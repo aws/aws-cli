@@ -674,7 +674,7 @@ class SSOError(BotoCoreError):
 class PendingAuthorizationExpiredError(SSOError):
     fmt = (
         "The pending authorization to retrieve an SSO token has expired. The "
-        "device authorization flow to retrieve an SSO token must be restarted."
+        "login flow to retrieve an SSO token must be restarted."
     )
 
 

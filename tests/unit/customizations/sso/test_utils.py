@@ -208,12 +208,12 @@ class TestOpenBrowserWithPatchedEnv(unittest.TestCase):
         self.assertIsNone(captured_env.get('LD_LIBRARY_PATH'))
 
 
-class TestAuthCodeFetcher(unittest.TestCase):
+class TestAuthCodeFetcher:
     """Tests for the AuthCodeFetcher class, which is the local
     web server we use to handle the OAuth 2.0 callback
     """
 
-    def setUp(self):
+    def setup_method(self):
         self.fetcher = AuthCodeFetcher()
         self.url = f'http://127.0.0.1:{self.fetcher.http_server.server_address[1]}/'
 
@@ -233,9 +233,10 @@ class TestAuthCodeFetcher(unittest.TestCase):
         http = urllib3.PoolManager()
         response = http.request("GET", url)
 
-        self.assertEqual(response.status, 200)
-        self.assertEqual(self.fetcher._auth_code, expected_code)
-        self.assertEqual(self.fetcher._state, expected_state)
+        actual_code, actual_state = self.fetcher.get_auth_code_and_state()
+        assert response.status == 200
+        assert actual_code == expected_code
+        assert actual_state == expected_state
 
     def test_error(self):
         expected_code = 'Failed'
@@ -244,7 +245,7 @@ class TestAuthCodeFetcher(unittest.TestCase):
         http = urllib3.PoolManager()
         response = http.request("GET", url)
 
-        self.assertEqual(response.status, 200)
-        self.assertEqual(self.fetcher._auth_code, None)
-        self.assertEqual(self.fetcher._state, None)
-
+        actual_code, actual_state = self.fetcher.get_auth_code_and_state()
+        assert response.status == 200
+        assert actual_code is None
+        assert actual_state is None

@@ -14,11 +14,12 @@ import datetime
 import json
 import logging
 import os
+import socket
 import webbrowser
 from functools import partial
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from urllib.parse import urlparse, parse_qs
 
+from botocore.compat import urlparse, parse_qs
 from botocore.credentials import JSONFileCache
 from botocore.exceptions import AuthCodeFetcherError
 from botocore.utils import SSOTokenFetcher, SSOTokenFetcherAuth
@@ -70,7 +71,7 @@ def _sso_json_dumps(obj):
 def do_sso_login(session, sso_region, start_url, token_cache=None,
                  on_pending_authorization=None, force_refresh=False,
                  registration_scopes=None, session_name=None,
-                 fallback_to_device_flow=False):
+                 use_device_code=False):
     if token_cache is None:
         token_cache = JSONFileCache(SSO_TOKEN_DIR, dumps_func=_sso_json_dumps)
     if on_pending_authorization is None:
@@ -80,27 +81,27 @@ def do_sso_login(session, sso_region, start_url, token_cache=None,
 
     # For the auth flow, we need a non-legacy sso-session and check that the
     # user hasn't opted into falling back to the device code flow
-    if session_name and not fallback_to_device_flow:
+    if session_name and not use_device_code:
         token_fetcher = SSOTokenFetcherAuth(
             sso_region=sso_region,
             client_creator=session.create_client,
             auth_code_fetcher=AuthCodeFetcher(),
             cache=token_cache,
-            on_pending_authorization=on_pending_authorization
+            on_pending_authorization=on_pending_authorization,
         )
     else:
         token_fetcher = SSOTokenFetcher(
             sso_region=sso_region,
             client_creator=session.create_client,
             cache=token_cache,
-            on_pending_authorization=on_pending_authorization
+            on_pending_authorization=on_pending_authorization,
         )
 
     return token_fetcher.fetch_token(
         start_url=start_url,
         session_name=session_name,
         force_refresh=force_refresh,
-        registration_scopes=registration_scopes
+        registration_scopes=registration_scopes,
     )
 
 
@@ -198,9 +199,9 @@ class AuthCodeFetcher:
         # We do this so that the request handler can have a reference to this
         # AuthCodeFetcher so that it can pass back the state and auth code
         try:
-            handler = partial(OAuthCallbackHandler, self)
+            handler = partial(self.OAuthCallbackHandler, self)
             self.http_server = HTTPServer(('', 0), handler)
-        except Exception as e:
+        except socket.error as e:
             raise AuthCodeFetcherError(error_msg=e)
 
     def redirect_uri_without_port(self):
@@ -219,39 +220,46 @@ class AuthCodeFetcher:
 
         return self._auth_code, self._state
 
+    def set_auth_code_and_state(self, auth_code, state):
+        self._auth_code = auth_code
+        self._state = state
+        self._is_done = True
 
-class OAuthCallbackHandler(BaseHTTPRequestHandler):
-    """HTTP handler to handle OAuth callback requests, extracting
-    the auth code and state parameters, and displaying a page directing
-    the user to return to the CLI.
-    """
-    def __init__(self, auth_code_fetcher, *args, **kwargs):
-        self._auth_code_fetcher = auth_code_fetcher
-        super().__init__(*args, **kwargs)
+    class OAuthCallbackHandler(BaseHTTPRequestHandler):
+        """HTTP handler to handle OAuth callback requests, extracting
+        the auth code and state parameters, and displaying a page directing
+        the user to return to the CLI.
+        """
+        def __init__(self, auth_code_fetcher, *args, **kwargs):
+            self._auth_code_fetcher = auth_code_fetcher
+            super().__init__(*args, **kwargs)
 
-    def log_message(self, format, *args):
-        # Suppress built-in logging, otherwise it prints
-        # each request to console
-        pass
+        def log_message(self, format, *args):
+            # Suppress built-in logging, otherwise it prints
+            # each request to console
+            pass
 
-    def do_GET(self):
-        self.send_response(200)
-        self.end_headers()
-        with open(
-            os.path.join(os.path.dirname(__file__), 'index.html'),
-            'rb',
-        ) as file:
-            self.wfile.write(file.read())
+        def do_GET(self):
+            self.send_response(200)
+            self.end_headers()
+            with open(
+                os.path.join(os.path.dirname(__file__), 'index.html'),
+                'rb',
+            ) as file:
+                self.wfile.write(file.read())
 
-        query_params = parse_qs(urlparse(self.path).query)
+            query_params = parse_qs(urlparse(self.path).query)
 
-        if 'error' in query_params:
-            self._auth_code_fetcher._is_done = True
-            return
-        elif 'code' in query_params and 'state' in query_params:
-            self._auth_code_fetcher._is_done = True
-            self._auth_code_fetcher._auth_code = query_params['code'][0]
-            self._auth_code_fetcher._state = query_params['state'][0]
+            if 'error' in query_params:
+                self._auth_code_fetcher.set_auth_code_and_state(
+                    None,
+                    None,
+                )
+            elif 'code' in query_params and 'state' in query_params:
+                self._auth_code_fetcher.set_auth_code_and_state(
+                    query_params['code'][0],
+                    query_params['state'][0],
+                )
 
 
 class InvalidSSOConfigError(ConfigurationError):

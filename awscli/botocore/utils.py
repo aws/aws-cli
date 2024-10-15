@@ -22,10 +22,10 @@ import logging
 import os
 import random
 import re
+import secrets
 import socket
 import string
 import time
-import urllib
 import uuid
 import warnings
 import weakref
@@ -45,6 +45,7 @@ from botocore.compat import (
     json,
     quote,
     total_seconds,
+    urlencode,
     urlparse,
     urlsplit,
     urlunsplit,
@@ -3176,6 +3177,15 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
             sleep = time.sleep
         self._sleep = sleep
 
+    def fetch_token(
+        self,
+        start_url,
+        force_refresh,
+        registration_scopes,
+        session_name,
+    ):
+        raise NotImplementedError('Must implement fetch_token()')
+
     def _register_client(self, session_name, scopes):
         register_kwargs = {
             'clientName': self._generate_client_name(session_name),
@@ -3377,7 +3387,7 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
 
         # Generate the PKCE pair
         self.code_verifier = ''.join(
-            random.SystemRandom().choice(
+            secrets.choice(
                 string.ascii_letters + string.digits + '-._~'
             )
             for _ in range(64)
@@ -3392,13 +3402,9 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
             'clientType': self._CLIENT_REGISTRATION_TYPE,
             'grantTypes': self._AUTH_GRANT_TYPES,
             'redirectUris': [redirect_uri],
-            'issuerUrl': issuer_url
+            'issuerUrl': issuer_url,
+            'scopes': scopes or [self._AUTH_GRANT_DEFAULT_SCOPE],
         }
-
-        if scopes:
-            register_kwargs['scopes'] = scopes
-        else:
-            register_kwargs['scopes'] = [self._AUTH_GRANT_DEFAULT_SCOPE]
 
         response = self._client.register_client(**register_kwargs)
 
@@ -3496,7 +3502,7 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
 
         return (
             f'{self._get_base_authorization_uri()}/authorize?'
-            f'{urllib.parse.urlencode(query_params)}'
+            f'{urlencode(query_params)}'
             f'&code_challenge={self.code_challenge[:-1]}'  # trim final '='
         )
 
@@ -3533,7 +3539,9 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
                 error_msg='Failed to retrieve an authorization code.'
             )
 
-        if state != expected_state:
+        # The state we get back from the redirect is just a string, so
+        # cast our original UUID before comparing
+        if state != str(expected_state):
             raise AuthorizationCodeLoadError(
                 error_msg='State parameter does not match expected value.'
             )
@@ -3564,8 +3572,6 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
             if 'refreshToken' in response:
                 token['refreshToken'] = response['refreshToken']
             return token
-        except self._client.exceptions.InvalidGrantException as error:
-            print(error)
         except self._client.exceptions.ExpiredTokenException:
             raise PendingAuthorizationExpiredError()
 

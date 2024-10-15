@@ -371,10 +371,16 @@ class IMDSFetcher(object):
             raise InvalidIMDSEndpointError(endpoint=chosen_base_url)
 
         return chosen_base_url
+        
+    def _construct_url(self, path):
+        sep = ''
+        if self._base_url and not self._base_url.endswith('/'):
+            sep = '/'
+        return f'{self._base_url}{sep}{path}'
 
     def _fetch_metadata_token(self):
         self._assert_enabled()
-        url = self._base_url + self._TOKEN_PATH
+        url = self._construct_url(self._TOKEN_PATH)
         headers = {
             'x-aws-ec2-metadata-token-ttl-seconds': self._TOKEN_TTL,
         }
@@ -424,7 +430,7 @@ class IMDSFetcher(object):
             self._assert_v1_enabled()
         if retry_func is None:
             retry_func = self._default_retry
-        url = self._base_url + url_path
+        url = self._construct_url(url_path)
         headers = {}
         if token is not None:
             headers['x-aws-ec2-metadata-token'] = token

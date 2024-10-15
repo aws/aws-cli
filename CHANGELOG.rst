@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.18.7
+======
+
+* api-change:``codebuild``: Enable proxy for reserved capacity fleet.
+* api-change:``sesv2``: This release adds support for email maximum delivery seconds that allows senders to control the time within which their emails are attempted for delivery.
+* api-change:``redshift``: This release launches the CreateIntegration, DeleteIntegration, DescribeIntegrations and ModifyIntegration APIs to create and manage Amazon Redshift Zero-ETL Integrations.
+* api-change:``resiliencehub``: AWS Resilience Hub now integrates with the myApplications platform, enabling customers to easily assess the resilience of applications defined in myApplications. The new Resiliency widget provides visibility into application resilience and actionable recommendations for improvement.
+* api-change:``ivs``: On a channel that you own, you can now replace an ongoing stream with a new stream by streaming up with the priority parameter appended to the stream key.
+* api-change:``cloudformation``: Documentation update for AWS CloudFormation API Reference.
+* api-change:``amplify``: Added sourceUrlType field to StartDeployment request
+* enhancement:awscrt: Update awscrt version requirement to 0.22.0
+* api-change:``qbusiness``: Amazon Q Business now supports embedding the Amazon Q Business web experience on third-party websites.
+
+
 2.18.6
 ======
 

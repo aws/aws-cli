@@ -3085,6 +3085,15 @@ class BaseSSOTokenFetcher(object):
             cache = {}
         self._cache = cache
 
+    def fetch_token(
+        self,
+        start_url,
+        force_refresh,
+        registration_scopes,
+        session_name,
+    ):
+        raise NotImplementedError('Must implement fetch_token()')
+
     def _utc_now(self):
         return datetime.datetime.now(tzutc())
 
@@ -3176,15 +3185,6 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
         if sleep is None:
             sleep = time.sleep
         self._sleep = sleep
-
-    def fetch_token(
-        self,
-        start_url,
-        force_refresh,
-        registration_scopes,
-        session_name,
-    ):
-        raise NotImplementedError('Must implement fetch_token()')
 
     def _register_client(self, session_name, scopes):
         register_kwargs = {

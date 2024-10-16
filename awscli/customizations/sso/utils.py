@@ -199,7 +199,7 @@ class AuthCodeFetcher:
         # We do this so that the request handler can have a reference to this
         # AuthCodeFetcher so that it can pass back the state and auth code
         try:
-            handler = partial(self.OAuthCallbackHandler, self)
+            handler = partial(OAuthCallbackHandler, self)
             self.http_server = HTTPServer(('', 0), handler)
         except socket.error as e:
             raise AuthCodeFetcherError(error_msg=e)
@@ -225,41 +225,42 @@ class AuthCodeFetcher:
         self._state = state
         self._is_done = True
 
-    class OAuthCallbackHandler(BaseHTTPRequestHandler):
-        """HTTP handler to handle OAuth callback requests, extracting
-        the auth code and state parameters, and displaying a page directing
-        the user to return to the CLI.
-        """
-        def __init__(self, auth_code_fetcher, *args, **kwargs):
-            self._auth_code_fetcher = auth_code_fetcher
-            super().__init__(*args, **kwargs)
 
-        def log_message(self, format, *args):
-            # Suppress built-in logging, otherwise it prints
-            # each request to console
-            pass
+class OAuthCallbackHandler(BaseHTTPRequestHandler):
+    """HTTP handler to handle OAuth callback requests, extracting
+    the auth code and state parameters, and displaying a page directing
+    the user to return to the CLI.
+    """
+    def __init__(self, auth_code_fetcher, *args, **kwargs):
+        self._auth_code_fetcher = auth_code_fetcher
+        super().__init__(*args, **kwargs)
 
-        def do_GET(self):
-            self.send_response(200)
-            self.end_headers()
-            with open(
-                os.path.join(os.path.dirname(__file__), 'index.html'),
-                'rb',
-            ) as file:
-                self.wfile.write(file.read())
+    def log_message(self, format, *args):
+        # Suppress built-in logging, otherwise it prints
+        # each request to console
+        pass
 
-            query_params = parse_qs(urlparse(self.path).query)
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        with open(
+            os.path.join(os.path.dirname(__file__), 'index.html'),
+            'rb',
+        ) as file:
+            self.wfile.write(file.read())
 
-            if 'error' in query_params:
-                self._auth_code_fetcher.set_auth_code_and_state(
-                    None,
-                    None,
-                )
-            elif 'code' in query_params and 'state' in query_params:
-                self._auth_code_fetcher.set_auth_code_and_state(
-                    query_params['code'][0],
-                    query_params['state'][0],
-                )
+        query_params = parse_qs(urlparse(self.path).query)
+
+        if 'error' in query_params:
+            self._auth_code_fetcher.set_auth_code_and_state(
+                None,
+                None,
+            )
+        elif 'code' in query_params and 'state' in query_params:
+            self._auth_code_fetcher.set_auth_code_and_state(
+                query_params['code'][0],
+                query_params['state'][0],
+            )
 
 
 class InvalidSSOConfigError(ConfigurationError):

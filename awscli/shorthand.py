@@ -198,7 +198,6 @@ class ShorthandParser(object):
         # keyval = key "=" [values] / key "@=" [file-optional-values]
         # file-optional-values = file://value / fileb://value / value
         key = self._key()
-        print(f'key len {len(key)}')
         assignment_strings = ['=', _FILE_ASSIGNMENT]
         resolve_paramfiles = False
         assignment_op = self._expect_strings(assignment_strings, consume_whitespace=True)

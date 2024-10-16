@@ -196,7 +196,7 @@ class ShorthandParser(object):
 
     def _keyval(self):
         # keyval = key "=" [values] / key "@=" [file-optional-values]
-        # file-optional-values = file://value / value
+        # file-optional-values = file://value / fileb://value / value
         key = self._key()
         print(f'key len {len(key)}')
         assignment_strings = ['=', _FILE_ASSIGNMENT]
@@ -208,7 +208,14 @@ class ShorthandParser(object):
         return key, values
 
     def _key(self):
-        # key = 1*(alpha / %x30-39 / %x5f / %x2e / %x23)  ; [a-zA-Z0-9\-_.#/]
+        # key = single-quoted-key / double-quoted-key / key_token
+        # single-quoted-key = single-quoted-value
+        # double-quoted-key = double-quoted-value
+        # key_token = 1*(alpha / %x30-39 / %x5f / %x2e / %x23)  ; [a-zA-Z0-9\-_.#/]
+        if self._current() == "'":
+            return self._single_quoted_value()
+        elif self._current() == '"':
+            return self._double_quoted_value()
         valid_chars = string.ascii_letters + string.digits + '-_.#/:'
         start = self._index
         while not self._at_eof():

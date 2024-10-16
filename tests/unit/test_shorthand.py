@@ -75,6 +75,8 @@ PARSING_TEST_CASES = (
     # Single quoted strings.
     ("foo='bar'", {"foo": "bar"}),
     ("foo='bar,baz'", {"foo": "bar,baz"}),
+    ("'foo'=bar", {"foo": "bar"}),
+    ("'foo,bar'='bar,bas'", {"foo,bar": "bar,bas"}),
     # Single quoted strings for each value in a CSV list.
     ("foo='bar','baz'", {"foo": ['bar', 'baz']}),
     # Can mix single quoted and non quoted values.
@@ -82,10 +84,13 @@ PARSING_TEST_CASES = (
     # Quoted strings can include chars not allowed in unquoted strings.
     ("foo=bar,'baz=qux'", {"foo": ['bar', 'baz=qux']}),
     ("foo=bar,'--option=bar space'", {"foo": ['bar', '--option=bar space']}),
+    ("'foo@=key'=bar", {"foo@=key": "bar"}),
     # Can escape the single quote.
     ("foo='bar\\'baz'", {"foo": "bar'baz"}),
     ("foo='bar\\\\baz'", {"foo": "bar\\baz"}),
+    ("'foo\\'bar'=bar", {"foo'bar": "bar"}),
     # Double quoted strings.
+    # TODO add double quoted keys w/ escapes
     ('foo="bar"', {'foo': 'bar'}),
     ('foo="bar,baz"', {'foo': 'bar,baz'}),
     ('foo="bar","baz"', {'foo': ['bar', 'baz']}),

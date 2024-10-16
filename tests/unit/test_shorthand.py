@@ -215,42 +215,37 @@ class TestShorthandParser:
         result = shorthand.ShorthandParser().parse(f'Foo@=file://{filename},Bar={{Baz@=file://{filename}}}')
         assert result == {'Foo': file_contents, 'Bar': {'Baz': file_contents}}
 
+    def test_binary_paramfile(self, files):
+        file_contents = b'file-contents123'
+        filename = files.create_file('foo', file_contents, mode='wb')
+        result = shorthand.ShorthandParser().parse(f'Foo@=fileb://{filename},Bar={{Baz@=fileb://{filename}}}')
+        assert result == {'Foo': file_contents, 'Bar': {'Baz': file_contents}}
+
     def test_paramfile_list(self, files):
         f1_contents = 'file-contents123'
         f2_contents = 'contents2'
-        with temporary_file('r+') as f1:
-            with temporary_file('r+') as f2:
-                f1.write(f1_contents)
-                f2.write(f2_contents)
-                f1.flush()
-                f2.flush()
-                result = shorthand.ShorthandParser().parse(f'Foo@=[a, file://{f1.name}, file://{f2.name}]')
+        f1_name = files.create_file('foo', f1_contents)
+        f2_name = files.create_file('bar', f2_contents)
+        result = shorthand.ShorthandParser().parse(f'Foo@=[a, file://{f1_name}, file://{f2_name}]')
         assert result == {'Foo': ['a', f1_contents, f2_contents]}
 
-    # TODO finish porting these tests over to pytest
-    def test_file_assignment_hash_literal_no_file(self):
+    def test_file_assignment_hash_literal_no_file(self, files):
         file_contents = 'file-contents123'
-        with temporary_file('r+') as f:
-            f.write(file_contents)
-            f.flush()
-            result = shorthand.ShorthandParser().parse(f'Bar@={{Baz=file://{f.name}}}')
-        assert result == {'Bar': {'Baz': f'file://{f.name}'}}
+        filename = files.create_file('foo', file_contents)
+        result = shorthand.ShorthandParser().parse(f'Bar@={{Baz=file://{filename}}}')
+        assert result == {'Bar': {'Baz': f'file://{filename}'}}
 
-    def test_file_assignment_no_file(self):
+    def test_file_assignment_no_file(self, files):
         file_contents = 'file-contents123'
-        with temporary_file('r+') as f:
-            f.write(file_contents)
-            f.flush()
-            result = shorthand.ShorthandParser().parse(f'Foo@={f.name},Bar={{Baz@={f.name}}}')
-        assert result == {'Foo': f.name, 'Bar': {'Baz': f.name}}
+        filename = files.create_file('foo', file_contents)
+        result = shorthand.ShorthandParser().parse(f'Foo@={filename},Bar={{Baz@={filename}}}')
+        assert result == {'Foo': filename, 'Bar': {'Baz': filename}}
 
-    def test_file_param_without_file_assignment(self):
+    def test_file_param_without_file_assignment(self, files):
         file_contents = 'file-contents123'
-        with temporary_file('r+') as f:
-            f.write(file_contents)
-            f.flush()
-            result = shorthand.ShorthandParser().parse(f'Foo=file://{f.name}')
-        assert result == {'Foo': f'file://{f.name}'}
+        filename = files.create_file('foo', file_contents)
+        result = shorthand.ShorthandParser().parse(f'Foo=file://{filename}')
+        assert result == {'Foo': f'file://{filename}'}
 
     def test_paramfile_does_not_exist_error(capsys):
         with pytest.raises(awscli.paramfile.ResourceLoadingError):

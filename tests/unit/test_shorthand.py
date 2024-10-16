@@ -258,11 +258,18 @@ class TestShorthandParser:
         result = shorthand.ShorthandParser().parse(f'Foo=file://{filename}')
         assert result == {'Foo': f'file://{filename}'}
 
-    def test_paramfile_does_not_exist_error(capsys):
+    def test_paramfile_does_not_exist_error(self, capsys):
         with pytest.raises(awscli.paramfile.ResourceLoadingError):
             shorthand.ShorthandParser().parse(f'Foo@=file://fakefile.txt')
             captured = capsys.readouterr()
             assert "No such file or directory: 'fakefile.txt" in captured.err
+
+    def test_paramfile_without_assignment_operator_emits_warning(self, capsys):
+        # TODO
+        # if any value is prefixed with file:// or fileb://, but resolve_paramfiles is False,
+        # emit a warning that the value was parsed to the raw string, and that the
+        # assignment operator must be used
+        pass
 
 
 class TestModelVisitor(unittest.TestCase):

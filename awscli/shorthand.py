@@ -38,38 +38,15 @@ necessary to maintain backwards compatibility.  This is done in the
 ``BackCompatVisitor`` class.
 
 """
-import copy
 import re
 import string
 
 from awscli.paramfile import get_paramfile, LOCAL_PREFIX_MAP
 from awscli.utils import is_document_type
 
-"""
-argprocess imports from shorthand
-
-paramfile imports from argprocess
-
-shorthand imports from paramfile
-
-argprocess -> shorthand (->) paramfile -> argprocess
-"""
-
-# TODO refactor paramfile:
-#     URIArgumentHandler to a new file uriargumenthandler.py (imports from paramfile)
-#     uriargumenthandler will import from argprocess
-#     shorthand will keep importing from paramfile
-#     paramfile will no longer import from argprocess.
-
-# new state (no cycles!):
-#
-# handlers -> uriargumenthandler -> argprocess
-#                     V
-#                  paramfile <- shorthand
-#
-
 
 _EOF = object()
+_FILE_ASSIGNMENT = '@='
 
 
 class _NamedRegex(object):
@@ -218,29 +195,14 @@ class ShorthandParser(object):
         return params
 
     def _keyval(self):
-        # keyval = key "=" [values] / key ":=" [file-optional-values]
+        # keyval = key "=" [values] / key "@=" [file-optional-values]
         # file-optional-values = file://value / value
         key = self._key()
+        assignment_strings = ['=', _FILE_ASSIGNMENT]
         resolve_paramfiles = False
-
-        # first try to parse '='. if exception is caught and actual char is ':',
-        # try to parse '=' a second time. if that fails, raise the exception
-        # if the second attempt passes, change inner state to allow file prefix,
-        # and continue parsing values
-
-        # TODO clean this into a new helper function. expect_any([list], consume_whitespace_
-        # handles any string in the list, and returns the first index/element that it parsed
-        # (in order of the list).
-        try:
-            self._expect('=', consume_whitespace=True)
-        except ShorthandParseSyntaxError as e:
-            if e.actual == '~':
-                self._index+=1
-                self._expect('=', consume_whitespace=True)
-                resolve_paramfiles = True
-            else:
-                raise
-
+        assignment_op = self._expect_strings(assignment_strings, consume_whitespace=True)
+        if assignment_op == _FILE_ASSIGNMENT:
+            resolve_paramfiles = True
         values = self._values(resolve_paramfiles)
         return key, values
 
@@ -261,7 +223,7 @@ class ShorthandParser(object):
         elif self._current() == '[':
             return self._explicit_list(resolve_paramfiles)
         elif self._current() == '{':
-            return self._hash_literal(resolve_paramfiles)
+            return self._hash_literal()
         else:
             return self._csv_value(resolve_paramfiles)
 
@@ -343,18 +305,20 @@ class ShorthandParser(object):
         if self._current() == '[':
             return self._explicit_list(resolve_paramfiles)
         elif self._current() == '{':
-            return self._hash_literal(resolve_paramfiles)
+            return self._hash_literal()
         else:
             return self._first_value(resolve_paramfiles)
 
-    def _hash_literal(self, resolve_paramfiles=False):
+    def _hash_literal(self):
         self._expect('{', consume_whitespace=True)
         keyvals = {}
-        # TODO after factoring out a expect_any helper function,
-        # use it below to support file-resolving for the values of hash literals.
+        assignment_strings = ['=', _FILE_ASSIGNMENT]
         while self._current() != '}':
             key = self._key()
-            self._expect('=', consume_whitespace=True)
+            resolve_paramfiles = False
+            assignment_op = self._expect_strings(assignment_strings, consume_whitespace=True)
+            if assignment_op == _FILE_ASSIGNMENT:
+                resolve_paramfiles = True
             v = self._explicit_values(resolve_paramfiles)
             self._consume_whitespace()
             if self._current() != '}':
@@ -450,23 +414,26 @@ class ShorthandParser(object):
         if self._index >= len(self._input_value):
             raise ShorthandParseSyntaxError(self._input_value, strs,
                                             'EOF', self._index)
-
-        for str in strs:
-
-        # for each str in strs
-        #   if the cursor parses to str at index
-        #       increment index by len(str)
-        #       break
-        # raise if no str parsed
-        # consume whitespace
-        # return the parsed str
-        actual = self._input_value[self._index]
-        if actual != char:
-            raise ShorthandParseSyntaxError(self._input_value, char,
+        actual = None
+        parsed = None
+        for exp in strs:
+            # Clip the parsing window to the end of the input
+            end_idx = min(self._index + len(exp), len(self._input_value))
+            curr = self._input_value[self._index:end_idx]
+            # In case we raise an error, we want actual to be the largest
+            # substring of the input that could've possibly been in strs.
+            if actual is None or len(actual) < len(exp):
+                actual = curr
+            if curr == exp:
+                self._index += len(exp)
+                parsed = curr
+                break
+        if parsed is None:
+            raise ShorthandParseSyntaxError(self._input_value, strs,
                                             actual, self._index)
-        self._index += 1
         if consume_whitespace:
             self._consume_whitespace()
+        return parsed
 
     def _must_consume_regex(self, regex):
         result = regex.match(self._input_value[self._index:])

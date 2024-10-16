@@ -78,39 +78,46 @@ def assert_all_requirements_match(auth_config, message):
     assert len(auth_requirements) == 1, message
 
 
+def get_config_file_path(base_path, value):
+    if value is None:
+        return "file-does-not-exist"
+
+    tmp_config_file_path = base_path / "config"
+    tmp_config_file_path.write_text(
+        f"[default]\nsigv4a_signing_region_set={value}\n"
+    )
+    return tmp_config_file_path
+
+
+def get_environ_mock(
+    request,
+    env_var_value=None,
+    config_file_value=None,
+):
+    base_path = request.getfixturevalue("tmp_path")
+    config_file_path = get_config_file_path(base_path, config_file_value)
+    return {
+        "AWS_CONFIG_FILE": str(config_file_path),
+        "AWS_SIGV4A_SIGNING_REGION_SET": env_var_value,
+    }
+
+
 @pytest.mark.parametrize(
-    "client_config_val, env_var_val, config_file_val, expected",
+    "client_config, env_var_val, config_file_val, expected",
     [
-        ("foo", "bar", "baz", "foo"),
-        ("foo", None, None, "foo"),
-        (None, "foo", "bar", "foo"),
-        (None, None, "foo", "foo"),
-        ("foo", None, "bar", "foo"),
+        (Config(sigv4a_signing_region_set="foo"), "bar", "baz", "foo"),
+        (Config(sigv4a_signing_region_set="foo"), None, None, "foo"),
+        (None, "bar", "baz", "bar"),
+        (None, None, "baz", "baz"),
+        (Config(sigv4a_signing_region_set="foo"), None, "baz", "foo"),
         (None, None, None, None),
     ],
 )
 def test_sigv4a_signing_region_set_config_from_environment(
-    client_config_val, env_var_val, config_file_val, expected, tmp_path
+    client_config, env_var_val, config_file_val, expected, request
 ):
-    if config_file_val:
-        tmp_config_file_path = tmp_path / 'config'
-        tmp_config_file_path.write_text(
-            f'[default]\nsigv4a_signing_region_set={config_file_val}\n'
-        )
-        environ = {'AWS_CONFIG_FILE': str(tmp_config_file_path)}
-    else:
-        environ = {'AWS_CONFIG_FILE': "file-does-not-exist"}
-
-    if env_var_val:
-        environ['AWS_SIGV4A_SIGNING_REGION_SET'] = env_var_val
-
-    if client_config_val:
-        config = Config(sigv4a_signing_region_set=client_config_val)
-    else:
-        config = Config()
-
-    with mock.patch('os.environ', environ):
+    environ_mock = get_environ_mock(request, env_var_val, config_file_val)
+    with mock.patch('os.environ', environ_mock):
         session = create_session()
-        session.config_filename = 'no-exist-foo'
-        s3 = session.create_client('s3', config=config)
+        s3 = session.create_client('s3', config=client_config)
         assert s3.meta.config.sigv4a_signing_region_set == expected

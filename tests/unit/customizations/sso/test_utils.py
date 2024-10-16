@@ -13,9 +13,10 @@
 import os
 import threading
 import webbrowser
-
 import pytest
 import urllib3
+
+from botocore.exceptions import PendingAuthorizationExpiredError
 from botocore.session import Session
 
 from awscli.compat import StringIO
@@ -249,3 +250,19 @@ class TestAuthCodeFetcher:
         assert response.status == 200
         assert actual_code is None
         assert actual_state is None
+
+
+@mock.patch(
+    'awscli.customizations.sso.utils.AuthCodeFetcher._REQUEST_TIMEOUT',
+    0.1
+)
+@mock.patch(
+    'awscli.customizations.sso.utils.AuthCodeFetcher._OVERALL_TIMEOUT',
+    0.1
+)
+def test_get_auth_code_and_state_timeout():
+    """Tests the timeout case separately of TestAuthCodeFetcher,
+    since we need to override the constants
+    """
+    with pytest.raises(PendingAuthorizationExpiredError):
+        AuthCodeFetcher().get_auth_code_and_state()

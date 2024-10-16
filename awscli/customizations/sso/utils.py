@@ -15,13 +15,17 @@ import json
 import logging
 import os
 import socket
+import time
 import webbrowser
 from functools import partial
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 from botocore.compat import urlparse, parse_qs
 from botocore.credentials import JSONFileCache
-from botocore.exceptions import AuthCodeFetcherError
+from botocore.exceptions import (
+    AuthCodeFetcherError,
+    PendingAuthorizationExpiredError,
+)
 from botocore.utils import SSOTokenFetcher, SSOTokenFetcherAuth
 from botocore.utils import original_ld_library_path
 
@@ -191,6 +195,11 @@ class AuthCodeFetcher:
     """Manages the local web server that will be used
     to retrieve the authorization code from the OAuth callback
     """
+    # How many seconds handle_request should wait for an incoming request
+    _REQUEST_TIMEOUT = 10
+    # How long we wait overall for the callback
+    _OVERALL_TIMEOUT = 60 * 10
+
     def __init__(self):
         self._auth_code = None
         self._state = None
@@ -201,6 +210,7 @@ class AuthCodeFetcher:
         try:
             handler = partial(OAuthCallbackHandler, self)
             self.http_server = HTTPServer(('', 0), handler)
+            self.http_server.timeout = self._REQUEST_TIMEOUT
         except socket.error as e:
             raise AuthCodeFetcherError(error_msg=e)
 
@@ -214,9 +224,13 @@ class AuthCodeFetcher:
         """Blocks until the expected redirect request with either the
         authorization code/state or and error is handled
         """
-        while not self._is_done:
+        start = time.time()
+        while not self._is_done and time.time() < start + self._OVERALL_TIMEOUT:
             self.http_server.handle_request()
         self.http_server.server_close()
+
+        if not self._is_done:
+            raise PendingAuthorizationExpiredError
 
         return self._auth_code, self._state
 

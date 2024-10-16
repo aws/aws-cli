@@ -264,23 +264,6 @@ class CLIDriver(object):
             'cli_auto_prompt',
             self._construct_cli_auto_prompt_chain()
         )
-        config_store.set_config_provider(
-            'sigv4a_signing_region_set',
-            ChainProvider(providers=[
-                InstanceVarProvider(
-                    instance_var='sigv4a_signing_region_set',
-                    session=self.session
-                ),
-                EnvironmentProvider(
-                name='AWS_SIGV4A_SIGNING_REGION_SET',
-                env=os.environ,
-                ),
-                ScopedConfigProvider(
-                    config_var_name='sigv4a_signing_region_set',
-                    session=self.session,
-                )
-            ])
-        )
 
     def _construct_cli_region_chain(self):
         providers = [

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.18.8
+======
+
+* api-change:``s3``: Add support for the new optional bucket-region and prefix query parameters in the ListBuckets API. For ListBuckets requests that express pagination, Amazon S3 will now return both the bucket names and associated AWS regions in the response.
+
+
 2.18.7
 ======
 

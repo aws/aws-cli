@@ -98,8 +98,6 @@ def create_clidriver(args=None):
         args, _ = parser.parse_known_args(args)
         debug = args.debug
     session = botocore.session.Session()
-    print(f'ENV VAR: {os.environ["AWS_SIGV4A_SIGNING_REGION_SET"]}')
-    print(f'CLIDRIVER FULL CONFIG: {session.full_config}')
     _set_user_agent_for_session(session)
     load_plugins(session.full_config.get('plugins', {}),
                  event_hooks=session.get_component('event_emitter'))
@@ -975,8 +973,6 @@ class CLIOperationCaller(object):
             value is returned.
 
         """
-        print('CLIDRIVER: ABOUT TO CREATE CLIENT')
-        print(f'full config: {self._session.full_config}')
         client = self._session.create_client(
             service_name, region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,

@@ -12,7 +12,8 @@
 # language governing permissions and limitations under the License.
 import pytest
 
-from botocore.session import get_session
+from botocore.config import Config
+from tests import create_session, mock
 
 # In the future, a service may have a list of credentials requirements where one
 # signature may fail and others may succeed. e.g. a service may want to use bearer
@@ -31,7 +32,7 @@ AUTH_TYPE_REQUIREMENTS = {
 
 
 def _all_test_cases():
-    session = get_session()
+    session = create_session()
     loader = session.get_component('data_loader')
 
     services = loader.list_available_services('service-2')
@@ -74,4 +75,42 @@ def assert_all_requirements_match(auth_config, message):
     auth_requirements = set(
         AUTH_TYPE_REQUIREMENTS[auth_type] for auth_type in auth_config
     )
-    assert len(auth_requirements) == 1
+    assert len(auth_requirements) == 1, message
+
+
+@pytest.mark.parametrize(
+    "client_config_val, env_var_val, config_file_val, expected",
+    [
+        ("foo", "bar", "baz", "foo"),
+        ("foo", None, None, "foo"),
+        (None, "foo", "bar", "foo"),
+        (None, None, "foo", "foo"),
+        ("foo", None, "bar", "foo"),
+        (None, None, None, None),
+    ],
+)
+def test_sigv4a_signing_region_set_config_from_environment(
+    client_config_val, env_var_val, config_file_val, expected, tmp_path
+):
+    if config_file_val:
+        tmp_config_file_path = tmp_path / 'config'
+        tmp_config_file_path.write_text(
+            f'[default]\nsigv4a_signing_region_set={config_file_val}\n'
+        )
+        environ = {'AWS_CONFIG_FILE': str(tmp_config_file_path)}
+    else:
+        environ = {'AWS_CONFIG_FILE': "file-does-not-exist"}
+
+    if env_var_val:
+        environ['AWS_SIGV4A_SIGNING_REGION_SET'] = env_var_val
+
+    if client_config_val:
+        config = Config(sigv4a_signing_region_set=client_config_val)
+    else:
+        config = Config()
+
+    with mock.patch('os.environ', environ):
+        session = create_session()
+        session.config_filename = 'no-exist-foo'
+        s3 = session.create_client('s3', config=config)
+        assert s3.meta.config.sigv4a_signing_region_set == expected

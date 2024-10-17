@@ -11,9 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import time
+import uuid
 
 from awscli.clidriver import AWSCLIEntryPoint
-from awscli.customizations.sso.utils import OpenBrowserHandler
+from awscli.customizations.sso.utils import OpenBrowserHandler, AuthCodeFetcher
 from awscli.testutils import create_clidriver
 from awscli.testutils import FileCreator
 from awscli.testutils import BaseAWSCommandParamsTest
@@ -45,6 +46,29 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
             self.open_browser_mock,
         )
         self.open_browser_patch.start()
+
+        self.fetcher_mock = mock.Mock(spec=AuthCodeFetcher)
+        self.fetcher_mock.return_value.redirect_uri_without_port.return_value = (
+            'http://127.0.0.1/oauth/callback'
+        )
+        self.fetcher_mock.return_value.redirect_uri_with_port.return_value = (
+            'http://127.0.0.1:55555/oauth/callback'
+        )
+        self.fetcher_mock.return_value.get_auth_code_and_state.return_value = (
+            "abc", "00000000-0000-0000-0000-000000000000"
+        )
+        self.auth_code_fetcher_patch = mock.patch(
+            'awscli.customizations.sso.utils.AuthCodeFetcher',
+            self.fetcher_mock,
+        )
+        self.auth_code_fetcher_patch.start()
+
+        self.uuid_mock = mock.Mock(
+            return_value=uuid.UUID("00000000-0000-0000-0000-000000000000")
+        )
+        self.uuid_patch = mock.patch('uuid.uuid4', self.uuid_mock)
+        self.uuid_patch.start()
+
         self.expires_in = 28800
         self.expiration_time = time.time() + 1000
 
@@ -52,6 +76,8 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         super(BaseSSOTest, self).tearDown()
         self.files.remove_all()
         self.open_browser_patch.stop()
+        self.auth_code_fetcher_patch.stop()
+        self.uuid_patch.stop()
         self.token_cache_dir_patch.stop()
 
     def assert_used_expected_sso_region(self, expected_region):

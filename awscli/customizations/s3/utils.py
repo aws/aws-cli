@@ -760,9 +760,7 @@ class ProvideLastModifiedTimeSubscriber(OnDoneFilteredSubscriber):
     def _on_success(self, future, **kwargs):
         filename = future.meta.call_args.fileobj
         try:
-            last_update_tuple = self._last_modified_time.timetuple()
-            mod_timestamp = time.mktime(last_update_tuple)
-            set_file_utime(filename, int(mod_timestamp))
+            set_file_utime(filename, self._last_modified_time.timestamp())
         except Exception as e:
             warning_message = (
                 'Successfully Downloaded %s but was unable to update the '

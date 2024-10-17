@@ -719,6 +719,39 @@ class PresignCommand(S3Command):
         return 0
 
 
+class PresignPutCommand(S3Command):
+    NAME = 'presign-put'
+    DESCRIPTION = (
+        "Generate a pre-signed URL for an Amazon S3 object. This allows "
+        "anyone who receives the pre-signed URL to upload the S3 object "
+        "with an HTTP PUT request. For sigv4 requests the region needs to be "
+        "configured explicitly."
+    )
+    USAGE = "<S3Uri>"
+    ARG_TABLE = [{'name': 'path',
+                  'positional_arg': True, 'synopsis': USAGE},
+                 {'name': 'expires-in', 'default': 3600,
+                  'cli_type_name': 'integer',
+                  'help_text': (
+                      'Number of seconds until the pre-signed '
+                      'URL expires.  Default is 3600 seconds.')}]
+
+    def _run_main(self, parsed_args, parsed_globals):
+        super(PresignPutCommand, self)._run_main(parsed_args, parsed_globals)
+        path = parsed_args.path
+        if path.startswith('s3://'):
+            path = path[5:]
+        bucket, key = find_bucket_key(path)
+        url = self.client.generate_presigned_url(
+                'put_object',
+                {'Bucket': bucket, 'Key': key},
+                ExpiresIn=parsed_args.expires_in
+        )
+        uni_print(url)
+        uni_print('\n')
+        return 0
+
+
 class S3TransferCommand(S3Command):
     def _run_main(self, parsed_args, parsed_globals):
         super(S3TransferCommand, self)._run_main(parsed_args, parsed_globals)

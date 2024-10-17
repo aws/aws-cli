@@ -16,11 +16,11 @@ Output::
             "SubmitTime": "2023-06-08T21:30:15.323000+00:00",
             "EndTime": "2023-06-08T21:40:23.509000+00:00",
             "InputDataConfig": {
-                "S3Uri": "s3://DOC-EXAMPLE-BUCKET/AsyncBatchJobs/",
+                "S3Uri": "s3://amzn-s3-demo-bucket/AsyncBatchJobs/",
                 "InputFormat": "ONE_DOC_PER_LINE"
             },
             "OutputDataConfig": {
-                "S3Uri": "s3://DOC-EXAMPLE-BUCKET/thefolder/111122223333-NER-123456abcdeb0e11022f22a11EXAMPLE/output/output.tar.gz"
+                "S3Uri": "s3://amzn-s3-demo-bucket/thefolder/111122223333-NER-123456abcdeb0e11022f22a11EXAMPLE/output/output.tar.gz"
             },
             "LanguageCode": "en",
             "DataAccessRoleArn": "arn:aws:iam::12345678012:role/service-role/AmazonComprehendServiceRole-example-role"

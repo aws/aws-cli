@@ -11,7 +11,7 @@ Output::
             {
                 "FlywheelArn": "arn:aws:comprehend:us-west-2:111122223333:flywheel/example-flywheel-1",
                 "ActiveModelArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/exampleclassifier/version/1",
-                "DataLakeS3Uri": "s3://DOC-EXAMPLE-BUCKET/example-flywheel-1/schemaVersion=1/20230616T200543Z/",
+                "DataLakeS3Uri": "s3://amzn-s3-demo-bucket/example-flywheel-1/schemaVersion=1/20230616T200543Z/",
                 "Status": "ACTIVE",
                 "ModelType": "DOCUMENT_CLASSIFIER",
                 "CreationTime": "2023-06-16T20:05:43.242000+00:00",
@@ -21,7 +21,7 @@ Output::
             {
                 "FlywheelArn": "arn:aws:comprehend:us-west-2:111122223333:flywheel/example-flywheel-2",
                 "ActiveModelArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/exampleclassifier2/version/1",
-                "DataLakeS3Uri": "s3://DOC-EXAMPLE-BUCKET/example-flywheel-2/schemaVersion=1/20220616T200543Z/",
+                "DataLakeS3Uri": "s3://amzn-s3-demo-bucket/example-flywheel-2/schemaVersion=1/20220616T200543Z/",
                 "Status": "ACTIVE",
                 "ModelType": "DOCUMENT_CLASSIFIER",
                 "CreationTime": "2022-06-16T20:05:43.242000+00:00",

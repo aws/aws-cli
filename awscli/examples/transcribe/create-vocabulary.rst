@@ -5,7 +5,7 @@ The following ``create-vocabulary`` example creates a custom vocabulary. To crea
     aws transcribe create-vocabulary \
         --language-code language-code \
         --vocabulary-name cli-vocab-example \
-        --vocabulary-file-uri s3://DOC-EXAMPLE-BUCKET/Amazon-S3-prefix/the-text-file-for-the-custom-vocabulary.txt
+        --vocabulary-file-uri s3://amzn-s3-demo-bucket/Amazon-S3-prefix/the-text-file-for-the-custom-vocabulary.txt
 
 Output::
 

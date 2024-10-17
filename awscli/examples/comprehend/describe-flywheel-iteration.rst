@@ -30,7 +30,7 @@ Output::
                 "AverageRecall": 0.9767700253081214,
                 "AverageAccuracy": 0.9858281665190434
             },
-            "EvaluationManifestS3Prefix": "s3://DOC-EXAMPLE-DESTINATION-BUCKET/flywheel-entity/schemaVersion=1/20230616T200543Z/evaluation/20230616T211026Z/"
+            "EvaluationManifestS3Prefix": "s3://amzn-s3-demo-destination-bucket/flywheel-entity/schemaVersion=1/20230616T200543Z/evaluation/20230616T211026Z/"
         }
     }
 

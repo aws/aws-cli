@@ -19,8 +19,8 @@ Contents of ``existing-policy.json``::
                     "s3:ListBucket"
                 ],
                 "Resource": [
-                    "arn:aws:s3:::DOC-EXAMPLE-BUCKET",
-                    "arn:aws:s3:::DOC-EXAMPLE-BUCKET/*"
+                    "arn:aws:s3:::amzn-s3-demo-bucket",
+                    "arn:aws:s3:::amzn-s3-demo-bucket/*"
                 ]
             }
         ]
@@ -39,8 +39,8 @@ Contents of ``new-policy.json``::
                     "s3:ListBucket"
                 ],
                 "Resource": [
-                    "arn:aws:s3:::DOC-EXAMPLE-BUCKET",
-                    "arn:aws:s3:::DOC-EXAMPLE-BUCKET/*"
+                    "arn:aws:s3:::amzn-s3-demo-bucket",
+                    "arn:aws:s3:::amzn-s3-demo-bucket/*"
                 ]
             }
         ]

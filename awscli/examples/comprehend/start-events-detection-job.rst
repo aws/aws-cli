@@ -8,8 +8,8 @@ When the job is complete, the folder, ``output``, is placed in the location spec
 
     aws comprehend start-events-detection-job \
         --job-name events-detection-1 \
-        --input-data-config "S3Uri=s3://DOC-EXAMPLE-BUCKET/EventsData" \
-        --output-data-config "S3Uri=s3://DOC-EXAMPLE-DESTINATION-BUCKET/testfolder/" \
+        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket/EventsData" \
+        --output-data-config "S3Uri=s3://amzn-s3-demo-destination-bucket/testfolder/" \
         --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-servicerole \
         --language-code en \
         --target-event-types "BANKRUPTCY" "EMPLOYMENT" "CORPORATE_ACQUISITION" "CORPORATE_MERGER" "INVESTMENT_GENERAL"

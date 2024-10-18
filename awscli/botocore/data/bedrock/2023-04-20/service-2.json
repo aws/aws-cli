@@ -1864,7 +1864,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:((:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:provisioned-model/[a-z0-9]{12})|([0-9]{12}:inference-profile/(([a-z]{2}.)[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))))|(([a-z]{2}[.]{1})([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))"
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:((:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:provisioned-model/[a-z0-9]{12})|([0-9]{12}:imported-model/[a-z0-9]{12})|([0-9]{12}:inference-profile/(([a-z]{2}.)[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))))|(([a-z]{2}[.]{1})([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))"
     },
     "EvaluationModelIdentifiers":{
       "type":"list",
@@ -2434,6 +2434,10 @@
         "modelKmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The imported model is encrypted at rest using this key.</p>"
+        },
+        "instructSupported":{
+          "shape":"InstructSupported",
+          "documentation":"<p>Specifies if the imported model supports fine tuning.</p>"
         }
       }
     },
@@ -3797,9 +3801,17 @@
         "creationTime":{
           "shape":"Timestamp",
           "documentation":"<p>Creation time of the imported model.</p>"
+        },
+        "instructSupported":{
+          "shape":"InstructSupported",
+          "documentation":"<p>Specifies if the imported model supports fine tuning.</p>"
+        },
+        "modelArchitecture":{
+          "shape":"ModelArchitecture",
+          "documentation":"<p>The architecture of the imported model.</p>"
         }
       },
-      "documentation":"<p>Information about tne imported model.</p>"
+      "documentation":"<p>Information about the imported model.</p>"
     },
     "ImportedModelSummaryList":{
       "type":"list",
@@ -3923,6 +3935,10 @@
     "InferenceTypeList":{
       "type":"list",
       "member":{"shape":"InferenceType"}
+    },
+    "InstructSupported":{
+      "type":"boolean",
+      "box":true
     },
     "InternalServerException":{
       "type":"structure",
@@ -4680,6 +4696,7 @@
       "type":"float",
       "box":true
     },
+    "ModelArchitecture":{"type":"string"},
     "ModelArn":{
       "type":"string",
       "max":1011,

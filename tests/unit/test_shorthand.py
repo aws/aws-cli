@@ -223,13 +223,17 @@ class TestShorthandParser:
     def test_paramfile(self, files):
         file_contents = 'file-contents123'
         filename = files.create_file('foo', file_contents)
-        result = shorthand.ShorthandParser().parse(f'Foo@=file://{filename},Bar={{Baz@=file://{filename}}}')
+        result = shorthand.ShorthandParser().parse(
+            f'Foo@=file://{filename},Bar={{Baz@=file://{filename}}}'
+        )
         assert result == {'Foo': file_contents, 'Bar': {'Baz': file_contents}}
 
     def test_binary_paramfile(self, files):
         file_contents = b'file-contents123'
         filename = files.create_file('foo', file_contents, mode='wb')
-        result = shorthand.ShorthandParser().parse(f'Foo@=fileb://{filename},Bar={{Baz@=fileb://{filename}}}')
+        result = shorthand.ShorthandParser().parse(
+            f'Foo@=fileb://{filename},Bar={{Baz@=fileb://{filename}}}'
+        )
         assert result == {'Foo': file_contents, 'Bar': {'Baz': file_contents}}
 
     def test_paramfile_list(self, files):
@@ -237,7 +241,9 @@ class TestShorthandParser:
         f2_contents = 'contents2'
         f1_name = files.create_file('foo', f1_contents)
         f2_name = files.create_file('bar', f2_contents)
-        result = shorthand.ShorthandParser().parse(f'Foo@=[a, file://{f1_name}, file://{f2_name}]')
+        result = shorthand.ShorthandParser().parse(
+            f'Foo@=[a, file://{f1_name}, file://{f2_name}]'
+        )
         assert result == {'Foo': ['a', f1_contents, f2_contents]}
 
     def test_file_assignment_hash_literal_no_file(self, files):
@@ -260,16 +266,30 @@ class TestShorthandParser:
 
     def test_paramfile_does_not_exist_error(self, capsys):
         with pytest.raises(awscli.paramfile.ResourceLoadingError):
-            shorthand.ShorthandParser().parse(f'Foo@=file://fakefile.txt')
+            shorthand.ShorthandParser().parse('Foo@=file://fakefile.txt')
             captured = capsys.readouterr()
             assert "No such file or directory: 'fakefile.txt" in captured.err
 
     def test_paramfile_without_assignment_operator_emits_warning(self, capsys):
-        # TODO
-        # if any value is prefixed with file:// or fileb://, but resolve_paramfiles is False,
-        # emit a warning that the value was parsed to the raw string, and that the
-        # assignment operator must be used
-        pass
+        key = 'Foo'
+        shorthand.ShorthandParser().parse(f'{key}=file://fakefile.txt')
+        captured = capsys.readouterr()
+        assert 'Warning: Usage of the file:// prefix was detected without the ' \
+               f'file assignment operator in parameter {key}.' in captured.out
+
+    def test_paramfileb_without_assignment_operator_emits_warning(self, capsys):
+        key = 'Foo'
+        shorthand.ShorthandParser().parse(f'{key}=fileb://fakefile.txt')
+        captured = capsys.readouterr()
+        assert 'Warning: Usage of the fileb:// prefix was detected without the ' \
+                f'file assignment operator in parameter {key}.' in captured.out
+
+    def test_paramfile_list_element_without_assignment_operator_emits_warning(self, capsys):
+        key = 'Foo'
+        shorthand.ShorthandParser().parse(f'{key}=[a, file://fakefile.txt, c]')
+        captured = capsys.readouterr()
+        assert 'Warning: Usage of the file:// prefix was detected without the ' \
+               f'file assignment operator in parameter {key}.' in captured.out
 
 
 class TestModelVisitor(unittest.TestCase):

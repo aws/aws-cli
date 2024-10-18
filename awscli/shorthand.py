@@ -177,6 +177,7 @@ class ShorthandParser(object):
 
     def _parameter(self):
         # parameter = keyval *("," keyval)
+        print(f'SHORTHAND INVOKED: {self._input_value}')
         params = {}
         key, val = self._keyval()
         params[key] = val
@@ -223,8 +224,119 @@ class ShorthandParser(object):
             self._index += 1
         return self._input_value[start:self._index]
 
-    def _values(self, resolve_paramfiles=False):
+    def _values(self,  resolve_paramfiles=False):
+        # 1. DO we want this warning emitted only in debug mode or not?
+        #       I prefer debug mode only. Printing after a command should be reserved for
+        #       errors and results. Or warnings of severe effects in common misuse cases.
+        #       we foresee a common misuse case, but the only effect of misuse is an
+        #       unexpected string being supplied to a service. if they catch
+
+        # 2. I don't want the lower-level parsing functions to know anything of
+        # their parents (e.g. the key of parent nested params).
+
+        # That leaves us with the result of surfacing from the lower-level some
+        # warnings. One such warning is finding a file prefix while resolve_params
+        # is false.
+
+        # Then, the higher-level nested param takes the warning results, and does
+        # what it wants with it.
+
+        # So how will we architect this surfacing of warnings from lower level
+        # parsers?
+
+        # 1. Event handler/callback passed from above.
+        #       This class seems small and self-contained enough to not warrant
+        #       such an architecture.
+        # 2. Returning a dict with warnings from below.
+        #       let's do this one. A nice benefit is that the warning messages can be
+        #       very descriptive. e.g. for deeply nested hash literals,
+        #       Foo = { a= {b= {c=file://txt}, d={e=fileb://txt} } }
+
+        # c.first_value returns {'FilePrefixNoAssignmentWarning': 'file://txt'}
+        # e.first_value returns {'FilebPrefixNoAssignmentWarning': 'fileb://txt'}
+        # e aggregates the results and returns
+        # {'e':
+        #   [
+        #       {'FilebPrefixNoAssignmentWarning': 'fileb://txt'}
+        #   ]
+        # }
+        # c aggregates the results and returns
+        # {'c':
+        #   [
+        #       {'FilePrefixNoAssignmentWarning': 'file://txt'}
+        #   ]
+        # }
+        # d aggregates the results and returns
+        # {'d':
+        #   [
+        #       {'e':
+        #            [
+        #                {'FilebPrefixNoAssignmentWarning': 'fileb://txt'}
+        #            ]
+        #        }
+        #   ]
+        # }
+        # b does something similar as above
+        # a aggregates into
+        # {'a':
+        #   [
+        #       {'b':
+        #           [
+        #                {'c':
+        #                     [
+        #                         {'FilePrefixNoAssignmentWarning': 'file://txt'}
+        #                     ]
+        #                 }
+        #            ]
+        #       {'d':
+        #           [
+        #               {'e':
+        #                   [
+        #                      {'FilebPrefixNoAssignmentWarning': 'fileb://txt'}
+        #                   ]
+        #               }
+        #           ]
+        #       }
+        #   ]
+        # }
+
+        # Then, Foo (in keyval), can print each warning via a tree-traversal.
+        # the resulting warnings can be much more descriptive.
+        # e.g. 'in parameter Foo.a.b.c'.
+        # lists can also be supported via indices, e.g. Foo.a.b[2].c
+
+        # alternatively, we just let the parent nested param handle it.
+        # e.g. 'in parameter c', and user must find which c is being referred to.
+        # if we get customer reports that this is cumbersome, then we can consider the
+        # previous, which would be non-breaking since its just logs.
+
+
+
         # values = csv-list / explicit-list / hash-literal
+        # pass key from keyval to explicit_list and csv_list
+        # pass key from hash_literal to explicit_list
+
+        # TODO in keyval, pass down key name to values
+        #   TODO in values, pass further to explicit_list and csv_list
+        # TODO in hash-literal, pass down key name to explicit_values
+        #   TODO in explicit_values, pass further to explicit_list and first_value.
+        # TODO in explicit_list, pass down to explicit_values
+        # TODO in csv_list, pass down to first_value and second_value
+
+        # TODO in first_value, and second_value
+        # if resolve_paramfiles = False
+        #    for each key of LOCAL_PREFIX_MAP:
+        #        if value starts with key:
+        #            emit the warning.
+
+        # HOwever, the above will emit exhaustively for each top-level shorthand param.
+        # We want one emission per top-level param.
+
+        # in hash_literal:
+        # for each key-val of the struct:
+        #   if resolve_paramfiles = False:
+        #
+        #
         if self._at_eof():
             return ''
         elif self._current() == '[':

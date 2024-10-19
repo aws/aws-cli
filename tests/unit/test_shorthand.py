@@ -157,9 +157,9 @@ def test_error_parsing(expr):
 @pytest.mark.parametrize(
     "expr", (
         # starting with " but unclosed, then repeated \
-        f'foo="{'\\' * 100}',
+        f'foo="' + '\\' * 100,
         # starting with ' but unclosed, then repeated \
-        f'foo=\'{'\\' * 100}',
+        f'foo=\'' + '\\' * 100,
     )
 )
 @skip_if_windows("Windows does not support signal.SIGALRM.")

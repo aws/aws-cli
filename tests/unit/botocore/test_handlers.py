@@ -980,13 +980,11 @@ class TestHandlers(BaseSessionTest):
         signing_name = 'myservice'
         context = {
             'auth_type': 'v4a',
-            'signing': {'foo': 'bar', 'region': 'abc'},
+            'signing': {'foo': 'bar'},
         }
         handlers.set_operation_specific_signer(
             context=context, signing_name=signing_name
         )
-        # region has been updated
-        self.assertEqual(context['signing']['region'], '*')
         # signing_name has been added
         self.assertEqual(context['signing']['signing_name'], signing_name)
         # foo remained untouched
@@ -1014,6 +1012,61 @@ class TestHandlers(BaseSessionTest):
             context=context, signing_name=signing_name)
         self.assertEqual(response, 's3v4')
         self.assertEqual(context.get('payload_signing_enabled'), False)
+
+    def test_set_operation_specific_signer_defaults_to_asterisk(self):
+        signing_name = 'myservice'
+        context = {
+            'auth_type': 'v4a',
+        }
+        handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertEqual(context['signing']['region'], '*')
+
+    def test_set_operation_specific_signer_prefers_client_config(self):
+        signing_name = 'myservice'
+        context = {
+            'auth_type': 'v4a',
+            'client_config': Config(
+                sigv4a_signing_region_set="region_1,region_2"
+            ),
+            'signing': {
+                'region': 'abc',
+            },
+        }
+        handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertEqual(context['signing']['region'], 'region_1,region_2')
+
+    def test_payload_signing_disabled_sets_proper_key(self):
+        signing_name = 'myservice'
+        context = {
+            'auth_type': 'v4',
+            'signing': {
+                'foo': 'bar',
+                'region': 'abc',
+            },
+            'unsigned_payload': True,
+        }
+        handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertEqual(context.get('payload_signing_enabled'), False)
+
+    def test_no_payload_signing_disabled_does_not_set_key(self):
+        signing_name = 'myservice'
+        context = {
+            'auth_type': 'v4',
+            'signing': {
+                'foo': 'bar',
+                'region': 'abc',
+            },
+        }
+        handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertNotIn('payload_signing_enabled', context)
 
 
 @pytest.mark.parametrize(

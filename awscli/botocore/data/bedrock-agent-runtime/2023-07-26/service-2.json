@@ -394,7 +394,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"^(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))))|(arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{1,20}):(|[0-9]{12}):inference-profile/[a-zA-Z0-9-:.]+)|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|(([0-9a-zA-Z][_-]?)+)$"
+      "pattern":"^(arn:aws(-[^:]{1,10})?:bedrock:[a-z0-9-]{1,20}:([0-9]{12})?:([a-z-]{1,20}/)?)?([a-z0-9.-]{1,63}){0,2}(([:][a-z0-9-]{1,63}){0,2})?(/[a-z0-9]{1,12})?$"
     },
     "Boolean":{
       "type":"boolean",
@@ -2144,8 +2144,19 @@
     },
     "OrchestrationConfiguration":{
       "type":"structure",
-      "required":["queryTransformationConfiguration"],
       "members":{
+        "additionalModelRequestFields":{
+          "shape":"AdditionalModelRequestFields",
+          "documentation":"<p> Additional model parameters and corresponding values not included in the textInferenceConfig structure for a knowledge base. This allows users to provide custom model parameters specific to the language model being used. </p>"
+        },
+        "inferenceConfig":{
+          "shape":"InferenceConfig",
+          "documentation":"<p> Configuration settings for inference when using RetrieveAndGenerate to generate responses while using a knowledge base as a source. </p>"
+        },
+        "promptTemplate":{
+          "shape":"PromptTemplate",
+          "documentation":"<p>Contains the template for the prompt that's sent to the model for response generation.</p>"
+        },
         "queryTransformationConfiguration":{
           "shape":"QueryTransformationConfiguration",
           "documentation":"<p>To split up the prompt and retrieve multiple sources, set the transformation type to <code>QUERY_DECOMPOSITION</code>.</p>"
@@ -2158,7 +2169,7 @@
       "members":{
         "metadata":{
           "shape":"Metadata",
-          "documentation":"<p>Contains information about the foundation model output.</p>"
+          "documentation":"<p>Contains information about the foundation model output from the orchestration step.</p>"
         },
         "rawResponse":{
           "shape":"RawResponse",
@@ -2280,12 +2291,18 @@
     "PostProcessingModelInvocationOutput":{
       "type":"structure",
       "members":{
-        "metadata":{"shape":"Metadata"},
+        "metadata":{
+          "shape":"Metadata",
+          "documentation":"<p> Contains information about the foundation model output from the post-processing step. </p>"
+        },
         "parsedResponse":{
           "shape":"PostProcessingParsedResponse",
           "documentation":"<p>Details about the response from the Lambda parsing of the output of the post-processing step.</p>"
         },
-        "rawResponse":{"shape":"RawResponse"},
+        "rawResponse":{
+          "shape":"RawResponse",
+          "documentation":"<p> Details of the raw response from the foundation model output. </p>"
+        },
         "traceId":{
           "shape":"TraceId",
           "documentation":"<p>The unique identifier of the trace.</p>"
@@ -2324,12 +2341,18 @@
     "PreProcessingModelInvocationOutput":{
       "type":"structure",
       "members":{
-        "metadata":{"shape":"Metadata"},
+        "metadata":{
+          "shape":"Metadata",
+          "documentation":"<p> Contains information about the foundation model output from the pre-processing step. </p>"
+        },
         "parsedResponse":{
           "shape":"PreProcessingParsedResponse",
           "documentation":"<p>Details about the response from the Lambda parsing of the output of the pre-processing step.</p>"
         },
-        "rawResponse":{"shape":"RawResponse"},
+        "rawResponse":{
+          "shape":"RawResponse",
+          "documentation":"<p> Details of the raw response from the foundation model output. </p>"
+        },
         "traceId":{
           "shape":"TraceId",
           "documentation":"<p>The unique identifier of the trace.</p>"

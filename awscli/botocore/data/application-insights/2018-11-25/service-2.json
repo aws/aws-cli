@@ -5,13 +5,15 @@
     "endpointPrefix":"applicationinsights",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"Application Insights",
     "serviceFullName":"Amazon CloudWatch Application Insights",
     "serviceId":"Application Insights",
     "signatureVersion":"v4",
     "signingName":"applicationinsights",
     "targetPrefix":"EC2WindowsBarleyService",
-    "uid":"application-insights-2018-11-25"
+    "uid":"application-insights-2018-11-25",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AddWorkload":{
@@ -618,7 +620,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the owner of the application.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the owner of the application.</p>"
         },
         "ResourceGroupName":{
           "shape":"ResourceGroupName",
@@ -631,6 +633,10 @@
         "OpsItemSNSTopicArn":{
           "shape":"OpsItemSNSTopicArn",
           "documentation":"<p> The SNS topic provided to Application Insights that is associated to the created opsItems to receive SNS notifications for opsItem updates. </p>"
+        },
+        "SNSNotificationArn":{
+          "shape":"SNSNotificationArn",
+          "documentation":"<p> The SNS topic ARN that is associated with SNS notifications for updates or issues. </p>"
         },
         "OpsCenterEnabled":{
           "shape":"OpsCenterEnabled",
@@ -712,7 +718,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the owner of the application to which the configuration event belongs.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the owner of the application to which the configuration event belongs.</p>"
         },
         "MonitoredResourceARN":{
           "shape":"ConfigurationEventMonitoredResourceARN",
@@ -784,6 +790,10 @@
         "OpsItemSNSTopicArn":{
           "shape":"OpsItemSNSTopicArn",
           "documentation":"<p> The SNS topic provided to Application Insights that is associated to the created opsItem. Allows you to receive notifications for updates to the opsItem. </p>"
+        },
+        "SNSNotificationArn":{
+          "shape":"SNSNotificationArn",
+          "documentation":"<p> The SNS notification topic ARN. </p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -871,7 +881,7 @@
         },
         "Rank":{
           "shape":"LogPatternRank",
-          "documentation":"<p>Rank of the log pattern. Must be a value between <code>1</code> and <code>1,000,000</code>. The patterns are sorted by rank, so we recommend that you set your highest priority patterns with the lowest rank. A pattern of rank <code>1</code> will be the first to get matched to a log line. A pattern of rank <code>1,000,000</code> will be last to get matched. When you configure custom log patterns from the console, a <code>Low</code> severity pattern translates to a <code>750,000</code> rank. A <code>Medium</code> severity pattern translates to a <code>500,000</code> rank. And a <code>High</code> severity pattern translates to a <code>250,000</code> rank. Rank values less than <code>1</code> or greater than <code>1,000,000</code> are reserved for AWS-provided patterns. </p>"
+          "documentation":"<p>Rank of the log pattern. Must be a value between <code>1</code> and <code>1,000,000</code>. The patterns are sorted by rank, so we recommend that you set your highest priority patterns with the lowest rank. A pattern of rank <code>1</code> will be the first to get matched to a log line. A pattern of rank <code>1,000,000</code> will be last to get matched. When you configure custom log patterns from the console, a <code>Low</code> severity pattern translates to a <code>750,000</code> rank. A <code>Medium</code> severity pattern translates to a <code>500,000</code> rank. And a <code>High</code> severity pattern translates to a <code>250,000</code> rank. Rank values less than <code>1</code> or greater than <code>1,000,000</code> are reserved for Amazon Web Services provided patterns. </p>"
         }
       }
     },
@@ -968,7 +978,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1003,7 +1013,7 @@
         },
         "WorkloadName":{
           "shape":"WorkloadName",
-          "documentation":"<p>The name of the workload.</p>"
+          "documentation":"<p>The name of the workload. The name of the workload is required when the tier of the application component is <code>SAP_ASE_SINGLE_NODE</code> or <code>SAP_ASE_HIGH_AVAILABILITY</code>.</p>"
         },
         "RecommendationType":{
           "shape":"RecommendationType",
@@ -1037,7 +1047,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1075,7 +1085,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1111,7 +1121,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1124,7 +1134,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         },
         "LogPattern":{
           "shape":"LogPattern",
@@ -1142,7 +1152,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1165,7 +1175,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1188,7 +1198,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the owner of the resource group affected by the problem.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the owner of the resource group affected by the problem.</p>"
         }
       }
     },
@@ -1198,6 +1208,10 @@
         "Problem":{
           "shape":"Problem",
           "documentation":"<p>Information about the problem. </p>"
+        },
+        "SNSNotificationArn":{
+          "shape":"SNSNotificationArn",
+          "documentation":"<p> The SNS notification topic ARN of the problem. </p>"
         }
       }
     },
@@ -1223,7 +1237,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the workload owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the workload owner.</p>"
         }
       }
     },
@@ -1316,7 +1330,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1351,7 +1365,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1397,7 +1411,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1432,7 +1446,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1445,7 +1459,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         },
         "LogPatternSets":{
           "shape":"LogPatternSetList",
@@ -1479,7 +1493,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1492,7 +1506,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         },
         "LogPatterns":{
           "shape":"LogPatternList",
@@ -1509,7 +1523,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         },
         "ResourceGroupName":{
           "shape":"ResourceGroupName",
@@ -1558,7 +1572,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the resource group owner.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the resource group owner.</p>"
         }
       }
     },
@@ -1606,7 +1620,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID of the owner of the workload.</p>"
+          "documentation":"<p>The Amazon Web Services account ID of the owner of the workload.</p>"
         }
       }
     },
@@ -1649,7 +1663,7 @@
         },
         "Rank":{
           "shape":"LogPatternRank",
-          "documentation":"<p>Rank of the log pattern. Must be a value between <code>1</code> and <code>1,000,000</code>. The patterns are sorted by rank, so we recommend that you set your highest priority patterns with the lowest rank. A pattern of rank <code>1</code> will be the first to get matched to a log line. A pattern of rank <code>1,000,000</code> will be last to get matched. When you configure custom log patterns from the console, a <code>Low</code> severity pattern translates to a <code>750,000</code> rank. A <code>Medium</code> severity pattern translates to a <code>500,000</code> rank. And a <code>High</code> severity pattern translates to a <code>250,000</code> rank. Rank values less than <code>1</code> or greater than <code>1,000,000</code> are reserved for AWS-provided patterns. </p>"
+          "documentation":"<p>Rank of the log pattern. Must be a value between <code>1</code> and <code>1,000,000</code>. The patterns are sorted by rank, so we recommend that you set your highest priority patterns with the lowest rank. A pattern of rank <code>1</code> will be the first to get matched to a log line. A pattern of rank <code>1,000,000</code> will be last to get matched. When you configure custom log patterns from the console, a <code>Low</code> severity pattern translates to a <code>750,000</code> rank. A <code>Medium</code> severity pattern translates to a <code>500,000</code> rank. And a <code>High</code> severity pattern translates to a <code>250,000</code> rank. Rank values less than <code>1</code> or greater than <code>1,000,000</code> are reserved for Amazon Web Services provided patterns. </p>"
         }
       },
       "documentation":"<p>An object that defines the log patterns that belongs to a <code>LogPatternSet</code>.</p>"
@@ -1691,6 +1705,7 @@
     "MetaDataValue":{"type":"string"},
     "MetricName":{"type":"string"},
     "MetricNamespace":{"type":"string"},
+    "MissingWorkloadConfig":{"type":"boolean"},
     "Monitor":{"type":"boolean"},
     "Observation":{
       "type":"structure",
@@ -1761,23 +1776,23 @@
         },
         "HealthEventArn":{
           "shape":"HealthEventArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the AWS Health Event-based observation.</p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Health Event-based observation.</p>"
         },
         "HealthService":{
           "shape":"HealthService",
-          "documentation":"<p> The service to which the AWS Health Event belongs, such as EC2. </p>"
+          "documentation":"<p> The service to which the Health Event belongs, such as EC2. </p>"
         },
         "HealthEventTypeCode":{
           "shape":"HealthEventTypeCode",
-          "documentation":"<p> The type of the AWS Health event, for example, <code>AWS_EC2_POWER_CONNECTIVITY_ISSUE</code>. </p>"
+          "documentation":"<p> The type of the Health event, for example, <code>AWS_EC2_POWER_CONNECTIVITY_ISSUE</code>. </p>"
         },
         "HealthEventTypeCategory":{
           "shape":"HealthEventTypeCategory",
-          "documentation":"<p> The category of the AWS Health event, such as <code>issue</code>. </p>"
+          "documentation":"<p> The category of the Health event, such as <code>issue</code>. </p>"
         },
         "HealthEventDescription":{
           "shape":"HealthEventDescription",
-          "documentation":"<p> The description of the AWS Health event provided by the service, such as Amazon EC2. </p>"
+          "documentation":"<p> The description of the Health event provided by the service, such as Amazon EC2. </p>"
         },
         "CodeDeployDeploymentId":{
           "shape":"CodeDeployDeploymentId",
@@ -1919,6 +1934,10 @@
           "shape":"Title",
           "documentation":"<p>The name of the problem.</p>"
         },
+        "ShortName":{
+          "shape":"ShortName",
+          "documentation":"<p> The short name of the problem associated with the SNS notification. </p>"
+        },
         "Insights":{
           "shape":"Insights",
           "documentation":"<p>A detailed analysis of the problem using machine learning.</p>"
@@ -1945,7 +1964,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The AWS account ID for the owner of the resource group affected by the problem.</p>"
+          "documentation":"<p>The Amazon Web Services account ID for the owner of the resource group affected by the problem.</p>"
         },
         "ResourceGroupName":{
           "shape":"ResourceGroupName",
@@ -2081,6 +2100,12 @@
       "pattern":"[0-9a-zA-Z:_]*"
     },
     "S3EventName":{"type":"string"},
+    "SNSNotificationArn":{
+      "type":"string",
+      "max":300,
+      "min":20,
+      "pattern":"^arn:aws(-\\w+)*:[\\w\\d-]+:([\\w\\d-]*)?:[\\w\\d_-]*([:/].+)*$"
+    },
     "SeverityLevel":{
       "type":"string",
       "enum":[
@@ -2090,6 +2115,7 @@
         "High"
       ]
     },
+    "ShortName":{"type":"string"},
     "SourceARN":{"type":"string"},
     "SourceType":{"type":"string"},
     "StartTime":{"type":"timestamp"},
@@ -2123,7 +2149,7 @@
           "documentation":"<p>The optional part of a key-value pair that defines a tag. The maximum length of a tag value is 256 characters. The minimum length is 0 characters. If you don't want an application to have a specific tag value, don't specify a value for this parameter.</p>"
         }
       },
-      "documentation":"<p>An object that defines the tags associated with an application. A <i>tag</i> is a label that you optionally define and associate with an application. Tags can help you categorize and manage resources in different ways, such as by purpose, owner, environment, or other criteria.</p> <p>Each tag consists of a required <i>tag key</i> and an associated <i>tag value</i>, both of which you define. A tag key is a general label that acts as a category for a more specific tag value. A tag value acts as a descriptor within a tag key. A tag key can contain as many as 128 characters. A tag value can contain as many as 256 characters. The characters can be Unicode letters, digits, white space, or one of the following symbols: _ . : / = + -. The following additional restrictions apply to tags:</p> <ul> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>For each associated resource, each tag key must be unique and it can have only one value.</p> </li> <li> <p>The <code>aws:</code> prefix is reserved for use by AWS; you can’t use it in any tag keys or values that you define. In addition, you can't edit or remove tag keys or values that use this prefix. </p> </li> </ul>"
+      "documentation":"<p>An object that defines the tags associated with an application. A <i>tag</i> is a label that you optionally define and associate with an application. Tags can help you categorize and manage resources in different ways, such as by purpose, owner, environment, or other criteria.</p> <p>Each tag consists of a required <i>tag key</i> and an associated <i>tag value</i>, both of which you define. A tag key is a general label that acts as a category for a more specific tag value. A tag value acts as a descriptor within a tag key. A tag key can contain as many as 128 characters. A tag value can contain as many as 256 characters. The characters can be Unicode letters, digits, white space, or one of the following symbols: _ . : / = + -. The following additional restrictions apply to tags:</p> <ul> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>For each associated resource, each tag key must be unique and it can have only one value.</p> </li> <li> <p>The <code>aws:</code> prefix is reserved for use by Amazon Web Services; you can’t use it in any tag keys or values that you define. In addition, you can't edit or remove tag keys or values that use this prefix. </p> </li> </ul>"
     },
     "TagKey":{
       "type":"string",
@@ -2197,6 +2223,8 @@
         "SAP_HANA_MULTI_NODE",
         "SAP_HANA_SINGLE_NODE",
         "SAP_HANA_HIGH_AVAILABILITY",
+        "SAP_ASE_SINGLE_NODE",
+        "SAP_ASE_HIGH_AVAILABILITY",
         "SQL_SERVER_FAILOVER_CLUSTER_INSTANCE",
         "SHAREPOINT",
         "ACTIVE_DIRECTORY",
@@ -2262,6 +2290,10 @@
         "OpsItemSNSTopicArn":{
           "shape":"OpsItemSNSTopicArn",
           "documentation":"<p> The SNS topic provided to Application Insights that is associated to the created opsItem. Allows you to receive notifications for updates to the opsItem.</p>"
+        },
+        "SNSNotificationArn":{
+          "shape":"SNSNotificationArn",
+          "documentation":"<p> The SNS topic ARN. Allows you to receive SNS notifications for updates and issues with an application. </p>"
         },
         "RemoveSNSTopic":{
           "shape":"RemoveSNSTopic",
@@ -2380,7 +2412,7 @@
         },
         "Rank":{
           "shape":"LogPatternRank",
-          "documentation":"<p>Rank of the log pattern. Must be a value between <code>1</code> and <code>1,000,000</code>. The patterns are sorted by rank, so we recommend that you set your highest priority patterns with the lowest rank. A pattern of rank <code>1</code> will be the first to get matched to a log line. A pattern of rank <code>1,000,000</code> will be last to get matched. When you configure custom log patterns from the console, a <code>Low</code> severity pattern translates to a <code>750,000</code> rank. A <code>Medium</code> severity pattern translates to a <code>500,000</code> rank. And a <code>High</code> severity pattern translates to a <code>250,000</code> rank. Rank values less than <code>1</code> or greater than <code>1,000,000</code> are reserved for AWS-provided patterns. </p>"
+          "documentation":"<p>Rank of the log pattern. Must be a value between <code>1</code> and <code>1,000,000</code>. The patterns are sorted by rank, so we recommend that you set your highest priority patterns with the lowest rank. A pattern of rank <code>1</code> will be the first to get matched to a log line. A pattern of rank <code>1,000,000</code> will be last to get matched. When you configure custom log patterns from the console, a <code>Low</code> severity pattern translates to a <code>750,000</code> rank. A <code>Medium</code> severity pattern translates to a <code>500,000</code> rank. And a <code>High</code> severity pattern translates to a <code>250,000</code> rank. Rank values less than <code>1</code> or greater than <code>1,000,000</code> are reserved for Amazon Web Services provided patterns. </p>"
         }
       }
     },
@@ -2501,6 +2533,10 @@
         "WorkloadRemarks":{
           "shape":"Remarks",
           "documentation":"<p>If logging is supported for the resource type, shows whether the component has configured logs to be monitored.</p>"
+        },
+        "MissingWorkloadConfig":{
+          "shape":"MissingWorkloadConfig",
+          "documentation":"<p>Indicates whether all of the component configurations required to monitor a workload were provided.</p>"
         }
       },
       "documentation":"<p>Describes the workloads on a component.</p>"
@@ -2540,7 +2576,7 @@
     },
     "WorkloadName":{
       "type":"string",
-      "max":8,
+      "max":12,
       "min":1,
       "pattern":"[a-zA-Z0-9\\.\\-_]*"
     },

@@ -2937,6 +2937,10 @@
           "shape":"PublicIpAddressList",
           "documentation":"<p>The IP addresses of the endpoints for the data migration.</p>"
         },
+        "DataMigrationCidrBlocks":{
+          "shape":"DataMigrationCidrBlock",
+          "documentation":"<p>The CIDR blocks of the endpoints for the data migration.</p>"
+        },
         "LastFailureMessage":{
           "shape":"String",
           "documentation":"<p>Information about the data migration's most recent error or failure.</p>"
@@ -2947,6 +2951,10 @@
         }
       },
       "documentation":"<p>This object provides information about a DMS data migration.</p>"
+    },
+    "DataMigrationCidrBlock":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "DataMigrationSettings":{
       "type":"structure",
@@ -8907,6 +8915,14 @@
         "AssessmentRunName":{
           "shape":"String",
           "documentation":"<p>Unique name of the assessment run.</p>"
+        },
+        "IsLatestTaskAssessmentRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates that the following PreflightAssessmentRun is the latest for the ReplicationTask. The status is either true or false.</p>"
+        },
+        "ResultStatistic":{
+          "shape":"ReplicationTaskAssessmentRunResultStatistic",
+          "documentation":"<p> Result statistics for a completed assessment run, showing aggregated statistics of IndividualAssessments for how many assessments were passed, failed, or encountered issues such as errors or warnings. </p>"
         }
       },
       "documentation":"<p>Provides information that describes a premigration assessment run that you have started using the <code>StartReplicationTaskAssessmentRun</code> operation.</p> <p>Some of the information appears based on other operations that can return the <code>ReplicationTaskAssessmentRun</code> object.</p>"
@@ -8928,6 +8944,32 @@
         }
       },
       "documentation":"<p>The progress values reported by the <code>AssessmentProgress</code> response element.</p>"
+    },
+    "ReplicationTaskAssessmentRunResultStatistic":{
+      "type":"structure",
+      "members":{
+        "Passed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of individual assessments that successfully passed all checks in the assessment run.</p>"
+        },
+        "Failed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of individual assessments that failed to meet the criteria defined in the assessment run.</p>"
+        },
+        "Error":{
+          "shape":"Integer",
+          "documentation":"<p>The number of individual assessments that encountered a critical error and could not complete properly.</p>"
+        },
+        "Warning":{
+          "shape":"Integer",
+          "documentation":"<p>Indicates that the recent completed AssessmentRun triggered a warning.</p>"
+        },
+        "Cancelled":{
+          "shape":"Integer",
+          "documentation":"<p> The number of individual assessments that were cancelled during the assessment run. </p>"
+        }
+      },
+      "documentation":"<p>The object containing the result statistics for a completed assessment run.</p>"
     },
     "ReplicationTaskIndividualAssessment":{
       "type":"structure",
@@ -9813,6 +9855,10 @@
         "Exclude":{
           "shape":"ExcludeTestList",
           "documentation":"<p>Space-separated list of names for specific individual assessments that you want to exclude. These names come from the default list of individual assessments that DMS supports for the associated migration task. This task is specified by <code>ReplicationTaskArn</code>.</p> <note> <p>You can't set a value for <code>Exclude</code> if you also set a value for <code>IncludeOnly</code> in the API operation.</p> <p>To identify the names of the default individual assessments that DMS supports for the associated migration task, run the <code>DescribeApplicableIndividualAssessments</code> operation using its own <code>ReplicationTaskArn</code> request parameter.</p> </note>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>One or more tags to be assigned to the premigration assessment run that you want to start.</p>"
         }
       },
       "documentation":"<p/>"

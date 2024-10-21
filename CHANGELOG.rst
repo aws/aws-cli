@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.35.11
+=======
+
+* api-change:``application-insights``: This feature enables customers to specify SNS Topic ARN. CloudWatch Application Insights (CWAI) will utilize this ARN to send problem notifications.
+* api-change:``autoscaling``: Adds support for removing the PlacementGroup setting on an Auto Scaling Group through the UpdateAutoScalingGroup API.
+* api-change:``bedrock-agent-runtime``: Knowledge Bases for Amazon Bedrock now supports custom prompts and model parameters in the orchestrationConfiguration of the RetrieveAndGenerate API. The modelArn field accepts Custom Models and Imported Models ARNs.
+* api-change:``dms``: Added support for tagging in StartReplicationTaskAssessmentRun API and introduced IsLatestTaskAssessmentRun and ResultStatistic fields for enhanced tracking and assessment result statistics.
+* api-change:``ec2``: Amazon EC2 now allows you to create network interfaces with just the EFA driver and no ENA driver by specifying the network interface type as efa-only.
+* api-change:``eks``: This release adds support for Amazon Application Recovery Controller (ARC) zonal shift and zonal autoshift with EKS that enhances the resiliency of multi-AZ cluster environments
+* api-change:``fms``: Update AWS WAF policy - add the option to retrofit existing web ACLs instead of creating all new web ACLs.
+* api-change:``payment-cryptography-data``: Adding new API to generate authenticated scripts for EMV pin change use cases.
+* api-change:``wafv2``: Add a property to WebACL to indicate whether it's been retrofitted by Firewall Manager.
+
+
 1.35.10
 =======
 

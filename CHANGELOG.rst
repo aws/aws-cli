@@ -2,6 +2,35 @@
 CHANGELOG
 =========
 
+1.35.10
+=======
+
+* api-change:``athena``: Removing FEDERATED from Create/List/Delete/GetDataCatalog API
+* api-change:``bedrock``: Adding converse support to CMI API's
+* api-change:``bedrock-runtime``: Added converse support for custom imported models
+* api-change:``datazone``: Adding the following project member designations: PROJECT_CATALOG_VIEWER, PROJECT_CATALOG_CONSUMER and PROJECT_CATALOG_STEWARD in the CreateProjectMembership API and PROJECT_CATALOG_STEWARD designation in the AddPolicyGrant API.
+* api-change:``ec2``: RequestSpotInstances and RequestSpotFleet feature release.
+
+
+1.35.9
+======
+
+* api-change:``bedrock-agent``: Removing support for topK property in PromptModelInferenceConfiguration object, Making PromptTemplateConfiguration property as required, Limiting the maximum PromptVariant to 1
+* api-change:``dataexchange``: This release adds Data Grant support, through which customers can programmatically create data grants to share with other AWS accounts and accept data grants from other AWS accounts.
+* api-change:``ecs``: This is an Amazon ECS documentation only update to address tickets.
+* api-change:``pinpoint-sms-voice-v2``: Added the registrations status of REQUIRES_AUTHENTICATION
+* api-change:``pipes``: This release adds validation to require specifying a SecurityGroup and Subnets in the Vpc object under PipesSourceSelfManagedKafkaParameters. It also adds support for iso-e, iso-f, and other non-commercial partitions in ARN parameters.
+* api-change:``quicksight``: Add StartDashboardSnapshotJobSchedule API. RestoreAnalysis now supports restoring analysis to folders.
+* api-change:``rds``: Updates Amazon RDS documentation for TAZ IAM support
+* api-change:``workspaces``: Updated the DomainName pattern for Active Directory
+
+
+1.35.8
+======
+
+* api-change:``s3``: Add support for the new optional bucket-region and prefix query parameters in the ListBuckets API. For ListBuckets requests that express pagination, Amazon S3 will now return both the bucket names and associated AWS regions in the response.
+
+
 1.35.7
 ======
 

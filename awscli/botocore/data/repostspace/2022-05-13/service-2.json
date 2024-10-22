@@ -5,13 +5,53 @@
     "endpointPrefix":"repostspace",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS re:Post Private",
     "serviceId":"repostspace",
     "signatureVersion":"v4",
     "signingName":"repostspace",
-    "uid":"repostspace-2022-05-13"
+    "uid":"repostspace-2022-05-13",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "BatchAddRole":{
+      "name":"BatchAddRole",
+      "http":{
+        "method":"POST",
+        "requestUri":"/spaces/{spaceId}/roles",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchAddRoleInput"},
+      "output":{"shape":"BatchAddRoleOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Add role to multiple users or groups in a private re:Post.</p>",
+      "idempotent":true
+    },
+    "BatchRemoveRole":{
+      "name":"BatchRemoveRole",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/spaces/{spaceId}/roles",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchRemoveRoleInput"},
+      "output":{"shape":"BatchRemoveRoleOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Remove role from multiple users or groups in a private re:Post.</p>",
+      "idempotent":true
+    },
     "CreateSpace":{
       "name":"CreateSpace",
       "http":{
@@ -243,6 +283,115 @@
       "max":2048,
       "min":20
     },
+    "BatchAddRoleInput":{
+      "type":"structure",
+      "required":[
+        "accessorIds",
+        "role",
+        "spaceId"
+      ],
+      "members":{
+        "accessorIds":{
+          "shape":"AccessorIdList",
+          "documentation":"<p>The user or group accessor identifiers to add the role to.</p>"
+        },
+        "role":{
+          "shape":"Role",
+          "documentation":"<p>The role to add to the users or groups.</p>"
+        },
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The unique ID of the private re:Post.</p>",
+          "location":"uri",
+          "locationName":"spaceId"
+        }
+      }
+    },
+    "BatchAddRoleOutput":{
+      "type":"structure",
+      "required":[
+        "addedAccessorIds",
+        "errors"
+      ],
+      "members":{
+        "addedAccessorIds":{
+          "shape":"AccessorIdList",
+          "documentation":"<p>An array of successfully updated accessor identifiers.</p>"
+        },
+        "errors":{
+          "shape":"BatchErrorList",
+          "documentation":"<p>An array of errors that occurred when roles were added.</p>"
+        }
+      }
+    },
+    "BatchError":{
+      "type":"structure",
+      "required":[
+        "accessorId",
+        "error",
+        "message"
+      ],
+      "members":{
+        "accessorId":{
+          "shape":"AccessorId",
+          "documentation":"<p>The accessor identifier that's related to the error.</p>"
+        },
+        "error":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>Description of the error.</p>"
+        }
+      },
+      "documentation":"<p>An error that occurred during a batch operation.</p>"
+    },
+    "BatchErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchError"}
+    },
+    "BatchRemoveRoleInput":{
+      "type":"structure",
+      "required":[
+        "accessorIds",
+        "role",
+        "spaceId"
+      ],
+      "members":{
+        "accessorIds":{
+          "shape":"AccessorIdList",
+          "documentation":"<p>The user or group accessor identifiers to remove the role from.</p>"
+        },
+        "role":{
+          "shape":"Role",
+          "documentation":"<p>The role to remove from the users or groups.</p>"
+        },
+        "spaceId":{
+          "shape":"SpaceId",
+          "documentation":"<p>The unique ID of the private re:Post.</p>",
+          "location":"uri",
+          "locationName":"spaceId"
+        }
+      }
+    },
+    "BatchRemoveRoleOutput":{
+      "type":"structure",
+      "required":[
+        "errors",
+        "removedAccessorIds"
+      ],
+      "members":{
+        "errors":{
+          "shape":"BatchErrorList",
+          "documentation":"<p>An array of errors that occurred when roles were removed.</p>"
+        },
+        "removedAccessorIds":{
+          "shape":"AccessorIdList",
+          "documentation":"<p>An array of successfully updated accessor identifiers.</p>"
+        }
+      }
+    },
     "ClientId":{"type":"string"},
     "ConfigurationStatus":{
       "type":"string",
@@ -361,6 +510,11 @@
         }
       }
     },
+    "ErrorCode":{
+      "type":"integer",
+      "box":true
+    },
+    "ErrorMessage":{"type":"string"},
     "GetSpaceInput":{
       "type":"structure",
       "required":["spaceId"],
@@ -424,7 +578,9 @@
         },
         "groupAdmins":{
           "shape":"GroupAdmins",
-          "documentation":"<p>The list of groups that are administrators of the private re:Post.</p>"
+          "documentation":"<p>The list of groups that are administrators of the private re:Post.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This property has been depracted and will be replaced by the roles property."
         },
         "name":{
           "shape":"SpaceName",
@@ -433,6 +589,10 @@
         "randomDomain":{
           "shape":"Url",
           "documentation":"<p>The AWS generated subdomain of the private re:Post</p>"
+        },
+        "roles":{
+          "shape":"Roles",
+          "documentation":"<p>A map of accessor identifiers and their roles.</p>"
         },
         "spaceId":{
           "shape":"SpaceId",
@@ -452,7 +612,9 @@
         },
         "userAdmins":{
           "shape":"UserAdmins",
-          "documentation":"<p>The list of users that are administrators of the private re:Post.</p>"
+          "documentation":"<p>The list of users that are administrators of the private re:Post.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This property has been depracted and will be replaced by the roles property."
         },
         "userCount":{
           "shape":"UserCount",
@@ -619,6 +781,24 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "Role":{
+      "type":"string",
+      "enum":[
+        "EXPERT",
+        "MODERATOR",
+        "ADMINISTRATOR",
+        "SUPPORTREQUESTOR"
+      ]
+    },
+    "RoleList":{
+      "type":"list",
+      "member":{"shape":"Role"}
+    },
+    "Roles":{
+      "type":"map",
+      "key":{"shape":"AccessorId"},
+      "value":{"shape":"RoleList"}
     },
     "SendInvitesInput":{
       "type":"structure",

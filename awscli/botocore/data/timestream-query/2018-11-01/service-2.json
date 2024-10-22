@@ -142,7 +142,7 @@
         {"shape":"ValidationException"},
         {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p> You can use this API to run a scheduled query manually. </p>",
+      "documentation":"<p> You can use this API to run a scheduled query manually. </p> <p>If you enabled <code>QueryInsights</code>, this API also returns insights and metrics related to the query that you executed as part of an Amazon SNS notification. <code>QueryInsights</code> helps with performance tuning of your query.</p>",
       "endpointdiscovery":{"required":true},
       "idempotent":true
     },
@@ -217,7 +217,7 @@
         {"shape":"ValidationException"},
         {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p> <code>Query</code> is a synchronous operation that enables you to run a query against your Amazon Timestream data. <code>Query</code> will time out after 60 seconds. You must update the default timeout in the SDK to support a timeout of 60 seconds. See the <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.run-query.html\">code sample</a> for details. </p> <p>Your query request will fail in the following cases:</p> <ul> <li> <p> If you submit a <code>Query</code> request with the same client token outside of the 5-minute idempotency window. </p> </li> <li> <p> If you submit a <code>Query</code> request with the same client token, but change other parameters, within the 5-minute idempotency window. </p> </li> <li> <p> If the size of the row (including the query metadata) exceeds 1 MB, then the query will fail with the following error message: </p> <p> <code>Query aborted as max page response size has been exceeded by the output result row</code> </p> </li> <li> <p> If the IAM principal of the query initiator and the result reader are not the same and/or the query initiator and the result reader do not have the same query string in the query requests, the query will fail with an <code>Invalid pagination token</code> error. </p> </li> </ul>",
+      "documentation":"<p> <code>Query</code> is a synchronous operation that enables you to run a query against your Amazon Timestream data.</p> <p>If you enabled <code>QueryInsights</code>, this API also returns insights and metrics related to the query that you executed. <code>QueryInsights</code> helps with performance tuning of your query.</p> <note> <p>The maximum number of <code>Query</code> API requests you're allowed to make with <code>QueryInsights</code> enabled is 1 query per second (QPS). If you exceed this query rate, it might result in throttling.</p> </note> <p> <code>Query</code> will time out after 60 seconds. You must update the default timeout in the SDK to support a timeout of 60 seconds. See the <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.run-query.html\">code sample</a> for details. </p> <p>Your query request will fail in the following cases:</p> <ul> <li> <p> If you submit a <code>Query</code> request with the same client token outside of the 5-minute idempotency window. </p> </li> <li> <p> If you submit a <code>Query</code> request with the same client token, but change other parameters, within the 5-minute idempotency window. </p> </li> <li> <p> If the size of the row (including the query metadata) exceeds 1 MB, then the query will fail with the following error message: </p> <p> <code>Query aborted as max page response size has been exceeded by the output result row</code> </p> </li> <li> <p> If the IAM principal of the query initiator and the result reader are not the same and/or the query initiator and the result reader do not have the same query string in the query requests, the query will fail with an <code>Invalid pagination token</code> error. </p> </li> </ul>",
       "endpointdiscovery":{"required":true},
       "idempotent":true
     },
@@ -614,6 +614,10 @@
           "shape":"ClientToken",
           "documentation":"<p>Not used. </p>",
           "idempotencyToken":true
+        },
+        "QueryInsights":{
+          "shape":"ScheduledQueryInsights",
+          "documentation":"<p>Encapsulates settings for enabling <code>QueryInsights</code>.</p> <p>Enabling <code>QueryInsights</code> returns insights and metrics as a part of the Amazon SNS notification for the query that you executed. You can use <code>QueryInsights</code> to tune your query performance and cost.</p>"
         }
       }
     },
@@ -867,6 +871,11 @@
       "type":"list",
       "member":{"shape":"ParameterMapping"}
     },
+    "PartitionKey":{"type":"string"},
+    "PartitionKeyList":{
+      "type":"list",
+      "member":{"shape":"PartitionKey"}
+    },
     "PrepareQueryRequest":{
       "type":"structure",
       "required":["QueryString"],
@@ -917,6 +926,68 @@
       "min":1,
       "pattern":"[a-zA-Z0-9]+"
     },
+    "QueryInsights":{
+      "type":"structure",
+      "required":["Mode"],
+      "members":{
+        "Mode":{
+          "shape":"QueryInsightsMode",
+          "documentation":"<p>Provides the following modes to enable <code>QueryInsights</code>:</p> <ul> <li> <p> <code>ENABLED_WITH_RATE_CONTROL</code> – Enables <code>QueryInsights</code> for the queries being processed. This mode also includes a rate control mechanism, which limits the <code>QueryInsights</code> feature to 1 query per second (QPS).</p> </li> <li> <p> <code>DISABLED</code> – Disables <code>QueryInsights</code>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p> <code>QueryInsights</code> is a performance tuning feature that helps you optimize your queries, reducing costs and improving performance. With <code>QueryInsights</code>, you can assess the pruning efficiency of your queries and identify areas for improvement to enhance query performance. With <code>QueryInsights</code>, you can also analyze the effectiveness of your queries in terms of temporal and spatial pruning, and identify opportunities to improve performance. Specifically, you can evaluate how well your queries use time-based and partition key-based indexing strategies to optimize data retrieval. To optimize query performance, it's essential that you fine-tune both the temporal and spatial parameters that govern query execution.</p> <p>The key metrics provided by <code>QueryInsights</code> are <code>QuerySpatialCoverage</code> and <code>QueryTemporalRange</code>. <code>QuerySpatialCoverage</code> indicates how much of the spatial axis the query scans, with lower values being more efficient. <code>QueryTemporalRange</code> shows the time range scanned, with narrower ranges being more performant.</p> <p> <b>Benefits of QueryInsights</b> </p> <p>The following are the key benefits of using <code>QueryInsights</code>:</p> <ul> <li> <p> <b>Identifying inefficient queries</b> – <code>QueryInsights</code> provides information on the time-based and attribute-based pruning of the tables accessed by the query. This information helps you identify the tables that are sub-optimally accessed.</p> </li> <li> <p> <b>Optimizing your data model and partitioning</b> – You can use the <code>QueryInsights</code> information to access and fine-tune your data model and partitioning strategy.</p> </li> <li> <p> <b>Tuning queries</b> – <code>QueryInsights</code> highlights opportunities to use indexes more effectively.</p> </li> </ul> <note> <p>The maximum number of <code>Query</code> API requests you're allowed to make with <code>QueryInsights</code> enabled is 1 query per second (QPS). If you exceed this query rate, it might result in throttling.</p> </note>"
+    },
+    "QueryInsightsMode":{
+      "type":"string",
+      "enum":[
+        "ENABLED_WITH_RATE_CONTROL",
+        "DISABLED"
+      ]
+    },
+    "QueryInsightsResponse":{
+      "type":"structure",
+      "members":{
+        "QuerySpatialCoverage":{
+          "shape":"QuerySpatialCoverage",
+          "documentation":"<p>Provides insights into the spatial coverage of the query, including the table with sub-optimal (max) spatial pruning. This information can help you identify areas for improvement in your partitioning strategy to enhance spatial pruning. </p>"
+        },
+        "QueryTemporalRange":{
+          "shape":"QueryTemporalRange",
+          "documentation":"<p>Provides insights into the temporal range of the query, including the table with the largest (max) time range. Following are some of the potential options for optimizing time-based pruning:</p> <ul> <li> <p>Add missing time-predicates.</p> </li> <li> <p>Remove functions around the time predicates.</p> </li> <li> <p>Add time predicates to all the sub-queries.</p> </li> </ul>"
+        },
+        "QueryTableCount":{
+          "shape":"Long",
+          "documentation":"<p>Indicates the number of tables in the query.</p>",
+          "box":true
+        },
+        "OutputRows":{
+          "shape":"Long",
+          "documentation":"<p>Indicates the total number of rows returned as part of the query result set. You can use this data to validate if the number of rows in the result set have changed as part of the query tuning exercise.</p>",
+          "box":true
+        },
+        "OutputBytes":{
+          "shape":"Long",
+          "documentation":"<p>Indicates the size of query result set in bytes. You can use this data to validate if the result set has changed as part of the query tuning exercise.</p>",
+          "box":true
+        },
+        "UnloadPartitionCount":{
+          "shape":"Long",
+          "documentation":"<p>Indicates the partitions created by the <code>Unload</code> operation.</p>",
+          "box":true
+        },
+        "UnloadWrittenRows":{
+          "shape":"Long",
+          "documentation":"<p>Indicates the rows written by the <code>Unload</code> query.</p>",
+          "box":true
+        },
+        "UnloadWrittenBytes":{
+          "shape":"Long",
+          "documentation":"<p>Indicates the size, in bytes, written by the <code>Unload</code> operation.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Provides various insights and metrics related to the query that you executed.</p>"
+    },
     "QueryPricingModel":{
       "type":"string",
       "enum":[
@@ -944,6 +1015,10 @@
         "MaxRows":{
           "shape":"MaxQueryResults",
           "documentation":"<p> The total number of rows to be returned in the <code>Query</code> output. The initial run of <code>Query</code> with a <code>MaxRows</code> value specified will return the result set of the query in two cases: </p> <ul> <li> <p>The size of the result is less than <code>1MB</code>.</p> </li> <li> <p>The number of rows in the result set is less than the value of <code>maxRows</code>.</p> </li> </ul> <p>Otherwise, the initial invocation of <code>Query</code> only returns a <code>NextToken</code>, which can then be used in subsequent calls to fetch the result set. To resume pagination, provide the <code>NextToken</code> value in the subsequent command.</p> <p>If the row size is large (e.g. a row has many columns), Timestream may return fewer rows to keep the response size from exceeding the 1 MB limit. If <code>MaxRows</code> is not provided, Timestream will send the necessary number of rows to meet the 1 MB limit.</p>"
+        },
+        "QueryInsights":{
+          "shape":"QueryInsights",
+          "documentation":"<p>Encapsulates settings for enabling <code>QueryInsights</code>.</p> <p>Enabling <code>QueryInsights</code> returns insights and metrics in addition to query results for the query that you executed. You can use <code>QueryInsights</code> to tune your query performance.</p>"
         }
       }
     },
@@ -974,8 +1049,40 @@
         "QueryStatus":{
           "shape":"QueryStatus",
           "documentation":"<p>Information about the status of the query, including progress and bytes scanned.</p>"
+        },
+        "QueryInsightsResponse":{
+          "shape":"QueryInsightsResponse",
+          "documentation":"<p>Encapsulates <code>QueryInsights</code> containing insights and metrics related to the query that you executed.</p>"
         }
       }
+    },
+    "QuerySpatialCoverage":{
+      "type":"structure",
+      "members":{
+        "Max":{
+          "shape":"QuerySpatialCoverageMax",
+          "documentation":"<p>Provides insights into the spatial coverage of the executed query and the table with the most inefficient spatial pruning.</p> <ul> <li> <p> <code>Value</code> – The maximum ratio of spatial coverage.</p> </li> <li> <p> <code>TableArn</code> – The Amazon Resource Name (ARN) of the table with sub-optimal spatial pruning.</p> </li> <li> <p> <code>PartitionKey</code> – The partition key used for partitioning, which can be a default <code>measure_name</code> or a CDPK.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Provides insights into the spatial coverage of the query, including the table with sub-optimal (max) spatial pruning. This information can help you identify areas for improvement in your partitioning strategy to enhance spatial pruning</p> <p>For example, you can do the following with the <code>QuerySpatialCoverage</code> information:</p> <ul> <li> <p>Add measure_name or use <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/customer-defined-partition-keys.html\">customer-defined partition key</a> (CDPK) predicates.</p> </li> <li> <p>If you've already done the preceding action, remove functions around them or clauses, such as <code>LIKE</code>.</p> </li> </ul>"
+    },
+    "QuerySpatialCoverageMax":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"Double",
+          "documentation":"<p>The maximum ratio of spatial coverage.</p>"
+        },
+        "TableArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table with the most sub-optimal spatial pruning.</p>"
+        },
+        "PartitionKey":{
+          "shape":"PartitionKeyList",
+          "documentation":"<p>The partition key used for partitioning, which can be a default <code>measure_name</code> or a <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/customer-defined-partition-keys.html\">customer defined partition key</a>.</p>"
+        }
+      },
+      "documentation":"<p>Provides insights into the table with the most sub-optimal spatial range scanned by your query.</p>"
     },
     "QueryStatus":{
       "type":"structure",
@@ -1000,6 +1107,30 @@
       "max":262144,
       "min":1,
       "sensitive":true
+    },
+    "QueryTemporalRange":{
+      "type":"structure",
+      "members":{
+        "Max":{
+          "shape":"QueryTemporalRangeMax",
+          "documentation":"<p>Encapsulates the following properties that provide insights into the most sub-optimal performing table on the temporal axis:</p> <ul> <li> <p> <code>Value</code> – The maximum duration in nanoseconds between the start and end of the query.</p> </li> <li> <p> <code>TableArn</code> – The Amazon Resource Name (ARN) of the table which is queried with the largest time range.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Provides insights into the temporal range of the query, including the table with the largest (max) time range.</p>"
+    },
+    "QueryTemporalRangeMax":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"Long",
+          "documentation":"<p>The maximum duration in nanoseconds between the start and end of the query.</p>"
+        },
+        "TableArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table which is queried with the largest time range.</p>"
+        }
+      },
+      "documentation":"<p>Provides insights into the table with the most sub-optimal temporal pruning scanned by your query.</p>"
     },
     "ResourceName":{"type":"string"},
     "ResourceNotFoundException":{
@@ -1246,6 +1377,53 @@
       },
       "documentation":"<p>Structure that describes scheduled query.</p>"
     },
+    "ScheduledQueryInsights":{
+      "type":"structure",
+      "required":["Mode"],
+      "members":{
+        "Mode":{
+          "shape":"ScheduledQueryInsightsMode",
+          "documentation":"<p>Provides the following modes to enable <code>ScheduledQueryInsights</code>:</p> <ul> <li> <p> <code>ENABLED_WITH_RATE_CONTROL</code> – Enables <code>ScheduledQueryInsights</code> for the queries being processed. This mode also includes a rate control mechanism, which limits the <code>QueryInsights</code> feature to 1 query per second (QPS).</p> </li> <li> <p> <code>DISABLED</code> – Disables <code>ScheduledQueryInsights</code>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Encapsulates settings for enabling <code>QueryInsights</code> on an <code>ExecuteScheduledQueryRequest</code>.</p>"
+    },
+    "ScheduledQueryInsightsMode":{
+      "type":"string",
+      "enum":[
+        "ENABLED_WITH_RATE_CONTROL",
+        "DISABLED"
+      ]
+    },
+    "ScheduledQueryInsightsResponse":{
+      "type":"structure",
+      "members":{
+        "QuerySpatialCoverage":{
+          "shape":"QuerySpatialCoverage",
+          "documentation":"<p>Provides insights into the spatial coverage of the query, including the table with sub-optimal (max) spatial pruning. This information can help you identify areas for improvement in your partitioning strategy to enhance spatial pruning.</p>"
+        },
+        "QueryTemporalRange":{
+          "shape":"QueryTemporalRange",
+          "documentation":"<p>Provides insights into the temporal range of the query, including the table with the largest (max) time range. Following are some of the potential options for optimizing time-based pruning:</p> <ul> <li> <p>Add missing time-predicates.</p> </li> <li> <p>Remove functions around the time predicates.</p> </li> <li> <p>Add time predicates to all the sub-queries.</p> </li> </ul>"
+        },
+        "QueryTableCount":{
+          "shape":"Long",
+          "documentation":"<p>Indicates the number of tables in the query.</p>",
+          "box":true
+        },
+        "OutputRows":{
+          "shape":"Long",
+          "documentation":"<p>Indicates the total number of rows returned as part of the query result set. You can use this data to validate if the number of rows in the result set have changed as part of the query tuning exercise.</p>",
+          "box":true
+        },
+        "OutputBytes":{
+          "shape":"Long",
+          "documentation":"<p>Indicates the size of query result set in bytes. You can use this data to validate if the result set has changed as part of the query tuning exercise.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Provides various insights and metrics related to the <code>ExecuteScheduledQueryRequest</code> that was executed.</p>"
+    },
     "ScheduledQueryList":{
       "type":"list",
       "member":{"shape":"ScheduledQuery"}
@@ -1283,6 +1461,10 @@
         "ExecutionStats":{
           "shape":"ExecutionStats",
           "documentation":"<p>Runtime statistics for a scheduled run.</p>"
+        },
+        "QueryInsightsResponse":{
+          "shape":"ScheduledQueryInsightsResponse",
+          "documentation":"<p>Provides various insights and metrics related to the run summary of the scheduled query.</p>"
         },
         "ErrorReportLocation":{
           "shape":"ErrorReportLocation",

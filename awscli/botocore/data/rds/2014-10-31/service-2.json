@@ -2258,6 +2258,7 @@
       },
       "errors":[
         {"shape":"GlobalClusterNotFoundFault"},
+        {"shape":"GlobalClusterAlreadyExistsFault"},
         {"shape":"InvalidGlobalClusterStateFault"},
         {"shape":"InvalidDBClusterStateFault"},
         {"shape":"InvalidDBInstanceStateFault"}
@@ -11124,6 +11125,10 @@
           "shape":"GlobalClusterMemberList",
           "documentation":"<p>The list of primary and secondary clusters within the global database cluster.</p>"
         },
+        "Endpoint":{
+          "shape":"String",
+          "documentation":"<p> The writer endpoint for the new global database cluster. This endpoint always points to the writer DB instance in the current primary cluster. </p>"
+        },
         "FailoverState":{
           "shape":"FailoverState",
           "documentation":"<p>A data object containing all properties for the current state of an in-process or pending switchover or failover process for this global cluster (Aurora global database). This object is empty unless the <code>SwitchoverGlobalCluster</code> or <code>FailoverGlobalCluster</code> operation was called on this global cluster.</p>"
@@ -11137,7 +11142,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The <code>GlobalClusterIdentifier</code> already exists. Choose a new global database identifier (unique name) to create a new global database cluster.</p>",
+      "documentation":"<p>The <code>GlobalClusterIdentifier</code> already exists. Specify a new global database identifier (unique name) to create a new global database cluster or to rename an existing one.</p>",
       "error":{
         "code":"GlobalClusterAlreadyExistsFault",
         "httpStatusCode":400,

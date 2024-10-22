@@ -11,7 +11,8 @@
     "serviceId":"imagebuilder",
     "signatureVersion":"v4",
     "signingName":"imagebuilder",
-    "uid":"imagebuilder-2019-12-02"
+    "uid":"imagebuilder-2019-12-02",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CancelImageCreation":{
@@ -769,7 +770,7 @@
         {"shape":"ForbiddenException"},
         {"shape":"CallRateLimitExceededException"}
       ],
-      "documentation":"<p>Returns the list of component build versions for the specified semantic version.</p> <note> <p>The semantic version has four nodes: &lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;/&lt;build&gt;. You can assign values for the first three, and can filter on all of them.</p> <p> <b>Filtering:</b> With semantic versioning, you have the flexibility to use wildcards (x) to specify the most recent versions or nodes when selecting the base image or components for your recipe. When you use a wildcard in any node, all nodes to the right of the first wildcard must also be wildcards.</p> </note>"
+      "documentation":"<p>Returns the list of component build versions for the specified component version Amazon Resource Name (ARN).</p>"
     },
     "ListComponents":{
       "name":"ListComponents",
@@ -2266,7 +2267,7 @@
         },
         "kmsKeyId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Identifies which KMS key is used to encrypt the container image.</p>"
+          "documentation":"<p>Identifies which KMS key is used to encrypt the Dockerfile template.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -2619,7 +2620,7 @@
         },
         "resourceTags":{
           "shape":"ResourceTagMap",
-          "documentation":"<p>The tags attached to the resource created by Image Builder.</p>"
+          "documentation":"<p>The metadata tags to assign to the Amazon EC2 instance that Image Builder launches during the build process. Tags are formatted as key value pairs.</p>"
         },
         "instanceMetadataOptions":{
           "shape":"InstanceMetadataOptions",
@@ -2627,7 +2628,11 @@
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>The tags of the infrastructure configuration.</p>"
+          "documentation":"<p>The metadata tags to assign to the infrastructure configuration resource that Image Builder creates as output. Tags are formatted as key value pairs.</p>"
+        },
+        "placement":{
+          "shape":"Placement",
+          "documentation":"<p>The instance placement settings that define where the instances that are launched from your image will run.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -3282,7 +3287,7 @@
         },
         "containerTags":{
           "shape":"StringList",
-          "documentation":"<p>Tags for Image Builder to apply to the output container image that &amp;INS; scans. Tags can help you identify and manage your scanned images.</p>"
+          "documentation":"<p>Tags for Image Builder to apply to the output container image that Amazon Inspector scans. Tags can help you identify and manage your scanned images.</p>"
         }
       },
       "documentation":"<p>Settings that Image Builder uses to configure the ECR repository and the output container images that Amazon Inspector scans.</p>"
@@ -4840,6 +4845,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags of the infrastructure configuration.</p>"
+        },
+        "placement":{
+          "shape":"Placement",
+          "documentation":"<p>The instance placement settings that define where the instances that are launched from your image will run.</p>"
         }
       },
       "documentation":"<p>Details of the infrastructure configuration.</p>"
@@ -4886,6 +4895,10 @@
         "instanceProfileName":{
           "shape":"InstanceProfileNameType",
           "documentation":"<p>The instance profile of the infrastructure configuration.</p>"
+        },
+        "placement":{
+          "shape":"Placement",
+          "documentation":"<p>The instance placement settings that define where the instances that are launched from your image will run.</p>"
         }
       },
       "documentation":"<p>The infrastructure used when building Amazon EC2 AMIs.</p>"
@@ -6606,11 +6619,34 @@
         "ENABLED"
       ]
     },
+    "Placement":{
+      "type":"structure",
+      "members":{
+        "availabilityZone":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Availability Zone where your build and test instances will launch.</p>"
+        },
+        "tenancy":{
+          "shape":"TenancyType",
+          "documentation":"<p>The tenancy of the instance. An instance with a tenancy of <code>dedicated</code> runs on single-tenant hardware. An instance with a tenancy of <code>host</code> runs on a Dedicated Host.</p> <p>If tenancy is set to <code>host</code>, then you can optionally specify one target for placement – either host ID or host resource group ARN. If automatic placement is enabled for your host, and you don't specify any placement target, Amazon EC2 will try to find an available host for your build and test instances.</p>"
+        },
+        "hostId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID of the Dedicated Host on which build and test instances run. This only applies if <code>tenancy</code> is <code>host</code>. If you specify the host ID, you must not specify the resource group ARN. If you specify both, Image Builder returns an error.</p>"
+        },
+        "hostResourceGroupArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the host resource group in which to launch build and test instances. This only applies if <code>tenancy</code> is <code>host</code>. If you specify the resource group ARN, you must not specify the host ID. If you specify both, Image Builder returns an error.</p>"
+        }
+      },
+      "documentation":"<p>By default, EC2 instances run on shared tenancy hardware. This means that multiple Amazon Web Services accounts might share the same physical hardware. When you use dedicated hardware, the physical server that hosts your instances is dedicated to your Amazon Web Services account. Instance placement settings contain the details for the physical hardware where instances that Image Builder launches during image creation will run.</p>"
+    },
     "Platform":{
       "type":"string",
       "enum":[
         "Windows",
-        "Linux"
+        "Linux",
+        "macOS"
       ]
     },
     "PutComponentPolicyRequest":{
@@ -7206,6 +7242,14 @@
       "max":10000,
       "min":1
     },
+    "TenancyType":{
+      "type":"string",
+      "enum":[
+        "default",
+        "dedicated",
+        "host"
+      ]
+    },
     "Timezone":{
       "type":"string",
       "max":100,
@@ -7414,11 +7458,6 @@
           "shape":"SnsTopicArn",
           "documentation":"<p>The Amazon Resource Name (ARN) for the SNS topic to which we send image build event notifications.</p> <note> <p>EC2 Image Builder is unable to send notifications to SNS topics that are encrypted using keys from other accounts. The key that is used to encrypt the SNS topic must reside in the account that the Image Builder service runs under.</p> </note>"
         },
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
-          "idempotencyToken":true
-        },
         "resourceTags":{
           "shape":"ResourceTagMap",
           "documentation":"<p>The tags attached to the resource created by Image Builder.</p>"
@@ -7426,6 +7465,15 @@
         "instanceMetadataOptions":{
           "shape":"InstanceMetadataOptions",
           "documentation":"<p>The instance metadata options that you can set for the HTTP requests that pipeline builds use to launch EC2 build and test instances. For more information about instance metadata options, see one of the following links:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-options.html\">Configure the instance metadata options</a> in the <i> <i>Amazon EC2 User Guide</i> </i> for Linux instances.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/configuring-instance-metadata-options.html\">Configure the instance metadata options</a> in the <i> <i>Amazon EC2 Windows Guide</i> </i> for Windows instances.</p> </li> </ul>"
+        },
+        "placement":{
+          "shape":"Placement",
+          "documentation":"<p>The instance placement settings that define where the instances that are launched from your image will run.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
+          "idempotencyToken":true
         }
       }
     },

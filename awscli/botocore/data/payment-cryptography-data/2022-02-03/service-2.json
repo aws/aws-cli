@@ -119,7 +119,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Generates pin-related data such as PIN, PIN Verification Value (PVV), PIN Block, and PIN Offset during new card issuance or reissuance. For more information, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/generate-pin-data.html\">Generate PIN data</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>PIN data is never transmitted in clear to or from Amazon Web Services Payment Cryptography. This operation generates PIN, PVV, or PIN Offset and then encrypts it using Pin Encryption Key (PEK) to create an <code>EncryptedPinBlock</code> for transmission from Amazon Web Services Payment Cryptography. This operation uses a separate Pin Verification Key (PVK) for VISA PVV generation. </p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>GenerateCardValidationData</a> </p> </li> <li> <p> <a>TranslatePinData</a> </p> </li> <li> <p> <a>VerifyPinData</a> </p> </li> </ul>"
+      "documentation":"<p>Generates pin-related data such as PIN, PIN Verification Value (PVV), PIN Block, and PIN Offset during new card issuance or reissuance. For more information, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/generate-pin-data.html\">Generate PIN data</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>PIN data is never transmitted in clear to or from Amazon Web Services Payment Cryptography. This operation generates PIN, PVV, or PIN Offset and then encrypts it using Pin Encryption Key (PEK) to create an <code>EncryptedPinBlock</code> for transmission from Amazon Web Services Payment Cryptography. This operation uses a separate Pin Verification Key (PVK) for VISA PVV generation. </p> <p>Using ECDH key exchange, you can receive cardholder selectable PINs into Amazon Web Services Payment Cryptography. The ECDH derived key protects the incoming PIN block. You can also use it for reveal PIN, wherein the generated PIN block is protected by the ECDH derived key before transmission from Amazon Web Services Payment Cryptography. For more information on establishing ECDH derived keys, see the <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/create-keys.html\">Generating keys</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>GenerateCardValidationData</a> </p> </li> <li> <p> <a>TranslatePinData</a> </p> </li> <li> <p> <a>VerifyPinData</a> </p> </li> </ul>"
     },
     "ReEncryptData":{
       "name":"ReEncryptData",
@@ -155,7 +155,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Translates encrypted PIN block from and to ISO 9564 formats 0,1,3,4. For more information, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/translate-pin-data.html\">Translate PIN data</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>PIN block translation involves changing the encrytion of PIN block from one encryption key to another encryption key and changing PIN block format from one to another without PIN block data leaving Amazon Web Services Payment Cryptography. The encryption key transformation can be from PEK (Pin Encryption Key) to BDK (Base Derivation Key) for DUKPT or from BDK for DUKPT to PEK. Amazon Web Services Payment Cryptography supports <code>TDES</code> and <code>AES</code> key derivation type for DUKPT translations. </p> <p>This operation also supports dynamic keys, allowing you to pass a dynamic PEK as a TR-31 WrappedKeyBlock. This can be used when key material is frequently rotated, such as during every card transaction, and there is need to avoid importing short-lived keys into Amazon Web Services Payment Cryptography. To translate PIN block using dynamic keys, the <code>keyARN</code> is the Key Encryption Key (KEK) of the TR-31 wrapped PEK. The incoming wrapped key shall have a key purpose of P0 with a mode of use of B or D. For more information, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/use-cases-acquirers-dynamickeys.html\">Using Dynamic Keys</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>The allowed combinations of PIN block format translations are guided by PCI. It is important to note that not all encrypted PIN block formats (example, format 1) require PAN (Primary Account Number) as input. And as such, PIN block format that requires PAN (example, formats 0,3,4) cannot be translated to a format (format 1) that does not require a PAN for generation. </p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <note> <p>Amazon Web Services Payment Cryptography currently supports ISO PIN block 4 translation for PIN block built using legacy PAN length. That is, PAN is the right most 12 digits excluding the check digits.</p> </note> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>GeneratePinData</a> </p> </li> <li> <p> <a>VerifyPinData</a> </p> </li> </ul>"
+      "documentation":"<p>Translates encrypted PIN block from and to ISO 9564 formats 0,1,3,4. For more information, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/translate-pin-data.html\">Translate PIN data</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>PIN block translation involves changing a PIN block from one encryption key to another and optionally change its format. PIN block translation occurs entirely within the HSM boundary and PIN data never enters or leaves Amazon Web Services Payment Cryptography in clear text. The encryption key transformation can be from PEK (Pin Encryption Key) to BDK (Base Derivation Key) for DUKPT or from BDK for DUKPT to PEK.</p> <p>Amazon Web Services Payment Cryptography also supports use of dynamic keys and ECDH (Elliptic Curve Diffie-Hellman) based key exchange for this operation.</p> <p>Dynamic keys allow you to pass a PEK as a TR-31 WrappedKeyBlock. They can be used when key material is frequently rotated, such as during every card transaction, and there is need to avoid importing short-lived keys into Amazon Web Services Payment Cryptography. To translate PIN block using dynamic keys, the <code>keyARN</code> is the Key Encryption Key (KEK) of the TR-31 wrapped PEK. The incoming wrapped key shall have a key purpose of P0 with a mode of use of B or D. For more information, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/use-cases-acquirers-dynamickeys.html\">Using Dynamic Keys</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>Using ECDH key exchange, you can receive cardholder selectable PINs into Amazon Web Services Payment Cryptography. The ECDH derived key protects the incoming PIN block, which is translated to a PEK encrypted PIN block for use within the service. You can also use ECDH for reveal PIN, wherein the service translates the PIN block from PEK to a ECDH derived encryption key. For more information on establishing ECDH derived keys, see the <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/create-keys.html\">Generating keys</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>The allowed combinations of PIN block format translations are guided by PCI. It is important to note that not all encrypted PIN block formats (example, format 1) require PAN (Primary Account Number) as input. And as such, PIN block format that requires PAN (example, formats 0,3,4) cannot be translated to a format (format 1) that does not require a PAN for generation. </p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <note> <p>Amazon Web Services Payment Cryptography currently supports ISO PIN block 4 translation for PIN block built using legacy PAN length. That is, PAN is the right most 12 digits excluding the check digits.</p> </note> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>GeneratePinData</a> </p> </li> <li> <p> <a>VerifyPinData</a> </p> </li> </ul>"
     },
     "VerifyAuthRequestCryptogram":{
       "name":"VerifyAuthRequestCryptogram",
@@ -470,6 +470,13 @@
         }
       },
       "documentation":"<p>Card data parameters that are required to verify Card Verification Value (CVV2) for the payment card.</p>"
+    },
+    "CertificateType":{
+      "type":"string",
+      "max":32768,
+      "min":1,
+      "pattern":"[^\\[;\\]<>]+",
+      "sensitive":true
     },
     "CipherTextType":{
       "type":"string",
@@ -795,6 +802,44 @@
         }
       },
       "documentation":"<p>Parameters that are required to generate or verify Dynamic Card Verification Value (dCVV).</p>"
+    },
+    "EcdhDerivationAttributes":{
+      "type":"structure",
+      "required":[
+        "CertificateAuthorityPublicKeyIdentifier",
+        "PublicKeyCertificate",
+        "KeyAlgorithm",
+        "KeyDerivationFunction",
+        "KeyDerivationHashAlgorithm",
+        "SharedInformation"
+      ],
+      "members":{
+        "CertificateAuthorityPublicKeyIdentifier":{
+          "shape":"KeyArnOrKeyAliasType",
+          "documentation":"<p>The <code>keyArn</code> of the certificate that signed the client's <code>PublicKeyCertificate</code>.</p>"
+        },
+        "PublicKeyCertificate":{
+          "shape":"CertificateType",
+          "documentation":"<p>The client's public key certificate in PEM format (base64 encoded) to use for ECDH key derivation.</p>"
+        },
+        "KeyAlgorithm":{
+          "shape":"SymmetricKeyAlgorithm",
+          "documentation":"<p>The key algorithm of the derived ECDH key.</p>"
+        },
+        "KeyDerivationFunction":{
+          "shape":"KeyDerivationFunction",
+          "documentation":"<p>The key derivation function to use for deriving a key using ECDH.</p>"
+        },
+        "KeyDerivationHashAlgorithm":{
+          "shape":"KeyDerivationHashAlgorithm",
+          "documentation":"<p>The hash type to use for deriving a key using ECDH.</p>"
+        },
+        "SharedInformation":{
+          "shape":"SharedInformation",
+          "documentation":"<p>A byte string containing information that binds the ECDH derived key to the two parties involved or to the context of the key.</p> <p>It may include details like identities of the two parties deriving the key, context of the operation, session IDs, and optionally a nonce. It must not contain zero bytes, and re-using shared information for multiple ECDH key derivations is not recommended.</p>"
+        }
+      },
+      "documentation":"<p>Parameters required to establish ECDH based key exchange.</p>"
     },
     "Emv2000Attributes":{
       "type":"structure",
@@ -1208,7 +1253,7 @@
         },
         "EncryptionKeyIdentifier":{
           "shape":"KeyArnOrKeyAliasType",
-          "documentation":"<p>The <code>keyARN</code> of the PEK that Amazon Web Services Payment Cryptography uses to encrypt the PIN Block.</p>"
+          "documentation":"<p>The <code>keyARN</code> of the PEK that Amazon Web Services Payment Cryptography uses to encrypt the PIN Block. For ECDH, it is the <code>keyARN</code> of the asymmetric ECC key.</p>"
         },
         "GenerationAttributes":{
           "shape":"PinGenerationAttributes",
@@ -1225,7 +1270,8 @@
         "PinBlockFormat":{
           "shape":"PinBlockFormatForPinData",
           "documentation":"<p>The PIN encoding format for pin data generation as specified in ISO 9564. Amazon Web Services Payment Cryptography supports <code>ISO_Format_0</code> and <code>ISO_Format_3</code>.</p> <p>The <code>ISO_Format_0</code> PIN block format is equivalent to the ANSI X9.8, VISA-1, and ECI-1 PIN block formats. It is similar to a VISA-4 PIN block format. It supports a PIN from 4 to 12 digits in length.</p> <p>The <code>ISO_Format_3</code> PIN block format is the same as <code>ISO_Format_0</code> except that the fill digits are random values from 10 to 15.</p>"
-        }
+        },
+        "EncryptionWrappedKey":{"shape":"WrappedKey"}
       }
     },
     "GeneratePinDataOutput":{
@@ -1249,7 +1295,7 @@
         },
         "EncryptionKeyArn":{
           "shape":"KeyArn",
-          "documentation":"<p>The <code>keyARN</code> of the PEK that Amazon Web Services Payment Cryptography uses for encrypted pin block generation.</p>"
+          "documentation":"<p>The <code>keyARN</code> of the PEK that Amazon Web Services Payment Cryptography uses for encrypted pin block generation. For ECDH, it is the <code>keyARN</code> of the asymmetric ECC key.</p>"
         },
         "EncryptionKeyCheckValue":{
           "shape":"KeyCheckValue",
@@ -1504,6 +1550,21 @@
         "ANSI_X9_24"
       ]
     },
+    "KeyDerivationFunction":{
+      "type":"string",
+      "enum":[
+        "NIST_SP800",
+        "ANSI_X963"
+      ]
+    },
+    "KeyDerivationHashAlgorithm":{
+      "type":"string",
+      "enum":[
+        "SHA_256",
+        "SHA_384",
+        "SHA_512"
+      ]
+    },
     "MacAlgorithm":{
       "type":"string",
       "enum":[
@@ -1681,7 +1742,8 @@
       "type":"string",
       "enum":[
         "ISO_FORMAT_0",
-        "ISO_FORMAT_3"
+        "ISO_FORMAT_3",
+        "ISO_FORMAT_4"
       ]
     },
     "PinBlockLengthEquals16":{
@@ -2082,6 +2144,12 @@
       },
       "documentation":"<p>Parameters to derive session key for Visa payment card for ARQC verification.</p>"
     },
+    "SharedInformation":{
+      "type":"string",
+      "max":2048,
+      "min":2,
+      "pattern":"(?:[0-9a-fA-F][0-9a-fA-F])+"
+    },
     "String":{"type":"string"},
     "SymmetricEncryptionAttributes":{
       "type":"structure",
@@ -2101,6 +2169,16 @@
         }
       },
       "documentation":"<p>Parameters requried to encrypt plaintext data using symmetric keys.</p>"
+    },
+    "SymmetricKeyAlgorithm":{
+      "type":"string",
+      "enum":[
+        "TDES_2KEY",
+        "TDES_3KEY",
+        "AES_128",
+        "AES_192",
+        "AES_256"
+      ]
     },
     "ThrottlingException":{
       "type":"structure",
@@ -2147,11 +2225,11 @@
       "members":{
         "IncomingKeyIdentifier":{
           "shape":"KeyArnOrKeyAliasType",
-          "documentation":"<p>The <code>keyARN</code> of the encryption key under which incoming PIN block data is encrypted. This key type can be PEK or BDK.</p> <p>When a WrappedKeyBlock is provided, this value will be the identifier to the key wrapping key for PIN block. Otherwise, it is the key identifier used to perform the operation.</p>"
+          "documentation":"<p>The <code>keyARN</code> of the encryption key under which incoming PIN block data is encrypted. This key type can be PEK or BDK.</p> <p>For dynamic keys, it is the <code>keyARN</code> of KEK of the TR-31 wrapped PEK. For ECDH, it is the <code>keyARN</code> of the asymmetric ECC key.</p>"
         },
         "OutgoingKeyIdentifier":{
           "shape":"KeyArnOrKeyAliasType",
-          "documentation":"<p>The <code>keyARN</code> of the encryption key for encrypting outgoing PIN block data. This key type can be PEK or BDK.</p>"
+          "documentation":"<p>The <code>keyARN</code> of the encryption key for encrypting outgoing PIN block data. This key type can be PEK or BDK.</p> <p>For ECDH, it is the <code>keyARN</code> of the asymmetric ECC key.</p>"
         },
         "IncomingTranslationAttributes":{
           "shape":"TranslationIsoFormats",
@@ -2514,7 +2592,8 @@
         "DukptAttributes":{
           "shape":"DukptAttributes",
           "documentation":"<p>The attributes and values for the DUKPT encrypted PIN block data.</p>"
-        }
+        },
+        "EncryptionWrappedKey":{"shape":"WrappedKey"}
       }
     },
     "VerifyPinDataOutput":{
@@ -2675,6 +2754,10 @@
         "Tr31KeyBlock":{
           "shape":"Tr31WrappedKeyBlock",
           "documentation":"<p>The TR-31 wrapped key block.</p>"
+        },
+        "DiffieHellmanSymmetricKey":{
+          "shape":"EcdhDerivationAttributes",
+          "documentation":"<p>The parameter information for deriving a ECDH shared key.</p>"
         }
       },
       "documentation":"<p>Parameter information of a WrappedKeyBlock for encryption key exchange.</p>",

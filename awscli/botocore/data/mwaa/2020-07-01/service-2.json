@@ -2,6 +2,7 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2020-07-01",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"airflow",
     "protocol":"rest-json",
     "protocols":["rest-json"],
@@ -40,7 +41,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates an Amazon Managed Workflows for Apache Airflow (MWAA) environment.</p>",
+      "documentation":"<p>Creates an Amazon Managed Workflows for Apache Airflow (Amazon MWAA) environment.</p>",
       "endpoint":{"hostPrefix":"api."},
       "idempotent":true
     },
@@ -77,7 +78,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes an Amazon Managed Workflows for Apache Airflow (MWAA) environment.</p>",
+      "documentation":"<p>Deletes an Amazon Managed Workflows for Apache Airflow (Amazon MWAA) environment.</p>",
       "endpoint":{"hostPrefix":"api."},
       "idempotent":true
     },
@@ -97,6 +98,26 @@
       ],
       "documentation":"<p>Describes an Amazon Managed Workflows for Apache Airflow (MWAA) environment.</p>",
       "endpoint":{"hostPrefix":"api."}
+    },
+    "InvokeRestApi":{
+      "name":"InvokeRestApi",
+      "http":{
+        "method":"POST",
+        "requestUri":"/restapi/{Name}",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeRestApiRequest"},
+      "output":{"shape":"InvokeRestApiResponse"},
+      "errors":[
+        {"shape":"RestApiClientException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"RestApiServerException"}
+      ],
+      "documentation":"<p>Invokes the Apache Airflow REST API on the webserver with the specified inputs. To learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/access-mwaa-apache-airflow-rest-api.html\">Using the Apache Airflow REST API</a> </p>",
+      "endpoint":{"hostPrefix":"env."}
     },
     "ListEnvironments":{
       "name":"ListEnvironments",
@@ -356,7 +377,7 @@
         },
         "AirflowVersion":{
           "shape":"AirflowVersion",
-          "documentation":"<p>The Apache Airflow version for your environment. If no value is specified, it defaults to the latest version. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/airflow-versions.html\">Apache Airflow versions on Amazon Managed Workflows for Apache Airflow (MWAA)</a>.</p> <p>Valid values: <code>1.10.12</code>, <code>2.0.2</code>, <code>2.2.2</code>, <code>2.4.3</code>, <code>2.5.1</code>, <code>2.6.3</code>, <code>2.7.2</code> <code>2.8.1</code> </p>"
+          "documentation":"<p>The Apache Airflow version for your environment. If no value is specified, it defaults to the latest version. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/airflow-versions.html\">Apache Airflow versions on Amazon Managed Workflows for Apache Airflow (Amazon MWAA)</a>.</p> <p>Valid values: <code>1.10.12</code>, <code>2.0.2</code>, <code>2.2.2</code>, <code>2.4.3</code>, <code>2.5.1</code>, <code>2.6.3</code>, <code>2.7.2</code>, <code>2.8.1</code>, <code>2.9.2</code>, and <code>2.10.1</code>.</p>"
         },
         "LoggingConfiguration":{
           "shape":"LoggingConfigurationInput",
@@ -395,7 +416,7 @@
           "documentation":"<p> The maximum number of web servers that you want to run in your environment. Amazon MWAA scales the number of Apache Airflow web servers up to the number you specify for <code>MaxWebservers</code> when you interact with your Apache Airflow environment using Apache Airflow REST API, or the Apache Airflow CLI. For example, in scenarios where your workload requires network calls to the Apache Airflow REST API with a high transaction-per-second (TPS) rate, Amazon MWAA will increase the number of web servers up to the number set in <code>MaxWebserers</code>. As TPS rates decrease Amazon MWAA disposes of the additional web servers, and scales down to the number set in <code>MinxWebserers</code>. </p> <p>Valid values: Accepts between <code>2</code> and <code>5</code>. Defaults to <code>2</code>.</p>"
         }
       },
-      "documentation":"<p>This section contains the Amazon Managed Workflows for Apache Airflow (MWAA) API reference documentation to create an environment. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/get-started.html\">Get started with Amazon Managed Workflows for Apache Airflow</a>.</p>"
+      "documentation":"<p>This section contains the Amazon Managed Workflows for Apache Airflow (Amazon MWAA) API reference documentation to create an environment. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/get-started.html\">Get started with Amazon Managed Workflows for Apache Airflow</a>.</p>"
     },
     "CreateEnvironmentOutput":{
       "type":"structure",
@@ -483,6 +504,12 @@
       "deprecated":true,
       "deprecatedMessage":"This type is for internal use and not meant for public use. Data set for this type will be ignored."
     },
+    "Document":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true
+    },
     "Double":{
       "type":"double",
       "box":true
@@ -531,7 +558,7 @@
         },
         "AirflowVersion":{
           "shape":"AirflowVersion",
-          "documentation":"<p>The Apache Airflow version on your environment.</p> <p>Valid values: <code>1.10.12</code>, <code>2.0.2</code>, <code>2.2.2</code>, <code>2.4.3</code>, <code>2.5.1</code>, <code>2.6.3</code>, <code>2.7.2</code>, <code>2.8.1</code>.</p>"
+          "documentation":"<p>The Apache Airflow version on your environment.</p> <p>Valid values: <code>1.10.12</code>, <code>2.0.2</code>, <code>2.2.2</code>, <code>2.4.3</code>, <code>2.5.1</code>, <code>2.6.3</code>, <code>2.7.2</code>, <code>2.8.1</code>, <code>2.9.2</code>, and <code>2.10.1</code>.</p>"
         },
         "SourceBucketArn":{
           "shape":"S3BucketArn",
@@ -728,6 +755,51 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "InvokeRestApiRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Path",
+        "Method"
+      ],
+      "members":{
+        "Name":{
+          "shape":"EnvironmentName",
+          "documentation":"<p>The name of the Amazon MWAA environment. For example, <code>MyMWAAEnvironment</code>.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        },
+        "Path":{
+          "shape":"RestApiPath",
+          "documentation":"<p>The Apache Airflow REST API endpoint path to be called. For example, <code>/dags/123456/clearTaskInstances</code>. For more information, see <a href=\"https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html\">Apache Airflow API</a> </p>"
+        },
+        "Method":{
+          "shape":"RestApiMethod",
+          "documentation":"<p>The HTTP method used for making Airflow REST API calls. For example, <code>POST</code>. </p>"
+        },
+        "QueryParameters":{
+          "shape":"Document",
+          "documentation":"<p>Query parameters to be included in the Apache Airflow REST API call, provided as a JSON object. </p>"
+        },
+        "Body":{
+          "shape":"RestApiRequestBody",
+          "documentation":"<p>The request body for the Apache Airflow REST API call, provided as a JSON object.</p>"
+        }
+      }
+    },
+    "InvokeRestApiResponse":{
+      "type":"structure",
+      "members":{
+        "RestApiStatusCode":{
+          "shape":"Integer",
+          "documentation":"<p>The HTTP status code returned by the Apache Airflow REST API call.</p>"
+        },
+        "RestApiResponse":{
+          "shape":"RestApiResponse",
+          "documentation":"<p>The response data from the Apache Airflow REST API call, provided as a JSON object.</p>"
+        }
+      }
     },
     "KmsKey":{
       "type":"string",
@@ -1044,6 +1116,73 @@
       },
       "exception":true
     },
+    "RestApiClientException":{
+      "type":"structure",
+      "members":{
+        "RestApiStatusCode":{
+          "shape":"Integer",
+          "documentation":"<p>The HTTP status code returned by the Apache Airflow REST API call.</p>"
+        },
+        "RestApiResponse":{
+          "shape":"RestApiResponse",
+          "documentation":"<p>The error response data from the Apache Airflow REST API call, provided as a JSON object.</p>"
+        }
+      },
+      "documentation":"<p>An exception indicating that a client-side error occurred during the Apache Airflow REST API call.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RestApiMethod":{
+      "type":"string",
+      "enum":[
+        "GET",
+        "PUT",
+        "POST",
+        "PATCH",
+        "DELETE"
+      ]
+    },
+    "RestApiPath":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "RestApiRequestBody":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true,
+      "sensitive":true
+    },
+    "RestApiResponse":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true,
+      "sensitive":true
+    },
+    "RestApiServerException":{
+      "type":"structure",
+      "members":{
+        "RestApiStatusCode":{
+          "shape":"Integer",
+          "documentation":"<p>The HTTP status code returned by the Apache Airflow REST API call.</p>"
+        },
+        "RestApiResponse":{
+          "shape":"RestApiResponse",
+          "documentation":"<p>The error response data from the Apache Airflow REST API call, provided as a JSON object.</p>"
+        }
+      },
+      "documentation":"<p>An exception indicating that a server-side error occurred during the Apache Airflow REST API call.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "S3BucketArn":{
       "type":"string",
       "max":1224,
@@ -1238,7 +1377,7 @@
         },
         "AirflowVersion":{
           "shape":"AirflowVersion",
-          "documentation":"<p>The Apache Airflow version for your environment. To upgrade your environment, specify a newer version of Apache Airflow supported by Amazon MWAA.</p> <p>Before you upgrade an environment, make sure your requirements, DAGs, plugins, and other resources used in your workflows are compatible with the new Apache Airflow version. For more information about updating your resources, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/upgrading-environment.html\">Upgrading an Amazon MWAA environment</a>.</p> <p>Valid values: <code>1.10.12</code>, <code>2.0.2</code>, <code>2.2.2</code>, <code>2.4.3</code>, <code>2.5.1</code>, <code>2.6.3</code>, <code>2.7.2</code>, <code>2.8.1</code>.</p>"
+          "documentation":"<p>The Apache Airflow version for your environment. To upgrade your environment, specify a newer version of Apache Airflow supported by Amazon MWAA.</p> <p>Before you upgrade an environment, make sure your requirements, DAGs, plugins, and other resources used in your workflows are compatible with the new Apache Airflow version. For more information about updating your resources, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/upgrading-environment.html\">Upgrading an Amazon MWAA environment</a>.</p> <p>Valid values: <code>1.10.12</code>, <code>2.0.2</code>, <code>2.2.2</code>, <code>2.4.3</code>, <code>2.5.1</code>, <code>2.6.3</code>, <code>2.7.2</code>, <code>2.8.1</code>, <code>2.9.2</code>, and <code>2.10.1</code>.</p>"
         },
         "SourceBucketArn":{
           "shape":"S3BucketArn",
@@ -1404,5 +1543,5 @@
       "pattern":".*(MON|TUE|WED|THU|FRI|SAT|SUN):([01]\\d|2[0-3]):(00|30).*"
     }
   },
-  "documentation":"<p><fullname>Amazon Managed Workflows for Apache Airflow</fullname> <p>This section contains the Amazon Managed Workflows for Apache Airflow (MWAA) API reference documentation. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html\">What is Amazon MWAA?</a>.</p> <p> <b>Endpoints</b> </p> <ul> <li> <p> <code>api.airflow.{region}.amazonaws.com</code> - This endpoint is used for environment management.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateEnvironment.html\">CreateEnvironment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_DeleteEnvironment.html\">DeleteEnvironment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_GetEnvironment.html\">GetEnvironment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_ListEnvironments.html\">ListEnvironments</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_ListTagsForResource.html\">ListTagsForResource</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_TagResource.html\">TagResource</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_UntagResource.html\">UntagResource</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_UpdateEnvironment.html\">UpdateEnvironment</a> </p> </li> </ul> </li> <li> <p> <code>env.airflow.{region}.amazonaws.com</code> - This endpoint is used to operate the Airflow environment.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateCliToken.html \">CreateCliToken</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateWebLoginToken.html\">CreateWebLoginToken</a> </p> </li> </ul> </li> </ul> <p> <b>Regions</b> </p> <p>For a list of supported regions, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/mwaa.html\">Amazon MWAA endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>.</p></p>"
+  "documentation":"<p><fullname>Amazon Managed Workflows for Apache Airflow</fullname> <p>This section contains the Amazon Managed Workflows for Apache Airflow (MWAA) API reference documentation. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html\">What is Amazon MWAA?</a>.</p> <p> <b>Endpoints</b> </p> <ul> <li> <p> <code>api.airflow.{region}.amazonaws.com</code> - This endpoint is used for environment management.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateEnvironment.html\">CreateEnvironment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_DeleteEnvironment.html\">DeleteEnvironment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_GetEnvironment.html\">GetEnvironment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_ListEnvironments.html\">ListEnvironments</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_ListTagsForResource.html\">ListTagsForResource</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_TagResource.html\">TagResource</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_UntagResource.html\">UntagResource</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_UpdateEnvironment.html\">UpdateEnvironment</a> </p> </li> </ul> </li> <li> <p> <code>env.airflow.{region}.amazonaws.com</code> - This endpoint is used to operate the Airflow environment.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateCliToken.html \">CreateCliToken</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateWebLoginToken.html\">CreateWebLoginToken</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_InvokeRestApi.html\">InvokeRestApi</a> </p> </li> </ul> </li> </ul> <p> <b>Regions</b> </p> <p>For a list of supported regions, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/mwaa.html\">Amazon MWAA endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>.</p></p>"
 }

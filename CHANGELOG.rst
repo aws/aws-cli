@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.18.13
+=======
+
+* api-change:``payment-cryptography``: Add support for ECC P-256 and P-384 Keys.
+* api-change:``ec2``: Amazon EC2 X8g, C8g and M8g instances are powered by AWS Graviton4 processors. X8g provide the lowest cost per GiB of memory among Graviton4 instances. C8g provide the best price performance for compute-intensive workloads. M8g provide the best price performance in for general purpose workloads.
+* api-change:``mwaa``: Introducing InvokeRestApi which allows users to invoke the Apache Airflow REST API on the webserver with the specified inputs.
+* api-change:``connect``: Amazon Connect Service Feature: Add support to start screen sharing for a web calling contact.
+* api-change:``bedrock``: Doc updates for supporting converse
+* api-change:``payment-cryptography-data``: Add ECDH support on PIN operations.
+
+
 2.18.12
 =======
 

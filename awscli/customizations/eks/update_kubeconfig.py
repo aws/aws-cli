@@ -80,8 +80,8 @@ class UpdateKubeconfigCommand(BasicCommand):
         },
         {
             'name': 'session-name',
-            'help_text': ("The name of the role session to be passed down "
-                          "to further commands."),
+            'help_text': ("The name of the role session to be used when "
+                          "role-arn is set."),
             'required': False
         },
         {

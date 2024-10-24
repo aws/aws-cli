@@ -2737,6 +2737,16 @@
       "output":{"shape":"DescribeInstanceEventWindowsResult"},
       "documentation":"<p>Describes the specified event windows or all event windows.</p> <p>If you specify event window IDs, the output includes information for only the specified event windows. If you specify filters, the output includes information for only those event windows that meet the filter criteria. If you do not specify event windows IDs or filters, the output includes information for all event windows, which can affect performance. We recommend that you use pagination to ensure that the operation returns quickly and successfully. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/event-windows.html\">Define event windows for scheduled events</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
+    "DescribeInstanceImageMetadata":{
+      "name":"DescribeInstanceImageMetadata",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeInstanceImageMetadataRequest"},
+      "output":{"shape":"DescribeInstanceImageMetadataResult"},
+      "documentation":"<p>Describes the AMI that was used to launch an instance, even if the AMI is deprecated, deregistered, or made private (no longer public or shared with your account).</p> <p>If you specify instance IDs, the output includes information for only the specified instances. If you specify filters, the output includes information for only those instances that meet the filter criteria. If you do not specify instance IDs or filters, the output includes information for all instances, which can affect performance.</p> <p>If you specify an instance ID that is not valid, an instance that doesn't exist, or an instance that you do not own, an error (<code>InvalidInstanceID.NotFound</code>) is returned.</p> <p>Recently terminated instances might appear in the returned results. This interval is usually less than one hour.</p> <p>In the rare case where an Availability Zone is experiencing a service disruption and you specify instance IDs that are in the affected Availability Zone, or do not specify any instance IDs at all, the call fails. If you specify only instance IDs that are in an unaffected Availability Zone, the call works normally.</p> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
+    },
     "DescribeInstanceStatus":{
       "name":"DescribeInstanceStatus",
       "http":{
@@ -13582,7 +13592,7 @@
         },
         "Locale":{
           "shape":"String",
-          "documentation":"<p>The locale for the pool should be one of the following:</p> <ul> <li> <p>An Amazon Web Services Region where you want this IPAM pool to be available for allocations.</p> </li> <li> <p>The network border group for an Amazon Web Services Local Zone where you want this IPAM pool to be available for allocations (<a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html#byoip-zone-avail\">supported Local Zones</a>). This option is only available for IPAM IPv4 pools in the public scope.</p> </li> </ul> <p>If you do not choose a locale, resources in Regions others than the IPAM's home region cannot use CIDRs from this pool.</p> <p>Possible values: Any Amazon Web Services Region or supported Amazon Web Services Local Zone. Default is <code>none</code> and means any locale.</p>"
+          "documentation":"<p>The locale for the pool should be one of the following:</p> <ul> <li> <p>An Amazon Web Services Region where you want this IPAM pool to be available for allocations.</p> </li> <li> <p>The network border group for an Amazon Web Services Local Zone where you want this IPAM pool to be available for allocations (<a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html#byoip-zone-avail\">supported Local Zones</a>). This option is only available for IPAM IPv4 pools in the public scope.</p> </li> </ul> <p>Possible values: Any Amazon Web Services Region or supported Amazon Web Services Local Zone. Default is <code>none</code> and means any locale.</p>"
         },
         "SourceIpamPoolId":{
           "shape":"IpamPoolId",
@@ -13602,7 +13612,7 @@
         },
         "PubliclyAdvertisable":{
           "shape":"Boolean",
-          "documentation":"<p>Determines if the pool is publicly advertisable. This option is not available for pools with AddressFamily set to <code>ipv4</code>.</p>"
+          "documentation":"<p>Determines if the pool is publicly advertisable. The request can only contain <code>PubliclyAdvertisable</code> if <code>AddressFamily</code> is <code>ipv6</code> and <code>PublicIpSource</code> is <code>byoip</code>.</p>"
         },
         "AllocationMinNetmaskLength":{
           "shape":"IpamNetmaskLength",
@@ -21488,6 +21498,53 @@
         }
       }
     },
+    "DescribeInstanceImageMetadataMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "DescribeInstanceImageMetadataRequest":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>availability-zone</code> - The name of the Availability Zone (for example, <code>us-west-2a</code>) or Local Zone (for example, <code>us-west-2-lax-1b</code>) of the instance.</p> </li> <li> <p> <code>instance-id</code> - The ID of the instance.</p> </li> <li> <p> <code>instance-state-name</code> - The state of the instance (<code>pending</code> | <code>running</code> | <code>shutting-down</code> | <code>terminated</code> | <code>stopping</code> | <code>stopped</code>).</p> </li> <li> <p> <code>instance-type</code> - The type of instance (for example, <code>t3.micro</code>).</p> </li> <li> <p> <code>launch-time</code> - The time when the instance was launched, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2023-09-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2023-09-29T*</code>, which matches an entire day. </p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>zone-id</code> - The ID of the Availability Zone (for example, <code>usw2-az2</code>) or Local Zone (for example, <code>usw2-lax1-az1</code>) of the instance.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "InstanceIds":{
+          "shape":"InstanceIdStringList",
+          "documentation":"<p>The instance IDs.</p> <p>If you don't specify an instance ID or filters, the output includes information for all instances.</p>",
+          "locationName":"InstanceId"
+        },
+        "MaxResults":{
+          "shape":"DescribeInstanceImageMetadataMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p> <p>Default: 1000</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeInstanceImageMetadataResult":{
+      "type":"structure",
+      "members":{
+        "InstanceImageMetadata":{
+          "shape":"InstanceImageMetadataList",
+          "documentation":"<p>Information about the instance and the AMI used to launch the instance.</p>",
+          "locationName":"instanceImageMetadataSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribeInstanceStatusRequest":{
       "type":"structure",
       "members":{
@@ -28155,11 +28212,11 @@
       "members":{
         "Type":{
           "shape":"String",
-          "documentation":"<p>The elastic GPU type.</p>",
+          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024. For workloads that require graphics acceleration, we recommend that you use Amazon EC2 G4ad, G4dn, or G5 instances.</p> </note>",
           "locationName":"type"
         }
       },
-      "documentation":"<note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024.</p> </note> <p>Describes an elastic GPU.</p>"
+      "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024. For workloads that require graphics acceleration, we recommend that you use Amazon EC2 G4ad, G4dn, or G5 instances.</p> </note>"
     },
     "ElasticGpuSpecificationResponseList":{
       "type":"list",
@@ -33995,6 +34052,52 @@
         "locationName":"item"
       }
     },
+    "ImageMetadata":{
+      "type":"structure",
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the AMI.</p>",
+          "locationName":"imageId"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the AMI.</p>",
+          "locationName":"name"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the AMI.</p>",
+          "locationName":"imageOwnerId"
+        },
+        "State":{
+          "shape":"ImageState",
+          "documentation":"<p>The current state of the AMI. If the state is <code>available</code>, the AMI is successfully registered and can be used to launch an instance.</p>",
+          "locationName":"imageState"
+        },
+        "ImageOwnerAlias":{
+          "shape":"String",
+          "documentation":"<p>The alias of the AMI owner.</p> <p>Valid values: <code>amazon</code> | <code>aws-marketplace</code> </p>",
+          "locationName":"imageOwnerAlias"
+        },
+        "CreationDate":{
+          "shape":"String",
+          "documentation":"<p>The date and time the AMI was created.</p>",
+          "locationName":"creationDate"
+        },
+        "DeprecationTime":{
+          "shape":"String",
+          "documentation":"<p>The deprecation date and time of the AMI, in UTC, in the following format: <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>Z.</p>",
+          "locationName":"deprecationTime"
+        },
+        "IsPublic":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the AMI has public launch permissions. A value of <code>true</code> means this AMI has public launch permissions, while <code>false</code> means it has only implicit (AMI owner) or explicit (shared with your account) launch permissions.</p>",
+          "locationName":"isPublic"
+        }
+      },
+      "documentation":"<p>Information about the AMI.</p>"
+    },
     "ImageRecycleBinInfo":{
       "type":"structure",
       "members":{
@@ -35762,6 +35865,64 @@
       "type":"list",
       "member":{
         "shape":"InstanceId",
+        "locationName":"item"
+      }
+    },
+    "InstanceImageMetadata":{
+      "type":"structure",
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The ID of the instance.</p>",
+          "locationName":"instanceId"
+        },
+        "InstanceType":{
+          "shape":"InstanceType",
+          "documentation":"<p>The instance type.</p>",
+          "locationName":"instanceType"
+        },
+        "LaunchTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The time the instance was launched.</p>",
+          "locationName":"launchTime"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone or Local Zone of the instance.</p>",
+          "locationName":"availabilityZone"
+        },
+        "ZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone or Local Zone of the instance.</p>",
+          "locationName":"zoneId"
+        },
+        "State":{
+          "shape":"InstanceState",
+          "documentation":"<p>The current state of the instance.</p>",
+          "locationName":"instanceState"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the instance.</p>",
+          "locationName":"instanceOwnerId"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Any tags assigned to the instance.</p>",
+          "locationName":"tagSet"
+        },
+        "ImageMetadata":{
+          "shape":"ImageMetadata",
+          "documentation":"<p>Information about the AMI used to launch the instance.</p>",
+          "locationName":"imageMetadata"
+        }
+      },
+      "documentation":"<p>Information about the instance and the AMI used to launch the instance.</p>"
+    },
+    "InstanceImageMetadataList":{
+      "type":"list",
+      "member":{
+        "shape":"InstanceImageMetadata",
         "locationName":"item"
       }
     },
@@ -40498,7 +40659,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The ARN of the Key Management Service (KMS) CMK used for encryption.</p>",
+          "documentation":"<p>Identifier (key ID, key alias, key ARN, or alias ARN) of the customer managed KMS key to use for EBS encryption.</p>",
           "locationName":"kmsKeyId"
         },
         "SnapshotId":{
@@ -40541,7 +40702,7 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The ARN of the symmetric Key Management Service (KMS) CMK used for encryption.</p>"
+          "documentation":"<p>Identifier (key ID, key alias, key ARN, or alias ARN) of the customer managed KMS key to use for EBS encryption.</p>"
         },
         "SnapshotId":{
           "shape":"SnapshotId",
@@ -40575,7 +40736,7 @@
           "documentation":"<p> The number of elastic inference accelerators to attach to the instance. </p> <p>Default: 1</p>"
         }
       },
-      "documentation":"<note> <p>Amazon Elastic Inference is no longer available.</p> </note> <p> Describes an elastic inference accelerator.</p>"
+      "documentation":"<note> <p>Amazon Elastic Inference is no longer available.</p> </note> <p> Describes an elastic inference accelerator. </p>"
     },
     "LaunchTemplateElasticInferenceAcceleratorCount":{
       "type":"integer",
@@ -50674,12 +50835,12 @@
         },
         "ElasticGpuSpecifications":{
           "shape":"ElasticGpuSpecificationList",
-          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024.</p> </note>",
+          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024. For workloads that require graphics acceleration, we recommend that you use Amazon EC2 G4ad, G4dn, or G5 instances.</p> </note>",
           "locationName":"ElasticGpuSpecification"
         },
         "ElasticInferenceAccelerators":{
           "shape":"LaunchTemplateElasticInferenceAcceleratorList",
-          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Inference is no longer available.</p> </note>",
+          "documentation":"<note> <p>Amazon Elastic Inference is no longer available.</p> </note> <p>An elastic inference accelerator to associate with the instance. Elastic inference accelerators are a resource you can attach to your Amazon EC2 instances to accelerate your Deep Learning (DL) inference workloads.</p> <p>You cannot specify accelerators from different generations in the same request.</p> <note> <p>Starting April 15, 2023, Amazon Web Services will not onboard new customers to Amazon Elastic Inference (EI), and will help current customers migrate their workloads to options that offer better price and performance. After April 15, 2023, new customers will not be able to launch instances with Amazon EI accelerators in Amazon SageMaker, Amazon ECS, or Amazon EC2. However, customers who have used Amazon EI at least once during the past 30-day period are considered current customers and will be able to continue using the service.</p> </note>",
           "locationName":"ElasticInferenceAccelerator"
         },
         "SecurityGroupIds":{
@@ -51955,12 +52116,12 @@
         },
         "ElasticGpuSpecifications":{
           "shape":"ElasticGpuSpecificationResponseList",
-          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024.</p> </note>",
+          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024. For workloads that require graphics acceleration, we recommend that you use Amazon EC2 G4ad, G4dn, or G5 instances.</p> </note>",
           "locationName":"elasticGpuSpecificationSet"
         },
         "ElasticInferenceAccelerators":{
           "shape":"LaunchTemplateElasticInferenceAcceleratorResponseList",
-          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Inference is no longer available.</p> </note>",
+          "documentation":"<note> <p>Amazon Elastic Inference is no longer available.</p> </note> <p>An elastic inference accelerator to associate with the instance. Elastic inference accelerators are a resource you can attach to your Amazon EC2 instances to accelerate your Deep Learning (DL) inference workloads.</p> <p>You cannot specify accelerators from different generations in the same request.</p> <note> <p>Starting April 15, 2023, Amazon Web Services will not onboard new customers to Amazon Elastic Inference (EI), and will help current customers migrate their workloads to options that offer better price and performance. After April 15, 2023, new customers will not be able to launch instances with Amazon EI accelerators in Amazon SageMaker, Amazon ECS, or Amazon EC2. However, customers who have used Amazon EI at least once during the past 30-day period are considered current customers and will be able to continue using the service.</p> </note>",
           "locationName":"elasticInferenceAcceleratorSet"
         },
         "SecurityGroupIds":{

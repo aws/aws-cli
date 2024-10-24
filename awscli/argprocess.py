@@ -535,7 +535,11 @@ class ParamShorthandDocGen(ParamShorthand):
 
     def _map_docs(self, argument_model, stack):
         k = argument_model.key
-        value_docs = self._shorthand_docs(argument_model.value, stack)
+        stack.append(argument_model.key)
+        try:
+            value_docs = self._shorthand_docs(argument_model.value, stack)
+        finally:
+            stack.pop()
         start = 'KeyName1=%s,KeyName2=%s' % (value_docs, value_docs)
         if k.enum and not stack:
             start += '\n\nWhere valid key names are:\n'

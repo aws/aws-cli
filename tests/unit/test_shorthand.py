@@ -11,9 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
+import signal
 
 from awscli import shorthand
-from awscli.testutils import unittest
+from awscli.testutils import unittest, skip_if_windows
 
 from botocore import model
 
@@ -151,6 +152,27 @@ def test_error_parsing(expr):
     with pytest.raises(shorthand.ShorthandParseError):
         shorthand.ShorthandParser().parse(expr)
 
+
+@pytest.mark.parametrize(
+    "expr", (
+        # starting with " but unclosed, then repeated \
+        f'foo="' + '\\' * 100,
+        # starting with ' but unclosed, then repeated \
+        f'foo=\'' + '\\' * 100,
+    )
+)
+@skip_if_windows("Windows does not support signal.SIGALRM.")
+def test_error_with_backtracking(expr):
+    signal.signal(signal.SIGALRM, handle_timeout)
+    # Ensure we don't spend more than 5 seconds backtracking
+    signal.alarm(5)
+    with pytest.raises(shorthand.ShorthandParseError):
+        shorthand.ShorthandParser().parse(expr)
+    signal.alarm(0)
+
+
+def handle_timeout(signum, frame):
+    raise TimeoutError('Shorthand parsing timed out')
 
 @pytest.mark.parametrize(
     'data, expected',

@@ -9,8 +9,8 @@ The Json output is printed on one line per input file, but is formatted here for
     aws comprehend start-entities-detection-job \
         --job-name entitiestest \
         --language-code en \
-        --input-data-config "S3Uri=s3://DOC-EXAMPLE-BUCKET/" \
-        --output-data-config "S3Uri=s3://DOC-EXAMPLE-DESTINATION-BUCKET/testfolder/" \
+        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket/" \
+        --output-data-config "S3Uri=s3://amzn-s3-demo-destination-bucket/testfolder/" \
         --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role \
         --language-code en
 
@@ -174,8 +174,8 @@ The entity recognizer model was trained on customer support Feedbacks to recogni
         --job-name customentitiestest \
         --entity-recognizer-arn "arn:aws:comprehend:us-west-2:111122223333:entity-recognizer/entityrecognizer" \
         --language-code en \
-        --input-data-config "S3Uri=s3://DOC-EXAMPLE-BUCKET/jobdata/" \
-        --output-data-config "S3Uri=s3://DOC-EXAMPLE-DESTINATION-BUCKET/testfolder/" \
+        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket/jobdata/" \
+        --output-data-config "S3Uri=s3://amzn-s3-demo-destination-bucket/testfolder/" \
         --data-access-role-arn "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-IOrole" 
 
 Contents of ``SampleFeedback1.txt``::

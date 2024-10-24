@@ -7,7 +7,7 @@ The following ``create-job`` example creates a streaming job that runs a script 
         --role AWSGlueServiceRoleDefault \
         --command '{ \
             "Name": "gluestreaming", \
-            "ScriptLocation": "s3://DOC-EXAMPLE-BUCKET/folder/" \
+            "ScriptLocation": "s3://amzn-s3-demo-bucket/folder/" \
         }' \
         --region us-east-1 \
         --output json \

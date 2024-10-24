@@ -13,9 +13,9 @@ Output::
             "id": "3c65eb13-6ef9-4629-8919-a32043619e6b",
             "analyzerArn": "arn:aws:access-analyzer:us-west-2:111122223333:analyzer/ConsoleAnalyzer-account",
             "configurations": {
-                "arn:aws:s3:::DOC-EXAMPLE-BUCKET": {
+                "arn:aws:s3:::amzn-s3-demo-bucket": {
                     "s3Bucket": {
-                        "bucketPolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"arn:aws:iam::111122223333:root\"]},\"Action\":[\"s3:PutObject\",\"s3:PutObjectAcl\"],\"Resource\":\"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"}]}",
+                        "bucketPolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"arn:aws:iam::111122223333:root\"]},\"Action\":[\"s3:PutObject\",\"s3:PutObjectAcl\"],\"Resource\":\"arn:aws:s3:::amzn-s3-demo-bucket/*\"}]}",
                         "bucketAclGrants": [
                             {
                                 "permission": "READ",

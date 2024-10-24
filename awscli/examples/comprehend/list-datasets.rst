@@ -13,7 +13,7 @@ Output::
                 "DatasetArn": "arn:aws:comprehend:us-west-2:111122223333:flywheel/flywheel-entity/dataset/example-dataset-1",
                 "DatasetName": "example-dataset-1",
                 "DatasetType": "TRAIN",
-                "DatasetS3Uri": "s3://DOC-EXAMPLE-BUCKET/flywheel-entity/schemaVersion=1/20230616T200543Z/datasets/example-dataset-1/20230616T203710Z/",
+                "DatasetS3Uri": "s3://amzn-s3-demo-bucket/flywheel-entity/schemaVersion=1/20230616T200543Z/datasets/example-dataset-1/20230616T203710Z/",
                 "Status": "CREATING",
                 "CreationTime": "2023-06-16T20:37:10.400000+00:00"
             },
@@ -21,7 +21,7 @@ Output::
                 "DatasetArn": "arn:aws:comprehend:us-west-2:111122223333:flywheel/flywheel-entity/dataset/example-dataset-2",
                 "DatasetName": "example-dataset-2",
                 "DatasetType": "TRAIN",
-                "DatasetS3Uri": "s3://DOC-EXAMPLE-BUCKET/flywheel-entity/schemaVersion=1/20230616T200543Z/datasets/example-dataset-2/20230616T200607Z/",
+                "DatasetS3Uri": "s3://amzn-s3-demo-bucket/flywheel-entity/schemaVersion=1/20230616T200543Z/datasets/example-dataset-2/20230616T200607Z/",
                 "Description": "TRAIN Dataset created by Flywheel creation.",
                 "Status": "COMPLETED",
                 "NumberOfDocuments": 5572,

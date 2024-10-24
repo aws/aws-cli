@@ -12,9 +12,9 @@ Output::
             {
                 "accountId": "123456789012",
                 "allowsUnencryptedObjectUploads": "FALSE",
-                "bucketArn": "arn:aws:s3:::MY-S3-DOC-EXAMPLE-BUCKET1",
+                "bucketArn": "arn:aws:s3:::amzn-s3-demo-bucket1",
                 "bucketCreatedAt": "2020-05-18T19:54:00+00:00",
-                "bucketName": "MY-S3-DOC-EXAMPLE-BUCKET1",
+                "bucketName": "amzn-s3-demo-bucket1",
                 "classifiableObjectCount": 13,
                 "classifiableSizeInBytes": 1592088,
                 "jobDetails": {
@@ -101,9 +101,9 @@ Output::
             {
                 "accountId": "123456789012",
                 "allowsUnencryptedObjectUploads": "TRUE",
-                "bucketArn": "arn:aws:s3:::MY-S3-DOC-EXAMPLE-BUCKET2",
+                "bucketArn": "arn:aws:s3:::amzn-s3-demo-bucket2",
                 "bucketCreatedAt": "2020-11-25T18:24:38+00:00",
-                "bucketName": "MY-S3-DOC-EXAMPLE-BUCKET2",
+                "bucketName": "amzn-s3-demo-bucket2",
                 "classifiableObjectCount": 8,
                 "classifiableSizeInBytes": 133810,
                 "jobDetails": {

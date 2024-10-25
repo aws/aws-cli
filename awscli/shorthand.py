@@ -41,9 +41,9 @@ necessary to maintain backwards compatibility.  This is done in the
 import re
 import string
 
+from awscli.customizations.utils import uni_print
 from awscli.paramfile import get_paramfile, LOCAL_PREFIX_MAP
 from awscli.utils import is_document_type
-
 
 _EOF = object()
 _FILE_ASSIGNMENT = '@='
@@ -177,7 +177,6 @@ class ShorthandParser(object):
 
     def _parameter(self):
         # parameter = keyval *("," keyval)
-        print(f'SHORTHAND INVOKED: {self._input_value}')
         params = {}
         key, val = self._keyval()
         params[key] = val
@@ -204,8 +203,7 @@ class ShorthandParser(object):
         assignment_op = self._expect_strings(assignment_strings, consume_whitespace=True)
         if assignment_op == _FILE_ASSIGNMENT:
             resolve_paramfiles = True
-        # TODO process the warnings from values, if any. if any, print them in some deterministic way.
-        values = self._values(resolve_paramfiles)
+        values = self._values(key, resolve_paramfiles)
         return key, values
 
     def _key(self):
@@ -225,7 +223,7 @@ class ShorthandParser(object):
             self._index += 1
         return self._input_value[start:self._index]
 
-    def _values(self, resolve_paramfiles=False):
+    def _values(self, parent_key, resolve_paramfiles=False):
         # 2. Returning a dict with warnings from below.
         #       let's do this one. A nice benefit is that the warning messages can be
         #       very descriptive. e.g. for deeply nested hash literals,
@@ -235,26 +233,21 @@ class ShorthandParser(object):
         # pass key from keyval to explicit_list and csv_list
         # pass key from hash_literal to explicit_list
         if self._at_eof():
-            # TODO surface the empty warnings
             return ''
         elif self._current() == '[':
-            # TODO surface the dictionary returned by explicit_list containing all warnings
-            return self._explicit_list(resolve_paramfiles)
+            return self._explicit_list(parent_key, resolve_paramfiles)
         elif self._current() == '{':
-            # TODO surface empty warnings
             return self._hash_literal()
         else:
-            # TODO surface the dictionary returned by csv_value containing all warnings
-            return self._csv_value(resolve_paramfiles)
+            return self._csv_value(parent_key, resolve_paramfiles)
 
-    def _csv_value(self, resolve_paramfiles=False):
+    def _csv_value(self, parent_key, resolve_paramfiles=False):
         # Supports either:
         # foo=bar     -> 'bar'
         #     ^
         # foo=bar,baz -> ['bar', 'baz']
         #     ^
-        # TODO surface warning from first_value to index 0 of this list, include it in all returns
-        first_value = self._first_value(resolve_paramfiles)
+        first_value = self._first_value(parent_key, resolve_paramfiles)
         self._consume_whitespace()
         if self._at_eof() or self._input_value[self._index] != ',':
             return first_value
@@ -270,8 +263,7 @@ class ShorthandParser(object):
 
         while True:
             try:
-                # TODO process warning from second_value with index in the csv_list. include it in return(s) below
-                current = self._second_value(resolve_paramfiles)
+                current = self._second_value(parent_key, resolve_paramfiles)
                 self._consume_whitespace()
                 if self._at_eof():
                     csv_list.append(current)
@@ -298,23 +290,23 @@ class ShorthandParser(object):
             return first_value
         return csv_list
 
-    def _value(self, resolve_paramfiles=False):
+    def _value(self, parent_key, resolve_paramfiles=False):
         result = self._FIRST_VALUE.match(self._input_value[self._index:])
         if result is not None:
             consumed = self._consume_matched_regex(result)
             return self._resolve_paramfile(
                 consumed.replace('\\,', ',').rstrip(),
-                resolve_paramfiles
+                resolve_paramfiles,
+                parent_key
             )
         return ''
 
-    def _explicit_list(self, resolve_paramfiles=False):
+    def _explicit_list(self, parent_key, resolve_paramfiles=False):
         # explicit-list = "[" [value *(",' value)] "]"
         self._expect('[', consume_whitespace=True)
         values = []
         while self._current() != ']':
-            # TODO: process warning dictionary from below, mapping to index in this list. return results with values below
-            val = self._explicit_values(resolve_paramfiles)
+            val = self._explicit_values(parent_key, resolve_paramfiles)
             values.append(val)
             self._consume_whitespace()
             if self._current() != ']':
@@ -323,17 +315,14 @@ class ShorthandParser(object):
         self._expect(']')
         return values
 
-    def _explicit_values(self, resolve_paramfiles=False):
+    def _explicit_values(self, parent_key, resolve_paramfiles=False):
         # values = csv-list / explicit-list / hash-literal
         if self._current() == '[':
-            # TODO surface warnings processed from explicit_list
-            return self._explicit_list(resolve_paramfiles)
+            return self._explicit_list(parent_key, resolve_paramfiles)
         elif self._current() == '{':
-            # TODO surface empty warnings
             return self._hash_literal()
         else:
-            # TODO surface warnings processing first_value
-            return self._first_value(resolve_paramfiles)
+            return self._first_value(parent_key, resolve_paramfiles)
 
     def _hash_literal(self):
         self._expect('{', consume_whitespace=True)
@@ -345,8 +334,7 @@ class ShorthandParser(object):
             assignment_op = self._expect_strings(assignment_strings, consume_whitespace=True)
             if assignment_op == _FILE_ASSIGNMENT:
                 resolve_paramfiles = True
-            v = self._explicit_values(resolve_paramfiles)
-            # TODO process and print any warnings for key here. similar to in keyval
+            v = self._explicit_values(key, resolve_paramfiles)
             self._consume_whitespace()
             if self._current() != '}':
                 self._expect(',')
@@ -355,24 +343,22 @@ class ShorthandParser(object):
         self._expect('}')
         return keyvals
 
-    def _first_value(self, resolve_paramfiles=False):
+    def _first_value(self, parent_key, resolve_paramfiles=False):
         # first-value = value / single-quoted-val / double-quoted-val
-        # TODO process warnings from ALL of the 3 calls below
         if self._current() == "'":
-            return self._single_quoted_value(resolve_paramfiles)
+            return self._single_quoted_value(parent_key, resolve_paramfiles)
         elif self._current() == '"':
-            return self._double_quoted_value(resolve_paramfiles)
-        return self._value(resolve_paramfiles)
+            return self._double_quoted_value(parent_key, resolve_paramfiles)
+        return self._value(parent_key, resolve_paramfiles)
 
-    # TODO since this is used by keys and values, add a param return_warnings=False.
-    # only return the warnings with result if True
-    def _single_quoted_value(self, resolve_paramfiles=False):
+    def _single_quoted_value(self, parent_key=None, resolve_paramfiles=False):
         # single-quoted-value = %x27 *(val-escaped-single) %x27
         # val-escaped-single  = %x20-26 / %x28-7F / escaped-escape /
         #                       (escape single-quote)
         return self._resolve_paramfile(
             self._consume_quoted(self._SINGLE_QUOTED, escaped_char="'"),
-            resolve_paramfiles
+            resolve_paramfiles,
+            parent_key
         )
 
     def _consume_quoted(self, regex, escaped_char=None):
@@ -382,39 +368,51 @@ class ShorthandParser(object):
             value = value.replace("\\\\", "\\")
         return value
 
-    # TODO since this is used by keys and values, add a param return_warnings=False.
-    def _double_quoted_value(self, resolve_paramfiles=False):
+    def _double_quoted_value(self, parent_key=None, resolve_paramfiles=False):
         return self._resolve_paramfile(
             self._consume_quoted(self._DOUBLE_QUOTED, escaped_char='"'),
-            resolve_paramfiles
+            resolve_paramfiles,
+            parent_key
         )
 
-    def _second_value(self, resolve_paramfiles=False):
-        # TODO return warning from the below 3 calls
+    def _second_value(self, parent_key, resolve_paramfiles=False):
         if self._current() == "'":
-            return self._single_quoted_value(resolve_paramfiles)
+            return self._single_quoted_value(parent_key, resolve_paramfiles)
         elif self._current() == '"':
-            return self._double_quoted_value(resolve_paramfiles)
+            return self._double_quoted_value(parent_key, resolve_paramfiles)
         else:
             consumed = self._must_consume_regex(self._SECOND_VALUE)
             return self._resolve_paramfile(
                 consumed.replace('\\,', ',').rstrip(),
                 resolve_paramfiles,
+                parent_key
             )
 
-    # TODO since this is in the stacktrace of keys and values, add a param return_warnings=False.
-    # return warnings only if True
-    def _resolve_paramfile(self, val, resolve_param_files):
+    def _resolve_paramfile(self, val, resolve_paramfiles, parent_key=None):
         # If resolve_param_files is True, this function tries to resolve val to a
         # paramfile (i.e. a file path prefixed with a key of LOCAL_PREFIX_MAP).
         # If val is a paramfile, returns the contents of the file (retrieved
         # according to the spec of get_paramfile).
         # If val is not a paramfile, returns val.
         # If resolve_param_files is False, returns val.
-        if (resolve_param_files and
+        # if a parent_key is supplied, then a warning will be printed if resolve_param_files=False
+        # and the value is parsed to a string that starts with a file prefix
+        if (resolve_paramfiles and
                 (paramfile := get_paramfile(val, LOCAL_PREFIX_MAP)) is not None):
             return paramfile
+        if parent_key is not None and not resolve_paramfiles:
+            self._print_file_warnings_if_prefixed(parent_key, val)
         return val
+
+    def _print_file_warnings_if_prefixed(self, key, val):
+        for prefix in LOCAL_PREFIX_MAP.keys():
+            if val.startswith(prefix):
+                uni_print(f'Usage of the {prefix} prefix was detected '
+                f'without the file assignment operator in parameter {key}. '
+                f'To load nested parameters from a file, you must use the file '
+                f'assignment operator \'{_FILE_ASSIGNMENT}\'.\n\nFor example, '
+                f'{key}{_FILE_ASSIGNMENT}<...>.')
+                break
 
     def _expect(self, char, consume_whitespace=False):
         if consume_whitespace:

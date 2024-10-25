@@ -18,7 +18,6 @@ from awscli import shorthand
 from awscli.testutils import FileCreator, skip_if_windows, unittest
 
 from botocore import model
-from awscli.testutils import temporary_file
 
 PARSING_TEST_CASES = (
     # Key val pairs with scalar value.
@@ -159,6 +158,7 @@ PARSING_TEST_CASES = (
     )
 )
 
+
 @pytest.mark.parametrize(
     "expr", (
         'foo',
@@ -182,7 +182,6 @@ def test_error_parsing(expr):
         shorthand.ShorthandParser().parse(expr)
 
 
-# TODO add a few tests to allow ~= synax:
 @pytest.mark.parametrize(
     "expr", (
         # starting with " but unclosed, then repeated \

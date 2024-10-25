@@ -40,11 +40,12 @@ necessary to maintain backwards compatibility.  This is done in the
 """
 import re
 import string
+import logging
 
-from awscli.customizations.utils import uni_print
 from awscli.paramfile import get_paramfile, LOCAL_PREFIX_MAP
 from awscli.utils import is_document_type
 
+_LOGGER = logging.getLogger(__name__)
 _EOF = object()
 _FILE_ASSIGNMENT = '@='
 
@@ -224,14 +225,6 @@ class ShorthandParser(object):
         return self._input_value[start:self._index]
 
     def _values(self, parent_key, resolve_paramfiles=False):
-        # 2. Returning a dict with warnings from below.
-        #       let's do this one. A nice benefit is that the warning messages can be
-        #       very descriptive. e.g. for deeply nested hash literals,
-        #       Foo = { a= {b= {c=file://txt}, d={e=fileb://txt} } }
-
-        # values = csv-list / explicit-list / hash-literal
-        # pass key from keyval to explicit_list and csv_list
-        # pass key from hash_literal to explicit_list
         if self._at_eof():
             return ''
         elif self._current() == '[':
@@ -407,11 +400,11 @@ class ShorthandParser(object):
     def _print_file_warnings_if_prefixed(self, key, val):
         for prefix in LOCAL_PREFIX_MAP.keys():
             if val.startswith(prefix):
-                uni_print(f'WARNING: Usage of the {prefix} prefix was detected '
+                _LOGGER.warning(f'Usage of the {prefix} prefix was detected '
                 f'without the file assignment operator in parameter {key}. '
                 f'To load nested parameters from a file, you must use the file '
-                f'assignment operator \'{_FILE_ASSIGNMENT}\'.\n\nFor example, '
-                f'{key}{_FILE_ASSIGNMENT}<...>.\n')
+                f'assignment operator \'{_FILE_ASSIGNMENT}\'. For example, '
+                f'{key}{_FILE_ASSIGNMENT}<...>.')
                 break
 
     def _expect(self, char, consume_whitespace=False):

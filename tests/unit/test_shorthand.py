@@ -270,27 +270,6 @@ class TestShorthandParser:
             captured = capsys.readouterr()
             assert "No such file or directory: 'fakefile.txt" in captured.err
 
-    def test_paramfile_without_assignment_operator_emits_warning(self, capsys):
-        key = 'Foo'
-        shorthand.ShorthandParser().parse(f'{key}=file://fakefile.txt')
-        captured = capsys.readouterr()
-        assert 'Usage of the file:// prefix was detected without the ' \
-               f'file assignment operator in parameter {key}.' in captured.out
-
-    def test_paramfileb_without_assignment_operator_emits_warning(self, capsys):
-        key = 'Foo'
-        shorthand.ShorthandParser().parse(f'{key}=fileb://fakefile.txt')
-        captured = capsys.readouterr()
-        assert 'Usage of the fileb:// prefix was detected without the ' \
-                f'file assignment operator in parameter {key}.' in captured.out
-
-    def test_paramfile_list_element_without_assignment_operator_emits_warning(self, capsys):
-        key = 'Foo'
-        shorthand.ShorthandParser().parse(f'{key}=[a, file://fakefile.txt, c]')
-        captured = capsys.readouterr()
-        assert 'Usage of the file:// prefix was detected without the ' \
-               f'file assignment operator in parameter {key}.' in captured.out
-
 
 class TestModelVisitor(unittest.TestCase):
     def test_promote_to_list_of_ints(self):

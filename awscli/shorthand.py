@@ -407,11 +407,11 @@ class ShorthandParser(object):
     def _print_file_warnings_if_prefixed(self, key, val):
         for prefix in LOCAL_PREFIX_MAP.keys():
             if val.startswith(prefix):
-                uni_print(f'Usage of the {prefix} prefix was detected '
+                uni_print(f'WARNING: Usage of the {prefix} prefix was detected '
                 f'without the file assignment operator in parameter {key}. '
                 f'To load nested parameters from a file, you must use the file '
                 f'assignment operator \'{_FILE_ASSIGNMENT}\'.\n\nFor example, '
-                f'{key}{_FILE_ASSIGNMENT}<...>.')
+                f'{key}{_FILE_ASSIGNMENT}<...>.\n')
                 break
 
     def _expect(self, char, consume_whitespace=False):

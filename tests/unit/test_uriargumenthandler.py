@@ -6,7 +6,7 @@ from botocore.session import Session
 
 class TestConfigureURIArgumentHandler(unittest.TestCase):
 
-    @mock.patch('awscli.paramfile.URIArgumentHandler')
+    @mock.patch('awscli.uriargumenthandler.URIArgumentHandler')
     def test_default_prefix_maps(self, mock_handler_cls):
         session = mock.Mock(spec=Session)
         session.get_scoped_config.return_value = {}

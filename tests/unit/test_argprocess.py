@@ -26,7 +26,8 @@ from awscli.argprocess import ParamShorthandParser
 from awscli.argprocess import ParamShorthandDocGen
 from awscli.argprocess import ParamError
 from awscli.argprocess import ParamUnknownKeyError
-from awscli.paramfile import URIArgumentHandler, LOCAL_PREFIX_MAP
+from awscli.paramfile import LOCAL_PREFIX_MAP
+from awscli.uriargumenthandler import URIArgumentHandler
 from awscli.arguments import CustomArgument, CLIArgument
 from awscli.arguments import ListArgument, BooleanArgument
 from awscli.arguments import create_argument_model_from_schema

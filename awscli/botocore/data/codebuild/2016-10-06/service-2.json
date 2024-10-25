@@ -739,6 +739,28 @@
         "SECRETS_MANAGER"
       ]
     },
+    "AutoRetryConfig":{
+      "type":"structure",
+      "members":{
+        "autoRetryLimit":{
+          "shape":"WrapperInt",
+          "documentation":"<p>The maximum number of additional automatic retries after a failed build. For example, if the auto-retry limit is set to 2, CodeBuild will call the <code>RetryBuild</code> API to automatically retry your build for up to 2 additional times.</p>"
+        },
+        "autoRetryNumber":{
+          "shape":"WrapperInt",
+          "documentation":"<p>The number of times that the build has been retried. The initial build will have an auto-retry number of 0.</p>"
+        },
+        "nextAutoRetry":{
+          "shape":"String",
+          "documentation":"<p>The build ARN of the auto-retried build triggered by the current build. The next auto-retry will be <code>null</code> for builds that don't trigger an auto-retry.</p>"
+        },
+        "previousAutoRetry":{
+          "shape":"String",
+          "documentation":"<p>The build ARN of the build that triggered the current auto-retry build. The previous auto-retry will be <code>null</code> for the initial build.</p>"
+        }
+      },
+      "documentation":"<p>Information about the auto-retry configuration for the build.</p>"
+    },
     "BatchDeleteBuildsInput":{
       "type":"structure",
       "required":["ids"],
@@ -1061,6 +1083,10 @@
         "buildBatchArn":{
           "shape":"String",
           "documentation":"<p>The ARN of the batch build that this build is a member of, if applicable.</p>"
+        },
+        "autoRetryConfig":{
+          "shape":"AutoRetryConfig",
+          "documentation":"<p>Information about the auto-retry configuration for the build.</p>"
         }
       },
       "documentation":"<p>Information about a build.</p>"
@@ -1727,6 +1753,10 @@
         "concurrentBuildLimit":{
           "shape":"WrapperInt",
           "documentation":"<p>The maximum number of concurrent builds that are allowed for this project.</p> <p>New builds are only started if the current number of builds is less than or equal to this limit. If the current build count meets this limit, new builds are throttled and are not run.</p>"
+        },
+        "autoRetryLimit":{
+          "shape":"WrapperInt",
+          "documentation":"<p>The maximum number of additional automatic retries after a failed build. For example, if the auto-retry limit is set to 2, CodeBuild will call the <code>RetryBuild</code> API to automatically retry your build for up to 2 additional times.</p>"
         }
       }
     },
@@ -3199,6 +3229,10 @@
         "resourceAccessRole":{
           "shape":"NonEmptyString",
           "documentation":"<p>The ARN of the IAM role that enables CodeBuild to access the CloudWatch Logs and Amazon S3 artifacts for the project's builds.</p>"
+        },
+        "autoRetryLimit":{
+          "shape":"WrapperInt",
+          "documentation":"<p>The maximum number of additional automatic retries after a failed build. For example, if the auto-retry limit is set to 2, CodeBuild will call the <code>RetryBuild</code> API to automatically retry your build for up to 2 additional times.</p>"
         }
       },
       "documentation":"<p>Information about a build project.</p>"
@@ -4402,6 +4436,10 @@
         "fleetOverride":{
           "shape":"ProjectFleet",
           "documentation":"<p>A ProjectFleet object specified for this build that overrides the one defined in the build project.</p>"
+        },
+        "autoRetryLimitOverride":{
+          "shape":"WrapperInt",
+          "documentation":"<p>The maximum number of additional automatic retries after a failed build. For example, if the auto-retry limit is set to 2, CodeBuild will call the <code>RetryBuild</code> API to automatically retry your build for up to 2 additional times.</p>"
         }
       }
     },
@@ -4729,6 +4767,10 @@
         "concurrentBuildLimit":{
           "shape":"WrapperInt",
           "documentation":"<p>The maximum number of concurrent builds that are allowed for this project.</p> <p>New builds are only started if the current number of builds is less than or equal to this limit. If the current build count meets this limit, new builds are throttled and are not run.</p> <p>To remove this limit, set this value to -1.</p>"
+        },
+        "autoRetryLimit":{
+          "shape":"WrapperInt",
+          "documentation":"<p>The maximum number of additional automatic retries after a failed build. For example, if the auto-retry limit is set to 2, CodeBuild will call the <code>RetryBuild</code> API to automatically retry your build for up to 2 additional times.</p>"
         }
       }
     },

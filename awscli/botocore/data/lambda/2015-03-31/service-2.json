@@ -3229,7 +3229,11 @@
         },
         "Tags":{
           "shape":"Tags",
-          "documentation":"<p>The function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/tagging.html\">tags</a>.</p>"
+          "documentation":"<p>The function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/tagging.html\">tags</a>. Lambda returns tag data only if you have explicit allow permissions for <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/lambda/latest/api/API_ListTags.html\">lambda:ListTags</a>.</p>"
+        },
+        "TagsError":{
+          "shape":"TagsError",
+          "documentation":"<p>An object that contains details about an error related to retrieving tags.</p>"
         },
         "Concurrency":{
           "shape":"Concurrency",
@@ -5765,6 +5769,36 @@
       "type":"map",
       "key":{"shape":"TagKey"},
       "value":{"shape":"TagValue"}
+    },
+    "TagsError":{
+      "type":"structure",
+      "required":[
+        "ErrorCode",
+        "Message"
+      ],
+      "members":{
+        "ErrorCode":{
+          "shape":"TagsErrorCode",
+          "documentation":"<p>The error code.</p>"
+        },
+        "Message":{
+          "shape":"TagsErrorMessage",
+          "documentation":"<p>The error message.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains details about an error related to retrieving tags.</p>"
+    },
+    "TagsErrorCode":{
+      "type":"string",
+      "max":21,
+      "min":10,
+      "pattern":"[A-Za-z]+Exception"
+    },
+    "TagsErrorMessage":{
+      "type":"string",
+      "max":1000,
+      "min":84,
+      "pattern":"^.*$"
     },
     "ThrottleReason":{
       "type":"string",

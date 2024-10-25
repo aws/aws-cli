@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.35.15
+=======
+
+* api-change:``bedrock-agent``: Add support of new model types for Bedrock Agents, Adding inference profile support for Flows and Prompt Management, Adding new field to configure additional inference configurations for Flows and Prompt Management
+* api-change:``codebuild``: AWS CodeBuild now supports automatically retrying failed builds
+* api-change:``lambda``: Add TagsError field in Lambda GetFunctionResponse. The TagsError field contains details related to errors retrieving tags.
+* api-change:``logs``: Adding inferred token name for dynamic tokens in Anomalies.
+* api-change:``supplychain``: API doc updates, and also support showing error message on a failed instance
+
+
 1.35.14
 =======
 

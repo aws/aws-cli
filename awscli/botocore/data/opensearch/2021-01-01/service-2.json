@@ -1956,6 +1956,10 @@
         "MultiAZWithStandbyEnabled":{
           "shape":"Boolean",
           "documentation":"<p>A boolean that indicates whether a multi-AZ domain is turned on with a standby AZ. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/managedomains-multiaz.html\">Configuring a multi-AZ domain in Amazon OpenSearch Service</a>. </p>"
+        },
+        "NodeOptions":{
+          "shape":"NodeOptionsList",
+          "documentation":"<p>List of node options for the domain.</p>"
         }
       },
       "documentation":"<p>Container for the cluster configuration of an OpenSearch Service domain. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html\">Creating and managing Amazon OpenSearch Service domains</a>.</p>"
@@ -5024,10 +5028,50 @@
       "type":"string",
       "documentation":"<p>When <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Send the request again using the returned token to retrieve the next page.</p>"
     },
+    "NodeConfig":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>A boolean that indicates whether a particular node type is enabled or not.</p>"
+        },
+        "Type":{
+          "shape":"OpenSearchPartitionInstanceType",
+          "documentation":"<p>The instance type of a particular node type in the cluster.</p>"
+        },
+        "Count":{
+          "shape":"IntegerClass",
+          "documentation":"<p>The number of nodes of a particular node type in the cluster.</p>"
+        }
+      },
+      "documentation":"<p>Container for specifying configuration of any node type.</p>"
+    },
     "NodeId":{
       "type":"string",
       "max":40,
       "min":10
+    },
+    "NodeOption":{
+      "type":"structure",
+      "members":{
+        "NodeType":{
+          "shape":"NodeOptionsNodeType",
+          "documentation":"<p>Container for node type like coordinating.</p>"
+        },
+        "NodeConfig":{
+          "shape":"NodeConfig",
+          "documentation":"<p>Container for specifying configuration of any node type.</p>"
+        }
+      },
+      "documentation":"<p>Container for specifying node type.</p>"
+    },
+    "NodeOptionsList":{
+      "type":"list",
+      "member":{"shape":"NodeOption"}
+    },
+    "NodeOptionsNodeType":{
+      "type":"string",
+      "enum":["coordinator"]
     },
     "NodeStatus":{
       "type":"string",

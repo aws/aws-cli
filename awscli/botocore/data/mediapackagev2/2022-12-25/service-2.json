@@ -2,6 +2,7 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2022-12-25",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"mediapackagev2",
     "protocol":"rest-json",
     "protocols":["rest-json"],
@@ -13,6 +14,26 @@
     "uid":"mediapackagev2-2022-12-25"
   },
   "operations":{
+    "CancelHarvestJob":{
+      "name":"CancelHarvestJob",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/harvestJob/{HarvestJobName}",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelHarvestJobRequest"},
+      "output":{"shape":"CancelHarvestJobResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Cancels an in-progress harvest job.</p>",
+      "idempotent":true
+    },
     "CreateChannel":{
       "name":"CreateChannel",
       "http":{
@@ -53,6 +74,27 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Create a channel group to group your channels and origin endpoints. A channel group is the top-level resource that consists of channels and origin endpoints that are associated with it and that provides predictable URLs for stream delivery. All channels and origin endpoints within the channel group are guaranteed to share the DNS. You can create only one channel group with each request. </p>",
+      "idempotent":true
+    },
+    "CreateHarvestJob":{
+      "name":"CreateHarvestJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/harvestJob",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateHarvestJobRequest"},
+      "output":{"shape":"CreateHarvestJobResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a new harvest job to export content from a MediaPackage v2 channel to an S3 bucket.</p>",
       "idempotent":true
     },
     "CreateOriginEndpoint":{
@@ -224,6 +266,24 @@
       ],
       "documentation":"<p>Retrieves the specified channel policy that's configured in AWS Elemental MediaPackage. With policies, you can specify who has access to AWS resources and what actions they can perform on those resources.</p>"
     },
+    "GetHarvestJob":{
+      "name":"GetHarvestJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/channelGroup/{ChannelGroupName}/channel/{ChannelName}/originEndpoint/{OriginEndpointName}/harvestJob/{HarvestJobName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetHarvestJobRequest"},
+      "output":{"shape":"GetHarvestJobResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the details of a specific harvest job.</p>"
+    },
     "GetOriginEndpoint":{
       "name":"GetOriginEndpoint",
       "http":{
@@ -294,6 +354,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves all channels in a specific channel group that are configured in AWS Elemental MediaPackage, including the origin endpoints that are associated with it.</p>"
+    },
+    "ListHarvestJobs":{
+      "name":"ListHarvestJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/channelGroup/{ChannelGroupName}/harvestJob",
+        "responseCode":200
+      },
+      "input":{"shape":"ListHarvestJobsRequest"},
+      "output":{"shape":"ListHarvestJobsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves a list of harvest jobs that match the specified criteria.</p>"
     },
     "ListOriginEndpoints":{
       "name":"ListOriginEndpoints",
@@ -483,6 +561,52 @@
     "Boolean":{
       "type":"boolean",
       "box":true
+    },
+    "CancelHarvestJobRequest":{
+      "type":"structure",
+      "required":[
+        "ChannelGroupName",
+        "ChannelName",
+        "OriginEndpointName",
+        "HarvestJobName"
+      ],
+      "members":{
+        "ChannelGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel group containing the channel from which the harvest job is running.</p>",
+          "location":"uri",
+          "locationName":"ChannelGroupName"
+        },
+        "ChannelName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel from which the harvest job is running.</p>",
+          "location":"uri",
+          "locationName":"ChannelName"
+        },
+        "OriginEndpointName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the origin endpoint that the harvest job is harvesting from. This cannot be changed after the harvest job is submitted.</p>",
+          "location":"uri",
+          "locationName":"OriginEndpointName"
+        },
+        "HarvestJobName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the harvest job to cancel. This name must be unique within the channel and cannot be changed after the harvest job is submitted.</p>",
+          "location":"uri",
+          "locationName":"HarvestJobName"
+        },
+        "ETag":{
+          "shape":"EntityTag",
+          "documentation":"<p>The current Entity Tag (ETag) associated with the harvest job. Used for concurrency control.</p>",
+          "location":"header",
+          "locationName":"x-amzn-update-if-match"
+        }
+      }
+    },
+    "CancelHarvestJobResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "ChannelGroupListConfiguration":{
       "type":"structure",
@@ -836,6 +960,148 @@
     "CreateDashManifests":{
       "type":"list",
       "member":{"shape":"CreateDashManifestConfiguration"}
+    },
+    "CreateHarvestJobRequest":{
+      "type":"structure",
+      "required":[
+        "ChannelGroupName",
+        "ChannelName",
+        "OriginEndpointName",
+        "HarvestedManifests",
+        "ScheduleConfiguration",
+        "Destination"
+      ],
+      "members":{
+        "ChannelGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel group containing the channel from which to harvest content.</p>",
+          "location":"uri",
+          "locationName":"ChannelGroupName"
+        },
+        "ChannelName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel from which to harvest content.</p>",
+          "location":"uri",
+          "locationName":"ChannelName"
+        },
+        "OriginEndpointName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the origin endpoint from which to harvest content.</p>",
+          "location":"uri",
+          "locationName":"OriginEndpointName"
+        },
+        "Description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>An optional description for the harvest job.</p>"
+        },
+        "HarvestedManifests":{
+          "shape":"HarvestedManifests",
+          "documentation":"<p>A list of manifests to be harvested.</p>"
+        },
+        "ScheduleConfiguration":{
+          "shape":"HarvesterScheduleConfiguration",
+          "documentation":"<p>The configuration for when the harvest job should run, including start and end times.</p>"
+        },
+        "Destination":{
+          "shape":"Destination",
+          "documentation":"<p>The S3 destination where the harvested content will be placed.</p>"
+        },
+        "ClientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"x-amzn-client-token"
+        },
+        "HarvestJobName":{
+          "shape":"ResourceName",
+          "documentation":"<p>A name for the harvest job. This name must be unique within the channel.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A collection of tags associated with the harvest job.</p>"
+        }
+      },
+      "documentation":"<p>The request object for creating a new harvest job.</p>"
+    },
+    "CreateHarvestJobResponse":{
+      "type":"structure",
+      "required":[
+        "ChannelGroupName",
+        "ChannelName",
+        "OriginEndpointName",
+        "Destination",
+        "HarvestJobName",
+        "HarvestedManifests",
+        "ScheduleConfiguration",
+        "Arn",
+        "CreatedAt",
+        "ModifiedAt",
+        "Status"
+      ],
+      "members":{
+        "ChannelGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel group containing the channel from which content is being harvested.</p>"
+        },
+        "ChannelName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel from which content is being harvested.</p>"
+        },
+        "OriginEndpointName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the origin endpoint from which content is being harvested.</p>"
+        },
+        "Destination":{
+          "shape":"Destination",
+          "documentation":"<p>The S3 destination where the harvested content will be placed.</p>"
+        },
+        "HarvestJobName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the created harvest job.</p>"
+        },
+        "HarvestedManifests":{
+          "shape":"HarvestedManifests",
+          "documentation":"<p>A list of manifests that will be harvested.</p>"
+        },
+        "Description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the harvest job, if provided.</p>"
+        },
+        "ScheduleConfiguration":{
+          "shape":"HarvesterScheduleConfiguration",
+          "documentation":"<p>The configuration for when the harvest job will run, including start and end times.</p>"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created harvest job.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the harvest job was created.</p>"
+        },
+        "ModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the harvest job was last modified.</p>"
+        },
+        "Status":{
+          "shape":"HarvestJobStatus",
+          "documentation":"<p>The current status of the harvest job (e.g., CREATED, IN_PROGRESS, ABORTED, COMPLETED, FAILED).</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>An error message if the harvest job creation failed.</p>"
+        },
+        "ETag":{
+          "shape":"EntityTag",
+          "documentation":"<p>The current version of the harvest job. Used for concurrency control.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A collection of tags associated with the harvest job.</p>"
+        }
+      },
+      "documentation":"<p>The response object returned after creating a harvest job.</p>"
     },
     "CreateHlsManifestConfiguration":{
       "type":"structure",
@@ -1264,6 +1530,17 @@
       "members":{
       }
     },
+    "Destination":{
+      "type":"structure",
+      "required":["S3Destination"],
+      "members":{
+        "S3Destination":{
+          "shape":"S3DestinationConfig",
+          "documentation":"<p>The configuration for exporting harvested content to an S3 bucket. This includes details such as the bucket name and destination path within the bucket.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the destination where the harvested content will be exported.</p>"
+    },
     "DrmSystem":{
       "type":"string",
       "enum":[
@@ -1643,6 +1920,121 @@
       "type":"list",
       "member":{"shape":"GetDashManifestConfiguration"}
     },
+    "GetHarvestJobRequest":{
+      "type":"structure",
+      "required":[
+        "ChannelGroupName",
+        "ChannelName",
+        "OriginEndpointName",
+        "HarvestJobName"
+      ],
+      "members":{
+        "ChannelGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel group containing the channel associated with the harvest job.</p>",
+          "location":"uri",
+          "locationName":"ChannelGroupName"
+        },
+        "ChannelName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel associated with the harvest job.</p>",
+          "location":"uri",
+          "locationName":"ChannelName"
+        },
+        "OriginEndpointName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the origin endpoint associated with the harvest job.</p>",
+          "location":"uri",
+          "locationName":"OriginEndpointName"
+        },
+        "HarvestJobName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the harvest job to retrieve.</p>",
+          "location":"uri",
+          "locationName":"HarvestJobName"
+        }
+      },
+      "documentation":"<p>The request object for retrieving a specific harvest job.</p>"
+    },
+    "GetHarvestJobResponse":{
+      "type":"structure",
+      "required":[
+        "ChannelGroupName",
+        "ChannelName",
+        "OriginEndpointName",
+        "Destination",
+        "HarvestJobName",
+        "HarvestedManifests",
+        "ScheduleConfiguration",
+        "Arn",
+        "CreatedAt",
+        "ModifiedAt",
+        "Status"
+      ],
+      "members":{
+        "ChannelGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel group containing the channel associated with the harvest job.</p>"
+        },
+        "ChannelName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel associated with the harvest job.</p>"
+        },
+        "OriginEndpointName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the origin endpoint associated with the harvest job.</p>"
+        },
+        "Destination":{
+          "shape":"Destination",
+          "documentation":"<p>The S3 destination where the harvested content is being placed.</p>"
+        },
+        "HarvestJobName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the harvest job.</p>"
+        },
+        "HarvestedManifests":{
+          "shape":"HarvestedManifests",
+          "documentation":"<p>A list of manifests that are being or have been harvested.</p>"
+        },
+        "Description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the harvest job, if provided.</p>"
+        },
+        "ScheduleConfiguration":{
+          "shape":"HarvesterScheduleConfiguration",
+          "documentation":"<p>The configuration for when the harvest job is scheduled to run, including start and end times.</p>"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the harvest job.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the harvest job was created.</p>"
+        },
+        "ModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the harvest job was last modified.</p>"
+        },
+        "Status":{
+          "shape":"HarvestJobStatus",
+          "documentation":"<p>The current status of the harvest job (e.g., QUEUED, IN_PROGRESS, CANCELLED, COMPLETED, FAILED).</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>An error message if the harvest job encountered any issues.</p>"
+        },
+        "ETag":{
+          "shape":"EntityTag",
+          "documentation":"<p>The current version of the harvest job. Used for concurrency control.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A collection of tags associated with the harvest job.</p>"
+        }
+      },
+      "documentation":"<p>The response object containing the details of the requested harvest job.</p>"
+    },
     "GetHlsManifestConfiguration":{
       "type":"structure",
       "required":[
@@ -1876,6 +2268,176 @@
         }
       }
     },
+    "HarvestJob":{
+      "type":"structure",
+      "required":[
+        "ChannelGroupName",
+        "ChannelName",
+        "OriginEndpointName",
+        "Destination",
+        "HarvestJobName",
+        "HarvestedManifests",
+        "ScheduleConfiguration",
+        "Arn",
+        "CreatedAt",
+        "ModifiedAt",
+        "Status"
+      ],
+      "members":{
+        "ChannelGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel group containing the channel associated with this harvest job.</p>"
+        },
+        "ChannelName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel associated with this harvest job.</p>"
+        },
+        "OriginEndpointName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the origin endpoint associated with this harvest job.</p>"
+        },
+        "Destination":{
+          "shape":"Destination",
+          "documentation":"<p>The S3 destination where the harvested content will be placed.</p>"
+        },
+        "HarvestJobName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the harvest job.</p>"
+        },
+        "HarvestedManifests":{
+          "shape":"HarvestedManifests",
+          "documentation":"<p>A list of manifests that are being or have been harvested.</p>"
+        },
+        "Description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>An optional description of the harvest job.</p>"
+        },
+        "ScheduleConfiguration":{
+          "shape":"HarvesterScheduleConfiguration",
+          "documentation":"<p>The configuration for when the harvest job is scheduled to run.</p>"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the harvest job.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the harvest job was created.</p>"
+        },
+        "ModifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the harvest job was last modified.</p>"
+        },
+        "Status":{
+          "shape":"HarvestJobStatus",
+          "documentation":"<p>The current status of the harvest job (e.g., QUEUED, IN_PROGRESS, CANCELLED, COMPLETED, FAILED).</p>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>An error message if the harvest job encountered any issues.</p>"
+        },
+        "ETag":{
+          "shape":"EntityTag",
+          "documentation":"<p>The current version of the harvest job. Used for concurrency control.</p>"
+        }
+      },
+      "documentation":"<p>Represents a harvest job resource in MediaPackage v2, which is used to export content from an origin endpoint to an S3 bucket.</p>"
+    },
+    "HarvestJobStatus":{
+      "type":"string",
+      "enum":[
+        "QUEUED",
+        "IN_PROGRESS",
+        "CANCELLED",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
+    "HarvestJobsList":{
+      "type":"list",
+      "member":{"shape":"HarvestJob"}
+    },
+    "HarvestedDashManifest":{
+      "type":"structure",
+      "required":["ManifestName"],
+      "members":{
+        "ManifestName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the harvested DASH manifest.</p>"
+        }
+      },
+      "documentation":"<p>Information about a harvested DASH manifest.</p>"
+    },
+    "HarvestedDashManifestsList":{
+      "type":"list",
+      "member":{"shape":"HarvestedDashManifest"}
+    },
+    "HarvestedHlsManifest":{
+      "type":"structure",
+      "required":["ManifestName"],
+      "members":{
+        "ManifestName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the harvested HLS manifest.</p>"
+        }
+      },
+      "documentation":"<p>Information about a harvested HLS manifest.</p>"
+    },
+    "HarvestedHlsManifestsList":{
+      "type":"list",
+      "member":{"shape":"HarvestedHlsManifest"}
+    },
+    "HarvestedLowLatencyHlsManifest":{
+      "type":"structure",
+      "required":["ManifestName"],
+      "members":{
+        "ManifestName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the harvested Low-Latency HLS manifest.</p>"
+        }
+      },
+      "documentation":"<p>Information about a harvested Low-Latency HLS manifest.</p>"
+    },
+    "HarvestedLowLatencyHlsManifestsList":{
+      "type":"list",
+      "member":{"shape":"HarvestedLowLatencyHlsManifest"}
+    },
+    "HarvestedManifests":{
+      "type":"structure",
+      "members":{
+        "HlsManifests":{
+          "shape":"HarvestedHlsManifestsList",
+          "documentation":"<p>A list of harvested HLS manifests.</p>"
+        },
+        "DashManifests":{
+          "shape":"HarvestedDashManifestsList",
+          "documentation":"<p>A list of harvested DASH manifests.</p>"
+        },
+        "LowLatencyHlsManifests":{
+          "shape":"HarvestedLowLatencyHlsManifestsList",
+          "documentation":"<p>A list of harvested Low-Latency HLS manifests.</p>"
+        }
+      },
+      "documentation":"<p>A collection of harvested manifests of different types.</p>"
+    },
+    "HarvesterScheduleConfiguration":{
+      "type":"structure",
+      "required":[
+        "StartTime",
+        "EndTime"
+      ],
+      "members":{
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time for the harvest job.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time for the harvest job.</p>"
+        }
+      },
+      "documentation":"<p>Defines the schedule configuration for a harvest job.</p>"
+    },
     "IdempotencyToken":{
       "type":"string",
       "max":256,
@@ -2007,6 +2569,81 @@
     "ListDashManifests":{
       "type":"list",
       "member":{"shape":"ListDashManifestConfiguration"}
+    },
+    "ListHarvestJobsRequest":{
+      "type":"structure",
+      "required":["ChannelGroupName"],
+      "members":{
+        "ChannelGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the channel group to filter the harvest jobs by. If specified, only harvest jobs associated with channels in this group will be returned.</p>",
+          "location":"uri",
+          "locationName":"ChannelGroupName"
+        },
+        "ChannelName":{
+          "shape":"ListHarvestJobsRequestChannelNameString",
+          "documentation":"<p>The name of the channel to filter the harvest jobs by. If specified, only harvest jobs associated with this channel will be returned.</p>",
+          "location":"querystring",
+          "locationName":"channelName"
+        },
+        "OriginEndpointName":{
+          "shape":"ListHarvestJobsRequestOriginEndpointNameString",
+          "documentation":"<p>The name of the origin endpoint to filter the harvest jobs by. If specified, only harvest jobs associated with this origin endpoint will be returned.</p>",
+          "location":"querystring",
+          "locationName":"originEndpointName"
+        },
+        "Status":{
+          "shape":"HarvestJobStatus",
+          "documentation":"<p>The status to filter the harvest jobs by. If specified, only harvest jobs with this status will be returned.</p>",
+          "location":"querystring",
+          "locationName":"includeStatus"
+        },
+        "MaxResults":{
+          "shape":"ListHarvestJobsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of harvest jobs to return in a single request. If not specified, a default value will be used.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A token used for pagination. Provide this value in subsequent requests to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      },
+      "documentation":"<p>The request object for listing harvest jobs.</p>"
+    },
+    "ListHarvestJobsRequestChannelNameString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "ListHarvestJobsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListHarvestJobsRequestOriginEndpointNameString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "ListHarvestJobsResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"HarvestJobsList",
+          "documentation":"<p>An array of harvest job objects that match the specified criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A token used for pagination. Include this value in subsequent requests to retrieve the next set of results. If null, there are no more results to retrieve.</p>"
+        }
+      },
+      "documentation":"<p>The response object containing the list of harvest jobs that match the specified criteria.</p>"
     },
     "ListHlsManifestConfiguration":{
       "type":"structure",
@@ -2330,8 +2967,38 @@
       "enum":[
         "CHANNEL_GROUP",
         "CHANNEL",
-        "ORIGIN_ENDPOINT"
+        "ORIGIN_ENDPOINT",
+        "HARVEST_JOB"
       ]
+    },
+    "S3BucketName":{
+      "type":"string",
+      "max":63,
+      "min":3
+    },
+    "S3DestinationConfig":{
+      "type":"structure",
+      "required":[
+        "BucketName",
+        "DestinationPath"
+      ],
+      "members":{
+        "BucketName":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of an S3 bucket within which harvested content will be exported.</p>"
+        },
+        "DestinationPath":{
+          "shape":"S3DestinationPath",
+          "documentation":"<p>The path within the specified S3 bucket where the harvested content will be placed.</p>"
+        }
+      },
+      "documentation":"<p>Configuration parameters for where in an S3 bucket to place the harvested content.</p>"
+    },
+    "S3DestinationPath":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[\\S]+"
     },
     "Scte":{
       "type":"structure",
@@ -2945,6 +3612,14 @@
         "DRM_SIGNALING_MISMATCH_SEGMENT_ENCRYPTION_STATUS",
         "ONLY_CMAF_INPUT_TYPE_ALLOW_FORCE_ENDPOINT_ERROR_CONFIGURATION",
         "SOURCE_DISRUPTIONS_ENABLED_INCORRECTLY",
+        "HARVESTED_MANIFEST_HAS_START_END_FILTER_CONFIGURATION",
+        "HARVESTED_MANIFEST_NOT_FOUND_ON_ENDPOINT",
+        "TOO_MANY_IN_PROGRESS_HARVEST_JOBS",
+        "HARVEST_JOB_INELIGIBLE_FOR_CANCELLATION",
+        "INVALID_HARVEST_JOB_DURATION",
+        "HARVEST_JOB_S3_DESTINATION_MISSING_OR_INCOMPLETE",
+        "HARVEST_JOB_UNABLE_TO_WRITE_TO_S3_DESTINATION",
+        "HARVEST_JOB_CUSTOMER_ENDPOINT_READ_ACCESS_DENIED",
         "CLIP_START_TIME_WITH_START_OR_END",
         "START_TAG_TIME_OFFSET_INVALID"
       ]

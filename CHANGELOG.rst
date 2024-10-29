@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.35.17
+=======
+
+* api-change:``bedrock``: Update Application Inference Profile
+* api-change:``bedrock-runtime``: Update Application Inference Profile
+* api-change:``cleanrooms``: This release adds the option for customers to configure analytics engine when creating a collaboration, and introduces the new SPARK analytics engine type in addition to maintaining the legacy CLEAN_ROOMS_SQL engine type.
+* api-change:``iotfleetwise``: Updated BatchCreateVehicle and BatchUpdateVehicle APIs: LimitExceededException has been added and the maximum number of vehicles in a batch has been set to 10 explicitly
+* api-change:``logs``: Added support for new optional baseline parameter in the UpdateAnomaly API. For UpdateAnomaly requests with baseline set to True, The anomaly behavior is then treated as baseline behavior. However, more severe occurrences of this behavior will still be reported as anomalies.
+* api-change:``redshift-data``: Adding a new API GetStatementResultV2 that supports CSV formatted results from ExecuteStatement and BatchExecuteStatement calls.
+* api-change:``sagemaker``: Adding `notebook-al2-v3` as allowed value to SageMaker NotebookInstance PlatformIdentifier attribute
+
+
 1.35.16
 =======
 

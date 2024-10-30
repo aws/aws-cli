@@ -174,6 +174,7 @@ class ShorthandParser(object):
         """
         self._input_value = value
         self._index = 0
+        self._resolve_paramfiles = False
         return self._parameter()
 
     def _parameter(self):
@@ -200,11 +201,10 @@ class ShorthandParser(object):
         # file-optional-values = file://value / fileb://value / value
         key = self._key()
         assignment_strings = ['=', _FILE_ASSIGNMENT]
-        resolve_paramfiles = False
         assignment_op = self._expect_strings(assignment_strings, consume_whitespace=True)
         if assignment_op == _FILE_ASSIGNMENT:
-            resolve_paramfiles = True
-        values = self._values(key, resolve_paramfiles)
+            self._resolve_paramfiles = True
+        values = self._values(key)
         return key, values
 
     def _key(self):
@@ -224,23 +224,23 @@ class ShorthandParser(object):
             self._index += 1
         return self._input_value[start:self._index]
 
-    def _values(self, parent_key, resolve_paramfiles=False):
+    def _values(self, parent_key):
         if self._at_eof():
             return ''
         elif self._current() == '[':
-            return self._explicit_list(parent_key, resolve_paramfiles)
+            return self._explicit_list(parent_key)
         elif self._current() == '{':
             return self._hash_literal()
         else:
-            return self._csv_value(parent_key, resolve_paramfiles)
+            return self._csv_value(parent_key)
 
-    def _csv_value(self, parent_key, resolve_paramfiles=False):
+    def _csv_value(self, parent_key):
         # Supports either:
         # foo=bar     -> 'bar'
         #     ^
         # foo=bar,baz -> ['bar', 'baz']
         #     ^
-        first_value = self._first_value(parent_key, resolve_paramfiles)
+        first_value = self._first_value(parent_key)
         self._consume_whitespace()
         if self._at_eof() or self._input_value[self._index] != ',':
             return first_value
@@ -256,7 +256,7 @@ class ShorthandParser(object):
 
         while True:
             try:
-                current = self._second_value(parent_key, resolve_paramfiles)
+                current = self._second_value(parent_key)
                 self._consume_whitespace()
                 if self._at_eof():
                     csv_list.append(current)
@@ -283,23 +283,22 @@ class ShorthandParser(object):
             return first_value
         return csv_list
 
-    def _value(self, parent_key, resolve_paramfiles=False):
+    def _value(self, parent_key):
         result = self._FIRST_VALUE.match(self._input_value[self._index:])
         if result is not None:
             consumed = self._consume_matched_regex(result)
             return self._resolve_paramfile(
                 consumed.replace('\\,', ',').rstrip(),
-                resolve_paramfiles,
                 parent_key
             )
         return ''
 
-    def _explicit_list(self, parent_key, resolve_paramfiles=False):
+    def _explicit_list(self, parent_key):
         # explicit-list = "[" [value *(",' value)] "]"
         self._expect('[', consume_whitespace=True)
         values = []
         while self._current() != ']':
-            val = self._explicit_values(parent_key, resolve_paramfiles)
+            val = self._explicit_values(parent_key)
             values.append(val)
             self._consume_whitespace()
             if self._current() != ']':
@@ -308,26 +307,28 @@ class ShorthandParser(object):
         self._expect(']')
         return values
 
-    def _explicit_values(self, parent_key, resolve_paramfiles=False):
+    def _explicit_values(self, parent_key):
         # values = csv-list / explicit-list / hash-literal
         if self._current() == '[':
-            return self._explicit_list(parent_key, resolve_paramfiles)
+            return self._explicit_list(parent_key)
         elif self._current() == '{':
             return self._hash_literal()
         else:
-            return self._first_value(parent_key, resolve_paramfiles)
+            return self._first_value(parent_key)
 
     def _hash_literal(self):
         self._expect('{', consume_whitespace=True)
         keyvals = {}
-        assignment_strings = ['=', _FILE_ASSIGNMENT]
         while self._current() != '}':
             key = self._key()
-            resolve_paramfiles = False
-            assignment_op = self._expect_strings(assignment_strings, consume_whitespace=True)
-            if assignment_op == _FILE_ASSIGNMENT:
-                resolve_paramfiles = True
-            v = self._explicit_values(key, resolve_paramfiles)
+            self._resolve_paramfiles = False
+            try:
+                self._expect('@', consume_whitespace=True)
+                self._resolve_paramfiles = True
+            except ShorthandParseSyntaxError:
+                pass
+            self._expect('=', consume_whitespace=True)
+            v = self._explicit_values(key)
             self._consume_whitespace()
             if self._current() != '}':
                 self._expect(',')
@@ -336,21 +337,20 @@ class ShorthandParser(object):
         self._expect('}')
         return keyvals
 
-    def _first_value(self, parent_key, resolve_paramfiles=False):
+    def _first_value(self, parent_key):
         # first-value = value / single-quoted-val / double-quoted-val
         if self._current() == "'":
-            return self._single_quoted_value(parent_key, resolve_paramfiles)
+            return self._single_quoted_value(parent_key)
         elif self._current() == '"':
-            return self._double_quoted_value(parent_key, resolve_paramfiles)
-        return self._value(parent_key, resolve_paramfiles)
+            return self._double_quoted_value(parent_key)
+        return self._value(parent_key)
 
-    def _single_quoted_value(self, parent_key=None, resolve_paramfiles=False):
+    def _single_quoted_value(self, parent_key=None):
         # single-quoted-value = %x27 *(val-escaped-single) %x27
         # val-escaped-single  = %x20-26 / %x28-7F / escaped-escape /
         #                       (escape single-quote)
         return self._resolve_paramfile(
             self._consume_quoted(self._SINGLE_QUOTED, escaped_char="'"),
-            resolve_paramfiles,
             parent_key
         )
 
@@ -361,27 +361,25 @@ class ShorthandParser(object):
             value = value.replace("\\\\", "\\")
         return value
 
-    def _double_quoted_value(self, parent_key=None, resolve_paramfiles=False):
+    def _double_quoted_value(self, parent_key=None):
         return self._resolve_paramfile(
             self._consume_quoted(self._DOUBLE_QUOTED, escaped_char='"'),
-            resolve_paramfiles,
             parent_key
         )
 
-    def _second_value(self, parent_key, resolve_paramfiles=False):
+    def _second_value(self, parent_key):
         if self._current() == "'":
-            return self._single_quoted_value(parent_key, resolve_paramfiles)
+            return self._single_quoted_value(parent_key)
         elif self._current() == '"':
-            return self._double_quoted_value(parent_key, resolve_paramfiles)
+            return self._double_quoted_value(parent_key)
         else:
             consumed = self._must_consume_regex(self._SECOND_VALUE)
             return self._resolve_paramfile(
                 consumed.replace('\\,', ',').rstrip(),
-                resolve_paramfiles,
                 parent_key
             )
 
-    def _resolve_paramfile(self, val, resolve_paramfiles, parent_key=None):
+    def _resolve_paramfile(self, val, parent_key=None):
         # If resolve_param_files is True, this function tries to resolve val to a
         # paramfile (i.e. a file path prefixed with a key of LOCAL_PREFIX_MAP).
         # If val is a paramfile, returns the contents of the file (retrieved
@@ -390,10 +388,10 @@ class ShorthandParser(object):
         # If resolve_param_files is False, returns val.
         # if a parent_key is supplied, then a warning will be printed if resolve_param_files=False
         # and the value is parsed to a string that starts with a file prefix
-        if (resolve_paramfiles and
+        if (self._resolve_paramfiles and
                 (paramfile := get_paramfile(val, LOCAL_PREFIX_MAP)) is not None):
             return paramfile
-        if parent_key is not None and not resolve_paramfiles:
+        if parent_key is not None and not self._resolve_paramfiles:
             self._print_file_warnings_if_prefixed(parent_key, val)
         return val
 
@@ -420,45 +418,6 @@ class ShorthandParser(object):
         self._index += 1
         if consume_whitespace:
             self._consume_whitespace()
-
-    def _expect_strings(self, strs, consume_whitespace=False):
-        # Tries to parse the content at the cursor as the
-        #   first element of the strs list.
-        #
-        # If the content does not parse to the first element of strs,
-        #   successively tries to parse it as the other elements of
-        #   the list (in order).
-        # Raises ShorthandParseSyntaxError if cursor is already at the
-        #   end of the file, or if the content does not parse to any
-        #   element of the list.
-        # Returns the element of strs that content was parsed to.
-        if len(strs) == 0:
-            raise ValueError('strs argument of _expect_strings must be non-empty.')
-        if consume_whitespace:
-            self._consume_whitespace()
-        if self._index >= len(self._input_value):
-            raise ShorthandParseSyntaxError(self._input_value, strs,
-                                            'EOF', self._index)
-        actual = None
-        parsed = None
-        for exp in strs:
-            # Clip the parsing window to the end of the input
-            end_idx = min(self._index + len(exp), len(self._input_value))
-            curr = self._input_value[self._index:end_idx]
-            # In case we raise an error, we want actual to be the largest
-            # substring of the input that could've possibly been in strs.
-            if actual is None or len(actual) < len(exp):
-                actual = curr
-            if curr == exp:
-                self._index += len(exp)
-                parsed = curr
-                break
-        if parsed is None:
-            raise ShorthandParseSyntaxError(self._input_value, strs,
-                                            actual, self._index)
-        if consume_whitespace:
-            self._consume_whitespace()
-        return parsed
 
     def _must_consume_regex(self, regex):
         result = regex.match(self._input_value[self._index:])

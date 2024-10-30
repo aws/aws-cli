@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+1.35.18
+=======
+
+* api-change:``appsync``: This release adds support for AppSync Event APIs.
+* api-change:``connect``: Updated the public documentation for the UserIdentityInfo object to accurately reflect the character limits for the FirstName and LastName fields, which were previously listed as 1-100 characters.
+* api-change:``datasync``: AWS DataSync now supports Enhanced mode tasks. This task mode supports transfer of virtually unlimited numbers of objects with enhanced metrics, more detailed logs, and higher performance than Basic mode. This mode currently supports transfers between Amazon S3 locations.
+* api-change:``ec2``: This release adds two new capabilities to VPC Security Groups: Security Group VPC Associations and Shared Security Groups.
+* api-change:``ecs``: This release supports service deployments and service revisions which provide a comprehensive view of your Amazon ECS service history.
+* api-change:``geo-maps``: Release of Amazon Location Maps API. Maps enables you to build digital maps that showcase your locations, visualize your data, and unlock insights to drive your business
+* api-change:``geo-places``: Release of Amazon Location Places API. Places enables you to quickly search, display, and filter places, businesses, and locations based on proximity, category, and name
+* api-change:``geo-routes``: Release of Amazon Location Routes API. Routes enables you to plan efficient routes and streamline deliveries by leveraging real-time traffic, vehicle restrictions, and turn-by-turn directions.
+* api-change:``keyspaces``: Adds support for interacting with user-defined types (UDTs) through the following new operations: Create-Type, Delete-Type, List-Types, Get-Type.
+* api-change:``network-firewall``: AWS Network Firewall now supports configuring TCP idle timeout
+* api-change:``opensearch``: This release introduces the new OpenSearch user interface (Dashboards), a new web-based application that can be associated with multiple data sources across OpenSearch managed clusters, serverless collections, and Amazon S3, so that users can gain a comprehensive insights in an unified interface.
+* api-change:``opensearchserverless``: Neo Integration via IAM Identity Center (IdC)
+* api-change:``redshift``: This release launches S3 event integrations to create and manage integrations from an Amazon S3 source into an Amazon Redshift database.
+* api-change:``redshift-serverless``: Adds and updates API members for the Redshift Serverless AI-driven scaling and optimization feature using the price-performance target setting.
+* api-change:``route53``: This release adds support for TLSA, SSHFP, SVCB, and HTTPS record types.
+* api-change:``sagemaker``: Added support for Model Registry Staging construct. Users can define series of stages that models can progress through for model workflows and lifecycle. This simplifies tracking and managing models as they transition through development, testing, and production stages.
+* api-change:``workmail``: This release adds support for Multi-Factor Authentication (MFA) and Personal Access Tokens through integration with AWS IAM Identity Center.
+
+
 1.35.17
 =======
 

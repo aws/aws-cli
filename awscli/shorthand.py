@@ -200,22 +200,18 @@ class ShorthandParser(object):
         # keyval = key "=" [values] / key "@=" [file-optional-values]
         # file-optional-values = file://value / fileb://value / value
         key = self._key()
-        assignment_strings = ['=', _FILE_ASSIGNMENT]
-        assignment_op = self._expect_strings(assignment_strings, consume_whitespace=True)
-        if assignment_op == _FILE_ASSIGNMENT:
+        self._resolve_paramfiles = False
+        try:
+            self._expect('@', consume_whitespace=True)
             self._resolve_paramfiles = True
+        except ShorthandParseSyntaxError:
+            pass
+        self._expect('=', consume_whitespace=True)
         values = self._values(key)
         return key, values
 
     def _key(self):
-        # key = single-quoted-key / double-quoted-key / key_token
-        # single-quoted-key = single-quoted-value
-        # double-quoted-key = double-quoted-value
-        # key_token = 1*(alpha / %x30-39 / %x5f / %x2e / %x23)  ; [a-zA-Z0-9\-_.#/]
-        if self._current() == "'":
-            return self._single_quoted_value()
-        elif self._current() == '"':
-            return self._double_quoted_value()
+        # key = 1*(alpha / %x30-39 / %x5f / %x2e / %x23)  ; [a-zA-Z0-9\-_.#/]
         valid_chars = string.ascii_letters + string.digits + '-_.#/:'
         start = self._index
         while not self._at_eof():

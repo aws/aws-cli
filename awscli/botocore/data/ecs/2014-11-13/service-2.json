@@ -46,7 +46,7 @@
         {"shape":"InvalidParameterException"},
         {"shape":"NamespaceNotFoundException"}
       ],
-      "documentation":"<p>Creates a new Amazon ECS cluster. By default, your account receives a <code>default</code> cluster when you launch your first container instance. However, you can create your own cluster with a unique name.</p> <note> <p>When you call the <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateCluster.html\">CreateCluster</a> API operation, Amazon ECS attempts to create the Amazon ECS service-linked role for your account. This is so that it can manage required resources in other Amazon Web Services services on your behalf. However, if the user that makes the call doesn't have permissions to create the service-linked role, it isn't created. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using-service-linked-roles.html\">Using service-linked roles for Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
+      "documentation":"<p>Creates a new Amazon ECS cluster. By default, your account receives a <code>default</code> cluster when you launch your first container instance. However, you can create your own cluster with a unique name.</p> <note> <p>When you call the <a>CreateCluster</a> API operation, Amazon ECS attempts to create the Amazon ECS service-linked role for your account. This is so that it can manage required resources in other Amazon Web Services services on your behalf. However, if the user that makes the call doesn't have permissions to create the service-linked role, it isn't created. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using-service-linked-roles.html\">Using service-linked roles for Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
     },
     "CreateService":{
       "name":"CreateService",
@@ -67,7 +67,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"NamespaceNotFoundException"}
       ],
-      "documentation":"<p>Runs and maintains your desired number of tasks from a specified task definition. If the number of tasks running in a service drops below the <code>desiredCount</code>, Amazon ECS runs another copy of the task in the specified cluster. To update an existing service, use <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html\">UpdateService</a>.</p> <note> <p>On March 21, 2024, a change was made to resolve the task definition revision before authorization. When a task definition revision is not specified, authorization will occur using the latest revision of a task definition.</p> </note> <note> <p>Amazon Elastic Inference (EI) is no longer available to customers.</p> </note> <p>In addition to maintaining the desired count of tasks in your service, you can optionally run your service behind one or more load balancers. The load balancers distribute traffic across the tasks that are associated with the service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-load-balancing.html\">Service load balancing</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when creating or updating a service. <code>volumeConfigurations</code> is only supported for REPLICA service and not DAEMON service. For more infomation, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Tasks for services that don't use a load balancer are considered healthy if they're in the <code>RUNNING</code> state. Tasks for services that use a load balancer are considered healthy if they're in the <code>RUNNING</code> state and are reported as healthy by the load balancer.</p> <p>There are two service scheduler strategies available:</p> <ul> <li> <p> <code>REPLICA</code> - The replica scheduling strategy places and maintains your desired number of tasks across your cluster. By default, the service scheduler spreads tasks across Availability Zones. You can use task placement strategies and constraints to customize task placement decisions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html\">Service scheduler concepts</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> <li> <p> <code>DAEMON</code> - The daemon scheduling strategy deploys exactly one task on each active container instance that meets all of the task placement constraints that you specify in your cluster. The service scheduler also evaluates the task placement constraints for running tasks. It also stops tasks that don't meet the placement constraints. When using this strategy, you don't need to specify a desired number of tasks, a task placement strategy, or use Service Auto Scaling policies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html\">Service scheduler concepts</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> </ul> <p>You can optionally specify a deployment configuration for your service. The deployment is initiated by changing properties. For example, the deployment might be initiated by the task definition or by your desired count of a service. You can use <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html\">UpdateService</a>. The default value for a replica service for <code>minimumHealthyPercent</code> is 100%. The default value for a daemon service for <code>minimumHealthyPercent</code> is 0%.</p> <p>If a service uses the <code>ECS</code> deployment controller, the minimum healthy percent represents a lower limit on the number of tasks in a service that must remain in the <code>RUNNING</code> state during a deployment. Specifically, it represents it as a percentage of your desired number of tasks (rounded up to the nearest integer). This happens when any of your container instances are in the <code>DRAINING</code> state if the service contains tasks using the EC2 launch type. Using this parameter, you can deploy without using additional cluster capacity. For example, if you set your service to have desired number of four tasks and a minimum healthy percent of 50%, the scheduler might stop two existing tasks to free up cluster capacity before starting two new tasks. If they're in the <code>RUNNING</code> state, tasks for services that don't use a load balancer are considered healthy . If they're in the <code>RUNNING</code> state and reported as healthy by the load balancer, tasks for services that <i>do</i> use a load balancer are considered healthy . The default value for minimum healthy percent is 100%.</p> <p>If a service uses the <code>ECS</code> deployment controller, the <b>maximum percent</b> parameter represents an upper limit on the number of tasks in a service that are allowed in the <code>RUNNING</code> or <code>PENDING</code> state during a deployment. Specifically, it represents it as a percentage of the desired number of tasks (rounded down to the nearest integer). This happens when any of your container instances are in the <code>DRAINING</code> state if the service contains tasks using the EC2 launch type. Using this parameter, you can define the deployment batch size. For example, if your service has a desired number of four tasks and a maximum percent value of 200%, the scheduler may start four new tasks before stopping the four older tasks (provided that the cluster resources required to do this are available). The default value for maximum percent is 200%.</p> <p>If a service uses either the <code>CODE_DEPLOY</code> or <code>EXTERNAL</code> deployment controller types and tasks that use the EC2 launch type, the <b>minimum healthy percent</b> and <b>maximum percent</b> values are used only to define the lower and upper limit on the number of the tasks in the service that remain in the <code>RUNNING</code> state. This is while the container instances are in the <code>DRAINING</code> state. If the tasks in the service use the Fargate launch type, the minimum healthy percent and maximum percent values aren't used. This is the case even if they're currently visible when describing your service.</p> <p>When creating a service that uses the <code>EXTERNAL</code> deployment controller, you can specify only parameters that aren't controlled at the task set level. The only required parameter is the service name. You control your services using the <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateTaskSet.html\">CreateTaskSet</a>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">Amazon ECS deployment types</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>When the service scheduler launches new tasks, it determines task placement. For information about task placement and task placement strategies, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-placement.html\">Amazon ECS task placement</a> in the <i>Amazon Elastic Container Service Developer Guide</i> </p>"
+      "documentation":"<p>Runs and maintains your desired number of tasks from a specified task definition. If the number of tasks running in a service drops below the <code>desiredCount</code>, Amazon ECS runs another copy of the task in the specified cluster. To update an existing service, see the <a>UpdateService</a> action.</p> <note> <p>On March 21, 2024, a change was made to resolve the task definition revision before authorization. When a task definition revision is not specified, authorization will occur using the latest revision of a task definition.</p> </note> <note> <p>Amazon Elastic Inference (EI) is no longer available to customers.</p> </note> <p>In addition to maintaining the desired count of tasks in your service, you can optionally run your service behind one or more load balancers. The load balancers distribute traffic across the tasks that are associated with the service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-load-balancing.html\">Service load balancing</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when creating or updating a service. <code>volumeConfigurations</code> is only supported for REPLICA service and not DAEMON service. For more infomation, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Tasks for services that don't use a load balancer are considered healthy if they're in the <code>RUNNING</code> state. Tasks for services that use a load balancer are considered healthy if they're in the <code>RUNNING</code> state and are reported as healthy by the load balancer.</p> <p>There are two service scheduler strategies available:</p> <ul> <li> <p> <code>REPLICA</code> - The replica scheduling strategy places and maintains your desired number of tasks across your cluster. By default, the service scheduler spreads tasks across Availability Zones. You can use task placement strategies and constraints to customize task placement decisions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html\">Service scheduler concepts</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> <li> <p> <code>DAEMON</code> - The daemon scheduling strategy deploys exactly one task on each active container instance that meets all of the task placement constraints that you specify in your cluster. The service scheduler also evaluates the task placement constraints for running tasks. It also stops tasks that don't meet the placement constraints. When using this strategy, you don't need to specify a desired number of tasks, a task placement strategy, or use Service Auto Scaling policies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html\">Service scheduler concepts</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> </ul> <p>You can optionally specify a deployment configuration for your service. The deployment is initiated by changing properties. For example, the deployment might be initiated by the task definition or by your desired count of a service. You can use <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html\">UpdateService</a>. The default value for a replica service for <code>minimumHealthyPercent</code> is 100%. The default value for a daemon service for <code>minimumHealthyPercent</code> is 0%.</p> <p>If a service uses the <code>ECS</code> deployment controller, the minimum healthy percent represents a lower limit on the number of tasks in a service that must remain in the <code>RUNNING</code> state during a deployment. Specifically, it represents it as a percentage of your desired number of tasks (rounded up to the nearest integer). This happens when any of your container instances are in the <code>DRAINING</code> state if the service contains tasks using the EC2 launch type. Using this parameter, you can deploy without using additional cluster capacity. For example, if you set your service to have desired number of four tasks and a minimum healthy percent of 50%, the scheduler might stop two existing tasks to free up cluster capacity before starting two new tasks. If they're in the <code>RUNNING</code> state, tasks for services that don't use a load balancer are considered healthy . If they're in the <code>RUNNING</code> state and reported as healthy by the load balancer, tasks for services that <i>do</i> use a load balancer are considered healthy . The default value for minimum healthy percent is 100%.</p> <p>If a service uses the <code>ECS</code> deployment controller, the <b>maximum percent</b> parameter represents an upper limit on the number of tasks in a service that are allowed in the <code>RUNNING</code> or <code>PENDING</code> state during a deployment. Specifically, it represents it as a percentage of the desired number of tasks (rounded down to the nearest integer). This happens when any of your container instances are in the <code>DRAINING</code> state if the service contains tasks using the EC2 launch type. Using this parameter, you can define the deployment batch size. For example, if your service has a desired number of four tasks and a maximum percent value of 200%, the scheduler may start four new tasks before stopping the four older tasks (provided that the cluster resources required to do this are available). The default value for maximum percent is 200%.</p> <p>If a service uses either the <code>CODE_DEPLOY</code> or <code>EXTERNAL</code> deployment controller types and tasks that use the EC2 launch type, the <b>minimum healthy percent</b> and <b>maximum percent</b> values are used only to define the lower and upper limit on the number of the tasks in the service that remain in the <code>RUNNING</code> state. This is while the container instances are in the <code>DRAINING</code> state. If the tasks in the service use the Fargate launch type, the minimum healthy percent and maximum percent values aren't used. This is the case even if they're currently visible when describing your service.</p> <p>When creating a service that uses the <code>EXTERNAL</code> deployment controller, you can specify only parameters that aren't controlled at the task set level. The only required parameter is the service name. You control your services using the <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateTaskSet.html\">CreateTaskSet</a>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">Amazon ECS deployment types</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>When the service scheduler launches new tasks, it determines task placement. For information about task placement and task placement strategies, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-placement.html\">Amazon ECS task placement</a> in the <i>Amazon Elastic Container Service Developer Guide</i> </p>"
     },
     "CreateTaskSet":{
       "name":"CreateTaskSet",
@@ -288,6 +288,44 @@
       ],
       "documentation":"<p>Describes one or more container instances. Returns metadata about each container instance requested.</p>"
     },
+    "DescribeServiceDeployments":{
+      "name":"DescribeServiceDeployments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeServiceDeploymentsRequest"},
+      "output":{"shape":"DescribeServiceDeploymentsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Describes one or more of your service deployments.</p> <p>A service deployment happens when you release a software update for the service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-deployments.html\">Amazon ECS service deployments</a>.</p>"
+    },
+    "DescribeServiceRevisions":{
+      "name":"DescribeServiceRevisions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeServiceRevisionsRequest"},
+      "output":{"shape":"DescribeServiceRevisionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Describes one or more service revisions.</p> <p>A service revision is a version of the service that includes the values for the Amazon ECS resources (for example, task definition) and the environment resources (for example, load balancers, subnets, and security groups). For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-revision.html\">Amazon ECS service revisions</a>.</p> <p>You can't describe a service revision that was created before October 25, 2024.</p>"
+    },
     "DescribeServices":{
       "name":"DescribeServices",
       "http":{
@@ -465,6 +503,24 @@
         {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Returns a list of container instances in a specified cluster. You can filter the results of a <code>ListContainerInstances</code> operation with cluster query language statements inside the <code>filter</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-query-language.html\">Cluster Query Language</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+    },
+    "ListServiceDeployments":{
+      "name":"ListServiceDeployments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListServiceDeploymentsRequest"},
+      "output":{"shape":"ListServiceDeploymentsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>This operation lists all the service deployments that meet the specified filter criteria.</p> <p>A service deployment happens when you release a softwre update for the service. You route traffic from the running service revisions to the new service revison and control the number of running tasks. </p> <p>This API returns the values that you use for the request parameters in <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeServiceRevisions.html\">DescribeServiceRevisions</a>.</p>"
     },
     "ListServices":{
       "name":"ListServices",
@@ -1752,6 +1808,28 @@
       },
       "documentation":"<p>The dependencies defined for container startup and shutdown. A container can contain multiple dependencies. When a dependency is defined for container startup, for container shutdown it is reversed.</p> <p>Your Amazon ECS container instances require at least version 1.26.0 of the container agent to use container dependencies. However, we recommend using the latest container agent version. For information about checking your agent version and updating to the latest version, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-update.html\">Updating the Amazon ECS Container Agent</a> in the <i>Amazon Elastic Container Service Developer Guide</i>. If you're using an Amazon ECS-optimized Linux AMI, your instance needs at least version 1.26.0-1 of the <code>ecs-init</code> package. If your container instances are launched from version <code>20190301</code> or later, then they contain the required versions of the container agent and <code>ecs-init</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html\">Amazon ECS-optimized Linux AMI</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <note> <p>For tasks that use the Fargate launch type, the task or service requires the following platforms:</p> <ul> <li> <p>Linux platform version <code>1.3.0</code> or later.</p> </li> <li> <p>Windows platform version <code>1.0.0</code> or later.</p> </li> </ul> </note> <p>For more information about how to create a container dependency, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/example_task_definitions.html#example_task_definition-containerdependency\">Container dependency</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
     },
+    "ContainerImage":{
+      "type":"structure",
+      "members":{
+        "containerName":{
+          "shape":"String",
+          "documentation":"<p>The name of the container.</p>"
+        },
+        "imageDigest":{
+          "shape":"String",
+          "documentation":"<p>The container image digest.</p>"
+        },
+        "image":{
+          "shape":"String",
+          "documentation":"<p>The container image. </p>"
+        }
+      },
+      "documentation":"<p>The details about the container image a service revision uses. </p> <p>To ensure that all tasks in a service use the same container image, Amazon ECS resolves container image names and any image tags specified in the task definition to container image digests. </p> <p>After the container image digest has been established, Amazon ECS uses the digest to start any other desired tasks, and for any future service and service revision updates. This leads to all tasks in a service always running identical container images, resulting in version consistency for your software. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html#deployment-container-image-stability\">Container image resolution</a> in the Amazon ECS Developer Guide.</p>"
+    },
+    "ContainerImages":{
+      "type":"list",
+      "member":{"shape":"ContainerImage"}
+    },
     "ContainerInstance":{
       "type":"structure",
       "members":{
@@ -2094,7 +2172,7 @@
         },
         "deploymentConfiguration":{
           "shape":"DeploymentConfiguration",
-          "documentation":"<p>Optional deployment parameters that control how many tasks run during the deployment and the ordering of stopping and starting tasks.</p>"
+          "documentation":"<p>Optional deployment parameters that control how many tasks run during the deployment and the failure detection methods.</p>"
         },
         "placementConstraints":{
           "shape":"PlacementConstraints",
@@ -2225,6 +2303,20 @@
           "documentation":"<p>Information about a set of Amazon ECS tasks in either an CodeDeploy or an <code>EXTERNAL</code> deployment. A task set includes details such as the desired number of tasks, how many tasks are running, and whether the task set serves production traffic.</p>"
         }
       }
+    },
+    "CreatedAt":{
+      "type":"structure",
+      "members":{
+        "before":{
+          "shape":"Timestamp",
+          "documentation":"<p>Include service deployments in the result that were created before this time. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        },
+        "after":{
+          "shape":"Timestamp",
+          "documentation":"<p>Include service deployments in the result that were created after this time. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        }
+      },
+      "documentation":"<p>The optional filter to narrow the <code>ListServiceDeployment</code> results.</p> <p> If you do not specify a value, service deployments that were created before the current time are included in the result.</p>"
     },
     "DeleteAccountSettingRequest":{
       "type":"structure",
@@ -2485,21 +2577,21 @@
       "type":"structure",
       "required":[
         "alarmNames",
-        "enable",
-        "rollback"
+        "rollback",
+        "enable"
       ],
       "members":{
         "alarmNames":{
           "shape":"StringList",
           "documentation":"<p>One or more CloudWatch alarm names. Use a \",\" to separate the alarms.</p>"
         },
-        "enable":{
-          "shape":"Boolean",
-          "documentation":"<p>Determines whether to use the CloudWatch alarm option in the service deployment process.</p>"
-        },
         "rollback":{
           "shape":"Boolean",
           "documentation":"<p>Determines whether to configure Amazon ECS to roll back the service if a service deployment fails. If rollback is used, when a service deployment fails, the service is rolled back to the last deployment that completed successfully.</p>"
+        },
+        "enable":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines whether to use the CloudWatch alarm option in the service deployment process.</p>"
         }
       },
       "documentation":"<p>One of the methods which provide a way for you to quickly identify when a deployment has failed, and then to optionally roll back the failure to the last working deployment.</p> <p>When the alarms are generated, Amazon ECS sets the service deployment to failed. Set the rollback parameter to have Amazon ECS to roll back your service to the last completed deployment after a failure.</p> <p>You can only use the <code>DeploymentAlarms</code> method to detect failures when the <code>DeploymentController</code> is set to <code>ECS</code> (rolling update).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html\">Rolling update</a> in the <i> <i>Amazon Elastic Container Service Developer Guide</i> </i>.</p>"
@@ -2542,7 +2634,7 @@
           "documentation":"<p>Information about the CloudWatch alarms.</p>"
         }
       },
-      "documentation":"<p>Optional deployment parameters that control how many tasks run during a deployment and the ordering of stopping and starting tasks.</p>"
+      "documentation":"<p>Optional deployment parameters that control how many tasks run during the deployment and the failure detection methods.</p>"
     },
     "DeploymentController":{
       "type":"structure",
@@ -2568,7 +2660,7 @@
       "members":{
         "kmsKeyId":{
           "shape":"String",
-          "documentation":"<p>Specify an Key Management Service key ID to encrypt the ephemeral storage for deployment.</p>"
+          "documentation":"<p>Specify an Amazon Web Services Key Management Service key ID to encrypt the ephemeral storage for deployment.</p>"
         }
       },
       "documentation":"<p>The amount of ephemeral storage to allocate for the deployment.</p>"
@@ -2719,6 +2811,52 @@
         "containerInstances":{
           "shape":"ContainerInstances",
           "documentation":"<p>The list of container instances.</p>"
+        },
+        "failures":{
+          "shape":"Failures",
+          "documentation":"<p>Any failures associated with the call.</p>"
+        }
+      }
+    },
+    "DescribeServiceDeploymentsRequest":{
+      "type":"structure",
+      "required":["serviceDeploymentArns"],
+      "members":{
+        "serviceDeploymentArns":{
+          "shape":"StringList",
+          "documentation":"<p>The ARN of the service deployment.</p> <p>You can specify a maximum of 20 ARNs.</p>"
+        }
+      }
+    },
+    "DescribeServiceDeploymentsResponse":{
+      "type":"structure",
+      "members":{
+        "serviceDeployments":{
+          "shape":"ServiceDeployments",
+          "documentation":"<p>The list of service deployments described.</p>"
+        },
+        "failures":{
+          "shape":"Failures",
+          "documentation":"<p>Any failures associated with the call.</p> <p>If you decsribe a deployment with a service revision created before October 25, 2024, the call fails. The failure includes the service revision ARN and the reason set to <code>MISSING</code>.</p>"
+        }
+      }
+    },
+    "DescribeServiceRevisionsRequest":{
+      "type":"structure",
+      "required":["serviceRevisionArns"],
+      "members":{
+        "serviceRevisionArns":{
+          "shape":"StringList",
+          "documentation":"<p>The ARN of the service revision. </p> <p>You can specify a maximum of 20 ARNs.</p> <p>You can call <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListServiceDeployments.html\">ListServiceDeployments</a> to get the ARNs.</p>"
+        }
+      }
+    },
+    "DescribeServiceRevisionsResponse":{
+      "type":"structure",
+      "members":{
+        "serviceRevisions":{
+          "shape":"ServiceRevisions",
+          "documentation":"<p>The list of service revisions described.</p>"
         },
         "failures":{
           "shape":"Failures",
@@ -3715,6 +3853,49 @@
         }
       }
     },
+    "ListServiceDeploymentsRequest":{
+      "type":"structure",
+      "required":["service"],
+      "members":{
+        "service":{
+          "shape":"String",
+          "documentation":"<p>The ARN or name of the service</p>"
+        },
+        "cluster":{
+          "shape":"String",
+          "documentation":"<p>The cluster that hosts the service. This can either be the cluster name or ARN. Starting April 15, 2023, Amazon Web Services will not onboard new customers to Amazon Elastic Inference (EI), and will help current customers migrate their workloads to options that offer better price and performanceIf you don't specify a cluster, <code>deault</code> is used.</p>"
+        },
+        "status":{
+          "shape":"ServiceDeploymentStatusList",
+          "documentation":"<p>An optional filter you can use to narrow the results. If you do not specify a status, then all status values are included in the result.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>An optional filter you can use to narrow the results by the service creation date. If you do not specify a value, the result includes all services created before the current time. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a <code>ListServiceDeployments</code> request indicating that more results are available to fulfill the request and further calls are needed. If you provided <code>maxResults</code>, it's possible the number of results is fewer than <code>maxResults</code>.</p>"
+        },
+        "maxResults":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum number of service deployment results that <code>ListServiceDeployments</code> returned in paginated output. When this parameter is used, <code>ListServiceDeployments</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListServiceDeployments</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, then <code>ListServiceDeployments</code> returns up to 20 results and a <code>nextToken</code> value if applicable.</p>"
+        }
+      }
+    },
+    "ListServiceDeploymentsResponse":{
+      "type":"structure",
+      "members":{
+        "serviceDeployments":{
+          "shape":"ServiceDeploymentsBrief",
+          "documentation":"<p>An overview of the service deployment, including the following properties:</p> <ul> <li> <p>The ARN of the service deployment.</p> </li> <li> <p>The ARN of the service being deployed.</p> </li> <li> <p>The ARN of the cluster that hosts the service in the service deployment.</p> </li> <li> <p>The time that the service deployment started.</p> </li> <li> <p>The time that the service deployment completed.</p> </li> <li> <p>The service deployment status.</p> </li> <li> <p>Information about why the service deployment is in the current state.</p> </li> <li> <p>The ARN of the service revision that is being deployed.</p> </li> </ul>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListServiceDeployments</code> request. When the results of a <code>ListServiceDeployments</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
     "ListServicesByNamespaceRequest":{
       "type":"structure",
       "required":["namespace"],
@@ -3938,7 +4119,7 @@
         },
         "loadBalancerName":{
           "shape":"String",
-          "documentation":"<p>The name of the load balancer to associate with the Amazon ECS service or task set.</p> <p>If you are using an Application Load Balancer or a Network Load Balancer the load balancer name parameter should be omitted.</p>"
+          "documentation":"<p>The name of the load balancer to associate with the service or task set.</p> <p>If you are using an Application Load Balancer or a Network Load Balancer the load balancer name parameter should be omitted.</p>"
         },
         "containerName":{
           "shape":"String",
@@ -4074,7 +4255,7 @@
         },
         "minimumScalingStepSize":{
           "shape":"ManagedScalingStepSize",
-          "documentation":"<p>The minimum number of Amazon EC2 instances that Amazon ECS will scale out at one time. The scale in process is not affected by this parameter If this parameter is omitted, the default value of <code>1</code> is used.</p> <p>When additional capacity is required, Amazon ECS will scale up the minimum scaling step size even if the actual demand is less than the minimum scaling step size.</p> <p>If you use a capacity provider with an Auto Scaling group configured with more than one Amazon EC2 instance type or Availability Zone, Amazon ECS will scale up by the exact minimum scaling step size value and will ignore both the maximum scaling step size as well as the capacity demand.</p>"
+          "documentation":"<p>The minimum number of Amazon EC2 instances that Amazon ECS will scale out at one time. If this parameter is omitted, the default value of <code>1</code> is used.</p> <p>When additional capacity is required, Amazon ECS will scale up the minimum scaling step size even if the actual demand is less than the minimum scaling step size.</p> <p>If you use a capacity provider with an Auto Scaling group configured with more than one Amazon EC2 instance type or Availability Zone, Amazon ECS will scale up by the exact minimum scaling step size value and will ignore both the maximum scaling step size as well as the capacity demand.</p>"
         },
         "maximumScalingStepSize":{
           "shape":"ManagedScalingStepSize",
@@ -4114,7 +4295,7 @@
       "members":{
         "kmsKeyId":{
           "shape":"String",
-          "documentation":"<p>Specify a Key Management Service key ID to encrypt the managed storage.</p>"
+          "documentation":"<p>Specify a Amazon Web Services Key Management Service key ID to encrypt the managed storage.</p>"
         },
         "fargateEphemeralStorageKmsKeyId":{
           "shape":"String",
@@ -4364,7 +4545,7 @@
       "members":{
         "containerPort":{
           "shape":"BoxedInteger",
-          "documentation":"<p>The port number on the container that's bound to the user-specified or automatically assigned host port.</p> <p>If you use containers in a task with the <code>awsvpc</code> or <code>host</code> network mode, specify the exposed ports using <code>containerPort</code>.</p> <p>If you use containers in a task with the <code>bridge</code> network mode and you specify a container port and not a host port, your container automatically receives a host port in the ephemeral port range. For more information, see <code>hostPort</code>. Port mappings that are automatically assigned in this way do not count toward the 100 reserved ports limit of a container instance.</p>"
+          "documentation":"<p>The port number on the container that's bound to the user-specified or automatically assigned host port.</p> <p>For tasks that use the Fargate launch type or EC2 tasks that use the <code>awsvpc</code> network mode, you use <code>containerPort</code> to specify the exposed ports.</p> <p>For Windows containers on Fargate, you can't use port 3150 for the <code>containerPort</code>. This is because it's reserved.</p> <p>Suppose that you're using containers in a task with the EC2 launch type and you specify a container port and not a host port. Then, your container automatically receives a host port in the ephemeral port range. For more information, see <code>hostPort</code>. Port mappings that are automatically assigned in this way don't count toward the 100 reserved ports quota of a container instance.</p>"
         },
         "hostPort":{
           "shape":"BoxedInteger",
@@ -4387,7 +4568,7 @@
           "documentation":"<p>The port number range on the container that's bound to the dynamically mapped host port range. </p> <p>The following rules apply when you specify a <code>containerPortRange</code>:</p> <ul> <li> <p>You must use either the <code>bridge</code> network mode or the <code>awsvpc</code> network mode.</p> </li> <li> <p>This parameter is available for both the EC2 and Fargate launch types.</p> </li> <li> <p>This parameter is available for both the Linux and Windows operating systems.</p> </li> <li> <p>The container instance must have at least version 1.67.0 of the container agent and at least version 1.67.0-1 of the <code>ecs-init</code> package </p> </li> <li> <p>You can specify a maximum of 100 port ranges per container.</p> </li> <li> <p>You do not specify a <code>hostPortRange</code>. The value of the <code>hostPortRange</code> is set as follows:</p> <ul> <li> <p>For containers in a task with the <code>awsvpc</code> network mode, the <code>hostPortRange</code> is set to the same value as the <code>containerPortRange</code>. This is a static mapping strategy.</p> </li> <li> <p>For containers in a task with the <code>bridge</code> network mode, the Amazon ECS agent finds open host ports from the default ephemeral range and passes it to docker to bind them to the container ports.</p> </li> </ul> </li> <li> <p>The <code>containerPortRange</code> valid values are between 1 and 65535.</p> </li> <li> <p>A port can only be included in one port mapping per container.</p> </li> <li> <p>You cannot specify overlapping port ranges.</p> </li> <li> <p>The first port in the range must be less than last port in the range.</p> </li> <li> <p>Docker recommends that you turn off the docker-proxy in the Docker daemon config file when you have a large number of ports.</p> <p>For more information, see <a href=\"https://github.com/moby/moby/issues/11185\"> Issue #11185</a> on the Github website.</p> <p>For information about how to turn off the docker-proxy in the Docker daemon config file, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/bootstrap_container_instance.html#bootstrap_docker_daemon\">Docker daemon</a> in the <i>Amazon ECS Developer Guide</i>.</p> </li> </ul> <p>You can call <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeTasks.html\"> <code>DescribeTasks</code> </a> to view the <code>hostPortRange</code> which are the host ports that are bound to the container ports.</p>"
         }
       },
-      "documentation":"<p>Port mappings allow containers to access ports on the host container instance to send or receive traffic. Port mappings are specified as part of the container definition.</p> <p>If you use containers in a task with the <code>awsvpc</code> or <code>host</code> network mode, specify the exposed ports using <code>containerPort</code>. The <code>hostPort</code> can be left blank or it must be the same value as the <code>containerPort</code>.</p> <p>Most fields of this parameter (<code>containerPort</code>, <code>hostPort</code>, <code>protocol</code>) maps to <code>PortBindings</code> in the docker container create command and the <code>--publish</code> option to <code>docker run</code>. If the network mode of a task definition is set to <code>host</code>, host ports must either be undefined or match the container port in the port mapping.</p> <note> <p>You can't expose the same container port for multiple protocols. If you attempt this, an error is returned.</p> </note> <p>After a task reaches the <code>RUNNING</code> status, manual and automatic host and container port assignments are visible in the <code>networkBindings</code> section of <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeTasks.html\">DescribeTasks</a> API responses.</p>"
+      "documentation":"<p>Port mappings expose your container's network ports to the outside world. this allows clients to access your application. It's also used for inter-container communication within the same task.</p> <p>For task definitions (both the Fargate and EC2 launch type) that use the <code>awsvpc</code> network mode, only specify the <code>containerPort</code>. The <code>hostPort</code> is always ignored, and the container port is automatically mapped to a random high-numbered port on the host.</p> <p>Most fields of this parameter (<code>containerPort</code>, <code>hostPort</code>, <code>protocol</code>) maps to <code>PortBindings</code> in the docker container create command and the <code>--publish</code> option to <code>docker run</code>. If the network mode of a task definition is set to <code>host</code>, host ports must either be undefined or match the container port in the port mapping.</p> <note> <p>You can't expose the same container port for multiple protocols. If you attempt this, an error is returned.</p> </note> <p>After a task reaches the <code>RUNNING</code> status, manual and automatic host and container port assignments are visible in the <code>networkBindings</code> section of <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeTasks.html\">DescribeTasks</a> API responses.</p>"
     },
     "PortMappingList":{
       "type":"list",
@@ -4637,7 +4818,7 @@
         },
         "networkMode":{
           "shape":"NetworkMode",
-          "documentation":"<p>The Docker networking mode to use for the containers in the task. The valid values are <code>none</code>, <code>bridge</code>, <code>awsvpc</code>, and <code>host</code>. If no network mode is specified, the default is <code>bridge</code>.</p> <p>For Amazon ECS tasks on Fargate, the <code>awsvpc</code> network mode is required. For Amazon ECS tasks on Amazon EC2 Linux instances, any network mode can be used. For Amazon ECS tasks on Amazon EC2 Windows instances, <code>&lt;default&gt;</code> or <code>awsvpc</code> can be used. If the network mode is set to <code>none</code>, you cannot specify port mappings in your container definitions, and the tasks containers do not have external connectivity. The <code>host</code> and <code>awsvpc</code> network modes offer the highest networking performance for containers because they use the EC2 network stack instead of the virtualized network stack provided by the <code>bridge</code> mode.</p> <p>With the <code>host</code> and <code>awsvpc</code> network modes, exposed container ports are mapped directly to the corresponding host port (for the <code>host</code> network mode) or the attached elastic network interface port (for the <code>awsvpc</code> network mode), so you cannot take advantage of dynamic host port mappings. </p> <important> <p>When using the <code>host</code> network mode, you should not run containers using the root user (UID 0). It is considered best practice to use a non-root user.</p> </important> <p>If the network mode is <code>awsvpc</code>, the task is allocated an elastic network interface, and you must specify a <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_NetworkConfiguration.html\">NetworkConfiguration</a> value when you create a service or run a task with the task definition. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking.html\">Task Networking</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>If the network mode is <code>host</code>, you cannot run multiple instantiations of the same task on a single container instance when port mappings are used.</p>"
+          "documentation":"<p>The Docker networking mode to use for the containers in the task. The valid values are <code>none</code>, <code>bridge</code>, <code>awsvpc</code>, and <code>host</code>. If no network mode is specified, the default is <code>bridge</code>.</p> <p>For Amazon ECS tasks on Fargate, the <code>awsvpc</code> network mode is required. For Amazon ECS tasks on Amazon EC2 Linux instances, any network mode can be used. For Amazon ECS tasks on Amazon EC2 Windows instances, <code>&lt;default&gt;</code> or <code>awsvpc</code> can be used. If the network mode is set to <code>none</code>, you cannot specify port mappings in your container definitions, and the tasks containers do not have external connectivity. The <code>host</code> and <code>awsvpc</code> network modes offer the highest networking performance for containers because they use the EC2 network stack instead of the virtualized network stack provided by the <code>bridge</code> mode.</p> <p>With the <code>host</code> and <code>awsvpc</code> network modes, exposed container ports are mapped directly to the corresponding host port (for the <code>host</code> network mode) or the attached elastic network interface port (for the <code>awsvpc</code> network mode), so you cannot take advantage of dynamic host port mappings. </p> <important> <p>When using the <code>host</code> network mode, you should not run containers using the root user (UID 0). It is considered best practice to use a non-root user.</p> </important> <p>If the network mode is <code>awsvpc</code>, the task is allocated an elastic network interface, and you must specify a <a>NetworkConfiguration</a> value when you create a service or run a task with the task definition. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking.html\">Task Networking</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>If the network mode is <code>host</code>, you cannot run multiple instantiations of the same task on a single container instance when port mappings are used.</p> <p>For more information, see <a href=\"https://docs.docker.com/engine/reference/run/#network-settings\">Network settings</a> in the <i>Docker run reference</i>.</p>"
         },
         "containerDefinitions":{
           "shape":"ContainerDefinitions",
@@ -4669,11 +4850,11 @@
         },
         "pidMode":{
           "shape":"PidMode",
-          "documentation":"<p>The process namespace to use for the containers in the task. The valid values are <code>host</code> or <code>task</code>. On Fargate for Linux containers, the only valid value is <code>task</code>. For example, monitoring sidecars might need <code>pidMode</code> to access information about other containers running in the same task.</p> <p>If <code>host</code> is specified, all containers within the tasks that specified the <code>host</code> PID mode on the same container instance share the same process namespace with the host Amazon EC2 instance.</p> <p>If <code>task</code> is specified, all containers within the specified task share the same process namespace.</p> <p>If no value is specified, the default is a private namespace for each container.</p> <p>If the <code>host</code> PID mode is used, there's a heightened risk of undesired process namespace exposure.</p> <note> <p>This parameter is not supported for Windows containers.</p> </note> <note> <p>This parameter is only supported for tasks that are hosted on Fargate if the tasks are using platform version <code>1.4.0</code> or later (Linux). This isn't supported for Windows containers on Fargate.</p> </note>"
+          "documentation":"<p>The process namespace to use for the containers in the task. The valid values are <code>host</code> or <code>task</code>. On Fargate for Linux containers, the only valid value is <code>task</code>. For example, monitoring sidecars might need <code>pidMode</code> to access information about other containers running in the same task.</p> <p>If <code>host</code> is specified, all containers within the tasks that specified the <code>host</code> PID mode on the same container instance share the same process namespace with the host Amazon EC2 instance.</p> <p>If <code>task</code> is specified, all containers within the specified task share the same process namespace.</p> <p>If no value is specified, the default is a private namespace for each container. For more information, see <a href=\"https://docs.docker.com/engine/reference/run/#pid-settings---pid\">PID settings</a> in the <i>Docker run reference</i>.</p> <p>If the <code>host</code> PID mode is used, there's a heightened risk of undesired process namespace exposure. For more information, see <a href=\"https://docs.docker.com/engine/security/security/\">Docker security</a>.</p> <note> <p>This parameter is not supported for Windows containers.</p> </note> <note> <p>This parameter is only supported for tasks that are hosted on Fargate if the tasks are using platform version <code>1.4.0</code> or later (Linux). This isn't supported for Windows containers on Fargate.</p> </note>"
         },
         "ipcMode":{
           "shape":"IpcMode",
-          "documentation":"<p>The IPC resource namespace to use for the containers in the task. The valid values are <code>host</code>, <code>task</code>, or <code>none</code>. If <code>host</code> is specified, then all containers within the tasks that specified the <code>host</code> IPC mode on the same container instance share the same IPC resources with the host Amazon EC2 instance. If <code>task</code> is specified, all containers within the specified task share the same IPC resources. If <code>none</code> is specified, then IPC resources within the containers of a task are private and not shared with other containers in a task or on the container instance. If no value is specified, then the IPC resource namespace sharing depends on the Docker daemon setting on the container instance.</p> <p>If the <code>host</code> IPC mode is used, be aware that there is a heightened risk of undesired IPC namespace expose.</p> <p>If you are setting namespaced kernel parameters using <code>systemControls</code> for the containers in the task, the following will apply to your IPC resource namespace. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html\">System Controls</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <ul> <li> <p>For tasks that use the <code>host</code> IPC mode, IPC namespace related <code>systemControls</code> are not supported.</p> </li> <li> <p>For tasks that use the <code>task</code> IPC mode, IPC namespace related <code>systemControls</code> will apply to all containers within a task.</p> </li> </ul> <note> <p>This parameter is not supported for Windows containers or tasks run on Fargate.</p> </note>"
+          "documentation":"<p>The IPC resource namespace to use for the containers in the task. The valid values are <code>host</code>, <code>task</code>, or <code>none</code>. If <code>host</code> is specified, then all containers within the tasks that specified the <code>host</code> IPC mode on the same container instance share the same IPC resources with the host Amazon EC2 instance. If <code>task</code> is specified, all containers within the specified task share the same IPC resources. If <code>none</code> is specified, then IPC resources within the containers of a task are private and not shared with other containers in a task or on the container instance. If no value is specified, then the IPC resource namespace sharing depends on the Docker daemon setting on the container instance. For more information, see <a href=\"https://docs.docker.com/engine/reference/run/#ipc-settings---ipc\">IPC settings</a> in the <i>Docker run reference</i>.</p> <p>If the <code>host</code> IPC mode is used, be aware that there is a heightened risk of undesired IPC namespace expose. For more information, see <a href=\"https://docs.docker.com/engine/security/security/\">Docker security</a>.</p> <p>If you are setting namespaced kernel parameters using <code>systemControls</code> for the containers in the task, the following will apply to your IPC resource namespace. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html\">System Controls</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <ul> <li> <p>For tasks that use the <code>host</code> IPC mode, IPC namespace related <code>systemControls</code> are not supported.</p> </li> <li> <p>For tasks that use the <code>task</code> IPC mode, IPC namespace related <code>systemControls</code> will apply to all containers within a task.</p> </li> </ul> <note> <p>This parameter is not supported for Windows containers or tasks run on Fargate.</p> </note>"
         },
         "proxyConfiguration":{
           "shape":"ProxyConfiguration",
@@ -4802,6 +4983,24 @@
       "type":"list",
       "member":{"shape":"Resource"}
     },
+    "Rollback":{
+      "type":"structure",
+      "members":{
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>The reason the rollback happened. For example, the circuit breaker initiated the rollback operation.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time time that the rollback started. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        },
+        "serviceRevisionArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the service revision deployed as part of the rollback.</p> <p>When the type is <code>GPU</code>, the value is the number of physical <code>GPUs</code> the Amazon ECS container agent reserves for the container. The number of GPUs that's reserved for all containers in a task can't exceed the number of available GPUs on the container instance that the task is launched on.</p> <p>When the type is <code>InferenceAccelerator</code>, the <code>value</code> matches the <code>deviceName</code> for an <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_InferenceAccelerator.html\">InferenceAccelerator</a> specified in a task definition.</p>"
+        }
+      },
+      "documentation":"<p>Information about the service deployment rollback.</p>"
+    },
     "RunTaskRequest":{
       "type":"structure",
       "required":["taskDefinition"],
@@ -4903,11 +5102,11 @@
       "members":{
         "cpuArchitecture":{
           "shape":"CPUArchitecture",
-          "documentation":"<p>The CPU architecture.</p> <p>You can run your Linux tasks on an ARM-based platform by setting the value to <code>ARM64</code>. This option is available for tasks that run on Linux Amazon EC2 instance or Linux containers on Fargate.</p>"
+          "documentation":"<p>The CPU architecture.</p> <p>You can run your Linux tasks on an ARM-based platform by setting the value to <code>ARM64</code>. This option is available for tasks that run on Linux Amazon EC2 instance or Linux containers on Fargate.</p> <p>The default is <code>X86_64</code>.</p>"
         },
         "operatingSystemFamily":{
           "shape":"OSFamily",
-          "documentation":"<p>The operating system.</p>"
+          "documentation":"<p>The operating system.</p> <p>The default is <code>Linux</code>.</p>"
         }
       },
       "documentation":"<p>Information about the platform for the Amazon ECS service or task.</p> <p>For more information about <code>RuntimePlatform</code>, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#runtime-platform\">RuntimePlatform</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
@@ -5027,7 +5226,7 @@
         },
         "capacityProviderStrategy":{
           "shape":"CapacityProviderStrategy",
-          "documentation":"<p>The capacity provider strategy the service uses. When using the DescribeServices API, this field is omitted if the service was created using a launch type.</p>"
+          "documentation":"<p>The capacity provider strategy the service uses. When using <code>DescribeServices</code>, this field is omitted if the service was created using a launch type.</p>"
         },
         "platformVersion":{
           "shape":"String",
@@ -5091,7 +5290,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>The metadata that you apply to the service to help you categorize and organize them. Each tag consists of a key and an optional value. You define bot the key and value.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case-sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for either keys or values as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys or values with this prefix. Tags with this prefix do not count against your tags per resource limit.</p> </li> </ul>"
+          "documentation":"<p>The metadata that you apply to the service to help you categorize and organize them. Each tag consists of a key and an optional value. You define both the key and value.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case-sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for either keys or values as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys or values with this prefix. Tags with this prefix do not count against your tags per resource limit.</p> </li> </ul>"
         },
         "createdBy":{
           "shape":"String",
@@ -5233,6 +5432,185 @@
       },
       "documentation":"<p>The key that encrypts and decrypts your resources for Service Connect TLS.</p>"
     },
+    "ServiceDeployment":{
+      "type":"structure",
+      "members":{
+        "serviceDeploymentArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the service deployment.</p>"
+        },
+        "serviceArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the service for this service deployment.</p>"
+        },
+        "clusterArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the cluster that hosts the service.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the service deployment was created. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the service deployment statred. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        },
+        "finishedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the service deployment finished. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        },
+        "stoppedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the service deployment stopped. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p> <p>The service deployment stops when any of the following actions happen:</p> <ul> <li> <p>A user manually stops the deployment</p> </li> <li> <p>The rollback option is not in use for the failure detection mechanism (the circuit breaker or alarm-based) and the service fails.</p> </li> </ul>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the service deployment was last updated. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        },
+        "sourceServiceRevisions":{
+          "shape":"ServiceRevisionsSummaryList",
+          "documentation":"<p>The currently deployed workload configuration.</p>"
+        },
+        "targetServiceRevision":{
+          "shape":"ServiceRevisionSummary",
+          "documentation":"<p>The workload configuration being deployed.</p>"
+        },
+        "status":{
+          "shape":"ServiceDeploymentStatus",
+          "documentation":"<p>The service deployment state.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Information about why the service deployment is in the current status. For example, the circuit breaker detected a failure.</p>"
+        },
+        "deploymentConfiguration":{"shape":"DeploymentConfiguration"},
+        "rollback":{
+          "shape":"Rollback",
+          "documentation":"<p>The rollback options the service deployment uses when the deployment fails.</p>"
+        },
+        "deploymentCircuitBreaker":{
+          "shape":"ServiceDeploymentCircuitBreaker",
+          "documentation":"<p>The circuit breaker configuration that determines a service deployment failed.</p>"
+        },
+        "alarms":{
+          "shape":"ServiceDeploymentAlarms",
+          "documentation":"<p>The CloudWatch alarms that determine when a service deployment fails.</p>"
+        }
+      },
+      "documentation":"<p>Information about the service deployment.</p> <p>Service deployments provide a comprehensive view of your deployments. For information about service deployments, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-deployment.html\">View service history using Amazon ECS service deployments</a> in the <i> <i>Amazon Elastic Container Service Developer Guide</i> </i>.</p>"
+    },
+    "ServiceDeploymentAlarms":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"ServiceDeploymentRollbackMonitorsStatus",
+          "documentation":"<p>The status of the alarms check. Amazon ECS is not using alarms for service deployment failures when the status is <code>DISABLED</code>.</p>"
+        },
+        "alarmNames":{
+          "shape":"StringList",
+          "documentation":"<p>The name of the CloudWatch alarms that determine when a service deployment failed. A \",\" separates the alarms.</p>"
+        },
+        "triggeredAlarmNames":{
+          "shape":"StringList",
+          "documentation":"<p>One or more CloudWatch alarm names that have been triggered during the service deployment. A \",\" separates the alarm names.</p>"
+        }
+      },
+      "documentation":"<p>The CloudWatch alarms used to determine a service deployment failed. </p> <p>Amazon ECS considers the service deployment as failed when any of the alarms move to the <code>ALARM</code> state. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-alarm-failure.html\">How CloudWatch alarms detect Amazon ECS deployment failures</a> in the Amazon ECS Developer Guide.</p>"
+    },
+    "ServiceDeploymentBrief":{
+      "type":"structure",
+      "members":{
+        "serviceDeploymentArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the service deployment.</p>"
+        },
+        "serviceArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the service for this service deployment.</p>"
+        },
+        "clusterArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the cluster that hosts the service.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the service deployment statred. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the service deployment was created. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        },
+        "finishedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the service deployment completed. The format is yyyy-MM-dd HH:mm:ss.SSSSSS.</p>"
+        },
+        "targetServiceRevisionArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the service revision being deplyed.</p>"
+        },
+        "status":{
+          "shape":"ServiceDeploymentStatus",
+          "documentation":"<p>The status of the service deployment</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Information about why the service deployment is in the current status. For example, the circuit breaker detected a deployment failure.</p>"
+        }
+      },
+      "documentation":"<p>The service deployment properties that are retured when you call <code>ListServiceDeployments</code>.</p> <p>This provides a high-level overview of the service deployment. </p>"
+    },
+    "ServiceDeploymentCircuitBreaker":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"ServiceDeploymentRollbackMonitorsStatus",
+          "documentation":"<p>The circuit breaker status. Amazon ECS is not using the circuit breaker for service deployment failures when the status is <code>DISABLED</code>.</p>"
+        },
+        "failureCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of times the circuit breaker detected a service deploymeny failure.</p>"
+        },
+        "threshold":{
+          "shape":"Integer",
+          "documentation":"<p>The threshhold which determines that the service deployment failed.</p> <p>The deployment circuit breaker calculates the threshold value, and then uses the value to determine when to move the deployment to a FAILED state. The deployment circuit breaker has a minimum threshold of 3 and a maximum threshold of 200. and uses the values in the following formula to determine the deployment failure.</p> <p> <code>0.5 * desired task count</code> </p>"
+        }
+      },
+      "documentation":"<p>Information about the circuit breaker used to determine when a service deployment has failed.</p> <p>The deployment circuit breaker is the rolling update mechanism that determines if the tasks reach a steady state. The deployment circuit breaker has an option that will automatically roll back a failed deployment to the last cpompleted service revision. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-circuit-breaker.html\">How the Amazon ECS deployment circuit breaker detects failures</a> in the<i> Amazon ECS Developer Guide</i>.</p>"
+    },
+    "ServiceDeploymentRollbackMonitorsStatus":{
+      "type":"string",
+      "enum":[
+        "TRIGGERED",
+        "MONITORING",
+        "MONITORING_COMPLETE",
+        "DISABLED"
+      ]
+    },
+    "ServiceDeploymentStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "SUCCESSFUL",
+        "STOPPED",
+        "STOP_REQUESTED",
+        "IN_PROGRESS",
+        "ROLLBACK_IN_PROGRESS",
+        "ROLLBACK_SUCCESSFUL",
+        "ROLLBACK_FAILED"
+      ]
+    },
+    "ServiceDeploymentStatusList":{
+      "type":"list",
+      "member":{"shape":"ServiceDeploymentStatus"}
+    },
+    "ServiceDeployments":{
+      "type":"list",
+      "member":{"shape":"ServiceDeployment"}
+    },
+    "ServiceDeploymentsBrief":{
+      "type":"list",
+      "member":{"shape":"ServiceDeploymentBrief"}
+    },
     "ServiceEvent":{
       "type":"structure",
       "members":{
@@ -5349,6 +5727,101 @@
         }
       },
       "documentation":"<p>The details for the service registry.</p> <p>Each service may be associated with one service registry. Multiple service registries for each service are not supported.</p> <p>When you add, update, or remove the service registries configuration, Amazon ECS starts a new deployment. New tasks are registered and deregistered to the updated service registry configuration.</p>"
+    },
+    "ServiceRevision":{
+      "type":"structure",
+      "members":{
+        "serviceRevisionArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the service revision.</p>"
+        },
+        "serviceArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the service for the service revision.</p>"
+        },
+        "clusterArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the cluster that hosts the service.</p>"
+        },
+        "taskDefinition":{
+          "shape":"String",
+          "documentation":"<p>The task definition the service revision uses.</p>"
+        },
+        "capacityProviderStrategy":{
+          "shape":"CapacityProviderStrategy",
+          "documentation":"<p>The capacity provider strategy the service revision uses.</p>"
+        },
+        "launchType":{
+          "shape":"LaunchType",
+          "documentation":"<p>The launch type the service revision uses.</p>"
+        },
+        "platformVersion":{
+          "shape":"String",
+          "documentation":"<p>For the Fargate launch type, the platform version the service revision uses.</p>"
+        },
+        "platformFamily":{
+          "shape":"String",
+          "documentation":"<p>The platform family the service revision uses.</p>"
+        },
+        "loadBalancers":{
+          "shape":"LoadBalancers",
+          "documentation":"<p>The load balancers the service revision uses.</p>"
+        },
+        "serviceRegistries":{
+          "shape":"ServiceRegistries",
+          "documentation":"<p>The service registries (for Service Discovery) the service revision uses.</p>"
+        },
+        "networkConfiguration":{"shape":"NetworkConfiguration"},
+        "containerImages":{
+          "shape":"ContainerImages",
+          "documentation":"<p>The container images the service revision uses.</p>"
+        },
+        "guardDutyEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether Runtime Monitoring is turned on.</p>"
+        },
+        "serviceConnectConfiguration":{"shape":"ServiceConnectConfiguration"},
+        "volumeConfigurations":{
+          "shape":"ServiceVolumeConfigurations",
+          "documentation":"<p>The volumes that are configured at deployment that the service revision uses.</p>"
+        },
+        "fargateEphemeralStorage":{"shape":"DeploymentEphemeralStorage"},
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the service revision was created. The format is yyyy-mm-dd HH:mm:ss.SSSSS.</p>"
+        }
+      },
+      "documentation":"<p>Information about the service revision.</p> <p>A service revision contains a record of the workload configuration Amazon ECS is attempting to deploy. Whenever you create or deploy a service, Amazon ECS automatically creates and captures the configuration that you're trying to deploy in the service revision. For information about service revisions, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-revision.html\">Amazon ECS service revisions</a> in the <i> <i>Amazon Elastic Container Service Developer Guide</i> </i>.</p>"
+    },
+    "ServiceRevisionSummary":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the service revision.</p>"
+        },
+        "requestedTaskCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of requested tasks for the service revision.</p>"
+        },
+        "runningTaskCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of running tasks for the service revision.</p>"
+        },
+        "pendingTaskCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of pending tasks for the service revision.</p>"
+        }
+      },
+      "documentation":"<p>The information about the number of requested, pending, and running tasks for a service revision.</p>"
+    },
+    "ServiceRevisions":{
+      "type":"list",
+      "member":{"shape":"ServiceRevision"}
+    },
+    "ServiceRevisionsSummaryList":{
+      "type":"list",
+      "member":{"shape":"ServiceRevisionSummary"}
     },
     "ServiceVolumeConfiguration":{
       "type":"structure",
@@ -5963,7 +6436,7 @@
         },
         "networkMode":{
           "shape":"NetworkMode",
-          "documentation":"<p>The Docker networking mode to use for the containers in the task. The valid values are <code>none</code>, <code>bridge</code>, <code>awsvpc</code>, and <code>host</code>. If no network mode is specified, the default is <code>bridge</code>.</p> <p>For Amazon ECS tasks on Fargate, the <code>awsvpc</code> network mode is required. For Amazon ECS tasks on Amazon EC2 Linux instances, any network mode can be used. For Amazon ECS tasks on Amazon EC2 Windows instances, <code>&lt;default&gt;</code> or <code>awsvpc</code> can be used. If the network mode is set to <code>none</code>, you cannot specify port mappings in your container definitions, and the tasks containers do not have external connectivity. The <code>host</code> and <code>awsvpc</code> network modes offer the highest networking performance for containers because they use the EC2 network stack instead of the virtualized network stack provided by the <code>bridge</code> mode.</p> <p>With the <code>host</code> and <code>awsvpc</code> network modes, exposed container ports are mapped directly to the corresponding host port (for the <code>host</code> network mode) or the attached elastic network interface port (for the <code>awsvpc</code> network mode), so you cannot take advantage of dynamic host port mappings. </p> <important> <p>When using the <code>host</code> network mode, you should not run containers using the root user (UID 0). It is considered best practice to use a non-root user.</p> </important> <p>If the network mode is <code>awsvpc</code>, the task is allocated an elastic network interface, and you must specify a <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_NetworkConfiguration.html\">NetworkConfiguration</a> value when you create a service or run a task with the task definition. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking.html\">Task Networking</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>If the network mode is <code>host</code>, you cannot run multiple instantiations of the same task on a single container instance when port mappings are used.</p>"
+          "documentation":"<p>The Docker networking mode to use for the containers in the task. The valid values are <code>none</code>, <code>bridge</code>, <code>awsvpc</code>, and <code>host</code>. If no network mode is specified, the default is <code>bridge</code>.</p> <p>For Amazon ECS tasks on Fargate, the <code>awsvpc</code> network mode is required. For Amazon ECS tasks on Amazon EC2 Linux instances, any network mode can be used. For Amazon ECS tasks on Amazon EC2 Windows instances, <code>&lt;default&gt;</code> or <code>awsvpc</code> can be used. If the network mode is set to <code>none</code>, you cannot specify port mappings in your container definitions, and the tasks containers do not have external connectivity. The <code>host</code> and <code>awsvpc</code> network modes offer the highest networking performance for containers because they use the EC2 network stack instead of the virtualized network stack provided by the <code>bridge</code> mode.</p> <p>With the <code>host</code> and <code>awsvpc</code> network modes, exposed container ports are mapped directly to the corresponding host port (for the <code>host</code> network mode) or the attached elastic network interface port (for the <code>awsvpc</code> network mode), so you cannot take advantage of dynamic host port mappings. </p> <important> <p>When using the <code>host</code> network mode, you should not run containers using the root user (UID 0). It is considered best practice to use a non-root user.</p> </important> <p>If the network mode is <code>awsvpc</code>, the task is allocated an elastic network interface, and you must specify a <a>NetworkConfiguration</a> value when you create a service or run a task with the task definition. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking.html\">Task Networking</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>If the network mode is <code>host</code>, you cannot run multiple instantiations of the same task on a single container instance when port mappings are used.</p> <p>For more information, see <a href=\"https://docs.docker.com/engine/reference/run/#network-settings\">Network settings</a> in the <i>Docker run reference</i>.</p>"
         },
         "revision":{
           "shape":"Integer",
@@ -6011,11 +6484,11 @@
         },
         "pidMode":{
           "shape":"PidMode",
-          "documentation":"<p>The process namespace to use for the containers in the task. The valid values are <code>host</code> or <code>task</code>. On Fargate for Linux containers, the only valid value is <code>task</code>. For example, monitoring sidecars might need <code>pidMode</code> to access information about other containers running in the same task.</p> <p>If <code>host</code> is specified, all containers within the tasks that specified the <code>host</code> PID mode on the same container instance share the same process namespace with the host Amazon EC2 instance.</p> <p>If <code>task</code> is specified, all containers within the specified task share the same process namespace.</p> <p>If no value is specified, the default is a private namespace for each container.</p> <p>If the <code>host</code> PID mode is used, there's a heightened risk of undesired process namespace exposure.</p> <note> <p>This parameter is not supported for Windows containers.</p> </note> <note> <p>This parameter is only supported for tasks that are hosted on Fargate if the tasks are using platform version <code>1.4.0</code> or later (Linux). This isn't supported for Windows containers on Fargate.</p> </note>"
+          "documentation":"<p>The process namespace to use for the containers in the task. The valid values are <code>host</code> or <code>task</code>. On Fargate for Linux containers, the only valid value is <code>task</code>. For example, monitoring sidecars might need <code>pidMode</code> to access information about other containers running in the same task.</p> <p>If <code>host</code> is specified, all containers within the tasks that specified the <code>host</code> PID mode on the same container instance share the same process namespace with the host Amazon EC2 instance.</p> <p>If <code>task</code> is specified, all containers within the specified task share the same process namespace.</p> <p>If no value is specified, the default is a private namespace for each container. For more information, see <a href=\"https://docs.docker.com/engine/reference/run/#pid-settings---pid\">PID settings</a> in the <i>Docker run reference</i>.</p> <p>If the <code>host</code> PID mode is used, there's a heightened risk of undesired process namespace exposure. For more information, see <a href=\"https://docs.docker.com/engine/security/security/\">Docker security</a>.</p> <note> <p>This parameter is not supported for Windows containers.</p> </note> <note> <p>This parameter is only supported for tasks that are hosted on Fargate if the tasks are using platform version <code>1.4.0</code> or later (Linux). This isn't supported for Windows containers on Fargate.</p> </note>"
         },
         "ipcMode":{
           "shape":"IpcMode",
-          "documentation":"<p>The IPC resource namespace to use for the containers in the task. The valid values are <code>host</code>, <code>task</code>, or <code>none</code>. If <code>host</code> is specified, then all containers within the tasks that specified the <code>host</code> IPC mode on the same container instance share the same IPC resources with the host Amazon EC2 instance. If <code>task</code> is specified, all containers within the specified task share the same IPC resources. If <code>none</code> is specified, then IPC resources within the containers of a task are private and not shared with other containers in a task or on the container instance. If no value is specified, then the IPC resource namespace sharing depends on the Docker daemon setting on the container instance.</p> <p>If the <code>host</code> IPC mode is used, be aware that there is a heightened risk of undesired IPC namespace expose.</p> <p>If you are setting namespaced kernel parameters using <code>systemControls</code> for the containers in the task, the following will apply to your IPC resource namespace. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html\">System Controls</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <ul> <li> <p>For tasks that use the <code>host</code> IPC mode, IPC namespace related <code>systemControls</code> are not supported.</p> </li> <li> <p>For tasks that use the <code>task</code> IPC mode, IPC namespace related <code>systemControls</code> will apply to all containers within a task.</p> </li> </ul> <note> <p>This parameter is not supported for Windows containers or tasks run on Fargate.</p> </note>"
+          "documentation":"<p>The IPC resource namespace to use for the containers in the task. The valid values are <code>host</code>, <code>task</code>, or <code>none</code>. If <code>host</code> is specified, then all containers within the tasks that specified the <code>host</code> IPC mode on the same container instance share the same IPC resources with the host Amazon EC2 instance. If <code>task</code> is specified, all containers within the specified task share the same IPC resources. If <code>none</code> is specified, then IPC resources within the containers of a task are private and not shared with other containers in a task or on the container instance. If no value is specified, then the IPC resource namespace sharing depends on the Docker daemon setting on the container instance. For more information, see <a href=\"https://docs.docker.com/engine/reference/run/#ipc-settings---ipc\">IPC settings</a> in the <i>Docker run reference</i>.</p> <p>If the <code>host</code> IPC mode is used, be aware that there is a heightened risk of undesired IPC namespace expose. For more information, see <a href=\"https://docs.docker.com/engine/security/security/\">Docker security</a>.</p> <p>If you are setting namespaced kernel parameters using <code>systemControls</code> for the containers in the task, the following will apply to your IPC resource namespace. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html\">System Controls</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <ul> <li> <p>For tasks that use the <code>host</code> IPC mode, IPC namespace related <code>systemControls</code> are not supported.</p> </li> <li> <p>For tasks that use the <code>task</code> IPC mode, IPC namespace related <code>systemControls</code> will apply to all containers within a task.</p> </li> </ul> <note> <p>This parameter is not supported for Windows containers or tasks run on Fargate.</p> </note>"
         },
         "proxyConfiguration":{
           "shape":"ProxyConfiguration",
@@ -6099,7 +6572,7 @@
         },
         "kmsKeyId":{
           "shape":"String",
-          "documentation":"<p>Specify an Key Management Service key ID to encrypt the ephemeral storage for the task.</p>"
+          "documentation":"<p>Specify an Amazon Web Services Key Management Service key ID to encrypt the ephemeral storage for the task.</p>"
         }
       },
       "documentation":"<p>The amount of ephemeral storage to allocate for the task.</p>"
@@ -6704,7 +7177,7 @@
         },
         "deploymentConfiguration":{
           "shape":"DeploymentConfiguration",
-          "documentation":"<p>Optional deployment parameters that control how many tasks run during the deployment and the ordering of stopping and starting tasks.</p>"
+          "documentation":"<p>Optional deployment parameters that control how many tasks run during the deployment and the failure detection methods.</p>"
         },
         "networkConfiguration":{
           "shape":"NetworkConfiguration",

@@ -2,9 +2,11 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2022-02-10",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"cassandra",
     "jsonVersion":"1.0",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"Amazon Keyspaces",
     "serviceId":"Keyspaces",
     "signatureVersion":"v4",
@@ -28,7 +30,7 @@
         {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>The <code>CreateKeyspace</code> operation adds a new keyspace to your account. In an Amazon Web Services account, keyspace names must be unique within each Region.</p> <p> <code>CreateKeyspace</code> is an asynchronous operation. You can monitor the creation status of the new keyspace by using the <code>GetKeyspace</code> operation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/working-with-keyspaces.html#keyspaces-create\">Creating keyspaces</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+      "documentation":"<p>The <code>CreateKeyspace</code> operation adds a new keyspace to your account. In an Amazon Web Services account, keyspace names must be unique within each Region.</p> <p> <code>CreateKeyspace</code> is an asynchronous operation. You can monitor the creation status of the new keyspace by using the <code>GetKeyspace</code> operation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/getting-started.keyspaces.html\">Create a keyspace</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
     },
     "CreateTable":{
       "name":"CreateTable",
@@ -46,7 +48,25 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>The <code>CreateTable</code> operation adds a new table to the specified keyspace. Within a keyspace, table names must be unique.</p> <p> <code>CreateTable</code> is an asynchronous operation. When the request is received, the status of the table is set to <code>CREATING</code>. You can monitor the creation status of the new table by using the <code>GetTable</code> operation, which returns the current <code>status</code> of the table. You can start using a table when the status is <code>ACTIVE</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/working-with-tables.html#tables-create\">Creating tables</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+      "documentation":"<p>The <code>CreateTable</code> operation adds a new table to the specified keyspace. Within a keyspace, table names must be unique.</p> <p> <code>CreateTable</code> is an asynchronous operation. When the request is received, the status of the table is set to <code>CREATING</code>. You can monitor the creation status of the new table by using the <code>GetTable</code> operation, which returns the current <code>status</code> of the table. You can start using a table when the status is <code>ACTIVE</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/getting-started.tables.html\">Create a table</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+    },
+    "CreateType":{
+      "name":"CreateType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateTypeRequest"},
+      "output":{"shape":"CreateTypeResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p> The <code>CreateType</code> operation creates a new user-defined type in the specified keyspace. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/udts.html\">User-defined types (UDTs)</a> in the <i>Amazon Keyspaces Developer Guide</i>. </p>"
     },
     "DeleteKeyspace":{
       "name":"DeleteKeyspace",
@@ -84,6 +104,24 @@
       ],
       "documentation":"<p>The <code>DeleteTable</code> operation deletes a table and all of its data. After a <code>DeleteTable</code> request is received, the specified table is in the <code>DELETING</code> state until Amazon Keyspaces completes the deletion. If the table is in the <code>ACTIVE</code> state, you can delete it. If a table is either in the <code>CREATING</code> or <code>UPDATING</code> states, then Amazon Keyspaces returns a <code>ResourceInUseException</code>. If the specified table does not exist, Amazon Keyspaces returns a <code>ResourceNotFoundException</code>. If the table is already in the <code>DELETING</code> state, no error is returned.</p>"
     },
+    "DeleteType":{
+      "name":"DeleteType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteTypeRequest"},
+      "output":{"shape":"DeleteTypeResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p> The <code>DeleteType</code> operation deletes a user-defined type (UDT). You can only delete a type that is not used in a table or another UDT. </p>"
+    },
     "GetKeyspace":{
       "name":"GetKeyspace",
       "http":{
@@ -116,7 +154,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns information about the table, including the table's name and current status, the keyspace name, configuration settings, and metadata.</p> <p>To read table metadata using <code>GetTable</code>, <code>Select</code> action permissions for the table and system tables are required to complete the operation.</p>"
+      "documentation":"<p>Returns information about the table, including the table's name and current status, the keyspace name, configuration settings, and metadata.</p> <p>To read table metadata using <code>GetTable</code>, the IAM principal needs <code>Select</code> action permissions for the table and the system keyspace.</p>"
     },
     "GetTableAutoScalingSettings":{
       "name":"GetTableAutoScalingSettings",
@@ -135,6 +173,23 @@
       ],
       "documentation":"<p>Returns auto scaling related settings of the specified table in JSON format. If the table is a multi-Region table, the Amazon Web Services Region specific auto scaling settings of the table are included.</p> <p>Amazon Keyspaces auto scaling helps you provision throughput capacity for variable workloads efficiently by increasing and decreasing your table's read and write capacity automatically in response to application traffic. For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/autoscaling.html\">Managing throughput capacity automatically with Amazon Keyspaces auto scaling</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p> <important> <p> <code>GetTableAutoScalingSettings</code> can't be used as an action in an IAM policy.</p> </important> <p>To define permissions for <code>GetTableAutoScalingSettings</code>, you must allow the following two actions in the IAM policy statement's <code>Action</code> element:</p> <ul> <li> <p> <code>application-autoscaling:DescribeScalableTargets</code> </p> </li> <li> <p> <code>application-autoscaling:DescribeScalingPolicies</code> </p> </li> </ul>"
     },
+    "GetType":{
+      "name":"GetType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetTypeRequest"},
+      "output":{"shape":"GetTypeResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p> The <code>GetType</code> operation returns information about the type, for example the field definitions, the timestamp when the type was last modified, the level of nesting, the status, and details about if the type is used in other types and tables. </p> <p>To read keyspace metadata using <code>GetType</code>, the IAM principal needs <code>Select</code> action permissions for the system keyspace.</p>"
+    },
     "ListKeyspaces":{
       "name":"ListKeyspaces",
       "http":{
@@ -150,7 +205,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of keyspaces.</p>"
+      "documentation":"<p>The <code>ListKeyspaces</code> operation returns a list of keyspaces.</p>"
     },
     "ListTables":{
       "name":"ListTables",
@@ -167,7 +222,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of tables for a specified keyspace.</p>"
+      "documentation":"<p>The <code>ListTables</code> operation returns a list of tables for a specified keyspace.</p> <p>To read keyspace metadata using <code>ListTables</code>, the IAM principal needs <code>Select</code> action permissions for the system keyspace.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -184,7 +239,24 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of all tags associated with the specified Amazon Keyspaces resource.</p>"
+      "documentation":"<p>Returns a list of all tags associated with the specified Amazon Keyspaces resource.</p> <p>To read keyspace metadata using <code>ListTagsForResource</code>, the IAM principal needs <code>Select</code> action permissions for the specified resource and the system keyspace.</p>"
+    },
+    "ListTypes":{
+      "name":"ListTypes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTypesRequest"},
+      "output":{"shape":"ListTypesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p> The <code>ListTypes</code> operation returns a list of types for a specified keyspace. </p> <p>To read keyspace metadata using <code>ListTypes</code>, the IAM principal needs <code>Select</code> action permissions for the system keyspace.</p>"
     },
     "RestoreTable":{
       "name":"RestoreTable",
@@ -216,6 +288,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
@@ -552,6 +625,45 @@
         }
       }
     },
+    "CreateTypeRequest":{
+      "type":"structure",
+      "required":[
+        "keyspaceName",
+        "typeName",
+        "fieldDefinitions"
+      ],
+      "members":{
+        "keyspaceName":{
+          "shape":"KeyspaceName",
+          "documentation":"<p> The name of the keyspace. </p>"
+        },
+        "typeName":{
+          "shape":"TypeName",
+          "documentation":"<p> The name of the user-defined type. </p> <p>UDT names must contain 48 characters or less, must begin with an alphabetic character, and can only contain alpha-numeric characters and underscores. Amazon Keyspaces converts upper case characters automatically into lower case characters. </p> <p>Alternatively, you can declare a UDT name in double quotes. When declaring a UDT name inside double quotes, Amazon Keyspaces preserves upper casing and allows special characters.</p> <p>You can also use double quotes as part of the name when you create the UDT, but you must escape each double quote character with an additional double quote character.</p>"
+        },
+        "fieldDefinitions":{
+          "shape":"FieldList",
+          "documentation":"<p> The field definitions, consisting of names and types, that define this type. </p>"
+        }
+      }
+    },
+    "CreateTypeResponse":{
+      "type":"structure",
+      "required":[
+        "keyspaceArn",
+        "typeName"
+      ],
+      "members":{
+        "keyspaceArn":{
+          "shape":"ARN",
+          "documentation":"<p> The unique identifier of the keyspace that contains the new type in the format of an Amazon Resource Name (ARN). </p>"
+        },
+        "typeName":{
+          "shape":"TypeName",
+          "documentation":"<p> The formatted name of the user-defined type that was created. Note that Amazon Keyspaces requires the formatted name of the type for other operations, for example <code>GetType</code>. </p>"
+        }
+      }
+    },
     "DefaultTimeToLive":{
       "type":"integer",
       "box":true,
@@ -595,6 +707,41 @@
       "members":{
       }
     },
+    "DeleteTypeRequest":{
+      "type":"structure",
+      "required":[
+        "keyspaceName",
+        "typeName"
+      ],
+      "members":{
+        "keyspaceName":{
+          "shape":"KeyspaceName",
+          "documentation":"<p> The name of the keyspace of the to be deleted type. </p>"
+        },
+        "typeName":{
+          "shape":"TypeName",
+          "documentation":"<p> The name of the type to be deleted. </p>"
+        }
+      }
+    },
+    "DeleteTypeResponse":{
+      "type":"structure",
+      "required":[
+        "keyspaceArn",
+        "typeName"
+      ],
+      "members":{
+        "keyspaceArn":{
+          "shape":"ARN",
+          "documentation":"<p> The unique identifier of the keyspace from which the type was deleted in the format of an Amazon Resource Name (ARN). </p>"
+        },
+        "typeName":{
+          "shape":"TypeName",
+          "documentation":"<p> The name of the type that was deleted. </p>"
+        }
+      }
+    },
+    "Depth":{"type":"integer"},
     "DoubleObject":{"type":"double"},
     "EncryptionSpecification":{
       "type":"structure",
@@ -617,6 +764,34 @@
         "CUSTOMER_MANAGED_KMS_KEY",
         "AWS_OWNED_KMS_KEY"
       ]
+    },
+    "FieldDefinition":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type"
+      ],
+      "members":{
+        "name":{
+          "shape":"FieldDefinitionNameString",
+          "documentation":"<p> The identifier. </p>"
+        },
+        "type":{
+          "shape":"GenericString",
+          "documentation":"<p> Any supported Cassandra data type, including collections and other user-defined types that are contained in the same keyspace. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/cassandra-apis.html#cassandra-data-type\">Cassandra data type support</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p> A field definition consists out of a name and a type. </p>"
+    },
+    "FieldDefinitionNameString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "FieldList":{
+      "type":"list",
+      "member":{"shape":"FieldDefinition"},
+      "min":1
     },
     "GenericString":{"type":"string"},
     "GetKeyspaceRequest":{
@@ -785,6 +960,69 @@
         }
       }
     },
+    "GetTypeRequest":{
+      "type":"structure",
+      "required":[
+        "keyspaceName",
+        "typeName"
+      ],
+      "members":{
+        "keyspaceName":{
+          "shape":"KeyspaceName",
+          "documentation":"<p> The name of the keyspace that contains this type. </p>"
+        },
+        "typeName":{
+          "shape":"TypeName",
+          "documentation":"<p>The formatted name of the type. For example, if the name of the type was created without double quotes, Amazon Keyspaces saved the name in lower-case characters. If the name was created in double quotes, you must use double quotes to specify the type name. </p>"
+        }
+      }
+    },
+    "GetTypeResponse":{
+      "type":"structure",
+      "required":[
+        "keyspaceName",
+        "typeName",
+        "keyspaceArn"
+      ],
+      "members":{
+        "keyspaceName":{
+          "shape":"KeyspaceName",
+          "documentation":"<p> The name of the keyspace that contains this type. </p>"
+        },
+        "typeName":{
+          "shape":"TypeName",
+          "documentation":"<p> The name of the type. </p>"
+        },
+        "fieldDefinitions":{
+          "shape":"FieldList",
+          "documentation":"<p> The names and types that define this type. </p>"
+        },
+        "lastModifiedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp that shows when this type was last modified. </p>"
+        },
+        "status":{
+          "shape":"TypeStatus",
+          "documentation":"<p> The status of this type. </p>"
+        },
+        "directReferringTables":{
+          "shape":"TableNameList",
+          "documentation":"<p> The tables that use this type. </p>"
+        },
+        "directParentTypes":{
+          "shape":"TypeNameList",
+          "documentation":"<p> The types that use this type. </p>"
+        },
+        "maxNestingDepth":{
+          "shape":"Depth",
+          "documentation":"<p> The level of nesting implemented for this type. </p>"
+        },
+        "keyspaceArn":{
+          "shape":"ARN",
+          "documentation":"<p> The unique identifier of the keyspace that contains this type in the format of an Amazon Resource Name (ARN). </p>"
+        }
+      }
+    },
     "IntegerObject":{"type":"integer"},
     "InternalServerException":{
       "type":"structure",
@@ -921,6 +1159,38 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p>A list of tags.</p>"
+        }
+      }
+    },
+    "ListTypesRequest":{
+      "type":"structure",
+      "required":["keyspaceName"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The pagination token. To resume pagination, provide the <code>NextToken</code> value as an argument of a subsequent API invocation. </p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> The total number of types to return in the output. If the total number of types available is more than the value specified, a <code>NextToken</code> is provided in the output. To resume pagination, provide the <code>NextToken</code> value as an argument of a subsequent API invocation. </p>"
+        },
+        "keyspaceName":{
+          "shape":"KeyspaceName",
+          "documentation":"<p> The name of the keyspace that contains the listed types. </p>"
+        }
+      }
+    },
+    "ListTypesResponse":{
+      "type":"structure",
+      "required":["types"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The pagination token. To resume pagination, provide the <code>NextToken</code> value as an argument of a subsequent API invocation. </p>"
+        },
+        "types":{
+          "shape":"TypeNameList",
+          "documentation":"<p> The list of types contained in the specified keyspace. </p>"
         }
       }
     },
@@ -1077,10 +1347,10 @@
         },
         "resourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The unique identifier in the format of Amazon Resource Name (ARN), for the resource not found.</p>"
+          "documentation":"<p>The unique identifier in the format of Amazon Resource Name (ARN) for the resource could't be found.</p>"
         }
       },
-      "documentation":"<p>The operation tried to access a keyspace or table that doesn't exist. The resource might not be specified correctly, or its status might not be <code>ACTIVE</code>.</p>",
+      "documentation":"<p>The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be <code>ACTIVE</code>.</p>",
       "exception":true
     },
     "RestoreTableRequest":{
@@ -1213,6 +1483,10 @@
       "max":48,
       "min":1,
       "pattern":"[a-zA-Z0-9][a-zA-Z0-9_]{0,47}"
+    },
+    "TableNameList":{
+      "type":"list",
+      "member":{"shape":"TableName"}
     },
     "TableStatus":{
       "type":"string",
@@ -1355,6 +1629,24 @@
       "enum":["ENABLED"]
     },
     "Timestamp":{"type":"timestamp"},
+    "TypeName":{
+      "type":"string",
+      "max":48,
+      "min":1
+    },
+    "TypeNameList":{
+      "type":"list",
+      "member":{"shape":"TypeName"}
+    },
+    "TypeStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "CREATING",
+        "DELETING",
+        "RESTORING"
+      ]
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[

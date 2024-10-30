@@ -130,6 +130,25 @@
       ],
       "documentation":"<p>Cancels a scheduled service software update for an Amazon OpenSearch Service domain. You can only perform this operation before the <code>AutomatedUpdateDate</code> and when the domain's <code>UpdateStatus</code> is <code>PENDING_UPDATE</code>. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/service-software.html\">Service software updates in Amazon OpenSearch Service</a>.</p>"
     },
+    "CreateApplication":{
+      "name":"CreateApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/application",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateApplicationRequest"},
+      "output":{"shape":"CreateApplicationResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Creates an OpenSearch Application.</p>"
+    },
     "CreateDomain":{
       "name":"CreateDomain",
       "http":{
@@ -201,6 +220,26 @@
         {"shape":"BaseException"}
       ],
       "documentation":"<p>Creates an Amazon OpenSearch Service-managed VPC endpoint.</p>"
+    },
+    "DeleteApplication":{
+      "name":"DeleteApplication",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2021-01-01/opensearch/application/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteApplicationRequest"},
+      "output":{"shape":"DeleteApplicationResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Deletes an existing OpenSearch Application.</p>"
     },
     "DeleteDataSource":{
       "name":"DeleteDataSource",
@@ -558,6 +597,25 @@
       ],
       "documentation":"<p>Removes a package from the specified Amazon OpenSearch Service domain. The package can't be in use with any OpenSearch index for the dissociation to succeed. The package is still available in OpenSearch Service for association later. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/custom-packages.html\">Custom packages for Amazon OpenSearch Service</a>.</p>"
     },
+    "GetApplication":{
+      "name":"GetApplication",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/application/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetApplicationRequest"},
+      "output":{"shape":"GetApplicationResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Check the configuration and status of an existing OpenSearch Application.</p>"
+    },
     "GetCompatibleVersions":{
       "name":"GetCompatibleVersions",
       "http":{
@@ -660,6 +718,25 @@
         {"shape":"InternalException"}
       ],
       "documentation":"<p>Returns the most recent status of the last upgrade or upgrade eligibility check performed on an Amazon OpenSearch Service domain.</p>"
+    },
+    "ListApplications":{
+      "name":"ListApplications",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/list-applications",
+        "responseCode":200
+      },
+      "input":{"shape":"ListApplicationsRequest"},
+      "output":{"shape":"ListApplicationsResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>List all OpenSearch Applications under your account.</p>"
     },
     "ListDataSources":{
       "name":"ListDataSources",
@@ -952,6 +1029,26 @@
       ],
       "documentation":"<p>Schedules a service software update for an Amazon OpenSearch Service domain. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/service-software.html\">Service software updates in Amazon OpenSearch Service</a>.</p>"
     },
+    "UpdateApplication":{
+      "name":"UpdateApplication",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2021-01-01/opensearch/application/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateApplicationRequest"},
+      "output":{"shape":"UpdateApplicationResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Update the OpenSearch Application. </p>"
+    },
     "UpdateDataSource":{
       "name":"UpdateDataSource",
       "http":{
@@ -1123,6 +1220,10 @@
         }
       },
       "documentation":"<p>Information about an Amazon OpenSearch Service domain.</p>"
+    },
+    "AWSServicePrincipal":{
+      "type":"string",
+      "enum":["application.opensearchservice.amazonaws.com"]
     },
     "AcceptInboundConnectionRequest":{
       "type":"structure",
@@ -1377,6 +1478,92 @@
       },
       "documentation":"<p>The status of fine-grained access control settings for a domain.</p>"
     },
+    "AppConfig":{
+      "type":"structure",
+      "members":{
+        "key":{
+          "shape":"AppConfigType",
+          "documentation":"<p>Specify the item to configure, such as admin role for the OpenSearch Application.</p>"
+        },
+        "value":{
+          "shape":"AppConfigValue",
+          "documentation":"<p>Specifies the value to configure for the key, such as an IAM user ARN.</p>"
+        }
+      },
+      "documentation":"<p>Configurations of the OpenSearch Application.</p>"
+    },
+    "AppConfigType":{
+      "type":"string",
+      "enum":[
+        "opensearchDashboards.dashboardAdmin.users",
+        "opensearchDashboards.dashboardAdmin.groups"
+      ]
+    },
+    "AppConfigValue":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "AppConfigs":{
+      "type":"list",
+      "member":{"shape":"AppConfig"},
+      "max":200
+    },
+    "ApplicationName":{
+      "type":"string",
+      "max":30,
+      "min":3,
+      "pattern":"[a-z][a-z0-9\\-]+"
+    },
+    "ApplicationStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "UPDATING",
+        "DELETING",
+        "ACTIVE",
+        "FAILED"
+      ]
+    },
+    "ApplicationStatuses":{
+      "type":"list",
+      "member":{"shape":"ApplicationStatus"}
+    },
+    "ApplicationSummaries":{
+      "type":"list",
+      "member":{"shape":"ApplicationSummary"}
+    },
+    "ApplicationSummary":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"Id",
+          "documentation":"<p>Unique identifier for an OpenSearch application.</p>"
+        },
+        "arn":{"shape":"ARN"},
+        "name":{
+          "shape":"ApplicationName",
+          "documentation":"<p>Name of an OpenSearch Application.</p>"
+        },
+        "endpoint":{
+          "shape":"String",
+          "documentation":"<p>Endpoint URL of an OpenSearch Application.</p>"
+        },
+        "status":{
+          "shape":"ApplicationStatus",
+          "documentation":"<p>Status of an OpenSearch Application. Possible values are <code>CREATING</code>, <code>UPDATING</code>,<code> DELETING</code>, <code>FAILED</code>, <code>ACTIVE</code>, and <code>DELETED</code>.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp at which an OpenSearch Application was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp at which an OpenSearch Application was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Basic information of the OpenSearch Application.</p>"
+    },
     "AssociatePackageRequest":{
       "type":"structure",
       "required":[
@@ -1411,10 +1598,7 @@
     },
     "AuthorizeVpcEndpointAccessRequest":{
       "type":"structure",
-      "required":[
-        "DomainName",
-        "Account"
-      ],
+      "required":["DomainName"],
       "members":{
         "DomainName":{
           "shape":"DomainName",
@@ -1425,6 +1609,10 @@
         "Account":{
           "shape":"AWSAccount",
           "documentation":"<p>The Amazon Web Services account ID to grant access to.</p>"
+        },
+        "Service":{
+          "shape":"AWSServicePrincipal",
+          "documentation":"<p>The Amazon Web Services service SP to grant access to.</p>"
         }
       }
     },
@@ -2111,6 +2299,65 @@
       "documentation":"<p>The connection properties of an outbound connection.</p>"
     },
     "ConnectionStatusMessage":{"type":"string"},
+    "CreateApplicationRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique client idempotency token. It will be auto generated if not provided.</p>",
+          "idempotencyToken":true
+        },
+        "name":{
+          "shape":"ApplicationName",
+          "documentation":"<p>Name of the OpenSearch Appication to create. Application names are unique across the applications owned by an account within an Amazon Web Services Region.</p>"
+        },
+        "dataSources":{
+          "shape":"DataSources",
+          "documentation":"<p>Data sources to be associated with the OpenSearch Application.</p>"
+        },
+        "iamIdentityCenterOptions":{
+          "shape":"IamIdentityCenterOptionsInput",
+          "documentation":"<p>Settings of IAM Identity Center for the OpenSearch Application.</p>"
+        },
+        "appConfigs":{
+          "shape":"AppConfigs",
+          "documentation":"<p>Configurations of the OpenSearch Application, inlcuding admin configuration.</p>"
+        },
+        "tagList":{"shape":"TagList"}
+      }
+    },
+    "CreateApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"Id",
+          "documentation":"<p>Unique identifier for the created OpenSearch Application.</p>"
+        },
+        "name":{
+          "shape":"ApplicationName",
+          "documentation":"<p>Name of the created OpenSearch Application.</p>"
+        },
+        "arn":{"shape":"ARN"},
+        "dataSources":{
+          "shape":"DataSources",
+          "documentation":"<p>Data sources associated with the created OpenSearch Application.</p>"
+        },
+        "iamIdentityCenterOptions":{
+          "shape":"IamIdentityCenterOptions",
+          "documentation":"<p>Settings of IAM Identity Center for the created OpenSearch Application.</p>"
+        },
+        "appConfigs":{
+          "shape":"AppConfigs",
+          "documentation":"<p>Configurations of the OpenSearch Application, inlcuding admin configuration.</p>"
+        },
+        "tagList":{"shape":"TagList"},
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp when the OpenSearch Application was created.</p>"
+        }
+      }
+    },
     "CreateDomainRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -2174,6 +2421,10 @@
         "AdvancedSecurityOptions":{
           "shape":"AdvancedSecurityOptionsInput",
           "documentation":"<p>Options for fine-grained access control.</p>"
+        },
+        "IdentityCenterOptions":{
+          "shape":"IdentityCenterOptionsInput",
+          "documentation":"<p>Options for IAM Identity Center Option control for the domain.</p>"
         },
         "TagList":{
           "shape":"TagList",
@@ -2351,6 +2602,17 @@
       },
       "documentation":"<p>Cross-cluster search specific connection properties.</p>"
     },
+    "DataSource":{
+      "type":"structure",
+      "members":{
+        "dataSourceArn":{"shape":"ARN"},
+        "dataSourceDescription":{
+          "shape":"DataSourceDescription",
+          "documentation":"<p>Detailed description of a data source.</p>"
+        }
+      },
+      "documentation":"<p>Data sources that are associated with an OpenSearch Application. </p>"
+    },
     "DataSourceDescription":{
       "type":"string",
       "max":1000,
@@ -2405,6 +2667,27 @@
       },
       "documentation":"<p>The type of data source.</p>",
       "union":true
+    },
+    "DataSources":{
+      "type":"list",
+      "member":{"shape":"DataSource"}
+    },
+    "DeleteApplicationRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"Id",
+          "documentation":"<p>Unique identifier for the OpenSearch Application that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "DeleteApplicationResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "DeleteDataSourceRequest":{
       "type":"structure",
@@ -3227,6 +3510,10 @@
           "shape":"AdvancedSecurityOptionsStatus",
           "documentation":"<p>Container for fine-grained access control settings for the domain.</p>"
         },
+        "IdentityCenterOptions":{
+          "shape":"IdentityCenterOptionsStatus",
+          "documentation":"<p>Container for IAM Identity Center Option control for the domain.</p>"
+        },
         "AutoTuneOptions":{
           "shape":"AutoTuneOptionsStatus",
           "documentation":"<p>Container for Auto-Tune settings for the domain.</p>"
@@ -3634,6 +3921,10 @@
           "shape":"AdvancedSecurityOptions",
           "documentation":"<p>Settings for fine-grained access control.</p>"
         },
+        "IdentityCenterOptions":{
+          "shape":"IdentityCenterOptions",
+          "documentation":"<p>Container for IAM Identity Center Option control for the domain.</p>"
+        },
         "AutoTuneOptions":{
           "shape":"AutoTuneOptionsOutput",
           "documentation":"<p>Auto-Tune settings for the domain.</p>"
@@ -3899,6 +4190,60 @@
       "type":"list",
       "member":{"shape":"GUID"}
     },
+    "GetApplicationRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"Id",
+          "documentation":"<p>Unique identifier of the checked OpenSearch Application.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "GetApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"Id",
+          "documentation":"<p>Unique identifier of the checked OpenSearch Application.</p>"
+        },
+        "arn":{"shape":"ARN"},
+        "name":{
+          "shape":"ApplicationName",
+          "documentation":"<p>Name of the checked OpenSearch Application.</p>"
+        },
+        "endpoint":{
+          "shape":"String",
+          "documentation":"<p>Endpoint URL of the checked OpenSearch Application.</p>"
+        },
+        "status":{
+          "shape":"ApplicationStatus",
+          "documentation":"<p>Current status of the checked OpenSearch Application. Possible values are <code>CREATING</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>FAILED</code>, <code>ACTIVE</code>, and <code>DELETED</code>.</p>"
+        },
+        "iamIdentityCenterOptions":{
+          "shape":"IamIdentityCenterOptions",
+          "documentation":"<p>IAM Identity Center settings for the checked OpenSearch Application.</p>"
+        },
+        "dataSources":{
+          "shape":"DataSources",
+          "documentation":"<p>Associated data sources to the checked OpenSearch Application.</p>"
+        },
+        "appConfigs":{
+          "shape":"AppConfigs",
+          "documentation":"<p>App configurations of the checked OpenSearch Application.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp at which the checked OpenSearch Application was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp at which the checked OpenSearch Application was last updated.</p>"
+        }
+      }
+    },
     "GetCompatibleVersionsRequest":{
       "type":"structure",
       "members":{
@@ -4153,11 +4498,134 @@
       },
       "documentation":"<p>The IP address type status for the domain.</p>"
     },
+    "IamIdentityCenterOptions":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>IAM Identity Center is enabled for the OpenSearch Application.</p>"
+        },
+        "iamIdentityCenterInstanceArn":{"shape":"ARN"},
+        "iamRoleForIdentityCenterApplicationArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>Amazon Resource Name of the IAM Identity Center's Application created for the OpenSearch Application after enabling IAM Identity Center.</p>"
+        },
+        "iamIdentityCenterApplicationArn":{"shape":"ARN"}
+      },
+      "documentation":"<p>Settings for IAM Identity Center for an OpenSearch Application.</p>"
+    },
+    "IamIdentityCenterOptionsInput":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable/disable settings for IAM Identity Center.</p>"
+        },
+        "iamIdentityCenterInstanceArn":{"shape":"ARN"},
+        "iamRoleForIdentityCenterApplicationArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>Amazon Resource Name of IAM Identity Center's application.</p>"
+        }
+      },
+      "documentation":"<p>Settings for IAM Identity Center.</p>"
+    },
+    "Id":{
+      "type":"string",
+      "pattern":"[a-z0-9]{3,30}"
+    },
+    "IdentityCenterApplicationARN":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[a-z\\\\-]*:[a-z]+:[a-z0-9\\\\-]*:[0-9]*:[a-z0-9\\\\-]+\\/[a-z0-9\\\\-]+\\/[a-z0-9\\\\-]+"
+    },
+    "IdentityCenterInstanceARN":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[a-z\\\\-]*:[a-z]+:[a-z0-9\\\\-]*:[0-9]*:[a-z0-9\\\\-]+\\/[a-z0-9\\\\-]+"
+    },
+    "IdentityCenterOptions":{
+      "type":"structure",
+      "members":{
+        "EnabledAPIAccess":{
+          "shape":"Boolean",
+          "documentation":"<p>True to enable IAM Identity Center for API access in Amazon OpenSearch Service.</p>"
+        },
+        "IdentityCenterInstanceARN":{
+          "shape":"IdentityCenterInstanceARN",
+          "documentation":"<p>The ARN for IAM Identity Center Instance.</p>"
+        },
+        "SubjectKey":{
+          "shape":"SubjectKeyIdCOption",
+          "documentation":"<p>Specify the attribute that contains the subject (username, userID, email) of IAM Identity Center.</p>"
+        },
+        "RolesKey":{
+          "shape":"RolesKeyIdCOption",
+          "documentation":"<p>Specify the attribute that contains the backend role (groupName, groupID) of IAM Identity Center</p>"
+        },
+        "IdentityCenterApplicationARN":{
+          "shape":"IdentityCenterApplicationARN",
+          "documentation":"<p>The ARN for IAM Identity Center Application which will integrate with Amazon OpenSearch Service.</p>"
+        },
+        "IdentityStoreId":{
+          "shape":"IdentityStoreId",
+          "documentation":"<p>The ID of IAM Identity Store.</p>"
+        }
+      },
+      "documentation":"<p>Container for IAM Identity Center Options settings.</p>"
+    },
+    "IdentityCenterOptionsInput":{
+      "type":"structure",
+      "members":{
+        "EnabledAPIAccess":{
+          "shape":"Boolean",
+          "documentation":"<p>True to enable IAM Identity Center for API access in Amazon OpenSearch Service.</p>"
+        },
+        "IdentityCenterInstanceARN":{
+          "shape":"IdentityCenterInstanceARN",
+          "documentation":"<p>The ARN for IAM Identity Center Instance which will be used for IAM Identity Center Application creation.</p>"
+        },
+        "SubjectKey":{
+          "shape":"SubjectKeyIdCOption",
+          "documentation":"<p>Specify the attribute that contains the subject (username, userID, email) of IAM Identity Center.</p>"
+        },
+        "RolesKey":{
+          "shape":"RolesKeyIdCOption",
+          "documentation":"<p>Specify the attribute that contains the backend role (groupName, groupID) of IAM Identity Center</p>"
+        }
+      },
+      "documentation":"<p>Container for IAM Identity Center Options settings.</p>"
+    },
+    "IdentityCenterOptionsStatus":{
+      "type":"structure",
+      "required":[
+        "Options",
+        "Status"
+      ],
+      "members":{
+        "Options":{
+          "shape":"IdentityCenterOptions",
+          "documentation":"<p>Container for IAM Identity Center Options settings.</p>"
+        },
+        "Status":{
+          "shape":"OptionStatus",
+          "documentation":"<p>The status of IAM Identity Center Options settings for a domain.</p>"
+        }
+      },
+      "documentation":"<p>The status of IAM Identity Center Options settings for a domain.</p>"
+    },
     "IdentityPoolId":{
       "type":"string",
       "max":55,
       "min":1,
       "pattern":"[\\w-]+:[0-9a-f-]+"
+    },
+    "IdentityStoreId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^d-[0-9a-f]{10}$|^[0-9a-f]{8}\\\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\\\b[0-9a-f]{12}$"
     },
     "InboundConnection":{
       "type":"structure",
@@ -4424,6 +4892,37 @@
       "key":{"shape":"InstanceRole"},
       "value":{"shape":"Limits"},
       "documentation":"<p> The role of a given instance and all applicable limits. The role performed by a given OpenSearch instance can be one of the following: </p> <ul> <li> <p> <b>data</b> - A data node.</p> </li> <li> <p> <b>master</b> - A dedicated master node.</p> </li> <li> <p> <b>ultra_warm</b> - An UltraWarm node.</p> </li> </ul>"
+    },
+    "ListApplicationsRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "statuses":{
+          "shape":"ApplicationStatuses",
+          "documentation":"<p>OpenSearch Application Status can be used as filters for the listing request. Possible values are <code>CREATING</code>, <code>UPDATING</code>, <code>DELETING</code>, <code>FAILED</code>, <code>ACTIVE</code>, and <code>DELETED</code>.</p>",
+          "location":"querystring",
+          "locationName":"statuses"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListApplicationsResponse":{
+      "type":"structure",
+      "members":{
+        "ApplicationSummaries":{
+          "shape":"ApplicationSummaries",
+          "documentation":"<p>Summary of the OpenSearch Applications, including ID, ARN, name, endpoint, status, create time and last update time.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
     },
     "ListDataSourcesRequest":{
       "type":"structure",
@@ -5859,10 +6358,7 @@
     },
     "RevokeVpcEndpointAccessRequest":{
       "type":"structure",
-      "required":[
-        "DomainName",
-        "Account"
-      ],
+      "required":["DomainName"],
       "members":{
         "DomainName":{
           "shape":"DomainName",
@@ -5873,6 +6369,10 @@
         "Account":{
           "shape":"AWSAccount",
           "documentation":"<p>The account ID to revoke access from.</p>"
+        },
+        "Service":{
+          "shape":"AWSServicePrincipal",
+          "documentation":"<p>The service SP to revoke access from.</p>"
         }
       }
     },
@@ -5891,6 +6391,13 @@
       "type":"string",
       "max":64,
       "min":1
+    },
+    "RolesKeyIdCOption":{
+      "type":"string",
+      "enum":[
+        "GroupName",
+        "GroupId"
+      ]
     },
     "RollbackOnDisable":{
       "type":"string",
@@ -6369,6 +6876,14 @@
       "max":64,
       "min":1
     },
+    "SubjectKeyIdCOption":{
+      "type":"string",
+      "enum":[
+        "UserName",
+        "UserId",
+        "Email"
+      ]
+    },
     "TLSSecurityPolicy":{
       "type":"string",
       "enum":[
@@ -6419,12 +6934,67 @@
       "documentation":"<p>The unit of a maintenance schedule duration. Valid value is <code>HOUR</code>.</p>",
       "enum":["HOURS"]
     },
+    "Timestamp":{"type":"timestamp"},
     "TotalNumberOfStages":{"type":"integer"},
     "UIntValue":{
       "type":"integer",
       "min":0
     },
     "UncompressedPluginSizeInBytes":{"type":"long"},
+    "UpdateApplicationRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"Id",
+          "documentation":"<p>Unique identifier of the OpenSearch Application to be updated.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "dataSources":{
+          "shape":"DataSources",
+          "documentation":"<p>Data sources to be associated with the OpenSearch Application.</p>"
+        },
+        "appConfigs":{
+          "shape":"AppConfigs",
+          "documentation":"<p>Configurations to be changed for the OpenSearch Application.</p>"
+        }
+      }
+    },
+    "UpdateApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"Id",
+          "documentation":"<p>Unique identifier of the updated OpenSearch Application.</p>"
+        },
+        "name":{
+          "shape":"ApplicationName",
+          "documentation":"<p>Name of the updated OpenSearch Application.</p>"
+        },
+        "arn":{"shape":"ARN"},
+        "dataSources":{
+          "shape":"DataSources",
+          "documentation":"<p>Data sources associated with the updated OpenSearch Application.</p>"
+        },
+        "iamIdentityCenterOptions":{
+          "shape":"IamIdentityCenterOptions",
+          "documentation":"<p>IAM Identity Center settings for the updated OpenSearch Application.</p>"
+        },
+        "appConfigs":{
+          "shape":"AppConfigs",
+          "documentation":"<p>Configurations for the updated OpenSearch Application.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp at which the OpenSearch Application was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp at which the OpenSearch Application was last updated.</p>"
+        }
+      }
+    },
     "UpdateDataSourceRequest":{
       "type":"structure",
       "required":[
@@ -6532,6 +7102,7 @@
           "shape":"AdvancedSecurityOptionsInput",
           "documentation":"<p>Options for fine-grained access control.</p>"
         },
+        "IdentityCenterOptions":{"shape":"IdentityCenterOptionsInput"},
         "AutoTuneOptions":{
           "shape":"AutoTuneOptions",
           "documentation":"<p>Options for Auto-Tune.</p>"

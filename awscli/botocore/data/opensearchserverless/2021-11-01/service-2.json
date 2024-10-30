@@ -1133,6 +1133,25 @@
         }
       }
     },
+    "CreateIamIdentityCenterConfigOptions":{
+      "type":"structure",
+      "required":["instanceArn"],
+      "members":{
+        "groupAttribute":{
+          "shape":"IamIdentityCenterGroupAttribute",
+          "documentation":"<p>The group attribute for this IAM Identity Center integration. Defaults to <code>GroupId</code>.</p>"
+        },
+        "instanceArn":{
+          "shape":"IamIdentityCenterInstanceArn",
+          "documentation":"<p>The ARN of the IAM Identity Center instance used to integrate with OpenSearch Serverless.</p>"
+        },
+        "userAttribute":{
+          "shape":"IamIdentityCenterUserAttribute",
+          "documentation":"<p>The user attribute for this IAM Identity Center integration. Defaults to <code>UserId</code>.</p>"
+        }
+      },
+      "documentation":"<p>Describes IAM Identity Center options for creating an OpenSearch Serverless security configuration in the form of a key-value map.</p>"
+    },
     "CreateLifecyclePolicyRequest":{
       "type":"structure",
       "required":[
@@ -1188,6 +1207,10 @@
         "description":{
           "shape":"ConfigDescription",
           "documentation":"<p>A description of the security configuration.</p>"
+        },
+        "iamIdentityCenterOptions":{
+          "shape":"CreateIamIdentityCenterConfigOptions",
+          "documentation":"<p>Describes IAM Identity Center options in the form of a key-value map. This field is required if you specify iamidentitycenter for the type parameter.</p>"
         },
         "name":{
           "shape":"ConfigName",
@@ -1675,6 +1698,63 @@
           "documentation":"<p>Details about the requested security policy.</p>"
         }
       }
+    },
+    "IamIdentityCenterApplicationArn":{
+      "type":"string",
+      "max":1224,
+      "min":10,
+      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}$"
+    },
+    "IamIdentityCenterConfigOptions":{
+      "type":"structure",
+      "members":{
+        "applicationArn":{
+          "shape":"IamIdentityCenterApplicationArn",
+          "documentation":"<p>The ARN of the IAM Identity Center application used to integrate with OpenSearch Serverless.</p>"
+        },
+        "applicationDescription":{
+          "shape":"String",
+          "documentation":"<p>The description of the IAM Identity Center application used to integrate with OpenSearch Serverless.</p>"
+        },
+        "applicationName":{
+          "shape":"String",
+          "documentation":"<p>The name of the IAM Identity Center application used to integrate with OpenSearch Serverless.</p>"
+        },
+        "groupAttribute":{
+          "shape":"IamIdentityCenterGroupAttribute",
+          "documentation":"<p>The group attribute for this IAM Identity Center integration. Defaults to <code>GroupId</code>.</p>"
+        },
+        "instanceArn":{
+          "shape":"IamIdentityCenterInstanceArn",
+          "documentation":"<p>The ARN of the IAM Identity Center instance used to integrate with OpenSearch Serverless.</p>"
+        },
+        "userAttribute":{
+          "shape":"IamIdentityCenterUserAttribute",
+          "documentation":"<p>The user attribute for this IAM Identity Center integration. Defaults to <code>UserId</code> </p>"
+        }
+      },
+      "documentation":"<p>Describes IAM Identity Center options for an OpenSearch Serverless security configuration in the form of a key-value map.</p>"
+    },
+    "IamIdentityCenterGroupAttribute":{
+      "type":"string",
+      "enum":[
+        "GroupId",
+        "GroupName"
+      ]
+    },
+    "IamIdentityCenterInstanceArn":{
+      "type":"string",
+      "max":1224,
+      "min":10,
+      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$"
+    },
+    "IamIdentityCenterUserAttribute":{
+      "type":"string",
+      "enum":[
+        "UserId",
+        "UserName",
+        "Email"
+      ]
     },
     "IndexingCapacityValue":{
       "type":"integer",
@@ -2225,6 +2305,10 @@
           "shape":"ConfigDescription",
           "documentation":"<p>The description of the security configuration.</p>"
         },
+        "iamIdentityCenterOptions":{
+          "shape":"IamIdentityCenterConfigOptions",
+          "documentation":"<p>Describes IAM Identity Center options in the form of a key-value map.</p>"
+        },
         "id":{
           "shape":"SecurityConfigId",
           "documentation":"<p>The unique identifier of the security configuration.</p>"
@@ -2295,7 +2379,10 @@
     },
     "SecurityConfigType":{
       "type":"string",
-      "enum":["saml"]
+      "enum":[
+        "saml",
+        "iamidentitycenter"
+      ]
     },
     "SecurityGroupId":{
       "type":"string",
@@ -2663,6 +2750,20 @@
         }
       }
     },
+    "UpdateIamIdentityCenterConfigOptions":{
+      "type":"structure",
+      "members":{
+        "groupAttribute":{
+          "shape":"IamIdentityCenterGroupAttribute",
+          "documentation":"<p>The group attribute for this IAM Identity Center integration. Defaults to <code>GroupId</code>.</p>"
+        },
+        "userAttribute":{
+          "shape":"IamIdentityCenterUserAttribute",
+          "documentation":"<p>The user attribute for this IAM Identity Center integration. Defaults to <code>UserId</code>.</p>"
+        }
+      },
+      "documentation":"<p>Describes IAM Identity Center options for updating an OpenSearch Serverless security configuration in the form of a key-value map.</p>"
+    },
     "UpdateLifecyclePolicyRequest":{
       "type":"structure",
       "required":[
@@ -2726,6 +2827,10 @@
         "description":{
           "shape":"ConfigDescription",
           "documentation":"<p>A description of the security configuration.</p>"
+        },
+        "iamIdentityCenterOptionsUpdates":{
+          "shape":"UpdateIamIdentityCenterConfigOptions",
+          "documentation":"<p>Describes IAM Identity Center options in the form of a key-value map.</p>"
         },
         "id":{
           "shape":"SecurityConfigId",

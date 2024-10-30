@@ -67,6 +67,23 @@
       ],
       "documentation":"<p>Creates an association between a Merged API and source API using the Merged API's identifier.</p>"
     },
+    "CreateApi":{
+      "name":"CreateApi",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/apis"
+      },
+      "input":{"shape":"CreateApiRequest"},
+      "output":{"shape":"CreateApiResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates an <code>Api</code> object. Use this operation to create an AppSync API with your preferred configuration, such as an Event API that provides real-time message publishing and message subscriptions over WebSockets.</p>"
+    },
     "CreateApiCache":{
       "name":"CreateApiCache",
       "http":{
@@ -103,6 +120,25 @@
         {"shape":"ApiKeyValidityOutOfBoundsException"}
       ],
       "documentation":"<p>Creates a unique key that you can distribute to clients who invoke your API.</p>"
+    },
+    "CreateChannelNamespace":{
+      "name":"CreateChannelNamespace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/apis/{apiId}/channelNamespaces"
+      },
+      "input":{"shape":"CreateChannelNamespaceRequest"},
+      "output":{"shape":"CreateChannelNamespaceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ConflictException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a <code>ChannelNamespace</code> for an <code>Api</code>.</p>"
     },
     "CreateDataSource":{
       "name":"CreateDataSource",
@@ -205,6 +241,25 @@
       ],
       "documentation":"<p>Creates a <code>Type</code> object.</p>"
     },
+    "DeleteApi":{
+      "name":"DeleteApi",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/apis/{apiId}"
+      },
+      "input":{"shape":"DeleteApiRequest"},
+      "output":{"shape":"DeleteApiResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an <code>Api</code> object</p>",
+      "idempotent":true
+    },
     "DeleteApiCache":{
       "name":"DeleteApiCache",
       "http":{
@@ -237,6 +292,25 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Deletes an API key.</p>"
+    },
+    "DeleteChannelNamespace":{
+      "name":"DeleteChannelNamespace",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/apis/{apiId}/channelNamespaces/{name}"
+      },
+      "input":{"shape":"DeleteChannelNamespaceRequest"},
+      "output":{"shape":"DeleteChannelNamespaceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a <code>ChannelNamespace</code>.</p>",
+      "idempotent":true
     },
     "DeleteDataSource":{
       "name":"DeleteDataSource",
@@ -439,6 +513,23 @@
       ],
       "documentation":"<p>Flushes an <code>ApiCache</code> object.</p>"
     },
+    "GetApi":{
+      "name":"GetApi",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/apis/{apiId}"
+      },
+      "input":{"shape":"GetApiRequest"},
+      "output":{"shape":"GetApiResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves an <code>Api</code> object.</p>"
+    },
     "GetApiAssociation":{
       "name":"GetApiAssociation",
       "http":{
@@ -471,6 +562,23 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Retrieves an <code>ApiCache</code> object.</p>"
+    },
+    "GetChannelNamespace":{
+      "name":"GetChannelNamespace",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/apis/{apiId}/channelNamespaces/{name}"
+      },
+      "input":{"shape":"GetChannelNamespaceRequest"},
+      "output":{"shape":"GetChannelNamespaceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the channel namespace for a specified <code>Api</code>.</p>"
     },
     "GetDataSource":{
       "name":"GetDataSource",
@@ -664,6 +772,37 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Lists the API keys for a given API.</p> <note> <p>API keys are deleted automatically 60 days after they expire. However, they may still be included in the response until they have actually been deleted. You can safely call <code>DeleteApiKey</code> to manually delete a key before it's automatically deleted.</p> </note>"
+    },
+    "ListApis":{
+      "name":"ListApis",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/apis"
+      },
+      "input":{"shape":"ListApisRequest"},
+      "output":{"shape":"ListApisResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists the APIs in your AppSync account.</p> <p> <code>ListApis</code> returns only the high level API details. For more detailed information about an API, use <code>GetApi</code>.</p>"
+    },
+    "ListChannelNamespaces":{
+      "name":"ListChannelNamespaces",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/apis/{apiId}/channelNamespaces"
+      },
+      "input":{"shape":"ListChannelNamespacesRequest"},
+      "output":{"shape":"ListChannelNamespacesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists the channel namespaces for a specified <code>Api</code>.</p> <p> <code>ListChannelNamespaces</code> returns only high level details for the channel namespace. To retrieve code handlers, use <code>GetChannelNamespace</code>.</p>"
     },
     "ListDataSources":{
       "name":"ListDataSources",
@@ -931,6 +1070,24 @@
       ],
       "documentation":"<p>Untags a resource.</p>"
     },
+    "UpdateApi":{
+      "name":"UpdateApi",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/apis/{apiId}"
+      },
+      "input":{"shape":"UpdateApiRequest"},
+      "output":{"shape":"UpdateApiResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates an <code>Api</code>.</p>"
+    },
     "UpdateApiCache":{
       "name":"UpdateApiCache",
       "http":{
@@ -965,6 +1122,24 @@
         {"shape":"ApiKeyValidityOutOfBoundsException"}
       ],
       "documentation":"<p>Updates an API key. You can update the key as long as it's not deleted.</p>"
+    },
+    "UpdateChannelNamespace":{
+      "name":"UpdateChannelNamespace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/apis/{apiId}/channelNamespaces/{name}"
+      },
+      "input":{"shape":"UpdateChannelNamespaceRequest"},
+      "output":{"shape":"UpdateChannelNamespaceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates a <code>ChannelNamespace</code> associated with an <code>Api</code>.</p>"
     },
     "UpdateDataSource":{
       "name":"UpdateDataSource",
@@ -1123,6 +1298,49 @@
       "type":"list",
       "member":{"shape":"AdditionalAuthenticationProvider"}
     },
+    "Api":{
+      "type":"structure",
+      "members":{
+        "apiId":{
+          "shape":"String",
+          "documentation":"<p>The <code>Api</code> ID.</p>"
+        },
+        "name":{
+          "shape":"ApiName",
+          "documentation":"<p>The name of the <code>Api</code>.</p>"
+        },
+        "ownerContact":{
+          "shape":"OwnerContact",
+          "documentation":"<p>The owner contact information for the <code>Api</code> </p>"
+        },
+        "tags":{"shape":"TagMap"},
+        "dns":{
+          "shape":"MapOfStringToString",
+          "documentation":"<p>The DNS records for the API. This will include an HTTP and a real-time endpoint.</p>"
+        },
+        "apiArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the <code>Api</code>.</p>"
+        },
+        "created":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the <code>Api</code> was created.</p>"
+        },
+        "xrayEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>A flag indicating whether to use X-Ray tracing for this <code>Api</code>.</p>"
+        },
+        "wafWebAclArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the WAF web access control list (web ACL) associated with this <code>Api</code>, if one exists.</p>"
+        },
+        "eventConfig":{
+          "shape":"EventConfig",
+          "documentation":"<p>The Event API configuration. This includes the default authorization configuration for connecting, publishing, and subscribing to an Event API.</p>"
+        }
+      },
+      "documentation":"<p>Describes an AppSync API. You can use <code>Api</code> for an AppSync API with your preferred configuration, such as an Event API that provides real-time message publishing and message subscriptions over WebSockets.</p>"
+    },
     "ApiAssociation":{
       "type":"structure",
       "members":{
@@ -1269,6 +1487,16 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "ApiName":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[A-Za-z0-9_\\-\\ ]+"
+    },
+    "Apis":{
+      "type":"list",
+      "member":{"shape":"Api"}
+    },
     "AppSyncRuntime":{
       "type":"structure",
       "required":[
@@ -1395,6 +1623,42 @@
         "SUCCESS"
       ]
     },
+    "AuthMode":{
+      "type":"structure",
+      "required":["authType"],
+      "members":{
+        "authType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>The authorization type.</p>"
+        }
+      },
+      "documentation":"<p>Describes an authorization configuration. Use <code>AuthMode</code> to specify the publishing and subscription authorization configuration for an Event API.</p>"
+    },
+    "AuthModes":{
+      "type":"list",
+      "member":{"shape":"AuthMode"}
+    },
+    "AuthProvider":{
+      "type":"structure",
+      "required":["authType"],
+      "members":{
+        "authType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>The authorization type.</p>"
+        },
+        "cognitoConfig":{
+          "shape":"CognitoConfig",
+          "documentation":"<p>Describes an Amazon Cognito user pool configuration.</p>"
+        },
+        "openIDConnectConfig":{"shape":"OpenIDConnectConfig"},
+        "lambdaAuthorizerConfig":{"shape":"LambdaAuthorizerConfig"}
+      },
+      "documentation":"<p>Describes an authorization provider.</p>"
+    },
+    "AuthProviders":{
+      "type":"list",
+      "member":{"shape":"AuthProvider"}
+    },
     "AuthenticationType":{
       "type":"string",
       "enum":[
@@ -1499,6 +1763,49 @@
       "min":20,
       "pattern":"^arn:[a-z-]*:(acm|iam):[a-z0-9-]*:\\d{12}:(certificate|server-certificate)/[0-9A-Za-z_/-]*$"
     },
+    "ChannelNamespace":{
+      "type":"structure",
+      "members":{
+        "apiId":{
+          "shape":"String",
+          "documentation":"<p>The <code>Api</code> ID.</p>"
+        },
+        "name":{
+          "shape":"Namespace",
+          "documentation":"<p>The name of the channel namespace. This name must be unique within the <code>Api</code>.</p>"
+        },
+        "subscribeAuthModes":{
+          "shape":"AuthModes",
+          "documentation":"<p>The authorization mode to use for subscribing to messages on the channel namespace. This configuration overrides the default <code>Api</code>authorization configuration.</p>"
+        },
+        "publishAuthModes":{
+          "shape":"AuthModes",
+          "documentation":"<p>The authorization mode to use for publishing messages on the channel namespace. This configuration overrides the default <code>Api</code>authorization configuration.</p>"
+        },
+        "codeHandlers":{
+          "shape":"Code",
+          "documentation":"<p>The event handler functions that run custom business logic to process published events and subscribe requests.</p>"
+        },
+        "tags":{"shape":"TagMap"},
+        "channelNamespaceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the <code>ChannelNamespace</code>.</p>"
+        },
+        "created":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the <code>ChannelNamespace</code> was created.</p>"
+        },
+        "lastModified":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the <code>ChannelNamespace</code> was last changed.</p>"
+        }
+      },
+      "documentation":"<p>Describes a channel namespace associated with an <code>Api</code>. The <code>ChannelNamespace</code> contains the definitions for code handlers for the <code>Api</code>.</p>"
+    },
+    "ChannelNamespaces":{
+      "type":"list",
+      "member":{"shape":"ChannelNamespace"}
+    },
     "Code":{
       "type":"string",
       "max":32768,
@@ -1547,6 +1854,28 @@
       "type":"list",
       "member":{"shape":"CodeError"}
     },
+    "CognitoConfig":{
+      "type":"structure",
+      "required":[
+        "userPoolId",
+        "awsRegion"
+      ],
+      "members":{
+        "userPoolId":{
+          "shape":"String",
+          "documentation":"<p>The user pool ID.</p>"
+        },
+        "awsRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region in which the user pool was created.</p>"
+        },
+        "appIdClientRegex":{
+          "shape":"String",
+          "documentation":"<p>A regular expression for validating the incoming Amazon Cognito user pool app client ID. If this value isn't set, no filtering is applied.</p>"
+        }
+      },
+      "documentation":"<p>Describes an Amazon Cognito configuration.</p>"
+    },
     "CognitoUserPoolConfig":{
       "type":"structure",
       "required":[
@@ -1584,6 +1913,15 @@
         "VERSION",
         "NONE"
       ]
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>A conflict with a previous successful update is detected. This typically occurs when the previous update did not have time to propagate before the next update was made. A retry (with appropriate backoff logic) is the recommended response to this exception.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
     },
     "ConflictHandlerType":{
       "type":"string",
@@ -1678,6 +2016,75 @@
         "apiKey":{
           "shape":"ApiKey",
           "documentation":"<p>The API key.</p>"
+        }
+      }
+    },
+    "CreateApiRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ApiName",
+          "documentation":"<p>The name for the <code>Api</code>.</p>"
+        },
+        "ownerContact":{
+          "shape":"String",
+          "documentation":"<p>The owner contact information for the <code>Api</code>.</p>"
+        },
+        "tags":{"shape":"TagMap"},
+        "eventConfig":{
+          "shape":"EventConfig",
+          "documentation":"<p>The Event API configuration. This includes the default authorization configuration for connecting, publishing, and subscribing to an Event API.</p>"
+        }
+      }
+    },
+    "CreateApiResponse":{
+      "type":"structure",
+      "members":{
+        "api":{
+          "shape":"Api",
+          "documentation":"<p>The <code>Api</code> object.</p>"
+        }
+      }
+    },
+    "CreateChannelNamespaceRequest":{
+      "type":"structure",
+      "required":[
+        "apiId",
+        "name"
+      ],
+      "members":{
+        "apiId":{
+          "shape":"String",
+          "documentation":"<p>The <code>Api</code> ID.</p>",
+          "location":"uri",
+          "locationName":"apiId"
+        },
+        "name":{
+          "shape":"Namespace",
+          "documentation":"<p>The name of the <code>ChannelNamespace</code>. This name must be unique within the <code>Api</code> </p>"
+        },
+        "subscribeAuthModes":{
+          "shape":"AuthModes",
+          "documentation":"<p>The authorization mode to use for subscribing to messages on the channel namespace. This configuration overrides the default <code>Api</code> authorization configuration.</p>"
+        },
+        "publishAuthModes":{
+          "shape":"AuthModes",
+          "documentation":"<p>The authorization mode to use for publishing messages on the channel namespace. This configuration overrides the default <code>Api</code> authorization configuration.</p>"
+        },
+        "codeHandlers":{
+          "shape":"Code",
+          "documentation":"<p>The event handler functions that run custom business logic to process published events and subscribe requests.</p>"
+        },
+        "tags":{"shape":"TagMap"}
+      }
+    },
+    "CreateChannelNamespaceResponse":{
+      "type":"structure",
+      "members":{
+        "channelNamespace":{
+          "shape":"ChannelNamespace",
+          "documentation":"<p>The <code>ChannelNamespace</code> object.</p>"
         }
       }
     },
@@ -1886,10 +2293,6 @@
           "shape":"LambdaAuthorizerConfig",
           "documentation":"<p>Configuration for Lambda function authorization.</p>"
         },
-        "visibility":{
-          "shape":"GraphQLApiVisibility",
-          "documentation":"<p>Sets the value of the GraphQL API to public (<code>GLOBAL</code>) or private (<code>PRIVATE</code>). If no value is provided, the visibility will be set to <code>GLOBAL</code> by default. This value cannot be changed once the API has been created.</p>"
-        },
         "apiType":{
           "shape":"GraphQLApiType",
           "documentation":"<p>The value that indicates whether the GraphQL API is a standard API (<code>GRAPHQL</code>) or merged API (<code>MERGED</code>).</p>"
@@ -1897,6 +2300,10 @@
         "mergedApiExecutionRoleArn":{
           "shape":"String",
           "documentation":"<p>The Identity and Access Management service role ARN for a merged API. The AppSync service assumes this role on behalf of the Merged API to validate access to source APIs at runtime and to prompt the <code>AUTO_MERGE</code> to update the merged API endpoint with the source API changes automatically.</p>"
+        },
+        "visibility":{
+          "shape":"GraphQLApiVisibility",
+          "documentation":"<p>Sets the value of the GraphQL API to public (<code>GLOBAL</code>) or private (<code>PRIVATE</code>). If no value is provided, the visibility will be set to <code>GLOBAL</code> by default. This value cannot be changed once the API has been created.</p>"
         },
         "ownerContact":{
           "shape":"String",
@@ -2298,6 +2705,49 @@
       }
     },
     "DeleteApiKeyResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteApiRequest":{
+      "type":"structure",
+      "required":["apiId"],
+      "members":{
+        "apiId":{
+          "shape":"String",
+          "documentation":"<p>The <code>Api</code> ID.</p>",
+          "location":"uri",
+          "locationName":"apiId"
+        }
+      }
+    },
+    "DeleteApiResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteChannelNamespaceRequest":{
+      "type":"structure",
+      "required":[
+        "apiId",
+        "name"
+      ],
+      "members":{
+        "apiId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the <code>Api</code> associated with the <code>ChannelNamespace</code>.</p>",
+          "location":"uri",
+          "locationName":"apiId"
+        },
+        "name":{
+          "shape":"Namespace",
+          "documentation":"<p>The name of the <code>ChannelNamespace</code>.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "DeleteChannelNamespaceResponse":{
       "type":"structure",
       "members":{
       }
@@ -2792,6 +3242,66 @@
       },
       "documentation":"<p>Describes an Amazon EventBridge bus data source configuration.</p>"
     },
+    "EventConfig":{
+      "type":"structure",
+      "required":[
+        "authProviders",
+        "connectionAuthModes",
+        "defaultPublishAuthModes",
+        "defaultSubscribeAuthModes"
+      ],
+      "members":{
+        "authProviders":{
+          "shape":"AuthProviders",
+          "documentation":"<p>A list of authorization providers.</p>"
+        },
+        "connectionAuthModes":{
+          "shape":"AuthModes",
+          "documentation":"<p>A list of valid authorization modes for the Event API connections.</p>"
+        },
+        "defaultPublishAuthModes":{
+          "shape":"AuthModes",
+          "documentation":"<p>A list of valid authorization modes for the Event API publishing.</p>"
+        },
+        "defaultSubscribeAuthModes":{
+          "shape":"AuthModes",
+          "documentation":"<p>A list of valid authorization modes for the Event API subscriptions.</p>"
+        },
+        "logConfig":{
+          "shape":"EventLogConfig",
+          "documentation":"<p>The CloudWatch Logs configuration for the Event API.</p>"
+        }
+      },
+      "documentation":"<p>Describes the authorization configuration for connections, message publishing, message subscriptions, and logging for an Event API.</p>"
+    },
+    "EventLogConfig":{
+      "type":"structure",
+      "required":[
+        "logLevel",
+        "cloudWatchLogsRoleArn"
+      ],
+      "members":{
+        "logLevel":{
+          "shape":"EventLogLevel",
+          "documentation":"<p>The type of information to log for the Event API. </p>"
+        },
+        "cloudWatchLogsRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The IAM service role that AppSync assumes to publish CloudWatch Logs in your account.</p>"
+        }
+      },
+      "documentation":"<p>Describes the CloudWatch Logs configuration for the Event API.</p>"
+    },
+    "EventLogLevel":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "ERROR",
+        "ALL",
+        "INFO",
+        "DEBUG"
+      ]
+    },
     "FieldLogLevel":{
       "type":"string",
       "enum":[
@@ -2921,6 +3431,57 @@
       },
       "documentation":"<p>Represents the output of a <code>GetApiCache</code> operation.</p>"
     },
+    "GetApiRequest":{
+      "type":"structure",
+      "required":["apiId"],
+      "members":{
+        "apiId":{
+          "shape":"String",
+          "documentation":"<p>The <code>Api</code> ID.</p>",
+          "location":"uri",
+          "locationName":"apiId"
+        }
+      }
+    },
+    "GetApiResponse":{
+      "type":"structure",
+      "members":{
+        "api":{
+          "shape":"Api",
+          "documentation":"<p>The <code>Api</code> object.</p>"
+        }
+      }
+    },
+    "GetChannelNamespaceRequest":{
+      "type":"structure",
+      "required":[
+        "apiId",
+        "name"
+      ],
+      "members":{
+        "apiId":{
+          "shape":"String",
+          "documentation":"<p>The <code>Api</code> ID.</p>",
+          "location":"uri",
+          "locationName":"apiId"
+        },
+        "name":{
+          "shape":"Namespace",
+          "documentation":"<p>The name of the <code>ChannelNamespace</code>.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetChannelNamespaceResponse":{
+      "type":"structure",
+      "members":{
+        "channelNamespace":{
+          "shape":"ChannelNamespace",
+          "documentation":"<p>The <code>ChannelNamespace</code> object.</p>"
+        }
+      }
+    },
     "GetDataSourceIntrospectionRequest":{
       "type":"structure",
       "required":["introspectionId"],
@@ -2933,7 +3494,7 @@
         },
         "includeModelsSDL":{
           "shape":"Boolean",
-          "documentation":"<p>A boolean flag that determines whether SDL should be generated for introspected types or not. If set to <code>true</code>, each model will contain an <code>sdl</code> property that contains the SDL for that type. The SDL only contains the type data and no additional metadata or directives. </p>",
+          "documentation":"<p>A boolean flag that determines whether SDL should be generated for introspected types. If set to <code>true</code>, each model will contain an <code>sdl</code> property that contains the SDL for that type. The SDL only contains the type data and no additional metadata or directives. </p>",
           "location":"querystring",
           "locationName":"includeModelsSDL"
         },
@@ -3503,6 +4064,73 @@
         }
       }
     },
+    "ListApisRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results that you want the request to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListApisResponse":{
+      "type":"structure",
+      "members":{
+        "apis":{
+          "shape":"Apis",
+          "documentation":"<p>The <code>Api</code> objects.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>"
+        }
+      }
+    },
+    "ListChannelNamespacesRequest":{
+      "type":"structure",
+      "required":["apiId"],
+      "members":{
+        "apiId":{
+          "shape":"String",
+          "documentation":"<p>The <code>Api</code> ID.</p>",
+          "location":"uri",
+          "locationName":"apiId"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results that you want the request to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListChannelNamespacesResponse":{
+      "type":"structure",
+      "members":{
+        "channelNamespaces":{
+          "shape":"ChannelNamespaces",
+          "documentation":"<p>The <code>ChannelNamespace</code> objects.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>An identifier that was returned from the previous call to this operation, which you can use to return the next set of items in the list.</p>"
+        }
+      }
+    },
     "ListDataSourcesRequest":{
       "type":"structure",
       "required":["apiId"],
@@ -3907,7 +4535,7 @@
       "members":{
         "fieldLogLevel":{
           "shape":"FieldLogLevel",
-          "documentation":"<p>The field logging level. Values can be NONE, ERROR, INFO, DEBUG, or ALL.</p> <ul> <li> <p> <b>NONE</b>: No field-level logs are captured.</p> </li> <li> <p> <b>ERROR</b>: Logs the following information <b>only</b> for the fields that are in the error category:</p> <ul> <li> <p>The error section in the server response.</p> </li> <li> <p>Field-level errors.</p> </li> <li> <p>The generated request/response functions that got resolved for error fields.</p> </li> </ul> </li> <li> <p> <b>INFO</b>: Logs the following information <b>only</b> for the fields that are in the info and error categories:</p> <ul> <li> <p>Info-level messages.</p> </li> <li> <p>The user messages sent through <code>$util.log.info</code> and <code>console.log</code>.</p> </li> <li> <p>Field-level tracing and mapping logs are not shown.</p> </li> </ul> </li> <li> <p> <b>DEBUG</b>: Logs the following information <b>only</b> for the fields that are in the debug, info, and error categories:</p> <ul> <li> <p>Debug-level messages.</p> </li> <li> <p>The user messages sent through <code>$util.log.info</code>, <code>$util.log.debug</code>, <code>console.log</code>, and <code>console.debug</code>.</p> </li> <li> <p>Field-level tracing and mapping logs are not shown.</p> </li> </ul> </li> <li> <p> <b>ALL</b>: The following information is logged for all fields in the query:</p> <ul> <li> <p>Field-level tracing information.</p> </li> <li> <p>The generated request/response functions that were resolved for each field.</p> </li> </ul> </li> </ul>"
+          "documentation":"<p>The field logging level. Values can be NONE, ERROR, or ALL.</p> <ul> <li> <p> <b>NONE</b>: No field-level logs are captured.</p> </li> <li> <p> <b>ERROR</b>: Logs the following information only for the fields that are in error:</p> <ul> <li> <p>The error section in the server response.</p> </li> <li> <p>Field-level errors.</p> </li> <li> <p>The generated request/response functions that got resolved for error fields.</p> </li> </ul> </li> <li> <p> <b>ALL</b>: The following information is logged for all fields in the query:</p> <ul> <li> <p>Field-level tracing information.</p> </li> <li> <p>The generated request/response functions that got resolved for each field.</p> </li> </ul> </li> </ul>"
         },
         "cloudWatchLogsRoleArn":{
           "shape":"String",
@@ -3952,6 +4580,12 @@
         "MANUAL_MERGE",
         "AUTO_MERGE"
       ]
+    },
+    "Namespace":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"([A-Za-z0-9](?:[A-Za-z0-9\\-]{0,48}[A-Za-z0-9])?)"
     },
     "NotFoundException":{
       "type":"structure",
@@ -4017,6 +4651,12 @@
         "JSON"
       ]
     },
+    "OwnerContact":{
+      "type":"string",
+      "max":250,
+      "min":0,
+      "pattern":"[A-Za-z0-9_\\-\\ \\.]+"
+    },
     "Ownership":{
       "type":"string",
       "enum":[
@@ -4028,7 +4668,7 @@
       "type":"string",
       "max":65536,
       "min":1,
-      "pattern":"[\\\\S]+"
+      "pattern":"[\\S]+"
     },
     "PipelineConfig":{
       "type":"structure",
@@ -4272,6 +4912,15 @@
         "SUCCESS",
         "NOT_APPLICABLE"
       ]
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The operation exceeded the service quota for this resource.</p>",
+      "error":{"httpStatusCode":402},
+      "exception":true
     },
     "SourceApiAssociation":{
       "type":"structure",
@@ -4549,6 +5198,7 @@
       "min":2,
       "pattern":"^[\\s\\S]*$"
     },
+    "Timestamp":{"type":"timestamp"},
     "Type":{
       "type":"structure",
       "members":{
@@ -4700,6 +5350,84 @@
         "apiKey":{
           "shape":"ApiKey",
           "documentation":"<p>The API key.</p>"
+        }
+      }
+    },
+    "UpdateApiRequest":{
+      "type":"structure",
+      "required":[
+        "apiId",
+        "name"
+      ],
+      "members":{
+        "apiId":{
+          "shape":"String",
+          "documentation":"<p>The <code>Api</code> ID.</p>",
+          "location":"uri",
+          "locationName":"apiId"
+        },
+        "name":{
+          "shape":"ApiName",
+          "documentation":"<p>The name of the Api.</p>"
+        },
+        "ownerContact":{
+          "shape":"String",
+          "documentation":"<p>The owner contact information for the <code>Api</code>.</p>"
+        },
+        "eventConfig":{
+          "shape":"EventConfig",
+          "documentation":"<p>The new event configuration. This includes the default authorization configuration for connecting, publishing, and subscribing to an Event API.</p>"
+        }
+      }
+    },
+    "UpdateApiResponse":{
+      "type":"structure",
+      "members":{
+        "api":{
+          "shape":"Api",
+          "documentation":"<p>The <code>Api</code> object.</p>"
+        }
+      }
+    },
+    "UpdateChannelNamespaceRequest":{
+      "type":"structure",
+      "required":[
+        "apiId",
+        "name"
+      ],
+      "members":{
+        "apiId":{
+          "shape":"String",
+          "documentation":"<p>The <code>Api</code> ID.</p>",
+          "location":"uri",
+          "locationName":"apiId"
+        },
+        "name":{
+          "shape":"Namespace",
+          "documentation":"<p>The name of the <code>ChannelNamespace</code>.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "subscribeAuthModes":{
+          "shape":"AuthModes",
+          "documentation":"<p>The authorization mode to use for subscribing to messages on the channel namespace. This configuration overrides the default <code>Api</code> authorization configuration.</p>"
+        },
+        "publishAuthModes":{
+          "shape":"AuthModes",
+          "documentation":"<p>The authorization mode to use for publishing messages on the channel namespace. This configuration overrides the default <code>Api</code> authorization configuration.</p>"
+        },
+        "codeHandlers":{
+          "shape":"Code",
+          "documentation":"<p>The event handler functions that run custom business logic to process published events and subscribe requests.</p>"
+        }
+      }
+    },
+    "UpdateChannelNamespaceResponse":{
+      "type":"structure",
+      "members":{
+        "channelNamespace":{
+          "shape":"ChannelNamespace",
+          "documentation":"<p>The <code>ChannelNamespace</code> object.</p>"
         }
       }
     },
@@ -4873,8 +5601,7 @@
       "type":"structure",
       "required":[
         "apiId",
-        "name",
-        "authenticationType"
+        "name"
       ],
       "members":{
         "apiId":{

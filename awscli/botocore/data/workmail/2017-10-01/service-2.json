@@ -5,11 +5,13 @@
     "endpointPrefix":"workmail",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"Amazon WorkMail",
     "serviceId":"WorkMail",
     "signatureVersion":"v4",
     "targetPrefix":"WorkMailService",
-    "uid":"workmail-2017-10-01"
+    "uid":"workmail-2017-10-01",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AssociateDelegateToResource":{
@@ -144,6 +146,20 @@
         {"shape":"UnsupportedOperationException"}
       ],
       "documentation":"<p>Creates a group that can be used in WorkMail by calling the <a>RegisterToWorkMail</a> operation.</p>",
+      "idempotent":true
+    },
+    "CreateIdentityCenterApplication":{
+      "name":"CreateIdentityCenterApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateIdentityCenterApplicationRequest"},
+      "output":{"shape":"CreateIdentityCenterApplicationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p> Creates the WorkMail application in IAM Identity Center that can be used later in the WorkMail - IdC integration. For more information, see PutIdentityProviderConfiguration. This action does not affect the authentication settings for any WorkMail organizations. </p>",
       "idempotent":true
     },
     "CreateImpersonationRole":{
@@ -324,6 +340,37 @@
       "documentation":"<p>Deletes a group from WorkMail.</p>",
       "idempotent":true
     },
+    "DeleteIdentityCenterApplication":{
+      "name":"DeleteIdentityCenterApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIdentityCenterApplicationRequest"},
+      "output":{"shape":"DeleteIdentityCenterApplicationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationStateException"}
+      ],
+      "documentation":"<p> Deletes the IAM Identity Center application from WorkMail. This action does not affect the authentication settings for any WorkMail organizations. </p>",
+      "idempotent":true
+    },
+    "DeleteIdentityProviderConfiguration":{
+      "name":"DeleteIdentityProviderConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIdentityProviderConfigurationRequest"},
+      "output":{"shape":"DeleteIdentityProviderConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"}
+      ],
+      "documentation":"<p> Disables the integration between IdC and WorkMail. Authentication will continue with the directory as it was before the IdC integration. You might have to reset your directory passwords and reconfigure your desktop and mobile email clients. </p>",
+      "idempotent":true
+    },
     "DeleteImpersonationRole":{
       "name":"DeleteImpersonationRole",
       "http":{
@@ -402,6 +449,22 @@
         {"shape":"OrganizationStateException"}
       ],
       "documentation":"<p>Deletes an WorkMail organization and all underlying AWS resources managed by WorkMail as part of the organization. You can choose whether to delete the associated directory. For more information, see <a href=\"https://docs.aws.amazon.com/workmail/latest/adminguide/remove_organization.html\">Removing an organization</a> in the <i>WorkMail Administrator Guide</i>.</p>",
+      "idempotent":true
+    },
+    "DeletePersonalAccessToken":{
+      "name":"DeletePersonalAccessToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeletePersonalAccessTokenRequest"},
+      "output":{"shape":"DeletePersonalAccessTokenResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"}
+      ],
+      "documentation":"<p> Deletes the Personal Access Token from the provided WorkMail Organization. </p>",
       "idempotent":true
     },
     "DeleteResource":{
@@ -545,6 +608,23 @@
       "documentation":"<p>Returns the data available for the group.</p>",
       "idempotent":true
     },
+    "DescribeIdentityProviderConfiguration":{
+      "name":"DescribeIdentityProviderConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeIdentityProviderConfigurationRequest"},
+      "output":{"shape":"DescribeIdentityProviderConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p> Returns detailed information on the current IdC setup for the WorkMail organization. </p>",
+      "idempotent":true
+    },
     "DescribeInboundDmarcSettings":{
       "name":"DescribeInboundDmarcSettings",
       "http":{
@@ -619,6 +699,8 @@
       "input":{"shape":"DescribeUserRequest"},
       "output":{"shape":"DescribeUserResponse"},
       "errors":[
+        {"shape":"DirectoryServiceAuthenticationFailedException"},
+        {"shape":"DirectoryUnavailableException"},
         {"shape":"EntityNotFoundException"},
         {"shape":"InvalidParameterException"},
         {"shape":"OrganizationNotFoundException"},
@@ -801,6 +883,23 @@
       ],
       "documentation":"<p>Gets the mobile device access override for the given WorkMail organization, user, and device.</p>"
     },
+    "GetPersonalAccessTokenMetadata":{
+      "name":"GetPersonalAccessTokenMetadata",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetPersonalAccessTokenMetadataRequest"},
+      "output":{"shape":"GetPersonalAccessTokenMetadataResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"}
+      ],
+      "documentation":"<p> Requests details of a specific Personal Access Token within the WorkMail organization. </p>",
+      "idempotent":true
+    },
     "ListAccessControlRules":{
       "name":"ListAccessControlRules",
       "http":{
@@ -843,7 +942,8 @@
       "output":{"shape":"ListAvailabilityConfigurationsResponse"},
       "errors":[
         {"shape":"OrganizationNotFoundException"},
-        {"shape":"OrganizationStateException"}
+        {"shape":"OrganizationStateException"},
+        {"shape":"InvalidParameterException"}
       ],
       "documentation":"<p>List all the <code>AvailabilityConfiguration</code>'s for the given WorkMail organization.</p>"
     },
@@ -1009,6 +1109,24 @@
       "documentation":"<p>Returns summaries of the customer's organizations.</p>",
       "idempotent":true
     },
+    "ListPersonalAccessTokens":{
+      "name":"ListPersonalAccessTokens",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListPersonalAccessTokensRequest"},
+      "output":{"shape":"ListPersonalAccessTokensResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"EntityStateException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"}
+      ],
+      "documentation":"<p> Returns a summary of your Personal Access Tokens. </p>",
+      "idempotent":true
+    },
     "ListResourceDelegates":{
       "name":"ListResourceDelegates",
       "http":{
@@ -1107,6 +1225,23 @@
         {"shape":"OrganizationStateException"}
       ],
       "documentation":"<p>Creates or updates the email monitoring configuration for a specified organization.</p>",
+      "idempotent":true
+    },
+    "PutIdentityProviderConfiguration":{
+      "name":"PutIdentityProviderConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutIdentityProviderConfigurationRequest"},
+      "output":{"shape":"PutIdentityProviderConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationStateException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p> Enables integration between IAM Identity Center (IdC) and WorkMail to proxy authentication requests for mailbox users. You can connect your IdC directory or your external directory to WorkMail through IdC and manage access to WorkMail mailboxes in a single place. For enhanced protection, you could enable Multifactor Authentication (MFA) and Personal Access Tokens. </p>",
       "idempotent":true
     },
     "PutInboundDmarcSettings":{
@@ -1354,7 +1489,7 @@
         {"shape":"UnsupportedOperationException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Updates attibutes in a group.</p>",
+      "documentation":"<p>Updates attributes in a group.</p>",
       "idempotent":true
     },
     "UpdateImpersonationRole":{
@@ -1600,6 +1735,12 @@
       "max":1011,
       "min":1,
       "pattern":"arn:aws:workmail:[a-z0-9-]*:[a-z0-9-]+:[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,1023}"
+    },
+    "ApplicationArn":{
+      "type":"string",
+      "max":1224,
+      "min":10,
+      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}$"
     },
     "AssociateDelegateToResourceRequest":{
       "type":"structure",
@@ -1866,6 +2007,37 @@
         }
       }
     },
+    "CreateIdentityCenterApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "InstanceArn"
+      ],
+      "members":{
+        "Name":{
+          "shape":"IdentityCenterApplicationName",
+          "documentation":"<p> The name of the IAM Identity Center application. </p>"
+        },
+        "InstanceArn":{
+          "shape":"InstanceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the instance. </p>"
+        },
+        "ClientToken":{
+          "shape":"IdempotencyClientToken",
+          "documentation":"<p> The idempotency token associated with the request. </p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateIdentityCenterApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "ApplicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the application. </p>"
+        }
+      }
+    },
     "CreateImpersonationRoleRequest":{
       "type":"structure",
       "required":[
@@ -2101,6 +2273,10 @@
         "HiddenFromGlobalAddressList":{
           "shape":"Boolean",
           "documentation":"<p>If this parameter is enabled, the user will be hidden from the address book.</p>"
+        },
+        "IdentityProviderUserId":{
+          "shape":"IdentityProviderUserId",
+          "documentation":"<p>User ID from the IAM Identity Center. If this parameter is empty it will be updated automatically when the user logs in for the first time to the mailbox associated with WorkMail.</p>"
         }
       }
     },
@@ -2239,6 +2415,36 @@
       "members":{
       }
     },
+    "DeleteIdentityCenterApplicationRequest":{
+      "type":"structure",
+      "required":["ApplicationArn"],
+      "members":{
+        "ApplicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the application. </p>"
+        }
+      }
+    },
+    "DeleteIdentityCenterApplicationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteIdentityProviderConfigurationRequest":{
+      "type":"structure",
+      "required":["OrganizationId"],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p> The Organization ID. </p>"
+        }
+      }
+    },
+    "DeleteIdentityProviderConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteImpersonationRoleRequest":{
       "type":"structure",
       "required":[
@@ -2360,6 +2566,10 @@
         "ForceDelete":{
           "shape":"Boolean",
           "documentation":"<p>Deletes a WorkMail organization even if the organization has enabled users.</p>"
+        },
+        "DeleteIdentityCenterApplication":{
+          "shape":"Boolean",
+          "documentation":"<p>Deletes IAM Identity Center application for WorkMail. This action does not affect authentication settings for any organization.</p>"
         }
       }
     },
@@ -2374,6 +2584,28 @@
           "shape":"String",
           "documentation":"<p>The state of the organization.</p>"
         }
+      }
+    },
+    "DeletePersonalAccessTokenRequest":{
+      "type":"structure",
+      "required":[
+        "OrganizationId",
+        "PersonalAccessTokenId"
+      ],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p> The Organization ID. </p>"
+        },
+        "PersonalAccessTokenId":{
+          "shape":"PersonalAccessTokenId",
+          "documentation":"<p> The Personal Access Token ID.</p>"
+        }
+      }
+    },
+    "DeletePersonalAccessTokenResponse":{
+      "type":"structure",
+      "members":{
       }
     },
     "DeleteResourceRequest":{
@@ -2590,6 +2822,33 @@
         "HiddenFromGlobalAddressList":{
           "shape":"Boolean",
           "documentation":"<p>If the value is set to <i>true</i>, the group is hidden from the address book.</p>"
+        }
+      }
+    },
+    "DescribeIdentityProviderConfigurationRequest":{
+      "type":"structure",
+      "required":["OrganizationId"],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p> The Organization ID. </p>"
+        }
+      }
+    },
+    "DescribeIdentityProviderConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "AuthenticationMode":{
+          "shape":"IdentityProviderAuthenticationMode",
+          "documentation":"<p> The authentication mode used in WorkMail.</p>"
+        },
+        "IdentityCenterConfiguration":{
+          "shape":"IdentityCenterConfiguration",
+          "documentation":"<p> The details of the IAM Identity Center configuration. </p>"
+        },
+        "PersonalAccessTokenConfiguration":{
+          "shape":"PersonalAccessTokenConfiguration",
+          "documentation":"<p> The details of the Personal Access Token configuration. </p>"
         }
       }
     },
@@ -2914,6 +3173,14 @@
         "Office":{
           "shape":"UserAttribute",
           "documentation":"<p>Office where the user is located.</p>"
+        },
+        "IdentityProviderUserId":{
+          "shape":"IdentityProviderUserId",
+          "documentation":"<p>User ID from the IAM Identity Center. If this parameter is empty it will be updated automatically when the user logs in for the first time to the mailbox associated with WorkMail.</p>"
+        },
+        "IdentityProviderIdentityStoreId":{
+          "shape":"IdentityProviderIdentityStoreId",
+          "documentation":"<p> Identity Store ID from the IAM Identity Center. If this parameter is empty it will be updated automatically when the user logs in for the first time to the mailbox associated with WorkMail. </p>"
         }
       }
     },
@@ -3571,6 +3838,56 @@
         }
       }
     },
+    "GetPersonalAccessTokenMetadataRequest":{
+      "type":"structure",
+      "required":[
+        "OrganizationId",
+        "PersonalAccessTokenId"
+      ],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p> The Organization ID. </p>"
+        },
+        "PersonalAccessTokenId":{
+          "shape":"PersonalAccessTokenId",
+          "documentation":"<p> The Personal Access Token ID.</p>"
+        }
+      }
+    },
+    "GetPersonalAccessTokenMetadataResponse":{
+      "type":"structure",
+      "members":{
+        "PersonalAccessTokenId":{
+          "shape":"PersonalAccessTokenId",
+          "documentation":"<p> The Personal Access Token ID.</p>"
+        },
+        "UserId":{
+          "shape":"WorkMailIdentifier",
+          "documentation":"<p> The WorkMail User ID. </p>"
+        },
+        "Name":{
+          "shape":"PersonalAccessTokenName",
+          "documentation":"<p> The Personal Access Token name. </p>"
+        },
+        "DateCreated":{
+          "shape":"Timestamp",
+          "documentation":"<p> The date when the Personal Access Token ID was created. </p>"
+        },
+        "DateLastUsed":{
+          "shape":"Timestamp",
+          "documentation":"<p> The date when the Personal Access Token ID was last used. </p>"
+        },
+        "ExpiresTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The time when the Personal Access Token ID will expire. </p>"
+        },
+        "Scopes":{
+          "shape":"PersonalAccessTokenScopeList",
+          "documentation":"<p> Lists all the Personal Access Token permissions for a mailbox. </p>"
+        }
+      }
+    },
     "Group":{
       "type":"structure",
       "members":{
@@ -3640,6 +3957,61 @@
       "max":128,
       "min":1,
       "pattern":"[\\x21-\\x7e]+"
+    },
+    "IdentityCenterApplicationName":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "pattern":"^[\\w+=,.@-]+$"
+    },
+    "IdentityCenterConfiguration":{
+      "type":"structure",
+      "required":[
+        "InstanceArn",
+        "ApplicationArn"
+      ],
+      "members":{
+        "InstanceArn":{
+          "shape":"InstanceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the of IAM Identity Center instance. Must be in the same AWS account and region as WorkMail organization.</p>"
+        },
+        "ApplicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of IAMIdentity Center Application for WorkMail. Must be created by the WorkMail API, see CreateIdentityCenterApplication.</p>"
+        }
+      },
+      "documentation":"<p> The IAM Identity Center configuration. </p>"
+    },
+    "IdentityProviderAuthenticationMode":{
+      "type":"string",
+      "enum":[
+        "IDENTITY_PROVIDER_ONLY",
+        "IDENTITY_PROVIDER_AND_DIRECTORY"
+      ]
+    },
+    "IdentityProviderIdentityStoreId":{
+      "type":"string",
+      "max":36,
+      "min":1,
+      "pattern":"^d-[0-9a-f]{10}$|^[0-9a-f]{8}\\\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\\\b[0-9a-f]{12}$"
+    },
+    "IdentityProviderUserId":{
+      "type":"string",
+      "max":47,
+      "min":1,
+      "pattern":"^([0-9a-f]{10}-|)[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$"
+    },
+    "IdentityProviderUserIdForUpdate":{
+      "type":"string",
+      "max":47,
+      "min":0,
+      "pattern":"^$|^([0-9a-f]{10}-|)[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$"
+    },
+    "IdentityProviderUserIdPrefix":{
+      "type":"string",
+      "max":47,
+      "min":1,
+      "pattern":"^[A-Fa-f0-9-]+$"
     },
     "ImpersonationMatchedRule":{
       "type":"structure",
@@ -3787,6 +4159,12 @@
       "max":256,
       "min":1,
       "pattern":"[\\x21-\\x7e]+"
+    },
+    "InstanceArn":{
+      "type":"string",
+      "max":1124,
+      "min":10,
+      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$"
     },
     "InvalidConfigurationException":{
       "type":"structure",
@@ -4319,6 +4697,41 @@
         }
       }
     },
+    "ListPersonalAccessTokensRequest":{
+      "type":"structure",
+      "required":["OrganizationId"],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p> The Organization ID. </p>"
+        },
+        "UserId":{
+          "shape":"EntityIdentifier",
+          "documentation":"<p> The WorkMail User ID. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token from the previous response to query the next page.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> The maximum amount of items that should be returned in a response. </p>"
+        }
+      }
+    },
+    "ListPersonalAccessTokensResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token from the previous response to query the next page.</p>"
+        },
+        "PersonalAccessTokenSummaries":{
+          "shape":"PersonalAccessTokenSummaryList",
+          "documentation":"<p> Lists all the personal tokens in an organization or user, if user ID is provided. </p>"
+        }
+      }
+    },
     "ListResourceDelegatesRequest":{
       "type":"structure",
       "required":[
@@ -4447,6 +4860,10 @@
         "State":{
           "shape":"EntityState",
           "documentation":"<p>Filters only users with the provided state.</p>"
+        },
+        "IdentityProviderUserIdPrefix":{
+          "shape":"IdentityProviderUserIdPrefix",
+          "documentation":"<p>Filters only users with the ID from the IAM Identity Center.</p>"
         }
       },
       "documentation":"<p> Filtering options for <i>ListUsers</i> operation. This is only used as input to Operation.</p>"
@@ -4811,7 +5228,8 @@
     "NewResourceDescription":{
       "type":"string",
       "max":64,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "NextToken":{
       "type":"string",
@@ -4927,6 +5345,96 @@
       "type":"list",
       "member":{"shape":"Permission"}
     },
+    "PersonalAccessTokenConfiguration":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"PersonalAccessTokenConfigurationStatus",
+          "documentation":"<p> The status of the Personal Access Token allowed for the organization. </p> <ul> <li> <p> <i>Active</i> - Mailbox users can login to the web application and choose <i>Settings</i> to see the new <i>Personal Access Tokens</i> page to create and delete the Personal Access Tokens. Mailbox users can use the Personal Access Tokens to set up mailbox connection from desktop or mobile email clients.</p> </li> <li> <p> <i>Inactive</i> - Personal Access Tokens are disabled for your organization. Mailbox users can’t create, list, or delete Personal Access Tokens and can’t use them to connect to their mailboxes from desktop or mobile email clients.</p> </li> </ul>"
+        },
+        "LifetimeInDays":{
+          "shape":"PersonalAccessTokenLifetimeInDays",
+          "documentation":"<p> The validity of the Personal Access Token status in days. </p>"
+        }
+      },
+      "documentation":"<p> Displays the Personal Access Token status. </p>"
+    },
+    "PersonalAccessTokenConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "PersonalAccessTokenId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "PersonalAccessTokenLifetimeInDays":{
+      "type":"integer",
+      "box":true,
+      "max":3653,
+      "min":1
+    },
+    "PersonalAccessTokenName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[^\\x00-\\x1F\\x7F\\x3C\\x3E\\x5C]+"
+    },
+    "PersonalAccessTokenScope":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\x00-\\x1F\\x7F\\x3C\\x3E\\x5C]+"
+    },
+    "PersonalAccessTokenScopeList":{
+      "type":"list",
+      "member":{"shape":"PersonalAccessTokenScope"},
+      "max":10,
+      "min":1
+    },
+    "PersonalAccessTokenSummary":{
+      "type":"structure",
+      "members":{
+        "PersonalAccessTokenId":{
+          "shape":"PersonalAccessTokenId",
+          "documentation":"<p> The ID of the Personal Access Token. </p>"
+        },
+        "UserId":{
+          "shape":"WorkMailIdentifier",
+          "documentation":"<p> The user ID of the WorkMail user associated with the Personal Access Token. </p>"
+        },
+        "Name":{
+          "shape":"PersonalAccessTokenName",
+          "documentation":"<p> The name of the Personal Access Token. </p>"
+        },
+        "DateCreated":{
+          "shape":"Timestamp",
+          "documentation":"<p> The date when the Personal Access Token was created. </p>"
+        },
+        "DateLastUsed":{
+          "shape":"Timestamp",
+          "documentation":"<p> The date when the Personal Access Token was last used. </p>"
+        },
+        "ExpiresTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The date when the Personal Access Token will expire. </p>"
+        },
+        "Scopes":{
+          "shape":"PersonalAccessTokenScopeList",
+          "documentation":"<p> Lists all the Personal Access Token permissions for a mailbox. </p>"
+        }
+      },
+      "documentation":"<p> The summary of the Personal Access Token. </p>"
+    },
+    "PersonalAccessTokenSummaryList":{
+      "type":"list",
+      "member":{"shape":"PersonalAccessTokenSummary"}
+    },
     "PolicyDescription":{
       "type":"string",
       "max":256,
@@ -5020,6 +5528,38 @@
       }
     },
     "PutEmailMonitoringConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "PutIdentityProviderConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "OrganizationId",
+        "AuthenticationMode",
+        "IdentityCenterConfiguration",
+        "PersonalAccessTokenConfiguration"
+      ],
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p> The ID of the WorkMail Organization. </p>"
+        },
+        "AuthenticationMode":{
+          "shape":"IdentityProviderAuthenticationMode",
+          "documentation":"<p> The authentication mode used in WorkMail.</p>"
+        },
+        "IdentityCenterConfiguration":{
+          "shape":"IdentityCenterConfiguration",
+          "documentation":"<p> The details of the IAM Identity Center configuration.</p>"
+        },
+        "PersonalAccessTokenConfiguration":{
+          "shape":"PersonalAccessTokenConfiguration",
+          "documentation":"<p> The details of the Personal Access Token configuration. </p>"
+        }
+      }
+    },
+    "PutIdentityProviderConfigurationResponse":{
       "type":"structure",
       "members":{
       }
@@ -5297,7 +5837,8 @@
     "ResourceDescription":{
       "type":"string",
       "max":64,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "ResourceId":{
       "type":"string",
@@ -5908,7 +6449,7 @@
         },
         "ZipCode":{
           "shape":"UserAttribute",
-          "documentation":"<p>Updates the user's zipcode.</p>"
+          "documentation":"<p>Updates the user's zip code.</p>"
         },
         "Department":{
           "shape":"UserAttribute",
@@ -5921,6 +6462,10 @@
         "Office":{
           "shape":"UserAttribute",
           "documentation":"<p>Updates the user's office.</p>"
+        },
+        "IdentityProviderUserId":{
+          "shape":"IdentityProviderUserIdForUpdate",
+          "documentation":"<p>User ID from the IAM Identity Center. If this parameter is empty it will be updated automatically when the user logs in for the first time to the mailbox associated with WorkMail.</p>"
         }
       }
     },
@@ -5968,6 +6513,14 @@
         "DisabledDate":{
           "shape":"Timestamp",
           "documentation":"<p>The date indicating when the user was disabled from WorkMail use.</p>"
+        },
+        "IdentityProviderUserId":{
+          "shape":"IdentityProviderUserId",
+          "documentation":"<p>User ID from the IAM Identity Center. If this parameter is empty it will be updated automatically when the user logs in for the first time to the mailbox associated with WorkMail.</p>"
+        },
+        "IdentityProviderIdentityStoreId":{
+          "shape":"IdentityProviderIdentityStoreId",
+          "documentation":"<p>Identity store ID from the IAM Identity Center. If this parameter is empty it will be updated automatically when the user logs in for the first time to the mailbox associated with WorkMail.</p>"
         }
       },
       "documentation":"<p>The representation of an WorkMail user.</p>"

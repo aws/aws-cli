@@ -492,7 +492,7 @@
         {"shape":"TagLimitExceededFault"},
         {"shape":"InvalidTagFault"}
       ],
-      "documentation":"<p>Creates a zero-ETL integration with Amazon Redshift.</p>"
+      "documentation":"<p>Creates a zero-ETL integration or S3 event integration with Amazon Redshift.</p>"
     },
     "CreateRedshiftIdcApplication":{
       "name":"CreateRedshiftIdcApplication",
@@ -817,7 +817,7 @@
         {"shape":"IntegrationConflictOperationFault"},
         {"shape":"UnsupportedOperationFault"}
       ],
-      "documentation":"<p>Deletes a zero-ETL integration with Amazon Redshift.</p>"
+      "documentation":"<p>Deletes a zero-ETL integration or S3 event integration with Amazon Redshift.</p>"
     },
     "DeletePartner":{
       "name":"DeletePartner",
@@ -1334,7 +1334,7 @@
         {"shape":"IntegrationNotFoundFault"},
         {"shape":"UnsupportedOperationFault"}
       ],
-      "documentation":"<p>Describes one or more zero-ETL integrations with Amazon Redshift.</p>"
+      "documentation":"<p>Describes one or more zero-ETL or S3 event integrations with Amazon Redshift.</p>"
     },
     "DescribeLoggingStatus":{
       "name":"DescribeLoggingStatus",
@@ -2117,7 +2117,7 @@
         {"shape":"IntegrationAlreadyExistsFault"},
         {"shape":"UnsupportedOperationFault"}
       ],
-      "documentation":"<p>Modifies a zero-ETL integration with Amazon Redshift.</p>"
+      "documentation":"<p>Modifies a zero-ETL integration or S3 event integration with Amazon Redshift.</p>"
     },
     "ModifyRedshiftIdcApplication":{
       "name":"ModifyRedshiftIdcApplication",
@@ -4640,11 +4640,11 @@
       ],
       "members":{
         "SourceArn":{
-          "shape":"String",
+          "shape":"SourceArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the database to use as the source for replication.</p>"
         },
         "TargetArn":{
-          "shape":"String",
+          "shape":"TargetArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Redshift data warehouse to use as the target for replication.</p>"
         },
         "IntegrationName":{
@@ -6009,11 +6009,11 @@
       "type":"structure",
       "members":{
         "IntegrationArn":{
-          "shape":"String",
+          "shape":"InboundIntegrationArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the inbound integration.</p>"
         },
         "TargetArn":{
-          "shape":"String",
+          "shape":"TargetArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the target of an inbound integration.</p>"
         },
         "MaxRecords":{
@@ -6441,7 +6441,7 @@
         },
         "ResourceType":{
           "shape":"String",
-          "documentation":"<p>The type of resource with which you want to view tags. Valid resource types are: </p> <ul> <li> <p>Cluster</p> </li> <li> <p>CIDR/IP</p> </li> <li> <p>EC2 security group</p> </li> <li> <p>Snapshot</p> </li> <li> <p>Cluster security group</p> </li> <li> <p>Subnet group</p> </li> <li> <p>HSM connection</p> </li> <li> <p>HSM certificate</p> </li> <li> <p>Parameter group</p> </li> <li> <p>Snapshot copy grant</p> </li> <li> <p>Integration (zero-ETL integration)</p> <note> <p>To describe the tags associated with an <code>integration</code>, don't specify <code>ResourceType</code>, instead specify the <code>ResourceName</code> of the integration.</p> </note> </li> </ul> <p>For more information about Amazon Redshift resource types and constructing ARNs, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-overview.html#redshift-iam-access-control-specify-actions\">Specifying Policy Elements: Actions, Effects, Resources, and Principals</a> in the Amazon Redshift Cluster Management Guide. </p>"
+          "documentation":"<p>The type of resource with which you want to view tags. Valid resource types are: </p> <ul> <li> <p>Cluster</p> </li> <li> <p>CIDR/IP</p> </li> <li> <p>EC2 security group</p> </li> <li> <p>Snapshot</p> </li> <li> <p>Cluster security group</p> </li> <li> <p>Subnet group</p> </li> <li> <p>HSM connection</p> </li> <li> <p>HSM certificate</p> </li> <li> <p>Parameter group</p> </li> <li> <p>Snapshot copy grant</p> </li> <li> <p>Integration (zero-ETL integration or S3 event integration)</p> <note> <p>To describe the tags associated with an <code>integration</code>, don't specify <code>ResourceType</code>, instead specify the <code>ResourceName</code> of the integration.</p> </note> </li> </ul> <p>For more information about Amazon Redshift resource types and constructing ARNs, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-overview.html#redshift-iam-access-control-specify-actions\">Specifying Policy Elements: Actions, Effects, Resources, and Principals</a> in the Amazon Redshift Cluster Management Guide. </p>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -7520,7 +7520,7 @@
       "type":"structure",
       "members":{
         "IntegrationArn":{
-          "shape":"String",
+          "shape":"InboundIntegrationArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of an inbound integration.</p>"
         },
         "SourceArn":{
@@ -7528,7 +7528,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the source of an inbound integration.</p>"
         },
         "TargetArn":{
-          "shape":"String",
+          "shape":"TargetArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the target of an inbound integration.</p>"
         },
         "Status":{
@@ -7545,6 +7545,12 @@
         }
       },
       "documentation":"<p>The content of an inbound integration.</p>"
+    },
+    "InboundIntegrationArn":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^arn:aws[a-z\\-]*:.+:[a-z0-9\\-]*:[0-9]*:integration:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
     },
     "InboundIntegrationList":{
       "type":"list",
@@ -7608,7 +7614,7 @@
       "type":"structure",
       "members":{
         "IntegrationArn":{
-          "shape":"String",
+          "shape":"IntegrationArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the integration.</p>"
         },
         "IntegrationName":{
@@ -7616,11 +7622,11 @@
           "documentation":"<p>The name of the integration.</p>"
         },
         "SourceArn":{
-          "shape":"String",
+          "shape":"SourceArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the database used as the source for replication.</p>"
         },
         "TargetArn":{
-          "shape":"String",
+          "shape":"TargetArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Redshift data warehouse to use as the target for replication.</p>"
         },
         "Status":{
@@ -7669,7 +7675,7 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"arn:aws[a-z\\-]*:redshift:[a-z0-9\\-]*:[0-9]*:integration:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+      "pattern":"^arn:aws[a-z\\-]*:redshift:[a-z0-9\\-]*:[0-9]*:integration:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
     },
     "IntegrationConflictOperationFault":{
       "type":"structure",
@@ -7752,7 +7758,7 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>You can't create any more zero-ETL integrations because the quota has been reached.</p>",
+      "documentation":"<p>You can't create any more zero-ETL or S3 event integrations because the quota has been reached.</p>",
       "error":{
         "code":"IntegrationQuotaExceededFault",
         "httpStatusCode":400,
@@ -11319,6 +11325,12 @@
         "DESC"
       ]
     },
+    "SourceArn":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^arn:aws[a-z\\-]*:(s3|dynamodb):.*:.*:[a-zA-Z0-9._\\-\\/]+$"
+    },
     "SourceIdsList":{
       "type":"list",
       "member":{
@@ -11695,6 +11707,12 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "TargetArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[a-z\\-]*:redshift(-serverless)?:[a-z0-9\\-]+:[0-9]{12}:(namespace\\/|namespace:)[a-z0-9\\-]+$"
     },
     "TrackList":{
       "type":"list",

@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.19.0
+======
+
+* api-change:``glue``: Add schedule support for AWS Glue column statistics
+* api-change:``autoscaling``: Adds bake time for Auto Scaling group Instance Refresh
+* api-change:``sagemaker``: SageMaker HyperPod adds scale-down at instance level via BatchDeleteClusterNodes API and group level via UpdateCluster API. SageMaker Training exposes secondary job status in TrainingJobSummary from ListTrainingJobs API. SageMaker now supports G6, G6e, P5e instances for HyperPod and Training.
+* feature:signing: Adds internal support for the new 'auth' trait to allow a priority list of auth types for a service or operation.
+* api-change:``batch``: Add `podNamespace` to `EksAttemptDetail` and `containerID` to `EksAttemptContainerDetail`.
+* api-change:``amp``: Added support for UpdateScraper API, to enable updating collector configuration in-place
+* api-change:``sesv2``: This release enables customers to provide the email template content in the SESv2 SendEmail and SendBulkEmail APIs instead of the name or the ARN of a stored email template.
+* api-change:``elbv2``: Add UDP support for AWS PrivateLink and dual-stack Network Load Balancers
+
+
 2.18.18
 =======
 

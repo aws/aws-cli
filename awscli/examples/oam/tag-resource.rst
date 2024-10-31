@@ -2,7 +2,7 @@
 
 The following ``tag-resource`` example assign a tag to the log group ``demo-log-group``. If the command succeeds, no output is returned. ::
 
-    aws logs tag-resource \
+    aws oam tag-resource \
         --resource-arn arn:aws:logs:us-east-1:123456789:log-group:demo-log-group \
         --tags team=Devops
 

@@ -1,4 +1,4 @@
-**To Removes one or more tags from the specified resource.**
+**To Remove one or more tags from the specified resource.**
 
 The following ``untag-resource`` example removes a tag with the key ``team`` from Sink ``arn:aws:oam:us-east-2:123456789012:sink/a1b2c3d4-5678-90ab-cdef-example12345``. If the command succeeds, no output is returned. ::
 

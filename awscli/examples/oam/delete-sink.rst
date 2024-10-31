@@ -1,6 +1,6 @@
 **To Delete a sink**
 
-The following ``delete-sink`` example deletes a sink. You must delete all links to a sink before you can delete that sink. ::
+The following ``delete-sink`` example deletes a sink. You must delete all links to a sink before you can delete that sink. If the command succeeds, no output is returned. ::
 
     aws oam delete-sink \
         --identifier arn:aws:oam:us-east-2:123456789012:sink/a1b2c3d4-5678-90ab-cdef-example12345

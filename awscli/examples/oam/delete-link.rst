@@ -1,6 +1,6 @@
 **To Delete a link**
 
-The following ``delete-link`` example deletes a link between a monitoring account sink and a source account. ::
+The following ``delete-link`` example deletes a link between a monitoring account sink and a source account. If the command succeeds, no output is returned. ::
 
     aws oam delete-link \
         --identifier arn:aws:oam:us-east-2:123456789111:link/a1b2c3d4-5678-90ab-cdef-example11111

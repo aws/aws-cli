@@ -596,7 +596,7 @@
         },
         "reason":{
           "shape":"String",
-          "documentation":"<p>A message to attach to the job that explains the reason for canceling it. This message is returned by future <a>DescribeJobs</a> operations on the job. This message is also recorded in the Batch activity logs.</p>"
+          "documentation":"<p>A message to attach to the job that explains the reason for canceling it. This message is returned by future <a>DescribeJobs</a> operations on the job. It is also recorded in the Batch activity logs.</p> <p>This parameter has as limit of 1024 characters.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>CancelJob</code>.</p>"
@@ -1219,7 +1219,7 @@
         },
         "schedulingPolicyArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the fair share scheduling policy. If this parameter is specified, the job queue uses a fair share scheduling policy. If this parameter isn't specified, the job queue uses a first in, first out (FIFO) scheduling policy. After a job queue is created, you can replace but can't remove the fair share scheduling policy. The format is <code>aws:<i>Partition</i>:batch:<i>Region</i>:<i>Account</i>:scheduling-policy/<i>Name</i> </code>. An example is <code>aws:aws:batch:us-west-2:123456789012:scheduling-policy/MySchedulingPolicy</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the fair share scheduling policy. Job queues that don't have a scheduling policy are scheduled in a first-in, first-out (FIFO) model. After a job queue has a scheduling policy, it can be replaced but can't be removed.</p> <p>The format is <code>aws:<i>Partition</i>:batch:<i>Region</i>:<i>Account</i>:scheduling-policy/<i>Name</i> </code>.</p> <p>An example is <code>aws:aws:batch:us-west-2:123456789012:scheduling-policy/MySchedulingPolicy</code>.</p> <p>A job queue without a scheduling policy is scheduled as a FIFO job queue and can't have a scheduling policy added. Jobs queues with a scheduling policy can have a maximum of 500 active fair share identifiers. When the limit has been reached, submissions of any jobs that add a new fair share identifier fail.</p>"
         },
         "priority":{
           "shape":"Integer",
@@ -1235,7 +1235,7 @@
         },
         "jobStateTimeLimitActions":{
           "shape":"JobStateTimeLimitActions",
-          "documentation":"<p>The set of actions that Batch performs on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after <code>maxTimeSeconds</code> has passed.</p>"
+          "documentation":"<p>The set of actions that Batch performs on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after <code>maxTimeSeconds</code> has passed. (<b>Note</b>: The minimum value for maxTimeSeconds is 600 (10 minutes) and its maximum value is 86,400 (24 hours).)</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>CreateJobQueue</code>.</p>"
@@ -1616,7 +1616,7 @@
       "members":{
         "taskProperties":{
           "shape":"ListEcsTaskProperties",
-          "documentation":"<p>An object that contains the properties for the Amazon ECS task definition of a job.</p> <note> <p>This object is currently limited to one element.</p> </note>"
+          "documentation":"<p>An object that contains the properties for the Amazon ECS task definition of a job.</p> <note> <p>This object is currently limited to one task element. However, the task element can run up to 10 containers.</p> </note>"
         }
       },
       "documentation":"<p>An object that contains the properties for the Amazon ECS resources of a job.</p>"
@@ -1749,6 +1749,10 @@
           "shape":"String",
           "documentation":"<p>The name of a container.</p>"
         },
+        "containerID":{
+          "shape":"String",
+          "documentation":"<p>The ID for the container.</p>"
+        },
         "exitCode":{
           "shape":"Integer",
           "documentation":"<p>The exit code returned for the job attempt. A non-zero exit code is considered failed.</p>"
@@ -1782,6 +1786,10 @@
         "podName":{
           "shape":"String",
           "documentation":"<p>The name of the pod for this job attempt.</p>"
+        },
+        "podNamespace":{
+          "shape":"String",
+          "documentation":"<p>The namespace of the Amazon EKS cluster that the pod exists in.</p>"
         },
         "nodeName":{
           "shape":"String",
@@ -2109,11 +2117,11 @@
         },
         "containers":{
           "shape":"EksContainers",
-          "documentation":"<p>The properties of the container that's used on the Amazon EKS pod.</p>"
+          "documentation":"<p>The properties of the container that's used on the Amazon EKS pod.</p> <note> <p>This object is limited to 10 elements.</p> </note>"
         },
         "initContainers":{
           "shape":"EksContainers",
-          "documentation":"<p>These containers run before application containers, always runs to completion, and must complete successfully before the next container starts. These containers are registered with the Amazon EKS Connector agent and persists the registration information in the Kubernetes backend data store. For more information, see <a href=\"https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\">Init Containers</a> in the <i>Kubernetes documentation</i>.</p> <note> <p>This object is limited to 10 elements</p> </note>"
+          "documentation":"<p>These containers run before application containers, always runs to completion, and must complete successfully before the next container starts. These containers are registered with the Amazon EKS Connector agent and persists the registration information in the Kubernetes backend data store. For more information, see <a href=\"https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\">Init Containers</a> in the <i>Kubernetes documentation</i>.</p> <note> <p>This object is limited to 10 elements.</p> </note>"
         },
         "volumes":{
           "shape":"EksVolumes",
@@ -2189,7 +2197,7 @@
         },
         "initContainers":{
           "shape":"EksContainerOverrideList",
-          "documentation":"<p>The overrides for the conatainers defined in the Amazon EKS pod. These containers run before application containers, always runs to completion, and must complete successfully before the next container starts. These containers are registered with the Amazon EKS Connector agent and persists the registration information in the Kubernetes backend data store. For more information, see <a href=\"https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\">Init Containers</a> in the <i>Kubernetes documentation</i>.</p> <note> <p>This object is limited to 10 elements</p> </note>"
+          "documentation":"<p>The overrides for the <code>initContainers</code> defined in the Amazon EKS pod. These containers run before application containers, always runs to completion, and must complete successfully before the next container starts. These containers are registered with the Amazon EKS Connector agent and persists the registration information in the Kubernetes backend data store. For more information, see <a href=\"https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\">Init Containers</a> in the <i>Kubernetes documentation</i>.</p>"
         },
         "metadata":{
           "shape":"EksMetadata",
@@ -3973,7 +3981,7 @@
         },
         "reason":{
           "shape":"String",
-          "documentation":"<p>A message to attach to the job that explains the reason for canceling it. This message is returned by future <a>DescribeJobs</a> operations on the job. This message is also recorded in the Batch activity logs.</p>"
+          "documentation":"<p>A message to attach to the job that explains the reason for canceling it. This message is returned by future <a>DescribeJobs</a> operations on the job. It is also recorded in the Batch activity logs.</p> <p>This parameter has as limit of 1024 characters.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>TerminateJob</code>.</p>"
@@ -4137,7 +4145,7 @@
         },
         "jobStateTimeLimitActions":{
           "shape":"JobStateTimeLimitActions",
-          "documentation":"<p>The set of actions that Batch perform on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after <code>maxTimeSeconds</code> has passed.</p>"
+          "documentation":"<p>The set of actions that Batch perform on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after <code>maxTimeSeconds</code> has passed. (<b>Note</b>: The minimum value for maxTimeSeconds is 600 (10 minutes) and its maximum value is 86,400 (24 hours).)</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>UpdateJobQueue</code>.</p>"

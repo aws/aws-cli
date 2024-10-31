@@ -1656,6 +1656,11 @@
       "type":"list",
       "member":{"shape":"XmlStringMaxLen255"}
     },
+    "BakeTime":{
+      "type":"integer",
+      "max":172800,
+      "min":0
+    },
     "BareMetal":{
       "type":"string",
       "enum":[
@@ -3174,7 +3179,7 @@
         },
         "Status":{
           "shape":"InstanceRefreshStatus",
-          "documentation":"<p>The current status for the instance refresh operation:</p> <ul> <li> <p> <code>Pending</code> - The request was created, but the instance refresh has not started.</p> </li> <li> <p> <code>InProgress</code> - An instance refresh is in progress.</p> </li> <li> <p> <code>Successful</code> - An instance refresh completed successfully.</p> </li> <li> <p> <code>Failed</code> - An instance refresh failed to complete. You can troubleshoot using the status reason and the scaling activities. </p> </li> <li> <p> <code>Cancelling</code> - An ongoing instance refresh is being cancelled.</p> </li> <li> <p> <code>Cancelled</code> - The instance refresh is cancelled. </p> </li> <li> <p> <code>RollbackInProgress</code> - An instance refresh is being rolled back.</p> </li> <li> <p> <code>RollbackFailed</code> - The rollback failed to complete. You can troubleshoot using the status reason and the scaling activities.</p> </li> <li> <p> <code>RollbackSuccessful</code> - The rollback completed successfully.</p> </li> </ul>"
+          "documentation":"<p>The current status for the instance refresh operation:</p> <ul> <li> <p> <code>Pending</code> - The request was created, but the instance refresh has not started.</p> </li> <li> <p> <code>InProgress</code> - An instance refresh is in progress.</p> </li> <li> <p> <code>Successful</code> - An instance refresh completed successfully.</p> </li> <li> <p> <code>Failed</code> - An instance refresh failed to complete. You can troubleshoot using the status reason and the scaling activities. </p> </li> <li> <p> <code>Cancelling</code> - An ongoing instance refresh is being cancelled.</p> </li> <li> <p> <code>Cancelled</code> - The instance refresh is cancelled. </p> </li> <li> <p> <code>RollbackInProgress</code> - An instance refresh is being rolled back.</p> </li> <li> <p> <code>RollbackFailed</code> - The rollback failed to complete. You can troubleshoot using the status reason and the scaling activities.</p> </li> <li> <p> <code>RollbackSuccessful</code> - The rollback completed successfully.</p> </li> <li> <p> <code>Baking</code> - Waiting the specified bake time after an instance refresh has finished updating instances.</p> </li> </ul>"
         },
         "StatusReason":{
           "shape":"XmlStringMaxLen1023",
@@ -3271,7 +3276,8 @@
         "Cancelled",
         "RollbackInProgress",
         "RollbackFailed",
-        "RollbackSuccessful"
+        "RollbackSuccessful",
+        "Baking"
       ]
     },
     "InstanceRefreshWarmPoolProgress":{
@@ -4794,6 +4800,10 @@
         "MaxHealthyPercentage":{
           "shape":"IntPercent100To200",
           "documentation":"<p>Specifies the maximum percentage of the group that can be in service and healthy, or pending, to support your workload when replacing instances. The value is expressed as a percentage of the desired capacity of the Auto Scaling group. Value range is 100 to 200.</p> <p>If you specify <code>MaxHealthyPercentage</code>, you must also specify <code>MinHealthyPercentage</code>, and the difference between them cannot be greater than 100. A larger range increases the number of instances that can be replaced at the same time.</p> <p>If you do not specify this property, the default is 100 percent, or the percentage set in the instance maintenance policy for the Auto Scaling group, if defined.</p>"
+        },
+        "BakeTime":{
+          "shape":"BakeTime",
+          "documentation":"<p> The amount of time, in seconds, to wait at the end of an instance refresh before the instance refresh is considered complete. </p>"
         }
       },
       "documentation":"<p>Describes the preferences for an instance refresh.</p>"
@@ -5262,7 +5272,7 @@
         },
         "Preferences":{
           "shape":"RefreshPreferences",
-          "documentation":"<p>Sets your preferences for the instance refresh so that it performs as expected when you start it. Includes the instance warmup time, the minimum and maximum healthy percentages, and the behaviors that you want Amazon EC2 Auto Scaling to use if instances that are in <code>Standby</code> state or protected from scale in are found. You can also choose to enable additional features, such as the following:</p> <ul> <li> <p>Auto rollback</p> </li> <li> <p>Checkpoints</p> </li> <li> <p>CloudWatch alarms</p> </li> <li> <p>Skip matching</p> </li> </ul>"
+          "documentation":"<p>Sets your preferences for the instance refresh so that it performs as expected when you start it. Includes the instance warmup time, the minimum and maximum healthy percentages, and the behaviors that you want Amazon EC2 Auto Scaling to use if instances that are in <code>Standby</code> state or protected from scale in are found. You can also choose to enable additional features, such as the following:</p> <ul> <li> <p>Auto rollback</p> </li> <li> <p>Checkpoints</p> </li> <li> <p>CloudWatch alarms</p> </li> <li> <p>Skip matching</p> </li> <li> <p>Bake time</p> </li> </ul>"
         }
       }
     },

@@ -5,11 +5,13 @@
     "endpointPrefix":"aps",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon Prometheus Service",
     "serviceId":"amp",
     "signatureVersion":"v4",
     "signingName":"aps",
-    "uid":"amp-2020-08-01"
+    "uid":"amp-2020-08-01",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateAlertManagerDefinition":{
@@ -90,7 +92,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>The <code>CreateScraper</code> operation creates a scraper to collect metrics. A scraper pulls metrics from Prometheus-compatible sources within an Amazon EKS cluster, and sends them to your Amazon Managed Service for Prometheus workspace. You can configure the scraper to control what metrics are collected, and what transformations are applied prior to sending them to your workspace.</p> <p>If needed, an IAM role will be created for you that gives Amazon Managed Service for Prometheus access to the metrics in your cluster. For more information, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/using-service-linked-roles.html#using-service-linked-roles-prom-scraper\">Using roles for scraping metrics from EKS</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p> <p>You cannot update a scraper. If you want to change the configuration of the scraper, create a new scraper and delete the old one.</p> <p>The <code>scrapeConfiguration</code> parameter contains the base64-encoded version of the YAML configuration file.</p> <note> <p>For more information about collectors, including what metrics are collected, and how to configure the scraper, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector.html\">Amazon Web Services managed collectors</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p> </note>",
+      "documentation":"<p>The <code>CreateScraper</code> operation creates a scraper to collect metrics. A scraper pulls metrics from Prometheus-compatible sources within an Amazon EKS cluster, and sends them to your Amazon Managed Service for Prometheus workspace. Scrapers are flexible, and can be configured to control what metrics are collected, the frequency of collection, what transformations are applied to the metrics, and more.</p> <p>An IAM role will be created for you that Amazon Managed Service for Prometheus uses to access the metrics in your cluster. You must configure this role with a policy that allows it to scrape metrics from your cluster. For more information, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html#AMP-collector-eks-setup\">Configuring your Amazon EKS cluster</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p> <p>The <code>scrapeConfiguration</code> parameter contains the base-64 encoded YAML configuration for the scraper.</p> <note> <p>For more information about collectors, including what metrics are collected, and how to configure the scraper, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html\">Using an Amazon Web Services managed collector</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p> </note>",
       "idempotent":true
     },
     "CreateWorkspace":{
@@ -364,7 +366,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>The <code>ListTagsForResource</code> operation returns the tags that are associated with an Amazon Managed Service for Prometheus resource. Currently, the only resources that can be tagged are workspaces and rule groups namespaces. </p>"
+      "documentation":"<p>The <code>ListTagsForResource</code> operation returns the tags that are associated with an Amazon Managed Service for Prometheus resource. Currently, the only resources that can be tagged are scrapers, workspaces, and rule groups namespaces. </p>"
     },
     "ListWorkspaces":{
       "name":"ListWorkspaces",
@@ -441,7 +443,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>The <code>TagResource</code> operation associates tags with an Amazon Managed Service for Prometheus resource. The only resources that can be tagged are workspaces and rule groups namespaces. </p> <p>If you specify a new tag key for the resource, this tag is appended to the list of tags associated with the resource. If you specify a tag key that is already associated with the resource, the new tag value that you specify replaces the previous value for that tag.</p>"
+      "documentation":"<p>The <code>TagResource</code> operation associates tags with an Amazon Managed Service for Prometheus resource. The only resources that can be tagged are rule groups namespaces, scrapers, and workspaces.</p> <p>If you specify a new tag key for the resource, this tag is appended to the list of tags associated with the resource. If you specify a tag key that is already associated with the resource, the new tag value that you specify replaces the previous value for that tag. To remove a tag, use <code>UntagResource</code>.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -459,7 +461,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Removes the specified tags from an Amazon Managed Service for Prometheus resource. The only resources that can be tagged are workspaces and rule groups namespaces. </p>",
+      "documentation":"<p>Removes the specified tags from an Amazon Managed Service for Prometheus resource. The only resources that can be tagged are rule groups namespaces, scrapers, and workspaces. </p>",
       "idempotent":true
     },
     "UpdateLoggingConfiguration":{
@@ -479,6 +481,27 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates the log group ARN or the workspace ID of the current logging configuration.</p>",
+      "idempotent":true
+    },
+    "UpdateScraper":{
+      "name":"UpdateScraper",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/scrapers/{scraperId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateScraperRequest"},
+      "output":{"shape":"UpdateScraperResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Updates an existing scraper.</p> <p>You can't use this function to update the source from which the scraper is collecting metrics. To change the source, delete the scraper and create a new one.</p>",
       "idempotent":true
     },
     "UpdateWorkspaceAlias":{
@@ -549,7 +572,7 @@
           "documentation":"<p>A structure that displays the current status of the alert manager definition..</p>"
         }
       },
-      "documentation":"<p>The details of an alert manager definition. </p>"
+      "documentation":"<p>The details of an alert manager definition. It is the configuration for the alert manager, including information about receivers for routing alerts.</p>"
     },
     "AlertManagerDefinitionStatus":{
       "type":"structure",
@@ -673,7 +696,7 @@
         },
         "logGroupArn":{
           "shape":"LogGroupArn",
-          "documentation":"<p>The ARN of the CloudWatch log group to which the vended log data will be published. This log group must exist prior to calling this API.</p>"
+          "documentation":"<p>The ARN of the CloudWatch log group to which the vended log data will be published. This log group must exist prior to calling this operation.</p>"
         },
         "workspaceId":{
           "shape":"WorkspaceId",
@@ -766,7 +789,7 @@
       "members":{
         "alias":{
           "shape":"ScraperAlias",
-          "documentation":"<p>(optional) a name to associate with the scraper. This is for your use, and does not need to be unique.</p>"
+          "documentation":"<p>(optional) An alias to associate with the scraper. This is for your use, and does not need to be unique.</p>"
         },
         "clientToken":{
           "shape":"IdempotencyToken",
@@ -779,7 +802,7 @@
         },
         "scrapeConfiguration":{
           "shape":"ScrapeConfiguration",
-          "documentation":"<p>The configuration file to use in the new scraper. For more information, see <a href=\"prometheus/latest/userguide/AMP-collector-how-to.html#AMP-collector-configuration\">Scraper configuration</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p>"
+          "documentation":"<p>The configuration file to use in the new scraper. For more information, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html#AMP-collector-configuration\">Scraper configuration</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p>"
         },
         "source":{
           "shape":"Source",
@@ -1134,7 +1157,7 @@
       "members":{
         "ampConfiguration":{
           "shape":"AmpConfiguration",
-          "documentation":"<p>The Amazon Managed Service for Prometheusworkspace to send metrics to.</p>"
+          "documentation":"<p>The Amazon Managed Service for Prometheus workspace to send metrics to.</p>"
         }
       },
       "documentation":"<p>Where to send the metrics from a scraper.</p>",
@@ -1343,7 +1366,7 @@
       "members":{
         "resourceArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the resource to list tages for. Must be a workspace or rule groups namespace resource.</p>",
+          "documentation":"<p>The ARN of the resource to list tages for. Must be a workspace, scraper, or rule groups namespace resource.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -1438,7 +1461,7 @@
           "documentation":"<p>The ID of the workspace the logging configuration is for.</p>"
         }
       },
-      "documentation":"<p>Contains information about the logging configuration. </p>"
+      "documentation":"<p>Contains information about the logging configuration for the workspace.</p>"
     },
     "LoggingConfigurationStatus":{
       "type":"structure",
@@ -1617,7 +1640,7 @@
       "members":{
         "arn":{
           "shape":"RuleGroupsNamespaceArn",
-          "documentation":"<p>The ARN of the rule groups namespace.</p>"
+          "documentation":"<p>The ARN of the rule groups namespace. For example, <code>arn:aws:aps:&lt;region&gt;:123456789012:rulegroupsnamespace/ws-example1-1234-abcd-5678-ef90abcd1234/rulesfile1</code>.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -1730,12 +1753,12 @@
           "documentation":"<p>The base 64 encoded scrape configuration file.</p>"
         }
       },
-      "documentation":"<p>A scrape configuration for a scraper, base 64 encoded. For more information, see <a href=\"prometheus/latest/userguide/AMP-collector-how-to.html#AMP-collector-configuration\">Scraper configuration</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p>",
+      "documentation":"<p>A scrape configuration for a scraper, base 64 encoded. For more information, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html#AMP-collector-configuration\">Scraper configuration</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p>",
       "union":true
     },
     "ScraperAlias":{
       "type":"string",
-      "documentation":"<p>A user-assigned scraper alias.</p>",
+      "documentation":"<p>An optional user-assigned scraper alias.</p>",
       "max":100,
       "min":1,
       "pattern":"^[0-9A-Za-z][-.0-9A-Z_a-z]*$"
@@ -1764,7 +1787,7 @@
         },
         "arn":{
           "shape":"ScraperArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the scraper.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scraper. For example, <code>arn:aws:aps:&lt;region&gt;:123456798012:scraper/s-example1-1234-abcd-5678-ef9012abcd34</code>.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -1780,15 +1803,15 @@
         },
         "roleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that provides permissions for the scraper to discover and collect metrics on your behalf.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that provides permissions for the scraper to discover and collect metrics on your behalf.</p> <p>For example, <code>arn:aws:iam::123456789012:role/service-role/AmazonGrafanaServiceRole-12example</code>.</p>"
         },
         "scrapeConfiguration":{
           "shape":"ScrapeConfiguration",
-          "documentation":"<p>The configuration file in use by the scraper.</p>"
+          "documentation":"<p>The configuration in use by the scraper.</p>"
         },
         "scraperId":{
           "shape":"ScraperId",
-          "documentation":"<p>The ID of the scraper.</p>"
+          "documentation":"<p>The ID of the scraper. For example, <code>s-example1-1234-abcd-5678-ef9012abcd34</code>.</p>"
         },
         "source":{
           "shape":"Source",
@@ -1846,9 +1869,11 @@
       "documentation":"<p>State of a scraper.</p>",
       "enum":[
         "CREATING",
+        "UPDATING",
         "ACTIVE",
         "DELETING",
         "CREATION_FAILED",
+        "UPDATE_FAILED",
         "DELETION_FAILED"
       ]
     },
@@ -2015,13 +2040,13 @@
       "type":"map",
       "key":{
         "shape":"TagKey",
-        "documentation":"<p>The key of the tag. May not begin with <code>aws:</code>.</p>"
+        "documentation":"<p>The key of the tag. Must not begin with <code>aws:</code>.</p>"
       },
       "value":{
         "shape":"TagValue",
         "documentation":"<p>The value of the tag.</p>"
       },
-      "documentation":"<p>The list of tags assigned to the resource.</p>",
+      "documentation":"<p>A tag associated with a resource.</p>",
       "max":50,
       "min":0
     },
@@ -2034,13 +2059,13 @@
       "members":{
         "resourceArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the workspace or rule groups namespace to apply tags to.</p>",
+          "documentation":"<p>The ARN of the resource to apply tags to.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>The list of tag keys and values to associate with the resource.</p> <p>Keys may not begin with <code>aws:</code>.</p>"
+          "documentation":"<p>The list of tag keys and values to associate with the resource.</p> <p>Keys must not begin with <code>aws:</code>.</p>"
         }
       }
     },
@@ -2096,7 +2121,7 @@
       "members":{
         "resourceArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the workspace or rule groups namespace.</p>",
+          "documentation":"<p>The ARN of the resource from which to remove a tag.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
@@ -2148,6 +2173,61 @@
         }
       },
       "documentation":"<p>Represents the output of an <code>UpdateLoggingConfiguration</code> operation.</p>"
+    },
+    "UpdateScraperRequest":{
+      "type":"structure",
+      "required":["scraperId"],
+      "members":{
+        "alias":{
+          "shape":"ScraperAlias",
+          "documentation":"<p>The new alias of the scraper.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique identifier that you can provide to ensure the idempotency of the request. Case-sensitive.</p>",
+          "idempotencyToken":true
+        },
+        "destination":{
+          "shape":"Destination",
+          "documentation":"<p>The new Amazon Managed Service for Prometheus workspace to send metrics to.</p>"
+        },
+        "scrapeConfiguration":{
+          "shape":"ScrapeConfiguration",
+          "documentation":"<p>Contains the base-64 encoded YAML configuration for the scraper.</p> <note> <p>For more information about configuring a scraper, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html\">Using an Amazon Web Services managed collector</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p> </note>"
+        },
+        "scraperId":{
+          "shape":"ScraperId",
+          "documentation":"<p>The ID of the scraper to update.</p>",
+          "location":"uri",
+          "locationName":"scraperId"
+        }
+      }
+    },
+    "UpdateScraperResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "scraperId",
+        "status"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ScraperArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated scraper.</p>"
+        },
+        "scraperId":{
+          "shape":"ScraperId",
+          "documentation":"<p>The ID of the updated scraper.</p>"
+        },
+        "status":{
+          "shape":"ScraperStatus",
+          "documentation":"<p>A structure that displays the current status of the scraper.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The list of tag keys and values that are associated with the scraper.</p>"
+        }
+      }
     },
     "UpdateWorkspaceAliasRequest":{
       "type":"structure",
@@ -2258,11 +2338,11 @@
       "members":{
         "alias":{
           "shape":"WorkspaceAlias",
-          "documentation":"<p>The alias that is assigned to this workspace to help identify it. It may not be unique.</p>"
+          "documentation":"<p>The alias that is assigned to this workspace to help identify it. It does not need to be unique.</p>"
         },
         "arn":{
           "shape":"WorkspaceArn",
-          "documentation":"<p>The ARN of the workspace.</p>"
+          "documentation":"<p>The ARN of the workspace. For example, <code>arn:aws:aps:&lt;region&gt;:123456789012:workspace/ws-example1-1234-abcd-5678-ef90abcd1234</code>.</p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -2274,7 +2354,7 @@
         },
         "prometheusEndpoint":{
           "shape":"Uri",
-          "documentation":"<p>The Prometheus endpoint available for this workspace. </p>"
+          "documentation":"<p>The Prometheus endpoint available for this workspace. For example, <code>https://aps-workspaces.&lt;region&gt;.amazonaws.com/workspaces/ws-example1-1234-abcd-5678-ef90abcd1234/api/v1/</code>.</p>"
         },
         "status":{
           "shape":"WorkspaceStatus",
@@ -2286,7 +2366,7 @@
         },
         "workspaceId":{
           "shape":"WorkspaceId",
-          "documentation":"<p>The unique ID for the workspace.</p>"
+          "documentation":"<p>The unique ID for the workspace. For example, <code>ws-example1-1234-abcd-5678-ef90abcd1234</code>.</p>"
         }
       },
       "documentation":"<p>The full details about one Amazon Managed Service for Prometheus workspace in your account.</p>"
@@ -2331,7 +2411,7 @@
       "members":{
         "alias":{
           "shape":"WorkspaceAlias",
-          "documentation":"<p>The alias that is assigned to this workspace to help identify it. It may not be unique.</p>"
+          "documentation":"<p>The alias that is assigned to this workspace to help identify it. It does not need to be unique.</p>"
         },
         "arn":{
           "shape":"WorkspaceArn",

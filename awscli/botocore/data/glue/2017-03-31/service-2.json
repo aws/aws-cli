@@ -415,6 +415,25 @@
       ],
       "documentation":"<p>Creates a classifier in the user's account. This can be a <code>GrokClassifier</code>, an <code>XMLClassifier</code>, a <code>JsonClassifier</code>, or a <code>CsvClassifier</code>, depending on which field of the request is present.</p>"
     },
+    "CreateColumnStatisticsTaskSettings":{
+      "name":"CreateColumnStatisticsTaskSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateColumnStatisticsTaskSettingsRequest"},
+      "output":{"shape":"CreateColumnStatisticsTaskSettingsResponse"},
+      "errors":[
+        {"shape":"AlreadyExistsException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"ColumnStatisticsTaskRunningException"}
+      ],
+      "documentation":"<p>Creates settings for a column statistics task.</p>"
+    },
     "CreateConnection":{
       "name":"CreateConnection",
       "http":{
@@ -867,6 +886,21 @@
         {"shape":"GlueEncryptionException"}
       ],
       "documentation":"<p>Retrieves table statistics of columns.</p> <p>The Identity and Access Management (IAM) permission required for this operation is <code>DeleteTable</code>.</p>"
+    },
+    "DeleteColumnStatisticsTaskSettings":{
+      "name":"DeleteColumnStatisticsTaskSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteColumnStatisticsTaskSettingsRequest"},
+      "output":{"shape":"DeleteColumnStatisticsTaskSettingsResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Deletes settings for a column statistics task.</p>"
     },
     "DeleteConnection":{
       "name":"DeleteConnection",
@@ -1392,6 +1426,21 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Retrieves information about all runs associated with the specified table.</p>"
+    },
+    "GetColumnStatisticsTaskSettings":{
+      "name":"GetColumnStatisticsTaskSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetColumnStatisticsTaskSettingsRequest"},
+      "output":{"shape":"GetColumnStatisticsTaskSettingsResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Gets settings for a column statistics task.</p>"
     },
     "GetConnection":{
       "name":"GetConnection",
@@ -3004,6 +3053,22 @@
       ],
       "documentation":"<p>Starts a column statistics task run, for a specified table and columns.</p>"
     },
+    "StartColumnStatisticsTaskRunSchedule":{
+      "name":"StartColumnStatisticsTaskRunSchedule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartColumnStatisticsTaskRunScheduleRequest"},
+      "output":{"shape":"StartColumnStatisticsTaskRunScheduleResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Starts a column statistics task run schedule.</p>"
+    },
     "StartCrawler":{
       "name":"StartCrawler",
       "http":{
@@ -3209,6 +3274,21 @@
       ],
       "documentation":"<p>Stops a task run for the specified table.</p>"
     },
+    "StopColumnStatisticsTaskRunSchedule":{
+      "name":"StopColumnStatisticsTaskRunSchedule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopColumnStatisticsTaskRunScheduleRequest"},
+      "output":{"shape":"StopColumnStatisticsTaskRunScheduleResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Stops a column statistics task run schedule.</p>"
+    },
     "StopCrawler":{
       "name":"StopCrawler",
       "http":{
@@ -3413,6 +3493,23 @@
         {"shape":"GlueEncryptionException"}
       ],
       "documentation":"<p>Creates or updates table statistics of columns.</p> <p>The Identity and Access Management (IAM) permission required for this operation is <code>UpdateTable</code>.</p>"
+    },
+    "UpdateColumnStatisticsTaskSettings":{
+      "name":"UpdateColumnStatisticsTaskSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateColumnStatisticsTaskSettingsRequest"},
+      "output":{"shape":"UpdateColumnStatisticsTaskSettingsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"VersionMismatchException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Updates settings for a column statistics task.</p>"
     },
     "UpdateConnection":{
       "name":"UpdateConnection",
@@ -6369,6 +6466,10 @@
           "shape":"NameString",
           "documentation":"<p>The type of workers being used for generating stats. The default is <code>g.1x</code>.</p>"
         },
+        "ComputationType":{
+          "shape":"ComputationType",
+          "documentation":"<p>The type of column statistics computation.</p>"
+        },
         "Status":{
           "shape":"ColumnStatisticsState",
           "documentation":"<p>The status of the task run.</p>"
@@ -6420,6 +6521,44 @@
     "ColumnStatisticsTaskRunsList":{
       "type":"list",
       "member":{"shape":"ColumnStatisticsTaskRun"}
+    },
+    "ColumnStatisticsTaskSettings":{
+      "type":"structure",
+      "members":{
+        "DatabaseName":{
+          "shape":"DatabaseName",
+          "documentation":"<p>The name of the database where the table resides.</p>"
+        },
+        "TableName":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table for which to generate column statistics.</p>"
+        },
+        "Schedule":{
+          "shape":"Schedule",
+          "documentation":"<p>A schedule for running the column statistics, specified in CRON syntax.</p>"
+        },
+        "ColumnNameList":{
+          "shape":"ColumnNameList",
+          "documentation":"<p>A list of column names for which to run statistics.</p>"
+        },
+        "CatalogID":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog in which the database resides.</p>"
+        },
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The role used for running the column statistics.</p>"
+        },
+        "SampleSize":{
+          "shape":"SampleSizePercentage",
+          "documentation":"<p>The percentage of data to sample.</p>"
+        },
+        "SecurityConfiguration":{
+          "shape":"CrawlerSecurityConfiguration",
+          "documentation":"<p>Name of the security configuration that is used to encrypt CloudWatch logs.</p>"
+        }
+      },
+      "documentation":"<p>The settings for a column statistics task.</p>"
     },
     "ColumnStatisticsTaskStoppingException":{
       "type":"structure",
@@ -6505,6 +6644,13 @@
       "enum":[
         "gzip",
         "bzip2"
+      ]
+    },
+    "ComputationType":{
+      "type":"string",
+      "enum":[
+        "FULL",
+        "INCREMENTAL"
       ]
     },
     "ConcurrentModificationException":{
@@ -7381,6 +7527,57 @@
       }
     },
     "CreateClassifierResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "CreateColumnStatisticsTaskSettingsRequest":{
+      "type":"structure",
+      "required":[
+        "DatabaseName",
+        "TableName",
+        "Role"
+      ],
+      "members":{
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the database where the table resides.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table for which to generate column statistics.</p>"
+        },
+        "Role":{
+          "shape":"NameString",
+          "documentation":"<p>The role used for running the column statistics.</p>"
+        },
+        "Schedule":{
+          "shape":"CronExpression",
+          "documentation":"<p>A schedule for running the column statistics, specified in CRON syntax.</p>"
+        },
+        "ColumnNameList":{
+          "shape":"ColumnNameList",
+          "documentation":"<p>A list of column names for which to run statistics.</p>"
+        },
+        "SampleSize":{
+          "shape":"SampleSizePercentage",
+          "documentation":"<p>The percentage of data to sample.</p>"
+        },
+        "CatalogID":{
+          "shape":"NameString",
+          "documentation":"<p>The ID of the Data Catalog in which the database resides.</p>"
+        },
+        "SecurityConfiguration":{
+          "shape":"NameString",
+          "documentation":"<p>Name of the security configuration that is used to encrypt CloudWatch logs.</p>"
+        },
+        "Tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tags.</p>"
+        }
+      }
+    },
+    "CreateColumnStatisticsTaskSettingsResponse":{
       "type":"structure",
       "members":{
       }
@@ -9723,6 +9920,28 @@
       "members":{
       }
     },
+    "DeleteColumnStatisticsTaskSettingsRequest":{
+      "type":"structure",
+      "required":[
+        "DatabaseName",
+        "TableName"
+      ],
+      "members":{
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the database where the table resides.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table for which to delete column statistics.</p>"
+        }
+      }
+    },
+    "DeleteColumnStatisticsTaskSettingsResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteConnectionNameList":{
       "type":"list",
       "member":{"shape":"NameString"},
@@ -11646,6 +11865,32 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>A continuation token, if not all task runs have yet been returned.</p>"
+        }
+      }
+    },
+    "GetColumnStatisticsTaskSettingsRequest":{
+      "type":"structure",
+      "required":[
+        "DatabaseName",
+        "TableName"
+      ],
+      "members":{
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the database where the table resides.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table for which to retrieve column statistics.</p>"
+        }
+      }
+    },
+    "GetColumnStatisticsTaskSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "ColumnStatisticsTaskSettings":{
+          "shape":"ColumnStatisticsTaskSettings",
+          "documentation":"<p>A <code>ColumnStatisticsTaskSettings</code> object representing the settings for the column statistics task.</p>"
         }
       }
     },
@@ -20710,6 +20955,28 @@
         }
       }
     },
+    "StartColumnStatisticsTaskRunScheduleRequest":{
+      "type":"structure",
+      "required":[
+        "DatabaseName",
+        "TableName"
+      ],
+      "members":{
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the database where the table resides.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table for which to start a column statistic task run schedule.</p>"
+        }
+      }
+    },
+    "StartColumnStatisticsTaskRunScheduleResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "StartCrawlerRequest":{
       "type":"structure",
       "required":["Name"],
@@ -21320,6 +21587,28 @@
       }
     },
     "StopColumnStatisticsTaskRunResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "StopColumnStatisticsTaskRunScheduleRequest":{
+      "type":"structure",
+      "required":[
+        "DatabaseName",
+        "TableName"
+      ],
+      "members":{
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the database where the table resides.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table for which to stop a column statistic task run schedule.</p>"
+        }
+      }
+    },
+    "StopColumnStatisticsTaskRunScheduleResponse":{
       "type":"structure",
       "members":{
       }
@@ -22800,6 +23089,52 @@
       "member":{"shape":"ColumnStatistics"},
       "max":25,
       "min":0
+    },
+    "UpdateColumnStatisticsTaskSettingsRequest":{
+      "type":"structure",
+      "required":[
+        "DatabaseName",
+        "TableName"
+      ],
+      "members":{
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the database where the table resides.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table for which to generate column statistics.</p>"
+        },
+        "Role":{
+          "shape":"NameString",
+          "documentation":"<p>The role used for running the column statistics.</p>"
+        },
+        "Schedule":{
+          "shape":"CronExpression",
+          "documentation":"<p>A schedule for running the column statistics, specified in CRON syntax.</p>"
+        },
+        "ColumnNameList":{
+          "shape":"ColumnNameList",
+          "documentation":"<p>A list of column names for which to run statistics.</p>"
+        },
+        "SampleSize":{
+          "shape":"SampleSizePercentage",
+          "documentation":"<p>The percentage of data to sample.</p>"
+        },
+        "CatalogID":{
+          "shape":"NameString",
+          "documentation":"<p>The ID of the Data Catalog in which the database resides.</p>"
+        },
+        "SecurityConfiguration":{
+          "shape":"NameString",
+          "documentation":"<p>Name of the security configuration that is used to encrypt CloudWatch logs.</p>"
+        }
+      }
+    },
+    "UpdateColumnStatisticsTaskSettingsResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "UpdateConnectionRequest":{
       "type":"structure",

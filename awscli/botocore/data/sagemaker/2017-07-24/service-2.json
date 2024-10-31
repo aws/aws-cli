@@ -54,6 +54,19 @@
       ],
       "documentation":"<p>Associates a trial component with a trial. A trial component can be associated with multiple trials. To disassociate a trial component from a trial, call the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DisassociateTrialComponent.html\">DisassociateTrialComponent</a> API.</p>"
     },
+    "BatchDeleteClusterNodes":{
+      "name":"BatchDeleteClusterNodes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchDeleteClusterNodesRequest"},
+      "output":{"shape":"BatchDeleteClusterNodesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Deletes specific nodes within a SageMaker HyperPod cluster. <code>BatchDeleteClusterNodes</code> accepts a cluster name and a list of node IDs.</p> <important> <ul> <li> <p>To safeguard your work, back up your data to Amazon S3 or an FSx for Lustre file system before invoking the API on a worker node group. This will help prevent any potential data loss from the instance root volume. For more information about backup, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-operate-cli-command.html#sagemaker-hyperpod-operate-cli-command-update-cluster-software-backup\">Use the backup script provided by SageMaker HyperPod</a>. </p> </li> <li> <p>If you want to invoke this API on an existing cluster, you'll first need to patch the cluster by running the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateClusterSoftware.html\">UpdateClusterSoftware API</a>. For more information about patching a cluster, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-operate-cli-command.html#sagemaker-hyperpod-operate-cli-command-update-cluster-software\">Update the SageMaker HyperPod platform software of a cluster</a>.</p> </li> </ul> </important>"
+    },
     "BatchDescribeModelPackage":{
       "name":"BatchDescribeModelPackage",
       "http":{
@@ -3670,7 +3683,7 @@
         {"shape":"ResourceNotFound"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Updates the platform software of a SageMaker HyperPod cluster for security patching. To learn how to use this API, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-operate.html#sagemaker-hyperpod-operate-cli-command-update-cluster-software\">Update the SageMaker HyperPod platform software of a cluster</a>.</p>"
+      "documentation":"<p>Updates the platform software of a SageMaker HyperPod cluster for security patching. To learn how to use this API, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-operate.html#sagemaker-hyperpod-operate-cli-command-update-cluster-software\">Update the SageMaker HyperPod platform software of a cluster</a>.</p> <important> <p>The <code>UpgradeClusterSoftware</code> API call may impact your SageMaker HyperPod cluster uptime and availability. Plan accordingly to mitigate potential disruptions to your workloads.</p> </important>"
     },
     "UpdateCodeRepository":{
       "name":"UpdateCodeRepository",
@@ -6188,6 +6201,73 @@
       },
       "documentation":"<p>Configuration to control how SageMaker captures inference data for batch transform jobs.</p>"
     },
+    "BatchDeleteClusterNodesError":{
+      "type":"structure",
+      "required":[
+        "Code",
+        "Message",
+        "NodeId"
+      ],
+      "members":{
+        "Code":{
+          "shape":"BatchDeleteClusterNodesErrorCode",
+          "documentation":"<p>The error code associated with the error encountered when deleting a node.</p> <p>The code provides information about the specific issue encountered, such as the node not being found, the node's status being invalid for deletion, or the node ID being in use by another process.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the error encountered when deleting a node.</p>"
+        },
+        "NodeId":{
+          "shape":"ClusterNodeId",
+          "documentation":"<p>The ID of the node that encountered an error during the deletion process.</p>"
+        }
+      },
+      "documentation":"<p>Represents an error encountered when deleting a node from a SageMaker HyperPod cluster.</p>"
+    },
+    "BatchDeleteClusterNodesErrorCode":{
+      "type":"string",
+      "enum":[
+        "NodeIdNotFound",
+        "InvalidNodeStatus",
+        "NodeIdInUse"
+      ]
+    },
+    "BatchDeleteClusterNodesErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteClusterNodesError"},
+      "max":99,
+      "min":1
+    },
+    "BatchDeleteClusterNodesRequest":{
+      "type":"structure",
+      "required":[
+        "ClusterName",
+        "NodeIds"
+      ],
+      "members":{
+        "ClusterName":{
+          "shape":"ClusterNameOrArn",
+          "documentation":"<p>The name of the SageMaker HyperPod cluster from which to delete the specified nodes.</p>"
+        },
+        "NodeIds":{
+          "shape":"ClusterNodeIds",
+          "documentation":"<p>A list of node IDs to be deleted from the specified cluster.</p> <note> <p>For SageMaker HyperPod clusters using the Slurm workload manager, you cannot remove instances that are configured as Slurm controller nodes.</p> </note>"
+        }
+      }
+    },
+    "BatchDeleteClusterNodesResponse":{
+      "type":"structure",
+      "members":{
+        "Failed":{
+          "shape":"BatchDeleteClusterNodesErrorList",
+          "documentation":"<p>A list of errors encountered when deleting the specified nodes.</p>"
+        },
+        "Successful":{
+          "shape":"ClusterNodeIds",
+          "documentation":"<p>A list of node IDs that were successfully deleted from the specified cluster.</p>"
+        }
+      }
+    },
     "BatchDescribeModelPackageError":{
       "type":"structure",
       "required":[
@@ -7439,7 +7519,26 @@
         "ml.t3.medium",
         "ml.t3.large",
         "ml.t3.xlarge",
-        "ml.t3.2xlarge"
+        "ml.t3.2xlarge",
+        "ml.g6.xlarge",
+        "ml.g6.2xlarge",
+        "ml.g6.4xlarge",
+        "ml.g6.8xlarge",
+        "ml.g6.16xlarge",
+        "ml.g6.12xlarge",
+        "ml.g6.24xlarge",
+        "ml.g6.48xlarge",
+        "ml.gr6.4xlarge",
+        "ml.gr6.8xlarge",
+        "ml.g6e.xlarge",
+        "ml.g6e.2xlarge",
+        "ml.g6e.4xlarge",
+        "ml.g6e.8xlarge",
+        "ml.g6e.16xlarge",
+        "ml.g6e.12xlarge",
+        "ml.g6e.24xlarge",
+        "ml.g6e.48xlarge",
+        "ml.p5e.48xlarge"
       ]
     },
     "ClusterLifeCycleConfig":{
@@ -7532,6 +7631,12 @@
       "max":256,
       "min":1,
       "pattern":"^i-[a-f0-9]{8}(?:[a-f0-9]{9})?$"
+    },
+    "ClusterNodeIds":{
+      "type":"list",
+      "member":{"shape":"ClusterNodeId"},
+      "max":99,
+      "min":1
     },
     "ClusterNodeRecovery":{
       "type":"string",
@@ -36525,6 +36630,22 @@
         "ml.g5.12xlarge",
         "ml.g5.24xlarge",
         "ml.g5.48xlarge",
+        "ml.g6.xlarge",
+        "ml.g6.2xlarge",
+        "ml.g6.4xlarge",
+        "ml.g6.8xlarge",
+        "ml.g6.16xlarge",
+        "ml.g6.12xlarge",
+        "ml.g6.24xlarge",
+        "ml.g6.48xlarge",
+        "ml.g6e.xlarge",
+        "ml.g6e.2xlarge",
+        "ml.g6e.4xlarge",
+        "ml.g6e.8xlarge",
+        "ml.g6e.16xlarge",
+        "ml.g6e.12xlarge",
+        "ml.g6e.24xlarge",
+        "ml.g6e.48xlarge",
         "ml.trn1.2xlarge",
         "ml.trn1.32xlarge",
         "ml.trn1n.32xlarge",
@@ -36861,6 +36982,10 @@
         "TrainingJobStatus":{
           "shape":"TrainingJobStatus",
           "documentation":"<p>The status of the training job.</p>"
+        },
+        "SecondaryStatus":{
+          "shape":"SecondaryStatus",
+          "documentation":"<p>The secondary status of the training job.</p>"
         },
         "WarmPoolStatus":{
           "shape":"WarmPoolStatus",

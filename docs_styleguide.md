@@ -85,9 +85,9 @@ Sanitize your examples. Replace all sensitive information with placeholders such
     **** a1b2c3d4-5678-90ab-cdef-EXAMPLE***22222***, a1b2c3d4-5678-90ab-cdef-EXAMPLE***33333***, ...
 * **Regions:** us-west-2  
     Unless the resource can only exist in a different region.
-* **Bucket names:** DOC-EXAMPLE-BUCKET  
+* **Bucket names:** amzn-s3-demo-bucket  
     If your example requires multiple buckets, then use this pattern:  
-    DOC-EXAMPLE-BUCKET1, DOC-EXAMPLE-BUCKET**2**, DOC-EXAMPLE-BUCKET**3,** ...
+    amzn-s3-demo-bucket**1**, amzn-s3-demo-bucket**2**, amzn-s3-demo-bucket**3,** ...
 
 ### Example file location
 

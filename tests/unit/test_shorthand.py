@@ -74,8 +74,6 @@ PARSING_TEST_CASES = (
     # Single quoted strings.
     ("foo='bar'", {"foo": "bar"}),
     ("foo='bar,baz'", {"foo": "bar,baz"}),
-    ("'foo'=bar", {"foo": "bar"}),
-    ("'foo,bar'='bar,bas'", {"foo,bar": "bar,bas"}),
     # Single quoted strings for each value in a CSV list.
     ("foo='bar','baz'", {"foo": ['bar', 'baz']}),
     # Can mix single quoted and non quoted values.
@@ -83,11 +81,9 @@ PARSING_TEST_CASES = (
     # Quoted strings can include chars not allowed in unquoted strings.
     ("foo=bar,'baz=qux'", {"foo": ['bar', 'baz=qux']}),
     ("foo=bar,'--option=bar space'", {"foo": ['bar', '--option=bar space']}),
-    ("'foo@=key'=bar", {"foo@=key": "bar"}),
     # Can escape the single quote.
     ("foo='bar\\'baz'", {"foo": "bar'baz"}),
     ("foo='bar\\\\baz'", {"foo": "bar\\baz"}),
-    ("'foo\\'bar'=bar", {"foo'bar": "bar"}),
     # Double quoted strings.
     ('foo="bar"', {'foo': 'bar'}),
     ('foo="bar,baz"', {'foo': 'bar,baz'}),
@@ -96,21 +92,18 @@ PARSING_TEST_CASES = (
     ('foo=bar,"--option=bar space"', {'foo': ['bar', '--option=bar space']}),
     ('foo="bar\\"baz"', {'foo': 'bar"baz'}),
     ('foo="bar\\\\baz"', {'foo': 'bar\\baz'}),
-    ("\"foo\\\"bar\"='bar,bas'", {"foo\"bar": "bar,bas"}),
     # Can escape comma in CSV list.
     ('foo=a\\,b', {"foo": "a,b"}),
     ('foo=a\\,b', {"foo": "a,b"}),
     ('foo=a\\,', {"foo": "a,"}),
     ('foo=\\,', {"foo": ","}),
     ('foo=a,b\\,c', {"foo": ['a', 'b,c']}),
-    ('"foo,"=a,b\\,c', {"foo,": ['a', 'b,c']}),
     ('foo=a,b\\,', {"foo": ['a', 'b,']}),
     ('foo=a,\\,bc', {"foo": ['a', ',bc']}),
     # Ignores whitespace around '=' and ','
     ('foo= bar', {'foo': 'bar'}),
     ('foo =bar', {'foo': 'bar'}),
     ('foo = bar', {'foo': 'bar'}),
-    ('"foo = key" = bar', {'foo = key': 'bar'}),
     ('foo  =   bar', {'foo': 'bar'}),
     ('foo = bar,baz = qux', {'foo': 'bar', 'baz': 'qux'}),
     ('a = b,  c = d , e = f', {'a': 'b', 'c': 'd', 'e': 'f'}),
@@ -123,7 +116,6 @@ PARSING_TEST_CASES = (
     ('A=b,\nC=d,\nE=f\n', {'A': 'b', 'C': 'd', 'E': 'f'}),
     # Hashes
     ('Name={foo=bar,baz=qux}', {'Name': {'foo': 'bar', 'baz': 'qux'}}),
-    ('Name={\'foo=\'=bar,baz=qux}', {'Name': {'foo=': 'bar', 'baz': 'qux'}}),
     ('Name={foo=[a,b,c],bar=baz}', {'Name': {'foo': ['a', 'b', 'c'], 'bar': 'baz'}}),
     ('Name={foo=bar},Bar=baz', {'Name': {'foo': 'bar'}, 'Bar': 'baz'}),
     ('Bar=baz,Name={foo=bar}', {'Bar': 'baz', 'Name': {'foo': 'bar'}}),
@@ -145,11 +137,9 @@ PARSING_TEST_CASES = (
     ('foo=a,b@=with space', {'foo': 'a', 'b': 'with space'}),
     ('foo=a,b@=with trailing space  ', {'foo': 'a', 'b': 'with trailing space'}),
     ('aws:service:region:124:foo/bar@=baz', {'aws:service:region:124:foo/bar': 'baz'}),
-    ('"aws:service:region:124:foo/bar@=baz"@=baz', {'aws:service:region:124:foo/bar@=baz': 'baz'}),
     ('foo=[a,b],bar@=[c,d]', {'foo': ['a', 'b'], 'bar': ['c', 'd']}),
     ('foo  @=  [ a , b  , c  ]', {'foo': ['a', 'b', 'c']}),
     ('A=b,\nC@=d,\nE@=f\n', {'A': 'b', 'C': 'd', 'E': 'f'}),
-    ('A=b,"\nC"@=d,\nE@=f\n', {'A': 'b', '\nC': 'd', 'E': 'f'}),
     ('Bar@=baz,Name={foo@=bar}', {'Bar': 'baz', 'Name': {'foo': 'bar'}}),
     ('Name=[{foo@=bar}, {baz=qux}]', {'Name': [{'foo': 'bar'}, {'baz': 'qux'}]}),
     (

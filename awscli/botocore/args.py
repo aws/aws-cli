@@ -157,7 +157,6 @@ class ClientArgsCreator(object):
             if raw_value is not None:
                 parameter_validation = ensure_boolean(raw_value)
 
-
         s3_config = self.compute_s3_config(client_config)
 
         configured_endpoint_url = self._compute_configured_endpoint_url(
@@ -349,7 +348,6 @@ class ClientArgsCreator(object):
         # overrides everything.
         retries = config_kwargs.get('retries')
         if retries is not None and 'max_attempts' in retries:
-            print(f'explicit max attempts provided in client config: {retries}')
             return
         # Otherwise we'll check the config store which checks env vars,
         # config files, etc.  There is no default value for max_attempts
@@ -360,7 +358,6 @@ class ClientArgsCreator(object):
                 retries = {}
                 config_kwargs['retries'] = retries
             retries['max_attempts'] = max_attempts
-            print(f'retries config: {retries}')
 
     def _compute_retry_mode(self, config_kwargs):
         retries = config_kwargs.get('retries')

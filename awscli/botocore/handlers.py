@@ -159,7 +159,6 @@ def _looks_like_special_case_error(status_code, body):
             # 500 Service Errors and try again.
             return True
         if root.tag == 'Error':
-            print(f'RETURNING TRUE! LOOKS LIKE SPECIAL CASE')
             return True
     return False
 
@@ -1144,7 +1143,6 @@ def _handle_200_error(operation_model, response_dict, **kwargs):
     if not _should_handle_200_error(operation_model, response_dict):
         # Operations with streaming response blobs are excluded as they
         # can't be reliably distinguished from an S3 error.
-        print(f'SHOULD NOT HANDLE THIS ONE. ')
         return
     if _looks_like_special_case_error(
         response_dict['status_code'], response_dict['body']
@@ -1153,7 +1151,6 @@ def _handle_200_error(operation_model, response_dict, **kwargs):
         logger.debug(
             f"Error found for response with 200 status code: {response_dict['body']}."
         )
-        print(f"Error found for response with 200 status code: {response_dict['body']}.")
 
 
 def _should_handle_200_error(operation_model, response_dict):
@@ -1181,7 +1178,6 @@ def _update_status_code(response, **kwargs):
     parsed_status_code = parsed.get('ResponseMetadata', {}).get(
         'HTTPStatusCode', http_response.status_code
     )
-    print(f'response status code : parsed code = {http_response.status_code} : {parsed_status_code}')
     if http_response.status_code != parsed_status_code:
         http_response.status_code = parsed_status_code
 

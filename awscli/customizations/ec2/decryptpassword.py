@@ -10,19 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import base64
 import logging
 import os
-import base64
 
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
-from cryptography.hazmat.primitives.serialization import load_pem_private_key
-
+from awscrt.crypto import RSA, RSASignatureAlgorithm
 from botocore import model
 
 from awscli.arguments import BaseCLIArgument
-
 
 logger = logging.getLogger(__name__)
 
@@ -100,8 +95,8 @@ class LaunchKeyArgument(BaseCLIArgument):
     def _decrypt_password_data(self, parsed, **kwargs):
         """
         This handler gets called after the GetPasswordData command has been
-        executed.  It is called with the and the ``parsed`` data.  It checks to
-        see if a private launch key was specified on the command.  If it was,
+        executed. It is called with the ``parsed`` data. It checks to
+        see if a private launch key was specified on the command. If it was,
         it tries to use that private key to decrypt the password data and
         replace it in the returned data dictionary.
         """
@@ -113,10 +108,9 @@ class LaunchKeyArgument(BaseCLIArgument):
             try:
                 with open(self._key_path, 'rb') as pk_file:
                     pk_bytes = pk_file.read()
-                    backend = default_backend()
-                    private_key = load_pem_private_key(pk_bytes, None, backend)
+                    private_key = RSA.new_private_key_from_pem_data(pk_bytes)
                     value = base64.b64decode(value)
-                    value = private_key.decrypt(value, PKCS1v15())
+                    value = private_key.decrypt(RSASignatureAlgorithm.PKCS1_5_SHA256, value)
                     logger.debug(parsed)
                     parsed['PasswordData'] = value.decode('utf-8')
                     logger.debug(parsed)

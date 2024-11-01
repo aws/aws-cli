@@ -3,7 +3,7 @@
 The following ``tag-resource`` example assign a tag to the log group ``demo-log-group``.
 
     aws oam tag-resource \
-        --resource-arn arn:aws:logs:us-east-1:123456789:log-group:demo-log-group \
+        --resource-arn arn:aws:logs:us-east-1:123456789012:log-group:demo-log-group \
         --tags team=Devops
 
 This command produces no output.

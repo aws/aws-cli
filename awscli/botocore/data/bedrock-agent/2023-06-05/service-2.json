@@ -5,11 +5,13 @@
     "endpointPrefix":"bedrock-agent",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Agents for Amazon Bedrock",
     "serviceId":"Bedrock Agent",
     "signatureVersion":"v4",
     "signingName":"bedrock",
-    "uid":"bedrock-agent-2023-06-05"
+    "uid":"bedrock-agent-2023-06-05",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AssociateAgentKnowledgeBase":{
@@ -1996,7 +1998,7 @@
       "type":"string",
       "max":2048,
       "min":20,
-      "pattern":"^(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:provisioned-model/[a-z0-9]{12})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|(([0-9a-zA-Z][_-]?)+)$"
+      "pattern":"^(arn:aws(-[^:]{1,12})?:(bedrock|sagemaker):[a-z0-9-]{1,20}:([0-9]{12})?:([a-z-]+/)?)?([a-zA-Z0-9.-]{1,63}){0,2}(([:][a-z0-9-]{1,63}){0,2})?(/[a-z0-9]{1,12})?$"
     },
     "BedrockEmbeddingModelConfiguration":{
       "type":"structure",
@@ -2027,7 +2029,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})|(arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{1,20}):(|[0-9]{12}):inference-profile/[a-zA-Z0-9-:.]+)$"
+      "pattern":"^(arn:aws(-[^:]{1,12})?:(bedrock):[a-z0-9-]{1,20}:([0-9]{12})?:([a-z-]+/)?)?([a-zA-Z0-9.-]{1,63}){0,2}(([:][a-z0-9-]{1,63}){0,2})?(/[a-z0-9]{1,12})?$"
     },
     "Boolean":{
       "type":"boolean",
@@ -8170,7 +8172,7 @@
       "members":{
         "embeddingModelArn":{
           "shape":"BedrockEmbeddingModelArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the model used to create vector embeddings for the knowledge base.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model or inference profile used to create vector embeddings for the knowledge base.</p>"
         },
         "embeddingModelConfiguration":{
           "shape":"EmbeddingModelConfiguration",

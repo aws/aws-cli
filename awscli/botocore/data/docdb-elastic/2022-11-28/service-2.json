@@ -5,14 +5,36 @@
     "endpointPrefix":"docdb-elastic",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"DocDB Elastic",
     "serviceFullName":"Amazon DocumentDB Elastic Clusters",
     "serviceId":"DocDB Elastic",
     "signatureVersion":"v4",
     "signingName":"docdb-elastic",
-    "uid":"docdb-elastic-2022-11-28"
+    "uid":"docdb-elastic-2022-11-28",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "ApplyPendingMaintenanceAction":{
+      "name":"ApplyPendingMaintenanceAction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/pending-action",
+        "responseCode":200
+      },
+      "input":{"shape":"ApplyPendingMaintenanceActionInput"},
+      "output":{"shape":"ApplyPendingMaintenanceActionOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>The type of pending maintenance action to be applied to the resource.</p>",
+      "idempotent":true
+    },
     "CopyClusterSnapshot":{
       "name":"CopyClusterSnapshot",
       "http":{
@@ -151,6 +173,25 @@
       ],
       "documentation":"<p>Returns information about a specific elastic cluster snapshot</p>"
     },
+    "GetPendingMaintenanceAction":{
+      "name":"GetPendingMaintenanceAction",
+      "http":{
+        "method":"GET",
+        "requestUri":"/pending-action/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPendingMaintenanceActionInput"},
+      "output":{"shape":"GetPendingMaintenanceActionOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves all maintenance actions that are pending.</p>"
+    },
     "ListClusterSnapshots":{
       "name":"ListClusterSnapshots",
       "http":{
@@ -184,6 +225,23 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Returns information about provisioned Amazon DocumentDB elastic clusters.</p>"
+    },
+    "ListPendingMaintenanceActions":{
+      "name":"ListPendingMaintenanceActions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/pending-actions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPendingMaintenanceActionsInput"},
+      "output":{"shape":"ListPendingMaintenanceActionsOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves a list of all maintenance actions that are pending.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -333,6 +391,42 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ApplyPendingMaintenanceActionInput":{
+      "type":"structure",
+      "required":[
+        "applyAction",
+        "optInType",
+        "resourceArn"
+      ],
+      "members":{
+        "applyAction":{
+          "shape":"InputString",
+          "documentation":"<p>The pending maintenance action to apply to the resource.</p> <p>Valid actions are:</p> <ul> <li> <p> <code>ENGINE_UPDATE<i/> </code> </p> </li> <li> <p> <code>ENGINE_UPGRADE</code> </p> </li> <li> <p> <code>SECURITY_UPDATE</code> </p> </li> <li> <p> <code>OS_UPDATE</code> </p> </li> <li> <p> <code>MASTER_USER_PASSWORD_UPDATE</code> </p> </li> </ul>"
+        },
+        "applyOn":{
+          "shape":"InputString",
+          "documentation":"<p>A specific date to apply the pending maintenance action. Required if opt-in-type is <code>APPLY_ON</code>. Format: <code>yyyy/MM/dd HH:mm-yyyy/MM/dd HH:mm</code> </p>"
+        },
+        "optInType":{
+          "shape":"OptInType",
+          "documentation":"<p>A value that specifies the type of opt-in request, or undoes an opt-in request. An opt-in request of type <code>IMMEDIATE</code> can't be undone.</p>"
+        },
+        "resourceArn":{
+          "shape":"InputString",
+          "documentation":"<p>The Amazon DocumentDB Amazon Resource Name (ARN) of the resource to which the pending maintenance action applies.</p>"
+        }
+      }
+    },
+    "ApplyPendingMaintenanceActionOutput":{
+      "type":"structure",
+      "required":["resourcePendingMaintenanceAction"],
+      "members":{
+        "resourcePendingMaintenanceAction":{
+          "shape":"ResourcePendingMaintenanceAction",
+          "documentation":"<p>The output of the pending maintenance action being applied.</p>"
+        }
+      }
     },
     "Arn":{
       "type":"string",
@@ -841,6 +935,33 @@
         }
       }
     },
+    "GetPendingMaintenanceActionInput":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"InputString",
+          "documentation":"<p>Retrieves pending maintenance actions for a specific Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "GetPendingMaintenanceActionOutput":{
+      "type":"structure",
+      "required":["resourcePendingMaintenanceAction"],
+      "members":{
+        "resourcePendingMaintenanceAction":{
+          "shape":"ResourcePendingMaintenanceAction",
+          "documentation":"<p>Provides information about a pending maintenance action for a resource.</p>"
+        }
+      }
+    },
+    "InputString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -941,6 +1062,43 @@
         }
       }
     },
+    "ListPendingMaintenanceActionsInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListPendingMaintenanceActionsInputMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to include in the response. If more records exist than the specified <code>maxResults</code> value, a pagination token (marker) is included in the response so that the remaining results can be retrieved.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>maxResults</code>.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListPendingMaintenanceActionsInputMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListPendingMaintenanceActionsOutput":{
+      "type":"structure",
+      "required":["resourcePendingMaintenanceActions"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is displayed, the responses will include only records beyond the marker, up to the value specified by <code>maxResults</code>.</p>"
+        },
+        "resourcePendingMaintenanceActions":{
+          "shape":"ResourcePendingMaintenanceActionList",
+          "documentation":"<p>Provides information about a pending maintenance action for a resource.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -962,13 +1120,57 @@
         }
       }
     },
+    "OptInType":{
+      "type":"string",
+      "enum":[
+        "IMMEDIATE",
+        "NEXT_MAINTENANCE",
+        "APPLY_ON",
+        "UNDO_OPT_IN"
+      ]
+    },
     "PaginationToken":{
       "type":"string",
-      "documentation":"<p>Token or cursor used in paginated operations.</p> <p>When this value is provided as operation input, the service returns results from where the previous response left off. When this value is present in operation output, it indicates that there are more results to retrieve.</p> <p>This should be opaque to not expose implementation details and potentially versioned to allow evolution of pagination strategy.</p>"
+      "documentation":"<pre><code>Token or cursor used in paginated operations. When this value is provided as operation input, the service returns results from where the previous response left off. When this value is present in operation output, it indicates that there are more results to retrieve. This should be opaque to not expose implementation details and potentially versioned to allow evolution of pagination strategy. </code></pre>"
     },
     "Password":{
       "type":"string",
       "sensitive":true
+    },
+    "PendingMaintenanceActionDetails":{
+      "type":"structure",
+      "required":["action"],
+      "members":{
+        "action":{
+          "shape":"String",
+          "documentation":"<p>Displays the specific action of a pending maintenance action.</p>"
+        },
+        "autoAppliedAfterDate":{
+          "shape":"String",
+          "documentation":"<p>Displays the date of the maintenance window when the action is applied. The maintenance action is applied to the resource during its first maintenance window after this date. If this date is specified, any <code>NEXT_MAINTENANCE</code> <code>optInType</code> requests are ignored.</p>"
+        },
+        "currentApplyDate":{
+          "shape":"String",
+          "documentation":"<p>Displays the effective date when the pending maintenance action is applied to the resource.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>Displays a description providing more detail about the maintenance action.</p>"
+        },
+        "forcedApplyDate":{
+          "shape":"String",
+          "documentation":"<p>Displays the date when the maintenance action is automatically applied. The maintenance action is applied to the resource on this date regardless of the maintenance window for the resource. If this date is specified, any <code>IMMEDIATE</code> <code>optInType</code> requests are ignored.</p>"
+        },
+        "optInStatus":{
+          "shape":"String",
+          "documentation":"<p>Displays the type of <code>optInType</code> request that has been received for the resource.</p>"
+        }
+      },
+      "documentation":"<p>Retrieves the details of maintenance actions that are pending.</p>"
+    },
+    "PendingMaintenanceActionDetailsList":{
+      "type":"list",
+      "member":{"shape":"PendingMaintenanceActionDetails"}
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -997,6 +1199,24 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ResourcePendingMaintenanceAction":{
+      "type":"structure",
+      "members":{
+        "pendingMaintenanceActionDetails":{
+          "shape":"PendingMaintenanceActionDetailsList",
+          "documentation":"<p>Provides information about a pending maintenance action for a resource.</p>"
+        },
+        "resourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon DocumentDB Amazon Resource Name (ARN) of the resource to which the pending maintenance action applies.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about a pending maintenance action for a resource.</p>"
+    },
+    "ResourcePendingMaintenanceActionList":{
+      "type":"list",
+      "member":{"shape":"ResourcePendingMaintenanceAction"}
     },
     "RestoreClusterFromSnapshotInput":{
       "type":"structure",
@@ -1138,7 +1358,9 @@
         "COPYING",
         "STARTING",
         "STOPPING",
-        "STOPPED"
+        "STOPPED",
+        "MAINTENANCE",
+        "INACCESSIBLE_ENCRYPTION_CREDENTIALS_RECOVERABLE"
       ]
     },
     "StopClusterInput":{

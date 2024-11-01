@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.35.20
+=======
+
+* api-change:``bedrock-agent``: Amazon Bedrock Knowledge Bases now supports using application inference profiles to increase throughput and improve resilience.
+* api-change:``docdb-elastic``: Amazon DocumentDB Elastic Clusters adds support for pending maintenance actions feature with APIs GetPendingMaintenanceAction, ListPendingMaintenanceActions and ApplyPendingMaintenanceAction
+* api-change:``logs``: This release introduces an improvement in PutLogEvents
+* api-change:``taxsettings``: Add support for supplemental tax registrations via these new APIs: PutSupplementalTaxRegistration, ListSupplementalTaxRegistrations, and DeleteSupplementalTaxRegistration.
+
+
 1.35.19
 =======
 

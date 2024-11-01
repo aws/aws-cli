@@ -3,7 +3,7 @@
 The following ``untag-resource`` example removes a tag with the key ``team`` from Sink ``arn:aws:oam:us-east-2:123456789012:sink/a1b2c3d4-5678-90ab-cdef-example12345``.
 
     aws oam untag-resource \
-        --resource-arn arn:aws:oam:us-east-2:123456789012:sink/f3f42f60-f0f2-425c-1234-12347bdd821f \
+        --resource-arn arn:aws:oam:us-east-2:123456789012:sink/a1b2c3d4-5678-90ab-cdef-example12345 \
         --tag-keys team
 
 This command produces no output.

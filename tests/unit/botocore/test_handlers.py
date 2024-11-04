@@ -1144,7 +1144,6 @@ class TestRetryHandlerOrder(BaseSessionTest):
         # care about the absolute order.
         names = self.get_handler_names(responses)
         self.assertIn('_update_status_code', names)
-        # TODO there may be a previous PR that i should port here too, including RetryHandler
         self.assertIn('needs_retry', names)
         s3_200_handler = names.index('_update_status_code')
         general_retry_handler = names.index('needs_retry')

@@ -12,9 +12,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+from sys import exception
 
 from awscrt.s3 import S3RequestType
 
+import botocore.exceptions
 from awscli.compat import BytesIO
 from awscli.customizations.s3.utils import S3PathResolver
 from awscli.testutils import mock
@@ -266,6 +268,22 @@ class TestMvCommand(BaseS3TransferCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
         self.assertEqual(self.operations_called[1][1]['ChecksumMode'], 'ENABLED')
+
+    def test_slowdown_raises_error(self):
+        self.parsed_responses = [
+            # Response for HeadObject
+            {"ContentLength": 100, "LastModified": "00:00:00Z"},
+            # Response for GetObject
+            {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
+            # Response for DeleteObject
+            {'Error': {'Code': 'SlowDown', 'Message': 'Please reduce your request rate.'}}
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir}'
+        stdout, stderr, _ = self.run_cmd(cmdline, expected_rc=1)
+        self.assertIn(
+            'An error occurred (SlowDown) when calling the DeleteObject operation: Please reduce your request rate.',
+            stderr
+        )
 
 
 class TestMvWithCRTClient(BaseCRTTransferClientTest):

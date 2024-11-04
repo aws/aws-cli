@@ -307,8 +307,9 @@ class TestMoveCommand(BaseS3IntegrationTest):
                          len(file_contents.getvalue()))
 
     def test_mv_to_nonexistent_bucket(self):
+        bucket_name = random_bucket_name()
         full_path = self.files.create_file('foo.txt', 'this is foo.txt')
-        p = aws('s3 mv %s s3://bad-noexist-13143242/foo.txt' % (full_path,))
+        p = aws(f's3 mv {full_path} s3://{bucket_name}/foo.txt')
         self.assertEqual(p.rc, 1)
 
     def test_cant_move_file_onto_itself_small_file(self):
@@ -518,8 +519,9 @@ class TestCp(BaseS3IntegrationTest):
                          "aborted after receiving Ctrl-C: %s" % uploads_after)
 
     def test_cp_to_nonexistent_bucket(self):
+        bucket_name = random_bucket_name()
         foo_txt = self.files.create_file('foo.txt', 'this is foo.txt')
-        p = aws('s3 cp %s s3://noexist-bucket-foo-bar123/foo.txt' % (foo_txt,))
+        p = aws(f's3 cp {foo_txt} s3://{bucket_name}/foo.txt')
         self.assertEqual(p.rc, 1)
 
     def test_cp_empty_file(self):
@@ -531,7 +533,8 @@ class TestCp(BaseS3IntegrationTest):
         self.assertTrue(self.key_exists(bucket_name, 'foo.txt'))
 
     def test_download_non_existent_key(self):
-        p = aws('s3 cp s3://jasoidfjasdjfasdofijasdf/foo.txt foo.txt')
+        bucket_name = random_bucket_name()
+        p = aws(f's3 cp s3://{bucket_name}/foo.txt foo.txt')
         self.assertEqual(p.rc, 1)
         expected_err_msg = (
             'An error occurred (404) when calling the '
@@ -1360,7 +1363,8 @@ class TestOutput(BaseS3IntegrationTest):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://non-existant-bucket/' % foo_txt)
+        bucket_name = random_bucket_name()
+        p = aws(f's3 cp {foo_txt} s3://{bucket_name}/')
         # Check that there were errors and that the error was print to stderr.
         self.assertEqual(p.rc, 1)
         self.assertIn('upload failed', p.stderr)
@@ -1369,7 +1373,8 @@ class TestOutput(BaseS3IntegrationTest):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://non-existant-bucket/ --quiet' % foo_txt)
+        bucket_name = random_bucket_name()
+        p = aws(f's3 cp {foo_txt} s3://{bucket_name}/ --quiet')
         # Check that there were errors and that the error was not
         # print to stderr.
         self.assertEqual(p.rc, 1)
@@ -1379,8 +1384,8 @@ class TestOutput(BaseS3IntegrationTest):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://non-existant-bucket/ --only-show-errors'
-                % foo_txt)
+        bucket_name = random_bucket_name()
+        p = aws(f's3 cp {foo_txt} s3://{bucket_name}/ --only-show-errors')
         # Check that there were errors and that the error was print to stderr.
         self.assertEqual(p.rc, 1)
         self.assertIn('upload failed', p.stderr)

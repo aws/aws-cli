@@ -32,6 +32,7 @@ import sys
 import tempfile
 import time
 import unittest
+import uuid
 from pprint import pformat
 from subprocess import PIPE, Popen
 from unittest import mock
@@ -219,7 +220,9 @@ def random_bucket_name(prefix='awscli-s3integ-', num_random=15):
     :returns: The name of a randomly generated bucket name as a string.
 
     """
-    return prefix + random_chars(num_random)
+    timestamp = int(time.time())
+    unique_id = str(uuid.uuid4())
+    return f"{prefix}{timestamp}{unique_id}"
 
 
 class BaseCLIDriverTest(unittest.TestCase):

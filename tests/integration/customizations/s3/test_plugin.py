@@ -45,6 +45,7 @@ from awscli.customizations.scalarparse import add_scalar_parsers, identity
 # Using the same log name as testutils.py
 LOG = logging.getLogger('awscli.tests.integration')
 _SHARED_BUCKET = random_bucket_name()
+_NON_EXISTENT_BUCKET = random_bucket_name()
 _DEFAULT_REGION = 'us-west-2'
 _DEFAULT_AZ = 'usw2-az1'
 _SHARED_DIR_BUCKET = f'{random_bucket_name()}--{_DEFAULT_AZ}--x-s3'
@@ -86,6 +87,17 @@ def setup_module():
     s3.delete_public_access_block(
         Bucket=_SHARED_BUCKET
     )
+
+    # Validate that "_NON_EXISTENT_BUCKET" doesn't exist.
+    waiter = s3.get_waiter('bucket_not_exists')
+    try:
+        waiter.wait(Bucket=_NON_EXISTENT_BUCKET)
+    except Exception as e:
+        LOG.debug(
+            f"The following bucket was unexpectedly discovered: {_NON_EXISTENT_BUCKET}",
+            e,
+            exc_info=True,
+        )
 
 
 def clear_out_bucket(bucket, delete_bucket=False):
@@ -308,7 +320,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
 
     def test_mv_to_nonexistent_bucket(self):
         full_path = self.files.create_file('foo.txt', 'this is foo.txt')
-        p = aws('s3 mv %s s3://bad-noexist-13143242/foo.txt' % (full_path,))
+        p = aws(f's3 mv {full_path} s3://{_NON_EXISTENT_BUCKET}/foo.txt')
         self.assertEqual(p.rc, 1)
 
     def test_cant_move_file_onto_itself_small_file(self):
@@ -519,7 +531,7 @@ class TestCp(BaseS3IntegrationTest):
 
     def test_cp_to_nonexistent_bucket(self):
         foo_txt = self.files.create_file('foo.txt', 'this is foo.txt')
-        p = aws('s3 cp %s s3://noexist-bucket-foo-bar123/foo.txt' % (foo_txt,))
+        p = aws(f's3 cp {foo_txt} s3://{_NON_EXISTENT_BUCKET}/foo.txt')
         self.assertEqual(p.rc, 1)
 
     def test_cp_empty_file(self):
@@ -531,7 +543,7 @@ class TestCp(BaseS3IntegrationTest):
         self.assertTrue(self.key_exists(bucket_name, 'foo.txt'))
 
     def test_download_non_existent_key(self):
-        p = aws('s3 cp s3://jasoidfjasdjfasdofijasdf/foo.txt foo.txt')
+        p = aws(f's3 cp s3://{_NON_EXISTENT_BUCKET}/foo.txt foo.txt')
         self.assertEqual(p.rc, 1)
         expected_err_msg = (
             'An error occurred (404) when calling the '
@@ -1223,7 +1235,7 @@ class TestLs(BaseS3IntegrationTest):
         self.assert_no_errors(p)
 
     def test_ls_non_existent_bucket(self):
-        p = aws('s3 ls s3://foobara99842u4wbts829381')
+        p = aws(f's3 ls s3://{_NON_EXISTENT_BUCKET}')
         self.assertEqual(p.rc, 255)
         self.assertIn(
             ('An error occurred (NoSuchBucket) when calling the '
@@ -1360,7 +1372,7 @@ class TestOutput(BaseS3IntegrationTest):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://non-existant-bucket/' % foo_txt)
+        p = aws(f's3 cp {foo_txt} s3://{_NON_EXISTENT_BUCKET}/')
         # Check that there were errors and that the error was print to stderr.
         self.assertEqual(p.rc, 1)
         self.assertIn('upload failed', p.stderr)
@@ -1369,7 +1381,7 @@ class TestOutput(BaseS3IntegrationTest):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://non-existant-bucket/ --quiet' % foo_txt)
+        p = aws(f's3 cp {foo_txt} s3://{_NON_EXISTENT_BUCKET}/ --quiet')
         # Check that there were errors and that the error was not
         # print to stderr.
         self.assertEqual(p.rc, 1)
@@ -1379,8 +1391,7 @@ class TestOutput(BaseS3IntegrationTest):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://non-existant-bucket/ --only-show-errors'
-                % foo_txt)
+        p = aws(f's3 cp {foo_txt} s3://{_NON_EXISTENT_BUCKET}/ --only-show-errors')
         # Check that there were errors and that the error was print to stderr.
         self.assertEqual(p.rc, 1)
         self.assertIn('upload failed', p.stderr)

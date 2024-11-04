@@ -39,6 +39,9 @@ from awscli.customizations.s3.transferconfig import DEFAULTS
 from tests.integration.customizations.s3 import BaseS3IntegrationTest
 
 
+_NON_EXISTENT_BUCKET = random_bucket_name()
+
+
 @pytest.fixture
 def symlink_files(files):
     nested_dir = os.path.join(files.rootdir, 'realfiles')
@@ -300,7 +303,7 @@ class TestMoveCommand(BaseParameterizedS3ClientTest):
 
     def test_mv_to_nonexistent_bucket(self, files):
         full_path = files.create_file('foo.txt', 'this is foo.txt')
-        p = aws('s3 mv %s s3://bad-noexist-13143242/foo.txt' % (full_path,))
+        p = aws(f's3 mv {full_path} s3://{_NON_EXISTENT_BUCKET}/foo.txt')
         assert p.rc == 1
 
     def test_cant_move_file_onto_itself_small_file(self, s3_utils,
@@ -493,7 +496,7 @@ class TestCp(BaseParameterizedS3ClientTest):
 
     def test_cp_to_nonexistent_bucket(self, files):
         foo_txt = files.create_file('foo.txt', 'this is foo.txt')
-        p = aws('s3 cp %s s3://noexist-bucket-foo-bar123/foo.txt' % (foo_txt,))
+        p = aws(f's3 cp {foo_txt} s3://{_NON_EXISTENT_BUCKET}/foo.txt')
         assert p.rc == 1
 
     def test_cp_empty_file(self, files, s3_utils, shared_bucket):
@@ -504,7 +507,7 @@ class TestCp(BaseParameterizedS3ClientTest):
         assert s3_utils.key_exists(shared_bucket, 'foo.txt')
 
     def test_download_non_existent_key(self):
-        p = aws('s3 cp s3://jasoidfjasdjfasdofijasdf/foo.txt foo.txt')
+        p = aws(f's3 cp s3://{_NON_EXISTENT_BUCKET}/foo.txt foo.txt')
         assert p.rc == 1
         expected_err_msg = (
             'An error occurred (404) when calling the '
@@ -754,7 +757,7 @@ class TestSync(BaseParameterizedS3ClientTest):
         files.create_file('bar.txt', 'bar contents')
 
         # Sync the directory and the bucket.
-        p = aws('s3 sync %s s3://noexist-bkt-nme-1412' % (files.rootdir,))
+        p = aws(f's3 sync {files.rootdir} s3://{_NON_EXISTENT_BUCKET}')
         assert p.rc == 1
 
     def test_sync_with_empty_files(self, files, s3_utils, shared_bucket):
@@ -1136,7 +1139,7 @@ class TestLs(BaseS3IntegrationTest):
         self.assert_no_errors(p)
 
     def test_ls_non_existent_bucket(self):
-        p = aws('s3 ls s3://foobara99842u4wbts829381')
+        p = aws(f's3 ls s3://{_NON_EXISTENT_BUCKET}')
         assert p.rc == 254
         error_msg = (
             'An error occurred (NoSuchBucket) when calling the '
@@ -1279,7 +1282,7 @@ class TestOutput(BaseParameterizedS3ClientTest):
         foo_txt = files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://non-existant-bucket/' % foo_txt)
+        p = aws(f's3 cp {foo_txt} s3://{_NON_EXISTENT_BUCKET}/')
         # Check that there were errors and that the error was print to stderr.
         assert p.rc == 1
         assert 'upload failed' in p.stderr
@@ -1288,7 +1291,7 @@ class TestOutput(BaseParameterizedS3ClientTest):
         foo_txt = files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://non-existant-bucket/ --quiet' % foo_txt)
+        p = aws(f's3 cp {foo_txt} s3://{_NON_EXISTENT_BUCKET}/ --quiet')
         # Check that there were errors and that the error was not
         # print to stderr.
         assert p.rc == 1
@@ -1298,8 +1301,7 @@ class TestOutput(BaseParameterizedS3ClientTest):
         foo_txt = files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://non-existant-bucket/ --only-show-errors'
-                % foo_txt)
+        p = aws(f's3 cp {foo_txt} s3://{_NON_EXISTENT_BUCKET}/ --only-show-errors')
         # Check that there were errors and that the error was print to stderr.
         assert p.rc == 1
         assert 'upload failed' in p.stderr

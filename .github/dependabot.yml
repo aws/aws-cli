@@ -10,6 +10,16 @@ updates:
       - dependency-name: "*"
         update-types: ["version-update:semver-patch"]
 
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+    target-branch: "gh-pages"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+
   - package-ecosystem: "pip"
     directory: "/"
     open-pull-requests-limit: 10
@@ -51,3 +61,21 @@ updates:
       - dependency-name: "pyyaml"
       - dependency-name: "wheel"
       - dependency-name: "rsa"
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    open-pull-requests-limit: 10
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+    target-branch: "gh-pages"
+    labels:
+      - "dependencies"
+      - "gh-pages"
+    allow:
+      - dependency-name: "Sphinx"
+      - dependency-name: "furo"
+      - dependency-name: "myst-parser"
+      - dependency-name: "sphinx-lint" 
+      - dependency-name: "sphinx-copybutton"
+      - dependency-name: "sphinx-inline-tabs"

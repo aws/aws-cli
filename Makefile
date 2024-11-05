@@ -118,7 +118,8 @@ htmlview: html
 	$(PYTHON) -c "import os, webbrowser; webbrowser.open('file://' + os.path.realpath('_build/html/index.html'))"
 
 check:
-	# Ignore the tools dir and check that the default role is not used.
-	$(SPHINXLINT) -i tools --enable default-role
+	# Ignore the static files dir and enable all checks except for `leaked-markup`, which is disabled as there
+	# are numerous examples displaying markup strings (e.g., backticks).
+	$(SPHINXLINT) -i _static/files/ --enable all --disable leaked-markup
 
 prcheck: check linkcheck

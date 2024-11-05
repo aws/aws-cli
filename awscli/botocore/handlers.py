@@ -1143,6 +1143,7 @@ def _handle_200_error(operation_model, response_dict, **kwargs):
     if not _should_handle_200_error(operation_model, response_dict):
         # Operations with streaming response blobs are excluded as they
         # can't be reliably distinguished from an S3 error.
+        print(f'Should not handle this since detectes as non-200 error: {response_dict}')
         return
     if _looks_like_special_case_error(
         response_dict['status_code'], response_dict['body']

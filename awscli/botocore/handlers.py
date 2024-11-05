@@ -137,7 +137,7 @@ def check_for_200_error(response, **kwargs):
         return
     http_response, parsed = response
     if _looks_like_special_case_error(
-            http_response.status_code, http_response.content
+        http_response.status_code, http_response.content
     ):
         logger.debug("Error found for response with 200 status code, "
                      "errors: %s, changing status code to "

@@ -12,13 +12,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-from sys import exception
 
 from awscrt.s3 import S3RequestType
 
-import botocore.exceptions
 from awscli.compat import BytesIO
-from awscli.customizations.s3.utils import S3PathResolver
 from awscli.testutils import mock
 from tests.functional.s3 import (
     BaseS3TransferCommandTest, BaseCRTTransferClientTest

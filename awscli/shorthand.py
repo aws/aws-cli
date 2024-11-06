@@ -94,12 +94,10 @@ class ShorthandParseSyntaxError(ShorthandParseError):
         super(ShorthandParseSyntaxError, self).__init__(msg)
 
     def _construct_msg(self):
-        expected_txt = ' or '.join(self.expected) \
-            if isinstance(self.expected, list) else self.expected
         msg = (
             "Expected: '%s', received: '%s' for input:\n"
             "%s"
-        ) % (expected_txt, self.actual, self._error_location())
+        ) % (self.expected, self.actual, self._error_location())
         return msg
 
 

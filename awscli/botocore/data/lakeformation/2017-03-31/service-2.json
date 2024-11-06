@@ -10,7 +10,8 @@
     "serviceId":"LakeFormation",
     "signatureVersion":"v4",
     "signingName":"lakeformation",
-    "uid":"lakeformation-2017-03-31"
+    "uid":"lakeformation-2017-03-31",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AddLFTagsToResource":{
@@ -150,6 +151,24 @@
       ],
       "documentation":"<p>Creates an LF-tag with the specified name and values.</p>"
     },
+    "CreateLFTagExpression":{
+      "name":"CreateLFTagExpression",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateLFTagExpression"
+      },
+      "input":{"shape":"CreateLFTagExpressionRequest"},
+      "output":{"shape":"CreateLFTagExpressionResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"}
+      ],
+      "documentation":"<p>Creates a new LF-Tag expression with the provided name, description, catalog ID, and expression body. This call fails if a LF-Tag expression with the same name already exists in the caller’s account or if the underlying LF-Tags don't exist. To call this API operation, caller needs the following Lake Formation permissions:</p> <p> <code>CREATE_LF_TAG_EXPRESSION</code> on the root catalog resource.</p> <p> <code>GRANT_WITH_LF_TAG_EXPRESSION</code> on all underlying LF-Tag key:value pairs included in the expression. </p>"
+    },
     "CreateLakeFormationIdentityCenterConfiguration":{
       "name":"CreateLakeFormationIdentityCenterConfiguration",
       "http":{
@@ -219,6 +238,23 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes the specified LF-tag given a key name. If the input parameter tag key was not found, then the operation will throw an exception. When you delete an LF-tag, the <code>LFTagPolicy</code> attached to the LF-tag becomes invalid. If the deleted LF-tag was still assigned to any resource, the tag policy attach to the deleted LF-tag will no longer be applied to the resource.</p>"
+    },
+    "DeleteLFTagExpression":{
+      "name":"DeleteLFTagExpression",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteLFTagExpression"
+      },
+      "input":{"shape":"DeleteLFTagExpressionRequest"},
+      "output":{"shape":"DeleteLFTagExpressionResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes the LF-Tag expression. The caller must be a data lake admin or have <code>DROP</code> permissions on the LF-Tag expression. Deleting a LF-Tag expression will also delete all <code>LFTagPolicy</code> permissions referencing the LF-Tag expression.</p>"
     },
     "DeleteLakeFormationIdentityCenterConfiguration":{
       "name":"DeleteLakeFormationIdentityCenterConfiguration",
@@ -440,6 +476,23 @@
       ],
       "documentation":"<p>Returns an LF-tag definition.</p>"
     },
+    "GetLFTagExpression":{
+      "name":"GetLFTagExpression",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetLFTagExpression"
+      },
+      "input":{"shape":"GetLFTagExpressionRequest"},
+      "output":{"shape":"GetLFTagExpressionResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the details about the LF-Tag expression. The caller must be a data lake admin or must have <code>DESCRIBE</code> permission on the LF-Tag expression resource. </p>"
+    },
     "GetQueryState":{
       "name":"GetQueryState",
       "http":{
@@ -548,7 +601,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"PermissionTypeMismatchException"}
       ],
-      "documentation":"<p>Allows a caller in a secure environment to assume a role with permission to access Amazon S3. In order to vend such credentials, Lake Formation assumes the role associated with a registered location, for example an Amazon S3 bucket, with a scope down policy which restricts the access to a single prefix.</p>"
+      "documentation":"<p>Allows a caller in a secure environment to assume a role with permission to access Amazon S3. In order to vend such credentials, Lake Formation assumes the role associated with a registered location, for example an Amazon S3 bucket, with a scope down policy which restricts the access to a single prefix.</p> <p>To call this API, the role that the service assumes must have <code>lakeformation:GetDataAccess</code> permission on the resource.</p>"
     },
     "GetWorkUnitResults":{
       "name":"GetWorkUnitResults",
@@ -618,6 +671,23 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists all the data cell filters on a table.</p>"
+    },
+    "ListLFTagExpressions":{
+      "name":"ListLFTagExpressions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListLFTagExpressions"
+      },
+      "input":{"shape":"ListLFTagExpressionsRequest"},
+      "output":{"shape":"ListLFTagExpressionsResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the LF-Tag expressions in caller’s account filtered based on caller's permissions. Data Lake and read only admins implicitly can see all tag expressions in their account, else caller needs DESCRIBE permissions on tag expression.</p>"
     },
     "ListLFTags":{
       "name":"ListLFTags",
@@ -744,7 +814,7 @@
         {"shape":"ResourceNumberLimitExceededException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Registers the resource as managed by the Data Catalog.</p> <p>To add or update data, Lake Formation needs read/write access to the chosen Amazon S3 path. Choose a role that you know has permission to do this, or choose the AWSServiceRoleForLakeFormationDataAccess service-linked role. When you register the first Amazon S3 path, the service-linked role and a new inline policy are created on your behalf. Lake Formation adds the first path to the inline policy and attaches it to the service-linked role. When you register subsequent paths, Lake Formation adds the path to the existing policy.</p> <p>The following request registers a new location and gives Lake Formation permission to use the service-linked role to access that location.</p> <p> <code>ResourceArn = arn:aws:s3:::my-bucket UseServiceLinkedRole = true</code> </p> <p>If <code>UseServiceLinkedRole</code> is not set to true, you must provide or set the <code>RoleArn</code>:</p> <p> <code>arn:aws:iam::12345:role/my-data-access-role</code> </p>"
+      "documentation":"<p>Registers the resource as managed by the Data Catalog.</p> <p>To add or update data, Lake Formation needs read/write access to the chosen Amazon S3 path. Choose a role that you know has permission to do this, or choose the AWSServiceRoleForLakeFormationDataAccess service-linked role. When you register the first Amazon S3 path, the service-linked role and a new inline policy are created on your behalf. Lake Formation adds the first path to the inline policy and attaches it to the service-linked role. When you register subsequent paths, Lake Formation adds the path to the existing policy.</p> <p>The following request registers a new location and gives Lake Formation permission to use the service-linked role to access that location.</p> <p> <code>ResourceArn = arn:aws:s3:::my-bucket/ UseServiceLinkedRole = true</code> </p> <p>If <code>UseServiceLinkedRole</code> is not set to true, you must provide or set the <code>RoleArn</code>:</p> <p> <code>arn:aws:iam::12345:role/my-data-access-role</code> </p>"
     },
     "RemoveLFTagsFromResource":{
       "name":"RemoveLFTagsFromResource",
@@ -883,6 +953,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Updates the list of possible values for the specified LF-tag key. If the LF-tag does not exist, the operation throws an EntityNotFoundException. The values in the delete key values will be deleted from list of possible values. If any value in the delete key values is attached to a resource, then API errors out with a 400 Exception - \"Update not allowed\". Untag the attribute before deleting the LF-tag key's value. </p>"
+    },
+    "UpdateLFTagExpression":{
+      "name":"UpdateLFTagExpression",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateLFTagExpression"
+      },
+      "input":{"shape":"UpdateLFTagExpressionRequest"},
+      "output":{"shape":"UpdateLFTagExpressionResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the name of the LF-Tag expression to the new description and expression body provided. Updating a LF-Tag expression immediately changes the permission boundaries of all existing <code>LFTagPolicy</code> permission grants that reference the given LF-Tag expression.</p>"
     },
     "UpdateLakeFormationIdentityCenterConfiguration":{
       "name":"UpdateLakeFormationIdentityCenterConfiguration",
@@ -1353,6 +1441,36 @@
       "members":{
       }
     },
+    "CreateLFTagExpressionRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Expression"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>A name for the expression.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>A description with information about the LF-Tag expression.</p>"
+        },
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment. </p>"
+        },
+        "Expression":{
+          "shape":"Expression",
+          "documentation":"<p>A list of LF-Tag conditions (key-value pairs).</p>"
+        }
+      }
+    },
+    "CreateLFTagExpressionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "CreateLFTagRequest":{
       "type":"structure",
       "required":[
@@ -1532,7 +1650,8 @@
         "LF_TAG",
         "LF_TAG_POLICY",
         "LF_TAG_POLICY_DATABASE",
-        "LF_TAG_POLICY_TABLE"
+        "LF_TAG_POLICY_TABLE",
+        "LF_NAMED_TAG_EXPRESSION"
       ]
     },
     "DataLakeSettings":{
@@ -1641,6 +1760,25 @@
       }
     },
     "DeleteDataCellsFilterResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteLFTagExpressionRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name for the LF-Tag expression.</p>"
+        },
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID in which the LF-Tag expression is saved. </p>"
+        }
+      }
+    },
+    "DeleteLFTagExpressionResponse":{
       "type":"structure",
       "members":{
       }
@@ -2097,6 +2235,41 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>A continuation token, if this is not the first call to retrieve this list.</p>"
+        }
+      }
+    },
+    "GetLFTagExpressionRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name for the LF-Tag expression</p>"
+        },
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID.</p>"
+        }
+      }
+    },
+    "GetLFTagExpressionResponse":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name for the LF-Tag expression. </p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The description with information about the LF-Tag expression.</p>"
+        },
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID in which the LF-Tag expression is saved.</p>"
+        },
+        "Expression":{
+          "shape":"Expression",
+          "documentation":"<p>The body of the LF-Tag expression. It is composed of one or more LF-Tag key-value pairs.</p>"
         }
       }
     },
@@ -2623,6 +2796,47 @@
       "type":"list",
       "member":{"shape":"LFTagError"}
     },
+    "LFTagExpression":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name for saved the LF-Tag expression.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>A structure that contains information about the LF-Tag expression.</p>"
+        },
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. </p>"
+        },
+        "Expression":{
+          "shape":"Expression",
+          "documentation":"<p>A logical expression composed of one or more LF-Tags.</p>"
+        }
+      },
+      "documentation":"<p>A structure consists LF-Tag expression name and catalog ID.</p>"
+    },
+    "LFTagExpressionResource":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. </p>"
+        },
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the LF-Tag expression to grant permissions on.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing a LF-Tag expression (keys and values).</p>"
+    },
+    "LFTagExpressionsList":{
+      "type":"list",
+      "member":{"shape":"LFTagExpression"}
+    },
     "LFTagKey":{
       "type":"string",
       "max":128,
@@ -2675,10 +2889,7 @@
     },
     "LFTagPolicyResource":{
       "type":"structure",
-      "required":[
-        "ResourceType",
-        "Expression"
-      ],
+      "required":["ResourceType"],
       "members":{
         "CatalogId":{
           "shape":"CatalogIdString",
@@ -2690,10 +2901,14 @@
         },
         "Expression":{
           "shape":"Expression",
-          "documentation":"<p>A list of LF-tag conditions that apply to the resource's LF-tag policy.</p>"
+          "documentation":"<p>A list of LF-tag conditions or a saved expression that apply to the resource's LF-tag policy.</p>"
+        },
+        "ExpressionName":{
+          "shape":"NameString",
+          "documentation":"<p>If provided, permissions are granted to the Data Catalog resources whose assigned LF-Tags match the expression body of the saved expression under the provided <code>ExpressionName</code>.</p>"
         }
       },
-      "documentation":"<p>A structure containing a list of LF-tag conditions that apply to a resource's LF-tag policy.</p>"
+      "documentation":"<p>A structure containing a list of LF-tag conditions or saved LF-Tag expressions that apply to a resource's LF-tag policy.</p>"
     },
     "LFTagValue":{
       "type":"string",
@@ -2755,6 +2970,36 @@
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>A continuation token, if not all requested data cell filters have been returned.</p>"
+        }
+      }
+    },
+    "ListLFTagExpressionsRequest":{
+      "type":"structure",
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. </p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is not the first call to retrieve this list.</p>"
+        }
+      }
+    },
+    "ListLFTagExpressionsResponse":{
+      "type":"structure",
+      "members":{
+        "LFTagExpressions":{
+          "shape":"LFTagExpressionsList",
+          "documentation":"<p>Logical expressions composed of one more LF-Tag key-value pairs.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is not the first call to retrieve this list.</p>"
         }
       }
     },
@@ -3091,7 +3336,8 @@
         "DATA_LOCATION_ACCESS",
         "CREATE_LF_TAG",
         "ASSOCIATE",
-        "GRANT_WITH_LF_TAG_EXPRESSION"
+        "GRANT_WITH_LF_TAG_EXPRESSION",
+        "CREATE_LF_TAG_EXPRESSION"
       ]
     },
     "PermissionList":{
@@ -3396,7 +3642,11 @@
         },
         "LFTagPolicy":{
           "shape":"LFTagPolicyResource",
-          "documentation":"<p>A list of LF-tag conditions that define a resource's LF-tag policy.</p>"
+          "documentation":"<p>A list of LF-tag conditions or saved LF-Tag expressions that define a resource's LF-tag policy.</p>"
+        },
+        "LFTagExpression":{
+          "shape":"LFTagExpressionResource",
+          "documentation":"<p>LF-Tag expression resource. A logical expression composed of one or more LF-Tag key:value pairs.</p>"
         }
       },
       "documentation":"<p>A structure for the resource.</p>"
@@ -4008,6 +4258,36 @@
       "members":{
       }
     },
+    "UpdateLFTagExpressionRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Expression"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name for the LF-Tag expression.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The description with information about the saved LF-Tag expression.</p>"
+        },
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. </p>"
+        },
+        "Expression":{
+          "shape":"Expression",
+          "documentation":"<p>The LF-Tag expression body composed of one more LF-Tag key-value pairs.</p>"
+        }
+      }
+    },
+    "UpdateLFTagExpressionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateLFTagRequest":{
       "type":"structure",
       "required":["TagKey"],
@@ -4148,7 +4428,7 @@
         },
         "StorageOptimizerConfig":{
           "shape":"StorageOptimizerConfigMap",
-          "documentation":"<p>Name of the table for which to enable the storage optimizer.</p>"
+          "documentation":"<p>Name of the configuration for the storage optimizer.</p>"
         }
       }
     },

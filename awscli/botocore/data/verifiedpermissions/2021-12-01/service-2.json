@@ -15,6 +15,22 @@
     "uid":"verifiedpermissions-2021-12-01"
   },
   "operations":{
+    "BatchGetPolicy":{
+      "name":"BatchGetPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetPolicyInput"},
+      "output":{"shape":"BatchGetPolicyOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about a group (batch) of policies.</p> <note> <p>The <code>BatchGetPolicy</code> operation doesn't have its own IAM permission. To authorize this operation for Amazon Web Services principals, include the permission <code>verifiedpermissions:GetPolicy</code> in their IAM policies.</p> </note>"
+    },
     "BatchIsAuthorized":{
       "name":"BatchIsAuthorized",
       "http":{
@@ -558,6 +574,14 @@
         "record":{
           "shape":"RecordAttribute",
           "documentation":"<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#record\">Record</a> type.</p> <p>Example: <code>{\"record\": { \"keyName\": {} } }</code> </p>"
+        },
+        "ipaddr":{
+          "shape":"IpAddr",
+          "documentation":"<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-ipaddr\">ipaddr</a> type.</p> <p>Example: <code>{\"ip\": \"192.168.1.100\"}</code> </p>"
+        },
+        "decimal":{
+          "shape":"Decimal",
+          "documentation":"<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-decimal\">decimal</a> type.</p> <p>Example: <code>{\"decimal\": \"1.1\"}</code> </p>"
         }
       },
       "documentation":"<p>The value of an attribute.</p> <p>Contains information about the runtime context for a request for which an authorization decision is made. </p> <p>This data type is used as a member of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ContextDefinition.html\">ContextDefinition</a> structure which is uses as a request parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a>, <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html\">BatchIsAuthorized</a>, and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p>",
@@ -573,6 +597,138 @@
       "member":{"shape":"Audience"},
       "max":255,
       "min":1
+    },
+    "BatchGetPolicyErrorCode":{
+      "type":"string",
+      "enum":[
+        "POLICY_STORE_NOT_FOUND",
+        "POLICY_NOT_FOUND"
+      ]
+    },
+    "BatchGetPolicyErrorItem":{
+      "type":"structure",
+      "required":[
+        "code",
+        "policyStoreId",
+        "policyId",
+        "message"
+      ],
+      "members":{
+        "code":{
+          "shape":"BatchGetPolicyErrorCode",
+          "documentation":"<p>The error code that was returned.</p>"
+        },
+        "policyStoreId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the policy store associated with the failed request.</p>"
+        },
+        "policyId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the policy associated with the failed request.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A detailed error message.</p>"
+        }
+      },
+      "documentation":"<p>Contains the information about an error resulting from a <code>BatchGetPolicy</code> API call.</p>"
+    },
+    "BatchGetPolicyErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchGetPolicyErrorItem"}
+    },
+    "BatchGetPolicyInput":{
+      "type":"structure",
+      "required":["requests"],
+      "members":{
+        "requests":{
+          "shape":"BatchGetPolicyInputList",
+          "documentation":"<p>An array of up to 100 policies you want information about.</p>"
+        }
+      }
+    },
+    "BatchGetPolicyInputItem":{
+      "type":"structure",
+      "required":[
+        "policyStoreId",
+        "policyId"
+      ],
+      "members":{
+        "policyStoreId":{
+          "shape":"PolicyStoreId",
+          "documentation":"<p>The identifier of the policy store where the policy you want information about is stored.</p>"
+        },
+        "policyId":{
+          "shape":"PolicyId",
+          "documentation":"<p>The identifier of the policy you want information about.</p>"
+        }
+      },
+      "documentation":"<p>Information about a policy that you include in a <code>BatchGetPolicy</code> API request.</p>"
+    },
+    "BatchGetPolicyInputList":{
+      "type":"list",
+      "member":{"shape":"BatchGetPolicyInputItem"},
+      "max":100,
+      "min":1
+    },
+    "BatchGetPolicyOutput":{
+      "type":"structure",
+      "required":[
+        "results",
+        "errors"
+      ],
+      "members":{
+        "results":{
+          "shape":"BatchGetPolicyOutputList",
+          "documentation":"<p>Information about the policies listed in the request that were successfully returned. These results are returned in the order they were requested.</p>"
+        },
+        "errors":{
+          "shape":"BatchGetPolicyErrorList",
+          "documentation":"<p>Information about the policies from the request that resulted in an error. These results are returned in the order they were requested.</p>"
+        }
+      }
+    },
+    "BatchGetPolicyOutputItem":{
+      "type":"structure",
+      "required":[
+        "policyStoreId",
+        "policyId",
+        "policyType",
+        "definition",
+        "createdDate",
+        "lastUpdatedDate"
+      ],
+      "members":{
+        "policyStoreId":{
+          "shape":"PolicyStoreId",
+          "documentation":"<p>The identifier of the policy store where the policy you want information about is stored.</p>"
+        },
+        "policyId":{
+          "shape":"PolicyId",
+          "documentation":"<p>The identifier of the policy you want information about.</p>"
+        },
+        "policyType":{
+          "shape":"PolicyType",
+          "documentation":"<p>The type of the policy. This is one of the following values:</p> <ul> <li> <p> <code>STATIC</code> </p> </li> <li> <p> <code>TEMPLATE_LINKED</code> </p> </li> </ul>"
+        },
+        "definition":{
+          "shape":"PolicyDefinitionDetail",
+          "documentation":"<p>The policy definition of an item in the list of policies returned.</p>"
+        },
+        "createdDate":{
+          "shape":"TimestampFormat",
+          "documentation":"<p>The date and time the policy was created.</p>"
+        },
+        "lastUpdatedDate":{
+          "shape":"TimestampFormat",
+          "documentation":"<p>The date and time the policy was most recently updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a policy returned from a <code>BatchGetPolicy</code> API request.</p>"
+    },
+    "BatchGetPolicyOutputList":{
+      "type":"list",
+      "member":{"shape":"BatchGetPolicyOutputItem"}
     },
     "BatchIsAuthorizedInput":{
       "type":"structure",
@@ -628,7 +784,7 @@
       "members":{
         "results":{
           "shape":"BatchIsAuthorizedOutputList",
-          "documentation":"<p>A series of <code>Allow</code> or <code>Deny</code> decisions for each request, and the policies that produced them.</p>"
+          "documentation":"<p>A series of <code>Allow</code> or <code>Deny</code> decisions for each request, and the policies that produced them. These results are returned in the order they were requested.</p>"
         }
       }
     },
@@ -726,7 +882,7 @@
         },
         "results":{
           "shape":"BatchIsAuthorizedWithTokenOutputList",
-          "documentation":"<p>A series of <code>Allow</code> or <code>Deny</code> decisions for each request, and the policies that produced them.</p>"
+          "documentation":"<p>A series of <code>Allow</code> or <code>Deny</code> decisions for each request, and the policies that produced them. These results are returned in the order they were requested.</p>"
         }
       }
     },
@@ -1192,6 +1348,13 @@
           "documentation":"<p>The date and time the policy template was most recently updated.</p>"
         }
       }
+    },
+    "Decimal":{
+      "type":"string",
+      "max":23,
+      "min":3,
+      "pattern":"-?\\d{1,15}\\.\\d{1,4}",
+      "sensitive":true
     },
     "Decision":{
       "type":"string",
@@ -1836,6 +1999,13 @@
       "fault":true,
       "retryable":{"throttling":false}
     },
+    "IpAddr":{
+      "type":"string",
+      "max":44,
+      "min":1,
+      "pattern":"[0-9a-fA-F\\.:\\/]*",
+      "sensitive":true
+    },
     "IsAuthorizedInput":{
       "type":"structure",
       "required":["policyStoreId"],
@@ -2103,7 +2273,7 @@
     "Namespace":{
       "type":"string",
       "max":100,
-      "min":1,
+      "min":0,
       "pattern":".*",
       "sensitive":true
     },
@@ -2479,7 +2649,7 @@
       "members":{
         "policyStoreId":{
           "shape":"PolicyStoreId",
-          "documentation":"<p>The identifier of the PolicyStore where the policy you want information about is stored.</p>"
+          "documentation":"<p>The identifier of the policy store where the policy you want information about is stored.</p>"
         },
         "policyId":{
           "shape":"PolicyId",
@@ -2760,7 +2930,6 @@
     },
     "SchemaJson":{
       "type":"string",
-      "max":100000,
       "min":1,
       "sensitive":true
     },

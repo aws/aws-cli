@@ -52,6 +52,63 @@
       ],
       "documentation":"<p>This operation creates a link between the user's identity calling the operation and a specific Q App. This is useful to mark the Q App as a <i>favorite</i> for the user if the user doesn't own the Amazon Q App so they can still run it and see it in their inventory of Q Apps.</p>"
     },
+    "BatchCreateCategory":{
+      "name":"BatchCreateCategory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/catalog.createCategories",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchCreateCategoryInput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates Categories for the Amazon Q Business application environment instance. Web experience users use Categories to tag and filter library items. For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/qapps-custom-labels.html\">Custom labels for Amazon Q Apps</a>.</p>"
+    },
+    "BatchDeleteCategory":{
+      "name":"BatchDeleteCategory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/catalog.deleteCategories",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDeleteCategoryInput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes Categories for the Amazon Q Business application environment instance. Web experience users use Categories to tag and filter library items. For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/qapps-custom-labels.html\">Custom labels for Amazon Q Apps</a>.</p>"
+    },
+    "BatchUpdateCategory":{
+      "name":"BatchUpdateCategory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/catalog.updateCategories",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchUpdateCategoryInput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates Categories for the Amazon Q Business application environment instance. Web experience users use Categories to tag and filter library items. For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/qapps-custom-labels.html\">Custom labels for Amazon Q Apps</a>.</p>"
+    },
     "CreateLibraryItem":{
       "name":"CreateLibraryItem",
       "http":{
@@ -248,6 +305,25 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Uploads a file that can then be used either as a default in a <code>FileUploadCard</code> from Q App definition or as a file that is used inside a single Q App run. The purpose of the document is determined by a scope parameter that indicates whether it is at the app definition level or at the app session level.</p>"
+    },
+    "ListCategories":{
+      "name":"ListCategories",
+      "http":{
+        "method":"GET",
+        "requestUri":"/catalog.listCategories",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCategoriesInput"},
+      "output":{"shape":"ListCategoriesOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the categories of a Amazon Q Business application environment instance. For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/qapps-custom-labels.html\">Custom labels for Amazon Q Apps</a>.</p>"
     },
     "ListLibraryItems":{
       "name":"ListLibraryItems",
@@ -653,6 +729,100 @@
       "type":"list",
       "member":{"shape":"AttributeFilter"}
     },
+    "BatchCreateCategoryInput":{
+      "type":"structure",
+      "required":[
+        "instanceId",
+        "categories"
+      ],
+      "members":{
+        "instanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The unique identifier of the Amazon Q Business application environment instance.</p>",
+          "location":"header",
+          "locationName":"instance-id"
+        },
+        "categories":{
+          "shape":"BatchCreateCategoryInputCategoryList",
+          "documentation":"<p>The list of category objects to be created</p>"
+        }
+      }
+    },
+    "BatchCreateCategoryInputCategory":{
+      "type":"structure",
+      "required":["title"],
+      "members":{
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier to be associated with a category. If you don't include a value, the category is automatically assigned a unique identifier.</p>"
+        },
+        "title":{
+          "shape":"BatchCreateCategoryInputCategoryTitleString",
+          "documentation":"<p>The name of the category.</p>"
+        },
+        "color":{
+          "shape":"BatchCreateCategoryInputCategoryColorString",
+          "documentation":"<p>The color to be associated with a category. The color must be a hexadecimal value of either 3 or 6 digits.</p>"
+        }
+      },
+      "documentation":"<p>The category object to be created.</p>"
+    },
+    "BatchCreateCategoryInputCategoryColorString":{
+      "type":"string",
+      "max":7,
+      "min":4,
+      "pattern":"#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})"
+    },
+    "BatchCreateCategoryInputCategoryList":{
+      "type":"list",
+      "member":{"shape":"BatchCreateCategoryInputCategory"},
+      "max":10,
+      "min":0
+    },
+    "BatchCreateCategoryInputCategoryTitleString":{
+      "type":"string",
+      "max":30,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*"
+    },
+    "BatchDeleteCategoryInput":{
+      "type":"structure",
+      "required":[
+        "instanceId",
+        "categories"
+      ],
+      "members":{
+        "instanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The unique identifier of the Amazon Q Business application environment instance.</p>",
+          "location":"header",
+          "locationName":"instance-id"
+        },
+        "categories":{
+          "shape":"DeleteCategoryInputList",
+          "documentation":"<p>The list of IDs of the categories to be deleted.</p>"
+        }
+      }
+    },
+    "BatchUpdateCategoryInput":{
+      "type":"structure",
+      "required":[
+        "instanceId",
+        "categories"
+      ],
+      "members":{
+        "instanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The unique identifier of the Amazon Q Business application environment instance.</p>",
+          "location":"header",
+          "locationName":"instance-id"
+        },
+        "categories":{
+          "shape":"CategoryListInput",
+          "documentation":"<p>The list of categories to be updated with their new values.</p>"
+        }
+      }
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -783,6 +953,12 @@
       "max":5000,
       "min":0
     },
+    "CategoriesList":{
+      "type":"list",
+      "member":{"shape":"Category"},
+      "max":10,
+      "min":0
+    },
     "Category":{
       "type":"structure",
       "required":[
@@ -797,6 +973,14 @@
         "title":{
           "shape":"String",
           "documentation":"<p>The title or name of the category.</p>"
+        },
+        "color":{
+          "shape":"String",
+          "documentation":"<p>The color of the category</p>"
+        },
+        "appCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of published Amazon Q Apps associated with a category</p>"
         }
       },
       "documentation":"<p>A category used to classify and filter library items for Amazon Q Apps.</p>"
@@ -807,10 +991,50 @@
       "max":3,
       "min":0
     },
+    "CategoryInput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "title"
+      ],
+      "members":{
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the category.</p>"
+        },
+        "title":{
+          "shape":"CategoryInputTitleString",
+          "documentation":"<p>The name of the category.</p>"
+        },
+        "color":{
+          "shape":"CategoryInputColorString",
+          "documentation":"<p>The color of the category, represented as a hexadecimal value of either 3 or 6 digits.</p>"
+        }
+      },
+      "documentation":"<p>A label that web experience users associate with a library item. Web experience users use Categories to tag and filter library items.</p>"
+    },
+    "CategoryInputColorString":{
+      "type":"string",
+      "max":7,
+      "min":4,
+      "pattern":"#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})"
+    },
+    "CategoryInputTitleString":{
+      "type":"string",
+      "max":30,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*"
+    },
     "CategoryList":{
       "type":"list",
       "member":{"shape":"Category"},
       "max":3,
+      "min":0
+    },
+    "CategoryListInput":{
+      "type":"list",
+      "member":{"shape":"CategoryInput"},
+      "max":10,
       "min":0
     },
     "ConflictException":{
@@ -1058,6 +1282,12 @@
     "Default":{
       "type":"string",
       "max":500,
+      "min":0
+    },
+    "DeleteCategoryInputList":{
+      "type":"list",
+      "member":{"shape":"UUID"},
+      "max":10,
       "min":0
     },
     "DeleteLibraryItemInput":{
@@ -1686,6 +1916,27 @@
         "PUBLISHED",
         "DISABLED"
       ]
+    },
+    "ListCategoriesInput":{
+      "type":"structure",
+      "required":["instanceId"],
+      "members":{
+        "instanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The unique identifier of the Amazon Q Business application environment instance.</p>",
+          "location":"header",
+          "locationName":"instance-id"
+        }
+      }
+    },
+    "ListCategoriesOutput":{
+      "type":"structure",
+      "members":{
+        "categories":{
+          "shape":"CategoriesList",
+          "documentation":"<p>The categories of a Amazon Q Business application environment instance.</p>"
+        }
+      }
     },
     "ListLibraryItemsInput":{
       "type":"structure",
@@ -2367,7 +2618,7 @@
     },
     "UUID":{
       "type":"string",
-      "pattern":"[\\da-f]{8}-[\\da-f]{4}-4[\\da-f]{3}-[89ABab][\\da-f]{3}-[\\da-f]{12}"
+      "pattern":"[\\da-f]{8}-[\\da-f]{4}-[45][\\da-f]{3}-[89ABab][\\da-f]{3}-[\\da-f]{12}"
     },
     "UnauthorizedException":{
       "type":"structure",

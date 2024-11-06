@@ -10,12 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import base64
 import re
 
 import pytest
 from dateutil.tz import tzutc
 
+from botocore.httpchecksum import HAS_CRT, Crc32Checksum, CrtCrc32Checksum
 from tests import (
     create_session, mock, temporary_file, unittest,
     BaseSessionTest, ClientHTTPStubber, FreezeTime
@@ -23,7 +23,7 @@ from tests import (
 
 import botocore.session
 from botocore.config import Config
-from botocore.compat import datetime, urlsplit, parse_qs, get_md5
+from botocore.compat import datetime, urlsplit, parse_qs
 from botocore.exceptions import (
     ParamValidationError, ClientError,
     UnsupportedS3ConfigurationError,
@@ -1389,31 +1389,68 @@ class TestS3SigV4(BaseS3OperationTest):
     def get_sent_headers(self):
         return self.http_stubber.requests[0].headers
 
-    def test_content_md5_set(self):
+    def test_trailing_checksum_set(self):
         with self.http_stubber:
             self.client.put_object(Bucket='foo', Key='bar', Body='baz')
-        self.assertIn('content-md5', self.get_sent_headers())
+        sent_headers = self.get_sent_headers()
+        self.assertEqual(sent_headers["Content-Encoding"], b"aws-chunked")
+        self.assertEqual(sent_headers["Transfer-Encoding"], b"chunked")
+        self.assertEqual(
+            sent_headers["X-Amz-Trailer"], b"x-amz-checksum-crc32"
+        )
+        self.assertEqual(sent_headers["X-Amz-Decoded-Content-Length"], b"3")
+        self.assertEqual(
+            sent_headers["x-amz-content-sha256"],
+            b"STREAMING-UNSIGNED-PAYLOAD-TRAILER",
+        )
+        body = self.http_stubber.requests[0].body.read()
+        self.assertIn(b"x-amz-checksum-crc32", body)
 
-    def test_content_md5_set_empty_body(self):
+
+    def test_trailing_checksum_set_empty_body(self):
         with self.http_stubber:
             self.client.put_object(Bucket='foo', Key='bar', Body='')
-        self.assertIn('content-md5', self.get_sent_headers())
+        sent_headers = self.get_sent_headers()
+        self.assertEqual(sent_headers["Content-Encoding"], b"aws-chunked")
+        self.assertEqual(sent_headers["Transfer-Encoding"], b"chunked")
+        self.assertEqual(
+            sent_headers["X-Amz-Trailer"], b"x-amz-checksum-crc32"
+        )
+        self.assertEqual(sent_headers["X-Amz-Decoded-Content-Length"], b"0")
+        self.assertEqual(
+            sent_headers["x-amz-content-sha256"],
+            b"STREAMING-UNSIGNED-PAYLOAD-TRAILER",
+        )
+        body = self.http_stubber.requests[0].body.read()
+        self.assertIn(b"x-amz-checksum-crc32", body)
 
-    def test_content_md5_set_empty_file(self):
+    def test_trailing_checksum_set_empty_file(self):
         with self.http_stubber:
             with temporary_file('rb') as f:
                 assert f.read() == b''
                 self.client.put_object(Bucket='foo', Key='bar', Body=f)
-        self.assertIn('content-md5', self.get_sent_headers())
+                body = self.http_stubber.requests[0].body.read()
+        sent_headers = self.get_sent_headers()
+        self.assertEqual(sent_headers["Content-Encoding"], b"aws-chunked")
+        self.assertEqual(sent_headers["Transfer-Encoding"], b"chunked")
+        self.assertEqual(
+            sent_headers["X-Amz-Trailer"], b"x-amz-checksum-crc32"
+        )
+        self.assertEqual(sent_headers["X-Amz-Decoded-Content-Length"], b"0")
+        self.assertEqual(
+            sent_headers["x-amz-content-sha256"],
+            b"STREAMING-UNSIGNED-PAYLOAD-TRAILER",
+        )
+        self.assertIn(b"x-amz-checksum-crc32", body)
 
-    def test_content_sha256_set_if_config_value_is_true(self):
-        # By default, put_object() does not include an x-amz-content-sha256
-        # header because it also includes a `Content-MD5` header. The
-        # `payload_signing_enabled` config overrides this logic and forces the
-        # header.
-        config = Config(signature_version='s3v4', s3={
-            'payload_signing_enabled': True
-        })
+    def test_content_sha256_not_set_if_config_value_is_true(self):
+        # By default, put_object() provides a trailing checksum and includes the
+        # x-amz-content-sha256 header with a value of "STREAMING-UNSIGNED-PAYLOAD-TRAILER".
+        # We do not support payload signing for streaming so the `payload_signing_enabled`
+        # config has no effect here.
+        config = Config(
+            signature_version='s3v4',
+            s3={'payload_signing_enabled': True})
         self.client = self.session.create_client(
             's3', self.region, config=config)
         self.http_stubber = ClientHTTPStubber(self.client)
@@ -1422,12 +1459,17 @@ class TestS3SigV4(BaseS3OperationTest):
             self.client.put_object(Bucket='foo', Key='bar', Body='baz')
         sent_headers = self.get_sent_headers()
         sha_header = sent_headers.get('x-amz-content-sha256')
-        self.assertNotEqual(sha_header, b'UNSIGNED-PAYLOAD')
+        self.assertEqual(sha_header, b"STREAMING-UNSIGNED-PAYLOAD-TRAILER")
 
     def test_content_sha256_not_set_if_config_value_is_false(self):
-        config = Config(signature_version='s3v4', s3={
-            'payload_signing_enabled': False
-        })
+        # By default, put_object() provides a trailing checksum and includes the
+        # x-amz-content-sha256 header with a value of "STREAMING-UNSIGNED-PAYLOAD-TRAILER".
+        # We do not support payload signing for streaming so the `payload_signing_enabled`
+        # config has no effect here.
+        config = Config(
+            signature_version='s3v4',
+            s3={'payload_signing_enabled': False},
+        )
         self.client = self.session.create_client(
             's3', self.region, config=config)
         self.http_stubber = ClientHTTPStubber(self.client)
@@ -1436,15 +1478,18 @@ class TestS3SigV4(BaseS3OperationTest):
             self.client.put_object(Bucket='foo', Key='bar', Body='baz')
         sent_headers = self.get_sent_headers()
         sha_header = sent_headers.get('x-amz-content-sha256')
-        self.assertEqual(sha_header, b'UNSIGNED-PAYLOAD')
+        self.assertEqual(sha_header, b"STREAMING-UNSIGNED-PAYLOAD-TRAILER")
 
-    def test_content_sha256_set_if_config_value_not_set_put_object(self):
-        # The default behavior matches payload_signing_enabled=False. For
-        # operations where the `Content-MD5` is present this means that
-        # `x-amz-content-sha256` is present but not set.
+    def test_content_sha256_not_set_if_config_value_not_set_put_object(self):
+        # By default, put_object() provides a trailing checksum and includes the
+        # x-amz-content-sha256 header with a value of "STREAMING-UNSIGNED-PAYLOAD-TRAILER".
+        # We do not support payload signing for streaming so the `payload_signing_enabled`
+        # config has no effect here.
         config = Config(signature_version='s3v4')
         self.client = self.session.create_client(
-            's3', self.region, config=config
+            "s3",
+            self.region,
+            config=config,
         )
         self.http_stubber = ClientHTTPStubber(self.client)
         self.http_stubber.add_response()
@@ -1452,7 +1497,7 @@ class TestS3SigV4(BaseS3OperationTest):
             self.client.put_object(Bucket='foo', Key='bar', Body='baz')
         sent_headers = self.get_sent_headers()
         sha_header = sent_headers.get('x-amz-content-sha256')
-        self.assertEqual(sha_header, b'UNSIGNED-PAYLOAD')
+        self.assertEqual(sha_header, b"STREAMING-UNSIGNED-PAYLOAD-TRAILER")
 
     def test_content_sha256_set_if_config_value_not_set_list_objects(self):
         # The default behavior matches payload_signing_enabled=False. For
@@ -1487,16 +1532,6 @@ class TestS3SigV4(BaseS3OperationTest):
         sent_headers = self.get_sent_headers()
         sha_header = sent_headers.get('x-amz-content-sha256')
         self.assertNotEqual(sha_header, b'UNSIGNED-PAYLOAD')
-
-    def test_content_sha256_set_if_md5_is_unavailable(self):
-        with mock.patch('botocore.auth.MD5_AVAILABLE', False):
-            with mock.patch('botocore.utils.MD5_AVAILABLE', False):
-                with self.http_stubber:
-                    self.client.put_object(Bucket='foo', Key='bar', Body='baz')
-        sent_headers = self.get_sent_headers()
-        unsigned = 'UNSIGNED-PAYLOAD'
-        self.assertNotEqual(sent_headers['x-amz-content-sha256'], unsigned)
-        self.assertNotIn('content-md5', sent_headers)
 
 
 class TestCanSendIntegerHeaders(BaseSessionTest):
@@ -2027,7 +2062,7 @@ def test_checksums_included_in_expected_operations(operation, operation_kwargs):
         stub.add_response()
         call = getattr(client, operation)
         call(**operation_kwargs)
-        assert 'Content-MD5' in stub.requests[-1].headers
+        assert "x-amz-checksum-crc32" in stub.requests[-1].headers
 
 
 @pytest.mark.parametrize(
@@ -2992,10 +3027,12 @@ class TestRequestPayerObjectTagging(BaseS3OperationTest):
 
 
 class TestS3XMLPayloadEscape(BaseS3OperationTest):
-    def assert_correct_content_md5(self, request):
-        content_md5_bytes = get_md5(request.body).digest()
-        content_md5 = base64.b64encode(content_md5_bytes)
-        self.assertEqual(content_md5, request.headers['Content-MD5'])
+    def assert_correct_crc32_checksum(self, request):
+        checksum = CrtCrc32Checksum() if HAS_CRT else Crc32Checksum()
+        crc32_checksum = checksum.handle(request.body).encode()
+        self.assertEqual(
+            crc32_checksum, request.headers["x-amz-checksum-crc32"]
+        )
 
     def test_escape_keys_in_xml_delete_objects(self):
         self.http_stubber.add_response()
@@ -3009,7 +3046,7 @@ class TestS3XMLPayloadEscape(BaseS3OperationTest):
         request = self.http_stubber.requests[0]
         self.assertNotIn(b'\r\n\r', request.body)
         self.assertIn(b'&#xD;&#xA;&#xD;', request.body)
-        self.assert_correct_content_md5(request)
+        self.assert_correct_crc32_checksum(request)
 
     def test_escape_keys_in_xml_put_bucket_lifecycle_configuration(self):
         self.http_stubber.add_response()
@@ -3026,7 +3063,7 @@ class TestS3XMLPayloadEscape(BaseS3OperationTest):
         request = self.http_stubber.requests[0]
         self.assertNotIn(b'my\r\n\rprefix', request.body)
         self.assertIn(b'my&#xD;&#xA;&#xD;prefix', request.body)
-        self.assert_correct_content_md5(request)
+        self.assert_correct_crc32_checksum(request)
 
 
 @pytest.mark.parametrize(

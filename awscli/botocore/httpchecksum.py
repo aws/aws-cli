@@ -25,14 +25,14 @@ from binascii import crc32
 from hashlib import sha1, sha256
 
 from awscrt import checksums as crt_checksums
+from botocore.compat import HAS_CRT, urlparse
 from botocore.exceptions import AwsChunkedWrapperError, FlexibleChecksumError
 from botocore.response import StreamingBody
-from botocore.utils import (
-    conditionally_calculate_md5,
-    determine_content_length,
-)
+from botocore.utils import determine_content_length, has_checksum_header
 
 logger = logging.getLogger(__name__)
+
+DEFAULT_CHECKSUM_ALGORITHM = "CRC32"
 
 
 class BaseChecksum:
@@ -246,7 +246,18 @@ def resolve_checksum_context(request, operation_model, params):
 def resolve_request_checksum_algorithm(
     request, operation_model, params, supported_algorithms=None,
 ):
+    # If the header is already set by the customer, skip calculation
+    if has_checksum_header(request):
+        return
+
+    request_checksum_calculation = request["context"][
+        "client_config"
+    ].request_checksum_calculation
     http_checksum = operation_model.http_checksum
+    request_checksum_required = (
+            operation_model.http_checksum_required
+            or http_checksum.get("requestChecksumRequired")
+    )
     algorithm_member = http_checksum.get("requestAlgorithmMember")
     if algorithm_member and algorithm_member in params:
         # If the client has opted into using flexible checksums and the
@@ -259,35 +270,32 @@ def resolve_request_checksum_algorithm(
             raise FlexibleChecksumError(
                 error_msg="Unsupported checksum algorithm: %s" % algorithm_name
             )
-
-        location_type = "header"
-        if operation_model.has_streaming_input:
-            # Operations with streaming input must support trailers.
-            if request["url"].startswith("https:"):
-                # We only support unsigned trailer checksums currently. As this
-                # disables payload signing we'll only use trailers over TLS.
-                location_type = "trailer"
-
-        algorithm = {
-            "algorithm": algorithm_name,
-            "in": location_type,
-            "name": "x-amz-checksum-%s" % algorithm_name,
-        }
-
-        if algorithm["name"] in request["headers"]:
-            # If the header is already set by the customer, skip calculation
-            return
-
-        checksum_context = request["context"].get("checksum", {})
-        checksum_context["request_algorithm"] = algorithm
-        request["context"]["checksum"] = checksum_context
-    elif operation_model.http_checksum_required or http_checksum.get(
-        "requestChecksumRequired"
+    elif request_checksum_required or (
+            algorithm_member and request_checksum_calculation == "when_supported"
     ):
-        # Otherwise apply the old http checksum behavior via Content-MD5
-        checksum_context = request["context"].get("checksum", {})
-        checksum_context["request_algorithm"] = "conditional-md5"
-        request["context"]["checksum"] = checksum_context
+        algorithm_name = DEFAULT_CHECKSUM_ALGORITHM.lower()
+    else:
+        return
+
+    location_type = "header"
+    if (
+            operation_model.has_streaming_input
+            and urlparse(request["url"]).scheme == "https"
+    ):
+        # Operations with streaming input must support trailers.
+        # We only support unsigned trailer checksums currently. As this
+        # disables payload signing we'll only use trailers over TLS.
+        location_type = "trailer"
+
+    algorithm = {
+        "algorithm": algorithm_name,
+        "in": location_type,
+        "name": f"x-amz-checksum-{algorithm_name}",
+    }
+
+    checksum_context = request["context"].get("checksum", {})
+    checksum_context["request_algorithm"] = algorithm
+    request["context"]["checksum"] = checksum_context
 
 
 def apply_request_checksum(request):
@@ -297,10 +305,7 @@ def apply_request_checksum(request):
     if not algorithm:
         return
 
-    if algorithm == "conditional-md5":
-        # Special case to handle the http checksum required trait
-        conditionally_calculate_md5(request)
-    elif algorithm["in"] == "header":
+    if algorithm["in"] == "header":
         _apply_request_header_checksum(request)
     elif algorithm["in"] == "trailer":
         _apply_request_trailer_checksum(request)

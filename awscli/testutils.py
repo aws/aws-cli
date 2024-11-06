@@ -32,6 +32,7 @@ import sys
 import tempfile
 import time
 import unittest
+import uuid
 from pprint import pformat
 from subprocess import PIPE, Popen
 from unittest import mock
@@ -208,7 +209,7 @@ def random_chars(num_chars):
     return binascii.hexlify(os.urandom(int(num_chars / 2))).decode('ascii')
 
 
-def random_bucket_name(prefix='awscli-s3integ-', num_random=15):
+def random_bucket_name(prefix='awscli-s3integ', num_random=15):
     """Generate a random S3 bucket name.
 
     :param prefix: A prefix to use in the bucket name.  Useful
@@ -219,7 +220,7 @@ def random_bucket_name(prefix='awscli-s3integ-', num_random=15):
     :returns: The name of a randomly generated bucket name as a string.
 
     """
-    return prefix + random_chars(num_random)
+    return f"{prefix}-{random_chars(num_random)}-{int(time.time())}"
 
 
 class BaseCLIDriverTest(unittest.TestCase):

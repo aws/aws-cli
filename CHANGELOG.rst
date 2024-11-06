@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.19.2
+======
+
+* api-change:``lakeformation``: API changes for new named tag expressions feature.
+* api-change:``codebuild``: AWS CodeBuild now adds additional compute types for reserved capacity fleet.
+* api-change:``qapps``: Introduces category apis in AmazonQApps. Web experience users use Categories to tag and filter library items.
+* api-change:``guardduty``: GuardDuty RDS Protection expands support for Amazon Aurora PostgreSQL Limitless Databases.
+* api-change:``s3control``: Fix ListStorageLensConfigurations and ListStorageLensGroups deserialization for Smithy SDKs.
+* api-change:``verifiedpermissions``: Adding BatchGetPolicy API which supports the retrieval of multiple policies across multiple policy stores within a single request.
+
+
 2.19.1
 ======
 

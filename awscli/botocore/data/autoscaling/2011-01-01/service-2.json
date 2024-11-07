@@ -1521,6 +1521,10 @@
         "InstanceMaintenancePolicy":{
           "shape":"InstanceMaintenancePolicy",
           "documentation":"<p>An instance maintenance policy.</p>"
+        },
+        "AvailabilityZoneDistribution":{
+          "shape":"AvailabilityZoneDistribution",
+          "documentation":"<p> The instance capacity distribution across Availability Zones. </p>"
         }
       },
       "documentation":"<p>Describes an Auto Scaling group.</p>"
@@ -1651,6 +1655,16 @@
     "AutoScalingNotificationTypes":{
       "type":"list",
       "member":{"shape":"XmlStringMaxLen255"}
+    },
+    "AvailabilityZoneDistribution":{
+      "type":"structure",
+      "members":{
+        "CapacityDistributionStrategy":{
+          "shape":"CapacityDistributionStrategy",
+          "documentation":"<p> If launches fail in an Availability Zone, the following strategies are available. The default is <code>balanced-best-effort</code>. </p> <ul> <li> <p> <code>balanced-only</code> - If launches fail in an Availability Zone, Auto Scaling will continue to attempt to launch in the unhealthy zone to preserve a balanced distribution.</p> </li> <li> <p> <code>balanced-best-effort</code> - If launches fail in an Availability Zone, Auto Scaling will attempt to launch in another healthy Availability Zone instead.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p> Describes an Availability Zone distribution. </p>"
     },
     "AvailabilityZones":{
       "type":"list",
@@ -1810,6 +1824,13 @@
           "documentation":"<p>The name of the Auto Scaling group.</p>"
         }
       }
+    },
+    "CapacityDistributionStrategy":{
+      "type":"string",
+      "enum":[
+        "balanced-only",
+        "balanced-best-effort"
+      ]
     },
     "CapacityForecast":{
       "type":"structure",
@@ -2011,6 +2032,10 @@
         "InstanceMaintenancePolicy":{
           "shape":"InstanceMaintenancePolicy",
           "documentation":"<p>An instance maintenance policy. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-instance-maintenance-policy.html\">Set instance maintenance policy</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
+        },
+        "AvailabilityZoneDistribution":{
+          "shape":"AvailabilityZoneDistribution",
+          "documentation":"<p>The instance capacity distribution across Availability Zones.</p>"
         }
       }
     },
@@ -5657,6 +5682,10 @@
         "InstanceMaintenancePolicy":{
           "shape":"InstanceMaintenancePolicy",
           "documentation":"<p>An instance maintenance policy. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-instance-maintenance-policy.html\">Set instance maintenance policy</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
+        },
+        "AvailabilityZoneDistribution":{
+          "shape":"AvailabilityZoneDistribution",
+          "documentation":"<p> The instance capacity distribution across Availability Zones. </p>"
         }
       }
     },

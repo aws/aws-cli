@@ -5587,6 +5587,14 @@
         "IAM_IDENTITY_CENTER"
       ]
     },
+    "AuthenticationType":{
+      "type":"string",
+      "enum":[
+        "PASSWORD",
+        "TOKEN",
+        "X509"
+      ]
+    },
     "AuthorSpecifiedAggregation":{
       "type":"string",
       "enum":[
@@ -11191,6 +11199,10 @@
       "type":"string",
       "max":128,
       "min":1
+    },
+    "DatabaseAccessControlRole":{
+      "type":"string",
+      "max":128
     },
     "DatabaseGroup":{
       "type":"string",
@@ -18852,6 +18864,11 @@
       "type":"list",
       "member":{"shape":"IdentityName"}
     },
+    "IdentityProviderResourceUri":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "IdentityStore":{
       "type":"string",
       "enum":["QUICKSIGHT"]
@@ -22950,6 +22967,31 @@
         }
       },
       "documentation":"<p>The measure type field with numerical type columns.</p>"
+    },
+    "OAuthParameters":{
+      "type":"structure",
+      "required":["TokenProviderUrl"],
+      "members":{
+        "TokenProviderUrl":{
+          "shape":"TokenProviderUrl",
+          "documentation":"<p>The token endpoint URL of the identity provider.</p>"
+        },
+        "OAuthScope":{
+          "shape":"OAuthScope",
+          "documentation":"<p>The OAuth scope.</p>"
+        },
+        "IdentityProviderVpcConnectionProperties":{"shape":"VpcConnectionProperties"},
+        "IdentityProviderResourceUri":{
+          "shape":"IdentityProviderResourceUri",
+          "documentation":"<p>The resource uri of the identity provider.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains information needed to create a data source connection that uses OAuth client credentials. This option is available for data source connections that are made with Snowflake and Starburst.</p>"
+    },
+    "OAuthScope":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "OnClause":{
       "type":"string",
@@ -27803,6 +27845,18 @@
         "Warehouse":{
           "shape":"Warehouse",
           "documentation":"<p>Warehouse.</p>"
+        },
+        "AuthenticationType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>The authentication type that you want to use for your connection. This parameter accepts OAuth and non-OAuth authentication types.</p>"
+        },
+        "DatabaseAccessControlRole":{
+          "shape":"DatabaseAccessControlRole",
+          "documentation":"<p>The database access control role.</p>"
+        },
+        "OAuthParameters":{
+          "shape":"OAuthParameters",
+          "documentation":"<p>An object that contains information needed to create a data source connection between an Amazon QuickSight account and Snowflake.</p>"
         }
       },
       "documentation":"<p>The parameters for Snowflake.</p>"
@@ -27928,6 +27982,18 @@
         "ProductType":{
           "shape":"StarburstProductType",
           "documentation":"<p>The product type for the Starburst data source.</p>"
+        },
+        "DatabaseAccessControlRole":{
+          "shape":"DatabaseAccessControlRole",
+          "documentation":"<p>The database access control role.</p>"
+        },
+        "AuthenticationType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>The authentication type that you want to use for your connection. This parameter accepts OAuth and non-OAuth authentication types.</p>"
+        },
+        "OAuthParameters":{
+          "shape":"OAuthParameters",
+          "documentation":"<p>An object that contains information needed to create a data source connection between an Amazon QuickSight account and Starburst.</p>"
         }
       },
       "documentation":"<p>The parameters that are required to connect to a Starburst data source.</p>"
@@ -29935,6 +30001,11 @@
       "documentation":"<p>The value of a time range filter.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
     },
     "Timestamp":{"type":"timestamp"},
+    "TokenProviderUrl":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "TooltipItem":{
       "type":"structure",
       "members":{

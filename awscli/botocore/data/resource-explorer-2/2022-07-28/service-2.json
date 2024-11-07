@@ -196,6 +196,25 @@
       ],
       "documentation":"<p>Retrieves details about the Amazon Web Services Resource Explorer index in the Amazon Web Services Region in which you invoked the operation.</p>"
     },
+    "GetManagedView":{
+      "name":"GetManagedView",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetManagedView",
+        "responseCode":200
+      },
+      "input":{"shape":"GetManagedViewInput"},
+      "output":{"shape":"GetManagedViewOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves details of the specified <a href=\"https://docs.aws.amazon.com/resource-explorer/latest/userguide/aws-managed-views.html\">Amazon Web Services-managed view</a>. </p>"
+    },
     "GetView":{
       "name":"GetView",
       "http":{
@@ -248,6 +267,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves a list of a member's indexes in all Amazon Web Services Regions that are currently collecting resource information for Amazon Web Services Resource Explorer. Only the management account or a delegated administrator with service access enabled can invoke this API call. </p>"
+    },
+    "ListManagedViews":{
+      "name":"ListManagedViews",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListManagedViews",
+        "responseCode":200
+      },
+      "input":{"shape":"ListManagedViewsInput"},
+      "output":{"shape":"ListManagedViewsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the Amazon resource names (ARNs) of the <a href=\"https://docs.aws.amazon.com/resource-explorer/latest/userguide/aws-managed-views.html\">Amazon Web Services-managed views</a> available in the Amazon Web Services Region in which you call this operation. </p>"
     },
     "ListResources":{
       "name":"ListResources",
@@ -728,6 +765,30 @@
         }
       }
     },
+    "GetManagedViewInput":{
+      "type":"structure",
+      "required":["ManagedViewArn"],
+      "members":{
+        "ManagedViewArn":{
+          "shape":"GetManagedViewInputManagedViewArnString",
+          "documentation":"<p>The Amazon resource name (ARN) of the managed view.</p>"
+        }
+      }
+    },
+    "GetManagedViewInputManagedViewArnString":{
+      "type":"string",
+      "max":1011,
+      "min":1
+    },
+    "GetManagedViewOutput":{
+      "type":"structure",
+      "members":{
+        "ManagedView":{
+          "shape":"ManagedView",
+          "documentation":"<p>Details about the specified managed view. </p>"
+        }
+      }
+    },
     "GetViewInput":{
       "type":"structure",
       "required":["ViewArn"],
@@ -924,6 +985,52 @@
         }
       }
     },
+    "ListManagedViewsInput":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListManagedViewsInputMaxResultsInteger",
+          "documentation":"<p>The maximum number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value appropriate to the operation. If additional items exist beyond those included in the current response, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results.</p> <note> <p>An API operation can return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p> </note>"
+        },
+        "NextToken":{
+          "shape":"ListManagedViewsInputNextTokenString",
+          "documentation":"<p>The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from. The pagination tokens expire after 24 hours.</p>"
+        },
+        "ServicePrincipal":{
+          "shape":"ListManagedViewsInputServicePrincipalString",
+          "documentation":"<p>Specifies a service principal name. If specified, then the operation only returns the managed views that are managed by the input service. </p>"
+        }
+      }
+    },
+    "ListManagedViewsInputMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
+    "ListManagedViewsInputNextTokenString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "ListManagedViewsInputServicePrincipalString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "ListManagedViewsOutput":{
+      "type":"structure",
+      "members":{
+        "ManagedViews":{
+          "shape":"ManagedViewArnList",
+          "documentation":"<p>The list of managed views available in the Amazon Web Services Region in which you called this operation. </p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. The pagination tokens expire after 24 hours.</p>"
+        }
+      }
+    },
     "ListResourcesInput":{
       "type":"structure",
       "members":{
@@ -1074,6 +1181,53 @@
       "type":"long",
       "box":true
     },
+    "ManagedView":{
+      "type":"structure",
+      "members":{
+        "Filters":{"shape":"SearchFilter"},
+        "IncludedProperties":{
+          "shape":"IncludedPropertyList",
+          "documentation":"<p>A structure that contains additional information about the managed view.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when this managed view was last modified.</p>"
+        },
+        "ManagedViewArn":{
+          "shape":"String",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon resource name (ARN)</a> of the managed view.</p>"
+        },
+        "ManagedViewName":{
+          "shape":"String",
+          "documentation":"<p>The name of the managed view. </p>"
+        },
+        "Owner":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account that owns this managed view.</p>"
+        },
+        "ResourcePolicy":{
+          "shape":"String",
+          "documentation":"<p>The resource policy that defines access to the managed view. To learn more about this policy, review <a href=\"https://docs.aws.amazon.com/resource-explorer/latest/userguide/aws-managed-views.html\">Managed views</a>.</p>"
+        },
+        "Scope":{
+          "shape":"String",
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon resource name (ARN)</a> of an Amazon Web Services account or organization that specifies whether this managed view includes resources from only the specified Amazon Web Services account or all accounts in the specified organization. </p>"
+        },
+        "TrustedService":{
+          "shape":"String",
+          "documentation":"<p>The service principal of the Amazon Web Services service that created and manages the managed view. </p>"
+        },
+        "Version":{
+          "shape":"String",
+          "documentation":"<p>The version of the managed view. </p>"
+        }
+      },
+      "documentation":"<p>An Amazon Web Services-managed view is how other Amazon Web Services services can access resource information indexed by Resource Explorer for your Amazon Web Services account or organization with your consent. For more information, see <a href=\"https://docs.aws.amazon.com/resource-explorer/latest/userguide/aws-managed-views.html\">Managed views</a>. </p>"
+    },
+    "ManagedViewArnList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "MemberIndex":{
       "type":"structure",
       "members":{
@@ -1154,7 +1308,7 @@
         },
         "Service":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Servicesservice that owns the resource and is responsible for creating and updating it.</p>"
+          "documentation":"<p>The Amazon Web Services service that owns the resource and is responsible for creating and updating it.</p>"
         }
       },
       "documentation":"<p>A resource in Amazon Web Services that Amazon Web Services Resource Explorer has discovered, and for which it has stored information in the index of the Amazon Web Services Region that contains the resource.</p>"
@@ -1341,7 +1495,7 @@
         },
         "Service":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Servicesservice that is associated with the resource type. This is the primary service that lets you create and interact with resources of this type.</p>"
+          "documentation":"<p>The Amazon Web Services service that is associated with the resource type. This is the primary service that lets you create and interact with resources of this type.</p>"
         }
       },
       "documentation":"<p>A structure that describes a resource type supported by Amazon Web Services Resource Explorer.</p>"

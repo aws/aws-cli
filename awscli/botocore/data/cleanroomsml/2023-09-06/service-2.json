@@ -13,6 +13,40 @@
     "uid":"cleanroomsml-2023-09-06"
   },
   "operations":{
+    "CancelTrainedModel":{
+      "name":"CancelTrainedModel",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/memberships/{membershipIdentifier}/trained-models/{trainedModelArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelTrainedModelRequest"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Submits a request to cancel the trained model job.</p>",
+      "idempotent":true
+    },
+    "CancelTrainedModelInferenceJob":{
+      "name":"CancelTrainedModelInferenceJob",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/memberships/{membershipIdentifier}/trained-model-inference-jobs/{trainedModelInferenceJobArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelTrainedModelInferenceJobRequest"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Submits a request to cancel a trained model inference job.</p>",
+      "idempotent":true
+    },
     "CreateAudienceModel":{
       "name":"CreateAudienceModel",
       "http":{
@@ -49,6 +83,81 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Defines the information necessary to create a configured audience model.</p>",
+      "idempotent":true
+    },
+    "CreateConfiguredModelAlgorithm":{
+      "name":"CreateConfiguredModelAlgorithm",
+      "http":{
+        "method":"POST",
+        "requestUri":"/configured-model-algorithms",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateConfiguredModelAlgorithmRequest"},
+      "output":{"shape":"CreateConfiguredModelAlgorithmResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a configured model algorithm using a container image stored in an ECR repository.</p>",
+      "idempotent":true
+    },
+    "CreateConfiguredModelAlgorithmAssociation":{
+      "name":"CreateConfiguredModelAlgorithmAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/configured-model-algorithm-associations",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateConfiguredModelAlgorithmAssociationRequest"},
+      "output":{"shape":"CreateConfiguredModelAlgorithmAssociationResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Associates a configured model algorithm to a collaboration for use by any member of the collaboration.</p>",
+      "idempotent":true
+    },
+    "CreateMLInputChannel":{
+      "name":"CreateMLInputChannel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/ml-input-channels",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateMLInputChannelRequest"},
+      "output":{"shape":"CreateMLInputChannelResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Provides the information to create an ML input channel. An ML input channel is the result of a query that can be used for ML modeling.</p>",
+      "idempotent":true
+    },
+    "CreateTrainedModel":{
+      "name":"CreateTrainedModel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/trained-models",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateTrainedModelRequest"},
+      "output":{"shape":"CreateTrainedModelResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a trained model from an associated configured model algorithm using data from any member of the collaboration.</p>",
       "idempotent":true
     },
     "CreateTrainingDataset":{
@@ -135,6 +244,90 @@
       "documentation":"<p>Deletes the specified configured audience model policy.</p>",
       "idempotent":true
     },
+    "DeleteConfiguredModelAlgorithm":{
+      "name":"DeleteConfiguredModelAlgorithm",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/configured-model-algorithms/{configuredModelAlgorithmArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteConfiguredModelAlgorithmRequest"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a configured model algorithm.</p>",
+      "idempotent":true
+    },
+    "DeleteConfiguredModelAlgorithmAssociation":{
+      "name":"DeleteConfiguredModelAlgorithmAssociation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/memberships/{membershipIdentifier}/configured-model-algorithm-associations/{configuredModelAlgorithmAssociationArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteConfiguredModelAlgorithmAssociationRequest"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a configured model algorithm association.</p>",
+      "idempotent":true
+    },
+    "DeleteMLConfiguration":{
+      "name":"DeleteMLConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/memberships/{membershipIdentifier}/ml-configurations",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteMLConfigurationRequest"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a ML modeling configuration.</p>",
+      "idempotent":true
+    },
+    "DeleteMLInputChannelData":{
+      "name":"DeleteMLInputChannelData",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/memberships/{membershipIdentifier}/ml-input-channels/{mlInputChannelArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteMLInputChannelDataRequest"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Provides the information necessary to delete an ML input channel.</p>",
+      "idempotent":true
+    },
+    "DeleteTrainedModelOutput":{
+      "name":"DeleteTrainedModelOutput",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/memberships/{membershipIdentifier}/trained-models/{trainedModelArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteTrainedModelOutputRequest"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes the output of a trained model.</p>",
+      "idempotent":true
+    },
     "DeleteTrainingDataset":{
       "name":"DeleteTrainingDataset",
       "http":{
@@ -184,6 +377,54 @@
       ],
       "documentation":"<p>Returns information about an audience model</p>"
     },
+    "GetCollaborationConfiguredModelAlgorithmAssociation":{
+      "name":"GetCollaborationConfiguredModelAlgorithmAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/configured-model-algorithm-associations/{configuredModelAlgorithmAssociationArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCollaborationConfiguredModelAlgorithmAssociationRequest"},
+      "output":{"shape":"GetCollaborationConfiguredModelAlgorithmAssociationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns information about the configured model algorithm association in a collaboration.</p>"
+    },
+    "GetCollaborationMLInputChannel":{
+      "name":"GetCollaborationMLInputChannel",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/ml-input-channels/{mlInputChannelArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCollaborationMLInputChannelRequest"},
+      "output":{"shape":"GetCollaborationMLInputChannelResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns information about a specific ML input channel in a collaboration.</p>"
+    },
+    "GetCollaborationTrainedModel":{
+      "name":"GetCollaborationTrainedModel",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/trained-models/{trainedModelArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCollaborationTrainedModelRequest"},
+      "output":{"shape":"GetCollaborationTrainedModelResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns information about a trained model in a collaboration.</p>"
+    },
     "GetConfiguredAudienceModel":{
       "name":"GetConfiguredAudienceModel",
       "http":{
@@ -215,6 +456,102 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Returns information about a configured audience model policy.</p>"
+    },
+    "GetConfiguredModelAlgorithm":{
+      "name":"GetConfiguredModelAlgorithm",
+      "http":{
+        "method":"GET",
+        "requestUri":"/configured-model-algorithms/{configuredModelAlgorithmArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConfiguredModelAlgorithmRequest"},
+      "output":{"shape":"GetConfiguredModelAlgorithmResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns information about a configured model algorithm.</p>"
+    },
+    "GetConfiguredModelAlgorithmAssociation":{
+      "name":"GetConfiguredModelAlgorithmAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/configured-model-algorithm-associations/{configuredModelAlgorithmAssociationArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConfiguredModelAlgorithmAssociationRequest"},
+      "output":{"shape":"GetConfiguredModelAlgorithmAssociationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns information about a configured model algorithm association.</p>"
+    },
+    "GetMLConfiguration":{
+      "name":"GetMLConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/ml-configurations",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMLConfigurationRequest"},
+      "output":{"shape":"GetMLConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns information about a specific ML configuration.</p>"
+    },
+    "GetMLInputChannel":{
+      "name":"GetMLInputChannel",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/ml-input-channels/{mlInputChannelArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMLInputChannelRequest"},
+      "output":{"shape":"GetMLInputChannelResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns information about an ML input channel.</p>"
+    },
+    "GetTrainedModel":{
+      "name":"GetTrainedModel",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/trained-models/{trainedModelArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTrainedModelRequest"},
+      "output":{"shape":"GetTrainedModelResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns information about a trained model.</p>"
+    },
+    "GetTrainedModelInferenceJob":{
+      "name":"GetTrainedModelInferenceJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/trained-model-inference-jobs/{trainedModelInferenceJobArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTrainedModelInferenceJobRequest"},
+      "output":{"shape":"GetTrainedModelInferenceJobResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns information about a trained model inference job.</p>"
     },
     "GetTrainingDataset":{
       "name":"GetTrainingDataset",
@@ -277,6 +614,81 @@
       ],
       "documentation":"<p>Returns a list of audience models.</p>"
     },
+    "ListCollaborationConfiguredModelAlgorithmAssociations":{
+      "name":"ListCollaborationConfiguredModelAlgorithmAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/configured-model-algorithm-associations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCollaborationConfiguredModelAlgorithmAssociationsRequest"},
+      "output":{"shape":"ListCollaborationConfiguredModelAlgorithmAssociationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of the configured model algorithm associations in a collaboration.</p>"
+    },
+    "ListCollaborationMLInputChannels":{
+      "name":"ListCollaborationMLInputChannels",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/ml-input-channels",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCollaborationMLInputChannelsRequest"},
+      "output":{"shape":"ListCollaborationMLInputChannelsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of the ML input channels in a collaboration.</p>"
+    },
+    "ListCollaborationTrainedModelExportJobs":{
+      "name":"ListCollaborationTrainedModelExportJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/trained-models/{trainedModelArn}/export-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCollaborationTrainedModelExportJobsRequest"},
+      "output":{"shape":"ListCollaborationTrainedModelExportJobsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of the export jobs for a trained model in a collaboration.</p>"
+    },
+    "ListCollaborationTrainedModelInferenceJobs":{
+      "name":"ListCollaborationTrainedModelInferenceJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/trained-model-inference-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCollaborationTrainedModelInferenceJobsRequest"},
+      "output":{"shape":"ListCollaborationTrainedModelInferenceJobsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of trained model inference jobs in a specified collaboration.</p>"
+    },
+    "ListCollaborationTrainedModels":{
+      "name":"ListCollaborationTrainedModels",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/trained-models",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCollaborationTrainedModelsRequest"},
+      "output":{"shape":"ListCollaborationTrainedModelsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of the trained models in a collaboration.</p>"
+    },
     "ListConfiguredAudienceModels":{
       "name":"ListConfiguredAudienceModels",
       "http":{
@@ -291,6 +703,51 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Returns a list of the configured audience models.</p>"
+    },
+    "ListConfiguredModelAlgorithmAssociations":{
+      "name":"ListConfiguredModelAlgorithmAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/configured-model-algorithm-associations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListConfiguredModelAlgorithmAssociationsRequest"},
+      "output":{"shape":"ListConfiguredModelAlgorithmAssociationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of configured model algorithm associations.</p>"
+    },
+    "ListConfiguredModelAlgorithms":{
+      "name":"ListConfiguredModelAlgorithms",
+      "http":{
+        "method":"GET",
+        "requestUri":"/configured-model-algorithms",
+        "responseCode":200
+      },
+      "input":{"shape":"ListConfiguredModelAlgorithmsRequest"},
+      "output":{"shape":"ListConfiguredModelAlgorithmsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of configured model algorithms.</p>"
+    },
+    "ListMLInputChannels":{
+      "name":"ListMLInputChannels",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/ml-input-channels",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMLInputChannelsRequest"},
+      "output":{"shape":"ListMLInputChannelsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of ML input channels.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -307,6 +764,36 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Returns a list of tags for a provided resource.</p>"
+    },
+    "ListTrainedModelInferenceJobs":{
+      "name":"ListTrainedModelInferenceJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/trained-model-inference-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTrainedModelInferenceJobsRequest"},
+      "output":{"shape":"ListTrainedModelInferenceJobsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of trained model inference jobs that match the request parameters.</p>"
+    },
+    "ListTrainedModels":{
+      "name":"ListTrainedModels",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/trained-models",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTrainedModelsRequest"},
+      "output":{"shape":"ListTrainedModelsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of trained models.</p>"
     },
     "ListTrainingDatasets":{
       "name":"ListTrainingDatasets",
@@ -338,6 +825,21 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Create or update the resource policy for a configured audience model.</p>",
+      "idempotent":true
+    },
+    "PutMLConfiguration":{
+      "name":"PutMLConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/memberships/{membershipIdentifier}/ml-configurations",
+        "responseCode":200
+      },
+      "input":{"shape":"PutMLConfigurationRequest"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Assigns information about an ML configuration.</p>",
       "idempotent":true
     },
     "StartAudienceExportJob":{
@@ -375,6 +877,42 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Information necessary to start the audience generation job.</p>",
+      "idempotent":true
+    },
+    "StartTrainedModelExportJob":{
+      "name":"StartTrainedModelExportJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/trained-models/{trainedModelArn}/export-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"StartTrainedModelExportJobRequest"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Provides the information necessary to start a trained model export job.</p>",
+      "idempotent":true
+    },
+    "StartTrainedModelInferenceJob":{
+      "name":"StartTrainedModelInferenceJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/trained-model-inference-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"StartTrainedModelInferenceJobRequest"},
+      "output":{"shape":"StartTrainedModelInferenceJobResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Defines the information necessary to begin a trained model inference job.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -448,6 +986,18 @@
       "max":12,
       "min":12,
       "pattern":"[0-9]{12}"
+    },
+    "AccountIdList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":5,
+      "min":1
+    },
+    "AlgorithmImage":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":".*"
     },
     "AnalysisTemplateArn":{
       "type":"string",
@@ -687,11 +1237,17 @@
           "documentation":"<p>The relevance scores of the generated audience.</p>"
         },
         "recallMetric":{
-          "shape":"Double",
+          "shape":"AudienceQualityMetricsRecallMetricDouble",
           "documentation":"<p>The recall score of the generated audience. Recall is the percentage of the most similar users (by default, the most similar 20%) from a sample of the training data that are included in the seed audience by the audience generation job. Values range from 0-1, larger values indicate a better audience. A recall value approximately equal to the maximum bin size indicates that the audience model is equivalent to random selection. </p>"
         }
       },
       "documentation":"<p>Metrics that describe the quality of the generated audience.</p>"
+    },
+    "AudienceQualityMetricsRecallMetricDouble":{
+      "type":"double",
+      "box":true,
+      "max":1.0,
+      "min":0.0
     },
     "AudienceSize":{
       "type":"structure",
@@ -752,6 +1308,377 @@
       "type":"boolean",
       "box":true
     },
+    "CancelTrainedModelInferenceJobRequest":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "trainedModelInferenceJobArn"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the trained model inference job that you want to cancel.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "trainedModelInferenceJobArn":{
+          "shape":"TrainedModelInferenceJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model inference job that you want to cancel.</p>",
+          "location":"uri",
+          "locationName":"trainedModelInferenceJobArn"
+        }
+      }
+    },
+    "CancelTrainedModelRequest":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "trainedModelArn"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the trained model job that you want to cancel.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model job that you want to cancel.</p>",
+          "location":"uri",
+          "locationName":"trainedModelArn"
+        }
+      }
+    },
+    "CollaborationConfiguredModelAlgorithmAssociationList":{
+      "type":"list",
+      "member":{"shape":"CollaborationConfiguredModelAlgorithmAssociationSummary"}
+    },
+    "CollaborationConfiguredModelAlgorithmAssociationSummary":{
+      "type":"structure",
+      "required":[
+        "createTime",
+        "updateTime",
+        "configuredModelAlgorithmAssociationArn",
+        "name",
+        "membershipIdentifier",
+        "collaborationIdentifier",
+        "configuredModelAlgorithmArn",
+        "creatorAccountId"
+      ],
+      "members":{
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the configured model algorithm association was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the configured model algorithm association was updated.</p>"
+        },
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the configured model algorithm association.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the configured model algorithm association.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that created the configured model algorithm association.</p>"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the configured model algorithm association.</p>"
+        },
+        "configuredModelAlgorithmArn":{
+          "shape":"ConfiguredModelAlgorithmArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm that is associated to the collaboration.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that created the configured model algorithm association.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about a configured model algorithm in a collaboration.</p>"
+    },
+    "CollaborationMLInputChannelSummary":{
+      "type":"structure",
+      "required":[
+        "createTime",
+        "updateTime",
+        "membershipIdentifier",
+        "collaborationIdentifier",
+        "name",
+        "configuredModelAlgorithmAssociations",
+        "mlInputChannelArn",
+        "status",
+        "creatorAccountId"
+      ],
+      "members":{
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the ML input channel was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the ML input channel was updated.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the membership that contains the ML input channel.</p>"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the ML input channel.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ML input channel.</p>"
+        },
+        "configuredModelAlgorithmAssociations":{
+          "shape":"CollaborationMLInputChannelSummaryConfiguredModelAlgorithmAssociationsList",
+          "documentation":"<p>The associated configured model algorithms used to create the ML input channel.</p>"
+        },
+        "mlInputChannelArn":{
+          "shape":"MLInputChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ML input channel.</p>"
+        },
+        "status":{
+          "shape":"MLInputChannelStatus",
+          "documentation":"<p>The status of the ML input channel.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member who created the ML input channel.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the ML input channel.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about an ML input channel in a collaboration.</p>"
+    },
+    "CollaborationMLInputChannelSummaryConfiguredModelAlgorithmAssociationsList":{
+      "type":"list",
+      "member":{"shape":"ConfiguredModelAlgorithmAssociationArn"},
+      "max":1,
+      "min":1
+    },
+    "CollaborationMLInputChannelsList":{
+      "type":"list",
+      "member":{"shape":"CollaborationMLInputChannelSummary"}
+    },
+    "CollaborationTrainedModelExportJobList":{
+      "type":"list",
+      "member":{"shape":"CollaborationTrainedModelExportJobSummary"}
+    },
+    "CollaborationTrainedModelExportJobSummary":{
+      "type":"structure",
+      "required":[
+        "createTime",
+        "updateTime",
+        "name",
+        "outputConfiguration",
+        "status",
+        "creatorAccountId",
+        "trainedModelArn",
+        "membershipIdentifier",
+        "collaborationIdentifier"
+      ],
+      "members":{
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the trained model export job was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the trained model export job was updated.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the trained model export job.</p>"
+        },
+        "outputConfiguration":{"shape":"TrainedModelExportOutputConfiguration"},
+        "status":{
+          "shape":"TrainedModelExportJobStatus",
+          "documentation":"<p>The status of the trained model.</p>"
+        },
+        "statusDetails":{"shape":"StatusDetails"},
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the trained model.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that created the trained model.</p>"
+        },
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model that is being exported.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that created the trained model export job.</p>"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the trained model export job.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about a trained model export job in a collaboration.</p>"
+    },
+    "CollaborationTrainedModelInferenceJobList":{
+      "type":"list",
+      "member":{"shape":"CollaborationTrainedModelInferenceJobSummary"}
+    },
+    "CollaborationTrainedModelInferenceJobSummary":{
+      "type":"structure",
+      "required":[
+        "trainedModelInferenceJobArn",
+        "membershipIdentifier",
+        "trainedModelArn",
+        "collaborationIdentifier",
+        "status",
+        "outputConfiguration",
+        "name",
+        "createTime",
+        "updateTime",
+        "creatorAccountId"
+      ],
+      "members":{
+        "trainedModelInferenceJobArn":{
+          "shape":"TrainedModelInferenceJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model inference job.</p>"
+        },
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association that is used for the trained model inference job.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the membership that contains the trained model inference job.</p>"
+        },
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model that is used for the trained model inference job.</p>"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the trained model inference job.</p>"
+        },
+        "status":{
+          "shape":"TrainedModelInferenceJobStatus",
+          "documentation":"<p>The status of the trained model inference job.</p>"
+        },
+        "outputConfiguration":{
+          "shape":"InferenceOutputConfiguration",
+          "documentation":"<p>Returns output configuration information for the trained model inference job.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the trained model inference job.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the trained model inference job.</p>"
+        },
+        "metricsStatus":{
+          "shape":"MetricsStatus",
+          "documentation":"<p>the trained model inference job metrics status.</p>"
+        },
+        "metricsStatusDetails":{
+          "shape":"String",
+          "documentation":"<p>Details about the metrics status for trained model inference job.</p>"
+        },
+        "logsStatus":{
+          "shape":"LogsStatus",
+          "documentation":"<p>The trained model inference job logs status.</p>"
+        },
+        "logsStatusDetails":{
+          "shape":"String",
+          "documentation":"<p>Details about the logs status for the trained model inference job.</p>"
+        },
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the trained model inference job was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the trained model inference job was updated.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID that created the trained model inference job.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about a trained model inference job in a collaboration.</p>"
+    },
+    "CollaborationTrainedModelList":{
+      "type":"list",
+      "member":{"shape":"CollaborationTrainedModelSummary"}
+    },
+    "CollaborationTrainedModelSummary":{
+      "type":"structure",
+      "required":[
+        "createTime",
+        "updateTime",
+        "trainedModelArn",
+        "name",
+        "membershipIdentifier",
+        "collaborationIdentifier",
+        "status",
+        "configuredModelAlgorithmAssociationArn",
+        "creatorAccountId"
+      ],
+      "members":{
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the trained model was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the trained model was updated.</p>"
+        },
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the trained model.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the trained model.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that created the trained model.</p>"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the trained model.</p>"
+        },
+        "status":{
+          "shape":"TrainedModelStatus",
+          "documentation":"<p>The status of the trained model.</p>"
+        },
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association that is used for this trained model.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that created the trained model.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about a trained model in a collaboration.</p>"
+    },
     "ColumnName":{
       "type":"string",
       "max":128,
@@ -791,6 +1718,17 @@
       "member":{"shape":"ColumnType"},
       "max":1,
       "min":1
+    },
+    "ComputeConfiguration":{
+      "type":"structure",
+      "members":{
+        "worker":{
+          "shape":"WorkerComputeConfiguration",
+          "documentation":"<p>The worker instances that will perform the compute work.</p>"
+        }
+      },
+      "documentation":"<p>Provides configuration information for the instances that will perform the compute work.</p>",
+      "union":true
     },
     "ConfiguredAudienceModelArn":{
       "type":"string",
@@ -868,6 +1806,105 @@
       },
       "documentation":"<p>Information about the configured audience model.</p>"
     },
+    "ConfiguredModelAlgorithmArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:configured-model-algorithm/[-a-zA-Z0-9_/.]+"
+    },
+    "ConfiguredModelAlgorithmAssociationArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:(membership/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)?configured-model-algorithm-association/[-a-zA-Z0-9_/.]+"
+    },
+    "ConfiguredModelAlgorithmAssociationList":{
+      "type":"list",
+      "member":{"shape":"ConfiguredModelAlgorithmAssociationSummary"}
+    },
+    "ConfiguredModelAlgorithmAssociationSummary":{
+      "type":"structure",
+      "required":[
+        "createTime",
+        "updateTime",
+        "configuredModelAlgorithmAssociationArn",
+        "configuredModelAlgorithmArn",
+        "name",
+        "membershipIdentifier",
+        "collaborationIdentifier"
+      ],
+      "members":{
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the configured model algorithm association was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the configured model algorithm association was updated.</p>"
+        },
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association.</p>"
+        },
+        "configuredModelAlgorithmArn":{
+          "shape":"ConfiguredModelAlgorithmArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm that is being associated.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the configured model algorithm association.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the configured model algorithm association.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that created the configured model algorithm association.</p>"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the configured model algorithm association.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about the configured model algorithm association.</p>"
+    },
+    "ConfiguredModelAlgorithmList":{
+      "type":"list",
+      "member":{"shape":"ConfiguredModelAlgorithmSummary"}
+    },
+    "ConfiguredModelAlgorithmSummary":{
+      "type":"structure",
+      "required":[
+        "createTime",
+        "updateTime",
+        "configuredModelAlgorithmArn",
+        "name"
+      ],
+      "members":{
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the configured model algorithm was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the configured model algorithm was updated.</p>"
+        },
+        "configuredModelAlgorithmArn":{
+          "shape":"ConfiguredModelAlgorithmArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the configured model algorithm.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the configured model algorithm.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about a configured model algorithm.</p>"
+    },
     "ConflictException":{
       "type":"structure",
       "required":["message"],
@@ -880,6 +1917,53 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ContainerArgument":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":".*"
+    },
+    "ContainerArguments":{
+      "type":"list",
+      "member":{"shape":"ContainerArgument"},
+      "max":100,
+      "min":1
+    },
+    "ContainerConfig":{
+      "type":"structure",
+      "required":["imageUri"],
+      "members":{
+        "imageUri":{
+          "shape":"AlgorithmImage",
+          "documentation":"<p>The registry path of the docker image that contains the algorithm. Clean Rooms ML supports both <code>registry/repository[:tag]</code> and <code>registry/repositry[@digest]</code> image path formats. For more information about using images in Clean Rooms ML, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AlgorithmSpecification.html#sagemaker-Type-AlgorithmSpecification-TrainingImage\">Sagemaker API reference</a>.</p>"
+        },
+        "entrypoint":{
+          "shape":"ContainerEntrypoint",
+          "documentation":"<p>The entrypoint script for a Docker container used to run a training job. This script takes precedence over the default train processing instructions. See How Amazon SageMaker Runs Your Training Image for additional information. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms-training-algo-dockerfile.html\">How Sagemaker runs your training image</a>.</p>"
+        },
+        "arguments":{
+          "shape":"ContainerArguments",
+          "documentation":"<p>The arguments for a container used to run a training job. See How Amazon SageMaker Runs Your Training Image for additional information. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms-training-algo-dockerfile.html\">How Sagemaker runs your training image</a>.</p>"
+        },
+        "metricDefinitions":{
+          "shape":"MetricDefinitionList",
+          "documentation":"<p>A list of metric definition objects. Each object specifies the metric name and regular expressions used to parse algorithm logs. Amazon Web Services Clean Rooms ML publishes each metric to all members' Amazon CloudWatch using IAM role configured in <a>PutMLConfiguration</a>.</p>"
+        }
+      },
+      "documentation":"<p>Provides configuration information for the dockerized container where the model algorithm is stored.</p>"
+    },
+    "ContainerEntrypoint":{
+      "type":"list",
+      "member":{"shape":"ContainerEntrypointString"},
+      "max":100,
+      "min":1
+    },
+    "ContainerEntrypointString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":".*"
     },
     "CreateAudienceModelRequest":{
       "type":"structure",
@@ -982,6 +2066,235 @@
         "configuredAudienceModelArn":{
           "shape":"ConfiguredAudienceModelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the configured audience model.</p>"
+        }
+      }
+    },
+    "CreateConfiguredModelAlgorithmAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "configuredModelAlgorithmArn",
+        "name"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member who is associating this configured model algorithm.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "configuredModelAlgorithmArn":{
+          "shape":"ConfiguredModelAlgorithmArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm that you want to associate.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the configured model algorithm association.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the configured model algorithm association.</p>"
+        },
+        "privacyConfiguration":{
+          "shape":"PrivacyConfiguration",
+          "documentation":"<p>Specifies the privacy configuration information for the configured model algorithm association. This information includes the maximum data size that can be exported.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The optional metadata that you apply to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.</p> </li> </ul>"
+        }
+      }
+    },
+    "CreateConfiguredModelAlgorithmAssociationResponse":{
+      "type":"structure",
+      "required":["configuredModelAlgorithmAssociationArn"],
+      "members":{
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association.</p>"
+        }
+      }
+    },
+    "CreateConfiguredModelAlgorithmRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "roleArn"
+      ],
+      "members":{
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the configured model algorithm.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the configured model algorithm.</p>"
+        },
+        "roleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role that is used to access the repository.</p>"
+        },
+        "trainingContainerConfig":{
+          "shape":"ContainerConfig",
+          "documentation":"<p>Configuration information for the training container, including entrypoints and arguments.</p>"
+        },
+        "inferenceContainerConfig":{
+          "shape":"InferenceContainerConfig",
+          "documentation":"<p>Configuration information for the inference container that is used when you run an inference job on a configured model algorithm.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The optional metadata that you apply to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.</p> </li> </ul>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key. This key is used to encrypt and decrypt customer-owned data in the configured ML model algorithm and associated data.</p>"
+        }
+      }
+    },
+    "CreateConfiguredModelAlgorithmResponse":{
+      "type":"structure",
+      "required":["configuredModelAlgorithmArn"],
+      "members":{
+        "configuredModelAlgorithmArn":{
+          "shape":"ConfiguredModelAlgorithmArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm.</p>"
+        }
+      }
+    },
+    "CreateMLInputChannelRequest":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "configuredModelAlgorithmAssociations",
+        "inputChannel",
+        "name",
+        "retentionInDays"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that is creating the ML input channel.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "configuredModelAlgorithmAssociations":{
+          "shape":"CreateMLInputChannelRequestConfiguredModelAlgorithmAssociationsList",
+          "documentation":"<p>The associated configured model algorithms that are necessary to create this ML input channel.</p>"
+        },
+        "inputChannel":{
+          "shape":"InputChannel",
+          "documentation":"<p>The input data that is used to create this ML input channel.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ML input channel.</p>"
+        },
+        "retentionInDays":{
+          "shape":"CreateMLInputChannelRequestRetentionInDaysInteger",
+          "documentation":"<p>The number of days that the data in the ML input channel is retained.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the ML input channel.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key that is used to access the input channel.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The optional metadata that you apply to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.</p> </li> </ul>"
+        }
+      }
+    },
+    "CreateMLInputChannelRequestConfiguredModelAlgorithmAssociationsList":{
+      "type":"list",
+      "member":{"shape":"ConfiguredModelAlgorithmAssociationArn"},
+      "max":1,
+      "min":1
+    },
+    "CreateMLInputChannelRequestRetentionInDaysInteger":{
+      "type":"integer",
+      "box":true,
+      "max":30,
+      "min":1
+    },
+    "CreateMLInputChannelResponse":{
+      "type":"structure",
+      "required":["mlInputChannelArn"],
+      "members":{
+        "mlInputChannelArn":{
+          "shape":"MLInputChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ML input channel.</p>"
+        }
+      }
+    },
+    "CreateTrainedModelRequest":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "name",
+        "configuredModelAlgorithmAssociationArn",
+        "resourceConfig",
+        "dataChannels"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that is creating the trained model.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the trained model.</p>"
+        },
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The associated configured model algorithm used to train this model.</p>"
+        },
+        "hyperparameters":{
+          "shape":"HyperParameters",
+          "documentation":"<p>Algorithm-specific parameters that influence the quality of the model. You set hyperparameters before you start the learning process.</p>"
+        },
+        "environment":{
+          "shape":"Environment",
+          "documentation":"<p>The environment variables to set in the Docker container.</p>"
+        },
+        "resourceConfig":{
+          "shape":"ResourceConfig",
+          "documentation":"<p>Information about the EC2 resources that are used to train this model.</p>"
+        },
+        "stoppingCondition":{
+          "shape":"StoppingCondition",
+          "documentation":"<p>The criteria that is used to stop model training.</p>"
+        },
+        "dataChannels":{
+          "shape":"ModelTrainingDataChannels",
+          "documentation":"<p>Defines the data channels that are used as input for the trained model request.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the trained model.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key. This key is used to encrypt and decrypt customer-owned data in the trained ML model and the associated data.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The optional metadata that you apply to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.</p> </li> </ul>"
+        }
+      }
+    },
+    "CreateTrainedModelResponse":{
+      "type":"structure",
+      "required":["trainedModelArn"],
+      "members":{
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model.</p>"
         }
       }
     },
@@ -1140,6 +2453,93 @@
         }
       }
     },
+    "DeleteConfiguredModelAlgorithmAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "configuredModelAlgorithmAssociationArn",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"configuredModelAlgorithmAssociationArn"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that is deleting the configured model algorithm association.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "DeleteConfiguredModelAlgorithmRequest":{
+      "type":"structure",
+      "required":["configuredModelAlgorithmArn"],
+      "members":{
+        "configuredModelAlgorithmArn":{
+          "shape":"ConfiguredModelAlgorithmArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"configuredModelAlgorithmArn"
+        }
+      }
+    },
+    "DeleteMLConfigurationRequest":{
+      "type":"structure",
+      "required":["membershipIdentifier"],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the of the member that is deleting the ML modeling configuration.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "DeleteMLInputChannelDataRequest":{
+      "type":"structure",
+      "required":[
+        "mlInputChannelArn",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "mlInputChannelArn":{
+          "shape":"MLInputChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ML input channel that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"mlInputChannelArn"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the membership that contains the ML input channel you want to delete.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "DeleteTrainedModelOutputRequest":{
+      "type":"structure",
+      "required":[
+        "trainedModelArn",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model whose output you want to delete.</p>",
+          "location":"uri",
+          "locationName":"trainedModelArn"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that is deleting the trained model output.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
     "DeleteTrainingDatasetRequest":{
       "type":"structure",
       "required":["trainingDatasetArn"],
@@ -1152,9 +2552,32 @@
         }
       }
     },
-    "Double":{
-      "type":"double",
-      "box":true
+    "Destination":{
+      "type":"structure",
+      "required":["s3Destination"],
+      "members":{
+        "s3Destination":{"shape":"S3ConfigMap"}
+      },
+      "documentation":"<p>The Amazon S3 location where the exported model artifacts are stored.</p>"
+    },
+    "Environment":{
+      "type":"map",
+      "key":{"shape":"EnvironmentKeyString"},
+      "value":{"shape":"EnvironmentValueString"},
+      "max":100,
+      "min":0
+    },
+    "EnvironmentKeyString":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[a-zA-Z_][a-zA-Z0-9_]*"
+    },
+    "EnvironmentValueString":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[\\S\\s]*"
     },
     "GetAudienceGenerationJobRequest":{
       "type":"structure",
@@ -1314,6 +2737,290 @@
         }
       }
     },
+    "GetCollaborationConfiguredModelAlgorithmAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "configuredModelAlgorithmAssociationArn",
+        "collaborationIdentifier"
+      ],
+      "members":{
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association that you want to return information about.</p>",
+          "location":"uri",
+          "locationName":"configuredModelAlgorithmAssociationArn"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID for the collaboration that contains the configured model algorithm association that you want to return information about.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        }
+      }
+    },
+    "GetCollaborationConfiguredModelAlgorithmAssociationResponse":{
+      "type":"structure",
+      "required":[
+        "createTime",
+        "updateTime",
+        "configuredModelAlgorithmAssociationArn",
+        "membershipIdentifier",
+        "collaborationIdentifier",
+        "configuredModelAlgorithmArn",
+        "name",
+        "creatorAccountId"
+      ],
+      "members":{
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the configured model algorithm association was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the configured model algorithm association was updated.</p>"
+        },
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that created the configured model algorithm association.</p>"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the configured model algorithm association.</p>"
+        },
+        "configuredModelAlgorithmArn":{
+          "shape":"ConfiguredModelAlgorithmArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the configured model algorithm association.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the configured model algorithm association.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that created the configured model algorithm association.</p>"
+        },
+        "privacyConfiguration":{"shape":"PrivacyConfiguration"}
+      }
+    },
+    "GetCollaborationMLInputChannelRequest":{
+      "type":"structure",
+      "required":[
+        "mlInputChannelArn",
+        "collaborationIdentifier"
+      ],
+      "members":{
+        "mlInputChannelArn":{
+          "shape":"MLInputChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ML input channel that you want to get.</p>",
+          "location":"uri",
+          "locationName":"mlInputChannelArn"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the ML input channel that you want to get.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        }
+      }
+    },
+    "GetCollaborationMLInputChannelResponse":{
+      "type":"structure",
+      "required":[
+        "createTime",
+        "updateTime",
+        "creatorAccountId",
+        "membershipIdentifier",
+        "collaborationIdentifier",
+        "mlInputChannelArn",
+        "name",
+        "configuredModelAlgorithmAssociations",
+        "status",
+        "retentionInDays"
+      ],
+      "members":{
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the ML input channel was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the ML input channel was updated.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member who created the ML input channel.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the membership that contains the ML input channel.</p>"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the ML input channel.</p>"
+        },
+        "mlInputChannelArn":{
+          "shape":"MLInputChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ML input channel.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ML input channel.</p>"
+        },
+        "configuredModelAlgorithmAssociations":{
+          "shape":"GetCollaborationMLInputChannelResponseConfiguredModelAlgorithmAssociationsList",
+          "documentation":"<p>The configured model algorithm associations that were used to create the ML input channel.</p>"
+        },
+        "status":{
+          "shape":"MLInputChannelStatus",
+          "documentation":"<p>The status of the ML input channel.</p>"
+        },
+        "statusDetails":{"shape":"StatusDetails"},
+        "retentionInDays":{
+          "shape":"GetCollaborationMLInputChannelResponseRetentionInDaysInteger",
+          "documentation":"<p>The number of days to retain the data for the ML input channel.</p>"
+        },
+        "numberOfRecords":{
+          "shape":"GetCollaborationMLInputChannelResponseNumberOfRecordsLong",
+          "documentation":"<p>The number of records in the ML input channel.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the ML input channel.</p>"
+        }
+      }
+    },
+    "GetCollaborationMLInputChannelResponseConfiguredModelAlgorithmAssociationsList":{
+      "type":"list",
+      "member":{"shape":"ConfiguredModelAlgorithmAssociationArn"},
+      "max":1,
+      "min":1
+    },
+    "GetCollaborationMLInputChannelResponseNumberOfRecordsLong":{
+      "type":"long",
+      "box":true,
+      "max":100000000000,
+      "min":0
+    },
+    "GetCollaborationMLInputChannelResponseRetentionInDaysInteger":{
+      "type":"integer",
+      "box":true,
+      "max":30,
+      "min":1
+    },
+    "GetCollaborationTrainedModelRequest":{
+      "type":"structure",
+      "required":[
+        "trainedModelArn",
+        "collaborationIdentifier"
+      ],
+      "members":{
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model that you want to return information about.</p>",
+          "location":"uri",
+          "locationName":"trainedModelArn"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID that contains the trained model that you want to return information about.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        }
+      }
+    },
+    "GetCollaborationTrainedModelResponse":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "collaborationIdentifier",
+        "trainedModelArn",
+        "name",
+        "status",
+        "configuredModelAlgorithmAssociationArn",
+        "createTime",
+        "updateTime",
+        "creatorAccountId"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that created the trained model.</p>"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the trained model.</p>"
+        },
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the trained model.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the trained model.</p>"
+        },
+        "status":{
+          "shape":"TrainedModelStatus",
+          "documentation":"<p>The status of the trained model.</p>"
+        },
+        "statusDetails":{"shape":"StatusDetails"},
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association that was used to create this trained model.</p>"
+        },
+        "resourceConfig":{
+          "shape":"ResourceConfig",
+          "documentation":"<p>The EC2 resource configuration that was used to train this model.</p>"
+        },
+        "stoppingCondition":{
+          "shape":"StoppingCondition",
+          "documentation":"<p>The stopping condition that determined when model training ended.</p>"
+        },
+        "metricsStatus":{
+          "shape":"MetricsStatus",
+          "documentation":"<p>The status of the model metrics.</p>"
+        },
+        "metricsStatusDetails":{
+          "shape":"String",
+          "documentation":"<p>Details about the status information for the model metrics.</p>"
+        },
+        "logsStatus":{
+          "shape":"LogsStatus",
+          "documentation":"<p>Status information for the logs.</p>"
+        },
+        "logsStatusDetails":{
+          "shape":"String",
+          "documentation":"<p>Details about the status information for the logs.</p>"
+        },
+        "trainingContainerImageDigest":{
+          "shape":"String",
+          "documentation":"<p>Information about the training container image.</p>"
+        },
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the trained model was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the trained model was updated.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that created the trained model.</p>"
+        }
+      }
+    },
     "GetConfiguredAudienceModelPolicyRequest":{
       "type":"structure",
       "required":["configuredAudienceModelArn"],
@@ -1427,6 +3134,566 @@
         }
       }
     },
+    "GetConfiguredModelAlgorithmAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "configuredModelAlgorithmAssociationArn",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association that you want to return information about.</p>",
+          "location":"uri",
+          "locationName":"configuredModelAlgorithmAssociationArn"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that created the configured model algorithm association.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "GetConfiguredModelAlgorithmAssociationResponse":{
+      "type":"structure",
+      "required":[
+        "createTime",
+        "updateTime",
+        "configuredModelAlgorithmAssociationArn",
+        "membershipIdentifier",
+        "collaborationIdentifier",
+        "configuredModelAlgorithmArn",
+        "name"
+      ],
+      "members":{
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the configured model algorithm association was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the configured model algorithm association was updated.</p>"
+        },
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that created the configured model algorithm association.</p>"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the configured model algorithm association.</p>"
+        },
+        "configuredModelAlgorithmArn":{
+          "shape":"ConfiguredModelAlgorithmArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm that was associated to the collaboration.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the configured model algorithm association.</p>"
+        },
+        "privacyConfiguration":{
+          "shape":"PrivacyConfiguration",
+          "documentation":"<p>The privacy configuration information for the configured model algorithm association.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the configured model algorithm association.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The optional metadata that you applied to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.</p> </li> </ul>"
+        }
+      }
+    },
+    "GetConfiguredModelAlgorithmRequest":{
+      "type":"structure",
+      "required":["configuredModelAlgorithmArn"],
+      "members":{
+        "configuredModelAlgorithmArn":{
+          "shape":"ConfiguredModelAlgorithmArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm that you want to return information about.</p>",
+          "location":"uri",
+          "locationName":"configuredModelAlgorithmArn"
+        }
+      }
+    },
+    "GetConfiguredModelAlgorithmResponse":{
+      "type":"structure",
+      "required":[
+        "createTime",
+        "updateTime",
+        "configuredModelAlgorithmArn",
+        "name",
+        "roleArn"
+      ],
+      "members":{
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the configured model algorithm was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the configured model algorithm was updated.</p>"
+        },
+        "configuredModelAlgorithmArn":{
+          "shape":"ConfiguredModelAlgorithmArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the configured model algorithm.</p>"
+        },
+        "trainingContainerConfig":{
+          "shape":"ContainerConfig",
+          "documentation":"<p>The configuration information of the training container for the configured model algorithm.</p>"
+        },
+        "inferenceContainerConfig":{
+          "shape":"InferenceContainerConfig",
+          "documentation":"<p>Configuration information for the inference container.</p>"
+        },
+        "roleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service role that was used to create the configured model algorithm.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the configured model algorithm.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The optional metadata that you applied to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.</p> </li> </ul>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key. This key is used to encrypt and decrypt customer-owned data in the configured ML model and associated data.</p>"
+        }
+      }
+    },
+    "GetMLConfigurationRequest":{
+      "type":"structure",
+      "required":["membershipIdentifier"],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that owns the ML configuration you want to return information about.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "GetMLConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "defaultOutputLocation",
+        "createTime",
+        "updateTime"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that owns the ML configuration you requested.</p>"
+        },
+        "defaultOutputLocation":{
+          "shape":"MLOutputConfiguration",
+          "documentation":"<p>The Amazon S3 location where ML model output is stored.</p>"
+        },
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the ML configuration was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the ML configuration was updated.</p>"
+        }
+      }
+    },
+    "GetMLInputChannelRequest":{
+      "type":"structure",
+      "required":[
+        "mlInputChannelArn",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "mlInputChannelArn":{
+          "shape":"MLInputChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ML input channel that you want to get.</p>",
+          "location":"uri",
+          "locationName":"mlInputChannelArn"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the membership that contains the ML input channel that you want to get.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "GetMLInputChannelResponse":{
+      "type":"structure",
+      "required":[
+        "createTime",
+        "updateTime",
+        "membershipIdentifier",
+        "collaborationIdentifier",
+        "inputChannel",
+        "mlInputChannelArn",
+        "name",
+        "configuredModelAlgorithmAssociations",
+        "status",
+        "retentionInDays"
+      ],
+      "members":{
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the ML input channel was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the ML input channel was updated.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the membership that contains the ML input channel.</p>"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the ML input channel.</p>"
+        },
+        "inputChannel":{
+          "shape":"InputChannel",
+          "documentation":"<p>The input channel that was used to create the ML input channel.</p>"
+        },
+        "protectedQueryIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The ID of the protected query that was used to create the ML input channel.</p>"
+        },
+        "mlInputChannelArn":{
+          "shape":"MLInputChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ML input channel.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ML input channel.</p>"
+        },
+        "configuredModelAlgorithmAssociations":{
+          "shape":"GetMLInputChannelResponseConfiguredModelAlgorithmAssociationsList",
+          "documentation":"<p>The configured model algorithm associations that were used to create the ML input channel.</p>"
+        },
+        "status":{
+          "shape":"MLInputChannelStatus",
+          "documentation":"<p>The status of the ML input channel.</p>"
+        },
+        "statusDetails":{"shape":"StatusDetails"},
+        "retentionInDays":{
+          "shape":"GetMLInputChannelResponseRetentionInDaysInteger",
+          "documentation":"<p>The number of days to keep the data in the ML input channel.</p>"
+        },
+        "numberOfRecords":{
+          "shape":"GetMLInputChannelResponseNumberOfRecordsLong",
+          "documentation":"<p>The number of records in the ML input channel.</p>"
+        },
+        "numberOfFiles":{
+          "shape":"GetMLInputChannelResponseNumberOfFilesDouble",
+          "documentation":"<p>The number of files in the ML input channel.</p>"
+        },
+        "sizeInGb":{
+          "shape":"GetMLInputChannelResponseSizeInGbDouble",
+          "documentation":"<p>The size, in GB, of the ML input channel.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the ML input channel.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key that was used to create the ML input channel.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The optional metadata that you applied to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.</p> </li> </ul>"
+        }
+      }
+    },
+    "GetMLInputChannelResponseConfiguredModelAlgorithmAssociationsList":{
+      "type":"list",
+      "member":{"shape":"ConfiguredModelAlgorithmAssociationArn"},
+      "max":1,
+      "min":1
+    },
+    "GetMLInputChannelResponseNumberOfFilesDouble":{
+      "type":"double",
+      "box":true,
+      "max":1000000,
+      "min":0
+    },
+    "GetMLInputChannelResponseNumberOfRecordsLong":{
+      "type":"long",
+      "box":true,
+      "max":100000000000,
+      "min":0
+    },
+    "GetMLInputChannelResponseRetentionInDaysInteger":{
+      "type":"integer",
+      "box":true,
+      "max":30,
+      "min":1
+    },
+    "GetMLInputChannelResponseSizeInGbDouble":{
+      "type":"double",
+      "box":true,
+      "max":1000000,
+      "min":0
+    },
+    "GetTrainedModelInferenceJobRequest":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "trainedModelInferenceJobArn"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>Provides the membership ID of the membership that contains the trained model inference job that you are interested in.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "trainedModelInferenceJobArn":{
+          "shape":"TrainedModelInferenceJobArn",
+          "documentation":"<p>Provides the Amazon Resource Name (ARN) of the trained model inference job that you are interested in.</p>",
+          "location":"uri",
+          "locationName":"trainedModelInferenceJobArn"
+        }
+      }
+    },
+    "GetTrainedModelInferenceJobResponse":{
+      "type":"structure",
+      "required":[
+        "createTime",
+        "updateTime",
+        "trainedModelInferenceJobArn",
+        "name",
+        "status",
+        "trainedModelArn",
+        "resourceConfig",
+        "outputConfiguration",
+        "membershipIdentifier",
+        "dataSource"
+      ],
+      "members":{
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the trained model inference job was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the trained model inference job was updated.</p>"
+        },
+        "trainedModelInferenceJobArn":{
+          "shape":"TrainedModelInferenceJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model inference job.</p>"
+        },
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association that was used for the trained model inference job.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the trained model inference job.</p>"
+        },
+        "status":{
+          "shape":"TrainedModelInferenceJobStatus",
+          "documentation":"<p>The status of the trained model inference job.</p>"
+        },
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the trained model that was used for the trained model inference job.</p>"
+        },
+        "resourceConfig":{
+          "shape":"InferenceResourceConfig",
+          "documentation":"<p>The resource configuration information for the trained model inference job.</p>"
+        },
+        "outputConfiguration":{
+          "shape":"InferenceOutputConfiguration",
+          "documentation":"<p>The output configuration information for the trained model inference job.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the membership that contains the trained model inference job.</p>"
+        },
+        "dataSource":{
+          "shape":"ModelInferenceDataSource",
+          "documentation":"<p>The data source that was used for the trained model inference job.</p>"
+        },
+        "containerExecutionParameters":{
+          "shape":"InferenceContainerExecutionParameters",
+          "documentation":"<p>The execution parameters for the model inference job container.</p>"
+        },
+        "statusDetails":{"shape":"StatusDetails"},
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the trained model inference job.</p>"
+        },
+        "inferenceContainerImageDigest":{
+          "shape":"String",
+          "documentation":"<p>Information about the training container image.</p>"
+        },
+        "environment":{
+          "shape":"InferenceEnvironmentMap",
+          "documentation":"<p>The environment variables to set in the Docker container.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key. This key is used to encrypt and decrypt customer-owned data in the ML inference job and associated data.</p>"
+        },
+        "metricsStatus":{
+          "shape":"MetricsStatus",
+          "documentation":"<p>The metrics status for the trained model inference job.</p>"
+        },
+        "metricsStatusDetails":{
+          "shape":"String",
+          "documentation":"<p>Details about the metrics status for the trained model inference job.</p>"
+        },
+        "logsStatus":{
+          "shape":"LogsStatus",
+          "documentation":"<p>The logs status for the trained model inference job.</p>"
+        },
+        "logsStatusDetails":{
+          "shape":"String",
+          "documentation":"<p>Details about the logs status for the trained model inference job.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The optional metadata that you applied to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.</p> </li> </ul>"
+        }
+      }
+    },
+    "GetTrainedModelRequest":{
+      "type":"structure",
+      "required":[
+        "trainedModelArn",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model that you are interested in.</p>",
+          "location":"uri",
+          "locationName":"trainedModelArn"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that created the trained model that you are interested in.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "GetTrainedModelResponse":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "collaborationIdentifier",
+        "trainedModelArn",
+        "name",
+        "status",
+        "configuredModelAlgorithmAssociationArn",
+        "createTime",
+        "updateTime",
+        "dataChannels"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that created the trained model.</p>"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the trained model.</p>"
+        },
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the trained model.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the trained model.</p>"
+        },
+        "status":{
+          "shape":"TrainedModelStatus",
+          "documentation":"<p>The status of the trained model.</p>"
+        },
+        "statusDetails":{"shape":"StatusDetails"},
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association that was used to create the trained model.</p>"
+        },
+        "resourceConfig":{
+          "shape":"ResourceConfig",
+          "documentation":"<p>The EC2 resource configuration that was used to create the trained model.</p>"
+        },
+        "stoppingCondition":{
+          "shape":"StoppingCondition",
+          "documentation":"<p>The stopping condition that was used to terminate model training.</p>"
+        },
+        "metricsStatus":{
+          "shape":"MetricsStatus",
+          "documentation":"<p>The status of the model metrics.</p>"
+        },
+        "metricsStatusDetails":{
+          "shape":"String",
+          "documentation":"<p>Details about the metrics status for the trained model.</p>"
+        },
+        "logsStatus":{
+          "shape":"LogsStatus",
+          "documentation":"<p>The logs status for the trained model.</p>"
+        },
+        "logsStatusDetails":{
+          "shape":"String",
+          "documentation":"<p>Details about the logs status for the trained model.</p>"
+        },
+        "trainingContainerImageDigest":{
+          "shape":"String",
+          "documentation":"<p>Information about the training image container.</p>"
+        },
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the trained model was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the trained model was updated.</p>"
+        },
+        "hyperparameters":{
+          "shape":"HyperParameters",
+          "documentation":"<p>The hyperparameters that were used to create the trained model.</p>"
+        },
+        "environment":{
+          "shape":"Environment",
+          "documentation":"<p>The EC2 environment that was used to create the trained model.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key. This key is used to encrypt and decrypt customer-owned data in the trained ML model and associated data.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The optional metadata that you applied to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.</p> </li> </ul>"
+        },
+        "dataChannels":{
+          "shape":"ModelTrainingDataChannels",
+          "documentation":"<p>The data channels that were used for the trained model.</p>"
+        }
+      }
+    },
     "GetTrainingDatasetRequest":{
       "type":"structure",
       "required":["trainingDatasetArn"],
@@ -1529,11 +3796,354 @@
       "min":64,
       "pattern":"[0-9a-f]+"
     },
+    "HyperParameters":{
+      "type":"map",
+      "key":{"shape":"HyperParametersKeyString"},
+      "value":{"shape":"HyperParametersValueString"},
+      "max":100,
+      "min":0
+    },
+    "HyperParametersKeyString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":".*"
+    },
+    "HyperParametersValueString":{
+      "type":"string",
+      "max":2500,
+      "min":1,
+      "pattern":".*"
+    },
     "IamRoleArn":{
       "type":"string",
       "max":2048,
       "min":20,
       "pattern":"arn:aws[-a-z]*:iam::[0-9]{12}:role/.+"
+    },
+    "InferenceContainerConfig":{
+      "type":"structure",
+      "required":["imageUri"],
+      "members":{
+        "imageUri":{
+          "shape":"AlgorithmImage",
+          "documentation":"<p>The registry path of the docker image that contains the inference algorithm. Clean Rooms ML supports both <code>registry/repository[:tag]</code> and <code>registry/repositry[@digest]</code> image path formats. For more information about using images in Clean Rooms ML, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AlgorithmSpecification.html#sagemaker-Type-AlgorithmSpecification-TrainingImage\">Sagemaker API reference</a>.</p>"
+        }
+      },
+      "documentation":"<p>Provides configuration information for the inference container.</p>"
+    },
+    "InferenceContainerExecutionParameters":{
+      "type":"structure",
+      "members":{
+        "maxPayloadInMB":{
+          "shape":"InferenceContainerExecutionParametersMaxPayloadInMBInteger",
+          "documentation":"<p>The maximum size of the inference container payload, specified in MB. </p>"
+        }
+      },
+      "documentation":"<p>Provides execution parameters for the inference container.</p>"
+    },
+    "InferenceContainerExecutionParametersMaxPayloadInMBInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "InferenceEnvironmentMap":{
+      "type":"map",
+      "key":{"shape":"InferenceEnvironmentMapKeyString"},
+      "value":{"shape":"InferenceEnvironmentMapValueString"},
+      "max":16,
+      "min":0
+    },
+    "InferenceEnvironmentMapKeyString":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[a-zA-Z_][a-zA-Z0-9_]*"
+    },
+    "InferenceEnvironmentMapValueString":{
+      "type":"string",
+      "max":10240,
+      "min":1,
+      "pattern":"[\\S\\s]*"
+    },
+    "InferenceInstanceType":{
+      "type":"string",
+      "enum":[
+        "ml.r7i.48xlarge",
+        "ml.r6i.16xlarge",
+        "ml.m6i.xlarge",
+        "ml.m5.4xlarge",
+        "ml.p2.xlarge",
+        "ml.m4.16xlarge",
+        "ml.r7i.16xlarge",
+        "ml.m7i.xlarge",
+        "ml.m6i.12xlarge",
+        "ml.r7i.8xlarge",
+        "ml.r7i.large",
+        "ml.m7i.12xlarge",
+        "ml.m6i.24xlarge",
+        "ml.m7i.24xlarge",
+        "ml.r6i.8xlarge",
+        "ml.r6i.large",
+        "ml.g5.2xlarge",
+        "ml.m5.large",
+        "ml.p3.16xlarge",
+        "ml.m7i.48xlarge",
+        "ml.m6i.16xlarge",
+        "ml.p2.16xlarge",
+        "ml.g5.4xlarge",
+        "ml.m7i.16xlarge",
+        "ml.c4.2xlarge",
+        "ml.c5.2xlarge",
+        "ml.c6i.32xlarge",
+        "ml.c4.4xlarge",
+        "ml.g5.8xlarge",
+        "ml.c6i.xlarge",
+        "ml.c5.4xlarge",
+        "ml.g4dn.xlarge",
+        "ml.c7i.xlarge",
+        "ml.c6i.12xlarge",
+        "ml.g4dn.12xlarge",
+        "ml.c7i.12xlarge",
+        "ml.c6i.24xlarge",
+        "ml.g4dn.2xlarge",
+        "ml.c7i.24xlarge",
+        "ml.c7i.2xlarge",
+        "ml.c4.8xlarge",
+        "ml.c6i.2xlarge",
+        "ml.g4dn.4xlarge",
+        "ml.c7i.48xlarge",
+        "ml.c7i.4xlarge",
+        "ml.c6i.16xlarge",
+        "ml.c5.9xlarge",
+        "ml.g4dn.16xlarge",
+        "ml.c7i.16xlarge",
+        "ml.c6i.4xlarge",
+        "ml.c5.xlarge",
+        "ml.c4.xlarge",
+        "ml.g4dn.8xlarge",
+        "ml.c7i.8xlarge",
+        "ml.c7i.large",
+        "ml.g5.xlarge",
+        "ml.c6i.8xlarge",
+        "ml.c6i.large",
+        "ml.g5.12xlarge",
+        "ml.g5.24xlarge",
+        "ml.m7i.2xlarge",
+        "ml.c5.18xlarge",
+        "ml.g5.48xlarge",
+        "ml.m6i.2xlarge",
+        "ml.g5.16xlarge",
+        "ml.m7i.4xlarge",
+        "ml.p3.2xlarge",
+        "ml.r6i.32xlarge",
+        "ml.m6i.4xlarge",
+        "ml.m5.xlarge",
+        "ml.m4.10xlarge",
+        "ml.r6i.xlarge",
+        "ml.m5.12xlarge",
+        "ml.m4.xlarge",
+        "ml.r7i.2xlarge",
+        "ml.r7i.xlarge",
+        "ml.r6i.12xlarge",
+        "ml.m5.24xlarge",
+        "ml.r7i.12xlarge",
+        "ml.m7i.8xlarge",
+        "ml.m7i.large",
+        "ml.r6i.24xlarge",
+        "ml.r6i.2xlarge",
+        "ml.m4.2xlarge",
+        "ml.r7i.24xlarge",
+        "ml.r7i.4xlarge",
+        "ml.m6i.8xlarge",
+        "ml.m6i.large",
+        "ml.m5.2xlarge",
+        "ml.p2.8xlarge",
+        "ml.r6i.4xlarge",
+        "ml.m6i.32xlarge",
+        "ml.p3.8xlarge",
+        "ml.m4.4xlarge"
+      ]
+    },
+    "InferenceOutputConfiguration":{
+      "type":"structure",
+      "required":["members"],
+      "members":{
+        "accept":{
+          "shape":"InferenceOutputConfigurationAcceptString",
+          "documentation":"<p>The MIME type used to specify the output data.</p>"
+        },
+        "members":{
+          "shape":"InferenceReceiverMembers",
+          "documentation":"<p>Defines the members that can receive inference output.</p>"
+        }
+      },
+      "documentation":"<p>Configuration information about how the inference output is stored.</p>"
+    },
+    "InferenceOutputConfigurationAcceptString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":".*"
+    },
+    "InferenceReceiverMember":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member that can receive inference results.</p>"
+        }
+      },
+      "documentation":"<p>Defines who will receive inference results.</p>"
+    },
+    "InferenceReceiverMembers":{
+      "type":"list",
+      "member":{"shape":"InferenceReceiverMember"},
+      "max":1,
+      "min":1
+    },
+    "InferenceResourceConfig":{
+      "type":"structure",
+      "required":["instanceType"],
+      "members":{
+        "instanceType":{
+          "shape":"InferenceInstanceType",
+          "documentation":"<p>The type of instance that is used to perform model inference.</p>"
+        },
+        "instanceCount":{
+          "shape":"InferenceResourceConfigInstanceCountInteger",
+          "documentation":"<p>The number of instances to use.</p>"
+        }
+      },
+      "documentation":"<p>Defines the resources used to perform model inference.</p>"
+    },
+    "InferenceResourceConfigInstanceCountInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "InputChannel":{
+      "type":"structure",
+      "required":[
+        "dataSource",
+        "roleArn"
+      ],
+      "members":{
+        "dataSource":{
+          "shape":"InputChannelDataSource",
+          "documentation":"<p>The data source that is used to create the ML input channel.</p>"
+        },
+        "roleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The ARN of the IAM role that Clean Rooms ML can assume to read the data referred to in the <code>dataSource</code> field the input channel.</p> <p>Passing a role across AWS accounts is not allowed. If you pass a role that isn't in your account, you get an <code>AccessDeniedException</code> error.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the data source that is used to create an ML input channel.</p>"
+    },
+    "InputChannelDataSource":{
+      "type":"structure",
+      "members":{
+        "protectedQueryInputParameters":{"shape":"ProtectedQueryInputParameters"}
+      },
+      "documentation":"<p>Provides the data source that is used to define an input channel.</p>",
+      "union":true
+    },
+    "InstanceType":{
+      "type":"string",
+      "enum":[
+        "ml.m4.xlarge",
+        "ml.m4.2xlarge",
+        "ml.m4.4xlarge",
+        "ml.m4.10xlarge",
+        "ml.m4.16xlarge",
+        "ml.g4dn.xlarge",
+        "ml.g4dn.2xlarge",
+        "ml.g4dn.4xlarge",
+        "ml.g4dn.8xlarge",
+        "ml.g4dn.12xlarge",
+        "ml.g4dn.16xlarge",
+        "ml.m5.large",
+        "ml.m5.xlarge",
+        "ml.m5.2xlarge",
+        "ml.m5.4xlarge",
+        "ml.m5.12xlarge",
+        "ml.m5.24xlarge",
+        "ml.c4.xlarge",
+        "ml.c4.2xlarge",
+        "ml.c4.4xlarge",
+        "ml.c4.8xlarge",
+        "ml.p2.xlarge",
+        "ml.p2.8xlarge",
+        "ml.p2.16xlarge",
+        "ml.p3.2xlarge",
+        "ml.p3.8xlarge",
+        "ml.p3.16xlarge",
+        "ml.p3dn.24xlarge",
+        "ml.p4d.24xlarge",
+        "ml.p4de.24xlarge",
+        "ml.p5.48xlarge",
+        "ml.c5.xlarge",
+        "ml.c5.2xlarge",
+        "ml.c5.4xlarge",
+        "ml.c5.9xlarge",
+        "ml.c5.18xlarge",
+        "ml.c5n.xlarge",
+        "ml.c5n.2xlarge",
+        "ml.c5n.4xlarge",
+        "ml.c5n.9xlarge",
+        "ml.c5n.18xlarge",
+        "ml.g5.xlarge",
+        "ml.g5.2xlarge",
+        "ml.g5.4xlarge",
+        "ml.g5.8xlarge",
+        "ml.g5.16xlarge",
+        "ml.g5.12xlarge",
+        "ml.g5.24xlarge",
+        "ml.g5.48xlarge",
+        "ml.trn1.2xlarge",
+        "ml.trn1.32xlarge",
+        "ml.trn1n.32xlarge",
+        "ml.m6i.large",
+        "ml.m6i.xlarge",
+        "ml.m6i.2xlarge",
+        "ml.m6i.4xlarge",
+        "ml.m6i.8xlarge",
+        "ml.m6i.12xlarge",
+        "ml.m6i.16xlarge",
+        "ml.m6i.24xlarge",
+        "ml.m6i.32xlarge",
+        "ml.c6i.xlarge",
+        "ml.c6i.2xlarge",
+        "ml.c6i.8xlarge",
+        "ml.c6i.4xlarge",
+        "ml.c6i.12xlarge",
+        "ml.c6i.16xlarge",
+        "ml.c6i.24xlarge",
+        "ml.c6i.32xlarge",
+        "ml.r5d.large",
+        "ml.r5d.xlarge",
+        "ml.r5d.2xlarge",
+        "ml.r5d.4xlarge",
+        "ml.r5d.8xlarge",
+        "ml.r5d.12xlarge",
+        "ml.r5d.16xlarge",
+        "ml.r5d.24xlarge",
+        "ml.t3.medium",
+        "ml.t3.large",
+        "ml.t3.xlarge",
+        "ml.t3.2xlarge",
+        "ml.r5.large",
+        "ml.r5.xlarge",
+        "ml.r5.2xlarge",
+        "ml.r5.4xlarge",
+        "ml.r5.8xlarge",
+        "ml.r5.12xlarge",
+        "ml.r5.16xlarge",
+        "ml.r5.24xlarge"
+      ]
     },
     "KmsKeyArn":{
       "type":"string",
@@ -1570,7 +4180,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The token value used to access the next page of results.</p>"
         },
         "audienceExportJobs":{
           "shape":"AudienceExportJobList",
@@ -1613,7 +4223,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The token value used to access the next page of results.</p>"
         },
         "audienceGenerationJobs":{
           "shape":"AudienceGenerationJobList",
@@ -1644,11 +4254,216 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The token value used to access the next page of results.</p>"
         },
         "audienceModels":{
           "shape":"AudienceModelList",
           "documentation":"<p>The audience models that match the request.</p>"
+        }
+      }
+    },
+    "ListCollaborationConfiguredModelAlgorithmAssociationsRequest":{
+      "type":"structure",
+      "required":["collaborationIdentifier"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the configured model algorithm associations that you are interested in.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        }
+      }
+    },
+    "ListCollaborationConfiguredModelAlgorithmAssociationsResponse":{
+      "type":"structure",
+      "required":["collaborationConfiguredModelAlgorithmAssociations"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value used to access the next page of results.</p>"
+        },
+        "collaborationConfiguredModelAlgorithmAssociations":{
+          "shape":"CollaborationConfiguredModelAlgorithmAssociationList",
+          "documentation":"<p>The configured model algorithm associations that belong to this collaboration.</p>"
+        }
+      }
+    },
+    "ListCollaborationMLInputChannelsRequest":{
+      "type":"structure",
+      "required":["collaborationIdentifier"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the ML input channels that you want to list.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        }
+      }
+    },
+    "ListCollaborationMLInputChannelsResponse":{
+      "type":"structure",
+      "required":["collaborationMLInputChannelsList"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value used to access the next page of results.</p>"
+        },
+        "collaborationMLInputChannelsList":{
+          "shape":"CollaborationMLInputChannelsList",
+          "documentation":"<p>The list of ML input channels that you wanted.</p>"
+        }
+      }
+    },
+    "ListCollaborationTrainedModelExportJobsRequest":{
+      "type":"structure",
+      "required":[
+        "collaborationIdentifier",
+        "trainedModelArn"
+      ],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the trained model export jobs that you are interested in.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        },
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model that was used to create the export jobs that you are interested in.</p>",
+          "location":"uri",
+          "locationName":"trainedModelArn"
+        }
+      }
+    },
+    "ListCollaborationTrainedModelExportJobsResponse":{
+      "type":"structure",
+      "required":["collaborationTrainedModelExportJobs"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value used to access the next page of results.</p>"
+        },
+        "collaborationTrainedModelExportJobs":{
+          "shape":"CollaborationTrainedModelExportJobList",
+          "documentation":"<p>The exports jobs that exist for the requested trained model in the requested collaboration.</p>"
+        }
+      }
+    },
+    "ListCollaborationTrainedModelInferenceJobsRequest":{
+      "type":"structure",
+      "required":["collaborationIdentifier"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the trained model inference jobs that you are interested in.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        },
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model that was used to create the trained model inference jobs that you are interested in.</p>",
+          "location":"querystring",
+          "locationName":"trainedModelArn"
+        }
+      }
+    },
+    "ListCollaborationTrainedModelInferenceJobsResponse":{
+      "type":"structure",
+      "required":["collaborationTrainedModelInferenceJobs"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value used to access the next page of results.</p>"
+        },
+        "collaborationTrainedModelInferenceJobs":{
+          "shape":"CollaborationTrainedModelInferenceJobList",
+          "documentation":"<p>The trained model inference jobs that you are interested in.</p>"
+        }
+      }
+    },
+    "ListCollaborationTrainedModelsRequest":{
+      "type":"structure",
+      "required":["collaborationIdentifier"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the trained models you are interested in.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        }
+      }
+    },
+    "ListCollaborationTrainedModelsResponse":{
+      "type":"structure",
+      "required":["collaborationTrainedModels"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value used to access the next page of results.</p>"
+        },
+        "collaborationTrainedModels":{
+          "shape":"CollaborationTrainedModelList",
+          "documentation":"<p>The trained models in the collaboration that you requested.</p>"
         }
       }
     },
@@ -1675,11 +4490,118 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The token value used to access the next page of results.</p>"
         },
         "configuredAudienceModels":{
           "shape":"ConfiguredAudienceModelList",
           "documentation":"<p>The configured audience models.</p>"
+        }
+      }
+    },
+    "ListConfiguredModelAlgorithmAssociationsRequest":{
+      "type":"structure",
+      "required":["membershipIdentifier"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that created the configured model algorithm associations you are interested in.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "ListConfiguredModelAlgorithmAssociationsResponse":{
+      "type":"structure",
+      "required":["configuredModelAlgorithmAssociations"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value used to access the next page of results.</p>"
+        },
+        "configuredModelAlgorithmAssociations":{
+          "shape":"ConfiguredModelAlgorithmAssociationList",
+          "documentation":"<p>The list of configured model algorithm associations.</p>"
+        }
+      }
+    },
+    "ListConfiguredModelAlgorithmsRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListConfiguredModelAlgorithmsResponse":{
+      "type":"structure",
+      "required":["configuredModelAlgorithms"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value used to access the next page of results.</p>"
+        },
+        "configuredModelAlgorithms":{
+          "shape":"ConfiguredModelAlgorithmList",
+          "documentation":"<p>The list of configured model algorithms.</p>"
+        }
+      }
+    },
+    "ListMLInputChannelsRequest":{
+      "type":"structure",
+      "required":["membershipIdentifier"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of ML input channels to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the membership that contains the ML input channels that you want to list.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "ListMLInputChannelsResponse":{
+      "type":"structure",
+      "required":["mlInputChannelsList"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value used to access the next page of results.</p>"
+        },
+        "mlInputChannelsList":{
+          "shape":"MLInputChannelsList",
+          "documentation":"<p>The list of ML input channels that you wanted.</p>"
         }
       }
     },
@@ -1702,6 +4624,88 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags that are associated with the resource.</p>"
+        }
+      }
+    },
+    "ListTrainedModelInferenceJobsRequest":{
+      "type":"structure",
+      "required":["membershipIdentifier"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership </p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a trained model that was used to create the trained model inference jobs that you are interested in.</p>",
+          "location":"querystring",
+          "locationName":"trainedModelArn"
+        }
+      }
+    },
+    "ListTrainedModelInferenceJobsResponse":{
+      "type":"structure",
+      "required":["trainedModelInferenceJobs"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value used to access the next page of results.</p>"
+        },
+        "trainedModelInferenceJobs":{
+          "shape":"TrainedModelInferenceJobList",
+          "documentation":"<p>Returns the requested trained model inference jobs.</p>"
+        }
+      }
+    },
+    "ListTrainedModelsRequest":{
+      "type":"structure",
+      "required":["membershipIdentifier"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that created the trained models you are interested in.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "ListTrainedModelsResponse":{
+      "type":"structure",
+      "required":["trainedModels"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token value used to access the next page of results.</p>"
+        },
+        "trainedModels":{
+          "shape":"TrainedModelList",
+          "documentation":"<p>The list of trained models.</p>"
         }
       }
     },
@@ -1728,7 +4732,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The token value used to access the next page of results.</p>"
         },
         "trainingDatasets":{
           "shape":"TrainingDatasetList",
@@ -1736,11 +4740,191 @@
         }
       }
     },
+    "LogsConfigurationPolicy":{
+      "type":"structure",
+      "required":["allowedAccountIds"],
+      "members":{
+        "allowedAccountIds":{
+          "shape":"AccountIdList",
+          "documentation":"<p>A list of account IDs that are allowed to access the logs.</p>"
+        },
+        "filterPattern":{
+          "shape":"LogsConfigurationPolicyFilterPatternString",
+          "documentation":"<p>A regular expression pattern that is used to parse the logs and return information that matches the pattern.</p>"
+        }
+      },
+      "documentation":"<p>Provides the information necessary for a user to access the logs.</p>"
+    },
+    "LogsConfigurationPolicyFilterPatternString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "LogsConfigurationPolicyList":{
+      "type":"list",
+      "member":{"shape":"LogsConfigurationPolicy"},
+      "max":5,
+      "min":1
+    },
+    "LogsStatus":{
+      "type":"string",
+      "enum":[
+        "PUBLISH_SUCCEEDED",
+        "PUBLISH_FAILED"
+      ]
+    },
+    "MLInputChannelArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:membership/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/ml-input-channel/[-a-zA-Z0-9_/.]+"
+    },
+    "MLInputChannelStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_PENDING",
+        "CREATE_IN_PROGRESS",
+        "CREATE_FAILED",
+        "ACTIVE",
+        "DELETE_PENDING",
+        "DELETE_IN_PROGRESS",
+        "DELETE_FAILED",
+        "INACTIVE"
+      ]
+    },
+    "MLInputChannelSummary":{
+      "type":"structure",
+      "required":[
+        "createTime",
+        "updateTime",
+        "membershipIdentifier",
+        "collaborationIdentifier",
+        "name",
+        "configuredModelAlgorithmAssociations",
+        "mlInputChannelArn",
+        "status"
+      ],
+      "members":{
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the ML input channel was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the ML input channel was updated.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the membership that contains the ML input channel.</p>"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the ML input channel.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the ML input channel.</p>"
+        },
+        "configuredModelAlgorithmAssociations":{
+          "shape":"MLInputChannelSummaryConfiguredModelAlgorithmAssociationsList",
+          "documentation":"<p>The associated configured model algorithms used to create the ML input channel.</p>"
+        },
+        "protectedQueryIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The ID of the protected query that was used to create the ML input channel.</p>"
+        },
+        "mlInputChannelArn":{
+          "shape":"MLInputChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ML input channel.</p>"
+        },
+        "status":{
+          "shape":"MLInputChannelStatus",
+          "documentation":"<p>The status of the ML input channel.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the ML input channel.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about the ML input channel.</p>"
+    },
+    "MLInputChannelSummaryConfiguredModelAlgorithmAssociationsList":{
+      "type":"list",
+      "member":{"shape":"ConfiguredModelAlgorithmAssociationArn"},
+      "max":1,
+      "min":1
+    },
+    "MLInputChannelsList":{
+      "type":"list",
+      "member":{"shape":"MLInputChannelSummary"}
+    },
+    "MLOutputConfiguration":{
+      "type":"structure",
+      "required":["roleArn"],
+      "members":{
+        "destination":{
+          "shape":"Destination",
+          "documentation":"<p>The Amazon S3 location where exported model artifacts are stored.</p>"
+        },
+        "roleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service access role that is used to store the model artifacts.</p>"
+        }
+      },
+      "documentation":"<p>Configuration information about how the exported model artifacts are stored.</p>"
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
       "max":100,
       "min":1
+    },
+    "MetricDefinition":{
+      "type":"structure",
+      "required":[
+        "name",
+        "regex"
+      ],
+      "members":{
+        "name":{
+          "shape":"MetricName",
+          "documentation":"<p>The name of the model metric.</p>"
+        },
+        "regex":{
+          "shape":"MetricRegex",
+          "documentation":"<p>The regular expression statement that defines how the model metric is reported.</p>"
+        }
+      },
+      "documentation":"<p>Information about the model metric that is reported for a trained model.</p>"
+    },
+    "MetricDefinitionList":{
+      "type":"list",
+      "member":{"shape":"MetricDefinition"},
+      "max":40,
+      "min":0
+    },
+    "MetricName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":".+"
+    },
+    "MetricRegex":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "pattern":".+"
+    },
+    "MetricsConfigurationPolicy":{
+      "type":"structure",
+      "required":["noiseLevel"],
+      "members":{
+        "noiseLevel":{
+          "shape":"NoiseLevelType",
+          "documentation":"<p>The noise level for the generated metrics.</p>"
+        }
+      },
+      "documentation":"<p>Provides the configuration policy for metrics generation.</p>"
     },
     "MetricsList":{
       "type":"list",
@@ -1748,11 +4932,59 @@
       "max":1,
       "min":1
     },
+    "MetricsStatus":{
+      "type":"string",
+      "enum":[
+        "PUBLISH_SUCCEEDED",
+        "PUBLISH_FAILED"
+      ]
+    },
     "MinMatchingSeedSize":{
       "type":"integer",
       "box":true,
       "max":500000,
       "min":25
+    },
+    "ModelInferenceDataSource":{
+      "type":"structure",
+      "required":["mlInputChannelArn"],
+      "members":{
+        "mlInputChannelArn":{
+          "shape":"MLInputChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ML input channel for this model inference data source.</p>"
+        }
+      },
+      "documentation":"<p>Defines information about the data source used for model inference.</p>"
+    },
+    "ModelTrainingDataChannel":{
+      "type":"structure",
+      "required":[
+        "mlInputChannelArn",
+        "channelName"
+      ],
+      "members":{
+        "mlInputChannelArn":{
+          "shape":"MLInputChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ML input channel for this model training data channel.</p>"
+        },
+        "channelName":{
+          "shape":"ModelTrainingDataChannelName",
+          "documentation":"<p>The name of the training data channel.</p>"
+        }
+      },
+      "documentation":"<p>Information about the model training data channel. A training data channel is a named data source that the training algorithms can consume. </p>"
+    },
+    "ModelTrainingDataChannelName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9\\.\\-_]+"
+    },
+    "ModelTrainingDataChannels":{
+      "type":"list",
+      "member":{"shape":"ModelTrainingDataChannel"},
+      "max":20,
+      "min":1
     },
     "NameString":{
       "type":"string",
@@ -1764,6 +4996,15 @@
       "type":"string",
       "max":10240,
       "min":1
+    },
+    "NoiseLevelType":{
+      "type":"string",
+      "enum":[
+        "HIGH",
+        "MEDIUM",
+        "LOW",
+        "NONE"
+      ]
     },
     "ParameterKey":{
       "type":"string",
@@ -1788,6 +5029,47 @@
         "POLICY_MUST_NOT_EXIST"
       ]
     },
+    "PrivacyConfiguration":{
+      "type":"structure",
+      "required":["policies"],
+      "members":{
+        "policies":{
+          "shape":"PrivacyConfigurationPolicies",
+          "documentation":"<p>The privacy configuration policies for a configured model algorithm association.</p>"
+        }
+      },
+      "documentation":"<p>Information about the privacy configuration for a configured model algorithm association.</p>"
+    },
+    "PrivacyConfigurationPolicies":{
+      "type":"structure",
+      "members":{
+        "trainedModels":{
+          "shape":"TrainedModelsConfigurationPolicy",
+          "documentation":"<p>Specifies who will receive the trained models.</p>"
+        },
+        "trainedModelExports":{
+          "shape":"TrainedModelExportsConfigurationPolicy",
+          "documentation":"<p>Specifies who will receive the trained model export.</p>"
+        },
+        "trainedModelInferenceJobs":{
+          "shape":"TrainedModelInferenceJobsConfigurationPolicy",
+          "documentation":"<p>Specifies who will receive the trained model inference jobs.</p>"
+        }
+      },
+      "documentation":"<p>Information about the privacy configuration policies for a configured model algorithm association.</p>"
+    },
+    "ProtectedQueryInputParameters":{
+      "type":"structure",
+      "required":["sqlParameters"],
+      "members":{
+        "sqlParameters":{"shape":"ProtectedQuerySQLParameters"},
+        "computeConfiguration":{
+          "shape":"ComputeConfiguration",
+          "documentation":"<p>Provides configuration information for the workers that will perform the protected query.</p>"
+        }
+      },
+      "documentation":"<p>Provides information necessary to perform the protected query.</p>"
+    },
     "ProtectedQuerySQLParameters":{
       "type":"structure",
       "members":{
@@ -1809,7 +5091,7 @@
     },
     "ProtectedQuerySQLParametersQueryStringString":{
       "type":"string",
-      "max":90000,
+      "max":500000,
       "min":0
     },
     "PutConfiguredAudienceModelPolicyRequest":{
@@ -1856,21 +5138,80 @@
         }
       }
     },
+    "PutMLConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "defaultOutputLocation"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that is being configured.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "defaultOutputLocation":{
+          "shape":"MLOutputConfiguration",
+          "documentation":"<p>The default Amazon S3 location where ML output is stored for the specified member.</p>"
+        }
+      }
+    },
     "RelevanceMetric":{
       "type":"structure",
       "required":["audienceSize"],
       "members":{
         "audienceSize":{"shape":"AudienceSize"},
         "score":{
-          "shape":"Double",
+          "shape":"RelevanceMetricScoreDouble",
           "documentation":"<p>The relevance score of the generated audience.</p>"
         }
       },
       "documentation":"<p>The relevance score of a generated audience.</p>"
     },
+    "RelevanceMetricScoreDouble":{
+      "type":"double",
+      "box":true,
+      "max":10.0,
+      "min":0.0
+    },
     "RelevanceMetrics":{
       "type":"list",
       "member":{"shape":"RelevanceMetric"}
+    },
+    "ResourceConfig":{
+      "type":"structure",
+      "required":[
+        "instanceType",
+        "volumeSizeInGB"
+      ],
+      "members":{
+        "instanceCount":{
+          "shape":"ResourceConfigInstanceCountInteger",
+          "documentation":"<p>The number of resources that are used to train the model.</p>"
+        },
+        "instanceType":{
+          "shape":"InstanceType",
+          "documentation":"<p>The instance type that is used to train the model.</p>"
+        },
+        "volumeSizeInGB":{
+          "shape":"ResourceConfigVolumeSizeInGBInteger",
+          "documentation":"<p>The maximum size of the instance that is used to train the model.</p>"
+        }
+      },
+      "documentation":"<p>Information about the EC2 resources that are used to train the model.</p>"
+    },
+    "ResourceConfigInstanceCountInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1,
+      "min":1
+    },
+    "ResourceConfigVolumeSizeInGBInteger":{
+      "type":"integer",
+      "box":true,
+      "max":8192,
+      "min":1
     },
     "ResourceDescription":{
       "type":"string",
@@ -2004,6 +5345,114 @@
         }
       }
     },
+    "StartTrainedModelExportJobRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "trainedModelArn",
+        "membershipIdentifier",
+        "outputConfiguration"
+      ],
+      "members":{
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the trained model export job.</p>"
+        },
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model that you want to export.</p>",
+          "location":"uri",
+          "locationName":"trainedModelArn"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that is receiving the exported trained model artifacts.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "outputConfiguration":{
+          "shape":"TrainedModelExportOutputConfiguration",
+          "documentation":"<p>The output configuration information for the trained model export job.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the trained model export job.</p>"
+        }
+      }
+    },
+    "StartTrainedModelInferenceJobRequest":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "name",
+        "trainedModelArn",
+        "resourceConfig",
+        "outputConfiguration",
+        "dataSource"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the membership that contains the trained model inference job.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the trained model inference job.</p>"
+        },
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model that is used for this trained model inference job.</p>"
+        },
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association that is used for this trained model inference job.</p>"
+        },
+        "resourceConfig":{
+          "shape":"InferenceResourceConfig",
+          "documentation":"<p>Defines the resource configuration for the trained model inference job.</p>"
+        },
+        "outputConfiguration":{
+          "shape":"InferenceOutputConfiguration",
+          "documentation":"<p>Defines the output configuration information for the trained model inference job.</p>"
+        },
+        "dataSource":{
+          "shape":"ModelInferenceDataSource",
+          "documentation":"<p>Defines he data source that is used for the trained model inference job.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the trained model inference job.</p>"
+        },
+        "containerExecutionParameters":{
+          "shape":"InferenceContainerExecutionParameters",
+          "documentation":"<p>The execution parameters for the container.</p>"
+        },
+        "environment":{
+          "shape":"InferenceEnvironmentMap",
+          "documentation":"<p>The environment variables to set in the Docker container.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key. This key is used to encrypt and decrypt customer-owned data in the ML inference job and associated data.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The optional metadata that you apply to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50.</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8.</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8.</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case sensitive.</p> </li> <li> <p>Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.</p> </li> </ul>"
+        }
+      }
+    },
+    "StartTrainedModelInferenceJobResponse":{
+      "type":"structure",
+      "required":["trainedModelInferenceJobArn"],
+      "members":{
+        "trainedModelInferenceJobArn":{
+          "shape":"TrainedModelInferenceJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model inference job.</p>"
+        }
+      }
+    },
     "StatusDetails":{
       "type":"structure",
       "members":{
@@ -2017,6 +5466,22 @@
         }
       },
       "documentation":"<p>Details about the status of a resource.</p>"
+    },
+    "StoppingCondition":{
+      "type":"structure",
+      "members":{
+        "maxRuntimeInSeconds":{
+          "shape":"StoppingConditionMaxRuntimeInSecondsInteger",
+          "documentation":"<p>The maximum amount of time, in seconds, that model training can run before it is terminated.</p>"
+        }
+      },
+      "documentation":"<p>The criteria used to stop model training.</p>"
+    },
+    "StoppingConditionMaxRuntimeInSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":2419200,
+      "min":1
     },
     "String":{"type":"string"},
     "SyntheticTimestamp_date_time":{
@@ -2081,7 +5546,337 @@
       "type":"string",
       "max":2048,
       "min":20,
-      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:(training-dataset|audience-model|configured-audience-model|audience-generation-job)/[-a-zA-Z0-9_/.]+"
+      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:(membership/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/(configured-model-algorithm-association|trained-model|trained-model-inference-job|ml-input-channel)|training-dataset|audience-model|configured-audience-model|audience-generation-job|configured-model-algorithm|configured-model-algorithm-association|trained-model|trained-model-inference-job)/[-a-zA-Z0-9_/.]+"
+    },
+    "TrainedModelArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:(membership/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)?trained-model/[-a-zA-Z0-9_/.]+"
+    },
+    "TrainedModelExportFileType":{
+      "type":"string",
+      "enum":[
+        "MODEL",
+        "OUTPUT"
+      ]
+    },
+    "TrainedModelExportFileTypeList":{
+      "type":"list",
+      "member":{"shape":"TrainedModelExportFileType"},
+      "max":2,
+      "min":1
+    },
+    "TrainedModelExportJobStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_PENDING",
+        "CREATE_IN_PROGRESS",
+        "CREATE_FAILED",
+        "ACTIVE"
+      ]
+    },
+    "TrainedModelExportOutputConfiguration":{
+      "type":"structure",
+      "required":["members"],
+      "members":{
+        "members":{
+          "shape":"TrainedModelExportReceiverMembers",
+          "documentation":"<p>The members that will received the exported trained model output.</p>"
+        }
+      },
+      "documentation":"<p>Information about the output of the trained model export job.</p>"
+    },
+    "TrainedModelExportReceiverMember":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of the member who will receive trained model exports.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the member who will receive trained model exports.</p>"
+    },
+    "TrainedModelExportReceiverMembers":{
+      "type":"list",
+      "member":{"shape":"TrainedModelExportReceiverMember"},
+      "max":1,
+      "min":1
+    },
+    "TrainedModelExportsConfigurationPolicy":{
+      "type":"structure",
+      "required":[
+        "maxSize",
+        "filesToExport"
+      ],
+      "members":{
+        "maxSize":{
+          "shape":"TrainedModelExportsMaxSize",
+          "documentation":"<p>The maximum size of the data that can be exported.</p>"
+        },
+        "filesToExport":{
+          "shape":"TrainedModelExportFileTypeList",
+          "documentation":"<p>The files that are exported during the trained model export job.</p>"
+        }
+      },
+      "documentation":"<p>Information about how the trained model exports are configured.</p>"
+    },
+    "TrainedModelExportsMaxSize":{
+      "type":"structure",
+      "required":[
+        "unit",
+        "value"
+      ],
+      "members":{
+        "unit":{
+          "shape":"TrainedModelExportsMaxSizeUnitType",
+          "documentation":"<p>The unit of measurement for the data size.</p>"
+        },
+        "value":{
+          "shape":"TrainedModelExportsMaxSizeValue",
+          "documentation":"<p>The maximum size of the dataset to export.</p>"
+        }
+      },
+      "documentation":"<p>The maximum size of the trained model metrics that can be exported. If the trained model metrics dataset is larger than this value, it will not be exported.</p>"
+    },
+    "TrainedModelExportsMaxSizeUnitType":{
+      "type":"string",
+      "enum":["GB"]
+    },
+    "TrainedModelExportsMaxSizeValue":{
+      "type":"double",
+      "box":true,
+      "max":10.0,
+      "min":0.01
+    },
+    "TrainedModelInferenceJobArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:(membership/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)?trained-model-inference-job/[-a-zA-Z0-9_/.]+"
+    },
+    "TrainedModelInferenceJobList":{
+      "type":"list",
+      "member":{"shape":"TrainedModelInferenceJobSummary"}
+    },
+    "TrainedModelInferenceJobStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_PENDING",
+        "CREATE_IN_PROGRESS",
+        "CREATE_FAILED",
+        "ACTIVE",
+        "CANCEL_PENDING",
+        "CANCEL_IN_PROGRESS",
+        "CANCEL_FAILED",
+        "INACTIVE"
+      ]
+    },
+    "TrainedModelInferenceJobSummary":{
+      "type":"structure",
+      "required":[
+        "trainedModelInferenceJobArn",
+        "membershipIdentifier",
+        "trainedModelArn",
+        "collaborationIdentifier",
+        "status",
+        "outputConfiguration",
+        "name",
+        "createTime",
+        "updateTime"
+      ],
+      "members":{
+        "trainedModelInferenceJobArn":{
+          "shape":"TrainedModelInferenceJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model inference job.</p>"
+        },
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association that is used for the trained model inference job.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the membership that contains the trained model inference job.</p>"
+        },
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model that is used for the trained model inference job.</p>"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the trained model inference job.</p>"
+        },
+        "status":{
+          "shape":"TrainedModelInferenceJobStatus",
+          "documentation":"<p>The status of the trained model inference job.</p>"
+        },
+        "outputConfiguration":{
+          "shape":"InferenceOutputConfiguration",
+          "documentation":"<p>The output configuration information of the trained model job.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the trained model inference job.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the trained model inference job.</p>"
+        },
+        "metricsStatus":{
+          "shape":"MetricsStatus",
+          "documentation":"<p>The metric status of the trained model inference job.</p>"
+        },
+        "metricsStatusDetails":{
+          "shape":"String",
+          "documentation":"<p>Details about the metrics status for the trained model inference job.</p>"
+        },
+        "logsStatus":{
+          "shape":"LogsStatus",
+          "documentation":"<p>The log status of the trained model inference job.</p>"
+        },
+        "logsStatusDetails":{
+          "shape":"String",
+          "documentation":"<p>Details about the log status for the trained model inference job.</p>"
+        },
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the trained model inference job was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the trained model inference job was updated.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the trained model inference job.</p>"
+    },
+    "TrainedModelInferenceJobsConfigurationPolicy":{
+      "type":"structure",
+      "members":{
+        "containerLogs":{
+          "shape":"LogsConfigurationPolicyList",
+          "documentation":"<p>The logs container for the trained model inference job.</p>"
+        },
+        "maxOutputSize":{
+          "shape":"TrainedModelInferenceMaxOutputSize",
+          "documentation":"<p>The maximum allowed size of the output of the trained model inference job.</p>"
+        }
+      },
+      "documentation":"<p>Provides configuration information for the trained model inference job.</p>"
+    },
+    "TrainedModelInferenceMaxOutputSize":{
+      "type":"structure",
+      "required":[
+        "unit",
+        "value"
+      ],
+      "members":{
+        "unit":{
+          "shape":"TrainedModelInferenceMaxOutputSizeUnitType",
+          "documentation":"<p>The measurement unit to use.</p>"
+        },
+        "value":{
+          "shape":"TrainedModelInferenceMaxOutputSizeValue",
+          "documentation":"<p>The maximum output size value.</p>"
+        }
+      },
+      "documentation":"<p>Information about the maximum output size for a trained model inference job.</p>"
+    },
+    "TrainedModelInferenceMaxOutputSizeUnitType":{
+      "type":"string",
+      "enum":["GB"]
+    },
+    "TrainedModelInferenceMaxOutputSizeValue":{
+      "type":"double",
+      "box":true,
+      "max":10.0,
+      "min":0.01
+    },
+    "TrainedModelList":{
+      "type":"list",
+      "member":{"shape":"TrainedModelSummary"}
+    },
+    "TrainedModelStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_PENDING",
+        "CREATE_IN_PROGRESS",
+        "CREATE_FAILED",
+        "ACTIVE",
+        "DELETE_PENDING",
+        "DELETE_IN_PROGRESS",
+        "DELETE_FAILED",
+        "INACTIVE",
+        "CANCEL_PENDING",
+        "CANCEL_IN_PROGRESS",
+        "CANCEL_FAILED"
+      ]
+    },
+    "TrainedModelSummary":{
+      "type":"structure",
+      "required":[
+        "createTime",
+        "updateTime",
+        "trainedModelArn",
+        "name",
+        "membershipIdentifier",
+        "collaborationIdentifier",
+        "status",
+        "configuredModelAlgorithmAssociationArn"
+      ],
+      "members":{
+        "createTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the trained model was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent time at which the trained model was updated.</p>"
+        },
+        "trainedModelArn":{
+          "shape":"TrainedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trained model.</p>"
+        },
+        "name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the trained model.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the trained model.</p>"
+        },
+        "membershipIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The membership ID of the member that created the trained model.</p>"
+        },
+        "collaborationIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The collaboration ID of the collaboration that contains the trained model.</p>"
+        },
+        "status":{
+          "shape":"TrainedModelStatus",
+          "documentation":"<p>The status of the trained model.</p>"
+        },
+        "configuredModelAlgorithmAssociationArn":{
+          "shape":"ConfiguredModelAlgorithmAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured model algorithm association that was used to create this trained model.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about the trained model.</p>"
+    },
+    "TrainedModelsConfigurationPolicy":{
+      "type":"structure",
+      "members":{
+        "containerLogs":{
+          "shape":"LogsConfigurationPolicyList",
+          "documentation":"<p>The container for the logs of the trained model.</p>"
+        },
+        "containerMetrics":{
+          "shape":"MetricsConfigurationPolicy",
+          "documentation":"<p>The container for the metrics of the trained model.</p>"
+        }
+      },
+      "documentation":"<p>The configuration policy for the trained models.</p>"
     },
     "TrainingDatasetArn":{
       "type":"string",
@@ -2224,6 +6019,33 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "WorkerComputeConfiguration":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"WorkerComputeType",
+          "documentation":"<p>The instance type of the compute workers that are used.</p>"
+        },
+        "number":{
+          "shape":"WorkerComputeConfigurationNumberInteger",
+          "documentation":"<p>The number of compute workers that are used.</p>"
+        }
+      },
+      "documentation":"<p>Configuration information about the compute workers that perform the transform job.</p>"
+    },
+    "WorkerComputeConfigurationNumberInteger":{
+      "type":"integer",
+      "box":true,
+      "max":400,
+      "min":2
+    },
+    "WorkerComputeType":{
+      "type":"string",
+      "enum":[
+        "CR.1X",
+        "CR.4X"
+      ]
     }
   },
   "documentation":"<p>Welcome to the <i>Amazon Web Services Clean Rooms ML API Reference</i>.</p> <p>Amazon Web Services Clean Rooms ML provides a privacy-enhancing method for two parties to identify similar users in their data without the need to share their data with each other. The first party brings the training data to Clean Rooms so that they can create and configure an audience model (lookalike model) and associate it with a collaboration. The second party then brings their seed data to Clean Rooms and generates an audience (lookalike segment) that resembles the training data.</p> <p>To learn more about Amazon Web Services Clean Rooms ML concepts, procedures, and best practices, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/machine-learning.html\">Clean Rooms User Guide</a>.</p> <p>To learn more about SQL commands, functions, and conditions supported in Clean Rooms, see the <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/sql-reference/sql-reference.html\">Clean Rooms SQL Reference</a>.</p>"

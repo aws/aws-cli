@@ -1527,7 +1527,7 @@
       "type":"string",
       "max":256,
       "min":0,
-      "pattern":"arn:aws:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:([\\d]{12}|\\*):membership/[\\*\\d\\w-]+/configuredaudiencemodelassociation/[\\*\\d\\w-]+"
+      "pattern":"arn:aws:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:([\\d]{12}|\\*):membership\\/[\\*\\d\\w-]+\\/configuredaudiencemodelassociation\\/[\\*\\d\\w-]+$|^arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:([0-9]{12}|\\*):membership\\/[\\*\\d\\w-]+\\/configured-model-algorithm-association\\/([-a-zA-Z0-9_\\/.]+|\\*)"
     },
     "AggregateColumn":{
       "type":"structure",
@@ -3869,6 +3869,10 @@
           "shape":"MemberAbilities",
           "documentation":"<p>The abilities granted to the collaboration creator.</p>"
         },
+        "creatorMLMemberAbilities":{
+          "shape":"MLMemberAbilities",
+          "documentation":"<p>The ML abilities granted to the collaboration creator.</p> <p>Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see <i>Betas and Previews</i> in the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a>.</p>"
+        },
         "creatorDisplayName":{
           "shape":"DisplayName",
           "documentation":"<p>The display name of the collaboration creator.</p>"
@@ -4292,6 +4296,18 @@
           "documentation":"<p>A summary of the elements in the privacy budget template.</p>"
         }
       }
+    },
+    "CustomMLMemberAbilities":{
+      "type":"list",
+      "member":{"shape":"CustomMLMemberAbility"},
+      "min":1
+    },
+    "CustomMLMemberAbility":{
+      "type":"string",
+      "enum":[
+        "CAN_RECEIVE_MODEL_OUTPUT",
+        "CAN_RECEIVE_INFERENCE_OUTPUT"
+      ]
     },
     "DataEncryptionMetadata":{
       "type":"structure",
@@ -6705,6 +6721,31 @@
       "type":"long",
       "box":true
     },
+    "MLMemberAbilities":{
+      "type":"structure",
+      "required":["customMLMemberAbilities"],
+      "members":{
+        "customMLMemberAbilities":{
+          "shape":"CustomMLMemberAbilities",
+          "documentation":"<p>The custom ML member abilities for a collaboration member. The inference feature is not available in the custom ML modeling beta.</p> <p>Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see <i>Betas and Previews</i> in the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a>.</p>"
+        }
+      },
+      "documentation":"<p>The ML member abilities for a collaboration member.</p> <p>Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see <i>Betas and Previews</i> in the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a>.</p>"
+    },
+    "MLPaymentConfig":{
+      "type":"structure",
+      "members":{
+        "modelTraining":{
+          "shape":"ModelTrainingPaymentConfig",
+          "documentation":"<p>The payment responsibilities accepted by the member for model training.</p>"
+        },
+        "modelInference":{
+          "shape":"ModelInferencePaymentConfig",
+          "documentation":"<p>The payment responsibilities accepted by the member for model inference.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the collaboration member's machine learning payment responsibilities set by the collaboration creator.</p>"
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -6743,6 +6784,10 @@
         "memberAbilities":{
           "shape":"MemberAbilities",
           "documentation":"<p>The abilities granted to the collaboration member.</p>"
+        },
+        "mlMemberAbilities":{
+          "shape":"MLMemberAbilities",
+          "documentation":"<p>The ML abilities granted to the collaboration member.</p> <p>Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see <i>Betas and Previews</i> in the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a>.</p>"
         },
         "displayName":{
           "shape":"DisplayName",
@@ -6791,6 +6836,10 @@
         "abilities":{
           "shape":"MemberAbilities",
           "documentation":"<p>The abilities granted to the collaboration member.</p>"
+        },
+        "mlAbilities":{
+          "shape":"MLMemberAbilities",
+          "documentation":"<p>Provides a summary of the ML abilities for the collaboration member.</p> <p>Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see <i>Betas and Previews</i> in the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a>.</p>"
         },
         "createTime":{
           "shape":"Timestamp",
@@ -6881,6 +6930,10 @@
           "shape":"MemberAbilities",
           "documentation":"<p>The abilities granted to the collaboration member.</p>"
         },
+        "mlMemberAbilities":{
+          "shape":"MLMemberAbilities",
+          "documentation":"<p>Specifies the ML member abilities that are granted to a collaboration member.</p> <p>Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see <i>Betas and Previews</i> in the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a>.</p>"
+        },
         "queryLogStatus":{
           "shape":"MembershipQueryLogStatus",
           "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the membership.</p>"
@@ -6908,6 +6961,42 @@
       "min":36,
       "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
+    "MembershipMLPaymentConfig":{
+      "type":"structure",
+      "members":{
+        "modelTraining":{
+          "shape":"MembershipModelTrainingPaymentConfig",
+          "documentation":"<p>The payment responsibilities accepted by the member for model training.</p>"
+        },
+        "modelInference":{
+          "shape":"MembershipModelInferencePaymentConfig",
+          "documentation":"<p>The payment responsibilities accepted by the member for model inference.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the collaboration member's machine learning payment responsibilities set by the collaboration creator.</p>"
+    },
+    "MembershipModelInferencePaymentConfig":{
+      "type":"structure",
+      "required":["isResponsible"],
+      "members":{
+        "isResponsible":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the collaboration member has accepted to pay for model inference costs (<code>TRUE</code>) or has not accepted to pay for model inference costs (<code>FALSE</code>).</p> <p>If the collaboration creator has not specified anyone to pay for model inference costs, then the member who can query is the default payer. </p> <p>An error message is returned for the following reasons: </p> <ul> <li> <p>If you set the value to <code>FALSE</code> but you are responsible to pay for model inference costs. </p> </li> <li> <p>If you set the value to <code>TRUE</code> but you are not responsible to pay for model inference costs. </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An object representing the collaboration member's model inference payment responsibilities set by the collaboration creator.</p>"
+    },
+    "MembershipModelTrainingPaymentConfig":{
+      "type":"structure",
+      "required":["isResponsible"],
+      "members":{
+        "isResponsible":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the collaboration member has accepted to pay for model training costs (<code>TRUE</code>) or has not accepted to pay for model training costs (<code>FALSE</code>).</p> <p>If the collaboration creator has not specified anyone to pay for model training costs, then the member who can query is the default payer. </p> <p>An error message is returned for the following reasons: </p> <ul> <li> <p>If you set the value to <code>FALSE</code> but you are responsible to pay for model training costs. </p> </li> <li> <p>If you set the value to <code>TRUE</code> but you are not responsible to pay for model training costs. </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An object representing the collaboration member's model training payment responsibilities set by the collaboration creator.</p>"
+    },
     "MembershipPaymentConfiguration":{
       "type":"structure",
       "required":["queryCompute"],
@@ -6915,6 +7004,10 @@
         "queryCompute":{
           "shape":"MembershipQueryComputePaymentConfig",
           "documentation":"<p>The payment responsibilities accepted by the collaboration member for query compute costs.</p>"
+        },
+        "machineLearning":{
+          "shape":"MembershipMLPaymentConfig",
+          "documentation":"<p>The payment responsibilities accepted by the collaboration member for machine learning costs.</p>"
         }
       },
       "documentation":"<p>An object representing the payment responsibilities accepted by the collaboration member.</p>"
@@ -7029,6 +7122,10 @@
           "shape":"MemberAbilities",
           "documentation":"<p>The abilities granted to the collaboration member.</p>"
         },
+        "mlMemberAbilities":{
+          "shape":"MLMemberAbilities",
+          "documentation":"<p>Provides a summary of the ML abilities for the collaboration member.</p> <p>Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see <i>Betas and Previews</i> in the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a>.</p>"
+        },
         "paymentConfiguration":{
           "shape":"MembershipPaymentConfiguration",
           "documentation":"<p>The payment responsibilities accepted by the collaboration member.</p>"
@@ -7039,6 +7136,28 @@
     "MembershipSummaryList":{
       "type":"list",
       "member":{"shape":"MembershipSummary"}
+    },
+    "ModelInferencePaymentConfig":{
+      "type":"structure",
+      "required":["isResponsible"],
+      "members":{
+        "isResponsible":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the collaboration creator has configured the collaboration member to pay for model inference costs (<code>TRUE</code>) or has not configured the collaboration member to pay for model inference costs (<code>FALSE</code>).</p> <p>Exactly one member can be configured to pay for model inference costs. An error is returned if the collaboration creator sets a <code>TRUE</code> value for more than one member in the collaboration. </p> <p>If the collaboration creator hasn't specified anyone as the member paying for model inference costs, then the member who can query is the default payer. An error is returned if the collaboration creator sets a <code>FALSE</code> value for the member who can query.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the collaboration member's model inference payment responsibilities set by the collaboration creator.</p>"
+    },
+    "ModelTrainingPaymentConfig":{
+      "type":"structure",
+      "required":["isResponsible"],
+      "members":{
+        "isResponsible":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the collaboration creator has configured the collaboration member to pay for model training costs (<code>TRUE</code>) or has not configured the collaboration member to pay for model training costs (<code>FALSE</code>).</p> <p>Exactly one member can be configured to pay for model training costs. An error is returned if the collaboration creator sets a <code>TRUE</code> value for more than one member in the collaboration. </p> <p>If the collaboration creator hasn't specified anyone as the member paying for model training costs, then the member who can query is the default payer. An error is returned if the collaboration creator sets a <code>FALSE</code> value for the member who can query.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the collaboration member's model training payment responsibilities set by the collaboration creator.</p>"
     },
     "PaginationToken":{
       "type":"string",
@@ -7101,6 +7220,10 @@
         "queryCompute":{
           "shape":"QueryComputePaymentConfig",
           "documentation":"<p>The collaboration member's payment responsibilities set by the collaboration creator for query compute costs.</p>"
+        },
+        "machineLearning":{
+          "shape":"MLPaymentConfig",
+          "documentation":"<p>An object representing the collaboration member's machine learning payment responsibilities set by the collaboration creator.</p>"
         }
       },
       "documentation":"<p>An object representing the collaboration member's payment responsibilities set by the collaboration creator.</p>"

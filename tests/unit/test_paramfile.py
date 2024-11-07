@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, FileCreator, mock
+from awscli.testutils import mock, unittest, FileCreator
 from awscli.testutils import skip_if_windows
 
 from awscli.paramfile import get_paramfile, ResourceLoadingError, LOCAL_PREFIX_MAP, register_uri_param_handler

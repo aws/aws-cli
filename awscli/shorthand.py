@@ -40,12 +40,10 @@ necessary to maintain backwards compatibility.  This is done in the
 """
 import re
 import string
-import logging
 
 from awscli.paramfile import LOCAL_PREFIX_MAP, get_paramfile
 from awscli.utils import is_document_type
 
-_LOGGER = logging.getLogger(__name__)
 _EOF = object()
 _FILE_ASSIGNMENT = '@='
 

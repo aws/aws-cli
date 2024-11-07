@@ -42,7 +42,7 @@ import re
 import string
 import logging
 
-from awscli.paramfile import get_paramfile, LOCAL_PREFIX_MAP
+from awscli.paramfile import LOCAL_PREFIX_MAP, get_paramfile
 from awscli.utils import is_document_type
 
 _LOGGER = logging.getLogger(__name__)
@@ -173,7 +173,6 @@ class ShorthandParser(object):
         self._input_value = value
         self._index = 0
         self._resolve_paramfiles = False
-        self._parent_key = None
         return self._parameter()
 
     def _parameter(self):
@@ -200,7 +199,6 @@ class ShorthandParser(object):
         # file-optional-values = file://value / fileb://value / value
         key = self._key()
         self._resolve_paramfiles = False
-        self._parent_key = key
         try:
             self._expect('@', consume_whitespace=True)
             self._resolve_paramfiles = True
@@ -221,6 +219,7 @@ class ShorthandParser(object):
         return self._input_value[start:self._index]
 
     def _values(self):
+        # values = csv-list / explicit-list / hash-literal
         if self._at_eof():
             return ''
         elif self._current() == '[':
@@ -249,7 +248,6 @@ class ShorthandParser(object):
         # In the case above, we'll hit the ShorthandParser,
         # backtrack to the comma, and return a single scalar
         # value 'b'.
-
         while True:
             try:
                 current = self._second_value()
@@ -315,7 +313,6 @@ class ShorthandParser(object):
         while self._current() != '}':
             key = self._key()
             self._resolve_paramfiles = False
-            self._parent_key = key
             try:
                 self._expect('@', consume_whitespace=True)
                 self._resolve_paramfiles = True
@@ -365,30 +362,10 @@ class ShorthandParser(object):
             return self._resolve_paramfile_with_warnings(consumed.replace('\\,', ',').rstrip())
 
     def _resolve_paramfile_with_warnings(self, val):
-        # If self._resolve_paramfiles is True, this function tries to resolve val to a
-        # paramfile (i.e. a file path prefixed with a key of LOCAL_PREFIX_MAP).
-        # If val is a paramfile, returns the contents of the file (retrieved
-        # according to the spec of get_paramfile).
-        # If val is not a paramfile, returns val.
-        # If self._resolve_paramfiles is False, returns val.
-        # A warning will be printed if self._resolve_paramfiles=False
-        # and the value is parsed to a string that starts with a file prefix
         if (self._resolve_paramfiles and
                 (paramfile := get_paramfile(val, LOCAL_PREFIX_MAP)) is not None):
             return paramfile
-        if self._parent_key is not None and not self._resolve_paramfiles:
-            self._print_file_warnings_if_prefixed(val)
         return val
-
-    def _print_file_warnings_if_prefixed(self,val):
-        for prefix in LOCAL_PREFIX_MAP.keys():
-            if val.startswith(prefix):
-                _LOGGER.warning(f'Usage of the {prefix} prefix was detected '
-                f'without the file assignment operator in parameter {self._parent_key}. '
-                f'To load nested parameters from a file, you must use the file '
-                f'assignment operator \'{_FILE_ASSIGNMENT}\'. For example, '
-                f'{self._parent_key}{_FILE_ASSIGNMENT}<...>.')
-                break
 
     def _expect(self, char, consume_whitespace=False):
         if consume_whitespace:

@@ -202,26 +202,23 @@ def test_parse(data, expected):
     actual = shorthand.ShorthandParser().parse(data)
     assert actual == expected
 
-class TestShorthandParser:
+class TestShorthandParserParamFile:
     @pytest.fixture()
     def files(self):
         files = FileCreator()
         yield files
         files.remove_all()
 
-    def test_paramfile(self, files):
+    @pytest.mark.parametrize(
+        'file_contents',
+        ('file-contents123', b'file-contents123')
+    )
+    def test_paramfile(self, files, file_contents):
         file_contents = 'file-contents123'
-        filename = files.create_file('foo', file_contents)
+        mode = 'wb' if isinstance(file_contents, bytes) else 'w'
+        filename = files.create_file('foo', contents=file_contents, mode=mode)
         result = shorthand.ShorthandParser().parse(
             f'Foo@=file://{filename},Bar={{Baz@=file://{filename}}}'
-        )
-        assert result == {'Foo': file_contents, 'Bar': {'Baz': file_contents}}
-
-    def test_binary_paramfile(self, files):
-        file_contents = b'file-contents123'
-        filename = files.create_file('foo', file_contents, mode='wb')
-        result = shorthand.ShorthandParser().parse(
-            f'Foo@=fileb://{filename},Bar={{Baz@=fileb://{filename}}}'
         )
         assert result == {'Foo': file_contents, 'Bar': {'Baz': file_contents}}
 
@@ -235,17 +232,18 @@ class TestShorthandParser:
         )
         assert result == {'Foo': ['a', f1_contents, f2_contents]}
 
-    def test_file_assignment_hash_literal_no_file(self, files):
+    @pytest.mark.parametrize(
+        'data, expected',
+        (
+            (f'Bar@={{Baz=file://foo}}', {'Bar': {'Baz': f'file://foo'}}),
+            (f'Foo@=foo,Bar={{Baz@=foo}}', {'Foo': 'foo', 'Bar': {'Baz': 'foo'}})
+        )
+    )
+    def test_file_assignment_no_file(self, files, data, expected):
         file_contents = 'file-contents123'
-        filename = files.create_file('foo', file_contents)
-        result = shorthand.ShorthandParser().parse(f'Bar@={{Baz=file://{filename}}}')
-        assert result == {'Bar': {'Baz': f'file://{filename}'}}
-
-    def test_file_assignment_no_file(self, files):
-        file_contents = 'file-contents123'
-        filename = files.create_file('foo', file_contents)
-        result = shorthand.ShorthandParser().parse(f'Foo@={filename},Bar={{Baz@={filename}}}')
-        assert result == {'Foo': filename, 'Bar': {'Baz': filename}}
+        files.create_file('foo', file_contents)
+        result = shorthand.ShorthandParser().parse(data)
+        assert result == expected
 
     def test_file_param_without_file_assignment(self, files):
         file_contents = 'file-contents123'

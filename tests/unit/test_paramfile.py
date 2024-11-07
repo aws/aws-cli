@@ -10,10 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, FileCreator
+from awscli.testutils import unittest, FileCreator, mock
 from awscli.testutils import skip_if_windows
 
-from awscli.paramfile import get_paramfile, ResourceLoadingError, LOCAL_PREFIX_MAP
+from awscli.paramfile import get_paramfile, ResourceLoadingError, LOCAL_PREFIX_MAP, register_uri_param_handler
+from botocore.session import Session
 
 
 class TestParamFile(unittest.TestCase):
@@ -60,3 +61,17 @@ class TestParamFile(unittest.TestCase):
 
     def test_non_string_type_returns_none(self):
         self.assertIsNone(self.get_paramfile(100))
+
+
+class TestConfigureURIArgumentHandler(unittest.TestCase):
+
+    @mock.patch('awscli.paramfile.URIArgumentHandler')
+    def test_default_prefix_maps(self, mock_handler_cls):
+        session = mock.Mock(spec=Session)
+        session.get_scoped_config.return_value = {}
+
+        register_uri_param_handler(session)
+        cases = mock_handler_cls.call_args[0][0]
+
+        self.assertIn('file://', cases)
+        self.assertIn('fileb://', cases)

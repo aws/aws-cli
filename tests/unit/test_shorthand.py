@@ -210,17 +210,31 @@ class TestShorthandParserParamFile:
         files.remove_all()
 
     @pytest.mark.parametrize(
-        'file_contents',
-        ('file-contents123', b'file-contents123')
-    )
-    def test_paramfile(self, files, file_contents):
-        file_contents = 'file-contents123'
-        mode = 'wb' if isinstance(file_contents, bytes) else 'w'
-        filename = files.create_file('foo', contents=file_contents, mode=mode)
-        result = shorthand.ShorthandParser().parse(
-            f'Foo@=file://{filename},Bar={{Baz@=file://{filename}}}'
+        'file_contents, data, expected',
+        (
+            ('file-contents123', 'Foo@=file://{0},Bar={{Baz@=file://{0}}}', {'Foo': 'file-contents123', 'Bar': {'Baz': 'file-contents123'}}),
+            (b'file-contents123', 'Foo@=fileb://{0},Bar={{Baz@=fileb://{0}}}', {'Foo': b'file-contents123', 'Bar': {'Baz': b'file-contents123'}}),
+            ('file-contents123', 'Bar@={{Baz=file://{0}}}', {'Bar': {'Baz': 'file://{0}'}}),
+            ('file-contents123', 'Foo@={0},Bar={{Baz@={0}}}', {'Foo': '{0}', 'Bar': {'Baz': '{0}'}})
         )
-        assert result == {'Foo': file_contents, 'Bar': {'Baz': file_contents}}
+    )
+    def test_paramfile(self, files, file_contents, data, expected):
+        is_binary = isinstance(file_contents, bytes)
+        mode = 'wb' if is_binary else 'w'
+        filename = files.create_file('foo', contents=file_contents, mode=mode)
+        result = shorthand.ShorthandParser().parse(data.format(filename))
+        # traverse the dictionary up to 2-levels deep, formatting values with the file path
+        for (key, value) in expected.items():
+            if isinstance(value, dict):
+                # value is a nested dictionary / hash literal
+                for (key2, value2) in value.items():
+                    # if it's a binary-encoded string, it must contain the raw file contents.
+                    if not isinstance(value2, bytes):
+                        value[key2] = value2.format(filename)
+            elif not isinstance(value, bytes):
+                expected[key] = value.format(filename)
+
+        assert result == expected
 
     def test_paramfile_list(self, files):
         f1_contents = 'file-contents123'
@@ -231,25 +245,6 @@ class TestShorthandParserParamFile:
             f'Foo@=[a, file://{f1_name}, file://{f2_name}]'
         )
         assert result == {'Foo': ['a', f1_contents, f2_contents]}
-
-    @pytest.mark.parametrize(
-        'data, expected',
-        (
-            (f'Bar@={{Baz=file://foo}}', {'Bar': {'Baz': f'file://foo'}}),
-            (f'Foo@=foo,Bar={{Baz@=foo}}', {'Foo': 'foo', 'Bar': {'Baz': 'foo'}})
-        )
-    )
-    def test_file_assignment_no_file(self, files, data, expected):
-        file_contents = 'file-contents123'
-        files.create_file('foo', file_contents)
-        result = shorthand.ShorthandParser().parse(data)
-        assert result == expected
-
-    def test_file_param_without_file_assignment(self, files):
-        file_contents = 'file-contents123'
-        filename = files.create_file('foo', file_contents)
-        result = shorthand.ShorthandParser().parse(f'Foo=file://{filename}')
-        assert result == {'Foo': f'file://{filename}'}
 
     def test_paramfile_does_not_exist_error(self, capsys):
         with pytest.raises(awscli.paramfile.ResourceLoadingError):

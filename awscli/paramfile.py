@@ -20,14 +20,14 @@ from awscli import argprocess
 logger = logging.getLogger(__name__)
 
 
+class ResourceLoadingError(Exception):
+    pass
+
+
 def register_uri_param_handler(session, **kwargs):
     prefix_map = copy.deepcopy(LOCAL_PREFIX_MAP)
     handler = URIArgumentHandler(prefix_map)
     session.register('load-cli-arg', handler)
-
-
-class ResourceLoadingError(Exception):
-    pass
 
 
 class URIArgumentHandler(object):

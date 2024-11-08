@@ -16,7 +16,6 @@ import os
 from awscrt.s3 import S3RequestType
 
 from awscli.compat import BytesIO
-from awscli.customizations.s3.utils import S3PathResolver
 from awscli.testutils import mock
 from tests.functional.s3 import (
     BaseS3TransferCommandTest, BaseCRTTransferClientTest

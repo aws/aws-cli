@@ -157,7 +157,6 @@ class ClientArgsCreator(object):
             if raw_value is not None:
                 parameter_validation = ensure_boolean(raw_value)
 
-
         s3_config = self.compute_s3_config(client_config)
 
         configured_endpoint_url = self._compute_configured_endpoint_url(

@@ -145,7 +145,7 @@ PARSING_TEST_CASES = (
     (
         'Name=[{foo@=[a,b]}, {bar=[c,d]}]',
         {'Name': [{'foo': ['a', 'b']}, {'bar': ['c', 'd']}]}
-    )
+    ),
 )
 
 

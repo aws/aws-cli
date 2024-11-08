@@ -161,7 +161,7 @@ class ShorthandParser:
         """
         self._input_value = value
         self._index = 0
-        self._resolve_paramfiles = False
+        self._should_resolve_paramfiles = False
         return self._parameter()
 
     def _parameter(self):
@@ -187,10 +187,10 @@ class ShorthandParser:
         # keyval = key "=" [values] / key "@=" [file-optional-values]
         # file-optional-values = file://value / fileb://value / value
         key = self._key()
-        self._resolve_paramfiles = False
+        self._should_resolve_paramfiles = False
         try:
             self._expect('@', consume_whitespace=True)
-            self._resolve_paramfiles = True
+            self._should_resolve_paramfiles = True
         except ShorthandParseSyntaxError:
             pass
         self._expect('=', consume_whitespace=True)
@@ -271,7 +271,7 @@ class ShorthandParser:
         if result is not None:
             consumed = self._consume_matched_regex(result)
             processed = consumed.replace('\\,', ',').rstrip()
-            return self._should_resolve_paramfiles(processed) if self._resolve_paramfiles else processed
+            return self._resolve_paramfiles(processed) if self._should_resolve_paramfiles else processed
         return ''
 
     def _explicit_list(self):
@@ -302,10 +302,10 @@ class ShorthandParser:
         keyvals = {}
         while self._current() != '}':
             key = self._key()
-            self._resolve_paramfiles = False
+            self._should_resolve_paramfiles = False
             try:
                 self._expect('@', consume_whitespace=True)
-                self._resolve_paramfiles = True
+                self._should_resolve_paramfiles = True
             except ShorthandParseSyntaxError:
                 pass
             self._expect('=', consume_whitespace=True)
@@ -331,7 +331,7 @@ class ShorthandParser:
         # val-escaped-single  = %x20-26 / %x28-7F / escaped-escape /
         #                       (escape single-quote)
         processed = self._consume_quoted(self._SINGLE_QUOTED, escaped_char="'")
-        return self._should_resolve_paramfiles(processed) if self._resolve_paramfiles else processed
+        return self._resolve_paramfiles(processed) if self._should_resolve_paramfiles else processed
 
     def _consume_quoted(self, regex, escaped_char=None):
         value = self._must_consume_regex(regex)[1:-1]
@@ -342,7 +342,7 @@ class ShorthandParser:
 
     def _double_quoted_value(self):
         processed = self._consume_quoted(self._DOUBLE_QUOTED, escaped_char='"')
-        return self._should_resolve_paramfiles(processed) if self._resolve_paramfiles else processed
+        return self._resolve_paramfiles(processed) if self._should_resolve_paramfiles else processed
 
     def _second_value(self):
         if self._current() == "'":
@@ -352,9 +352,9 @@ class ShorthandParser:
         else:
             consumed = self._must_consume_regex(self._SECOND_VALUE)
             processed = consumed.replace('\\,', ',').rstrip()
-            return self._should_resolve_paramfiles(processed) if self._resolve_paramfiles else processed
+            return self._resolve_paramfiles(processed) if self._should_resolve_paramfiles else processed
 
-    def _should_resolve_paramfiles(self, val):
+    def _resolve_paramfiles(self, val):
         if (paramfile := get_paramfile(val, LOCAL_PREFIX_MAP)) is not None:
             return paramfile
         return val

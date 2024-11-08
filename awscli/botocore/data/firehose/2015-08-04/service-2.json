@@ -29,7 +29,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"InvalidKMSResourceException"}
       ],
-      "documentation":"<p>Creates a Firehose delivery stream.</p> <p>By default, you can create up to 50 delivery streams per Amazon Web Services Region.</p> <p>This is an asynchronous operation that immediately returns. The initial status of the delivery stream is <code>CREATING</code>. After the delivery stream is created, its status is <code>ACTIVE</code> and it now accepts data. If the delivery stream creation fails, the status transitions to <code>CREATING_FAILED</code>. Attempts to send data to a delivery stream that is not in the <code>ACTIVE</code> state cause an exception. To check the state of a delivery stream, use <a>DescribeDeliveryStream</a>.</p> <p>If the status of a delivery stream is <code>CREATING_FAILED</code>, this status doesn't change, and you can't invoke <code>CreateDeliveryStream</code> again on it. However, you can invoke the <a>DeleteDeliveryStream</a> operation to delete it.</p> <p>A Firehose delivery stream can be configured to receive records directly from providers using <a>PutRecord</a> or <a>PutRecordBatch</a>, or it can be configured to use an existing Kinesis stream as its source. To specify a Kinesis data stream as input, set the <code>DeliveryStreamType</code> parameter to <code>KinesisStreamAsSource</code>, and provide the Kinesis stream Amazon Resource Name (ARN) and role ARN in the <code>KinesisStreamSourceConfiguration</code> parameter.</p> <p>To create a delivery stream with server-side encryption (SSE) enabled, include <a>DeliveryStreamEncryptionConfigurationInput</a> in your request. This is optional. You can also invoke <a>StartDeliveryStreamEncryption</a> to turn on SSE for an existing delivery stream that doesn't have SSE enabled.</p> <p>A delivery stream is configured with a single destination, such as Amazon Simple Storage Service (Amazon S3), Amazon Redshift, Amazon OpenSearch Service, Amazon OpenSearch Serverless, Splunk, and any custom HTTP endpoint or HTTP endpoints owned by or supported by third-party service providers, including Datadog, Dynatrace, LogicMonitor, MongoDB, New Relic, and Sumo Logic. You must specify only one of the following destination configuration parameters: <code>ExtendedS3DestinationConfiguration</code>, <code>S3DestinationConfiguration</code>, <code>ElasticsearchDestinationConfiguration</code>, <code>RedshiftDestinationConfiguration</code>, or <code>SplunkDestinationConfiguration</code>.</p> <p>When you specify <code>S3DestinationConfiguration</code>, you can also provide the following optional values: BufferingHints, <code>EncryptionConfiguration</code>, and <code>CompressionFormat</code>. By default, if no <code>BufferingHints</code> value is provided, Firehose buffers data up to 5 MB or for 5 minutes, whichever condition is satisfied first. <code>BufferingHints</code> is a hint, so there are some cases where the service cannot adhere to these conditions strictly. For example, record boundaries might be such that the size is a little over or under the configured buffering size. By default, no encryption is performed. We strongly recommend that you enable encryption to ensure secure data storage in Amazon S3.</p> <p>A few notes about Amazon Redshift as a destination:</p> <ul> <li> <p>An Amazon Redshift destination requires an S3 bucket as intermediate location. Firehose first delivers data to Amazon S3 and then uses <code>COPY</code> syntax to load data into an Amazon Redshift table. This is specified in the <code>RedshiftDestinationConfiguration.S3Configuration</code> parameter.</p> </li> <li> <p>The compression formats <code>SNAPPY</code> or <code>ZIP</code> cannot be specified in <code>RedshiftDestinationConfiguration.S3Configuration</code> because the Amazon Redshift <code>COPY</code> operation that reads from the S3 bucket doesn't support these compression formats.</p> </li> <li> <p>We strongly recommend that you use the user name and password you provide exclusively with Firehose, and that the permissions for the account are restricted for Amazon Redshift <code>INSERT</code> permissions.</p> </li> </ul> <p>Firehose assumes the IAM role that is configured as part of the destination. The role should allow the Firehose principal to assume the role, and the role should have permissions that allow the service to deliver the data. For more information, see <a href=\"https://docs.aws.amazon.com/firehose/latest/dev/controlling-access.html#using-iam-s3\">Grant Firehose Access to an Amazon S3 Destination</a> in the <i>Amazon Firehose Developer Guide</i>.</p>"
+      "documentation":"<p>Creates a Firehose stream.</p> <p>By default, you can create up to 50 Firehose streams per Amazon Web Services Region.</p> <p>This is an asynchronous operation that immediately returns. The initial status of the Firehose stream is <code>CREATING</code>. After the Firehose stream is created, its status is <code>ACTIVE</code> and it now accepts data. If the Firehose stream creation fails, the status transitions to <code>CREATING_FAILED</code>. Attempts to send data to a delivery stream that is not in the <code>ACTIVE</code> state cause an exception. To check the state of a Firehose stream, use <a>DescribeDeliveryStream</a>.</p> <p>If the status of a Firehose stream is <code>CREATING_FAILED</code>, this status doesn't change, and you can't invoke <code>CreateDeliveryStream</code> again on it. However, you can invoke the <a>DeleteDeliveryStream</a> operation to delete it.</p> <p>A Firehose stream can be configured to receive records directly from providers using <a>PutRecord</a> or <a>PutRecordBatch</a>, or it can be configured to use an existing Kinesis stream as its source. To specify a Kinesis data stream as input, set the <code>DeliveryStreamType</code> parameter to <code>KinesisStreamAsSource</code>, and provide the Kinesis stream Amazon Resource Name (ARN) and role ARN in the <code>KinesisStreamSourceConfiguration</code> parameter.</p> <p>To create a Firehose stream with server-side encryption (SSE) enabled, include <a>DeliveryStreamEncryptionConfigurationInput</a> in your request. This is optional. You can also invoke <a>StartDeliveryStreamEncryption</a> to turn on SSE for an existing Firehose stream that doesn't have SSE enabled.</p> <p>A Firehose stream is configured with a single destination, such as Amazon Simple Storage Service (Amazon S3), Amazon Redshift, Amazon OpenSearch Service, Amazon OpenSearch Serverless, Splunk, and any custom HTTP endpoint or HTTP endpoints owned by or supported by third-party service providers, including Datadog, Dynatrace, LogicMonitor, MongoDB, New Relic, and Sumo Logic. You must specify only one of the following destination configuration parameters: <code>ExtendedS3DestinationConfiguration</code>, <code>S3DestinationConfiguration</code>, <code>ElasticsearchDestinationConfiguration</code>, <code>RedshiftDestinationConfiguration</code>, or <code>SplunkDestinationConfiguration</code>.</p> <p>When you specify <code>S3DestinationConfiguration</code>, you can also provide the following optional values: BufferingHints, <code>EncryptionConfiguration</code>, and <code>CompressionFormat</code>. By default, if no <code>BufferingHints</code> value is provided, Firehose buffers data up to 5 MB or for 5 minutes, whichever condition is satisfied first. <code>BufferingHints</code> is a hint, so there are some cases where the service cannot adhere to these conditions strictly. For example, record boundaries might be such that the size is a little over or under the configured buffering size. By default, no encryption is performed. We strongly recommend that you enable encryption to ensure secure data storage in Amazon S3.</p> <p>A few notes about Amazon Redshift as a destination:</p> <ul> <li> <p>An Amazon Redshift destination requires an S3 bucket as intermediate location. Firehose first delivers data to Amazon S3 and then uses <code>COPY</code> syntax to load data into an Amazon Redshift table. This is specified in the <code>RedshiftDestinationConfiguration.S3Configuration</code> parameter.</p> </li> <li> <p>The compression formats <code>SNAPPY</code> or <code>ZIP</code> cannot be specified in <code>RedshiftDestinationConfiguration.S3Configuration</code> because the Amazon Redshift <code>COPY</code> operation that reads from the S3 bucket doesn't support these compression formats.</p> </li> <li> <p>We strongly recommend that you use the user name and password you provide exclusively with Firehose, and that the permissions for the account are restricted for Amazon Redshift <code>INSERT</code> permissions.</p> </li> </ul> <p>Firehose assumes the IAM role that is configured as part of the destination. The role should allow the Firehose principal to assume the role, and the role should have permissions that allow the service to deliver the data. For more information, see <a href=\"https://docs.aws.amazon.com/firehose/latest/dev/controlling-access.html#using-iam-s3\">Grant Firehose Access to an Amazon S3 Destination</a> in the <i>Amazon Firehose Developer Guide</i>.</p>"
     },
     "DeleteDeliveryStream":{
       "name":"DeleteDeliveryStream",
@@ -43,7 +43,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes a delivery stream and its data.</p> <p>You can delete a delivery stream only if it is in one of the following states: <code>ACTIVE</code>, <code>DELETING</code>, <code>CREATING_FAILED</code>, or <code>DELETING_FAILED</code>. You can't delete a delivery stream that is in the <code>CREATING</code> state. To check the state of a delivery stream, use <a>DescribeDeliveryStream</a>. </p> <p>DeleteDeliveryStream is an asynchronous API. When an API request to DeleteDeliveryStream succeeds, the delivery stream is marked for deletion, and it goes into the <code>DELETING</code> state.While the delivery stream is in the <code>DELETING</code> state, the service might continue to accept records, but it doesn't make any guarantees with respect to delivering the data. Therefore, as a best practice, first stop any applications that are sending records before you delete a delivery stream.</p> <p>Removal of a delivery stream that is in the <code>DELETING</code> state is a low priority operation for the service. A stream may remain in the <code>DELETING</code> state for several minutes. Therefore, as a best practice, applications should not wait for streams in the <code>DELETING</code> state to be removed. </p>"
+      "documentation":"<p>Deletes a Firehose stream and its data.</p> <p>You can delete a Firehose stream only if it is in one of the following states: <code>ACTIVE</code>, <code>DELETING</code>, <code>CREATING_FAILED</code>, or <code>DELETING_FAILED</code>. You can't delete a Firehose stream that is in the <code>CREATING</code> state. To check the state of a Firehose stream, use <a>DescribeDeliveryStream</a>. </p> <p>DeleteDeliveryStream is an asynchronous API. When an API request to DeleteDeliveryStream succeeds, the Firehose stream is marked for deletion, and it goes into the <code>DELETING</code> state.While the Firehose stream is in the <code>DELETING</code> state, the service might continue to accept records, but it doesn't make any guarantees with respect to delivering the data. Therefore, as a best practice, first stop any applications that are sending records before you delete a Firehose stream.</p> <p>Removal of a Firehose stream that is in the <code>DELETING</code> state is a low priority operation for the service. A stream may remain in the <code>DELETING</code> state for several minutes. Therefore, as a best practice, applications should not wait for streams in the <code>DELETING</code> state to be removed. </p>"
     },
     "DescribeDeliveryStream":{
       "name":"DescribeDeliveryStream",
@@ -56,7 +56,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Describes the specified delivery stream and its status. For example, after your delivery stream is created, call <code>DescribeDeliveryStream</code> to see whether the delivery stream is <code>ACTIVE</code> and therefore ready for data to be sent to it. </p> <p>If the status of a delivery stream is <code>CREATING_FAILED</code>, this status doesn't change, and you can't invoke <a>CreateDeliveryStream</a> again on it. However, you can invoke the <a>DeleteDeliveryStream</a> operation to delete it. If the status is <code>DELETING_FAILED</code>, you can force deletion by invoking <a>DeleteDeliveryStream</a> again but with <a>DeleteDeliveryStreamInput$AllowForceDelete</a> set to true.</p>"
+      "documentation":"<p>Describes the specified Firehose stream and its status. For example, after your Firehose stream is created, call <code>DescribeDeliveryStream</code> to see whether the Firehose stream is <code>ACTIVE</code> and therefore ready for data to be sent to it. </p> <p>If the status of a Firehose stream is <code>CREATING_FAILED</code>, this status doesn't change, and you can't invoke <a>CreateDeliveryStream</a> again on it. However, you can invoke the <a>DeleteDeliveryStream</a> operation to delete it. If the status is <code>DELETING_FAILED</code>, you can force deletion by invoking <a>DeleteDeliveryStream</a> again but with <a>DeleteDeliveryStreamInput$AllowForceDelete</a> set to true.</p>"
     },
     "ListDeliveryStreams":{
       "name":"ListDeliveryStreams",
@@ -66,7 +66,7 @@
       },
       "input":{"shape":"ListDeliveryStreamsInput"},
       "output":{"shape":"ListDeliveryStreamsOutput"},
-      "documentation":"<p>Lists your delivery streams in alphabetical order of their names.</p> <p>The number of delivery streams might be too large to return using a single call to <code>ListDeliveryStreams</code>. You can limit the number of delivery streams returned, using the <code>Limit</code> parameter. To determine whether there are more delivery streams to list, check the value of <code>HasMoreDeliveryStreams</code> in the output. If there are more delivery streams to list, you can request them by calling this operation again and setting the <code>ExclusiveStartDeliveryStreamName</code> parameter to the name of the last delivery stream returned in the last call.</p>"
+      "documentation":"<p>Lists your Firehose streams in alphabetical order of their names.</p> <p>The number of Firehose streams might be too large to return using a single call to <code>ListDeliveryStreams</code>. You can limit the number of Firehose streams returned, using the <code>Limit</code> parameter. To determine whether there are more delivery streams to list, check the value of <code>HasMoreDeliveryStreams</code> in the output. If there are more Firehose streams to list, you can request them by calling this operation again and setting the <code>ExclusiveStartDeliveryStreamName</code> parameter to the name of the last Firehose stream returned in the last call.</p>"
     },
     "ListTagsForDeliveryStream":{
       "name":"ListTagsForDeliveryStream",
@@ -81,7 +81,7 @@
         {"shape":"InvalidArgumentException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Lists the tags for the specified delivery stream. This operation has a limit of five transactions per second per account. </p>"
+      "documentation":"<p>Lists the tags for the specified Firehose stream. This operation has a limit of five transactions per second per account. </p>"
     },
     "PutRecord":{
       "name":"PutRecord",
@@ -98,7 +98,7 @@
         {"shape":"InvalidSourceException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Writes a single data record into an Amazon Firehose delivery stream. To write multiple data records into a delivery stream, use <a>PutRecordBatch</a>. Applications using these operations are referred to as producers.</p> <p>By default, each delivery stream can take in up to 2,000 transactions per second, 5,000 records per second, or 5 MB per second. If you use <a>PutRecord</a> and <a>PutRecordBatch</a>, the limits are an aggregate across these two operations for each delivery stream. For more information about limits and how to request an increase, see <a href=\"https://docs.aws.amazon.com/firehose/latest/dev/limits.html\">Amazon Firehose Limits</a>. </p> <p>Firehose accumulates and publishes a particular metric for a customer account in one minute intervals. It is possible that the bursts of incoming bytes/records ingested to a delivery stream last only for a few seconds. Due to this, the actual spikes in the traffic might not be fully visible in the customer's 1 minute CloudWatch metrics.</p> <p>You must specify the name of the delivery stream and the data record when using <a>PutRecord</a>. The data record consists of a data blob that can be up to 1,000 KiB in size, and any kind of data. For example, it can be a segment from a log file, geographic location data, website clickstream data, and so on.</p> <p>Firehose buffers records before delivering them to the destination. To disambiguate the data blobs at the destination, a common solution is to use delimiters in the data, such as a newline (<code>\\n</code>) or some other character unique within the data. This allows the consumer application to parse individual data items when reading the data from the destination.</p> <p>The <code>PutRecord</code> operation returns a <code>RecordId</code>, which is a unique string assigned to each record. Producer applications can use this ID for purposes such as auditability and investigation.</p> <p>If the <code>PutRecord</code> operation throws a <code>ServiceUnavailableException</code>, the API is automatically reinvoked (retried) 3 times. If the exception persists, it is possible that the throughput limits have been exceeded for the delivery stream. </p> <p>Re-invoking the Put API operations (for example, PutRecord and PutRecordBatch) can result in data duplicates. For larger data assets, allow for a longer time out before retrying Put API operations.</p> <p>Data records sent to Firehose are stored for 24 hours from the time they are added to a delivery stream as it tries to send the records to the destination. If the destination is unreachable for more than 24 hours, the data is no longer available.</p> <important> <p>Don't concatenate two or more base64 strings to form the data fields of your records. Instead, concatenate the raw data, then perform base64 encoding.</p> </important>"
+      "documentation":"<p>Writes a single data record into an Firehose stream. To write multiple data records into a Firehose stream, use <a>PutRecordBatch</a>. Applications using these operations are referred to as producers.</p> <p>By default, each Firehose stream can take in up to 2,000 transactions per second, 5,000 records per second, or 5 MB per second. If you use <a>PutRecord</a> and <a>PutRecordBatch</a>, the limits are an aggregate across these two operations for each Firehose stream. For more information about limits and how to request an increase, see <a href=\"https://docs.aws.amazon.com/firehose/latest/dev/limits.html\">Amazon Firehose Limits</a>. </p> <p>Firehose accumulates and publishes a particular metric for a customer account in one minute intervals. It is possible that the bursts of incoming bytes/records ingested to a Firehose stream last only for a few seconds. Due to this, the actual spikes in the traffic might not be fully visible in the customer's 1 minute CloudWatch metrics.</p> <p>You must specify the name of the Firehose stream and the data record when using <a>PutRecord</a>. The data record consists of a data blob that can be up to 1,000 KiB in size, and any kind of data. For example, it can be a segment from a log file, geographic location data, website clickstream data, and so on.</p> <p>For multi record de-aggregation, you can not put more than 500 records even if the data blob length is less than 1000 KiB. If you include more than 500 records, the request succeeds but the record de-aggregation doesn't work as expected and transformation lambda is invoked with the complete base64 encoded data blob instead of de-aggregated base64 decoded records.</p> <p>Firehose buffers records before delivering them to the destination. To disambiguate the data blobs at the destination, a common solution is to use delimiters in the data, such as a newline (<code>\\n</code>) or some other character unique within the data. This allows the consumer application to parse individual data items when reading the data from the destination.</p> <p>The <code>PutRecord</code> operation returns a <code>RecordId</code>, which is a unique string assigned to each record. Producer applications can use this ID for purposes such as auditability and investigation.</p> <p>If the <code>PutRecord</code> operation throws a <code>ServiceUnavailableException</code>, the API is automatically reinvoked (retried) 3 times. If the exception persists, it is possible that the throughput limits have been exceeded for the Firehose stream. </p> <p>Re-invoking the Put API operations (for example, PutRecord and PutRecordBatch) can result in data duplicates. For larger data assets, allow for a longer time out before retrying Put API operations.</p> <p>Data records sent to Firehose are stored for 24 hours from the time they are added to a Firehose stream as it tries to send the records to the destination. If the destination is unreachable for more than 24 hours, the data is no longer available.</p> <important> <p>Don't concatenate two or more base64 strings to form the data fields of your records. Instead, concatenate the raw data, then perform base64 encoding.</p> </important>"
     },
     "PutRecordBatch":{
       "name":"PutRecordBatch",
@@ -115,7 +115,7 @@
         {"shape":"InvalidSourceException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Writes multiple data records into a delivery stream in a single call, which can achieve higher throughput per producer than when writing single records. To write single data records into a delivery stream, use <a>PutRecord</a>. Applications using these operations are referred to as producers.</p> <p>Firehose accumulates and publishes a particular metric for a customer account in one minute intervals. It is possible that the bursts of incoming bytes/records ingested to a delivery stream last only for a few seconds. Due to this, the actual spikes in the traffic might not be fully visible in the customer's 1 minute CloudWatch metrics.</p> <p>For information about service quota, see <a href=\"https://docs.aws.amazon.com/firehose/latest/dev/limits.html\">Amazon Firehose Quota</a>.</p> <p>Each <a>PutRecordBatch</a> request supports up to 500 records. Each record in the request can be as large as 1,000 KB (before base64 encoding), up to a limit of 4 MB for the entire request. These limits cannot be changed.</p> <p>You must specify the name of the delivery stream and the data record when using <a>PutRecord</a>. The data record consists of a data blob that can be up to 1,000 KB in size, and any kind of data. For example, it could be a segment from a log file, geographic location data, website clickstream data, and so on.</p> <p>Firehose buffers records before delivering them to the destination. To disambiguate the data blobs at the destination, a common solution is to use delimiters in the data, such as a newline (<code>\\n</code>) or some other character unique within the data. This allows the consumer application to parse individual data items when reading the data from the destination.</p> <p>The <a>PutRecordBatch</a> response includes a count of failed records, <code>FailedPutCount</code>, and an array of responses, <code>RequestResponses</code>. Even if the <a>PutRecordBatch</a> call succeeds, the value of <code>FailedPutCount</code> may be greater than 0, indicating that there are records for which the operation didn't succeed. Each entry in the <code>RequestResponses</code> array provides additional information about the processed record. It directly correlates with a record in the request array using the same ordering, from the top to the bottom. The response array always includes the same number of records as the request array. <code>RequestResponses</code> includes both successfully and unsuccessfully processed records. Firehose tries to process all records in each <a>PutRecordBatch</a> request. A single record failure does not stop the processing of subsequent records. </p> <p>A successfully processed record includes a <code>RecordId</code> value, which is unique for the record. An unsuccessfully processed record includes <code>ErrorCode</code> and <code>ErrorMessage</code> values. <code>ErrorCode</code> reflects the type of error, and is one of the following values: <code>ServiceUnavailableException</code> or <code>InternalFailure</code>. <code>ErrorMessage</code> provides more detailed information about the error.</p> <p>If there is an internal server error or a timeout, the write might have completed or it might have failed. If <code>FailedPutCount</code> is greater than 0, retry the request, resending only those records that might have failed processing. This minimizes the possible duplicate records and also reduces the total bytes sent (and corresponding charges). We recommend that you handle any duplicates at the destination.</p> <p>If <a>PutRecordBatch</a> throws <code>ServiceUnavailableException</code>, the API is automatically reinvoked (retried) 3 times. If the exception persists, it is possible that the throughput limits have been exceeded for the delivery stream.</p> <p>Re-invoking the Put API operations (for example, PutRecord and PutRecordBatch) can result in data duplicates. For larger data assets, allow for a longer time out before retrying Put API operations.</p> <p>Data records sent to Firehose are stored for 24 hours from the time they are added to a delivery stream as it attempts to send the records to the destination. If the destination is unreachable for more than 24 hours, the data is no longer available.</p> <important> <p>Don't concatenate two or more base64 strings to form the data fields of your records. Instead, concatenate the raw data, then perform base64 encoding.</p> </important>"
+      "documentation":"<p>Writes multiple data records into a Firehose stream in a single call, which can achieve higher throughput per producer than when writing single records. To write single data records into a Firehose stream, use <a>PutRecord</a>. Applications using these operations are referred to as producers.</p> <p>Firehose accumulates and publishes a particular metric for a customer account in one minute intervals. It is possible that the bursts of incoming bytes/records ingested to a Firehose stream last only for a few seconds. Due to this, the actual spikes in the traffic might not be fully visible in the customer's 1 minute CloudWatch metrics.</p> <p>For information about service quota, see <a href=\"https://docs.aws.amazon.com/firehose/latest/dev/limits.html\">Amazon Firehose Quota</a>.</p> <p>Each <a>PutRecordBatch</a> request supports up to 500 records. Each record in the request can be as large as 1,000 KB (before base64 encoding), up to a limit of 4 MB for the entire request. These limits cannot be changed.</p> <p>You must specify the name of the Firehose stream and the data record when using <a>PutRecord</a>. The data record consists of a data blob that can be up to 1,000 KB in size, and any kind of data. For example, it could be a segment from a log file, geographic location data, website clickstream data, and so on.</p> <p>For multi record de-aggregation, you can not put more than 500 records even if the data blob length is less than 1000 KiB. If you include more than 500 records, the request succeeds but the record de-aggregation doesn't work as expected and transformation lambda is invoked with the complete base64 encoded data blob instead of de-aggregated base64 decoded records.</p> <p>Firehose buffers records before delivering them to the destination. To disambiguate the data blobs at the destination, a common solution is to use delimiters in the data, such as a newline (<code>\\n</code>) or some other character unique within the data. This allows the consumer application to parse individual data items when reading the data from the destination.</p> <p>The <a>PutRecordBatch</a> response includes a count of failed records, <code>FailedPutCount</code>, and an array of responses, <code>RequestResponses</code>. Even if the <a>PutRecordBatch</a> call succeeds, the value of <code>FailedPutCount</code> may be greater than 0, indicating that there are records for which the operation didn't succeed. Each entry in the <code>RequestResponses</code> array provides additional information about the processed record. It directly correlates with a record in the request array using the same ordering, from the top to the bottom. The response array always includes the same number of records as the request array. <code>RequestResponses</code> includes both successfully and unsuccessfully processed records. Firehose tries to process all records in each <a>PutRecordBatch</a> request. A single record failure does not stop the processing of subsequent records. </p> <p>A successfully processed record includes a <code>RecordId</code> value, which is unique for the record. An unsuccessfully processed record includes <code>ErrorCode</code> and <code>ErrorMessage</code> values. <code>ErrorCode</code> reflects the type of error, and is one of the following values: <code>ServiceUnavailableException</code> or <code>InternalFailure</code>. <code>ErrorMessage</code> provides more detailed information about the error.</p> <p>If there is an internal server error or a timeout, the write might have completed or it might have failed. If <code>FailedPutCount</code> is greater than 0, retry the request, resending only those records that might have failed processing. This minimizes the possible duplicate records and also reduces the total bytes sent (and corresponding charges). We recommend that you handle any duplicates at the destination.</p> <p>If <a>PutRecordBatch</a> throws <code>ServiceUnavailableException</code>, the API is automatically reinvoked (retried) 3 times. If the exception persists, it is possible that the throughput limits have been exceeded for the Firehose stream.</p> <p>Re-invoking the Put API operations (for example, PutRecord and PutRecordBatch) can result in data duplicates. For larger data assets, allow for a longer time out before retrying Put API operations.</p> <p>Data records sent to Firehose are stored for 24 hours from the time they are added to a Firehose stream as it attempts to send the records to the destination. If the destination is unreachable for more than 24 hours, the data is no longer available.</p> <important> <p>Don't concatenate two or more base64 strings to form the data fields of your records. Instead, concatenate the raw data, then perform base64 encoding.</p> </important>"
     },
     "StartDeliveryStreamEncryption":{
       "name":"StartDeliveryStreamEncryption",
@@ -132,7 +132,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InvalidKMSResourceException"}
       ],
-      "documentation":"<p>Enables server-side encryption (SSE) for the delivery stream. </p> <p>This operation is asynchronous. It returns immediately. When you invoke it, Firehose first sets the encryption status of the stream to <code>ENABLING</code>, and then to <code>ENABLED</code>. The encryption status of a delivery stream is the <code>Status</code> property in <a>DeliveryStreamEncryptionConfiguration</a>. If the operation fails, the encryption status changes to <code>ENABLING_FAILED</code>. You can continue to read and write data to your delivery stream while the encryption status is <code>ENABLING</code>, but the data is not encrypted. It can take up to 5 seconds after the encryption status changes to <code>ENABLED</code> before all records written to the delivery stream are encrypted. To find out whether a record or a batch of records was encrypted, check the response elements <a>PutRecordOutput$Encrypted</a> and <a>PutRecordBatchOutput$Encrypted</a>, respectively.</p> <p>To check the encryption status of a delivery stream, use <a>DescribeDeliveryStream</a>.</p> <p>Even if encryption is currently enabled for a delivery stream, you can still invoke this operation on it to change the ARN of the CMK or both its type and ARN. If you invoke this method to change the CMK, and the old CMK is of type <code>CUSTOMER_MANAGED_CMK</code>, Firehose schedules the grant it had on the old CMK for retirement. If the new CMK is of type <code>CUSTOMER_MANAGED_CMK</code>, Firehose creates a grant that enables it to use the new CMK to encrypt and decrypt data and to manage the grant.</p> <p>For the KMS grant creation to be successful, the Firehose API operations <code>StartDeliveryStreamEncryption</code> and <code>CreateDeliveryStream</code> should not be called with session credentials that are more than 6 hours old.</p> <p>If a delivery stream already has encryption enabled and then you invoke this operation to change the ARN of the CMK or both its type and ARN and you get <code>ENABLING_FAILED</code>, this only means that the attempt to change the CMK failed. In this case, encryption remains enabled with the old CMK.</p> <p>If the encryption status of your delivery stream is <code>ENABLING_FAILED</code>, you can invoke this operation again with a valid CMK. The CMK must be enabled and the key policy mustn't explicitly deny the permission for Firehose to invoke KMS encrypt and decrypt operations.</p> <p>You can enable SSE for a delivery stream only if it's a delivery stream that uses <code>DirectPut</code> as its source. </p> <p>The <code>StartDeliveryStreamEncryption</code> and <code>StopDeliveryStreamEncryption</code> operations have a combined limit of 25 calls per delivery stream per 24 hours. For example, you reach the limit if you call <code>StartDeliveryStreamEncryption</code> 13 times and <code>StopDeliveryStreamEncryption</code> 12 times for the same delivery stream in a 24-hour period.</p>"
+      "documentation":"<p>Enables server-side encryption (SSE) for the Firehose stream. </p> <p>This operation is asynchronous. It returns immediately. When you invoke it, Firehose first sets the encryption status of the stream to <code>ENABLING</code>, and then to <code>ENABLED</code>. The encryption status of a Firehose stream is the <code>Status</code> property in <a>DeliveryStreamEncryptionConfiguration</a>. If the operation fails, the encryption status changes to <code>ENABLING_FAILED</code>. You can continue to read and write data to your Firehose stream while the encryption status is <code>ENABLING</code>, but the data is not encrypted. It can take up to 5 seconds after the encryption status changes to <code>ENABLED</code> before all records written to the Firehose stream are encrypted. To find out whether a record or a batch of records was encrypted, check the response elements <a>PutRecordOutput$Encrypted</a> and <a>PutRecordBatchOutput$Encrypted</a>, respectively.</p> <p>To check the encryption status of a Firehose stream, use <a>DescribeDeliveryStream</a>.</p> <p>Even if encryption is currently enabled for a Firehose stream, you can still invoke this operation on it to change the ARN of the CMK or both its type and ARN. If you invoke this method to change the CMK, and the old CMK is of type <code>CUSTOMER_MANAGED_CMK</code>, Firehose schedules the grant it had on the old CMK for retirement. If the new CMK is of type <code>CUSTOMER_MANAGED_CMK</code>, Firehose creates a grant that enables it to use the new CMK to encrypt and decrypt data and to manage the grant.</p> <p>For the KMS grant creation to be successful, the Firehose API operations <code>StartDeliveryStreamEncryption</code> and <code>CreateDeliveryStream</code> should not be called with session credentials that are more than 6 hours old.</p> <p>If a Firehose stream already has encryption enabled and then you invoke this operation to change the ARN of the CMK or both its type and ARN and you get <code>ENABLING_FAILED</code>, this only means that the attempt to change the CMK failed. In this case, encryption remains enabled with the old CMK.</p> <p>If the encryption status of your Firehose stream is <code>ENABLING_FAILED</code>, you can invoke this operation again with a valid CMK. The CMK must be enabled and the key policy mustn't explicitly deny the permission for Firehose to invoke KMS encrypt and decrypt operations.</p> <p>You can enable SSE for a Firehose stream only if it's a Firehose stream that uses <code>DirectPut</code> as its source. </p> <p>The <code>StartDeliveryStreamEncryption</code> and <code>StopDeliveryStreamEncryption</code> operations have a combined limit of 25 calls per Firehose stream per 24 hours. For example, you reach the limit if you call <code>StartDeliveryStreamEncryption</code> 13 times and <code>StopDeliveryStreamEncryption</code> 12 times for the same Firehose stream in a 24-hour period.</p>"
     },
     "StopDeliveryStreamEncryption":{
       "name":"StopDeliveryStreamEncryption",
@@ -148,7 +148,7 @@
         {"shape":"InvalidArgumentException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Disables server-side encryption (SSE) for the delivery stream. </p> <p>This operation is asynchronous. It returns immediately. When you invoke it, Firehose first sets the encryption status of the stream to <code>DISABLING</code>, and then to <code>DISABLED</code>. You can continue to read and write data to your stream while its status is <code>DISABLING</code>. It can take up to 5 seconds after the encryption status changes to <code>DISABLED</code> before all records written to the delivery stream are no longer subject to encryption. To find out whether a record or a batch of records was encrypted, check the response elements <a>PutRecordOutput$Encrypted</a> and <a>PutRecordBatchOutput$Encrypted</a>, respectively.</p> <p>To check the encryption state of a delivery stream, use <a>DescribeDeliveryStream</a>. </p> <p>If SSE is enabled using a customer managed CMK and then you invoke <code>StopDeliveryStreamEncryption</code>, Firehose schedules the related KMS grant for retirement and then retires it after it ensures that it is finished delivering records to the destination.</p> <p>The <code>StartDeliveryStreamEncryption</code> and <code>StopDeliveryStreamEncryption</code> operations have a combined limit of 25 calls per delivery stream per 24 hours. For example, you reach the limit if you call <code>StartDeliveryStreamEncryption</code> 13 times and <code>StopDeliveryStreamEncryption</code> 12 times for the same delivery stream in a 24-hour period.</p>"
+      "documentation":"<p>Disables server-side encryption (SSE) for the Firehose stream. </p> <p>This operation is asynchronous. It returns immediately. When you invoke it, Firehose first sets the encryption status of the stream to <code>DISABLING</code>, and then to <code>DISABLED</code>. You can continue to read and write data to your stream while its status is <code>DISABLING</code>. It can take up to 5 seconds after the encryption status changes to <code>DISABLED</code> before all records written to the Firehose stream are no longer subject to encryption. To find out whether a record or a batch of records was encrypted, check the response elements <a>PutRecordOutput$Encrypted</a> and <a>PutRecordBatchOutput$Encrypted</a>, respectively.</p> <p>To check the encryption state of a Firehose stream, use <a>DescribeDeliveryStream</a>. </p> <p>If SSE is enabled using a customer managed CMK and then you invoke <code>StopDeliveryStreamEncryption</code>, Firehose schedules the related KMS grant for retirement and then retires it after it ensures that it is finished delivering records to the destination.</p> <p>The <code>StartDeliveryStreamEncryption</code> and <code>StopDeliveryStreamEncryption</code> operations have a combined limit of 25 calls per Firehose stream per 24 hours. For example, you reach the limit if you call <code>StartDeliveryStreamEncryption</code> 13 times and <code>StopDeliveryStreamEncryption</code> 12 times for the same Firehose stream in a 24-hour period.</p>"
     },
     "TagDeliveryStream":{
       "name":"TagDeliveryStream",
@@ -164,7 +164,7 @@
         {"shape":"InvalidArgumentException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Adds or updates tags for the specified delivery stream. A tag is a key-value pair that you can define and assign to Amazon Web Services resources. If you specify a tag that already exists, the tag value is replaced with the value that you specify in the request. Tags are metadata. For example, you can add friendly names and descriptions or other types of information that can help you distinguish the delivery stream. For more information about tags, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>Amazon Web Services Billing and Cost Management User Guide</i>. </p> <p>Each delivery stream can have up to 50 tags. </p> <p>This operation has a limit of five transactions per second per account. </p>"
+      "documentation":"<p>Adds or updates tags for the specified Firehose stream. A tag is a key-value pair that you can define and assign to Amazon Web Services resources. If you specify a tag that already exists, the tag value is replaced with the value that you specify in the request. Tags are metadata. For example, you can add friendly names and descriptions or other types of information that can help you distinguish the Firehose stream. For more information about tags, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>Amazon Web Services Billing and Cost Management User Guide</i>. </p> <p>Each Firehose stream can have up to 50 tags. </p> <p>This operation has a limit of five transactions per second per account. </p>"
     },
     "UntagDeliveryStream":{
       "name":"UntagDeliveryStream",
@@ -180,7 +180,7 @@
         {"shape":"InvalidArgumentException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Removes tags from the specified delivery stream. Removed tags are deleted, and you can't recover them after this operation successfully completes.</p> <p>If you specify a tag that doesn't exist, the operation ignores it.</p> <p>This operation has a limit of five transactions per second per account. </p>"
+      "documentation":"<p>Removes tags from the specified Firehose stream. Removed tags are deleted, and you can't recover them after this operation successfully completes.</p> <p>If you specify a tag that doesn't exist, the operation ignores it.</p> <p>This operation has a limit of five transactions per second per account. </p>"
     },
     "UpdateDestination":{
       "name":"UpdateDestination",
@@ -196,7 +196,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConcurrentModificationException"}
       ],
-      "documentation":"<p>Updates the specified destination of the specified delivery stream.</p> <p>Use this operation to change the destination type (for example, to replace the Amazon S3 destination with Amazon Redshift) or change the parameters associated with a destination (for example, to change the bucket name of the Amazon S3 destination). The update might not occur immediately. The target delivery stream remains active while the configurations are updated, so data writes to the delivery stream can continue during this process. The updated configurations are usually effective within a few minutes.</p> <p>Switching between Amazon OpenSearch Service and other services is not supported. For an Amazon OpenSearch Service destination, you can only update to another Amazon OpenSearch Service destination.</p> <p>If the destination type is the same, Firehose merges the configuration parameters specified with the destination configuration that already exists on the delivery stream. If any of the parameters are not specified in the call, the existing values are retained. For example, in the Amazon S3 destination, if <a>EncryptionConfiguration</a> is not specified, then the existing <code>EncryptionConfiguration</code> is maintained on the destination.</p> <p>If the destination type is not the same, for example, changing the destination from Amazon S3 to Amazon Redshift, Firehose does not merge any parameters. In this case, all parameters must be specified.</p> <p>Firehose uses <code>CurrentDeliveryStreamVersionId</code> to avoid race conditions and conflicting merges. This is a required field, and the service updates the configuration only if the existing configuration has a version ID that matches. After the update is applied successfully, the version ID is updated, and can be retrieved using <a>DescribeDeliveryStream</a>. Use the new version ID to set <code>CurrentDeliveryStreamVersionId</code> in the next call.</p>"
+      "documentation":"<p>Updates the specified destination of the specified Firehose stream.</p> <p>Use this operation to change the destination type (for example, to replace the Amazon S3 destination with Amazon Redshift) or change the parameters associated with a destination (for example, to change the bucket name of the Amazon S3 destination). The update might not occur immediately. The target Firehose stream remains active while the configurations are updated, so data writes to the Firehose stream can continue during this process. The updated configurations are usually effective within a few minutes.</p> <p>Switching between Amazon OpenSearch Service and other services is not supported. For an Amazon OpenSearch Service destination, you can only update to another Amazon OpenSearch Service destination.</p> <p>If the destination type is the same, Firehose merges the configuration parameters specified with the destination configuration that already exists on the delivery stream. If any of the parameters are not specified in the call, the existing values are retained. For example, in the Amazon S3 destination, if <a>EncryptionConfiguration</a> is not specified, then the existing <code>EncryptionConfiguration</code> is maintained on the destination.</p> <p>If the destination type is not the same, for example, changing the destination from Amazon S3 to Amazon Redshift, Firehose does not merge any parameters. In this case, all parameters must be specified.</p> <p>Firehose uses <code>CurrentDeliveryStreamVersionId</code> to avoid race conditions and conflicting merges. This is a required field, and the service updates the configuration only if the existing configuration has a version ID that matches. After the update is applied successfully, the version ID is updated, and can be retrieved using <a>DescribeDeliveryStream</a>. Use the new version ID to set <code>CurrentDeliveryStreamVersionId</code> in the next call.</p>"
     }
   },
   "shapes":{
@@ -204,7 +204,7 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"arn:.*"
+      "pattern":"arn:.*:kms:[a-zA-Z0-9\\-]+:\\d{12}:(key|alias)/[a-zA-Z_0-9+=,.@\\-_/]+"
     },
     "AmazonOpenSearchServerlessBufferingHints":{
       "type":"structure",
@@ -215,7 +215,7 @@
         },
         "SizeInMBs":{
           "shape":"AmazonOpenSearchServerlessBufferingSizeInMBs",
-          "documentation":"<p>Buffer incoming data to the specified size, in MBs, before delivering it to the destination. The default value is 5. </p> <p>We recommend setting this parameter to a value greater than the amount of data you typically ingest into the delivery stream in 10 seconds. For example, if you typically ingest data at 1 MB/sec, the value should be 10 MB or higher.</p>"
+          "documentation":"<p>Buffer incoming data to the specified size, in MBs, before delivering it to the destination. The default value is 5. </p> <p>We recommend setting this parameter to a value greater than the amount of data you typically ingest into the Firehose stream in 10 seconds. For example, if you typically ingest data at 1 MB/sec, the value should be 10 MB or higher.</p>"
         }
       },
       "documentation":"<p>Describes the buffering to perform before delivering data to the Serverless offering for Amazon OpenSearch Service destination.</p>"
@@ -375,7 +375,7 @@
         },
         "SizeInMBs":{
           "shape":"AmazonopensearchserviceBufferingSizeInMBs",
-          "documentation":"<p>Buffer incoming data to the specified size, in MBs, before delivering it to the destination. The default value is 5.</p> <p>We recommend setting this parameter to a value greater than the amount of data you typically ingest into the delivery stream in 10 seconds. For example, if you typically ingest data at 1 MB/sec, the value should be 10 MB or higher. </p>"
+          "documentation":"<p>Buffer incoming data to the specified size, in MBs, before delivering it to the destination. The default value is 5.</p> <p>We recommend setting this parameter to a value greater than the amount of data you typically ingest into the Firehose stream in 10 seconds. For example, if you typically ingest data at 1 MB/sec, the value should be 10 MB or higher. </p>"
         }
       },
       "documentation":"<p>Describes the buffering to perform before delivering data to the Amazon OpenSearch Service destination. </p>"
@@ -522,7 +522,7 @@
         },
         "TypeName":{
           "shape":"AmazonopensearchserviceTypeName",
-          "documentation":"<p>The Amazon OpenSearch Service type name. For Elasticsearch 6.x, there can be only one type per index. If you try to specify a new type for an existing index that already has another type, Firehose returns an error during runtime. </p> <p>If you upgrade Elasticsearch from 6.x to 7.x and don’t update your delivery stream, Firehose still delivers data to Elasticsearch with the old index name and type name. If you want to update your delivery stream with a new index name, provide an empty string for TypeName. </p>"
+          "documentation":"<p>The Amazon OpenSearch Service type name. For Elasticsearch 6.x, there can be only one type per index. If you try to specify a new type for an existing index that already has another type, Firehose returns an error during runtime. </p> <p>If you upgrade Elasticsearch from 6.x to 7.x and don’t update your Firehose stream, Firehose still delivers data to Elasticsearch with the old index name and type name. If you want to update your Firehose stream with a new index name, provide an empty string for TypeName. </p>"
         },
         "IndexRotationPeriod":{
           "shape":"AmazonopensearchserviceIndexRotationPeriod",
@@ -550,7 +550,7 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"arn:.*"
+      "pattern":"arn:.*:es:[a-zA-Z0-9\\-]+:\\d{12}:domain/[a-z][-0-9a-z]{2,27}"
     },
     "AmazonopensearchserviceIndexName":{
       "type":"string",
@@ -623,14 +623,14 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:.*"
+      "pattern":"arn:.*:s3:::[\\w\\.\\-]{1,255}"
     },
     "BufferingHints":{
       "type":"structure",
       "members":{
         "SizeInMBs":{
           "shape":"SizeInMBs",
-          "documentation":"<p>Buffer incoming data to the specified size, in MiBs, before delivering it to the destination. The default value is 5. This parameter is optional but if you specify a value for it, you must also specify a value for <code>IntervalInSeconds</code>, and vice versa.</p> <p>We recommend setting this parameter to a value greater than the amount of data you typically ingest into the delivery stream in 10 seconds. For example, if you typically ingest data at 1 MiB/sec, the value should be 10 MiB or higher.</p>"
+          "documentation":"<p>Buffer incoming data to the specified size, in MiBs, before delivering it to the destination. The default value is 5. This parameter is optional but if you specify a value for it, you must also specify a value for <code>IntervalInSeconds</code>, and vice versa.</p> <p>We recommend setting this parameter to a value greater than the amount of data you typically ingest into the Firehose stream in 10 seconds. For example, if you typically ingest data at 1 MiB/sec, the value should be 10 MiB or higher.</p>"
         },
         "IntervalInSeconds":{
           "shape":"IntervalInSeconds",
@@ -644,10 +644,14 @@
       "members":{
         "CatalogARN":{
           "shape":"GlueDataCatalogARN",
-          "documentation":"<p> Specifies the Glue catalog ARN indentifier of the destination Apache Iceberg Tables. You must specify the ARN in the format <code>arn:aws:glue:region:account-id:catalog</code>. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> Specifies the Glue catalog ARN identifier of the destination Apache Iceberg Tables. You must specify the ARN in the format <code>arn:aws:glue:region:account-id:catalog</code>. </p>"
+        },
+        "WarehouseLocation":{
+          "shape":"WarehouseLocation",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
         }
       },
-      "documentation":"<p> Describes the containers where the destination Apache Iceberg Tables are persisted. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+      "documentation":"<p> Describes the containers where the destination Apache Iceberg Tables are persisted. </p>"
     },
     "CloudWatchLoggingOptions":{
       "type":"structure",
@@ -665,13 +669,13 @@
           "documentation":"<p>The CloudWatch log stream name for logging. This value is required if CloudWatch logging is enabled.</p>"
         }
       },
-      "documentation":"<p>Describes the Amazon CloudWatch logging options for your delivery stream.</p>"
+      "documentation":"<p>Describes the Amazon CloudWatch logging options for your Firehose stream.</p>"
     },
     "ClusterJDBCURL":{
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"jdbc:(redshift|postgresql)://((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+(redshift(-serverless)?)\\.([a-zA-Z0-9\\.]+):\\d{1,5}/[a-zA-Z0-9_$-]+"
+      "pattern":"jdbc:(redshift|postgresql)://((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+(redshift(-serverless)?)\\.([a-zA-Z0-9\\.\\-]+):\\d{1,5}/[a-zA-Z0-9_$-]+"
     },
     "ColumnToJsonKeyMappings":{
       "type":"map",
@@ -734,7 +738,7 @@
     },
     "CopyOptions":{
       "type":"string",
-      "max":204800,
+      "max":10240,
       "min":0,
       "pattern":".*"
     },
@@ -744,15 +748,15 @@
       "members":{
         "DeliveryStreamName":{
           "shape":"DeliveryStreamName",
-          "documentation":"<p>The name of the delivery stream. This name must be unique per Amazon Web Services account in the same Amazon Web Services Region. If the delivery streams are in different accounts or different Regions, you can have multiple delivery streams with the same name.</p>"
+          "documentation":"<p>The name of the Firehose stream. This name must be unique per Amazon Web Services account in the same Amazon Web Services Region. If the Firehose streams are in different accounts or different Regions, you can have multiple Firehose streams with the same name.</p>"
         },
         "DeliveryStreamType":{
           "shape":"DeliveryStreamType",
-          "documentation":"<p>The delivery stream type. This parameter can be one of the following values:</p> <ul> <li> <p> <code>DirectPut</code>: Provider applications access the delivery stream directly.</p> </li> <li> <p> <code>KinesisStreamAsSource</code>: The delivery stream uses a Kinesis data stream as a source.</p> </li> </ul>"
+          "documentation":"<p>The Firehose stream type. This parameter can be one of the following values:</p> <ul> <li> <p> <code>DirectPut</code>: Provider applications access the Firehose stream directly.</p> </li> <li> <p> <code>KinesisStreamAsSource</code>: The Firehose stream uses a Kinesis data stream as a source.</p> </li> </ul>"
         },
         "KinesisStreamSourceConfiguration":{
           "shape":"KinesisStreamSourceConfiguration",
-          "documentation":"<p>When a Kinesis data stream is used as the source for the delivery stream, a <a>KinesisStreamSourceConfiguration</a> containing the Kinesis data stream Amazon Resource Name (ARN) and the role ARN for the source stream.</p>"
+          "documentation":"<p>When a Kinesis data stream is used as the source for the Firehose stream, a <a>KinesisStreamSourceConfiguration</a> containing the Kinesis data stream Amazon Resource Name (ARN) and the role ARN for the source stream.</p>"
         },
         "DeliveryStreamEncryptionConfigurationInput":{
           "shape":"DeliveryStreamEncryptionConfigurationInput",
@@ -789,7 +793,7 @@
         },
         "Tags":{
           "shape":"TagDeliveryStreamInputTagList",
-          "documentation":"<p>A set of tags to assign to the delivery stream. A tag is a key-value pair that you can define and assign to Amazon Web Services resources. Tags are metadata. For example, you can add friendly names and descriptions or other types of information that can help you distinguish the delivery stream. For more information about tags, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the Amazon Web Services Billing and Cost Management User Guide.</p> <p>You can specify up to 50 tags when creating a delivery stream.</p> <p>If you specify tags in the <code>CreateDeliveryStream</code> action, Amazon Data Firehose performs an additional authorization on the <code>firehose:TagDeliveryStream</code> action to verify if users have permissions to create tags. If you do not provide this permission, requests to create new Firehose delivery streams with IAM resource tags will fail with an <code>AccessDeniedException</code> such as following.</p> <p> <b>AccessDeniedException</b> </p> <p>User: arn:aws:sts::x:assumed-role/x/x is not authorized to perform: firehose:TagDeliveryStream on resource: arn:aws:firehose:us-east-1:x:deliverystream/x with an explicit deny in an identity-based policy.</p> <p>For an example IAM policy, see <a href=\"https://docs.aws.amazon.com/firehose/latest/APIReference/API_CreateDeliveryStream.html#API_CreateDeliveryStream_Examples\">Tag example.</a> </p>"
+          "documentation":"<p>A set of tags to assign to the Firehose stream. A tag is a key-value pair that you can define and assign to Amazon Web Services resources. Tags are metadata. For example, you can add friendly names and descriptions or other types of information that can help you distinguish the Firehose stream. For more information about tags, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the Amazon Web Services Billing and Cost Management User Guide.</p> <p>You can specify up to 50 tags when creating a Firehose stream.</p> <p>If you specify tags in the <code>CreateDeliveryStream</code> action, Amazon Data Firehose performs an additional authorization on the <code>firehose:TagDeliveryStream</code> action to verify if users have permissions to create tags. If you do not provide this permission, requests to create new Firehose Firehose streams with IAM resource tags will fail with an <code>AccessDeniedException</code> such as following.</p> <p> <b>AccessDeniedException</b> </p> <p>User: arn:aws:sts::x:assumed-role/x/x is not authorized to perform: firehose:TagDeliveryStream on resource: arn:aws:firehose:us-east-1:x:deliverystream/x with an explicit deny in an identity-based policy.</p> <p>For an example IAM policy, see <a href=\"https://docs.aws.amazon.com/firehose/latest/APIReference/API_CreateDeliveryStream.html#API_CreateDeliveryStream_Examples\">Tag example.</a> </p>"
         },
         "AmazonOpenSearchServerlessDestinationConfiguration":{
           "shape":"AmazonOpenSearchServerlessDestinationConfiguration",
@@ -802,7 +806,11 @@
         },
         "IcebergDestinationConfiguration":{
           "shape":"IcebergDestinationConfiguration",
-          "documentation":"<p> Configure Apache Iceberg Tables destination. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> Configure Apache Iceberg Tables destination. </p>"
+        },
+        "DatabaseSourceConfiguration":{
+          "shape":"DatabaseSourceConfiguration",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
         }
       }
     },
@@ -811,14 +819,15 @@
       "members":{
         "DeliveryStreamARN":{
           "shape":"DeliveryStreamARN",
-          "documentation":"<p>The ARN of the delivery stream.</p>"
+          "documentation":"<p>The ARN of the Firehose stream.</p>"
         }
       }
     },
     "CustomTimeZone":{
       "type":"string",
       "max":50,
-      "min":0
+      "min":0,
+      "pattern":"^$|[a-zA-Z/_]+"
     },
     "Data":{
       "type":"blob",
@@ -849,7 +858,7 @@
     },
     "DataTableColumns":{
       "type":"string",
-      "max":204800,
+      "max":10240,
       "min":0,
       "pattern":".*"
     },
@@ -858,6 +867,271 @@
       "max":512,
       "min":1,
       "pattern":".*"
+    },
+    "DatabaseColumnIncludeOrExcludeList":{
+      "type":"list",
+      "member":{"shape":"DatabaseColumnName"}
+    },
+    "DatabaseColumnList":{
+      "type":"structure",
+      "members":{
+        "Include":{
+          "shape":"DatabaseColumnIncludeOrExcludeList",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "Exclude":{
+          "shape":"DatabaseColumnIncludeOrExcludeList",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        }
+      },
+      "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
+    "DatabaseColumnName":{
+      "type":"string",
+      "max":194,
+      "min":1,
+      "pattern":"[\\u0001-\\uFFFF]*"
+    },
+    "DatabaseEndpoint":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(?!\\s*$).+"
+    },
+    "DatabaseIncludeOrExcludeList":{
+      "type":"list",
+      "member":{"shape":"DatabaseName"}
+    },
+    "DatabaseList":{
+      "type":"structure",
+      "members":{
+        "Include":{
+          "shape":"DatabaseIncludeOrExcludeList",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "Exclude":{
+          "shape":"DatabaseIncludeOrExcludeList",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        }
+      },
+      "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
+    "DatabaseName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\u0001-\\uFFFF]*"
+    },
+    "DatabasePort":{
+      "type":"integer",
+      "max":65535,
+      "min":0
+    },
+    "DatabaseSnapshotInfo":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Table",
+        "RequestTimestamp",
+        "RequestedBy",
+        "Status"
+      ],
+      "members":{
+        "Id":{
+          "shape":"NonEmptyStringWithoutWhitespace",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "Table":{
+          "shape":"DatabaseTableName",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "RequestTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "RequestedBy":{
+          "shape":"SnapshotRequestedBy",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "Status":{
+          "shape":"SnapshotStatus",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "FailureDescription":{"shape":"FailureDescription"}
+      },
+      "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
+    "DatabaseSnapshotInfoList":{
+      "type":"list",
+      "member":{"shape":"DatabaseSnapshotInfo"}
+    },
+    "DatabaseSourceAuthenticationConfiguration":{
+      "type":"structure",
+      "required":["SecretsManagerConfiguration"],
+      "members":{
+        "SecretsManagerConfiguration":{"shape":"SecretsManagerConfiguration"}
+      },
+      "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
+    "DatabaseSourceConfiguration":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Endpoint",
+        "Port",
+        "Databases",
+        "Tables",
+        "SnapshotWatermarkTable",
+        "DatabaseSourceAuthenticationConfiguration",
+        "DatabaseSourceVPCConfiguration"
+      ],
+      "members":{
+        "Type":{
+          "shape":"DatabaseType",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "Endpoint":{
+          "shape":"DatabaseEndpoint",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "Port":{
+          "shape":"DatabasePort",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "SSLMode":{
+          "shape":"SSLMode",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "Databases":{
+          "shape":"DatabaseList",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "Tables":{
+          "shape":"DatabaseTableList",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "Columns":{
+          "shape":"DatabaseColumnList",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "SurrogateKeys":{
+          "shape":"DatabaseSurrogateKeyList",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "SnapshotWatermarkTable":{
+          "shape":"DatabaseTableName",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "DatabaseSourceAuthenticationConfiguration":{
+          "shape":"DatabaseSourceAuthenticationConfiguration",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "DatabaseSourceVPCConfiguration":{
+          "shape":"DatabaseSourceVPCConfiguration",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        }
+      },
+      "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
+    "DatabaseSourceDescription":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"DatabaseType",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "Endpoint":{
+          "shape":"DatabaseEndpoint",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "Port":{
+          "shape":"DatabasePort",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "SSLMode":{
+          "shape":"SSLMode",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "Databases":{
+          "shape":"DatabaseList",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "Tables":{
+          "shape":"DatabaseTableList",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "Columns":{
+          "shape":"DatabaseColumnList",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "SurrogateKeys":{
+          "shape":"DatabaseColumnIncludeOrExcludeList",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "SnapshotWatermarkTable":{
+          "shape":"DatabaseTableName",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "SnapshotInfo":{
+          "shape":"DatabaseSnapshotInfoList",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "DatabaseSourceAuthenticationConfiguration":{
+          "shape":"DatabaseSourceAuthenticationConfiguration",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "DatabaseSourceVPCConfiguration":{
+          "shape":"DatabaseSourceVPCConfiguration",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        }
+      },
+      "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
+    "DatabaseSourceVPCConfiguration":{
+      "type":"structure",
+      "required":["VpcEndpointServiceName"],
+      "members":{
+        "VpcEndpointServiceName":{
+          "shape":"VpcEndpointServiceName",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        }
+      },
+      "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
+    "DatabaseSurrogateKeyList":{
+      "type":"list",
+      "member":{"shape":"NonEmptyStringWithoutWhitespace"}
+    },
+    "DatabaseTableIncludeOrExcludeList":{
+      "type":"list",
+      "member":{"shape":"DatabaseTableName"}
+    },
+    "DatabaseTableList":{
+      "type":"structure",
+      "members":{
+        "Include":{
+          "shape":"DatabaseTableIncludeOrExcludeList",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "Exclude":{
+          "shape":"DatabaseTableIncludeOrExcludeList",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        }
+      },
+      "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
+    "DatabaseTableName":{
+      "type":"string",
+      "max":129,
+      "min":1,
+      "pattern":"[\\u0001-\\uFFFF]*"
+    },
+    "DatabaseType":{
+      "type":"string",
+      "enum":[
+        "MySQL",
+        "PostgreSQL"
+      ]
     },
     "DefaultDocumentIdFormat":{
       "type":"string",
@@ -872,11 +1146,11 @@
       "members":{
         "DeliveryStreamName":{
           "shape":"DeliveryStreamName",
-          "documentation":"<p>The name of the delivery stream.</p>"
+          "documentation":"<p>The name of the Firehose stream.</p>"
         },
         "AllowForceDelete":{
           "shape":"BooleanObject",
-          "documentation":"<p>Set this to true if you want to delete the delivery stream even if Firehose is unable to retire the grant for the CMK. Firehose might be unable to retire the grant due to a customer error, such as when the CMK or the grant are in an invalid state. If you force deletion, you can then use the <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_RevokeGrant.html\">RevokeGrant</a> operation to revoke the grant you gave to Firehose. If a failure to retire the grant happens due to an Amazon Web Services KMS issue, Firehose keeps retrying the delete operation.</p> <p>The default value is false.</p>"
+          "documentation":"<p>Set this to true if you want to delete the Firehose stream even if Firehose is unable to retire the grant for the CMK. Firehose might be unable to retire the grant due to a customer error, such as when the CMK or the grant are in an invalid state. If you force deletion, you can then use the <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_RevokeGrant.html\">RevokeGrant</a> operation to revoke the grant you gave to Firehose. If a failure to retire the grant happens due to an Amazon Web Services KMS issue, Firehose keeps retrying the delete operation.</p> <p>The default value is false.</p>"
         }
       }
     },
@@ -890,7 +1164,7 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"arn:.*"
+      "pattern":"arn:.*:firehose:[a-zA-Z0-9\\-]+:\\d{12}:deliverystream/[a-zA-Z0-9._-]+"
     },
     "DeliveryStreamDescription":{
       "type":"structure",
@@ -906,15 +1180,15 @@
       "members":{
         "DeliveryStreamName":{
           "shape":"DeliveryStreamName",
-          "documentation":"<p>The name of the delivery stream.</p>"
+          "documentation":"<p>The name of the Firehose stream.</p>"
         },
         "DeliveryStreamARN":{
           "shape":"DeliveryStreamARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the delivery stream. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Firehose stream. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.</p>"
         },
         "DeliveryStreamStatus":{
           "shape":"DeliveryStreamStatus",
-          "documentation":"<p>The status of the delivery stream. If the status of a delivery stream is <code>CREATING_FAILED</code>, this status doesn't change, and you can't invoke <code>CreateDeliveryStream</code> again on it. However, you can invoke the <a>DeleteDeliveryStream</a> operation to delete it.</p>"
+          "documentation":"<p>The status of the Firehose stream. If the status of a Firehose stream is <code>CREATING_FAILED</code>, this status doesn't change, and you can't invoke <code>CreateDeliveryStream</code> again on it. However, you can invoke the <a>DeleteDeliveryStream</a> operation to delete it.</p>"
         },
         "FailureDescription":{
           "shape":"FailureDescription",
@@ -922,23 +1196,23 @@
         },
         "DeliveryStreamEncryptionConfiguration":{
           "shape":"DeliveryStreamEncryptionConfiguration",
-          "documentation":"<p>Indicates the server-side encryption (SSE) status for the delivery stream.</p>"
+          "documentation":"<p>Indicates the server-side encryption (SSE) status for the Firehose stream.</p>"
         },
         "DeliveryStreamType":{
           "shape":"DeliveryStreamType",
-          "documentation":"<p>The delivery stream type. This can be one of the following values:</p> <ul> <li> <p> <code>DirectPut</code>: Provider applications access the delivery stream directly.</p> </li> <li> <p> <code>KinesisStreamAsSource</code>: The delivery stream uses a Kinesis data stream as a source.</p> </li> </ul>"
+          "documentation":"<p>The Firehose stream type. This can be one of the following values:</p> <ul> <li> <p> <code>DirectPut</code>: Provider applications access the Firehose stream directly.</p> </li> <li> <p> <code>KinesisStreamAsSource</code>: The Firehose stream uses a Kinesis data stream as a source.</p> </li> </ul>"
         },
         "VersionId":{
           "shape":"DeliveryStreamVersionId",
-          "documentation":"<p>Each time the destination is updated for a delivery stream, the version ID is changed, and the current version ID is required when updating the destination. This is so that the service knows it is applying the changes to the correct version of the delivery stream.</p>"
+          "documentation":"<p>Each time the destination is updated for a Firehose stream, the version ID is changed, and the current version ID is required when updating the destination. This is so that the service knows it is applying the changes to the correct version of the delivery stream.</p>"
         },
         "CreateTimestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the delivery stream was created.</p>"
+          "documentation":"<p>The date and time that the Firehose stream was created.</p>"
         },
         "LastUpdateTimestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the delivery stream was last updated.</p>"
+          "documentation":"<p>The date and time that the Firehose stream was last updated.</p>"
         },
         "Source":{
           "shape":"SourceDescription",
@@ -953,7 +1227,7 @@
           "documentation":"<p>Indicates whether there are more destinations available to list.</p>"
         }
       },
-      "documentation":"<p>Contains information about a delivery stream.</p>"
+      "documentation":"<p>Contains information about a Firehose stream.</p>"
     },
     "DeliveryStreamEncryptionConfiguration":{
       "type":"structure",
@@ -968,7 +1242,7 @@
         },
         "Status":{
           "shape":"DeliveryStreamEncryptionStatus",
-          "documentation":"<p>This is the server-side encryption (SSE) status for the delivery stream. For a full description of the different values of this status, see <a>StartDeliveryStreamEncryption</a> and <a>StopDeliveryStreamEncryption</a>. If this status is <code>ENABLING_FAILED</code> or <code>DISABLING_FAILED</code>, it is the status of the most recent attempt to enable or disable SSE, respectively.</p>"
+          "documentation":"<p>This is the server-side encryption (SSE) status for the Firehose stream. For a full description of the different values of this status, see <a>StartDeliveryStreamEncryption</a> and <a>StopDeliveryStreamEncryption</a>. If this status is <code>ENABLING_FAILED</code> or <code>DISABLING_FAILED</code>, it is the status of the most recent attempt to enable or disable SSE, respectively.</p>"
         },
         "FailureDescription":{
           "shape":"FailureDescription",
@@ -987,7 +1261,7 @@
         },
         "KeyType":{
           "shape":"KeyType",
-          "documentation":"<p>Indicates the type of customer master key (CMK) to use for encryption. The default setting is <code>Amazon Web Services_OWNED_CMK</code>. For more information about CMKs, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#master_keys\">Customer Master Keys (CMKs)</a>. When you invoke <a>CreateDeliveryStream</a> or <a>StartDeliveryStreamEncryption</a> with <code>KeyType</code> set to CUSTOMER_MANAGED_CMK, Firehose invokes the Amazon KMS operation <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateGrant.html\">CreateGrant</a> to create a grant that allows the Firehose service to use the customer managed CMK to perform encryption and decryption. Firehose manages that grant. </p> <p>When you invoke <a>StartDeliveryStreamEncryption</a> to change the CMK for a delivery stream that is encrypted with a customer managed CMK, Firehose schedules the grant it had on the old CMK for retirement.</p> <p>You can use a CMK of type CUSTOMER_MANAGED_CMK to encrypt up to 500 delivery streams. If a <a>CreateDeliveryStream</a> or <a>StartDeliveryStreamEncryption</a> operation exceeds this limit, Firehose throws a <code>LimitExceededException</code>. </p> <important> <p>To encrypt your delivery stream, use symmetric CMKs. Firehose doesn't support asymmetric CMKs. For information about symmetric and asymmetric CMKs, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/symm-asymm-concepts.html\">About Symmetric and Asymmetric CMKs</a> in the Amazon Web Services Key Management Service developer guide.</p> </important>"
+          "documentation":"<p>Indicates the type of customer master key (CMK) to use for encryption. The default setting is <code>Amazon Web Services_OWNED_CMK</code>. For more information about CMKs, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#master_keys\">Customer Master Keys (CMKs)</a>. When you invoke <a>CreateDeliveryStream</a> or <a>StartDeliveryStreamEncryption</a> with <code>KeyType</code> set to CUSTOMER_MANAGED_CMK, Firehose invokes the Amazon KMS operation <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateGrant.html\">CreateGrant</a> to create a grant that allows the Firehose service to use the customer managed CMK to perform encryption and decryption. Firehose manages that grant. </p> <p>When you invoke <a>StartDeliveryStreamEncryption</a> to change the CMK for a Firehose stream that is encrypted with a customer managed CMK, Firehose schedules the grant it had on the old CMK for retirement.</p> <p>You can use a CMK of type CUSTOMER_MANAGED_CMK to encrypt up to 500 Firehose streams. If a <a>CreateDeliveryStream</a> or <a>StartDeliveryStreamEncryption</a> operation exceeds this limit, Firehose throws a <code>LimitExceededException</code>. </p> <important> <p>To encrypt your Firehose stream, use symmetric CMKs. Firehose doesn't support asymmetric CMKs. For information about symmetric and asymmetric CMKs, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/symm-asymm-concepts.html\">About Symmetric and Asymmetric CMKs</a> in the Amazon Web Services Key Management Service developer guide.</p> </important>"
         }
       },
       "documentation":"<p>Specifies the type and Amazon Resource Name (ARN) of the CMK to use for Server-Side Encryption (SSE). </p>"
@@ -1006,6 +1280,8 @@
     "DeliveryStreamFailureType":{
       "type":"string",
       "enum":[
+        "VPC_ENDPOINT_SERVICE_NAME_NOT_FOUND",
+        "VPC_INTERFACE_ENDPOINT_SERVICE_ACCESS_DENIED",
         "RETIRE_KMS_GRANT_FAILED",
         "CREATE_KMS_GRANT_FAILED",
         "KMS_ACCESS_DENIED",
@@ -1048,7 +1324,8 @@
       "enum":[
         "DirectPut",
         "KinesisStreamAsSource",
-        "MSKAsSource"
+        "MSKAsSource",
+        "DatabaseAsSource"
       ]
     },
     "DeliveryStreamVersionId":{
@@ -1063,15 +1340,15 @@
       "members":{
         "DeliveryStreamName":{
           "shape":"DeliveryStreamName",
-          "documentation":"<p>The name of the delivery stream.</p>"
+          "documentation":"<p>The name of the Firehose stream.</p>"
         },
         "Limit":{
           "shape":"DescribeDeliveryStreamInputLimit",
-          "documentation":"<p>The limit on the number of destinations to return. You can have one destination per delivery stream.</p>"
+          "documentation":"<p>The limit on the number of destinations to return. You can have one destination per Firehose stream.</p>"
         },
         "ExclusiveStartDestinationId":{
           "shape":"DestinationId",
-          "documentation":"<p>The ID of the destination to start returning the destination information. Firehose supports one destination per delivery stream.</p>"
+          "documentation":"<p>The ID of the destination to start returning the destination information. Firehose supports one destination per Firehose stream.</p>"
         }
       }
     },
@@ -1086,7 +1363,7 @@
       "members":{
         "DeliveryStreamDescription":{
           "shape":"DeliveryStreamDescription",
-          "documentation":"<p>Information about the delivery stream.</p>"
+          "documentation":"<p>Information about the Firehose stream.</p>"
         }
       }
     },
@@ -1150,10 +1427,10 @@
         },
         "IcebergDestinationDescription":{
           "shape":"IcebergDestinationDescription",
-          "documentation":"<p> Describes a destination in Apache Iceberg Tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> Describes a destination in Apache Iceberg Tables. </p>"
         }
       },
-      "documentation":"<p>Describes the destination for a delivery stream.</p>"
+      "documentation":"<p>Describes the destination for a Firehose stream.</p>"
     },
     "DestinationDescriptionList":{
       "type":"list",
@@ -1173,23 +1450,27 @@
       ],
       "members":{
         "DestinationTableName":{
-          "shape":"NonEmptyStringWithoutWhitespace",
-          "documentation":"<p> Specifies the name of the Apache Iceberg Table. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "shape":"StringWithLettersDigitsUnderscoresDots",
+          "documentation":"<p> Specifies the name of the Apache Iceberg Table. </p>"
         },
         "DestinationDatabaseName":{
-          "shape":"NonEmptyStringWithoutWhitespace",
-          "documentation":"<p> The name of the Apache Iceberg database. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "shape":"StringWithLettersDigitsUnderscoresDots",
+          "documentation":"<p> The name of the Apache Iceberg database. </p>"
         },
         "UniqueKeys":{
           "shape":"ListOfNonEmptyStringsWithoutWhitespace",
-          "documentation":"<p> A list of unique keys for a given Apache Iceberg table. Firehose will use these for running Create/Update/Delete operations on the given Iceberg table. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> A list of unique keys for a given Apache Iceberg table. Firehose will use these for running Create, Update, or Delete operations on the given Iceberg table. </p>"
+        },
+        "PartitionSpec":{
+          "shape":"PartitionSpec",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
         },
         "S3ErrorOutputPrefix":{
           "shape":"ErrorOutputPrefix",
-          "documentation":"<p> The table specific S3 error output prefix. All the errors that occurred while delivering to this table will be prefixed with this value in S3 destination. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> The table specific S3 error output prefix. All the errors that occurred while delivering to this table will be prefixed with this value in S3 destination. </p>"
         }
       },
-      "documentation":"<p> Describes the configuration of a destination in Apache Iceberg Tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+      "documentation":"<p> Describes the configuration of a destination in Apache Iceberg Tables. </p>"
     },
     "DestinationTableConfigurationList":{
       "type":"list",
@@ -1215,7 +1496,7 @@
         },
         "Enabled":{
           "shape":"BooleanObject",
-          "documentation":"<p>Specifies that the dynamic partitioning is enabled for this Firehose delivery stream.</p>"
+          "documentation":"<p>Specifies that the dynamic partitioning is enabled for this Firehose Firehose stream.</p>"
         }
       },
       "documentation":"<p>The configuration of the dynamic partitioning mechanism that creates smaller data sets from the streaming data by partitioning it based on partition keys. Currently, dynamic partitioning is only supported for Amazon S3 destinations. </p>"
@@ -1229,7 +1510,7 @@
         },
         "SizeInMBs":{
           "shape":"ElasticsearchBufferingSizeInMBs",
-          "documentation":"<p>Buffer incoming data to the specified size, in MBs, before delivering it to the destination. The default value is 5.</p> <p>We recommend setting this parameter to a value greater than the amount of data you typically ingest into the delivery stream in 10 seconds. For example, if you typically ingest data at 1 MB/sec, the value should be 10 MB or higher.</p>"
+          "documentation":"<p>Buffer incoming data to the specified size, in MBs, before delivering it to the destination. The default value is 5.</p> <p>We recommend setting this parameter to a value greater than the amount of data you typically ingest into the Firehose stream in 10 seconds. For example, if you typically ingest data at 1 MB/sec, the value should be 10 MB or higher.</p>"
         }
       },
       "documentation":"<p>Describes the buffering to perform before delivering data to the Amazon ES destination.</p>"
@@ -1292,7 +1573,7 @@
         },
         "S3BackupMode":{
           "shape":"ElasticsearchS3BackupMode",
-          "documentation":"<p>Defines how documents should be delivered to Amazon S3. When it is set to <code>FailedDocumentsOnly</code>, Firehose writes any documents that could not be indexed to the configured Amazon S3 destination, with <code>AmazonOpenSearchService-failed/</code> appended to the key prefix. When set to <code>AllDocuments</code>, Firehose delivers all incoming records to Amazon S3, and also writes failed documents with <code>AmazonOpenSearchService-failed/</code> appended to the prefix. For more information, see <a href=\"https://docs.aws.amazon.com/firehose/latest/dev/basic-deliver.html#es-s3-backup\">Amazon S3 Backup for the Amazon ES Destination</a>. Default value is <code>FailedDocumentsOnly</code>.</p> <p>You can't change this backup mode after you create the delivery stream. </p>"
+          "documentation":"<p>Defines how documents should be delivered to Amazon S3. When it is set to <code>FailedDocumentsOnly</code>, Firehose writes any documents that could not be indexed to the configured Amazon S3 destination, with <code>AmazonOpenSearchService-failed/</code> appended to the key prefix. When set to <code>AllDocuments</code>, Firehose delivers all incoming records to Amazon S3, and also writes failed documents with <code>AmazonOpenSearchService-failed/</code> appended to the prefix. For more information, see <a href=\"https://docs.aws.amazon.com/firehose/latest/dev/basic-deliver.html#es-s3-backup\">Amazon S3 Backup for the Amazon ES Destination</a>. Default value is <code>FailedDocumentsOnly</code>.</p> <p>You can't change this backup mode after you create the Firehose stream. </p>"
         },
         "S3Configuration":{
           "shape":"S3DestinationConfiguration",
@@ -1304,7 +1585,7 @@
         },
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
-          "documentation":"<p>The Amazon CloudWatch logging options for your delivery stream.</p>"
+          "documentation":"<p>The Amazon CloudWatch logging options for your Firehose stream.</p>"
         },
         "VpcConfiguration":{
           "shape":"VpcConfiguration",
@@ -1400,7 +1681,7 @@
         },
         "TypeName":{
           "shape":"ElasticsearchTypeName",
-          "documentation":"<p>The Elasticsearch type name. For Elasticsearch 6.x, there can be only one type per index. If you try to specify a new type for an existing index that already has another type, Firehose returns an error during runtime.</p> <p>If you upgrade Elasticsearch from 6.x to 7.x and don’t update your delivery stream, Firehose still delivers data to Elasticsearch with the old index name and type name. If you want to update your delivery stream with a new index name, provide an empty string for <code>TypeName</code>. </p>"
+          "documentation":"<p>The Elasticsearch type name. For Elasticsearch 6.x, there can be only one type per index. If you try to specify a new type for an existing index that already has another type, Firehose returns an error during runtime.</p> <p>If you upgrade Elasticsearch from 6.x to 7.x and don’t update your Firehose stream, Firehose still delivers data to Elasticsearch with the old index name and type name. If you want to update your Firehose stream with a new index name, provide an empty string for <code>TypeName</code>. </p>"
         },
         "IndexRotationPeriod":{
           "shape":"ElasticsearchIndexRotationPeriod",
@@ -1424,7 +1705,7 @@
         },
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
-          "documentation":"<p>The CloudWatch logging options for your delivery stream.</p>"
+          "documentation":"<p>The CloudWatch logging options for your Firehose stream.</p>"
         },
         "DocumentIdOptions":{
           "shape":"DocumentIdOptions",
@@ -1437,7 +1718,7 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"arn:.*"
+      "pattern":"arn:.*:es:[a-zA-Z0-9\\-]+:\\d{12}:domain/[a-z][-0-9a-z]{2,27}"
     },
     "ElasticsearchIndexName":{
       "type":"string",
@@ -1542,7 +1823,7 @@
         },
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
-          "documentation":"<p>The Amazon CloudWatch logging options for your delivery stream.</p>"
+          "documentation":"<p>The Amazon CloudWatch logging options for your Firehose stream.</p>"
         },
         "ProcessingConfiguration":{
           "shape":"ProcessingConfiguration",
@@ -1550,7 +1831,7 @@
         },
         "S3BackupMode":{
           "shape":"S3BackupMode",
-          "documentation":"<p>The Amazon S3 backup mode. After you create a delivery stream, you can update it to enable Amazon S3 backup if it is disabled. If backup is enabled, you can't update the delivery stream to disable it. </p>"
+          "documentation":"<p>The Amazon S3 backup mode. After you create a Firehose stream, you can update it to enable Amazon S3 backup if it is disabled. If backup is enabled, you can't update the Firehose stream to disable it. </p>"
         },
         "S3BackupConfiguration":{
           "shape":"S3DestinationConfiguration",
@@ -1615,7 +1896,7 @@
         },
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
-          "documentation":"<p>The Amazon CloudWatch logging options for your delivery stream.</p>"
+          "documentation":"<p>The Amazon CloudWatch logging options for your Firehose stream.</p>"
         },
         "ProcessingConfiguration":{
           "shape":"ProcessingConfiguration",
@@ -1681,7 +1962,7 @@
         },
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
-          "documentation":"<p>The Amazon CloudWatch logging options for your delivery stream.</p>"
+          "documentation":"<p>The Amazon CloudWatch logging options for your Firehose stream.</p>"
         },
         "ProcessingConfiguration":{
           "shape":"ProcessingConfiguration",
@@ -1689,7 +1970,7 @@
         },
         "S3BackupMode":{
           "shape":"S3BackupMode",
-          "documentation":"<p>You can update a delivery stream to enable Amazon S3 backup if it is disabled. If backup is enabled, you can't update the delivery stream to disable it. </p>"
+          "documentation":"<p>You can update a Firehose stream to enable Amazon S3 backup if it is disabled. If backup is enabled, you can't update the Firehose stream to disable it. </p>"
         },
         "S3BackupUpdate":{
           "shape":"S3DestinationUpdate",
@@ -1742,7 +2023,7 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"arn:.*"
+      "pattern":"arn:.*:glue:.*:\\d{12}:catalog"
     },
     "HECAcknowledgmentTimeoutInSeconds":{
       "type":"integer",
@@ -1804,7 +2085,7 @@
       "members":{
         "SizeInMBs":{
           "shape":"HttpEndpointBufferingSizeInMBs",
-          "documentation":"<p>Buffer incoming data to the specified size, in MBs, before delivering it to the destination. The default value is 5. </p> <p>We recommend setting this parameter to a value greater than the amount of data you typically ingest into the delivery stream in 10 seconds. For example, if you typically ingest data at 1 MB/sec, the value should be 10 MB or higher. </p>"
+          "documentation":"<p>Buffer incoming data to the specified size, in MBs, before delivering it to the destination. The default value is 5. </p> <p>We recommend setting this parameter to a value greater than the amount of data you typically ingest into the Firehose stream in 10 seconds. For example, if you typically ingest data at 1 MB/sec, the value should be 10 MB or higher. </p>"
         },
         "IntervalInSeconds":{
           "shape":"HttpEndpointBufferingIntervalInSeconds",
@@ -2054,81 +2335,105 @@
       "members":{
         "DestinationTableConfigurationList":{
           "shape":"DestinationTableConfigurationList",
-          "documentation":"<p> Provides a list of <code>DestinationTableConfigurations</code> which Firehose uses to deliver data to Apache Iceberg tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> Provides a list of <code>DestinationTableConfigurations</code> which Firehose uses to deliver data to Apache Iceberg Tables. Firehose will write data with insert if table specific configuration is not provided here.</p>"
+        },
+        "SchemaEvolutionConfiguration":{
+          "shape":"SchemaEvolutionConfiguration",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "TableCreationConfiguration":{
+          "shape":"TableCreationConfiguration",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
         },
         "BufferingHints":{"shape":"BufferingHints"},
         "CloudWatchLoggingOptions":{"shape":"CloudWatchLoggingOptions"},
         "ProcessingConfiguration":{"shape":"ProcessingConfiguration"},
         "S3BackupMode":{
           "shape":"IcebergS3BackupMode",
-          "documentation":"<p> Describes how Firehose will backup records. Currently,Firehose only supports <code>FailedDataOnly</code> for preview. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> Describes how Firehose will backup records. Currently,S3 backup only supports <code>FailedDataOnly</code>. </p>"
         },
         "RetryOptions":{"shape":"RetryOptions"},
         "RoleARN":{
           "shape":"RoleARN",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the Apache Iceberg tables role. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the IAM role to be assumed by Firehose for calling Apache Iceberg Tables. </p>"
         },
         "CatalogConfiguration":{
           "shape":"CatalogConfiguration",
-          "documentation":"<p> Configuration describing where the destination Apache Iceberg Tables are persisted. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> Configuration describing where the destination Apache Iceberg Tables are persisted. </p>"
         },
         "S3Configuration":{"shape":"S3DestinationConfiguration"}
       },
-      "documentation":"<p> Specifies the destination configure settings for Apache Iceberg Table. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+      "documentation":"<p> Specifies the destination configure settings for Apache Iceberg Table. </p>"
     },
     "IcebergDestinationDescription":{
       "type":"structure",
       "members":{
         "DestinationTableConfigurationList":{
           "shape":"DestinationTableConfigurationList",
-          "documentation":"<p> Provides a list of <code>DestinationTableConfigurations</code> which Firehose uses to deliver data to Apache Iceberg tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> Provides a list of <code>DestinationTableConfigurations</code> which Firehose uses to deliver data to Apache Iceberg Tables. Firehose will write data with insert if table specific configuration is not provided here.</p>"
+        },
+        "SchemaEvolutionConfiguration":{
+          "shape":"SchemaEvolutionConfiguration",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "TableCreationConfiguration":{
+          "shape":"TableCreationConfiguration",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
         },
         "BufferingHints":{"shape":"BufferingHints"},
         "CloudWatchLoggingOptions":{"shape":"CloudWatchLoggingOptions"},
         "ProcessingConfiguration":{"shape":"ProcessingConfiguration"},
         "S3BackupMode":{
           "shape":"IcebergS3BackupMode",
-          "documentation":"<p> Describes how Firehose will backup records. Currently,Firehose only supports <code>FailedDataOnly</code> for preview. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> Describes how Firehose will backup records. Currently,Firehose only supports <code>FailedDataOnly</code>. </p>"
         },
         "RetryOptions":{"shape":"RetryOptions"},
         "RoleARN":{
           "shape":"RoleARN",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the Apache Iceberg Tables role. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the IAM role to be assumed by Firehose for calling Apache Iceberg Tables. </p>"
         },
         "CatalogConfiguration":{
           "shape":"CatalogConfiguration",
-          "documentation":"<p> Configuration describing where the destination Iceberg tables are persisted. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> Configuration describing where the destination Iceberg tables are persisted. </p>"
         },
         "S3DestinationDescription":{"shape":"S3DestinationDescription"}
       },
-      "documentation":"<p> Describes a destination in Apache Iceberg Tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+      "documentation":"<p> Describes a destination in Apache Iceberg Tables. </p>"
     },
     "IcebergDestinationUpdate":{
       "type":"structure",
       "members":{
         "DestinationTableConfigurationList":{
           "shape":"DestinationTableConfigurationList",
-          "documentation":"<p> Provides a list of <code>DestinationTableConfigurations</code> which Firehose uses to deliver data to Apache Iceberg tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> Provides a list of <code>DestinationTableConfigurations</code> which Firehose uses to deliver data to Apache Iceberg Tables. Firehose will write data with insert if table specific configuration is not provided here.</p>"
+        },
+        "SchemaEvolutionConfiguration":{
+          "shape":"SchemaEvolutionConfiguration",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "TableCreationConfiguration":{
+          "shape":"TableCreationConfiguration",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
         },
         "BufferingHints":{"shape":"BufferingHints"},
         "CloudWatchLoggingOptions":{"shape":"CloudWatchLoggingOptions"},
         "ProcessingConfiguration":{"shape":"ProcessingConfiguration"},
         "S3BackupMode":{
           "shape":"IcebergS3BackupMode",
-          "documentation":"<p> Describes how Firehose will backup records. Currently,Firehose only supports <code>FailedDataOnly</code> for preview. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> Describes how Firehose will backup records. Currently,Firehose only supports <code>FailedDataOnly</code>. </p>"
         },
         "RetryOptions":{"shape":"RetryOptions"},
         "RoleARN":{
           "shape":"RoleARN",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the Apache Iceberg Tables role. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the IAM role to be assumed by Firehose for calling Apache Iceberg Tables. </p>"
         },
         "CatalogConfiguration":{
           "shape":"CatalogConfiguration",
-          "documentation":"<p> Configuration describing where the destination Iceberg tables are persisted. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> Configuration describing where the destination Iceberg tables are persisted. </p>"
         },
         "S3Configuration":{"shape":"S3DestinationConfiguration"}
       },
-      "documentation":"<p> Describes an update for a destination in Apache Iceberg Tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+      "documentation":"<p> Describes an update for a destination in Apache Iceberg Tables. </p>"
     },
     "IcebergS3BackupMode":{
       "type":"string",
@@ -2169,7 +2474,7 @@
         "code":{"shape":"ErrorCode"},
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>Firehose throws this exception when an attempt to put records or to start or stop delivery stream encryption fails. This happens when the KMS service throws one of the following exception types: <code>AccessDeniedException</code>, <code>InvalidStateException</code>, <code>DisabledException</code>, or <code>NotFoundException</code>.</p>",
+      "documentation":"<p>Firehose throws this exception when an attempt to put records or to start or stop Firehose stream encryption fails. This happens when the KMS service throws one of the following exception types: <code>AccessDeniedException</code>, <code>InvalidStateException</code>, <code>DisabledException</code>, or <code>NotFoundException</code>.</p>",
       "exception":true
     },
     "InvalidSourceException":{
@@ -2203,7 +2508,7 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"arn:.*"
+      "pattern":"arn:.*:kinesis:[a-zA-Z0-9\\-]+:\\d{12}:stream/[a-zA-Z0-9_.-]+"
     },
     "KinesisStreamSourceConfiguration":{
       "type":"structure",
@@ -2221,7 +2526,7 @@
           "documentation":"<p>The ARN of the role that provides access to the source Kinesis data stream. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-iam\">Amazon Web Services Identity and Access Management (IAM) ARN Format</a>.</p>"
         }
       },
-      "documentation":"<p>The stream and role Amazon Resource Names (ARNs) for a Kinesis data stream used as the source for a delivery stream.</p>"
+      "documentation":"<p>The stream and role Amazon Resource Names (ARNs) for a Kinesis data stream used as the source for a Firehose stream.</p>"
     },
     "KinesisStreamSourceDescription":{
       "type":"structure",
@@ -2239,7 +2544,7 @@
           "documentation":"<p>Firehose starts retrieving records from the Kinesis data stream starting with this timestamp.</p>"
         }
       },
-      "documentation":"<p>Details about a Kinesis data stream used as the source for a Firehose delivery stream.</p>"
+      "documentation":"<p>Details about a Kinesis data stream used as the source for a Firehose Firehose stream.</p>"
     },
     "LimitExceededException":{
       "type":"structure",
@@ -2257,15 +2562,15 @@
       "members":{
         "Limit":{
           "shape":"ListDeliveryStreamsInputLimit",
-          "documentation":"<p>The maximum number of delivery streams to list. The default value is 10.</p>"
+          "documentation":"<p>The maximum number of Firehose streams to list. The default value is 10.</p>"
         },
         "DeliveryStreamType":{
           "shape":"DeliveryStreamType",
-          "documentation":"<p>The delivery stream type. This can be one of the following values:</p> <ul> <li> <p> <code>DirectPut</code>: Provider applications access the delivery stream directly.</p> </li> <li> <p> <code>KinesisStreamAsSource</code>: The delivery stream uses a Kinesis data stream as a source.</p> </li> </ul> <p>This parameter is optional. If this parameter is omitted, delivery streams of all types are returned.</p>"
+          "documentation":"<p>The Firehose stream type. This can be one of the following values:</p> <ul> <li> <p> <code>DirectPut</code>: Provider applications access the Firehose stream directly.</p> </li> <li> <p> <code>KinesisStreamAsSource</code>: The Firehose stream uses a Kinesis data stream as a source.</p> </li> </ul> <p>This parameter is optional. If this parameter is omitted, Firehose streams of all types are returned.</p>"
         },
         "ExclusiveStartDeliveryStreamName":{
           "shape":"DeliveryStreamName",
-          "documentation":"<p>The list of delivery streams returned by this call to <code>ListDeliveryStreams</code> will start with the delivery stream whose name comes alphabetically immediately after the name you specify in <code>ExclusiveStartDeliveryStreamName</code>.</p>"
+          "documentation":"<p>The list of Firehose streams returned by this call to <code>ListDeliveryStreams</code> will start with the Firehose stream whose name comes alphabetically immediately after the name you specify in <code>ExclusiveStartDeliveryStreamName</code>.</p>"
         }
       }
     },
@@ -2283,11 +2588,11 @@
       "members":{
         "DeliveryStreamNames":{
           "shape":"DeliveryStreamNameList",
-          "documentation":"<p>The names of the delivery streams.</p>"
+          "documentation":"<p>The names of the Firehose streams.</p>"
         },
         "HasMoreDeliveryStreams":{
           "shape":"BooleanObject",
-          "documentation":"<p>Indicates whether there are more delivery streams available to list.</p>"
+          "documentation":"<p>Indicates whether there are more Firehose streams available to list.</p>"
         }
       }
     },
@@ -2305,7 +2610,7 @@
       "members":{
         "DeliveryStreamName":{
           "shape":"DeliveryStreamName",
-          "documentation":"<p>The name of the delivery stream whose tags you want to list.</p>"
+          "documentation":"<p>The name of the Firehose stream whose tags you want to list.</p>"
         },
         "ExclusiveStartTagKey":{
           "shape":"TagKey",
@@ -2313,7 +2618,7 @@
         },
         "Limit":{
           "shape":"ListTagsForDeliveryStreamInputLimit",
-          "documentation":"<p>The number of tags to return. If this number is less than the total number of tags associated with the delivery stream, <code>HasMoreTags</code> is set to <code>true</code> in the response. To list additional tags, set <code>ExclusiveStartTagKey</code> to the last key in the response. </p>"
+          "documentation":"<p>The number of tags to return. If this number is less than the total number of tags associated with the Firehose stream, <code>HasMoreTags</code> is set to <code>true</code> in the response. To list additional tags, set <code>ExclusiveStartTagKey</code> to the last key in the response. </p>"
         }
       }
     },
@@ -2414,7 +2719,7 @@
           "documentation":"<p>The start date and time in UTC for the offset position within your MSK topic from where Firehose begins to read. By default, this is set to timestamp when Firehose becomes Active. </p> <p>If you want to create a Firehose stream with Earliest start position from SDK or CLI, you need to set the <code>ReadFromTimestampUTC</code> parameter to Epoch (1970-01-01T00:00:00Z). </p>"
         }
       },
-      "documentation":"<p>Details about the Amazon MSK cluster used as the source for a Firehose delivery stream.</p>"
+      "documentation":"<p>Details about the Amazon MSK cluster used as the source for a Firehose Firehose stream.</p>"
     },
     "NoEncryptionConfig":{
       "type":"string",
@@ -2582,6 +2887,31 @@
         "V2"
       ]
     },
+    "PartitionField":{
+      "type":"structure",
+      "required":["SourceName"],
+      "members":{
+        "SourceName":{
+          "shape":"NonEmptyStringWithoutWhitespace",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        }
+      },
+      "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
+    "PartitionFields":{
+      "type":"list",
+      "member":{"shape":"PartitionField"}
+    },
+    "PartitionSpec":{
+      "type":"structure",
+      "members":{
+        "Identity":{
+          "shape":"PartitionFields",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        }
+      },
+      "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
     "Password":{
       "type":"string",
       "max":512,
@@ -2697,7 +3027,7 @@
       "members":{
         "DeliveryStreamName":{
           "shape":"DeliveryStreamName",
-          "documentation":"<p>The name of the delivery stream.</p>"
+          "documentation":"<p>The name of the Firehose stream.</p>"
         },
         "Records":{
           "shape":"PutRecordBatchRequestEntryList",
@@ -2748,7 +3078,7 @@
           "documentation":"<p>The error message for an individual record result.</p>"
         }
       },
-      "documentation":"<p>Contains the result for an individual record from a <a>PutRecordBatch</a> request. If the record is successfully added to your delivery stream, it receives a record ID. If the record fails to be added to your delivery stream, the result includes an error code and an error message.</p>"
+      "documentation":"<p>Contains the result for an individual record from a <a>PutRecordBatch</a> request. If the record is successfully added to your Firehose stream, it receives a record ID. If the record fails to be added to your Firehose stream, the result includes an error code and an error message.</p>"
     },
     "PutRecordBatchResponseEntryList":{
       "type":"list",
@@ -2765,7 +3095,7 @@
       "members":{
         "DeliveryStreamName":{
           "shape":"DeliveryStreamName",
-          "documentation":"<p>The name of the delivery stream.</p>"
+          "documentation":"<p>The name of the Firehose stream.</p>"
         },
         "Record":{
           "shape":"Record",
@@ -2801,7 +3131,7 @@
           "documentation":"<p>The data blob, which is base64-encoded when the blob is serialized. The maximum size of the data blob, before base64-encoding, is 1,000 KiB.</p>"
         }
       },
-      "documentation":"<p>The unit of data in a delivery stream.</p>"
+      "documentation":"<p>The unit of data in a Firehose stream.</p>"
     },
     "RedshiftDestinationConfiguration":{
       "type":"structure",
@@ -2846,7 +3176,7 @@
         },
         "S3BackupMode":{
           "shape":"RedshiftS3BackupMode",
-          "documentation":"<p>The Amazon S3 backup mode. After you create a delivery stream, you can update it to enable Amazon S3 backup if it is disabled. If backup is enabled, you can't update the delivery stream to disable it. </p>"
+          "documentation":"<p>The Amazon S3 backup mode. After you create a Firehose stream, you can update it to enable Amazon S3 backup if it is disabled. If backup is enabled, you can't update the Firehose stream to disable it. </p>"
         },
         "S3BackupConfiguration":{
           "shape":"S3DestinationConfiguration",
@@ -2854,7 +3184,7 @@
         },
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
-          "documentation":"<p>The CloudWatch logging options for your delivery stream.</p>"
+          "documentation":"<p>The CloudWatch logging options for your Firehose stream.</p>"
         },
         "SecretsManagerConfiguration":{
           "shape":"SecretsManagerConfiguration",
@@ -2910,7 +3240,7 @@
         },
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
-          "documentation":"<p>The Amazon CloudWatch logging options for your delivery stream.</p>"
+          "documentation":"<p>The Amazon CloudWatch logging options for your Firehose stream.</p>"
         },
         "SecretsManagerConfiguration":{
           "shape":"SecretsManagerConfiguration",
@@ -2956,7 +3286,7 @@
         },
         "S3BackupMode":{
           "shape":"RedshiftS3BackupMode",
-          "documentation":"<p>You can update a delivery stream to enable Amazon S3 backup if it is disabled. If backup is enabled, you can't update the delivery stream to disable it. </p>"
+          "documentation":"<p>You can update a Firehose stream to enable Amazon S3 backup if it is disabled. If backup is enabled, you can't update the Firehose stream to disable it. </p>"
         },
         "S3BackupUpdate":{
           "shape":"S3DestinationUpdate",
@@ -2964,7 +3294,7 @@
         },
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
-          "documentation":"<p>The Amazon CloudWatch logging options for your delivery stream.</p>"
+          "documentation":"<p>The Amazon CloudWatch logging options for your Firehose stream.</p>"
         },
         "SecretsManagerConfiguration":{
           "shape":"SecretsManagerConfiguration",
@@ -3027,16 +3357,16 @@
       "members":{
         "DurationInSeconds":{
           "shape":"RetryDurationInSeconds",
-          "documentation":"<p>The period of time during which Firehose retries to deliver data to the specified Amazon S3 prefix.</p>"
+          "documentation":"<p>The period of time during which Firehose retries to deliver data to the specified destination.</p>"
         }
       },
-      "documentation":"<p> The retry behavior in case Firehose is unable to deliver data to an Amazon S3 prefix.</p>"
+      "documentation":"<p> The retry behavior in case Firehose is unable to deliver data to a destination.</p>"
     },
     "RoleARN":{
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"arn:.*"
+      "pattern":"arn:.*:iam::\\d{12}:role/[a-zA-Z_0-9+=,.@\\-_/]+"
     },
     "S3BackupMode":{
       "type":"string",
@@ -3082,7 +3412,7 @@
         },
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
-          "documentation":"<p>The CloudWatch logging options for your delivery stream.</p>"
+          "documentation":"<p>The CloudWatch logging options for your Firehose stream.</p>"
         }
       },
       "documentation":"<p>Describes the configuration of a destination in Amazon S3.</p>"
@@ -3127,7 +3457,7 @@
         },
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
-          "documentation":"<p>The Amazon CloudWatch logging options for your delivery stream.</p>"
+          "documentation":"<p>The Amazon CloudWatch logging options for your Firehose stream.</p>"
         }
       },
       "documentation":"<p>Describes a destination in Amazon S3.</p>"
@@ -3165,10 +3495,17 @@
         },
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
-          "documentation":"<p>The CloudWatch logging options for your delivery stream.</p>"
+          "documentation":"<p>The CloudWatch logging options for your Firehose stream.</p>"
         }
       },
       "documentation":"<p>Describes an update for a destination in Amazon S3.</p>"
+    },
+    "SSLMode":{
+      "type":"string",
+      "enum":[
+        "Disabled",
+        "Enabled"
+      ]
     },
     "SchemaConfiguration":{
       "type":"structure",
@@ -3200,11 +3537,22 @@
       },
       "documentation":"<p>Specifies the schema to which you want Firehose to configure your data before it writes it to Amazon S3. This parameter is required if <code>Enabled</code> is set to true.</p>"
     },
+    "SchemaEvolutionConfiguration":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        }
+      },
+      "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
     "SecretARN":{
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:.*"
+      "pattern":"arn:.*:secretsmanager:[a-zA-Z0-9\\-]+:\\d{12}:secret:[a-zA-Z0-9\\-/_+=.@]+"
     },
     "SecretsManagerConfiguration":{
       "type":"structure",
@@ -3212,7 +3560,7 @@
       "members":{
         "SecretARN":{
           "shape":"SecretARN",
-          "documentation":"<p>The ARN of the secret that stores your credentials. It must be in the same region as the Firehose stream and the role. The secret ARN can reside in a different account than the delivery stream and role as Firehose supports cross-account secret access. This parameter is required when <b>Enabled</b> is set to <code>True</code>.</p>"
+          "documentation":"<p>The ARN of the secret that stores your credentials. It must be in the same region as the Firehose stream and the role. The secret ARN can reside in a different account than the Firehose stream and role as Firehose supports cross-account secret access. This parameter is required when <b>Enabled</b> is set to <code>True</code>.</p>"
         },
         "RoleARN":{
           "shape":"RoleARN",
@@ -3220,7 +3568,7 @@
         },
         "Enabled":{
           "shape":"BooleanObject",
-          "documentation":"<p>Specifies whether you want to use the the secrets manager feature. When set as <code>True</code> the secrets manager configuration overwrites the existing secrets in the destination configuration. When it's set to <code>False</code> Firehose falls back to the credentials in the destination configuration.</p>"
+          "documentation":"<p>Specifies whether you want to use the secrets manager feature. When set as <code>True</code> the secrets manager configuration overwrites the existing secrets in the destination configuration. When it's set to <code>False</code> Firehose falls back to the credentials in the destination configuration.</p>"
         }
       },
       "documentation":"<p>The structure that defines how Firehose accesses the secret.</p>"
@@ -3253,7 +3601,7 @@
           "documentation":"<p>A message that provides information about the error.</p>"
         }
       },
-      "documentation":"<p>The service is unavailable. Back off and retry the operation. If you continue to see the exception, throughput limits for the delivery stream may have been exceeded. For more information about limits and how to request an increase, see <a href=\"https://docs.aws.amazon.com/firehose/latest/dev/limits.html\">Amazon Firehose Limits</a>.</p>",
+      "documentation":"<p>The service is unavailable. Back off and retry the operation. If you continue to see the exception, throughput limits for the Firehose stream may have been exceeded. For more information about limits and how to request an increase, see <a href=\"https://docs.aws.amazon.com/firehose/latest/dev/limits.html\">Amazon Firehose Limits</a>.</p>",
       "exception":true,
       "fault":true
     },
@@ -3261,6 +3609,21 @@
       "type":"integer",
       "max":128,
       "min":1
+    },
+    "SnapshotRequestedBy":{
+      "type":"string",
+      "enum":[
+        "USER",
+        "FIREHOSE"
+      ]
+    },
+    "SnapshotStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETE",
+        "SUSPENDED"
+      ]
     },
     "SnowflakeAccountUrl":{
       "type":"string",
@@ -3274,7 +3637,7 @@
       "members":{
         "SizeInMBs":{
           "shape":"SnowflakeBufferingSizeInMBs",
-          "documentation":"<p> Buffer incoming data to the specified size, in MBs, before delivering it to the destination. The default value is 1. </p>"
+          "documentation":"<p>Buffer incoming data to the specified size, in MBs, before delivering it to the destination. The default value is 128. </p>"
         },
         "IntervalInSeconds":{
           "shape":"SnowflakeBufferingIntervalInSeconds",
@@ -3526,7 +3889,7 @@
         },
         "S3BackupMode":{
           "shape":"SnowflakeS3BackupMode",
-          "documentation":"<p>Choose an S3 backup mode</p>"
+          "documentation":"<p>Choose an S3 backup mode. Once you set the mode as <code>AllData</code>, you can not change it to <code>FailedDataOnly</code>.</p>"
         },
         "S3Update":{"shape":"S3DestinationUpdate"},
         "SecretsManagerConfiguration":{
@@ -3647,9 +4010,13 @@
         "MSKSourceDescription":{
           "shape":"MSKSourceDescription",
           "documentation":"<p>The configuration description for the Amazon MSK cluster to be used as the source for a delivery stream.</p>"
+        },
+        "DatabaseSourceDescription":{
+          "shape":"DatabaseSourceDescription",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
         }
       },
-      "documentation":"<p>Details about a Kinesis data stream used as the source for a Firehose delivery stream.</p>"
+      "documentation":"<p>Details about a Kinesis data stream used as the source for a Firehose Firehose stream.</p>"
     },
     "SplunkBufferingHints":{
       "type":"structure",
@@ -3717,7 +4084,7 @@
         },
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
-          "documentation":"<p>The Amazon CloudWatch logging options for your delivery stream.</p>"
+          "documentation":"<p>The Amazon CloudWatch logging options for your Firehose stream.</p>"
         },
         "BufferingHints":{
           "shape":"SplunkBufferingHints",
@@ -3767,7 +4134,7 @@
         },
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
-          "documentation":"<p>The Amazon CloudWatch logging options for your delivery stream.</p>"
+          "documentation":"<p>The Amazon CloudWatch logging options for your Firehose stream.</p>"
         },
         "BufferingHints":{
           "shape":"SplunkBufferingHints",
@@ -3817,7 +4184,7 @@
         },
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
-          "documentation":"<p>The Amazon CloudWatch logging options for your delivery stream.</p>"
+          "documentation":"<p>The Amazon CloudWatch logging options for your Firehose stream.</p>"
         },
         "BufferingHints":{
           "shape":"SplunkBufferingHints",
@@ -3858,7 +4225,7 @@
       "members":{
         "DeliveryStreamName":{
           "shape":"DeliveryStreamName",
-          "documentation":"<p>The name of the delivery stream for which you want to enable server-side encryption (SSE).</p>"
+          "documentation":"<p>The name of the Firehose stream for which you want to enable server-side encryption (SSE).</p>"
         },
         "DeliveryStreamEncryptionConfigurationInput":{
           "shape":"DeliveryStreamEncryptionConfigurationInput",
@@ -3877,7 +4244,7 @@
       "members":{
         "DeliveryStreamName":{
           "shape":"DeliveryStreamName",
-          "documentation":"<p>The name of the delivery stream for which you want to disable server-side encryption (SSE).</p>"
+          "documentation":"<p>The name of the Firehose stream for which you want to disable server-side encryption (SSE).</p>"
         }
       }
     },
@@ -3886,11 +4253,28 @@
       "members":{
       }
     },
+    "StringWithLettersDigitsUnderscoresDots":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\.\\_]+"
+    },
     "SubnetIdList":{
       "type":"list",
       "member":{"shape":"NonEmptyStringWithoutWhitespace"},
       "max":16,
       "min":1
+    },
+    "TableCreationConfiguration":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        }
+      },
+      "documentation":"<p> </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
     },
     "Tag":{
       "type":"structure",
@@ -3905,7 +4289,7 @@
           "documentation":"<p>An optional string, which you can use to describe or define the tag. Maximum length: 256 characters. Valid characters: Unicode letters, digits, white space, _ . / = + - % @</p>"
         }
       },
-      "documentation":"<p>Metadata that you can assign to a delivery stream, consisting of a key-value pair.</p>"
+      "documentation":"<p>Metadata that you can assign to a Firehose stream, consisting of a key-value pair.</p>"
     },
     "TagDeliveryStreamInput":{
       "type":"structure",
@@ -3916,7 +4300,7 @@
       "members":{
         "DeliveryStreamName":{
           "shape":"DeliveryStreamName",
-          "documentation":"<p>The name of the delivery stream to which you want to add the tags.</p>"
+          "documentation":"<p>The name of the Firehose stream to which you want to add the tags.</p>"
         },
         "Tags":{
           "shape":"TagDeliveryStreamInputTagList",
@@ -3969,7 +4353,7 @@
       "members":{
         "DeliveryStreamName":{
           "shape":"DeliveryStreamName",
-          "documentation":"<p>The name of the delivery stream.</p>"
+          "documentation":"<p>The name of the Firehose stream.</p>"
         },
         "TagKeys":{
           "shape":"TagKeyList",
@@ -3992,7 +4376,7 @@
       "members":{
         "DeliveryStreamName":{
           "shape":"DeliveryStreamName",
-          "documentation":"<p>The name of the delivery stream.</p>"
+          "documentation":"<p>The name of the Firehose stream.</p>"
         },
         "CurrentDeliveryStreamVersionId":{
           "shape":"DeliveryStreamVersionId",
@@ -4041,7 +4425,7 @@
         },
         "IcebergDestinationUpdate":{
           "shape":"IcebergDestinationUpdate",
-          "documentation":"<p> Describes an update for a destination in Apache Iceberg Tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+          "documentation":"<p> Describes an update for a destination in Apache Iceberg Tables. </p>"
         }
       }
     },
@@ -4067,11 +4451,11 @@
       "members":{
         "SubnetIds":{
           "shape":"SubnetIdList",
-          "documentation":"<p>The IDs of the subnets that you want Firehose to use to create ENIs in the VPC of the Amazon ES destination. Make sure that the routing tables and inbound and outbound rules allow traffic to flow from the subnets whose IDs are specified here to the subnets that have the destination Amazon ES endpoints. Firehose creates at least one ENI in each of the subnets that are specified here. Do not delete or modify these ENIs.</p> <p>The number of ENIs that Firehose creates in the subnets specified here scales up and down automatically based on throughput. To enable Firehose to scale up the number of ENIs to match throughput, ensure that you have sufficient quota. To help you calculate the quota you need, assume that Firehose can create up to three ENIs for this delivery stream for each of the subnets specified here. For more information about ENI quota, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html#vpc-limits-enis\">Network Interfaces </a> in the Amazon VPC Quotas topic.</p>"
+          "documentation":"<p>The IDs of the subnets that you want Firehose to use to create ENIs in the VPC of the Amazon ES destination. Make sure that the routing tables and inbound and outbound rules allow traffic to flow from the subnets whose IDs are specified here to the subnets that have the destination Amazon ES endpoints. Firehose creates at least one ENI in each of the subnets that are specified here. Do not delete or modify these ENIs.</p> <p>The number of ENIs that Firehose creates in the subnets specified here scales up and down automatically based on throughput. To enable Firehose to scale up the number of ENIs to match throughput, ensure that you have sufficient quota. To help you calculate the quota you need, assume that Firehose can create up to three ENIs for this Firehose stream for each of the subnets specified here. For more information about ENI quota, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html#vpc-limits-enis\">Network Interfaces </a> in the Amazon VPC Quotas topic.</p>"
         },
         "RoleARN":{
           "shape":"RoleARN",
-          "documentation":"<p>The ARN of the IAM role that you want the delivery stream to use to create endpoints in the destination VPC. You can use your existing Firehose delivery role or you can specify a new role. In either case, make sure that the role trusts the Firehose service principal and that it grants the following permissions:</p> <ul> <li> <p> <code>ec2:DescribeVpcs</code> </p> </li> <li> <p> <code>ec2:DescribeVpcAttribute</code> </p> </li> <li> <p> <code>ec2:DescribeSubnets</code> </p> </li> <li> <p> <code>ec2:DescribeSecurityGroups</code> </p> </li> <li> <p> <code>ec2:DescribeNetworkInterfaces</code> </p> </li> <li> <p> <code>ec2:CreateNetworkInterface</code> </p> </li> <li> <p> <code>ec2:CreateNetworkInterfacePermission</code> </p> </li> <li> <p> <code>ec2:DeleteNetworkInterface</code> </p> </li> </ul> <important> <p>When you specify subnets for delivering data to the destination in a private VPC, make sure you have enough number of free IP addresses in chosen subnets. If there is no available free IP address in a specified subnet, Firehose cannot create or add ENIs for the data delivery in the private VPC, and the delivery will be degraded or fail.</p> </important>"
+          "documentation":"<p>The ARN of the IAM role that you want the Firehose stream to use to create endpoints in the destination VPC. You can use your existing Firehose delivery role or you can specify a new role. In either case, make sure that the role trusts the Firehose service principal and that it grants the following permissions:</p> <ul> <li> <p> <code>ec2:DescribeVpcs</code> </p> </li> <li> <p> <code>ec2:DescribeVpcAttribute</code> </p> </li> <li> <p> <code>ec2:DescribeSubnets</code> </p> </li> <li> <p> <code>ec2:DescribeSecurityGroups</code> </p> </li> <li> <p> <code>ec2:DescribeNetworkInterfaces</code> </p> </li> <li> <p> <code>ec2:CreateNetworkInterface</code> </p> </li> <li> <p> <code>ec2:CreateNetworkInterfacePermission</code> </p> </li> <li> <p> <code>ec2:DeleteNetworkInterface</code> </p> </li> </ul> <important> <p>When you specify subnets for delivering data to the destination in a private VPC, make sure you have enough number of free IP addresses in chosen subnets. If there is no available free IP address in a specified subnet, Firehose cannot create or add ENIs for the data delivery in the private VPC, and the delivery will be degraded or fail.</p> </important>"
         },
         "SecurityGroupIds":{
           "shape":"SecurityGroupIdList",
@@ -4091,15 +4475,15 @@
       "members":{
         "SubnetIds":{
           "shape":"SubnetIdList",
-          "documentation":"<p>The IDs of the subnets that Firehose uses to create ENIs in the VPC of the Amazon ES destination. Make sure that the routing tables and inbound and outbound rules allow traffic to flow from the subnets whose IDs are specified here to the subnets that have the destination Amazon ES endpoints. Firehose creates at least one ENI in each of the subnets that are specified here. Do not delete or modify these ENIs.</p> <p>The number of ENIs that Firehose creates in the subnets specified here scales up and down automatically based on throughput. To enable Firehose to scale up the number of ENIs to match throughput, ensure that you have sufficient quota. To help you calculate the quota you need, assume that Firehose can create up to three ENIs for this delivery stream for each of the subnets specified here. For more information about ENI quota, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html#vpc-limits-enis\">Network Interfaces </a> in the Amazon VPC Quotas topic.</p>"
+          "documentation":"<p>The IDs of the subnets that Firehose uses to create ENIs in the VPC of the Amazon ES destination. Make sure that the routing tables and inbound and outbound rules allow traffic to flow from the subnets whose IDs are specified here to the subnets that have the destination Amazon ES endpoints. Firehose creates at least one ENI in each of the subnets that are specified here. Do not delete or modify these ENIs.</p> <p>The number of ENIs that Firehose creates in the subnets specified here scales up and down automatically based on throughput. To enable Firehose to scale up the number of ENIs to match throughput, ensure that you have sufficient quota. To help you calculate the quota you need, assume that Firehose can create up to three ENIs for this Firehose stream for each of the subnets specified here. For more information about ENI quota, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html#vpc-limits-enis\">Network Interfaces </a> in the Amazon VPC Quotas topic.</p>"
         },
         "RoleARN":{
           "shape":"RoleARN",
-          "documentation":"<p>The ARN of the IAM role that the delivery stream uses to create endpoints in the destination VPC. You can use your existing Firehose delivery role or you can specify a new role. In either case, make sure that the role trusts the Firehose service principal and that it grants the following permissions:</p> <ul> <li> <p> <code>ec2:DescribeVpcs</code> </p> </li> <li> <p> <code>ec2:DescribeVpcAttribute</code> </p> </li> <li> <p> <code>ec2:DescribeSubnets</code> </p> </li> <li> <p> <code>ec2:DescribeSecurityGroups</code> </p> </li> <li> <p> <code>ec2:DescribeNetworkInterfaces</code> </p> </li> <li> <p> <code>ec2:CreateNetworkInterface</code> </p> </li> <li> <p> <code>ec2:CreateNetworkInterfacePermission</code> </p> </li> <li> <p> <code>ec2:DeleteNetworkInterface</code> </p> </li> </ul> <p>If you revoke these permissions after you create the delivery stream, Firehose can't scale out by creating more ENIs when necessary. You might therefore see a degradation in performance.</p>"
+          "documentation":"<p>The ARN of the IAM role that the Firehose stream uses to create endpoints in the destination VPC. You can use your existing Firehose delivery role or you can specify a new role. In either case, make sure that the role trusts the Firehose service principal and that it grants the following permissions:</p> <ul> <li> <p> <code>ec2:DescribeVpcs</code> </p> </li> <li> <p> <code>ec2:DescribeVpcAttribute</code> </p> </li> <li> <p> <code>ec2:DescribeSubnets</code> </p> </li> <li> <p> <code>ec2:DescribeSecurityGroups</code> </p> </li> <li> <p> <code>ec2:DescribeNetworkInterfaces</code> </p> </li> <li> <p> <code>ec2:CreateNetworkInterface</code> </p> </li> <li> <p> <code>ec2:CreateNetworkInterfacePermission</code> </p> </li> <li> <p> <code>ec2:DeleteNetworkInterface</code> </p> </li> </ul> <p>If you revoke these permissions after you create the Firehose stream, Firehose can't scale out by creating more ENIs when necessary. You might therefore see a degradation in performance.</p>"
         },
         "SecurityGroupIds":{
           "shape":"SecurityGroupIdList",
-          "documentation":"<p>The IDs of the security groups that Firehose uses when it creates ENIs in the VPC of the Amazon ES destination. You can use the same security group that the Amazon ES domain uses or different ones. If you specify different security groups, ensure that they allow outbound HTTPS traffic to the Amazon ES domain's security group. Also ensure that the Amazon ES domain's security group allows HTTPS traffic from the security groups specified here. If you use the same security group for both your delivery stream and the Amazon ES domain, make sure the security group inbound rule allows HTTPS traffic. For more information about security group rules, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html#SecurityGroupRules\">Security group rules</a> in the Amazon VPC documentation.</p>"
+          "documentation":"<p>The IDs of the security groups that Firehose uses when it creates ENIs in the VPC of the Amazon ES destination. You can use the same security group that the Amazon ES domain uses or different ones. If you specify different security groups, ensure that they allow outbound HTTPS traffic to the Amazon ES domain's security group. Also ensure that the Amazon ES domain's security group allows HTTPS traffic from the security groups specified here. If you use the same security group for both your Firehose stream and the Amazon ES domain, make sure the security group inbound rule allows HTTPS traffic. For more information about security group rules, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html#SecurityGroupRules\">Security group rules</a> in the Amazon VPC documentation.</p>"
         },
         "VpcId":{
           "shape":"NonEmptyStringWithoutWhitespace",
@@ -4107,6 +4491,18 @@
         }
       },
       "documentation":"<p>The details of the VPC of the Amazon ES destination.</p>"
+    },
+    "VpcEndpointServiceName":{
+      "type":"string",
+      "max":255,
+      "min":47,
+      "pattern":"([a-zA-Z0-9\\-\\_]+\\.){2,3}vpce\\.[a-zA-Z0-9\\-]*\\.vpce-svc\\-[a-zA-Z0-9\\-]{17}$"
+    },
+    "WarehouseLocation":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"s3:\\/\\/.*"
     }
   },
   "documentation":"<fullname>Amazon Data Firehose</fullname> <note> <p>Amazon Data Firehose was previously known as Amazon Kinesis Data Firehose.</p> </note> <p>Amazon Data Firehose is a fully managed service that delivers real-time streaming data to destinations such as Amazon Simple Storage Service (Amazon S3), Amazon OpenSearch Service, Amazon Redshift, Splunk, and various other supported destinations.</p>"

@@ -218,6 +218,21 @@
         "DETECTIVE"
       ]
     },
+    "ControlParameter":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The parameter name. This name is the parameter <code>key</code> when you call <a href=\"https://docs.aws.amazon.com/controltower/latest/APIReference/API_EnableControl.html\"> <code>EnableControl</code> </a> or <a href=\"https://docs.aws.amazon.com/controltower/latest/APIReference/API_UpdateEnabledControl.html\"> <code>UpdateEnabledControl</code> </a>.</p>"
+        }
+      },
+      "documentation":"<p>Four types of control parameters are supported.</p> <ul> <li> <p> <b>AllowedRegions</b>: List of Amazon Web Services Regions exempted from the control. Each string is expected to be an Amazon Web Services Region code. This parameter is mandatory for the <b>OU Region deny</b> control, <b>CT.MULTISERVICE.PV.1</b>.</p> <p>Example: <code>[\"us-east-1\",\"us-west-2\"]</code> </p> </li> <li> <p> <b>ExemptedActions</b>: List of Amazon Web Services IAM actions exempted from the control. Each string is expected to be an IAM action.</p> <p>Example: <code>[\"logs:DescribeLogGroups\",\"logs:StartQuery\",\"logs:GetQueryResults\"]</code> </p> </li> <li> <p> <b>ExemptedPrincipalArns</b>: List of Amazon Web Services IAM principal ARNs exempted from the control. Each string is expected to be an IAM principal that follows the pattern <code>^arn:(aws|aws-us-gov):(iam|sts)::.+:.+$</code> </p> <p>Example: <code>[\"arn:aws:iam::*:role/ReadOnly\",\"arn:aws:sts::*:assumed-role/ReadOnly/*\"]</code> </p> </li> <li> <p> <b>ExemptedResourceArns</b>: List of resource ARNs exempted from the control. Each string is expected to be a resource ARN.</p> <p>Example: <code>[\"arn:aws:s3:::my-bucket-name\"]</code> </p> </li> </ul>"
+    },
+    "ControlParameters":{
+      "type":"list",
+      "member":{"shape":"ControlParameter"}
+    },
     "ControlScope":{
       "type":"string",
       "enum":[
@@ -347,10 +362,35 @@
         },
         "Behavior":{
           "shape":"ControlBehavior",
-          "documentation":"<p>A term that identifies the control's functional behavior. One of <code>Preventive</code>, <code>Deteictive</code>, <code>Proactive</code> </p>"
+          "documentation":"<p>A term that identifies the control's functional behavior. One of <code>Preventive</code>, <code>Detective</code>, <code>Proactive</code> </p>"
         },
-        "RegionConfiguration":{"shape":"RegionConfiguration"}
+        "RegionConfiguration":{"shape":"RegionConfiguration"},
+        "Implementation":{
+          "shape":"ImplementationDetails",
+          "documentation":"<p>Returns information about the control, as an <code>ImplementationDetails</code> object that shows the underlying implementation type for a control.</p>"
+        },
+        "Parameters":{
+          "shape":"ControlParameters",
+          "documentation":"<p>Returns an array of <code>ControlParameter</code> objects that specify the parameters a control supports. An empty list is returned for controls that don’t support parameters. </p>"
+        }
       }
+    },
+    "ImplementationDetails":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"ImplementationType",
+          "documentation":"<p>A string that describes a control's implementation type.</p>"
+        }
+      },
+      "documentation":"<p>An object that describes the implementation type for a control.</p> <p>Our <code>ImplementationDetails</code> <code>Type</code> format has three required segments:</p> <ul> <li> <p> <code>SERVICE-PROVIDER::SERVICE-NAME::RESOURCE-NAME</code> </p> </li> </ul> <p>For example, <code>AWS::Config::ConfigRule</code> <b>or</b> <code>AWS::SecurityHub::SecurityControl</code> resources have the format with three required segments.</p> <p>Our <code>ImplementationDetails</code> <code>Type</code> format has an optional fourth segment, which is present for applicable implementation types. The format is as follows: </p> <ul> <li> <p> <code>SERVICE-PROVIDER::SERVICE-NAME::RESOURCE-NAME::RESOURCE-TYPE-DESCRIPTION</code> </p> </li> </ul> <p>For example, <code>AWS::Organizations::Policy::SERVICE_CONTROL_POLICY</code> <b>or</b> <code>AWS::CloudFormation::Type::HOOK</code> have the format with four segments.</p> <p>Although the format is similar, the values for the <code>Type</code> field do not match any Amazon Web Services CloudFormation values, and we do not use CloudFormation to implement these controls.</p>"
+    },
+    "ImplementationType":{
+      "type":"string",
+      "max":2048,
+      "min":7,
+      "pattern":"[A-Za-z0-9]+(::[A-Za-z0-9_]+){2,3}"
     },
     "InternalServerException":{
       "type":"structure",
@@ -613,7 +653,7 @@
           "documentation":"<p>Regions in which the control is available to be deployed.</p>"
         }
       },
-      "documentation":"<p>Returns information about the control, including the scope of the control, if enabled, and the Regions in which the control currently is available for deployment.</p> <p>If you are applying controls through an Amazon Web Services Control Tower landing zone environment, remember that the values returned in the <code>RegionConfiguration</code> API operation are not related to the governed Regions in your landing zone. For example, if you are governing Regions <code>A</code>,<code>B</code>,and <code>C</code> while the control is available in Regions <code>A</code>, <code>B</code>, C<code>,</code> and <code>D</code>, you'd see a response with <code>DeployableRegions</code> of <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code> for a control with <code>REGIONAL</code> scope, even though you may not intend to deploy the control in Region <code>D</code>, because you do not govern it through your landing zone.</p>"
+      "documentation":"<p>Returns information about the control, including the scope of the control, if enabled, and the Regions in which the control currently is available for deployment. For more information about scope, see <a href=\"https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/global-services.html\">Global services</a>.</p> <p>If you are applying controls through an Amazon Web Services Control Tower landing zone environment, remember that the values returned in the <code>RegionConfiguration</code> API operation are not related to the governed Regions in your landing zone. For example, if you are governing Regions <code>A</code>,<code>B</code>,and <code>C</code> while the control is available in Regions <code>A</code>, <code>B</code>, C<code>,</code> and <code>D</code>, you'd see a response with <code>DeployableRegions</code> of <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code> for a control with <code>REGIONAL</code> scope, even though you may not intend to deploy the control in Region <code>D</code>, because you do not govern it through your landing zone.</p>"
     },
     "ResourceNotFoundException":{
       "type":"structure",

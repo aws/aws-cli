@@ -111,7 +111,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates an Amazon Q Business application.</p> <note> <p>There are new tiers for Amazon Q Business. Not all features in Amazon Q Business Pro are also available in Amazon Q Business Lite. For information on what's included in Amazon Q Business Lite and what's included in Amazon Q Business Pro, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/tiers.html#user-sub-tiers\">Amazon Q Business tiers</a>. You must use the Amazon Q Business console to assign subscription tiers to users.</p> </note>",
+      "documentation":"<p>Creates an Amazon Q Business application.</p> <note> <p>There are new tiers for Amazon Q Business. Not all features in Amazon Q Business Pro are also available in Amazon Q Business Lite. For information on what's included in Amazon Q Business Lite and what's included in Amazon Q Business Pro, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/tiers.html#user-sub-tiers\">Amazon Q Business tiers</a>. You must use the Amazon Q Business console to assign subscription tiers to users. </p> <p> A Amazon Q Apps service linked role will be created if it's absent in the Amazon Web Services account when the QAppsConfiguration is enabled in the request. For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/using-service-linked-roles-qapps.html\"> Using service-linked roles for Q Apps </a> </p> </note>",
       "idempotent":true
     },
     "CreateDataSource":{
@@ -950,7 +950,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Updates an existing Amazon Q Business application.</p>",
+      "documentation":"<p>Updates an existing Amazon Q Business application.</p> <note> <p> A Amazon Q Apps service-linked role will be created if it's absent in the Amazon Web Services account when the QAppsConfiguration is enabled in the request. For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/using-service-linked-roles-qapps.html\"> Using service-linked roles for Q Apps </a> </p> </note>",
       "idempotent":true
     },
     "UpdateChatControlsConfiguration":{
@@ -4192,7 +4192,8 @@
         "memberUsers":{
           "shape":"MemberUsers",
           "documentation":"<p>A list of users that belong to a group. For example, a list of interns all belong to the \"Interns\" group.</p>"
-        }
+        },
+        "s3PathForGroupMembers":{"shape":"S3"}
       },
       "documentation":"<p>A list of users or sub groups that belong to a group. This is for generating Amazon Q Business chat results only from document a user has access to.</p>"
     },
@@ -5645,7 +5646,11 @@
           "shape":"MembershipType",
           "documentation":"<p>The type of the group.</p>"
         },
-        "groupMembers":{"shape":"GroupMembers"}
+        "groupMembers":{"shape":"GroupMembers"},
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that has access to the S3 file that contains your list of users that belong to a group.The Amazon Resource Name (ARN) of an IAM role that has access to the S3 file that contains your list of users that belong to a group.</p>"
+        }
       }
     },
     "PutGroupResponse":{

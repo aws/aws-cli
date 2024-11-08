@@ -10,12 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from unittest.mock import patch
+
 import pytest
 import signal
 
 import awscli.paramfile
 from awscli import shorthand
-from awscli.testutils import FileCreator, skip_if_windows, unittest
+from awscli.testutils import skip_if_windows, unittest
 
 from botocore import model
 
@@ -203,46 +205,28 @@ def test_parse(data, expected):
     assert actual == expected
 
 class TestShorthandParserParamFile:
-    @pytest.fixture()
-    def files(self):
-        files = FileCreator()
-        yield files
-        files.remove_all()
-
+    @patch('awscli.paramfile.compat_open')
     @pytest.mark.parametrize(
         'file_contents, data, expected',
         (
-            ('file-contents123', 'Foo@=file://{0},Bar={{Baz@=file://{0}}}', {'Foo': 'file-contents123', 'Bar': {'Baz': 'file-contents123'}}),
-            (b'file-contents123', 'Foo@=fileb://{0},Bar={{Baz@=fileb://{0}}}', {'Foo': b'file-contents123', 'Bar': {'Baz': b'file-contents123'}}),
-            ('file-contents123', 'Bar@={{Baz=file://{0}}}', {'Bar': {'Baz': 'file://{0}'}}),
-            ('file-contents123', 'Foo@={0},Bar={{Baz@={0}}}', {'Foo': '{0}', 'Bar': {'Baz': '{0}'}})
+            ('file-contents123', 'Foo@=file://foo,Bar={Baz@=file://foo}', {'Foo': 'file-contents123', 'Bar': {'Baz': 'file-contents123'}}),
+            (b'file-contents123', 'Foo@=fileb://foo,Bar={Baz@=fileb://foo}', {'Foo': b'file-contents123', 'Bar': {'Baz': b'file-contents123'}}),
+            ('file-contents123', 'Bar@={Baz=file://foo}', {'Bar': {'Baz': 'file://foo'}}),
+            ('file-contents123', 'Foo@=foo,Bar={Baz@=foo}', {'Foo': 'foo', 'Bar': {'Baz': 'foo'}})
         )
     )
-    def test_paramfile(self, files, file_contents, data, expected):
-        is_binary = isinstance(file_contents, bytes)
-        mode = 'wb' if is_binary else 'w'
-        filename = files.create_file('foo', contents=file_contents, mode=mode)
-        result = shorthand.ShorthandParser().parse(data.format(filename))
-        # traverse the dictionary up to 2-levels deep, formatting values with the file path
-        for (key, value) in expected.items():
-            if isinstance(value, dict):
-                # value is a nested dictionary / hash literal
-                for (key2, value2) in value.items():
-                    # if it's a binary-encoded string, it must contain the raw file contents.
-                    if not isinstance(value2, bytes):
-                        value[key2] = value2.format(filename)
-            elif not isinstance(value, bytes):
-                expected[key] = value.format(filename)
-
+    def test_paramfile(self, mock_compat_open, file_contents, data, expected):
+        mock_compat_open.return_value.__enter__.return_value.read.return_value = file_contents
+        result = shorthand.ShorthandParser().parse(data)
         assert result == expected
 
-    def test_paramfile_list(self, files):
+    @patch('awscli.paramfile.compat_open')
+    def test_paramfile_list(self, mock_compat_open):
         f1_contents = 'file-contents123'
         f2_contents = 'contents2'
-        f1_name = files.create_file('foo', f1_contents)
-        f2_name = files.create_file('bar', f2_contents)
+        mock_compat_open.return_value.__enter__.return_value.read.side_effect = [f1_contents, f2_contents]
         result = shorthand.ShorthandParser().parse(
-            f'Foo@=[a, file://{f1_name}, file://{f2_name}]'
+            f'Foo@=[a, file://foo1, file://foo2]'
         )
         assert result == {'Foo': ['a', f1_contents, f2_contents]}
 

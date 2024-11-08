@@ -278,7 +278,8 @@ class ShorthandParser(object):
         result = self._FIRST_VALUE.match(self._input_value[self._index:])
         if result is not None:
             consumed = self._consume_matched_regex(result)
-            return self._resolve_paramfile(consumed.replace('\\,', ',').rstrip())
+            processed = consumed.replace('\\,', ',').rstrip()
+            return self._should_resolve_paramfiles(processed) if self._resolve_paramfiles else processed
         return ''
 
     def _explicit_list(self):
@@ -337,7 +338,8 @@ class ShorthandParser(object):
         # single-quoted-value = %x27 *(val-escaped-single) %x27
         # val-escaped-single  = %x20-26 / %x28-7F / escaped-escape /
         #                       (escape single-quote)
-        return self._resolve_paramfile(self._consume_quoted(self._SINGLE_QUOTED, escaped_char="'"))
+        processed = self._consume_quoted(self._SINGLE_QUOTED, escaped_char="'")
+        return self._should_resolve_paramfiles(processed) if self._resolve_paramfiles else processed
 
     def _consume_quoted(self, regex, escaped_char=None):
         value = self._must_consume_regex(regex)[1:-1]
@@ -347,7 +349,8 @@ class ShorthandParser(object):
         return value
 
     def _double_quoted_value(self):
-        return self._resolve_paramfile(self._consume_quoted(self._DOUBLE_QUOTED, escaped_char='"'))
+        processed = self._consume_quoted(self._DOUBLE_QUOTED, escaped_char='"')
+        return self._should_resolve_paramfiles(processed) if self._resolve_paramfiles else processed
 
     def _second_value(self):
         if self._current() == "'":
@@ -356,11 +359,11 @@ class ShorthandParser(object):
             return self._double_quoted_value()
         else:
             consumed = self._must_consume_regex(self._SECOND_VALUE)
-            return self._resolve_paramfile(consumed.replace('\\,', ',').rstrip())
+            processed = consumed.replace('\\,', ',').rstrip()
+            return self._should_resolve_paramfiles(processed) if self._resolve_paramfiles else processed
 
-    def _resolve_paramfile(self, val):
-        if (self._resolve_paramfiles and
-                (paramfile := get_paramfile(val, LOCAL_PREFIX_MAP)) is not None):
+    def _should_resolve_paramfiles(self, val):
+        if (paramfile := get_paramfile(val, LOCAL_PREFIX_MAP)) is not None:
             return paramfile
         return val
 

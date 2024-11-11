@@ -647,7 +647,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists coverage details for you environment.</p>"
+      "documentation":"<p>Lists coverage details for your environment.</p>"
     },
     "ListCoverageStatistics":{
       "name":"ListCoverageStatistics",
@@ -891,7 +891,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Stops a CIS session. This API is used by the Amazon Inspector SSM plugin to communicate with the Amazon Inspector service. The Amazon Inspector SSM plugin calls this API to start a CIS scan session for the scan ID supplied by the service. </p>",
+      "documentation":"<p> Stops a CIS session. This API is used by the Amazon Inspector SSM plugin to communicate with the Amazon Inspector service. The Amazon Inspector SSM plugin calls this API to stop a CIS scan session for the scan ID supplied by the service. </p>",
       "idempotent":true
     },
     "TagResource":{
@@ -1061,7 +1061,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>You do not have sufficient access to perform this action.</p> <p> For <code>Enable</code>, you receive this error if you attempt to use a feature in an unsupported Amazon Web Services Region. </p>",
+      "documentation":"<p>You do not have sufficient access to perform this action.</p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
@@ -3049,7 +3049,7 @@
         },
         "scanMode":{
           "shape":"CoverageStringFilterList",
-          "documentation":"<p>The filter to search for Amazon EC2 instance coverage by scan mode. Valid values are <code>EC2_SSM_AGENT_BASED</code> and <code>EC2_HYBRID</code>.</p>"
+          "documentation":"<p>The filter to search for Amazon EC2 instance coverage by scan mode. Valid values are <code>EC2_SSM_AGENT_BASED</code> and <code>EC2_AGENTLESS</code>.</p>"
         },
         "scanStatusCode":{
           "shape":"CoverageStringFilterList",
@@ -3338,7 +3338,10 @@
           "shape":"ResourceFilterCriteria",
           "documentation":"<p>The resource filter criteria for the software bill of materials (SBOM) report.</p>"
         },
-        "s3Destination":{"shape":"Destination"}
+        "s3Destination":{
+          "shape":"Destination",
+          "documentation":"<p>Contains details of the Amazon S3 bucket and KMS key used to export findings.</p>"
+        }
       }
     },
     "CreateSbomExportResponse":{
@@ -4671,7 +4674,10 @@
     "FindingDetail":{
       "type":"structure",
       "members":{
-        "cisaData":{"shape":"CisaData"},
+        "cisaData":{
+          "shape":"CisaData",
+          "documentation":"<p>The Cybersecurity and Infrastructure Security Agency (CISA) details for a specific vulnerability.</p>"
+        },
         "cwes":{
           "shape":"Cwes",
           "documentation":"<p>The Common Weakness Enumerations (CWEs) associated with the vulnerability.</p>"
@@ -4684,7 +4690,10 @@
           "shape":"EvidenceList",
           "documentation":"<p>Information on the evidence of the vulnerability.</p>"
         },
-        "exploitObserved":{"shape":"ExploitObserved"},
+        "exploitObserved":{
+          "shape":"ExploitObserved",
+          "documentation":"<p>Contains information on when this exploit was observed.</p>"
+        },
         "findingArn":{
           "shape":"FindingArn",
           "documentation":"<p>The finding ARN that the vulnerability details are associated with.</p>"
@@ -5216,7 +5225,10 @@
           "shape":"ReportId",
           "documentation":"<p>The report ID of the software bill of materials (SBOM) report.</p>"
         },
-        "s3Destination":{"shape":"Destination"},
+        "s3Destination":{
+          "shape":"Destination",
+          "documentation":"<p>Contains details of the Amazon S3 bucket and KMS key used to export findings</p>"
+        },
         "status":{
           "shape":"ExternalReportStatus",
           "documentation":"<p>The status of the software bill of materials (SBOM) report.</p>"
@@ -5422,7 +5434,10 @@
           "shape":"String",
           "documentation":"<p>The runtimes included in the aggregation results.</p>"
         },
-        "severityCounts":{"shape":"SeverityCounts"}
+        "severityCounts":{
+          "shape":"SeverityCounts",
+          "documentation":"<p>An object that contains the counts of aggregated finding per severity.</p>"
+        }
       },
       "documentation":"<p>A response that contains the results of an Amazon Web Services Lambda function finding aggregation.</p>"
     },
@@ -5507,7 +5522,10 @@
           "shape":"NonEmptyString",
           "documentation":"<p>The Resource ID of the Amazon Web Services Lambda function layer.</p>"
         },
-        "severityCounts":{"shape":"SeverityCounts"}
+        "severityCounts":{
+          "shape":"SeverityCounts",
+          "documentation":"<p>An object that contains the counts of aggregated finding per severity.</p>"
+        }
       },
       "documentation":"<p>A response that contains the results of an Amazon Web Services Lambda function layer finding aggregation.</p>"
     },
@@ -6483,6 +6501,10 @@
           "shape":"NumberFilter",
           "documentation":"<p>An object that contains details on the package epoch to filter on.</p>"
         },
+        "filePath":{
+          "shape":"StringFilter",
+          "documentation":"<p>An object that contains details on the package file path to filter on.</p>"
+        },
         "name":{
           "shape":"StringFilter",
           "documentation":"<p>An object that contains details on the name of the package to filter on.</p>"
@@ -6491,7 +6513,10 @@
           "shape":"StringFilter",
           "documentation":"<p>An object that contains details on the package release to filter on.</p>"
         },
-        "sourceLambdaLayerArn":{"shape":"StringFilter"},
+        "sourceLambdaLayerArn":{
+          "shape":"StringFilter",
+          "documentation":"<p>An object that describes the details of a string filter.</p>"
+        },
         "sourceLayerHash":{
           "shape":"StringFilter",
           "documentation":"<p>An object that contains details on the source layer hash to filter on.</p>"
@@ -6528,7 +6553,8 @@
         "PYTHONPKG",
         "NODEPKG",
         "POM",
-        "GEMSPEC"
+        "GEMSPEC",
+        "DOTNET_CORE"
       ]
     },
     "PackageName":{
@@ -7073,8 +7099,14 @@
           "shape":"State",
           "documentation":"<p>An object detailing the state of Amazon Inspector scanning for Amazon ECR resources.</p>"
         },
-        "lambda":{"shape":"State"},
-        "lambdaCode":{"shape":"State"}
+        "lambda":{
+          "shape":"State",
+          "documentation":"<p>An object that described the state of Amazon Inspector scans for an account.</p>"
+        },
+        "lambdaCode":{
+          "shape":"State",
+          "documentation":"<p>An object that described the state of Amazon Inspector scans for an account.</p>"
+        }
       },
       "documentation":"<p>Details the state of Amazon Inspector for each resource type Amazon Inspector scans.</p>"
     },
@@ -7181,7 +7213,13 @@
         "NODEJS_18_X",
         "GO_1_X",
         "JAVA_17",
-        "PYTHON_3_10"
+        "PYTHON_3_10",
+        "PYTHON_3_11",
+        "DOTNETCORE_3_1",
+        "DOTNET_6",
+        "DOTNET_7",
+        "RUBY_2_7",
+        "RUBY_3_2"
       ]
     },
     "SbomReportFormat":{

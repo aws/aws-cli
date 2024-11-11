@@ -1,47 +1,41 @@
 {
-  "version": 2,
-  "waiters": {
-    "DistributionDeployed": {
-      "delay": 60,
-      "operation": "GetDistribution",
-      "maxAttempts": 35,
-      "description": "Wait until a distribution is deployed.",
-      "acceptors": [
-        {
-          "expected": "Deployed",
-          "matcher": "path",
-          "state": "success",
-          "argument": "Distribution.Status"
-        }
-      ]
+  "version" : 2,
+  "waiters" : {
+    "DistributionDeployed" : {
+      "description" : "Wait until a distribution is deployed.",
+      "delay" : 60,
+      "maxAttempts" : 35,
+      "operation" : "GetDistribution",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "Distribution.Status",
+        "state" : "success",
+        "expected" : "Deployed"
+      } ]
     },
-    "InvalidationCompleted": {
-      "delay": 20,
-      "operation": "GetInvalidation",
-      "maxAttempts": 30,
-      "description": "Wait until an invalidation has completed.",
-      "acceptors": [
-        {
-          "expected": "Completed",
-          "matcher": "path",
-          "state": "success",
-          "argument": "Invalidation.Status"
-        }
-      ]
+    "InvalidationCompleted" : {
+      "description" : "Wait until an invalidation has completed.",
+      "delay" : 20,
+      "maxAttempts" : 30,
+      "operation" : "GetInvalidation",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "Invalidation.Status",
+        "state" : "success",
+        "expected" : "Completed"
+      } ]
     },
-    "StreamingDistributionDeployed": {
-      "delay": 60,
-      "operation": "GetStreamingDistribution",
-      "maxAttempts": 25,
-      "description": "Wait until a streaming distribution is deployed.",
-      "acceptors": [
-        {
-          "expected": "Deployed",
-          "matcher": "path",
-          "state": "success",
-          "argument": "StreamingDistribution.Status"
-        }
-      ]
+    "StreamingDistributionDeployed" : {
+      "description" : "Wait until a streaming distribution is deployed.",
+      "delay" : 60,
+      "maxAttempts" : 25,
+      "operation" : "GetStreamingDistribution",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "StreamingDistribution.Status",
+        "state" : "success",
+        "expected" : "Deployed"
+      } ]
     }
   }
 }

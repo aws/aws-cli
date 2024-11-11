@@ -79,6 +79,24 @@
       ],
       "documentation":"<p>Associates a package with an Amazon OpenSearch Service domain. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/custom-packages.html\">Custom packages for Amazon OpenSearch Service</a>.</p>"
     },
+    "AssociatePackages":{
+      "name":"AssociatePackages",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/packages/associateMultiple"
+      },
+      "input":{"shape":"AssociatePackagesRequest"},
+      "output":{"shape":"AssociatePackagesResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Operation in the Amazon OpenSearch Service API for associating multiple packages with a domain simultaneously.</p>"
+    },
     "AuthorizeVpcEndpointAccess":{
       "name":"AuthorizeVpcEndpointAccess",
       "http":{
@@ -597,6 +615,24 @@
       ],
       "documentation":"<p>Removes a package from the specified Amazon OpenSearch Service domain. The package can't be in use with any OpenSearch index for the dissociation to succeed. The package is still available in OpenSearch Service for association later. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/custom-packages.html\">Custom packages for Amazon OpenSearch Service</a>.</p>"
     },
+    "DissociatePackages":{
+      "name":"DissociatePackages",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/packages/dissociateMultiple"
+      },
+      "input":{"shape":"DissociatePackagesRequest"},
+      "output":{"shape":"DissociatePackagesResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Dissociates multiple packages from a domain simulatneously.</p>"
+    },
     "GetApplication":{
       "name":"GetApplication",
       "http":{
@@ -1103,6 +1139,23 @@
       ],
       "documentation":"<p>Updates a package for use with Amazon OpenSearch Service domains. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/custom-packages.html\">Custom packages for Amazon OpenSearch Service</a>.</p>"
     },
+    "UpdatePackageScope":{
+      "name":"UpdatePackageScope",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/packages/updateScope"
+      },
+      "input":{"shape":"UpdatePackageScopeRequest"},
+      "output":{"shape":"UpdatePackageScopeResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Updates the scope of a package. Scope of the package defines users who can view and associate a package.</p>"
+    },
     "UpdateScheduledAction":{
       "name":"UpdateScheduledAction",
       "http":{
@@ -1582,6 +1635,14 @@
           "documentation":"<p>Name of the domain to associate the package with.</p>",
           "location":"uri",
           "locationName":"DomainName"
+        },
+        "PrerequisitePackageIDList":{
+          "shape":"PackageIDList",
+          "documentation":"<p>A list of package IDs that must be associated with the domain before the package specified in the request can be associated.</p>"
+        },
+        "AssociationConfiguration":{
+          "shape":"PackageAssociationConfiguration",
+          "documentation":"<p>The configuration for associating a package with an Amazon OpenSearch Service domain.</p>"
         }
       },
       "documentation":"<p>Container for the request parameters to the <code>AssociatePackage</code> operation.</p>"
@@ -1595,6 +1656,29 @@
         }
       },
       "documentation":"<p>Container for the response returned by the <code>AssociatePackage</code> operation.</p>"
+    },
+    "AssociatePackagesRequest":{
+      "type":"structure",
+      "required":[
+        "PackageList",
+        "DomainName"
+      ],
+      "members":{
+        "PackageList":{
+          "shape":"PackageDetailsForAssociationList",
+          "documentation":"<p>A list of packages and their prerequisites to be associated with a domain.</p>"
+        },
+        "DomainName":{"shape":"DomainName"}
+      }
+    },
+    "AssociatePackagesResponse":{
+      "type":"structure",
+      "members":{
+        "DomainPackageDetailsList":{
+          "shape":"DomainPackageDetailsList",
+          "documentation":"<p>List of information about packages that are associated with a domain. </p>"
+        }
+      }
     },
     "AuthorizeVpcEndpointAccessRequest":{
       "type":"structure",
@@ -2546,6 +2630,22 @@
         "PackageSource":{
           "shape":"PackageSource",
           "documentation":"<p>The Amazon S3 location from which to import the package.</p>"
+        },
+        "PackageConfiguration":{
+          "shape":"PackageConfiguration",
+          "documentation":"<p> The configuration parameters for the package being created.</p>"
+        },
+        "EngineVersion":{
+          "shape":"EngineVersion",
+          "documentation":"<p>The version of the Amazon OpenSearch Service engine for which is compatible with the package. This can only be specified for package type <code>ZIP-PLUGIN</code> </p>"
+        },
+        "PackageVendingOptions":{
+          "shape":"PackageVendingOptions",
+          "documentation":"<p> The vending options for the package being created. They determine if the package can be vended to other users.</p>"
+        },
+        "PackageEncryptionOptions":{
+          "shape":"PackageEncryptionOptions",
+          "documentation":"<p>The encryption parameters for the package being created.</p>"
         }
       },
       "documentation":"<p>Container for request parameters to the <code>CreatePackage</code> operation.</p>"
@@ -3256,7 +3356,8 @@
         "PackageName",
         "PackageStatus",
         "PackageType",
-        "EngineVersion"
+        "EngineVersion",
+        "PackageOwner"
       ]
     },
     "DescribePackagesFilterValue":{
@@ -3444,6 +3545,29 @@
         }
       },
       "documentation":"<p>Container for the response returned by an <code>DissociatePackage</code> operation.</p>"
+    },
+    "DissociatePackagesRequest":{
+      "type":"structure",
+      "required":[
+        "PackageList",
+        "DomainName"
+      ],
+      "members":{
+        "PackageList":{
+          "shape":"PackageIDList",
+          "documentation":"<p>A list of package IDs to be dissociated from a domain.</p>"
+        },
+        "DomainName":{"shape":"DomainName"}
+      }
+    },
+    "DissociatePackagesResponse":{
+      "type":"structure",
+      "members":{
+        "DomainPackageDetailsList":{
+          "shape":"DomainPackageDetailsList",
+          "documentation":"<p>A list of package details for the packages that were dissociated from the domain.</p>"
+        }
+      }
     },
     "DomainArn":{
       "type":"string",
@@ -3763,6 +3887,10 @@
           "shape":"PackageVersion",
           "documentation":"<p>The current version of the package.</p>"
         },
+        "PrerequisitePackageIDList":{
+          "shape":"PackageIDList",
+          "documentation":"<p>A list of package IDs that must be associated with the domain before or with the package can be associated.</p>"
+        },
         "ReferencePath":{
           "shape":"ReferencePath",
           "documentation":"<p>The relative path of the package on the OpenSearch Service cluster nodes. This is <code>synonym_path</code> when the package is for synonym files.</p>"
@@ -3770,6 +3898,10 @@
         "ErrorDetails":{
           "shape":"ErrorDetails",
           "documentation":"<p>Additional information if the package is in an error state. Null otherwise.</p>"
+        },
+        "AssociationConfiguration":{
+          "shape":"PackageAssociationConfiguration",
+          "documentation":"<p>The configuration for associating a package with an Amazon OpenSearch Service domain.</p>"
         }
       },
       "documentation":"<p>Information about a package that is associated with a domain. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/custom-packages.html\">Custom packages for Amazon OpenSearch Service</a>.</p>"
@@ -4848,6 +4980,21 @@
       },
       "documentation":"<p>Describes the JWT options configured for the domain.</p>"
     },
+    "KeyStoreAccessOption":{
+      "type":"structure",
+      "required":["KeyStoreAccessEnabled"],
+      "members":{
+        "KeyAccessRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>Role ARN to access the KeyStore Key</p>"
+        },
+        "KeyStoreAccessEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>This indicates whether Key Store access is enabled </p>"
+        }
+      },
+      "documentation":"<p>The configuration parameters to enable access to the key store required by the package.</p>"
+    },
     "KmsKeyId":{
       "type":"string",
       "max":500,
@@ -4855,6 +5002,11 @@
       "pattern":".*"
     },
     "LastUpdated":{"type":"timestamp"},
+    "LicenseFilepath":{
+      "type":"string",
+      "max":256,
+      "pattern":"^(?!.*\\/\\.{2,})(?!.*\\.\\.)[a-zA-Z0-9_.-]+(?:\\/[a-zA-Z0-9_.-]+)*$"
+    },
     "LimitExceededException":{
       "type":"structure",
       "members":{
@@ -5911,6 +6063,42 @@
       "min":12,
       "pattern":"[0-9]+"
     },
+    "PackageAssociationConfiguration":{
+      "type":"structure",
+      "members":{
+        "KeyStoreAccessOption":{
+          "shape":"KeyStoreAccessOption",
+          "documentation":"<p>The configuration parameters to enable accessing the key store required by the package.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for associating a package with a domain.</p>"
+    },
+    "PackageConfiguration":{
+      "type":"structure",
+      "required":[
+        "LicenseRequirement",
+        "ConfigurationRequirement"
+      ],
+      "members":{
+        "LicenseRequirement":{
+          "shape":"RequirementLevel",
+          "documentation":"<p>The license requirements for the package.</p>"
+        },
+        "LicenseFilepath":{
+          "shape":"LicenseFilepath",
+          "documentation":"<p>The relative file path for the license associated with the package.</p>"
+        },
+        "ConfigurationRequirement":{
+          "shape":"RequirementLevel",
+          "documentation":"<p>The configuration requirements for the package.</p>"
+        },
+        "RequiresRestartForConfigurationUpdate":{
+          "shape":"Boolean",
+          "documentation":"<p>This indicates whether a B/G deployment is required for updating the configuration that the plugin is prerequisite for.</p>"
+        }
+      },
+      "documentation":"<p> The configuration parameters for a package.</p>"
+    },
     "PackageDescription":{
       "type":"string",
       "max":1024
@@ -5961,23 +6149,97 @@
         "AvailablePluginProperties":{
           "shape":"PluginProperties",
           "documentation":"<p>If the package is a <code>ZIP-PLUGIN</code> package, additional information about plugin properties.</p>"
+        },
+        "AvailablePackageConfiguration":{
+          "shape":"PackageConfiguration",
+          "documentation":"<p>This represents the available configuration parameters for the package.</p>"
+        },
+        "AllowListedUserList":{
+          "shape":"PackageUserList",
+          "documentation":"<p> A list of users who are allowed to view and associate the package. This field is only visible to the owner of a package.</p>"
+        },
+        "PackageOwner":{
+          "shape":"PackageOwner",
+          "documentation":"<p>The owner of the package who is allowed to create/update a package and add users to the package scope.</p>"
+        },
+        "PackageVendingOptions":{
+          "shape":"PackageVendingOptions",
+          "documentation":"<p>Package Vending Options for a package.</p>"
+        },
+        "PackageEncryptionOptions":{
+          "shape":"PackageEncryptionOptions",
+          "documentation":"<p>Package Encryption Options for a package.</p>"
         }
       },
       "documentation":"<p>Basic information about a package.</p>"
+    },
+    "PackageDetailsForAssociation":{
+      "type":"structure",
+      "required":["PackageID"],
+      "members":{
+        "PackageID":{
+          "shape":"PackageID",
+          "documentation":"<p>Internal ID of the package that you want to associate with a domain.</p>"
+        },
+        "PrerequisitePackageIDList":{
+          "shape":"PackageIDList",
+          "documentation":"<p>List of package IDs that must be associated with the domain with or before the package can be associated.</p>"
+        },
+        "AssociationConfiguration":{
+          "shape":"PackageAssociationConfiguration",
+          "documentation":"<p>The configuration parameters for associating the package with a domain.</p>"
+        }
+      },
+      "documentation":"<p> Details of a package that is associated with a domain.</p>"
+    },
+    "PackageDetailsForAssociationList":{
+      "type":"list",
+      "member":{"shape":"PackageDetailsForAssociation"}
     },
     "PackageDetailsList":{
       "type":"list",
       "member":{"shape":"PackageDetails"}
     },
+    "PackageEncryptionOptions":{
+      "type":"structure",
+      "required":["EncryptionEnabled"],
+      "members":{
+        "KmsKeyIdentifier":{
+          "shape":"KmsKeyId",
+          "documentation":"<p> KMS key ID for encrypting the package.</p>"
+        },
+        "EncryptionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>This indicates whether encryption is enabled for the package.</p>"
+        }
+      },
+      "documentation":"<p>Encryption options for a package.</p>"
+    },
     "PackageID":{
       "type":"string",
-      "pattern":"^([FG][0-9]+)$"
+      "pattern":"^([FG][0-9]+)$|^(pkg-[a-f0-9]+)$"
+    },
+    "PackageIDList":{
+      "type":"list",
+      "member":{"shape":"PackageID"}
     },
     "PackageName":{
       "type":"string",
       "max":256,
       "min":3,
       "pattern":"[a-z][a-z0-9\\-]+"
+    },
+    "PackageOwner":{
+      "type":"string",
+      "max":1024
+    },
+    "PackageScopeOperationEnum":{
+      "type":"string",
+      "enum":[
+        "ADD",
+        "OVERRIDE",
+        "REMOVE"
+      ]
     },
     "PackageSource":{
       "type":"structure",
@@ -6010,8 +6272,31 @@
       "type":"string",
       "enum":[
         "TXT-DICTIONARY",
-        "ZIP-PLUGIN"
+        "ZIP-PLUGIN",
+        "PACKAGE-LICENSE",
+        "PACKAGE-CONFIG"
       ]
+    },
+    "PackageUser":{
+      "type":"string",
+      "max":12,
+      "min":6,
+      "pattern":"^[0-9]{12}$|^GLOBAL$"
+    },
+    "PackageUserList":{
+      "type":"list",
+      "member":{"shape":"PackageUser"}
+    },
+    "PackageVendingOptions":{
+      "type":"structure",
+      "required":["VendingEnabled"],
+      "members":{
+        "VendingEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>This indicates whether vending is enabled for the package to determine if package can be used by other users. </p>"
+        }
+      },
+      "documentation":"<p>The vending options for a package to determine if the package can be used by other users. </p>"
     },
     "PackageVersion":{"type":"string"},
     "PackageVersionHistory":{
@@ -6032,6 +6317,10 @@
         "PluginProperties":{
           "shape":"PluginProperties",
           "documentation":"<p>Additional information about plugin properties if the package is a <code>ZIP-PLUGIN</code> package.</p>"
+        },
+        "PackageConfiguration":{
+          "shape":"PackageConfiguration",
+          "documentation":"<p>The configuration details for a specific version of a package.</p>"
         }
       },
       "documentation":"<p>Details about a package version.</p>"
@@ -6217,6 +6506,14 @@
       "max":100,
       "min":1,
       "pattern":"^([\\s\\S]*)$"
+    },
+    "RequirementLevel":{
+      "type":"string",
+      "enum":[
+        "REQUIRED",
+        "OPTIONAL",
+        "NONE"
+      ]
     },
     "ReservationToken":{
       "type":"string",
@@ -7171,6 +7468,14 @@
         "CommitMessage":{
           "shape":"CommitMessage",
           "documentation":"<p>Commit message for the updated file, which is shown as part of <code>GetPackageVersionHistoryResponse</code>.</p>"
+        },
+        "PackageConfiguration":{
+          "shape":"PackageConfiguration",
+          "documentation":"<p>The updated configuration details for a package.</p>"
+        },
+        "PackageEncryptionOptions":{
+          "shape":"PackageEncryptionOptions",
+          "documentation":"<p>Encryption options for a package.</p>"
         }
       },
       "documentation":"<p>Container for request parameters to the <code>UpdatePackage</code> operation.</p>"
@@ -7184,6 +7489,45 @@
         }
       },
       "documentation":"<p>Container for the response returned by the <code>UpdatePackage</code> operation.</p>"
+    },
+    "UpdatePackageScopeRequest":{
+      "type":"structure",
+      "required":[
+        "PackageID",
+        "Operation",
+        "PackageUserList"
+      ],
+      "members":{
+        "PackageID":{
+          "shape":"PackageID",
+          "documentation":"<p>ID of the package whose scope is being updated.</p>"
+        },
+        "Operation":{
+          "shape":"PackageScopeOperationEnum",
+          "documentation":"<p> The operation to perform on the package scope (e.g., add/remove/override users).</p>"
+        },
+        "PackageUserList":{
+          "shape":"PackageUserList",
+          "documentation":"<p> List of users to be added or removed from the package scope.</p>"
+        }
+      }
+    },
+    "UpdatePackageScopeResponse":{
+      "type":"structure",
+      "members":{
+        "PackageID":{
+          "shape":"PackageID",
+          "documentation":"<p> ID of the package whose scope was updated.</p>"
+        },
+        "Operation":{
+          "shape":"PackageScopeOperationEnum",
+          "documentation":"<p>The operation that was performed on the package scope.</p>"
+        },
+        "PackageUserList":{
+          "shape":"PackageUserList",
+          "documentation":"<p> List of users who have access to the package after the scope update.</p>"
+        }
+      }
     },
     "UpdateScheduledActionRequest":{
       "type":"structure",

@@ -278,6 +278,22 @@
       ],
       "documentation":"<p> Gets the site address of the specified site. </p>"
     },
+    "ListAssetInstances":{
+      "name":"ListAssetInstances",
+      "http":{
+        "method":"GET",
+        "requestUri":"/outposts/{OutpostId}/assetInstances"
+      },
+      "input":{"shape":"ListAssetInstancesInput"},
+      "output":{"shape":"ListAssetInstancesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"NotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>A list of Amazon EC2 instances, belonging to all accounts, running on the specified Outpost. Does not include Amazon EBS or Amazon S3 instances.</p>"
+    },
     "ListAssets":{
       "name":"ListAssets",
       "http":{
@@ -293,6 +309,22 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists the hardware assets for the specified Outpost.</p> <p>Use filters to return specific results. If you specify multiple filters, the results include only the resources that match all of the specified filters. For a filter where you can specify multiple values, the results include items that match any of the values that you specify for the filter.</p>"
+    },
+    "ListBlockingInstancesForCapacityTask":{
+      "name":"ListBlockingInstancesForCapacityTask",
+      "http":{
+        "method":"GET",
+        "requestUri":"/outposts/{OutpostId}/capacity/{CapacityTaskId}/blockingInstances"
+      },
+      "input":{"shape":"ListBlockingInstancesForCapacityTaskInput"},
+      "output":{"shape":"ListBlockingInstancesForCapacityTaskOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"NotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>A list of Amazon EC2 instances running on the Outpost and belonging to the account that initiated the capacity task. Use this list to specify the instances you cannot stop to free up capacity to run the capacity task.</p>"
     },
     "ListCapacityTasks":{
       "name":"ListCapacityTasks",
@@ -401,7 +433,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Starts the specified capacity task. You can have one active capacity task for an order.</p>"
+      "documentation":"<p>Starts the specified capacity task. You can have one active capacity task per order or Outpost.</p>"
     },
     "StartConnection":{
       "name":"StartConnection",
@@ -519,6 +551,21 @@
     }
   },
   "shapes":{
+    "AWSServiceName":{
+      "type":"string",
+      "enum":[
+        "AWS",
+        "EC2",
+        "ELASTICACHE",
+        "ELB",
+        "RDS",
+        "ROUTE53"
+      ]
+    },
+    "AWSServiceNameList":{
+      "type":"list",
+      "member":{"shape":"AWSServiceName"}
+    },
     "AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -534,6 +581,10 @@
       "max":12,
       "min":12,
       "pattern":"\\d{12}"
+    },
+    "AccountIdList":{
+      "type":"list",
+      "member":{"shape":"AccountId"}
     },
     "Address":{
       "type":"structure",
@@ -628,6 +679,10 @@
       "min":1,
       "pattern":"^(\\w+)$"
     },
+    "AssetIdList":{
+      "type":"list",
+      "member":{"shape":"AssetId"}
+    },
     "AssetInfo":{
       "type":"structure",
       "members":{
@@ -653,6 +708,55 @@
         }
       },
       "documentation":"<p> Information about hardware assets. </p>"
+    },
+    "AssetInstance":{
+      "type":"structure",
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The ID of the instance.</p>"
+        },
+        "InstanceType":{
+          "shape":"OutpostInstanceType",
+          "documentation":"<p>The type of instance.</p>"
+        },
+        "AssetId":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the asset.</p>"
+        },
+        "AccountId":{"shape":"AccountId"},
+        "AwsServiceName":{
+          "shape":"AWSServiceName",
+          "documentation":"<p>The Amazon Web Services service name of the instance.</p>"
+        }
+      },
+      "documentation":"<p>An Amazon EC2 instance.</p>"
+    },
+    "AssetInstanceCapacityList":{
+      "type":"list",
+      "member":{"shape":"AssetInstanceTypeCapacity"}
+    },
+    "AssetInstanceList":{
+      "type":"list",
+      "member":{"shape":"AssetInstance"}
+    },
+    "AssetInstanceTypeCapacity":{
+      "type":"structure",
+      "required":[
+        "InstanceType",
+        "Count"
+      ],
+      "members":{
+        "InstanceType":{
+          "shape":"InstanceTypeName",
+          "documentation":"<p>The type of instance.</p>"
+        },
+        "Count":{
+          "shape":"InstanceTypeCount",
+          "documentation":"<p>The number of each instance type.</p>"
+        }
+      },
+      "documentation":"<p>The capacity for each instance type.</p>"
     },
     "AssetListDefinition":{
       "type":"list",
@@ -705,6 +809,25 @@
       "member":{"shape":"AvailabilityZone"},
       "max":5,
       "min":1
+    },
+    "BlockingInstance":{
+      "type":"structure",
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The ID of the blocking instance.</p>"
+        },
+        "AccountId":{"shape":"AccountId"},
+        "AwsServiceName":{
+          "shape":"AWSServiceName",
+          "documentation":"<p>The Amazon Web Services service name that owns the specified blocking instance.</p>"
+        }
+      },
+      "documentation":"<p>A running Amazon EC2 instance that can be stopped to free up capacity needed to run the capacity task.</p>"
+    },
+    "BlockingInstancesList":{
+      "type":"list",
+      "member":{"shape":"BlockingInstance"}
     },
     "CIDR":{
       "type":"string",
@@ -776,7 +899,13 @@
     },
     "CapacityTaskFailureType":{
       "type":"string",
-      "enum":["UNSUPPORTED_CAPACITY_CONFIGURATION"]
+      "enum":[
+        "UNSUPPORTED_CAPACITY_CONFIGURATION",
+        "UNEXPECTED_ASSET_STATE",
+        "BLOCKING_INSTANCES_NOT_EVACUATED",
+        "INTERNAL_SERVER_ERROR",
+        "RESOURCE_NOT_FOUND"
+      ]
     },
     "CapacityTaskId":{
       "type":"string",
@@ -795,6 +924,8 @@
         "IN_PROGRESS",
         "FAILED",
         "COMPLETED",
+        "WAITING_FOR_EVACUATION",
+        "CANCELLATION_IN_PROGRESS",
         "CANCELLED"
       ]
     },
@@ -936,6 +1067,14 @@
         "InstanceFamilies":{
           "shape":"InstanceFamilies",
           "documentation":"<p>A list of the names of instance families that are currently associated with a given asset.</p>"
+        },
+        "InstanceTypeCapacities":{
+          "shape":"AssetInstanceCapacityList",
+          "documentation":"<p>The instance type capacities configured for this asset. This can be changed through a capacity task.</p>"
+        },
+        "MaxVcpus":{
+          "shape":"VCPUCount",
+          "documentation":"<p>The maximum number of vCPUs possible for the specified asset.</p>"
         }
       },
       "documentation":"<p> Information about compute hardware assets. </p>"
@@ -1247,6 +1386,10 @@
           "shape":"RequestedInstancePools",
           "documentation":"<p>List of instance pools requested in the capacity task.</p>"
         },
+        "InstancesToExclude":{
+          "shape":"InstancesToExclude",
+          "documentation":"<p>Instances that the user specified they cannot stop in order to free up the capacity needed to run the capacity task.</p>"
+        },
         "DryRun":{
           "shape":"DryRun",
           "documentation":"<p>Performs a dry run to determine if you are above or below instance capacity.</p>"
@@ -1270,6 +1413,10 @@
         "LastModifiedDate":{
           "shape":"ISO8601Timestamp",
           "documentation":"<p>The date the capacity task was last modified.</p>"
+        },
+        "TaskActionOnBlockingInstances":{
+          "shape":"TaskActionOnBlockingInstances",
+          "documentation":"<p>User-specified option in case an instance is blocking the capacity task from running. Shows one of the following options:</p> <ul> <li> <p> <code>WAIT_FOR_EVACUATION</code> - Checks every 10 minutes over 48 hours to determine if instances have stopped and capacity is available to complete the task.</p> </li> <li> <p> <code>FAIL_TASK</code> - The capacity task fails.</p> </li> </ul>"
         }
       }
     },
@@ -1391,10 +1538,7 @@
     },
     "GetOutpostSupportedInstanceTypesInput":{
       "type":"structure",
-      "required":[
-        "OutpostIdentifier",
-        "OrderId"
-      ],
+      "required":["OutpostIdentifier"],
       "members":{
         "OutpostIdentifier":{
           "shape":"OutpostIdentifier",
@@ -1501,6 +1645,16 @@
       "min":1,
       "pattern":"^(?:.{1,200}/)?(?:[a-z0-9-_A-Z])+$"
     },
+    "InstanceId":{
+      "type":"string",
+      "max":32,
+      "min":11,
+      "pattern":"^i-[0-9a-z]+$"
+    },
+    "InstanceIdList":{
+      "type":"list",
+      "member":{"shape":"InstanceId"}
+    },
     "InstanceType":{
       "type":"string",
       "documentation":"<p>The instance type.</p>"
@@ -1549,6 +1703,24 @@
       "max":64,
       "min":1,
       "pattern":"^[a-z0-9\\-]+\\.[a-z0-9\\-]+$"
+    },
+    "InstancesToExclude":{
+      "type":"structure",
+      "members":{
+        "Instances":{
+          "shape":"InstanceIdList",
+          "documentation":"<p>List of user-specified instances that must not be stopped.</p>"
+        },
+        "AccountIds":{
+          "shape":"AccountIdList",
+          "documentation":"<p>IDs of the accounts that own each instance that must not be stopped.</p>"
+        },
+        "Services":{
+          "shape":"AWSServiceNameList",
+          "documentation":"<p>Names of the services that own each instance that must not be stopped in order to free up the capacity needed to run the capacity task.</p>"
+        }
+      },
+      "documentation":"<p>User-specified instances that must not be stopped. These instances will not appear in the list of instances that Amazon Web Services recommends to stop in order to free up capacity.</p>"
     },
     "InternalServerException":{
       "type":"structure",
@@ -1679,6 +1851,62 @@
       "key":{"shape":"LineItemStatus"},
       "value":{"shape":"LineItemQuantity"}
     },
+    "ListAssetInstancesInput":{
+      "type":"structure",
+      "required":["OutpostIdentifier"],
+      "members":{
+        "OutpostIdentifier":{
+          "shape":"OutpostIdentifier",
+          "documentation":"<p>The ID of the Outpost.</p>",
+          "location":"uri",
+          "locationName":"OutpostId"
+        },
+        "AssetIdFilter":{
+          "shape":"AssetIdList",
+          "documentation":"<p>Filters the results by asset ID.</p>",
+          "location":"querystring",
+          "locationName":"AssetIdFilter"
+        },
+        "InstanceTypeFilter":{
+          "shape":"OutpostInstanceTypeList",
+          "documentation":"<p>Filters the results by instance ID.</p>",
+          "location":"querystring",
+          "locationName":"InstanceTypeFilter"
+        },
+        "AccountIdFilter":{
+          "shape":"AccountIdList",
+          "documentation":"<p>Filters the results by account ID.</p>",
+          "location":"querystring",
+          "locationName":"AccountIdFilter"
+        },
+        "AwsServiceFilter":{
+          "shape":"AWSServiceNameList",
+          "documentation":"<p>Filters the results by Amazon Web Services service.</p>",
+          "location":"querystring",
+          "locationName":"AwsServiceFilter"
+        },
+        "MaxResults":{
+          "shape":"MaxResults1000",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListAssetInstancesOutput":{
+      "type":"structure",
+      "members":{
+        "AssetInstances":{
+          "shape":"AssetInstanceList",
+          "documentation":"<p>List of instances owned by all accounts on the Outpost. Does not include Amazon EBS or Amazon S3 instances.</p>"
+        },
+        "NextToken":{"shape":"Token"}
+      }
+    },
     "ListAssetsInput":{
       "type":"structure",
       "required":["OutpostIdentifier"],
@@ -1719,6 +1947,47 @@
         "Assets":{
           "shape":"AssetListDefinition",
           "documentation":"<p>Information about the hardware assets.</p>"
+        },
+        "NextToken":{"shape":"Token"}
+      }
+    },
+    "ListBlockingInstancesForCapacityTaskInput":{
+      "type":"structure",
+      "required":[
+        "OutpostIdentifier",
+        "CapacityTaskId"
+      ],
+      "members":{
+        "OutpostIdentifier":{
+          "shape":"OutpostIdentifier",
+          "documentation":"<p>The ID or ARN of the Outpost associated with the specified capacity task.</p>",
+          "location":"uri",
+          "locationName":"OutpostId"
+        },
+        "CapacityTaskId":{
+          "shape":"CapacityTaskId",
+          "documentation":"<p>The ID of the capacity task.</p>",
+          "location":"uri",
+          "locationName":"CapacityTaskId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults1000",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListBlockingInstancesForCapacityTaskOutput":{
+      "type":"structure",
+      "members":{
+        "BlockingInstances":{
+          "shape":"BlockingInstancesList",
+          "documentation":"<p>A list of all running Amazon EC2 instances on the Outpost. Stopping one or more of these instances can free up the capacity needed to run the capacity task.</p>"
         },
         "NextToken":{"shape":"Token"}
       }
@@ -2169,6 +2438,16 @@
       "min":1,
       "pattern":"^(arn:aws([a-z-]+)?:outposts:[a-z\\d-]+:\\d{12}:outpost/)?op-[a-f0-9]{17}$"
     },
+    "OutpostInstanceType":{
+      "type":"string",
+      "max":30,
+      "min":3,
+      "pattern":"[a-z0-9\\-\\.]+"
+    },
+    "OutpostInstanceTypeList":{
+      "type":"list",
+      "member":{"shape":"OutpostInstanceType"}
+    },
     "OutpostName":{
       "type":"string",
       "documentation":"<p>The name of the Outpost.</p>",
@@ -2420,7 +2699,6 @@
       "type":"structure",
       "required":[
         "OutpostIdentifier",
-        "OrderId",
         "InstancePools"
       ],
       "members":{
@@ -2438,9 +2716,17 @@
           "shape":"RequestedInstancePools",
           "documentation":"<p>The instance pools specified in the capacity task.</p>"
         },
+        "InstancesToExclude":{
+          "shape":"InstancesToExclude",
+          "documentation":"<p>List of user-specified running instances that must not be stopped in order to free up the capacity needed to run the capacity task.</p>"
+        },
         "DryRun":{
           "shape":"DryRun",
           "documentation":"<p>You can request a dry run to determine if the instance type and instance size changes is above or below available instance capacity. Requesting a dry run does not make any changes to your plan.</p>"
+        },
+        "TaskActionOnBlockingInstances":{
+          "shape":"TaskActionOnBlockingInstances",
+          "documentation":"<p>Specify one of the following options in case an instance is blocking the capacity task from running.</p> <ul> <li> <p> <code>WAIT_FOR_EVACUATION</code> - Checks every 10 minutes over 48 hours to determine if instances have stopped and capacity is available to complete the task.</p> </li> <li> <p> <code>FAIL_TASK</code> - The capacity task fails.</p> </li> </ul>"
         }
       }
     },
@@ -2462,6 +2748,10 @@
         "RequestedInstancePools":{
           "shape":"RequestedInstancePools",
           "documentation":"<p>List of the instance pools requested in the specified capacity task.</p>"
+        },
+        "InstancesToExclude":{
+          "shape":"InstancesToExclude",
+          "documentation":"<p>User-specified instances that must not be stopped in order to free up the capacity needed to run the capacity task.</p>"
         },
         "DryRun":{
           "shape":"DryRun",
@@ -2486,6 +2776,10 @@
         "LastModifiedDate":{
           "shape":"ISO8601Timestamp",
           "documentation":"<p>Date that the specified capacity task was last modified.</p>"
+        },
+        "TaskActionOnBlockingInstances":{
+          "shape":"TaskActionOnBlockingInstances",
+          "documentation":"<p>User-specified option in case an instance is blocking the capacity task from running.</p> <ul> <li> <p> <code>WAIT_FOR_EVACUATION</code> - Checks every 10 minutes over 48 hours to determine if instances have stopped and capacity is available to complete the task.</p> </li> <li> <p> <code>FAIL_TASK</code> - The capacity task fails.</p> </li> </ul>"
         }
       }
     },
@@ -2620,6 +2914,13 @@
       "type":"string",
       "max":256,
       "pattern":"^[\\S \\n]+$"
+    },
+    "TaskActionOnBlockingInstances":{
+      "type":"string",
+      "enum":[
+        "WAIT_FOR_EVACUATION",
+        "FAIL_TASK"
+      ]
     },
     "Token":{
       "type":"string",

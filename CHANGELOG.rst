@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.35.24
+=======
+
+* api-change:``cloudfront``: No API changes from previous release. This release migrated the model to Smithy keeping all features unchanged.
+* api-change:``inspector2``: Adds support for filePath filter.
+* api-change:``lambda``: Add Python 3.13 (python3.13) support to AWS Lambda
+* api-change:``opensearch``: Adds Support for new AssociatePackages and DissociatePackages API in Amazon OpenSearch Service that allows association and dissociation operations to be carried out on multiple packages at the same time.
+* api-change:``outposts``: This release updates StartCapacityTask to allow an active Outpost to be modified. It also adds a new API to list all running EC2 instances on the Outpost.
+
+
 1.35.23
 =======
 

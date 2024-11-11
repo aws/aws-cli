@@ -34,7 +34,7 @@ The aws-cli package works on Python versions:
 -------
 Notices
 -------
-On 2024-11-11, support for macOS version 10.15 was dropped.
+On 2024-11-13, support for macOS version 10.15 was dropped.
 To use up-to-date versions of AWS CLI v2, customers using macOS 10.15 or prior
 should upgrade to macOS 11 or later. For more information, please see
 this `blog post <https://aws.amazon.com/blogs/developer/macos-support-policy-updates-for-the-aws-cli-v2/>`__.

@@ -18,17 +18,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps: 
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v3
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # version 4.2.2
+    - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # version 5.3.0
       with:
-        python-version: "3.10"
+        python-version: "3.12"
         cache: pip
     - name: Install dependencies
       run: make install
     - name: Build docs
       run: make html
     - name: Upload artifact
-      uses: actions/upload-pages-artifact@v0.1.0
+      uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # version 3.0.1
       with:
         path: _build/html
   deploy:
@@ -40,4 +40,4 @@ jobs:
     steps:
       - name: 'Deploy to GitHub Pages'
         id: deployment
-        uses: actions/deploy-pages@v1.0.4        
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # version 4.0.5     

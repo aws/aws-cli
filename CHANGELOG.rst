@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.20.0
+======
+
+* api-change:``codebuild``: AWS CodeBuild now supports non-containerized Linux and Windows builds on Reserved Capacity.
+* api-change:``payment-cryptography``: Updated ListAliases API with KeyArn filter.
+* feature:shorthand: Adds support to shorthand syntax for loading parameters from files via the ``@=`` assignment operator.
+* api-change:``controltower``: Added ResetEnabledControl API.
+* api-change:``gamelift``: Amazon GameLift releases container fleets support for general availability. Deploy Linux-based containerized game server software for hosting on Amazon GameLift.
+* api-change:``rds``: Updates Amazon RDS documentation for Amazon RDS Extended Support for Amazon Aurora MySQL.
+* api-change:``fis``: This release adds support for generating experiment reports with the experiment report configuration
+
+
 2.19.5
 ======
 

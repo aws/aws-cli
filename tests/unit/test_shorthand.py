@@ -10,14 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from unittest.mock import patch
+
 import pytest
 import signal
 
+import awscli.paramfile
 from awscli import shorthand
-from awscli.testutils import unittest, skip_if_windows
+from awscli.testutils import skip_if_windows, unittest
 
 from botocore import model
-
 
 PARSING_TEST_CASES = (
     # Key val pairs with scalar value.
@@ -128,6 +130,24 @@ PARSING_TEST_CASES = (
         'Name=[{foo=[a,b]}, {bar=[c,d]}]',
         {'Name': [{'foo': ['a', 'b']}, {'bar': ['c', 'd']}]}
     ),
+    # key-value pairs using @= syntax
+    ('foo@=bar', {'foo': 'bar'}),
+    ('foo@=bar,baz@=qux', {'foo': 'bar', 'baz': 'qux'}),
+    ('foo@=,bar@=', {'foo': '', 'bar': ''}),
+    (u'foo@=\u2713,\u2713', {'foo': [u'\u2713', u'\u2713']}),
+    ('foo@=a,b,bar=c,d', {'foo': ['a', 'b'], 'bar': ['c', 'd']}),
+    ('foo=a,b@=with space', {'foo': 'a', 'b': 'with space'}),
+    ('foo=a,b@=with trailing space  ', {'foo': 'a', 'b': 'with trailing space'}),
+    ('aws:service:region:124:foo/bar@=baz', {'aws:service:region:124:foo/bar': 'baz'}),
+    ('foo=[a,b],bar@=[c,d]', {'foo': ['a', 'b'], 'bar': ['c', 'd']}),
+    ('foo  @=  [ a , b  , c  ]', {'foo': ['a', 'b', 'c']}),
+    ('A=b,\nC@=d,\nE@=f\n', {'A': 'b', 'C': 'd', 'E': 'f'}),
+    ('Bar@=baz,Name={foo@=bar}', {'Bar': 'baz', 'Name': {'foo': 'bar'}}),
+    ('Name=[{foo@=bar}, {baz=qux}]', {'Name': [{'foo': 'bar'}, {'baz': 'qux'}]}),
+    (
+        'Name=[{foo@=[a,b]}, {bar=[c,d]}]',
+        {'Name': [{'foo': ['a', 'b']}, {'bar': ['c', 'd']}]}
+    ),
 )
 
 
@@ -136,6 +156,7 @@ PARSING_TEST_CASES = (
         'foo',
         # Missing closing quotes
         'foo="bar',
+        '"foo=bar',
         "foo='bar",
         "foo=[bar",
         "foo={bar",
@@ -181,6 +202,38 @@ def handle_timeout(signum, frame):
 def test_parse(data, expected):
     actual = shorthand.ShorthandParser().parse(data)
     assert actual == expected
+
+class TestShorthandParserParamFile:
+    @patch('awscli.paramfile.compat_open')
+    @pytest.mark.parametrize(
+        'file_contents, data, expected',
+        (
+            ('file-contents123', 'Foo@=file://foo,Bar={Baz@=file://foo}', {'Foo': 'file-contents123', 'Bar': {'Baz': 'file-contents123'}}),
+            (b'file-contents123', 'Foo@=fileb://foo,Bar={Baz@=fileb://foo}', {'Foo': b'file-contents123', 'Bar': {'Baz': b'file-contents123'}}),
+            ('file-contents123', 'Bar@={Baz=file://foo}', {'Bar': {'Baz': 'file://foo'}}),
+            ('file-contents123', 'Foo@=foo,Bar={Baz@=foo}', {'Foo': 'foo', 'Bar': {'Baz': 'foo'}})
+        )
+    )
+    def test_paramfile(self, mock_compat_open, file_contents, data, expected):
+        mock_compat_open.return_value.__enter__.return_value.read.return_value = file_contents
+        result = shorthand.ShorthandParser().parse(data)
+        assert result == expected
+
+    @patch('awscli.paramfile.compat_open')
+    def test_paramfile_list(self, mock_compat_open):
+        f1_contents = 'file-contents123'
+        f2_contents = 'contents2'
+        mock_compat_open.return_value.__enter__.return_value.read.side_effect = [f1_contents, f2_contents]
+        result = shorthand.ShorthandParser().parse(
+            f'Foo@=[a, file://foo1, file://foo2]'
+        )
+        assert result == {'Foo': ['a', f1_contents, f2_contents]}
+
+    def test_paramfile_does_not_exist_error(self, capsys):
+        with pytest.raises(awscli.paramfile.ResourceLoadingError):
+            shorthand.ShorthandParser().parse('Foo@=file://fakefile.txt')
+            captured = capsys.readouterr()
+            assert "No such file or directory: 'fakefile.txt" in captured.err
 
 
 class TestModelVisitor(unittest.TestCase):

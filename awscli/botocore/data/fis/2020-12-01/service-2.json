@@ -619,6 +619,28 @@
       },
       "documentation":"<p>Specifies the configuration for experiment logging.</p>"
     },
+    "CreateExperimentTemplateReportConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "outputs":{
+          "shape":"ExperimentTemplateReportConfigurationOutputsInput",
+          "documentation":"<p>The output destinations of the experiment report. </p>"
+        },
+        "dataSources":{
+          "shape":"ExperimentTemplateReportConfigurationDataSourcesInput",
+          "documentation":"<p>The data sources for the experiment report.</p>"
+        },
+        "preExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration before the experiment start time for the data sources to include in the report. </p>"
+        },
+        "postExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration after the experiment end time for the data sources to include in the report. </p>"
+        }
+      },
+      "documentation":"<p>Specifies the configuration for experiment reports.</p>"
+    },
     "CreateExperimentTemplateRequest":{
       "type":"structure",
       "required":[
@@ -665,6 +687,10 @@
         "experimentOptions":{
           "shape":"CreateExperimentTemplateExperimentOptionsInput",
           "documentation":"<p>The experiment options for the experiment template.</p>"
+        },
+        "experimentReportConfiguration":{
+          "shape":"CreateExperimentTemplateReportConfigurationInput",
+          "documentation":"<p>The experiment report configuration for the experiment template.</p>"
         }
       }
     },
@@ -905,6 +931,14 @@
         "targetAccountConfigurationsCount":{
           "shape":"TargetAccountConfigurationsCount",
           "documentation":"<p>The count of target account configurations for the experiment.</p>"
+        },
+        "experimentReportConfiguration":{
+          "shape":"ExperimentReportConfiguration",
+          "documentation":"<p>The experiment report configuration for the experiment.</p>"
+        },
+        "experimentReport":{
+          "shape":"ExperimentReport",
+          "documentation":"<p>The experiment report for the experiment.</p>"
         }
       },
       "documentation":"<p>Describes an experiment.</p>"
@@ -1107,6 +1141,164 @@
         }
       },
       "documentation":"<p>Describes the options for an experiment.</p>"
+    },
+    "ExperimentReport":{
+      "type":"structure",
+      "members":{
+        "state":{
+          "shape":"ExperimentReportState",
+          "documentation":"<p>The state of the experiment report.</p>"
+        },
+        "s3Reports":{
+          "shape":"ExperimentReportS3ReportList",
+          "documentation":"<p>The S3 destination of the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Describes the experiment report.</p>"
+    },
+    "ExperimentReportConfiguration":{
+      "type":"structure",
+      "members":{
+        "outputs":{
+          "shape":"ExperimentReportConfigurationOutputs",
+          "documentation":"<p>The output destinations of the experiment report.</p>"
+        },
+        "dataSources":{
+          "shape":"ExperimentReportConfigurationDataSources",
+          "documentation":"<p>The data sources for the experiment report.</p>"
+        },
+        "preExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration before the experiment start time for the data sources to include in the report.</p>"
+        },
+        "postExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration after the experiment end time for the data sources to include in the report.</p>"
+        }
+      },
+      "documentation":"<p>Describes the report configuration for the experiment. For more information, see <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/experiment-report-configuration\">Experiment report configurations for AWS FIS</a>.</p>"
+    },
+    "ExperimentReportConfigurationCloudWatchDashboard":{
+      "type":"structure",
+      "members":{
+        "dashboardIdentifier":{
+          "shape":"ReportConfigurationCloudWatchDashboardIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudWatch dashboard to include in the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the CloudWatch dashboard to include in the experiment report. The dashboard widgets will be captured as snapshot graphs within the report.</p>"
+    },
+    "ExperimentReportConfigurationCloudWatchDashboardList":{
+      "type":"list",
+      "member":{"shape":"ExperimentReportConfigurationCloudWatchDashboard"}
+    },
+    "ExperimentReportConfigurationDataSources":{
+      "type":"structure",
+      "members":{
+        "cloudWatchDashboards":{
+          "shape":"ExperimentReportConfigurationCloudWatchDashboardList",
+          "documentation":"<p>The CloudWatch dashboards to include as data sources in the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Describes the data sources for the experiment report.</p>"
+    },
+    "ExperimentReportConfigurationOutputs":{
+      "type":"structure",
+      "members":{
+        "s3Configuration":{
+          "shape":"ExperimentReportConfigurationOutputsS3Configuration",
+          "documentation":"<p>The S3 destination for the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Describes the output destinations of the experiment report.</p>"
+    },
+    "ExperimentReportConfigurationOutputsS3Configuration":{
+      "type":"structure",
+      "members":{
+        "bucketName":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of the S3 bucket where the experiment report will be stored.</p>"
+        },
+        "prefix":{
+          "shape":"S3ObjectKey",
+          "documentation":"<p>The prefix of the S3 bucket where the experiment report will be stored.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the S3 destination for the experiment report.</p>"
+    },
+    "ExperimentReportError":{
+      "type":"structure",
+      "members":{
+        "code":{
+          "shape":"ExperimentReportErrorCode",
+          "documentation":"<p>The error code for the failed experiment report generation.</p>"
+        }
+      },
+      "documentation":"<p>Describes the error when experiment report generation has failed.</p>"
+    },
+    "ExperimentReportErrorCode":{
+      "type":"string",
+      "max":128,
+      "pattern":"[\\s\\S]+"
+    },
+    "ExperimentReportReason":{
+      "type":"string",
+      "max":512,
+      "pattern":"[\\s\\S]+"
+    },
+    "ExperimentReportS3Report":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ExperimentReportS3ReportArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the generated report.</p>"
+        },
+        "reportType":{
+          "shape":"ExperimentReportS3ReportType",
+          "documentation":"<p>The report type for the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Describes the S3 destination for the report.</p>"
+    },
+    "ExperimentReportS3ReportArn":{
+      "type":"string",
+      "pattern":"[\\s\\S]+"
+    },
+    "ExperimentReportS3ReportList":{
+      "type":"list",
+      "member":{"shape":"ExperimentReportS3Report"}
+    },
+    "ExperimentReportS3ReportType":{
+      "type":"string",
+      "pattern":"[\\s\\S]+"
+    },
+    "ExperimentReportState":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"ExperimentReportStatus",
+          "documentation":"<p>The state of the experiment report generation.</p>"
+        },
+        "reason":{
+          "shape":"ExperimentReportReason",
+          "documentation":"<p>The reason for the state of the experiment report generation.</p>"
+        },
+        "error":{
+          "shape":"ExperimentReportError",
+          "documentation":"<p>The error information of the experiment when the experiment report generation has failed.</p>"
+        }
+      },
+      "documentation":"<p>Describes the state of the experiment report generation.</p>"
+    },
+    "ExperimentReportStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "running",
+        "completed",
+        "cancelled",
+        "failed"
+      ]
     },
     "ExperimentS3LogConfiguration":{
       "type":"structure",
@@ -1401,6 +1593,10 @@
         "targetAccountConfigurationsCount":{
           "shape":"TargetAccountConfigurationsCount",
           "documentation":"<p>The count of target account configurations for the experiment template.</p>"
+        },
+        "experimentReportConfiguration":{
+          "shape":"ExperimentTemplateReportConfiguration",
+          "documentation":"<p>Describes the report configuration for the experiment template.</p>"
         }
       },
       "documentation":"<p>Describes an experiment template.</p>"
@@ -1542,6 +1738,82 @@
         }
       },
       "documentation":"<p>Describes the configuration for experiment logging.</p>"
+    },
+    "ExperimentTemplateReportConfiguration":{
+      "type":"structure",
+      "members":{
+        "outputs":{
+          "shape":"ExperimentTemplateReportConfigurationOutputs",
+          "documentation":"<p>Describes the output destinations of the experiment report.</p>"
+        },
+        "dataSources":{
+          "shape":"ExperimentTemplateReportConfigurationDataSources",
+          "documentation":"<p>The data sources for the experiment report.</p>"
+        },
+        "preExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration before the experiment start time for the data sources to include in the report.</p>"
+        },
+        "postExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration after the experiment end time for the data sources to include in the report.</p>"
+        }
+      },
+      "documentation":"<p>Describes the experiment report configuration. For more information, see <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/experiment-report-configuration\">Experiment report configurations for AWS FIS</a>.</p>"
+    },
+    "ExperimentTemplateReportConfigurationCloudWatchDashboard":{
+      "type":"structure",
+      "members":{
+        "dashboardIdentifier":{
+          "shape":"ReportConfigurationCloudWatchDashboardIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudWatch dashboard to include in the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>The CloudWatch dashboards to include as data sources in the experiment report.</p>"
+    },
+    "ExperimentTemplateReportConfigurationCloudWatchDashboardList":{
+      "type":"list",
+      "member":{"shape":"ExperimentTemplateReportConfigurationCloudWatchDashboard"}
+    },
+    "ExperimentTemplateReportConfigurationDataSources":{
+      "type":"structure",
+      "members":{
+        "cloudWatchDashboards":{
+          "shape":"ExperimentTemplateReportConfigurationCloudWatchDashboardList",
+          "documentation":"<p>The CloudWatch dashboards to include as data sources in the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Describes the data sources for the experiment report.</p>"
+    },
+    "ExperimentTemplateReportConfigurationDataSourcesInput":{
+      "type":"structure",
+      "members":{
+        "cloudWatchDashboards":{
+          "shape":"ReportConfigurationCloudWatchDashboardInputList",
+          "documentation":"<p>The CloudWatch dashboards to include as data sources in the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the data sources for the experiment report.</p>"
+    },
+    "ExperimentTemplateReportConfigurationOutputs":{
+      "type":"structure",
+      "members":{
+        "s3Configuration":{
+          "shape":"ReportConfigurationS3Output",
+          "documentation":"<p>The S3 destination for the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>The output destinations of the experiment report.</p>"
+    },
+    "ExperimentTemplateReportConfigurationOutputsInput":{
+      "type":"structure",
+      "members":{
+        "s3Configuration":{
+          "shape":"ReportConfigurationS3OutputInput",
+          "documentation":"<p>The S3 destination for the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the outputs for the experiment templates.</p>"
     },
     "ExperimentTemplateS3LogConfiguration":{
       "type":"structure",
@@ -2206,6 +2478,58 @@
       "min":1,
       "pattern":"[\\S]+"
     },
+    "ReportConfigurationCloudWatchDashboardIdentifier":{
+      "type":"string",
+      "max":512,
+      "pattern":"[\\S]+"
+    },
+    "ReportConfigurationCloudWatchDashboardInput":{
+      "type":"structure",
+      "members":{
+        "dashboardIdentifier":{
+          "shape":"ReportConfigurationCloudWatchDashboardIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudWatch dashboard to include in the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the CloudWatch dashboard for the experiment report.</p>"
+    },
+    "ReportConfigurationCloudWatchDashboardInputList":{
+      "type":"list",
+      "member":{"shape":"ReportConfigurationCloudWatchDashboardInput"}
+    },
+    "ReportConfigurationDuration":{
+      "type":"string",
+      "max":32,
+      "pattern":"[\\S]+"
+    },
+    "ReportConfigurationS3Output":{
+      "type":"structure",
+      "members":{
+        "bucketName":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of the S3 bucket where the experiment report will be stored.</p>"
+        },
+        "prefix":{
+          "shape":"S3ObjectKey",
+          "documentation":"<p>The prefix of the S3 bucket where the experiment report will be stored.</p>"
+        }
+      },
+      "documentation":"<p>Describes the S3 destination for the experiment report.</p>"
+    },
+    "ReportConfigurationS3OutputInput":{
+      "type":"structure",
+      "members":{
+        "bucketName":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of the S3 bucket where the experiment report will be stored.</p>"
+        },
+        "prefix":{
+          "shape":"S3ObjectKey",
+          "documentation":"<p>The prefix of the S3 bucket where the experiment report will be stored.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the S3 destination for the experiment report.</p>"
+    },
     "ResolvedTarget":{
       "type":"structure",
       "members":{
@@ -2683,6 +3007,28 @@
       },
       "documentation":"<p>Specifies the configuration for experiment logging.</p>"
     },
+    "UpdateExperimentTemplateReportConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "outputs":{
+          "shape":"ExperimentTemplateReportConfigurationOutputsInput",
+          "documentation":"<p>Describes the output destinations of the experiment report. </p>"
+        },
+        "dataSources":{
+          "shape":"ExperimentTemplateReportConfigurationDataSourcesInput",
+          "documentation":"<p>The data sources for the experiment report.</p>"
+        },
+        "preExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration before the experiment start time for the data sources to include in the report. </p>"
+        },
+        "postExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration after the experiment end time for the data sources to include in the report. </p>"
+        }
+      },
+      "documentation":"<p> Specifies the input for the experiment report configuration.</p>"
+    },
     "UpdateExperimentTemplateRequest":{
       "type":"structure",
       "required":["id"],
@@ -2720,6 +3066,10 @@
         "experimentOptions":{
           "shape":"UpdateExperimentTemplateExperimentOptionsInput",
           "documentation":"<p>The experiment options for the experiment template.</p>"
+        },
+        "experimentReportConfiguration":{
+          "shape":"UpdateExperimentTemplateReportConfigurationInput",
+          "documentation":"<p>The experiment report configuration for the experiment template.</p>"
         }
       }
     },

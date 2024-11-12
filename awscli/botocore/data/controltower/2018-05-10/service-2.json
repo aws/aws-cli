@@ -398,6 +398,26 @@
       ],
       "documentation":"<p>Re-enables an <code>EnabledBaseline</code> resource. For example, this API can re-apply the existing <code>Baseline</code> after a new member account is moved to the target OU. For usage examples, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/baseline-api-examples.html\"> <i>the Amazon Web Services Control Tower User Guide</i> </a>.</p>"
     },
+    "ResetEnabledControl":{
+      "name":"ResetEnabledControl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/reset-enabled-control",
+        "responseCode":200
+      },
+      "input":{"shape":"ResetEnabledControlInput"},
+      "output":{"shape":"ResetEnabledControlOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Resets an enabled control.</p>"
+    },
     "ResetLandingZone":{
       "name":"ResetLandingZone",
       "http":{
@@ -487,7 +507,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Updates the configuration of an already enabled control.</p> <p>If the enabled control shows an <code>EnablementStatus</code> of SUCCEEDED, supply parameters that are different from the currently configured parameters. Otherwise, Amazon Web Services Control Tower will not accept the request.</p> <p>If the enabled control shows an <code>EnablementStatus</code> of FAILED, Amazon Web Services Control Tower updates the control to match any valid parameters that you supply.</p> <p>If the <code>DriftSummary</code> status for the control shows as DRIFTED, you cannot call this API. Instead, you can update the control by calling <code>DisableControl</code> and again calling <code>EnableControl</code>, or you can run an extending governance operation. For usage examples, see the <a href=\"https://docs.aws.amazon.com/controltower/latest/controlreference/control-api-examples-short.html\"> <i>Controls Reference Guide</i> </a>. </p>"
+      "documentation":"<p> Updates the configuration of an already enabled control.</p> <p>If the enabled control shows an <code>EnablementStatus</code> of SUCCEEDED, supply parameters that are different from the currently configured parameters. Otherwise, Amazon Web Services Control Tower will not accept the request.</p> <p>If the enabled control shows an <code>EnablementStatus</code> of FAILED, Amazon Web Services Control Tower updates the control to match any valid parameters that you supply.</p> <p>If the <code>DriftSummary</code> status for the control shows as <code>DRIFTED</code>, you cannot call this API. Instead, you can update the control by calling the <code>ResetEnabledControl</code> API. Alternatively, you can call <code>DisableControl</code> and then call <code>EnableControl</code> again. Also, you can run an extending governance operation to repair drift. For usage examples, see the <a href=\"https://docs.aws.amazon.com/controltower/latest/controlreference/control-api-examples-short.html\"> <i>Controls Reference Guide</i> </a>. </p>"
     },
     "UpdateLandingZone":{
       "name":"UpdateLandingZone",
@@ -766,7 +786,8 @@
       "enum":[
         "ENABLE_CONTROL",
         "DISABLE_CONTROL",
-        "UPDATE_ENABLED_CONTROL"
+        "UPDATE_ENABLED_CONTROL",
+        "RESET_ENABLED_CONTROL"
       ]
     },
     "ControlOperationTypes":{
@@ -1937,6 +1958,26 @@
         "operationIdentifier":{
           "shape":"OperationIdentifier",
           "documentation":"<p>The ID (in UUID format) of the asynchronous <code>ResetEnabledBaseline</code> operation. This <code>operationIdentifier</code> is used to track status through calls to the <code>GetBaselineOperation</code> API.</p>"
+        }
+      }
+    },
+    "ResetEnabledControlInput":{
+      "type":"structure",
+      "required":["enabledControlIdentifier"],
+      "members":{
+        "enabledControlIdentifier":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the enabled control to be reset.</p>"
+        }
+      }
+    },
+    "ResetEnabledControlOutput":{
+      "type":"structure",
+      "required":["operationIdentifier"],
+      "members":{
+        "operationIdentifier":{
+          "shape":"OperationIdentifier",
+          "documentation":"<p> The operation identifier for this <code>ResetEnabledControl</code> operation. </p>"
         }
       }
     },

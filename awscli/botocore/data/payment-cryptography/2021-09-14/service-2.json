@@ -245,7 +245,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the aliases for all keys in the caller's Amazon Web Services account and Amazon Web Services Region. You can filter the list of aliases. For more information, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-managealias.html\">Using aliases</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>This is a paginated operation, which means that each response might contain only a subset of all the aliases. When the response contains only a subset of aliases, it includes a <code>NextToken</code> value. Use this value in a subsequent <code>ListAliases</code> request to get more aliases. When you receive a response with no NextToken (or an empty or null value), that means there are no more aliases to get.</p> <p> <b>Cross-account use:</b> This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_CreateAlias.html\">CreateAlias</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_DeleteAlias.html\">DeleteAlias</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_GetAlias.html\">GetAlias</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_UpdateAlias.html\">UpdateAlias</a> </p> </li> </ul>"
+      "documentation":"<p>Lists the aliases for all keys in the caller's Amazon Web Services account and Amazon Web Services Region. You can filter the aliases by <code>keyARN</code>. For more information, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-managealias.html\">Using aliases</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>This is a paginated operation, which means that each response might contain only a subset of all the aliases. When the response contains only a subset of aliases, it includes a <code>NextToken</code> value. Use this value in a subsequent <code>ListAliases</code> request to get more aliases. When you receive a response with no NextToken (or an empty or null value), that means there are no more aliases to get.</p> <p> <b>Cross-account use:</b> This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_CreateAlias.html\">CreateAlias</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_DeleteAlias.html\">DeleteAlias</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_GetAlias.html\">GetAlias</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_UpdateAlias.html\">UpdateAlias</a> </p> </li> </ul>"
     },
     "ListKeys":{
       "name":"ListKeys",
@@ -1375,6 +1375,10 @@
     "ListAliasesInput":{
       "type":"structure",
       "members":{
+        "KeyArn":{
+          "shape":"KeyArn",
+          "documentation":"<p>The <code>keyARN</code> for which you want to list all aliases.</p>"
+        },
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>Use this parameter in a subsequent request after you receive a response with truncated results. Set it to the value of <code>NextToken</code> from the truncated response you just received.</p>"
@@ -1608,7 +1612,10 @@
     "String":{"type":"string"},
     "Tag":{
       "type":"structure",
-      "required":["Key"],
+      "required":[
+        "Key",
+        "Value"
+      ],
       "members":{
         "Key":{
           "shape":"TagKey",
@@ -1657,7 +1664,7 @@
     "TagValue":{
       "type":"string",
       "max":256,
-      "min":0
+      "min":1
     },
     "Tags":{
       "type":"list",
@@ -1689,7 +1696,8 @@
       "type":"string",
       "max":4096,
       "min":2,
-      "pattern":"[0-9A-F]+"
+      "pattern":"[0-9A-F]+",
+      "sensitive":true
     },
     "TrustedCertificatePublicKey":{
       "type":"structure",
@@ -1803,7 +1811,8 @@
       "type":"string",
       "max":4096,
       "min":16,
-      "pattern":"[0-9A-F]+"
+      "pattern":"[0-9A-F]+",
+      "sensitive":true
     },
     "WrappedKeyMaterialFormat":{
       "type":"string",

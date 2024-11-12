@@ -13,11 +13,8 @@
 from awscli.testutils import mock, unittest, FileCreator
 from awscli.testutils import skip_if_windows
 
-from awscli.paramfile import get_paramfile, ResourceLoadingError
-from awscli.paramfile import LOCAL_PREFIX_MAP
-from awscli.paramfile import register_uri_param_handler
+from awscli.paramfile import get_paramfile, ResourceLoadingError, LOCAL_PREFIX_MAP, register_uri_param_handler
 from botocore.session import Session
-from botocore.exceptions import ProfileNotFound
 
 
 class TestParamFile(unittest.TestCase):

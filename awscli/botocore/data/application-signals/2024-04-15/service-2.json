@@ -342,6 +342,29 @@
       "type":"integer",
       "box":true
     },
+    "BurnRateConfiguration":{
+      "type":"structure",
+      "required":["LookBackWindowMinutes"],
+      "members":{
+        "LookBackWindowMinutes":{
+          "shape":"BurnRateLookBackWindowMinutes",
+          "documentation":"<p>The number of minutes to use as the look-back window.</p>"
+        }
+      },
+      "documentation":"<p>This object defines the length of the look-back window used to calculate one burn rate metric for this SLO. The burn rate measures how fast the service is consuming the error budget, relative to the attainment goal of the SLO. A burn rate of exactly 1 indicates that the SLO goal will be met exactly.</p> <p>For example, if you specify 60 as the number of minutes in the look-back window, the burn rate is calculated as the following:</p> <p> <i>burn rate = error rate over the look-back window / (1 - attainment goal percentage)</i> </p> <p>For more information about burn rates, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-ServiceLevelObjectives.html#CloudWatch-ServiceLevelObjectives-burn\">Calculate burn rates</a>.</p>"
+    },
+    "BurnRateConfigurations":{
+      "type":"list",
+      "member":{"shape":"BurnRateConfiguration"},
+      "max":10,
+      "min":0
+    },
+    "BurnRateLookBackWindowMinutes":{
+      "type":"integer",
+      "box":true,
+      "max":10080,
+      "min":1
+    },
     "CalendarInterval":{
       "type":"structure",
       "required":[
@@ -410,6 +433,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of key-value pairs to associate with the SLO. You can associate as many as 50 tags with an SLO. To be able to associate tags with the SLO when you create the SLO, you must have the <code>cloudwatch:TagResource</code> permission.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions by granting a user permission to access or change only resources with certain tag values.</p>"
+        },
+        "BurnRateConfigurations":{
+          "shape":"BurnRateConfigurations",
+          "documentation":"<p>Use this array to create <i>burn rates</i> for this SLO. Each burn rate is a metric that indicates how fast the service is consuming the error budget, relative to the attainment goal of the SLO.</p>"
         }
       }
     },
@@ -1535,7 +1562,11 @@
           "shape":"EvaluationType",
           "documentation":"<p>Displays whether this is a period-based SLO or a request-based SLO.</p>"
         },
-        "Goal":{"shape":"Goal"}
+        "Goal":{"shape":"Goal"},
+        "BurnRateConfigurations":{
+          "shape":"BurnRateConfigurations",
+          "documentation":"<p>Each object in this array defines the length of the look-back window used to calculate one burn rate metric for this SLO. The burn rate measures how fast the service is consuming the error budget, relative to the attainment goal of the SLO.</p>"
+        }
       },
       "documentation":"<p>A structure containing information about one service level objective (SLO) that has been created in Application Signals. Creating SLOs can help you ensure your services are performing to the level that you expect. SLOs help you set and track a specific target level for the reliability and availability of your applications and services. Each SLO uses a service level indicator (SLI), which is a key performance metric, to calculate how much underperformance can be tolerated before the goal that you set for the SLO is not achieved.</p>"
     },
@@ -1940,6 +1971,10 @@
         "Goal":{
           "shape":"Goal",
           "documentation":"<p>A structure that contains the attributes that determine the goal of the SLO. This includes the time period for evaluation and the attainment threshold.</p>"
+        },
+        "BurnRateConfigurations":{
+          "shape":"BurnRateConfigurations",
+          "documentation":"<p>Use this array to create <i>burn rates</i> for this SLO. Each burn rate is a metric that indicates how fast the service is consuming the error budget, relative to the attainment goal of the SLO.</p>"
         }
       }
     },

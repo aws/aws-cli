@@ -1977,6 +1977,10 @@
         "OnDemandThroughput":{
           "shape":"OnDemandThroughput",
           "documentation":"<p>The maximum number of read and write units for the global secondary index being created. If you use this parameter, you must specify <code>MaxReadRequestUnits</code>, <code>MaxWriteRequestUnits</code>, or both.</p>"
+        },
+        "WarmThroughput":{
+          "shape":"WarmThroughput",
+          "documentation":"<p>Represents the warm throughput value (in read units per second and write units per second) when creating a secondary index.</p>"
         }
       },
       "documentation":"<p>Represents a new global secondary index to be added to an existing table.</p>"
@@ -2104,6 +2108,10 @@
         "DeletionProtectionEnabled":{
           "shape":"DeletionProtectionEnabled",
           "documentation":"<p>Indicates whether deletion protection is to be enabled (true) or disabled (false) on the table.</p>"
+        },
+        "WarmThroughput":{
+          "shape":"WarmThroughput",
+          "documentation":"<p>Represents the warm throughput (in read units per second and write units per second) for creating a table.</p>"
         },
         "ResourcePolicy":{
           "shape":"ResourcePolicy",
@@ -3214,6 +3222,10 @@
         "OnDemandThroughput":{
           "shape":"OnDemandThroughput",
           "documentation":"<p>The maximum number of read and write units for the specified global secondary index. If you use this parameter, you must specify <code>MaxReadRequestUnits</code>, <code>MaxWriteRequestUnits</code>, or both.</p>"
+        },
+        "WarmThroughput":{
+          "shape":"WarmThroughput",
+          "documentation":"<p>Represents the warm throughput value (in read units per second and write units per second) for the specified secondary index. If you use this parameter, you must specify <code>ReadUnitsPerSecond</code>, <code>WriteUnitsPerSecond</code>, or both.</p>"
         }
       },
       "documentation":"<p>Represents the properties of a global secondary index.</p>"
@@ -3276,6 +3288,10 @@
         "OnDemandThroughput":{
           "shape":"OnDemandThroughput",
           "documentation":"<p>The maximum number of read and write units for the specified global secondary index. If you use this parameter, you must specify <code>MaxReadRequestUnits</code>, <code>MaxWriteRequestUnits</code>, or both.</p>"
+        },
+        "WarmThroughput":{
+          "shape":"GlobalSecondaryIndexWarmThroughputDescription",
+          "documentation":"<p>Represents the warm throughput value (in read units per second and write units per second) for the specified secondary index.</p>"
         }
       },
       "documentation":"<p>Represents the properties of a global secondary index.</p>"
@@ -3332,6 +3348,24 @@
     "GlobalSecondaryIndexUpdateList":{
       "type":"list",
       "member":{"shape":"GlobalSecondaryIndexUpdate"}
+    },
+    "GlobalSecondaryIndexWarmThroughputDescription":{
+      "type":"structure",
+      "members":{
+        "ReadUnitsPerSecond":{
+          "shape":"PositiveLongObject",
+          "documentation":"<p>Represents warm throughput read units per second value for a global secondary index.</p>"
+        },
+        "WriteUnitsPerSecond":{
+          "shape":"PositiveLongObject",
+          "documentation":"<p>Represents warm throughput write units per second value for a global secondary index.</p>"
+        },
+        "Status":{
+          "shape":"IndexStatus",
+          "documentation":"<p>Represents the warm throughput status being created or updated on a global secondary index. The status can only be <code>UPDATING</code> or <code>ACTIVE</code>.</p>"
+        }
+      },
+      "documentation":"<p>The description of the warm throughput value on a global secondary index.</p>"
     },
     "GlobalSecondaryIndexes":{
       "type":"list",
@@ -4908,6 +4942,10 @@
           "shape":"OnDemandThroughputOverride",
           "documentation":"<p>Overrides the maximum on-demand throughput settings for the specified replica table.</p>"
         },
+        "WarmThroughput":{
+          "shape":"TableWarmThroughputDescription",
+          "documentation":"<p>Represents the warm throughput value for this replica.</p>"
+        },
         "GlobalSecondaryIndexes":{
           "shape":"ReplicaGlobalSecondaryIndexDescriptionList",
           "documentation":"<p>Replica-specific global secondary index settings.</p>"
@@ -4992,6 +5030,10 @@
         "OnDemandThroughputOverride":{
           "shape":"OnDemandThroughputOverride",
           "documentation":"<p>Overrides the maximum on-demand throughput for the specified global secondary index in the specified replica table.</p>"
+        },
+        "WarmThroughput":{
+          "shape":"GlobalSecondaryIndexWarmThroughputDescription",
+          "documentation":"<p>Represents the warm throughput of the global secondary index for this replica.</p>"
         }
       },
       "documentation":"<p>Represents the properties of a replica global secondary index.</p>"
@@ -5933,6 +5975,10 @@
         "OnDemandThroughput":{
           "shape":"OnDemandThroughput",
           "documentation":"<p>The maximum number of read and write units for the specified on-demand table. If you use this parameter, you must specify <code>MaxReadRequestUnits</code>, <code>MaxWriteRequestUnits</code>, or both.</p>"
+        },
+        "WarmThroughput":{
+          "shape":"TableWarmThroughputDescription",
+          "documentation":"<p>Describes the warm throughput value of the base table.</p>"
         }
       },
       "documentation":"<p>Represents the properties of a table.</p>"
@@ -5978,6 +6024,24 @@
         "ARCHIVING",
         "ARCHIVED"
       ]
+    },
+    "TableWarmThroughputDescription":{
+      "type":"structure",
+      "members":{
+        "ReadUnitsPerSecond":{
+          "shape":"PositiveLongObject",
+          "documentation":"<p>Represents the base table's warm throughput value in read units per second.</p>"
+        },
+        "WriteUnitsPerSecond":{
+          "shape":"PositiveLongObject",
+          "documentation":"<p>Represents the base table's warm throughput value in write units per second.</p>"
+        },
+        "Status":{
+          "shape":"TableStatus",
+          "documentation":"<p>Represents warm throughput value of the base table..</p>"
+        }
+      },
+      "documentation":"<p>Represents the warm throughput value (in read units per second and write units per second) of the base table.</p>"
     },
     "Tag":{
       "type":"structure",
@@ -6350,6 +6414,10 @@
         "OnDemandThroughput":{
           "shape":"OnDemandThroughput",
           "documentation":"<p>Updates the maximum number of read and write units for the specified global secondary index. If you use this parameter, you must specify <code>MaxReadRequestUnits</code>, <code>MaxWriteRequestUnits</code>, or both.</p>"
+        },
+        "WarmThroughput":{
+          "shape":"WarmThroughput",
+          "documentation":"<p>Represents the warm throughput value of the new provisioned throughput settings to be applied to a global secondary index.</p>"
         }
       },
       "documentation":"<p>Represents the new provisioned throughput settings to be applied to a global secondary index.</p>"
@@ -6630,6 +6698,10 @@
         "OnDemandThroughput":{
           "shape":"OnDemandThroughput",
           "documentation":"<p>Updates the maximum number of read and write units for the specified table in on-demand capacity mode. If you use this parameter, you must specify <code>MaxReadRequestUnits</code>, <code>MaxWriteRequestUnits</code>, or both.</p>"
+        },
+        "WarmThroughput":{
+          "shape":"WarmThroughput",
+          "documentation":"<p>Represents the warm throughput (in read units per second and write units per second) for updating a table.</p>"
         }
       },
       "documentation":"<p>Represents the input of an <code>UpdateTable</code> operation.</p>"
@@ -6698,6 +6770,20 @@
           "documentation":"<p>Represents the output of an <code>UpdateTimeToLive</code> operation.</p>"
         }
       }
+    },
+    "WarmThroughput":{
+      "type":"structure",
+      "members":{
+        "ReadUnitsPerSecond":{
+          "shape":"LongObject",
+          "documentation":"<p>Represents the number of read operations your base table can instantaneously support.</p>"
+        },
+        "WriteUnitsPerSecond":{
+          "shape":"LongObject",
+          "documentation":"<p>Represents the number of write operations your base table can instantaneously support.</p>"
+        }
+      },
+      "documentation":"<p>Provides visibility into the number of read and write operations your table or secondary index can instantaneously support. The settings can be modified using the <code>UpdateTable</code> operation to meet the throughput requirements of an upcoming peak event.</p>"
     },
     "WriteRequest":{
       "type":"structure",

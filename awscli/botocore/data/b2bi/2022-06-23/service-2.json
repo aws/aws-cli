@@ -184,6 +184,23 @@
       "documentation":"<p>Deletes the specified transformer. A transformer can take an EDI file as input and transform it into a JSON-or XML-formatted document. Alternatively, a transformer can take a JSON-or XML-formatted document as input and transform it into an EDI file.</p>",
       "idempotent":true
     },
+    "GenerateMapping":{
+      "name":"GenerateMapping",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GenerateMappingRequest"},
+      "output":{"shape":"GenerateMappingResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Takes sample input and output documents and uses Amazon Bedrock to generate a mapping automatically. Depending on the accuracy and other factors, you can then edit the mapping for your needs.</p> <note> <p>Before you can use the AI-assisted feature for Amazon Web Services B2B Data Interchange you must enable models in Amazon Bedrock. For details, see <a href=\"https://docs.aws.amazon.com/b2bi/latest/userguide/ai-assisted-mapping.html#ai-assist-prereq\">AI-assisted template mapping prerequisites</a> in the <i>Amazon Web Services B2B Data Interchange User guide</i>.</p> </note>",
+      "idempotent":true
+    },
     "GetCapability":{
       "name":"GetCapability",
       "http":{
@@ -1247,6 +1264,58 @@
     "FromFormat":{
       "type":"string",
       "enum":["X12"]
+    },
+    "GenerateMappingInputFileContent":{
+      "type":"string",
+      "max":5000000,
+      "min":0
+    },
+    "GenerateMappingOutputFileContent":{
+      "type":"string",
+      "max":5000000,
+      "min":0
+    },
+    "GenerateMappingRequest":{
+      "type":"structure",
+      "required":[
+        "inputFileContent",
+        "outputFileContent",
+        "mappingType"
+      ],
+      "members":{
+        "inputFileContent":{
+          "shape":"GenerateMappingInputFileContent",
+          "documentation":"<p>Provide the contents of a sample X12 EDI file (for inbound EDI) or JSON/XML file (for outbound EDI) to use as a starting point for the mapping.</p>"
+        },
+        "outputFileContent":{
+          "shape":"GenerateMappingOutputFileContent",
+          "documentation":"<p>Provide the contents of a sample X12 EDI file (for outbound EDI) or JSON/XML file (for inbound EDI) to use as a target for the mapping.</p>"
+        },
+        "mappingType":{
+          "shape":"MappingType",
+          "documentation":"<p>Specify the mapping type: either <code>JSONATA</code> or <code>XSLT.</code> </p>"
+        }
+      }
+    },
+    "GenerateMappingResponse":{
+      "type":"structure",
+      "required":["mappingTemplate"],
+      "members":{
+        "mappingTemplate":{
+          "shape":"String",
+          "documentation":"<p>Returns a mapping template based on your inputs.</p>"
+        },
+        "mappingAccuracy":{
+          "shape":"GenerateMappingResponseMappingAccuracyFloat",
+          "documentation":"<p>Returns a percentage that estimates the accuracy of the generated mapping.</p>"
+        }
+      }
+    },
+    "GenerateMappingResponseMappingAccuracyFloat":{
+      "type":"float",
+      "box":true,
+      "max":1.0,
+      "min":0.0
     },
     "GetCapabilityRequest":{
       "type":"structure",
@@ -2646,7 +2715,7 @@
         },
         "status":{
           "shape":"TransformerStatus",
-          "documentation":"<p>Specifies the transformer's status. You can update the state of the transformer, from <code>active</code> to <code>inactive</code>, or <code>inactive</code> to <code>active</code>.</p>"
+          "documentation":"<p>Specifies the transformer's status. You can update the state of the transformer from <code>inactive</code> to <code>active</code>.</p>"
         },
         "fileFormat":{
           "shape":"FileFormat",

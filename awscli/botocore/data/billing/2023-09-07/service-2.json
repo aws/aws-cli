@@ -1,0 +1,235 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2023-09-07",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"billing",
+    "jsonVersion":"1.0",
+    "protocol":"json",
+    "protocols":["json"],
+    "serviceFullName":"AWS Billing",
+    "serviceId":"Billing",
+    "signatureVersion":"v4",
+    "signingName":"billing",
+    "targetPrefix":"AWSBilling",
+    "uid":"billing-2023-09-07"
+  },
+  "operations":{
+    "ListBillingViews":{
+      "name":"ListBillingViews",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListBillingViewsRequest"},
+      "output":{"shape":"ListBillingViewsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the billing views available for a given time period. </p> <p>Every Amazon Web Services account has a unique <code>PRIMARY</code> billing view that represents the billing data available by default. Accounts that use Billing Conductor also have <code>BILLING_GROUP</code> billing views representing pro forma costs associated with each created billing group.</p>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>You don't have sufficient access to perform this action.</p>",
+      "exception":true
+    },
+    "AccountId":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
+    "ActiveTimeRange":{
+      "type":"structure",
+      "required":[
+        "activeAfterInclusive",
+        "activeBeforeInclusive"
+      ],
+      "members":{
+        "activeAfterInclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p>The inclusive time range start date.</p>"
+        },
+        "activeBeforeInclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p> The inclusive time range end date. </p>"
+        }
+      },
+      "documentation":"<p>A time range with a start and end time.</p>"
+    },
+    "BillingViewArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-z-]*:(billing)::[0-9]{12}:billingview/[a-zA-Z0-9_\\+=\\.\\-@]{1,43}"
+    },
+    "BillingViewList":{
+      "type":"list",
+      "member":{"shape":"BillingViewListElement"}
+    },
+    "BillingViewListElement":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that can be used to uniquely identify the billing view. </p>"
+        },
+        "name":{
+          "shape":"BillingViewName",
+          "documentation":"<p> A list of names of the Billing view. </p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The list of owners of the Billing view. </p>"
+        },
+        "billingViewType":{
+          "shape":"BillingViewType",
+          "documentation":"<p>The type of billing view.</p>"
+        }
+      },
+      "documentation":"<p>A representation of a billing view.</p>"
+    },
+    "BillingViewName":{
+      "type":"string",
+      "pattern":"[ a-zA-Z0-9_\\+=\\.\\-@]+",
+      "sensitive":true
+    },
+    "BillingViewType":{
+      "type":"string",
+      "enum":[
+        "PRIMARY",
+        "BILLING_GROUP"
+      ]
+    },
+    "BillingViewsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ErrorMessage":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "FieldName":{
+      "type":"string",
+      "max":100,
+      "min":0
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request processing failed because of an unknown error, exception, or failure. </p>",
+      "exception":true,
+      "fault":true
+    },
+    "ListBillingViewsRequest":{
+      "type":"structure",
+      "required":["activeTimeRange"],
+      "members":{
+        "activeTimeRange":{
+          "shape":"ActiveTimeRange",
+          "documentation":"<p> The time range for the billing views listed. <code>PRIMARY</code> billing view is always listed. <code>BILLING_GROUP</code> billing views are listed for time ranges when the associated billing group resource in Billing Conductor is active. The time range must be within one calendar month. </p>"
+        },
+        "maxResults":{
+          "shape":"BillingViewsMaxResults",
+          "documentation":"<p>The maximum number of billing views to retrieve. Default is 100. </p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token that is used on subsequent calls to list billing views.</p>"
+        }
+      }
+    },
+    "ListBillingViewsResponse":{
+      "type":"structure",
+      "required":["billingViews"],
+      "members":{
+        "billingViews":{
+          "shape":"BillingViewList",
+          "documentation":"<p>A list of <code>BillingViewListElement</code> retrieved.</p>"
+        },
+        "nextToken":{
+          "shape":"PageToken",
+          "documentation":"<p>The pagination token to use on subsequent calls to list billing views. </p>"
+        }
+      }
+    },
+    "PageToken":{
+      "type":"string",
+      "max":2047,
+      "min":1
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request was denied due to request throttling. </p>",
+      "exception":true
+    },
+    "Timestamp":{"type":"timestamp"},
+    "ValidationException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "reason"
+      ],
+      "members":{
+        "message":{"shape":"ErrorMessage"},
+        "reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>"
+        },
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>"
+        }
+      },
+      "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service. </p>",
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "name",
+        "message"
+      ],
+      "members":{
+        "name":{
+          "shape":"FieldName",
+          "documentation":"<p>The name of the field.</p>"
+        },
+        "message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The message describing why the field failed validation.</p>"
+        }
+      },
+      "documentation":"<p>The field's information of a request that resulted in an exception. </p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    },
+    "ValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "unknownOperation",
+        "cannotParse",
+        "fieldValidationFailed",
+        "other"
+      ]
+    }
+  },
+  "documentation":"<p> You can use the Billing API to programatically list the billing views available to you for a given time period. A billing view represents a set of billing data. </p> <p>The Billing API provides the following endpoint:</p> <p> <code>https://billing.us-east-1.api.aws</code> </p>"
+}

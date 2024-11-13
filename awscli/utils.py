@@ -26,6 +26,7 @@ from awscli.compat import StringIO
 from botocore.useragent import UserAgentComponent
 from botocore.utils import resolve_imds_endpoint_mode
 from botocore.utils import IMDSFetcher
+from botocore.utils import BadIMDSRequestError
 from botocore.configprovider import BaseProvider
 
 logger = logging.getLogger(__name__)
@@ -171,9 +172,17 @@ class InstanceMetadataRegionFetcher(IMDSFetcher):
             region = self._get_region()
             return region
         except self._RETRIES_EXCEEDED_ERROR_CLS:
-            logger.debug("Max number of attempts exceeded (%s) when "
-                         "attempting to retrieve data from metadata service.",
-                         self._num_attempts)
+            logger.debug(
+                "Max number of attempts exceeded (%s) when "
+                "attempting to retrieve data from metadata service.",
+                self._num_attempts
+            )
+        except BadIMDSRequestError as e:
+            logger.debug(
+                "Failed to retrieve a region from IMDS. "
+                "Region detection may not be supported from this endpoint: "
+                "%s", e.request.url
+            )
         return None
 
     def _get_region(self):

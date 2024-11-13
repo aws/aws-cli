@@ -55,7 +55,7 @@ AC_SUBST(DOWNLOAD_DEPS_FLAG)
 
 ac_operating_system=`(uname -s) 2>/dev/null || echo unknown`
 if test "$ac_operating_system" = Darwin; then
-    AC_CHECK_MACOS_END_OF_SUPPORT([10.15.0], [June 20, 2024])
+    AC_CHECK_MACOS_END_OF_SUPPORT([11.0.0], [November 13, 2024])
 fi
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

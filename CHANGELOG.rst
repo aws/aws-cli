@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.36.1
+======
+
+* api-change:``accessanalyzer``: This release adds support for policy validation and external access findings for resource control policies (RCP). IAM Access Analyzer helps you author functional and secure RCPs and awareness that a RCP may restrict external access. Updated service API, documentation, and paginators.
+* api-change:``application-signals``: Amazon CloudWatch Application Signals now supports creating Service Level Objectives with burn rates. Users can now create or update SLOs with burn rate configurations to meet their specific business requirements.
+* api-change:``b2bi``: This release adds a GenerateMapping API to allow generation of JSONata or XSLT transformer code based on input and output samples.
+* api-change:``billing``: Today, AWS announces the general availability of ListBillingViews API in the AWS SDKs, to enable AWS Billing Conductor (ABC) users to create proforma Cost and Usage Reports (CUR) programmatically.
+* api-change:``cloudtrail``: This release adds a new API GenerateQuery that generates a query from a natural language prompt about the event data in your event data store. This operation uses generative artificial intelligence (generative AI) to produce a ready-to-use SQL query from the prompt.
+* api-change:``dynamodb``: This release includes supports the new WarmThroughput feature for DynamoDB. You can now provide an optional WarmThroughput attribute for CreateTable or UpdateTable APIs to pre-warm your table or global secondary index. You can also use DescribeTable to see the latest WarmThroughput value.
+* api-change:``ec2``: This release adds the source AMI details in DescribeImages API
+* api-change:``internetmonitor``: Add new query type Routing_Suggestions regarding querying interface
+* api-change:``mediaconvert``: This release adds support for ARN inputs in the Kantar credentials secrets name field and the MSPR field to the manifests for PlayReady DRM protected outputs.
+* api-change:``organizations``: Add support for policy operations on the Resource Control Polices.
+
+
 1.36.0
 ======
 

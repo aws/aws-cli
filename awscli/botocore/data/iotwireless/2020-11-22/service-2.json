@@ -994,7 +994,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Fetches the log-level override, if any, for a given resource-ID and resource-type. It can be used for a wireless device or a wireless gateway.</p>"
+      "documentation":"<p>Fetches the log-level override, if any, for a given resource-ID and resource-type. It can be used for a wireless device, wireless gateway or fuota task.</p>"
     },
     "GetResourcePosition":{
       "name":"GetResourcePosition",
@@ -1538,7 +1538,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Removes the log-level overrides for all resources; both wireless devices and wireless gateways.</p>"
+      "documentation":"<p>Removes the log-level overrides for all resources; wireless devices, wireless gateways, and fuota tasks.</p>"
     },
     "ResetResourceLogLevel":{
       "name":"ResetResourceLogLevel",
@@ -1556,7 +1556,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Removes the log-level override, if any, for a specific resource-ID and resource-type. It can be used for a wireless device or a wireless gateway.</p>"
+      "documentation":"<p>Removes the log-level override, if any, for a specific resource-ID and resource-type. It can be used for a wireless device, a wireless gateway, or a fuota task.</p>"
     },
     "SendDataToMulticastGroup":{
       "name":"SendDataToMulticastGroup",
@@ -2770,7 +2770,8 @@
         "Tags":{"shape":"TagList"},
         "RedundancyPercent":{"shape":"RedundancyPercent"},
         "FragmentSizeBytes":{"shape":"FragmentSizeBytes"},
-        "FragmentIntervalMS":{"shape":"FragmentIntervalMS"}
+        "FragmentIntervalMS":{"shape":"FragmentIntervalMS"},
+        "Descriptor":{"shape":"FileDescriptor"}
       }
     },
     "CreateFuotaTaskResponse":{
@@ -3832,6 +3833,7 @@
     "EventNotificationResourceType":{
       "type":"string",
       "enum":[
+        "FuotaTask",
         "SidewalkAccount",
         "WirelessDevice",
         "WirelessGateway"
@@ -3895,6 +3897,12 @@
       "min":0
     },
     "FactorySupport":{"type":"boolean"},
+    "FileDescriptor":{
+      "type":"string",
+      "documentation":"<p>The Descriptor specifies some metadata about the File being transferred using FUOTA e.g. the software version. It is sent transparently to the device. It is a binary field encoded in base64</p>",
+      "max":332,
+      "pattern":"^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+    },
     "Fingerprint":{
       "type":"string",
       "max":64,
@@ -3956,6 +3964,28 @@
       "documentation":"<p>The arn of a FUOTA task.</p>",
       "max":128
     },
+    "FuotaTaskEvent":{
+      "type":"string",
+      "documentation":"<p>The event for a log message, if the log message is tied to a fuota task.</p>",
+      "enum":["Fuota"]
+    },
+    "FuotaTaskEventLogOption":{
+      "type":"structure",
+      "required":[
+        "Event",
+        "LogLevel"
+      ],
+      "members":{
+        "Event":{"shape":"FuotaTaskEvent"},
+        "LogLevel":{"shape":"LogLevel"}
+      },
+      "documentation":"<p>The log options for a FUOTA task event and can be used to set log levels for a specific fuota task event.</p> <p>For a LoRaWAN FuotaTask type, possible event for a log message is <code>Fuota</code>.</p>"
+    },
+    "FuotaTaskEventLogOptionList":{
+      "type":"list",
+      "member":{"shape":"FuotaTaskEventLogOption"},
+      "documentation":"<p>The list of FUOTA task event log options.</p>"
+    },
     "FuotaTaskId":{
       "type":"string",
       "documentation":"<p>The ID of a FUOTA task.</p>",
@@ -3965,6 +3995,27 @@
       "type":"list",
       "member":{"shape":"FuotaTask"},
       "documentation":"<p>Lists the FUOTA tasks registered to your AWS account.</p>"
+    },
+    "FuotaTaskLogOption":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "LogLevel"
+      ],
+      "members":{
+        "Type":{
+          "shape":"FuotaTaskType",
+          "documentation":"<p>The fuota task type.</p>"
+        },
+        "LogLevel":{"shape":"LogLevel"},
+        "Events":{"shape":"FuotaTaskEventLogOptionList"}
+      },
+      "documentation":"<p>The log options for fuota tasks and can be used to set log levels for a specific type of fuota task.</p>"
+    },
+    "FuotaTaskLogOptionList":{
+      "type":"list",
+      "member":{"shape":"FuotaTaskLogOption"},
+      "documentation":"<p>The list of fuota task log options.</p>"
     },
     "FuotaTaskName":{
       "type":"string",
@@ -3981,6 +4032,11 @@
         "FuotaDone",
         "Delete_Waiting"
       ]
+    },
+    "FuotaTaskType":{
+      "type":"string",
+      "documentation":"<p>The fuota task type.</p>",
+      "enum":["LoRaWAN"]
     },
     "GPST":{"type":"float"},
     "GatewayEui":{
@@ -4008,6 +4064,11 @@
         }
       },
       "documentation":"<p>Gateway list item object that specifies the frequency and list of gateways for which the downlink message should be sent.</p>"
+    },
+    "GatewayListMulticast":{
+      "type":"list",
+      "member":{"shape":"WirelessGatewayId"},
+      "max":20
     },
     "GatewayMaxEirp":{
       "type":"float",
@@ -4157,7 +4218,8 @@
         "CreatedAt":{"shape":"CreatedAt"},
         "RedundancyPercent":{"shape":"RedundancyPercent"},
         "FragmentSizeBytes":{"shape":"FragmentSizeBytes"},
-        "FragmentIntervalMS":{"shape":"FragmentIntervalMS"}
+        "FragmentIntervalMS":{"shape":"FragmentIntervalMS"},
+        "Descriptor":{"shape":"FileDescriptor"}
       }
     },
     "GetLogLevelsByResourceTypesRequest":{
@@ -4170,7 +4232,8 @@
       "members":{
         "DefaultLogLevel":{"shape":"LogLevel"},
         "WirelessGatewayLogOptions":{"shape":"WirelessGatewayLogOptionList"},
-        "WirelessDeviceLogOptions":{"shape":"WirelessDeviceLogOptionList"}
+        "WirelessDeviceLogOptions":{"shape":"WirelessDeviceLogOptionList"},
+        "FuotaTaskLogOptions":{"shape":"FuotaTaskLogOptionList"}
       }
     },
     "GetMetricConfigurationRequest":{
@@ -4507,7 +4570,7 @@
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The type of the resource, which can be <code>WirelessDevice</code> or <code>WirelessGateway</code>.</p>",
+          "documentation":"<p>The type of the resource, which can be <code>WirelessDevice</code>, <code>WirelessGateway</code> or <code>FuotaTask</code>.</p>",
           "location":"querystring",
           "locationName":"resourceType"
         }
@@ -5155,6 +5218,7 @@
       "enum":[
         "PartnerAccountId",
         "DevEui",
+        "FuotaTaskId",
         "GatewayEui",
         "WirelessDeviceId",
         "WirelessGatewayId"
@@ -6253,7 +6317,8 @@
       "type":"structure",
       "members":{
         "RfRegion":{"shape":"SupportedRfRegion"},
-        "DlClass":{"shape":"DlClass"}
+        "DlClass":{"shape":"DlClass"},
+        "ParticipatingGateways":{"shape":"ParticipatingGatewaysMulticast"}
       },
       "documentation":"<p>The LoRaWAN information that is to be used with the multicast group.</p>"
     },
@@ -6263,7 +6328,8 @@
         "RfRegion":{"shape":"SupportedRfRegion"},
         "DlClass":{"shape":"DlClass"},
         "NumberOfDevicesRequested":{"shape":"NumberOfDevicesRequested"},
-        "NumberOfDevicesInGroup":{"shape":"NumberOfDevicesInGroup"}
+        "NumberOfDevicesInGroup":{"shape":"NumberOfDevicesInGroup"},
+        "ParticipatingGateways":{"shape":"ParticipatingGatewaysMulticast"}
       },
       "documentation":"<p>The LoRaWAN information that is to be returned from getting multicast group information.</p>"
     },
@@ -6971,6 +7037,20 @@
       },
       "documentation":"<p>Specify the list of gateways to which you want to send downlink data traffic when the wireless device is running in class B or class C mode.</p>"
     },
+    "ParticipatingGatewaysMulticast":{
+      "type":"structure",
+      "members":{
+        "GatewayList":{
+          "shape":"GatewayListMulticast",
+          "documentation":"<p>The list of gateways that you want to use for sending the multicast downlink. Each downlink will be sent to all the gateways in the list with transmission interval between them. If list is empty the gateway list will be dynamically selected similar to the case of no ParticipatingGateways </p>"
+        },
+        "TransmissionInterval":{
+          "shape":"TransmissionIntervalMulticast",
+          "documentation":"<p>The duration of time for which AWS IoT Core for LoRaWAN will wait before transmitting the multicast payload to the next gateway in the list.</p>"
+        }
+      },
+      "documentation":"<p>Specify the list of gateways to which you want to send the multicast downlink messages. The multicast message will be sent to each gateway in the sequence provided in the list.</p>"
+    },
     "PartnerAccountArn":{"type":"string"},
     "PartnerAccountId":{
       "type":"string",
@@ -7212,7 +7292,7 @@
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The type of the resource, which can be <code>WirelessDevice</code> or <code>WirelessGateway</code>.</p>",
+          "documentation":"<p>The type of the resource, which can be <code>WirelessDevice</code>, <code>WirelessGateway</code>, or <code>FuotaTask</code>.</p>",
           "location":"querystring",
           "locationName":"resourceType"
         },
@@ -7292,7 +7372,7 @@
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The type of the resource, which can be <code>WirelessDevice</code> or <code>WirelessGateway</code>.</p>",
+          "documentation":"<p>The type of the resource, which can be <code>WirelessDevice</code>, <code>WirelessGateway</code>, or <code>FuotaTask</code>.</p>",
           "location":"querystring",
           "locationName":"resourceType"
         }
@@ -8373,6 +8453,11 @@
       "max":604800,
       "min":1
     },
+    "TransmissionIntervalMulticast":{
+      "type":"integer",
+      "max":60000,
+      "min":0
+    },
     "TransmitMode":{
       "type":"integer",
       "max":1,
@@ -8546,7 +8631,8 @@
         "FirmwareUpdateRole":{"shape":"FirmwareUpdateRole"},
         "RedundancyPercent":{"shape":"RedundancyPercent"},
         "FragmentSizeBytes":{"shape":"FragmentSizeBytes"},
-        "FragmentIntervalMS":{"shape":"FragmentIntervalMS"}
+        "FragmentIntervalMS":{"shape":"FragmentIntervalMS"},
+        "Descriptor":{"shape":"FileDescriptor"}
       }
     },
     "UpdateFuotaTaskResponse":{
@@ -8558,6 +8644,7 @@
       "type":"structure",
       "members":{
         "DefaultLogLevel":{"shape":"LogLevel"},
+        "FuotaTaskLogOptions":{"shape":"FuotaTaskLogOptionList"},
         "WirelessDeviceLogOptions":{"shape":"WirelessDeviceLogOptionList"},
         "WirelessGatewayLogOptions":{"shape":"WirelessGatewayLogOptionList"}
       }

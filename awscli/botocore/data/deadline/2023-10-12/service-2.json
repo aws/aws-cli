@@ -2040,20 +2040,68 @@
     }
   },
   "shapes":{
+    "AcceleratorCapabilities":{
+      "type":"structure",
+      "required":["selections"],
+      "members":{
+        "selections":{
+          "shape":"AcceleratorSelections",
+          "documentation":"<p>A list of objects that contain the GPU name of the accelerator and driver for the instance types that support the accelerator.</p>"
+        },
+        "count":{
+          "shape":"AcceleratorCountRange",
+          "documentation":"<p>The number of GPUs on each worker. The default is 1.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the GPU accelerators and drivers for the instance types in a fleet. If you include the <code>acceleratorCapabilities</code> property in the <a href=\"https://docs.aws.amazon.com/deadline-cloud/latest/APIReference/API_ServiceManagedEc2InstanceCapabilities\">ServiceManagedEc2InstanceCapabilities</a> object, all of the Amazon EC2 instances will have at least one accelerator. </p>"
+    },
     "AcceleratorCountRange":{
       "type":"structure",
       "required":["min"],
       "members":{
         "min":{
           "shape":"MinZeroMaxInteger",
-          "documentation":"<p>The minimum GPU for the accelerator.</p>"
+          "documentation":"<p>The minimum number of GPUs for the accelerator. If you set the value to 0, a worker will still have 1 GPU.</p>"
         },
         "max":{
           "shape":"MinZeroMaxInteger",
-          "documentation":"<p>The maximum GPU for the accelerator.</p>"
+          "documentation":"<p>The maximum number of GPUs for the accelerator.</p>"
         }
       },
       "documentation":"<p>The range for the GPU fleet acceleration.</p>"
+    },
+    "AcceleratorName":{
+      "type":"string",
+      "enum":[
+        "t4",
+        "a10g",
+        "l4",
+        "l40s"
+      ]
+    },
+    "AcceleratorRuntime":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "AcceleratorSelection":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"AcceleratorName",
+          "documentation":"<p>The name of the GPU accelerator.</p>"
+        },
+        "runtime":{
+          "shape":"AcceleratorRuntime",
+          "documentation":"<p>The driver version that the GPU accelerator uses. </p>"
+        }
+      },
+      "documentation":"<p>Values that you can use to select a particular Amazon EC2 instance type. </p>"
+    },
+    "AcceleratorSelections":{
+      "type":"list",
+      "member":{"shape":"AcceleratorSelection"}
     },
     "AcceleratorTotalMemoryMiBRange":{
       "type":"structure",
@@ -9537,6 +9585,10 @@
           "shape":"Ec2EbsVolume",
           "documentation":"<p>The root EBS volume.</p>"
         },
+        "acceleratorCapabilities":{
+          "shape":"AcceleratorCapabilities",
+          "documentation":"<p>The GPU accelerator capabilities required for the Amazon EC2 instances. If you include the <code>acceleratorCapabilities</code> property in the <a href=\"https://docs.aws.amazon.com/deadline-cloud/latest/APIReference/API_ServiceManagedEc2InstanceCapabilities\">ServiceManagedEc2InstanceCapabilities</a> object, all of the Amazon EC2 instances will have at least one accelerator. </p>"
+        },
         "allowedInstanceTypes":{
           "shape":"InstanceTypes",
           "documentation":"<p>The allowable Amazon EC2 instance types.</p>"
@@ -10030,7 +10082,9 @@
     },
     "StepAmountCapabilities":{
       "type":"list",
-      "member":{"shape":"StepAmountCapability"}
+      "member":{"shape":"StepAmountCapability"},
+      "max":25,
+      "min":1
     },
     "StepAmountCapability":{
       "type":"structure",
@@ -10057,7 +10111,9 @@
     },
     "StepAttributeCapabilities":{
       "type":"list",
-      "member":{"shape":"StepAttributeCapability"}
+      "member":{"shape":"StepAttributeCapability"},
+      "max":25,
+      "min":1
     },
     "StepAttributeCapability":{
       "type":"structure",

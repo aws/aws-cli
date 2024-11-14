@@ -127,6 +127,47 @@
       ],
       "documentation":"<p>Creates an analysis in Amazon QuickSight. Analyses can be created either from a template or from an <code>AnalysisDefinition</code>.</p>"
     },
+    "CreateBrand":{
+      "name":"CreateBrand",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/brands/{BrandId}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateBrandRequest"},
+      "output":{"shape":"CreateBrandResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates an Amazon QuickSight brand.</p>"
+    },
+    "CreateCustomPermissions":{
+      "name":"CreateCustomPermissions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/custom-permissions"
+      },
+      "input":{"shape":"CreateCustomPermissionsRequest"},
+      "output":{"shape":"CreateCustomPermissionsResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceUnavailableException"}
+      ],
+      "documentation":"<p>Creates a custom permissions profile.</p>"
+    },
     "CreateDashboard":{
       "name":"CreateDashboard",
       "http":{
@@ -568,6 +609,67 @@
       ],
       "documentation":"<p>Deletes an analysis from Amazon QuickSight. You can optionally include a recovery window during which you can restore the analysis. If you don't specify a recovery window value, the operation defaults to 30 days. Amazon QuickSight attaches a <code>DeletionTime</code> stamp to the response that specifies the end of the recovery window. At the end of the recovery window, Amazon QuickSight deletes the analysis permanently.</p> <p>At any time before recovery window ends, you can use the <code>RestoreAnalysis</code> API operation to remove the <code>DeletionTime</code> stamp and cancel the deletion of the analysis. The analysis remains visible in the API until it's deleted, so you can describe it but you can't make a template from it.</p> <p>An analysis that's scheduled for deletion isn't accessible in the Amazon QuickSight console. To access it in the console, restore it. Deleting an analysis doesn't delete the dashboards that you publish from it.</p>"
     },
+    "DeleteBrand":{
+      "name":"DeleteBrand",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/brands/{BrandId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteBrandRequest"},
+      "output":{"shape":"DeleteBrandResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an Amazon QuickSight brand.</p>",
+      "idempotent":true
+    },
+    "DeleteBrandAssignment":{
+      "name":"DeleteBrandAssignment",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/brandassignments",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteBrandAssignmentRequest"},
+      "output":{"shape":"DeleteBrandAssignmentResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a brand assignment.</p>",
+      "idempotent":true
+    },
+    "DeleteCustomPermissions":{
+      "name":"DeleteCustomPermissions",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/custom-permissions/{CustomPermissionsName}"
+      },
+      "input":{"shape":"DeleteCustomPermissionsRequest"},
+      "output":{"shape":"DeleteCustomPermissionsResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceUnavailableException"}
+      ],
+      "documentation":"<p>Deletes a custom permissions profile.</p>"
+    },
     "DeleteDashboard":{
       "name":"DeleteDashboard",
       "http":{
@@ -975,6 +1077,26 @@
       ],
       "documentation":"<p>Deletes a user identified by its principal ID. </p>"
     },
+    "DeleteUserCustomPermission":{
+      "name":"DeleteUserCustomPermission",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}/custom-permission"
+      },
+      "input":{"shape":"DeleteUserCustomPermissionRequest"},
+      "output":{"shape":"DeleteUserCustomPermissionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceUnavailableException"}
+      ],
+      "documentation":"<p>Deletes a custom permissions profile from a user.</p>"
+    },
     "DeleteVPCConnection":{
       "name":"DeleteVPCConnection",
       "http":{
@@ -1132,6 +1254,82 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Describes an existing import job.</p> <p>Poll job descriptions after starting a job to know when it has succeeded or failed. Job descriptions are available for 14 days after job starts.</p>"
+    },
+    "DescribeBrand":{
+      "name":"DescribeBrand",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/brands/{BrandId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeBrandRequest"},
+      "output":{"shape":"DescribeBrandResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Describes a brand.</p>"
+    },
+    "DescribeBrandAssignment":{
+      "name":"DescribeBrandAssignment",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/brandassignments",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeBrandAssignmentRequest"},
+      "output":{"shape":"DescribeBrandAssignmentResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Describes a brand assignment.</p>"
+    },
+    "DescribeBrandPublishedVersion":{
+      "name":"DescribeBrandPublishedVersion",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/brands/{BrandId}/publishedversion",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeBrandPublishedVersionRequest"},
+      "output":{"shape":"DescribeBrandPublishedVersionResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Describes the published version of the brand.</p>"
+    },
+    "DescribeCustomPermissions":{
+      "name":"DescribeCustomPermissions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/custom-permissions/{CustomPermissionsName}"
+      },
+      "input":{"shape":"DescribeCustomPermissionsRequest"},
+      "output":{"shape":"DescribeCustomPermissionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceUnavailableException"}
+      ],
+      "documentation":"<p>Describes a custom permissions profile.</p>"
     },
     "DescribeDashboard":{
       "name":"DescribeDashboard",
@@ -1919,6 +2117,42 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists all asset bundle import jobs that have taken place in the last 14 days. Jobs created more than 14 days ago are deleted forever and are not returned. If you are using the same job ID for multiple jobs, <code>ListAssetBundleImportJobs</code> only returns the most recent job that uses the repeated job ID.</p>"
+    },
+    "ListBrands":{
+      "name":"ListBrands",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/brands",
+        "responseCode":200
+      },
+      "input":{"shape":"ListBrandsRequest"},
+      "output":{"shape":"ListBrandsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all brands in an Amazon QuickSight account.</p>"
+    },
+    "ListCustomPermissions":{
+      "name":"ListCustomPermissions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/custom-permissions"
+      },
+      "input":{"shape":"ListCustomPermissionsRequest"},
+      "output":{"shape":"ListCustomPermissionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceUnavailableException"}
+      ],
+      "documentation":"<p>Returns a list of all the custom permissions profiles.</p>"
     },
     "ListDashboardVersions":{
       "name":"ListDashboardVersions",
@@ -2816,6 +3050,86 @@
       ],
       "documentation":"<p>Updates the read and write permissions for an analysis.</p>"
     },
+    "UpdateBrand":{
+      "name":"UpdateBrand",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/brands/{BrandId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateBrandRequest"},
+      "output":{"shape":"UpdateBrandResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates a brand.</p>",
+      "idempotent":true
+    },
+    "UpdateBrandAssignment":{
+      "name":"UpdateBrandAssignment",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/brandassignments",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateBrandAssignmentRequest"},
+      "output":{"shape":"UpdateBrandAssignmentResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates a brand assignment.</p>",
+      "idempotent":true
+    },
+    "UpdateBrandPublishedVersion":{
+      "name":"UpdateBrandPublishedVersion",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/brands/{BrandId}/publishedversion",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateBrandPublishedVersionRequest"},
+      "output":{"shape":"UpdateBrandPublishedVersionResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the published version of a brand.</p>",
+      "idempotent":true
+    },
+    "UpdateCustomPermissions":{
+      "name":"UpdateCustomPermissions",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/custom-permissions/{CustomPermissionsName}"
+      },
+      "input":{"shape":"UpdateCustomPermissionsRequest"},
+      "output":{"shape":"UpdateCustomPermissionsResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceUnavailableException"}
+      ],
+      "documentation":"<p>Updates a custom permissions profile.</p>"
+    },
     "UpdateDashboard":{
       "name":"UpdateDashboard",
       "http":{
@@ -3380,6 +3694,26 @@
       ],
       "documentation":"<p>Updates an Amazon QuickSight user.</p>"
     },
+    "UpdateUserCustomPermission":{
+      "name":"UpdateUserCustomPermission",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/namespaces/{Namespace}/users/{UserName}/custom-permission"
+      },
+      "input":{"shape":"UpdateUserCustomPermissionRequest"},
+      "output":{"shape":"UpdateUserCustomPermissionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceUnavailableException"}
+      ],
+      "documentation":"<p>Updates a custom permissions profile for a user.</p>"
+    },
     "UpdateVPCConnection":{
       "name":"UpdateVPCConnection",
       "http":{
@@ -3680,6 +4014,12 @@
       "members":{
       },
       "documentation":"<p>An empty object that represents that the <code>AllSheets</code> option is the chosen value for the <code>FilterScopeConfiguration</code> parameter. This structure applies the filter to all visuals on all sheets of an Analysis, Dashboard, or Template.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
+    },
+    "AltText":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[ -ÿ]+"
     },
     "AmazonElasticsearchParameters":{
       "type":"structure",
@@ -4105,6 +4445,20 @@
     "AnswerIds":{
       "type":"list",
       "member":{"shape":"AnswerId"}
+    },
+    "ApplicationTheme":{
+      "type":"structure",
+      "members":{
+        "BrandColorPalette":{
+          "shape":"BrandColorPalette",
+          "documentation":"<p>The color palette.</p>"
+        },
+        "BrandElementStyle":{
+          "shape":"BrandElementStyle",
+          "documentation":"<p>The element style.</p>"
+        }
+      },
+      "documentation":"<p>The application theme.</p>"
     },
     "ArcAxisConfiguration":{
       "type":"structure",
@@ -6519,6 +6873,180 @@
       },
       "documentation":"<p>A box plot.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/box-plots.html\">Using box plots</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
     },
+    "BrandColorPalette":{
+      "type":"structure",
+      "members":{
+        "Primary":{
+          "shape":"Palette",
+          "documentation":"<p>The primary color.</p>"
+        },
+        "Secondary":{
+          "shape":"Palette",
+          "documentation":"<p>The secondary color.</p>"
+        },
+        "Accent":{
+          "shape":"Palette",
+          "documentation":"<p>The color that is used for accent elements.</p>"
+        },
+        "Measure":{
+          "shape":"Palette",
+          "documentation":"<p>The color that is used for measure elements.</p>"
+        },
+        "Dimension":{
+          "shape":"Palette",
+          "documentation":"<p>The color that is used for dimension elements.</p>"
+        },
+        "Success":{
+          "shape":"Palette",
+          "documentation":"<p>The color that is used for success elements.</p>"
+        },
+        "Info":{
+          "shape":"Palette",
+          "documentation":"<p>The color that is used for info elements.</p>"
+        },
+        "Warning":{
+          "shape":"Palette",
+          "documentation":"<p>The color that is used for warning elements.</p>"
+        },
+        "Danger":{
+          "shape":"Palette",
+          "documentation":"<p>The color that is used for danger elements.</p>"
+        }
+      },
+      "documentation":"<p>The color palette.</p>"
+    },
+    "BrandDefinition":{
+      "type":"structure",
+      "required":["BrandName"],
+      "members":{
+        "BrandName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the brand.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the brand.</p>"
+        },
+        "ApplicationTheme":{
+          "shape":"ApplicationTheme",
+          "documentation":"<p>The application theme of the brand.</p>"
+        },
+        "LogoConfiguration":{
+          "shape":"LogoConfiguration",
+          "documentation":"<p>The logo configuration of the brand.</p>"
+        }
+      },
+      "documentation":"<p>The definition of the brand.</p>"
+    },
+    "BrandDetail":{
+      "type":"structure",
+      "required":["BrandId"],
+      "members":{
+        "BrandId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the Amazon QuickSight brand.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the brand.</p>"
+        },
+        "BrandStatus":{
+          "shape":"BrandStatus",
+          "documentation":"<p>The status of the brand.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the brand was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last time the brand was updated.</p>"
+        },
+        "VersionId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the version.</p>"
+        },
+        "VersionStatus":{
+          "shape":"BrandVersionStatus",
+          "documentation":"<p>The status of the version.</p>"
+        },
+        "Errors":{
+          "shape":"ErrorList",
+          "documentation":"<p>A list of errors that occurred during the most recent brand operation.</p>"
+        },
+        "Logo":{
+          "shape":"Logo",
+          "documentation":"<p>The logo details.</p>"
+        }
+      },
+      "documentation":"<p>The details of the brand.</p>"
+    },
+    "BrandElementStyle":{
+      "type":"structure",
+      "members":{
+        "NavbarStyle":{
+          "shape":"NavbarStyle",
+          "documentation":"<p>The navigation bar style.</p>"
+        }
+      },
+      "documentation":"<p>The element style.</p>"
+    },
+    "BrandStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_IN_PROGRESS",
+        "CREATE_SUCCEEDED",
+        "CREATE_FAILED",
+        "DELETE_IN_PROGRESS",
+        "DELETE_FAILED"
+      ]
+    },
+    "BrandSummary":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the brand.</p>"
+        },
+        "BrandId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the Amazon QuickSight brand.</p>"
+        },
+        "BrandName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the brand.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the brand.</p>"
+        },
+        "BrandStatus":{
+          "shape":"BrandStatus",
+          "documentation":"<p>The status of the brand.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the brand was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the brand was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the brand.</p>"
+    },
+    "BrandSummaryList":{
+      "type":"list",
+      "member":{"shape":"BrandSummary"}
+    },
+    "BrandVersionStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_IN_PROGRESS",
+        "CREATE_SUCCEEDED",
+        "CREATE_FAILED"
+      ]
+    },
     "CIDR":{
       "type":"string",
       "pattern":"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(3[0-2]|[1-2][0-9]|[1-9]))$"
@@ -6658,6 +7186,84 @@
           "location":"statusCode"
         }
       }
+    },
+    "Capabilities":{
+      "type":"structure",
+      "members":{
+        "ExportToCsv":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to export to CSV files.</p>"
+        },
+        "ExportToExcel":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to export to Excel files.</p>"
+        },
+        "CreateAndUpdateThemes":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to export to Create and Update themes.</p>"
+        },
+        "AddOrRunAnomalyDetectionForAnalyses":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to add or run anomaly detection.</p>"
+        },
+        "ShareAnalyses":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to share analyses.</p>"
+        },
+        "CreateAndUpdateDatasets":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to create and update datasets.</p>"
+        },
+        "ShareDatasets":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to share datasets.</p>"
+        },
+        "SubscribeDashboardEmailReports":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to subscribe to email reports.</p>"
+        },
+        "CreateAndUpdateDashboardEmailReports":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to create and update email reports.</p>"
+        },
+        "ShareDashboards":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to share dashboards.</p>"
+        },
+        "CreateAndUpdateThresholdAlerts":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to create and update threshold alerts.</p>"
+        },
+        "RenameSharedFolders":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to rename shared folders.</p>"
+        },
+        "CreateSharedFolders":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to create shared folders.</p>"
+        },
+        "CreateAndUpdateDataSources":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to create and update data sources.</p>"
+        },
+        "ShareDataSources":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to share data sources.</p>"
+        },
+        "ViewAccountSPICECapacity":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to view account SPICE capacity.</p>"
+        },
+        "CreateSPICEDataset":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to create a SPICE dataset.</p>"
+        }
+      },
+      "documentation":"<p>A set of actions that correspond to Amazon QuickSight permissions.</p>"
+    },
+    "CapabilityState":{
+      "type":"string",
+      "enum":["DENY"]
     },
     "CascadingControlConfiguration":{
       "type":"structure",
@@ -8158,6 +8764,52 @@
         }
       }
     },
+    "CreateBrandRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "BrandId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the brand.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "BrandId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the Amazon QuickSight brand.</p>",
+          "location":"uri",
+          "locationName":"BrandId"
+        },
+        "BrandDefinition":{
+          "shape":"BrandDefinition",
+          "documentation":"<p>The definition of the brand.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A map of the key-value pairs that are assigned to the brand.</p>"
+        }
+      }
+    },
+    "CreateBrandResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "BrandDetail":{
+          "shape":"BrandDetail",
+          "documentation":"<p>The details of the brand.</p>"
+        },
+        "BrandDefinition":{
+          "shape":"BrandDefinition",
+          "documentation":"<p>The definition of the brand.</p>"
+        }
+      }
+    },
     "CreateColumnsOperation":{
       "type":"structure",
       "required":["Columns"],
@@ -8168,6 +8820,50 @@
         }
       },
       "documentation":"<p>A transform operation that creates calculated columns. Columns created in one such operation form a lexical closure.</p>"
+    },
+    "CreateCustomPermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "CustomPermissionsName"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that you want to create the custom permissions profile in.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "CustomPermissionsName":{
+          "shape":"CustomPermissionsName",
+          "documentation":"<p>The name of the custom permissions profile that you want to create.</p>"
+        },
+        "Capabilities":{
+          "shape":"Capabilities",
+          "documentation":"<p>A set of actions to include in the custom permissions profile.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to associate with the custom permissions profile.</p>"
+        }
+      }
+    },
+    "CreateCustomPermissionsResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom permissions profile.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
     },
     "CreateDashboardRequest":{
       "type":"structure",
@@ -9787,6 +10483,34 @@
         }
       },
       "documentation":"<p>The customized parameter values.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
+    },
+    "CustomPermissions":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom permissions profile.</p>"
+        },
+        "CustomPermissionsName":{
+          "shape":"CustomPermissionsName",
+          "documentation":"<p>The name of the custom permissions profile.</p>"
+        },
+        "Capabilities":{
+          "shape":"Capabilities",
+          "documentation":"<p>A set of actions in the custom permissions profile.</p>"
+        }
+      },
+      "documentation":"<p>The custom permissions profile.</p>"
+    },
+    "CustomPermissionsList":{
+      "type":"list",
+      "member":{"shape":"CustomPermissions"}
+    },
+    "CustomPermissionsName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9+=,.@_-]+$"
     },
     "CustomSql":{
       "type":"structure",
@@ -12191,6 +12915,95 @@
         }
       }
     },
+    "DeleteBrandAssignmentRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the brand assignment.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        }
+      }
+    },
+    "DeleteBrandAssignmentResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "DeleteBrandRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "BrandId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the brand.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "BrandId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the Amazon QuickSight brand.</p>",
+          "location":"uri",
+          "locationName":"BrandId"
+        }
+      }
+    },
+    "DeleteBrandResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "DeleteCustomPermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "CustomPermissionsName"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the custom permissions profile that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "CustomPermissionsName":{
+          "shape":"CustomPermissionsName",
+          "documentation":"<p>The name of the custom permissions profile that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"CustomPermissionsName"
+        }
+      }
+    },
+    "DeleteCustomPermissionsResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom permissions profile.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "DeleteDashboardRequest":{
       "type":"structure",
       "required":[
@@ -13145,6 +13958,48 @@
         }
       }
     },
+    "DeleteUserCustomPermissionRequest":{
+      "type":"structure",
+      "required":[
+        "UserName",
+        "AwsAccountId",
+        "Namespace"
+      ],
+      "members":{
+        "UserName":{
+          "shape":"UserName",
+          "documentation":"<p>The username of the user that you want to remove custom permissions from.</p>",
+          "location":"uri",
+          "locationName":"UserName"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the custom permission configuration that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace that the user belongs to.</p>",
+          "location":"uri",
+          "locationName":"Namespace"
+        }
+      }
+    },
+    "DeleteUserCustomPermissionResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DeleteUserRequest":{
       "type":"structure",
       "required":[
@@ -13693,6 +14548,151 @@
         "Warnings":{
           "shape":"AssetBundleImportJobWarningList",
           "documentation":"<p>An array of warning records that describe all permitted errors that are encountered during the import job.</p>"
+        }
+      }
+    },
+    "DescribeBrandAssignmentRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the brand assignment.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        }
+      }
+    },
+    "DescribeBrandAssignmentResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "BrandArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the brand.</p>"
+        }
+      }
+    },
+    "DescribeBrandPublishedVersionRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "BrandId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the brand.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "BrandId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the Amazon QuickSight brand.</p>",
+          "location":"uri",
+          "locationName":"BrandId"
+        }
+      }
+    },
+    "DescribeBrandPublishedVersionResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "BrandDetail":{
+          "shape":"BrandDetail",
+          "documentation":"<p>The details of the brand.</p>"
+        },
+        "BrandDefinition":{
+          "shape":"BrandDefinition",
+          "documentation":"<p>The definition of the brand.</p>"
+        }
+      }
+    },
+    "DescribeBrandRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "BrandId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the brand.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "BrandId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the Amazon QuickSight brand.</p>",
+          "location":"uri",
+          "locationName":"BrandId"
+        },
+        "VersionId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the specific version. The default value is the latest version.</p>",
+          "location":"querystring",
+          "locationName":"versionId"
+        }
+      }
+    },
+    "DescribeBrandResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "BrandDetail":{
+          "shape":"BrandDetail",
+          "documentation":"<p>The details of the brand.</p>"
+        },
+        "BrandDefinition":{
+          "shape":"BrandDefinition",
+          "documentation":"<p>The definition of the brand.</p>"
+        }
+      }
+    },
+    "DescribeCustomPermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "CustomPermissionsName"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the custom permissions profile that you want described.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "CustomPermissionsName":{
+          "shape":"CustomPermissionsName",
+          "documentation":"<p>The name of the custom permissions profile to describe.</p>",
+          "location":"uri",
+          "locationName":"CustomPermissionsName"
+        }
+      }
+    },
+    "DescribeCustomPermissionsResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>"
+        },
+        "CustomPermissions":{
+          "shape":"CustomPermissions",
+          "documentation":"<p>The custom permissions profile.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -15484,6 +16484,12 @@
         }
       }
     },
+    "Description":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[ -ÿ]+"
+    },
     "DestinationParameterValueConfiguration":{
       "type":"structure",
       "members":{
@@ -15784,6 +16790,11 @@
       },
       "documentation":"<p>Error information for the SPICE ingestion of a dataset.</p>"
     },
+    "ErrorList":{
+      "type":"list",
+      "member":{"shape":"ErrorMessage"}
+    },
+    "ErrorMessage":{"type":"string"},
     "ExasolParameters":{
       "type":"structure",
       "required":[
@@ -18894,6 +19905,75 @@
       "error":{"httpStatusCode":403},
       "exception":true
     },
+    "Image":{
+      "type":"structure",
+      "members":{
+        "Source":{
+          "shape":"ImageSource",
+          "documentation":"<p>The source of the logo image.</p>"
+        },
+        "GeneratedImageUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL that points to the generated logo image.</p>"
+        }
+      },
+      "documentation":"<p>The logo image.</p>"
+    },
+    "ImageConfiguration":{
+      "type":"structure",
+      "members":{
+        "Source":{
+          "shape":"ImageSource",
+          "documentation":"<p>The source of the image.</p>"
+        }
+      },
+      "documentation":"<p>The logo image configuration.</p>"
+    },
+    "ImageSet":{
+      "type":"structure",
+      "required":["Original"],
+      "members":{
+        "Original":{
+          "shape":"Image",
+          "documentation":"<p>The original image.</p>"
+        },
+        "Height64":{
+          "shape":"Image",
+          "documentation":"<p>The image with the height set to 64 pixels.</p>"
+        },
+        "Height32":{
+          "shape":"Image",
+          "documentation":"<p>The image with the height set to 32 pixels.</p>"
+        }
+      },
+      "documentation":"<p>The image set.</p>"
+    },
+    "ImageSetConfiguration":{
+      "type":"structure",
+      "required":["Original"],
+      "members":{
+        "Original":{
+          "shape":"ImageConfiguration",
+          "documentation":"<p>The original image.</p>"
+        }
+      },
+      "documentation":"<p>The image set configuration.</p>"
+    },
+    "ImageSource":{
+      "type":"structure",
+      "members":{
+        "PublicUrl":{
+          "shape":"String",
+          "documentation":"<p>The public URL that points to the source image.</p>"
+        },
+        "S3Uri":{
+          "shape":"String",
+          "documentation":"<p>The Amazon S3 URI that points to the source image.</p>"
+        }
+      },
+      "documentation":"<p>The source of the image.</p>",
+      "union":true
+    },
     "IncludeFolderMembers":{
       "type":"string",
       "enum":[
@@ -19314,6 +20394,17 @@
         }
       },
       "documentation":"<p>An internal failure occurred.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>An internal service exception.</p>",
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
@@ -20334,6 +21425,44 @@
         }
       }
     },
+    "ListBrandsRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the brands that you want to list.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned in a single request.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListBrandsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "Brands":{
+          "shape":"BrandSummaryList",
+          "documentation":"<p>A list of all brands in your Amazon Web Services account. This structure provides basic information about each brand.</p>"
+        }
+      }
+    },
     "ListControlDisplayOptions":{
       "type":"structure",
       "members":{
@@ -20375,6 +21504,53 @@
         }
       },
       "documentation":"<p>The configuration of the <code>Select all</code> options in a list control.</p>"
+    },
+    "ListCustomPermissionsRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the custom permissions profiles that you want to list.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListCustomPermissionsResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "CustomPermissionsList":{
+          "shape":"CustomPermissionsList",
+          "documentation":"<p>A list of custom permissions profiles.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
     },
     "ListDashboardVersionsRequest":{
       "type":"structure",
@@ -21974,6 +23150,72 @@
       },
       "documentation":"<p>Information about the source of a logical table. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.</p>"
     },
+    "Logo":{
+      "type":"structure",
+      "required":[
+        "AltText",
+        "LogoSet"
+      ],
+      "members":{
+        "AltText":{
+          "shape":"AltText",
+          "documentation":"<p>The alt text for the logo.</p>"
+        },
+        "LogoSet":{
+          "shape":"LogoSet",
+          "documentation":"<p>A set of configured logos.</p>"
+        }
+      },
+      "documentation":"<p>The logo configuration.</p>"
+    },
+    "LogoConfiguration":{
+      "type":"structure",
+      "required":[
+        "AltText",
+        "LogoSet"
+      ],
+      "members":{
+        "AltText":{
+          "shape":"String",
+          "documentation":"<p>The alt text for the logo.</p>"
+        },
+        "LogoSet":{
+          "shape":"LogoSetConfiguration",
+          "documentation":"<p>A set of configured logos.</p>"
+        }
+      },
+      "documentation":"<p>The logo configuration.</p>"
+    },
+    "LogoSet":{
+      "type":"structure",
+      "required":["Primary"],
+      "members":{
+        "Primary":{
+          "shape":"ImageSet",
+          "documentation":"<p>The primary logo.</p>"
+        },
+        "Favicon":{
+          "shape":"ImageSet",
+          "documentation":"<p>The favicon logo.</p>"
+        }
+      },
+      "documentation":"<p>A set of logos.</p>"
+    },
+    "LogoSetConfiguration":{
+      "type":"structure",
+      "required":["Primary"],
+      "members":{
+        "Primary":{
+          "shape":"ImageSetConfiguration",
+          "documentation":"<p>The primary logo.</p>"
+        },
+        "Favicon":{
+          "shape":"ImageSetConfiguration",
+          "documentation":"<p>The favicon logo.</p>"
+        }
+      },
+      "documentation":"<p>The logo set configuration.</p>"
+    },
     "Long":{"type":"long"},
     "LongFormatText":{
       "type":"structure",
@@ -22305,6 +23547,12 @@
       },
       "documentation":"<p>The parameters for MySQL.</p>"
     },
+    "Name":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[ -ÿ]+"
+    },
     "NamedEntityAggType":{
       "type":"string",
       "enum":[
@@ -22477,6 +23725,20 @@
     "NarrativeString":{
       "type":"string",
       "max":150000
+    },
+    "NavbarStyle":{
+      "type":"structure",
+      "members":{
+        "GlobalNavbar":{
+          "shape":"Palette",
+          "documentation":"<p>The global navigation bar style.</p>"
+        },
+        "ContextualNavbar":{
+          "shape":"Palette",
+          "documentation":"<p>The contextual navigation bar style.</p>"
+        }
+      },
+      "documentation":"<p>The navigation bar style.</p>"
     },
     "NegativeFormat":{
       "type":"structure",
@@ -23105,6 +24367,20 @@
         }
       },
       "documentation":"<p>The pagination configuration for a table visual or boxplot.</p>"
+    },
+    "Palette":{
+      "type":"structure",
+      "members":{
+        "Foreground":{
+          "shape":"HexColor",
+          "documentation":"<p>The foreground color.</p>"
+        },
+        "Background":{
+          "shape":"HexColor",
+          "documentation":"<p>The background color.</p>"
+        }
+      },
+      "documentation":"<p>The color palette.</p>"
     },
     "PanelBorderStyle":{
       "type":"string",
@@ -31942,6 +33218,161 @@
         }
       }
     },
+    "UpdateBrandAssignmentRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "BrandArn"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the brand assignment.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "BrandArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the brand.</p>"
+        }
+      }
+    },
+    "UpdateBrandAssignmentResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "BrandArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the brand.</p>"
+        }
+      }
+    },
+    "UpdateBrandPublishedVersionRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "BrandId",
+        "VersionId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the brand.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "BrandId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the Amazon QuickSight brand.</p>",
+          "location":"uri",
+          "locationName":"BrandId"
+        },
+        "VersionId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the published version.</p>"
+        }
+      }
+    },
+    "UpdateBrandPublishedVersionResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "VersionId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the published version.</p>"
+        }
+      }
+    },
+    "UpdateBrandRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "BrandId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the brand.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "BrandId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the Amazon QuickSight brand.</p>",
+          "location":"uri",
+          "locationName":"BrandId"
+        },
+        "BrandDefinition":{
+          "shape":"BrandDefinition",
+          "documentation":"<p>The definition of the brand.</p>"
+        }
+      }
+    },
+    "UpdateBrandResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "BrandDetail":{
+          "shape":"BrandDetail",
+          "documentation":"<p>The details of the brand.</p>"
+        },
+        "BrandDefinition":{
+          "shape":"BrandDefinition",
+          "documentation":"<p>The definition of the brand.</p>"
+        }
+      }
+    },
+    "UpdateCustomPermissionsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "CustomPermissionsName"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the custom permissions profile that you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "CustomPermissionsName":{
+          "shape":"CustomPermissionsName",
+          "documentation":"<p>The name of the custom permissions profile that you want to update.</p>",
+          "location":"uri",
+          "locationName":"CustomPermissionsName"
+        },
+        "Capabilities":{
+          "shape":"Capabilities",
+          "documentation":"<p>A set of actions to include in the custom permissions profile.</p>"
+        }
+      }
+    },
+    "UpdateCustomPermissionsResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom permissions profile.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "UpdateDashboardLinksRequest":{
       "type":"structure",
       "required":[
@@ -33512,6 +34943,53 @@
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the topic refresh.</p>"
         },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "UpdateUserCustomPermissionRequest":{
+      "type":"structure",
+      "required":[
+        "UserName",
+        "AwsAccountId",
+        "Namespace",
+        "CustomPermissionsName"
+      ],
+      "members":{
+        "UserName":{
+          "shape":"UserName",
+          "documentation":"<p>The username of the user that you want to update custom permissions for.</p>",
+          "location":"uri",
+          "locationName":"UserName"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the custom permission configuration that you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace that the user belongs to.</p>",
+          "location":"uri",
+          "locationName":"Namespace"
+        },
+        "CustomPermissionsName":{
+          "shape":"CustomPermissionsName",
+          "documentation":"<p>The name of the custom permissions that you want to update.</p>"
+        }
+      }
+    },
+    "UpdateUserCustomPermissionResponse":{
+      "type":"structure",
+      "members":{
         "RequestId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"

@@ -415,7 +415,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Retrieves a list of resources of the specified type that have been analyzed by the specified external access analyzer. This action is not supported for unused access analyzers.</p>"
+      "documentation":"<p>Retrieves a list of resources of the specified type that have been analyzed by the specified analyzer.</p>"
     },
     "ListAnalyzers":{
       "name":"ListAnalyzers",
@@ -595,6 +595,26 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Removes a tag from the specified resource.</p>",
+      "idempotent":true
+    },
+    "UpdateAnalyzer":{
+      "name":"UpdateAnalyzer",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/analyzer/{analyzerName}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAnalyzerRequest"},
+      "output":{"shape":"UpdateAnalyzerResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Modifies the configuration of an existing analyzer.</p>",
       "idempotent":true
     },
     "UpdateArchiveRule":{
@@ -913,6 +933,10 @@
       "max":100,
       "min":0
     },
+    "AccountIdsList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "AclCanonicalId":{"type":"string"},
     "AclGrantee":{
       "type":"structure",
@@ -944,6 +968,34 @@
     "ActionList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "AnalysisRule":{
+      "type":"structure",
+      "members":{
+        "exclusions":{
+          "shape":"AnalysisRuleCriteriaList",
+          "documentation":"<p>A list of rules for the analyzer containing criteria to exclude from analysis. Entities that meet the rule criteria will not generate findings.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about analysis rules for the analyzer. Analysis rules determine which entities will generate findings based on the criteria you define when you create the rule.</p>"
+    },
+    "AnalysisRuleCriteria":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"AccountIdsList",
+          "documentation":"<p>A list of Amazon Web Services account IDs to apply to the analysis rule criteria. The accounts cannot include the organization analyzer owner account. Account IDs can only be applied to the analysis rule criteria for organization-level analyzers. The list cannot include more than 2,000 account IDs.</p>"
+        },
+        "resourceTags":{
+          "shape":"TagsList",
+          "documentation":"<p>An array of key-value pairs to match for your resources. You can use the set of Unicode letters, digits, whitespace, <code>_</code>, <code>.</code>, <code>/</code>, <code>=</code>, <code>+</code>, and <code>-</code>.</p> <p>For the tag key, you can specify a value that is 1 to 128 characters in length and cannot be prefixed with <code>aws:</code>.</p> <p>For the tag value, you can specify a value that is 0 to 256 characters in length. If the specified tag value is 0 characters, the rule is applied to all principals with the specified tag key.</p>"
+        }
+      },
+      "documentation":"<p>The criteria for an analysis rule for an analyzer. The criteria determine which entities will generate findings.</p>"
+    },
+    "AnalysisRuleCriteriaList":{
+      "type":"list",
+      "member":{"shape":"AnalysisRuleCriteria"}
     },
     "AnalyzedResource":{
       "type":"structure",
@@ -1040,10 +1092,10 @@
       "members":{
         "unusedAccess":{
           "shape":"UnusedAccessConfiguration",
-          "documentation":"<p>Specifies the configuration of an unused access analyzer for an Amazon Web Services organization or account. External access analyzers do not support any configuration.</p>"
+          "documentation":"<p>Specifies the configuration of an unused access analyzer for an Amazon Web Services organization or account.</p>"
         }
       },
-      "documentation":"<p>Contains information about the configuration of an unused access analyzer for an Amazon Web Services organization or account.</p>",
+      "documentation":"<p>Contains information about the configuration of an analyzer for an Amazon Web Services organization or account.</p>",
       "union":true
     },
     "AnalyzerStatus":{
@@ -1161,7 +1213,7 @@
           "documentation":"<p>The time at which the archive rule was last updated.</p>"
         }
       },
-      "documentation":"<p>Contains information about an archive rule.</p>"
+      "documentation":"<p>Contains information about an archive rule. Archive rules automatically archive new findings that meet the criteria you define when you create the rule.</p>"
     },
     "ArchiveRulesList":{
       "type":"list",
@@ -1533,7 +1585,7 @@
         },
         "tags":{
           "shape":"TagsMap",
-          "documentation":"<p>An array of key-value pairs to apply to the analyzer.</p>"
+          "documentation":"<p>An array of key-value pairs to apply to the analyzer. You can use the set of Unicode letters, digits, whitespace, <code>_</code>, <code>.</code>, <code>/</code>, <code>=</code>, <code>+</code>, and <code>-</code>.</p> <p>For the tag key, you can specify a value that is 1 to 128 characters in length and cannot be prefixed with <code>aws:</code>.</p> <p>For the tag value, you can specify a value that is 0 to 256 characters in length.</p>"
         },
         "clientToken":{
           "shape":"String",
@@ -1542,7 +1594,7 @@
         },
         "configuration":{
           "shape":"AnalyzerConfiguration",
-          "documentation":"<p>Specifies the configuration of the analyzer. If the analyzer is an unused access analyzer, the specified scope of unused access is used for the configuration. If the analyzer is an external access analyzer, this field is not used.</p>"
+          "documentation":"<p>Specifies the configuration of the analyzer. If the analyzer is an unused access analyzer, the specified scope of unused access is used for the configuration.</p>"
         }
       },
       "documentation":"<p>Creates an analyzer.</p>"
@@ -3522,7 +3574,8 @@
         "AWS::SNS::Topic",
         "AWS::S3Express::DirectoryBucket",
         "AWS::DynamoDB::Table",
-        "AWS::DynamoDB::Stream"
+        "AWS::DynamoDB::Stream",
+        "AWS::IAM::User"
       ]
     },
     "RetiringPrincipal":{"type":"string"},
@@ -3849,6 +3902,10 @@
       },
       "documentation":"<p>The response to the request.</p>"
     },
+    "TagsList":{
+      "type":"list",
+      "member":{"shape":"TagsMap"}
+    },
     "TagsMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -3981,8 +4038,9 @@
       "members":{
         "unusedAccessAge":{
           "shape":"Integer",
-          "documentation":"<p>The specified access age in days for which to generate findings for unused access. For example, if you specify 90 days, the analyzer will generate findings for IAM entities within the accounts of the selected organization for any access that hasn't been used in 90 or more days since the analyzer's last scan. You can choose a value between 1 and 180 days.</p>"
-        }
+          "documentation":"<p>The specified access age in days for which to generate findings for unused access. For example, if you specify 90 days, the analyzer will generate findings for IAM entities within the accounts of the selected organization for any access that hasn't been used in 90 or more days since the analyzer's last scan. You can choose a value between 1 and 365 days.</p>"
+        },
+        "analysisRule":{"shape":"AnalysisRule"}
       },
       "documentation":"<p>Contains information about an unused access analyzer.</p>"
     },
@@ -4081,6 +4139,25 @@
         }
       },
       "documentation":"<p>Contains information about the action to take for a policy in an unused permissions finding.</p>"
+    },
+    "UpdateAnalyzerRequest":{
+      "type":"structure",
+      "required":["analyzerName"],
+      "members":{
+        "analyzerName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the analyzer to modify.</p>",
+          "location":"uri",
+          "locationName":"analyzerName"
+        },
+        "configuration":{"shape":"AnalyzerConfiguration"}
+      }
+    },
+    "UpdateAnalyzerResponse":{
+      "type":"structure",
+      "members":{
+        "configuration":{"shape":"AnalyzerConfiguration"}
+      }
     },
     "UpdateArchiveRuleRequest":{
       "type":"structure",

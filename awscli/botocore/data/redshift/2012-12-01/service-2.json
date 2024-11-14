@@ -9441,6 +9441,17 @@
         }
       }
     },
+    "ReadWriteAccess":{
+      "type":"structure",
+      "required":["Authorization"],
+      "members":{
+        "Authorization":{
+          "shape":"ServiceAuthorization",
+          "documentation":"<p>Determines whether the read/write scope is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>The S3 Access Grants scope.</p>"
+    },
     "RebootClusterMessage":{
       "type":"structure",
       "required":["ClusterIdentifier"],
@@ -10585,6 +10596,21 @@
         "Cluster":{"shape":"Cluster"}
       }
     },
+    "S3AccessGrantsScopeUnion":{
+      "type":"structure",
+      "members":{
+        "ReadWriteAccess":{
+          "shape":"ReadWriteAccess",
+          "documentation":"<p>The S3 Access Grants scope.</p>"
+        }
+      },
+      "documentation":"<p>A list of scopes set up for S3 Access Grants integration.</p>",
+      "union":true
+    },
+    "S3AccessGrantsServiceIntegrations":{
+      "type":"list",
+      "member":{"shape":"S3AccessGrantsScopeUnion"}
+    },
     "S3KeyPrefixValue":{
       "type":"string",
       "max":256,
@@ -10877,6 +10903,10 @@
         "LakeFormation":{
           "shape":"LakeFormationServiceIntegrations",
           "documentation":"<p>A list of scopes set up for Lake Formation integration.</p>"
+        },
+        "S3AccessGrants":{
+          "shape":"S3AccessGrantsServiceIntegrations",
+          "documentation":"<p>A list of scopes set up for S3 Access Grants integration.</p>"
         }
       },
       "documentation":"<p>A list of service integrations.</p>",

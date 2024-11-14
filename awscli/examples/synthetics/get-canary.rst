@@ -1,6 +1,6 @@
-**To Retrieve complete information about one canary**
+**To retrieve complete information about one canary**
 
-The following ``get-canary`` example retrieves complete information about canary named ``demo_canary``. ::
+The following ``get-canary`` example retrieves complete information about the canary named ``demo_canary``. ::
 
     aws synthetics get-canary \
         --name demo_canary

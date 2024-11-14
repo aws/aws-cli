@@ -1,6 +1,6 @@
-**To Delete a group**
+**To delete a group**
 
-The following ``delete-group`` example deletes a group named ``demo_group``.
+The following ``delete-group`` example deletes a group named ``demo_group``. ::
 
     aws synthetics delete-group \
         --group-identifier demo_group

@@ -1,15 +1,15 @@
-**Example 1: To Assign a tag to the canary**
+**Example 1: To assign a tag to the canary**
 
-The following ``tag-resource`` example assigns a tag to the canary named ``demo_canary``.
+The following ``tag-resource`` example assigns a tag to the canary named ``demo_canary``. ::
     aws synthetics tag-resource \
         --resource-arn arn:aws:synthetics:us-east-1:123456789012:canary:demo_canary \
         --tags blueprint=heartbeat
 
 This command produces no output.
 
-**Example 2: To Assign a tag to the group**
+**Example 2: To assign a tag to the group**
 
-The following ``tag-resource`` example assigns a tag to the group named ``demo_group``.
+The following ``tag-resource`` example assigns a tag to the group named ``demo_group``. ::
 
     aws synthetics tag-resource \
         --resource-arn arn:aws:synthetics:us-east-1:123456789012:group:example123 \

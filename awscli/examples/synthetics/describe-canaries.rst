@@ -1,6 +1,6 @@
 **To list canaries in your account**
 
-The following ``describe-canaries`` example returns the list of canaries in your account, along with full details about each canary. ::
+The following ``describe-canaries`` example lists the details of canaries in your account. ::
 
     aws synthetics describe-canaries
 

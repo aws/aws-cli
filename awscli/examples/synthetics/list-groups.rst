@@ -1,4 +1,4 @@
-**To Return a list of all groups in the account**
+**To return a list of all groups in the account**
 
 The following ``list-groups`` example returns a list of all groups in the account. ::
 

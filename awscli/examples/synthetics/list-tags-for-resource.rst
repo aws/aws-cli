@@ -1,4 +1,4 @@
-**Example 1: To Display the tags associated with a canary**
+**Example 1: To display the tags associated with a canary**
 
 The following ``list-tags-for-resource`` example returns the tags associated with a canary named ``demo_canary``. ::
 
@@ -13,7 +13,7 @@ Output::
         }
     }
 
-**Example 2: To Display the tags associated with a group**
+**Example 2: To display the tags associated with a group**
 
 The following ``list-tags-for-resource`` example returns the tags associated with a group named ``demo_group``. ::
 

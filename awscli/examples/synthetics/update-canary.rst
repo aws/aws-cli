@@ -1,6 +1,6 @@
-**To Update a canary**
+**To update a canary**
 
-The following ``update-canary`` example updates the configuration of a canary named ``demo_canary``.
+The following ``update-canary`` example updates the configuration of a canary named ``demo_canary``. ::
 
     aws synthetics update-canary \
         --name demo_canary \

@@ -1,4 +1,4 @@
-**To Retrieve a list of runs for a specified canary**
+**To retrieve a list of runs for a specified canary**
 
 The following ``get-canary-runs`` example retrieves a list of runs for the canary named ``demo_canary``. ::
 

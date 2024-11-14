@@ -1,4 +1,4 @@
-**To Return a list of the ARNs of the canaries that are associated with the specified group**
+**To return a list of the ARNs of the canaries that are associated with the specified group**
 
 The following ``list-group-resources`` example returns a list of the ARNs of the canaries that are associated with the group named ``demo_group``. ::
 

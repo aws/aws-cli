@@ -1,6 +1,6 @@
-**To Return information about one group**
+**To return information about one group**
 
-The following ``get-group`` example returns information about group named ``demo_group``. ::
+The following ``get-group`` example returns information about the group named ``demo_group``. ::
 
     aws synthetics get-group \
         --group-identifier demo_group

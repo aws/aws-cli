@@ -1,6 +1,6 @@
-**To Stop a canary **
+**To stop a canary **
 
-The following ``stop-canary`` example stops the canary named ``demo_canary``.
+The following ``stop-canary`` example stops the canary named ``demo_canary``. ::
 
     aws synthetics stop-canary \
         --name demo_canary

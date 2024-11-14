@@ -1,6 +1,6 @@
-**To Remove a canary from a group**
+**To remove a canary from a group**
 
-The following ``disassociate-resource`` example removes a canary from the group named ``demo_group``.
+The following ``disassociate-resource`` example removes a canary from the group named ``demo_group``. ::
 
     aws synthetics disassociate-resource \
         --group-identifier demo_group \

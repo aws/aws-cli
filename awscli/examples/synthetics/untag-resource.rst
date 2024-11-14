@@ -1,6 +1,6 @@
-**Example 1: To Remove a tag from the canary**
+**Example 1: To remove a tag from the canary**
 
-The following ``untag-resource`` example removes a tag from the canary named ``demo_canary``.
+The following ``untag-resource`` example removes a tag from the canary named ``demo_canary``. ::
 
     aws synthetics untag-resource \
         --resource-arn arn:aws:synthetics:us-east-1:123456789012:canary:demo_canary \
@@ -8,9 +8,9 @@ The following ``untag-resource`` example removes a tag from the canary named ``d
 
 This command produces no output.
 
-**Example 2: To Remove a tag from the group**
+**Example 2: To remove a tag from the group**
 
-The following ``untag-resource`` example assigns a removes a tag from the group named ``demo_group``.
+The following ``untag-resource`` example assigns a removes a tag from the group named ``demo_group``. ::
 
     aws synthetics untag-resource \
         --resource-arn arn:aws:synthetics:us-east-1:123456789012:group:example123 \

@@ -1,6 +1,6 @@
-**To Associate a canary with a group**
+**To associate a canary with a group**
 
-The following ``associate-resource`` example associates a canary with group named `demo_group``.
+The following ``associate-resource`` example associates a canary with group named `demo_group``. ::
 
     aws synthetics associate-resource \
         --group-identifier demo_group \

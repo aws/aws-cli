@@ -1,6 +1,6 @@
-**To Permanently delete a canary**
+**To permanently delete a canary**
 
-The following ``delete-canary`` example deletes the canary named ``demo_canary``.
+The following ``delete-canary`` example deletes the canary named ``demo_canary``. ::
 
     aws synthetics delete-canary \
         --name demo_canary

@@ -1,6 +1,6 @@
-**To Run a canary **
+**To run a canary **
 
-The following ``start-canary`` example runs a canary named ``demo_canary``.
+The following ``start-canary`` example runs a canary named ``demo_canary``. ::
 
     aws synthetics start-canary \
         --name demo_canary

@@ -1,11 +1,11 @@
-**To Create a canary**
+**To create a canary**
 
 The following ``create-canary`` example creates a canary named ``demo_canary``. ::
 
     aws synthetics create-canary \
         --name demo_canary \
         --code '{"S3Bucket": "artifacts3bucket", "S3Key":"demo_canary.zip", "Handler": "index.lambda_handler"}' \
-        --artifact-s3-location s3://doc-example-bucket/demo_canary.zip \
+        --artifact-s3-location s3://amzn-s3-demo-bucket/demo_canary.zip \
         --execution-role-arn arn:aws:iam::123456789012:role/demo_canary_role \
         --schedule Expression="rate(10 minutes)" \
         --runtime-version syn-nodejs-puppeteer-9.1
@@ -39,7 +39,7 @@ Output::
                 "Created": "2024-10-15T19:03:08.826000+05:30",
                 "LastModified": "2024-10-15T19:03:08.826000+05:30"
             },
-            "ArtifactS3Location": "doc-example-bucket/demo_canary.zip",
+            "ArtifactS3Location": "amzn-s3-demo-bucket/demo_canary.zip",
             "RuntimeVersion": "syn-nodejs-puppeteer-9.1",
             "Tags": {}
         }

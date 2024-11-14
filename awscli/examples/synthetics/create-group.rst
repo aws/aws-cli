@@ -1,6 +1,6 @@
-**To Create a group**
+**To create a group**
 
-The following ``create-group`` example creates a group ``demo_group``. ::
+The following ``create-group`` example creates a group named ``demo_group``. ::
 
     aws synthetics create-group \
         --name demo_group

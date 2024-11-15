@@ -45,7 +45,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Enables you to create a formal association between an <code>Opportunity</code> and various related entities, enriching the context and details of the opportunity for better collaboration and decision-making. You can associate an opportunity with the following types of entities: </p> <ul> <li> <p> Partner Solution: A software product or consulting practice created and delivered by Partners. Partner Solutions help customers address specific business challenges or achieve particular goals using Amazon Web Services services. </p> </li> <li> <p> Amazon Web Services Product: Amazon Web Services offers a wide range of products and services designed to provide scalable, reliable, and cost-effective infrastructure solutions. For the latest list of Amazon Web Services products, refer to <a href=\"https://github.com/aws-samples/partner-crm-integration-samples/blob/main/resources/aws_products.json\">Amazon Web Services products</a>. </p> </li> <li> <p> Amazon Web Services Marketplace private offer: Allows Amazon Web Services Marketplace sellers to extend custom pricing and terms to individual Amazon Web Services customers. Sellers can negotiate custom prices, payment schedules, and end user license terms through private offers, enabling Amazon Web Services customers to acquire software solutions tailored to their specific needs. For more information, refer to <a href=\"https://docs.aws.amazon.com/marketplace/latest/buyerguide/buyer-private-offers.html\">Private offers in Amazon Web Services Marketplace</a>. </p> </li> </ul> <p>To obtain identifiers for these entities, use the following methods:</p> <ul> <li> <p>Solution: Use the <code>ListSolutions</code> operation.</p> </li> <li> <p> AWS products: For the latest list of Amazon Web Services products, refer to the Amazon Web Services products list.</p> </li> <li> <p> Amazon Web Services Marketplace private offer: Use the <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/welcome.html\">AWS Marketplace Catalog API</a> to list entities. Specifically, use the <code>ListEntities</code> operation to retrieve a list of private offers. The request to the <code>ListEntities</code> API returns the details of the private offers available to you. For more information, refer to <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/API_ListEntities.html\">ListEntities</a>. </p> </li> </ul>"
+      "documentation":"<p> Enables you to create a formal association between an <code>Opportunity</code> and various related entities, enriching the context and details of the opportunity for better collaboration and decision making. You can associate an opportunity with the following entity types: </p> <ul> <li> <p> Partner Solution: A software product or consulting practice created and delivered by Partners. Partner Solutions help customers address business challenges using Amazon Web Services services. </p> </li> <li> <p> Amazon Web Services Products: Amazon Web Services offers many products and services that provide scalable, reliable, and cost-effective infrastructure solutions. For the latest list of Amazon Web Services products, see <a href=\"https://github.com/aws-samples/partner-crm-integration-samples/blob/main/resources/aws_products.json\">Amazon Web Services products</a>. </p> </li> <li> <p> Amazon Web Services Marketplace private offer: Allows Amazon Web Services Marketplace sellers to extend custom pricing and terms to individual Amazon Web Services customers. Sellers can negotiate custom prices, payment schedules, and end user license terms through private offers, enabling Amazon Web Services customers to acquire software solutions tailored to their specific needs. For more information, see <a href=\"https://docs.aws.amazon.com/marketplace/latest/buyerguide/buyer-private-offers.html\">Private offers in Amazon Web Services Marketplace</a>. </p> </li> </ul> <p>To obtain identifiers for these entities, use the following methods:</p> <ul> <li> <p>Solution: Use the <code>ListSolutions</code> operation.</p> </li> <li> <p> AWS Products: For the latest list of Amazon Web Services products, see <a href=\"https://github.com/aws-samples/partner-crm-integration-samples/blob/main/resources/aws_products.json\">Amazon Web Services products</a>. </p> </li> <li> <p> Amazon Web Services Marketplace private offer: Use the <a href=\"https://docs.aws.amazon.com/marketplace/latest/APIReference/catalog-apis.html\">Using the Amazon Web Services Marketplace Catalog API</a> to list entities. Specifically, use the <code>ListEntities</code> operation to retrieve a list of private offers. The request returns the details of available private offers. For more information, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/API_ListEntities.html\">ListEntities</a>. </p> </li> </ul>"
     },
     "CreateOpportunity":{
       "name":"CreateOpportunity",
@@ -63,7 +63,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Creates an <code>Opportunity</code> record in Partner Central. Use this operation to create a potential business opportunity intended to be submitted to Amazon Web Services. Creating an opportunity sets its <code>Lifecycle.ReviewStatus</code> to <code>Pending Submission</code>. </p> <p> To fully submit an opportunity, follow these steps: </p> <ol> <li> <p>To create the opportunity, use <code>CreateOpportunity</code>.</p> </li> <li> <p>To associate a solution with the opportunity, use <code>AssociateOpportunity</code>.</p> </li> <li> <p>To submit the opportunity, use <code>SubmitOpportunity</code>.</p> </li> </ol> <p> After submission, you can't edit the opportunity until the review is complete. However, opportunities in the <code>Pending Submission</code> state still need all details completed. You can update the opportunity while it's in the <code>Pending Submission</code> state. </p> <p> There's a set of mandatory fields required to create opportunities, but consider providing optional fields to enrich the opportunity record. </p>",
+      "documentation":"<p> Creates an <code>Opportunity</code> record in Partner Central. Use this operation to create a potential business opportunity for submission to Amazon Web Services. Creating an opportunity sets <code>Lifecycle.ReviewStatus</code> to <code>Pending Submission</code>. </p> <p> To submit an opportunity, follow these steps: </p> <ol> <li> <p>To create the opportunity, use <code>CreateOpportunity</code>.</p> </li> <li> <p>To associate a solution with the opportunity, use <code>AssociateOpportunity</code>.</p> </li> <li> <p>To submit the opportunity, use <code>StartEngagementFromOpportunityTask</code>.</p> </li> </ol> <p> After submission, you can't edit the opportunity until the review is complete. But opportunities in the <code>Pending Submission</code> state must have complete details. You can update the opportunity while it's in the <code>Pending Submission</code> state. </p> <p> There's a set of mandatory fields to create opportunities, but consider providing optional fields to enrich the opportunity record. </p>",
       "idempotent":true
     },
     "DisassociateOpportunity":{
@@ -80,7 +80,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Allows you to remove an existing association between an <code>Opportunity</code> and related entities such as a Partner Solution, Amazon Web Services product, or an Amazon Web Services Marketplace offer. This operation is the counterpart to <code>AssociateOpportunity</code>, and it provides flexibility to manage associations as business needs change. </p> <p> Use this operation to update the associations of an <code>Opportunity</code> due to changes in the related entities, or if an association was made in error. Ensuring accurate associations helps maintain clarity and accuracy to track and manage business opportunities. When you replace an entity, first attach the new entity and then disassociate the one to be removed, especially if it's the last remaining related entity that's required. </p>"
+      "documentation":"<p> Allows you to remove an existing association between an <code>Opportunity</code> and related entities, such as a Partner Solution, Amazon Web Services product, or an Amazon Web Services Marketplace offer. This operation is the counterpart to <code>AssociateOpportunity</code>, and it provides flexibility to manage associations as business needs change. </p> <p> Use this operation to update the associations of an <code>Opportunity</code> due to changes in the related entities, or if an association was made in error. Ensuring accurate associations helps maintain clarity and accuracy to track and manage business opportunities. When you replace an entity, first attach the new entity and then disassociate the one to be removed, especially if it's the last remaining entity that's required. </p>"
     },
     "GetAwsOpportunitySummary":{
       "name":"GetAwsOpportunitySummary",
@@ -114,7 +114,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the details of an engagement invitation shared by AWS with a partner. The information includes key aspects such as the customer, project details, and lifecycle information related to the engagement.</p>"
+      "documentation":"<p>Retrieves the details of an engagement invitation shared by AWS with a partner. The information includes aspects such as customer, project details, and lifecycle information. To connect an engagement invitation with an opportunity, match the invitation’s <code>Payload.Project.Title</code> with opportunity <code>Project.Title</code>.</p>"
     },
     "GetOpportunity":{
       "name":"GetOpportunity",
@@ -165,7 +165,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>This request accepts a list of filters to use to retrieve a specific subset of opportunities, as well as sort options. This feature is available to partners from <a href=\"https://partnercentral.awspartner.com/\">Partner Central</a> using the <code>ListOpportunities</code> API action. </p> <p>To synchronize your system with Amazon Web Services, only list the opportunities that were newly created or updated. We recommend you rely on events emitted by the service into your Amazon Web Services account’s Amazon EventBridge default event bus, you can also use the <code>ListOpportunities</code> action. </p> <p>We recommend the following approach:</p> <ol> <li> <p>Find the latest <code>LastModifiedDate</code> that you stored, and only use the values that came from Amazon Web Services. Don’t use values generated by your system. </p> </li> <li> <p>When you send a <code>ListOpportunities</code> request, submit the date in ISO 8601 format in the <code>AfterLastModifiedDate</code> filter. </p> </li> <li> <p>Amazon Web Services only returns opportunities created or updated on or after that date and time. Use <code>NextToken</code> to iterate over all pages. </p> </li> </ol>"
+      "documentation":"<p>This request accepts a list of filters that retrieve opportunity subsets as well as sort options. This feature is available to partners from <a href=\"https://partnercentral.awspartner.com/\">Partner Central</a> using the <code>ListOpportunities</code> API action. </p> <p>To synchronize your system with Amazon Web Services, only list the opportunities that were newly created or updated. We recommend you rely on events emitted by the service into your Amazon Web Services account’s Amazon EventBridge default event bus, you can also use the <code>ListOpportunities</code> action. </p> <p>We recommend the following approach:</p> <ol> <li> <p>Find the latest <code>LastModifiedDate</code> that you stored, and only use the values that came from Amazon Web Services. Don’t use values generated by your system. </p> </li> <li> <p>When you send a <code>ListOpportunities</code> request, submit the date in ISO 8601 format in the <code>AfterLastModifiedDate</code> filter. </p> </li> <li> <p>Amazon Web Services only returns opportunities created or updated on or after that date and time. Use <code>NextToken</code> to iterate over all pages. </p> </li> </ol>"
     },
     "ListSolutions":{
       "name":"ListSolutions",
@@ -197,7 +197,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Use this action to reject an <code>EngagementInvitation</code> that has been shared by AWS. Rejecting the engagement invitation indicates that the partner does not wish to pursue the opportunity, and all related data will be inaccessible after the rejection.</p>"
+      "documentation":"<p>This action rejects an <code>EngagementInvitation</code> that AWS shared. Rejecting an invitation indicates that the partner doesn't want to pursue the opportunity, and all related data will become inaccessible thereafter.</p>"
     },
     "StartEngagementByAcceptingInvitationTask":{
       "name":"StartEngagementByAcceptingInvitationTask",
@@ -216,7 +216,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>This action starts the engagement by accepting an <code>EngagementInvitation</code>. The task is asynchronous and involves several steps: accepting the invitation, creating an opportunity in the partner’s account from the AWS Opportunity, and copying over key details for tracking. Once completed, an <code>Opportunity Created</code> event is generated, indicating that the opportunity has been successfully created in the partner's account.</p>"
+      "documentation":"<p>This action starts the engagement by accepting an <code>EngagementInvitation</code>. The task is asynchronous and involves the following steps: accepting the invitation, creating an opportunity in the partner’s account from the AWS opportunity, and copying details for tracking. When completed, an <code>Opportunity Created</code> event is generated, indicating that the opportunity has been successfully created in the partner's account.</p>"
     },
     "StartEngagementFromOpportunityTask":{
       "name":"StartEngagementFromOpportunityTask",
@@ -287,7 +287,7 @@
         },
         "Industry":{
           "shape":"Industry",
-          "documentation":"<p>Specifies the industry the end <code>Customer</code> belongs to that's associated with the <code>Opportunity</code> . It refers to the category or sector where the customer's business operates. This is a required field. </p>"
+          "documentation":"<p>Specifies the industry the end <code>Customer</code> belongs to that's associated with the <code>Opportunity</code>. It refers to the category or sector where the customer's business operates. This is a required field. </p>"
         },
         "OtherIndustry":{
           "shape":"AccountOtherIndustryString",
@@ -340,7 +340,7 @@
         },
         "Industry":{
           "shape":"Industry",
-          "documentation":"<p>Specifies which industry the end <code>Customer</code> belongs to associated with the <code>Opportunity</code> . It refers to the category or sector that the customer's business operates in. </p> <p>To submit a value outside the picklist, use <code>Other</code>. </p> <p>Conditionally mandatory if <code>Other</code> is selected for Industry Vertical in LOVs. </p>"
+          "documentation":"<p>Specifies which industry the end <code>Customer</code> belongs to associated with the <code>Opportunity</code>. It refers to the category or sector that the customer's business operates in. </p> <p>To submit a value outside the picklist, use <code>Other</code>. </p> <p>Conditionally mandatory if <code>Other</code> is selected for Industry Vertical in LOVs. </p>"
         },
         "OtherIndustry":{
           "shape":"AccountSummaryOtherIndustryString",
@@ -470,7 +470,7 @@
         },
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> Specifies the catalog associated with the request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines which environment the opportunity is assigned in. Use <code>AWS</code> to assign real opportunities in the Amazon Web Services catalog, and <code>Sandbox</code> to test in a secure and isolated environment. </p>"
+          "documentation":"<p> Specifies the catalog associated with the request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines which environment the opportunity is assigned in. Use <code>AWS</code> to assign real opportunities in the Amazon Web Services catalog, and <code>Sandbox</code> for testing in secure, isolated environments. </p>"
         },
         "Identifier":{
           "shape":"OpportunityIdentifier",
@@ -489,7 +489,7 @@
       "members":{
         "BusinessTitle":{
           "shape":"JobTitle",
-          "documentation":"<p>Specifies the business title of the assignee managing the opportunity. This helps clarify the individual's role and responsibilities within the organization.</p>"
+          "documentation":"<p>Specifies the business title of the assignee managing the opportunity. This helps clarify the individual's role and responsibilities within the organization. Use the value <code>PartnerAccountManager</code> to update details of the opportunity owner.</p>"
         },
         "Email":{
           "shape":"Email",
@@ -497,14 +497,14 @@
         },
         "FirstName":{
           "shape":"AssigneeContactFirstNameString",
-          "documentation":"<p>Specifies the first name of the assignee managing the opportunity.</p>"
+          "documentation":"<p>Specifies the first name of the assignee managing the opportunity. The system automatically retrieves this value from the user profile by referencing the associated email address.</p>"
         },
         "LastName":{
           "shape":"AssigneeContactLastNameString",
-          "documentation":"<p>Specifies the last name of the assignee managing the opportunity.</p>"
+          "documentation":"<p>Specifies the last name of the assignee managing the opportunity. The system automatically retrieves this value from the user profile by referencing the associated email address.</p>"
         }
       },
-      "documentation":"<p>Represents the contact details of the individual assigned to manage the opportunity within the partner organization. This ensures that there is a clear point of contact for the opportunity's progress and updates.</p>"
+      "documentation":"<p>Represents the contact details of the individual assigned to manage the opportunity within the partner organization. This helps to ensure that there is a point of contact for the opportunity's progress.</p>"
     },
     "AssigneeContactFirstNameString":{
       "type":"string",
@@ -529,7 +529,7 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> Specifies the catalog associated with the request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines whichenvironment the opportunity association is made in. Use <code>AWS</code> to associate opportunities in the Amazon Web Services catalog, and <code>Sandbox</code> to test in a secure and isolated environment. </p>"
+          "documentation":"<p> Specifies the catalog associated with the request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines which environment the opportunity association is made in. Use <code>AWS</code> to associate opportunities in the Amazon Web Services catalog, and <code>Sandbox</code> for testing in secure, isolated environments. </p>"
         },
         "OpportunityIdentifier":{
           "shape":"OpportunityIdentifier",
@@ -541,7 +541,7 @@
         },
         "RelatedEntityType":{
           "shape":"RelatedEntityType",
-          "documentation":"<p>Specifies the type of the related entity you're associating with the <code> Opportunity</code>. This helps to categorize and properly process the association. </p>"
+          "documentation":"<p>Specifies the entity type that you're associating with the <code> Opportunity</code>. This helps to categorize and properly process the association. </p>"
         }
       }
     },
@@ -644,7 +644,7 @@
       "members":{
         "Contacts":{
           "shape":"CustomerContactsList",
-          "documentation":"<p>Provides a list of customer contacts involved in the opportunity. These contacts may include decision-makers, influencers, and other key stakeholders within the customer's organization.</p>"
+          "documentation":"<p>Provides a list of customer contacts involved in the opportunity. These contacts may include decision makers, influencers, and other stakeholders within the customer's organization.</p>"
         }
       },
       "documentation":"<p>Represents the customer associated with the AWS opportunity. This field captures key details about the customer that are necessary for managing the opportunity.</p>"
@@ -672,7 +672,7 @@
         },
         "NextSteps":{
           "shape":"AwsOpportunityLifeCycleNextStepsString",
-          "documentation":"<p>Specifies the immediate next steps required to progress the opportunity. These steps are based on AWS's guidance and the current stage of the opportunity.</p>"
+          "documentation":"<p>Specifies the immediate next steps required to progress the opportunity. These steps are based on AWS guidance and the current stage of the opportunity.</p>"
         },
         "NextStepsHistory":{
           "shape":"AwsOpportunityLifeCycleNextStepsHistoryList",
@@ -769,14 +769,14 @@
       "members":{
         "InvolvementType":{
           "shape":"SalesInvolvementType",
-          "documentation":"<p>Specifies the type of AWS involvement in the opportunity, such as co-selling, deal support, or technical consultation. This helps categorize the nature of AWS's participation.</p>"
+          "documentation":"<p>Specifies the type of AWS involvement in the opportunity, such as coselling, deal support, or technical consultation. This helps categorize the nature of AWS participation.</p>"
         },
         "Visibility":{
           "shape":"Visibility",
-          "documentation":"<p>Determines who can view AWS's involvement in the opportunity. Typically, this field is set to <code>Full</code> for most cases, but it may be restricted based on special program requirements or confidentiality needs.</p>"
+          "documentation":"<p>Determines who can view AWS involvement in the opportunity. Typically, this field is set to <code>Full</code> for most cases, but it may be restricted based on special program requirements or confidentiality needs.</p>"
         }
       },
-      "documentation":"<p>Indicates the level of AWS involvement in the opportunity. This field helps track AWS's role and participation throughout the engagement, such as providing technical support, deal assistance, or sales support.</p>"
+      "documentation":"<p>Indicates the level of AWS involvement in the opportunity. This field helps track AWS participation throughout the engagement, such as providing technical support, deal assistance, and sales support.</p>"
     },
     "AwsTeamMember":{
       "type":"structure",
@@ -904,7 +904,7 @@
       "members":{
         "BusinessTitle":{
           "shape":"JobTitle",
-          "documentation":"<p>The partner contact's title (job title or role) associated with the <code>Opportunity</code>. </p>"
+          "documentation":"<p>The partner contact's title (job title or role) associated with the <code>Opportunity</code>. <code>BusinessTitle</code> supports either <code>PartnerAccountManager</code> or <code>OpportunityOwner</code>. </p>"
         },
         "Email":{
           "shape":"Email",
@@ -1201,11 +1201,11 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> Specifies the catalog associated with the request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines which environment the opportunity is created in. Use <code>AWS</code> to create opportunities in the Amazon Web Services catalog, and <code>Sandbox</code> to test in a secure and isolated environment. </p>"
+          "documentation":"<p> Specifies the catalog associated with the request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines which environment the opportunity is created in. Use <code>AWS</code> to create opportunities in the Amazon Web Services catalog, and <code>Sandbox</code> for testing in secure, isolated environments. </p>"
         },
         "ClientToken":{
           "shape":"CreateOpportunityRequestClientTokenString",
-          "documentation":"<p> Required to be unique, and should be unchanging, it can be randomly generated or a meaningful string. </p> <p> Default: None </p> <p> Best practice: To ensure uniqueness and avoid collisions, we recommend you use a UUID (Universally Unique Identifier) as the <code>ClientToken</code>. You can use standard libraries available in most programming languages to generated this. If you use the same client token, the API throws this error: \"Conflicting client token submitted for a new request body\". </p>",
+          "documentation":"<p> Required to be unique, and should be unchanging, it can be randomly generated or a meaningful string. </p> <p> Default: None </p> <p> Best practice: To help ensure uniqueness and avoid conflicts, use a Universally Unique Identifier (UUID) as the <code>ClientToken</code>. You can use standard libraries from most programming languages to generate this. If you use the same client token, the API returns the following error: \"Conflicting client token submitted for a new request body.\" </p>",
           "idempotencyToken":true
         },
         "Customer":{
@@ -1226,7 +1226,7 @@
         },
         "OpportunityTeam":{
           "shape":"PartnerOpportunityTeamMembersList",
-          "documentation":"<p>Represents the internal team handling the opportunity. Specify the members involved in collaborating on this opportunity within the partner's organization.</p>"
+          "documentation":"<p>Represents the internal team handling the opportunity. Specify collaborating members of this opportunity who are within the partner's organization.</p>"
         },
         "OpportunityType":{
           "shape":"OpportunityType",
@@ -1238,11 +1238,11 @@
         },
         "PartnerOpportunityIdentifier":{
           "shape":"CreateOpportunityRequestPartnerOpportunityIdentifierString",
-          "documentation":"<p> Specifies the opportunity's unique identifier in the partner's CRM system. This value is essential to track and reconcile because it's included in the outbound payload sent back to the partner. </p> <p> This field allows partners to link an opportunity to their CRM, to ensure seamless integration and accurate synchronization between the Partner Central API and the partner's internal systems. </p>"
+          "documentation":"<p> Specifies the opportunity's unique identifier in the partner's CRM system. This value is essential to track and reconcile because it's included in the outbound payload to the partner. </p> <p> This field allows partners to link an opportunity to their CRM, which helps to ensure seamless integration and accurate synchronization between the Partner Central API and the partner's internal systems. </p>"
         },
         "PrimaryNeedsFromAws":{
           "shape":"PrimaryNeedsFromAws",
-          "documentation":"<p> Identifies the type of support the partner needs from Amazon Web Services. </p> <p> Valid values: </p> <ul> <li> <p> Co-Sell - Architectural Validation: Confirmation from Amazon Web Services that the partner's proposed solution architecture is aligned with Amazon Web Services best practices and poses minimal architectural risks. </p> </li> <li> <p> Co-Sell - Business Presentation: Request Amazon Web Services seller's participation in a joint customer presentation. </p> </li> <li> <p> Co-Sell - Competitive Information: Access to Amazon Web Services competitive resources and support for the partner's proposed solution. </p> </li> <li> <p> Co-Sell - Pricing Assistance: Connect with an Amazon Web Services seller for support situations where a partner may be receiving an upfront discount on a service (for example: EDP deals). </p> </li> <li> <p> Co-Sell - Technical Consultation: Connect with an Amazon Web Services Solutions Architect to address the partner's questions about the proposed solution. </p> </li> <li> <p> Co-Sell - Total Cost of Ownership Evaluation: Assistance with quoting different cost savings of proposed solutions on Amazon Web Services versus on-premises or a traditional hosting environment. </p> </li> <li> <p> Co-Sell - Deal Support: Request Amazon Web Services seller's support to progress the opportunity (for example: joint customer call, strategic positioning). </p> </li> <li> <p> Co-Sell - Support for Public Tender / RFx: Opportunity related to the public sector where the partner needs Amazon Web Services RFx support. </p> </li> <li> <p> Do Not Need Support from AWS Sales Rep: Indicates that a partner doesn't need support from an Amazon Web Services sales representative, and the partner solely manages the opportunity. It's possible to request co-selling support on these opportunities at any stage during their lifecycle. Also known as, for-visibility-only (FVO) opportunity. </p> </li> </ul>"
+          "documentation":"<p> Identifies the type of support the partner needs from Amazon Web Services. </p> <p> Valid values: </p> <ul> <li> <p> Cosell—Architectural Validation: Confirmation from Amazon Web Services that the partner's proposed solution architecture is aligned with Amazon Web Services best practices and poses minimal architectural risks. </p> </li> <li> <p> Cosell—Business Presentation: Request Amazon Web Services seller's participation in a joint customer presentation. </p> </li> <li> <p> Cosell—Competitive Information: Access to Amazon Web Services competitive resources and support for the partner's proposed solution. </p> </li> <li> <p> Cosell—Pricing Assistance: Connect with an Amazon Web Services seller for support situations where a partner may be receiving an upfront discount on a service (for example: EDP deals). </p> </li> <li> <p> Cosell—Technical Consultation: Connect with an Amazon Web Services Solutions Architect to address the partner's questions about the proposed solution. </p> </li> <li> <p> Cosell—Total Cost of Ownership Evaluation: Assistance with quoting different cost savings of proposed solutions on Amazon Web Services versus on-premises or a traditional hosting environment. </p> </li> <li> <p> Cosell—Deal Support: Request Amazon Web Services seller's support to progress the opportunity (for example: joint customer call, strategic positioning). </p> </li> <li> <p> Cosell—Support for Public Tender/RFx: Opportunity related to the public sector where the partner needs Amazon Web Services RFx support. </p> </li> <li> <p> Do Not Need Support from AWS Sales Rep: Indicates that a partner doesn't need support from an Amazon Web Services sales representative, and the partner solely manages the opportunity. It's possible to request coselling support on these opportunities at any stage during their lifecycles. This is also known as a for-visibility-only (FVO) opportunity. </p> </li> </ul>"
         },
         "Project":{
           "shape":"Project",
@@ -1250,7 +1250,7 @@
         },
         "SoftwareRevenue":{
           "shape":"SoftwareRevenue",
-          "documentation":"<p>Specifies details of a customer's procurement terms. Required only for partners in eligible programs.</p>"
+          "documentation":"<p>Specifies details of a customer's procurement terms. This is required only for partners in eligible programs.</p>"
         }
       }
     },
@@ -1269,11 +1269,11 @@
       "members":{
         "Id":{
           "shape":"OpportunityIdentifier",
-          "documentation":"<p> Read-only, system-generated <code>Opportunity</code> unique identifier. Amazon Web Services creates this identifier, and it's used for all subsequent actions on the opportunity, such as updates, associations, and submissions. It ensures that each opportunity can be accurately tracked and managed within the system. </p>"
+          "documentation":"<p> Read-only, system-generated <code>Opportunity</code> unique identifier. Amazon Web Services creates this identifier, and it's used for all subsequent opportunity actions, such as updates, associations, and submissions. It helps to ensure that each opportunity is accurately tracked and managed. </p>"
         },
         "LastModifiedDate":{
           "shape":"DateTime",
-          "documentation":"<p> <code>DateTime</code> when the opportunity was last modified. When the <code>Opportunity</code> is created, its value is equal to <code>CreatedDate</code>. </p>"
+          "documentation":"<p> <code>DateTime</code> when the opportunity was last modified. When the <code>Opportunity</code> is created, its value is <code>CreatedDate</code>. </p>"
         },
         "PartnerOpportunityIdentifier":{
           "shape":"String",
@@ -1452,7 +1452,8 @@
         "ZAR",
         "ZMW",
         "ZWL"
-      ]
+      ],
+      "sensitive":true
     },
     "Customer":{
       "type":"structure",
@@ -1516,19 +1517,19 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> Specifies the catalog associated with the request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines which environment the opportunity disassociation is made in. Use <code>AWS</code> to disassociate opportunities in the Amazon Web Services catalog, and <code>Sandbox</code> to test in a secure and isolated environment. </p>"
+          "documentation":"<p> Specifies the catalog associated with the request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines which environment the opportunity disassociation is made in. Use <code>AWS</code> to disassociate opportunities in the Amazon Web Services catalog, and <code>Sandbox</code> for testing in secure, isolated environments. </p>"
         },
         "OpportunityIdentifier":{
           "shape":"OpportunityIdentifier",
-          "documentation":"<p>The opportunity's unique identifier for when you want to disassociate it from related entities. This identifier is crucial to ensure the correct opportunity is updated, especially in environments with numerous opportunities. </p> <p>Validation: Ensure that the identifier provided corresponds to an existing opportunity in the Amazon Web Services system because incorrect identifiers result in an error and no changes are made. </p>"
+          "documentation":"<p>The opportunity's unique identifier for when you want to disassociate it from related entities. This identifier helps to ensure that the correct opportunity is updated. </p> <p>Validation: Ensure that the provided identifier corresponds to an existing opportunity in the Amazon Web Services system because incorrect identifiers result in an error and no changes are made. </p>"
         },
         "RelatedEntityIdentifier":{
           "shape":"DisassociateOpportunityRequestRelatedEntityIdentifierString",
-          "documentation":"<p>The related entity's identifier that you want to disassociate from the opportunity. Depending on the type of entity, this could be a simple identifier or an Amazon Resource Name (ARN) for entities managed through Amazon Web Services Marketplace. </p> <p>For Amazon Web Services Marketplace entities, use the Amazon Web Services Marketplace API to obtain the necessary ARNs. For guidance on retrieving these ARNs, refer to <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/welcome.html\"> Amazon Web Services Marketplace Catalog API</a> . </p> <p>Validation: Ensure the identifier or ARN is valid and corresponds to an existing related entity. An incorrect or invalid identifier results in an error. </p>"
+          "documentation":"<p>The related entity's identifier that you want to disassociate from the opportunity. Depending on the type of entity, this could be a simple identifier or an Amazon Resource Name (ARN) for entities managed through Amazon Web Services Marketplace. </p> <p>For Amazon Web Services Marketplace entities, use the Amazon Web Services Marketplace API to obtain the necessary ARNs. For guidance on retrieving these ARNs, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/welcome.html\"> Amazon Web Services MarketplaceUsing the Amazon Web Services Marketplace Catalog API</a>. </p> <p>Validation: Ensure the identifier or ARN is valid and corresponds to an existing entity. An incorrect or invalid identifier results in an error. </p>"
         },
         "RelatedEntityType":{
           "shape":"RelatedEntityType",
-          "documentation":"<p>The type of the entity that you're disassociating from the opportunity. When you specify the entity type, it helps the system correctly process the disassociation request and ensures that the right connections are removed. </p> <p>Examples of entity types include Partner Solution, Amazon Web Services product, and Amazon Web Services Marketplace offer. Ensure that the value matches one of the expected entity types. </p> <p>Validation: Provide a valid entity type to ensure successful disassociation. Invalid or incorrect entity types result in an error. </p>"
+          "documentation":"<p>The type of the entity that you're disassociating from the opportunity. When you specify the entity type, it helps the system correctly process the disassociation request to ensure that the right connections are removed. </p> <p>Examples of entity types include Partner Solution, Amazon Web Services product, and Amazon Web Services Marketplaceoffer. Ensure that the value matches one of the expected entity types. </p> <p>Validation: Provide a valid entity type to help ensure successful disassociation. An invalid or incorrect entity type results in an error. </p>"
         }
       }
     },
@@ -1575,7 +1576,7 @@
           "documentation":"<p>Provides the website URL of the customer’s company. This field helps partners verify the legitimacy and size of the customer organization.</p>"
         }
       },
-      "documentation":"<p>Contains details about the customer associated with the Engagement Invitation, including key company information and industry.</p>"
+      "documentation":"<p>Contains details about the customer associated with the Engagement Invitation, including company information and industry.</p>"
     },
     "EngagementCustomerBusinessProblem":{
       "type":"string",
@@ -1622,7 +1623,7 @@
         },
         "ExpirationDate":{
           "shape":"DateTime",
-          "documentation":"<p>Indicates the date and time when the Engagement Invitation will expire. After this date, the invitation can no longer be accepted, and the opportunity will no longer be available for the partner to engage.</p>"
+          "documentation":"<p>Indicates the date and time when the Engagement Invitation will expire. After this date, the invitation can no longer be accepted, and the opportunity will be unavailable to the partner.</p>"
         },
         "Id":{
           "shape":"EngagementInvitationArnOrIdentifier",
@@ -1653,7 +1654,7 @@
           "documentation":"<p>Represents the current status of the Engagement Invitation, such as <code>Pending</code>, <code>Accepted</code>, or <code>Rejected</code>. The status helps track the progress and response to the invitation.</p>"
         }
       },
-      "documentation":"<p>Provides a summarized view of the Engagement Invitation, including key details like the identifier, status, and sender information. This summary helps partners track and manage AWS-originated opportunities.</p>"
+      "documentation":"<p>Provides a summarized view of the Engagement Invitation, including details like the identifier, status, and sender. This summary helps partners track and manage AWS originated opportunities.</p>"
     },
     "EngagementInvitationSummarySenderCompanyNameString":{
       "type":"string",
@@ -1687,7 +1688,7 @@
       ],
       "members":{
         "Amount":{
-          "shape":"ExpectedCustomerSpendAmountString",
+          "shape":"String",
           "documentation":"<p>Represents the estimated monthly revenue that the partner expects to earn from the opportunity. This helps in forecasting financial returns.</p>"
         },
         "CurrencyCode":{
@@ -1704,10 +1705,6 @@
         }
       },
       "documentation":"<p>Provides an estimate of the revenue that the partner is expected to generate from the opportunity. This information helps partners assess the financial value of the project.</p>"
-    },
-    "ExpectedCustomerSpendAmountString":{
-      "type":"string",
-      "pattern":"^(0|([1-9][0-9]{0,30}))(\\.[0-9]{0,2})?$"
     },
     "ExpectedCustomerSpendCurrencyCodeEnum":{
       "type":"string",
@@ -1881,7 +1878,8 @@
         "ZMW",
         "ZWL"
       ],
-      "pattern":"^USD$"
+      "pattern":"^USD$",
+      "sensitive":true
     },
     "ExpectedCustomerSpendList":{
       "type":"list",
@@ -1906,7 +1904,7 @@
         },
         "RelatedOpportunityIdentifier":{
           "shape":"OpportunityIdentifier",
-          "documentation":"<p> The unique identifier for the related partner opportunity. Use this field to correlate an AWS opportunity with its corresponding partner opportunity in your CRM system. </p>"
+          "documentation":"<p> The unique identifier for the related partner opportunity. Use this field to correlate an AWS opportunity with its corresponding partner opportunity. </p>"
         }
       }
     },
@@ -1920,7 +1918,7 @@
         },
         "Customer":{
           "shape":"AwsOpportunityCustomer",
-          "documentation":"<p> Provides details about the customer associated with the AWS Opportunity, including account information, industry, and other key customer data. These details help partners understand the business context of the opportunity. </p>"
+          "documentation":"<p> Provides details about the customer associated with the AWS Opportunity, including account information, industry, and other customer data. These details help partners understand the business context of the opportunity. </p>"
         },
         "Insights":{
           "shape":"AwsOpportunityInsights",
@@ -1928,7 +1926,7 @@
         },
         "InvolvementType":{
           "shape":"SalesInvolvementType",
-          "documentation":"<p> Specifies the type of involvement AWS has in the opportunity, such as direct co-sell or advisory support. This field helps partners understand the role AWS will play in advancing the opportunity. </p>"
+          "documentation":"<p> Specifies the type of involvement AWS has in the opportunity, such as direct cosell or advisory support. This field helps partners understand the role AWS plays in advancing the opportunity. </p>"
         },
         "InvolvementTypeChangeReason":{
           "shape":"InvolvementTypeChangeReason",
@@ -1940,7 +1938,7 @@
         },
         "OpportunityTeam":{
           "shape":"AwsOpportunityTeamMembersList",
-          "documentation":"<p> Details the AWS Opportunity team, including key members involved in the opportunity. This information helps partners know who from AWS is engaged and their roles in the opportunity. </p>"
+          "documentation":"<p> Details the AWS opportunity team, including members involved. This information helps partners know who from AWS is engaged and what their role is. </p>"
         },
         "Origin":{
           "shape":"OpportunityOrigin",
@@ -1977,7 +1975,7 @@
         },
         "Identifier":{
           "shape":"EngagementInvitationArnOrIdentifier",
-          "documentation":"<p>Specifies the unique identifier for the engagement invitation being retrieved.</p>"
+          "documentation":"<p>Specifies the unique identifier for the retrieved engagement invitation.</p>"
         }
       }
     },
@@ -1990,7 +1988,7 @@
       "members":{
         "Arn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the engagement invitation.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the engagement invitation.</p>"
         },
         "Catalog":{
           "shape":"CatalogIdentifier",
@@ -1998,7 +1996,7 @@
         },
         "EngagementTitle":{
           "shape":"EngagementTitle",
-          "documentation":"<p>The title of the engagement invitation, summarizing the purpose or key objectives of the opportunity shared by AWS.</p>"
+          "documentation":"<p>The title of the engagement invitation, summarizing the purpose or objectives of the opportunity shared by AWS.</p>"
         },
         "ExpirationDate":{
           "shape":"DateTime",
@@ -2038,7 +2036,7 @@
         },
         "Status":{
           "shape":"InvitationStatus",
-          "documentation":"<p>The current status of the engagement invitation (e.g., <code>Accepted</code>, <code>Pending</code>, or <code>Rejected</code>).</p>"
+          "documentation":"<p>The current status of the engagement invitation.</p>"
         }
       }
     },
@@ -2056,7 +2054,7 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> Specifies the catalog associated with the request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines which environment the opportunity is fetched from. Use <code>AWS</code> to retrieve opportunities in the Amazon Web Services catalog, and <code>Sandbox</code> to retrieve opportunities in a secure and isolated testing environment. </p>"
+          "documentation":"<p> Specifies the catalog associated with the request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines which environment the opportunity is fetched from. Use <code>AWS</code> to retrieve opportunities in the Amazon Web Services catalog, and <code>Sandbox</code> to retrieve opportunities in a secure, isolated testing environment. </p>"
         },
         "Identifier":{
           "shape":"OpportunityIdentifier",
@@ -2112,7 +2110,7 @@
         },
         "OpportunityType":{
           "shape":"OpportunityType",
-          "documentation":"<p> Specifies the opportunity type as renewal, new, or expansion. </p> <p> Opportunity types: </p> <ul> <li> <p> New opportunity: Represents a new business opportunity with a potential customer that's not previously engaged with your solutions or services. </p> </li> <li> <p> Renewal opportunity: Represents an opportunity to renew an existing contract or subscription with a current customer, ensuring continuity of service. </p> </li> <li> <p> Expansion opportunity: Represents an opportunity to expand the scope of an existing contract or subscription, either by adding new services or increasing the volume of existing services for a current customer. </p> </li> </ul>"
+          "documentation":"<p> Specifies the opportunity type as renewal, new, or expansion. </p> <p> Opportunity types: </p> <ul> <li> <p> New opportunity: Represents a new business opportunity with a potential customer that's not previously engaged with your solutions or services. </p> </li> <li> <p> Renewal opportunity: Represents an opportunity to renew an existing contract or subscription with a current customer, which helps to ensure service continuity. </p> </li> <li> <p> Expansion opportunity: Represents an opportunity to expand the scope of a customer's contract or subscription, either by adding new services or increasing the volume of existing services. </p> </li> </ul>"
         },
         "PartnerOpportunityIdentifier":{
           "shape":"GetOpportunityResponsePartnerOpportunityIdentifierString",
@@ -2120,7 +2118,7 @@
         },
         "PrimaryNeedsFromAws":{
           "shape":"PrimaryNeedsFromAws",
-          "documentation":"<p> Identifies the type of support the partner needs from Amazon Web Services. </p> <p> Valid values: </p> <ul> <li> <p> Co-Sell - Architectural Validation: Confirmation from Amazon Web Services that the partner's proposed solution architecture is aligned with Amazon Web Services best practices and poses minimal architectural risks. </p> </li> <li> <p> Co-Sell - Business Presentation: Request Amazon Web Services seller's participation in a joint customer presentation. </p> </li> <li> <p> Co-Sell - Competitive Information: Access to Amazon Web Services competitive resources and support for the partner's proposed solution. </p> </li> <li> <p> Co-Sell - Pricing Assistance: Connect with an Amazon Web Services seller for support situations where a partner may be receiving an upfront discount on a service (for example: EDP deals). </p> </li> <li> <p> Co-Sell - Technical Consultation: Connect with an Amazon Web Services Solutions Architect to address the partner's questions about the proposed solution. </p> </li> <li> <p> Co-Sell - Total Cost of Ownership Evaluation: Assistance with quoting different cost savings of proposed solutions on Amazon Web Services versus on-premises or a traditional hosting environment. </p> </li> <li> <p> Co-Sell - Deal Support: Request Amazon Web Services seller's support to progress the opportunity (for example: joint customer call, strategic positioning). </p> </li> <li> <p> Co-Sell - Support for Public Tender / RFx: Opportunity related to the public sector where the partner needs Amazon Web Services RFx support. </p> </li> <li> <p> Do Not Need Support from Amazon Web Services Sales Rep: Indicates that a partner doesn't need support from an Amazon Web Services sales representative, and the partner solely manages the opportunity. It's possible to request co-selling support on these opportunities at any stage during their lifecycle. Also known as, for-visibility-only (FVO) opportunity. </p> </li> </ul>"
+          "documentation":"<p> Identifies the type of support the partner needs from Amazon Web Services. </p> <p> Valid values: </p> <ul> <li> <p> Cosell—Architectural Validation: Confirmation from Amazon Web Services that the partner's proposed solution architecture is aligned with Amazon Web Services best practices and poses minimal architectural risks. </p> </li> <li> <p> Cosell—Business Presentation: Request Amazon Web Services seller's participation in a joint customer presentation. </p> </li> <li> <p> Cosell—Competitive Information: Access to Amazon Web Services competitive resources and support for the partner's proposed solution. </p> </li> <li> <p> Cosell—Pricing Assistance: Connect with an Amazon Web Services seller for support situations where a partner may be receiving an upfront discount on a service (for example: EDP deals). </p> </li> <li> <p> Cosell—Technical Consultation: Connect with an Amazon Web Services Solutions Architect to address the partner's questions about the proposed solution. </p> </li> <li> <p> Cosell—Total Cost of Ownership Evaluation: Assistance with quoting different cost savings of proposed solutions on Amazon Web Services versus on-premises or a traditional hosting environment. </p> </li> <li> <p> Cosell—Deal Support: Request Amazon Web Services seller's support to progress the opportunity (for example: joint customer call, strategic positioning). </p> </li> <li> <p> Cosell—Support for Public Tender/RFx: Opportunity related to the public sector where the partner needs Amazon Web Services RFx support. </p> </li> <li> <p> Do Not Need Support from Amazon Web Services Sales Rep: Indicates that a partner doesn't need support from an Amazon Web Services sales representative, and the partner solely manages the opportunity. It's possible to request coselling support on these opportunities at any stage during their lifecycle. Also known as, for-visibility-only (FVO) opportunity. </p> </li> </ul>"
         },
         "Project":{
           "shape":"Project",
@@ -2227,11 +2225,11 @@
       "members":{
         "ClosedLostReason":{
           "shape":"ClosedLostReason",
-          "documentation":"<p> Specifies the reason code when an opportunity is marked as <i>Closed Lost</i>. When you select an appropriate reason code, you communicate the context for closing the <code>Opportunity</code>, and aid in accurate reports and analysis of opportunity outcomes. The possible values are: </p> <ul> <li> <p>Customer Deficiency: The customer lacked necessary resources or capabilities.</p> </li> <li> <p>Delay/Cancellation of Project: The project was delayed or canceled.</p> </li> <li> <p>Legal/Tax/Regulatory: Legal, tax, or regulatory issues prevented progress.</p> </li> <li> <p>Lost to Competitor - Google: The opportunity was lost to Google.</p> </li> <li> <p>Lost to Competitor - Microsoft: The opportunity was lost to Microsoft.</p> </li> <li> <p>Lost to Competitor - SoftLayer: The opportunity was lost to SoftLayer.</p> </li> <li> <p>Lost to Competitor - VMWare: The opportunity was lost to VMWare.</p> </li> <li> <p>Lost to Competitor - Other: The opportunity was lost to a competitor not listed above.</p> </li> <li> <p>No Opportunity: There was no opportunity to pursue.</p> </li> <li> <p>On Premises Deployment: The customer chose an on-premises solution.</p> </li> <li> <p>Partner Gap: The partner lacked necessary resources or capabilities.</p> </li> <li> <p>Price: The price was not competitive or acceptable to the customer.</p> </li> <li> <p>Security/Compliance: Security or compliance issues prevented progress.</p> </li> <li> <p>Technical Limitations: Technical limitations prevented progress.</p> </li> <li> <p>Customer Experience: Issues related to the customer's experience impacted the decision.</p> </li> <li> <p>Other: Any reason not covered by the other values.</p> </li> <li> <p>People/Relationship/Governance: Issues related to people, relationships, or governance.</p> </li> <li> <p>Product/Technology: Issues related to the product or technology.</p> </li> <li> <p>Financial/Commercial: Financial or commercial issues impacted the decision.</p> </li> </ul>"
+          "documentation":"<p> Specifies the reason code when an opportunity is marked as <i>Closed Lost</i>. When you select an appropriate reason code, you communicate the context for closing the <code>Opportunity</code>, and aid in accurate reports and analysis of opportunity outcomes. The possible values are: </p> <ul> <li> <p>Customer Deficiency: The customer lacked necessary resources or capabilities.</p> </li> <li> <p>Delay/Cancellation of Project: The project was delayed or canceled.</p> </li> <li> <p>Legal/Tax/Regulatory: Legal, tax, or regulatory issues prevented progress.</p> </li> <li> <p>Lost to Competitor—Google: The opportunity was lost to Google.</p> </li> <li> <p>Lost to Competitor—Microsoft: The opportunity was lost to Microsoft.</p> </li> <li> <p>Lost to Competitor—SoftLayer: The opportunity was lost to SoftLayer.</p> </li> <li> <p>Lost to Competitor—VMWare: The opportunity was lost to VMWare.</p> </li> <li> <p>Lost to Competitor—Other: The opportunity was lost to a competitor not listed above.</p> </li> <li> <p>No Opportunity: There was no opportunity to pursue.</p> </li> <li> <p>On Premises Deployment: The customer chose an on-premises solution.</p> </li> <li> <p>Partner Gap: The partner lacked necessary resources or capabilities.</p> </li> <li> <p>Price: The price was not competitive or acceptable to the customer.</p> </li> <li> <p>Security/Compliance: Security or compliance issues prevented progress.</p> </li> <li> <p>Technical Limitations: Technical limitations prevented progress.</p> </li> <li> <p>Customer Experience: Issues related to the customer's experience impacted the decision.</p> </li> <li> <p>Other: Any reason not covered by the other values.</p> </li> <li> <p>People/Relationship/Governance: Issues related to people, relationships, or governance.</p> </li> <li> <p>Product/Technology: Issues related to the product or technology.</p> </li> <li> <p>Financial/Commercial: Financial or commercial issues impacted the decision.</p> </li> </ul>"
         },
         "NextSteps":{
           "shape":"LifeCycleNextStepsString",
-          "documentation":"<p>Specifies the upcoming actions or tasks for the <code>Opportunity</code>. This field is utilized to communicate to Amazon Web Services the next actions required for the <code>Opportunity</code>. </p>"
+          "documentation":"<p>Specifies the upcoming actions or tasks for the <code>Opportunity</code>. Use this field to communicate with Amazon Web Services about the next actions required for the <code>Opportunity</code>. </p>"
         },
         "NextStepsHistory":{
           "shape":"LifeCycleNextStepsHistoryList",
@@ -2239,11 +2237,11 @@
         },
         "ReviewComments":{
           "shape":"String",
-          "documentation":"<p>Indicates why an opportuntiy was sent back for further details. Partners must take corrective action based on the <code>ReviewComments</code>.</p>"
+          "documentation":"<p>Indicates why an opportunity was sent back for further details. Partners must take corrective action based on the <code>ReviewComments</code>.</p>"
         },
         "ReviewStatus":{
           "shape":"ReviewStatus",
-          "documentation":"<p> Indicates the review status of an opportunity referred by a partner. This field is read-only and only applicable for partner referrals. The possible values are: </p> <ul> <li> <p> Pending Submission: Not submitted for validation (editable). </p> </li> <li> <p> Submitted: Submitted for validation, and Amazon Web Services hasn't reviewed it (read-only). </p> </li> <li> <p> In Review: Amazon Web Services is validating (read-only). </p> </li> <li> <p> Action Required: Issues that Amazon Web Services highlights need to be addressed. Partners should use the <code>UpdateOpportunity</code> API action to update the opportunity, and ensure all required changes are made. Only these fields are editable when the <code>Lifecycle.ReviewStatus</code> is <code>Action Required</code>: </p> <ul> <li> <p>Customer.Account.Address.City</p> </li> <li> <p>Customer.Account.Address.CountryCode</p> </li> <li> <p>Customer.Account.Address.PostalCode</p> </li> <li> <p>Customer.Account.Address.StateOrRegion</p> </li> <li> <p>Customer.Account.Address.StreetAddress</p> </li> <li> <p>Customer.Account.WebsiteUrl</p> </li> <li> <p>LifeCycle.TargetCloseDate</p> </li> <li> <p>Project.ExpectedMonthlyAWSRevenue.Amount</p> </li> <li> <p>Project.ExpectedMonthlyAWSRevenue.CurrencyCode</p> </li> <li> <p>Project.CustomerBusinessProblem</p> </li> <li> <p>PartnerOpportunityIdentifier</p> </li> </ul> <p> After updates, the opportunity re-enters the validation phase. This process repeats until all issues are resolved, and the opportunity's <code>Lifecycle.ReviewStatus</code> is set to <code>Approved</code> or <code>Rejected</code>. </p> </li> <li> <p> Approved: Validated and converted into the Amazon Web Services seller's pipeline (editable). </p> </li> <li> <p> Rejected: Disqualified (read-only). </p> </li> </ul>"
+          "documentation":"<p> Indicates the review status of an opportunity referred by a partner. This field is read-only and only applicable for partner referrals. The possible values are: </p> <ul> <li> <p> Pending Submission: Not submitted for validation (editable). </p> </li> <li> <p> Submitted: Submitted for validation, and Amazon Web Services hasn't reviewed it (read-only). </p> </li> <li> <p> In Review: Amazon Web Services is validating (read-only). </p> </li> <li> <p> Action Required: Issues that Amazon Web Services highlights need to be addressed. Partners should use the <code>UpdateOpportunity</code> API action to update the opportunity and helps to ensure that all required changes are made. Only the following fields are editable when the <code>Lifecycle.ReviewStatus</code> is <code>Action Required</code>: </p> <ul> <li> <p>Customer.Account.Address.City</p> </li> <li> <p>Customer.Account.Address.CountryCode</p> </li> <li> <p>Customer.Account.Address.PostalCode</p> </li> <li> <p>Customer.Account.Address.StateOrRegion</p> </li> <li> <p>Customer.Account.Address.StreetAddress</p> </li> <li> <p>Customer.Account.WebsiteUrl</p> </li> <li> <p>LifeCycle.TargetCloseDate</p> </li> <li> <p>Project.ExpectedMonthlyAWSRevenue.Amount</p> </li> <li> <p>Project.ExpectedMonthlyAWSRevenue.CurrencyCode</p> </li> <li> <p>Project.CustomerBusinessProblem</p> </li> <li> <p>PartnerOpportunityIdentifier</p> </li> </ul> <p> After updates, the opportunity re-enters the validation phase. This process repeats until all issues are resolved, and the opportunity's <code>Lifecycle.ReviewStatus</code> is set to <code>Approved</code> or <code>Rejected</code>. </p> </li> <li> <p> Approved: Validated and converted into the Amazon Web Services seller's pipeline (editable). </p> </li> <li> <p> Rejected: Disqualified (read-only). </p> </li> </ul>"
         },
         "ReviewStatusReason":{
           "shape":"String",
@@ -2251,7 +2249,7 @@
         },
         "Stage":{
           "shape":"Stage",
-          "documentation":"<p> Specifies the current stage of the <code>Opportunity</code>'s lifecycle as it maps to Amazon Web Services stages from the current stage in the partner CRM. This field provides a translated value of the stage, and offers insight into the <code>Opportunity</code>'s progression in the sales cycle, according to Amazon Web Services definitions. </p> <note> <p>A lead and a prospect must be further matured to a <code>Qualified</code> opportunity before submission. Opportunities that were closed/lost before submission aren't suitable for submission.</p> </note> <p> The descriptions of each sales stage are: </p> <ul> <li> <p> Prospect: Amazon Web Services identifies the opportunity. It can be active (Comes directly from the end customer through a lead) or latent (Your account team believes it exists based on research, account plans, sales plays). </p> </li> <li> <p> Qualified: Your account team engaged with the prospect/end customer to discuss viability and understand requirements. The prospect/end customer agreed that the opportunity is real, of interest, and may solve key business/technical needs. </p> </li> <li> <p> Technical Validation: All parties understand the implementation plan. </p> </li> <li> <p> Business Validation: Pricing was proposed, and all parties agree to the steps to close. </p> </li> <li> <p> Committed: The customer signed the contract, but Amazon Web Services hasn't started billing. </p> </li> <li> <p> Launched: The workload is complete, and Amazon Web Services has started billing. </p> </li> <li> <p> Closed Lost: The opportunity is lost, and there are no steps to move forward. </p> </li> </ul>"
+          "documentation":"<p> Specifies the current stage of the <code>Opportunity</code>'s lifecycle as it maps to Amazon Web Services stages from the current stage in the partner CRM. This field provides a translated value of the stage, and offers insight into the <code>Opportunity</code>'s progression in the sales cycle, according to Amazon Web Services definitions. </p> <note> <p>A lead and a prospect must be further matured to a <code>Qualified</code> opportunity before submission. Opportunities that were closed/lost before submission aren't suitable for submission.</p> </note> <p> The descriptions of each sales stage are: </p> <ul> <li> <p> Prospect: Amazon Web Services identifies the opportunity. It can be active (Comes directly from the end customer through a lead) or latent (Your account team believes it exists based on research, account plans, sales plays). </p> </li> <li> <p> Qualified: Your account team engaged with the customer to discuss viability and requirements. The customer agreed that the opportunity is real, of interest, and may solve business/technical needs. </p> </li> <li> <p> Technical Validation: All parties understand the implementation plan. </p> </li> <li> <p> Business Validation: Pricing was proposed, and all parties agree to the steps to close. </p> </li> <li> <p> Committed: The customer signed the contract, but Amazon Web Services hasn't started billing. </p> </li> <li> <p> Launched: The workload is complete, and Amazon Web Services has started billing. </p> </li> <li> <p> Closed Lost: The opportunity is lost, and there are no steps to move forward. </p> </li> </ul>"
         },
         "TargetCloseDate":{
           "shape":"Date",
@@ -2285,7 +2283,7 @@
         },
         "ReviewComments":{
           "shape":"String",
-          "documentation":"<p>Indicates why an opportuntiy was sent back for further details. Partners must take corrective action based on the <code>ReviewComments</code>.</p>"
+          "documentation":"<p>Indicates why an opportunity was sent back for further details. Partners must take corrective action based on the <code>ReviewComments</code>.</p>"
         },
         "ReviewStatus":{
           "shape":"ReviewStatus",
@@ -2297,7 +2295,7 @@
         },
         "Stage":{
           "shape":"Stage",
-          "documentation":"<p> Specifies the current stage of the <code>Opportunity</code>'s lifecycle as it maps to Amazon Web Services stages from the current stage in the partner CRM. This field provides a translated value of the stage, and offers insight into the <code>Opportunity</code>'s progression in the sales cycle, according to Amazon Web Services definitions. </p> <note> <p>A lead and a prospect must be further matured to a <code>Qualified</code> opportunity before submission. Opportunities that were closed/lost before submission aren't suitable for submission.</p> </note> <p> The descriptions of each sales stage are: </p> <ul> <li> <p> Prospect: Amazon Web Services identifies the opportunity. It can be active (Comes directly from the end customer through a lead) or latent (Your account team believes it exists based on research, account plans, sales plays). </p> </li> <li> <p> Qualified: Your account team engaged with the prospect/end customer to discuss viability and understand requirements. The prospect/end customer agreed that the opportunity is real, of interest, and may solve key business/technical needs. </p> </li> <li> <p> Technical Validation: All parties understand the implementation plan. </p> </li> <li> <p> Business Validation: Pricing has been proposed, Pricing was proposed, and all parties agree to the steps to close. </p> </li> <li> <p> Committed: The customer signed the contract, but Amazon Web Services hasn't started billing. </p> </li> <li> <p> Launched: The workload is complete, and Amazon Web Services has started billing. </p> </li> <li> <p> Closed Lost: The opportunity is lost, and there are no steps to move forward. </p> </li> </ul>"
+          "documentation":"<p> Specifies the current stage of the <code>Opportunity</code>'s lifecycle as it maps to Amazon Web Services stages from the current stage in the partner CRM. This field provides a translated value of the stage, and offers insight into the <code>Opportunity</code>'s progression in the sales cycle, according to Amazon Web Services definitions. </p> <note> <p>A lead and a prospect must be further matured to a <code>Qualified</code> opportunity before submission. Opportunities that were closed/lost before submission aren't suitable for submission.</p> </note> <p> The descriptions of each sales stage are: </p> <ul> <li> <p> Prospect: Amazon Web Services identifies the opportunity. It can be active (Comes directly from the end customer through a lead) or latent (Your account team believes it exists based on research, account plans, sales plays). </p> </li> <li> <p> Qualified: Your account team engaged with the customer to discuss viability and understand requirements. The customer agreed that the opportunity is real, of interest, and may solve business/technical needs. </p> </li> <li> <p> Technical Validation: All parties understand the implementation plan. </p> </li> <li> <p> Business Validation: Pricing was proposed, and all parties agree to the steps to close. </p> </li> <li> <p> Committed: The customer signed the contract, but Amazon Web Services hasn't started billing. </p> </li> <li> <p> Launched: The workload is complete, and Amazon Web Services has started billing. </p> </li> <li> <p> Closed Lost: The opportunity is lost, and there are no steps to move forward. </p> </li> </ul>"
         },
         "TargetCloseDate":{
           "shape":"Date",
@@ -2350,7 +2348,7 @@
       "members":{
         "EngagementInvitationSummaries":{
           "shape":"EngagementInvitationSummaries",
-          "documentation":"<p>An array containing summaries of engagement invitations. Each summary includes key information such as the invitation title, invitation date, and the current status of the invitation.</p>"
+          "documentation":"<p>An array containing summaries of engagement invitations. Each summary includes information such as the invitation title, invitation date, and the current status of the invitation.</p>"
         },
         "NextToken":{
           "shape":"String",
@@ -2364,7 +2362,7 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> Specifies the catalog associated with the request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines which environment the opportunities are listed in. Use <code>AWS</code> for listing real opportunities in the Amazon Web Services catalog, and <code>Sandbox</code> for to test in a secure and isolated environment. </p>"
+          "documentation":"<p> Specifies the catalog associated with the request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines which environment the opportunities are listed in. Use <code>AWS</code> for listing real opportunities in the Amazon Web Services catalog, and <code>Sandbox</code> for testing in secure, isolated environments. </p>"
         },
         "CustomerCompanyName":{
           "shape":"ListOpportunitiesRequestCustomerCompanyNameList",
@@ -2388,7 +2386,7 @@
         },
         "MaxResults":{
           "shape":"PageSize",
-          "documentation":"<p> Specifies the maximum number of results to return in a single call. This limits the number of opportunities returned in the response to avoid overloading with too many results at once. </p> <p> Default: 20 </p>"
+          "documentation":"<p> Specifies the maximum number of results to return in a single call. This limits the number of opportunities returned in the response to avoid providing too many results at once. </p> <p> Default: 20 </p>"
         },
         "NextToken":{
           "shape":"String",
@@ -2468,7 +2466,7 @@
         },
         "Status":{
           "shape":"ListSolutionsRequestStatusList",
-          "documentation":"<p>Filters the solutions based on their status. This filter helps retrieve solutions with statuses such as <code>Active</code>, <code>Inactive</code>, or <code>Pending Approval</code>, allowing partners to manage their solution portfolios effectively.</p>"
+          "documentation":"<p>Filters solutions based on their status. This filter helps partners manage their solution portfolios effectively.</p>"
         }
       }
     },
@@ -2513,7 +2511,7 @@
         },
         "CampaignName":{
           "shape":"String",
-          "documentation":"<p>Specifies the <code>Opportunity</code>'s unique marketing campaign name. The Amazon Web Services campaign name serves as a reference to specific marketing initiatives, promotions, or activities related to the <code>Opportunity</code>. This field captures the identifier used to track and categorize the <code>Opportunity</code> within Amazon Web Services's marketing campaigns. If you don't have a campaign name, reach out to your Amazon Web Services point of contact to obtain one. </p>"
+          "documentation":"<p>Specifies the <code>Opportunity</code> marketing campaign code. The Amazon Web Services campaign code is a reference to specific marketing initiatives, promotions, or activities. This field captures the identifier used to track and categorize the <code>Opportunity</code> within marketing campaigns. If you don't have a campaign code, contact your Amazon Web Services point of contact to obtain one. </p>"
         },
         "Channels":{
           "shape":"Channels",
@@ -2638,7 +2636,7 @@
         },
         "SenderContacts":{
           "shape":"SenderContactList",
-          "documentation":"<p>Represents the contact details of the AWS representatives involved in sending the Engagement Invitation. These contacts are key stakeholders for the opportunity.</p>"
+          "documentation":"<p>Represents the contact details of the AWS representatives involved in sending the Engagement Invitation. These contacts are opportunity stakeholders.</p>"
         }
       },
       "documentation":"<p>Represents the data payload of an Engagement Invitation for a specific opportunity. This contains detailed information that partners use to evaluate the engagement.</p>"
@@ -2821,11 +2819,11 @@
         },
         "CustomerBusinessProblem":{
           "shape":"ProjectCustomerBusinessProblemString",
-          "documentation":"<p>Describes the problem the end customer has, and how the partner is helping. Utilize this field to provide a clear and concise narrative that outlines the specific business challenge or issue the customer has. Elaborate on how the partner's solution or offerings align to resolve the customer's business problem. Include relevant information about the partner's value proposition, unique selling points, and expertise to tackle the issue. Offer insights on how the proposed solution meets the customer's needs and provides value. Use concise language and precise descriptions to convey the context and significance of the <code>Opportunity</code>. The content in this field helps Amazon Web Services understand the nature of the <code>Opportunity</code> and the strategic fit of the partner's solution. </p>"
+          "documentation":"<p>Describes the problem the end customer has, and how the partner is helping. Utilize this field to provide a concise narrative that outlines the customer's business challenge or issue. Elaborate on how the partner's solution or offerings align to resolve the customer's business problem. Include relevant information about the partner's value proposition, unique selling points, and expertise to tackle the issue. Offer insights on how the proposed solution meets the customer's needs and provides value. Use concise language and precise descriptions to convey the context and significance of the <code>Opportunity</code>. The content in this field helps Amazon Web Services understand the nature of the <code>Opportunity</code> and the strategic fit of the partner's solution. </p>"
         },
         "CustomerUseCase":{
           "shape":"String",
-          "documentation":"<p> Specifies the proposed solution focus or type of workload for the Opportunity. This field captures the primary use case or objective of the proposed solution, and provides context and clarity to the addressed workload. </p> <p> Valid values: <code>AI Machine Learning and Analytics | Archiving | Big Data: Data Warehouse / Data Integration / ETL / Data Lake / BI | Blockchain | Business Applications: Mainframe Modernization | Business Applications &amp; Contact Center | Business Applications &amp; SAP Production | Centralized Operations Management | Cloud Management Tools | Cloud Management Tools &amp; DevOps with Continuous Integration &amp; Continuous Delivery (CICD) | Configuration, Compliance &amp; Auditing | Connected Services | Containers &amp; Serverless | Content Delivery &amp; Edge Services | Database | Edge Computing / End User Computing | Energy | Enterprise Governance &amp; Controls | Enterprise Resource Planning | Financial Services | Healthcare and Life Sciences | High Performance Computing | Hybrid Application Platform | Industrial Software | IOT | Manufacturing, Supply Chain and Operations | Media &amp; High performance computing (HPC) | Migration / Database Migration | Monitoring, logging and performance | Monitoring &amp; Observability | Networking | Outpost | SAP | Security &amp; Compliance | Storage &amp; Backup | Training | VMC | VMWare | Web development &amp; DevOps</code> </p>"
+          "documentation":"<p> Specifies the proposed solution focus or type of workload for the Opportunity. This field captures the primary use case or objective of the proposed solution, and provides context and clarity to the addressed workload. </p> <p> Valid values: <code>AI Machine Learning and Analytics | Archiving | Big Data: Data Warehouse/Data Integration/ETL/Data Lake/BI | Blockchain | Business Applications: Mainframe Modernization | Business Applications &amp; Contact Center | Business Applications &amp; SAP Production | Centralized Operations Management | Cloud Management Tools | Cloud Management Tools &amp; DevOps with Continuous Integration &amp; Continuous Delivery (CICD) | Configuration, Compliance &amp; Auditing | Connected Services | Containers &amp; Serverless | Content Delivery &amp; Edge Services | Database | Edge Computing/End User Computing | Energy | Enterprise Governance &amp; Controls | Enterprise Resource Planning | Financial Services | Healthcare and Life Sciences | High Performance Computing | Hybrid Application Platform | Industrial Software | IOT | Manufacturing, Supply Chain and Operations | Media &amp; High performance computing (HPC) | Migration/Database Migration | Monitoring, logging and performance | Monitoring &amp; Observability | Networking | Outpost | SAP | Security &amp; Compliance | Storage &amp; Backup | Training | VMC | VMWare | Web development &amp; DevOps</code> </p>"
         },
         "DeliveryModels":{
           "shape":"DeliveryModels",
@@ -2849,7 +2847,7 @@
         },
         "SalesActivities":{
           "shape":"SalesActivities",
-          "documentation":"<p> Specifies the <code>Opportunity</code>'s sales activities conducted with the end customer. These activities help drive Amazon Web Services assignment priority. </p> <p> Valid values: </p> <ul> <li> <p> Initialized discussions with customer: Initial conversations with the customer to understand their needs and introduce your solution. </p> </li> <li> <p> Customer has shown interest in solution: After initial discussions, the customer is interested in your solution. </p> </li> <li> <p> Conducted POC / Demo: You conducted a proof of concept (POC) or demonstration of the solution for the customer. </p> </li> <li> <p> In evaluation / planning stage: The customer is evaluating the solution and planning potential implementation. </p> </li> <li> <p> Agreed on solution to Business Problem: Both parties agree on how the solution addresses the customer's business problem. </p> </li> <li> <p> Completed Action Plan: A detailed action plan is complete and outlines the steps for implementation. </p> </li> <li> <p> Finalized Deployment Need: Both parties agree with and finalized the deployment needs. </p> </li> <li> <p> SOW Signed: Both parties signed a statement of work (SOW), and formalize the agreement and detail the project scope and deliverables. </p> </li> </ul>"
+          "documentation":"<p> Specifies the <code>Opportunity</code>'s sales activities conducted with the end customer. These activities help drive Amazon Web Services assignment priority. </p> <p> Valid values: </p> <ul> <li> <p> Initialized discussions with customer: Initial conversations with the customer to understand their needs and introduce your solution. </p> </li> <li> <p> Customer has shown interest in solution: After initial discussions, the customer is interested in your solution. </p> </li> <li> <p> Conducted POC/demo: You conducted a proof of concept (POC) or demonstration of the solution for the customer. </p> </li> <li> <p> In evaluation/planning stage: The customer is evaluating the solution and planning potential implementation. </p> </li> <li> <p> Agreed on solution to Business Problem: Both parties agree on how the solution addresses the customer's business problem. </p> </li> <li> <p> Completed Action Plan: A detailed action plan is complete and outlines the steps for implementation. </p> </li> <li> <p> Finalized Deployment Need: Both parties agree with and finalized the deployment needs. </p> </li> <li> <p> SOW Signed: Both parties signed a statement of work (SOW), and formalize the agreement and detail the project scope and deliverables. </p> </li> </ul>"
         },
         "Title":{
           "shape":"ProjectTitleString",
@@ -2945,7 +2943,8 @@
         "EngagementInvitationConflict",
         "InternalError",
         "OpportunityValidationFailed",
-        "OpportunityConflict"
+        "OpportunityConflict",
+        "ResourceSnapshotAccessDenied"
       ]
     },
     "Receiver":{
@@ -2986,15 +2985,15 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p>Specifies the catalog related to the engagement invitation. Accepted values are <code>AWS</code> and <code>Sandbox</code>, which determine the environment in which the opportunity is managed.</p>"
+          "documentation":"<p>This is the catalog that's associated with the engagement invitation. Acceptable values are <code>AWS</code> or <code>Sandbox</code>, and these values determine the environment in which the opportunity is managed.</p>"
         },
         "Identifier":{
           "shape":"EngagementInvitationArnOrIdentifier",
-          "documentation":"<p>Specifies the unique identifier of the <code>EngagementInvitation</code> to be rejected. Providing the correct identifier ensures that the intended invitation is rejected.</p>"
+          "documentation":"<p>This is the unique identifier of the rejected <code>EngagementInvitation</code>. Providing the correct identifier helps to ensure that the intended invitation is rejected.</p>"
         },
         "RejectionReason":{
           "shape":"RejectionReasonString",
-          "documentation":"<p>Specifies the reason for rejecting the engagement invitation. Providing a reason helps document the rationale behind the rejection and assists AWS in tracking patterns or issues. Possible values include:</p> <ul> <li> <p> <i>Customer problem unclear:</i> The customer's problem is not clearly defined.</p> </li> <li> <p> <i>Next steps unclear:</i> The next steps required to proceed are not clear.</p> </li> <li> <p> <i>Unable to support:</i> The partner is unable to provide support due to resource or capability constraints.</p> </li> <li> <p> <i>Duplicate of Partner Referral:</i> The opportunity is a duplicate of an existing referral.</p> </li> <li> <p> <i>Other:</i> Any other reason not covered by the specified values.</p> </li> </ul>"
+          "documentation":"<p>This describes the reason for rejecting the engagement invitation, which helps AWS track usage patterns. Acceptable values include the following:</p> <ul> <li> <p> <i>Customer problem unclear:</i> The customer's problem isn't understood.</p> </li> <li> <p> <i>Next steps unclear:</i> The next steps required to proceed aren't understood.</p> </li> <li> <p> <i>Unable to support:</i> The partner is unable to provide support due to resource or capability constraints.</p> </li> <li> <p> <i>Duplicate of partner referral:</i> The opportunity is a duplicate of an existing referral.</p> </li> <li> <p> <i>Other:</i> Any reason not covered by other values.</p> </li> </ul>"
         }
       }
     },
@@ -3015,7 +3014,7 @@
         },
         "Solutions":{
           "shape":"SolutionIdentifiers",
-          "documentation":"<p> Enables partner solutions or offerings' association with an opportunity. To associate a solution, provide the solution's unique identifier, which you can obtain with the <code>ListSolutions</code> operation. </p> <p> If the specific solution identifier is not available, you can use the value <code>Other</code> and provide details about the solution in the <code>otherSolutionOffered</code> field. However, once the opportunity reaches the <code>Committed</code> stage or beyond, the <code>Other</code> value cannot be used, and a valid solution identifier must be provided. </p> <p> By associating the relevant solutions with the opportunity, you can clearly communicate the offerings that are being considered or implemented to address the customer's business problem. </p>"
+          "documentation":"<p> Enables partner solutions or offerings' association with an opportunity. To associate a solution, provide the solution's unique identifier, which you can obtain with the <code>ListSolutions</code> operation. </p> <p> If the specific solution identifier is not available, you can use the value <code>Other</code> and provide details about the solution in the <code>otherSolutionOffered</code> field. But when the opportunity reaches the <code>Committed</code> stage or beyond, the <code>Other</code> value cannot be used, and a valid solution identifier must be provided. </p> <p> By associating the relevant solutions with the opportunity, you can communicate the offerings that are being considered or implemented to address the customer's business problem. </p>"
         }
       },
       "documentation":"<p> This field provides the associations' information for other entities with the opportunity. These entities include identifiers for <code>AWSProducts</code>, <code>Partner Solutions</code>, and <code>AWSMarketplaceOffers</code>. </p>"
@@ -3124,7 +3123,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>This error occurs when the request would cause a service quota to be exceeded. Service quotas represent the maximum allowed use of a specific resource, and this error indicates that the request would surpass that limit. </p> <p>Suggested action: Review the <a href=\"https://docs.aws.amazon.com/partner-central/latest/selling-api/quotas.html\">service quotas</a> for the specific resource, and reduce the usage or request a quota increase through support if necessary. </p>",
+      "documentation":"<p>This error occurs when the request would cause a service quota to be exceeded. Service quotas represent the maximum allowed use of a specific resource, and this error indicates that the request would surpass that limit. </p> <p>Suggested action: Review the <a href=\"https://docs.aws.amazon.com/partner-central/latest/selling-api/quotas.html\">Quotas</a> for the resource, and either reduce usage or request a quota increase. </p>",
       "exception":true
     },
     "SoftwareRevenue":{
@@ -3268,18 +3267,19 @@
         },
         "ClientToken":{
           "shape":"StartEngagementByAcceptingInvitationTaskRequestClientTokenString",
-          "documentation":"<p>A unique, case-sensitive identifier provided by the client to ensure the idempotency of the request. Can be a random or meaningful string, but must be unique for each request.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier provided by the client that helps to ensure the idempotency of the request. This can be a random or meaningful string but must be unique for each request.</p>",
           "idempotencyToken":true
         },
         "Identifier":{
           "shape":"EngagementInvitationArnOrIdentifier",
-          "documentation":"<p>Specifies the unique identifier of the <code>EngagementInvitation</code> to be accepted. Providing the correct identifier ensures the right engagement invitation is processed.</p>"
+          "documentation":"<p>Specifies the unique identifier of the <code>EngagementInvitation</code> to be accepted. Providing the correct identifier helps ensure that the correct engagement is processed.</p>"
         }
       }
     },
     "StartEngagementByAcceptingInvitationTaskRequestClientTokenString":{
       "type":"string",
-      "min":1
+      "min":1,
+      "pattern":"^[!-~]{1,64}$"
     },
     "StartEngagementByAcceptingInvitationTaskResponse":{
       "type":"structure",
@@ -3298,7 +3298,7 @@
         },
         "ReasonCode":{
           "shape":"ReasonCode",
-          "documentation":"<p>Indicates the reason for task failure using an enumerated code. Possible values are: <code>ACCEPT_ENGAGEMENT_INVITATION_FAILED</code>, <code>GET_ENGAGEMENT_INVITATION_FAILED</code>, <code>CREATE_OPPORTUNITY_FAILED</code>, <code>CREATE_RESOURCE_VIEW_AUTOMATION_FAILED</code>, <code>SUBMIT_OPPORTUNITY_FAILED</code>.</p>"
+          "documentation":"<p>Indicates the reason for task failure using an enumerated code.</p>"
         },
         "StartTime":{
           "shape":"DateTime",
@@ -3310,11 +3310,11 @@
         },
         "TaskId":{
           "shape":"TaskIdentifier",
-          "documentation":"<p>The unique identifier of the task, used to track the task’s progress. This value follows a specific pattern: <code>^oit-[0-9a-z]{13}$</code>.</p>"
+          "documentation":"<p>The unique identifier of the task, used to track the task’s progress.</p>"
         },
         "TaskStatus":{
           "shape":"TaskStatus",
-          "documentation":"<p>Indicates the current status of the task. Valid values include <code>IN_PROGRESS</code>, <code>COMPLETE</code>, and <code>FAILED</code>.</p>"
+          "documentation":"<p>Indicates the current status of the task.</p>"
         }
       }
     },
@@ -3334,18 +3334,19 @@
         },
         "ClientToken":{
           "shape":"StartEngagementFromOpportunityTaskRequestClientTokenString",
-          "documentation":"<p>A unique token provided by the client to ensure the idempotency of the request. It helps prevent the same task from being performed multiple times.</p>",
+          "documentation":"<p>A unique token provided by the client to help ensure the idempotency of the request. It helps prevent the same task from being performed multiple times.</p>",
           "idempotencyToken":true
         },
         "Identifier":{
           "shape":"OpportunityIdentifier",
-          "documentation":"<p>The unique identifier of the opportunity from which the engagement task is to be initiated. This ensures the task is applied to the correct opportunity.</p>"
+          "documentation":"<p>The unique identifier of the opportunity from which the engagement task is to be initiated. This helps ensure that the task is applied to the correct opportunity.</p>"
         }
       }
     },
     "StartEngagementFromOpportunityTaskRequestClientTokenString":{
       "type":"string",
-      "min":1
+      "min":1,
+      "pattern":"^[!-~]{1,64}$"
     },
     "StartEngagementFromOpportunityTaskResponse":{
       "type":"structure",
@@ -3360,7 +3361,7 @@
         },
         "ReasonCode":{
           "shape":"ReasonCode",
-          "documentation":"<p>Indicates the reason for task failure using an enumerated code. Possible values are: <code>ACCEPT_ENGAGEMENT_INVITATION_FAILED</code>, <code>GET_ENGAGEMENT_INVITATION_FAILED</code>, <code>CREATE_OPPORTUNITY_FAILED</code>, <code>CREATE_RESOURCE_VIEW_AUTOMATION_FAILED</code>, <code>SUBMIT_OPPORTUNITY_FAILED</code>.</p>"
+          "documentation":"<p>Indicates the reason for task failure using an enumerated code.</p>"
         },
         "StartTime":{
           "shape":"DateTime",
@@ -3402,7 +3403,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>This error occurs when there are too many requests sent. Review the provided quotas and adapt your usage to avoid throttling. </p> <p>This error occurs when there are too many requests sent. Review the provided <a href=\"https://docs.aws.amazon.com/partner-central/latest/selling-api/quotas.html\">quotas</a> and retry after the provided delay. </p>",
+      "documentation":"<p>This error occurs when there are too many requests sent. Review the provided quotas and adapt your usage to avoid throttling. </p> <p>This error occurs when there are too many requests sent. Review the provided <a href=\"https://docs.aws.amazon.com/partner-central/latest/selling-api/quotas.html\">Quotas</a> and retry after the provided delay. </p>",
       "exception":true
     },
     "UpdateOpportunityRequest":{
@@ -3415,11 +3416,11 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> Specifies the catalog associated with the request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines which environment the opportunity is updated in. Use <code>AWS</code> to update real opportunities in the production environment, and <code>Sandbox</code> to test in a secure and isolated environment. When you use the <code>Sandbox</code> catalog, it allows you to simulate and validate your interactions with Amazon Web Services services without affecting live data or operations. </p>"
+          "documentation":"<p> Specifies the catalog associated with the request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines which environment the opportunity is updated in. Use <code>AWS</code> to update real opportunities in the production environment, and <code>Sandbox</code> for testing in secure, isolated environments. When you use the <code>Sandbox</code> catalog, it allows you to simulate and validate your interactions with Amazon Web Services services without affecting live data or operations. </p>"
         },
         "Customer":{
           "shape":"Customer",
-          "documentation":"<p>Specifies details of the customer associated with the <code>Opportunity</code> . </p>"
+          "documentation":"<p>Specifies details of the customer associated with the <code>Opportunity</code>. </p>"
         },
         "Identifier":{
           "shape":"OpportunityIdentifier",
@@ -3439,7 +3440,7 @@
         },
         "NationalSecurity":{
           "shape":"NationalSecurity",
-          "documentation":"<p>Specifies if the opportunity is associated with national security concerns. This flag is only applicable when the industry is <code>Government</code>. For national security-related opportunities, specific validation and compliance rules may apply, impacting the opportunity's visibility and processing.</p>"
+          "documentation":"<p>Specifies if the opportunity is associated with national security concerns. This flag is only applicable when the industry is <code>Government</code>. For national-security-related opportunities, validation and compliance rules may apply, impacting the opportunity's visibility and processing.</p>"
         },
         "OpportunityType":{
           "shape":"OpportunityType",
@@ -3451,7 +3452,7 @@
         },
         "PrimaryNeedsFromAws":{
           "shape":"PrimaryNeedsFromAws",
-          "documentation":"<p> Identifies the type of support the partner needs from Amazon Web Services. </p> <p> Valid values: </p> <ul> <li> <p> Co-Sell - Architectural Validation: Confirmation from Amazon Web Services that the partner's proposed solution architecture is aligned with Amazon Web Services best practices and poses minimal architectural risks. </p> </li> <li> <p> Co-Sell - Business Presentation: Request Amazon Web Services seller's participation in a joint customer presentation. </p> </li> <li> <p> Co-Sell - Competitive Information: Access to Amazon Web Services competitive resources and support for the partner's proposed solution. </p> </li> <li> <p> Co-Sell - Pricing Assistance: Connect with an AWS seller for support situations where a partner may be receiving an upfront discount on a service (for example: EDP deals). </p> </li> <li> <p> Co-Sell - Technical Consultation: Connection with an Amazon Web Services Solutions Architect to address the partner's questions about the proposed solution. </p> </li> <li> <p> Co-Sell - Total Cost of Ownership Evaluation: Assistance with quoting different cost savings of proposed solutions on Amazon Web Services versus on-premises or a traditional hosting environment. </p> </li> <li> <p> Co-Sell - Deal Support: Request Amazon Web Services seller's support to progress the opportunity (for example: joint customer call, strategic positioning). </p> </li> <li> <p> Co-Sell - Support for Public Tender / RFx: Opportunity related to the public sector where the partner needs RFx support from Amazon Web Services. </p> </li> <li> <p> Do Not Need Support from AWS Sales Rep: Indicates that a partner doesn't need support from an Amazon Web Services Sales representative. The opportunity is managed solely by the partner. It's possible to request co-selling support on these opportunities at any stage during their lifecycle. Also known as, for-visibility-only (FVO) opportunity. </p> </li> </ul>"
+          "documentation":"<p> Identifies the type of support the partner needs from Amazon Web Services. </p> <p> Valid values: </p> <ul> <li> <p> Cosell—Architectural Validation: Confirmation from Amazon Web Services that the partner's proposed solution architecture is aligned with Amazon Web Services best practices and poses minimal architectural risks. </p> </li> <li> <p> Cosell—Business Presentation: Request Amazon Web Services seller's participation in a joint customer presentation. </p> </li> <li> <p> Cosell—Competitive Information: Access to Amazon Web Services competitive resources and support for the partner's proposed solution. </p> </li> <li> <p> Cosell—Pricing Assistance: Connect with an AWS seller for support situations where a partner may be receiving an upfront discount on a service (for example: EDP deals). </p> </li> <li> <p> Cosell—Technical Consultation: Connection with an Amazon Web Services Solutions Architect to address the partner's questions about the proposed solution. </p> </li> <li> <p> Cosell—Total Cost of Ownership Evaluation: Assistance with quoting different cost savings of proposed solutions on Amazon Web Services versus on-premises or a traditional hosting environment. </p> </li> <li> <p> Cosell—Deal Support: Request Amazon Web Services seller's support to progress the opportunity (for example: joint customer call, strategic positioning). </p> </li> <li> <p> Cosell—Support for Public Tender/RFx: Opportunity related to the public sector where the partner needs RFx support from Amazon Web Services. </p> </li> <li> <p> Do Not Need Support from AWS Sales Rep: Indicates that a partner doesn't need support from an Amazon Web Services Sales representative. The opportunity is managed solely by the partner. It's possible to request coselling support on these opportunities at any stage during their lifecycle. Also known as, for-visibility-only (FVO) opportunity. </p> </li> </ul>"
         },
         "Project":{
           "shape":"Project",
@@ -3570,5 +3571,5 @@
       "sensitive":true
     }
   },
-  "documentation":"<p><fullname>AWS Partner Central API for Selling</fullname> <p> <b>AWS Partner Central API for Selling Reference Guide</b> </p> <p> Amazon Web Services (AWS) Partner Central API reference guide is designed to help <a href=\"https://docs.aws.amazon.com/partners/programs/\">AWS Partners</a> programmatically integrate their Customer Relationship Management (CRM) systems with AWS Partner Central. Through the Partner Central APIs, partners can automate and streamline their interactions with AWS Partner Central, ensuring a more efficient and effective engagement in joint business activities. </p> <p> The AWS Partner Central API service provides standard AWS API functionality. You can directly use the API <a href=\"https://docs.aws.amazon.com/partner-central/latest/selling-api/API_Operations.html\">Actions</a>, or you can use an AWS SDK to access an API that's tailored to the programming language or platform that you're using. For more information about AWS application development, see <a href=\"https://docs.aws.amazon.com/getting-started\">Getting Started with AWS</a>. For more information about using AWS SDKs, see <a href=\"https://docs.aws.amazon.com/aws-sdk\">AWS SDKs</a>. </p> <p class=\"title\"> <b>Features offered by AWS Partner Central API</b> </p> <ol> <li> <p> <b>Opportunity management:</b> Facilitates the management of co-selling opportunities with AWS using API actions such as <code>CreateOpportunity</code>, <code>UpdateOpportunity</code>, <code>ListOpportunities</code>, <code>GetOpportunity</code>, and <code>AssignOpportunity</code>.</p> </li> <li> <p> <b>AWS referral management:</b> Facilitates receiving referrals shared by AWS using actions like <code>ListEngagementInvitations</code>, <code>GetEngagementInvitation</code>, <code>StartEngagementByAcceptingInvitation</code>, and <code>RejectEngagementInvitation</code>.</p> </li> <li> <p> <b>Entity association:</b> Associate related entities such as <i>AWS Products</i>, <i>Partner Solutions</i>, and <i>AWS Marketplace Private Offers</i> with opportunities using the actions <code>AssociateOpportunity</code> and <code>DisassociateOpportunity</code>.</p> </li> <li> <p> <b>View AWS opportunity details:</b> Use the <code>GetAWSOpportunitySummary</code> action to retrieve real-time summaries of AWS opportunities that are linked to your opportunities.</p> </li> <li> <p> <b>List solutions:</b> Provides list APIs for listing solutions partners offer using <code>ListSolutions</code>.</p> </li> <li> <p> <b>Event subscription:</b> Partners can subscribe to real-time updates on opportunities by listening to events such as <i>Opportunity Created</i>, <i>Opportunity Updated</i>, <i>Engagement Invitation Accepted</i>, <i>Engagement Invitation Rejected</i> and <i>Engagement Invitation Created</i> using AWS EventBridge.</p> </li> </ol></p>"
+  "documentation":"<p><fullname>AWS Partner Central API for Selling</fullname> <p> <b>AWS Partner Central API for Selling Reference Guide</b> </p> <p>This Amazon Web Services (AWS) Partner Central API reference is designed to help <a href=\"http://aws.amazon.com/partners/programs/\">AWS Partners</a> integrate Customer Relationship Management (CRM) systems with AWS Partner Central. Partners can automate interactions with AWS Partner Central, which helps to ensure effective engagements in joint business activities.</p> <p>The API provides standard AWS API functionality. Access it by either using API <a href=\"https://docs.aws.amazon.com/partner-central/latest/selling-api/API_Operations.html\">Actions</a> or by using an AWS SDK that's tailored to your programming language or platform. For more information, see <a href=\"http://aws.amazon.com/getting-started\">Getting Started with AWS</a> and <a href=\"http://aws.amazon.com/developer/tools/\">Tools to Build on AWS</a>.</p> <p class=\"title\"> <b>Features offered by AWS Partner Central API</b> </p> <ol> <li> <p> <b>Opportunity management:</b> Manages coselling opportunities through API actions such as <code>CreateOpportunity</code>, <code>UpdateOpportunity</code>, <code>ListOpportunities</code>, <code>GetOpportunity</code>, and <code>AssignOpportunity</code>.</p> </li> <li> <p> <b>AWS referral management:</b> Manages referrals shared by AWS using actions such as <code>ListEngagementInvitations</code>, <code>GetEngagementInvitation</code>, <code>StartEngagementByAcceptingInvitation</code>, and <code>RejectEngagementInvitation</code>.</p> </li> <li> <p> <b>Entity association:</b> Associates related entities such as <i>AWS Products</i>, <i>Partner Solutions</i>, and <i>AWS Marketplace Private Offers</i> with opportunities using the actions <code>AssociateOpportunity</code>, and <code>DisassociateOpportunity</code>.</p> </li> <li> <p> <b>View AWS opportunity details:</b> Retrieves real-time summaries of AWS opportunities using the <code>GetAWSOpportunitySummary</code> action.</p> </li> <li> <p> <b>List solutions:</b> Provides list APIs for listing partner offers using <code>ListSolutions</code>.</p> </li> <li> <p> <b>Event subscription:</b> Subscribe to real-time opportunity updates through AWS EventBridge by using actions such as <i>Opportunity Created</i>, <i>Opportunity Updated</i>, <i>Engagement Invitation Accepted</i>, <i>Engagement Invitation Rejected</i>, and <i>Engagement Invitation Created</i>.</p> </li> </ol></p>"
 }

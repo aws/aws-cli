@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.21.2
+======
+
+* api-change:``partnercentral-selling``: Announcing AWS Partner Central API for Selling: This service launch Introduces new APIs for co-selling opportunity management and related functions. Key features include notifications, a dynamic sandbox for testing, and streamlined validations.
+
+
 2.21.1
 ======
 

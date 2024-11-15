@@ -843,7 +843,7 @@ class S3ClientArgsCreator:
 
         arn_handler = _S3ArnParamHandler()
         if (
-            accesspoint_arn_details := arn_handler.handle_arn(call_args.bucket)
+            (accesspoint_arn_details := arn_handler.handle_arn(call_args.bucket))
             and accesspoint_arn_details['region'] == ""
         ):
             # Configure our region to `*` to propogate in `x-amz-region-set`

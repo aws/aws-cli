@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.36.4
+======
+
+* api-change:``cloudwatch``: Adds support for adding related Entity information to metrics ingested through PutMetricData.
+* api-change:``connectcampaignsv2``: Added Amazon Connect Outbound Campaigns V2 SDK.
+* api-change:``datasync``: Doc-only updates and enhancements related to creating DataSync tasks and describing task executions.
+* api-change:``ec2``: Remove non-functional enum variants for FleetCapacityReservationUsageStrategy
+* api-change:``iot``: This release allows AWS IoT Core users to enrich MQTT messages with propagating attributes, to associate a thing to a connection, and to enable Online Certificate Status Protocol (OCSP) stapling for TLS X.509 server certificates through private endpoints.
+* api-change:``outposts``: You can now purchase AWS Outposts rack or server capacity for a 5-year term with one of  the following payment options: All Upfront, Partial Upfront, and No Upfront.
+* api-change:``pinpoint-sms-voice-v2``: Use rule overrides to always allow or always block messages to specific phone numbers. Use message feedback to monitor if a customer interacts with your message.
+* api-change:``route53resolver``: Route 53 Resolver DNS Firewall Advanced Rules allows you to monitor and block suspicious DNS traffic based on anomalies detected in the queries, such as DNS tunneling and Domain Generation Algorithms (DGAs).
+
+
 1.36.3
 ======
 

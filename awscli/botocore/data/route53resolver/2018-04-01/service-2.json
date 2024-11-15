@@ -253,6 +253,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServiceErrorException"},
+        {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes the specified firewall rule.</p>"
@@ -1409,6 +1410,14 @@
       ]
     },
     "Boolean":{"type":"boolean"},
+    "ConfidenceThreshold":{
+      "type":"string",
+      "enum":[
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -1487,7 +1496,6 @@
       "required":[
         "CreatorRequestId",
         "FirewallRuleGroupId",
-        "FirewallDomainListId",
         "Priority",
         "Action",
         "Name"
@@ -1504,7 +1512,8 @@
         },
         "FirewallDomainListId":{
           "shape":"ResourceId",
-          "documentation":"<p>The ID of the domain list that you want to use in the rule. </p>"
+          "documentation":"<p>The ID of the domain list that you want to use in the rule. Can't be used together with <code>DnsThreatProtecton</code>.</p>",
+          "box":true
         },
         "Priority":{
           "shape":"Priority",
@@ -1512,7 +1521,7 @@
         },
         "Action":{
           "shape":"Action",
-          "documentation":"<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through.</p> </li> <li> <p> <code>ALERT</code> - Permit the request and send metrics and logs to Cloud Watch.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. This option requires additional details in the rule's <code>BlockResponse</code>. </p> </li> </ul>"
+          "documentation":"<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list, or a threat in a DNS Firewall Advanced rule:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through. Not available for DNS Firewall Advanced rules.</p> </li> <li> <p> <code>ALERT</code> - Permit the request and send metrics and logs to Cloud Watch.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. This option requires additional details in the rule's <code>BlockResponse</code>. </p> </li> </ul>"
         },
         "BlockResponse":{
           "shape":"BlockResponse",
@@ -1540,12 +1549,22 @@
         },
         "FirewallDomainRedirectionAction":{
           "shape":"FirewallDomainRedirectionAction",
-          "documentation":"<p> How you want the the rule to evaluate DNS redirection in the DNS redirection chain, such as CNAME or DNAME. </p> <p> <code>Inspect_Redirection_Domain </code>(Default) inspects all domains in the redirection chain. The individual domains in the redirection chain must be added to the domain list.</p> <p> <code>Trust_Redirection_Domain </code> inspects only the first domain in the redirection chain. You don't need to add the subsequent domains in the domain in the redirection list to the domain list.</p>",
+          "documentation":"<p> How you want the the rule to evaluate DNS redirection in the DNS redirection chain, such as CNAME or DNAME. </p> <p> <code>INSPECT_REDIRECTION_DOMAIN</code>: (Default) inspects all domains in the redirection chain. The individual domains in the redirection chain must be added to the domain list.</p> <p> <code>TRUST_REDIRECTION_DOMAIN</code>: Inspects only the first domain in the redirection chain. You don't need to add the subsequent domains in the domain in the redirection list to the domain list.</p>",
           "box":true
         },
         "Qtype":{
           "shape":"Qtype",
           "documentation":"<p> The DNS query type you want the rule to evaluate. Allowed values are; </p> <ul> <li> <p> A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an Ipv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65334, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> </li> </ul>",
+          "box":true
+        },
+        "DnsThreatProtection":{
+          "shape":"DnsThreatProtection",
+          "documentation":"<p> Use to create a DNS Firewall Advanced rule. </p>",
+          "box":true
+        },
+        "ConfidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p> The confidence threshold for DNS Firewall Advanced. You must provide this value when you create a DNS Firewall Advanced rule. The confidence level values mean: </p> <ul> <li> <p> <code>LOW</code>: Provides the highest detection rate for threats, but also increases false positives.</p> </li> <li> <p> <code>MEDIUM</code>: Provides a balance between detecting threats and false positives.</p> </li> <li> <p> <code>HIGH</code>: Detects only the most well corroborated threats with a low rate of false positives. </p> </li> </ul>",
           "box":true
         }
       }
@@ -1803,10 +1822,7 @@
     },
     "DeleteFirewallRuleRequest":{
       "type":"structure",
-      "required":[
-        "FirewallRuleGroupId",
-        "FirewallDomainListId"
-      ],
+      "required":["FirewallRuleGroupId"],
       "members":{
         "FirewallRuleGroupId":{
           "shape":"ResourceId",
@@ -1814,7 +1830,13 @@
         },
         "FirewallDomainListId":{
           "shape":"ResourceId",
-          "documentation":"<p>The ID of the domain list that's used in the rule. </p>"
+          "documentation":"<p>The ID of the domain list that's used in the rule. </p>",
+          "box":true
+        },
+        "FirewallThreatProtectionId":{
+          "shape":"ResourceId",
+          "documentation":"<p> The ID that is created for a DNS Firewall Advanced rule. </p>",
+          "box":true
         },
         "Qtype":{
           "shape":"Qtype",
@@ -2008,6 +2030,13 @@
           "documentation":"<p>Information about the <code>DisassociateResolverRule</code> request, including the status of the request.</p>"
         }
       }
+    },
+    "DnsThreatProtection":{
+      "type":"string",
+      "enum":[
+        "DGA",
+        "DNS_TUNNELING"
+      ]
     },
     "DomainListFileUrl":{
       "type":"string",
@@ -2205,11 +2234,15 @@
       "members":{
         "FirewallRuleGroupId":{
           "shape":"ResourceId",
-          "documentation":"<p>The unique identifier of the firewall rule group of the rule. </p>"
+          "documentation":"<p>The unique identifier of the Firewall rule group of the rule. </p>"
         },
         "FirewallDomainListId":{
           "shape":"ResourceId",
           "documentation":"<p>The ID of the domain list that's used in the rule. </p>"
+        },
+        "FirewallThreatProtectionId":{
+          "shape":"ResourceId",
+          "documentation":"<p> ID of the DNS Firewall Advanced rule. </p>"
         },
         "Name":{
           "shape":"Name",
@@ -2221,7 +2254,7 @@
         },
         "Action":{
           "shape":"Action",
-          "documentation":"<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through.</p> </li> <li> <p> <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. If this is specified, additional handling details are provided in the rule's <code>BlockResponse</code> setting. </p> </li> </ul>"
+          "documentation":"<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list, or a threat in a DNS Firewall Advanced rule:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through. Not available for DNS Firewall Advanced rules.</p> </li> <li> <p> <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. If this is specified, additional handling details are provided in the rule's <code>BlockResponse</code> setting. </p> </li> </ul>"
         },
         "BlockResponse":{
           "shape":"BlockResponse",
@@ -2253,11 +2286,19 @@
         },
         "FirewallDomainRedirectionAction":{
           "shape":"FirewallDomainRedirectionAction",
-          "documentation":"<p> How you want the the rule to evaluate DNS redirection in the DNS redirection chain, such as CNAME or DNAME. </p> <p> <code>Inspect_Redirection_Domain </code>(Default) inspects all domains in the redirection chain. The individual domains in the redirection chain must be added to the domain list.</p> <p> <code>Trust_Redirection_Domain </code> inspects only the first domain in the redirection chain. You don't need to add the subsequent domains in the domain in the redirection list to the domain list.</p>"
+          "documentation":"<p> How you want the the rule to evaluate DNS redirection in the DNS redirection chain, such as CNAME or DNAME. </p> <p> <code>INSPECT_REDIRECTION_DOMAIN</code>: (Default) inspects all domains in the redirection chain. The individual domains in the redirection chain must be added to the domain list.</p> <p> <code>TRUST_REDIRECTION_DOMAIN</code>: Inspects only the first domain in the redirection chain. You don't need to add the subsequent domains in the domain in the redirection list to the domain list.</p>"
         },
         "Qtype":{
           "shape":"Qtype",
           "documentation":"<p> The DNS query type you want the rule to evaluate. Allowed values are; </p> <ul> <li> <p> A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an Ipv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65334, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> </li> </ul>"
+        },
+        "DnsThreatProtection":{
+          "shape":"DnsThreatProtection",
+          "documentation":"<p> The type of the DNS Firewall Advanced rule. Valid values are: </p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> </ul>"
+        },
+        "ConfidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p> The confidence threshold for DNS Firewall Advanced. You must provide this value when you create a DNS Firewall Advanced rule. The confidence level values mean: </p> <ul> <li> <p> <code>LOW</code>: Provides the highest detection rate for threats, but also increases false positives.</p> </li> <li> <p> <code>MEDIUM</code>: Provides a balance between detecting threats and false positives.</p> </li> <li> <p> <code>HIGH</code>: Detects only the most well corroborated threats with a low rate of false positives. </p> </li> </ul>"
         }
       },
       "documentation":"<p>A single firewall rule in a rule group.</p>"
@@ -3139,7 +3180,7 @@
         },
         "Action":{
           "shape":"Action",
-          "documentation":"<p>Optional additional filter for the rules to retrieve.</p> <p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through.</p> </li> <li> <p> <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. If this is specified, additional handling details are provided in the rule's <code>BlockResponse</code> setting. </p> </li> </ul>",
+          "documentation":"<p>Optional additional filter for the rules to retrieve.</p> <p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list, or a threat in a DNS Firewall Advanced rule:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through. Not availabe for DNS Firewall Advanced rules.</p> </li> <li> <p> <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. If this is specified, additional handling details are provided in the rule's <code>BlockResponse</code> setting. </p> </li> </ul>",
           "box":true
         },
         "MaxResults":{
@@ -3988,7 +4029,7 @@
         },
         "Status":{
           "shape":"ResolverQueryLogConfigAssociationStatus",
-          "documentation":"<p>The status of the specified query logging association. Valid values include the following:</p> <ul> <li> <p> <code>CREATING</code>: Resolver is creating an association between an Amazon VPC and a query logging configuration.</p> </li> <li> <p> <code>CREATED</code>: The association between an Amazon VPC and a query logging configuration was successfully created. Resolver is logging queries that originate in the specified VPC.</p> </li> <li> <p> <code>DELETING</code>: Resolver is deleting this query logging association.</p> </li> <li> <p> <code>FAILED</code>: Resolver either couldn't create or couldn't delete the query logging association.</p> </li> </ul>"
+          "documentation":"<p>The status of the specified query logging association. Valid values include the following:</p> <ul> <li> <p> <code>CREATING</code>: Resolver is creating an association between an Amazon VPC and a query logging configuration.</p> </li> <li> <p> <code>ACTIVE</code>: The association between an Amazon VPC and a query logging configuration was successfully created. Resolver is logging queries that originate in the specified VPC.</p> </li> <li> <p> <code>DELETING</code>: Resolver is deleting this query logging association.</p> </li> <li> <p> <code>FAILED</code>: Resolver either couldn't create or couldn't delete the query logging association.</p> </li> </ul>"
         },
         "Error":{
           "shape":"ResolverQueryLogConfigAssociationError",
@@ -4391,7 +4432,7 @@
         },
         "Protocol":{
           "shape":"Protocol",
-          "documentation":"<p> The protocols for the Resolver endpoints. DoH-FIPS is applicable for inbound endpoints only. </p> <p>For an inbound endpoint you can apply the protocols as follows:</p> <ul> <li> <p> Do53 and DoH in combination.</p> </li> <li> <p>Do53 and DoH-FIPS in combination.</p> </li> <li> <p>Do53 alone.</p> </li> <li> <p>DoH alone.</p> </li> <li> <p>DoH-FIPS alone.</p> </li> <li> <p>None, which is treated as Do53.</p> </li> </ul> <p>For an outbound endpoint you can apply the protocols as follows:</p> <ul> <li> <p> Do53 and DoH in combination.</p> </li> <li> <p>Do53 alone.</p> </li> <li> <p>DoH alone.</p> </li> <li> <p>None, which is treated as Do53.</p> </li> </ul>",
+          "documentation":"<p> The protocols for the target address. The protocol you choose needs to be supported by the outbound endpoint of the Resolver rule.</p>",
           "box":true
         },
         "ServerNameIndication":{
@@ -4551,10 +4592,7 @@
     },
     "UpdateFirewallRuleRequest":{
       "type":"structure",
-      "required":[
-        "FirewallRuleGroupId",
-        "FirewallDomainListId"
-      ],
+      "required":["FirewallRuleGroupId"],
       "members":{
         "FirewallRuleGroupId":{
           "shape":"ResourceId",
@@ -4562,7 +4600,13 @@
         },
         "FirewallDomainListId":{
           "shape":"ResourceId",
-          "documentation":"<p>The ID of the domain list to use in the rule. </p>"
+          "documentation":"<p>The ID of the domain list to use in the rule. </p>",
+          "box":true
+        },
+        "FirewallThreatProtectionId":{
+          "shape":"ResourceId",
+          "documentation":"<p> The DNS Firewall Advanced rule ID. </p>",
+          "box":true
         },
         "Priority":{
           "shape":"Priority",
@@ -4571,7 +4615,7 @@
         },
         "Action":{
           "shape":"Action",
-          "documentation":"<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through.</p> </li> <li> <p> <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. This option requires additional details in the rule's <code>BlockResponse</code>. </p> </li> </ul>",
+          "documentation":"<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list, or a threat in a DNS Firewall Advanced rule:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through. Not available for DNS Firewall Advanced rules.</p> </li> <li> <p> <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. This option requires additional details in the rule's <code>BlockResponse</code>. </p> </li> </ul>",
           "box":true
         },
         "BlockResponse":{
@@ -4601,12 +4645,22 @@
         },
         "FirewallDomainRedirectionAction":{
           "shape":"FirewallDomainRedirectionAction",
-          "documentation":"<p> How you want the the rule to evaluate DNS redirection in the DNS redirection chain, such as CNAME or DNAME. </p> <p> <code>Inspect_Redirection_Domain </code>(Default) inspects all domains in the redirection chain. The individual domains in the redirection chain must be added to the domain list.</p> <p> <code>Trust_Redirection_Domain </code> inspects only the first domain in the redirection chain. You don't need to add the subsequent domains in the domain in the redirection list to the domain list.</p>",
+          "documentation":"<p> How you want the the rule to evaluate DNS redirection in the DNS redirection chain, such as CNAME or DNAME. </p> <p> <code>INSPECT_REDIRECTION_DOMAIN</code>: (Default) inspects all domains in the redirection chain. The individual domains in the redirection chain must be added to the domain list.</p> <p> <code>TRUST_REDIRECTION_DOMAIN</code>: Inspects only the first domain in the redirection chain. You don't need to add the subsequent domains in the domain in the redirection list to the domain list.</p>",
           "box":true
         },
         "Qtype":{
           "shape":"Qtype",
           "documentation":"<p> The DNS query type you want the rule to evaluate. Allowed values are; </p> <ul> <li> <p> A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an Ipv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65334, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> <note> <p>If you set up a firewall BLOCK rule with action NXDOMAIN on query type equals AAAA, this action will not be applied to synthetic IPv6 addresses generated when DNS64 is enabled. </p> </note> </li> </ul>"
+        },
+        "DnsThreatProtection":{
+          "shape":"DnsThreatProtection",
+          "documentation":"<p> The type of the DNS Firewall Advanced rule. Valid values are: </p> <ul> <li> <p> <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains to to launch malware attacks.</p> </li> <li> <p> <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without making a network connection to the client.</p> </li> </ul>",
+          "box":true
+        },
+        "ConfidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p> The confidence threshold for DNS Firewall Advanced. You must provide this value when you create a DNS Firewall Advanced rule. The confidence level values mean: </p> <ul> <li> <p> <code>LOW</code>: Provides the highest detection rate for threats, but also increases false positives.</p> </li> <li> <p> <code>MEDIUM</code>: Provides a balance between detecting threats and false positives.</p> </li> <li> <p> <code>HIGH</code>: Detects only the most well corroborated threats with a low rate of false positives. </p> </li> </ul>",
+          "box":true
         }
       }
     },

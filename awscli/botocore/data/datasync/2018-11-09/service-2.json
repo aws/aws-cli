@@ -523,7 +523,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Provides information about an execution of your DataSync task. You can use this operation to help monitor the progress of an ongoing data transfer or check the results of the transfer.</p> <note> <p>Some <code>DescribeTaskExecution</code> response elements are only relevant to a specific task mode. For information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html#task-mode-differences\">Understanding task mode differences</a> and <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/transfer-performance-metrics.html\">Understanding data transfer performance metrics</a>.</p> </note>"
+      "documentation":"<p>Provides information about an execution of your DataSync task. You can use this operation to help monitor the progress of an ongoing data transfer or check the results of the transfer.</p> <note> <p>Some <code>DescribeTaskExecution</code> response elements are only relevant to a specific task mode. For information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html#task-mode-differences\">Understanding task mode differences</a> and <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/transfer-performance-counters.html\">Understanding data transfer performance counters</a>.</p> </note>"
     },
     "GenerateRecommendations":{
       "name":"GenerateRecommendations",
@@ -1698,7 +1698,7 @@
         },
         "TaskMode":{
           "shape":"TaskMode",
-          "documentation":"<p>Specifies one of the following task modes for your data transfer:</p> <ul> <li> <p> <code>ENHANCED</code> - Transfer virtually unlimited numbers of objects with enhanced metrics, more detailed logs, and higher performance than Basic mode. Currently available for transfers between Amazon S3 locations.</p> <note> <p>To create an Enhanced mode task, the IAM role that you use to call the <code>CreateTask</code> operation must have the <code>iam:CreateServiceLinkedRole</code> permission.</p> </note> </li> <li> <p> <code>BASIC</code> (default) - Transfer files or objects between Amazon Web Services storage and on-premises, edge, or other cloud storage. DataSync <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/datasync-limits.html\">quotas</a> apply.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html#task-mode-differences\">Understanding task mode differences</a>.</p>"
+          "documentation":"<p>Specifies one of the following task modes for your data transfer:</p> <ul> <li> <p> <code>ENHANCED</code> - Transfer virtually unlimited numbers of objects with higher performance than Basic mode. Enhanced mode tasks optimize the data transfer process by listing, preparing, transferring, and verifying data in parallel. Enhanced mode is currently available for transfers between Amazon S3 locations.</p> <note> <p>To create an Enhanced mode task, the IAM role that you use to call the <code>CreateTask</code> operation must have the <code>iam:CreateServiceLinkedRole</code> permission.</p> </note> </li> <li> <p> <code>BASIC</code> (default) - Transfer files or objects between Amazon Web Services storage and all other supported DataSync locations. Basic mode tasks are subject to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/datasync-limits.html\">quotas</a> on the number of files, objects, and directories in a dataset. Basic mode sequentially prepares, transfers, and verifies data, making it slower than Enhanced mode for most workloads.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html#task-mode-differences\">Understanding task mode differences</a>.</p>"
         }
       },
       "documentation":"<p>CreateTaskRequest</p>"
@@ -2519,7 +2519,7 @@
         },
         "EstimatedFilesToTransfer":{
           "shape":"long",
-          "documentation":"<p>The number of files, objects, and directories that DataSync expects to transfer over the network. This value is calculated during the task execution's <code>PREPARING</code> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#understand-task-execution-statuses\">step</a> before the <code>TRANSFERRING</code> step.</p> <p>How this gets calculated depends primarily on your task’s <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-TransferMode\">transfer mode</a> configuration:</p> <ul> <li> <p>If <code>TranserMode</code> is set to <code>CHANGED</code> - The calculation is based on comparing the content of the source and destination locations and determining the difference that needs to be transferred. The difference can include:</p> <ul> <li> <p>Anything that's added or modified at the source location.</p> </li> <li> <p>Anything that's in both locations and modified at the destination after an initial transfer (unless <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-OverwriteMode\">OverwriteMode</a> is set to <code>NEVER</code>).</p> </li> <li> <p> <b>(Basic task mode only)</b> The number of items that DataSync expects to delete (if <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-PreserveDeletedFiles\">PreserveDeletedFiles</a> is set to <code>REMOVE</code>).</p> </li> </ul> </li> <li> <p>If <code>TranserMode</code> is set to <code>ALL</code> - The calculation is based only on the items that DataSync finds at the source location.</p> </li> </ul>"
+          "documentation":"<p>The number of files, objects, and directories that DataSync expects to transfer over the network. This value is calculated while DataSync <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#understand-task-execution-statuses\">prepares</a> the transfer.</p> <p>How this gets calculated depends primarily on your task’s <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-TransferMode\">transfer mode</a> configuration:</p> <ul> <li> <p>If <code>TranserMode</code> is set to <code>CHANGED</code> - The calculation is based on comparing the content of the source and destination locations and determining the difference that needs to be transferred. The difference can include:</p> <ul> <li> <p>Anything that's added or modified at the source location.</p> </li> <li> <p>Anything that's in both locations and modified at the destination after an initial transfer (unless <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-OverwriteMode\">OverwriteMode</a> is set to <code>NEVER</code>).</p> </li> <li> <p> <b>(Basic task mode only)</b> The number of items that DataSync expects to delete (if <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-PreserveDeletedFiles\">PreserveDeletedFiles</a> is set to <code>REMOVE</code>).</p> </li> </ul> </li> <li> <p>If <code>TranserMode</code> is set to <code>ALL</code> - The calculation is based only on the items that DataSync finds at the source location.</p> </li> </ul>"
         },
         "EstimatedBytesToTransfer":{
           "shape":"long",
@@ -2527,7 +2527,7 @@
         },
         "FilesTransferred":{
           "shape":"long",
-          "documentation":"<p>The number of files, objects, and directories that DataSync actually transfers over the network. This value is updated periodically during the task execution's <code>TRANSFERRING</code> <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#understand-task-execution-statuses\">step</a> when something is read from the source and sent over the network.</p> <p>If DataSync fails to transfer something, this value can be less than <code>EstimatedFilesToTransfer</code>. In some cases, this value can also be greater than <code>EstimatedFilesToTransfer</code>. This element is implementation-specific for some location types, so don't use it as an exact indication of what's transferring or to monitor your task execution.</p>"
+          "documentation":"<p>The number of files, objects, and directories that DataSync actually transfers over the network. This value is updated periodically during your task execution when something is read from the source and sent over the network.</p> <p>If DataSync fails to transfer something, this value can be less than <code>EstimatedFilesToTransfer</code>. In some cases, this value can also be greater than <code>EstimatedFilesToTransfer</code>. This element is implementation-specific for some location types, so don't use it as an exact indication of what's transferring or to monitor your task execution.</p>"
         },
         "BytesWritten":{
           "shape":"long",
@@ -2539,7 +2539,7 @@
         },
         "BytesCompressed":{
           "shape":"long",
-          "documentation":"<p>The number of physical bytes that DataSync transfers over the network after compression (if compression is possible). This number is typically less than <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeTaskExecution.html#DataSync-DescribeTaskExecution-response-BytesTransferred\">BytesTransferred</a> unless the data isn't compressible.</p> <note> <p>Not currently supported with <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+          "documentation":"<p>The number of physical bytes that DataSync transfers over the network after compression (if compression is possible). This number is typically less than <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeTaskExecution.html#DataSync-DescribeTaskExecution-response-BytesTransferred\">BytesTransferred</a> unless the data isn't compressible.</p>"
         },
         "Result":{
           "shape":"TaskExecutionResultDetail",
@@ -2551,7 +2551,7 @@
         },
         "FilesDeleted":{
           "shape":"long",
-          "documentation":"<p>The number of files, objects, and directories that DataSync actually deletes in your destination location. If you don't <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">configure your task</a> to delete data in the destination that isn't in the source, the value is always <code>0</code>.</p>"
+          "documentation":"<p>The number of files, objects, and directories that DataSync actually deletes in your destination location. If you don't configure your task to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">delete data in the destination that isn't in the source</a>, the value is always <code>0</code>.</p>"
         },
         "FilesSkipped":{
           "shape":"long",
@@ -2567,7 +2567,7 @@
         },
         "EstimatedFilesToDelete":{
           "shape":"long",
-          "documentation":"<p>The number of files, objects, and directories that DataSync expects to delete in your destination location. If you don't <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">configure your task</a> to delete data in the destination that isn't in the source, the value is always <code>0</code>.</p>"
+          "documentation":"<p>The number of files, objects, and directories that DataSync expects to delete in your destination location. If you don't configure your task to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">delete data in the destination that isn't in the source</a>, the value is always <code>0</code>.</p>"
         },
         "TaskMode":{
           "shape":"TaskMode",
@@ -2575,7 +2575,7 @@
         },
         "FilesPrepared":{
           "shape":"long",
-          "documentation":"<p>The number of objects that DataSync will attempt to transfer after comparing your source and destination locations.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note> <p>This metric isn't applicable if you configure your task to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html#task-option-transfer-mode\">transfer all data</a>. In that scenario, DataSync copies everything from the source to the destination without comparing differences between the locations.</p>"
+          "documentation":"<p>The number of objects that DataSync will attempt to transfer after comparing your source and destination locations.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note> <p>This counter isn't applicable if you configure your task to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html#task-option-transfer-mode\">transfer all data</a>. In that scenario, DataSync copies everything from the source to the destination without comparing differences between the locations.</p>"
         },
         "FilesListed":{
           "shape":"TaskExecutionFilesListedDetail",
@@ -4699,7 +4699,7 @@
         },
         "AtDestinationForDelete":{
           "shape":"long",
-          "documentation":"<p>The number of objects that DataSync finds at your destination location. This metric is only applicable if you <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html#task-option-file-object-handling\">configure your task</a> to delete data in the destination that isn't in the source.</p>"
+          "documentation":"<p>The number of objects that DataSync finds at your destination location. This counter is only applicable if you <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html#task-option-file-object-handling\">configure your task</a> to delete data in the destination that isn't in the source.</p>"
         }
       },
       "documentation":"<p>The number of objects that DataSync finds at your locations.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"

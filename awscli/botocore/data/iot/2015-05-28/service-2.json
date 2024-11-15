@@ -3082,6 +3082,24 @@
       ],
       "documentation":"<p>Lists the things associated with the specified principal. A principal can be X.509 certificates, IAM users, groups, and roles, Amazon Cognito identities or federated identities. </p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListPrincipalThings</a> action.</p>"
     },
+    "ListPrincipalThingsV2":{
+      "name":"ListPrincipalThingsV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/principals/things-v2"
+      },
+      "input":{"shape":"ListPrincipalThingsV2Request"},
+      "output":{"shape":"ListPrincipalThingsV2Response"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the things associated with the specified principal. A principal can be an X.509 certificate or an Amazon Cognito ID.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListPrincipalThings</a> action.</p>"
+    },
     "ListProvisioningTemplateVersions":{
       "name":"ListProvisioningTemplateVersions",
       "http":{
@@ -3329,6 +3347,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists the principals associated with the specified thing. A principal can be X.509 certificates, IAM users, groups, and roles, Amazon Cognito identities or federated identities.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListThingPrincipals</a> action.</p>"
+    },
+    "ListThingPrincipalsV2":{
+      "name":"ListThingPrincipalsV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/things/{thingName}/principals-v2"
+      },
+      "input":{"shape":"ListThingPrincipalsV2Request"},
+      "output":{"shape":"ListThingPrincipalsV2Response"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the principals associated with the specified thing. A principal can be an X.509 certificate or an Amazon Cognito ID.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListThingPrincipals</a> action.</p>"
     },
     "ListThingRegistrationTaskReports":{
       "name":"ListThingRegistrationTaskReports",
@@ -4396,6 +4432,24 @@
       ],
       "documentation":"<p>Updates the groups to which the thing belongs.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">UpdateThingGroupsForThing</a> action.</p>"
     },
+    "UpdateThingType":{
+      "name":"UpdateThingType",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/thing-types/{thingTypeName}"
+      },
+      "input":{"shape":"UpdateThingTypeRequest"},
+      "output":{"shape":"UpdateThingTypeResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates a thing type.</p>"
+    },
     "UpdateTopicRuleDestination":{
       "name":"UpdateTopicRuleDestination",
       "http":{
@@ -5105,6 +5159,12 @@
           "documentation":"<p>The principal, which can be a certificate ARN (as returned from the CreateCertificate operation) or an Amazon Cognito ID.</p>",
           "location":"header",
           "locationName":"x-amzn-principal"
+        },
+        "thingPrincipalType":{
+          "shape":"ThingPrincipalType",
+          "documentation":"<p>The type of the relation you want to specify when you attach a principal to a thing.</p> <ul> <li> <p> <code>EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing, exclusively. The thing will be the only thing that’s attached to the principal.</p> </li> </ul> <ul> <li> <p> <code>NON_EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing. Multiple things can be attached to the principal.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"thingPrincipalType"
         }
       },
       "documentation":"<p>The input for the AttachThingPrincipal operation.</p>"
@@ -5138,7 +5198,7 @@
     "AttributeValue":{
       "type":"string",
       "max":800,
-      "pattern":"[a-zA-Z0-9_.,@/:#-]*"
+      "pattern":"[a-zA-Z0-9_.,@/:#=\\[\\]-]*"
     },
     "Attributes":{
       "type":"map",
@@ -6792,6 +6852,11 @@
       "documentation":"<p>A conflicting resource update exception. This exception is thrown when two pending updates cause a conflict.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
+    },
+    "ConnectionAttributeName":{
+      "type":"string",
+      "max":128,
+      "pattern":"[a-zA-Z0-9:.]+"
     },
     "ConnectivityTimestamp":{"type":"long"},
     "ConsecutiveDatapointsToAlarm":{
@@ -10489,7 +10554,7 @@
         },
         "thingTypeProperties":{
           "shape":"ThingTypeProperties",
-          "documentation":"<p>The ThingTypeProperties contains information about the thing type including description, and a list of searchable thing attribute names.</p>"
+          "documentation":"<p>The ThingTypeProperties contains information about the thing type including description, a list of searchable thing attribute names, and MQTT5 configuration.</p>"
         },
         "thingTypeMetadata":{
           "shape":"ThingTypeMetadata",
@@ -14596,6 +14661,49 @@
       },
       "documentation":"<p>The output from the ListPrincipalThings operation.</p>"
     },
+    "ListPrincipalThingsV2Request":{
+      "type":"structure",
+      "required":["principal"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"RegistryMaxResults",
+          "documentation":"<p>The maximum number of results to return in this operation.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "principal":{
+          "shape":"Principal",
+          "documentation":"<p>The principal. A principal can be an X.509 certificate or an Amazon Cognito ID.</p>",
+          "location":"header",
+          "locationName":"x-amzn-principal"
+        },
+        "thingPrincipalType":{
+          "shape":"ThingPrincipalType",
+          "documentation":"<p>The type of the relation you want to filter in the response. If no value is provided in this field, the response will list all things, including both the <code>EXCLUSIVE_THING</code> and <code>NON_EXCLUSIVE_THING</code> attachment types.</p> <ul> <li> <p> <code>EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing, exclusively. The thing will be the only thing that’s attached to the principal.</p> </li> </ul> <ul> <li> <p> <code>NON_EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing. Multiple things can be attached to the principal.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"thingPrincipalType"
+        }
+      }
+    },
+    "ListPrincipalThingsV2Response":{
+      "type":"structure",
+      "members":{
+        "principalThingObjects":{
+          "shape":"PrincipalThingObjects",
+          "documentation":"<p>A list of <code>thingPrincipalObject</code> that represents the principal and the type of relation it has with the thing.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to get the next set of results, or <b>null</b> if there are no additional results.</p>"
+        }
+      }
+    },
     "ListProvisioningTemplateVersionsRequest":{
       "type":"structure",
       "required":["templateName"],
@@ -15169,6 +15277,49 @@
         }
       },
       "documentation":"<p>The output from the ListThingPrincipals operation.</p>"
+    },
+    "ListThingPrincipalsV2Request":{
+      "type":"structure",
+      "required":["thingName"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"RegistryMaxResults",
+          "documentation":"<p>The maximum number of results to return in this operation.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "thingName":{
+          "shape":"ThingName",
+          "documentation":"<p>The name of the thing.</p>",
+          "location":"uri",
+          "locationName":"thingName"
+        },
+        "thingPrincipalType":{
+          "shape":"ThingPrincipalType",
+          "documentation":"<p>The type of the relation you want to filter in the response. If no value is provided in this field, the response will list all principals, including both the <code>EXCLUSIVE_THING</code> and <code>NON_EXCLUSIVE_THING</code> attachment types.</p> <ul> <li> <p> <code>EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing, exclusively. The thing will be the only thing that’s attached to the principal.</p> </li> </ul> <ul> <li> <p> <code>NON_EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing. Multiple things can be attached to the principal.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"thingPrincipalType"
+        }
+      }
+    },
+    "ListThingPrincipalsV2Response":{
+      "type":"structure",
+      "members":{
+        "thingPrincipalObjects":{
+          "shape":"ThingPrincipalObjects",
+          "documentation":"<p>A list of <code>thingPrincipalObject</code> that represents the principal and the type of relation it has with the thing.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to get the next set of results, or <b>null</b> if there are no additional results.</p>"
+        }
+      }
     },
     "ListThingRegistrationTaskReportsRequest":{
       "type":"structure",
@@ -16104,6 +16255,16 @@
         "EXPIRED"
       ]
     },
+    "Mqtt5Configuration":{
+      "type":"structure",
+      "members":{
+        "propagatingAttributes":{
+          "shape":"PropagatingAttributeList",
+          "documentation":"<p>An object that represents the propagating thing attributes and the connection attributes.</p>"
+        }
+      },
+      "documentation":"<p>The configuration to add user-defined properties to enrich MQTT 5 messages.</p>"
+    },
     "MqttClientId":{
       "type":"string",
       "max":65535,
@@ -16236,6 +16397,10 @@
     "NumberOfThings":{
       "type":"integer",
       "min":1
+    },
+    "OCSPLambdaArn":{
+      "type":"string",
+      "max":140
     },
     "OTAUpdateArn":{"type":"string"},
     "OTAUpdateDescription":{
@@ -16763,6 +16928,25 @@
       "min":1,
       "pattern":"[a-zA-Z0-9]+"
     },
+    "PrincipalThingObject":{
+      "type":"structure",
+      "required":["thingName"],
+      "members":{
+        "thingName":{
+          "shape":"ThingName",
+          "documentation":"<p>The name of the thing.</p>"
+        },
+        "thingPrincipalType":{
+          "shape":"ThingPrincipalType",
+          "documentation":"<p>The type of the relation you want to specify when you attach a principal to a thing. The value defaults to <code>NON_EXCLUSIVE_THING</code>.</p> <ul> <li> <p> <code>EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing, exclusively. The thing will be the only thing that’s attached to the principal.</p> </li> </ul> <ul> <li> <p> <code>NON_EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing. Multiple things can be attached to the principal.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An object that represents the thing and the type of relation it has with the principal.</p>"
+    },
+    "PrincipalThingObjects":{
+      "type":"list",
+      "member":{"shape":"PrincipalThingObject"}
+    },
     "Principals":{
       "type":"list",
       "member":{"shape":"PrincipalArn"}
@@ -16776,6 +16960,28 @@
     "ProcessingTargetNameList":{
       "type":"list",
       "member":{"shape":"ProcessingTargetName"}
+    },
+    "PropagatingAttribute":{
+      "type":"structure",
+      "members":{
+        "userPropertyKey":{
+          "shape":"UserPropertyKeyName",
+          "documentation":"<p>The key of the user property key-value pair.</p>"
+        },
+        "thingAttribute":{
+          "shape":"AttributeName",
+          "documentation":"<p>The user-defined thing attribute that is propagating for MQTT 5 message enrichment.</p>"
+        },
+        "connectionAttribute":{
+          "shape":"ConnectionAttributeName",
+          "documentation":"<p>The attribute associated with the connection between a device and Amazon Web Services IoT Core.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents the connection attribute, thing attribute, and the user property key.</p>"
+    },
+    "PropagatingAttributeList":{
+      "type":"list",
+      "member":{"shape":"PropagatingAttribute"}
     },
     "Protocol":{
       "type":"string",
@@ -17994,7 +18200,15 @@
       "members":{
         "enableOCSPCheck":{
           "shape":"EnableOCSPCheck",
-          "documentation":"<p>A Boolean value that indicates whether Online Certificate Status Protocol (OCSP) server certificate check is enabled or not.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-custom-endpoints-cert-config.html\">Configuring OCSP server-certificate stapling in domain configuration</a> from Amazon Web Services IoT Core Developer Guide.</p>"
+          "documentation":"<p>A Boolean value that indicates whether Online Certificate Status Protocol (OCSP) server certificate check is enabled or not.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-custom-endpoints-cert-config.html\"> Server certificate configuration for OCSP stapling</a> from Amazon Web Services IoT Core Developer Guide.</p>"
+        },
+        "ocspLambdaArn":{
+          "shape":"OCSPLambdaArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for a Lambda function that acts as a Request for Comments (RFC) 6960-compliant Online Certificate Status Protocol (OCSP) responder, supporting basic OCSP responses. The Lambda function accepts a JSON string that's Base64-encoded. Therefore, you must convert your OCSP response, which is typically in the Distinguished Encoding Rules (DER) format, into a JSON string that's Base64-encoded. The Lambda function's response is also a Base64-encoded JSON string and the response payload must not exceed 8 kilobytes (KiB) in size. The Lambda function must be in the same Amazon Web Services region and account as the domain configuration.</p>"
+        },
+        "ocspAuthorizedResponderArn":{
+          "shape":"AcmCertificateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for an X.509 certificate stored in Amazon Web Services Certificate Manager (ACM). If provided, Amazon Web Services IoT Core will use this certificate to validate the signature of the received OCSP response. The OCSP responder must sign responses using either this authorized responder certificate or the issuing certificate, depending on whether the ARN is provided or not. The certificate must be in the same Amazon Web Services region and account as the domain configuration. </p>"
         }
       },
       "documentation":"<p>The server certificate configuration.</p>"
@@ -19279,6 +19493,32 @@
       "type":"list",
       "member":{"shape":"ThingName"}
     },
+    "ThingPrincipalObject":{
+      "type":"structure",
+      "required":["principal"],
+      "members":{
+        "principal":{
+          "shape":"Principal",
+          "documentation":"<p>The principal of the thing principal object.</p>"
+        },
+        "thingPrincipalType":{
+          "shape":"ThingPrincipalType",
+          "documentation":"<p>The type of the relation you want to specify when you attach a principal to a thing. The value defaults to <code>NON_EXCLUSIVE_THING</code>.</p> <ul> <li> <p> <code>EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing, exclusively. The thing will be the only thing that’s attached to the principal.</p> </li> </ul> <ul> <li> <p> <code>NON_EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing. Multiple things can be attached to the principal.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An object that represents the principal and the type of relation it has with the thing.</p>"
+    },
+    "ThingPrincipalObjects":{
+      "type":"list",
+      "member":{"shape":"ThingPrincipalObject"}
+    },
+    "ThingPrincipalType":{
+      "type":"string",
+      "enum":[
+        "EXCLUSIVE_THING",
+        "NON_EXCLUSIVE_THING"
+      ]
+    },
     "ThingTypeArn":{"type":"string"},
     "ThingTypeDefinition":{
       "type":"structure",
@@ -19346,6 +19586,10 @@
         "searchableAttributes":{
           "shape":"SearchableAttributes",
           "documentation":"<p>A list of searchable thing attribute names.</p>"
+        },
+        "mqtt5Configuration":{
+          "shape":"Mqtt5Configuration",
+          "documentation":"<p>The configuration to add user-defined properties to enrich MQTT 5 messages.</p>"
         }
       },
       "documentation":"<p>The ThingTypeProperties contains information about the thing type including: a thing type description, and a list of searchable thing attribute names.</p>"
@@ -20901,6 +21145,24 @@
       },
       "documentation":"<p>The output from the UpdateThing operation.</p>"
     },
+    "UpdateThingTypeRequest":{
+      "type":"structure",
+      "required":["thingTypeName"],
+      "members":{
+        "thingTypeName":{
+          "shape":"ThingTypeName",
+          "documentation":"<p>The name of a thing type.</p>",
+          "location":"uri",
+          "locationName":"thingTypeName"
+        },
+        "thingTypeProperties":{"shape":"ThingTypeProperties"}
+      }
+    },
+    "UpdateThingTypeResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateTopicRuleDestinationRequest":{
       "type":"structure",
       "required":[
@@ -20956,6 +21218,11 @@
       "type":"string",
       "max":1024,
       "min":0
+    },
+    "UserPropertyKeyName":{
+      "type":"string",
+      "max":128,
+      "pattern":"[a-zA-Z0-9:$.]+"
     },
     "UserPropertyValue":{
       "type":"string",

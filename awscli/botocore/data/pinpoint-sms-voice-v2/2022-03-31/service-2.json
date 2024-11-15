@@ -426,6 +426,23 @@
       ],
       "documentation":"<p>Permanently delete the protect configuration. The protect configuration must have deletion protection disabled and must not be associated as the account default protect configuration or associated with a configuration set.</p>"
     },
+    "DeleteProtectConfigurationRuleSetNumberOverride":{
+      "name":"DeleteProtectConfigurationRuleSetNumberOverride",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteProtectConfigurationRuleSetNumberOverrideRequest"},
+      "output":{"shape":"DeleteProtectConfigurationRuleSetNumberOverrideResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Permanently delete the protect configuration rule set number override.</p>"
+    },
     "DeleteRegistration":{
       "name":"DeleteRegistration",
       "http":{
@@ -862,7 +879,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves the specified verified destiona numbers.</p>"
+      "documentation":"<p>Retrieves the specified verified destination numbers.</p>"
     },
     "DisassociateOriginationIdentity":{
       "name":"DisassociateOriginationIdentity",
@@ -969,6 +986,23 @@
       ],
       "documentation":"<p>Lists all associated origination identities in your pool.</p> <p>If you specify filters, the output includes information for only those origination identities that meet the filter criteria.</p>"
     },
+    "ListProtectConfigurationRuleSetNumberOverrides":{
+      "name":"ListProtectConfigurationRuleSetNumberOverrides",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListProtectConfigurationRuleSetNumberOverridesRequest"},
+      "output":{"shape":"ListProtectConfigurationRuleSetNumberOverridesResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieve all of the protect configuration rule set number overrides that match the filters.</p>"
+    },
     "ListRegistrationAssociations":{
       "name":"ListRegistrationAssociations",
       "http":{
@@ -984,7 +1018,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retreive all of the origination identies that are associated with a registration.</p>"
+      "documentation":"<p>Retrieve all of the origination identities that are associated with a registration.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -1022,6 +1056,23 @@
       ],
       "documentation":"<p>Creates or updates a keyword configuration on an origination phone number or pool.</p> <p> A keyword is a word that you can search for on a particular phone number or pool. It is also a specific word or phrase that an end user can send to your number to elicit a response, such as an informational message or a special offer. When your number receives a message that begins with a keyword, AWS End User Messaging SMS and Voice responds with a customizable message.</p> <p>If you specify a keyword that isn't valid, an error is returned.</p>"
     },
+    "PutMessageFeedback":{
+      "name":"PutMessageFeedback",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutMessageFeedbackRequest"},
+      "output":{"shape":"PutMessageFeedbackResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Set the MessageFeedbackStatus as <code>RECEIVED</code> or <code>FAILED</code> for the passed in MessageId. </p> <p>If you use message feedback then you must update message feedback record. When you receive a signal that a user has received the message you must use <code>PutMessageFeedback</code> to set the message feedback record as <code>RECEIVED</code>; Otherwise, an hour after the message feedback record is set to <code>FAILED</code>.</p>"
+    },
     "PutOptedOutNumber":{
       "name":"PutOptedOutNumber",
       "http":{
@@ -1038,6 +1089,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates an opted out destination phone number in the opt-out list.</p> <p>If the destination phone number isn't valid or if the specified opt-out list doesn't exist, an error is returned.</p>"
+    },
+    "PutProtectConfigurationRuleSetNumberOverride":{
+      "name":"PutProtectConfigurationRuleSetNumberOverride",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutProtectConfigurationRuleSetNumberOverrideRequest"},
+      "output":{"shape":"PutProtectConfigurationRuleSetNumberOverrideResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create or update a RuleSetNumberOverride and associate it with a protect configuration.</p>"
     },
     "PutRegistrationFieldValue":{
       "name":"PutRegistrationFieldValue",
@@ -1239,6 +1308,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Set a protect configuration as your account default. You can only have one account default protect configuration at a time. The current account default protect configuration is replaced with the provided protect configuration.</p>"
+    },
+    "SetDefaultMessageFeedbackEnabled":{
+      "name":"SetDefaultMessageFeedbackEnabled",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SetDefaultMessageFeedbackEnabledRequest"},
+      "output":{"shape":"SetDefaultMessageFeedbackEnabledResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Sets a configuration set's default for message feedback. </p>"
     },
     "SetDefaultMessageType":{
       "name":"SetDefaultMessageType",
@@ -1773,6 +1859,7 @@
         "matching-event-types",
         "default-message-type",
         "default-sender-id",
+        "default-message-feedback-enabled",
         "protect-configuration-id"
       ]
     },
@@ -1804,6 +1891,10 @@
         "DefaultSenderId":{
           "shape":"SenderId",
           "documentation":"<p>The default sender ID used by the ConfigurationSet.</p>"
+        },
+        "DefaultMessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>True if message feedback is enabled.</p>"
         },
         "CreatedTimestamp":{
           "shape":"Timestamp",
@@ -1895,7 +1986,8 @@
         "PROTECT_CONFIGURATION_IS_ACCOUNT_DEFAULT",
         "PROTECT_CONFIGURATION_ASSOCIATED_WITH_CONFIGURATION_SET",
         "PROTECT_CONFIGURATION_NOT_ASSOCIATED_WITH_CONFIGURATION_SET",
-        "DESTINATION_COUNTRY_BLOCKED_BY_PROTECT_CONFIGURATION"
+        "DESTINATION_COUNTRY_BLOCKED_BY_PROTECT_CONFIGURATION",
+        "DESTINATION_PHONE_NUMBER_BLOCKED_BY_PROTECT_NUMBER_OVERRIDE"
       ]
     },
     "ContextKey":{
@@ -2530,6 +2622,10 @@
           "shape":"SenderId",
           "documentation":"<p>The default Sender ID of the configuration set that was deleted.</p>"
         },
+        "DefaultMessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>True if the configuration set has message feedback enabled. By default this is set to false. </p>"
+        },
         "CreatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time that the deleted configuration set was created in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
@@ -2847,6 +2943,63 @@
         "DeletionProtectionEnabled":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>The status of deletion protection for the protect configuration. When set to true deletion protection is enabled. By default this is set to false. </p>"
+        }
+      }
+    },
+    "DeleteProtectConfigurationRuleSetNumberOverrideRequest":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationId",
+        "DestinationPhoneNumber"
+      ],
+      "members":{
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The destination phone number in E.164 format.</p>"
+        }
+      }
+    },
+    "DeleteProtectConfigurationRuleSetNumberOverrideResult":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationArn",
+        "ProtectConfigurationId",
+        "DestinationPhoneNumber",
+        "CreatedTimestamp",
+        "Action"
+      ],
+      "members":{
+        "ProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the protect configuration.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The destination phone number in E.164 format.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the rule was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "Action":{
+          "shape":"ProtectConfigurationRuleOverrideAction",
+          "documentation":"<p>The action associated with the rule.</p>"
+        },
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "ExpirationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource-based policy was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
         }
       }
     },
@@ -3805,7 +3958,7 @@
       "members":{
         "VerifiedDestinationNumberIds":{
           "shape":"VerifiedDestinationNumberIdList",
-          "documentation":"<p>An array of VerifiedDestinationNumberid to retreive.</p>"
+          "documentation":"<p>An array of VerifiedDestinationNumberid to retrieve.</p>"
         },
         "DestinationPhoneNumbers":{
           "shape":"DestinationPhoneNumberList",
@@ -4067,6 +4220,7 @@
         "TEXT_SPAM",
         "TEXT_UNKNOWN",
         "TEXT_TTL_EXPIRED",
+        "TEXT_PROTECT_BLOCKED",
         "VOICE_ALL",
         "VOICE_INITIATED",
         "VOICE_RINGING",
@@ -4133,7 +4287,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"[/\\.:A-Za-z0-9_-]+"
+      "pattern":"[/\\.:A-Za-z0-9+_-]+"
     },
     "FilterValueList":{
       "type":"list",
@@ -4402,6 +4556,59 @@
         }
       }
     },
+    "ListProtectConfigurationRuleSetNumberOverrideFilter":{
+      "type":"list",
+      "member":{"shape":"ProtectConfigurationRuleSetNumberOverrideFilterItem"},
+      "max":100,
+      "min":0
+    },
+    "ListProtectConfigurationRuleSetNumberOverridesRequest":{
+      "type":"structure",
+      "required":["ProtectConfigurationId"],
+      "members":{
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "Filters":{
+          "shape":"ListProtectConfigurationRuleSetNumberOverrideFilter",
+          "documentation":"<p>An array of ProtectConfigurationRuleSetNumberOverrideFilterItem objects to filter the results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "ListProtectConfigurationRuleSetNumberOverridesResult":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationArn",
+        "ProtectConfigurationId"
+      ],
+      "members":{
+        "ProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the protect configuration.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "RuleSetNumberOverrides":{
+          "shape":"ProtectConfigurationRuleSetNumberOverrideList",
+          "documentation":"<p>An array of RuleSetNumberOverrides objects.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        }
+      }
+    },
     "ListRegistrationAssociationsRequest":{
       "type":"structure",
       "required":["RegistrationId"],
@@ -4513,6 +4720,19 @@
       "max":2048,
       "min":1,
       "pattern":"s3://([a-z0-9\\.-]{3,63})/(.+)"
+    },
+    "MessageFeedbackStatus":{
+      "type":"string",
+      "enum":[
+        "RECEIVED",
+        "FAILED"
+      ]
+    },
+    "MessageId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/-]+"
     },
     "MessageType":{
       "type":"string",
@@ -5166,6 +5386,80 @@
       "max":100,
       "min":1
     },
+    "ProtectConfigurationRuleOverrideAction":{
+      "type":"string",
+      "enum":[
+        "ALLOW",
+        "BLOCK"
+      ]
+    },
+    "ProtectConfigurationRuleSetNumberOverride":{
+      "type":"structure",
+      "required":[
+        "DestinationPhoneNumber",
+        "CreatedTimestamp",
+        "Action"
+      ],
+      "members":{
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The destination phone number in E.164 format.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the rule was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "Action":{
+          "shape":"ProtectConfigurationRuleOverrideAction",
+          "documentation":"<p>The action for the rule to perform of either blocking or allowing messages to the destination phone number.</p>"
+        },
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "ExpirationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the rule will expire at. If <code>ExpirationTimestamp</code> is not set then the rule will not expire.</p>"
+        }
+      },
+      "documentation":"<p>Provides details on a RuleSetNumberOverride.</p>"
+    },
+    "ProtectConfigurationRuleSetNumberOverrideFilterItem":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ProtectConfigurationRuleSetNumberOverrideFilterName",
+          "documentation":"<p>The name of the attribute to filter on.</p>"
+        },
+        "Values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>An array values to filter for.</p>"
+        }
+      },
+      "documentation":"<p>The information for a protect configuration rule set number override that meets a specified criteria.</p>"
+    },
+    "ProtectConfigurationRuleSetNumberOverrideFilterName":{
+      "type":"string",
+      "enum":[
+        "iso-country-code",
+        "destination-phone-number-begins-with",
+        "action",
+        "expires-before",
+        "expires-after",
+        "created-before",
+        "created-after"
+      ]
+    },
+    "ProtectConfigurationRuleSetNumberOverrideList":{
+      "type":"list",
+      "member":{"shape":"ProtectConfigurationRuleSetNumberOverride"},
+      "max":100,
+      "min":1
+    },
     "ProtectStatus":{
       "type":"string",
       "enum":[
@@ -5224,6 +5518,40 @@
         }
       }
     },
+    "PutMessageFeedbackRequest":{
+      "type":"structure",
+      "required":[
+        "MessageId",
+        "MessageFeedbackStatus"
+      ],
+      "members":{
+        "MessageId":{
+          "shape":"MessageId",
+          "documentation":"<p>The unique identifier for the message.</p>"
+        },
+        "MessageFeedbackStatus":{
+          "shape":"MessageFeedbackStatus",
+          "documentation":"<p>Set the message feedback to be either <code>RECEIVED</code> or <code>FAILED</code>.</p>"
+        }
+      }
+    },
+    "PutMessageFeedbackResult":{
+      "type":"structure",
+      "required":[
+        "MessageId",
+        "MessageFeedbackStatus"
+      ],
+      "members":{
+        "MessageId":{
+          "shape":"MessageId",
+          "documentation":"<p>The unique identifier for the message.</p>"
+        },
+        "MessageFeedbackStatus":{
+          "shape":"MessageFeedbackStatus",
+          "documentation":"<p>The current status of the message.</p>"
+        }
+      }
+    },
     "PutOptedOutNumberRequest":{
       "type":"structure",
       "required":[
@@ -5263,6 +5591,77 @@
         "EndUserOptedOut":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>This is true if it was the end user who requested their phone number be removed. </p>"
+        }
+      }
+    },
+    "PutProtectConfigurationRuleSetNumberOverrideRequest":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationId",
+        "DestinationPhoneNumber",
+        "Action"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don't specify a client token, a randomly generated token is used for the request to ensure idempotency.</p>",
+          "idempotencyToken":true
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The destination phone number in E.164 format.</p>"
+        },
+        "Action":{
+          "shape":"ProtectConfigurationRuleOverrideAction",
+          "documentation":"<p>The action for the rule to either block or allow messages to the destination phone number.</p>"
+        },
+        "ExpirationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the rule will expire at. If <code>ExpirationTimestamp</code> is not set then the rule does not expire.</p>"
+        }
+      }
+    },
+    "PutProtectConfigurationRuleSetNumberOverrideResult":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationArn",
+        "ProtectConfigurationId",
+        "DestinationPhoneNumber",
+        "CreatedTimestamp",
+        "Action"
+      ],
+      "members":{
+        "ProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the protect configuration.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The destination phone number in E.164 format.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the rule was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "Action":{
+          "shape":"ProtectConfigurationRuleOverrideAction",
+          "documentation":"<p>The action for the rule to take.</p>"
+        },
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "ExpirationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the rule will expire at.</p>"
         }
       }
     },
@@ -6467,7 +6866,8 @@
         "registration-attachment",
         "verified-destination-number",
         "protect-configuration",
-        "policy"
+        "policy",
+        "message"
       ]
     },
     "SectionPath":{
@@ -6619,7 +7019,7 @@
         },
         "TimeToLive":{
           "shape":"TimeToLive",
-          "documentation":"<p>How long the text message is valid for. By default this is 72 hours.</p>"
+          "documentation":"<p>How long the media message is valid for. By default this is 72 hours.</p>"
         },
         "Context":{
           "shape":"ContextMap",
@@ -6632,6 +7032,10 @@
         "ProtectConfigurationId":{
           "shape":"ProtectConfigurationIdOrArn",
           "documentation":"<p>The unique identifier of the protect configuration to use.</p>"
+        },
+        "MessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to enable message feedback for the message. When a user receives the message you need to update the message status using <a>PutMessageFeedback</a>.</p>"
         }
       }
     },
@@ -6695,6 +7099,10 @@
         "ProtectConfigurationId":{
           "shape":"ProtectConfigurationIdOrArn",
           "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "MessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to enable message feedback for the message. When a user receives the message you need to update the message status using <a>PutMessageFeedback</a>.</p>"
         }
       }
     },
@@ -6757,6 +7165,10 @@
         "ProtectConfigurationId":{
           "shape":"ProtectConfigurationIdOrArn",
           "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "MessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to enable message feedback for the message. When a user receives the message you need to update the message status using <a>PutMessageFeedback</a>.</p>"
         }
       }
     },
@@ -6954,6 +7366,40 @@
         "DefaultProtectConfigurationId":{
           "shape":"ProtectConfigurationId",
           "documentation":"<p>The unique identifier of the account default protect configuration.</p>"
+        }
+      }
+    },
+    "SetDefaultMessageFeedbackEnabledRequest":{
+      "type":"structure",
+      "required":[
+        "ConfigurationSetName",
+        "MessageFeedbackEnabled"
+      ],
+      "members":{
+        "ConfigurationSetName":{
+          "shape":"ConfigurationSetNameOrArn",
+          "documentation":"<p>The name of the configuration set to use. This can be either the ConfigurationSetName or ConfigurationSetArn.</p>"
+        },
+        "MessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to enable message feedback.</p>"
+        }
+      }
+    },
+    "SetDefaultMessageFeedbackEnabledResult":{
+      "type":"structure",
+      "members":{
+        "ConfigurationSetArn":{
+          "shape":"String",
+          "documentation":"<p>The arn of the configuration set.</p>"
+        },
+        "ConfigurationSetName":{
+          "shape":"ConfigurationSetName",
+          "documentation":"<p>The name of the configuration.</p>"
+        },
+        "MessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>True if message feedback is enabled.</p>"
         }
       }
     },

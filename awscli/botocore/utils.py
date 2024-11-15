@@ -3067,6 +3067,7 @@ class BaseSSOTokenFetcher(object):
     """
     _EXPIRY_WINDOW = 15 * 60
     _CLIENT_REGISTRATION_TYPE = 'public'
+    _USER_AGENT_EXTRA = None
 
     def __init__(
             self, sso_region, client_creator, cache=None,
@@ -3122,6 +3123,7 @@ class BaseSSOTokenFetcher(object):
         config = botocore.config.Config(
             region_name=self._sso_region,
             signature_version=botocore.UNSIGNED,
+            user_agent_extra=self._USER_AGENT_EXTRA,
         )
         return self._client_creator('sso-oidc', config=config)
 
@@ -3364,6 +3366,7 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
     """Performs the authorization code grant with PKCE OAuth2.0 flow"""
     _AUTH_GRANT_TYPES = ('authorization_code', 'refresh_token')
     _AUTH_GRANT_DEFAULT_SCOPE = 'sso:account:access'
+    _USER_AGENT_EXTRA = 'md/sso#auth'
 
     def __init__(
         self,

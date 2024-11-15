@@ -516,3 +516,17 @@ class TestLoginCommand(BaseSSOTest):
             stderr
         )
 
+    def test_login_device_no_extra_user_agent(self):
+        self.add_oidc_device_responses(self.access_token)
+        self.run_cmd('sso login --use-device-code')
+        self.assertNotIn('md/sso#auth',
+                         self.last_request_dict['headers']['User-Agent'])
+
+    def test_login_auth_includes_extra_user_agent(self):
+        content = self.get_sso_session_config('test-session')
+        self.set_config_file_content(content=content)
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login')
+        self.assertIn('md/sso#auth',
+                      self.last_request_dict['headers']['User-Agent'])
+

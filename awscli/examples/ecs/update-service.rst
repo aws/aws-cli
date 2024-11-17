@@ -1,6 +1,6 @@
 **Example 1: To change the task definition used in a service**
 
-The following ``update-service`` example updates the ``my-http-service`` service present in ``my-cluster`` cluster to use the ``amazon-ecs-sample`` task definition. ::
+The following ``update-service`` example updates the ``my-http-service`` service present in ``my-cluster`` cluster to use the latest ``ACTIVE`` revision of ``amazon-ecs-sample`` task definition. ::
 
     aws ecs update-service --service my-http-service --cluster my-cluster --task-definition amazon-ecs-sample
 

@@ -170,4 +170,4 @@ The following ``update-service`` example updates the desired task count of the s
 
 See Example 1 for sample output
 
-For more information, see `Updating a Service <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/update-service.html>`_ in the *Amazon ECS Developer Guide*.
+For more information, see `Updating a Service <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/update-service-console-v2.html>`_ in the *Amazon ECS Developer Guide*.

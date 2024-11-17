@@ -4,6 +4,8 @@ The following ``update-service`` example updates the ``my-http-service`` service
 
     aws ecs update-service --service my-http-service --cluster my-cluster --task-definition amazon-ecs-sample
 
+Output::
+
     {
         "service": {
             "serviceArn": "arn:aws:ecs:us-east-1:123456789012:service/my-cluster/my-http-service",

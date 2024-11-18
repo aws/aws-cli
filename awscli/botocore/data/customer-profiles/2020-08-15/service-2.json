@@ -32,6 +32,40 @@
       ],
       "documentation":"<p>Associates a new key value with a specific profile, such as a Contact Record ContactId.</p> <p>A profile object can have a single unique key and any number of additional keys that can be used to identify the profile that it belongs to.</p>"
     },
+    "BatchGetCalculatedAttributeForProfile":{
+      "name":"BatchGetCalculatedAttributeForProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/calculated-attributes/{CalculatedAttributeName}/batch-get-for-profiles"
+      },
+      "input":{"shape":"BatchGetCalculatedAttributeForProfileRequest"},
+      "output":{"shape":"BatchGetCalculatedAttributeForProfileResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Fetch the possible attribute values given the attribute name.</p>"
+    },
+    "BatchGetProfile":{
+      "name":"BatchGetProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/batch-get-profiles"
+      },
+      "input":{"shape":"BatchGetProfileRequest"},
+      "output":{"shape":"BatchGetProfileResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get a batch of profiles.</p>"
+    },
     "CreateCalculatedAttributeDefinition":{
       "name":"CreateCalculatedAttributeDefinition",
       "http":{
@@ -116,6 +150,59 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates a standard profile.</p> <p>A standard profile represents the following attributes for a customer profile in a domain.</p>"
+    },
+    "CreateSegmentDefinition":{
+      "name":"CreateSegmentDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateSegmentDefinitionRequest"},
+      "output":{"shape":"CreateSegmentDefinitionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a segment definition associated to the given domain.</p>",
+      "idempotent":true
+    },
+    "CreateSegmentEstimate":{
+      "name":"CreateSegmentEstimate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/segment-estimates"
+      },
+      "input":{"shape":"CreateSegmentEstimateRequest"},
+      "output":{"shape":"CreateSegmentEstimateResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a segment estimate query.</p>"
+    },
+    "CreateSegmentSnapshot":{
+      "name":"CreateSegmentSnapshot",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/segments/{SegmentDefinitionName}/snapshots"
+      },
+      "input":{"shape":"CreateSegmentSnapshotRequest"},
+      "output":{"shape":"CreateSegmentSnapshotResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Triggers a job to export a segment to a specified destination.</p>"
     },
     "DeleteCalculatedAttributeDefinition":{
       "name":"DeleteCalculatedAttributeDefinition",
@@ -253,6 +340,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Removes a ProfileObjectType from a specific domain as well as removes all the ProfileObjects of that type. It also disables integrations from this specific ProfileObjectType. In addition, it scrubs all of the fields of the standard profile that were populated from this ProfileObjectType.</p>"
+    },
+    "DeleteSegmentDefinition":{
+      "name":"DeleteSegmentDefinition",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteSegmentDefinitionRequest"},
+      "output":{"shape":"DeleteSegmentDefinitionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a segment definition from the domain.</p>",
+      "idempotent":true
     },
     "DeleteWorkflow":{
       "name":"DeleteWorkflow",
@@ -458,6 +564,77 @@
       ],
       "documentation":"<p>Returns the template information for a specific object type.</p> <p>A template is a predefined ProfileObjectType, such as “Salesforce-Account” or “Salesforce-Contact.” When a user sends a ProfileObject, using the PutProfileObject API, with an ObjectTypeName that matches one of the TemplateIds, it uses the mappings from the template.</p>"
     },
+    "GetSegmentDefinition":{
+      "name":"GetSegmentDefinition",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/segment-definitions/{SegmentDefinitionName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSegmentDefinitionRequest"},
+      "output":{"shape":"GetSegmentDefinitionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Gets a segment definition from the domain.</p>"
+    },
+    "GetSegmentEstimate":{
+      "name":"GetSegmentEstimate",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/segment-estimates/{EstimateId}"
+      },
+      "input":{"shape":"GetSegmentEstimateRequest"},
+      "output":{"shape":"GetSegmentEstimateResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets the result of a segment estimate query.</p>"
+    },
+    "GetSegmentMembership":{
+      "name":"GetSegmentMembership",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/segments/{SegmentDefinitionName}/membership",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSegmentMembershipRequest"},
+      "output":{"shape":"GetSegmentMembershipResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Determines if the given profiles are within a segment.</p>",
+      "idempotent":true
+    },
+    "GetSegmentSnapshot":{
+      "name":"GetSegmentSnapshot",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/segments/{SegmentDefinitionName}/snapshots/{SnapshotId}"
+      },
+      "input":{"shape":"GetSegmentSnapshotRequest"},
+      "output":{"shape":"GetSegmentSnapshotResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieve the latest status of a segment snapshot.</p>"
+    },
     "GetSimilarProfiles":{
       "name":"GetSimilarProfiles",
       "http":{
@@ -628,6 +805,40 @@
       ],
       "documentation":"<p>Lists all of the integrations in your domain.</p>"
     },
+    "ListObjectTypeAttributes":{
+      "name":"ListObjectTypeAttributes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/object-types/{ObjectTypeName}/attributes"
+      },
+      "input":{"shape":"ListObjectTypeAttributesRequest"},
+      "output":{"shape":"ListObjectTypeAttributesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Fetch the possible attribute values given the attribute name.</p>"
+    },
+    "ListProfileAttributeValues":{
+      "name":"ListProfileAttributeValues",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/profile-attributes/{AttributeName}/values"
+      },
+      "input":{"shape":"ProfileAttributeValuesRequest"},
+      "output":{"shape":"ProfileAttributeValuesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Fetch the possible attribute values given the attribute name.</p>"
+    },
     "ListProfileObjectTypeTemplates":{
       "name":"ListProfileObjectTypeTemplates",
       "http":{
@@ -695,6 +906,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns a set of <code>MatchIds</code> that belong to the given domain.</p>"
+    },
+    "ListSegmentDefinitions":{
+      "name":"ListSegmentDefinitions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/segment-definitions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSegmentDefinitionsRequest"},
+      "output":{"shape":"ListSegmentDefinitionsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all segment definitions under a domain.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -1017,6 +1246,42 @@
       "documentation":"<p>A generic address associated with the customer that is not mailing, shipping, or billing.</p>",
       "sensitive":true
     },
+    "AddressDimension":{
+      "type":"structure",
+      "members":{
+        "City":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>The city belonging to the address.</p>",
+          "locationName":"City"
+        },
+        "Country":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>The country belonging to the address.</p>",
+          "locationName":"Country"
+        },
+        "County":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>The county belonging to the address.</p>",
+          "locationName":"County"
+        },
+        "PostalCode":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>The postal code belonging to the address.</p>",
+          "locationName":"PostalCode"
+        },
+        "Province":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>The province belonging to the address.</p>",
+          "locationName":"Province"
+        },
+        "State":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>The state belonging to the address.</p>",
+          "locationName":"State"
+        }
+      },
+      "documentation":"<p>Object that segments on Customer Profile's address object.</p>"
+    },
     "AddressList":{
       "type":"list",
       "member":{"shape":"string1To255"},
@@ -1147,6 +1412,46 @@
       "documentation":"<p>Mathematical expression and a list of attribute items specified in that expression.</p>",
       "sensitive":true
     },
+    "AttributeDimension":{
+      "type":"structure",
+      "required":[
+        "DimensionType",
+        "Values"
+      ],
+      "members":{
+        "DimensionType":{
+          "shape":"AttributeDimensionType",
+          "documentation":"<p>The action to segment with.</p>",
+          "locationName":"DimensionType"
+        },
+        "Values":{
+          "shape":"Values",
+          "documentation":"<p>The values to apply the DimensionType on.</p>",
+          "locationName":"Values"
+        }
+      },
+      "documentation":"<p>Object that segments on various Customer Profile's fields.</p>"
+    },
+    "AttributeDimensionType":{
+      "type":"string",
+      "enum":[
+        "INCLUSIVE",
+        "EXCLUSIVE",
+        "CONTAINS",
+        "BEGINS_WITH",
+        "ENDS_WITH",
+        "BEFORE",
+        "AFTER",
+        "BETWEEN",
+        "NOT_BETWEEN",
+        "ON",
+        "GREATER_THAN",
+        "LESS_THAN",
+        "GREATER_THAN_OR_EQUAL",
+        "LESS_THAN_OR_EQUAL",
+        "EQUAL"
+      ]
+    },
     "AttributeItem":{
       "type":"structure",
       "required":["Name"],
@@ -1163,6 +1468,11 @@
       "member":{"shape":"AttributeItem"},
       "max":2,
       "min":1
+    },
+    "AttributeMap":{
+      "type":"map",
+      "key":{"shape":"attributeName"},
+      "value":{"shape":"FilterAttributeDimension"}
     },
     "AttributeMatchingModel":{
       "type":"string",
@@ -1198,6 +1508,20 @@
         }
       },
       "documentation":"<p>Configuration information about the <code>AttributeTypesSelector </code>where the rule-based identity resolution uses to match profiles. You can choose how profiles are compared across attribute types and which attribute to use for matching from each type. There are three attribute types you can configure:</p> <ul> <li> <p>Email type</p> <ul> <li> <p>You can choose from <code>Email</code>, <code>BusinessEmail</code>, and <code>PersonalEmail</code> </p> </li> </ul> </li> <li> <p>Phone number type</p> <ul> <li> <p>You can choose from <code>Phone</code>, <code>HomePhone</code>, and <code>MobilePhone</code> </p> </li> </ul> </li> <li> <p>Address type</p> <ul> <li> <p>You can choose from <code>Address</code>, <code>BusinessAddress</code>, <code>MaillingAddress</code>, and <code>ShippingAddress</code> </p> </li> </ul> </li> </ul> <p>You can either choose <code>ONE_TO_ONE</code> or <code>MANY_TO_MANY</code> as the <code>AttributeMatchingModel</code>. When choosing <code>MANY_TO_MANY</code>, the system can match attribute across the sub-types of an attribute type. For example, if the value of the <code>Email</code> field of Profile A and the value of <code>BusinessEmail</code> field of Profile B matches, the two profiles are matched on the Email type. When choosing <code>ONE_TO_ONE</code> the system can only match if the sub-types are exact matches. For example, only when the value of the <code>Email</code> field of Profile A and the value of the <code>Email</code> field of Profile B matches, the two profiles are matched on the Email type.</p>"
+    },
+    "AttributeValueItem":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"string1To255",
+          "documentation":"<p>An individual value belonging to the given attribute.</p>"
+        }
+      },
+      "documentation":"<p>List containing the values for the given attribute.</p>"
+    },
+    "AttributeValueItemList":{
+      "type":"list",
+      "member":{"shape":"AttributeValueItem"}
     },
     "Attributes":{
       "type":"map",
@@ -1255,6 +1579,151 @@
       },
       "documentation":"<p>Batch defines the boundaries for ingestion for each step in <code>APPFLOW_INTEGRATION</code> workflow. <code>APPFLOW_INTEGRATION</code> workflow splits ingestion based on these boundaries.</p>"
     },
+    "BatchGetCalculatedAttributeForProfileError":{
+      "type":"structure",
+      "required":[
+        "Code",
+        "Message",
+        "ProfileId"
+      ],
+      "members":{
+        "Code":{
+          "shape":"string1To255",
+          "documentation":"<p>Status code for why a specific profile and calculated attribute failed.</p>"
+        },
+        "Message":{
+          "shape":"string1To1000",
+          "documentation":"<p>Message describing why a specific profile and calculated attribute failed.</p>"
+        },
+        "ProfileId":{
+          "shape":"uuid",
+          "documentation":"<p>The profile id that failed.</p>"
+        }
+      },
+      "documentation":"<p>Error object describing why a specific profile and calculated attribute failed.</p>"
+    },
+    "BatchGetCalculatedAttributeForProfileErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchGetCalculatedAttributeForProfileError"}
+    },
+    "BatchGetCalculatedAttributeForProfileIdList":{
+      "type":"list",
+      "member":{"shape":"uuid"},
+      "max":100,
+      "min":1
+    },
+    "BatchGetCalculatedAttributeForProfileRequest":{
+      "type":"structure",
+      "required":[
+        "CalculatedAttributeName",
+        "DomainName",
+        "ProfileIds"
+      ],
+      "members":{
+        "CalculatedAttributeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the calculated attribute.</p>",
+          "location":"uri",
+          "locationName":"CalculatedAttributeName"
+        },
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ProfileIds":{
+          "shape":"BatchGetCalculatedAttributeForProfileIdList",
+          "documentation":"<p>List of unique identifiers for customer profiles to retrieve.</p>"
+        },
+        "ConditionOverrides":{
+          "shape":"ConditionOverrides",
+          "documentation":"<p>Overrides the condition block within the original calculated attribute definition.</p>"
+        }
+      }
+    },
+    "BatchGetCalculatedAttributeForProfileResponse":{
+      "type":"structure",
+      "members":{
+        "Errors":{
+          "shape":"BatchGetCalculatedAttributeForProfileErrorList",
+          "documentation":"<p>List of errors for calculated attribute values that could not be retrieved.</p>"
+        },
+        "CalculatedAttributeValues":{
+          "shape":"CalculatedAttributeValueList",
+          "documentation":"<p>List of calculated attribute values retrieved.</p>"
+        },
+        "ConditionOverrides":{
+          "shape":"ConditionOverrides",
+          "documentation":"<p>Overrides the condition block within the original calculated attribute definition.</p>"
+        }
+      }
+    },
+    "BatchGetProfileError":{
+      "type":"structure",
+      "required":[
+        "Code",
+        "Message",
+        "ProfileId"
+      ],
+      "members":{
+        "Code":{
+          "shape":"string1To255",
+          "documentation":"<p>Status code for why a specific profile failed.</p>"
+        },
+        "Message":{
+          "shape":"string1To1000",
+          "documentation":"<p>Message describing why a specific profile failed.</p>"
+        },
+        "ProfileId":{
+          "shape":"uuid",
+          "documentation":"<p>The profile id that failed.</p>"
+        }
+      },
+      "documentation":"<p>Error object describing why a specific profile failed.</p>"
+    },
+    "BatchGetProfileErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchGetProfileError"}
+    },
+    "BatchGetProfileIdList":{
+      "type":"list",
+      "member":{"shape":"uuid"},
+      "max":20,
+      "min":1
+    },
+    "BatchGetProfileRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ProfileIds"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ProfileIds":{
+          "shape":"BatchGetProfileIdList",
+          "documentation":"<p>List of unique identifiers for customer profiles to retrieve.</p>"
+        }
+      }
+    },
+    "BatchGetProfileResponse":{
+      "type":"structure",
+      "members":{
+        "Errors":{
+          "shape":"BatchGetProfileErrorList",
+          "documentation":"<p>For information about the errors that are common to all actions, see <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/CommonErrors.html\">Common Errors</a>.</p>"
+        },
+        "Profiles":{
+          "shape":"ProfileList",
+          "documentation":"<p>Array of Profile Objects.</p>"
+        }
+      }
+    },
     "Batches":{
       "type":"list",
       "member":{"shape":"Batch"}
@@ -1275,9 +1744,80 @@
       "member":{"shape":"ListCalculatedAttributeDefinitionItem"},
       "sensitive":true
     },
+    "CalculatedAttributeDimension":{
+      "type":"structure",
+      "required":[
+        "DimensionType",
+        "Values"
+      ],
+      "members":{
+        "DimensionType":{
+          "shape":"AttributeDimensionType",
+          "documentation":"<p>The action to segment with.</p>",
+          "locationName":"DimensionType"
+        },
+        "Values":{
+          "shape":"Values",
+          "documentation":"<p>The values to apply the DimensionType with.</p>",
+          "locationName":"Values"
+        },
+        "ConditionOverrides":{
+          "shape":"ConditionOverrides",
+          "documentation":"<p>Applies the given condition over the initial Calculated Attribute's definition.</p>",
+          "locationName":"ConditionOverrides"
+        }
+      },
+      "documentation":"<p>Object that segments on Customer Profile's Calculated Attributes.</p>"
+    },
+    "CalculatedAttributeValue":{
+      "type":"structure",
+      "members":{
+        "CalculatedAttributeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the calculated attribute.</p>"
+        },
+        "DisplayName":{
+          "shape":"displayName",
+          "documentation":"<p>The display name of the calculated attribute.</p>"
+        },
+        "IsDataPartial":{
+          "shape":"string1To255",
+          "documentation":"<p>Indicates whether the calculated attribute's value is based on partial data. If the data is partial, it is set to true.</p>"
+        },
+        "ProfileId":{
+          "shape":"uuid",
+          "documentation":"<p>The profile id belonging to this calculated attribute value.</p>"
+        },
+        "Value":{
+          "shape":"string1To255",
+          "documentation":"<p>The value of the calculated attribute.</p>"
+        }
+      },
+      "documentation":"<p>The object containing the values of a single calculated attribute value.</p>"
+    },
+    "CalculatedAttributeValueList":{
+      "type":"list",
+      "member":{"shape":"CalculatedAttributeValue"}
+    },
     "CalculatedAttributesForProfileList":{
       "type":"list",
       "member":{"shape":"ListCalculatedAttributeForProfileItem"}
+    },
+    "CalculatedCustomAttributes":{
+      "type":"map",
+      "key":{"shape":"typeName"},
+      "value":{"shape":"CalculatedAttributeDimension"}
+    },
+    "ConditionOverrides":{
+      "type":"structure",
+      "members":{
+        "Range":{
+          "shape":"RangeOverride",
+          "documentation":"<p>The relative time period over which data is included in the aggregation for this override.</p>"
+        }
+      },
+      "documentation":"<p>An object to override the original condition block of a calculated attribute.</p>",
+      "sensitive":true
     },
     "Conditions":{
       "type":"structure",
@@ -1399,6 +1939,10 @@
           "shape":"Conditions",
           "documentation":"<p>The conditions including range, object count, and threshold for the calculated attribute.</p>"
         },
+        "Filter":{
+          "shape":"Filter",
+          "documentation":"<p>Defines how to filter incoming objects to include part of the Calculated Attribute.</p>"
+        },
         "Statistic":{
           "shape":"Statistic",
           "documentation":"<p>The aggregation operation to perform for the calculated attribute.</p>"
@@ -1431,6 +1975,10 @@
         "Conditions":{
           "shape":"Conditions",
           "documentation":"<p>The conditions including range, object count, and threshold for the calculated attribute.</p>"
+        },
+        "Filter":{
+          "shape":"Filter",
+          "documentation":"<p>The filter that was used as part of the request.</p>"
         },
         "Statistic":{
           "shape":"Statistic",
@@ -1749,6 +2297,179 @@
         }
       }
     },
+    "CreateSegmentDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SegmentDefinitionName",
+        "DisplayName",
+        "SegmentGroups"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition.</p>",
+          "location":"uri",
+          "locationName":"SegmentDefinitionName"
+        },
+        "DisplayName":{
+          "shape":"string1To255",
+          "documentation":"<p>The display name of the segment definition.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>The description of the segment definition.</p>"
+        },
+        "SegmentGroups":{
+          "shape":"SegmentGroup",
+          "documentation":"<p>Specifies the base segments and dimensions for a segment definition along with their respective relationship.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateSegmentDefinitionResponse":{
+      "type":"structure",
+      "required":["SegmentDefinitionName"],
+      "members":{
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The name of the segment definition.</p>",
+          "locationName":"SegmentDefinitionName"
+        },
+        "DisplayName":{
+          "shape":"string1To255",
+          "documentation":"<p>The display name of the segment definition.</p>",
+          "locationName":"DisplayName"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>The description of the segment definition.</p>",
+          "locationName":"Description"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the segment definition was created.</p>",
+          "locationName":"CreatedAt"
+        },
+        "SegmentDefinitionArn":{
+          "shape":"SegmentDefinitionArn",
+          "documentation":"<p>The arn of the segment definition.</p>",
+          "locationName":"SegmentDefinitionArn"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>",
+          "locationName":"Tags"
+        }
+      }
+    },
+    "CreateSegmentEstimateRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SegmentQuery"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "SegmentQuery":{
+          "shape":"SegmentGroupStructure",
+          "documentation":"<p>The segment query for calculating a segment estimate.</p>"
+        }
+      }
+    },
+    "CreateSegmentEstimateResponse":{
+      "type":"structure",
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>"
+        },
+        "EstimateId":{
+          "shape":"string1To255",
+          "documentation":"<p>A unique identifier for the resource. The value can be passed to <code>GetSegmentEstimate</code> to retrieve the result of segment estimate status.</p>"
+        },
+        "StatusCode":{
+          "shape":"StatusCode",
+          "documentation":"<p>The status code for the response.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "CreateSegmentSnapshotRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SegmentDefinitionName",
+        "DataFormat"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The name of the segment definition used in this snapshot request.</p>",
+          "location":"uri",
+          "locationName":"SegmentDefinitionName"
+        },
+        "DataFormat":{
+          "shape":"DataFormat",
+          "documentation":"<p>The format in which the segment will be exported.</p>"
+        },
+        "EncryptionKey":{
+          "shape":"encryptionKey",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the exported segment.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that allows Customer Profiles service principal to assume the role for conducting KMS and S3 operations.</p>"
+        },
+        "DestinationUri":{
+          "shape":"string1To255",
+          "documentation":"<p>The destination to which the segment will be exported. This field must be provided if the request is not submitted from the Amazon Connect Admin Website.</p>"
+        }
+      }
+    },
+    "CreateSegmentSnapshotResponse":{
+      "type":"structure",
+      "required":["SnapshotId"],
+      "members":{
+        "SnapshotId":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of the segment snapshot.</p>"
+        }
+      }
+    },
+    "CustomAttributes":{
+      "type":"map",
+      "key":{"shape":"typeName"},
+      "value":{"shape":"AttributeDimension"}
+    },
+    "DataFormat":{
+      "type":"string",
+      "enum":[
+        "CSV",
+        "JSONL",
+        "ORC"
+      ]
+    },
     "DataPullMode":{
       "type":"string",
       "enum":[
@@ -1757,6 +2478,42 @@
       ]
     },
     "Date":{"type":"timestamp"},
+    "DateDimension":{
+      "type":"structure",
+      "required":[
+        "DimensionType",
+        "Values"
+      ],
+      "members":{
+        "DimensionType":{
+          "shape":"DateDimensionType",
+          "documentation":"<p>The action to segment with.</p>",
+          "locationName":"DimensionType"
+        },
+        "Values":{
+          "shape":"DateValues",
+          "documentation":"<p>The values to apply the DimensionType on.</p>",
+          "locationName":"Values"
+        }
+      },
+      "documentation":"<p>Object that segments on various Customer Profile's date fields.</p>"
+    },
+    "DateDimensionType":{
+      "type":"string",
+      "enum":[
+        "BEFORE",
+        "AFTER",
+        "BETWEEN",
+        "NOT_BETWEEN",
+        "ON"
+      ]
+    },
+    "DateValues":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":50,
+      "min":1
+    },
     "DatetimeTypeFieldName":{
       "type":"string",
       "max":256,
@@ -2000,6 +2757,37 @@
         }
       }
     },
+    "DeleteSegmentDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SegmentDefinitionName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition.</p>",
+          "location":"uri",
+          "locationName":"SegmentDefinitionName"
+        }
+      }
+    },
+    "DeleteSegmentDefinitionResponse":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"string1To1000",
+          "documentation":"<p>A message that indicates the delete request is done.</p>",
+          "locationName":"Message"
+        }
+      }
+    },
     "DeleteWorkflowRequest":{
       "type":"structure",
       "required":[
@@ -2103,6 +2891,27 @@
       "type":"list",
       "member":{"shape":"DetectedProfileObjectType"}
     },
+    "Dimension":{
+      "type":"structure",
+      "members":{
+        "ProfileAttributes":{
+          "shape":"ProfileAttributes",
+          "documentation":"<p>Object that holds the profile attributes to segment on.</p>",
+          "locationName":"ProfileAttributes"
+        },
+        "CalculatedAttributes":{
+          "shape":"CalculatedCustomAttributes",
+          "documentation":"<p>Object that holds the calculated attributes to segment on.</p>",
+          "locationName":"CalculatedAttributes"
+        }
+      },
+      "documentation":"<p>Object that holds what profile and calculated attributes to segment on.</p>",
+      "union":true
+    },
+    "DimensionList":{
+      "type":"list",
+      "member":{"shape":"Dimension"}
+    },
     "DomainList":{
       "type":"list",
       "member":{"shape":"ListDomainItem"}
@@ -2140,6 +2949,19 @@
       "member":{"shape":"string1To255"},
       "max":3,
       "min":1
+    },
+    "End":{
+      "type":"integer",
+      "max":366,
+      "min":0
+    },
+    "EstimateStatus":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED"
+      ]
     },
     "EventStreamDestinationDetails":{
       "type":"structure",
@@ -2244,6 +3066,36 @@
         }
       },
       "documentation":"<p>The S3 location where Identity Resolution Jobs write result files.</p>"
+    },
+    "ExtraLengthValueProfileDimension":{
+      "type":"structure",
+      "required":[
+        "DimensionType",
+        "Values"
+      ],
+      "members":{
+        "DimensionType":{
+          "shape":"StringDimensionType",
+          "documentation":"<p>The action to segment with.</p>",
+          "locationName":"DimensionType"
+        },
+        "Values":{
+          "shape":"ExtraLengthValues",
+          "documentation":"<p>The values to apply the DimensionType on.</p>",
+          "locationName":"Values"
+        }
+      },
+      "documentation":"<p>Object that segments on various Customer profile's fields that are larger than normal.</p>"
+    },
+    "ExtraLengthValues":{
+      "type":"list",
+      "member":{"shape":"string1To1000"},
+      "max":50,
+      "min":1
+    },
+    "Failures":{
+      "type":"list",
+      "member":{"shape":"ProfileQueryFailures"}
     },
     "FieldContentType":{
       "type":"string",
@@ -2354,6 +3206,97 @@
         }
       },
       "documentation":"<p>A duplicate customer profile that is to be merged into a main profile. </p>"
+    },
+    "Filter":{
+      "type":"structure",
+      "required":[
+        "Include",
+        "Groups"
+      ],
+      "members":{
+        "Include":{
+          "shape":"Include",
+          "documentation":"<p>Define whether to include or exclude objects for Calculated Attributed calculation that fit the filter groups criteria.</p>"
+        },
+        "Groups":{
+          "shape":"GroupList",
+          "documentation":"<p>Holds the list of Filter groups within the Filter definition.</p>"
+        }
+      },
+      "documentation":"<p>Defines how to filter the objects coming in for calculated attributes.</p>"
+    },
+    "FilterAttributeDimension":{
+      "type":"structure",
+      "required":[
+        "DimensionType",
+        "Values"
+      ],
+      "members":{
+        "DimensionType":{
+          "shape":"FilterDimensionType",
+          "documentation":"<p>The action to filter with.</p>"
+        },
+        "Values":{
+          "shape":"ValueList",
+          "documentation":"<p>The values to apply the DimensionType on.</p>"
+        }
+      },
+      "documentation":"<p>Object that defines how to filter the incoming objects for the calculated attribute.</p>"
+    },
+    "FilterDimension":{
+      "type":"structure",
+      "required":["Attributes"],
+      "members":{
+        "Attributes":{
+          "shape":"AttributeMap",
+          "documentation":"<p>Is the attribute within the FilterDimension map</p>"
+        }
+      },
+      "documentation":"<p>Contains the map of attribute names to attribute dimensions.</p>"
+    },
+    "FilterDimensionList":{
+      "type":"list",
+      "member":{"shape":"FilterDimension"},
+      "max":10,
+      "min":1
+    },
+    "FilterDimensionType":{
+      "type":"string",
+      "enum":[
+        "INCLUSIVE",
+        "EXCLUSIVE",
+        "CONTAINS",
+        "BEGINS_WITH",
+        "ENDS_WITH",
+        "BEFORE",
+        "AFTER",
+        "BETWEEN",
+        "NOT_BETWEEN",
+        "ON",
+        "GREATER_THAN",
+        "LESS_THAN",
+        "GREATER_THAN_OR_EQUAL",
+        "LESS_THAN_OR_EQUAL",
+        "EQUAL"
+      ]
+    },
+    "FilterGroup":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Dimensions"
+      ],
+      "members":{
+        "Type":{
+          "shape":"Type",
+          "documentation":"<p>The type of logical relationship between the dimensions of the Filter group.</p>"
+        },
+        "Dimensions":{
+          "shape":"FilterDimensionList",
+          "documentation":"<p>Object that holds the attributes to filter on.</p>"
+        }
+      },
+      "documentation":"<p>Object that holds the dimensions to filter on.</p>"
     },
     "FlowDefinition":{
       "type":"structure",
@@ -2524,6 +3467,10 @@
         "Statistic":{
           "shape":"Statistic",
           "documentation":"<p>The aggregation operation to perform for the calculated attribute.</p>"
+        },
+        "Filter":{
+          "shape":"Filter",
+          "documentation":"<p>The filter assigned to this calculated attribute definition.</p>"
         },
         "Conditions":{
           "shape":"Conditions",
@@ -3027,6 +3974,237 @@
         }
       }
     },
+    "GetSegmentDefinitionRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SegmentDefinitionName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition.</p>",
+          "location":"uri",
+          "locationName":"SegmentDefinitionName"
+        }
+      }
+    },
+    "GetSegmentDefinitionResponse":{
+      "type":"structure",
+      "required":["SegmentDefinitionArn"],
+      "members":{
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The name of the segment definition.</p>",
+          "locationName":"SegmentDefinitionName"
+        },
+        "DisplayName":{
+          "shape":"string1To255",
+          "documentation":"<p>The display name of the segment definition.</p>",
+          "locationName":"DisplayName"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>The description of the segment definition.</p>",
+          "locationName":"Description"
+        },
+        "SegmentGroups":{
+          "shape":"SegmentGroup",
+          "documentation":"<p>The segment criteria associated with this definition.</p>",
+          "locationName":"SegmentGroups"
+        },
+        "SegmentDefinitionArn":{
+          "shape":"SegmentDefinitionArn",
+          "documentation":"<p>The arn of the segment definition.</p>",
+          "locationName":"SegmentDefinitionArn"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the segment definition was created.</p>",
+          "locationName":"CreatedAt"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>",
+          "locationName":"Tags"
+        }
+      }
+    },
+    "GetSegmentEstimateRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "EstimateId"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "EstimateId":{
+          "shape":"string1To255",
+          "documentation":"<p>The query Id passed by a previous <code>CreateSegmentEstimate</code> operation.</p>",
+          "location":"uri",
+          "locationName":"EstimateId"
+        }
+      }
+    },
+    "GetSegmentEstimateResponse":{
+      "type":"structure",
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>"
+        },
+        "EstimateId":{
+          "shape":"string1To255",
+          "documentation":"<p>The <code>QueryId</code> which is the same as the value passed in <code>QueryId</code>.</p>"
+        },
+        "Status":{
+          "shape":"EstimateStatus",
+          "documentation":"<p>The current status of the query.</p>"
+        },
+        "Estimate":{
+          "shape":"string1To255",
+          "documentation":"<p>The estimated number of profiles contained in the segment.</p>"
+        },
+        "Message":{
+          "shape":"string1To255",
+          "documentation":"<p>The error message if there is any error.</p>"
+        },
+        "StatusCode":{
+          "shape":"StatusCode",
+          "documentation":"<p>The status code of the segment estimate.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "GetSegmentMembershipMessage":{"type":"string"},
+    "GetSegmentMembershipRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SegmentDefinitionName",
+        "ProfileIds"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The Id of the wanted segment. Needs to be a valid, and existing segment Id.</p>",
+          "location":"uri",
+          "locationName":"SegmentDefinitionName"
+        },
+        "ProfileIds":{
+          "shape":"ProfileIds",
+          "documentation":"<p>The list of profile IDs to query for.</p>",
+          "locationName":"ProfileIds"
+        }
+      }
+    },
+    "GetSegmentMembershipResponse":{
+      "type":"structure",
+      "members":{
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition.</p>",
+          "locationName":"SegmentDefinitionName"
+        },
+        "Profiles":{
+          "shape":"Profiles",
+          "documentation":"<p>An array of maps where each contains a response per profile requested.</p>",
+          "locationName":"Profiles"
+        },
+        "Failures":{
+          "shape":"Failures",
+          "documentation":"<p>An array of maps where each contains a response per profile failed for the request.</p>",
+          "locationName":"Failures"
+        }
+      }
+    },
+    "GetSegmentMembershipStatus":{
+      "type":"integer",
+      "box":true
+    },
+    "GetSegmentSnapshotRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "SegmentDefinitionName",
+        "SnapshotId"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique identifier of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition.</p>",
+          "location":"uri",
+          "locationName":"SegmentDefinitionName"
+        },
+        "SnapshotId":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of the segment snapshot.</p>",
+          "location":"uri",
+          "locationName":"SnapshotId"
+        }
+      }
+    },
+    "GetSegmentSnapshotResponse":{
+      "type":"structure",
+      "required":[
+        "SnapshotId",
+        "Status",
+        "DataFormat"
+      ],
+      "members":{
+        "SnapshotId":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of the segment snapshot.</p>"
+        },
+        "Status":{
+          "shape":"SegmentSnapshotStatus",
+          "documentation":"<p>The status of the asynchronous job for exporting the segment snapshot.</p>"
+        },
+        "StatusMessage":{
+          "shape":"string1To1000",
+          "documentation":"<p>The status message of the asynchronous job for exporting the segment snapshot.</p>"
+        },
+        "DataFormat":{
+          "shape":"DataFormat",
+          "documentation":"<p>The format in which the segment will be exported.</p>"
+        },
+        "EncryptionKey":{
+          "shape":"encryptionKey",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the exported segment.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that allows Customer Profiles service principal to assume the role for conducting KMS and S3 operations.</p>"
+        },
+        "DestinationUri":{
+          "shape":"string1To255",
+          "documentation":"<p>The destination to which the segment will be exported. This field must be provided if the request is not submitted from the Amazon Connect Admin Website.</p>"
+        }
+      }
+    },
     "GetSimilarProfilesRequest":{
       "type":"structure",
       "required":[
@@ -3209,6 +4387,38 @@
         }
       }
     },
+    "Group":{
+      "type":"structure",
+      "members":{
+        "Dimensions":{
+          "shape":"DimensionList",
+          "documentation":"<p>Defines the attributes to segment on.</p>",
+          "locationName":"Dimensions"
+        },
+        "SourceSegments":{
+          "shape":"SourceSegmentList",
+          "documentation":"<p>Defines the starting source of data.</p>",
+          "locationName":"SourceSegments"
+        },
+        "SourceType":{
+          "shape":"IncludeOptions",
+          "documentation":"<p>Defines how to interact with the source data.</p>",
+          "locationName":"SourceType"
+        },
+        "Type":{
+          "shape":"IncludeOptions",
+          "documentation":"<p>Defines how to interact with the profiles found in the current filtering.</p>",
+          "locationName":"Type"
+        }
+      },
+      "documentation":"<p>Contains dimensions that determine what to segment on.</p>"
+    },
+    "GroupList":{
+      "type":"list",
+      "member":{"shape":"FilterGroup"},
+      "max":2,
+      "min":1
+    },
     "IdentityResolutionJob":{
       "type":"structure",
       "members":{
@@ -3262,6 +4472,22 @@
     "IdentityResolutionJobsList":{
       "type":"list",
       "member":{"shape":"IdentityResolutionJob"}
+    },
+    "Include":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "ANY",
+        "NONE"
+      ]
+    },
+    "IncludeOptions":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "ANY",
+        "NONE"
+      ]
     },
     "IncrementalPullConfig":{
       "type":"structure",
@@ -3765,6 +4991,74 @@
         }
       }
     },
+    "ListObjectTypeAttributeItem":{
+      "type":"structure",
+      "required":[
+        "AttributeName",
+        "LastUpdatedAt"
+      ],
+      "members":{
+        "AttributeName":{
+          "shape":"name",
+          "documentation":"<p>Name of the attribute.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>When the attribute was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Item that contains the attribute and when it was last updated.</p>"
+    },
+    "ListObjectTypeAttributesList":{
+      "type":"list",
+      "member":{"shape":"ListObjectTypeAttributeItem"}
+    },
+    "ListObjectTypeAttributesRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ObjectTypeName"
+      ],
+      "members":{
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call. </p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of objects returned per page.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique identifier of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The name of the profile object type.</p>",
+          "location":"uri",
+          "locationName":"ObjectTypeName"
+        }
+      }
+    },
+    "ListObjectTypeAttributesResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"ListObjectTypeAttributesList",
+          "documentation":"<p>The items returned as part of the response.</p>"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call.</p>"
+        }
+      }
+    },
     "ListProfileObjectTypeItem":{
       "type":"structure",
       "required":[
@@ -3993,6 +5287,45 @@
         "NextToken":{
           "shape":"token",
           "documentation":"<p>The pagination token from the previous <code>ListRuleBasedMatches</code> API call.</p>"
+        }
+      }
+    },
+    "ListSegmentDefinitionsRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique identifier of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "MaxResults":{
+          "shape":"MaxSize500",
+          "documentation":"<p>The maximum number of objects returned per page.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call. </p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListSegmentDefinitionsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call.</p>",
+          "locationName":"NextToken"
+        },
+        "Items":{
+          "shape":"SegmentDefinitionsList",
+          "documentation":"<p>List of segment definitions.</p>",
+          "locationName":"Items"
         }
       }
     },
@@ -4263,6 +5596,12 @@
       "max":15,
       "min":1
     },
+    "MaxSize500":{
+      "type":"integer",
+      "box":true,
+      "max":500,
+      "min":1
+    },
     "MergeProfilesRequest":{
       "type":"structure",
       "required":[
@@ -4526,6 +5865,182 @@
       },
       "documentation":"<p>The standard profile of a customer.</p>"
     },
+    "ProfileAttributeValuesRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "AttributeName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique identifier of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "AttributeName":{
+          "shape":"string1To255",
+          "documentation":"<p>The attribute name.</p>",
+          "location":"uri",
+          "locationName":"AttributeName"
+        }
+      }
+    },
+    "ProfileAttributeValuesResponse":{
+      "type":"structure",
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The name of the domain.</p>"
+        },
+        "AttributeName":{
+          "shape":"string1To255",
+          "documentation":"<p>The attribute name.</p>"
+        },
+        "Items":{
+          "shape":"AttributeValueItemList",
+          "documentation":"<p>The items returned as part of the response.</p>"
+        },
+        "StatusCode":{
+          "shape":"StatusCode",
+          "documentation":"<p>The status code for the response.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "ProfileAttributes":{
+      "type":"structure",
+      "members":{
+        "AccountNumber":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>A field to describe values to segment on within account number.</p>",
+          "locationName":"AccountNumber"
+        },
+        "AdditionalInformation":{
+          "shape":"ExtraLengthValueProfileDimension",
+          "documentation":"<p>A field to describe values to segment on within additional information.</p>",
+          "locationName":"AdditionalInformation"
+        },
+        "FirstName":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>A field to describe values to segment on within first name.</p>",
+          "locationName":"FirstName"
+        },
+        "LastName":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>A field to describe values to segment on within last name.</p>",
+          "locationName":"LastName"
+        },
+        "MiddleName":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>A field to describe values to segment on within middle name.</p>",
+          "locationName":"MiddleName"
+        },
+        "GenderString":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>A field to describe values to segment on within genderString.</p>",
+          "locationName":"GenderString"
+        },
+        "PartyTypeString":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>A field to describe values to segment on within partyTypeString.</p>",
+          "locationName":"PartyTypeString"
+        },
+        "BirthDate":{
+          "shape":"DateDimension",
+          "documentation":"<p>A field to describe values to segment on within birthDate.</p>",
+          "locationName":"BirthDate"
+        },
+        "PhoneNumber":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>A field to describe values to segment on within phone number.</p>",
+          "locationName":"PhoneNumber"
+        },
+        "BusinessName":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>A field to describe values to segment on within business name.</p>",
+          "locationName":"BusinessName"
+        },
+        "BusinessPhoneNumber":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>A field to describe values to segment on within business phone number.</p>",
+          "locationName":"BusinessPhoneNumber"
+        },
+        "HomePhoneNumber":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>A field to describe values to segment on within home phone number.</p>",
+          "locationName":"HomePhoneNumber"
+        },
+        "MobilePhoneNumber":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>A field to describe values to segment on within mobile phone number.</p>",
+          "locationName":"MobilePhoneNumber"
+        },
+        "EmailAddress":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>A field to describe values to segment on within email address.</p>",
+          "locationName":"EmailAddress"
+        },
+        "PersonalEmailAddress":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>A field to describe values to segment on within personal email address.</p>",
+          "locationName":"PersonalEmailAddress"
+        },
+        "BusinessEmailAddress":{
+          "shape":"ProfileDimension",
+          "documentation":"<p>A field to describe values to segment on within business email address.</p>",
+          "locationName":"BusinessEmailAddress"
+        },
+        "Address":{
+          "shape":"AddressDimension",
+          "documentation":"<p>A field to describe values to segment on within address.</p>",
+          "locationName":"Address"
+        },
+        "ShippingAddress":{
+          "shape":"AddressDimension",
+          "documentation":"<p>A field to describe values to segment on within shipping address.</p>",
+          "locationName":"ShippingAddress"
+        },
+        "MailingAddress":{
+          "shape":"AddressDimension",
+          "documentation":"<p>A field to describe values to segment on within mailing address.</p>",
+          "locationName":"MailingAddress"
+        },
+        "BillingAddress":{
+          "shape":"AddressDimension",
+          "documentation":"<p>A field to describe values to segment on within billing address.</p>",
+          "locationName":"BillingAddress"
+        },
+        "Attributes":{
+          "shape":"CustomAttributes",
+          "documentation":"<p>A field to describe values to segment on within attributes.</p>",
+          "locationName":"Attributes"
+        }
+      },
+      "documentation":"<p>The object used to segment on attributes within the customer profile.</p>",
+      "sensitive":true
+    },
+    "ProfileDimension":{
+      "type":"structure",
+      "required":[
+        "DimensionType",
+        "Values"
+      ],
+      "members":{
+        "DimensionType":{
+          "shape":"StringDimensionType",
+          "documentation":"<p>The action to segment on.</p>",
+          "locationName":"DimensionType"
+        },
+        "Values":{
+          "shape":"Values",
+          "documentation":"<p>The values to apply the DimensionType on.</p>",
+          "locationName":"Values"
+        }
+      },
+      "documentation":"<p>Object to hold the dimensions of a profile's fields to segment on.</p>"
+    },
+    "ProfileId":{"type":"string"},
     "ProfileIdList":{
       "type":"list",
       "member":{"shape":"uuid"}
@@ -4534,6 +6049,12 @@
       "type":"list",
       "member":{"shape":"uuid"},
       "max":20,
+      "min":1
+    },
+    "ProfileIds":{
+      "type":"list",
+      "member":{"shape":"uuid"},
+      "max":100,
       "min":1
     },
     "ProfileList":{
@@ -4552,6 +6073,59 @@
     "ProfileObjectTypeTemplateList":{
       "type":"list",
       "member":{"shape":"ListProfileObjectTypeTemplateItem"}
+    },
+    "ProfileQueryFailures":{
+      "type":"structure",
+      "required":[
+        "ProfileId",
+        "Message"
+      ],
+      "members":{
+        "ProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>The profile id the failure belongs to.</p>",
+          "locationName":"ProfileId"
+        },
+        "Message":{
+          "shape":"GetSegmentMembershipMessage",
+          "documentation":"<p>A message describing the failure.</p>",
+          "locationName":"Message"
+        },
+        "Status":{
+          "shape":"GetSegmentMembershipStatus",
+          "documentation":"<p>The status describing the failure.</p>",
+          "locationName":"Status"
+        }
+      },
+      "documentation":"<p>Object that holds failures for membership.</p>"
+    },
+    "ProfileQueryResult":{
+      "type":"structure",
+      "required":[
+        "ProfileId",
+        "QueryResult"
+      ],
+      "members":{
+        "ProfileId":{
+          "shape":"ProfileId",
+          "documentation":"<p>The profile id the result belongs to.</p>",
+          "locationName":"ProfileId"
+        },
+        "QueryResult":{
+          "shape":"QueryResult",
+          "documentation":"<p>Describes whether the profile was absent or present in the segment.</p>",
+          "locationName":"QueryResult"
+        },
+        "Profile":{
+          "shape":"Profile",
+          "locationName":"Profile"
+        }
+      },
+      "documentation":"<p>Object that holds the results for membership.</p>"
+    },
+    "Profiles":{
+      "type":"list",
+      "member":{"shape":"ProfileQueryResult"}
     },
     "Property":{
       "type":"string",
@@ -4805,6 +6379,13 @@
         }
       }
     },
+    "QueryResult":{
+      "type":"string",
+      "enum":[
+        "PRESENT",
+        "ABSENT"
+      ]
+    },
     "Range":{
       "type":"structure",
       "required":[
@@ -4822,6 +6403,32 @@
         }
       },
       "documentation":"<p>The relative time period over which data is included in the aggregation.</p>"
+    },
+    "RangeOverride":{
+      "type":"structure",
+      "required":[
+        "Start",
+        "Unit"
+      ],
+      "members":{
+        "Start":{
+          "shape":"Start",
+          "documentation":"<p>The start time of when to include objects.</p>"
+        },
+        "End":{
+          "shape":"End",
+          "documentation":"<p>The end time of when to include objects.</p>"
+        },
+        "Unit":{
+          "shape":"RangeUnit",
+          "documentation":"<p>The unit for start and end.</p>"
+        }
+      },
+      "documentation":"<p>Overrides the original range on a calculated attribute definition.</p>"
+    },
+    "RangeUnit":{
+      "type":"string",
+      "enum":["DAYS"]
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -5128,6 +6735,94 @@
         }
       }
     },
+    "SegmentDefinitionArn":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "SegmentDefinitionItem":{
+      "type":"structure",
+      "members":{
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>Name of the segment definition.</p>",
+          "locationName":"SegmentDefinitionName"
+        },
+        "DisplayName":{
+          "shape":"string1To255",
+          "documentation":"<p>Display name of the segment definition.</p>",
+          "locationName":"DisplayName"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>The description of the segment definition.</p>",
+          "locationName":"Description"
+        },
+        "SegmentDefinitionArn":{
+          "shape":"SegmentDefinitionArn",
+          "documentation":"<p>The arn of the segment definition.</p>",
+          "locationName":"SegmentDefinitionArn"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>When the segment definition was created.</p>",
+          "locationName":"CreatedAt"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags belonging to the segment definition.</p>",
+          "locationName":"Tags"
+        }
+      },
+      "documentation":"<p>Object holding the segment definition fields.</p>"
+    },
+    "SegmentDefinitionsList":{
+      "type":"list",
+      "member":{"shape":"SegmentDefinitionItem"}
+    },
+    "SegmentGroup":{
+      "type":"structure",
+      "members":{
+        "Groups":{
+          "shape":"SegmentGroupList",
+          "documentation":"<p>Holds the list of groups within the segment definition.</p>",
+          "locationName":"Groups"
+        },
+        "Include":{
+          "shape":"IncludeOptions",
+          "documentation":"<p>Defines whether to include or exclude the profiles that fit the segment criteria.</p>",
+          "locationName":"Include"
+        }
+      },
+      "documentation":"<p>Contains all groups of the segment definition.</p>",
+      "sensitive":true
+    },
+    "SegmentGroupList":{
+      "type":"list",
+      "member":{"shape":"Group"}
+    },
+    "SegmentGroupStructure":{
+      "type":"structure",
+      "members":{
+        "Groups":{
+          "shape":"SegmentGroupList",
+          "documentation":"<p>Holds the list of groups within the segment definition.</p>"
+        },
+        "Include":{
+          "shape":"IncludeOptions",
+          "documentation":"<p>Define whether to include or exclude the profiles that fit the segment criteria.</p>"
+        }
+      },
+      "documentation":"<p>Contains all groups of the segment definition.</p>"
+    },
+    "SegmentSnapshotStatus":{
+      "type":"string",
+      "enum":[
+        "COMPLETED",
+        "IN_PROGRESS",
+        "FAILED"
+      ]
+    },
     "ServiceNowConnectorOperator":{
       "type":"string",
       "enum":[
@@ -5231,22 +6926,43 @@
       },
       "documentation":"<p>Contains information about the configuration of the source connector used in the flow.</p>"
     },
+    "SourceSegment":{
+      "type":"structure",
+      "members":{
+        "SegmentDefinitionName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the segment definition.</p>",
+          "locationName":"SegmentDefinitionName"
+        }
+      },
+      "documentation":"<p>The source segments to build off of.</p>"
+    },
+    "SourceSegmentList":{
+      "type":"list",
+      "member":{"shape":"SourceSegment"}
+    },
     "StandardIdentifier":{
       "type":"string",
       "enum":[
         "PROFILE",
         "ASSET",
         "CASE",
+        "ORDER",
+        "COMMUNICATION_RECORD",
         "UNIQUE",
         "SECONDARY",
         "LOOKUP_ONLY",
-        "NEW_ONLY",
-        "ORDER"
+        "NEW_ONLY"
       ]
     },
     "StandardIdentifierList":{
       "type":"list",
       "member":{"shape":"StandardIdentifier"}
+    },
+    "Start":{
+      "type":"integer",
+      "max":366,
+      "min":1
     },
     "Statistic":{
       "type":"string",
@@ -5272,6 +6988,18 @@
         "SPLIT",
         "RETRY",
         "CANCELLED"
+      ]
+    },
+    "StatusCode":{"type":"integer"},
+    "String":{"type":"string"},
+    "StringDimensionType":{
+      "type":"string",
+      "enum":[
+        "INCLUSIVE",
+        "EXCLUSIVE",
+        "CONTAINS",
+        "BEGINS_WITH",
+        "ENDS_WITH"
       ]
     },
     "TagArn":{
@@ -5440,6 +7168,14 @@
         "Scheduled",
         "Event",
         "OnDemand"
+      ]
+    },
+    "Type":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "ANY",
+        "NONE"
       ]
     },
     "Unit":{
@@ -5805,6 +7541,18 @@
     "Value":{
       "type":"integer",
       "max":366,
+      "min":1
+    },
+    "ValueList":{
+      "type":"list",
+      "member":{"shape":"string1To255"},
+      "max":10,
+      "min":1
+    },
+    "Values":{
+      "type":"list",
+      "member":{"shape":"string1To255"},
+      "max":50,
       "min":1
     },
     "WorkflowAttributes":{

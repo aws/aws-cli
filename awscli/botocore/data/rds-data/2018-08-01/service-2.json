@@ -26,6 +26,7 @@
         {"shape":"SecretsErrorException"},
         {"shape":"HttpEndpointNotEnabledException"},
         {"shape":"DatabaseErrorException"},
+        {"shape":"DatabaseResumingException"},
         {"shape":"DatabaseUnavailableException"},
         {"shape":"TransactionNotFoundException"},
         {"shape":"InvalidSecretException"},
@@ -52,6 +53,7 @@
         {"shape":"SecretsErrorException"},
         {"shape":"HttpEndpointNotEnabledException"},
         {"shape":"DatabaseErrorException"},
+        {"shape":"DatabaseResumingException"},
         {"shape":"DatabaseUnavailableException"},
         {"shape":"TransactionNotFoundException"},
         {"shape":"InvalidSecretException"},
@@ -110,7 +112,8 @@
       ],
       "documentation":"<p>Runs one or more SQL statements.</p> <note> <p>This operation isn't supported for Aurora Serverless v2 and provisioned DB clusters. For Aurora Serverless v1 DB clusters, the operation is deprecated. Use the <code>BatchExecuteStatement</code> or <code>ExecuteStatement</code> operation.</p> </note>",
       "deprecated":true,
-      "deprecatedMessage":"The ExecuteSql API is deprecated, please use the ExecuteStatement API."
+      "deprecatedMessage":"The ExecuteSql API is deprecated, please use the ExecuteStatement API.",
+      "deprecatedSince":"2019-03-21"
     },
     "ExecuteStatement":{
       "name":"ExecuteStatement",
@@ -125,6 +128,7 @@
         {"shape":"SecretsErrorException"},
         {"shape":"HttpEndpointNotEnabledException"},
         {"shape":"DatabaseErrorException"},
+        {"shape":"DatabaseResumingException"},
         {"shape":"DatabaseUnavailableException"},
         {"shape":"TransactionNotFoundException"},
         {"shape":"InvalidSecretException"},
@@ -463,6 +467,18 @@
       "documentation":"<p>The DB cluster doesn't have a DB instance.</p>",
       "error":{
         "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "DatabaseResumingException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>A request was canceled because the Aurora Serverless v2 DB instance was in a paused state. The Data API request automatically causes the DB instance to begin resuming. Wait a few seconds and try again.</p>",
+      "error":{
+        "httpStatusCode":400,
         "senderFault":true
       },
       "exception":true

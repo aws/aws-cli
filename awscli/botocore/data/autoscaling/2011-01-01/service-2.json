@@ -1365,6 +1365,10 @@
         "TrafficSources":{
           "shape":"TrafficSources",
           "documentation":"<p>The unique identifiers of one or more traffic sources. You can specify up to 10 traffic sources.</p>"
+        },
+        "SkipZonalShiftValidation":{
+          "shape":"SkipZonalShiftValidation",
+          "documentation":"<p> If you enable zonal shift with cross-zone disabled load balancers, capacity could become imbalanced across Availability Zones. To skip the validation, specify <code>true</code>. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-zonal-shift.html\">Auto Scaling group zonal shift</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>. </p>"
         }
       }
     },
@@ -1525,6 +1529,10 @@
         "AvailabilityZoneDistribution":{
           "shape":"AvailabilityZoneDistribution",
           "documentation":"<p> The instance capacity distribution across Availability Zones. </p>"
+        },
+        "AvailabilityZoneImpairmentPolicy":{
+          "shape":"AvailabilityZoneImpairmentPolicy",
+          "documentation":"<p> The Availability Zone impairment policy. </p>"
         }
       },
       "documentation":"<p>Describes an Auto Scaling group.</p>"
@@ -1665,6 +1673,20 @@
         }
       },
       "documentation":"<p> Describes an Availability Zone distribution. </p>"
+    },
+    "AvailabilityZoneImpairmentPolicy":{
+      "type":"structure",
+      "members":{
+        "ZonalShiftEnabled":{
+          "shape":"ZonalShiftEnabled",
+          "documentation":"<p> If <code>true</code>, enable zonal shift for your Auto Scaling group. </p>"
+        },
+        "ImpairedZoneHealthCheckBehavior":{
+          "shape":"ImpairedZoneHealthCheckBehavior",
+          "documentation":"<p> Specifies the health check behavior for the impaired Availability Zone in an active zonal shift. If you select <code>Replace unhealthy</code>, instances that appear unhealthy will be replaced in all Availability Zones. If you select <code>Ignore unhealthy</code>, instances will not be replaced in the Availability Zone with the active zonal shift. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-zonal-shift.html\">Auto Scaling group zonal shift</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>. </p>"
+        }
+      },
+      "documentation":"<p> Describes an Availability Zone impairment policy. </p>"
     },
     "AvailabilityZones":{
       "type":"list",
@@ -2036,6 +2058,14 @@
         "AvailabilityZoneDistribution":{
           "shape":"AvailabilityZoneDistribution",
           "documentation":"<p>The instance capacity distribution across Availability Zones.</p>"
+        },
+        "AvailabilityZoneImpairmentPolicy":{
+          "shape":"AvailabilityZoneImpairmentPolicy",
+          "documentation":"<p> The policy for Availability Zone impairment. </p>"
+        },
+        "SkipZonalShiftValidation":{
+          "shape":"SkipZonalShiftValidation",
+          "documentation":"<p> If you enable zonal shift with cross-zone disabled load balancers, capacity could become imbalanced across Availability Zones. To skip the validation, specify <code>true</code>. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-zonal-shift.html\">Auto Scaling group zonal shift</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>. </p>"
         }
       }
     },
@@ -3064,6 +3094,13 @@
     "HealthCheckGracePeriod":{"type":"integer"},
     "HeartbeatTimeout":{"type":"integer"},
     "HonorCooldown":{"type":"boolean"},
+    "ImpairedZoneHealthCheckBehavior":{
+      "type":"string",
+      "enum":[
+        "ReplaceUnhealthy",
+        "IgnoreUnhealthy"
+      ]
+    },
     "IncludeDeletedGroups":{"type":"boolean"},
     "Instance":{
       "type":"structure",
@@ -5256,6 +5293,7 @@
     "ShouldDecrementDesiredCapacity":{"type":"boolean"},
     "ShouldRespectGracePeriod":{"type":"boolean"},
     "SkipMatching":{"type":"boolean"},
+    "SkipZonalShiftValidation":{"type":"boolean"},
     "SpotInstancePools":{"type":"integer"},
     "SpotPrice":{
       "type":"string",
@@ -5686,6 +5724,14 @@
         "AvailabilityZoneDistribution":{
           "shape":"AvailabilityZoneDistribution",
           "documentation":"<p> The instance capacity distribution across Availability Zones. </p>"
+        },
+        "AvailabilityZoneImpairmentPolicy":{
+          "shape":"AvailabilityZoneImpairmentPolicy",
+          "documentation":"<p> The policy for Availability Zone impairment. </p>"
+        },
+        "SkipZonalShiftValidation":{
+          "shape":"SkipZonalShiftValidation",
+          "documentation":"<p> If you enable zonal shift with cross-zone disabled load balancers, capacity could become imbalanced across Availability Zones. To skip the validation, specify <code>true</code>. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-zonal-shift.html\">Auto Scaling group zonal shift</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>. </p>"
         }
       }
     },
@@ -5830,7 +5876,8 @@
       "type":"string",
       "max":21847,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
-    }
+    },
+    "ZonalShiftEnabled":{"type":"boolean"}
   },
   "documentation":"<fullname>Amazon EC2 Auto Scaling</fullname> <p>Amazon EC2 Auto Scaling is designed to automatically launch and terminate EC2 instances based on user-defined scaling policies, scheduled actions, and health checks.</p> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html\">Amazon EC2 Auto Scaling User Guide</a> and the <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/Welcome.html\">Amazon EC2 Auto Scaling API Reference</a>.</p>"
 }

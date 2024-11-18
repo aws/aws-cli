@@ -281,6 +281,27 @@
       "documentation":"<p>Creates a dashboard in an IoT SiteWise Monitor project.</p>",
       "endpoint":{"hostPrefix":"monitor."}
     },
+    "CreateDataset":{
+      "name":"CreateDataset",
+      "http":{
+        "method":"POST",
+        "requestUri":"/datasets",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateDatasetRequest"},
+      "output":{"shape":"CreateDatasetResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConflictingOperationException"}
+      ],
+      "documentation":"<p>Creates a dataset to connect an external datasource.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
     "CreateGateway":{
       "name":"CreateGateway",
       "http":{
@@ -432,6 +453,25 @@
       ],
       "documentation":"<p>Deletes a dashboard from IoT SiteWise Monitor.</p>",
       "endpoint":{"hostPrefix":"monitor."}
+    },
+    "DeleteDataset":{
+      "name":"DeleteDataset",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/datasets/{datasetId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteDatasetRequest"},
+      "output":{"shape":"DeleteDatasetResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictingOperationException"}
+      ],
+      "documentation":"<p>Deletes a dataset. This cannot be undone.</p>",
+      "endpoint":{"hostPrefix":"api."}
     },
     "DeleteGateway":{
       "name":"DeleteGateway",
@@ -658,6 +698,23 @@
       ],
       "documentation":"<p>Retrieves information about a dashboard.</p>",
       "endpoint":{"hostPrefix":"monitor."}
+    },
+    "DescribeDataset":{
+      "name":"DescribeDataset",
+      "http":{
+        "method":"GET",
+        "requestUri":"/datasets/{datasetId}"
+      },
+      "input":{"shape":"DescribeDatasetRequest"},
+      "output":{"shape":"DescribeDatasetResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves information about a dataset.</p>",
+      "endpoint":{"hostPrefix":"api."}
     },
     "DescribeDefaultEncryptionConfiguration":{
       "name":"DescribeDefaultEncryptionConfiguration",
@@ -944,6 +1001,27 @@
       "documentation":"<p>Get interpolated values for an asset property for a specified time interval, during a period of time. If your time series is missing data points during the specified time interval, you can use interpolation to estimate the missing data.</p> <p>For example, you can use this operation to return the interpolated temperature values for a wind turbine every 24 hours over a duration of 7 days.</p> <p>To identify an asset property, you must specify one of the following:</p> <ul> <li> <p>The <code>assetId</code> and <code>propertyId</code> of an asset property.</p> </li> <li> <p>A <code>propertyAlias</code>, which is a data stream alias (for example, <code>/company/windfarm/3/turbine/7/temperature</code>). To define an asset property's alias, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetProperty.html\">UpdateAssetProperty</a>.</p> </li> </ul>",
       "endpoint":{"hostPrefix":"data."}
     },
+    "InvokeAssistant":{
+      "name":"InvokeAssistant",
+      "http":{
+        "method":"POST",
+        "requestUri":"/assistant/invocation",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeAssistantRequest"},
+      "output":{"shape":"InvokeAssistantResponse"},
+      "errors":[
+        {"shape":"InternalFailureException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConflictingOperationException"}
+      ],
+      "documentation":"<p>Invokes SiteWise Assistant to start or continue a conversation.</p>",
+      "endpoint":{"hostPrefix":"data."}
+    },
     "ListAccessPolicies":{
       "name":"ListAccessPolicies",
       "http":{
@@ -1146,6 +1224,22 @@
       ],
       "documentation":"<p>Retrieves a paginated list of dashboards for an IoT SiteWise Monitor project.</p>",
       "endpoint":{"hostPrefix":"monitor."}
+    },
+    "ListDatasets":{
+      "name":"ListDatasets",
+      "http":{
+        "method":"GET",
+        "requestUri":"/datasets"
+      },
+      "input":{"shape":"ListDatasetsRequest"},
+      "output":{"shape":"ListDatasetsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of datasets for a specific target resource.</p>",
+      "endpoint":{"hostPrefix":"api."}
     },
     "ListGateways":{
       "name":"ListGateways",
@@ -1465,6 +1559,26 @@
       "documentation":"<p>Updates an IoT SiteWise Monitor dashboard.</p>",
       "endpoint":{"hostPrefix":"monitor."}
     },
+    "UpdateDataset":{
+      "name":"UpdateDataset",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/datasets/{datasetId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateDatasetRequest"},
+      "output":{"shape":"UpdateDatasetResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictingOperationException"}
+      ],
+      "documentation":"<p>Updates a dataset.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
     "UpdateGateway":{
       "name":"UpdateGateway",
       "http":{
@@ -1550,7 +1664,7 @@
     "AccessDeniedException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"errorMessage"}
+        "message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Access is denied.</p>",
       "error":{"httpStatusCode":403},
@@ -1739,7 +1853,7 @@
       "required":["alarmRoleArn"],
       "members":{
         "alarmRoleArn":{
-          "shape":"ARN",
+          "shape":"IamArn",
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the IAM role that allows the alarm to perform actions and access Amazon Web Services resources and services, such as IoT Events.</p>"
         },
         "notificationLambdaArn":{
@@ -2140,7 +2254,7 @@
         },
         "dataType":{
           "shape":"PropertyDataType",
-          "documentation":"<p>The data type of the asset model property.</p>"
+          "documentation":"<p>The data type of the asset model property.</p> <p>If you specify <code>STRUCT</code>, you must also specify <code>dataTypeSpec</code> to identify the type of the structure for this property.</p>"
         },
         "dataTypeSpec":{
           "shape":"Name",
@@ -3511,6 +3625,24 @@
         "NOT_APPLICABLE"
       ]
     },
+    "Citation":{
+      "type":"structure",
+      "members":{
+        "reference":{
+          "shape":"Reference",
+          "documentation":"<p>Contains information about the data source.</p>"
+        },
+        "content":{
+          "shape":"Content",
+          "documentation":"<p>Contains the cited text from the data source.</p>"
+        }
+      },
+      "documentation":"<p>Contains text content to which the SiteWise Assistant refers to, and generate the final response. It also contains information about the source.</p>"
+    },
+    "Citations":{
+      "type":"list",
+      "member":{"shape":"Citation"}
+    },
     "ClientToken":{
       "type":"string",
       "max":64,
@@ -3710,6 +3842,22 @@
       "documentation":"<p>Your request has conflicting operations. This can occur if you're trying to perform more than one operation on the same resource at the same time.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
+    },
+    "Content":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The cited text from the data source.</p>"
+        }
+      },
+      "documentation":"<p>Contains the cited text from the data source.</p>"
+    },
+    "ConversationId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
     "CoreDeviceThingName":{
       "type":"string",
@@ -4068,7 +4216,7 @@
         },
         "dashboardDefinition":{
           "shape":"DashboardDefinition",
-          "documentation":"<p>The dashboard definition specified in a JSON literal. For detailed information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-dashboards-using-aws-cli.html\">Creating dashboards (CLI)</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+          "documentation":"<p>The dashboard definition specified in a JSON literal.</p> <ul> <li> <p>IoT SiteWise Monitor (Classic) see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-dashboards-using-aws-cli.html\">Create dashboards (CLI)</a> </p> </li> <li> <p>IoT SiteWise Monitor (AI-aware) see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-dashboards-ai-dashboard-cli.html\">Create dashboards (CLI)</a> </p> </li> </ul> <p>in the <i>IoT SiteWise User Guide</i> </p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -4095,6 +4243,62 @@
         "dashboardArn":{
           "shape":"ARN",
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the dashboard, which has the following format.</p> <p> <code>arn:${Partition}:iotsitewise:${Region}:${Account}:dashboard/${DashboardId}</code> </p>"
+        }
+      }
+    },
+    "CreateDatasetRequest":{
+      "type":"structure",
+      "required":[
+        "datasetName",
+        "datasetSource"
+      ],
+      "members":{
+        "datasetId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the dataset.</p>"
+        },
+        "datasetName":{
+          "shape":"RestrictedName",
+          "documentation":"<p>The name of the dataset.</p>"
+        },
+        "datasetDescription":{
+          "shape":"RestrictedDescription",
+          "documentation":"<p>A description about the dataset, and its functionality.</p>"
+        },
+        "datasetSource":{
+          "shape":"DatasetSource",
+          "documentation":"<p>The data source for the dataset.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A list of key-value pairs that contain metadata for the access policy. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html\">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+        }
+      }
+    },
+    "CreateDatasetResponse":{
+      "type":"structure",
+      "required":[
+        "datasetId",
+        "datasetArn",
+        "datasetStatus"
+      ],
+      "members":{
+        "datasetId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the dataset.</p>"
+        },
+        "datasetArn":{
+          "shape":"ARN",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">ARN</a> of the dataset. The format is <code>arn:${Partition}:iotsitewise:${Region}:${Account}:dataset/${DatasetId}</code>.</p>"
+        },
+        "datasetStatus":{
+          "shape":"DatasetStatus",
+          "documentation":"<p>The status of the dataset. This contains the state and any error messages. State is <code>CREATING</code> after a successfull call to this API, and any associated error message. The state is <code>ACTIVE</code> when ready to use.</p>"
         }
       }
     },
@@ -4166,7 +4370,7 @@
           "documentation":"<p>A logo image to display in the portal. Upload a square, high-resolution image. The image is displayed on a dark background.</p>"
         },
         "roleArn":{
-          "shape":"ARN",
+          "shape":"IamArn",
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of a service role that allows the portal's users to access your IoT SiteWise resources on your behalf. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-service-role.html\">Using service roles for IoT SiteWise Monitor</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         },
         "tags":{
@@ -4184,6 +4388,14 @@
         "alarms":{
           "shape":"Alarms",
           "documentation":"<p>Contains the configuration information of an alarm created in an IoT SiteWise Monitor portal. You can use the alarm to monitor an asset property and get notified when the asset property value is outside a specified range. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/appguide/monitor-alarms.html\">Monitoring with alarms</a> in the <i>IoT SiteWise Application Guide</i>.</p>"
+        },
+        "portalType":{
+          "shape":"PortalType",
+          "documentation":"<p>Define the type of portal. The value for IoT SiteWise Monitor (Classic) is <code>SITEWISE_PORTAL_V1</code>. The value for IoT SiteWise Monitor (AI-aware) is <code>SITEWISE_PORTAL_V2</code>.</p>"
+        },
+        "portalTypeConfiguration":{
+          "shape":"PortalTypeConfiguration",
+          "documentation":"<p>The configuration entry associated with the specific portal type. The value for IoT SiteWise Monitor (Classic) is <code>SITEWISE_PORTAL_V1</code>. The value for IoT SiteWise Monitor (AI-aware) is <code>SITEWISE_PORTAL_V2</code>.</p>"
         }
       }
     },
@@ -4340,6 +4552,119 @@
         }
       },
       "documentation":"<p>Contains a dashboard summary.</p>"
+    },
+    "DataSetReference":{
+      "type":"structure",
+      "members":{
+        "datasetArn":{
+          "shape":"String",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">ARN</a> of the dataset. The format is <code>arn:${Partition}:iotsitewise:${Region}:${Account}:dataset/${DatasetId}</code>.</p>"
+        },
+        "source":{
+          "shape":"Source",
+          "documentation":"<p>The data source for the dataset.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the dataset use and it's source.</p>"
+    },
+    "DatasetSource":{
+      "type":"structure",
+      "required":[
+        "sourceType",
+        "sourceFormat"
+      ],
+      "members":{
+        "sourceType":{
+          "shape":"DatasetSourceType",
+          "documentation":"<p>The type of data source for the dataset.</p>"
+        },
+        "sourceFormat":{
+          "shape":"DatasetSourceFormat",
+          "documentation":"<p>The format of the dataset source associated with the dataset.</p>"
+        },
+        "sourceDetail":{
+          "shape":"SourceDetail",
+          "documentation":"<p>The details of the dataset source associated with the dataset.</p>"
+        }
+      },
+      "documentation":"<p>The data source for the dataset.</p>"
+    },
+    "DatasetSourceFormat":{
+      "type":"string",
+      "enum":["KNOWLEDGE_BASE"]
+    },
+    "DatasetSourceType":{
+      "type":"string",
+      "enum":["KENDRA"]
+    },
+    "DatasetState":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "FAILED"
+      ]
+    },
+    "DatasetStatus":{
+      "type":"structure",
+      "required":["state"],
+      "members":{
+        "state":{
+          "shape":"DatasetState",
+          "documentation":"<p>The current status of the dataset.</p>"
+        },
+        "error":{"shape":"ErrorDetails"}
+      },
+      "documentation":"<p>The status of the dataset. This contains the state and any error messages. The state is <code>ACTIVE</code> when ready to use.</p>"
+    },
+    "DatasetSummaries":{
+      "type":"list",
+      "member":{"shape":"DatasetSummary"}
+    },
+    "DatasetSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "name",
+        "description",
+        "creationDate",
+        "lastUpdateDate",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the dataset.</p>"
+        },
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">ARN</a> of the dataset. The format is <code>arn:${Partition}:iotsitewise:${Region}:${Account}:dataset/${DatasetId}</code>.</p>"
+        },
+        "name":{
+          "shape":"RestrictedName",
+          "documentation":"<p>The name of the dataset.</p>"
+        },
+        "description":{
+          "shape":"RestrictedDescription",
+          "documentation":"<p>A description about the dataset, and its functionality.</p>"
+        },
+        "creationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The dataset creation date, in Unix epoch time.</p>"
+        },
+        "lastUpdateDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the dataset was last updated, in Unix epoch time.</p>"
+        },
+        "status":{
+          "shape":"DatasetStatus",
+          "documentation":"<p>The status of the dataset. This contains the state and any error messages. The state is <code>ACTIVE</code> when ready to use.</p>"
+        }
+      },
+      "documentation":"<p>The summary details for the dataset.</p>"
     },
     "Datum":{
       "type":"structure",
@@ -4546,6 +4871,35 @@
     "DeleteDashboardResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "DeleteDatasetRequest":{
+      "type":"structure",
+      "required":["datasetId"],
+      "members":{
+        "datasetId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the dataset.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "DeleteDatasetResponse":{
+      "type":"structure",
+      "required":["datasetStatus"],
+      "members":{
+        "datasetStatus":{
+          "shape":"DatasetStatus",
+          "documentation":"<p>The status of the dataset. This contains the state and any error messages. State is <code>DELETING</code> after a successfull call to this API, and any associated error message.</p>"
+        }
       }
     },
     "DeleteFilesAfterImport":{"type":"boolean"},
@@ -5275,6 +5629,69 @@
         }
       }
     },
+    "DescribeDatasetRequest":{
+      "type":"structure",
+      "required":["datasetId"],
+      "members":{
+        "datasetId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the dataset.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        }
+      }
+    },
+    "DescribeDatasetResponse":{
+      "type":"structure",
+      "required":[
+        "datasetId",
+        "datasetArn",
+        "datasetName",
+        "datasetDescription",
+        "datasetSource",
+        "datasetStatus",
+        "datasetCreationDate",
+        "datasetLastUpdateDate"
+      ],
+      "members":{
+        "datasetId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the dataset.</p>"
+        },
+        "datasetArn":{
+          "shape":"ARN",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">ARN</a> of the dataset. The format is <code>arn:${Partition}:iotsitewise:${Region}:${Account}:dataset/${DatasetId}</code>.</p>"
+        },
+        "datasetName":{
+          "shape":"RestrictedName",
+          "documentation":"<p>The name of the dataset.</p>"
+        },
+        "datasetDescription":{
+          "shape":"RestrictedDescription",
+          "documentation":"<p>A description about the dataset, and its functionality.</p>"
+        },
+        "datasetSource":{
+          "shape":"DatasetSource",
+          "documentation":"<p>The data source for the dataset.</p>"
+        },
+        "datasetStatus":{
+          "shape":"DatasetStatus",
+          "documentation":"<p>The status of the dataset. This contains the state and any error messages. State is <code>CREATING</code> after a successfull call to this API, and any associated error message. The state is <code>ACTIVE</code> when ready to use.</p>"
+        },
+        "datasetCreationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The dataset creation date, in Unix epoch time.</p>"
+        },
+        "datasetLastUpdateDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date the dataset was last updated, in Unix epoch time.</p>"
+        },
+        "datasetVersion":{
+          "shape":"Version",
+          "documentation":"<p>The version of the dataset.</p>"
+        }
+      }
+    },
     "DescribeDefaultEncryptionConfigurationRequest":{
       "type":"structure",
       "members":{
@@ -5345,7 +5762,7 @@
         },
         "capabilitySyncStatus":{
           "shape":"CapabilitySyncStatus",
-          "documentation":"<p>The synchronization status of the capability configuration. The sync status can be one of the following:</p> <ul> <li> <p> <code>IN_SYNC</code> – The gateway is running the capability configuration.</p> </li> <li> <p> <code>OUT_OF_SYNC</code> – The gateway hasn't received the capability configuration.</p> </li> <li> <p> <code>SYNC_FAILED</code> – The gateway rejected the capability configuration.</p> </li> </ul>"
+          "documentation":"<p>The synchronization status of the capability configuration. The sync status can be one of the following:</p> <ul> <li> <p> <code>IN_SYNC</code> – The gateway is running the capability configuration.</p> </li> <li> <p> <code>NOT_APPLICABLE</code> – Synchronization is not required for this capability configuration. This is most common when integrating partner data sources, because the data integration is handled externally by the partner.</p> </li> <li> <p> <code>OUT_OF_SYNC</code> – The gateway hasn't received the capability configuration.</p> </li> <li> <p> <code>SYNC_FAILED</code> – The gateway rejected the capability configuration.</p> </li> <li> <p> <code>UNKNOWN</code> – The synchronization status is currently unknown due to an undetermined or temporary error.</p> </li> </ul>"
         }
       }
     },
@@ -5488,7 +5905,7 @@
           "documentation":"<p>The portal's logo image, which is available at a URL.</p>"
         },
         "roleArn":{
-          "shape":"ARN",
+          "shape":"IamArn",
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the service role that allows the portal's users to access your IoT SiteWise resources on your behalf. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-service-role.html\">Using service roles for IoT SiteWise Monitor</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         },
         "portalAuthMode":{
@@ -5502,6 +5919,14 @@
         "alarms":{
           "shape":"Alarms",
           "documentation":"<p>Contains the configuration information of an alarm created in an IoT SiteWise Monitor portal.</p>"
+        },
+        "portalType":{
+          "shape":"PortalType",
+          "documentation":"<p>Define the type of portal. The value for IoT SiteWise Monitor (Classic) is <code>SITEWISE_PORTAL_V1</code>. The value for IoT SiteWise Monitor (AI-aware) is <code>SITEWISE_PORTAL_V2</code>.</p>"
+        },
+        "portalTypeConfiguration":{
+          "shape":"PortalTypeConfiguration",
+          "documentation":"<p>The configuration entry associated with the specific portal type. The value for IoT SiteWise Monitor (Classic) is <code>SITEWISE_PORTAL_V1</code>. The value for IoT SiteWise Monitor (AI-aware) is <code>SITEWISE_PORTAL_V2</code>.</p>"
         }
       }
     },
@@ -5785,7 +6210,8 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"[^@]+@[^@]+"
+      "pattern":"^[a-zA-Z0-9_\\-\\.\\+]+@[a-zA-Z0-9_\\-\\.\\+]+\\.[a-zA-Z]{2,}$",
+      "sensitive":true
     },
     "EncryptionType":{
       "type":"string",
@@ -5910,6 +6336,11 @@
         "maxResults":{
           "shape":"ExecuteQueryMaxResults",
           "documentation":"<p>The maximum number of results to return at one time. The default is 25.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -6038,7 +6469,7 @@
         },
         "capabilitySyncStatus":{
           "shape":"CapabilitySyncStatus",
-          "documentation":"<p>The synchronization status of the capability configuration. The sync status can be one of the following:</p> <ul> <li> <p> <code>IN_SYNC</code> – The gateway is running the capability configuration.</p> </li> <li> <p> <code>OUT_OF_SYNC</code> – The gateway hasn't received the capability configuration.</p> </li> <li> <p> <code>SYNC_FAILED</code> – The gateway rejected the capability configuration.</p> </li> </ul>"
+          "documentation":"<p>The synchronization status of the capability configuration. The sync status can be one of the following:</p> <ul> <li> <p> <code>IN_SYNC</code> – The gateway is running the capability configuration.</p> </li> <li> <p> <code>NOT_APPLICABLE</code> – Synchronization is not required for this capability configuration. This is most common when integrating partner data sources, because the data integration is handled externally by the partner.</p> </li> <li> <p> <code>OUT_OF_SYNC</code> – The gateway hasn't received the capability configuration.</p> </li> <li> <p> <code>SYNC_FAILED</code> – The gateway rejected the capability configuration.</p> </li> <li> <p> <code>UNKNOWN</code> – The synchronization status is currently unknown due to an undetermined or temporary error.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Contains a summary of a gateway capability configuration.</p>"
@@ -6450,7 +6881,7 @@
       "required":["arn"],
       "members":{
         "arn":{
-          "shape":"ARN",
+          "shape":"IamArn",
           "documentation":"<p>The ARN of the IAM role. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html\">IAM ARNs</a> in the <i>IAM User Guide</i>.</p>"
         }
       },
@@ -6461,7 +6892,7 @@
       "required":["arn"],
       "members":{
         "arn":{
-          "shape":"ARN",
+          "shape":"IamArn",
           "documentation":"<p>The ARN of the IAM user. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html\">IAM ARNs</a> in the <i>IAM User Guide</i>.</p> <note> <p>If you delete the IAM user, access policies that contain this identity include an empty <code>arn</code>. You can delete the access policy for the IAM user that no longer exists.</p> </note>"
         }
       },
@@ -6478,6 +6909,12 @@
       "member":{"shape":"ID"},
       "max":100,
       "min":1
+    },
+    "IamArn":{
+      "type":"string",
+      "max":1600,
+      "min":1,
+      "pattern":"^arn:aws(-cn|-us-gov)?:[a-zA-Z0-9-:\\/_\\.\\+=,@]+$"
     },
     "Identity":{
       "type":"structure",
@@ -6628,6 +7065,56 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "InvocationOutput":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The text message of the SiteWise Assistant's response.</p>"
+        },
+        "citations":{
+          "shape":"Citations",
+          "documentation":"<p>A list of citations, and related information for the SiteWise Assistant's response.</p>"
+        }
+      },
+      "documentation":"<p>This contains the SiteWise Assistant's response and the corresponding citation.</p>",
+      "event":true
+    },
+    "InvokeAssistantRequest":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "conversationId":{
+          "shape":"ConversationId",
+          "documentation":"<p>The ID assigned to a conversation. IoT SiteWise automatically generates a unique ID for you, and this parameter is never required. However, if you prefer to have your own ID, you must specify it here in UUID format. If you specify your own ID, it must be globally unique.</p>"
+        },
+        "message":{
+          "shape":"MessageInput",
+          "documentation":"<p>A text message sent to the SiteWise Assistant by the user.</p>"
+        },
+        "enableTrace":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>Specifies if to turn trace on or not. It is used to track the SiteWise Assistant's reasoning, and data access process.</p>"
+        }
+      }
+    },
+    "InvokeAssistantResponse":{
+      "type":"structure",
+      "required":[
+        "body",
+        "conversationId"
+      ],
+      "members":{
+        "body":{"shape":"ResponseStream"},
+        "conversationId":{
+          "shape":"ConversationId",
+          "documentation":"<p>The ID of the conversation, in UUID format. This ID uniquely identifies the conversation within IoT SiteWise.</p>",
+          "location":"header",
+          "locationName":"x-amz-iotsitewise-assistant-conversation-id"
+        }
+      },
+      "payload":"body"
+    },
     "IotCoreThingName":{
       "type":"string",
       "max":128,
@@ -6683,6 +7170,24 @@
       },
       "documentation":"<p>Contains the job summary information.</p>"
     },
+    "KendraSourceDetail":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseArn",
+        "roleArn"
+      ],
+      "members":{
+        "knowledgeBaseArn":{
+          "shape":"ARN",
+          "documentation":"<p>The <code>knowledgeBaseArn</code> details for the Kendra dataset source.</p>"
+        },
+        "roleArn":{
+          "shape":"ARN",
+          "documentation":"<p>The <code>roleARN</code> details for the Kendra dataset source.</p>"
+        }
+      },
+      "documentation":"<p>The source details for the Kendra dataset source.</p>"
+    },
     "KmsKeyId":{
       "type":"string",
       "max":2048,
@@ -6726,7 +7231,7 @@
           "locationName":"resourceId"
         },
         "iamArn":{
-          "shape":"ARN",
+          "shape":"IamArn",
           "documentation":"<p>The ARN of the IAM user. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html\">IAM ARNs</a> in the <i>IAM User Guide</i>. This parameter is required if you specify <code>IAM</code> for <code>identityType</code>.</p>",
           "location":"querystring",
           "locationName":"iamArn"
@@ -7280,6 +7785,44 @@
         }
       }
     },
+    "ListDatasetsRequest":{
+      "type":"structure",
+      "required":["sourceType"],
+      "members":{
+        "sourceType":{
+          "shape":"DatasetSourceType",
+          "documentation":"<p>The type of data source for the dataset.</p>",
+          "location":"querystring",
+          "locationName":"sourceType"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no additional results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return for each paginated request.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListDatasetsResponse":{
+      "type":"structure",
+      "required":["datasetSummaries"],
+      "members":{
+        "datasetSummaries":{
+          "shape":"DatasetSummaries",
+          "documentation":"<p>A list that summarizes the dataset response.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no additional results.</p>"
+        }
+      }
+    },
     "ListGatewaysRequest":{
       "type":"structure",
       "members":{
@@ -7494,6 +8037,16 @@
         "DISASSOCIATED"
       ]
     },
+    "Location":{
+      "type":"structure",
+      "members":{
+        "uri":{
+          "shape":"String",
+          "documentation":"<p>The URI of the location.</p>"
+        }
+      },
+      "documentation":"<p>Contains location information about the cited text and where it's stored.</p>"
+    },
     "LoggingLevel":{
       "type":"string",
       "enum":[
@@ -7548,6 +8101,12 @@
         }
       },
       "documentation":"<p>The processing configuration for the given measurement property. You can configure measurements to be kept at the edge or forwarded to the Amazon Web Services Cloud. By default, measurements are forwarded to the cloud.</p>"
+    },
+    "MessageInput":{
+      "type":"string",
+      "max":10000,
+      "min":1,
+      "sensitive":true
     },
     "Metric":{
       "type":"structure",
@@ -7695,6 +8254,7 @@
       "type":"string",
       "enum":[
         "CREATING",
+        "PENDING",
         "UPDATING",
         "DELETING",
         "ACTIVE",
@@ -7754,12 +8314,47 @@
           "documentation":"<p>The date the portal was last updated, in Unix epoch time.</p>"
         },
         "roleArn":{
-          "shape":"ARN",
+          "shape":"IamArn",
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the service role that allows the portal's users to access your IoT SiteWise resources on your behalf. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-service-role.html\">Using service roles for IoT SiteWise Monitor</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         },
-        "status":{"shape":"PortalStatus"}
+        "status":{"shape":"PortalStatus"},
+        "portalType":{
+          "shape":"PortalType",
+          "documentation":"<p>Define the type of portal. The value for IoT SiteWise Monitor (Classic) is <code>SITEWISE_PORTAL_V1</code>. The value for IoT SiteWise Monitor (AI-aware) is <code>SITEWISE_PORTAL_V2</code>.</p>"
+        }
       },
       "documentation":"<p>Contains a portal summary.</p>"
+    },
+    "PortalTools":{
+      "type":"list",
+      "member":{"shape":"Name"}
+    },
+    "PortalType":{
+      "type":"string",
+      "enum":[
+        "SITEWISE_PORTAL_V1",
+        "SITEWISE_PORTAL_V2"
+      ]
+    },
+    "PortalTypeConfiguration":{
+      "type":"map",
+      "key":{"shape":"PortalTypeKey"},
+      "value":{"shape":"PortalTypeEntry"}
+    },
+    "PortalTypeEntry":{
+      "type":"structure",
+      "members":{
+        "portalTools":{
+          "shape":"PortalTools",
+          "documentation":"<p>The array of tools associated with the specified portal type. The possible values are <code>ASSISTANT</code> and <code>DASHBOARD</code>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration entry associated with the specific portal type. The <code>portalTypeConfiguration</code> is a map of the <code>portalTypeKey</code> to the <code>PortalTypeEntry</code>.</p>"
+    },
+    "PortalTypeKey":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "PreconditionFailedException":{
       "type":"structure",
@@ -7783,6 +8378,7 @@
       "error":{"httpStatusCode":412},
       "exception":true
     },
+    "PrimitiveBoolean":{"type":"boolean"},
     "ProjectResource":{
       "type":"structure",
       "required":["id"],
@@ -8112,11 +8708,21 @@
     "QueryTimeoutException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"errorMessage"}
+        "message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The query timed out.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "Reference":{
+      "type":"structure",
+      "members":{
+        "dataset":{
+          "shape":"DataSetReference",
+          "documentation":"<p>Contains the dataset reference information.</p>"
+        }
+      },
+      "documentation":"<p>Contains the reference information.</p>"
     },
     "Resolution":{
       "type":"string",
@@ -8178,6 +8784,40 @@
         "PORTAL",
         "PROJECT"
       ]
+    },
+    "ResponseStream":{
+      "type":"structure",
+      "members":{
+        "trace":{
+          "shape":"Trace",
+          "documentation":"<p>Contains tracing information of the SiteWise Assistant's reasoning and data access.</p>"
+        },
+        "output":{
+          "shape":"InvocationOutput",
+          "documentation":"<p>Contains the SiteWise Assistant's response.</p>"
+        },
+        "accessDeniedException":{"shape":"AccessDeniedException"},
+        "conflictingOperationException":{"shape":"ConflictingOperationException"},
+        "internalFailureException":{"shape":"InternalFailureException"},
+        "invalidRequestException":{"shape":"InvalidRequestException"},
+        "limitExceededException":{"shape":"LimitExceededException"},
+        "resourceNotFoundException":{"shape":"ResourceNotFoundException"},
+        "throttlingException":{"shape":"ThrottlingException"}
+      },
+      "documentation":"<p>Contains the response, citation, and trace from the SiteWise Assistant.</p>",
+      "eventstream":true
+    },
+    "RestrictedDescription":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9 _\\-#$*!@]+$"
+    },
+    "RestrictedName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9 _\\-#$*!@]+$"
     },
     "RetentionPeriod":{
       "type":"structure",
@@ -8250,6 +8890,30 @@
         }
       },
       "documentation":"<p>Contains details for a SiteWise Edge gateway that runs on a Siemens Industrial Edge Device.</p>"
+    },
+    "Source":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>Contains the ARN of the dataset. If the source is Kendra, it's the ARN of the Kendra index.</p>"
+        },
+        "location":{
+          "shape":"Location",
+          "documentation":"<p>Contains the location information where the cited text is originally stored. For example, if the data source is Kendra, and the text synchronized is from an S3 bucket, then the location refers to an S3 object.</p>"
+        }
+      },
+      "documentation":"<p>The data source for the dataset.</p>"
+    },
+    "SourceDetail":{
+      "type":"structure",
+      "members":{
+        "kendra":{
+          "shape":"KendraSourceDetail",
+          "documentation":"<p>Contains details about the Kendra dataset source.</p>"
+        }
+      },
+      "documentation":"<p>The details of the dataset source associated with the dataset.</p>"
     },
     "StorageType":{
       "type":"string",
@@ -8433,6 +9097,17 @@
       "documentation":"<p>You've reached the limit for the number of tags allowed for a resource. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html#tag-conventions\">Tag naming limits and requirements</a> in the <i>Amazon Web Services General Reference</i>.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "Trace":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The cited text from the data source.</p>"
+        }
+      },
+      "documentation":"<p>Contains tracing information of the SiteWise Assistant's reasoning and data access.</p>",
+      "event":true
     },
     "Transform":{
       "type":"structure",
@@ -8821,7 +9496,7 @@
         },
         "dashboardDefinition":{
           "shape":"DashboardDefinition",
-          "documentation":"<p>The new dashboard definition, as specified in a JSON literal. For detailed information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-dashboards-using-aws-cli.html\">Creating dashboards (CLI)</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+          "documentation":"<p>The new dashboard definition, as specified in a JSON literal.</p> <ul> <li> <p>IoT SiteWise Monitor (Classic) see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-dashboards-using-aws-cli.html\">Create dashboards (CLI)</a> </p> </li> <li> <p>IoT SiteWise Monitor (AI-aware) see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-dashboards-ai-dashboard-cli.html\">Create dashboards (CLI)</a> </p> </li> </ul> <p>in the <i>IoT SiteWise User Guide</i> </p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -8833,6 +9508,56 @@
     "UpdateDashboardResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "UpdateDatasetRequest":{
+      "type":"structure",
+      "required":[
+        "datasetId",
+        "datasetName",
+        "datasetSource"
+      ],
+      "members":{
+        "datasetId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the dataset.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        },
+        "datasetName":{
+          "shape":"RestrictedName",
+          "documentation":"<p>The name of the dataset.</p>"
+        },
+        "datasetDescription":{
+          "shape":"RestrictedDescription",
+          "documentation":"<p>A description about the dataset, and its functionality.</p>"
+        },
+        "datasetSource":{
+          "shape":"DatasetSource",
+          "documentation":"<p>The data source for the dataset.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateDatasetResponse":{
+      "type":"structure",
+      "members":{
+        "datasetId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the dataset.</p>"
+        },
+        "datasetArn":{
+          "shape":"ARN",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">ARN</a> of the dataset. The format is <code>arn:${Partition}:iotsitewise:${Region}:${Account}:dataset/${DatasetId}</code>.</p>"
+        },
+        "datasetStatus":{
+          "shape":"DatasetStatus",
+          "documentation":"<p>The status of the dataset. This contains the state and any error messages. State is <code>UPDATING</code> after a successfull call to this API, and any associated error message. The state is <code>ACTIVE</code> when ready to use.</p>"
+        }
       }
     },
     "UpdateGatewayCapabilityConfigurationRequest":{
@@ -8872,7 +9597,7 @@
         },
         "capabilitySyncStatus":{
           "shape":"CapabilitySyncStatus",
-          "documentation":"<p>The synchronization status of the capability configuration. The sync status can be one of the following:</p> <ul> <li> <p> <code>IN_SYNC</code> – The gateway is running the capability configuration.</p> </li> <li> <p> <code>OUT_OF_SYNC</code> – The gateway hasn't received the capability configuration.</p> </li> <li> <p> <code>SYNC_FAILED</code> – The gateway rejected the capability configuration.</p> </li> </ul> <p>After you update a capability configuration, its sync status is <code>OUT_OF_SYNC</code> until the gateway receives and applies or rejects the updated configuration.</p>"
+          "documentation":"<p>The synchronization status of the capability configuration. The sync status can be one of the following:</p> <ul> <li> <p> <code>IN_SYNC</code> – The gateway is running the capability configuration.</p> </li> <li> <p> <code>NOT_APPLICABLE</code> – Synchronization is not required for this capability configuration. This is most common when integrating partner data sources, because the data integration is handled externally by the partner.</p> </li> <li> <p> <code>OUT_OF_SYNC</code> – The gateway hasn't received the capability configuration.</p> </li> <li> <p> <code>SYNC_FAILED</code> – The gateway rejected the capability configuration.</p> </li> <li> <p> <code>UNKNOWN</code> – The synchronization status is currently unknown due to an undetermined or temporary error.</p> </li> </ul> <p>After you update a capability configuration, its sync status is <code>OUT_OF_SYNC</code> until the gateway receives and applies or rejects the updated configuration.</p>"
         }
       }
     },
@@ -8924,7 +9649,7 @@
         },
         "portalLogoImage":{"shape":"Image"},
         "roleArn":{
-          "shape":"ARN",
+          "shape":"IamArn",
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of a service role that allows the portal's users to access your IoT SiteWise resources on your behalf. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-service-role.html\">Using service roles for IoT SiteWise Monitor</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         },
         "clientToken":{
@@ -8939,6 +9664,14 @@
         "alarms":{
           "shape":"Alarms",
           "documentation":"<p>Contains the configuration information of an alarm created in an IoT SiteWise Monitor portal. You can use the alarm to monitor an asset property and get notified when the asset property value is outside a specified range. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/appguide/monitor-alarms.html\">Monitoring with alarms</a> in the <i>IoT SiteWise Application Guide</i>.</p>"
+        },
+        "portalType":{
+          "shape":"PortalType",
+          "documentation":"<p>Define the type of portal. The value for IoT SiteWise Monitor (Classic) is <code>SITEWISE_PORTAL_V1</code>. The value for IoT SiteWise Monitor (AI-aware) is <code>SITEWISE_PORTAL_V2</code>.</p>"
+        },
+        "portalTypeConfiguration":{
+          "shape":"PortalTypeConfiguration",
+          "documentation":"<p>The configuration entry associated with the specific portal type. The value for IoT SiteWise Monitor (Classic) is <code>SITEWISE_PORTAL_V1</code>. The value for IoT SiteWise Monitor (AI-aware) is <code>SITEWISE_PORTAL_V2</code>.</p>"
         }
       }
     },
@@ -9005,7 +9738,7 @@
     "ValidationException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"errorMessage"}
+        "message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The validation failed for this query.</p>",
       "error":{"httpStatusCode":400},
@@ -9083,8 +9816,7 @@
         "ENABLED",
         "DISABLED"
       ]
-    },
-    "errorMessage":{"type":"string"}
+    }
   },
   "documentation":"<p>Welcome to the IoT SiteWise API Reference. IoT SiteWise is an Amazon Web Services service that connects <a href=\"https://en.wikipedia.org/wiki/Internet_of_things#Industrial_applications\">Industrial Internet of Things (IIoT)</a> devices to the power of the Amazon Web Services Cloud. For more information, see the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/\">IoT SiteWise User Guide</a>. For information about IoT SiteWise quotas, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html\">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>"
 }

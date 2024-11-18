@@ -790,6 +790,22 @@
       },
       "documentation":"<p>Lists your generated templates in this Region.</p>"
     },
+    "ListHookResults":{
+      "name":"ListHookResults",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListHookResultsInput"},
+      "output":{
+        "shape":"ListHookResultsOutput",
+        "resultWrapper":"ListHookResultsResult"
+      },
+      "errors":[
+        {"shape":"HookResultNotFoundException"}
+      ],
+      "documentation":"<p>Returns summaries of invoked Hooks when a change set or Cloud Control API operation target is provided.</p>"
+    },
     "ListImports":{
       "name":"ListImports",
       "http":{
@@ -3807,6 +3823,62 @@
       "type":"string",
       "enum":["PRE_PROVISION"]
     },
+    "HookResultId":{
+      "type":"string",
+      "max":1600,
+      "min":1,
+      "pattern":"[a-zA-Z][-a-zA-Z0-9]*|arn:[-a-zA-Z0-9:/]*|^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
+    "HookResultNotFoundException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified target doesn't have any requested Hook invocations.</p>",
+      "error":{
+        "code":"HookResultNotFound",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "HookResultSummaries":{
+      "type":"list",
+      "member":{"shape":"HookResultSummary"}
+    },
+    "HookResultSummary":{
+      "type":"structure",
+      "members":{
+        "InvocationPoint":{
+          "shape":"HookInvocationPoint",
+          "documentation":"<p>The exact point in the provisioning logic where the Hook runs.</p>"
+        },
+        "FailureMode":{
+          "shape":"HookFailureMode",
+          "documentation":"<p>The failure mode of the invocation. The following are potential modes:</p> <ul> <li> <p> <code>FAIL</code>: If the hook invocation returns a failure, then the requested target operation should fail.</p> </li> <li> <p> <code>WARN</code>: If the hook invocation returns a failure, then the requested target operation should warn.</p> </li> </ul>"
+        },
+        "TypeName":{
+          "shape":"HookTypeName",
+          "documentation":"<p>The type name of the Hook being invoked.</p>"
+        },
+        "TypeVersionId":{
+          "shape":"HookTypeVersionId",
+          "documentation":"<p>The version of the Hook being invoked.</p>"
+        },
+        "TypeConfigurationVersionId":{
+          "shape":"HookTypeConfigurationVersionId",
+          "documentation":"<p>The version of the Hook type configuration.</p>"
+        },
+        "Status":{
+          "shape":"HookStatus",
+          "documentation":"<p>The state of the Hook invocation.</p>"
+        },
+        "HookStatusReason":{
+          "shape":"HookStatusReason",
+          "documentation":"<p>A description of the Hook results status. For example, if the Hook result is in a <code>FAILED</code> state, this may contain additional information for the <code>FAILED</code> state.</p>"
+        }
+      },
+      "documentation":"<p>Describes a Hook invocation, its status, and the reason for its status.</p>"
+    },
     "HookStatus":{
       "type":"string",
       "enum":[
@@ -4076,6 +4148,57 @@
           "documentation":"<p>If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>ListGeneratedTemplates</code> again and use that value for the <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to an empty string.</p>"
         }
       }
+    },
+    "ListHookResultsInput":{
+      "type":"structure",
+      "required":[
+        "TargetType",
+        "TargetId"
+      ],
+      "members":{
+        "TargetType":{
+          "shape":"ListHookResultsTargetType",
+          "documentation":"<p>The type of operation being targeted by the Hook.</p>"
+        },
+        "TargetId":{
+          "shape":"HookResultId",
+          "documentation":"<p>The logical ID of the target the operation is acting on by the Hook. If the target is a change set, it's the ARN of the change set.</p> <p>If the target is a Cloud Control API operation, this will be the <code>HookRequestToken</code> returned by the Cloud Control API operation request. For more information on the <code>HookRequestToken</code>, see <a href=\"https://docs.aws.amazon.com/cloudcontrolapi/latest/APIReference/API_ProgressEvent.html\">ProgressEvent</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A string that identifies the next page of events that you want to retrieve.</p>"
+        }
+      }
+    },
+    "ListHookResultsOutput":{
+      "type":"structure",
+      "members":{
+        "TargetType":{
+          "shape":"ListHookResultsTargetType",
+          "documentation":"<p>The type of operation being targeted by the Hook.</p>"
+        },
+        "TargetId":{
+          "shape":"HookResultId",
+          "documentation":"<p>The logical ID of the target the operation is acting on by the Hook. If the target is a change set, it's the ARN of the change set.</p> <p>If the target is a Cloud Control API operation, this will be the <code>HooksRequestToken</code> returned by the Cloud Control API operation request. For more information on the <code>HooksRequestToken</code>, see <a href=\"https://docs.aws.amazon.com/cloudcontrolapi/latest/APIReference/API_ProgressEvent.html\">ProgressEvent</a>.</p>"
+        },
+        "HookResults":{
+          "shape":"HookResultSummaries",
+          "documentation":"<p>A list of <code>HookResultSummary</code> structures that provides the status and Hook status reason for each Hook invocation for the specified target.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Pagination token, <code>null</code> or empty if no more results.</p>"
+        }
+      }
+    },
+    "ListHookResultsTargetType":{
+      "type":"string",
+      "enum":[
+        "CHANGE_SET",
+        "STACK",
+        "RESOURCE",
+        "CLOUD_CONTROL"
+      ]
     },
     "ListImportsInput":{
       "type":"structure",

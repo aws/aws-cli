@@ -523,7 +523,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists configurations stored in the AppConfig hosted configuration store by version.</p>"
+      "documentation":"<p>Lists configurations stored in the AppConfig hosted configuration store by version. </p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -762,7 +762,7 @@
           "documentation":"<p>An Amazon Resource Name (ARN) for an Identity and Access Management assume role.</p>"
         }
       },
-      "documentation":"<p>An action defines the tasks that the extension performs during the AppConfig workflow. Each action includes an action point such as <code>ON_CREATE_HOSTED_CONFIGURATION</code>, <code>PRE_DEPLOYMENT</code>, or <code>ON_DEPLOYMENT</code>. Each action also includes a name, a URI to an Lambda function, and an Amazon Resource Name (ARN) for an Identity and Access Management assume role. You specify the name, URI, and ARN for each <i>action point</i> defined in the extension. You can specify the following actions for an extension:</p> <ul> <li> <p> <code>PRE_CREATE_HOSTED_CONFIGURATION_VERSION</code> </p> </li> <li> <p> <code>PRE_START_DEPLOYMENT</code> </p> </li> <li> <p> <code>ON_DEPLOYMENT_START</code> </p> </li> <li> <p> <code>ON_DEPLOYMENT_STEP</code> </p> </li> <li> <p> <code>ON_DEPLOYMENT_BAKING</code> </p> </li> <li> <p> <code>ON_DEPLOYMENT_COMPLETE</code> </p> </li> <li> <p> <code>ON_DEPLOYMENT_ROLLED_BACK</code> </p> </li> </ul>"
+      "documentation":"<p>An action defines the tasks that the extension performs during the AppConfig workflow. Each action includes an action point, as shown in the following list: </p> <ul> <li> <p> <code>PRE_CREATE_HOSTED_CONFIGURATION_VERSION</code> </p> </li> <li> <p> <code>PRE_START_DEPLOYMENT</code> </p> </li> <li> <p> <code>AT_DEPLOYMENT_TICK</code> </p> </li> <li> <p> <code>ON_DEPLOYMENT_START</code> </p> </li> <li> <p> <code>ON_DEPLOYMENT_STEP</code> </p> </li> <li> <p> <code>ON_DEPLOYMENT_BAKING</code> </p> </li> <li> <p> <code>ON_DEPLOYMENT_COMPLETE</code> </p> </li> <li> <p> <code>ON_DEPLOYMENT_ROLLED_BACK</code> </p> </li> </ul> <p>Each action also includes a name, a URI to an Lambda function, and an Amazon Resource Name (ARN) for an Identity and Access Management assume role. You specify the name, URI, and ARN for each <i>action point</i> defined in the extension.</p>"
     },
     "ActionInvocation":{
       "type":"structure",
@@ -813,6 +813,7 @@
       "enum":[
         "PRE_CREATE_HOSTED_CONFIGURATION_VERSION",
         "PRE_START_DEPLOYMENT",
+        "AT_DEPLOYMENT_TICK",
         "ON_DEPLOYMENT_START",
         "ON_DEPLOYMENT_STEP",
         "ON_DEPLOYMENT_BAKING",
@@ -1097,7 +1098,7 @@
         },
         "LocationUri":{
           "shape":"Uri",
-          "documentation":"<p>A URI to locate the configuration. You can specify the following:</p> <ul> <li> <p>For the AppConfig hosted configuration store and for feature flags, specify <code>hosted</code>.</p> </li> <li> <p>For an Amazon Web Services Systems Manager Parameter Store parameter, specify either the parameter name in the format <code>ssm-parameter://&lt;parameter name&gt;</code> or the ARN.</p> </li> <li> <p>For an Amazon Web Services CodePipeline pipeline, specify the URI in the following format: <code>codepipeline</code>://&lt;pipeline name&gt;.</p> </li> <li> <p>For an Secrets Manager secret, specify the URI in the following format: <code>secretsmanager</code>://&lt;secret name&gt;.</p> </li> <li> <p>For an Amazon S3 object, specify the URI in the following format: <code>s3://&lt;bucket&gt;/&lt;objectKey&gt; </code>. Here is an example: <code>s3://my-bucket/my-app/us-east-1/my-config.json</code> </p> </li> <li> <p>For an SSM document, specify either the document name in the format <code>ssm-document://&lt;document name&gt;</code> or the Amazon Resource Name (ARN).</p> </li> </ul>"
+          "documentation":"<p>A URI to locate the configuration. You can specify the following:</p> <ul> <li> <p>For the AppConfig hosted configuration store and for feature flags, specify <code>hosted</code>.</p> </li> <li> <p>For an Amazon Web Services Systems Manager Parameter Store parameter, specify either the parameter name in the format <code>ssm-parameter://&lt;parameter name&gt;</code> or the ARN.</p> </li> <li> <p>For an Amazon Web Services CodePipeline pipeline, specify the URI in the following format: <code>codepipeline</code>://&lt;pipeline name&gt;.</p> </li> <li> <p>For an Secrets Manager secret, specify the URI in the following format: <code>secretsmanager</code>://&lt;secret name&gt;.</p> </li> <li> <p>For an Amazon S3 object, specify the URI in the following format: <code>s3://&lt;bucket&gt;/&lt;objectKey&gt; </code>. Here is an example: <code>s3://amzn-s3-demo-bucket/my-app/us-east-1/my-config.json</code> </p> </li> <li> <p>For an SSM document, specify either the document name in the format <code>ssm-document://&lt;document name&gt;</code> or the Amazon Resource Name (ARN).</p> </li> </ul>"
         },
         "RetrievalRoleArn":{
           "shape":"RoleArn",
@@ -2557,7 +2558,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.</p>",
+          "documentation":"<p>The maximum number of items to return for this call. If <code>MaxResults</code> is not provided in the call, AppConfig returns the maximum of 50. The call also returns a token that you can specify in a subsequent call to get the next set of results.</p>",
           "box":true,
           "location":"querystring",
           "locationName":"max_results"

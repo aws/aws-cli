@@ -14,6 +14,24 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "ActivateMessageTemplate":{
+      "name":"ActivateMessageTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/activate",
+        "responseCode":200
+      },
+      "input":{"shape":"ActivateMessageTemplateRequest"},
+      "output":{"shape":"ActivateMessageTemplateResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Activates a specific version of the Amazon Q in Connect message template. After the version is activated, the previous active version will be deactivated automatically. You can use the <code>$ACTIVE_VERSION</code> qualifier later to reference the version that is in active status.</p>"
+    },
     "CreateAIAgent":{
       "name":"CreateAIAgent",
       "http":{
@@ -187,6 +205,65 @@
       "documentation":"<p>Creates a knowledge base.</p> <note> <p>When using this API, you cannot reuse <a href=\"https://docs.aws.amazon.com/appintegrations/latest/APIReference/Welcome.html\">Amazon AppIntegrations</a> DataIntegrations with external knowledge bases such as Salesforce and ServiceNow. If you do, you'll get an <code>InvalidRequestException</code> error. </p> <p>For example, you're programmatically managing your external knowledge base, and you want to add or remove one of the fields that is being ingested from Salesforce. Do the following:</p> <ol> <li> <p>Call <a href=\"https://docs.aws.amazon.com/amazon-q-connect/latest/APIReference/API_DeleteKnowledgeBase.html\">DeleteKnowledgeBase</a>.</p> </li> <li> <p>Call <a href=\"https://docs.aws.amazon.com/appintegrations/latest/APIReference/API_DeleteDataIntegration.html\">DeleteDataIntegration</a>.</p> </li> <li> <p>Call <a href=\"https://docs.aws.amazon.com/appintegrations/latest/APIReference/API_CreateDataIntegration.html\">CreateDataIntegration</a> to recreate the DataIntegration or a create different one.</p> </li> <li> <p>Call CreateKnowledgeBase.</p> </li> </ol> </note>",
       "idempotent":true
     },
+    "CreateMessageTemplate":{
+      "name":"CreateMessageTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/messageTemplates",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateMessageTemplateRequest"},
+      "output":{"shape":"CreateMessageTemplateResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an Amazon Q in Connect message template. The name of the message template has to be unique for each knowledge base. The channel subtype of the message template is immutable and cannot be modified after creation. After the message template is created, you can use the <code>$LATEST</code> qualifier to reference the created message template.</p>",
+      "idempotent":true
+    },
+    "CreateMessageTemplateAttachment":{
+      "name":"CreateMessageTemplateAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/attachments",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateMessageTemplateAttachmentRequest"},
+      "output":{"shape":"CreateMessageTemplateAttachmentResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Uploads an attachment file to the specified Amazon Q in Connect message template. The name of the message template attachment has to be unique for each message template referenced by the <code>$LATEST</code> qualifier. The body of the attachment file should be encoded using base64 encoding. After the file is uploaded, you can use the pre-signed Amazon S3 URL returned in response to download the uploaded file.</p>",
+      "idempotent":true
+    },
+    "CreateMessageTemplateVersion":{
+      "name":"CreateMessageTemplateVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateMessageTemplateVersionRequest"},
+      "output":{"shape":"CreateMessageTemplateVersionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a new Amazon Q in Connect message template version from the current content and configuration of a message template. Versions are immutable and monotonically increasing. Once a version is created, you can reference a specific version of the message template by passing in <code>&lt;message-template-id&gt;:&lt;versionNumber&gt;</code> as the message template identifier. An error is displayed if the supplied <code>messageTemplateContentSha256</code> is different from the <code>messageTemplateContentSha256</code> of the message template with <code>$LATEST</code> qualifier. If multiple <code>CreateMessageTemplateVersion</code> requests are made while the message template remains the same, only the first invocation creates a new version and the succeeding requests will return the same response as the first invocation.</p>"
+    },
     "CreateQuickResponse":{
       "name":"CreateQuickResponse",
       "http":{
@@ -223,6 +300,24 @@
       ],
       "documentation":"<p>Creates a session. A session is a contextual container used for generating recommendations. Amazon Connect creates a new Amazon Q in Connect session for each contact on which Amazon Q in Connect is enabled.</p>",
       "idempotent":true
+    },
+    "DeactivateMessageTemplate":{
+      "name":"DeactivateMessageTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/deactivate",
+        "responseCode":200
+      },
+      "input":{"shape":"DeactivateMessageTemplateRequest"},
+      "output":{"shape":"DeactivateMessageTemplateResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deactivates a specific version of the Amazon Q in Connect message template . After the version is deactivated, you can no longer use the <code>$ACTIVE_VERSION</code> qualifier to reference the version in active status.</p>"
     },
     "DeleteAIAgent":{
       "name":"DeleteAIAgent",
@@ -402,6 +497,44 @@
       "documentation":"<p>Deletes the knowledge base.</p> <note> <p>When you use this API to delete an external knowledge base such as Salesforce or ServiceNow, you must also delete the <a href=\"https://docs.aws.amazon.com/appintegrations/latest/APIReference/Welcome.html\">Amazon AppIntegrations</a> DataIntegration. This is because you can't reuse the DataIntegration after it's been associated with an external knowledge base. However, you can delete and recreate it. See <a href=\"https://docs.aws.amazon.com/appintegrations/latest/APIReference/API_DeleteDataIntegration.html\">DeleteDataIntegration</a> and <a href=\"https://docs.aws.amazon.com/appintegrations/latest/APIReference/API_CreateDataIntegration.html\">CreateDataIntegration</a> in the <i>Amazon AppIntegrations API Reference</i>.</p> </note>",
       "idempotent":true
     },
+    "DeleteMessageTemplate":{
+      "name":"DeleteMessageTemplate",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteMessageTemplateRequest"},
+      "output":{"shape":"DeleteMessageTemplateResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes an Amazon Q in Connect message template entirely or a specific version of the message template if version is supplied in the request. You can provide the message template identifier as <code>&lt;message-template-id&gt;:&lt;versionNumber&gt;</code> to delete a specific version of the message template. If it is not supplied, the message template and all available versions will be deleted.</p>",
+      "idempotent":true
+    },
+    "DeleteMessageTemplateAttachment":{
+      "name":"DeleteMessageTemplateAttachment",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/attachments/{attachmentId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteMessageTemplateAttachmentRequest"},
+      "output":{"shape":"DeleteMessageTemplateAttachmentResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes the attachment file from the Amazon Q in Connect message template that is referenced by <code>$LATEST</code> qualifier. Attachments on available message template versions will remain unchanged.</p>",
+      "idempotent":true
+    },
     "DeleteQuickResponse":{
       "name":"DeleteQuickResponse",
       "http":{
@@ -564,6 +697,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves information about the knowledge base.</p>"
+    },
+    "GetMessageTemplate":{
+      "name":"GetMessageTemplate",
+      "http":{
+        "method":"GET",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMessageTemplateRequest"},
+      "output":{"shape":"GetMessageTemplateResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the Amazon Q in Connect message template. The message template identifier can contain an optional qualifier, for example, <code>&lt;message-template-id&gt;:&lt;qualifier&gt;</code>, which is either an actual version number or an Amazon Q Connect managed qualifier <code>$ACTIVE_VERSION</code> | <code>$LATEST</code>. If it is not supplied, then <code>$LATEST</code> is assumed implicitly.</p>"
     },
     "GetQuickResponse":{
       "name":"GetQuickResponse",
@@ -776,6 +926,40 @@
       ],
       "documentation":"<p>Lists the knowledge bases.</p>"
     },
+    "ListMessageTemplateVersions":{
+      "name":"ListMessageTemplateVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMessageTemplateVersionsRequest"},
+      "output":{"shape":"ListMessageTemplateVersionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists all the available versions for the specified Amazon Q in Connect message template.</p>"
+    },
+    "ListMessageTemplates":{
+      "name":"ListMessageTemplates",
+      "http":{
+        "method":"GET",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/messageTemplates",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMessageTemplatesRequest"},
+      "output":{"shape":"ListMessageTemplatesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists all the available Amazon Q in Connect message templates for the specified knowledge base.</p>"
+    },
     "ListQuickResponses":{
       "name":"ListQuickResponses",
       "http":{
@@ -893,6 +1077,23 @@
       ],
       "documentation":"<p>Removes a URI template from a knowledge base.</p>"
     },
+    "RenderMessageTemplate":{
+      "name":"RenderMessageTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/render",
+        "responseCode":200
+      },
+      "input":{"shape":"RenderMessageTemplateRequest"},
+      "output":{"shape":"RenderMessageTemplateResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Renders the Amazon Q in Connect message template based on the attribute values provided and generates the message content. For any variable present in the message template, if the attribute value is neither provided in the attribute request parameter nor the default attribute of the message template, the rendered message content will keep the variable placeholder as it is and return the attribute keys that are missing.</p>"
+    },
     "SearchContent":{
       "name":"SearchContent",
       "http":{
@@ -908,6 +1109,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Searches for content in a specified knowledge base. Can be used to get a specific content resource by its name.</p>"
+    },
+    "SearchMessageTemplates":{
+      "name":"SearchMessageTemplates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/search/messageTemplates",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchMessageTemplatesRequest"},
+      "output":{"shape":"SearchMessageTemplatesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Searches for Amazon Q in Connect message templates in the specified knowledge base.</p>"
     },
     "SearchQuickResponses":{
       "name":"SearchQuickResponses",
@@ -1095,6 +1313,42 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Updates the template URI of a knowledge base. This is only supported for knowledge bases of type EXTERNAL. Include a single variable in <code>${variable}</code> format; this interpolated by Amazon Q in Connect using ingested content. For example, if you ingest a Salesforce article, it has an <code>Id</code> value, and you can set the template URI to <code>https://myInstanceName.lightning.force.com/lightning/r/Knowledge__kav/*${Id}*/view</code>. </p>"
+    },
+    "UpdateMessageTemplate":{
+      "name":"UpdateMessageTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateMessageTemplateRequest"},
+      "output":{"shape":"UpdateMessageTemplateResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates the Amazon Q in Connect message template. Partial update is supported. If any field is not supplied, it will remain unchanged for the message template that is referenced by the <code>$LATEST</code> qualifier. Any modification will only apply to the message template that is referenced by the <code>$LATEST</code> qualifier. The fields for all available versions will remain unchanged.</p>"
+    },
+    "UpdateMessageTemplateMetadata":{
+      "name":"UpdateMessageTemplateMetadata",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/messageTemplates/{messageTemplateId}/metadata",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateMessageTemplateMetadataRequest"},
+      "output":{"shape":"UpdateMessageTemplateMetadataResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates the Amazon Q in Connect message template metadata. Note that any modification to the message template’s name, description and grouping configuration will applied to the message template pointed by the <code>$LATEST</code> qualifier and all available versions. Partial update is supported. If any field is not supplied, it will remain unchanged for the message template.</p>"
     },
     "UpdateQuickResponse":{
       "name":"UpdateQuickResponse",
@@ -1577,6 +1831,68 @@
       },
       "exception":true
     },
+    "ActivateMessageTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseId",
+        "messageTemplateId",
+        "versionNumber"
+      ],
+      "members":{
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "messageTemplateId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the message template. Can be either the ID or the ARN. It cannot contain any qualifier.</p>",
+          "location":"uri",
+          "locationName":"messageTemplateId"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the message template version to activate.</p>"
+        }
+      }
+    },
+    "ActivateMessageTemplateResponse":{
+      "type":"structure",
+      "required":[
+        "messageTemplateArn",
+        "messageTemplateId",
+        "versionNumber"
+      ],
+      "members":{
+        "messageTemplateArn":{
+          "shape":"ArnWithQualifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the message template.</p>"
+        },
+        "messageTemplateId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the message template.</p>"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the message template version that is activated.</p>"
+        }
+      }
+    },
+    "AgentAttributes":{
+      "type":"structure",
+      "members":{
+        "firstName":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The agent’s first name as entered in their Amazon Connect user account.</p>"
+        },
+        "lastName":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The agent’s last name as entered in their Amazon Connect user account.</p>"
+        }
+      },
+      "documentation":"<p>Information about an agent.</p>"
+    },
     "AmazonConnectGuideAssociationData":{
       "type":"structure",
       "members":{
@@ -1631,6 +1947,10 @@
     "Arn":{
       "type":"string",
       "pattern":"^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}){0,2}$"
+    },
+    "ArnWithQualifier":{
+      "type":"string",
+      "pattern":"^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}){0,2}(:[A-Z0-9_$]+){0,1}$"
     },
     "AssistantAssociationData":{
       "type":"structure",
@@ -1939,6 +2259,13 @@
       "type":"string",
       "enum":["KNOWLEDGE_BASE"]
     },
+    "AttachmentFileName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[\\p{L}\\p{M}\\p{N}_\\s&@()+,;=\\-]+\\.[A-Za-z0-9]+$",
+      "sensitive":true
+    },
     "BedrockFoundationModelConfigurationForParsing":{
       "type":"structure",
       "required":["modelArn"],
@@ -1969,6 +2296,13 @@
       "max":10,
       "min":1,
       "sensitive":true
+    },
+    "ChannelSubtype":{
+      "type":"string",
+      "enum":[
+        "EMAIL",
+        "SMS"
+      ]
     },
     "Channels":{
       "type":"list",
@@ -2289,6 +2623,10 @@
       },
       "documentation":"<p>Details about the content data.</p>"
     },
+    "ContentDisposition":{
+      "type":"string",
+      "enum":["ATTACHMENT"]
+    },
     "ContentFeedbackData":{
       "type":"structure",
       "members":{
@@ -2442,7 +2780,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the AWS SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>..</p>",
           "idempotencyToken":true
         },
         "configuration":{
@@ -2501,7 +2839,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the AWS SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>..</p>",
           "idempotencyToken":true
         },
         "modifiedTime":{
@@ -2548,7 +2886,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the AWS SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>..</p>",
           "idempotencyToken":true
         },
         "description":{
@@ -2615,7 +2953,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the AWS SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/https:/aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>..</p>",
           "idempotencyToken":true
         },
         "modifiedTime":{
@@ -2661,7 +2999,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
           "idempotencyToken":true
         },
         "tags":{
@@ -2688,7 +3026,7 @@
       "members":{
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
           "idempotencyToken":true
         },
         "description":{
@@ -2741,7 +3079,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
           "idempotencyToken":true
         },
         "contentId":{
@@ -2781,7 +3119,7 @@
       "members":{
         "clientToken":{
           "shape":"NonEmptyString",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
           "idempotencyToken":true
         },
         "knowledgeBaseId":{
@@ -2834,7 +3172,7 @@
       "members":{
         "clientToken":{
           "shape":"NonEmptyString",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
           "idempotencyToken":true
         },
         "description":{
@@ -2859,7 +3197,7 @@
         },
         "sourceConfiguration":{
           "shape":"SourceConfiguration",
-          "documentation":"<p>The source of the knowledge base content. Only set this argument for EXTERNAL knowledge bases.</p>"
+          "documentation":"<p>The source of the knowledge base content. Only set this argument for EXTERNAL or Managed knowledge bases.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -2880,6 +3218,149 @@
         }
       }
     },
+    "CreateMessageTemplateAttachmentRequest":{
+      "type":"structure",
+      "required":[
+        "body",
+        "contentDisposition",
+        "knowledgeBaseId",
+        "messageTemplateId",
+        "name"
+      ],
+      "members":{
+        "body":{
+          "shape":"NonEmptyUnlimitedString",
+          "documentation":"<p>The body of the attachment file being uploaded. It should be encoded using base64 encoding.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>"
+        },
+        "contentDisposition":{
+          "shape":"ContentDisposition",
+          "documentation":"<p>The presentation information for the attachment file.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "messageTemplateId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the message template. Can be either the ID or the ARN. It cannot contain any qualifier.</p>",
+          "location":"uri",
+          "locationName":"messageTemplateId"
+        },
+        "name":{
+          "shape":"AttachmentFileName",
+          "documentation":"<p>The name of the attachment file being uploaded. The name should include the file extension.</p>"
+        }
+      }
+    },
+    "CreateMessageTemplateAttachmentResponse":{
+      "type":"structure",
+      "members":{
+        "attachment":{
+          "shape":"MessageTemplateAttachment",
+          "documentation":"<p>The message template attachment.</p>"
+        }
+      }
+    },
+    "CreateMessageTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "channelSubtype",
+        "content",
+        "knowledgeBaseId",
+        "name"
+      ],
+      "members":{
+        "channelSubtype":{
+          "shape":"ChannelSubtype",
+          "documentation":"<p>The channel subtype this message template applies to.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "content":{
+          "shape":"MessageTemplateContentProvider",
+          "documentation":"<p>The content of the message template.</p>"
+        },
+        "defaultAttributes":{
+          "shape":"MessageTemplateAttributes",
+          "documentation":"<p>An object that specifies the default values to use for variables in the message template. This object contains different categories of key-value pairs. Each key defines a variable or placeholder in the message template. The corresponding value defines the default value for that variable.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the message template.</p>"
+        },
+        "groupingConfiguration":{"shape":"GroupingConfiguration"},
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "language":{
+          "shape":"LanguageCode",
+          "documentation":"<p>The language code value for the language in which the quick response is written. The supported language codes include <code>de_DE</code>, <code>en_US</code>, <code>es_ES</code>, <code>fr_FR</code>, <code>id_ID</code>, <code>it_IT</code>, <code>ja_JP</code>, <code>ko_KR</code>, <code>pt_BR</code>, <code>zh_CN</code>, <code>zh_TW</code> </p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the message template.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateMessageTemplateResponse":{
+      "type":"structure",
+      "members":{
+        "messageTemplate":{
+          "shape":"MessageTemplateData",
+          "documentation":"<p>The message template.</p>"
+        }
+      }
+    },
+    "CreateMessageTemplateVersionRequest":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseId",
+        "messageTemplateId"
+      ],
+      "members":{
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "messageTemplateContentSha256":{
+          "shape":"MessageTemplateContentSha256",
+          "documentation":"<p>The checksum value of the message template content that is referenced by the <code>$LATEST</code> qualifier. It can be returned in <code>MessageTemplateData</code> or <code>ExtendedMessageTemplateData</code>. It’s calculated by content, language, <code>defaultAttributes</code> and <code>Attachments</code> of the message template. If not supplied, the message template version will be created based on the message template content that is referenced by the <code>$LATEST</code> qualifier by default.</p>"
+        },
+        "messageTemplateId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the message template. Can be either the ID or the ARN. It cannot contain any qualifier.</p>",
+          "location":"uri",
+          "locationName":"messageTemplateId"
+        }
+      }
+    },
+    "CreateMessageTemplateVersionResponse":{
+      "type":"structure",
+      "members":{
+        "messageTemplate":{
+          "shape":"ExtendedMessageTemplateData",
+          "documentation":"<p>The message template.</p>"
+        }
+      }
+    },
     "CreateQuickResponseRequest":{
       "type":"structure",
       "required":[
@@ -2894,7 +3375,7 @@
         },
         "clientToken":{
           "shape":"NonEmptyString",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
           "idempotencyToken":true
         },
         "content":{
@@ -2969,7 +3450,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
           "idempotencyToken":true
         },
         "description":{
@@ -2998,6 +3479,250 @@
           "documentation":"<p>The session.</p>"
         }
       }
+    },
+    "CustomAttributes":{
+      "type":"map",
+      "key":{"shape":"MessageTemplateAttributeKey"},
+      "value":{"shape":"MessageTemplateAttributeValue"},
+      "sensitive":true
+    },
+    "CustomerProfileAttributes":{
+      "type":"structure",
+      "members":{
+        "accountNumber":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>A unique account number that you have given to the customer.</p>"
+        },
+        "additionalInformation":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>Any additional information relevant to the customer's profile.</p>"
+        },
+        "address1":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The first line of a customer address.</p>"
+        },
+        "address2":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The second line of a customer address.</p>"
+        },
+        "address3":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The third line of a customer address.</p>"
+        },
+        "address4":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The fourth line of a customer address.</p>"
+        },
+        "billingAddress1":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The first line of a customer’s billing address.</p>"
+        },
+        "billingAddress2":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The second line of a customer’s billing address.</p>"
+        },
+        "billingAddress3":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The third line of a customer’s billing address.</p>"
+        },
+        "billingAddress4":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The fourth line of a customer’s billing address.</p>"
+        },
+        "billingCity":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The city of a customer’s billing address.</p>"
+        },
+        "billingCountry":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The country of a customer’s billing address.</p>"
+        },
+        "billingCounty":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The county of a customer’s billing address.</p>"
+        },
+        "billingPostalCode":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The postal code of a customer’s billing address.</p>"
+        },
+        "billingProvince":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The province of a customer’s billing address.</p>"
+        },
+        "billingState":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The state of a customer’s billing address.</p>"
+        },
+        "birthDate":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The customer's birth date.</p>"
+        },
+        "businessEmailAddress":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The customer's business email address.</p>"
+        },
+        "businessName":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The name of the customer's business.</p>"
+        },
+        "businessPhoneNumber":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The customer's business phone number.</p>"
+        },
+        "city":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The city in which a customer lives.</p>"
+        },
+        "country":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The country in which a customer lives.</p>"
+        },
+        "county":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The county in which a customer lives.</p>"
+        },
+        "custom":{
+          "shape":"CustomAttributes",
+          "documentation":"<p>The custom attributes in customer profile attributes.</p>"
+        },
+        "emailAddress":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The customer's email address, which has not been specified as a personal or business address.</p>"
+        },
+        "firstName":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The customer's first name.</p>"
+        },
+        "gender":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The customer's gender.</p>"
+        },
+        "homePhoneNumber":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The customer's mobile phone number.</p>"
+        },
+        "lastName":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The customer's last name.</p>"
+        },
+        "mailingAddress1":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The first line of a customer’s mailing address.</p>"
+        },
+        "mailingAddress2":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The second line of a customer’s mailing address.</p>"
+        },
+        "mailingAddress3":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The third line of a customer’s mailing address.</p>"
+        },
+        "mailingAddress4":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The fourth line of a customer’s mailing address.</p>"
+        },
+        "mailingCity":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The city of a customer’s mailing address.</p>"
+        },
+        "mailingCountry":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The country of a customer’s mailing address.</p>"
+        },
+        "mailingCounty":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The county of a customer’s mailing address.</p>"
+        },
+        "mailingPostalCode":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The postal code of a customer’s mailing address.</p>"
+        },
+        "mailingProvince":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The province of a customer’s mailing address.</p>"
+        },
+        "mailingState":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The state of a customer’s mailing address.</p>"
+        },
+        "middleName":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The customer's middle name.</p>"
+        },
+        "mobilePhoneNumber":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The customer's mobile phone number.</p>"
+        },
+        "partyType":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The customer's party type.</p>"
+        },
+        "phoneNumber":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The customer's phone number, which has not been specified as a mobile, home, or business number.</p>"
+        },
+        "postalCode":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The postal code of a customer address.</p>"
+        },
+        "profileARN":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The ARN of a customer profile.</p>"
+        },
+        "profileId":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The unique identifier of a customer profile.</p>"
+        },
+        "province":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The province in which a customer lives.</p>"
+        },
+        "shippingAddress1":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The first line of a customer’s shipping address.</p>"
+        },
+        "shippingAddress2":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The second line of a customer’s shipping address.</p>"
+        },
+        "shippingAddress3":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The third line of a customer’s shipping address.</p>"
+        },
+        "shippingAddress4":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The fourth line of a customer’s shipping address.</p>"
+        },
+        "shippingCity":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The city of a customer’s shipping address.</p>"
+        },
+        "shippingCountry":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The country of a customer’s shipping address.</p>"
+        },
+        "shippingCounty":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The county of a customer’s shipping address.</p>"
+        },
+        "shippingPostalCode":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The postal code of a customer’s shipping address.</p>"
+        },
+        "shippingProvince":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The province of a customer’s shipping address.</p>"
+        },
+        "shippingState":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The state of a customer’s shipping address.</p>"
+        },
+        "state":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The state in which a customer lives.</p>"
+        }
+      },
+      "documentation":"<p>The customer profile attributes that are used with the message template.</p>"
     },
     "DataDetails":{
       "type":"structure",
@@ -3055,6 +3780,54 @@
     "DataSummaryList":{
       "type":"list",
       "member":{"shape":"DataSummary"}
+    },
+    "DeactivateMessageTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseId",
+        "messageTemplateId",
+        "versionNumber"
+      ],
+      "members":{
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "messageTemplateId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the message template. Can be either the ID or the ARN. It cannot contain any qualifier.</p>",
+          "location":"uri",
+          "locationName":"messageTemplateId"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the message template version to deactivate.</p>"
+        }
+      }
+    },
+    "DeactivateMessageTemplateResponse":{
+      "type":"structure",
+      "required":[
+        "messageTemplateArn",
+        "messageTemplateId",
+        "versionNumber"
+      ],
+      "members":{
+        "messageTemplateArn":{
+          "shape":"ArnWithQualifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the message template.</p>"
+        },
+        "messageTemplateId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the message template.</p>"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the message template version that has been deactivated.</p>"
+        }
+      }
     },
     "DeleteAIAgentRequest":{
       "type":"structure",
@@ -3319,6 +4092,65 @@
       "members":{
       }
     },
+    "DeleteMessageTemplateAttachmentRequest":{
+      "type":"structure",
+      "required":[
+        "attachmentId",
+        "knowledgeBaseId",
+        "messageTemplateId"
+      ],
+      "members":{
+        "attachmentId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the attachment file.</p>",
+          "location":"uri",
+          "locationName":"attachmentId"
+        },
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "messageTemplateId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the message template. Can be either the ID or the ARN. It cannot contain any qualifier.</p>",
+          "location":"uri",
+          "locationName":"messageTemplateId"
+        }
+      }
+    },
+    "DeleteMessageTemplateAttachmentResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteMessageTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseId",
+        "messageTemplateId"
+      ],
+      "members":{
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "messageTemplateId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the message template. Can be either the ID or the ARN.</p>",
+          "location":"uri",
+          "locationName":"messageTemplateId"
+        }
+      }
+    },
+    "DeleteMessageTemplateResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteQuickResponseRequest":{
       "type":"structure",
       "required":[
@@ -3383,6 +4215,167 @@
         }
       },
       "documentation":"<p>The text of the document.</p>"
+    },
+    "EmailHeader":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"EmailHeaderKey",
+          "documentation":"<p>The name of the email header.</p>"
+        },
+        "value":{
+          "shape":"EmailHeaderValue",
+          "documentation":"<p>The value of the email header.</p>"
+        }
+      },
+      "documentation":"<p>The email header to include in email messages.</p>"
+    },
+    "EmailHeaderKey":{
+      "type":"string",
+      "max":126,
+      "min":1,
+      "pattern":"^[!-9;-@A-~]+$"
+    },
+    "EmailHeaderValue":{
+      "type":"string",
+      "max":870,
+      "min":1,
+      "pattern":"[ -~]*",
+      "sensitive":true
+    },
+    "EmailHeaders":{
+      "type":"list",
+      "member":{"shape":"EmailHeader"},
+      "max":15,
+      "min":0
+    },
+    "EmailMessageTemplateContent":{
+      "type":"structure",
+      "members":{
+        "body":{
+          "shape":"EmailMessageTemplateContentBody",
+          "documentation":"<p>The body to use in email messages.</p>"
+        },
+        "headers":{
+          "shape":"EmailHeaders",
+          "documentation":"<p>The email headers to include in email messages.</p>"
+        },
+        "subject":{
+          "shape":"NonEmptyUnlimitedString",
+          "documentation":"<p>The subject line, or title, to use in email messages.</p>"
+        }
+      },
+      "documentation":"<p>The content of the message template that applies to the email channel subtype.</p>"
+    },
+    "EmailMessageTemplateContentBody":{
+      "type":"structure",
+      "members":{
+        "html":{
+          "shape":"MessageTemplateBodyContentProvider",
+          "documentation":"<p>The message body, in HTML format, to use in email messages that are based on the message template. We recommend using HTML format for email clients that render HTML content. You can include links, formatted text, and more in an HTML message.</p>"
+        },
+        "plainText":{
+          "shape":"MessageTemplateBodyContentProvider",
+          "documentation":"<p>The message body, in plain text format, to use in email messages that are based on the message template. We recommend using plain text format for email clients that don't render HTML content and clients that are connected to high-latency networks, such as mobile devices.</p>"
+        }
+      },
+      "documentation":"<p>The body to use in email messages.</p>"
+    },
+    "ExtendedMessageTemplateData":{
+      "type":"structure",
+      "required":[
+        "channelSubtype",
+        "content",
+        "createdTime",
+        "knowledgeBaseArn",
+        "knowledgeBaseId",
+        "lastModifiedBy",
+        "lastModifiedTime",
+        "messageTemplateArn",
+        "messageTemplateContentSha256",
+        "messageTemplateId",
+        "name"
+      ],
+      "members":{
+        "attachments":{
+          "shape":"MessageTemplateAttachmentList",
+          "documentation":"<p>The message template attachments.</p>"
+        },
+        "attributeTypes":{
+          "shape":"MessageTemplateAttributeTypeList",
+          "documentation":"<p>The types of attributes contain the message template.</p>"
+        },
+        "channelSubtype":{
+          "shape":"ChannelSubtype",
+          "documentation":"<p>The channel subtype this message template applies to.</p>"
+        },
+        "content":{
+          "shape":"MessageTemplateContentProvider",
+          "documentation":"<p>The content of the message template.</p>"
+        },
+        "createdTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the message template was created.</p>"
+        },
+        "defaultAttributes":{
+          "shape":"MessageTemplateAttributes",
+          "documentation":"<p>An object that specifies the default values to use for variables in the message template. This object contains different categories of key-value pairs. Each key defines a variable or placeholder in the message template. The corresponding value defines the default value for that variable.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the message template.</p>"
+        },
+        "groupingConfiguration":{"shape":"GroupingConfiguration"},
+        "isActive":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the version of the message template is activated.</p>"
+        },
+        "knowledgeBaseArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the knowledge base.</p>"
+        },
+        "language":{
+          "shape":"LanguageCode",
+          "documentation":"<p>The language code value for the language in which the quick response is written. The supported language codes include <code>de_DE</code>, <code>en_US</code>, <code>es_ES</code>, <code>fr_FR</code>, <code>id_ID</code>, <code>it_IT</code>, <code>ja_JP</code>, <code>ko_KR</code>, <code>pt_BR</code>, <code>zh_CN</code>, <code>zh_TW</code> </p>"
+        },
+        "lastModifiedBy":{
+          "shape":"GenericArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who last updated the message template data.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the message template data was last modified.</p>"
+        },
+        "messageTemplateArn":{
+          "shape":"ArnWithQualifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the message template.</p>"
+        },
+        "messageTemplateContentSha256":{
+          "shape":"MessageTemplateContentSha256",
+          "documentation":"<p>The checksum value of the message template content that is referenced by the <code>$LATEST</code> qualifier. It can be returned in <code>MessageTemplateData</code> or <code>ExtendedMessageTemplateData</code>. It’s calculated by content, language, <code>defaultAttributes</code> and <code>Attachments</code> of the message template.</p>"
+        },
+        "messageTemplateId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the message template.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the message template.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the message template version.</p>"
+        }
+      },
+      "documentation":"<p>The extended data of a message template.</p>"
     },
     "ExternalSource":{
       "type":"string",
@@ -3792,6 +4785,36 @@
         "knowledgeBase":{
           "shape":"KnowledgeBaseData",
           "documentation":"<p>The knowledge base.</p>"
+        }
+      }
+    },
+    "GetMessageTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseId",
+        "messageTemplateId"
+      ],
+      "members":{
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "messageTemplateId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the message template. Can be either the ID or the ARN.</p>",
+          "location":"uri",
+          "locationName":"messageTemplateId"
+        }
+      }
+    },
+    "GetMessageTemplateResponse":{
+      "type":"structure",
+      "members":{
+        "messageTemplate":{
+          "shape":"ExtendedMessageTemplateData",
+          "documentation":"<p>The message template.</p>"
         }
       }
     },
@@ -4782,6 +5805,91 @@
         }
       }
     },
+    "ListMessageTemplateVersionsRequest":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseId",
+        "messageTemplateId"
+      ],
+      "members":{
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "messageTemplateId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the message template. Can be either the ID or the ARN. It cannot contain any qualifier.</p>",
+          "location":"uri",
+          "locationName":"messageTemplateId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListMessageTemplateVersionsResponse":{
+      "type":"structure",
+      "required":["messageTemplateVersionSummaries"],
+      "members":{
+        "messageTemplateVersionSummaries":{
+          "shape":"MessageTemplateVersionSummaryList",
+          "documentation":"<p>Summary information about the versions of a message template.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListMessageTemplatesRequest":{
+      "type":"structure",
+      "required":["knowledgeBaseId"],
+      "members":{
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListMessageTemplatesResponse":{
+      "type":"structure",
+      "required":["messageTemplateSummaries"],
+      "members":{
+        "messageTemplateSummaries":{
+          "shape":"MessageTemplateSummaryList",
+          "documentation":"<p>Summary information about the message template.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
     "ListQuickResponsesRequest":{
       "type":"structure",
       "required":["knowledgeBaseId"],
@@ -4877,6 +5985,552 @@
       "max":100,
       "min":1
     },
+    "MessageTemplateAttachment":{
+      "type":"structure",
+      "required":[
+        "attachmentId",
+        "contentDisposition",
+        "name",
+        "uploadedTime",
+        "url",
+        "urlExpiry"
+      ],
+      "members":{
+        "attachmentId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the attachment file.</p>"
+        },
+        "contentDisposition":{
+          "shape":"ContentDisposition",
+          "documentation":"<p>The presentation information for the attachment file.</p>"
+        },
+        "name":{
+          "shape":"AttachmentFileName",
+          "documentation":"<p>The name of the attachment file being uploaded. The name should include the file extension.</p>"
+        },
+        "uploadedTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the attachment file was uploaded.</p>"
+        },
+        "url":{
+          "shape":"Url",
+          "documentation":"<p>A pre-signed Amazon S3 URL that can be used to download the attachment file.</p>"
+        },
+        "urlExpiry":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The expiration time of the pre-signed Amazon S3 URL.</p>"
+        }
+      },
+      "documentation":"<p>Information about the message template attachment.</p>"
+    },
+    "MessageTemplateAttachmentList":{
+      "type":"list",
+      "member":{"shape":"MessageTemplateAttachment"}
+    },
+    "MessageTemplateAttributeKey":{
+      "type":"string",
+      "max":32767,
+      "min":1
+    },
+    "MessageTemplateAttributeKeyList":{
+      "type":"list",
+      "member":{"shape":"MessageTemplateAttributeKey"},
+      "sensitive":true
+    },
+    "MessageTemplateAttributeType":{
+      "type":"string",
+      "enum":[
+        "SYSTEM",
+        "AGENT",
+        "CUSTOMER_PROFILE",
+        "CUSTOM"
+      ]
+    },
+    "MessageTemplateAttributeTypeList":{
+      "type":"list",
+      "member":{"shape":"MessageTemplateAttributeType"}
+    },
+    "MessageTemplateAttributeValue":{
+      "type":"string",
+      "max":32767,
+      "min":1,
+      "sensitive":true
+    },
+    "MessageTemplateAttributes":{
+      "type":"structure",
+      "members":{
+        "agentAttributes":{
+          "shape":"AgentAttributes",
+          "documentation":"<p>The agent attributes that are used with the message template.</p>"
+        },
+        "customAttributes":{
+          "shape":"CustomAttributes",
+          "documentation":"<p>The custom attributes that are used with the message template.</p>"
+        },
+        "customerProfileAttributes":{
+          "shape":"CustomerProfileAttributes",
+          "documentation":"<p>The customer profile attributes that are used with the message template.</p>"
+        },
+        "systemAttributes":{
+          "shape":"SystemAttributes",
+          "documentation":"<p>The system attributes that are used with the message template.</p>"
+        }
+      },
+      "documentation":"<p>The attributes that are used with the message template.</p>"
+    },
+    "MessageTemplateBodyContentProvider":{
+      "type":"structure",
+      "members":{
+        "content":{
+          "shape":"NonEmptyUnlimitedString",
+          "documentation":"<p>The content of the message template.</p>"
+        }
+      },
+      "documentation":"<p>The container of the message template body.</p>",
+      "union":true
+    },
+    "MessageTemplateContentProvider":{
+      "type":"structure",
+      "members":{
+        "email":{
+          "shape":"EmailMessageTemplateContent",
+          "documentation":"<p>The content of the message template that applies to the email channel subtype.</p>"
+        },
+        "sms":{
+          "shape":"SMSMessageTemplateContent",
+          "documentation":"<p>The content of the message template that applies to the SMS channel subtype.</p>"
+        }
+      },
+      "documentation":"<p>The container of message template content.</p>",
+      "union":true
+    },
+    "MessageTemplateContentSha256":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9]+$"
+    },
+    "MessageTemplateData":{
+      "type":"structure",
+      "required":[
+        "channelSubtype",
+        "content",
+        "createdTime",
+        "knowledgeBaseArn",
+        "knowledgeBaseId",
+        "lastModifiedBy",
+        "lastModifiedTime",
+        "messageTemplateArn",
+        "messageTemplateContentSha256",
+        "messageTemplateId",
+        "name"
+      ],
+      "members":{
+        "attributeTypes":{
+          "shape":"MessageTemplateAttributeTypeList",
+          "documentation":"<p>The types of attributes that the message template contains.</p>"
+        },
+        "channelSubtype":{
+          "shape":"ChannelSubtype",
+          "documentation":"<p>The channel subtype this message template applies to.</p>"
+        },
+        "content":{
+          "shape":"MessageTemplateContentProvider",
+          "documentation":"<p>The content of the message template.</p>"
+        },
+        "createdTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the message template was created.</p>"
+        },
+        "defaultAttributes":{
+          "shape":"MessageTemplateAttributes",
+          "documentation":"<p>An object that specifies the default values to use for variables in the message template. This object contains different categories of key-value pairs. Each key defines a variable or placeholder in the message template. The corresponding value defines the default value for that variable.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the message template.</p>"
+        },
+        "groupingConfiguration":{"shape":"GroupingConfiguration"},
+        "knowledgeBaseArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the knowledge base.</p>"
+        },
+        "language":{
+          "shape":"LanguageCode",
+          "documentation":"<p>The language code value for the language in which the quick response is written. The supported language codes include <code>de_DE</code>, <code>en_US</code>, <code>es_ES</code>, <code>fr_FR</code>, <code>id_ID</code>, <code>it_IT</code>, <code>ja_JP</code>, <code>ko_KR</code>, <code>pt_BR</code>, <code>zh_CN</code>, <code>zh_TW</code> </p>"
+        },
+        "lastModifiedBy":{
+          "shape":"GenericArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who last updated the message template data.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the message template data was last modified.</p>"
+        },
+        "messageTemplateArn":{
+          "shape":"ArnWithQualifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the message template.</p>"
+        },
+        "messageTemplateContentSha256":{
+          "shape":"MessageTemplateContentSha256",
+          "documentation":"<p>The checksum value of the message template content that is referenced by the <code>$LATEST</code> qualifier. It can be returned in <code>MessageTemplateData</code> or <code>ExtendedMessageTemplateData</code>. It’s calculated by content, language, <code>defaultAttributes</code> and <code>Attachments</code> of the message template.</p>"
+        },
+        "messageTemplateId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the message template.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the message template.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      },
+      "documentation":"<p>The data of a message template.</p>"
+    },
+    "MessageTemplateFilterField":{
+      "type":"structure",
+      "required":[
+        "name",
+        "operator"
+      ],
+      "members":{
+        "includeNoExistence":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to treat null value as a match for the attribute field.</p>"
+        },
+        "name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the attribute field to filter the message templates by.</p>"
+        },
+        "operator":{
+          "shape":"MessageTemplateFilterOperator",
+          "documentation":"<p>The operator to use for filtering.</p>"
+        },
+        "values":{
+          "shape":"MessageTemplateFilterValueList",
+          "documentation":"<p>The values of attribute field to filter the message template by.</p>"
+        }
+      },
+      "documentation":"<p>The message template fields to filter the message template query results by. The following is the list of supported field names:</p> <ul> <li> <p>name</p> </li> <li> <p>description</p> </li> <li> <p>channel</p> </li> <li> <p>channelSubtype</p> </li> <li> <p>language</p> </li> <li> <p>qualifier</p> </li> <li> <p>createdTime</p> </li> <li> <p>lastModifiedTime</p> </li> <li> <p>lastModifiedBy</p> </li> <li> <p>groupingConfiguration.criteria</p> </li> <li> <p>groupingConfiguration.values</p> </li> </ul>"
+    },
+    "MessageTemplateFilterFieldList":{
+      "type":"list",
+      "member":{"shape":"MessageTemplateFilterField"},
+      "max":10,
+      "min":0
+    },
+    "MessageTemplateFilterOperator":{
+      "type":"string",
+      "enum":[
+        "EQUALS",
+        "PREFIX"
+      ]
+    },
+    "MessageTemplateFilterValue":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "MessageTemplateFilterValueList":{
+      "type":"list",
+      "member":{"shape":"MessageTemplateFilterValue"},
+      "max":5,
+      "min":1
+    },
+    "MessageTemplateOrderField":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the message template.</p>"
+        },
+        "order":{
+          "shape":"Order",
+          "documentation":"<p>The order at which the message templates are sorted by.</p>"
+        }
+      },
+      "documentation":"<p>The message template fields to order the message template query results by. The following is the list of supported field names:</p> <ul> <li> <p>name</p> </li> <li> <p>description</p> </li> <li> <p>channel</p> </li> <li> <p>channelSubtype</p> </li> <li> <p>language</p> </li> <li> <p>qualifier</p> </li> <li> <p>createdTime</p> </li> <li> <p>lastModifiedTime</p> </li> <li> <p>lastModifiedBy</p> </li> <li> <p>groupingConfiguration.criteria</p> </li> <li> <p>groupingConfiguration.values</p> </li> </ul>"
+    },
+    "MessageTemplateQueryField":{
+      "type":"structure",
+      "required":[
+        "name",
+        "operator",
+        "values"
+      ],
+      "members":{
+        "allowFuzziness":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the query expects only exact matches on the attribute field values. The results of the query will only include exact matches if this parameter is set to false.</p>"
+        },
+        "name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the attribute to query the message templates by.</p>"
+        },
+        "operator":{
+          "shape":"MessageTemplateQueryOperator",
+          "documentation":"<p>The operator to use for matching attribute field values in the query.</p>"
+        },
+        "priority":{
+          "shape":"Priority",
+          "documentation":"<p>The importance of the attribute field when calculating query result relevancy scores. The value set for this parameter affects the ordering of search results.</p>"
+        },
+        "values":{
+          "shape":"MessageTemplateQueryValueList",
+          "documentation":"<p>The values of the attribute to query the message templates by.</p>"
+        }
+      },
+      "documentation":"<p>The message template fields to query message templates by. The following is the list of supported field names:</p> <ul> <li> <p>name</p> </li> <li> <p>description</p> </li> </ul>"
+    },
+    "MessageTemplateQueryFieldList":{
+      "type":"list",
+      "member":{"shape":"MessageTemplateQueryField"},
+      "max":4,
+      "min":0
+    },
+    "MessageTemplateQueryOperator":{
+      "type":"string",
+      "enum":[
+        "CONTAINS",
+        "CONTAINS_AND_PREFIX"
+      ]
+    },
+    "MessageTemplateQueryValue":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "MessageTemplateQueryValueList":{
+      "type":"list",
+      "member":{"shape":"MessageTemplateQueryValue"},
+      "max":5,
+      "min":1
+    },
+    "MessageTemplateSearchExpression":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"MessageTemplateFilterFieldList",
+          "documentation":"<p>The configuration of filtering rules applied to message template query results.</p>"
+        },
+        "orderOnField":{
+          "shape":"MessageTemplateOrderField",
+          "documentation":"<p>The message template attribute fields on which the query results are ordered.</p>"
+        },
+        "queries":{
+          "shape":"MessageTemplateQueryFieldList",
+          "documentation":"<p>The message template query expressions.</p>"
+        }
+      },
+      "documentation":"<p>The search expression of the message template.</p>"
+    },
+    "MessageTemplateSearchResultData":{
+      "type":"structure",
+      "required":[
+        "channelSubtype",
+        "createdTime",
+        "knowledgeBaseArn",
+        "knowledgeBaseId",
+        "lastModifiedBy",
+        "lastModifiedTime",
+        "messageTemplateArn",
+        "messageTemplateId",
+        "name"
+      ],
+      "members":{
+        "channelSubtype":{
+          "shape":"ChannelSubtype",
+          "documentation":"<p>The channel subtype this message template applies to.</p>"
+        },
+        "createdTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the message template was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the message template.</p>"
+        },
+        "groupingConfiguration":{"shape":"GroupingConfiguration"},
+        "isActive":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the version of the message template is activated.</p>"
+        },
+        "knowledgeBaseArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the knowledge base.</p>"
+        },
+        "language":{
+          "shape":"LanguageCode",
+          "documentation":"<p>The language code value for the language in which the quick response is written. The supported language codes include <code>de_DE</code>, <code>en_US</code>, <code>es_ES</code>, <code>fr_FR</code>, <code>id_ID</code>, <code>it_IT</code>, <code>ja_JP</code>, <code>ko_KR</code>, <code>pt_BR</code>, <code>zh_CN</code>, <code>zh_TW</code> </p>"
+        },
+        "lastModifiedBy":{
+          "shape":"GenericArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who last updated the message template data.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the message template data was last modified.</p>"
+        },
+        "messageTemplateArn":{
+          "shape":"ArnWithQualifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the message template.</p>"
+        },
+        "messageTemplateId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the message template.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the message template.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the message template version.</p>"
+        }
+      },
+      "documentation":"<p>The result of message template search.</p>"
+    },
+    "MessageTemplateSearchResultsList":{
+      "type":"list",
+      "member":{"shape":"MessageTemplateSearchResultData"}
+    },
+    "MessageTemplateSummary":{
+      "type":"structure",
+      "required":[
+        "channelSubtype",
+        "createdTime",
+        "knowledgeBaseArn",
+        "knowledgeBaseId",
+        "lastModifiedBy",
+        "lastModifiedTime",
+        "messageTemplateArn",
+        "messageTemplateId",
+        "name"
+      ],
+      "members":{
+        "activeVersionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the message template version that is activated.</p>"
+        },
+        "channelSubtype":{
+          "shape":"ChannelSubtype",
+          "documentation":"<p>The channel subtype this message template applies to.</p>"
+        },
+        "createdTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the message template was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the message template.</p>"
+        },
+        "knowledgeBaseArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the knowledge base.</p>"
+        },
+        "lastModifiedBy":{
+          "shape":"GenericArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the user who last updated the message template data.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the message template data was last modified.</p>"
+        },
+        "messageTemplateArn":{
+          "shape":"ArnWithQualifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the message template.</p>"
+        },
+        "messageTemplateId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the message template.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the message template.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the message template.</p>"
+    },
+    "MessageTemplateSummaryList":{
+      "type":"list",
+      "member":{"shape":"MessageTemplateSummary"}
+    },
+    "MessageTemplateVersionSummary":{
+      "type":"structure",
+      "required":[
+        "channelSubtype",
+        "isActive",
+        "knowledgeBaseArn",
+        "knowledgeBaseId",
+        "messageTemplateArn",
+        "messageTemplateId",
+        "name",
+        "versionNumber"
+      ],
+      "members":{
+        "channelSubtype":{
+          "shape":"ChannelSubtype",
+          "documentation":"<p>The channel subtype this message template applies to.</p>"
+        },
+        "isActive":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the version of the message template is activated.</p>"
+        },
+        "knowledgeBaseArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the knowledge base.</p>"
+        },
+        "messageTemplateArn":{
+          "shape":"ArnWithQualifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the message template.</p>"
+        },
+        "messageTemplateId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the message template.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the message template.</p>"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the message template version.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the message template version.</p>"
+    },
+    "MessageTemplateVersionSummaryList":{
+      "type":"list",
+      "member":{"shape":"MessageTemplateVersionSummary"}
+    },
     "Name":{
       "type":"string",
       "max":255,
@@ -4898,6 +6552,11 @@
       "type":"string",
       "max":4096,
       "min":1
+    },
+    "NonEmptyUnlimitedString":{
+      "type":"string",
+      "min":1,
+      "sensitive":true
     },
     "NotifyRecommendationsReceivedError":{
       "type":"structure",
@@ -5345,7 +7004,7 @@
         },
         "language":{
           "shape":"LanguageCode",
-          "documentation":"<p>The language code value for the language in which the quick response is written.</p>"
+          "documentation":"<p>The language code value for the language in which the quick response is written. The supported language codes include <code>de_DE</code>, <code>en_US</code>, <code>es_ES</code>, <code>fr_FR</code>, <code>id_ID</code>, <code>it_IT</code>, <code>ja_JP</code>, <code>ko_KR</code>, <code>pt_BR</code>, <code>zh_CN</code>, <code>zh_TW</code> </p>"
         },
         "lastModifiedBy":{
           "shape":"GenericArn",
@@ -5939,6 +7598,50 @@
       "members":{
       }
     },
+    "RenderMessageTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "attributes",
+        "knowledgeBaseId",
+        "messageTemplateId"
+      ],
+      "members":{
+        "attributes":{
+          "shape":"MessageTemplateAttributes",
+          "documentation":"<p>An object that specifies the values to use for variables in the message template. This object contains different categories of key-value pairs. Each key defines a variable or placeholder in the message template. The corresponding value defines the value for that variable.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "messageTemplateId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the message template. Can be either the ID or the ARN.</p>",
+          "location":"uri",
+          "locationName":"messageTemplateId"
+        }
+      }
+    },
+    "RenderMessageTemplateResponse":{
+      "type":"structure",
+      "required":["content"],
+      "members":{
+        "attachments":{
+          "shape":"MessageTemplateAttachmentList",
+          "documentation":"<p>The message template attachments.</p>"
+        },
+        "attributesNotInterpolated":{
+          "shape":"MessageTemplateAttributeKeyList",
+          "documentation":"<p>The attribute keys that are not resolved.</p>"
+        },
+        "content":{
+          "shape":"MessageTemplateContentProvider",
+          "documentation":"<p>The content of the message template.</p>"
+        }
+      }
+    },
     "RenderingConfiguration":{
       "type":"structure",
       "members":{
@@ -6040,6 +7743,26 @@
       "documentation":"<p>A union type that specifies the data stored on the session.</p>",
       "union":true
     },
+    "SMSMessageTemplateContent":{
+      "type":"structure",
+      "members":{
+        "body":{
+          "shape":"SMSMessageTemplateContentBody",
+          "documentation":"<p>The body to use in SMS messages.</p>"
+        }
+      },
+      "documentation":"<p>The content of the message template that applies to the SMS channel subtype.</p>"
+    },
+    "SMSMessageTemplateContentBody":{
+      "type":"structure",
+      "members":{
+        "plainText":{
+          "shape":"MessageTemplateBodyContentProvider",
+          "documentation":"<p>The message body to use in SMS messages.</p>"
+        }
+      },
+      "documentation":"<p>The body to use in SMS messages.</p>"
+    },
     "SearchContentRequest":{
       "type":"structure",
       "required":[
@@ -6095,6 +7818,51 @@
         }
       },
       "documentation":"<p>The search expression.</p>"
+    },
+    "SearchMessageTemplatesRequest":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseId",
+        "searchExpression"
+      ],
+      "members":{
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "searchExpression":{
+          "shape":"MessageTemplateSearchExpression",
+          "documentation":"<p>The search expression for querying the message template.</p>"
+        }
+      }
+    },
+    "SearchMessageTemplatesResponse":{
+      "type":"structure",
+      "required":["results"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "results":{
+          "shape":"MessageTemplateSearchResultsList",
+          "documentation":"<p>The results of the message template search.</p>"
+        }
+      }
     },
     "SearchQuickResponsesRequest":{
       "type":"structure",
@@ -6534,9 +8302,41 @@
         "CREATE_IN_PROGRESS"
       ]
     },
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
     "SyntheticTimestamp_epoch_seconds":{
       "type":"timestamp",
       "timestampFormat":"unixTimestamp"
+    },
+    "SystemAttributes":{
+      "type":"structure",
+      "members":{
+        "customerEndpoint":{
+          "shape":"SystemEndpointAttributes",
+          "documentation":"<p>The CustomerEndpoint attribute.</p>"
+        },
+        "name":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The name of the task.</p>"
+        },
+        "systemEndpoint":{
+          "shape":"SystemEndpointAttributes",
+          "documentation":"<p>The SystemEndpoint attribute.</p>"
+        }
+      },
+      "documentation":"<p>The system attributes that are used with the message template.</p>"
+    },
+    "SystemEndpointAttributes":{
+      "type":"structure",
+      "members":{
+        "address":{
+          "shape":"MessageTemplateAttributeValue",
+          "documentation":"<p>The customer's phone number if used with <code>customerEndpoint</code>, or the number the customer dialed to call your contact center if used with <code>systemEndpoint</code>.</p>"
+        }
+      },
+      "documentation":"<p>The system endpoint attributes that are used with the message template.</p>"
     },
     "TagCondition":{
       "type":"structure",
@@ -6735,7 +8535,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the AWS SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>..</p>",
           "idempotencyToken":true
         },
         "configuration":{
@@ -6783,7 +8583,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the AWS SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/https:/aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>..</p>",
           "idempotencyToken":true
         },
         "description":{
@@ -6918,6 +8718,87 @@
         "knowledgeBase":{
           "shape":"KnowledgeBaseData",
           "documentation":"<p>The knowledge base to update.</p>"
+        }
+      }
+    },
+    "UpdateMessageTemplateMetadataRequest":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseId",
+        "messageTemplateId"
+      ],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the message template.</p>"
+        },
+        "groupingConfiguration":{"shape":"GroupingConfiguration"},
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "messageTemplateId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the message template. Can be either the ID or the ARN. It cannot contain any qualifier.</p>",
+          "location":"uri",
+          "locationName":"messageTemplateId"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the message template.</p>"
+        }
+      }
+    },
+    "UpdateMessageTemplateMetadataResponse":{
+      "type":"structure",
+      "members":{
+        "messageTemplate":{
+          "shape":"MessageTemplateData",
+          "documentation":"<p>The message template.</p>"
+        }
+      }
+    },
+    "UpdateMessageTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseId",
+        "messageTemplateId"
+      ],
+      "members":{
+        "content":{
+          "shape":"MessageTemplateContentProvider",
+          "documentation":"<p>The content of the message template.</p>"
+        },
+        "defaultAttributes":{
+          "shape":"MessageTemplateAttributes",
+          "documentation":"<p>An object that specifies the default values to use for variables in the message template. This object contains different categories of key-value pairs. Each key defines a variable or placeholder in the message template. The corresponding value defines the default value for that variable.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "language":{
+          "shape":"LanguageCode",
+          "documentation":"<p>The language code value for the language in which the quick response is written. The supported language codes include <code>de_DE</code>, <code>en_US</code>, <code>es_ES</code>, <code>fr_FR</code>, <code>id_ID</code>, <code>it_IT</code>, <code>ja_JP</code>, <code>ko_KR</code>, <code>pt_BR</code>, <code>zh_CN</code>, <code>zh_TW</code> </p>"
+        },
+        "messageTemplateId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the message template. Can be either the ID or the ARN. It cannot contain any qualifier.</p>",
+          "location":"uri",
+          "locationName":"messageTemplateId"
+        }
+      }
+    },
+    "UpdateMessageTemplateResponse":{
+      "type":"structure",
+      "members":{
+        "messageTemplate":{
+          "shape":"MessageTemplateData",
+          "documentation":"<p>The message template.</p>"
         }
       }
     },

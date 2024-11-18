@@ -1296,7 +1296,8 @@
         "resultWrapper":"DescribeDBLogFilesResult"
       },
       "errors":[
-        {"shape":"DBInstanceNotFoundFault"}
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"DBInstanceNotReadyFault"}
       ],
       "documentation":"<p>Returns a list of DB log files for the DB instance.</p> <p>This command doesn't apply to RDS Custom.</p>"
     },
@@ -1794,6 +1795,7 @@
       },
       "errors":[
         {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"DBInstanceNotReadyFault"},
         {"shape":"DBLogFileNotFoundFault"}
       ],
       "documentation":"<p>Downloads all or a portion of the specified log file, up to 1 MB in size.</p> <p>This command doesn't apply to RDS Custom.</p>"
@@ -4418,7 +4420,7 @@
       "members":{
         "DBName":{
           "shape":"String",
-          "documentation":"<p>The meaning of this parameter differs according to the database engine you use.</p> <dl> <dt>Amazon Aurora MySQL</dt> <dd> <p>The name of the database to create when the primary DB instance of the Aurora MySQL DB cluster is created. If this parameter isn't specified for an Aurora MySQL DB cluster, no database is created in the DB cluster.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 64 alphanumeric characters.</p> </li> <li> <p>Can't be a word reserved by the database engine.</p> </li> </ul> </dd> <dt>Amazon Aurora PostgreSQL</dt> <dd> <p>The name of the database to create when the primary DB instance of the Aurora PostgreSQL DB cluster is created. A database named <code>postgres</code> is always created. If this parameter is specified, an additional database with this name is created.</p> <p>Constraints:</p> <ul> <li> <p>It must contain 1 to 63 alphanumeric characters.</p> </li> <li> <p>Must begin with a letter. Subsequent characters can be letters, underscores, or digits (0 to 9).</p> </li> <li> <p>Can't be a word reserved by the database engine.</p> </li> </ul> </dd> <dt>Amazon RDS Custom for Oracle</dt> <dd> <p>The Oracle System ID (SID) of the created RDS Custom DB instance. If you don't specify a value, the default value is <code>ORCL</code> for non-CDBs and <code>RDSCDB</code> for CDBs.</p> <p>Default: <code>ORCL</code> </p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 8 alphanumeric characters.</p> </li> <li> <p>Must contain a letter.</p> </li> <li> <p>Can't be a word reserved by the database engine.</p> </li> </ul> </dd> <dt>Amazon RDS Custom for SQL Server</dt> <dd> <p>Not applicable. Must be null.</p> </dd> <dt>RDS for Db2</dt> <dd> <p>The name of the database to create when the DB instance is created. If this parameter isn't specified, no database is created in the DB instance. In some cases, we recommend that you don't add a database name. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/db2-db-instance-prereqs.html#db2-prereqs-additional-considerations\">Additional considerations</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 64 letters or numbers.</p> </li> <li> <p>Must begin with a letter. Subsequent characters can be letters, underscores, or digits (0-9).</p> </li> <li> <p>Can't be a word reserved by the specified database engine.</p> </li> </ul> </dd> <dt>RDS for MariaDB</dt> <dd> <p>The name of the database to create when the DB instance is created. If this parameter isn't specified, no database is created in the DB instance.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 64 letters or numbers.</p> </li> <li> <p>Must begin with a letter. Subsequent characters can be letters, underscores, or digits (0-9).</p> </li> <li> <p>Can't be a word reserved by the specified database engine.</p> </li> </ul> </dd> <dt>RDS for MySQL</dt> <dd> <p>The name of the database to create when the DB instance is created. If this parameter isn't specified, no database is created in the DB instance.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 64 letters or numbers.</p> </li> <li> <p>Must begin with a letter. Subsequent characters can be letters, underscores, or digits (0-9).</p> </li> <li> <p>Can't be a word reserved by the specified database engine.</p> </li> </ul> </dd> <dt>RDS for Oracle</dt> <dd> <p>The Oracle System ID (SID) of the created DB instance. If you don't specify a value, the default value is <code>ORCL</code>. You can't specify the string <code>null</code>, or any other reserved word, for <code>DBName</code>.</p> <p>Default: <code>ORCL</code> </p> <p>Constraints:</p> <ul> <li> <p>Can't be longer than 8 characters.</p> </li> </ul> </dd> <dt>RDS for PostgreSQL</dt> <dd> <p>The name of the database to create when the DB instance is created. A database named <code>postgres</code> is always created. If this parameter is specified, an additional database with this name is created.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 63 letters, numbers, or underscores.</p> </li> <li> <p>Must begin with a letter. Subsequent characters can be letters, underscores, or digits (0-9).</p> </li> <li> <p>Can't be a word reserved by the specified database engine.</p> </li> </ul> </dd> <dt>RDS for SQL Server</dt> <dd> <p>Not applicable. Must be null.</p> </dd> </dl>"
+          "documentation":"<p>The meaning of this parameter differs according to the database engine you use.</p> <dl> <dt>Amazon Aurora MySQL</dt> <dd> <p>The name of the database to create when the primary DB instance of the Aurora MySQL DB cluster is created. If this parameter isn't specified for an Aurora MySQL DB cluster, no database is created in the DB cluster.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 64 alphanumeric characters.</p> </li> <li> <p>Must begin with a letter. Subsequent characters can be letters, underscores, or digits (0-9).</p> </li> <li> <p>Can't be a word reserved by the database engine.</p> </li> </ul> </dd> <dt>Amazon Aurora PostgreSQL</dt> <dd> <p>The name of the database to create when the primary DB instance of the Aurora PostgreSQL DB cluster is created. A database named <code>postgres</code> is always created. If this parameter is specified, an additional database with this name is created.</p> <p>Constraints:</p> <ul> <li> <p>It must contain 1 to 63 alphanumeric characters.</p> </li> <li> <p>Must begin with a letter. Subsequent characters can be letters, underscores, or digits (0 to 9).</p> </li> <li> <p>Can't be a word reserved by the database engine.</p> </li> </ul> </dd> <dt>Amazon RDS Custom for Oracle</dt> <dd> <p>The Oracle System ID (SID) of the created RDS Custom DB instance. If you don't specify a value, the default value is <code>ORCL</code> for non-CDBs and <code>RDSCDB</code> for CDBs.</p> <p>Default: <code>ORCL</code> </p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 8 alphanumeric characters.</p> </li> <li> <p>Must contain a letter.</p> </li> <li> <p>Can't be a word reserved by the database engine.</p> </li> </ul> </dd> <dt>Amazon RDS Custom for SQL Server</dt> <dd> <p>Not applicable. Must be null.</p> </dd> <dt>RDS for Db2</dt> <dd> <p>The name of the database to create when the DB instance is created. If this parameter isn't specified, no database is created in the DB instance. In some cases, we recommend that you don't add a database name. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/db2-db-instance-prereqs.html#db2-prereqs-additional-considerations\">Additional considerations</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 64 letters or numbers.</p> </li> <li> <p>Must begin with a letter. Subsequent characters can be letters, underscores, or digits (0-9).</p> </li> <li> <p>Can't be a word reserved by the specified database engine.</p> </li> </ul> </dd> <dt>RDS for MariaDB</dt> <dd> <p>The name of the database to create when the DB instance is created. If this parameter isn't specified, no database is created in the DB instance.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 64 letters or numbers.</p> </li> <li> <p>Must begin with a letter. Subsequent characters can be letters, underscores, or digits (0-9).</p> </li> <li> <p>Can't be a word reserved by the specified database engine.</p> </li> </ul> </dd> <dt>RDS for MySQL</dt> <dd> <p>The name of the database to create when the DB instance is created. If this parameter isn't specified, no database is created in the DB instance.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 64 letters or numbers.</p> </li> <li> <p>Must begin with a letter. Subsequent characters can be letters, underscores, or digits (0-9).</p> </li> <li> <p>Can't be a word reserved by the specified database engine.</p> </li> </ul> </dd> <dt>RDS for Oracle</dt> <dd> <p>The Oracle System ID (SID) of the created DB instance. If you don't specify a value, the default value is <code>ORCL</code>. You can't specify the string <code>null</code>, or any other reserved word, for <code>DBName</code>.</p> <p>Default: <code>ORCL</code> </p> <p>Constraints:</p> <ul> <li> <p>Can't be longer than 8 characters.</p> </li> </ul> </dd> <dt>RDS for PostgreSQL</dt> <dd> <p>The name of the database to create when the DB instance is created. A database named <code>postgres</code> is always created. If this parameter is specified, an additional database with this name is created.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1 to 63 letters, numbers, or underscores.</p> </li> <li> <p>Must begin with a letter. Subsequent characters can be letters, underscores, or digits (0-9).</p> </li> <li> <p>Can't be a word reserved by the specified database engine.</p> </li> </ul> </dd> <dt>RDS for SQL Server</dt> <dd> <p>Not applicable. Must be null.</p> </dd> </dl>"
         },
         "DBInstanceIdentifier":{
           "shape":"String",
@@ -6681,6 +6683,10 @@
         "SupportsIntegrations":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the DB engine version supports zero-ETL integrations with Amazon Redshift.</p>"
+        },
+        "ServerlessV2FeaturesSupport":{
+          "shape":"ServerlessV2FeaturesSupport",
+          "documentation":"<p>Specifies any Aurora Serverless v2 properties or limits that differ between Aurora engine versions. You can test the values of this attribute when deciding which Aurora version to use in a new or upgraded DB cluster. You can also retrieve the version of an existing DB cluster and check whether that version supports certain Aurora Serverless v2 features before you attempt to use those features. </p>"
         }
       },
       "documentation":"<p>This data type is used as a response element in the action <code>DescribeDBEngineVersions</code>.</p>"
@@ -7289,6 +7295,17 @@
         "code":"DBInstanceNotFound",
         "httpStatusCode":404,
         "senderFault":true
+      },
+      "exception":true
+    },
+    "DBInstanceNotReadyFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>An attempt to download or examine log files didn't succeed because an Aurora Serverless v2 instance was paused.</p>",
+      "error":{
+        "code":"DBInstanceNotReady",
+        "httpStatusCode":503
       },
       "exception":true
     },
@@ -8156,7 +8173,8 @@
           "documentation":"<p>The Amazon Resource Name (ARN) for the DB shard group.</p>"
         },
         "TagList":{"shape":"TagList"}
-      }
+      },
+      "documentation":"<p>Contains the details for an Amazon RDS DB shard group.</p>"
     },
     "DBShardGroupAlreadyExistsFault":{
       "type":"structure",
@@ -12229,7 +12247,7 @@
         },
         "ApplyImmediately":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether the modifications in this request and any pending modifications are asynchronously applied as soon as possible, regardless of the <code>PreferredMaintenanceWindow</code> setting for the DB cluster. If this parameter is disabled, changes to the DB cluster are applied during the next maintenance window.</p> <p>Most modifications can be applied immediately or during the next scheduled maintenance window. Some modifications, such as turning on deletion protection and changing the master password, are applied immediately—regardless of when you choose to apply them.</p> <p>By default, this parameter is disabled.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>Specifies whether the modifications in this request are asynchronously applied as soon as possible, regardless of the <code>PreferredMaintenanceWindow</code> setting for the DB cluster. If this parameter is disabled, changes to the DB cluster are applied during the next maintenance window.</p> <p>Most modifications can be applied immediately or during the next scheduled maintenance window. Some modifications, such as turning on deletion protection and changing the master password, are applied immediately—regardless of when you choose to apply them.</p> <p>By default, this parameter is disabled.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "BackupRetentionPeriod":{
           "shape":"IntegerOptional",
@@ -16002,16 +16020,34 @@
       "type":"string",
       "sensitive":true
     },
+    "ServerlessV2FeaturesSupport":{
+      "type":"structure",
+      "members":{
+        "MinCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>If the minimum capacity is 0 ACUs, the engine version supports the automatic pause/resume feature of Aurora Serverless v2.</p>"
+        },
+        "MaxCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p> Specifies the upper Aurora Serverless v2 capacity limit for a particular engine version. Depending on the engine version, the maximum capacity for an Aurora Serverless v2 cluster might be <code>256</code> or <code>128</code>. </p>"
+        }
+      },
+      "documentation":"<p>Specifies any Aurora Serverless v2 properties or limits that differ between Aurora engine versions. You can test the values of this attribute when deciding which Aurora version to use in a new or upgraded DB cluster. You can also retrieve the version of an existing DB cluster and check whether that version supports certain Aurora Serverless v2 features before you attempt to use those features. </p>"
+    },
     "ServerlessV2ScalingConfiguration":{
       "type":"structure",
       "members":{
         "MinCapacity":{
           "shape":"DoubleOptional",
-          "documentation":"<p>The minimum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 8, 8.5, 9, and so on. The smallest value that you can use is 0.5.</p>"
+          "documentation":"<p>The minimum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 8, 8.5, 9, and so on. For Aurora versions that support the Aurora Serverless v2 auto-pause feature, the smallest value that you can use is 0. For versions that don't support Aurora Serverless v2 auto-pause, the smallest value that you can use is 0.5. </p>"
         },
         "MaxCapacity":{
           "shape":"DoubleOptional",
-          "documentation":"<p>The maximum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 40, 40.5, 41, and so on. The largest value that you can use is 128.</p>"
+          "documentation":"<p>The maximum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 32, 32.5, 33, and so on. The largest value that you can use is 256 for recent Aurora versions, or 128 for older versions.</p>"
+        },
+        "SecondsUntilAutoPause":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>Specifies the number of seconds an Aurora Serverless v2 DB instance must be idle before Aurora attempts to automatically pause it. </p> <p>Specify a value between 300 seconds (five minutes) and 86,400 seconds (one day). The default is 300 seconds.</p>"
         }
       },
       "documentation":"<p>Contains the scaling configuration of an Aurora Serverless v2 DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html\">Using Amazon Aurora Serverless v2</a> in the <i>Amazon Aurora User Guide</i>.</p>"
@@ -16021,11 +16057,15 @@
       "members":{
         "MinCapacity":{
           "shape":"DoubleOptional",
-          "documentation":"<p>The minimum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 8, 8.5, 9, and so on. The smallest value that you can use is 0.5.</p>"
+          "documentation":"<p>The minimum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 8, 8.5, 9, and so on. For Aurora versions that support the Aurora Serverless v2 auto-pause feature, the smallest value that you can use is 0. For versions that don't support Aurora Serverless v2 auto-pause, the smallest value that you can use is 0.5. </p>"
         },
         "MaxCapacity":{
           "shape":"DoubleOptional",
-          "documentation":"<p>The maximum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 40, 40.5, 41, and so on. The largest value that you can use is 128.</p>"
+          "documentation":"<p>The maximum number of Aurora capacity units (ACUs) for a DB instance in an Aurora Serverless v2 cluster. You can specify ACU values in half-step increments, such as 32, 32.5, 33, and so on. The largest value that you can use is 256 for recent Aurora versions, or 128 for older versions.</p>"
+        },
+        "SecondsUntilAutoPause":{
+          "shape":"IntegerOptional",
+          "documentation":"<p> The number of seconds an Aurora Serverless v2 DB instance must be idle before Aurora attempts to automatically pause it. This property is only shown when the minimum capacity for the cluster is set to 0 ACUs. Changing the minimum capacity to a nonzero value removes this property. If you later change the minimum capacity back to 0 ACUs, this property is reset to its default value unless you specify it again. </p> <p>This value ranges between 300 seconds (five minutes) and 86,400 seconds (one day). The default is 300 seconds.</p>"
         }
       },
       "documentation":"<p>The scaling configuration for an Aurora Serverless v2 DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html\">Using Amazon Aurora Serverless v2</a> in the <i>Amazon Aurora User Guide</i>.</p>"

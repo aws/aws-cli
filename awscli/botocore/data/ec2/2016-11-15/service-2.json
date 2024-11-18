@@ -13903,6 +13903,10 @@
           "shape":"RequestLaunchTemplateData",
           "documentation":"<p>The information for the launch template.</p>"
         },
+        "Operator":{
+          "shape":"OperatorRequest",
+          "documentation":"<p>Reserved for internal use.</p>"
+        },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
           "documentation":"<p>The tags to apply to the launch template on creation. To tag the launch template, the resource type must be <code>launch-template</code>.</p> <p>To specify the tags for the resources that are created when an instance is launched, you must use the <code>TagSpecifications</code> parameter in the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestLaunchTemplateData.html\">launch template data</a> structure.</p>",
@@ -14537,6 +14541,10 @@
         "ConnectionTrackingSpecification":{
           "shape":"ConnectionTrackingSpecificationRequest",
           "documentation":"<p>A connection tracking specification for the network interface.</p>"
+        },
+        "Operator":{
+          "shape":"OperatorRequest",
+          "documentation":"<p>Reserved for internal use.</p>"
         },
         "SubnetId":{
           "shape":"SubnetId",
@@ -16394,6 +16402,10 @@
           "shape":"String",
           "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensure Idempotency</a>.</p>",
           "idempotencyToken":true
+        },
+        "Operator":{
+          "shape":"OperatorRequest",
+          "documentation":"<p>Reserved for internal use.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -27988,6 +28000,11 @@
           "shape":"String",
           "documentation":"<p>The ID of the Amazon Web Services account that owns the volume.</p> <p>This parameter is returned only for volumes that are attached to Fargate tasks.</p>",
           "locationName":"volumeOwnerId"
+        },
+        "Operator":{
+          "shape":"OperatorResponse",
+          "documentation":"<p>The entity that manages the EBS volume.</p>",
+          "locationName":"operator"
         }
       },
       "documentation":"<p>Describes a parameter used to set up an EBS volume in a block device mapping.</p>"
@@ -35311,6 +35328,11 @@
           "documentation":"<p>The boot mode that is used to boot the instance at launch or start. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-boot.html\">Boot modes</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"currentInstanceBootMode"
         },
+        "Operator":{
+          "shape":"OperatorResponse",
+          "documentation":"<p>The entity that manages the instance.</p>",
+          "locationName":"operator"
+        },
         "InstanceId":{
           "shape":"String",
           "documentation":"<p>The ID of the instance.</p>",
@@ -36061,6 +36083,11 @@
           "shape":"ImageMetadata",
           "documentation":"<p>Information about the AMI used to launch the instance.</p>",
           "locationName":"imageMetadata"
+        },
+        "Operator":{
+          "shape":"OperatorResponse",
+          "documentation":"<p>The entity that manages the instance.</p>",
+          "locationName":"operator"
         }
       },
       "documentation":"<p>Information about the instance and the AMI used to launch the instance.</p>"
@@ -36456,6 +36483,11 @@
           "shape":"ConnectionTrackingSpecificationResponse",
           "documentation":"<p>A security group connection tracking configuration that enables you to set the timeout for connection tracking on an Elastic network interface. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-connection-tracking.html#connection-tracking-timeouts\">Connection tracking timeouts</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"connectionTrackingConfiguration"
+        },
+        "Operator":{
+          "shape":"OperatorResponse",
+          "documentation":"<p>The entity that manages the network interface.</p>",
+          "locationName":"operator"
         }
       },
       "documentation":"<p>Describes a network interface.</p>"
@@ -37043,6 +37075,11 @@
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Outpost.</p>",
           "locationName":"outpostArn"
+        },
+        "Operator":{
+          "shape":"OperatorResponse",
+          "documentation":"<p>The entity that manages the instance.</p>",
+          "locationName":"operator"
         },
         "Events":{
           "shape":"InstanceStatusEventList",
@@ -40604,6 +40641,11 @@
           "shape":"TagList",
           "documentation":"<p>The tags for the launch template.</p>",
           "locationName":"tagSet"
+        },
+        "Operator":{
+          "shape":"OperatorResponse",
+          "documentation":"<p>The entity that manages the launch template.</p>",
+          "locationName":"operator"
         }
       },
       "documentation":"<p>Describes a launch template.</p>"
@@ -41808,6 +41850,11 @@
           "shape":"ResponseLaunchTemplateData",
           "documentation":"<p>Information about the launch template.</p>",
           "locationName":"launchTemplateData"
+        },
+        "Operator":{
+          "shape":"OperatorResponse",
+          "documentation":"<p>The entity that manages the launch template.</p>",
+          "locationName":"operator"
         }
       },
       "documentation":"<p>Describes a launch template version.</p>"
@@ -47118,6 +47165,11 @@
           "shape":"String",
           "documentation":"<p>The IPv6 globally unique address associated with the network interface.</p>",
           "locationName":"ipv6Address"
+        },
+        "Operator":{
+          "shape":"OperatorResponse",
+          "documentation":"<p>The entity that manages the network interface.</p>",
+          "locationName":"operator"
         }
       },
       "documentation":"<p>Describes a network interface.</p>"
@@ -47762,6 +47814,32 @@
         "add",
         "remove"
       ]
+    },
+    "OperatorRequest":{
+      "type":"structure",
+      "members":{
+        "Principal":{
+          "shape":"String",
+          "documentation":"<p>The entity that manages the resource.</p>"
+        }
+      },
+      "documentation":"<p>The entity that manages the resource.</p>"
+    },
+    "OperatorResponse":{
+      "type":"structure",
+      "members":{
+        "Managed":{
+          "shape":"Boolean",
+          "documentation":"<p>If <code>true</code>, the resource is managed by an entity.</p>",
+          "locationName":"managed"
+        },
+        "Principal":{
+          "shape":"String",
+          "documentation":"<p>If <code>managed</code> is <code>true</code>, then the principal is returned. The principal is the entity that manages the resource.</p>",
+          "locationName":"principal"
+        }
+      },
+      "documentation":"<p>Describes whether the resource is managed by an entity and, if so, describes the entity that manages it.</p>"
     },
     "OrganizationArnStringList":{
       "type":"list",
@@ -51047,6 +51125,10 @@
         "DisableApiStop":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether to enable the instance for stop protection. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-stop-protection.html\">Enable stop protection for your instance</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+        },
+        "Operator":{
+          "shape":"OperatorRequest",
+          "documentation":"<p>The entity that manages the launch template.</p>"
         }
       },
       "documentation":"<p>The information to include in the launch template.</p> <note> <p>You must specify at least one parameter for the launch template data.</p> </note>"
@@ -52339,6 +52421,11 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the instance is enabled for stop protection. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-stop-protection.html\">Enable stop protection for your instance</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"disableApiStop"
+        },
+        "Operator":{
+          "shape":"OperatorResponse",
+          "documentation":"<p>The entity that manages the launch template.</p>",
+          "locationName":"operator"
         }
       },
       "documentation":"<p>The information for a launch template. </p>"
@@ -53304,6 +53391,10 @@
         "EnablePrimaryIpv6":{
           "shape":"Boolean",
           "documentation":"<p>If you’re launching an instance into a dual-stack or IPv6-only subnet, you can enable assigning a primary IPv6 address. A primary IPv6 address is an IPv6 GUA address associated with an ENI that you have enabled to use a primary IPv6 address. Use this option if an instance relies on its IPv6 address not changing. When you launch the instance, Amazon Web Services will automatically assign an IPv6 address associated with the ENI attached to your instance to be the primary IPv6 address. Once you enable an IPv6 GUA address to be a primary IPv6, you cannot disable it. When you enable an IPv6 GUA address to be a primary IPv6, the first IPv6 GUA will be made the primary IPv6 address until the instance is terminated or the network interface is detached. If you have multiple IPv6 addresses associated with an ENI attached to your instance and you enable a primary IPv6 address, the first IPv6 GUA address associated with the ENI becomes the primary IPv6 address.</p>"
+        },
+        "Operator":{
+          "shape":"OperatorRequest",
+          "documentation":"<p>Reserved for internal use.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -61040,6 +61131,11 @@
           "shape":"SSEType",
           "documentation":"<note> <p>This parameter is not returned by CreateVolume.</p> </note> <p>Reserved for future use.</p>",
           "locationName":"sseType"
+        },
+        "Operator":{
+          "shape":"OperatorResponse",
+          "documentation":"<p>The entity that manages the volume.</p>",
+          "locationName":"operator"
         },
         "VolumeId":{
           "shape":"String",

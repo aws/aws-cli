@@ -11,22 +11,24 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import threading
 import webbrowser
-
 import pytest
+import urllib3
 
-from awscli.testutils import mock
-from awscli.testutils import unittest
-
+from botocore.exceptions import PendingAuthorizationExpiredError
 from botocore.session import Session
-from botocore.exceptions import ClientError
 
-from awscli.compat import StringIO
-from awscli.customizations.sso.utils import parse_sso_registration_scopes
-from awscli.customizations.sso.utils import do_sso_login
+from awscli.compat import BytesIO, StringIO
 from awscli.customizations.sso.utils import OpenBrowserHandler
 from awscli.customizations.sso.utils import PrintOnlyHandler
+from awscli.customizations.sso.utils import do_sso_login
 from awscli.customizations.sso.utils import open_browser_with_original_ld_path
+from awscli.customizations.sso.utils import (
+    parse_sso_registration_scopes, AuthCodeFetcher, OAuthCallbackHandler
+)
+from awscli.testutils import mock
+from awscli.testutils import unittest
 
 
 @pytest.mark.parametrize(
@@ -205,3 +207,115 @@ class TestOpenBrowserWithPatchedEnv(unittest.TestCase):
                     os.environ)
                 open_browser_with_original_ld_path('http://example.com')
         self.assertIsNone(captured_env.get('LD_LIBRARY_PATH'))
+
+
+class MockRequest(object):
+    def __init__(self, request):
+        self._request = request
+
+    def makefile(self, *args, **kwargs):
+        return BytesIO(self._request)
+
+    def sendall(self, data):
+        pass
+
+
+class TestOAuthCallbackHandler:
+    """Tests for OAuthCallbackHandler, which handles
+    individual requests that we receive at the callback uri
+    """
+    def test_expected_query_params(self):
+        fetcher = mock.Mock(AuthCodeFetcher)
+
+        OAuthCallbackHandler(
+            fetcher,
+            MockRequest(b'GET /?state=123&code=456'),
+            mock.MagicMock(),
+            mock.MagicMock(),
+        )
+        fetcher.set_auth_code_and_state.assert_called_once_with('456', '123')
+
+    def test_error(self):
+        fetcher = mock.Mock(AuthCodeFetcher)
+
+        OAuthCallbackHandler(
+            fetcher,
+            MockRequest(b'GET /?error=Error%20message'),
+            mock.MagicMock(),
+            mock.MagicMock(),
+        )
+
+        fetcher.set_auth_code_and_state.assert_called_once_with(None, None)
+
+    def test_missing_expected_query_params(self):
+        fetcher = mock.Mock(AuthCodeFetcher)
+
+        # We generally don't expect to be missing the expected query params,
+        # but if we do we expect the server to keep waiting for a valid callback
+        OAuthCallbackHandler(
+            fetcher,
+            MockRequest(b'GET /'),
+            mock.MagicMock(),
+            mock.MagicMock(),
+        )
+
+        fetcher.set_auth_code_and_state.assert_not_called()
+
+
+class TestAuthCodeFetcher:
+    """Tests for the AuthCodeFetcher class, which is the local
+    web server we use to handle the OAuth 2.0 callback
+    """
+
+    def setup_method(self):
+        self.fetcher = AuthCodeFetcher()
+        self.url = f'http://127.0.0.1:{self.fetcher.http_server.server_address[1]}/'
+
+        # Start the server on a background thread so that
+        # the test thread can make the request
+        self.server_thread = threading.Thread(
+            target=self.fetcher.get_auth_code_and_state
+        )
+        self.server_thread.daemon = True
+        self.server_thread.start()
+
+    def test_expected_auth_code(self):
+        expected_code = '1234'
+        expected_state = '4567'
+        url = self.url + f'?code={expected_code}&state={expected_state}'
+
+        http = urllib3.PoolManager()
+        response = http.request("GET", url)
+
+        actual_code, actual_state = self.fetcher.get_auth_code_and_state()
+        assert response.status == 200
+        assert actual_code == expected_code
+        assert actual_state == expected_state
+
+    def test_error(self):
+        expected_code = 'Failed'
+        url = self.url + f'?error={expected_code}'
+
+        http = urllib3.PoolManager()
+        response = http.request("GET", url)
+
+        actual_code, actual_state = self.fetcher.get_auth_code_and_state()
+        assert response.status == 200
+        assert actual_code is None
+        assert actual_state is None
+
+
+@mock.patch(
+    'awscli.customizations.sso.utils.AuthCodeFetcher._REQUEST_TIMEOUT',
+    0.1
+)
+@mock.patch(
+    'awscli.customizations.sso.utils.AuthCodeFetcher._OVERALL_TIMEOUT',
+    0.1
+)
+def test_get_auth_code_and_state_timeout():
+    """Tests the timeout case separately of TestAuthCodeFetcher,
+    since we need to override the constants
+    """
+    with pytest.raises(PendingAuthorizationExpiredError):
+        AuthCodeFetcher().get_auth_code_and_state()

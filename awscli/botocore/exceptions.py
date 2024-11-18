@@ -674,7 +674,7 @@ class SSOError(BotoCoreError):
 class PendingAuthorizationExpiredError(SSOError):
     fmt = (
         "The pending authorization to retrieve an SSO token has expired. The "
-        "device authorization flow to retrieve an SSO token must be restarted."
+        "login flow to retrieve an SSO token must be restarted."
     )
 
 
@@ -682,11 +682,23 @@ class SSOTokenLoadError(SSOError):
     fmt = "Error loading SSO Token: {error_msg}"
 
 
+class AuthorizationCodeLoadError(SSOError):
+    fmt = "Error loading authorization code: {error_msg}"
+
+
 class UnauthorizedSSOTokenError(SSOError):
     fmt = (
         "The SSO session associated with this profile has expired or is "
         "otherwise invalid. To refresh this SSO session run aws sso login "
         "with the corresponding profile."
+    )
+
+
+class AuthCodeFetcherError(SSOError):
+    fmt = (
+        "Unable to initialize the OAuth 2.0 authorization callback handler: "
+        "{error_msg} \n You may use --use-device-code to fall back to the "
+        "device code flow which does not require the callback handler."
     )
 
 

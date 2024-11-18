@@ -11,19 +11,29 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import datetime
-import os
-import logging
 import json
+import logging
+import os
+import socket
+import time
 import webbrowser
+from functools import partial
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
-from botocore.utils import SSOTokenFetcher
-from botocore.utils import original_ld_library_path
+from botocore.compat import urlparse, parse_qs
 from botocore.credentials import JSONFileCache
+from botocore.exceptions import (
+    AuthCodeFetcherError,
+    PendingAuthorizationExpiredError,
+)
+from botocore.utils import SSOTokenFetcher, SSOTokenFetcherAuth
+from botocore.utils import original_ld_library_path
 
-from awscli.customizations.commands import BasicCommand
-from awscli.customizations.utils import uni_print
+from awscli import __version__ as awscli_version
 from awscli.customizations.assumerole import CACHE_DIR as AWS_CREDS_CACHE_DIR
+from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ConfigurationError
+from awscli.customizations.utils import uni_print
 
 LOG = logging.getLogger(__name__)
 
@@ -37,8 +47,17 @@ LOGIN_ARGS = [
         'action': 'store_true',
         'default': False,
         'help_text': (
-            'Disables automatically opening the verfication URL in the '
+            'Disables automatically opening the verification URL in the '
             'default browser.'
+        )
+    },
+    {
+        'name': 'use-device-code',
+        'action': 'store_true',
+        'default': False,
+        'help_text': (
+            'Uses the Device Code authorization grant and login flow '
+            'instead of the Authorization Code flow.'
         )
     }
 ]
@@ -56,19 +75,33 @@ def _sso_json_dumps(obj):
 
 def do_sso_login(session, sso_region, start_url, token_cache=None,
                  on_pending_authorization=None, force_refresh=False,
-                 registration_scopes=None, session_name=None):
+                 registration_scopes=None, session_name=None,
+                 use_device_code=False):
     if token_cache is None:
         token_cache = JSONFileCache(SSO_TOKEN_DIR, dumps_func=_sso_json_dumps)
     if on_pending_authorization is None:
         on_pending_authorization = OpenBrowserHandler(
             open_browser=open_browser_with_original_ld_path
         )
-    token_fetcher = SSOTokenFetcher(
-        sso_region=sso_region,
-        client_creator=session.create_client,
-        cache=token_cache,
-        on_pending_authorization=on_pending_authorization
-    )
+
+    # For the auth flow, we need a non-legacy sso-session and check that the
+    # user hasn't opted into falling back to the device code flow
+    if session_name and not use_device_code:
+        token_fetcher = SSOTokenFetcherAuth(
+            sso_region=sso_region,
+            client_creator=session.create_client,
+            auth_code_fetcher=AuthCodeFetcher(),
+            cache=token_cache,
+            on_pending_authorization=on_pending_authorization,
+        )
+    else:
+        token_fetcher = SSOTokenFetcher(
+            sso_region=sso_region,
+            client_creator=session.create_client,
+            cache=token_cache,
+            on_pending_authorization=on_pending_authorization,
+        )
+
     return token_fetcher.fetch_token(
         start_url=start_url,
         session_name=session_name,
@@ -110,13 +143,20 @@ class PrintOnlyHandler(BaseAuthorizationhandler):
             f'Browser will not be automatically opened.\n'
             f'Please visit the following URL:\n'
             f'\n{verificationUri}\n'
+
+        )
+
+        user_code_msg = (
             f'\nThen enter the code:\n'
             f'\n{userCode}\n'
             f'\nAlternatively, you may visit the following URL which will '
             f'autofill the code upon loading:'
             f'\n{verificationUriComplete}\n'
         )
+
         uni_print(opening_msg, self._outfile)
+        if userCode:
+            uni_print(user_code_msg, self._outfile)
 
 
 class OpenBrowserHandler(BaseAuthorizationhandler):
@@ -135,15 +175,111 @@ class OpenBrowserHandler(BaseAuthorizationhandler):
             f'to use a different device to authorize this request, open the '
             f'following URL:\n'
             f'\n{verificationUri}\n'
+        )
+
+        user_code_msg = (
             f'\nThen enter the code:\n'
             f'\n{userCode}\n'
         )
         uni_print(opening_msg, self._outfile)
+        if userCode:
+            uni_print(user_code_msg, self._outfile)
+
         if self._open_browser:
             try:
                 return self._open_browser(verificationUriComplete)
             except Exception:
                 LOG.debug('Failed to open browser:', exc_info=True)
+
+
+class AuthCodeFetcher:
+    """Manages the local web server that will be used
+    to retrieve the authorization code from the OAuth callback
+    """
+    # How many seconds handle_request should wait for an incoming request
+    _REQUEST_TIMEOUT = 10
+    # How long we wait overall for the callback
+    _OVERALL_TIMEOUT = 60 * 10
+
+    def __init__(self):
+        self._auth_code = None
+        self._state = None
+        self._is_done = False
+
+        # We do this so that the request handler can have a reference to this
+        # AuthCodeFetcher so that it can pass back the state and auth code
+        try:
+            handler = partial(OAuthCallbackHandler, self)
+            self.http_server = HTTPServer(('', 0), handler)
+            self.http_server.timeout = self._REQUEST_TIMEOUT
+        except socket.error as e:
+            raise AuthCodeFetcherError(error_msg=e)
+
+    def redirect_uri_without_port(self):
+        return 'http://127.0.0.1/oauth/callback'
+
+    def redirect_uri_with_port(self):
+        return f'http://127.0.0.1:{self.http_server.server_port}/oauth/callback'
+
+    def get_auth_code_and_state(self):
+        """Blocks until the expected redirect request with either the
+        authorization code/state or and error is handled
+        """
+        start = time.time()
+        while not self._is_done and time.time() < start + self._OVERALL_TIMEOUT:
+            self.http_server.handle_request()
+        self.http_server.server_close()
+
+        if not self._is_done:
+            raise PendingAuthorizationExpiredError
+
+        return self._auth_code, self._state
+
+    def set_auth_code_and_state(self, auth_code, state):
+        self._auth_code = auth_code
+        self._state = state
+        self._is_done = True
+
+
+class OAuthCallbackHandler(BaseHTTPRequestHandler):
+    """HTTP handler to handle OAuth callback requests, extracting
+    the auth code and state parameters, and displaying a page directing
+    the user to return to the CLI.
+    """
+    def __init__(self, auth_code_fetcher, *args, **kwargs):
+        self._auth_code_fetcher = auth_code_fetcher
+        super().__init__(*args, **kwargs)
+
+    def log_message(self, format, *args):
+        # Suppress built-in logging, otherwise it prints
+        # each request to console
+        pass
+
+    def version_string(self):
+        # Override the Host header in case helpful for debugging
+        return f'AWS CLI/{awscli_version}'
+
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        with open(
+            os.path.join(os.path.dirname(__file__), 'index.html'),
+            'rb',
+        ) as file:
+            self.wfile.write(file.read())
+
+        query_params = parse_qs(urlparse(self.path).query)
+
+        if 'error' in query_params:
+            self._auth_code_fetcher.set_auth_code_and_state(
+                None,
+                None,
+            )
+        elif 'code' in query_params and 'state' in query_params:
+            self._auth_code_fetcher.set_auth_code_and_state(
+                query_params['code'][0],
+                query_params['state'][0],
+            )
 
 
 class InvalidSSOConfigError(ConfigurationError):

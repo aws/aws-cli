@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+1.36.5
+======
+
+* api-change:``appconfig``: AWS AppConfig has added a new extension action point, AT_DEPLOYMENT_TICK, to support third-party monitors to trigger an automatic rollback during a deployment.
+* api-change:``autoscaling``: Amazon EC2 Auto Scaling now supports Amazon Application Recovery Controller (ARC) zonal shift and zonal autoshift to help you quickly recover an impaired application from failures in an Availability Zone (AZ).
+* api-change:``cloudformation``: This release adds a new API, ListHookResults, that allows retrieving CloudFormation Hooks invocation results for hooks invoked during a create change set operation or Cloud Control API operation
+* api-change:``connect``: Adds CreateContactFlowVersion and ListContactFlowVersions APIs to create and view the versions of a contact flow.
+* api-change:``customer-profiles``: This release introduces Segmentation APIs and new Calculated Attribute Event Filters as part of Amazon Connect Customer Profiles service.
+* api-change:``ec2``: Adding request and response elements for managed resources.
+* api-change:``ecs``: This release adds support for adding VPC Lattice configurations in ECS CreateService/UpdateService APIs. The configuration allows for associating VPC Lattice target groups with ECS Services.
+* api-change:``iotsitewise``: The release introduces a generative AI Assistant in AWS IoT SiteWise. It includes: 1) InvokeAssistant API - Invoke the Assistant to get alarm summaries and ask questions. 2) Dataset APIs - Manage knowledge base configuration for the Assistant. 3) Portal APIs enhancement - Manage AI-aware dashboards.
+* api-change:``qconnect``: This release introduces MessageTemplate as a resource in Amazon Q in Connect, along with APIs to create, read, search, update, and delete MessageTemplate resources.
+* api-change:``rds``: Add support for the automatic pause/resume feature of Aurora Serverless v2.
+* api-change:``rds-data``: Add support for the automatic pause/resume feature of Aurora Serverless v2.
+
+
 1.36.4
 ======
 

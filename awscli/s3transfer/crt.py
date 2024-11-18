@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+import re
 import threading
 from io import BytesIO
 
@@ -41,7 +42,7 @@ from botocore import UNSIGNED
 from botocore.compat import urlsplit
 from botocore.config import Config
 from botocore.exceptions import NoCredentialsError
-from botocore.utils import is_s3express_bucket
+from botocore.utils import ArnParser, InvalidArnException, is_s3express_bucket
 
 from s3transfer.constants import MB
 from s3transfer.exceptions import TransferNotDoneError
@@ -840,7 +841,19 @@ class S3ClientArgsCreator:
                 x.title() for x in request_type.split('_')
             )
 
-        if is_s3express_bucket(call_args.bucket):
+        arn_handler = _S3ArnParamHandler()
+        if (
+            (accesspoint_arn_details := arn_handler.handle_arn(call_args.bucket))
+            and accesspoint_arn_details['region'] == ""
+        ):
+            # Configure our region to `*` to propogate in `x-amz-region-set`
+            # for multi-region support in MRAP accesspoints.
+            make_request_args['signing_config'] = AwsSigningConfig(
+                algorithm=AwsSigningAlgorithm.V4_ASYMMETRIC,
+                region="*",
+            )
+            call_args.bucket = accesspoint_arn_details['resource_name']
+        elif is_s3express_bucket(call_args.bucket):
             make_request_args['signing_config'] = AwsSigningConfig(
                 algorithm=AwsSigningAlgorithm.V4_S3EXPRESS
             )
@@ -883,3 +896,40 @@ class OnBodyFileObjWriter:
 
     def __call__(self, chunk, **kwargs):
         self._fileobj.write(chunk)
+
+
+class _S3ArnParamHandler:
+    """Partial port of S3ArnParamHandler from botocore.
+
+    This is used to make a determination on MRAP accesspoints for signing
+    purposes. This should be safe to remove once we properly integrate auth
+    resolution from Botocore into the CRT transfer integration.
+    """
+    _RESOURCE_REGEX = re.compile(
+        r'^(?P<resource_type>accesspoint|outpost)[/:](?P<resource_name>.+)$'
+    )
+
+    def __init__(self):
+        self._arn_parser = ArnParser()
+
+    def handle_arn(self, bucket):
+        arn_details = self._get_arn_details_from_bucket(bucket)
+        if arn_details is None:
+            return
+        if arn_details['resource_type'] == 'accesspoint':
+            return arn_details
+
+    def _get_arn_details_from_bucket(self, bucket):
+        try:
+            arn_details = self._arn_parser.parse_arn(bucket)
+            self._add_resource_type_and_name(arn_details)
+            return arn_details
+        except InvalidArnException:
+                pass
+        return None
+    
+    def _add_resource_type_and_name(self, arn_details):
+        match = self._RESOURCE_REGEX.match(arn_details['resource'])
+        if match:
+            arn_details['resource_type'] = match.group('resource_type')
+            arn_details['resource_name'] = match.group('resource_name')

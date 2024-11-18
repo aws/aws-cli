@@ -17,8 +17,14 @@ from dateutil.tz import tzutc
 
 from botocore.httpchecksum import HAS_CRT, Crc32Checksum, CrtCrc32Checksum
 from tests import (
-    create_session, mock, temporary_file, unittest,
-    BaseSessionTest, ClientHTTPStubber, FreezeTime
+    BaseSessionTest,
+    ClientHTTPStubber,
+    FreezeTime,
+    create_session,
+    get_checksum_cls,
+    mock,
+    temporary_file, unittest,
+
 )
 
 import botocore.session
@@ -3028,7 +3034,7 @@ class TestRequestPayerObjectTagging(BaseS3OperationTest):
 
 class TestS3XMLPayloadEscape(BaseS3OperationTest):
     def assert_correct_crc32_checksum(self, request):
-        checksum = CrtCrc32Checksum() if HAS_CRT else Crc32Checksum()
+        checksum = get_checksum_cls()()
         crc32_checksum = checksum.handle(request.body).encode()
         self.assertEqual(
             crc32_checksum, request.headers["x-amz-checksum-crc32"]

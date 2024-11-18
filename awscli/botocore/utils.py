@@ -2996,6 +2996,7 @@ def _is_s3express_request(params):
 def has_checksum_header(params):
     """
     Checks if a header starting with "x-amz-checksum-" is provided in a request.
+
     This class is considered private and subject to abrupt breaking changes or
     removal without prior announcement. Please do not use it directly.
     """
@@ -3038,6 +3039,7 @@ def conditionally_enable_crc32(params, **kwargs):
 def conditionally_calculate_md5(params, **kwargs):
     """
     This function has been deprecated, but is kept for backwards compatibility.
+
     Only add a Content-MD5 if the system supports it.
     """
     body = params['body']

@@ -99,6 +99,17 @@ class CrtCrc32cChecksum(BaseChecksum):
         return self._int_crc32c.to_bytes(4, byteorder="big")
 
 
+class CrtCrc64NvmeChecksum(BaseChecksum):
+    # Note: This class is only used if the CRT is available
+    def __init__(self):
+        self._int_crc64nvme = 0
+    def update(self, chunk):
+        new_checksum = crt_checksums.crc64nvme(chunk, self._int_crc64nvme)
+        self._int_crc64nvme = new_checksum & 0xFFFFFFFFFFFFFFFF
+    def digest(self):
+        return self._int_crc64nvme.to_bytes(8, byteorder="big")
+
+
 class Sha1Checksum(BaseChecksum):
     def __init__(self):
         self._checksum = sha1()
@@ -438,6 +449,7 @@ def _handle_bytes_response(http_response, response, algorithm):
 
 
 _CHECKSUM_CLS = {
+    'crc64nvme': CrtCrc64NvmeChecksum,
     "crc32c": CrtCrc32cChecksum,
     "crc32": CrtCrc32Checksum,
     "sha1": Sha1Checksum,
@@ -446,4 +458,5 @@ _CHECKSUM_CLS = {
 
 
 _SUPPORTED_CHECKSUM_ALGORITHMS = list(_CHECKSUM_CLS.keys())
-_ALGORITHMS_PRIORITY_LIST = ['crc32c', 'crc32', 'sha1', 'sha256']
+_ALGORITHMS_PRIORITY_LIST = ['crc64nvme', 'crc32c', 'crc32', 'sha1', 'sha256']
+print(_SUPPORTED_CHECKSUM_ALGORITHMS)

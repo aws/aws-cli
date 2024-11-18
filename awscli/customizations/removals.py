@@ -58,6 +58,8 @@ def register_removals(event_handler):
                                           'invoke-flow'])
     cmd_remover.remove(on_event='building-command-table.qbusiness',
                         remove_commands=['chat'])
+    cmd_remover.remove(on_event='building-command-table.iotsitewise',
+                        remove_commands=['invoke-assistant'])
 
 
 class CommandRemover(object):

@@ -25,7 +25,7 @@ from binascii import crc32
 from hashlib import sha1, sha256
 
 from awscrt import checksums as crt_checksums
-from botocore.compat import HAS_CRT, urlparse
+from botocore.compat import urlparse
 from botocore.exceptions import AwsChunkedWrapperError, FlexibleChecksumError
 from botocore.response import StreamingBody
 from botocore.utils import determine_content_length, has_checksum_header

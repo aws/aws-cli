@@ -39,7 +39,7 @@ from unittest import mock
 import botocore.loaders
 import botocore.session
 from botocore.awsrequest import AWSResponse
-from botocore.compat import HAS_CRT, parse_qs, urlparse
+from botocore.compat import parse_qs, urlparse
 from botocore import utils
 from botocore import credentials
 from botocore.httpchecksum import _CHECKSUM_CLS, DEFAULT_CHECKSUM_ALGORITHM
@@ -82,15 +82,6 @@ def skip_if_windows(reason):
     def decorator(func):
         return unittest.skipIf(
             platform.system() not in ['Darwin', 'Linux'], reason)(func)
-    return decorator
-
-def requires_crt(reason=None):
-    if reason is None:
-        reason = "Test requires awscrt to be installed"
-
-    def decorator(func):
-        return unittest.skipIf(not HAS_CRT, reason)(func)
-
     return decorator
 
 def random_chars(num_chars):

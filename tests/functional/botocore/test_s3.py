@@ -15,21 +15,19 @@ import re
 import pytest
 from dateutil.tz import tzutc
 
-from botocore.httpchecksum import HAS_CRT, Crc32Checksum, CrtCrc32Checksum
 from tests import (
     BaseSessionTest,
     ClientHTTPStubber,
     FreezeTime,
     create_session,
-    get_checksum_cls,
     mock,
     temporary_file, unittest,
-
 )
+from tests.utils.botocore import get_checksum_cls
 
 import botocore.session
 from botocore.config import Config
-from botocore.compat import datetime, urlsplit, parse_qs
+from botocore.compat import datetime, parse_qs, urlsplit
 from botocore.exceptions import (
     ParamValidationError, ClientError,
     UnsupportedS3ConfigurationError,
@@ -1411,7 +1409,6 @@ class TestS3SigV4(BaseS3OperationTest):
         )
         body = self.http_stubber.requests[0].body.read()
         self.assertIn(b"x-amz-checksum-crc32", body)
-
 
     def test_trailing_checksum_set_empty_body(self):
         with self.http_stubber:

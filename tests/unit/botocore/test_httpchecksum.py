@@ -14,7 +14,7 @@ import unittest
 from io import BytesIO
 
 from tests import mock
-from tests.utils.botocore import get_checksum_cls, requires_crt
+from tests.utils.botocore import get_checksum_cls
 
 from botocore.awsrequest import AWSResponse
 from botocore.model import OperationModel
@@ -640,23 +640,6 @@ class TestChecksumImplementations(unittest.TestCase):
 
     def test_crt_crc64nvme(self):
         self.assert_base64_checksum(CrtCrc64NvmeChecksum, "jSnVw/bqjr4=")
-
-
-class TestCrtChecksumOverrides(unittest.TestCase):
-    @requires_crt()
-    def test_crt_crc32_available(self):
-        actual_cls = get_checksum_cls("crc32")
-        self.assertEqual(actual_cls, CrtCrc32Checksum)
-
-    @requires_crt()
-    def test_crt_crc32c_available(self):
-        actual_cls = get_checksum_cls("crc32c")
-        self.assertEqual(actual_cls, CrtCrc32cChecksum)
-
-    @requires_crt()
-    def test_crt_crc64nvme_available(self):
-        actual_cls = get_checksum_cls("crc64nvme")
-        self.assertEqual(actual_cls, CrtCrc64NvmeChecksum)
 
 
 class TestStreamingChecksumBody(unittest.TestCase):

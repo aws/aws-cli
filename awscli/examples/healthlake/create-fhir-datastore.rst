@@ -26,7 +26,7 @@ Output::
         --sse-configuration '{ "KmsEncryptionConfig": {  "CmkType": "CUSTOMER_MANAGED_KMS_KEY", "KmsKeyId": "arn:aws:kms:us-east-1:your-account-id:key/your-key-id" } }' \
         --identity-provider-configuration  file://identity_provider_configuration.json
 
-    Contents of ``identity_provider_configuration.json``::
+Contents of ``identity_provider_configuration.json``::
 
     {
       "AuthorizationStrategy": "SMART_ON_FHIR_V1",

@@ -19,6 +19,16 @@ Output::
             "DatastoreStatus": "CREATING",
             "DatastoreTypeVersion": "R4",
             "DatastoreId": "(Datastore ID)"
+            "CreatedAt": "2024-11-18T14:42:53.467000-05:00",
+            "SseConfiguration": {
+                "KmsEncryptionConfig": {
+                    "CmkType": "AWS_OWNED_KMS_KEY"
+                }
+            },
+            "IdentityProviderConfiguration": {
+                "AuthorizationStrategy": "AWS_AUTH",
+                "FineGrainedAuthorizationEnabled": false
+            }
         }
     }
 

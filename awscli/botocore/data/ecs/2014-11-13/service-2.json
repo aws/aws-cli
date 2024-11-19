@@ -1699,6 +1699,10 @@
           "shape":"BoxedInteger",
           "documentation":"<p>Time duration (in seconds) to wait before the container is forcefully killed if it doesn't exit normally on its own.</p> <p>For tasks using the Fargate launch type, the task or service requires the following platforms:</p> <ul> <li> <p>Linux platform version <code>1.3.0</code> or later.</p> </li> <li> <p>Windows platform version <code>1.0.0</code> or later.</p> </li> </ul> <p>For tasks that use the Fargate launch type, the max stop timeout value is 120 seconds and if the parameter is not specified, the default value of 30 seconds is used.</p> <p>For tasks that use the EC2 launch type, if the <code>stopTimeout</code> parameter isn't specified, the value set for the Amazon ECS container agent configuration variable <code>ECS_CONTAINER_STOP_TIMEOUT</code> is used. If neither the <code>stopTimeout</code> parameter or the <code>ECS_CONTAINER_STOP_TIMEOUT</code> agent configuration variable are set, then the default values of 30 seconds for Linux containers and 30 seconds on Windows containers are used. Your container instances require at least version 1.26.0 of the container agent to use a container stop timeout value. However, we recommend using the latest container agent version. For information about checking your agent version and updating to the latest version, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-update.html\">Updating the Amazon ECS Container Agent</a> in the <i>Amazon Elastic Container Service Developer Guide</i>. If you're using an Amazon ECS-optimized Linux AMI, your instance needs at least version 1.26.0-1 of the <code>ecs-init</code> package. If your container instances are launched from version <code>20190301</code> or later, then they contain the required versions of the container agent and <code>ecs-init</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html\">Amazon ECS-optimized Linux AMI</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>The valid values for Fargate are 2-120 seconds.</p>"
         },
+        "versionConsistency":{
+          "shape":"VersionConsistency",
+          "documentation":"<p>Specifies whether Amazon ECS will resolve the container image tag provided in the container definition to an image digest. By default, the value is <code>enabled</code>. If you set the value for a container as <code>disabled</code>, Amazon ECS will not resolve the provided container image tag to a digest and will use the original image URI specified in the container definition for deployment. For more information about container image resolution, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html#deployment-container-image-stability\">Container image resolution</a> in the <i>Amazon ECS Developer Guide</i>.</p>"
+        },
         "hostname":{
           "shape":"String",
           "documentation":"<p>The hostname to use for your container. This parameter maps to <code>Hostname</code> in the docker container create command and the <code>--hostname</code> option to docker run.</p> <note> <p>The <code>hostname</code> parameter is not supported if you're using the <code>awsvpc</code> network mode.</p> </note>"
@@ -7332,6 +7336,13 @@
           "documentation":"<p>Details about the task set.</p>"
         }
       }
+    },
+    "VersionConsistency":{
+      "type":"string",
+      "enum":[
+        "enabled",
+        "disabled"
+      ]
     },
     "VersionInfo":{
       "type":"structure",

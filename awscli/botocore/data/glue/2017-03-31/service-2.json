@@ -747,7 +747,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a new table optimizer for a specific function. <code>compaction</code> is the only currently supported optimizer type.</p>"
+      "documentation":"<p>Creates a new table optimizer for a specific function. </p>"
     },
     "CreateTrigger":{
       "name":"CreateTrigger",
@@ -8585,7 +8585,7 @@
         },
         "Type":{
           "shape":"TableOptimizerType",
-          "documentation":"<p>The type of table optimizer. Currently, the only valid value is <code>compaction</code>.</p>"
+          "documentation":"<p>The type of table optimizer.</p>"
         },
         "TableOptimizerConfiguration":{
           "shape":"TableOptimizerConfiguration",
@@ -16566,7 +16566,7 @@
         },
         "Type":{
           "shape":"TableOptimizerType",
-          "documentation":"<p>The type of table optimizer. Currently, the only valid value is <code>compaction</code>.</p>"
+          "documentation":"<p>The type of table optimizer.</p>"
         },
         "MaxResults":{
           "shape":"MaxListTableOptimizerRunsTokenResults",
@@ -22077,6 +22077,10 @@
           "shape":"NullableBoolean",
           "documentation":"<p>Whether table optimization is enabled.</p>"
         },
+        "vpcConfiguration":{
+          "shape":"TableOptimizerVpcConfiguration",
+          "documentation":"<p>A <code>TableOptimizerVpcConfiguration</code> object representing the VPC configuration for a table optimizer.</p> <p>This configuration is necessary to perform optimization on tables that are in a customer VPC.</p>"
+        },
         "retentionConfiguration":{
           "shape":"RetentionConfiguration",
           "documentation":"<p>The configuration for a snapshot retention optimizer.</p>"
@@ -22149,6 +22153,17 @@
         "retention",
         "orphan_file_deletion"
       ]
+    },
+    "TableOptimizerVpcConfiguration":{
+      "type":"structure",
+      "members":{
+        "glueConnectionName":{
+          "shape":"glueConnectionNameString",
+          "documentation":"<p>The name of the Glue connection used for the VPC for the table optimizer.</p>"
+        }
+      },
+      "documentation":"<p>An object that describes the VPC configuration for a table optimizer.</p> <p>This configuration is necessary to perform optimization on tables that are in a customer VPC.</p>",
+      "union":true
     },
     "TablePrefix":{
       "type":"string",
@@ -23751,7 +23766,7 @@
         },
         "Type":{
           "shape":"TableOptimizerType",
-          "documentation":"<p>The type of table optimizer. Currently, the only valid value is <code>compaction</code>.</p>"
+          "documentation":"<p>The type of table optimizer.</p>"
         },
         "TableOptimizerConfiguration":{
           "shape":"TableOptimizerConfiguration",
@@ -24522,6 +24537,10 @@
     "double":{"type":"double"},
     "dpuCounts":{"type":"integer"},
     "dpuDurationInHour":{"type":"double"},
+    "glueConnectionNameString":{
+      "type":"string",
+      "min":1
+    },
     "metricCounts":{"type":"long"},
     "tableNameString":{
       "type":"string",

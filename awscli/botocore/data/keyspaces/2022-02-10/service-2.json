@@ -66,7 +66,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> The <code>CreateType</code> operation creates a new user-defined type in the specified keyspace. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/udts.html\">User-defined types (UDTs)</a> in the <i>Amazon Keyspaces Developer Guide</i>. </p>"
+      "documentation":"<p> The <code>CreateType</code> operation creates a new user-defined type in the specified keyspace. </p> <p>To configure the required permissions, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/configure-udt-permissions.html#udt-permissions-create\">Permissions to create a UDT</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/udts.html\">User-defined types (UDTs)</a> in the <i>Amazon Keyspaces Developer Guide</i>. </p>"
     },
     "DeleteKeyspace":{
       "name":"DeleteKeyspace",
@@ -120,7 +120,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> The <code>DeleteType</code> operation deletes a user-defined type (UDT). You can only delete a type that is not used in a table or another UDT. </p>"
+      "documentation":"<p> The <code>DeleteType</code> operation deletes a user-defined type (UDT). You can only delete a type that is not used in a table or another UDT. </p> <p>To configure the required permissions, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/configure-udt-permissions.html#udt-permissions-drop\">Permissions to delete a UDT</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
     },
     "GetKeyspace":{
       "name":"GetKeyspace",
@@ -137,7 +137,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns the name and the Amazon Resource Name (ARN) of the specified table.</p>"
+      "documentation":"<p>Returns the name of the specified keyspace, the Amazon Resource Name (ARN), the replication strategy, the Amazon Web Services Regions of a multi-Region keyspace, and the status of newly added Regions after an <code>UpdateKeyspace</code> operation.</p>"
     },
     "GetTable":{
       "name":"GetTable",
@@ -188,7 +188,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> The <code>GetType</code> operation returns information about the type, for example the field definitions, the timestamp when the type was last modified, the level of nesting, the status, and details about if the type is used in other types and tables. </p> <p>To read keyspace metadata using <code>GetType</code>, the IAM principal needs <code>Select</code> action permissions for the system keyspace.</p>"
+      "documentation":"<p> The <code>GetType</code> operation returns information about the type, for example the field definitions, the timestamp when the type was last modified, the level of nesting, the status, and details about if the type is used in other types and tables. </p> <p>To read keyspace metadata using <code>GetType</code>, the IAM principal needs <code>Select</code> action permissions for the system keyspace. To configure the required permissions, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/configure-udt-permissions.html#udt-permissions-view\">Permissions to view a UDT</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
     },
     "ListKeyspaces":{
       "name":"ListKeyspaces",
@@ -256,7 +256,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> The <code>ListTypes</code> operation returns a list of types for a specified keyspace. </p> <p>To read keyspace metadata using <code>ListTypes</code>, the IAM principal needs <code>Select</code> action permissions for the system keyspace.</p>"
+      "documentation":"<p> The <code>ListTypes</code> operation returns a list of types for a specified keyspace. </p> <p>To read keyspace metadata using <code>ListTypes</code>, the IAM principal needs <code>Select</code> action permissions for the system keyspace. To configure the required permissions, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/configure-udt-permissions.html#udt-permissions-view\">Permissions to view a UDT</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
     },
     "RestoreTable":{
       "name":"RestoreTable",
@@ -311,6 +311,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Removes the association of tags from a Amazon Keyspaces resource.</p>"
+    },
+    "UpdateKeyspace":{
+      "name":"UpdateKeyspace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateKeyspaceRequest"},
+      "output":{"shape":"UpdateKeyspaceResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p> Adds a new Amazon Web Services Region to the keyspace. You can add a new Region to a keyspace that is either a single or a multi-Region keyspace. The new replica Region is applied to all tables in the keyspace. For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/keyspaces-multi-region-add-replica.html\">Add an Amazon Web Services Region to a keyspace in Amazon Keyspaces</a> in the <i>Amazon Keyspaces Developer Guide</i>. </p> <p>To change a single-Region to a multi-Region keyspace, you have to enable client-side timestamps for all tables in the keyspace. For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/client-side-timestamps.html\">Client-side timestamps in Amazon Keyspaces</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
     },
     "UpdateTable":{
       "name":"UpdateTable",
@@ -827,6 +845,10 @@
         "replicationRegions":{
           "shape":"RegionList",
           "documentation":"<p> If the <code>replicationStrategy</code> of the keyspace is <code>MULTI_REGION</code>, a list of replication Regions is returned. </p>"
+        },
+        "replicationGroupStatuses":{
+          "shape":"ReplicationGroupStatusList",
+          "documentation":"<p> A list of all Regions the keyspace is replicated in after the update keyspace operation and their status. </p>"
         }
       }
     },
@@ -1041,6 +1063,15 @@
       "max":48,
       "min":1,
       "pattern":"[a-zA-Z0-9][a-zA-Z0-9_]{0,47}"
+    },
+    "KeyspaceStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "CREATING",
+        "UPDATING",
+        "DELETING"
+      ]
     },
     "KeyspaceSummary":{
       "type":"structure",
@@ -1323,6 +1354,34 @@
       "member":{"shape":"ReplicaSpecificationSummary"},
       "min":0
     },
+    "ReplicationGroupStatus":{
+      "type":"structure",
+      "required":[
+        "region",
+        "keyspaceStatus"
+      ],
+      "members":{
+        "region":{
+          "shape":"region",
+          "documentation":"<p> The name of the Region that was added to the keyspace. </p>"
+        },
+        "keyspaceStatus":{
+          "shape":"KeyspaceStatus",
+          "documentation":"<p> The status of the keyspace. </p>"
+        },
+        "tablesReplicationProgress":{
+          "shape":"TablesReplicationProgress",
+          "documentation":"<p> This shows the replication progress of tables in the keyspace. The value is expressed as a percentage of the newly replicated tables with status <code>Active</code> compared to the total number of tables in the keyspace. </p>"
+        }
+      },
+      "documentation":"<p> This shows the summary status of the keyspace after a new Amazon Web Services Region was added. </p>"
+    },
+    "ReplicationGroupStatusList":{
+      "type":"list",
+      "member":{"shape":"ReplicationGroupStatus"},
+      "max":6,
+      "min":2
+    },
     "ReplicationSpecification":{
       "type":"structure",
       "required":["replicationStrategy"],
@@ -1347,7 +1406,7 @@
         },
         "resourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The unique identifier in the format of Amazon Resource Name (ARN) for the resource could't be found.</p>"
+          "documentation":"<p>The unique identifier in the format of Amazon Resource Name (ARN) for the resource couldn’t be found.</p>"
         }
       },
       "documentation":"<p>The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be <code>ACTIVE</code>.</p>",
@@ -1527,6 +1586,12 @@
       "type":"list",
       "member":{"shape":"TableSummary"}
     },
+    "TablesReplicationProgress":{
+      "type":"string",
+      "max":7,
+      "min":2,
+      "pattern":"[0-9]{1,3}(?:[.][0-9]{1,2})?%"
+    },
     "Tag":{
       "type":"structure",
       "required":[
@@ -1667,6 +1732,31 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "UpdateKeyspaceRequest":{
+      "type":"structure",
+      "required":[
+        "keyspaceName",
+        "replicationSpecification"
+      ],
+      "members":{
+        "keyspaceName":{
+          "shape":"KeyspaceName",
+          "documentation":"<p> The name of the keyspace. </p>"
+        },
+        "replicationSpecification":{"shape":"ReplicationSpecification"},
+        "clientSideTimestamps":{"shape":"ClientSideTimestamps"}
+      }
+    },
+    "UpdateKeyspaceResponse":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ARN",
+          "documentation":"<p> The unique identifier of the keyspace in the format of an Amazon Resource Name (ARN). </p>"
+        }
       }
     },
     "UpdateTableRequest":{

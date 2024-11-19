@@ -3,8 +3,7 @@
 The following ``describe-fhir-datastore`` example demonstrates how to find the properties of a Data Store in Amazon HealthLake. ::
 
     aws healthlake describe-fhir-datastore \
-        --datastore-id "1f2f459836ac6c513ce899f9e4f66a59" \
-        --region us-east-1
+        --datastore-id "1f2f459836ac6c513ce899f9e4f66a59"
 
 
 Output::

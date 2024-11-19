@@ -3,7 +3,6 @@
 The following ``list-fhir-datastores`` example shows to how to use the command and how users can filter results based on Data Store status in Amazon HealthLake. ::
 
     aws healthlake list-fhir-datastores \
-        --region us-east-1 \
         --filter DatastoreStatus=ACTIVE
 
 Output::

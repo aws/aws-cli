@@ -103,9 +103,11 @@ class CrtCrc64NvmeChecksum(BaseChecksum):
     # Note: This class is only used if the CRT is available
     def __init__(self):
         self._int_crc64nvme = 0
+
     def update(self, chunk):
         new_checksum = crt_checksums.crc64nvme(chunk, self._int_crc64nvme)
         self._int_crc64nvme = new_checksum & 0xFFFFFFFFFFFFFFFF
+
     def digest(self):
         return self._int_crc64nvme.to_bytes(8, byteorder="big")
 

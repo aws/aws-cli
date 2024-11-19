@@ -3,7 +3,7 @@
 The following ``untag-resource`` example shows how to remove tags from a Data Store. ::
 
     aws healthlake untag-resource \
-        --resource-arn "arn:aws:healthlake:us-east-1:674914422125:datastore/fhir/b91723d65c6fdeb1d26543a49d2ed1fa" \
+        --resource-arn "arn:aws:healthlake:us-east-1:123456789012:datastore/fhir/b91723d65c6fdeb1d26543a49d2ed1fa" \
         --tag-keys '["key1"]'
 
 This command produces no output.

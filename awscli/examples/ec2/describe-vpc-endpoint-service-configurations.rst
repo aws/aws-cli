@@ -59,4 +59,4 @@ Output::
         ]
     }
 
-For more information, see `VPC endpoint services <https://docs.aws.amazon.com/vpc/latest/userguide/endpoint-service.html>`__ in the *Amazon VPC User Guide*.
+For more information, see `Concepts <https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html>`__ in the *AWS PrivateLink User Guide*.

@@ -1,35 +1,44 @@
-**To associate an Elastic IP addresses in EC2-Classic**
+**Example 1: To associate an Elastic IP address with an instance**
 
-This example associates an Elastic IP address with an instance in EC2-Classic. If the command succeeds, no output is returned.
+The following ``associate-address`` example associates an Elastic IP address with the specified EC2 instance. ::
 
-Command::
-
-  aws ec2 associate-address --instance-id i-07ffe74c7330ebf53 --public-ip 198.51.100.0
-
-**To associate an Elastic IP address in EC2-VPC**
-
-This example associates an Elastic IP address with an instance in a VPC.
-
-Command::
-
-  aws ec2 associate-address --instance-id i-0b263919b6498b123 --allocation-id eipalloc-64d5890a
+    aws ec2 associate-address \
+        --instance-id i-0b263919b6498b123 \
+        --allocation-id eipalloc-64d5890a
 
 Output::
 
-  {
-      "AssociationId": "eipassoc-2bebb745"
-  }
+    {
+        "AssociationId": "eipassoc-2bebb745"
+    }
 
-This example associates an Elastic IP address with a network interface.
+**Example 2: To associate an Elastic IP address with a network interface**
 
-Command::
+The following ``associate-address`` example associates the specified Elastic IP address with the specified network interface. ::
 
-  aws ec2 associate-address --allocation-id eipalloc-64d5890a --network-interface-id eni-1a2b3c4d
+    aws ec2 associate-address 
+        --allocation-id eipalloc-64d5890a \
+        --network-interface-id eni-1a2b3c4d
 
-This example associates an Elastic IP with a private IP address that's associated with a network interface.
+Output::
 
-Command::
+    {
+        "AssociationId": "eipassoc-2bebb745"
+    }
 
-  aws ec2 associate-address --allocation-id eipalloc-64d5890a --network-interface-id eni-1a2b3c4d --private-ip-address 10.0.0.85
+**Example 3: To associate an Elastic IP address with a private IP address**
 
- 
+The following ``associate-address`` example associates the specified Elastic IP address with the specified private IP address in the specified network interface. ::
+
+    aws ec2 associate-address \
+        --allocation-id eipalloc-64d5890a \
+        --network-interface-id eni-1a2b3c4d \
+        --private-ip-address 10.0.0.85
+
+Output::
+
+    {
+        "AssociationId": "eipassoc-2bebb745"
+    }
+
+For more information, see `Elastic IP addresses <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html>`__ in the *Amazon EC2 User Guide*.

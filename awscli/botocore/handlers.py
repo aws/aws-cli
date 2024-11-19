@@ -1151,6 +1151,12 @@ def _update_status_code(response, **kwargs):
         http_response.status_code = parsed_status_code
 
 
+def add_query_compatibility_header(model, params, **kwargs):
+    if not model.service_model.is_query_compatible:
+        return
+    params['headers']['x-amzn-query-mode'] = 'true'
+
+
 # This is a list of (event_name, handler).
 # When a Session is created, everything in this list will be
 # automatically registered with that Session.
@@ -1201,7 +1207,7 @@ BUILTIN_HANDLERS = [
     ('docs.response-example.s3.*.complete-section', document_expires_shape),
     ('docs.response-params.s3.*.complete-section', document_expires_shape),
     ('before-endpoint-resolution.s3', customize_endpoint_resolver_builtins),
-
+    ('before-call', add_query_compatibility_header),
     ('before-call.s3', add_expect_header),
     ('before-call.glacier', add_glacier_version),
     ('before-call.api-gateway', add_accept_header),

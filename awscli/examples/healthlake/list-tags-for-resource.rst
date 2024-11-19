@@ -3,8 +3,7 @@
 The following ``list-tags-for-resource`` example lists the tags associated with the specified Data Store.::
 
     aws healthlake list-tags-for-resource \
-        --resource-arn "arn:aws:healthlake:us-east-1:674914422125:datastore/fhir/0725c83f4307f263e16fd56b6d8ebdbe" \
-        --region us-east-1
+        --resource-arn "arn:aws:healthlake:us-east-1:674914422125:datastore/fhir/0725c83f4307f263e16fd56b6d8ebdbe"
 
 Output::
 

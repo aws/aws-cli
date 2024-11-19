@@ -3,8 +3,6 @@
 The following ``create-fhir-datastore`` example demonstrates how to create a new Data Store in Amazon HealthLake. ::
 
     aws healthlake create-fhir-datastore \
-        --region us-east-1 \
-        --datastore-type-version R4 \
         --datastore-type-version R4 \
         --datastore-name "FhirTestDatastore"
 

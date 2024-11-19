@@ -38,6 +38,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' outfile'
         self.addCleanup(self.remove_file_if_exists, 'outfile')
         self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket',
+                                              'ChecksumMode': 'ENABLED',
                                               'Key': 'mykey'})
 
     def test_range(self):
@@ -48,6 +49,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' outfile'
         self.addCleanup(self.remove_file_if_exists, 'outfile')
         self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket',
+                                              'ChecksumMode': 'ENABLED',
                                               'Key': 'mykey',
                                               'Range': 'bytes=0-499'})
 
@@ -61,7 +63,9 @@ class TestGetObject(BaseAWSCommandParamsTest):
         self.addCleanup(self.remove_file_if_exists, 'outfile')
         self.assert_params_for_cmd(
             cmdline, {
-                'Bucket': 'mybucket', 'Key': 'mykey',
+                'Bucket': 'mybucket',
+                'ChecksumMode': 'ENABLED',
+                'Key': 'mykey',
                 'ResponseCacheControl': 'No-cache',
                 'ResponseContentEncoding': 'x-gzip'
             }
@@ -83,7 +87,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' outfile'
         self.addCleanup(self.remove_file_if_exists, 'outfile')
         self.assert_params_for_cmd(
-            cmdline, {'Bucket': 'mybucket', 'Key': 'mykey'})
+            cmdline, {'Bucket': 'mybucket', 'ChecksumMode': 'ENABLED', 'Key': 'mykey'})
 
 
 if __name__ == "__main__":

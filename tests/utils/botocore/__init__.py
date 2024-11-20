@@ -39,10 +39,10 @@ from unittest import mock
 import botocore.loaders
 import botocore.session
 from botocore.awsrequest import AWSResponse
-from botocore.compat import urlparse
-from botocore.compat import parse_qs
+from botocore.compat import parse_qs, urlparse
 from botocore import utils
 from botocore import credentials
+from botocore.httpchecksum import _CHECKSUM_CLS, DEFAULT_CHECKSUM_ALGORITHM
 from botocore.stub import Stubber
 
 
@@ -590,3 +590,13 @@ def patch_load_service_model(
 
     loader = session.get_component('data_loader')
     monkeypatch.setattr(loader, 'load_service_model', mock_load_service_model)
+
+
+def get_checksum_cls(algorithm=DEFAULT_CHECKSUM_ALGORITHM.lower()):
+    """
+    This pass through is grabbing our internally supported list of checksums
+    to ensure we stay in sync, while not exposing them publicly.
+
+    Returns the default checksum algorithm class if none is specified.
+    """
+    return _CHECKSUM_CLS[algorithm]

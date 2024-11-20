@@ -2207,7 +2207,7 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
             expected_type=S3RequestType.PUT_OBJECT,
             expected_host=self.get_virtual_s3_host('bucket'),
             expected_path='/key',
-            expected_body_content=b'foo',
+            expected_body_content=b'3\r\nfoo\r\n0\r\nx-amz-checksum-crc32:jHNlIQ==\r\n\r\n',
         )
 
     def test_streaming_download_using_crt_client(self):

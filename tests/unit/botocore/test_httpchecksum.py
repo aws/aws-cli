@@ -24,6 +24,7 @@ from botocore.httpchecksum import StreamingChecksumBody
 from botocore.httpchecksum import (
     Crc32Checksum,
     Sha256Checksum,
+    CrtCrc64NvmeChecksum,
     Sha1Checksum,
     CrtCrc32Checksum,
     CrtCrc32cChecksum,
@@ -617,6 +618,9 @@ class TestChecksumImplementations(unittest.TestCase):
 
     def test_crt_crc32c(self):
         self.assert_base64_checksum(CrtCrc32cChecksum, "yZRlqg==")
+
+    def test_crt_crc64nvme(self):
+        self.assert_base64_checksum(CrtCrc64NvmeChecksum, "jSnVw/bqjr4=")
 
 
 class TestStreamingChecksumBody(unittest.TestCase):

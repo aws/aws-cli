@@ -36,6 +36,14 @@ logger = logging.getLogger(__name__)
 # values result in a warning-level log message.
 USERAGENT_APPID_MAXLEN = 50
 
+VALID_REQUEST_CHECKSUM_CALCULATION_CONFIG = (
+    "when_supported",
+    "when_required",
+)
+VALID_RESPONSE_CHECKSUM_VALIDATION_CONFIG = (
+    "when_supported",
+    "when_required",
+)
 
 class ClientArgsCreator(object):
     def __init__(self, event_emitter, user_agent, response_parser_factory,
@@ -216,11 +224,18 @@ class ClientArgsCreator(object):
                 sigv4a_signing_region_set=(
                     client_config.sigv4a_signing_region_set
                 ),
+                request_checksum_calculation=(
+                    client_config.request_checksum_calculation
+                ),
+                response_checksum_validation=(
+                    client_config.response_checksum_validation
+                ),
             )
         self._compute_retry_config(config_kwargs)
         self._compute_request_compression_config(config_kwargs)
         self._compute_user_agent_appid_config(config_kwargs)
         self._compute_sigv4a_signing_region_set_config(config_kwargs)
+        self._compute_checksum_config(config_kwargs)
         s3_config = self.compute_s3_config(client_config)
 
         is_s3_service = self._is_s3_service(service_name)
@@ -589,3 +604,39 @@ class ClientArgsCreator(object):
                 'sigv4a_signing_region_set'
             )
         config_kwargs['sigv4a_signing_region_set'] = sigv4a_signing_region_set
+
+    def _compute_checksum_config(self, config_kwargs):
+        self._handle_checksum_config(
+            config_kwargs,
+            config_key="request_checksum_calculation",
+            default_value="when_supported",
+            valid_options=VALID_REQUEST_CHECKSUM_CALCULATION_CONFIG,
+        )
+        self._handle_checksum_config(
+            config_kwargs,
+            config_key="response_checksum_validation",
+            default_value="when_supported",
+            valid_options=VALID_RESPONSE_CHECKSUM_VALIDATION_CONFIG,
+        )
+
+    def _handle_checksum_config(
+        self,
+        config_kwargs,
+        config_key,
+        default_value,
+        valid_options,
+    ):
+        value = config_kwargs.get(config_key)
+        if value is None:
+            value = (
+                self._config_store.get_config_variable(config_key)
+                or default_value
+            )
+        value = value.lower()
+        if value not in valid_options:
+            raise botocore.exceptions.InvalidChecksumConfigError(
+                config_key=config_key,
+                config_value=value,
+                valid_options=valid_options,
+            )
+        config_kwargs[config_key] = value

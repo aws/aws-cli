@@ -13,9 +13,14 @@ Output::
             "DataAccessRoleArn": "arn:aws:iam::(AWS Account ID):role/(Role Name)",
             "JobStatus": "IN_PROGRESS",
             "JobId": "9009813e9d69ba7cf79bcb3468780f16",
-            "SubmitTime": 1609175692.715,
+            "SubmitTime": "2024-11-20T11:31:46.672000-05:00",
+            "EndTime": "2024-11-20T11:34:01.636000-05:00",
             "OutputDataConfig": {
-                "S3Uri": "s3://(Bucket Name)/(Prefix Name)/59593b2d0367ce252b5e66bf5fd6b574-FHIR_EXPORT-9009813e9d69ba7cf79bcb3468780f16/"
+                "S3Configuration": {
+                "S3Uri": "s3://outputS3Bucket/healthlake-output",
+                "KmsKeyId": "arn:aws:kms:us-east-1:012345678910:key/d330e7fc-b56c-4216-a250-f4c43ef46e83"
+            }
+
             },
             "DatastoreId": "(Datastore ID)"
         }

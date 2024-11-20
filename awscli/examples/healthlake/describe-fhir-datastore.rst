@@ -13,18 +13,19 @@ Output::
             "PreloadDataConfig": {
                 "PreloadDataType": "SYNTHEA"
             },
-            "DatastoreName": "FhirTestDatastore",
-            "DatastoreArn": "arn:aws:healthlake:us-east-1:(AWS Account ID):datastore/(Datastore ID)",
-            "DatastoreEndpoint": "https://healthlake.us-east-1.amazonaws.com/datastore/(Datastore ID)/r4/",
-            "DatastoreStatus": "CREATING",
-            "DatastoreTypeVersion": "R4",
-            "DatastoreId": "(Datastore ID)"
-            "CreatedAt": "2024-11-18T14:42:53.467000-05:00",
             "SseConfiguration": {
                 "KmsEncryptionConfig": {
-                    "CmkType": "AWS_OWNED_KMS_KEY"
+                    "CmkType": "CUSTOMER_MANAGED_KMS_KEY",
+                    "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
                 }
             },
+            "DatastoreName": "Demo",
+            "DatastoreArn": "arn:aws:healthlake:us-east-1:<AWS Account ID>:datastore/<Datastore ID>",
+            "DatastoreEndpoint": "https://healthlake.us-east-1.amazonaws.com/datastore/<Datastore ID>/r4/",
+            "DatastoreStatus": "ACTIVE",
+            "DatastoreTypeVersion": "R4",
+            "CreatedAt": 1603761064.881,
+            "DatastoreId": "<Datastore ID>",
             "IdentityProviderConfiguration": {
                 "AuthorizationStrategy": "AWS_AUTH",
                 "FineGrainedAuthorizationEnabled": false

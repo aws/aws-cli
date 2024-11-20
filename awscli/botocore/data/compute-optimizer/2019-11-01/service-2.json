@@ -135,6 +135,26 @@
       ],
       "documentation":"<p> Exports optimization recommendations for Amazon ECS services on Fargate. </p> <p>Recommendations are exported in a CSV file, and its metadata in a JSON file, to an existing Amazon Simple Storage Service (Amazon S3) bucket that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html\">Exporting Recommendations</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>You can only have one Amazon ECS service export job in progress per Amazon Web Services Region.</p>"
     },
+    "ExportIdleRecommendations":{
+      "name":"ExportIdleRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ExportIdleRecommendationsRequest"},
+      "output":{"shape":"ExportIdleRecommendationsResponse"},
+      "errors":[
+        {"shape":"OptInRequiredException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingAuthenticationToken"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p> Export optimization recommendations for your idle resources. </p> <p>Recommendations are exported in a comma-separated values (CSV) file, and its metadata in a JavaScript Object Notation (JSON) file, to an existing Amazon Simple Storage Service (Amazon S3) bucket that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html\">Exporting Recommendations</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>You can have only one idle resource export job in progress per Amazon Web Services Region.</p>"
+    },
     "ExportLambdaFunctionRecommendations":{
       "name":"ExportLambdaFunctionRecommendations",
       "http":{
@@ -370,6 +390,26 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns the Compute Optimizer enrollment (opt-in) status of organization member accounts, if your account is an organization management account.</p> <p>To get the enrollment status of standalone accounts, use the <a>GetEnrollmentStatus</a> action.</p>"
+    },
+    "GetIdleRecommendations":{
+      "name":"GetIdleRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIdleRecommendationsRequest"},
+      "output":{"shape":"GetIdleRecommendationsResponse"},
+      "errors":[
+        {"shape":"OptInRequiredException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"MissingAuthenticationToken"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns idle resource recommendations. Compute Optimizer generates recommendations for idle resources that meet a specific set of requirements. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/requirements.html\">Resource requirements</a> in the <i>Compute Optimizer User Guide</i> </p>"
     },
     "GetLambdaFunctionRecommendations":{
       "name":"GetLambdaFunctionRecommendations",
@@ -875,6 +915,7 @@
         "P99_5"
       ]
     },
+    "DBClusterIdentifier":{"type":"string"},
     "DBInstanceClass":{"type":"string"},
     "DBStorageConfiguration":{
       "type":"structure",
@@ -966,6 +1007,13 @@
     "DestinationBucket":{"type":"string"},
     "DestinationKey":{"type":"string"},
     "DestinationKeyPrefix":{"type":"string"},
+    "Dimension":{
+      "type":"string",
+      "enum":[
+        "SavingsValue",
+        "SavingsValueAfterDiscount"
+      ]
+    },
     "EBSEffectiveRecommendationPreferences":{
       "type":"structure",
       "members":{
@@ -1682,6 +1730,43 @@
         "s3Destination":{"shape":"S3Destination"}
       }
     },
+    "ExportIdleRecommendationsRequest":{
+      "type":"structure",
+      "required":["s3DestinationConfig"],
+      "members":{
+        "accountIds":{
+          "shape":"AccountIds",
+          "documentation":"<p> The Amazon Web Services account IDs for the export idle resource recommendations. </p> <p>If your account is the management account or the delegated administrator of an organization, use this parameter to specify the member account you want to export recommendations to.</p> <p>This parameter can't be specified together with the include member accounts parameter. The parameters are mutually exclusive.</p> <p>If this parameter or the include member accounts parameter is omitted, the recommendations for member accounts aren't included in the export.</p> <p>You can specify multiple account IDs per request.</p>"
+        },
+        "filters":{
+          "shape":"IdleRecommendationFilters",
+          "documentation":"<p>An array of objects to specify a filter that exports a more specific set of idle resource recommendations.</p>"
+        },
+        "fieldsToExport":{
+          "shape":"ExportableIdleFields",
+          "documentation":"<p>The recommendations data to include in the export file. For more information about the fields that can be exported, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files\">Exported files</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+        },
+        "s3DestinationConfig":{"shape":"S3DestinationConfig"},
+        "fileFormat":{
+          "shape":"FileFormat",
+          "documentation":"<p>The format of the export file. The CSV file is the only export file format currently supported.</p>"
+        },
+        "includeMemberAccounts":{
+          "shape":"IncludeMemberAccounts",
+          "documentation":"<p>If your account is the management account or the delegated administrator of an organization, this parameter indicates whether to include recommendations for resources in all member accounts of the organization.</p> <p>The member accounts must also be opted in to Compute Optimizer, and trusted access for Compute Optimizer must be enabled in the organization account. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access\">Compute Optimizer and Amazon Web Services Organizations trusted access</a> in the <i>Compute Optimizer User Guide</i>.</p> <p>If this parameter is omitted, recommendations for member accounts of the organization aren't included in the export file.</p> <p>If this parameter or the account ID parameter is omitted, recommendations for member accounts aren't included in the export.</p>"
+        }
+      }
+    },
+    "ExportIdleRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p> The identification number of the export job. </p> <p>To view the status of an export job, use the <a>DescribeRecommendationExportJobs</a> action and specify the job ID. </p>"
+        },
+        "s3Destination":{"shape":"S3Destination"}
+      }
+    },
     "ExportLambdaFunctionRecommendationsRequest":{
       "type":"structure",
       "required":["s3DestinationConfig"],
@@ -1906,6 +1991,35 @@
       "type":"list",
       "member":{"shape":"ExportableECSServiceField"}
     },
+    "ExportableIdleField":{
+      "type":"string",
+      "enum":[
+        "AccountId",
+        "ResourceArn",
+        "ResourceId",
+        "ResourceType",
+        "LastRefreshTimestamp",
+        "LookbackPeriodInDays",
+        "SavingsOpportunity",
+        "SavingsOpportunityAfterDiscount",
+        "UtilizationMetricsCpuMaximum",
+        "UtilizationMetricsMemoryMaximum",
+        "UtilizationMetricsNetworkOutBytesPerSecondMaximum",
+        "UtilizationMetricsNetworkInBytesPerSecondMaximum",
+        "UtilizationMetricsDatabaseConnectionsMaximum",
+        "UtilizationMetricsEBSVolumeReadIOPSMaximum",
+        "UtilizationMetricsEBSVolumeWriteIOPSMaximum",
+        "UtilizationMetricsVolumeReadOpsPerSecondMaximum",
+        "UtilizationMetricsVolumeWriteOpsPerSecondMaximum",
+        "Finding",
+        "FindingDescription",
+        "Tags"
+      ]
+    },
+    "ExportableIdleFields":{
+      "type":"list",
+      "member":{"shape":"ExportableIdleField"}
+    },
     "ExportableInstanceField":{
       "type":"string",
       "enum":[
@@ -2074,6 +2188,7 @@
         "CurrentInstanceOnDemandHourlyPrice",
         "CurrentStorageOnDemandMonthlyPrice",
         "LookbackPeriodInDays",
+        "CurrentInstancePerformanceRisk",
         "UtilizationMetricsCpuMaximum",
         "UtilizationMetricsMemoryMaximum",
         "UtilizationMetricsEBSVolumeStorageSpaceUtilizationMaximum",
@@ -2084,6 +2199,14 @@
         "UtilizationMetricsEBSVolumeReadThroughputMaximum",
         "UtilizationMetricsEBSVolumeWriteThroughputMaximum",
         "UtilizationMetricsDatabaseConnectionsMaximum",
+        "UtilizationMetricsStorageNetworkReceiveThroughputMaximum",
+        "UtilizationMetricsStorageNetworkTransmitThroughputMaximum",
+        "UtilizationMetricsAuroraMemoryHealthStateMaximum",
+        "UtilizationMetricsAuroraMemoryNumDeclinedSqlTotalMaximum",
+        "UtilizationMetricsAuroraMemoryNumKillConnTotalMaximum",
+        "UtilizationMetricsAuroraMemoryNumKillQueryTotalMaximum",
+        "UtilizationMetricsReadIOPSEphemeralStorageMaximum",
+        "UtilizationMetricsWriteIOPSEphemeralStorageMaximum",
         "InstanceFinding",
         "InstanceFindingReasonCodes",
         "StorageFinding",
@@ -2117,7 +2240,9 @@
         "EffectiveRecommendationPreferencesLookBackPeriod",
         "EffectiveRecommendationPreferencesSavingsEstimationMode",
         "LastRefreshTimestamp",
-        "Tags"
+        "Tags",
+        "DBClusterIdentifier",
+        "PromotionTier"
       ]
     },
     "ExportableRDSDBFields":{
@@ -2633,6 +2758,52 @@
         }
       }
     },
+    "GetIdleRecommendationsRequest":{
+      "type":"structure",
+      "members":{
+        "resourceArns":{
+          "shape":"ResourceArns",
+          "documentation":"<p>The ARN that identifies the idle resource.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to advance to the next page of idle resource recommendations.</p>"
+        },
+        "maxResults":{
+          "shape":"IdleMaxResults",
+          "documentation":"<p>The maximum number of idle resource recommendations to return with a single request. </p> <p>To retrieve the remaining results, make another request with the returned <code>nextToken</code> value.</p>"
+        },
+        "filters":{
+          "shape":"IdleRecommendationFilters",
+          "documentation":"<p>An array of objects to specify a filter that returns a more specific list of idle resource recommendations.</p>"
+        },
+        "accountIds":{
+          "shape":"AccountIds",
+          "documentation":"<p>Return the idle resource recommendations to the specified Amazon Web Services account IDs.</p> <p>If your account is the management account or the delegated administrator of an organization, use this parameter to return the idle resource recommendations to specific member accounts.</p> <p>You can only specify one account ID per request.</p>"
+        },
+        "orderBy":{
+          "shape":"OrderBy",
+          "documentation":"<p>The order to sort the idle resource recommendations.</p>"
+        }
+      }
+    },
+    "GetIdleRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to advance to the next page of idle resource recommendations.</p>"
+        },
+        "idleRecommendations":{
+          "shape":"IdleRecommendations",
+          "documentation":"<p>An array of objects that describe the idle resource recommendations.</p>"
+        },
+        "errors":{
+          "shape":"IdleRecommendationErrors",
+          "documentation":"<p>An array of objects that describe errors of the request.</p>"
+        }
+      }
+    },
     "GetLambdaFunctionRecommendationsRequest":{
       "type":"structure",
       "members":{
@@ -2923,6 +3094,235 @@
         "True",
         "False"
       ]
+    },
+    "IdleEstimatedMonthlySavings":{
+      "type":"structure",
+      "members":{
+        "currency":{
+          "shape":"Currency",
+          "documentation":"<p>The currency of the estimated monthly savings.</p>"
+        },
+        "value":{
+          "shape":"Value",
+          "documentation":"<p>The value of the estimated monthly savings for Idle resources.</p>"
+        }
+      },
+      "documentation":"<p>Describes the estimated monthly savings possible for idle resources by adopting Compute Optimizer recommendations.</p>"
+    },
+    "IdleFinding":{
+      "type":"string",
+      "enum":[
+        "Idle",
+        "Unattached"
+      ]
+    },
+    "IdleFindingDescription":{"type":"string"},
+    "IdleMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":0
+    },
+    "IdleMetricName":{
+      "type":"string",
+      "enum":[
+        "CPU",
+        "Memory",
+        "NetworkOutBytesPerSecond",
+        "NetworkInBytesPerSecond",
+        "DatabaseConnections",
+        "EBSVolumeReadIOPS",
+        "EBSVolumeWriteIOPS",
+        "VolumeReadOpsPerSecond",
+        "VolumeWriteOpsPerSecond"
+      ]
+    },
+    "IdleRecommendation":{
+      "type":"structure",
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the current idle resource.</p>"
+        },
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the resource.</p>"
+        },
+        "resourceType":{
+          "shape":"IdleRecommendationResourceType",
+          "documentation":"<p>The type of resource that is idle.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the idle resource.</p>"
+        },
+        "finding":{
+          "shape":"IdleFinding",
+          "documentation":"<p>The finding classification of an idle resource.</p>"
+        },
+        "findingDescription":{
+          "shape":"IdleFindingDescription",
+          "documentation":"<p>A summary of the findings for the resource.</p>"
+        },
+        "savingsOpportunity":{
+          "shape":"IdleSavingsOpportunity",
+          "documentation":"<p>The savings opportunity for the idle resource.</p>"
+        },
+        "savingsOpportunityAfterDiscounts":{
+          "shape":"IdleSavingsOpportunityAfterDiscounts",
+          "documentation":"<p>The savings opportunity for the idle resource after any applying discounts.</p>"
+        },
+        "utilizationMetrics":{
+          "shape":"IdleUtilizationMetrics",
+          "documentation":"<p>An array of objects that describe the utilization metrics of the idle resource.</p>"
+        },
+        "lookBackPeriodInDays":{
+          "shape":"LookBackPeriodInDays",
+          "documentation":"<p>The number of days the idle resource utilization metrics were analyzed.</p>"
+        },
+        "lastRefreshTimestamp":{
+          "shape":"LastRefreshTimestamp",
+          "documentation":"<p>The timestamp of when the idle resource recommendation was last generated.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of tags assigned to your idle resource recommendations.</p>"
+        }
+      },
+      "documentation":"<p>Describes an Idle resource recommendation.</p>"
+    },
+    "IdleRecommendationError":{
+      "type":"structure",
+      "members":{
+        "identifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The ID of the error.</p>"
+        },
+        "code":{
+          "shape":"Code",
+          "documentation":"<p>The error code.</p>"
+        },
+        "message":{
+          "shape":"Message",
+          "documentation":"<p>The error message.</p>"
+        },
+        "resourceType":{
+          "shape":"IdleRecommendationResourceType",
+          "documentation":"<p>The type of resource associated with the error.</p>"
+        }
+      },
+      "documentation":"<p>Returns of list of resources that doesn't have idle recommendations.</p>"
+    },
+    "IdleRecommendationErrors":{
+      "type":"list",
+      "member":{"shape":"IdleRecommendationError"}
+    },
+    "IdleRecommendationFilter":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"IdleRecommendationFilterName",
+          "documentation":"<p> The name of the filter. </p> <p> Specify <code>Finding</code> to return recommendations with a specific finding classification. </p> <p>You can filter your idle resource recommendations by <code>tag:key</code> and <code>tag-key</code> tags.</p> <p>A <code>tag:key</code> is a key and value combination of a tag assigned to your idle resource recommendations. Use the tag key in the filter name and the tag value as the filter value. For example, to find all idle resource service recommendations that have a tag with the key of <code>Owner</code> and the value of <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> <p>A <code>tag-key</code> is the key of a tag assigned to your idle resource recommendations. Use this filter to find all of your idle resource recommendations that have a tag with a specific key. This doesn’t consider the tag value. For example, you can find your idle resource service recommendations with a tag key value of <code>Owner</code> or without any tag keys assigned.</p>"
+        },
+        "values":{
+          "shape":"FilterValues",
+          "documentation":"<p>The value of the filter.</p>"
+        }
+      },
+      "documentation":"<p>Describes a filter that returns a more specific list of idle resource recommendations.</p>"
+    },
+    "IdleRecommendationFilterName":{
+      "type":"string",
+      "enum":[
+        "Finding",
+        "ResourceType"
+      ]
+    },
+    "IdleRecommendationFilters":{
+      "type":"list",
+      "member":{"shape":"IdleRecommendationFilter"}
+    },
+    "IdleRecommendationResourceType":{
+      "type":"string",
+      "enum":[
+        "EC2Instance",
+        "AutoScalingGroup",
+        "EBSVolume",
+        "ECSService",
+        "RDSDBInstance"
+      ]
+    },
+    "IdleRecommendations":{
+      "type":"list",
+      "member":{"shape":"IdleRecommendation"}
+    },
+    "IdleSavingsOpportunity":{
+      "type":"structure",
+      "members":{
+        "savingsOpportunityPercentage":{
+          "shape":"SavingsOpportunityPercentage",
+          "documentation":"<p>The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer's idle resource recommendations.</p>"
+        },
+        "estimatedMonthlySavings":{
+          "shape":"IdleEstimatedMonthlySavings",
+          "documentation":"<p>The estimated monthly savings possible by adopting Compute Optimizer's idle resource recommendations.</p>"
+        }
+      },
+      "documentation":"<p>Describes the savings opportunity for idle resource recommendations.</p>"
+    },
+    "IdleSavingsOpportunityAfterDiscounts":{
+      "type":"structure",
+      "members":{
+        "savingsOpportunityPercentage":{
+          "shape":"SavingsOpportunityPercentage",
+          "documentation":"<p>The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer's idle resource recommendations. This includes any applicable discounts.</p>"
+        },
+        "estimatedMonthlySavings":{
+          "shape":"IdleEstimatedMonthlySavings",
+          "documentation":"<p>The estimated monthly savings possible by adopting Compute Optimizer's idle resource recommendations. This includes any applicable discounts.</p>"
+        }
+      },
+      "documentation":"<p>Describes the savings opportunity for idle resource recommendations after applying discounts.</p> <p>Savings opportunity represents the estimated monthly savings after applying discounts. You can achieve this by implementing a given Compute Optimizer recommendation.</p>"
+    },
+    "IdleSummaries":{
+      "type":"list",
+      "member":{"shape":"IdleSummary"}
+    },
+    "IdleSummary":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"IdleFinding",
+          "documentation":"<p>The name of the finding group for the idle resources.</p>"
+        },
+        "value":{
+          "shape":"SummaryValue",
+          "documentation":"<p>The count of idle resources in the finding group.</p>"
+        }
+      },
+      "documentation":"<p>Describes the findings summary of the idle resources.</p>"
+    },
+    "IdleUtilizationMetric":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"IdleMetricName",
+          "documentation":"<p>The name of the utilization metric.</p>"
+        },
+        "statistic":{
+          "shape":"MetricStatistic",
+          "documentation":"<p> The statistic of the utilization metric. </p> <p>The Compute Optimizer API, Command Line Interface (CLI), and SDKs return utilization metrics using only the <code>Maximum</code> statistic, which is the highest value observed during the specified period.</p> <p>The Compute Optimizer console displays graphs for some utilization metrics using the <code>Average</code> statistic, which is the value of <code>Sum</code> / <code>SampleCount</code> during the specified period. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/viewing-recommendations.html\">Viewing resource recommendations</a> in the <i>Compute Optimizer User Guide</i>. You can also get averaged utilization metric data for your resources using Amazon CloudWatch. For more information, see the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html\">Amazon CloudWatch User Guide</a>.</p>"
+        },
+        "value":{
+          "shape":"MetricValue",
+          "documentation":"<p>The value of the utilization metric.</p>"
+        }
+      },
+      "documentation":"<p>Describes the utilization metric of an idle resource.</p>"
+    },
+    "IdleUtilizationMetrics":{
+      "type":"list",
+      "member":{"shape":"IdleUtilizationMetric"}
     },
     "IncludeMemberAccounts":{"type":"boolean"},
     "InferredWorkloadSaving":{
@@ -3843,6 +4243,27 @@
       "exception":true,
       "synthetic":true
     },
+    "Order":{
+      "type":"string",
+      "enum":[
+        "Asc",
+        "Desc"
+      ]
+    },
+    "OrderBy":{
+      "type":"structure",
+      "members":{
+        "dimension":{
+          "shape":"Dimension",
+          "documentation":"<p>The dimension values to sort the recommendations.</p>"
+        },
+        "order":{
+          "shape":"Order",
+          "documentation":"<p>The order to sort the recommendations.</p>"
+        }
+      },
+      "documentation":"<p>Describes how the recommendations are ordered.</p>"
+    },
     "PerformanceRisk":{
       "type":"double",
       "max":4,
@@ -3921,6 +4342,7 @@
       "type":"list",
       "member":{"shape":"UtilizationMetric"}
     },
+    "PromotionTier":{"type":"integer"},
     "PutRecommendationPreferencesRequest":{
       "type":"structure",
       "required":["resourceType"],
@@ -3968,6 +4390,15 @@
       "members":{
       }
     },
+    "RDSCurrentInstancePerformanceRisk":{
+      "type":"string",
+      "enum":[
+        "VeryLow",
+        "Low",
+        "Medium",
+        "High"
+      ]
+    },
     "RDSDBInstanceRecommendationOption":{
       "type":"structure",
       "members":{
@@ -4011,7 +4442,15 @@
         "EBSVolumeWriteIOPS",
         "EBSVolumeReadThroughput",
         "EBSVolumeWriteThroughput",
-        "DatabaseConnections"
+        "DatabaseConnections",
+        "StorageNetworkReceiveThroughput",
+        "StorageNetworkTransmitThroughput",
+        "AuroraMemoryHealthState",
+        "AuroraMemoryNumDeclinedSql",
+        "AuroraMemoryNumKillConnTotal",
+        "AuroraMemoryNumKillQueryTotal",
+        "ReadIOPSEphemeralStorage",
+        "WriteIOPSEphemeralStorage"
       ]
     },
     "RDSDBMetricStatistic":{
@@ -4045,6 +4484,10 @@
           "shape":"EngineVersion",
           "documentation":"<p> The database engine version. </p>"
         },
+        "promotionTier":{
+          "shape":"PromotionTier",
+          "documentation":"<p>The promotion tier for the Aurora instance.</p>"
+        },
         "currentDBInstanceClass":{
           "shape":"CurrentDBInstanceClass",
           "documentation":"<p> The DB instance class of the current RDS instance. </p>"
@@ -4052,6 +4495,10 @@
         "currentStorageConfiguration":{
           "shape":"DBStorageConfiguration",
           "documentation":"<p> The configuration of the current RDS storage. </p>"
+        },
+        "dbClusterIdentifier":{
+          "shape":"DBClusterIdentifier",
+          "documentation":"<p>The identifier for DB cluster.</p>"
         },
         "idle":{
           "shape":"Idle",
@@ -4068,6 +4515,10 @@
         "instanceFindingReasonCodes":{
           "shape":"RDSInstanceFindingReasonCodes",
           "documentation":"<p> The reason for the finding classification of an Amazon RDS instance. </p>"
+        },
+        "currentInstancePerformanceRisk":{
+          "shape":"RDSCurrentInstancePerformanceRisk",
+          "documentation":"<p>The performance risk for the current DB instance.</p>"
         },
         "storageFindingReasonCodes":{
           "shape":"RDSStorageFindingReasonCodes",
@@ -4275,12 +4726,17 @@
         "CPUOverprovisioned",
         "NetworkBandwidthOverprovisioned",
         "EBSIOPSOverprovisioned",
+        "EBSIOPSUnderprovisioned",
         "EBSThroughputOverprovisioned",
         "CPUUnderprovisioned",
         "NetworkBandwidthUnderprovisioned",
         "EBSThroughputUnderprovisioned",
         "NewGenerationDBInstanceClassAvailable",
-        "NewEngineVersionAvailable"
+        "NewEngineVersionAvailable",
+        "DBClusterWriterUnderprovisioned",
+        "MemoryUnderprovisioned",
+        "InstanceStorageReadIOPSUnderprovisioned",
+        "InstanceStorageWriteIOPSUnderprovisioned"
       ]
     },
     "RDSInstanceFindingReasonCodes":{
@@ -4544,6 +5000,10 @@
           "shape":"Summaries",
           "documentation":"<p>An array of objects that describe a recommendation summary.</p>"
         },
+        "idleSummaries":{
+          "shape":"IdleSummaries",
+          "documentation":"<p> Describes the findings summary of the idle resources. </p>"
+        },
         "recommendationResourceType":{
           "shape":"RecommendationSourceType",
           "documentation":"<p>The resource type that the recommendation summary applies to.</p>"
@@ -4556,6 +5016,8 @@
           "shape":"SavingsOpportunity",
           "documentation":"<p>An object that describes the savings opportunity for a given resource type. Savings opportunity includes the estimated monthly savings amount and percentage.</p>"
         },
+        "idleSavingsOpportunity":{"shape":"SavingsOpportunity"},
+        "aggregatedSavingsOpportunity":{"shape":"SavingsOpportunity"},
         "currentPerformanceRiskRatings":{
           "shape":"CurrentPerformanceRiskRatings",
           "documentation":"<p>An object that describes the performance risk ratings for a given resource type.</p>"
@@ -4596,6 +5058,7 @@
       "type":"list",
       "member":{"shape":"ResourceArn"}
     },
+    "ResourceId":{"type":"string"},
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -4615,7 +5078,8 @@
         "NotApplicable",
         "EcsService",
         "License",
-        "RdsDBInstance"
+        "RdsDBInstance",
+        "Idle"
       ]
     },
     "RootVolume":{"type":"boolean"},
@@ -4890,7 +5354,7 @@
       "members":{
         "volumeType":{
           "shape":"VolumeType",
-          "documentation":"<p>The volume type.</p> <p>This can be <code>gp2</code> for General Purpose SSD, <code>io1</code> or <code>io2</code> for Provisioned IOPS SSD, <code>st1</code> for Throughput Optimized HDD, <code>sc1</code> for Cold HDD, or <code>standard</code> for Magnetic volumes.</p>"
+          "documentation":"<p>The volume type.</p> <p>The volume types can be the following:</p> <ul> <li> <p>General Purpose SSD <code>gp2</code> and <code>gp3</code> </p> </li> <li> <p>Provisioned IOPS SSD <code>io1</code>, <code>io2</code>, and <code>io2 Block Express</code> </p> </li> <li> <p>Throughput Optimized HDD <code>st1</code> </p> </li> <li> <p>Cold HDD <code>sc1</code> </p> </li> <li> <p>Magnetic volumes <code>standard</code> </p> </li> </ul>"
         },
         "volumeSize":{
           "shape":"VolumeSize",

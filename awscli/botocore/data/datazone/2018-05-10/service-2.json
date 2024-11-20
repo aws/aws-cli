@@ -556,6 +556,28 @@
       ],
       "documentation":"<p>Creates a project membership in Amazon DataZone.</p>"
     },
+    "CreateRule":{
+      "name":"CreateRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/rules",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateRuleInput"},
+      "output":{"shape":"CreateRuleOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Creates a rule in Amazon DataZone. A rule is a formal agreement that enforces specific requirements across user workflows (e.g., publishing assets to the catalog, requesting subscriptions, creating projects) within the Amazon DataZone data portal. These rules help maintain consistency, ensure compliance, and uphold governance standards in data management processes. For instance, a metadata enforcement rule can specify the required information for creating a subscription request or publishing a data asset to the catalog, ensuring alignment with organizational standards.</p>",
+      "idempotent":true
+    },
     "CreateSubscriptionGrant":{
       "name":"CreateSubscriptionGrant",
       "http":{
@@ -981,6 +1003,27 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Deletes project membership in Amazon DataZone.</p>",
+      "idempotent":true
+    },
+    "DeleteRule":{
+      "name":"DeleteRule",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/rules/{identifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteRuleInput"},
+      "output":{"shape":"DeleteRuleOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes a rule in Amazon DataZone. A rule is a formal agreement that enforces specific requirements across user workflows (e.g., publishing assets to the catalog, requesting subscriptions, creating projects) within the Amazon DataZone data portal. These rules help maintain consistency, ensure compliance, and uphold governance standards in data management processes. For instance, a metadata enforcement rule can specify the required information for creating a subscription request or publishing a data asset to the catalog, ensuring alignment with organizational standards.</p>",
       "idempotent":true
     },
     "DeleteSubscriptionGrant":{
@@ -1524,6 +1567,25 @@
       ],
       "documentation":"<p>Gets a project in Amazon DataZone.</p>"
     },
+    "GetRule":{
+      "name":"GetRule",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/rules/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRuleInput"},
+      "output":{"shape":"GetRuleOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets the details of a rule in Amazon DataZone. A rule is a formal agreement that enforces specific requirements across user workflows (e.g., publishing assets to the catalog, requesting subscriptions, creating projects) within the Amazon DataZone data portal. These rules help maintain consistency, ensure compliance, and uphold governance standards in data management processes. For instance, a metadata enforcement rule can specify the required information for creating a subscription request or publishing a data asset to the catalog, ensuring alignment with organizational standards.</p>"
+    },
     "GetSubscription":{
       "name":"GetSubscription",
       "http":{
@@ -2018,6 +2080,25 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Lists Amazon DataZone projects.</p>"
+    },
+    "ListRules":{
+      "name":"ListRules",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/list-rules/{targetType}/{targetIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRulesInput"},
+      "output":{"shape":"ListRulesOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists existing rules. In Amazon DataZone, a rule is a formal agreement that enforces specific requirements across user workflows (e.g., publishing assets to the catalog, requesting subscriptions, creating projects) within the Amazon DataZone data portal. These rules help maintain consistency, ensure compliance, and uphold governance standards in data management processes. For instance, a metadata enforcement rule can specify the required information for creating a subscription request or publishing a data asset to the catalog, ensuring alignment with organizational standards.</p>"
     },
     "ListSubscriptionGrants":{
       "name":"ListSubscriptionGrants",
@@ -2704,6 +2785,28 @@
       "documentation":"<p>Updates the specified project in Amazon DataZone.</p>",
       "idempotent":true
     },
+    "UpdateRule":{
+      "name":"UpdateRule",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/rules/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateRuleInput"},
+      "output":{"shape":"UpdateRuleOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Updates a rule. In Amazon DataZone, a rule is a formal agreement that enforces specific requirements across user workflows (e.g., publishing assets to the catalog, requesting subscriptions, creating projects) within the Amazon DataZone data portal. These rules help maintain consistency, ensure compliance, and uphold governance standards in data management processes. For instance, a metadata enforcement rule can specify the required information for creating a subscription request or publishing a data asset to the catalog, ensuring alignment with organizational standards.</p>",
+      "idempotent":true
+    },
     "UpdateSubscriptionGrantStatus":{
       "name":"UpdateSubscriptionGrantStatus",
       "http":{
@@ -2953,9 +3056,17 @@
           "shape":"DomainId",
           "documentation":"<p>The unique identifier of the Amazon DataZone domain where the specified subscription request was accepted.</p>"
         },
+        "existingSubscriptionId":{
+          "shape":"SubscriptionId",
+          "documentation":"<p>The ID of the existing subscription.</p>"
+        },
         "id":{
           "shape":"SubscriptionRequestId",
           "documentation":"<p>The identifier of the subscription request.</p>"
+        },
+        "metadataForms":{
+          "shape":"MetadataForms",
+          "documentation":"<p>The metadata form in the subscription request.</p>"
         },
         "requestReason":{
           "shape":"RequestReason",
@@ -3579,6 +3690,10 @@
       "min":1,
       "pattern":"^(?!\\.)[\\w\\.]*\\w$"
     },
+    "AssetTypeIdentifiers":{
+      "type":"list",
+      "member":{"shape":"AssetTypeIdentifier"}
+    },
     "AssetTypeItem":{
       "type":"structure",
       "required":[
@@ -3639,6 +3754,21 @@
         }
       },
       "documentation":"<p>The details of the asset type.</p>"
+    },
+    "AssetTypesForRule":{
+      "type":"structure",
+      "required":["selectionMode"],
+      "members":{
+        "selectionMode":{
+          "shape":"RuleScopeSelectionMode",
+          "documentation":"<p>The selection mode for the rule.</p>"
+        },
+        "specificAssetTypes":{
+          "shape":"RuleAssetTypeList",
+          "documentation":"<p>The specific asset types that are included in the rule.</p>"
+        }
+      },
+      "documentation":"<p>The asset type for the rule details.</p>"
     },
     "AssociateEnvironmentRoleInput":{
       "type":"structure",
@@ -5816,6 +5946,114 @@
       },
       "documentation":"<p>The details of the policy grant.</p>"
     },
+    "CreateRuleInput":{
+      "type":"structure",
+      "required":[
+        "action",
+        "detail",
+        "domainIdentifier",
+        "name",
+        "scope",
+        "target"
+      ],
+      "members":{
+        "action":{
+          "shape":"RuleAction",
+          "documentation":"<p>The action of the rule.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the rule.</p>"
+        },
+        "detail":{
+          "shape":"RuleDetail",
+          "documentation":"<p>The detail of the rule.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the rule is created.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "name":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the rule.</p>"
+        },
+        "scope":{
+          "shape":"RuleScope",
+          "documentation":"<p>The scope of the rule.</p>"
+        },
+        "target":{
+          "shape":"RuleTarget",
+          "documentation":"<p>The target of the rule.</p>"
+        }
+      }
+    },
+    "CreateRuleOutput":{
+      "type":"structure",
+      "required":[
+        "action",
+        "createdAt",
+        "createdBy",
+        "detail",
+        "identifier",
+        "name",
+        "ruleType",
+        "scope",
+        "target"
+      ],
+      "members":{
+        "action":{
+          "shape":"RuleAction",
+          "documentation":"<p>The action of the rule.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the rule is created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who creates the rule.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the rule.</p>"
+        },
+        "detail":{
+          "shape":"RuleDetail",
+          "documentation":"<p>The detail of the rule.</p>"
+        },
+        "identifier":{
+          "shape":"RuleId",
+          "documentation":"<p>The ID of the rule.</p>"
+        },
+        "name":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the rule.</p>"
+        },
+        "ruleType":{
+          "shape":"RuleType",
+          "documentation":"<p>The type of the rule.</p>"
+        },
+        "scope":{
+          "shape":"RuleScope",
+          "documentation":"<p>The scope of the rule.</p>"
+        },
+        "target":{
+          "shape":"RuleTarget",
+          "documentation":"<p>The target of the rule.</p>"
+        },
+        "targetType":{
+          "shape":"RuleTargetType",
+          "documentation":"<p>The target type of the rule.</p>"
+        }
+      }
+    },
     "CreateSubscriptionGrantInput":{
       "type":"structure",
       "required":[
@@ -5935,6 +6173,10 @@
           "location":"uri",
           "locationName":"domainIdentifier"
         },
+        "metadataForms":{
+          "shape":"MetadataFormInputs",
+          "documentation":"<p>The metadata form included in the subscription request.</p>"
+        },
         "requestReason":{
           "shape":"RequestReason",
           "documentation":"<p>The reason for the subscription request.</p>"
@@ -5979,9 +6221,17 @@
           "shape":"DomainId",
           "documentation":"<p>The ID of the Amazon DataZone domain in whcih the subscription request is created.</p>"
         },
+        "existingSubscriptionId":{
+          "shape":"SubscriptionId",
+          "documentation":"<p>The ID of the existing subscription.</p>"
+        },
         "id":{
           "shape":"SubscriptionRequestId",
           "documentation":"<p>The ID of the subscription request.</p>"
+        },
+        "metadataForms":{
+          "shape":"MetadataForms",
+          "documentation":"<p>The metadata form included in the subscription request.</p>"
         },
         "requestReason":{
           "shape":"RequestReason",
@@ -7380,6 +7630,32 @@
       "members":{
       }
     },
+    "DeleteRuleInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain that where the rule is to be deleted.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"RuleId",
+          "documentation":"<p>The ID of the rule that is to be deleted.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "DeleteRuleOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteSubscriptionGrantInput":{
       "type":"structure",
       "required":[
@@ -7895,6 +8171,21 @@
         }
       },
       "documentation":"<p>The summary of the domain unit.</p>"
+    },
+    "DomainUnitTarget":{
+      "type":"structure",
+      "required":["domainUnitId"],
+      "members":{
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit.</p>"
+        },
+        "includeChildDomainUnits":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to apply a rule to the child domain units.</p>"
+        }
+      },
+      "documentation":"<p>The target for the domain unit.</p>"
     },
     "DomainUnitUserProperties":{
       "type":"structure",
@@ -8514,7 +8805,7 @@
           "documentation":"<p>The ID of the metadata form type.</p>"
         },
         "typeRevision":{
-          "shape":"Revision",
+          "shape":"RevisionInput",
           "documentation":"<p>The revision of the metadata form type.</p>"
         }
       },
@@ -10466,6 +10757,108 @@
         }
       }
     },
+    "GetRuleInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the <code>GetRule</code> action is to be invoked.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"RuleId",
+          "documentation":"<p>The ID of the rule.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the rule.</p>",
+          "location":"querystring",
+          "locationName":"revision"
+        }
+      }
+    },
+    "GetRuleOutput":{
+      "type":"structure",
+      "required":[
+        "action",
+        "createdAt",
+        "createdBy",
+        "detail",
+        "identifier",
+        "lastUpdatedBy",
+        "name",
+        "revision",
+        "ruleType",
+        "scope",
+        "target",
+        "updatedAt"
+      ],
+      "members":{
+        "action":{
+          "shape":"RuleAction",
+          "documentation":"<p>The action of the rule.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the rule was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the rule.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the rule.</p>"
+        },
+        "detail":{
+          "shape":"RuleDetail",
+          "documentation":"<p>The detail of the rule.</p>"
+        },
+        "identifier":{
+          "shape":"RuleId",
+          "documentation":"<p>The ID of the rule.</p>"
+        },
+        "lastUpdatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The timestamp at which the rule was last updated.</p>"
+        },
+        "name":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the rule.</p>"
+        },
+        "revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the rule.</p>"
+        },
+        "ruleType":{
+          "shape":"RuleType",
+          "documentation":"<p>The type of the rule.</p>"
+        },
+        "scope":{
+          "shape":"RuleScope",
+          "documentation":"<p>The scope of the rule.</p>"
+        },
+        "target":{
+          "shape":"RuleTarget",
+          "documentation":"<p>The target of the rule.</p>"
+        },
+        "targetType":{
+          "shape":"RuleTargetType",
+          "documentation":"<p>The target type of the rule.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp at which the rule was last updated.</p>"
+        }
+      }
+    },
     "GetSubscriptionGrantInput":{
       "type":"structure",
       "required":[
@@ -10679,9 +11072,17 @@
           "shape":"DomainId",
           "documentation":"<p>The Amazon DataZone domain of the subscription request.</p>"
         },
+        "existingSubscriptionId":{
+          "shape":"SubscriptionId",
+          "documentation":"<p>The ID of the existing subscription.</p>"
+        },
         "id":{
           "shape":"SubscriptionRequestId",
           "documentation":"<p>The identifier of the subscription request.</p>"
+        },
+        "metadataForms":{
+          "shape":"MetadataForms",
+          "documentation":"<p>The metadata forms included in the subscription request.</p>"
         },
         "requestReason":{
           "shape":"RequestReason",
@@ -12774,6 +13175,102 @@
         }
       }
     },
+    "ListRulesInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "targetIdentifier",
+        "targetType"
+      ],
+      "members":{
+        "action":{
+          "shape":"RuleAction",
+          "documentation":"<p>The action of the rule.</p>",
+          "location":"querystring",
+          "locationName":"ruleAction"
+        },
+        "assetTypes":{
+          "shape":"AssetTypeIdentifiers",
+          "documentation":"<p>The asset types of the rule.</p>",
+          "location":"querystring",
+          "locationName":"assetTypes"
+        },
+        "dataProduct":{
+          "shape":"Boolean",
+          "documentation":"<p>The data product of the rule.</p>",
+          "location":"querystring",
+          "locationName":"dataProduct"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain in which the rules are to be listed.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "includeCascaded":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to include cascading rules in the results.</p>",
+          "location":"querystring",
+          "locationName":"includeCascaded"
+        },
+        "maxResults":{
+          "shape":"ListRulesInputMaxResultsInteger",
+          "documentation":"<p>The maximum number of rules to return in a single call to <code>ListRules</code>. When the number of rules to be listed is greater than the value of <code>MaxResults</code>, the response contains a <code>NextToken</code> value that you can use in a subsequent call to <code>ListRules</code> to list the next set of rules.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of rules is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of rules, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListRules</code> to list the next set of rules.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "projectIds":{
+          "shape":"ProjectIds",
+          "documentation":"<p>The IDs of projects in which rules are to be listed.</p>",
+          "location":"querystring",
+          "locationName":"projectIds"
+        },
+        "ruleType":{
+          "shape":"RuleType",
+          "documentation":"<p>The type of the rule.</p>",
+          "location":"querystring",
+          "locationName":"ruleType"
+        },
+        "targetIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The target ID of the rule.</p>",
+          "location":"uri",
+          "locationName":"targetIdentifier"
+        },
+        "targetType":{
+          "shape":"RuleTargetType",
+          "documentation":"<p>The target type of the rule.</p>",
+          "location":"uri",
+          "locationName":"targetType"
+        }
+      }
+    },
+    "ListRulesInputMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":25
+    },
+    "ListRulesOutput":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"RuleSummaries",
+          "documentation":"<p>The results of the <code>ListRules</code> action.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of rules is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of rules, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListRules</code> to list the next set of rules.</p>"
+        }
+      }
+    },
     "ListSubscriptionGrantsInput":{
       "type":"structure",
       "required":["domainIdentifier"],
@@ -13341,6 +13838,68 @@
       "max":16384,
       "min":0,
       "sensitive":true
+    },
+    "MetadataFormEnforcementDetail":{
+      "type":"structure",
+      "members":{
+        "requiredMetadataForms":{
+          "shape":"RequiredMetadataFormList",
+          "documentation":"<p>The required metadata forms.</p>"
+        }
+      },
+      "documentation":"<p>The enforcement details of a metadata form.</p>"
+    },
+    "MetadataFormInputs":{
+      "type":"list",
+      "member":{"shape":"FormInput"}
+    },
+    "MetadataFormReference":{
+      "type":"structure",
+      "required":[
+        "typeIdentifier",
+        "typeRevision"
+      ],
+      "members":{
+        "typeIdentifier":{
+          "shape":"FormTypeIdentifier",
+          "documentation":"<p>The type ID of the metadata form reference.</p>"
+        },
+        "typeRevision":{
+          "shape":"Revision",
+          "documentation":"<p>The type revision of the metadata form reference.</p>"
+        }
+      },
+      "documentation":"<p>The reference of a metadata form.</p>"
+    },
+    "MetadataFormSummary":{
+      "type":"structure",
+      "required":[
+        "typeName",
+        "typeRevision"
+      ],
+      "members":{
+        "formName":{
+          "shape":"FormName",
+          "documentation":"<p>The form name of the metadata form.</p>"
+        },
+        "typeName":{
+          "shape":"FormTypeName",
+          "documentation":"<p>The type name of the metadata form.</p>"
+        },
+        "typeRevision":{
+          "shape":"Revision",
+          "documentation":"<p>The type revision of the metadata form.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the metadata form.</p>"
+    },
+    "MetadataForms":{
+      "type":"list",
+      "member":{"shape":"FormOutput"}
+    },
+    "MetadataFormsSummary":{
+      "type":"list",
+      "member":{"shape":"MetadataFormSummary"}
     },
     "MetadataGenerationRunIdentifier":{
       "type":"string",
@@ -13961,6 +14520,10 @@
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]{1,36}$"
     },
+    "ProjectIds":{
+      "type":"list",
+      "member":{"shape":"ProjectId"}
+    },
     "ProjectMember":{
       "type":"structure",
       "required":[
@@ -14072,6 +14635,21 @@
         }
       },
       "documentation":"<p>The details of a Amazon DataZone project.</p>"
+    },
+    "ProjectsForRule":{
+      "type":"structure",
+      "required":["selectionMode"],
+      "members":{
+        "selectionMode":{
+          "shape":"RuleScopeSelectionMode",
+          "documentation":"<p>The selection mode of the rule.</p>"
+        },
+        "specificProjects":{
+          "shape":"RuleProjectIdentifierList",
+          "documentation":"<p>The specific projects in which the rule is created.</p>"
+        }
+      },
+      "documentation":"<p>Specifies projects in which the rule is created.</p>"
     },
     "ProvisioningConfiguration":{
       "type":"structure",
@@ -14516,9 +15094,17 @@
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain in which the subscription request was rejected.</p>"
         },
+        "existingSubscriptionId":{
+          "shape":"SubscriptionId",
+          "documentation":"<p>The ID of the existing subscription.</p>"
+        },
         "id":{
           "shape":"SubscriptionRequestId",
           "documentation":"<p>The identifier of the subscription request that was rejected.</p>"
+        },
+        "metadataForms":{
+          "shape":"MetadataForms",
+          "documentation":"<p>Metadata forms included in the subscription request.</p>"
         },
         "requestReason":{
           "shape":"RequestReason",
@@ -14692,6 +15278,12 @@
       "min":1,
       "sensitive":true
     },
+    "RequiredMetadataFormList":{
+      "type":"list",
+      "member":{"shape":"MetadataFormReference"},
+      "max":5,
+      "min":1
+    },
     "Resource":{
       "type":"structure",
       "required":[
@@ -14739,6 +15331,12 @@
       "type":"string",
       "max":64,
       "min":1
+    },
+    "RevisionInput":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_-]+$"
     },
     "RevokeSubscriptionInput":{
       "type":"structure",
@@ -14920,6 +15518,136 @@
     "RowFilterList":{
       "type":"list",
       "member":{"shape":"RowFilter"}
+    },
+    "RuleAction":{
+      "type":"string",
+      "enum":["CREATE_SUBSCRIPTION_REQUEST"]
+    },
+    "RuleAssetTypeList":{
+      "type":"list",
+      "member":{"shape":"AssetTypeIdentifier"},
+      "min":1
+    },
+    "RuleDetail":{
+      "type":"structure",
+      "members":{
+        "metadataFormEnforcementDetail":{
+          "shape":"MetadataFormEnforcementDetail",
+          "documentation":"<p>The enforcement detail of the metadata form.</p>"
+        }
+      },
+      "documentation":"<p>The details of a rule.</p>",
+      "union":true
+    },
+    "RuleId":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "RuleName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[\\w -]+$",
+      "sensitive":true
+    },
+    "RuleProjectIdentifierList":{
+      "type":"list",
+      "member":{"shape":"ProjectId"},
+      "min":1
+    },
+    "RuleScope":{
+      "type":"structure",
+      "members":{
+        "assetType":{
+          "shape":"AssetTypesForRule",
+          "documentation":"<p>The asset type included in the rule scope.</p>"
+        },
+        "dataProduct":{
+          "shape":"Boolean",
+          "documentation":"<p>The data product included in the rule scope.</p>"
+        },
+        "project":{
+          "shape":"ProjectsForRule",
+          "documentation":"<p>The project included in the rule scope.</p>"
+        }
+      },
+      "documentation":"<p>The scope of a rule.</p>"
+    },
+    "RuleScopeSelectionMode":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "SPECIFIC"
+      ]
+    },
+    "RuleSummaries":{
+      "type":"list",
+      "member":{"shape":"RuleSummary"}
+    },
+    "RuleSummary":{
+      "type":"structure",
+      "members":{
+        "action":{
+          "shape":"RuleAction",
+          "documentation":"<p>The action of the rule.</p>"
+        },
+        "identifier":{
+          "shape":"RuleId",
+          "documentation":"<p>The ID of the rule.</p>"
+        },
+        "lastUpdatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The timestamp at which the rule was last updated.</p>"
+        },
+        "name":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the rule.</p>"
+        },
+        "revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the rule.</p>"
+        },
+        "ruleType":{
+          "shape":"RuleType",
+          "documentation":"<p>The type of the rule.</p>"
+        },
+        "scope":{
+          "shape":"RuleScope",
+          "documentation":"<p>The scope of the rule.</p>"
+        },
+        "target":{
+          "shape":"RuleTarget",
+          "documentation":"<p>The target of the rule.</p>"
+        },
+        "targetType":{
+          "shape":"RuleTargetType",
+          "documentation":"<p>The target type of the rule.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp at which the rule was last updated.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the rule.</p>"
+    },
+    "RuleTarget":{
+      "type":"structure",
+      "members":{
+        "domainUnitTarget":{
+          "shape":"DomainUnitTarget",
+          "documentation":"<p>The ID of the domain unit.</p>"
+        }
+      },
+      "documentation":"<p>The target of the rule.</p>",
+      "union":true
+    },
+    "RuleTargetType":{
+      "type":"string",
+      "enum":["DOMAIN_UNIT"]
+    },
+    "RuleType":{
+      "type":"string",
+      "enum":["METADATA_FORM_ENFORCEMENT"]
     },
     "RunStatisticsForAssets":{
       "type":"structure",
@@ -16052,9 +16780,17 @@
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain in which a subscription request exists.</p>"
         },
+        "existingSubscriptionId":{
+          "shape":"SubscriptionId",
+          "documentation":"<p>The ID of the existing subscription.</p>"
+        },
         "id":{
           "shape":"SubscriptionRequestId",
           "documentation":"<p>The identifier of the subscription request.</p>"
+        },
+        "metadataFormsSummary":{
+          "shape":"MetadataFormsSummary",
+          "documentation":"<p>The summary of the metadata forms.</p>"
         },
         "requestReason":{
           "shape":"RequestReason",
@@ -17704,6 +18440,118 @@
         }
       }
     },
+    "UpdateRuleInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the rule.</p>"
+        },
+        "detail":{
+          "shape":"RuleDetail",
+          "documentation":"<p>The detail of the rule.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain in which a rule is to be updated.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"RuleId",
+          "documentation":"<p>The ID of the rule that is to be updated</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "includeChildDomainUnits":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to update this rule in the child domain units.</p>"
+        },
+        "name":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the rule.</p>"
+        },
+        "scope":{
+          "shape":"RuleScope",
+          "documentation":"<p>The scrope of the rule.</p>"
+        }
+      }
+    },
+    "UpdateRuleOutput":{
+      "type":"structure",
+      "required":[
+        "action",
+        "createdAt",
+        "createdBy",
+        "detail",
+        "identifier",
+        "lastUpdatedBy",
+        "name",
+        "revision",
+        "ruleType",
+        "scope",
+        "target",
+        "updatedAt"
+      ],
+      "members":{
+        "action":{
+          "shape":"RuleAction",
+          "documentation":"<p>The action of the rule.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the rule was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the rule.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the rule.</p>"
+        },
+        "detail":{
+          "shape":"RuleDetail",
+          "documentation":"<p>The detail of the rule.</p>"
+        },
+        "identifier":{
+          "shape":"RuleId",
+          "documentation":"<p>The ID of the rule.</p>"
+        },
+        "lastUpdatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The timestamp at which the rule was last updated.</p>"
+        },
+        "name":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the rule.</p>"
+        },
+        "revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the rule.</p>"
+        },
+        "ruleType":{
+          "shape":"RuleType",
+          "documentation":"<p>The type of the rule.</p>"
+        },
+        "scope":{
+          "shape":"RuleScope",
+          "documentation":"<p>The scope of the rule.</p>"
+        },
+        "target":{
+          "shape":"RuleTarget",
+          "documentation":"<p>The target of the rule.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp at which the rule was last updated.</p>"
+        }
+      }
+    },
     "UpdateSubscriptionGrantStatusInput":{
       "type":"structure",
       "required":[
@@ -17862,9 +18710,17 @@
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain in which a subscription request is to be updated.</p>"
         },
+        "existingSubscriptionId":{
+          "shape":"SubscriptionId",
+          "documentation":"<p>The ID of the existing subscription.</p>"
+        },
         "id":{
           "shape":"SubscriptionRequestId",
           "documentation":"<p>The identifier of the subscription request that is to be updated.</p>"
+        },
+        "metadataForms":{
+          "shape":"MetadataForms",
+          "documentation":"<p>Metadata forms included in the subscription request.</p>"
         },
         "requestReason":{
           "shape":"RequestReason",

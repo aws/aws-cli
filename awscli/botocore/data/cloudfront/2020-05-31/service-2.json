@@ -113,6 +113,29 @@
       ],
       "documentation":"<p>Creates a staging distribution using the configuration of the provided primary distribution. A staging distribution is a copy of an existing distribution (called the primary distribution) that you can use in a continuous deployment workflow.</p> <p>After you create a staging distribution, you can use <code>UpdateDistribution</code> to modify the staging distribution's configuration. Then you can use <code>CreateContinuousDeploymentPolicy</code> to incrementally move traffic to the staging distribution.</p> <p>This API operation requires the following IAM permissions:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_GetDistribution.html\">GetDistribution</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_CreateDistribution.html\">CreateDistribution</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_CopyDistribution.html\">CopyDistribution</a> </p> </li> </ul>"
     },
+    "CreateAnycastIpList":{
+      "name":"CreateAnycastIpList2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/anycast-ip-list",
+        "responseCode":202
+      },
+      "input":{
+        "shape":"CreateAnycastIpListRequest",
+        "locationName":"CreateAnycastIpListRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"CreateAnycastIpListResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"EntityAlreadyExists"},
+        {"shape":"InvalidTagging"},
+        {"shape":"InvalidArgument"},
+        {"shape":"EntityLimitExceeded"}
+      ],
+      "documentation":"<p>Creates an Anycast static IP list.</p>"
+    },
     "CreateCachePolicy":{
       "name":"CreateCachePolicy2020_05_31",
       "http":{
@@ -210,6 +233,7 @@
         {"shape":"InvalidArgument"},
         {"shape":"InvalidOriginReadTimeout"},
         {"shape":"InvalidOriginAccessControl"},
+        {"shape":"EntityNotFound"},
         {"shape":"InvalidHeadersForS3Origin"},
         {"shape":"TrustedSignerDoesNotExist"},
         {"shape":"InvalidWebACLId"},
@@ -288,6 +312,7 @@
         {"shape":"InvalidArgument"},
         {"shape":"InvalidOriginReadTimeout"},
         {"shape":"InvalidOriginAccessControl"},
+        {"shape":"EntityNotFound"},
         {"shape":"InvalidHeadersForS3Origin"},
         {"shape":"TrustedSignerDoesNotExist"},
         {"shape":"InvalidWebACLId"},
@@ -617,6 +642,50 @@
       ],
       "documentation":"<p>This API is deprecated. Amazon CloudFront is deprecating real-time messaging protocol (RTMP) distributions on December 31, 2020. For more information, <a href=\"http://forums.aws.amazon.com/ann.jspa?annID=7356\">read the announcement</a> on the Amazon CloudFront discussion forum.</p>"
     },
+    "CreateVpcOrigin":{
+      "name":"CreateVpcOrigin2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/vpc-origin",
+        "responseCode":202
+      },
+      "input":{
+        "shape":"CreateVpcOriginRequest",
+        "locationName":"CreateVpcOriginRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"CreateVpcOriginResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InconsistentQuantities"},
+        {"shape":"EntityAlreadyExists"},
+        {"shape":"InvalidTagging"},
+        {"shape":"InvalidArgument"},
+        {"shape":"EntityLimitExceeded"}
+      ],
+      "documentation":"<p>Create an Amazon CloudFront VPC origin.</p>"
+    },
+    "DeleteAnycastIpList":{
+      "name":"DeleteAnycastIpList2020_05_31",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2020-05-31/anycast-ip-list/{Id}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAnycastIpListRequest"},
+      "errors":[
+        {"shape":"CannotDeleteEntityWhileInUse"},
+        {"shape":"PreconditionFailed"},
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"IllegalDelete"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Deletes an Anycast static IP list.</p>"
+    },
     "DeleteCachePolicy":{
       "name":"DeleteCachePolicy2020_05_31",
       "http":{
@@ -897,6 +966,27 @@
       ],
       "documentation":"<p>Delete a streaming distribution. To delete an RTMP distribution using the CloudFront API, perform the following steps.</p> <p> <b>To delete an RTMP distribution using the CloudFront API</b>:</p> <ol> <li> <p>Disable the RTMP distribution.</p> </li> <li> <p>Submit a <code>GET Streaming Distribution Config</code> request to get the current configuration and the <code>Etag</code> header for the distribution. </p> </li> <li> <p>Update the XML document that was returned in the response to your <code>GET Streaming Distribution Config</code> request to change the value of <code>Enabled</code> to <code>false</code>.</p> </li> <li> <p>Submit a <code>PUT Streaming Distribution Config</code> request to update the configuration for your distribution. In the request body, include the XML document that you updated in Step 3. Then set the value of the HTTP <code>If-Match</code> header to the value of the <code>ETag</code> header that CloudFront returned when you submitted the <code>GET Streaming Distribution Config</code> request in Step 2.</p> </li> <li> <p>Review the response to the <code>PUT Streaming Distribution Config</code> request to confirm that the distribution was successfully disabled.</p> </li> <li> <p>Submit a <code>GET Streaming Distribution Config</code> request to confirm that your changes have propagated. When propagation is complete, the value of <code>Status</code> is <code>Deployed</code>.</p> </li> <li> <p>Submit a <code>DELETE Streaming Distribution</code> request. Set the value of the HTTP <code>If-Match</code> header to the value of the <code>ETag</code> header that CloudFront returned when you submitted the <code>GET Streaming Distribution Config</code> request in Step 2.</p> </li> <li> <p>Review the response to your <code>DELETE Streaming Distribution</code> request to confirm that the distribution was successfully deleted.</p> </li> </ol> <p>For information about deleting a distribution using the CloudFront console, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/HowToDeleteDistribution.html\">Deleting a Distribution</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
     },
+    "DeleteVpcOrigin":{
+      "name":"DeleteVpcOrigin2020_05_31",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2020-05-31/vpc-origin/{Id}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteVpcOriginRequest"},
+      "output":{"shape":"DeleteVpcOriginResult"},
+      "errors":[
+        {"shape":"CannotDeleteEntityWhileInUse"},
+        {"shape":"PreconditionFailed"},
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"IllegalDelete"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Delete an Amazon CloudFront VPC origin.</p>"
+    },
     "DescribeFunction":{
       "name":"DescribeFunction2020_05_31",
       "http":{
@@ -928,6 +1018,23 @@
         {"shape":"InvalidArgument"}
       ],
       "documentation":"<p>Specifies the key value store and its configuration.</p>"
+    },
+    "GetAnycastIpList":{
+      "name":"GetAnycastIpList2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/anycast-ip-list/{Id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAnycastIpListRequest"},
+      "output":{"shape":"GetAnycastIpListResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Gets an Anycast static IP list.</p>"
     },
     "GetCachePolicy":{
       "name":"GetCachePolicy2020_05_31",
@@ -1355,6 +1462,40 @@
       ],
       "documentation":"<p>Get the configuration information about a streaming distribution.</p>"
     },
+    "GetVpcOrigin":{
+      "name":"GetVpcOrigin2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/vpc-origin/{Id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetVpcOriginRequest"},
+      "output":{"shape":"GetVpcOriginResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Get the details of an Amazon CloudFront VPC origin.</p>"
+    },
+    "ListAnycastIpLists":{
+      "name":"ListAnycastIpLists2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/anycast-ip-list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAnycastIpListsRequest"},
+      "output":{"shape":"ListAnycastIpListsResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Lists your Anycast static IP lists.</p>"
+    },
     "ListCachePolicies":{
       "name":"ListCachePolicies2020_05_31",
       "http":{
@@ -1429,6 +1570,23 @@
         {"shape":"InvalidArgument"}
       ],
       "documentation":"<p>List CloudFront distributions.</p>"
+    },
+    "ListDistributionsByAnycastIpListId":{
+      "name":"ListDistributionsByAnycastIpListId2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/distributionsByAnycastIpListId/{AnycastIpListId}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDistributionsByAnycastIpListIdRequest"},
+      "output":{"shape":"ListDistributionsByAnycastIpListIdResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Lists the distributions in your account that are associated with the specified <code>AnycastIpListId</code>.</p>"
     },
     "ListDistributionsByCachePolicyId":{
       "name":"ListDistributionsByCachePolicyId2020_05_31",
@@ -1510,6 +1668,23 @@
         {"shape":"InvalidArgument"}
       ],
       "documentation":"<p>Gets a list of distribution IDs for distributions that have a cache behavior that's associated with the specified response headers policy.</p> <p>You can optionally specify the maximum number of items to receive in the response. If the total number of items in the list exceeds the maximum that you specify, or the default maximum, the response is paginated. To get the next page of items, send a subsequent request that specifies the <code>NextMarker</code> value from the current response as the <code>Marker</code> value in the subsequent request.</p>"
+    },
+    "ListDistributionsByVpcOriginId":{
+      "name":"ListDistributionsByVpcOriginId2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/distributionsByVpcOriginId/{VpcOriginId}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDistributionsByVpcOriginIdRequest"},
+      "output":{"shape":"ListDistributionsByVpcOriginIdResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>List CloudFront distributions by their VPC origin ID.</p>"
     },
     "ListDistributionsByWebACLId":{
       "name":"ListDistributionsByWebACLId2020_05_31",
@@ -1722,6 +1897,23 @@
       ],
       "documentation":"<p>List tags for a CloudFront resource. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/tagging.html\">Tagging a distribution</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
     },
+    "ListVpcOrigins":{
+      "name":"ListVpcOrigins2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/vpc-origin",
+        "responseCode":200
+      },
+      "input":{"shape":"ListVpcOriginsRequest"},
+      "output":{"shape":"ListVpcOriginsResult"},
+      "errors":[
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>List the CloudFront VPC origins in your account.</p>"
+    },
     "PublishFunction":{
       "name":"PublishFunction2020_05_31",
       "http":{
@@ -1896,6 +2088,7 @@
         {"shape":"InvalidOriginReadTimeout"},
         {"shape":"IllegalUpdate"},
         {"shape":"InvalidOriginAccessControl"},
+        {"shape":"EntityNotFound"},
         {"shape":"StagingDistributionInUse"},
         {"shape":"InvalidHeadersForS3Origin"},
         {"shape":"TrustedSignerDoesNotExist"},
@@ -1973,6 +2166,7 @@
         {"shape":"InvalidOriginReadTimeout"},
         {"shape":"IllegalUpdate"},
         {"shape":"InvalidOriginAccessControl"},
+        {"shape":"EntityNotFound"},
         {"shape":"InvalidHeadersForS3Origin"},
         {"shape":"TrustedSignerDoesNotExist"},
         {"shape":"InvalidWebACLId"},
@@ -2261,6 +2455,30 @@
         {"shape":"NoSuchStreamingDistribution"}
       ],
       "documentation":"<p>Update a streaming distribution.</p>"
+    },
+    "UpdateVpcOrigin":{
+      "name":"UpdateVpcOrigin2020_05_31",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2020-05-31/vpc-origin/{Id}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateVpcOriginRequest"},
+      "output":{"shape":"UpdateVpcOriginResult"},
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"EntityNotFound"},
+        {"shape":"AccessDenied"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InconsistentQuantities"},
+        {"shape":"EntityAlreadyExists"},
+        {"shape":"CannotUpdateEntityWhileInUse"},
+        {"shape":"InvalidArgument"},
+        {"shape":"EntityLimitExceeded"},
+        {"shape":"IllegalUpdate"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Update an Amazon CloudFront VPC origin in your account.</p>"
     }
   },
   "shapes":{
@@ -2410,6 +2628,143 @@
       },
       "documentation":"<p>A complex type that controls which HTTP methods CloudFront processes and forwards to your Amazon S3 bucket or your custom origin. There are three choices:</p> <ul> <li> <p>CloudFront forwards only <code>GET</code> and <code>HEAD</code> requests.</p> </li> <li> <p>CloudFront forwards only <code>GET</code>, <code>HEAD</code>, and <code>OPTIONS</code> requests.</p> </li> <li> <p>CloudFront forwards <code>GET, HEAD, OPTIONS, PUT, PATCH, POST</code>, and <code>DELETE</code> requests.</p> </li> </ul> <p>If you pick the third choice, you may need to restrict access to your Amazon S3 bucket or to your custom origin so users can't perform operations that you don't want them to. For example, you might not want users to have permissions to delete objects from your origin.</p>"
     },
+    "AnycastIpList":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Name",
+        "Status",
+        "Arn",
+        "AnycastIps",
+        "IpCount",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the Anycast static IP list.</p>"
+        },
+        "Name":{
+          "shape":"AnycastIpListName",
+          "documentation":"<p>The name of the Anycast static IP list.</p>"
+        },
+        "Status":{
+          "shape":"string",
+          "documentation":"<p>The status of the Anycast static IP list. Valid values: <code>Deployed</code>, <code>Deploying</code>, or <code>Failed</code>.</p>"
+        },
+        "Arn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Anycast static IP list.</p>"
+        },
+        "AnycastIps":{
+          "shape":"AnycastIps",
+          "documentation":"<p>The static IP addresses that are allocated to the Anycast static IP list.</p>"
+        },
+        "IpCount":{
+          "shape":"integer",
+          "documentation":"<p>The number of IP addresses in the Anycast static IP list.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The last time the Anycast static IP list was modified.</p>"
+        }
+      },
+      "documentation":"<p>An Anycast static IP list.</p>"
+    },
+    "AnycastIpListCollection":{
+      "type":"structure",
+      "required":[
+        "Marker",
+        "MaxItems",
+        "IsTruncated",
+        "Quantity"
+      ],
+      "members":{
+        "Items":{
+          "shape":"AnycastIpListSummaries",
+          "documentation":"<p>Items in the Anycast static IP list collection. Each item is of the <a>AnycastIpListSummary</a> structure type.</p>"
+        },
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>Use this field when paginating results to indicate where to begin in your list. The response includes items in the list that occur after the marker. To get the next page of the list, set this field's value to the value of <code>NextMarker</code> from the current page's response.</p>"
+        },
+        "NextMarker":{
+          "shape":"string",
+          "documentation":"<p>Indicates the next page of the Anycast static IP list collection. To get the next page of the list, use this value in the <code>Marker</code> field of your request.</p>"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of Anycast static IP list collections that you want returned in the response.</p>"
+        },
+        "IsTruncated":{
+          "shape":"boolean",
+          "documentation":"<p>If there are more items in the list collection than are in this response, this value is <code>true</code>.</p>"
+        },
+        "Quantity":{
+          "shape":"integer",
+          "documentation":"<p>The quantity of Anycast static IP lists in the collection.</p>"
+        }
+      },
+      "documentation":"<p>The Anycast static IP list collection.</p>"
+    },
+    "AnycastIpListName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-_]{1,64}"
+    },
+    "AnycastIpListSummaries":{
+      "type":"list",
+      "member":{
+        "shape":"AnycastIpListSummary",
+        "locationName":"AnycastIpListSummary"
+      }
+    },
+    "AnycastIpListSummary":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Name",
+        "Status",
+        "Arn",
+        "IpCount",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the Anycast static IP list.</p>"
+        },
+        "Name":{
+          "shape":"AnycastIpListName",
+          "documentation":"<p>The name of the Anycast static IP list.</p>"
+        },
+        "Status":{
+          "shape":"string",
+          "documentation":"<p>The deployment status of the Anycast static IP list. Valid values: Deployed, Deploying, or Failed.</p>"
+        },
+        "Arn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Anycast static IP list.</p>"
+        },
+        "IpCount":{
+          "shape":"integer",
+          "documentation":"<p>The number of IP addresses in the Anycast static IP list.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The last time the Anycast static IP list was modified.</p>"
+        }
+      },
+      "documentation":"<p>An abbreviated version of the <a>AnycastIpList</a> structure. Omits the allocated static IP addresses (<a>AnycastIpList$AnycastIps</a>).</p>"
+    },
+    "AnycastIps":{
+      "type":"list",
+      "member":{
+        "shape":"string",
+        "locationName":"AnycastIp"
+      }
+    },
     "AssociateAliasRequest":{
       "type":"structure",
       "required":[
@@ -2526,6 +2881,10 @@
         "ResponseHeadersPolicyId":{
           "shape":"string",
           "documentation":"<p>The identifier for a response headers policy.</p>"
+        },
+        "GrpcConfig":{
+          "shape":"GrpcConfig",
+          "documentation":"<p>The gRPC configuration for your cache behavior.</p>"
         },
         "ForwardedValues":{
           "shape":"ForwardedValues",
@@ -2810,7 +3169,19 @@
       "members":{
         "Message":{"shape":"string"}
       },
-      "documentation":"<p>The key value store entity cannot be deleted while it is in use.</p>",
+      "documentation":"<p>The entity cannot be deleted while it is in use.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CannotUpdateEntityWhileInUse":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The entity cannot be updated while it is in use.</p>",
       "error":{
         "httpStatusCode":409,
         "senderFault":true
@@ -3302,6 +3673,40 @@
         }
       },
       "payload":"Distribution"
+    },
+    "CreateAnycastIpListRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "IpCount"
+      ],
+      "members":{
+        "Name":{
+          "shape":"AnycastIpListName",
+          "documentation":"<p>Name of the Anycast static IP list.</p>"
+        },
+        "IpCount":{
+          "shape":"integer",
+          "documentation":"<p>The number of static IP addresses that are allocated to the Anycast static IP list.</p>"
+        },
+        "Tags":{"shape":"Tags"}
+      }
+    },
+    "CreateAnycastIpListResult":{
+      "type":"structure",
+      "members":{
+        "AnycastIpList":{
+          "shape":"AnycastIpList",
+          "documentation":"<p>A response structure that includes the version identifier (ETag) and the created <a>AnycastIpList</a> structure.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The version identifier for the current version of the Anycast static IP list.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"AnycastIpList"
     },
     "CreateCachePolicyRequest":{
       "type":"structure",
@@ -3995,6 +4400,39 @@
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"StreamingDistribution"
     },
+    "CreateVpcOriginRequest":{
+      "type":"structure",
+      "required":["VpcOriginEndpointConfig"],
+      "members":{
+        "VpcOriginEndpointConfig":{
+          "shape":"VpcOriginEndpointConfig",
+          "documentation":"<p>The VPC origin endpoint configuration.</p>"
+        },
+        "Tags":{"shape":"Tags"}
+      }
+    },
+    "CreateVpcOriginResult":{
+      "type":"structure",
+      "members":{
+        "VpcOrigin":{
+          "shape":"VpcOrigin",
+          "documentation":"<p>The VPC origin.</p>"
+        },
+        "Location":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin location.</p>",
+          "location":"header",
+          "locationName":"Location"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin ETag.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"VpcOrigin"
+    },
     "CustomErrorResponse":{
       "type":"structure",
       "required":["ErrorCode"],
@@ -4150,6 +4588,10 @@
           "shape":"string",
           "documentation":"<p>The identifier for a response headers policy.</p>"
         },
+        "GrpcConfig":{
+          "shape":"GrpcConfig",
+          "documentation":"<p>The gRPC configuration for your cache behavior.</p>"
+        },
         "ForwardedValues":{
           "shape":"ForwardedValues",
           "documentation":"<p>This field is deprecated. We recommend that you use a cache policy or an origin request policy instead of this field. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/working-with-policies.html\">Working with policies</a> in the <i>Amazon CloudFront Developer Guide</i>.</p> <p>If you want to include values in the cache key, use a cache policy. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-the-cache-key.html#cache-key-create-cache-policy\">Creating cache policies</a> or <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html\">Using the managed cache policies</a> in the <i>Amazon CloudFront Developer Guide</i>.</p> <p>If you want to send values to the origin but not include them in the cache key, use an origin request policy. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-origin-requests.html#origin-request-create-origin-request-policy\">Creating origin request policies</a> or <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-origin-request-policies.html\">Using the managed origin request policies</a> in the <i>Amazon CloudFront Developer Guide</i>.</p> <p>A <code>DefaultCacheBehavior</code> must include either a <code>CachePolicyId</code> or <code>ForwardedValues</code>. We recommend that you use a <code>CachePolicyId</code>.</p> <p>A complex type that specifies how CloudFront handles query strings, cookies, and HTTP headers.</p>",
@@ -4172,6 +4614,27 @@
         }
       },
       "documentation":"<p>A complex type that describes the default cache behavior if you don't specify a <code>CacheBehavior</code> element or if request URLs don't match any of the values of <code>PathPattern</code> in <code>CacheBehavior</code> elements. You must create exactly one default cache behavior.</p>"
+    },
+    "DeleteAnycastIpListRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "IfMatch"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the Anycast static IP list.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The current version (<code>ETag</code> value) of the Anycast static IP list that you are deleting.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
     },
     "DeleteCachePolicyRequest":{
       "type":"structure",
@@ -4464,6 +4927,43 @@
       },
       "documentation":"<p>The request to delete a streaming distribution.</p>"
     },
+    "DeleteVpcOriginRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "IfMatch"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin ID.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin to delete, if a match occurs.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
+    },
+    "DeleteVpcOriginResult":{
+      "type":"structure",
+      "members":{
+        "VpcOrigin":{
+          "shape":"VpcOrigin",
+          "documentation":"<p>The VPC origin.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin ETag.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"VpcOrigin"
+    },
     "DescribeFunctionRequest":{
       "type":"structure",
       "required":["Name"],
@@ -4678,6 +5178,10 @@
         "Staging":{
           "shape":"boolean",
           "documentation":"<p>A Boolean that indicates whether this is a staging distribution. When this value is <code>true</code>, this is a staging distribution. When this value is <code>false</code>, this is not a staging distribution.</p>"
+        },
+        "AnycastIpListId":{
+          "shape":"string",
+          "documentation":"<p>ID of the Anycast static IP list that is associated with the distribution.</p>"
         }
       },
       "documentation":"<p>A distribution configuration.</p>"
@@ -4898,6 +5402,10 @@
         "Staging":{
           "shape":"boolean",
           "documentation":"<p>A Boolean that indicates whether this is a staging distribution. When this value is <code>true</code>, this is a staging distribution. When this value is <code>false</code>, this is not a staging distribution.</p>"
+        },
+        "AnycastIpListId":{
+          "shape":"string",
+          "documentation":"<p>ID of the Anycast static IP list that is associated with the distribution.</p>"
         }
       },
       "documentation":"<p>A summary of the information about a CloudFront distribution.</p>"
@@ -4978,7 +5486,7 @@
       "members":{
         "Message":{"shape":"string"}
       },
-      "documentation":"<p>The key value store entity already exists. You must provide a unique key value store entity.</p>",
+      "documentation":"<p>The entity already exists. You must provide a unique entity.</p>",
       "error":{
         "httpStatusCode":409,
         "senderFault":true
@@ -4990,7 +5498,7 @@
       "members":{
         "Message":{"shape":"string"}
       },
-      "documentation":"<p>The key value store entity limit has been exceeded.</p>",
+      "documentation":"<p>The entity limit has been exceeded.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -5002,7 +5510,7 @@
       "members":{
         "Message":{"shape":"string"}
       },
-      "documentation":"<p>The key value store entity was not found.</p>",
+      "documentation":"<p>The entity was not found.</p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true
@@ -5014,7 +5522,7 @@
       "members":{
         "Message":{"shape":"string"}
       },
-      "documentation":"<p>The key value store entity size limit was exceeded.</p>",
+      "documentation":"<p>The entity size limit was exceeded.</p>",
       "error":{
         "httpStatusCode":413,
         "senderFault":true
@@ -5636,6 +6144,34 @@
         "whitelist",
         "none"
       ]
+    },
+    "GetAnycastIpListRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the Anycast static IP list.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        }
+      }
+    },
+    "GetAnycastIpListResult":{
+      "type":"structure",
+      "members":{
+        "AnycastIpList":{
+          "shape":"AnycastIpList",
+          "documentation":"<p>The Anycast static IP list details.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The version identifier for the current version of the Anycast static IP list.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"AnycastIpList"
     },
     "GetCachePolicyConfigRequest":{
       "type":"structure",
@@ -6435,6 +6971,45 @@
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"StreamingDistribution"
     },
+    "GetVpcOriginRequest":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin ID.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        }
+      }
+    },
+    "GetVpcOriginResult":{
+      "type":"structure",
+      "members":{
+        "VpcOrigin":{
+          "shape":"VpcOrigin",
+          "documentation":"<p>The VPC origin.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin ETag.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"VpcOrigin"
+    },
+    "GrpcConfig":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"boolean",
+          "documentation":"<p>Enables your CloudFront distribution to receive gRPC requests and to proxy them directly to your origins.</p>"
+        }
+      },
+      "documentation":"<p>Amazon CloudFront supports gRPC, an open-source remote procedure call (RPC) framework built on HTTP/2. gRPC offers bi-directional streaming and binary protocol that buffers payloads, making it suitable for applications that require low latency communications.</p> <p>To enable your distribution to handle gRPC requests, you must include HTTP/2 as one of the supported <code>HTTP</code> versions and allow <code>HTTP</code> methods, including <code>POST</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-using-grpc.html\">Using gRPC with CloudFront distributions</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
+    },
     "HeaderList":{
       "type":"list",
       "member":{
@@ -6479,7 +7054,7 @@
       "members":{
         "Message":{"shape":"string"}
       },
-      "documentation":"<p>You cannot delete a managed policy.</p>",
+      "documentation":"<p>Deletion is not allowed for this entity.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -7312,6 +7887,34 @@
       },
       "documentation":"<p>A complex type that specifies a list of Lambda@Edge functions associations for a cache behavior.</p> <p>If you want to invoke one or more Lambda@Edge functions triggered by requests that match the <code>PathPattern</code> of the cache behavior, specify the applicable values for <code>Quantity</code> and <code>Items</code>. Note that there can be up to 4 <code>LambdaFunctionAssociation</code> items in this list (one for each possible value of <code>EventType</code>) and each <code>EventType</code> can be associated with only one function.</p> <p>If you don't want to invoke any Lambda@Edge functions for the requests that match <code>PathPattern</code>, specify <code>0</code> for <code>Quantity</code> and omit <code>Items</code>.</p>"
     },
+    "ListAnycastIpListsRequest":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>Use this field when paginating results to indicate where to begin in your list. The response includes items in the list that occur after the marker. To get the next page of the list, set this field's value to the value of <code>NextMarker</code> from the current page's response.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of Anycast static IP lists that you want returned in the response.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        }
+      }
+    },
+    "ListAnycastIpListsResult":{
+      "type":"structure",
+      "members":{
+        "AnycastIpLists":{
+          "shape":"AnycastIpListCollection",
+          "documentation":"<p>Root level tag for the <code>AnycastIpLists</code> parameters.</p>",
+          "locationName":"AnycastIpListCollection"
+        }
+      },
+      "payload":"AnycastIpLists"
+    },
     "ListCachePoliciesRequest":{
       "type":"structure",
       "members":{
@@ -7443,6 +8046,37 @@
         }
       },
       "payload":"ContinuousDeploymentPolicyList"
+    },
+    "ListDistributionsByAnycastIpListIdRequest":{
+      "type":"structure",
+      "required":["AnycastIpListId"],
+      "members":{
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>Use this field when paginating results to indicate where to begin in your list. The response includes items in the list that occur after the marker. To get the next page of the list, set this field's value to the value of <code>NextMarker</code> from the current page's response.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"string",
+          "documentation":"<p>The maximum number of distributions that you want returned in the response.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        },
+        "AnycastIpListId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the Anycast static IP list.</p>",
+          "location":"uri",
+          "locationName":"AnycastIpListId"
+        }
+      }
+    },
+    "ListDistributionsByAnycastIpListIdResult":{
+      "type":"structure",
+      "members":{
+        "DistributionList":{"shape":"DistributionList"}
+      },
+      "payload":"DistributionList"
     },
     "ListDistributionsByCachePolicyIdRequest":{
       "type":"structure",
@@ -7596,6 +8230,37 @@
       }
     },
     "ListDistributionsByResponseHeadersPolicyIdResult":{
+      "type":"structure",
+      "members":{
+        "DistributionIdList":{"shape":"DistributionIdList"}
+      },
+      "payload":"DistributionIdList"
+    },
+    "ListDistributionsByVpcOriginIdRequest":{
+      "type":"structure",
+      "required":["VpcOriginId"],
+      "members":{
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>The marker associated with the VPC origin distributions list.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"string",
+          "documentation":"<p>The maximum number of items included in the list.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        },
+        "VpcOriginId":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin ID.</p>",
+          "location":"uri",
+          "locationName":"VpcOriginId"
+        }
+      }
+    },
+    "ListDistributionsByVpcOriginIdResult":{
       "type":"structure",
       "members":{
         "DistributionIdList":{"shape":"DistributionIdList"}
@@ -8051,6 +8716,33 @@
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"Tags"
     },
+    "ListVpcOriginsRequest":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>The marker associated with the VPC origins list.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"string",
+          "documentation":"<p>The maximum number of items included in the list.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        }
+      }
+    },
+    "ListVpcOriginsResult":{
+      "type":"structure",
+      "members":{
+        "VpcOriginList":{
+          "shape":"VpcOriginList",
+          "documentation":"<p>List of VPC origins.</p>"
+        }
+      },
+      "payload":"VpcOriginList"
+    },
     "LocationList":{
       "type":"list",
       "member":{
@@ -8060,31 +8752,27 @@
     },
     "LoggingConfig":{
       "type":"structure",
-      "required":[
-        "Enabled",
-        "IncludeCookies",
-        "Bucket",
-        "Prefix"
-      ],
       "members":{
         "Enabled":{
           "shape":"boolean",
-          "documentation":"<p>Specifies whether you want CloudFront to save access logs to an Amazon S3 bucket. If you don't want to enable logging when you create a distribution or if you want to disable logging for an existing distribution, specify <code>false</code> for <code>Enabled</code>, and specify empty <code>Bucket</code> and <code>Prefix</code> elements. If you specify <code>false</code> for <code>Enabled</code> but you specify values for <code>Bucket</code>, <code>prefix</code>, and <code>IncludeCookies</code>, the values are automatically deleted.</p>"
+          "documentation":"<p>Specifies whether you want CloudFront to save access logs to an Amazon S3 bucket. If you don't want to enable logging when you create a distribution or if you want to disable logging for an existing distribution, specify <code>false</code> for <code>Enabled</code>, and specify empty <code>Bucket</code> and <code>Prefix</code> elements. If you specify <code>false</code> for <code>Enabled</code> but you specify values for <code>Bucket</code> and <code>prefix</code>, the values are automatically deleted.</p>",
+          "box":true
         },
         "IncludeCookies":{
           "shape":"boolean",
-          "documentation":"<p>Specifies whether you want CloudFront to include cookies in access logs, specify <code>true</code> for <code>IncludeCookies</code>. If you choose to include cookies in logs, CloudFront logs all cookies regardless of how you configure the cache behaviors for this distribution. If you don't want to include cookies when you create a distribution or if you want to disable include cookies for an existing distribution, specify <code>false</code> for <code>IncludeCookies</code>.</p>"
+          "documentation":"<p>Specifies whether you want CloudFront to include cookies in access logs, specify <code>true</code> for <code>IncludeCookies</code>. If you choose to include cookies in logs, CloudFront logs all cookies regardless of how you configure the cache behaviors for this distribution. If you don't want to include cookies when you create a distribution or if you want to disable include cookies for an existing distribution, specify <code>false</code> for <code>IncludeCookies</code>.</p>",
+          "box":true
         },
         "Bucket":{
           "shape":"string",
-          "documentation":"<p>The Amazon S3 bucket to store the access logs in, for example, <code>myawslogbucket.s3.amazonaws.com</code>.</p>"
+          "documentation":"<p>The Amazon S3 bucket to store the access logs in, for example, <code>amzn-s3-demo-bucket.s3.amazonaws.com</code>.</p>"
         },
         "Prefix":{
           "shape":"string",
           "documentation":"<p>An optional string that you want CloudFront to prefix to the access log <code>filenames</code> for this distribution, for example, <code>myprefix/</code>. If you want to enable logging, but you don't want to specify a prefix, you still must include an empty <code>Prefix</code> element in the <code>Logging</code> element.</p>"
         }
       },
-      "documentation":"<p>A complex type that controls whether access logs are written for the distribution.</p>"
+      "documentation":"<p>A complex type that specifies whether access logs are written for the distribution.</p> <note> <p>If you already enabled standard logging (legacy) and you want to enable standard logging (v2) to send your access logs to Amazon S3, we recommend that you specify a <i>different</i> Amazon S3 bucket or use a <i>separate path</i> in the same bucket (for example, use a log prefix or partitioning). This helps you keep track of which log files are associated with which logging subscription and prevents log files from overwriting each other. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/AccessLogs.html\">Standard logging (access logs)</a> in the <i>Amazon CloudFront Developer Guide</i>.</p> </note>"
     },
     "Method":{
       "type":"string",
@@ -8385,6 +9073,10 @@
         "CustomOriginConfig":{
           "shape":"CustomOriginConfig",
           "documentation":"<p>Use this type to specify an origin that is not an Amazon S3 bucket, with one exception. If the Amazon S3 bucket is configured with static website hosting, use this type. If the Amazon S3 bucket is not configured with static website hosting, use the <code>S3OriginConfig</code> type instead.</p>"
+        },
+        "VpcOriginConfig":{
+          "shape":"VpcOriginConfig",
+          "documentation":"<p>The VPC origin configuration.</p>"
         },
         "ConnectionAttempts":{
           "shape":"integer",
@@ -10411,7 +11103,7 @@
         },
         "Bucket":{
           "shape":"string",
-          "documentation":"<p>The Amazon S3 bucket to store the access logs in, for example, <code>myawslogbucket.s3.amazonaws.com</code>.</p>"
+          "documentation":"<p>The Amazon S3 bucket to store the access logs in, for example, <code>amzn-s3-demo-bucket.s3.amazonaws.com</code>.</p>"
         },
         "Prefix":{
           "shape":"string",
@@ -12028,6 +12720,51 @@
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"StreamingDistribution"
     },
+    "UpdateVpcOriginRequest":{
+      "type":"structure",
+      "required":[
+        "VpcOriginEndpointConfig",
+        "Id",
+        "IfMatch"
+      ],
+      "members":{
+        "VpcOriginEndpointConfig":{
+          "shape":"VpcOriginEndpointConfig",
+          "documentation":"<p>The VPC origin endpoint configuration.</p>",
+          "locationName":"VpcOriginEndpointConfig",
+          "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+        },
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin ID.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin to update, if a match occurs.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      },
+      "payload":"VpcOriginEndpointConfig"
+    },
+    "UpdateVpcOriginResult":{
+      "type":"structure",
+      "members":{
+        "VpcOrigin":{
+          "shape":"VpcOrigin",
+          "documentation":"<p>The VPC origin.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin ETag.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"VpcOrigin"
+    },
     "ViewerCertificate":{
       "type":"structure",
       "members":{
@@ -12071,6 +12808,175 @@
         "https-only",
         "redirect-to-https"
       ]
+    },
+    "VpcOrigin":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Arn",
+        "Status",
+        "CreatedTime",
+        "LastModifiedTime",
+        "VpcOriginEndpointConfig"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin ID.</p>"
+        },
+        "Arn":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin ARN.</p>"
+        },
+        "Status":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin status.</p>"
+        },
+        "CreatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The VPC origin created time.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The VPC origin last modified time.</p>"
+        },
+        "VpcOriginEndpointConfig":{
+          "shape":"VpcOriginEndpointConfig",
+          "documentation":"<p>The VPC origin endpoint configuration.</p>"
+        }
+      },
+      "documentation":"<p>An Amazon CloudFront VPC origin.</p>"
+    },
+    "VpcOriginConfig":{
+      "type":"structure",
+      "required":["VpcOriginId"],
+      "members":{
+        "VpcOriginId":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin ID.</p>"
+        }
+      },
+      "documentation":"<p>An Amazon CloudFront VPC origin configuration.</p>"
+    },
+    "VpcOriginEndpointConfig":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "HTTPPort",
+        "HTTPSPort",
+        "OriginProtocolPolicy"
+      ],
+      "members":{
+        "Name":{
+          "shape":"string",
+          "documentation":"<p>The name of the CloudFront VPC origin endpoint configuration.</p>"
+        },
+        "Arn":{
+          "shape":"string",
+          "documentation":"<p>The ARN of the CloudFront VPC origin endpoint configuration.</p>"
+        },
+        "HTTPPort":{
+          "shape":"integer",
+          "documentation":"<p>The HTTP port for the CloudFront VPC origin endpoint configuration.</p>"
+        },
+        "HTTPSPort":{
+          "shape":"integer",
+          "documentation":"<p>The HTTPS port of the CloudFront VPC origin endpoint configuration.</p>"
+        },
+        "OriginProtocolPolicy":{
+          "shape":"OriginProtocolPolicy",
+          "documentation":"<p>The origin protocol policy for the CloudFront VPC origin endpoint configuration.</p>"
+        },
+        "OriginSslProtocols":{"shape":"OriginSslProtocols"}
+      },
+      "documentation":"<p>An Amazon CloudFront VPC origin endpoint configuration.</p>"
+    },
+    "VpcOriginList":{
+      "type":"structure",
+      "required":[
+        "Marker",
+        "MaxItems",
+        "IsTruncated",
+        "Quantity"
+      ],
+      "members":{
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>The marker associated with the VPC origins list.</p>"
+        },
+        "NextMarker":{
+          "shape":"string",
+          "documentation":"<p>The next marker associated with the VPC origins list.</p>"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of items included in the list.</p>"
+        },
+        "IsTruncated":{
+          "shape":"boolean",
+          "documentation":"<p>A flag that indicates whether more VPC origins remain to be listed. If your results were truncated, you can make a follow-up pagination request using the <code>Marker</code> request parameter to retrieve more VPC origins in the list.</p>"
+        },
+        "Quantity":{
+          "shape":"integer",
+          "documentation":"<p>The number of VPC origins in the list.</p>"
+        },
+        "Items":{
+          "shape":"VpcOriginSummaryList",
+          "documentation":"<p>The items of the VPC origins list.</p>"
+        }
+      },
+      "documentation":"<p>A list of CloudFront VPC origins.</p>"
+    },
+    "VpcOriginSummary":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Name",
+        "Status",
+        "CreatedTime",
+        "LastModifiedTime",
+        "Arn",
+        "OriginEndpointArn"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin summary ID.</p>"
+        },
+        "Name":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin summary name.</p>"
+        },
+        "Status":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin summary status.</p>"
+        },
+        "CreatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The VPC origin summary created time.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The VPC origin summary last modified time.</p>"
+        },
+        "Arn":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin summary ARN.</p>"
+        },
+        "OriginEndpointArn":{
+          "shape":"string",
+          "documentation":"<p>The VPC origin summary origin endpoint ARN.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the CloudFront VPC origin.</p>"
+    },
+    "VpcOriginSummaryList":{
+      "type":"list",
+      "member":{
+        "shape":"VpcOriginSummary",
+        "locationName":"VpcOriginSummary"
+      }
     },
     "aliasString":{
       "type":"string",

@@ -4031,6 +4031,11 @@
     "CreateQueueRequest": {
       "type": "structure",
       "members": {
+        "ConcurrentJobs": {
+          "shape": "__integer",
+          "locationName": "concurrentJobs",
+          "documentation": "Specify the maximum number of jobs your queue can process concurrently. For on-demand queues, the value you enter is constrained by your service quotas for Maximum concurrent jobs, per on-demand queue and Maximum concurrent jobs, per account. For reserved queues, specify the number of jobs you can process concurrently in your reservation plan instead."
+        },
         "Description": {
           "shape": "__string",
           "locationName": "description",
@@ -8947,6 +8952,16 @@
           "shape": "__listOfQueue",
           "locationName": "queues",
           "documentation": "List of queues."
+        },
+        "TotalConcurrentJobs": {
+          "shape": "__integer",
+          "locationName": "totalConcurrentJobs",
+          "documentation": "The maximum number of jobs that MediaConvert can process at one time, across all of your on-demand queues in the current AWS Region."
+        },
+        "UnallocatedConcurrentJobs": {
+          "shape": "__integer",
+          "locationName": "unallocatedConcurrentJobs",
+          "documentation": "The remaining number of concurrent jobs that are not associated with a queue and are available to allocate to a queue. You can allocate these jobs when you create or update a queue."
         }
       }
     },
@@ -11275,6 +11290,11 @@
           "locationName": "arn",
           "documentation": "An identifier for this resource that is unique within all of AWS."
         },
+        "ConcurrentJobs": {
+          "shape": "__integer",
+          "locationName": "concurrentJobs",
+          "documentation": "The maximum number of jobs your queue can process concurrently."
+        },
         "CreatedAt": {
           "shape": "__timestampUnix",
           "locationName": "createdAt",
@@ -11309,6 +11329,11 @@
           "shape": "ReservationPlan",
           "locationName": "reservationPlan",
           "documentation": "Details about the pricing plan for your reserved queue. Required for reserved queues and not applicable to on-demand queues."
+        },
+        "ServiceOverrides": {
+          "shape": "__listOfServiceOverride",
+          "locationName": "serviceOverrides",
+          "documentation": "A list of any service overrides applied by MediaConvert to the settings that you have configured. If you see any overrides, we recommend that you contact AWS Support."
         },
         "Status": {
           "shape": "QueueStatus",
@@ -11727,6 +11752,32 @@
           "documentation": "Use this string to request the next batch of jobs."
         }
       }
+    },
+    "ServiceOverride": {
+      "type": "structure",
+      "members": {
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "Details about the service override that MediaConvert has applied."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name of the setting that MediaConvert has applied an override to."
+        },
+        "OverrideValue": {
+          "shape": "__string",
+          "locationName": "overrideValue",
+          "documentation": "The current value of the service override that MediaConvert has applied."
+        },
+        "Value": {
+          "shape": "__string",
+          "locationName": "value",
+          "documentation": "The value of the setting that you configured, prior to any overrides that MediaConvert has applied."
+        }
+      },
+      "documentation": "A service override applied by MediaConvert to the settings that you have configured. If you see any overrides, we recommend that you contact AWS Support."
     },
     "SimulateReservedQueue": {
       "type": "string",
@@ -12340,6 +12391,11 @@
     "UpdateQueueRequest": {
       "type": "structure",
       "members": {
+        "ConcurrentJobs": {
+          "shape": "__integer",
+          "locationName": "concurrentJobs",
+          "documentation": "Specify the maximum number of jobs your queue can process concurrently. For on-demand queues, the value you enter is constrained by your service quotas for Maximum concurrent jobs, per on-demand queue and Maximum concurrent jobs, per account. For reserved queues, update your reservation plan instead in order to increase your yearly commitment."
+        },
         "Description": {
           "shape": "__string",
           "locationName": "description",
@@ -14430,6 +14486,12 @@
       "type": "list",
       "member": {
         "shape": "QueueTransition"
+      }
+    },
+    "__listOfServiceOverride": {
+      "type": "list",
+      "member": {
+        "shape": "ServiceOverride"
       }
     },
     "__listOfTeletextPageType": {

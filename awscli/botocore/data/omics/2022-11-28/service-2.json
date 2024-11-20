@@ -244,6 +244,28 @@
       "documentation":"<p>Creates a reference store.</p>",
       "endpoint":{"hostPrefix":"control-storage-"}
     },
+    "CreateRunCache":{
+      "name":"CreateRunCache",
+      "http":{
+        "method":"POST",
+        "requestUri":"/runCache",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateRunCacheRequest"},
+      "output":{"shape":"CreateRunCacheResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>You can create a run cache to save the task outputs from completed tasks in a run for a private workflow. Subsequent runs use the task outputs from the cache, rather than computing the task outputs again. You specify an Amazon S3 location where HealthOmics saves the cached data. This data must be immediately accessible (not in an archived state).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-cache-create.html\">Creating a run cache</a> in the AWS HealthOmics User Guide.</p>",
+      "endpoint":{"hostPrefix":"workflows-"}
+    },
     "CreateRunGroup":{
       "name":"CreateRunGroup",
       "http":{
@@ -455,6 +477,28 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>Deletes a workflow run.</p>",
+      "endpoint":{"hostPrefix":"workflows-"},
+      "idempotent":true
+    },
+    "DeleteRunCache":{
+      "name":"DeleteRunCache",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/runCache/{id}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteRunCacheRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Delete a run cache. This action removes the cache metadata stored in the service account, but doesn't delete the data in Amazon S3. You can access the cache data in Amazon S3, for inspection or to troubleshoot issues. You can remove old cache data using standard S3 <code>Delete</code> operations. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-cache-delete.html\">Deleting a run cache</a> in the AWS HealthOmics User Guide.</p>",
       "endpoint":{"hostPrefix":"workflows-"},
       "idempotent":true
     },
@@ -826,7 +870,29 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Gets information about a workflow run.</p> <p>If a workflow is shared with you, you cannot export information about the run.</p>",
+      "documentation":"<p>Gets information about a workflow run.</p> <p>If a workflow is shared with you, you cannot export information about the run.</p> <p>HealthOmics stores a fixed number of runs that are available to the console and API. If GetRun doesn't return the requested run, you can find run logs for all runs in the CloudWatch logs. For more information about viewing the run logs, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/cloudwatch-logs.html\">CloudWatch logs</a> in the <i>AWS HealthOmics User Guide</i>.</p>",
+      "endpoint":{"hostPrefix":"workflows-"}
+    },
+    "GetRunCache":{
+      "name":"GetRunCache",
+      "http":{
+        "method":"GET",
+        "requestUri":"/runCache/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRunCacheRequest"},
+      "output":{"shape":"GetRunCacheResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Retrieve the details for the specified run cache.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/workflow-call-caching.html\">Call caching for HealthOmics runs</a> in the AWS HealthOmics User Guide.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
     "GetRunGroup":{
@@ -1214,6 +1280,28 @@
       "documentation":"<p>Retrieves a list of references.</p>",
       "endpoint":{"hostPrefix":"control-storage-"}
     },
+    "ListRunCaches":{
+      "name":"ListRunCaches",
+      "http":{
+        "method":"GET",
+        "requestUri":"/runCache",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRunCachesRequest"},
+      "output":{"shape":"ListRunCachesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Retrieves a list of your run caches.</p>",
+      "endpoint":{"hostPrefix":"workflows-"}
+    },
     "ListRunGroups":{
       "name":"ListRunGroups",
       "http":{
@@ -1277,7 +1365,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Retrieves a list of runs.</p>",
+      "documentation":"<p>Retrieves a list of runs.</p> <p>HealthOmics stores a fixed number of runs that are available to the console and API. If the ListRuns response doesn't include specific runs that you expected, you can find run logs for all runs in the CloudWatch logs. For more information about viewing the run logs, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/cloudwatch-logs.html\">CloudWatch logs</a> in the <i>AWS HealthOmics User Guide</i>.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
     "ListSequenceStores":{
@@ -1525,7 +1613,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Starts a workflow run. To duplicate a run, specify the run's ID and a role ARN. The remaining parameters are copied from the previous run.</p> <p>StartRun will not support re-run for a workflow that is shared with you.</p> <p>The total number of runs in your account is subject to a quota per Region. To avoid needing to delete runs manually, you can set the retention mode to <code>REMOVE</code>. Runs with this setting are deleted automatically when the run quoata is exceeded.</p> <p>By default, the run uses STATIC storage. For STATIC storage, set the <code>storageCapacity</code> field. You can set the storage type to DYNAMIC. You do not set <code>storageCapacity</code>, because HealthOmics dynamically scales the storage up or down as required. For more information about static and dynamic storage, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/Using-workflows.html\">Running workflows</a> in the <i>AWS HealthOmics User Guide</i>.</p>",
+      "documentation":"<p>Starts a workflow run. To duplicate a run, specify the run's ID and a role ARN. The remaining parameters are copied from the previous run.</p> <p>StartRun will not support re-run for a workflow that is shared with you.</p> <p>HealthOmics stores a fixed number of runs that are available to the console and API. By default, HealthOmics doesn't any remove any runs. If HealthOmics reaches the maximum number of runs, you must manually remove runs. To have older runs removed automatically, set the retention mode to <code>REMOVE</code>.</p> <p>By default, the run uses STATIC storage. For STATIC storage, set the <code>storageCapacity</code> field. You can set the storage type to DYNAMIC. You do not set <code>storageCapacity</code>, because HealthOmics dynamically scales the storage up or down as required. For more information about static and dynamic storage, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/Using-workflows.html\">Running workflows</a> in the <i>AWS HealthOmics User Guide</i>.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
     "StartVariantImportJob":{
@@ -1630,6 +1718,27 @@
       ],
       "documentation":"<p> Updates the description of an annotation store version. </p>",
       "endpoint":{"hostPrefix":"analytics-"}
+    },
+    "UpdateRunCache":{
+      "name":"UpdateRunCache",
+      "http":{
+        "method":"POST",
+        "requestUri":"/runCache/{id}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateRunCacheRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Update a run cache. </p>",
+      "endpoint":{"hostPrefix":"workflows-"}
     },
     "UpdateRunGroup":{
       "name":"UpdateRunGroup",
@@ -2147,6 +2256,12 @@
       "max":10,
       "min":1
     },
+    "AwsAccountId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]+"
+    },
     "BatchDeleteReadSetRequest":{
       "type":"structure",
       "required":[
@@ -2179,6 +2294,15 @@
     "Boolean":{
       "type":"boolean",
       "box":true
+    },
+    "CacheBehavior":{
+      "type":"string",
+      "enum":[
+        "CACHE_ON_FAILURE",
+        "CACHE_ALWAYS"
+      ],
+      "max":64,
+      "min":1
     },
     "CancelAnnotationImportRequest":{
       "type":"structure",
@@ -2655,6 +2779,65 @@
         }
       }
     },
+    "CreateRunCacheRequest":{
+      "type":"structure",
+      "required":[
+        "cacheS3Location",
+        "requestId"
+      ],
+      "members":{
+        "cacheBehavior":{
+          "shape":"CacheBehavior",
+          "documentation":"<p>Default cache behavior for runs that use this cache. Supported values are:</p> <p> <code>CACHE_ON_FAILURE</code>: Caches task outputs from completed tasks for runs that fail. This setting is useful if you're debugging a workflow that fails after several tasks completed successfully. The subsequent run uses the cache outputs for previously-completed tasks if the task definition, inputs, and container in ECR are identical to the prior run.</p> <p> <code>CACHE_ALWAYS</code>: Caches task outputs from completed tasks for all runs. This setting is useful in development mode, but do not use it in a production setting.</p> <p>If you don't specify a value, the default behavior is CACHE_ON_FAILURE. When you start a run that uses this cache, you can override the default cache behavior.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/how-run-cache.html#run-cache-behavior\">Run cache behavior</a> in the AWS HealthOmics User Guide.</p>"
+        },
+        "cacheS3Location":{
+          "shape":"S3UriForBucketOrObject",
+          "documentation":"<p>Specify the S3 location for storing the cached task outputs. This data must be immediately accessible (not in an archived state).</p>"
+        },
+        "description":{
+          "shape":"UserCustomDescription",
+          "documentation":"<p>Enter a description of the run cache.</p>"
+        },
+        "name":{
+          "shape":"UserCustomName",
+          "documentation":"<p>Enter a user-friendly name for the run cache.</p>"
+        },
+        "requestId":{
+          "shape":"RunCacheRequestId",
+          "documentation":"<p>A unique request token, to ensure idempotency. If you don't specify a token, HealthOmics automatically generates a universally unique identifier (UUID) for the request.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Specify one or more tags to associate with this run cache.</p>"
+        },
+        "cacheBucketOwnerId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The AWS account ID of the expected owner of the S3 bucket for the run cache. If not provided, your account ID is set as the owner of the bucket.</p>"
+        }
+      }
+    },
+    "CreateRunCacheResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"RunCacheArn",
+          "documentation":"<p>Unique resource identifier for the run cache.</p>"
+        },
+        "id":{
+          "shape":"RunCacheId",
+          "documentation":"<p>Identifier for the run cache.</p>"
+        },
+        "status":{
+          "shape":"RunCacheStatus",
+          "documentation":"<p>Run cache status.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with this run cache.</p>"
+        }
+      }
+    },
     "CreateRunGroupRequest":{
       "type":"structure",
       "required":["requestId"],
@@ -3102,6 +3285,18 @@
       "members":{
       }
     },
+    "DeleteRunCacheRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"RunCacheId",
+          "documentation":"<p>Run cache identifier for the cache you want to delete.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
     "DeleteRunGroupRequest":{
       "type":"structure",
       "required":["id"],
@@ -3261,6 +3456,10 @@
     "EngineLogStream":{
       "type":"string",
       "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "EngineVersion":{
+      "type":"string",
+      "pattern":"[0-9]{2}.[0-9]{2}.[0-9]"
     },
     "EscapeChar":{
       "type":"string",
@@ -4336,6 +4535,63 @@
         }
       }
     },
+    "GetRunCacheRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"RunCacheId",
+          "documentation":"<p>The identifier of the run cache to retrieve.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "GetRunCacheResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"RunCacheArn",
+          "documentation":"<p>Unique resource identifier for the run cache.</p>"
+        },
+        "cacheBehavior":{
+          "shape":"CacheBehavior",
+          "documentation":"<p>The default cache behavior for runs using this cache.</p>"
+        },
+        "cacheBucketOwnerId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The identifier of the bucket owner.</p>"
+        },
+        "cacheS3Uri":{
+          "shape":"S3UriForBucketOrObject",
+          "documentation":"<p>The S3 URI where the cache data is stored.</p>"
+        },
+        "creationTime":{
+          "shape":"RunCacheTimestamp",
+          "documentation":"<p>Creation time of the run cache (an ISO 8601 formatted string).</p>"
+        },
+        "description":{
+          "shape":"UserCustomDescription",
+          "documentation":"<p>The run cache description.</p>"
+        },
+        "id":{
+          "shape":"RunCacheId",
+          "documentation":"<p>The run cache ID.</p>"
+        },
+        "name":{
+          "shape":"UserCustomName",
+          "documentation":"<p>The run cache name.</p>"
+        },
+        "status":{
+          "shape":"RunCacheStatus",
+          "documentation":"<p>The run cache status.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with the run cache.</p>"
+        }
+      }
+    },
     "GetRunGroupRequest":{
       "type":"structure",
       "required":["id"],
@@ -4441,6 +4697,18 @@
         "id":{
           "shape":"RunId",
           "documentation":"<p>The run's ID.</p>"
+        },
+        "cacheId":{
+          "shape":"NumericIdInArn",
+          "documentation":"<p>The run cache associated with the run.</p>"
+        },
+        "cacheBehavior":{
+          "shape":"CacheBehavior",
+          "documentation":"<p>The run cache behavior for the run.</p>"
+        },
+        "engineVersion":{
+          "shape":"EngineVersion",
+          "documentation":"<p>The workflow engine version.</p>"
         },
         "status":{
           "shape":"RunStatus",
@@ -4611,6 +4879,14 @@
         "cpus":{
           "shape":"GetRunTaskResponseCpusInteger",
           "documentation":"<p>The task's CPU usage.</p>"
+        },
+        "cacheHit":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true if AWS HealthOmics found a matching entry in the run cache for this task.</p>"
+        },
+        "cacheS3Uri":{
+          "shape":"S3UriForBucketOrObject",
+          "documentation":"<p>The S3 URI of the cache location.</p>"
         },
         "memory":{
           "shape":"GetRunTaskResponseMemoryInteger",
@@ -5897,6 +6173,42 @@
         }
       }
     },
+    "ListRunCachesRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListRunCachesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "startingToken":{
+          "shape":"ListToken",
+          "documentation":"<p>Optional pagination token returned from a prior call to the <code>ListRunCaches</code> API operation.</p>",
+          "location":"querystring",
+          "locationName":"startingToken"
+        }
+      }
+    },
+    "ListRunCachesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListRunCachesResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"RunCacheList",
+          "documentation":"<p>Details about each run cache in the response.</p>"
+        },
+        "nextToken":{
+          "shape":"ListToken",
+          "documentation":"<p>Pagination token to retrieve additional run caches. If the response does not have a <code>nextToken</code>value, you have reached to the end of the list.</p>"
+        }
+      }
+    },
     "ListRunGroupsRequest":{
       "type":"structure",
       "members":{
@@ -6144,6 +6456,12 @@
           "documentation":"<p>A list of tags.</p>"
         }
       }
+    },
+    "ListToken":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
     },
     "ListVariantImportJobsFilter":{
       "type":"structure",
@@ -6419,6 +6737,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "NumericIdInArn":{
+      "type":"string",
+      "max":18,
+      "min":1,
+      "pattern":"[0-9]+"
     },
     "PrimitiveBoolean":{"type":"boolean"},
     "Quote":{
@@ -7172,6 +7496,76 @@
       "min":1,
       "pattern":"arn:.+"
     },
+    "RunCacheArn":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"arn:.+"
+    },
+    "RunCacheId":{
+      "type":"string",
+      "max":18,
+      "min":1,
+      "pattern":"[0-9]+"
+    },
+    "RunCacheList":{
+      "type":"list",
+      "member":{"shape":"RunCacheListItem"}
+    },
+    "RunCacheListItem":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"RunCacheArn",
+          "documentation":"<p>Unique resource identifier for the run cache.</p>"
+        },
+        "cacheBehavior":{
+          "shape":"CacheBehavior",
+          "documentation":"<p>Default cache behavior for the run cache.</p>"
+        },
+        "cacheS3Uri":{
+          "shape":"S3UriForBucketOrObject",
+          "documentation":"<p>The S3 uri for the run cache data.</p>"
+        },
+        "creationTime":{
+          "shape":"RunCacheTimestamp",
+          "documentation":"<p>The time that this run cache was created (an ISO 8601 formatted string).</p>"
+        },
+        "id":{
+          "shape":"RunCacheId",
+          "documentation":"<p>The identifier for this run cache.</p>"
+        },
+        "name":{
+          "shape":"UserCustomName",
+          "documentation":"<p>The name of the run cache.</p>"
+        },
+        "status":{
+          "shape":"RunCacheStatus",
+          "documentation":"<p>The run cache status.</p>"
+        }
+      },
+      "documentation":"<p>List entry for one run cache.</p>"
+    },
+    "RunCacheRequestId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "RunCacheStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "DELETED",
+        "FAILED"
+      ],
+      "max":64,
+      "min":1
+    },
+    "RunCacheTimestamp":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
     "RunExport":{
       "type":"string",
       "enum":["DEFINITION"],
@@ -7501,6 +7895,11 @@
     "S3Uri":{
       "type":"string",
       "pattern":"s3://([a-z0-9][a-z0-9-.]{1,61}[a-z0-9])/(.{1,1024})"
+    },
+    "S3UriForBucketOrObject":{
+      "type":"string",
+      "documentation":"<p>Uri to a S3 object or bucket</p>",
+      "pattern":"s3://([a-z0-9][a-z0-9-.]{1,61}[a-z0-9])(/(.{0,1024}))?"
     },
     "SampleId":{
       "type":"string",
@@ -8203,6 +8602,14 @@
           "shape":"RunName",
           "documentation":"<p>A name for the run.</p>"
         },
+        "cacheId":{
+          "shape":"NumericIdInArn",
+          "documentation":"<p>Identifier of the cache associated with this run. If you don't specify a cache ID, no task outputs are cached for this run.</p>"
+        },
+        "cacheBehavior":{
+          "shape":"CacheBehavior",
+          "documentation":"<p>The cache behavior for the run. You specify this value if you want to override the default behavior for the cache. You had set the default value when you created the cache. For more information, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/how-run-cache.html#run-cache-behavior\">Run cache behavior</a> in the AWS HealthOmics User Guide.</p>"
+        },
         "runGroupId":{
           "shape":"RunGroupId",
           "documentation":"<p>The run's group ID.</p>"
@@ -8238,7 +8645,7 @@
         },
         "retentionMode":{
           "shape":"RunRetentionMode",
-          "documentation":"<p>The retention mode for the run.</p>"
+          "documentation":"<p>The retention mode for the run. The default value is RETAIN. </p> <p>HealthOmics stores a fixed number of runs that are available to the console and API. In the default mode (RETAIN), you need to remove runs manually when the number of run exceeds the maximum. If you set the retention mode to <code>REMOVE</code>, HealthOmics automatically removes runs (that have mode set to REMOVE) when the number of run exceeds the maximum. All run logs are available in CloudWatch logs, if you need information about a run that is no longer available to the API.</p> <p>For more information about retention mode, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/starting-a-run.html\">Specifying run retention mode</a> in the <i>AWS HealthOmics User Guide</i>.</p>"
         },
         "storageType":{
           "shape":"StorageType",
@@ -8267,7 +8674,7 @@
       "members":{
         "arn":{
           "shape":"RunArn",
-          "documentation":"<p>The run's ARN.</p>"
+          "documentation":"<p>Unique resource identifier for the run.</p>"
         },
         "id":{
           "shape":"RunId",
@@ -8493,6 +8900,14 @@
         "cpus":{
           "shape":"TaskListItemCpusInteger",
           "documentation":"<p>The task's CPU count.</p>"
+        },
+        "cacheHit":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true if AWS HealthOmics found a matching entry in the run cache for this task.</p>"
+        },
+        "cacheS3Uri":{
+          "shape":"S3UriForBucketOrObject",
+          "documentation":"<p>The S3 URI of the cache location.</p>"
         },
         "memory":{
           "shape":"TaskListItemMemoryInteger",
@@ -8815,6 +9230,30 @@
         }
       }
     },
+    "UpdateRunCacheRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "cacheBehavior":{
+          "shape":"CacheBehavior",
+          "documentation":"<p>Update the default run cache behavior.</p>"
+        },
+        "description":{
+          "shape":"UserCustomDescription",
+          "documentation":"<p>Update the run cache description.</p>"
+        },
+        "id":{
+          "shape":"RunCacheId",
+          "documentation":"<p>The identifier of the run cache you want to update.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "name":{
+          "shape":"UserCustomName",
+          "documentation":"<p>Update the name of the run cache.</p>"
+        }
+      }
+    },
     "UpdateRunGroupRequest":{
       "type":"structure",
       "required":["id"],
@@ -9015,6 +9454,18 @@
           "documentation":"<p>An identifier used to confirm that parts are being added to the intended upload.</p>"
         }
       }
+    },
+    "UserCustomDescription":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "UserCustomName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
     },
     "ValidationException":{
       "type":"structure",

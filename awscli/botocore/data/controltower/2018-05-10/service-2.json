@@ -632,6 +632,10 @@
       "type":"list",
       "member":{"shape":"BaselineSummary"}
     },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
     "ConflictException":{
       "type":"structure",
       "required":["message"],
@@ -1053,6 +1057,10 @@
           "shape":"EnabledBaselineParameterSummaries",
           "documentation":"<p>Shows the parameters that are applied when enabling this <code>Baseline</code>.</p>"
         },
+        "parentIdentifier":{
+          "shape":"Arn",
+          "documentation":"<p>An ARN that represents the parent <code>EnabledBaseline</code> at the Organizational Unit (OU) level, from which the child <code>EnabledBaseline</code> inherits its configuration. The value is returned by <code>GetEnabledBaseline</code>.</p>"
+        },
         "statusSummary":{"shape":"EnablementStatusSummary"},
         "targetIdentifier":{
           "shape":"String",
@@ -1067,6 +1075,10 @@
         "baselineIdentifiers":{
           "shape":"EnabledBaselineBaselineIdentifiers",
           "documentation":"<p>Identifiers for the <code>Baseline</code> objects returned as part of the filter operation.</p>"
+        },
+        "parentIdentifiers":{
+          "shape":"EnabledBaselineParentIdentifiers",
+          "documentation":"<p>An optional filter that sets up a list of <code>parentIdentifiers</code> to filter the results of the <code>ListEnabledBaseline</code> output.</p>"
         },
         "targetIdentifiers":{
           "shape":"EnabledBaselineTargetIdentifiers",
@@ -1125,6 +1137,12 @@
       "type":"list",
       "member":{"shape":"EnabledBaselineParameter"}
     },
+    "EnabledBaselineParentIdentifiers":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "max":5,
+      "min":1
+    },
     "EnabledBaselineSummary":{
       "type":"structure",
       "required":[
@@ -1145,6 +1163,10 @@
         "baselineVersion":{
           "shape":"String",
           "documentation":"<p>The enabled version of the baseline.</p>"
+        },
+        "parentIdentifier":{
+          "shape":"Arn",
+          "documentation":"<p>An ARN that represents an object returned by <code>ListEnabledBaseline</code>, to describe an enabled baseline.</p>"
         },
         "statusSummary":{"shape":"EnablementStatusSummary"},
         "targetIdentifier":{
@@ -1740,6 +1762,10 @@
         "filter":{
           "shape":"EnabledBaselineFilter",
           "documentation":"<p>A filter applied on the <code>ListEnabledBaseline</code> operation. Allowed filters are <code>baselineIdentifiers</code> and <code>targetIdentifiers</code>. The filter can be applied for either, or both.</p>"
+        },
+        "includeChildren":{
+          "shape":"Boolean",
+          "documentation":"<p>A value that can be set to include the child enabled baselines in responses. The default value is false.</p>"
         },
         "maxResults":{
           "shape":"ListEnabledBaselinesMaxResults",

@@ -1533,6 +1533,10 @@
         "AvailabilityZoneImpairmentPolicy":{
           "shape":"AvailabilityZoneImpairmentPolicy",
           "documentation":"<p> The Availability Zone impairment policy. </p>"
+        },
+        "CapacityReservationSpecification":{
+          "shape":"CapacityReservationSpecification",
+          "documentation":"<p> The capacity reservation specification. </p>"
         }
       },
       "documentation":"<p>Describes an Auto Scaling group.</p>"
@@ -1719,6 +1723,16 @@
       },
       "documentation":"<p>Specifies the minimum and maximum for the <code>BaselineEbsBandwidthMbps</code> object when you specify <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_InstanceRequirements.html\">InstanceRequirements</a> for an Auto Scaling group.</p>"
     },
+    "BaselinePerformanceFactorsRequest":{
+      "type":"structure",
+      "members":{
+        "Cpu":{
+          "shape":"CpuPerformanceFactorRequest",
+          "documentation":"<p> The CPU performance to consider, using an instance family as the baseline reference. </p>"
+        }
+      },
+      "documentation":"<p> The baseline performance to consider, using an instance family as a baseline reference. The instance family establishes the lowest acceptable level of performance. Auto Scaling uses this baseline to guide instance type selection, but there is no guarantee that the selected instance types will always exceed the baseline for every application. </p> <p>Currently, this parameter only supports CPU performance as a baseline performance factor. For example, specifying <code>c6i</code> uses the CPU performance of the <code>c6i</code> family as the baseline reference.</p>"
+    },
     "BatchDeleteScheduledActionAnswer":{
       "type":"structure",
       "members":{
@@ -1873,6 +1887,51 @@
       "documentation":"<p>A <code>GetPredictiveScalingForecast</code> call returns the capacity forecast for a predictive scaling policy. This structure includes the data points for that capacity forecast, along with the timestamps of those data points. </p>"
     },
     "CapacityRebalanceEnabled":{"type":"boolean"},
+    "CapacityReservationIds":{
+      "type":"list",
+      "member":{"shape":"AsciiStringMaxLen255"}
+    },
+    "CapacityReservationPreference":{
+      "type":"string",
+      "enum":[
+        "capacity-reservations-only",
+        "capacity-reservations-first",
+        "none",
+        "default"
+      ]
+    },
+    "CapacityReservationResourceGroupArns":{
+      "type":"list",
+      "member":{"shape":"ResourceName"}
+    },
+    "CapacityReservationSpecification":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationPreference":{
+          "shape":"CapacityReservationPreference",
+          "documentation":"<p> The capacity reservation preference. The following options are available: </p> <ul> <li> <p> <code>capacity-reservations-only</code> - Auto Scaling will only launch instances into a Capacity Reservation or Capacity Reservation resource group. If capacity isn't available, instances will fail to launch.</p> </li> <li> <p> <code>capacity-reservations-first</code> - Auto Scaling will try to launch instances into a Capacity Reservation or Capacity Reservation resource group first. If capacity isn't available, instances will run in On-Demand capacity.</p> </li> <li> <p> <code>none</code> - Auto Scaling will not launch instances into a Capacity Reservation. Instances will run in On-Demand capacity. </p> </li> <li> <p> <code>default</code> - Auto Scaling uses the Capacity Reservation preference from your launch template or an open Capacity Reservation.</p> </li> </ul>"
+        },
+        "CapacityReservationTarget":{
+          "shape":"CapacityReservationTarget",
+          "documentation":"<p> Describes a target Capacity Reservation or Capacity Reservation resource group. </p>"
+        }
+      },
+      "documentation":"<p> Describes the Capacity Reservation preference and targeting options. If you specify <code>open</code> or <code>none</code> for <code>CapacityReservationPreference</code>, do not specify a <code>CapacityReservationTarget</code>. </p>"
+    },
+    "CapacityReservationTarget":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationIds":{
+          "shape":"CapacityReservationIds",
+          "documentation":"<p> The Capacity Reservation IDs to launch instances into. </p>"
+        },
+        "CapacityReservationResourceGroupArns":{
+          "shape":"CapacityReservationResourceGroupArns",
+          "documentation":"<p> The resource group ARNs of the Capacity Reservation to launch instances into. </p>"
+        }
+      },
+      "documentation":"<p> The target for the Capacity Reservation. Specify Capacity Reservations IDs or Capacity Reservation resource group ARNs. </p>"
+    },
     "CheckpointDelay":{
       "type":"integer",
       "max":172800,
@@ -1934,6 +1993,17 @@
     "CpuManufacturers":{
       "type":"list",
       "member":{"shape":"CpuManufacturer"}
+    },
+    "CpuPerformanceFactorRequest":{
+      "type":"structure",
+      "members":{
+        "References":{
+          "shape":"PerformanceFactorReferenceSetRequest",
+          "documentation":"<p> Specify an instance family to use as the baseline reference for CPU performance. All instance types that match your specified attributes will be compared against the CPU performance of the referenced instance family, regardless of CPU manufacturer or architecture differences. </p> <note> <p>Currently only one instance family can be specified in the list.</p> </note>",
+          "locationName":"Reference"
+        }
+      },
+      "documentation":"<p> The CPU performance to consider, using an instance family as the baseline reference. </p>"
     },
     "CreateAutoScalingGroupType":{
       "type":"structure",
@@ -2066,6 +2136,10 @@
         "SkipZonalShiftValidation":{
           "shape":"SkipZonalShiftValidation",
           "documentation":"<p> If you enable zonal shift with cross-zone disabled load balancers, capacity could become imbalanced across Availability Zones. To skip the validation, specify <code>true</code>. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-zonal-shift.html\">Auto Scaling group zonal shift</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>. </p>"
+        },
+        "CapacityReservationSpecification":{
+          "shape":"CapacityReservationSpecification",
+          "documentation":"<p> The capacity reservation specification for the Auto Scaling group. </p>"
         }
       }
     },
@@ -3462,6 +3536,10 @@
         "AllowedInstanceTypes":{
           "shape":"AllowedInstanceTypes",
           "documentation":"<p>The instance types to apply your specified attributes against. All other instance types are ignored, even if they match your specified attributes.</p> <p>You can use strings with one or more wild cards, represented by an asterisk (<code>*</code>), to allow an instance type, size, or generation. The following are examples: <code>m5.8xlarge</code>, <code>c5*.*</code>, <code>m5a.*</code>, <code>r*</code>, <code>*3*</code>.</p> <p>For example, if you specify <code>c5*</code>, Amazon EC2 Auto Scaling will allow the entire C5 instance family, which includes all C5a and C5n instance types. If you specify <code>m5a.*</code>, Amazon EC2 Auto Scaling will allow all the M5a instance types, but not the M5n instance types.</p> <note> <p>If you specify <code>AllowedInstanceTypes</code>, you can't specify <code>ExcludedInstanceTypes</code>.</p> </note> <p>Default: All instance types</p>"
+        },
+        "BaselinePerformanceFactors":{
+          "shape":"BaselinePerformanceFactorsRequest",
+          "documentation":"<p> The baseline performance factors for the instance requirements. </p>"
         }
       },
       "documentation":"<p>The attributes for the instance types for a mixed instances policy. Amazon EC2 Auto Scaling uses your specified requirements to identify instance types. Then, it uses your On-Demand and Spot allocation strategies to launch instances from these instance types.</p> <p>When you specify multiple attributes, you get instance types that satisfy all of the specified attributes. If you specify multiple values for an attribute, you get instance types that satisfy any of the specified values.</p> <p>To limit the list of instance types from which Amazon EC2 Auto Scaling can identify matching instance types, you can use one of the following parameters, but not both in the same request:</p> <ul> <li> <p> <code>AllowedInstanceTypes</code> - The instance types to include in the list. All other instance types are ignored, even if they match your specified attributes.</p> </li> <li> <p> <code>ExcludedInstanceTypes</code> - The instance types to exclude from the list, even if they match your specified attributes.</p> </li> </ul> <note> <p>You must specify <code>VCpuCount</code> and <code>MemoryMiB</code>. All other attributes are optional. Any unspecified optional attribute is set to its default.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-mixed-instances-group-attribute-based-instance-type-selection.html\">Create a mixed instances group using attribute-based instance type selection</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>. For help determining which instance types match your attributes before you apply them to your Auto Scaling group, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-attribute-based-instance-type-selection.html#ec2fleet-get-instance-types-from-instance-requirements\">Preview instance types with specified attributes</a> in the <i>Amazon EC2 User Guide for Linux Instances</i>.</p>"
@@ -4288,6 +4366,23 @@
     "Overrides":{
       "type":"list",
       "member":{"shape":"LaunchTemplateOverrides"}
+    },
+    "PerformanceFactorReferenceRequest":{
+      "type":"structure",
+      "members":{
+        "InstanceFamily":{
+          "shape":"String",
+          "documentation":"<p> The instance family to use as a baseline reference. </p> <note> <p>Make sure that you specify the correct value for the instance family. The instance family is everything before the period (.) in the instance type name. For example, in the instance <code>c6i.large</code>, the instance family is <code>c6i</code>, not <code>c6</code>. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/instancetypes/instance-type-names.html\">Amazon EC2 instance type naming conventions</a> in <i>Amazon EC2 Instance Types</i>.</p> </note> <p>The following instance types are <i>not supported</i> for performance protection.</p> <ul> <li> <p> <code>c1</code> </p> </li> <li> <p> <code>g3| g3s</code> </p> </li> <li> <p> <code>hpc7g</code> </p> </li> <li> <p> <code>m1| m2</code> </p> </li> <li> <p> <code>mac1 | mac2 | mac2-m1ultra | mac2-m2 | mac2-m2pro</code> </p> </li> <li> <p> <code>p3dn | p4d | p5</code> </p> </li> <li> <p> <code>t1</code> </p> </li> <li> <p> <code>u-12tb1 | u-18tb1 | u-24tb1 | u-3tb1 | u-6tb1 | u-9tb1 | u7i-12tb | u7in-16tb | u7in-24tb | u7in-32tb</code> </p> </li> </ul> <p>If you performance protection by specifying a supported instance family, the returned instance types will exclude the preceding unsupported instance families.</p> <p>If you specify an unsupported instance family as a value for baseline performance, the API returns an empty response.</p>"
+        }
+      },
+      "documentation":"<p> Specify an instance family to use as the baseline reference for CPU performance. All instance types that All instance types that match your specified attributes will be compared against the CPU performance of the referenced instance family, regardless of CPU manufacturer or architecture differences. </p> <note> <p>Currently only one instance family can be specified in the list.</p> </note>"
+    },
+    "PerformanceFactorReferenceSetRequest":{
+      "type":"list",
+      "member":{
+        "shape":"PerformanceFactorReferenceRequest",
+        "locationName":"item"
+      }
     },
     "PoliciesType":{
       "type":"structure",
@@ -5362,6 +5457,7 @@
       "type":"list",
       "member":{"shape":"StepAdjustment"}
     },
+    "String":{"type":"string"},
     "SuspendedProcess":{
       "type":"structure",
       "members":{
@@ -5732,6 +5828,10 @@
         "SkipZonalShiftValidation":{
           "shape":"SkipZonalShiftValidation",
           "documentation":"<p> If you enable zonal shift with cross-zone disabled load balancers, capacity could become imbalanced across Availability Zones. To skip the validation, specify <code>true</code>. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-zonal-shift.html\">Auto Scaling group zonal shift</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>. </p>"
+        },
+        "CapacityReservationSpecification":{
+          "shape":"CapacityReservationSpecification",
+          "documentation":"<p> The capacity reservation specification for the Auto Scaling group. </p>"
         }
       }
     },

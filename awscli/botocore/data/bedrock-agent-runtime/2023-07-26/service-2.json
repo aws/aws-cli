@@ -101,7 +101,26 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Invokes an alias of a flow to run the inputs that you specify and return the output of each node as a stream. If there's an error, the error is returned. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/flows-test.html\">Test a flow in Amazon Bedrock</a> in the Amazon Bedrock User Guide.</p> <note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>InvokeFlow</code>.</p> </note>"
+      "documentation":"<p>Invokes an alias of a flow to run the inputs that you specify and return the output of each node as a stream. If there's an error, the error is returned. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/flows-test.html\">Test a flow in Amazon Bedrock</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p> <note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>InvokeFlow</code>.</p> </note>"
+    },
+    "OptimizePrompt":{
+      "name":"OptimizePrompt",
+      "http":{
+        "method":"POST",
+        "requestUri":"/optimize-prompt",
+        "responseCode":200
+      },
+      "input":{"shape":"OptimizePromptRequest"},
+      "output":{"shape":"OptimizePromptResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"DependencyFailedException"},
+        {"shape":"BadGatewayException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Optimizes a prompt for the task that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-optimize.html\">Optimize a prompt</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
     "Retrieve":{
       "name":"Retrieve",
@@ -197,7 +216,7 @@
           "documentation":"<p>The API method being used, based off the action group.</p>"
         }
       },
-      "documentation":"<p>Contains information about the action group being invoked. For more information about the possible structures, see the InvocationInput tab in <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/trace-orchestration.html\">OrchestrationTrace</a> in the Amazon Bedrock User Guide.</p>"
+      "documentation":"<p>Contains information about the action group being invoked. For more information about the possible structures, see the InvocationInput tab in <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/trace-orchestration.html\">OrchestrationTrace</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
     "ActionGroupInvocationOutput":{
       "type":"structure",
@@ -258,6 +277,18 @@
       "max":5,
       "min":1,
       "pattern":"^(DRAFT|[0-9]{0,4}[1-9][0-9]{0,4})$"
+    },
+    "AnalyzePromptEvent":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the analysis of the prompt.</p>"
+        }
+      },
+      "documentation":"<p>An event in which the prompt was analyzed in preparation for optimization.</p>",
+      "event":true,
+      "sensitive":true
     },
     "ApiContentMap":{
       "type":"map",
@@ -1774,6 +1805,17 @@
       "type":"list",
       "member":{"shape":"InputFile"}
     },
+    "InputPrompt":{
+      "type":"structure",
+      "members":{
+        "textPrompt":{
+          "shape":"TextPrompt",
+          "documentation":"<p>Contains information about the text prompt to optimize.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the prompt to optimize.</p>",
+      "union":true
+    },
     "InputText":{
       "type":"string",
       "max":25000000,
@@ -2348,6 +2390,102 @@
       },
       "documentation":"<p>Contains the result or output of an action group or knowledge base, or the response to the user.</p>",
       "sensitive":true
+    },
+    "OptimizePromptRequest":{
+      "type":"structure",
+      "required":[
+        "input",
+        "targetModelId"
+      ],
+      "members":{
+        "input":{
+          "shape":"InputPrompt",
+          "documentation":"<p>Contains the prompt to optimize.</p>"
+        },
+        "targetModelId":{
+          "shape":"OptimizePromptRequestTargetModelIdString",
+          "documentation":"<p>The unique identifier of the model that you want to optimize the prompt for.</p>"
+        }
+      }
+    },
+    "OptimizePromptRequestTargetModelIdString":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:provisioned-model/[a-z0-9]{12})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|(([0-9a-zA-Z][_-]?)+)$"
+    },
+    "OptimizePromptResponse":{
+      "type":"structure",
+      "required":["optimizedPrompt"],
+      "members":{
+        "optimizedPrompt":{
+          "shape":"OptimizedPromptStream",
+          "documentation":"<p>The prompt after being optimized for the task.</p>"
+        }
+      },
+      "payload":"optimizedPrompt"
+    },
+    "OptimizedPrompt":{
+      "type":"structure",
+      "members":{
+        "textPrompt":{
+          "shape":"TextPrompt",
+          "documentation":"<p>Contains information about the text in the prompt that was optimized.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the optimized prompt.</p>",
+      "union":true
+    },
+    "OptimizedPromptEvent":{
+      "type":"structure",
+      "members":{
+        "optimizedPrompt":{
+          "shape":"OptimizedPrompt",
+          "documentation":"<p>Contains information about the optimized prompt.</p>"
+        }
+      },
+      "documentation":"<p>An event in which the prompt was optimized.</p>",
+      "event":true,
+      "sensitive":true
+    },
+    "OptimizedPromptStream":{
+      "type":"structure",
+      "members":{
+        "accessDeniedException":{
+          "shape":"AccessDeniedException",
+          "documentation":"<p>The request is denied because of missing access permissions. Check your permissions and retry your request.</p>"
+        },
+        "analyzePromptEvent":{
+          "shape":"AnalyzePromptEvent",
+          "documentation":"<p>An event in which the prompt was analyzed in preparation for optimization.</p>"
+        },
+        "badGatewayException":{
+          "shape":"BadGatewayException",
+          "documentation":"<p>There was an issue with a dependency due to a server issue. Retry your request.</p>"
+        },
+        "dependencyFailedException":{
+          "shape":"DependencyFailedException",
+          "documentation":"<p>There was an issue with a dependency. Check the resource configurations and retry the request.</p>"
+        },
+        "internalServerException":{
+          "shape":"InternalServerException",
+          "documentation":"<p>An internal server error occurred. Retry your request.</p>"
+        },
+        "optimizedPromptEvent":{
+          "shape":"OptimizedPromptEvent",
+          "documentation":"<p>An event in which the prompt was optimized.</p>"
+        },
+        "throttlingException":{
+          "shape":"ThrottlingException",
+          "documentation":"<p>Your request was throttled because of service-wide limitations. Resubmit your request later or in a different region. You can also purchase <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> to increase the rate or number of tokens you can process.</p>"
+        },
+        "validationException":{
+          "shape":"ValidationException",
+          "documentation":"<p>Input validation failed. Check your request parameters and retry the request.</p>"
+        }
+      },
+      "documentation":"<p>The stream containing events in the prompt optimization process.</p>",
+      "eventstream":true
     },
     "OrchestrationConfiguration":{
       "type":"structure",
@@ -3347,11 +3485,28 @@
       },
       "documentation":"<p>Configuration settings for text generation using a language model via the RetrieveAndGenerate operation. Includes parameters like temperature, top-p, maximum token count, and stop sequences. </p> <note> <p>The valid range of <code>maxTokens</code> depends on the accepted values for your chosen model's inference parameters. To see the inference parameters for your model, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models.</a> </p> </note>"
     },
+    "TextPrompt":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{
+          "shape":"TextPromptTextString",
+          "documentation":"<p>The text in the text prompt to optimize.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the text prompt to optimize.</p>",
+      "sensitive":true
+    },
     "TextPromptTemplate":{
       "type":"string",
       "max":4000,
       "min":1,
       "sensitive":true
+    },
+    "TextPromptTextString":{
+      "type":"string",
+      "max":200000,
+      "min":1
     },
     "TextResponsePart":{
       "type":"structure",

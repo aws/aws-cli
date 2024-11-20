@@ -142,7 +142,7 @@
         {"shape":"ValidationException"},
         {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p> You can use this API to run a scheduled query manually. </p> <p>If you enabled <code>QueryInsights</code>, this API also returns insights and metrics related to the query that you executed as part of an Amazon SNS notification. <code>QueryInsights</code> helps with performance tuning of your query.</p>",
+      "documentation":"<p> You can use this API to run a scheduled query manually. </p> <p>If you enabled <code>QueryInsights</code>, this API also returns insights and metrics related to the query that you executed as part of an Amazon SNS notification. <code>QueryInsights</code> helps with performance tuning of your query. For more information about <code>QueryInsights</code>, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/using-query-insights.html\">Using query insights to optimize queries in Amazon Timestream</a>.</p>",
       "endpointdiscovery":{"required":true},
       "idempotent":true
     },
@@ -217,7 +217,7 @@
         {"shape":"ValidationException"},
         {"shape":"InvalidEndpointException"}
       ],
-      "documentation":"<p> <code>Query</code> is a synchronous operation that enables you to run a query against your Amazon Timestream data.</p> <p>If you enabled <code>QueryInsights</code>, this API also returns insights and metrics related to the query that you executed. <code>QueryInsights</code> helps with performance tuning of your query.</p> <note> <p>The maximum number of <code>Query</code> API requests you're allowed to make with <code>QueryInsights</code> enabled is 1 query per second (QPS). If you exceed this query rate, it might result in throttling.</p> </note> <p> <code>Query</code> will time out after 60 seconds. You must update the default timeout in the SDK to support a timeout of 60 seconds. See the <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.run-query.html\">code sample</a> for details. </p> <p>Your query request will fail in the following cases:</p> <ul> <li> <p> If you submit a <code>Query</code> request with the same client token outside of the 5-minute idempotency window. </p> </li> <li> <p> If you submit a <code>Query</code> request with the same client token, but change other parameters, within the 5-minute idempotency window. </p> </li> <li> <p> If the size of the row (including the query metadata) exceeds 1 MB, then the query will fail with the following error message: </p> <p> <code>Query aborted as max page response size has been exceeded by the output result row</code> </p> </li> <li> <p> If the IAM principal of the query initiator and the result reader are not the same and/or the query initiator and the result reader do not have the same query string in the query requests, the query will fail with an <code>Invalid pagination token</code> error. </p> </li> </ul>",
+      "documentation":"<p> <code>Query</code> is a synchronous operation that enables you to run a query against your Amazon Timestream data.</p> <p>If you enabled <code>QueryInsights</code>, this API also returns insights and metrics related to the query that you executed. <code>QueryInsights</code> helps with performance tuning of your query. For more information about <code>QueryInsights</code>, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/using-query-insights.html\">Using query insights to optimize queries in Amazon Timestream</a>.</p> <note> <p>The maximum number of <code>Query</code> API requests you're allowed to make with <code>QueryInsights</code> enabled is 1 query per second (QPS). If you exceed this query rate, it might result in throttling.</p> </note> <p> <code>Query</code> will time out after 60 seconds. You must update the default timeout in the SDK to support a timeout of 60 seconds. See the <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.run-query.html\">code sample</a> for details. </p> <p>Your query request will fail in the following cases:</p> <ul> <li> <p> If you submit a <code>Query</code> request with the same client token outside of the 5-minute idempotency window. </p> </li> <li> <p> If you submit a <code>Query</code> request with the same client token, but change other parameters, within the 5-minute idempotency window. </p> </li> <li> <p> If the size of the row (including the query metadata) exceeds 1 MB, then the query will fail with the following error message: </p> <p> <code>Query aborted as max page response size has been exceeded by the output result row</code> </p> </li> <li> <p> If the IAM principal of the query initiator and the result reader are not the same and/or the query initiator and the result reader do not have the same query string in the query requests, the query will fail with an <code>Invalid pagination token</code> error. </p> </li> </ul>",
       "endpointdiscovery":{"required":true},
       "idempotent":true
     },
@@ -300,9 +300,21 @@
       "members":{
         "Message":{"shape":"ServiceErrorMessage"}
       },
-      "documentation":"<p> You are not authorized to perform this action. </p>",
+      "documentation":"<p>You do not have the necessary permissions to access the account settings.</p>",
       "exception":true,
       "synthetic":true
+    },
+    "AccountSettingsNotificationConfiguration":{
+      "type":"structure",
+      "required":["RoleArn"],
+      "members":{
+        "SnsConfiguration":{"shape":"SnsConfiguration"},
+        "RoleArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>An Amazon Resource Name (ARN) that grants Timestream permission to publish notifications. This field is only visible if SNS Topic is provided when updating the account settings.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for notifications related to account settings.</p>"
     },
     "AmazonResourceName":{
       "type":"string",
@@ -358,6 +370,13 @@
     "ColumnInfoList":{
       "type":"list",
       "member":{"shape":"ColumnInfo"}
+    },
+    "ComputeMode":{
+      "type":"string",
+      "enum":[
+        "ON_DEMAND",
+        "PROVISIONED"
+      ]
     },
     "ConflictException":{
       "type":"structure",
@@ -481,11 +500,15 @@
       "members":{
         "MaxQueryTCU":{
           "shape":"MaxQueryCapacity",
-          "documentation":"<p>The maximum number of <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/tcu.html\">Timestream compute units</a> (TCUs) the service will use at any point in time to serve your queries.</p>"
+          "documentation":"<p>The maximum number of <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/tcu.html\">Timestream compute units</a> (TCUs) the service will use at any point in time to serve your queries. To run queries, you must set a minimum capacity of 4 TCU. You can set the maximum number of TCU in multiples of 4, for example, 4, 8, 16, 32, and so on. This configuration is applicable only for on-demand usage of (TCUs). </p>"
         },
         "QueryPricingModel":{
           "shape":"QueryPricingModel",
-          "documentation":"<p>The pricing model for queries in your account.</p>"
+          "documentation":"<p>The pricing model for queries in your account.</p> <note> <p>The <code>QueryPricingModel</code> parameter is used by several Timestream operations; however, the <code>UpdateAccountSettings</code> API operation doesn't recognize any values other than <code>COMPUTE_UNITS</code>.</p> </note>"
+        },
+        "QueryCompute":{
+          "shape":"QueryComputeResponse",
+          "documentation":"<p>An object that contains the usage settings for Timestream Compute Units (TCUs) in your account for the query workload. </p>"
         }
       }
     },
@@ -656,7 +679,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p> The service was unable to fully process this request because of an internal server error. </p>",
+      "documentation":"<p>An internal server error occurred while processing the request.</p>",
       "exception":true
     },
     "InvalidEndpointException":{
@@ -664,8 +687,34 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The requested endpoint was not valid.</p>",
+      "documentation":"<p>The requested endpoint is invalid.</p>",
       "exception":true
+    },
+    "LastUpdate":{
+      "type":"structure",
+      "members":{
+        "TargetQueryTCU":{
+          "shape":"QueryTCU",
+          "documentation":"<p>The number of TimeStream Compute Units (TCUs) requested in the last account settings update.</p>"
+        },
+        "Status":{
+          "shape":"LastUpdateStatus",
+          "documentation":"<p>The status of the last update. Can be either <code>PENDING</code>, <code>FAILED</code>, or <code>SUCCEEDED</code>.</p>"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p>Error message describing the last account settings update status, visible only if an error occurred.</p>"
+        }
+      },
+      "documentation":"<p>Configuration object that contains the most recent account settings update, visible only if settings have been updated previously.</p>"
+    },
+    "LastUpdateStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "FAILED",
+        "SUCCEEDED"
+      ]
     },
     "ListScheduledQueriesRequest":{
       "type":"structure",
@@ -838,7 +887,7 @@
       "members":{
         "SnsConfiguration":{
           "shape":"SnsConfiguration",
-          "documentation":"<p>Details on SNS configuration. </p>"
+          "documentation":"<p>Details about the Amazon Simple Notification Service (SNS) configuration. This field is visible only when SNS Topic is provided when updating the account settings. </p>"
         }
       },
       "documentation":"<p>Notification configuration for a scheduled query. A notification is sent by Timestream when a scheduled query is created, its state is updated or when it is deleted. </p>"
@@ -911,6 +960,67 @@
           "documentation":"<p>A list of parameters used in the submitted query string. </p>"
         }
       }
+    },
+    "ProvisionedCapacityRequest":{
+      "type":"structure",
+      "required":["TargetQueryTCU"],
+      "members":{
+        "TargetQueryTCU":{
+          "shape":"QueryTCU",
+          "documentation":"<p>The target compute capacity for querying data, specified in Timestream Compute Units (TCUs).</p>"
+        },
+        "NotificationConfiguration":{
+          "shape":"AccountSettingsNotificationConfiguration",
+          "documentation":"<p>Configuration settings for notifications related to the provisioned capacity update.</p>"
+        }
+      },
+      "documentation":"<p>A request to update the provisioned capacity settings for querying data.</p>"
+    },
+    "ProvisionedCapacityResponse":{
+      "type":"structure",
+      "members":{
+        "ActiveQueryTCU":{
+          "shape":"QueryTCU",
+          "documentation":"<p>The number of Timestream Compute Units (TCUs) provisioned in the account. This field is only visible when the compute mode is <code>PROVISIONED</code>.</p>"
+        },
+        "NotificationConfiguration":{
+          "shape":"AccountSettingsNotificationConfiguration",
+          "documentation":"<p>An object that contains settings for notifications that are sent whenever the provisioned capacity settings are modified. This field is only visible when the compute mode is <code>PROVISIONED</code>.</p>"
+        },
+        "LastUpdate":{
+          "shape":"LastUpdate",
+          "documentation":"<p>Information about the last update to the provisioned capacity settings.</p>"
+        }
+      },
+      "documentation":"<p>The response to a request to update the provisioned capacity settings for querying data.</p>"
+    },
+    "QueryComputeRequest":{
+      "type":"structure",
+      "members":{
+        "ComputeMode":{
+          "shape":"ComputeMode",
+          "documentation":"<p>The mode in which Timestream Compute Units (TCUs) are allocated and utilized within an account. Note that in the Asia Pacific (Mumbai) region, the API operation only recognizes the value <code>PROVISIONED</code>.</p>"
+        },
+        "ProvisionedCapacity":{
+          "shape":"ProvisionedCapacityRequest",
+          "documentation":"<p>Configuration object that contains settings for provisioned Timestream Compute Units (TCUs) in your account.</p>"
+        }
+      },
+      "documentation":"<p>A request to retrieve or update the compute capacity settings for querying data.</p>"
+    },
+    "QueryComputeResponse":{
+      "type":"structure",
+      "members":{
+        "ComputeMode":{
+          "shape":"ComputeMode",
+          "documentation":"<p>The mode in which Timestream Compute Units (TCUs) are allocated and utilized within an account. Note that in the Asia Pacific (Mumbai) region, the API operation only recognizes the value <code>PROVISIONED</code>.</p>"
+        },
+        "ProvisionedCapacity":{
+          "shape":"ProvisionedCapacityResponse",
+          "documentation":"<p>Configuration object that contains settings for provisioned Timestream Compute Units (TCUs) in your account.</p>"
+        }
+      },
+      "documentation":"<p>The response to a request to retrieve or update the compute capacity settings for querying data.</p>"
     },
     "QueryExecutionException":{
       "type":"structure",
@@ -1108,6 +1218,7 @@
       "min":1,
       "sensitive":true
     },
+    "QueryTCU":{"type":"integer"},
     "QueryTemporalRange":{
       "type":"structure",
       "members":{
@@ -1630,7 +1741,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "documentation":"<p>The request was throttled due to excessive requests.</p>",
       "exception":true
     },
     "Time":{"type":"timestamp"},
@@ -1760,11 +1871,15 @@
       "members":{
         "MaxQueryTCU":{
           "shape":"MaxQueryCapacity",
-          "documentation":"<p>The maximum number of compute units the service will use at any point in time to serve your queries. To run queries, you must set a minimum capacity of 4 TCU. You can set the maximum number of TCU in multiples of 4, for example, 4, 8, 16, 32, and so on.</p> <p>The maximum value supported for <code>MaxQueryTCU</code> is 1000. To request an increase to this soft limit, contact Amazon Web Services Support. For information about the default quota for maxQueryTCU, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html#limits.default\">Default quotas</a>.</p>"
+          "documentation":"<p>The maximum number of compute units the service will use at any point in time to serve your queries. To run queries, you must set a minimum capacity of 4 TCU. You can set the maximum number of TCU in multiples of 4, for example, 4, 8, 16, 32, and so on. The maximum value supported for <code>MaxQueryTCU</code> is 1000. To request an increase to this soft limit, contact Amazon Web Services Support. For information about the default quota for maxQueryTCU, see Default quotas. This configuration is applicable only for on-demand usage of Timestream Compute Units (TCUs).</p> <p>The maximum value supported for <code>MaxQueryTCU</code> is 1000. To request an increase to this soft limit, contact Amazon Web Services Support. For information about the default quota for <code>maxQueryTCU</code>, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html#limits.default\">Default quotas</a>.</p>"
         },
         "QueryPricingModel":{
           "shape":"QueryPricingModel",
           "documentation":"<p>The pricing model for queries in an account.</p> <note> <p>The <code>QueryPricingModel</code> parameter is used by several Timestream operations; however, the <code>UpdateAccountSettings</code> API operation doesn't recognize any values other than <code>COMPUTE_UNITS</code>.</p> </note>"
+        },
+        "QueryCompute":{
+          "shape":"QueryComputeRequest",
+          "documentation":"<p>Modifies the query compute settings configured in your account, including the query pricing model and provisioned Timestream Compute Units (TCUs) in your account.</p> <note> <p>This API is idempotent, meaning that making the same request multiple times will have the same effect as making the request once.</p> </note>"
         }
       }
     },
@@ -1778,6 +1893,10 @@
         "QueryPricingModel":{
           "shape":"QueryPricingModel",
           "documentation":"<p>The pricing model for an account.</p>"
+        },
+        "QueryCompute":{
+          "shape":"QueryComputeResponse",
+          "documentation":"<p>Confirms the updated account settings for querying data in your account.</p>"
         }
       }
     },

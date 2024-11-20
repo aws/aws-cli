@@ -5,11 +5,13 @@
     "endpointPrefix":"rbin",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon Recycle Bin",
     "serviceId":"rbin",
     "signatureVersion":"v4",
     "signingName":"rbin",
-    "uid":"rbin-2021-06-15"
+    "uid":"rbin-2021-06-15",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateRule":{
@@ -26,7 +28,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a Recycle Bin retention rule. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin-working-with-rules.html#recycle-bin-create-rule\"> Create Recycle Bin retention rules</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+      "documentation":"<p>Creates a Recycle Bin retention rule. You can create two types of retention rules:</p> <ul> <li> <p> <b>Tag-level retention rules</b> - These retention rules use resource tags to identify the resources to protect. For each retention rule, you specify one or more tag key and value pairs. Resources (of the specified type) that have at least one of these tag key and value pairs are automatically retained in the Recycle Bin upon deletion. Use this type of retention rule to protect specific resources in your account based on their tags.</p> </li> <li> <p> <b>Region-level retention rules</b> - These retention rules, by default, apply to all of the resources (of the specified type) in the Region, even if the resources are not tagged. However, you can specify exclusion tags to exclude resources that have specific tags. Use this type of retention rule to protect all resources of a specific type in a Region.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/recycle-bin.html\"> Create Recycle Bin retention rules</a> in the <i>Amazon EBS User Guide</i>.</p>"
     },
     "DeleteRule":{
       "name":"DeleteRule",
@@ -107,7 +109,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Locks a retention rule. A locked retention rule can't be modified or deleted.</p>"
+      "documentation":"<p>Locks a Region-level retention rule. A locked retention rule can't be modified or deleted.</p> <note> <p>You can't lock tag-level retention rules, or Region-level retention rules that have exclusion tags.</p> </note>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -221,11 +223,15 @@
         },
         "ResourceTags":{
           "shape":"ResourceTags",
-          "documentation":"<p>Specifies the resource tags to use to identify resources that are to be retained by a tag-level retention rule. For tag-level retention rules, only deleted resources, of the specified resource type, that have one or more of the specified tag key and value pairs are retained. If a resource is deleted, but it does not have any of the specified tag key and value pairs, it is immediately deleted without being retained by the retention rule.</p> <p>You can add the same tag key and value pair to a maximum or five retention rules.</p> <p>To create a Region-level retention rule, omit this parameter. A Region-level retention rule does not have any resource tags specified. It retains all deleted resources of the specified resource type in the Region in which the rule is created, even if the resources are not tagged.</p>"
+          "documentation":"<p>[Tag-level retention rules only] Specifies the resource tags to use to identify resources that are to be retained by a tag-level retention rule. For tag-level retention rules, only deleted resources, of the specified resource type, that have one or more of the specified tag key and value pairs are retained. If a resource is deleted, but it does not have any of the specified tag key and value pairs, it is immediately deleted without being retained by the retention rule.</p> <p>You can add the same tag key and value pair to a maximum or five retention rules.</p> <p>To create a Region-level retention rule, omit this parameter. A Region-level retention rule does not have any resource tags specified. It retains all deleted resources of the specified resource type in the Region in which the rule is created, even if the resources are not tagged.</p>"
         },
         "LockConfiguration":{
           "shape":"LockConfiguration",
           "documentation":"<p>Information about the retention rule lock configuration.</p>"
+        },
+        "ExcludeResourceTags":{
+          "shape":"ExcludeResourceTags",
+          "documentation":"<p>[Region-level retention rules only] Specifies the exclusion tags to use to identify resources that are to be excluded, or ignored, by a Region-level retention rule. Resources that have any of these tags are not retained by the retention rule upon deletion.</p> <p>You can't specify exclusion tags for tag-level retention rules.</p>"
         }
       }
     },
@@ -251,7 +257,7 @@
         },
         "ResourceTags":{
           "shape":"ResourceTags",
-          "documentation":"<p>Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
+          "documentation":"<p>[Tag-level retention rules only] Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
         },
         "Status":{
           "shape":"RuleStatus",
@@ -263,11 +269,15 @@
         },
         "LockState":{
           "shape":"LockState",
-          "documentation":"<p>The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
+          "documentation":"<p>[Region-level retention rules only] The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
         },
         "RuleArn":{
           "shape":"RuleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the retention rule.</p>"
+        },
+        "ExcludeResourceTags":{
+          "shape":"ExcludeResourceTags",
+          "documentation":"<p>[Region-level retention rules only] Information about the exclusion tags used to identify resources that are to be excluded, or ignored, by the retention rule.</p>"
         }
       }
     },
@@ -293,6 +303,12 @@
       "pattern":"^[\\S ]{0,255}$"
     },
     "ErrorMessage":{"type":"string"},
+    "ExcludeResourceTags":{
+      "type":"list",
+      "member":{"shape":"ResourceTag"},
+      "max":5,
+      "min":0
+    },
     "GetRuleRequest":{
       "type":"structure",
       "required":["Identifier"],
@@ -326,7 +342,7 @@
         },
         "ResourceTags":{
           "shape":"ResourceTags",
-          "documentation":"<p>Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
+          "documentation":"<p>[Tag-level retention rules only] Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
         },
         "Status":{
           "shape":"RuleStatus",
@@ -338,7 +354,7 @@
         },
         "LockState":{
           "shape":"LockState",
-          "documentation":"<p>The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
+          "documentation":"<p>[Region-level retention rules only] The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
         },
         "LockEndTime":{
           "shape":"TimeStamp",
@@ -347,6 +363,10 @@
         "RuleArn":{
           "shape":"RuleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the retention rule.</p>"
+        },
+        "ExcludeResourceTags":{
+          "shape":"ExcludeResourceTags",
+          "documentation":"<p>[Region-level retention rules only] Information about the exclusion tags used to identify resources that are to be excluded, or ignored, by the retention rule.</p>"
         }
       }
     },
@@ -378,11 +398,15 @@
         },
         "ResourceTags":{
           "shape":"ResourceTags",
-          "documentation":"<p>Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
+          "documentation":"<p>[Tag-level retention rules only] Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
         },
         "LockState":{
           "shape":"LockState",
           "documentation":"<p>The lock state of the retention rules to list. Only retention rules with the specified lock state are returned.</p>"
+        },
+        "ExcludeResourceTags":{
+          "shape":"ExcludeResourceTags",
+          "documentation":"<p>[Region-level retention rules only] Information about the exclusion tags used to identify resources that are to be excluded, or ignored, by the retention rule.</p>"
         }
       }
     },
@@ -468,7 +492,7 @@
         "RetentionPeriod":{"shape":"RetentionPeriod"},
         "ResourceTags":{
           "shape":"ResourceTags",
-          "documentation":"<p>Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
+          "documentation":"<p>[Tag-level retention rules only] Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
         },
         "Status":{
           "shape":"RuleStatus",
@@ -480,11 +504,15 @@
         },
         "LockState":{
           "shape":"LockState",
-          "documentation":"<p>The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
+          "documentation":"<p>[Region-level retention rules only] The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
         },
         "RuleArn":{
           "shape":"RuleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the retention rule.</p>"
+        },
+        "ExcludeResourceTags":{
+          "shape":"ExcludeResourceTags",
+          "documentation":"<p>[Region-level retention rules only] Information about the exclusion tags used to identify resources that are to be excluded, or ignored, by the retention rule.</p>"
         }
       }
     },
@@ -535,7 +563,7 @@
           "documentation":"<p>The tag value.</p>"
         }
       },
-      "documentation":"<p>Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
+      "documentation":"<p>[Tag-level retention rules only] Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
     },
     "ResourceTagKey":{
       "type":"string",
@@ -619,7 +647,7 @@
         },
         "LockState":{
           "shape":"LockState",
-          "documentation":"<p>The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
+          "documentation":"<p>[Region-level retention rules only] The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
         },
         "RuleArn":{
           "shape":"RuleArn",
@@ -773,7 +801,7 @@
         "RetentionPeriod":{"shape":"RetentionPeriod"},
         "ResourceTags":{
           "shape":"ResourceTags",
-          "documentation":"<p>Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
+          "documentation":"<p>[Tag-level retention rules only] Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
         },
         "Status":{
           "shape":"RuleStatus",
@@ -785,7 +813,7 @@
         },
         "LockState":{
           "shape":"LockState",
-          "documentation":"<p>The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
+          "documentation":"<p>[Region-level retention rules only] The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
         },
         "LockEndTime":{
           "shape":"TimeStamp",
@@ -794,6 +822,10 @@
         "RuleArn":{
           "shape":"RuleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the retention rule.</p>"
+        },
+        "ExcludeResourceTags":{
+          "shape":"ExcludeResourceTags",
+          "documentation":"<p>[Region-level retention rules only] Information about the exclusion tags used to identify resources that are to be excluded, or ignored, by the retention rule.</p>"
         }
       }
     },
@@ -847,7 +879,11 @@
         },
         "ResourceTags":{
           "shape":"ResourceTags",
-          "documentation":"<p>Specifies the resource tags to use to identify resources that are to be retained by a tag-level retention rule. For tag-level retention rules, only deleted resources, of the specified resource type, that have one or more of the specified tag key and value pairs are retained. If a resource is deleted, but it does not have any of the specified tag key and value pairs, it is immediately deleted without being retained by the retention rule.</p> <p>You can add the same tag key and value pair to a maximum or five retention rules.</p> <p>To create a Region-level retention rule, omit this parameter. A Region-level retention rule does not have any resource tags specified. It retains all deleted resources of the specified resource type in the Region in which the rule is created, even if the resources are not tagged.</p>"
+          "documentation":"<p>[Tag-level retention rules only] Specifies the resource tags to use to identify resources that are to be retained by a tag-level retention rule. For tag-level retention rules, only deleted resources, of the specified resource type, that have one or more of the specified tag key and value pairs are retained. If a resource is deleted, but it does not have any of the specified tag key and value pairs, it is immediately deleted without being retained by the retention rule.</p> <p>You can add the same tag key and value pair to a maximum or five retention rules.</p> <p>To create a Region-level retention rule, omit this parameter. A Region-level retention rule does not have any resource tags specified. It retains all deleted resources of the specified resource type in the Region in which the rule is created, even if the resources are not tagged.</p>"
+        },
+        "ExcludeResourceTags":{
+          "shape":"ExcludeResourceTags",
+          "documentation":"<p>[Region-level retention rules only] Specifies the exclusion tags to use to identify resources that are to be excluded, or ignored, by a Region-level retention rule. Resources that have any of these tags are not retained by the retention rule upon deletion.</p> <p>You can't specify exclusion tags for tag-level retention rules.</p>"
         }
       }
     },
@@ -869,7 +905,7 @@
         },
         "ResourceTags":{
           "shape":"ResourceTags",
-          "documentation":"<p>Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
+          "documentation":"<p>[Tag-level retention rules only] Information about the resource tags used to identify resources that are retained by the retention rule.</p>"
         },
         "Status":{
           "shape":"RuleStatus",
@@ -877,7 +913,7 @@
         },
         "LockState":{
           "shape":"LockState",
-          "documentation":"<p>The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
+          "documentation":"<p>[Region-level retention rules only] The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
         },
         "LockEndTime":{
           "shape":"TimeStamp",
@@ -886,6 +922,10 @@
         "RuleArn":{
           "shape":"RuleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the retention rule.</p>"
+        },
+        "ExcludeResourceTags":{
+          "shape":"ExcludeResourceTags",
+          "documentation":"<p>[Region-level retention rules only] Information about the exclusion tags used to identify resources that are to be excluded, or ignored, by the retention rule.</p>"
         }
       }
     },

@@ -339,6 +339,22 @@
       },
       "documentation":"<p>Describes the current Elastic Load Balancing resource limits for your Amazon Web Services account.</p> <p>For more information, see the following:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-limits.html\">Quotas for your Application Load Balancers</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-limits.html\">Quotas for your Network Load Balancers</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/gateway/quotas-limits.html\">Quotas for your Gateway Load Balancers</a> </p> </li> </ul>"
     },
+    "DescribeCapacityReservation":{
+      "name":"DescribeCapacityReservation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCapacityReservationInput"},
+      "output":{
+        "shape":"DescribeCapacityReservationOutput",
+        "resultWrapper":"DescribeCapacityReservationResult"
+      },
+      "errors":[
+        {"shape":"LoadBalancerNotFoundException"}
+      ],
+      "documentation":"<p>Describes the capacity reservation status for the specified load balancer.</p>"
+    },
     "DescribeListenerAttributes":{
       "name":"DescribeListenerAttributes",
       "http":{
@@ -623,6 +639,29 @@
         {"shape":"RevocationIdNotFoundException"}
       ],
       "documentation":"<p>Retrieves the specified revocation file.</p> <p>This action returns a pre-signed S3 URI which is active for ten minutes.</p>"
+    },
+    "ModifyCapacityReservation":{
+      "name":"ModifyCapacityReservation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyCapacityReservationInput"},
+      "output":{
+        "shape":"ModifyCapacityReservationOutput",
+        "resultWrapper":"ModifyCapacityReservationResult"
+      },
+      "errors":[
+        {"shape":"LoadBalancerNotFoundException"},
+        {"shape":"InvalidConfigurationRequestException"},
+        {"shape":"CapacityUnitsLimitExceededException"},
+        {"shape":"CapacityReservationPendingException"},
+        {"shape":"InsufficientCapacityException"},
+        {"shape":"CapacityDecreaseRequestsLimitExceededException"},
+        {"shape":"PriorRequestNotCompleteException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Modifies the capacity reservation of the specified load balancer.</p> <p>When modifying capacity reservation, you must include at least one <code>MinimumLoadBalancerCapacity</code> or <code>ResetCapacityReservation</code>.</p>"
     },
     "ModifyListener":{
       "name":"ModifyListener",
@@ -915,7 +954,8 @@
         {"shape":"SubnetNotFoundException"},
         {"shape":"InvalidSubnetException"},
         {"shape":"AllocationIdNotFoundException"},
-        {"shape":"AvailabilityZoneNotSupportedException"}
+        {"shape":"AvailabilityZoneNotSupportedException"},
+        {"shape":"CapacityReservationPendingException"}
       ],
       "documentation":"<p>Enables the Availability Zones for the specified public subnets for the specified Application Load Balancer, Network Load Balancer or Gateway Load Balancer. The specified subnets replace the previously enabled subnets.</p> <p>When you specify subnets for a Network Load Balancer, or Gateway Load Balancer you must include all subnets that were enabled previously, with their existing configurations, plus any additional subnets.</p>"
     }
@@ -1324,6 +1364,67 @@
       "exception":true
     },
     "CanonicalHostedZoneId":{"type":"string"},
+    "CapacityDecreaseRequestsLimitExceededException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>You've exceeded the daily capacity decrease limit for this reservation.</p>",
+      "error":{
+        "code":"CapacityDecreaseRequestLimitExceeded",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CapacityReservationPendingException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>There is a pending capacity reservation.</p>",
+      "error":{
+        "code":"CapacityReservationPending",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CapacityReservationStateEnum":{
+      "type":"string",
+      "enum":[
+        "provisioned",
+        "pending",
+        "rebalancing",
+        "failed"
+      ]
+    },
+    "CapacityReservationStatus":{
+      "type":"structure",
+      "members":{
+        "Code":{
+          "shape":"CapacityReservationStateEnum",
+          "documentation":"<p>The status code.</p>"
+        },
+        "Reason":{
+          "shape":"StateReason",
+          "documentation":"<p>The reason code for the status.</p>"
+        }
+      },
+      "documentation":"<p>The status of a capacity reservation.</p>"
+    },
+    "CapacityUnits":{"type":"integer"},
+    "CapacityUnitsDouble":{"type":"double"},
+    "CapacityUnitsLimitExceededException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>You've exceeded the capacity units limit.</p>",
+      "error":{
+        "code":"CapacityUnitsLimitExceeded",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "Certificate":{
       "type":"structure",
       "members":{
@@ -1657,6 +1758,7 @@
       "pattern":"^(ipv4pool-coip-)[a-zA-Z0-9]+$"
     },
     "DNSName":{"type":"string"},
+    "DecreaseRequestsRemaining":{"type":"integer"},
     "Default":{"type":"boolean"},
     "DeleteAssociationSameAccountException":{
       "type":"structure",
@@ -1812,6 +1914,37 @@
         "NextMarker":{
           "shape":"Marker",
           "documentation":"<p>If there are additional results, this is the marker for the next set of results. Otherwise, this is null.</p>"
+        }
+      }
+    },
+    "DescribeCapacityReservationInput":{
+      "type":"structure",
+      "required":["LoadBalancerArn"],
+      "members":{
+        "LoadBalancerArn":{
+          "shape":"LoadBalancerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the load balancer.</p>"
+        }
+      }
+    },
+    "DescribeCapacityReservationOutput":{
+      "type":"structure",
+      "members":{
+        "LastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>The last time the capacity reservation was modified.</p>"
+        },
+        "DecreaseRequestsRemaining":{
+          "shape":"DecreaseRequestsRemaining",
+          "documentation":"<p>The amount of daily capacity decreases remaining.</p>"
+        },
+        "MinimumLoadBalancerCapacity":{
+          "shape":"MinimumLoadBalancerCapacity",
+          "documentation":"<p>The requested minimum capacity reservation for the load balancer</p>"
+        },
+        "CapacityReservationState":{
+          "shape":"ZonalCapacityReservationStates",
+          "documentation":"<p>The state of the capacity reservation.</p>"
         }
       }
     },
@@ -2522,6 +2655,17 @@
       },
       "exception":true
     },
+    "InsufficientCapacityException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>There is insufficient capacity to reserve.</p>",
+      "error":{
+        "code":"InsufficientCapacity",
+        "httpStatusCode":500
+      },
+      "exception":true
+    },
     "InvalidCaCertificatesBundleException":{
       "type":"structure",
       "members":{
@@ -2628,6 +2772,7 @@
       ]
     },
     "IsDefault":{"type":"boolean"},
+    "LastModifiedTime":{"type":"timestamp"},
     "Limit":{
       "type":"structure",
       "members":{
@@ -2942,6 +3087,16 @@
       "documentation":"<p>The codes to use when checking for a successful response from a target. If the protocol version is gRPC, these are gRPC codes. Otherwise, these are HTTP codes. </p>"
     },
     "Max":{"type":"string"},
+    "MinimumLoadBalancerCapacity":{
+      "type":"structure",
+      "members":{
+        "CapacityUnits":{
+          "shape":"CapacityUnits",
+          "documentation":"<p>The number of capacity units.</p>"
+        }
+      },
+      "documentation":"<p>The minimum capacity for a load balancer.</p>"
+    },
     "MitigationInEffectEnum":{
       "type":"string",
       "enum":[
@@ -2950,6 +3105,45 @@
       ]
     },
     "Mode":{"type":"string"},
+    "ModifyCapacityReservationInput":{
+      "type":"structure",
+      "required":["LoadBalancerArn"],
+      "members":{
+        "LoadBalancerArn":{
+          "shape":"LoadBalancerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the load balancer.</p>"
+        },
+        "MinimumLoadBalancerCapacity":{
+          "shape":"MinimumLoadBalancerCapacity",
+          "documentation":"<p>The minimum load balancer capacity reserved.</p>"
+        },
+        "ResetCapacityReservation":{
+          "shape":"ResetCapacityReservation",
+          "documentation":"<p>Resets the capacity reservation.</p>"
+        }
+      }
+    },
+    "ModifyCapacityReservationOutput":{
+      "type":"structure",
+      "members":{
+        "LastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>The last time the capacity reservation was modified.</p>"
+        },
+        "DecreaseRequestsRemaining":{
+          "shape":"DecreaseRequestsRemaining",
+          "documentation":"<p>The amount of daily capacity decreases remaining.</p>"
+        },
+        "MinimumLoadBalancerCapacity":{
+          "shape":"MinimumLoadBalancerCapacity",
+          "documentation":"<p>The requested minimum capacity reservation for the load balancer</p>"
+        },
+        "CapacityReservationState":{
+          "shape":"ZonalCapacityReservationStates",
+          "documentation":"<p>The state of the capacity reservation.</p>"
+        }
+      }
+    },
     "ModifyListenerAttributesInput":{
       "type":"structure",
       "required":[
@@ -3259,6 +3453,18 @@
       "max":65535,
       "min":1
     },
+    "PriorRequestNotCompleteException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>This operation is not allowed while a prior request has not been completed.</p>",
+      "error":{
+        "code":"PriorRequestNotComplete",
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "PriorityInUseException":{
       "type":"structure",
       "members":{
@@ -3459,6 +3665,7 @@
       "members":{
       }
     },
+    "ResetCapacityReservation":{"type":"boolean"},
     "ResourceArn":{"type":"string"},
     "ResourceArns":{
       "type":"list",
@@ -4572,6 +4779,28 @@
       "exception":true
     },
     "VpcId":{"type":"string"},
+    "ZonalCapacityReservationState":{
+      "type":"structure",
+      "members":{
+        "State":{
+          "shape":"CapacityReservationStatus",
+          "documentation":"<p>The state of the capacity reservation.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"ZoneName",
+          "documentation":"<p>Information about the availability zone.</p>"
+        },
+        "EffectiveCapacityUnits":{
+          "shape":"CapacityUnitsDouble",
+          "documentation":"<p>The number of effective capacity units.</p>"
+        }
+      },
+      "documentation":"<p>The capacity reservation status for each availability zone.</p>"
+    },
+    "ZonalCapacityReservationStates":{
+      "type":"list",
+      "member":{"shape":"ZonalCapacityReservationState"}
+    },
     "ZoneName":{"type":"string"}
   },
   "documentation":"<fullname>Elastic Load Balancing</fullname> <p>A load balancer distributes incoming traffic across targets, such as your EC2 instances. This enables you to increase the availability of your application. The load balancer also monitors the health of its registered targets and ensures that it routes traffic only to healthy targets. You configure your load balancer to accept incoming traffic by specifying one or more listeners, which are configured with a protocol and port number for connections from clients to the load balancer. You configure a target group with a protocol and port number for connections from the load balancer to the targets, and with health check settings to be used when checking the health status of the targets.</p> <p>Elastic Load Balancing supports the following types of load balancers: Application Load Balancers, Network Load Balancers, Gateway Load Balancers, and Classic Load Balancers. This reference covers the following load balancer types:</p> <ul> <li> <p>Application Load Balancer - Operates at the application layer (layer 7) and supports HTTP and HTTPS.</p> </li> <li> <p>Network Load Balancer - Operates at the transport layer (layer 4) and supports TCP, TLS, and UDP.</p> </li> <li> <p>Gateway Load Balancer - Operates at the network layer (layer 3).</p> </li> </ul> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/\">Elastic Load Balancing User Guide</a>.</p> <p>All Elastic Load Balancing operations are idempotent, which means that they complete at most one time. If you repeat an operation, it succeeds.</p>"

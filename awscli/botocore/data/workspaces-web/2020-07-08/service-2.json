@@ -34,6 +34,26 @@
       "documentation":"<p>Associates a browser settings resource with a web portal.</p>",
       "idempotent":true
     },
+    "AssociateDataProtectionSettings":{
+      "name":"AssociateDataProtectionSettings",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/portals/{portalArn+}/dataProtectionSettings",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateDataProtectionSettingsRequest"},
+      "output":{"shape":"AssociateDataProtectionSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Associates a data protection settings resource with a web portal.</p>",
+      "idempotent":true
+    },
     "AssociateIpAccessSettings":{
       "name":"AssociateIpAccessSettings",
       "http":{
@@ -153,6 +173,26 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Creates a browser settings resource that can be associated with a web portal. Once associated with a web portal, browser settings control how the browser will behave once a user starts a streaming session for the web portal. </p>"
+    },
+    "CreateDataProtectionSettings":{
+      "name":"CreateDataProtectionSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/dataProtectionSettings",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateDataProtectionSettingsRequest"},
+      "output":{"shape":"CreateDataProtectionSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a data protection settings resource that can be associated with a web portal.</p>"
     },
     "CreateIdentityProvider":{
       "name":"CreateIdentityProvider",
@@ -308,6 +348,25 @@
       "documentation":"<p>Deletes browser settings.</p>",
       "idempotent":true
     },
+    "DeleteDataProtectionSettings":{
+      "name":"DeleteDataProtectionSettings",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/dataProtectionSettings/{dataProtectionSettingsArn+}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteDataProtectionSettingsRequest"},
+      "output":{"shape":"DeleteDataProtectionSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes data protection settings.</p>",
+      "idempotent":true
+    },
     "DeleteIdentityProvider":{
       "name":"DeleteIdentityProvider",
       "http":{
@@ -461,6 +520,26 @@
       "documentation":"<p>Disassociates browser settings from a web portal.</p>",
       "idempotent":true
     },
+    "DisassociateDataProtectionSettings":{
+      "name":"DisassociateDataProtectionSettings",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/portals/{portalArn+}/dataProtectionSettings",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateDataProtectionSettingsRequest"},
+      "output":{"shape":"DisassociateDataProtectionSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Disassociates data protection settings from a web portal.</p>",
+      "idempotent":true
+    },
     "DisassociateIpAccessSettings":{
       "name":"DisassociateIpAccessSettings",
       "http":{
@@ -597,6 +676,24 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Gets browser settings.</p>"
+    },
+    "GetDataProtectionSettings":{
+      "name":"GetDataProtectionSettings",
+      "http":{
+        "method":"GET",
+        "requestUri":"/dataProtectionSettings/{dataProtectionSettingsArn+}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDataProtectionSettingsRequest"},
+      "output":{"shape":"GetDataProtectionSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets the data protection settings.</p>"
     },
     "GetIdentityProvider":{
       "name":"GetIdentityProvider",
@@ -794,6 +891,23 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Retrieves a list of browser settings.</p>"
+    },
+    "ListDataProtectionSettings":{
+      "name":"ListDataProtectionSettings",
+      "http":{
+        "method":"GET",
+        "requestUri":"/dataProtectionSettings",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDataProtectionSettingsRequest"},
+      "output":{"shape":"ListDataProtectionSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves a list of data protection settings.</p>"
     },
     "ListIdentityProviders":{
       "name":"ListIdentityProviders",
@@ -1024,6 +1138,24 @@
       ],
       "documentation":"<p>Updates browser settings.</p>"
     },
+    "UpdateDataProtectionSettings":{
+      "name":"UpdateDataProtectionSettings",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/dataProtectionSettings/{dataProtectionSettingsArn+}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateDataProtectionSettingsRequest"},
+      "output":{"shape":"UpdateDataProtectionSettingsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates data protection settings.</p>"
+    },
     "UpdateIdentityProvider":{
       "name":"UpdateIdentityProvider",
       "http":{
@@ -1209,6 +1341,44 @@
         "browserSettingsArn":{
           "shape":"ARN",
           "documentation":"<p>The ARN of the browser settings.</p>"
+        },
+        "portalArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the web portal.</p>"
+        }
+      }
+    },
+    "AssociateDataProtectionSettingsRequest":{
+      "type":"structure",
+      "required":[
+        "dataProtectionSettingsArn",
+        "portalArn"
+      ],
+      "members":{
+        "dataProtectionSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the data protection settings.</p>",
+          "location":"querystring",
+          "locationName":"dataProtectionSettingsArn"
+        },
+        "portalArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the web portal.</p>",
+          "location":"uri",
+          "locationName":"portalArn"
+        }
+      }
+    },
+    "AssociateDataProtectionSettingsResponse":{
+      "type":"structure",
+      "required":[
+        "dataProtectionSettingsArn",
+        "portalArn"
+      ],
+      "members":{
+        "dataProtectionSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the data protection settings resource.</p>"
         },
         "portalArn":{
           "shape":"ARN",
@@ -1466,6 +1636,13 @@
       "type":"string",
       "enum":["Chrome"]
     },
+    "BuiltInPatternId":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"^[_\\-\\d\\w]+$",
+      "sensitive":true
+    },
     "Certificate":{
       "type":"structure",
       "members":{
@@ -1550,6 +1727,12 @@
     "ClientToken":{
       "type":"string",
       "max":512,
+      "min":1
+    },
+    "ConfidenceLevel":{
+      "type":"integer",
+      "box":true,
+      "max":3,
       "min":1
     },
     "ConflictException":{
@@ -1667,6 +1850,50 @@
         "browserSettingsArn":{
           "shape":"ARN",
           "documentation":"<p>The ARN of the browser settings.</p>"
+        }
+      }
+    },
+    "CreateDataProtectionSettingsRequest":{
+      "type":"structure",
+      "members":{
+        "additionalEncryptionContext":{
+          "shape":"EncryptionContextMap",
+          "documentation":"<p>Additional encryption context of the data protection settings.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token returns the result from the original successful request. </p> <p>If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.</p>",
+          "idempotencyToken":true
+        },
+        "customerManagedKey":{
+          "shape":"keyArn",
+          "documentation":"<p>The custom managed key of the data protection settings.</p>"
+        },
+        "description":{
+          "shape":"DescriptionSafe",
+          "documentation":"<p>The description of the data protection settings.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayNameSafe",
+          "documentation":"<p>The display name of the data protection settings.</p>"
+        },
+        "inlineRedactionConfiguration":{
+          "shape":"InlineRedactionConfiguration",
+          "documentation":"<p>The inline redaction configuration of the data protection settings that will be applied to all sessions.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to add to the data protection settings resource. A tag is a key-value pair.</p>"
+        }
+      }
+    },
+    "CreateDataProtectionSettingsResponse":{
+      "type":"structure",
+      "required":["dataProtectionSettingsArn"],
+      "members":{
+        "dataProtectionSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the data protection settings resource.</p>"
         }
       }
     },
@@ -1990,6 +2217,98 @@
         }
       }
     },
+    "CustomPattern":{
+      "type":"structure",
+      "required":[
+        "patternName",
+        "patternRegex"
+      ],
+      "members":{
+        "keywordRegex":{
+          "shape":"Regex",
+          "documentation":"<p>The keyword regex for the customer pattern. After there is a match to the pattern regex, the keyword regex is used to search within the proximity of the match. If there is a keyword match, then the match is confirmed. If no keyword regex is provided, the pattern regex match will automatically be confirmed. The format must follow JavaScript regex format. The pattern must be enclosed between slashes, and can have flags behind the second slash. For example, “/ab+c/gi”</p>"
+        },
+        "patternDescription":{
+          "shape":"DescriptionSafe",
+          "documentation":"<p>The pattern description for the customer pattern.</p>"
+        },
+        "patternName":{
+          "shape":"PatternName",
+          "documentation":"<p>The pattern name for the custom pattern.</p>"
+        },
+        "patternRegex":{
+          "shape":"Regex",
+          "documentation":"<p>The pattern regex for the customer pattern. The format must follow JavaScript regex format. The pattern must be enclosed between slashes, and can have flags behind the second slash. For example: “/ab+c/gi”.</p>"
+        }
+      },
+      "documentation":"<p>The pattern configuration for redacting custom data types in session.</p>"
+    },
+    "DataProtectionSettings":{
+      "type":"structure",
+      "required":["dataProtectionSettingsArn"],
+      "members":{
+        "additionalEncryptionContext":{
+          "shape":"EncryptionContextMap",
+          "documentation":"<p>The additional encryption context of the data protection settings.</p>"
+        },
+        "associatedPortalArns":{
+          "shape":"ArnList",
+          "documentation":"<p>A list of web portal ARNs that this data protection settings resource is associated with.</p>"
+        },
+        "creationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation date timestamp of the data protection settings.</p>"
+        },
+        "customerManagedKey":{
+          "shape":"keyArn",
+          "documentation":"<p>The customer managed key used to encrypt sensitive information in the data protection settings.</p>"
+        },
+        "dataProtectionSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the data protection settings resource.</p>"
+        },
+        "description":{
+          "shape":"DescriptionSafe",
+          "documentation":"<p>The description of the data protection settings.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayNameSafe",
+          "documentation":"<p>The display name of the data protection settings.</p>"
+        },
+        "inlineRedactionConfiguration":{
+          "shape":"InlineRedactionConfiguration",
+          "documentation":"<p>The inline redaction configuration for the data protection settings.</p>"
+        }
+      },
+      "documentation":"<p>The data protection settings resource that can be associated with a web portal.</p>"
+    },
+    "DataProtectionSettingsList":{
+      "type":"list",
+      "member":{"shape":"DataProtectionSettingsSummary"}
+    },
+    "DataProtectionSettingsSummary":{
+      "type":"structure",
+      "required":["dataProtectionSettingsArn"],
+      "members":{
+        "creationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation date timestamp of the data protection settings.</p>"
+        },
+        "dataProtectionSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the data protection settings.</p>"
+        },
+        "description":{
+          "shape":"DescriptionSafe",
+          "documentation":"<p>The description of the data protection settings.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayNameSafe",
+          "documentation":"<p>The display name of the data protection settings.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the data protection settings.</p>"
+    },
     "DeleteBrowserSettingsRequest":{
       "type":"structure",
       "required":["browserSettingsArn"],
@@ -2003,6 +2322,23 @@
       }
     },
     "DeleteBrowserSettingsResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteDataProtectionSettingsRequest":{
+      "type":"structure",
+      "required":["dataProtectionSettingsArn"],
+      "members":{
+        "dataProtectionSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the data protection settings.</p>",
+          "location":"uri",
+          "locationName":"dataProtectionSettingsArn"
+        }
+      }
+    },
+    "DeleteDataProtectionSettingsResponse":{
       "type":"structure",
       "members":{
       }
@@ -2133,6 +2469,13 @@
       "pattern":"^.+$",
       "sensitive":true
     },
+    "DescriptionSafe":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[ _\\-\\d\\w]+$",
+      "sensitive":true
+    },
     "DisassociateBrowserSettingsRequest":{
       "type":"structure",
       "required":["portalArn"],
@@ -2146,6 +2489,23 @@
       }
     },
     "DisassociateBrowserSettingsResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DisassociateDataProtectionSettingsRequest":{
+      "type":"structure",
+      "required":["portalArn"],
+      "members":{
+        "portalArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the web portal.</p>",
+          "location":"uri",
+          "locationName":"portalArn"
+        }
+      }
+    },
+    "DisassociateDataProtectionSettingsResponse":{
       "type":"structure",
       "members":{
       }
@@ -2248,6 +2608,13 @@
       "pattern":"^.+$",
       "sensitive":true
     },
+    "DisplayNameSafe":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[ _\\-\\d\\w]+$",
+      "sensitive":true
+    },
     "EnabledType":{
       "type":"string",
       "enum":[
@@ -2306,6 +2673,27 @@
         "browserSettings":{
           "shape":"BrowserSettings",
           "documentation":"<p>The browser settings.</p>"
+        }
+      }
+    },
+    "GetDataProtectionSettingsRequest":{
+      "type":"structure",
+      "required":["dataProtectionSettingsArn"],
+      "members":{
+        "dataProtectionSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the data protection settings.</p>",
+          "location":"uri",
+          "locationName":"dataProtectionSettingsArn"
+        }
+      }
+    },
+    "GetDataProtectionSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "dataProtectionSettings":{
+          "shape":"DataProtectionSettings",
+          "documentation":"<p>The data protection settings.</p>"
         }
       }
     },
@@ -2547,6 +2935,12 @@
         }
       }
     },
+    "GlobalInlineRedactionUrls":{
+      "type":"list",
+      "member":{"shape":"InlineRedactionUrl"},
+      "max":100,
+      "min":1
+    },
     "IdentityProvider":{
       "type":"structure",
       "required":["identityProviderArn"],
@@ -2622,6 +3016,77 @@
       "box":true,
       "max":60,
       "min":0
+    },
+    "InlineRedactionConfiguration":{
+      "type":"structure",
+      "required":["inlineRedactionPatterns"],
+      "members":{
+        "globalConfidenceLevel":{
+          "shape":"ConfidenceLevel",
+          "documentation":"<p>The global confidence level for the inline redaction configuration. This indicates the certainty of data type matches in the redaction process. Confidence level 3 means high confidence, and requires a formatted text pattern match in order for content to be redacted. Confidence level 2 means medium confidence, and redaction considers both formatted and unformatted text, and adds keyword associate to the logic. Confidence level 1 means low confidence, and redaction is enforced for both formatted pattern + unformatted pattern without keyword. This is applied to patterns that do not have a pattern-level confidence level. Defaults to confidence level 2.</p>"
+        },
+        "globalEnforcedUrls":{
+          "shape":"GlobalInlineRedactionUrls",
+          "documentation":"<p>The global enforced URL configuration for the inline redaction configuration. This is applied to patterns that do not have a pattern-level enforced URL list.</p>"
+        },
+        "globalExemptUrls":{
+          "shape":"GlobalInlineRedactionUrls",
+          "documentation":"<p>The global exempt URL configuration for the inline redaction configuration. This is applied to patterns that do not have a pattern-level exempt URL list.</p>"
+        },
+        "inlineRedactionPatterns":{
+          "shape":"InlineRedactionPatterns",
+          "documentation":"<p>The inline redaction patterns to be enabled for the inline redaction configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for in-session inline redaction.</p>"
+    },
+    "InlineRedactionPattern":{
+      "type":"structure",
+      "required":["redactionPlaceHolder"],
+      "members":{
+        "builtInPatternId":{
+          "shape":"BuiltInPatternId",
+          "documentation":"<p>The built-in pattern from the list of preconfigured patterns. Either a customPattern or builtInPatternId is required.</p>"
+        },
+        "confidenceLevel":{
+          "shape":"ConfidenceLevel",
+          "documentation":"<p>The confidence level for inline redaction pattern. This indicates the certainty of data type matches in the redaction process. Confidence level 3 means high confidence, and requires a formatted text pattern match in order for content to be redacted. Confidence level 2 means medium confidence, and redaction considers both formatted and unformatted text, and adds keyword associate to the logic. Confidence level 1 means low confidence, and redaction is enforced for both formatted pattern + unformatted pattern without keyword. This overrides the global confidence level.</p>"
+        },
+        "customPattern":{
+          "shape":"CustomPattern",
+          "documentation":"<p>&gt;The configuration for a custom pattern. Either a customPattern or builtInPatternId is required.</p>"
+        },
+        "enforcedUrls":{
+          "shape":"InlineRedactionUrls",
+          "documentation":"<p>The enforced URL configuration for the inline redaction pattern. This will override the global enforced URL configuration.</p>"
+        },
+        "exemptUrls":{
+          "shape":"InlineRedactionUrls",
+          "documentation":"<p>The exempt URL configuration for the inline redaction pattern. This will override the global exempt URL configuration for the inline redaction pattern.</p>"
+        },
+        "redactionPlaceHolder":{
+          "shape":"RedactionPlaceHolder",
+          "documentation":"<p>The redaction placeholder that will replace the redacted text in session for the inline redaction pattern.</p>"
+        }
+      },
+      "documentation":"<p>The set of patterns that determine the data types redacted in session.</p>"
+    },
+    "InlineRedactionPatterns":{
+      "type":"list",
+      "member":{"shape":"InlineRedactionPattern"},
+      "max":150,
+      "min":0
+    },
+    "InlineRedactionUrl":{
+      "type":"string",
+      "pattern":"^((([a-zA-Z][a-zA-Z0-9+.-]*):\\/\\/(\\*|[\\w%._\\-\\+~#=@]+)?(\\/[^@\\s]*)?(?:\\?([^*\\s]+(?:\\*?)))?)|(\\*|[\\w%._\\-\\+~#=@]+\\.[\\w%._\\-\\+~#=@]+)(?::(\\d{1,5}))?(\\/[^@\\s]*)?(?:\\?([^*\\s]+(?:\\*?)))?|(([a-zA-Z][a-zA-Z0-9+.-]*):(\\/\\/)?\\*))$",
+      "sensitive":true
+    },
+    "InlineRedactionUrls":{
+      "type":"list",
+      "member":{"shape":"InlineRedactionUrl"},
+      "max":20,
+      "min":1
     },
     "InstanceType":{
       "type":"string",
@@ -2784,6 +3249,36 @@
         "browserSettings":{
           "shape":"BrowserSettingsList",
           "documentation":"<p>The browser settings.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        }
+      }
+    },
+    "ListDataProtectionSettingsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be included in the next page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListDataProtectionSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "dataProtectionSettings":{
+          "shape":"DataProtectionSettingsList",
+          "documentation":"<p>The data protection settings.</p>"
         },
         "nextToken":{
           "shape":"PaginationToken",
@@ -3196,6 +3691,13 @@
       "min":1,
       "pattern":"^\\S+$"
     },
+    "PatternName":{
+      "type":"string",
+      "max":20,
+      "min":1,
+      "pattern":"^[_\\-\\d\\w]+$",
+      "sensitive":true
+    },
     "Portal":{
       "type":"structure",
       "required":["portalArn"],
@@ -3223,6 +3725,10 @@
         "customerManagedKey":{
           "shape":"keyArn",
           "documentation":"<p>The customer managed key used to encrypt sensitive information in the portal.</p>"
+        },
+        "dataProtectionSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the data protection settings.</p>"
         },
         "displayName":{
           "shape":"DisplayName",
@@ -3323,6 +3829,10 @@
           "shape":"Timestamp",
           "documentation":"<p>The creation date of the web portal.</p>"
         },
+        "dataProtectionSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the data protection settings.</p>"
+        },
         "displayName":{
           "shape":"DisplayName",
           "documentation":"<p>The name of the web portal.</p>"
@@ -3375,6 +3885,39 @@
       "documentation":"<p>The summary of the portal.</p>"
     },
     "QuotaCode":{"type":"string"},
+    "RedactionPlaceHolder":{
+      "type":"structure",
+      "required":["redactionPlaceHolderType"],
+      "members":{
+        "redactionPlaceHolderText":{
+          "shape":"RedactionPlaceHolderText",
+          "documentation":"<p>The redaction placeholder text that will replace the redacted text in session for the custom text redaction placeholder type.</p>"
+        },
+        "redactionPlaceHolderType":{
+          "shape":"RedactionPlaceHolderType",
+          "documentation":"<p>The redaction placeholder type that will replace the redacted text in session.</p>"
+        }
+      },
+      "documentation":"<p>The redaction placeholder that will replace the redacted text in session.</p>"
+    },
+    "RedactionPlaceHolderText":{
+      "type":"string",
+      "max":20,
+      "min":1,
+      "pattern":"^[*_\\-\\d\\w]+$",
+      "sensitive":true
+    },
+    "RedactionPlaceHolderType":{
+      "type":"string",
+      "enum":["CustomText"]
+    },
+    "Regex":{
+      "type":"string",
+      "max":300,
+      "min":0,
+      "pattern":"^\\/((?:[^\\n])+)\\/([gimsuyvd]{0,8})$",
+      "sensitive":true
+    },
     "RendererType":{
       "type":"string",
       "enum":["AppStream"]
@@ -3768,6 +4311,45 @@
         "browserSettings":{
           "shape":"BrowserSettings",
           "documentation":"<p>The browser settings.</p>"
+        }
+      }
+    },
+    "UpdateDataProtectionSettingsRequest":{
+      "type":"structure",
+      "required":["dataProtectionSettingsArn"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, subsequent retries with the same client token return the result from the original successful request. </p> <p>If you do not specify a client token, one is automatically generated by the Amazon Web Services SDK.</p>",
+          "idempotencyToken":true
+        },
+        "dataProtectionSettingsArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the data protection settings.</p>",
+          "location":"uri",
+          "locationName":"dataProtectionSettingsArn"
+        },
+        "description":{
+          "shape":"DescriptionSafe",
+          "documentation":"<p>The description of the data protection settings.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayNameSafe",
+          "documentation":"<p>The display name of the data protection settings.</p>"
+        },
+        "inlineRedactionConfiguration":{
+          "shape":"InlineRedactionConfiguration",
+          "documentation":"<p>The inline redaction configuration of the data protection settings that will be applied to all sessions.</p>"
+        }
+      }
+    },
+    "UpdateDataProtectionSettingsResponse":{
+      "type":"structure",
+      "required":["dataProtectionSettings"],
+      "members":{
+        "dataProtectionSettings":{
+          "shape":"DataProtectionSettings",
+          "documentation":"<p>The data protection settings.</p>"
         }
       }
     },

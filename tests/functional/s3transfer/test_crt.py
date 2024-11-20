@@ -143,7 +143,7 @@ class TestCRTTransferManager(unittest.TestCase):
             for expected_missing_header in expected_missing_headers:
                 self.assertNotIn(expected_missing_header.lower(), header_names)
 
-    def _assert_exected_s3express_request(
+    def _assert_expected_s3express_request(
         self,
         make_request_kwargs,
         expected_http_method='GET'
@@ -160,7 +160,7 @@ class TestCRTTransferManager(unittest.TestCase):
             awscrt.auth.AwsSigningAlgorithm.V4_S3EXPRESS
         )
 
-    def _assert_exected_mrap_request(
+    def _assert_expected_mrap_request(
         self,
         make_request_kwargs,
         expected_http_method='GET'
@@ -407,7 +407,7 @@ class TestCRTTransferManager(unittest.TestCase):
             [self.record_subscriber]
         )
         future.result()
-        self._assert_exected_s3express_request(
+        self._assert_expected_s3express_request(
             self.s3_crt_client.make_request.call_args[1],
             expected_http_method='PUT'
         )
@@ -418,7 +418,7 @@ class TestCRTTransferManager(unittest.TestCase):
             [self.record_subscriber]
         )
         future.result()
-        self._assert_exected_mrap_request(
+        self._assert_expected_mrap_request(
             self.s3_crt_client.make_request.call_args[1],
             expected_http_method='PUT'
         )
@@ -531,7 +531,7 @@ class TestCRTTransferManager(unittest.TestCase):
             [self.record_subscriber]
         )
         future.result()
-        self._assert_exected_s3express_request(
+        self._assert_expected_s3express_request(
             self.s3_crt_client.make_request.call_args[1],
             expected_http_method='GET'
         )
@@ -542,7 +542,7 @@ class TestCRTTransferManager(unittest.TestCase):
             [self.record_subscriber]
         )
         future.result()
-        self._assert_exected_mrap_request(
+        self._assert_expected_mrap_request(
             self.s3_crt_client.make_request.call_args[1],
             expected_http_method='GET'
         )
@@ -576,7 +576,7 @@ class TestCRTTransferManager(unittest.TestCase):
             self.s3express_bucket, self.key, {}, [self.record_subscriber]
         )
         future.result()
-        self._assert_exected_s3express_request(
+        self._assert_expected_s3express_request(
             self.s3_crt_client.make_request.call_args[1],
             expected_http_method='DELETE'
         )

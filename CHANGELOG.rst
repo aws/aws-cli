@@ -2,6 +2,31 @@
 CHANGELOG
 =========
 
+1.36.7
+======
+
+* api-change:``autoscaling``: With this release, customers can prioritize launching instances into ODCRs using targets from ASGs or Launch Templates. Customers can express their baseline instances' CPU-performance in attribute-based Instance Requirements configuration by referencing an instance family that meets their needs.
+* api-change:``bedrock-agent-runtime``: Releasing new Prompt Optimization to enhance your prompts for improved performance
+* api-change:``cloudfront``: Add support for gRPC, VPC origins, and Anycast IP Lists. Allow LoggingConfig IncludeCookies to be set regardless of whether the LoggingConfig is enabled.
+* api-change:``compute-optimizer``: This release enables AWS Compute Optimizer to analyze and generate optimization recommendations for Amazon Aurora database instances. It also enables Compute Optimizer to identify idle Amazon EC2 instances, Amazon EBS volumes, Amazon ECS services running on Fargate, and Amazon RDS databases.
+* api-change:``controltower``: Adds support for child enabled baselines which allow you to see the enabled baseline status for individual accounts.
+* api-change:``cost-optimization-hub``: This release adds action type "Delete" to the GetRecommendation, ListRecommendations and ListRecommendationSummaries APIs to support new EBS and ECS recommendations with action type "Delete".
+* api-change:``datazone``: This release supports Metadata Enforcement Rule feature for Create Subscription Request action.
+* api-change:``discovery``: Add support to import data from commercially available discovery tools without file manipulation.
+* api-change:``ec2``: With this release, customers can express their desire to launch instances only in an ODCR or ODCR group rather than OnDemand capacity. Customers can express their baseline instances' CPU-performance in attribute-based Instance Requirements configuration by referencing an instance family.
+* api-change:``ecs``: This release adds support for the Availability Zone rebalancing feature on Amazon ECS.
+* api-change:``elbv2``: This release adds support for configuring Load balancer Capacity Unit reservations
+* api-change:``lambda``: Add Node 22.x (node22.x) support to AWS Lambda
+* api-change:``mediaconvert``: This release adds the ability to reconfigure concurrent job settings for existing queues and create queues with custom concurrent job settings.
+* api-change:``mediapackagev2``: MediaPackage v2 now supports the Media Quality Confidence Score (MQCS) published from MediaLive. Customers can control input switching based on the MQCS and publishing HTTP Headers for the MQCS via the API.
+* api-change:``omics``: Enabling call caching feature that allows customers to reuse previously computed results from a set of completed tasks in a new workflow run.
+* api-change:``rbin``: This release adds support for exclusion tags for Recycle Bin, which allows you to identify resources that are to be excluded, or ignored, by a Region-level retention rule.
+* api-change:``rds``: This release adds support for scale storage on the DB instance using a Blue/Green Deployment.
+* api-change:``timestream-query``: This release adds support for Provisioning Timestream Compute Units (TCUs), a new feature that allows provisioning dedicated compute resources for your queries, providing predictable and cost-effective query performance.
+* api-change:``workspaces``: Added support for Rocky Linux 8 on Amazon WorkSpaces Personal.
+* api-change:``workspaces-web``: Added data protection settings with support for inline data redaction.
+
+
 1.36.6
 ======
 

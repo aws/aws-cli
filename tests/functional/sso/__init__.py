@@ -80,6 +80,63 @@ class BaseSSOTest(BaseAWSCommandParamsTest):
         self.uuid_patch.stop()
         self.token_cache_dir_patch.stop()
 
+    def add_oidc_device_responses(self, access_token,
+                                  include_register_response=True):
+        responses = [
+            # StartDeviceAuthorization response
+            {
+                'interval': 1,
+                'expiresIn': 600,
+                'userCode': 'foo',
+                'deviceCode': 'foo-device-code',
+                'verificationUri': 'https://sso.fake/device',
+                'verificationUriComplete': 'https://sso.verify',
+            },
+            # CreateToken responses
+            {
+                'Error': {
+                    'Code': 'AuthorizationPendingException',
+                    'Message': 'Authorization is still pending',
+                }
+            },
+            {
+                'expiresIn': self.expires_in,
+                'tokenType': 'Bearer',
+                'accessToken': access_token,
+            }
+        ]
+        if include_register_response:
+            responses.insert(
+                0,
+                {
+                    'clientSecretExpiresAt': self.expiration_time,
+                    'clientId': 'device-client-id',
+                    'clientSecret': 'device-client-secret',
+                }
+            )
+        self.parsed_responses = responses
+
+    def add_oidc_auth_code_responses(self, access_token,
+                                     include_register_response=True):
+        responses = [
+            # CreateToken responses
+            {
+                'expiresIn': self.expires_in,
+                'tokenType': 'Bearer',
+                'accessToken': access_token,
+            }
+        ]
+        if include_register_response:
+            responses.insert(
+                0,
+                {
+                    'clientSecretExpiresAt': self.expiration_time,
+                    'clientId': 'auth-client-id',
+                    'clientSecret': 'auth-client-secret',
+                }
+            )
+        self.parsed_responses = responses
+
     def assert_used_expected_sso_region(self, expected_region):
         self.assertIn(expected_region, self.last_request_dict['url'])
 

@@ -517,6 +517,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             self._session,
             token_cache=self._sso_token_cache,
             on_pending_authorization=on_pending_authorization,
+            use_device_code=parsed_args.use_device_code,
             **sso_registration_args
         )
 

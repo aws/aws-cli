@@ -826,6 +826,7 @@ class TestConfigureSSOCommand:
         botocore_session,
         expected_sso_region,
         expected_start_url,
+        expected_use_device_code=False,
         expected_session_name=None,
         expected_scopes=None,
         expected_auth_handler_cls=None,
@@ -836,6 +837,7 @@ class TestConfigureSSOCommand:
             "start_url": expected_start_url,
             "on_pending_authorization": None,
             "token_cache": None,
+            "use_device_code": expected_use_device_code,
         }
         if expected_session_name is not None:
             expected_kwargs["session_name"] = expected_session_name

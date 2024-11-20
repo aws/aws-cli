@@ -826,6 +826,7 @@ class TestConfigureSSOCommand:
         botocore_session,
         expected_sso_region,
         expected_start_url,
+        expected_use_device_code=False,
         expected_session_name=None,
         expected_scopes=None,
         expected_auth_handler_cls=None,
@@ -836,6 +837,7 @@ class TestConfigureSSOCommand:
             "start_url": expected_start_url,
             "on_pending_authorization": None,
             "token_cache": None,
+            "use_device_code": expected_use_device_code,
         }
         if expected_session_name is not None:
             expected_kwargs["session_name"] = expected_session_name
@@ -1469,6 +1471,46 @@ class TestConfigureSSOCommand:
         )
         sso_cmd = sso_cmd_factory(session=session)
         assert sso_cmd(args, parsed_globals) == 0
+
+    def test_single_account_single_role_device_code_fallback(
+        self,
+        sso_cmd,
+        ptk_stubber,
+        aws_config,
+        stub_simple_single_item_sso_responses,
+        mock_do_sso_login,
+        botocore_session,
+        args,
+        parsed_globals,
+        configure_sso_legacy_inputs,
+        account_id,
+        role_name,
+    ):
+        inputs = configure_sso_legacy_inputs
+        inputs.skip_account_and_role_selection()
+        ptk_stubber.user_inputs = inputs
+        stub_simple_single_item_sso_responses(account_id, role_name)
+
+        sso_cmd(["--use-device-code"], parsed_globals)
+        self.assert_do_sso_login_call(
+            mock_do_sso_login,
+            botocore_session,
+            expected_sso_region=inputs.sso_region_prompt.answer,
+            expected_start_url=inputs.start_url_prompt.answer,
+            expected_use_device_code=True,
+        )
+        assert_aws_config(
+            aws_config,
+            expected_lines=[
+                f"[profile {inputs.profile_prompt.answer}]",
+                f"sso_start_url = {inputs.start_url_prompt.answer}",
+                f"sso_region = {inputs.sso_region_prompt.answer}",
+                f"sso_account_id = {account_id}",
+                f"sso_role_name = {role_name}",
+                f"region = {inputs.region_prompt.answer}",
+                f"output = {inputs.output_prompt.answer}",
+            ],
+        )
 
 
 class TestConfigureSSOSessionCommand:

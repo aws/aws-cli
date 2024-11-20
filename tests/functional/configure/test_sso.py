@@ -69,7 +69,7 @@ class TestConfigureSSOCommand(BaseSSOTest):
         self.profile_prompt.start()
 
     def tearDown(self):
-        super().setUp()
+        super().tearDown()
         self.registration_args_prompt.stop()
         self.account_and_role_prompt.stop()
         self.region_prompt.stop()

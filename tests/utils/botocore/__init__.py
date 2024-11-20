@@ -84,6 +84,7 @@ def skip_if_windows(reason):
             platform.system() not in ['Darwin', 'Linux'], reason)(func)
     return decorator
 
+
 def random_chars(num_chars):
     """Returns random hex characters.
 

@@ -743,6 +743,7 @@ class EndpointResolutionError(EndpointProviderError):
 class UnknownEndpointResolutionBuiltInName(EndpointProviderError):
     fmt = 'Unknown builtin variable name: {name}'
 
+
 class InvalidChecksumConfigError(BotoCoreError):
     """Error when invalid value supplied for checksum config"""
 

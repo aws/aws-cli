@@ -620,17 +620,17 @@ class ClientArgsCreator(object):
         )
 
     def _handle_checksum_config(
-            self,
-            config_kwargs,
-            config_key,
-            default_value,
-            valid_options,
+        self,
+        config_kwargs,
+        config_key,
+        default_value,
+        valid_options,
     ):
         value = config_kwargs.get(config_key)
         if value is None:
             value = (
-                    self._config_store.get_config_variable(config_key)
-                    or default_value
+                self._config_store.get_config_variable(config_key)
+                or default_value
             )
         value = value.lower()
         if value not in valid_options:

@@ -176,10 +176,25 @@ list_instance_fleets_result_mock = {
                     "BidPriceAsPercentageOfOnDemandPrice": 0.0
                 }
             ],
+            "LaunchSpecifications" : {
+                "SpotSpecification": {"TimeoutDurationMinutes": 77, "TimeoutAction": "TERMINATE_CLUSTER",
+                                        "AllocationStrategy": "capacity-optimized-prioritized"},
+                "OnDemandSpecification": {"AllocationStrategy": "lowest-price"}
+            },
+            "ResizeSpecifications": {
+                "OnDemandResizeSpecification": {"AllocationStrategy": "lowest-price",
+                    "CapacityReservationOptions": {
+                        "CapacityReservationPreference": "open",
+                        "UsageStrategy": "use-capacity-reservations-first"
+                    }
+                },
+                "SpotResizeSpecification": {"AllocationStrategy": "capacity-optimized"}
+            },
             "Name": "Master instance group",
             "InstanceFleetType": "MASTER",
             "InstanceType": "m1.large",
             "Id": "if-ABCD",
+            "Context": "testContext"
         }
     ]
 }
@@ -327,10 +342,25 @@ EXPECTED_RESULT_IF = {
                         "BidPriceAsPercentageOfOnDemandPrice": 0.0
                     }
                 ],
+                "LaunchSpecifications" : {
+                    "SpotSpecification": {"TimeoutDurationMinutes": 77, "TimeoutAction": "TERMINATE_CLUSTER",
+                                          "AllocationStrategy": "capacity-optimized-prioritized"},
+                    "OnDemandSpecification": {"AllocationStrategy": "lowest-price"}
+                },
+                "ResizeSpecifications": {
+                    "OnDemandResizeSpecification": {"AllocationStrategy": "lowest-price",
+                        "CapacityReservationOptions": {
+                            "CapacityReservationPreference": "open",
+                            "UsageStrategy": "use-capacity-reservations-first"
+                        }
+                    },
+                    "SpotResizeSpecification": {"AllocationStrategy": "capacity-optimized"}
+                },
                 "Name": "Master instance group",
                 "InstanceFleetType": "MASTER",
                 "InstanceType": "m1.large",
                 "Id": "if-ABCD",
+                "Context": "testContext"
             }
         ],
         "RequestedAmiVersion": "2.4.2",

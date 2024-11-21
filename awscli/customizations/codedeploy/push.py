@@ -61,8 +61,8 @@ class Push(BasicCommand):
                 'revision to be uploaded to Amazon S3. You must specify both '
                 'a bucket and a key that represent the Amazon S3 bucket name '
                 'and the object key name. Content will be zipped before '
-                'uploading. Use the format s3://\<bucket\>/\<key\>'
-            )
+                'uploading. Use the format s3://<bucket>/<key>'
+            ),
         },
         {
             'name': 'ignore-hidden-files',

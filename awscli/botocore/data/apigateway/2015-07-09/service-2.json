@@ -145,6 +145,24 @@
       ],
       "documentation":"<p>Creates a new domain name.</p>"
     },
+    "CreateDomainNameAccessAssociation":{
+      "name":"CreateDomainNameAccessAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domainnameaccessassociations",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateDomainNameAccessAssociationRequest"},
+      "output":{"shape":"DomainNameAccessAssociation"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p> Creates a domain name access association resource between an access association source and a private custom domain name.</p>"
+    },
     "CreateModel":{
       "name":"CreateModel",
       "http":{
@@ -431,6 +449,23 @@
         {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p>Deletes the DomainName resource.</p>"
+    },
+    "DeleteDomainNameAccessAssociation":{
+      "name":"DeleteDomainNameAccessAssociation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domainnameaccessassociations/{domain_name_access_association_arn}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteDomainNameAccessAssociationRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p> Deletes the DomainNameAccessAssociation resource.</p> <p>Only the AWS account that created the DomainNameAccessAssociation resource can delete it. To stop an access association source in another AWS account from accessing your private custom domain name, use the RejectDomainNameAccessAssociation operation.</p>"
     },
     "DeleteGatewayResponse":{
       "name":"DeleteGatewayResponse",
@@ -963,6 +998,22 @@
         {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p>Represents a domain name that is contained in a simpler, more intuitive URL that can be called.</p>"
+    },
+    "GetDomainNameAccessAssociations":{
+      "name":"GetDomainNameAccessAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domainnameaccessassociations"
+      },
+      "input":{"shape":"GetDomainNameAccessAssociationsRequest"},
+      "output":{"shape":"DomainNameAccessAssociations"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Represents a collection on DomainNameAccessAssociations resources.</p>"
     },
     "GetDomainNames":{
       "name":"GetDomainNames",
@@ -1621,6 +1672,23 @@
       ],
       "documentation":"<p>A feature of the API Gateway control service for updating an existing API with an input of external API definitions. The update can take the form of merging the supplied definition into the existing API or overwriting the existing API.</p>"
     },
+    "RejectDomainNameAccessAssociation":{
+      "name":"RejectDomainNameAccessAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/rejectdomainnameaccessassociations",
+        "responseCode":202
+      },
+      "input":{"shape":"RejectDomainNameAccessAssociationRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConflictException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Rejects a domain name access association with a private custom domain name.</p> <p>To reject a domain name access association with an access association source in another AWS account, use this operation. To remove a domain name access association with an access association source in your own account, use the DeleteDomainNameAccessAssociation operation.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -2087,6 +2155,10 @@
     }
   },
   "shapes":{
+    "AccessAssociationSourceType":{
+      "type":"string",
+      "enum":["VPCE"]
+    },
     "AccessLogSettings":{
       "type":"structure",
       "members":{
@@ -2552,6 +2624,12 @@
           "location":"uri",
           "locationName":"domain_name"
         },
+        "domainNameId":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the domain name resource. Supported only for private custom domain names.</p>",
+          "location":"querystring",
+          "locationName":"domainNameId"
+        },
         "basePath":{
           "shape":"String",
           "documentation":"<p>The base path name that callers of the API must provide as part of the URL after the domain name. This value must be unique for all of the mappings across a single API. Specify '(none)' if you do not want callers to specify a base path name after the domain name.</p>"
@@ -2665,6 +2743,32 @@
       },
       "documentation":"<p>Creates a new documentation version of a given API.</p>"
     },
+    "CreateDomainNameAccessAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "domainNameArn",
+        "accessAssociationSourceType",
+        "accessAssociationSource"
+      ],
+      "members":{
+        "domainNameArn":{
+          "shape":"String",
+          "documentation":"<p> The ARN of the domain name. </p>"
+        },
+        "accessAssociationSourceType":{
+          "shape":"AccessAssociationSourceType",
+          "documentation":"<p> The type of the domain name access association source. </p>"
+        },
+        "accessAssociationSource":{
+          "shape":"String",
+          "documentation":"<p> The identifier of the domain name access association source. For a VPCE, the value is the VPC endpoint ID. </p>"
+        },
+        "tags":{
+          "shape":"MapOfStringToString",
+          "documentation":"<p>The key-value map of strings. The valid character set is [a-zA-Z+-=._:/]. The tag key can be up to 128 characters and must not start with <code>aws:</code>. The tag value can be up to 256 characters.</p>"
+        }
+      }
+    },
     "CreateDomainNameRequest":{
       "type":"structure",
       "required":["domainName"],
@@ -2675,11 +2779,11 @@
         },
         "certificateName":{
           "shape":"String",
-          "documentation":"<p>The user-friendly name of the certificate that will be used by edge-optimized endpoint for this domain name.</p>"
+          "documentation":"<p>The user-friendly name of the certificate that will be used by edge-optimized endpoint or private endpoint for this domain name.</p>"
         },
         "certificateBody":{
           "shape":"String",
-          "documentation":"<p>[Deprecated] The body of the server certificate that will be used by edge-optimized endpoint for this domain name provided by your certificate authority.</p>"
+          "documentation":"<p>[Deprecated] The body of the server certificate that will be used by edge-optimized endpoint or private endpoint for this domain name provided by your certificate authority.</p>"
         },
         "certificatePrivateKey":{
           "shape":"String",
@@ -2691,7 +2795,7 @@
         },
         "certificateArn":{
           "shape":"String",
-          "documentation":"<p>The reference to an Amazon Web Services-managed certificate that will be used by edge-optimized endpoint for this domain name. Certificate Manager is the only supported source.</p>"
+          "documentation":"<p>The reference to an Amazon Web Services-managed certificate that will be used by edge-optimized endpoint or private endpoint for this domain name. Certificate Manager is the only supported source.</p>"
         },
         "regionalCertificateName":{
           "shape":"String",
@@ -2717,6 +2821,10 @@
         "ownershipVerificationCertificateArn":{
           "shape":"String",
           "documentation":"<p>The ARN of the public certificate issued by ACM to validate ownership of your custom domain. Only required when configuring mutual TLS and using an ACM imported or private CA certificate ARN as the regionalCertificateArn.</p>"
+        },
+        "policy":{
+          "shape":"String",
+          "documentation":"<p>A stringified JSON policy document that applies to the <code>execute-api</code> service for this DomainName regardless of the caller and Method configuration. Supported only for private custom domain names.</p>"
         }
       },
       "documentation":"<p>A request to create a new domain name.</p>"
@@ -3044,6 +3152,12 @@
           "location":"uri",
           "locationName":"domain_name"
         },
+        "domainNameId":{
+          "shape":"String",
+          "documentation":"<p> The identifier for the domain name resource. Supported only for private custom domain names. </p>",
+          "location":"querystring",
+          "locationName":"domainNameId"
+        },
         "basePath":{
           "shape":"String",
           "documentation":"<p>The base path name of the BasePathMapping resource to delete.</p> <p>To specify an empty base path, set this parameter to <code>'(none)'</code>.</p>",
@@ -3132,6 +3246,18 @@
       },
       "documentation":"<p>Deletes an existing documentation version of an API.</p>"
     },
+    "DeleteDomainNameAccessAssociationRequest":{
+      "type":"structure",
+      "required":["domainNameAccessAssociationArn"],
+      "members":{
+        "domainNameAccessAssociationArn":{
+          "shape":"String",
+          "documentation":"<p> The ARN of the domain name access association resource.</p>",
+          "location":"uri",
+          "locationName":"domain_name_access_association_arn"
+        }
+      }
+    },
     "DeleteDomainNameRequest":{
       "type":"structure",
       "required":["domainName"],
@@ -3141,6 +3267,12 @@
           "documentation":"<p>The name of the DomainName resource to be deleted.</p>",
           "location":"uri",
           "locationName":"domain_name"
+        },
+        "domainNameId":{
+          "shape":"String",
+          "documentation":"<p> The identifier for the domain name resource. Supported only for private custom domain names. </p>",
+          "location":"querystring",
+          "locationName":"domainNameId"
         }
       },
       "documentation":"<p>A request to delete the DomainName resource.</p>"
@@ -3627,17 +3759,25 @@
           "shape":"String",
           "documentation":"<p>The custom domain name as an API host name, for example, <code>my-api.example.com</code>.</p>"
         },
+        "domainNameId":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the domain name resource. Supported only for private custom domain names.</p>"
+        },
+        "domainNameArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the domain name. Supported only for private custom domain names. </p>"
+        },
         "certificateName":{
           "shape":"String",
-          "documentation":"<p>The name of the certificate that will be used by edge-optimized endpoint for this domain name.</p>"
+          "documentation":"<p>The name of the certificate that will be used by edge-optimized endpoint or private endpoint for this domain name.</p>"
         },
         "certificateArn":{
           "shape":"String",
-          "documentation":"<p>The reference to an Amazon Web Services-managed certificate that will be used by edge-optimized endpoint for this domain name. Certificate Manager is the only supported source.</p>"
+          "documentation":"<p>The reference to an Amazon Web Services-managed certificate that will be used by edge-optimized endpoint or private endpoint for this domain name. Certificate Manager is the only supported source.</p>"
         },
         "certificateUploadDate":{
           "shape":"Timestamp",
-          "documentation":"<p>The timestamp when the certificate that was used by edge-optimized endpoint for this domain name was uploaded. API Gateway doesn't change this value if you update the certificate.</p>"
+          "documentation":"<p>The timestamp when the certificate that was used by edge-optimized endpoint or private endpoint for this domain name was uploaded.</p>"
         },
         "regionalDomainName":{
           "shape":"String",
@@ -3690,9 +3830,54 @@
         "ownershipVerificationCertificateArn":{
           "shape":"String",
           "documentation":"<p>The ARN of the public certificate issued by ACM to validate ownership of your custom domain. Only required when configuring mutual TLS and using an ACM imported or private CA certificate ARN as the regionalCertificateArn.</p>"
+        },
+        "managementPolicy":{
+          "shape":"String",
+          "documentation":"<p>A stringified JSON policy document that applies to the API Gateway Management service for this DomainName. This policy document controls access for access association sources to create domain name access associations with this DomainName. Supported only for private custom domain names.</p>"
+        },
+        "policy":{
+          "shape":"String",
+          "documentation":"<p>A stringified JSON policy document that applies to the <code>execute-api</code> service for this DomainName regardless of the caller and Method configuration. Supported only for private custom domain names.</p>"
         }
       },
       "documentation":"<p>Represents a custom domain name as a user-friendly host name of an API (RestApi).</p>"
+    },
+    "DomainNameAccessAssociation":{
+      "type":"structure",
+      "members":{
+        "domainNameAccessAssociationArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the domain name access association resource. </p>"
+        },
+        "domainNameArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the domain name. </p>"
+        },
+        "accessAssociationSourceType":{
+          "shape":"AccessAssociationSourceType",
+          "documentation":"<p> The type of the domain name access association source. </p>"
+        },
+        "accessAssociationSource":{
+          "shape":"String",
+          "documentation":"<p> The ARN of the domain name access association source. For a VPCE, the ARN must be a VPC endpoint. </p>"
+        },
+        "tags":{
+          "shape":"MapOfStringToString",
+          "documentation":"<p> The collection of tags. Each tag element is associated with a given resource. </p>"
+        }
+      },
+      "documentation":"<p>Represents a domain name access association between an access association source and a private custom domain name. With a domain name access association, an access association source can invoke a private custom domain name while isolated from the public internet.</p>"
+    },
+    "DomainNameAccessAssociations":{
+      "type":"structure",
+      "members":{
+        "position":{"shape":"String"},
+        "items":{
+          "shape":"ListOfDomainNameAccessAssociation",
+          "documentation":"<p> The current page of elements from this collection. </p>",
+          "locationName":"item"
+        }
+      }
     },
     "DomainNameStatus":{
       "type":"string",
@@ -4006,6 +4191,12 @@
           "location":"uri",
           "locationName":"domain_name"
         },
+        "domainNameId":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the domain name resource. Supported only for private custom domain names. </p>",
+          "location":"querystring",
+          "locationName":"domainNameId"
+        },
         "basePath":{
           "shape":"String",
           "documentation":"<p>The base path name that callers of the API must provide as part of the URL after the domain name. This value must be unique for all of the mappings across a single API. Specify '(none)' if you do not want callers to specify any base path name after the domain name.</p>",
@@ -4024,6 +4215,12 @@
           "documentation":"<p>The domain name of a BasePathMapping resource.</p>",
           "location":"uri",
           "locationName":"domain_name"
+        },
+        "domainNameId":{
+          "shape":"String",
+          "documentation":"<p> The identifier for the domain name resource. Supported only for private custom domain names. </p>",
+          "location":"querystring",
+          "locationName":"domainNameId"
         },
         "position":{
           "shape":"String",
@@ -4242,6 +4439,29 @@
       },
       "documentation":"<p>Gets the documentation versions of an API.</p>"
     },
+    "GetDomainNameAccessAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "position":{
+          "shape":"String",
+          "documentation":"<p>The current pagination position in the paged result set. </p>",
+          "location":"querystring",
+          "locationName":"position"
+        },
+        "limit":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The maximum number of returned results per page. The default value is 25 and the maximum value is 500. </p>",
+          "location":"querystring",
+          "locationName":"limit"
+        },
+        "resourceOwner":{
+          "shape":"ResourceOwner",
+          "documentation":"<p> The owner of the domain name access association. Use <code>SELF</code> to only list the domain name access associations owned by your own account. Use <code>OTHER_ACCOUNTS</code> to list the domain name access associations with your private custom domain names that are owned by other AWS accounts.</p>",
+          "location":"querystring",
+          "locationName":"resourceOwner"
+        }
+      }
+    },
     "GetDomainNameRequest":{
       "type":"structure",
       "required":["domainName"],
@@ -4251,6 +4471,12 @@
           "documentation":"<p>The name of the DomainName resource.</p>",
           "location":"uri",
           "locationName":"domain_name"
+        },
+        "domainNameId":{
+          "shape":"String",
+          "documentation":"<p> The identifier for the domain name resource. Supported only for private custom domain names. </p>",
+          "location":"querystring",
+          "locationName":"domainNameId"
         }
       },
       "documentation":"<p>Request to get the name of a DomainName resource.</p>"
@@ -4269,6 +4495,12 @@
           "documentation":"<p>The maximum number of returned results per page. The default value is 25 and the maximum value is 500.</p>",
           "location":"querystring",
           "locationName":"limit"
+        },
+        "resourceOwner":{
+          "shape":"ResourceOwner",
+          "documentation":"<p>The owner of the domain name access association. </p>",
+          "location":"querystring",
+          "locationName":"resourceOwner"
         }
       },
       "documentation":"<p>Request to describe a collection of DomainName resources.</p>"
@@ -5242,6 +5474,10 @@
       "type":"list",
       "member":{"shape":"DomainName"}
     },
+    "ListOfDomainNameAccessAssociation":{
+      "type":"list",
+      "member":{"shape":"DomainNameAccessAssociation"}
+    },
     "ListOfEndpointType":{
       "type":"list",
       "member":{"shape":"EndpointType"}
@@ -5964,6 +6200,27 @@
       },
       "documentation":"<p>Quotas configured for a usage plan.</p>"
     },
+    "RejectDomainNameAccessAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "domainNameAccessAssociationArn",
+        "domainNameArn"
+      ],
+      "members":{
+        "domainNameAccessAssociationArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the domain name access association resource. </p>",
+          "location":"querystring",
+          "locationName":"domainNameAccessAssociationArn"
+        },
+        "domainNameArn":{
+          "shape":"String",
+          "documentation":"<p> The ARN of the domain name. </p>",
+          "location":"querystring",
+          "locationName":"domainNameArn"
+        }
+      }
+    },
     "RequestValidator":{
       "type":"structure",
       "members":{
@@ -6023,6 +6280,13 @@
         }
       },
       "documentation":"<p>Represents an API resource.</p>"
+    },
+    "ResourceOwner":{
+      "type":"string",
+      "enum":[
+        "SELF",
+        "OTHER_ACCOUNTS"
+      ]
     },
     "Resources":{
       "type":"structure",
@@ -6666,6 +6930,12 @@
           "location":"uri",
           "locationName":"domain_name"
         },
+        "domainNameId":{
+          "shape":"String",
+          "documentation":"<p> The identifier for the domain name resource. Supported only for private custom domain names. </p>",
+          "location":"querystring",
+          "locationName":"domainNameId"
+        },
         "basePath":{
           "shape":"String",
           "documentation":"<p>The base path of the BasePathMapping resource to change.</p> <p>To specify an empty base path, set this parameter to <code>'(none)'</code>.</p>",
@@ -6783,6 +7053,12 @@
           "documentation":"<p>The name of the DomainName resource to be changed.</p>",
           "location":"uri",
           "locationName":"domain_name"
+        },
+        "domainNameId":{
+          "shape":"String",
+          "documentation":"<p> The identifier for the domain name resource. Supported only for private custom domain names. </p>",
+          "location":"querystring",
+          "locationName":"domainNameId"
         },
         "patchOperations":{
           "shape":"ListOfPatchOperation",

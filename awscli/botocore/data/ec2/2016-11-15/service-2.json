@@ -470,7 +470,7 @@
       },
       "input":{"shape":"CancelCapacityReservationRequest"},
       "output":{"shape":"CancelCapacityReservationResult"},
-      "documentation":"<p>Cancels the specified Capacity Reservation, releases the reserved capacity, and changes the Capacity Reservation's state to <code>cancelled</code>.</p> <p>Instances running in the reserved capacity continue running until you stop them. Stopped instances that target the Capacity Reservation can no longer launch. Modify these instances to either target a different Capacity Reservation, launch On-Demand Instance capacity, or run in any open Capacity Reservation that has matching attributes and sufficient capacity.</p>"
+      "documentation":"<p>Cancels the specified Capacity Reservation, releases the reserved capacity, and changes the Capacity Reservation's state to <code>cancelled</code>.</p> <p>You can cancel a Capacity Reservation that is in the following states:</p> <ul> <li> <p> <code>assessing</code> </p> </li> <li> <p> <code>active</code> and there is no commitment duration or the commitment duration has elapsed. You can't cancel a future-dated Capacity Reservation during the commitment duration.</p> </li> </ul> <p>If a future-dated Capacity Reservation enters the <code>delayed</code> state, the commitment duration is waived, and you can cancel it as soon as it enters the <code>active</code> state.</p> <p>Instances running in the reserved capacity continue running until you stop them. Stopped instances that target the Capacity Reservation can no longer launch. Modify these instances to either target a different Capacity Reservation, launch On-Demand Instance capacity, or run in any open Capacity Reservation that has matching attributes and sufficient capacity.</p>"
     },
     "CancelCapacityReservationFleets":{
       "name":"CancelCapacityReservationFleets",
@@ -598,7 +598,7 @@
       },
       "input":{"shape":"CreateCapacityReservationRequest"},
       "output":{"shape":"CreateCapacityReservationResult"},
-      "documentation":"<p>Creates a new Capacity Reservation with the specified attributes.</p> <p>Capacity Reservations enable you to reserve capacity for your Amazon EC2 instances in a specific Availability Zone for any duration. This gives you the flexibility to selectively add capacity reservations and still get the Regional RI discounts for that usage. By creating Capacity Reservations, you ensure that you always have access to Amazon EC2 capacity when you need it, for as long as you need it. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-capacity-reservations.html\">Capacity Reservations</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Your request to create a Capacity Reservation could fail if Amazon EC2 does not have sufficient capacity to fulfill the request. If your request fails due to Amazon EC2 capacity constraints, either try again at a later time, try in a different Availability Zone, or request a smaller capacity reservation. If your application is flexible across instance types and sizes, try to create a Capacity Reservation with different instance attributes.</p> <p>Your request could also fail if the requested quantity exceeds your On-Demand Instance limit for the selected instance type. If your request fails due to limit constraints, increase your On-Demand Instance limit for the required instance type and try again. For more information about increasing your instance limits, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html\">Amazon EC2 Service Quotas</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Creates a new Capacity Reservation with the specified attributes. Capacity Reservations enable you to reserve capacity for your Amazon EC2 instances in a specific Availability Zone for any duration.</p> <p>You can create a Capacity Reservation at any time, and you can choose when it starts. You can create a Capacity Reservation for immediate use or you can request a Capacity Reservation for a future date.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-capacity-reservations.html\"> Reserve compute capacity with On-Demand Capacity Reservations</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Your request to create a Capacity Reservation could fail if:</p> <ul> <li> <p>Amazon EC2 does not have sufficient capacity. In this case, try again at a later time, try in a different Availability Zone, or request a smaller Capacity Reservation. If your workload is flexible across instance types and sizes, try with different instance attributes.</p> </li> <li> <p>The requested quantity exceeds your On-Demand Instance quota. In this case, increase your On-Demand Instance quota for the requested instance type and try again. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html\"> Amazon EC2 Service Quotas</a> in the <i>Amazon EC2 User Guide</i>.</p> </li> </ul>"
     },
     "CreateCapacityReservationBySplitting":{
       "name":"CreateCapacityReservationBySplitting",
@@ -2347,6 +2347,26 @@
       "output":{"shape":"DescribeByoipCidrsResult"},
       "documentation":"<p>Describes the IP address ranges that were specified in calls to <a>ProvisionByoipCidr</a>.</p> <p>To describe the address pools that were created when you provisioned the address ranges, use <a>DescribePublicIpv4Pools</a> or <a>DescribeIpv6Pools</a>.</p>"
     },
+    "DescribeCapacityBlockExtensionHistory":{
+      "name":"DescribeCapacityBlockExtensionHistory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCapacityBlockExtensionHistoryRequest"},
+      "output":{"shape":"DescribeCapacityBlockExtensionHistoryResult"},
+      "documentation":"<p>Describes the events for the specified Capacity Block extension during the specified time.</p>"
+    },
+    "DescribeCapacityBlockExtensionOfferings":{
+      "name":"DescribeCapacityBlockExtensionOfferings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCapacityBlockExtensionOfferingsRequest"},
+      "output":{"shape":"DescribeCapacityBlockExtensionOfferingsResult"},
+      "documentation":"<p>Describes Capacity Block extension offerings available for purchase in the Amazon Web Services Region that you're currently using.</p>"
+    },
     "DescribeCapacityBlockOfferings":{
       "name":"DescribeCapacityBlockOfferings",
       "http":{
@@ -3705,7 +3725,7 @@
       },
       "input":{"shape":"DescribeVpcBlockPublicAccessOptionsRequest"},
       "output":{"shape":"DescribeVpcBlockPublicAccessOptionsResult"},
-      "documentation":"<p>Describe VPC Block Public Access (BPA) options. VPC Block public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. To learn more about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>"
+      "documentation":"<p>Describe VPC Block Public Access (BPA) options. VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. To learn more about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "DescribeVpcClassicLink":{
       "name":"DescribeVpcClassicLink",
@@ -5037,7 +5057,7 @@
       },
       "input":{"shape":"ModifyCapacityReservationRequest"},
       "output":{"shape":"ModifyCapacityReservationResult"},
-      "documentation":"<p>Modifies a Capacity Reservation's capacity, instance eligibility, and the conditions under which it is to be released. You can't modify a Capacity Reservation's instance type, EBS optimization, platform, instance store settings, Availability Zone, or tenancy. If you need to modify any of these attributes, we recommend that you cancel the Capacity Reservation, and then create a new one with the required attributes. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-modify.html\">Modify an active Capacity Reservation</a>.</p>"
+      "documentation":"<p>Modifies a Capacity Reservation's capacity, instance eligibility, and the conditions under which it is to be released. You can't modify a Capacity Reservation's instance type, EBS optimization, platform, instance store settings, Availability Zone, or tenancy. If you need to modify any of these attributes, we recommend that you cancel the Capacity Reservation, and then create a new one with the required attributes. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-modify.html\"> Modify an active Capacity Reservation</a>.</p> <p>The allowed modifications depend on the state of the Capacity Reservation:</p> <ul> <li> <p> <code>assessing</code> or <code>scheduled</code> state - You can modify the tags only.</p> </li> <li> <p> <code>pending</code> state - You can't modify the Capacity Reservation in any way.</p> </li> <li> <p> <code>active</code> state but still within the commitment duration - You can't decrease the instance count or set an end date that is within the commitment duration. All other modifications are allowed.</p> </li> <li> <p> <code>active</code> state with no commitment duration or elapsed commitment duration - All modifications are allowed.</p> </li> <li> <p> <code>expired</code>, <code>cancelled</code>, <code>unsupported</code>, or <code>failed</code> state - You can't modify the Capacity Reservation in any way.</p> </li> </ul>"
     },
     "ModifyCapacityReservationFleet":{
       "name":"ModifyCapacityReservationFleet",
@@ -5568,7 +5588,7 @@
       },
       "input":{"shape":"ModifyVpcBlockPublicAccessOptionsRequest"},
       "output":{"shape":"ModifyVpcBlockPublicAccessOptionsResult"},
-      "documentation":"<p>Modify VPC Block Public Access (BPA) options. VPC Block public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. To learn more about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>"
+      "documentation":"<p>Modify VPC Block Public Access (BPA) options. VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. To learn more about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "ModifyVpcEndpoint":{
       "name":"ModifyVpcEndpoint",
@@ -5769,6 +5789,16 @@
       "input":{"shape":"PurchaseCapacityBlockRequest"},
       "output":{"shape":"PurchaseCapacityBlockResult"},
       "documentation":"<p>Purchase the Capacity Block for use with your account. With Capacity Blocks you ensure GPU capacity is available for machine learning (ML) workloads. You must specify the ID of the Capacity Block offering you are purchasing.</p>"
+    },
+    "PurchaseCapacityBlockExtension":{
+      "name":"PurchaseCapacityBlockExtension",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PurchaseCapacityBlockExtensionRequest"},
+      "output":{"shape":"PurchaseCapacityBlockExtensionResult"},
+      "documentation":"<p>Purchase the Capacity Block extension for use with your account. You must specify the ID of the Capacity Block extension offering you are purchasing.</p>"
     },
     "PurchaseHostReservation":{
       "name":"PurchaseHostReservation",
@@ -6933,6 +6963,22 @@
       "type":"list",
       "member":{"shape":"AddIpamOperatingRegion"},
       "max":50,
+      "min":0
+    },
+    "AddIpamOrganizationalUnitExclusion":{
+      "type":"structure",
+      "members":{
+        "OrganizationsEntityPath":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Web Services Organizations entity path. Build the path for the OU(s) using Amazon Web Services Organizations IDs separated by a <code>/</code>. Include all child OUs by ending the path with <code>/*</code>.</p> <ul> <li> <p>Example 1</p> <ul> <li> <p>Path to a child OU: <code>o-a1b2c3d4e5/r-f6g7h8i9j0example/ou-ghi0-awsccccc/ou-jkl0-awsddddd/</code> </p> </li> <li> <p>In this example, <code>o-a1b2c3d4e5</code> is the organization ID, <code>r-f6g7h8i9j0example</code> is the root ID , <code>ou-ghi0-awsccccc</code> is an OU ID, and <code>ou-jkl0-awsddddd</code> is a child OU ID.</p> </li> <li> <p>IPAM will not manage the IP addresses in accounts in the child OU.</p> </li> </ul> </li> <li> <p>Example 2</p> <ul> <li> <p>Path where all child OUs will be part of the exclusion: <code>o-a1b2c3d4e5/r-f6g7h8i9j0example/ou-ghi0-awsccccc/*</code> </p> </li> <li> <p>In this example, IPAM will not manage the IP addresses in accounts in the OU (<code>ou-ghi0-awsccccc</code>) or in accounts in any OUs that are children of the OU.</p> </li> </ul> </li> </ul> <p>For more information on how to construct an entity path, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_last-accessed-view-data-orgs.html#access_policies_access-advisor-viewing-orgs-entity-path\">Understand the Amazon Web Services Organizations entity path</a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>Add an Organizational Unit (OU) exclusion to your IPAM. If your IPAM is integrated with Amazon Web Services Organizations and you add an organizational unit (OU) exclusion, IPAM will not manage the IP addresses in accounts in that OU exclusion. There is a limit on the number of exclusions you can create. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/quotas-ipam.html\">Quotas for your IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+    },
+    "AddIpamOrganizationalUnitExclusionSet":{
+      "type":"list",
+      "member":{"shape":"AddIpamOrganizationalUnitExclusion"},
+      "max":10,
       "min":0
     },
     "AddPrefixListEntries":{
@@ -9810,7 +9856,7 @@
       "members":{
         "InternetGatewayBlockMode":{
           "shape":"BlockPublicAccessMode",
-          "documentation":"<p>The mode of VPC BPA.</p> <ul> <li> <p> <code>bidirectional-access-allowed</code>: VPC BPA is not enabled and traffic is allowed to and from internet gateways and egress-only internet gateways in this Region.</p> </li> <li> <p> <code>bidirectional-access-blocked</code>: Block all traffic to and from internet gateways and egress-only internet gateways in this Region (except for excluded VPCs and subnets).</p> </li> <li> <p> <code>ingress-access-blocked</code>: Block all internet traffic to the VPCs in this Region (except for VPCs or subnets which are excluded). Only traffic to and from NAT gateways and egress-only internet gateways is allowed because these gateways only allow outbound connections to be established.</p> </li> </ul>",
+          "documentation":"<p>The mode of VPC BPA.</p> <ul> <li> <p> <code>off</code>: VPC BPA is not enabled and traffic is allowed to and from internet gateways and egress-only internet gateways in this Region.</p> </li> <li> <p> <code>block-bidirectional</code>: Block all traffic to and from internet gateways and egress-only internet gateways in this Region (except for excluded VPCs and subnets).</p> </li> <li> <p> <code>block-ingress</code>: Block all internet traffic to the VPCs in this Region (except for VPCs or subnets which are excluded). Only traffic to and from NAT gateways and egress-only internet gateways is allowed because these gateways only allow outbound connections to be established.</p> </li> </ul>",
           "locationName":"internetGatewayBlockMode"
         }
       },
@@ -10485,6 +10531,165 @@
         "locationName":"item"
       }
     },
+    "CapacityBlockExtension":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p>The reservation ID of the Capacity Block extension.</p>",
+          "locationName":"capacityReservationId"
+        },
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>The instance type of the Capacity Block extension.</p>",
+          "locationName":"instanceType"
+        },
+        "InstanceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of instances in the Capacity Block extension.</p>",
+          "locationName":"instanceCount"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZoneName",
+          "documentation":"<p>The Availability Zone of the Capacity Block extension.</p>",
+          "locationName":"availabilityZone"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The Availability Zone ID of the Capacity Block extension.</p>",
+          "locationName":"availabilityZoneId"
+        },
+        "CapacityBlockExtensionOfferingId":{
+          "shape":"OfferingId",
+          "documentation":"<p>The ID of the Capacity Block extension offering.</p>",
+          "locationName":"capacityBlockExtensionOfferingId"
+        },
+        "CapacityBlockExtensionDurationHours":{
+          "shape":"Integer",
+          "documentation":"<p>The duration of the Capacity Block extension in hours.</p>",
+          "locationName":"capacityBlockExtensionDurationHours"
+        },
+        "CapacityBlockExtensionStatus":{
+          "shape":"CapacityBlockExtensionStatus",
+          "documentation":"<p>The status of the Capacity Block extension. A Capacity Block extension can have one of the following statuses:</p> <ul> <li> <p> <code>payment-pending</code> - The Capacity Block extension payment is processing. If your payment can't be processed within 12 hours, the Capacity Block extension is failed.</p> </li> <li> <p> <code>payment-failed</code> - Payment for the Capacity Block extension request was not successful.</p> </li> <li> <p> <code>payment-succeeded</code> - Payment for the Capacity Block extension request was successful. You receive an invoice that reflects the one-time upfront payment. In the invoice, you can associate the paid amount with the Capacity Block reservation ID.</p> </li> </ul>",
+          "locationName":"capacityBlockExtensionStatus"
+        },
+        "CapacityBlockExtensionPurchaseDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date when the Capacity Block extension was purchased.</p>",
+          "locationName":"capacityBlockExtensionPurchaseDate"
+        },
+        "CapacityBlockExtensionStartDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The start date of the Capacity Block extension.</p>",
+          "locationName":"capacityBlockExtensionStartDate"
+        },
+        "CapacityBlockExtensionEndDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The end date of the Capacity Block extension.</p>",
+          "locationName":"capacityBlockExtensionEndDate"
+        },
+        "UpfrontFee":{
+          "shape":"String",
+          "documentation":"<p>The total price to be paid up front.</p>",
+          "locationName":"upfrontFee"
+        },
+        "CurrencyCode":{
+          "shape":"String",
+          "documentation":"<p>The currency of the payment for the Capacity Block extension.</p>",
+          "locationName":"currencyCode"
+        }
+      },
+      "documentation":"<p>Describes a Capacity Block extension. With an extension, you can extend the duration of time for an existing Capacity Block.</p>"
+    },
+    "CapacityBlockExtensionOffering":{
+      "type":"structure",
+      "members":{
+        "CapacityBlockExtensionOfferingId":{
+          "shape":"OfferingId",
+          "documentation":"<p>The ID of the Capacity Block extension offering.</p>",
+          "locationName":"capacityBlockExtensionOfferingId"
+        },
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>The instance type of the Capacity Block that will be extended.</p>",
+          "locationName":"instanceType"
+        },
+        "InstanceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of instances in the Capacity Block extension offering.</p>",
+          "locationName":"instanceCount"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZoneName",
+          "documentation":"<p>The Availability Zone of the Capacity Block that will be extended.</p>",
+          "locationName":"availabilityZone"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The Availability Zone ID of the Capacity Block that will be extended.</p>",
+          "locationName":"availabilityZoneId"
+        },
+        "StartDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The start date of the Capacity Block that will be extended.</p>",
+          "locationName":"startDate"
+        },
+        "CapacityBlockExtensionStartDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the Capacity Block extension will start. This date is also the same as the end date of the Capacity Block that will be extended.</p>",
+          "locationName":"capacityBlockExtensionStartDate"
+        },
+        "CapacityBlockExtensionEndDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the Capacity Block extension expires. When a Capacity Block expires, the reserved capacity is released and you can no longer launch instances into it. The Capacity Block's state changes to <code>expired</code> when it reaches its end date</p>",
+          "locationName":"capacityBlockExtensionEndDate"
+        },
+        "CapacityBlockExtensionDurationHours":{
+          "shape":"Integer",
+          "documentation":"<p>The amount of time of the Capacity Block extension offering in hours.</p>",
+          "locationName":"capacityBlockExtensionDurationHours"
+        },
+        "UpfrontFee":{
+          "shape":"String",
+          "documentation":"<p>The total price of the Capacity Block extension offering, to be paid up front.</p>",
+          "locationName":"upfrontFee"
+        },
+        "CurrencyCode":{
+          "shape":"String",
+          "documentation":"<p>The currency of the payment for the Capacity Block extension offering.</p>",
+          "locationName":"currencyCode"
+        },
+        "Tenancy":{
+          "shape":"CapacityReservationTenancy",
+          "documentation":"<p>Indicates the tenancy of the Capacity Block extension offering. A Capacity Block can have one of the following tenancy settings:</p> <ul> <li> <p> <code>default</code> - The Capacity Block is created on hardware that is shared with other Amazon Web Services accounts.</p> </li> <li> <p> <code>dedicated</code> - The Capacity Block is created on single-tenant hardware that is dedicated to a single Amazon Web Services account.</p> </li> </ul>",
+          "locationName":"tenancy"
+        }
+      },
+      "documentation":"<p>The recommended Capacity Block extension that fits your search requirements.</p>"
+    },
+    "CapacityBlockExtensionOfferingSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityBlockExtensionOffering",
+        "locationName":"item"
+      }
+    },
+    "CapacityBlockExtensionSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityBlockExtension",
+        "locationName":"item"
+      }
+    },
+    "CapacityBlockExtensionStatus":{
+      "type":"string",
+      "enum":[
+        "payment-pending",
+        "payment-failed",
+        "payment-succeeded"
+      ]
+    },
     "CapacityBlockOffering":{
       "type":"structure",
       "members":{
@@ -10520,7 +10725,7 @@
         },
         "CapacityBlockDurationHours":{
           "shape":"Integer",
-          "documentation":"<p>The amount of time of the Capacity Block reservation in hours.</p>",
+          "documentation":"<p>The number of hours (in addition to <code>capacityBlockDurationMinutes</code>) for the duration of the Capacity Block reservation. For example, if a Capacity Block starts at <b>04:55</b> and ends at <b>11:30</b>, the hours field would be <b>6</b>.</p>",
           "locationName":"capacityBlockDurationHours"
         },
         "UpfrontFee":{
@@ -10537,6 +10742,11 @@
           "shape":"CapacityReservationTenancy",
           "documentation":"<p>The tenancy of the Capacity Block.</p>",
           "locationName":"tenancy"
+        },
+        "CapacityBlockDurationMinutes":{
+          "shape":"Integer",
+          "documentation":"<p>The number of minutes (in addition to <code>capacityBlockDurationHours</code>) for the duration of the Capacity Block reservation. For example, if a Capacity Block starts at <b>08:55</b> and ends at <b>11:30</b>, the minutes field would be <b>35</b>.</p>",
+          "locationName":"capacityBlockDurationMinutes"
         }
       },
       "documentation":"<p>The recommended Capacity Block that fits your search requirements.</p>"
@@ -10613,7 +10823,7 @@
         },
         "State":{
           "shape":"CapacityReservationState",
-          "documentation":"<p>The current state of the Capacity Reservation. A Capacity Reservation can be in one of the following states:</p> <ul> <li> <p> <code>active</code> - The Capacity Reservation is active and the capacity is available for your use.</p> </li> <li> <p> <code>expired</code> - The Capacity Reservation expired automatically at the date and time specified in your request. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>cancelled</code> - The Capacity Reservation was cancelled. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>pending</code> - The Capacity Reservation request was successful but the capacity provisioning is still pending.</p> </li> <li> <p> <code>failed</code> - The Capacity Reservation request has failed. A request might fail due to invalid request parameters, capacity constraints, or instance limit constraints. Failed requests are retained for 60 minutes.</p> </li> </ul>",
+          "documentation":"<p>The current state of the Capacity Reservation. A Capacity Reservation can be in one of the following states:</p> <ul> <li> <p> <code>active</code> - The capacity is available for use.</p> </li> <li> <p> <code>expired</code> - The Capacity Reservation expired automatically at the date and time specified in your reservation request. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>cancelled</code> - The Capacity Reservation was canceled. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>pending</code> - The Capacity Reservation request was successful but the capacity provisioning is still pending.</p> </li> <li> <p> <code>failed</code> - The Capacity Reservation request has failed. A request can fail due to request parameters that are not valid, capacity constraints, or instance limit constraints. You can view a failed request for 60 minutes.</p> </li> <li> <p> <code>scheduled</code> - (<i>Future-dated Capacity Reservations only</i>) The future-dated Capacity Reservation request was approved and the Capacity Reservation is scheduled for delivery on the requested start date.</p> </li> <li> <p> <code>assessing</code> - (<i>Future-dated Capacity Reservations only</i>) Amazon EC2 is assessing your request for a future-dated Capacity Reservation.</p> </li> <li> <p> <code>delayed</code> - (<i>Future-dated Capacity Reservations only</i>) Amazon EC2 encountered a delay in provisioning the requested future-dated Capacity Reservation. Amazon EC2 is unable to deliver the requested capacity by the requested start date and time.</p> </li> <li> <p> <code>unsupported</code> - (<i>Future-dated Capacity Reservations only</i>) Amazon EC2 can't support the future-dated Capacity Reservation request due to capacity constraints. You can view unsupported requests for 30 days. The Capacity Reservation will not be delivered.</p> </li> </ul>",
           "locationName":"state"
         },
         "StartDate":{
@@ -10675,6 +10885,16 @@
           "shape":"AccountID",
           "documentation":"<p>The ID of the Amazon Web Services account to which billing of the unused capacity of the Capacity Reservation is assigned.</p>",
           "locationName":"unusedReservationBillingOwnerId"
+        },
+        "CommitmentInfo":{
+          "shape":"CapacityReservationCommitmentInfo",
+          "documentation":"<p>Information about your commitment for a future-dated Capacity Reservation.</p>",
+          "locationName":"commitmentInfo"
+        },
+        "DeliveryPreference":{
+          "shape":"CapacityReservationDeliveryPreference",
+          "documentation":"<p>The delivery method for a future-dated Capacity Reservation. <code>incremental</code> indicates that the requested capacity is delivered in addition to any running instances and reserved capacity that you have in your account at the requested date and time.</p>",
+          "locationName":"deliveryPreference"
         }
       },
       "documentation":"<p>Describes a Capacity Reservation.</p>"
@@ -10736,6 +10956,34 @@
         "cancelled",
         "revoked",
         "expired"
+      ]
+    },
+    "CapacityReservationCommitmentDuration":{
+      "type":"long",
+      "max":200000000,
+      "min":1
+    },
+    "CapacityReservationCommitmentInfo":{
+      "type":"structure",
+      "members":{
+        "CommittedInstanceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The instance capacity that you committed to when you requested the future-dated Capacity Reservation.</p>",
+          "locationName":"committedInstanceCount"
+        },
+        "CommitmentEndDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the commitment duration expires, in the ISO8601 format in the UTC time zone (<code>YYYY-MM-DDThh:mm:ss.sssZ</code>). You can't decrease the instance count or cancel the Capacity Reservation before this date and time.</p>",
+          "locationName":"commitmentEndDate"
+        }
+      },
+      "documentation":"<p>Information about your commitment for a future-dated Capacity Reservation.</p>"
+    },
+    "CapacityReservationDeliveryPreference":{
+      "type":"string",
+      "enum":[
+        "fixed",
+        "incremental"
       ]
     },
     "CapacityReservationFleet":{
@@ -11012,7 +11260,10 @@
         "failed",
         "scheduled",
         "payment-pending",
-        "payment-failed"
+        "payment-failed",
+        "assessing",
+        "delayed",
+        "unsupported"
       ]
     },
     "CapacityReservationTarget":{
@@ -12735,7 +12986,7 @@
         },
         "InstanceType":{
           "shape":"String",
-          "documentation":"<p>The instance type for which to reserve capacity. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance types</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+          "documentation":"<p>The instance type for which to reserve capacity.</p> <note> <p>You can request future-dated Capacity Reservations for instance types in the C, M, R, I, and T instance families only.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance types</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
         "InstancePlatform":{
           "shape":"CapacityReservationInstancePlatform",
@@ -12755,7 +13006,7 @@
         },
         "InstanceCount":{
           "shape":"Integer",
-          "documentation":"<p>The number of instances for which to reserve capacity.</p> <p>Valid range: 1 - 1000</p>"
+          "documentation":"<p>The number of instances for which to reserve capacity.</p> <note> <p>You can request future-dated Capacity Reservations for an instance count with a minimum of 100 VPUs. For example, if you request a future-dated Capacity Reservation for <code>m5.xlarge</code> instances, you must request at least 25 instances (<i>25 * m5.xlarge = 100 vCPUs</i>).</p> </note> <p>Valid range: 1 - 1000</p>"
         },
         "EbsOptimized":{
           "shape":"Boolean",
@@ -12767,7 +13018,7 @@
         },
         "EndDate":{
           "shape":"DateTime",
-          "documentation":"<p>The date and time at which the Capacity Reservation expires. When a Capacity Reservation expires, the reserved capacity is released and you can no longer launch instances into it. The Capacity Reservation's state changes to <code>expired</code> when it reaches its end date and time.</p> <p>You must provide an <code>EndDate</code> value if <code>EndDateType</code> is <code>limited</code>. Omit <code>EndDate</code> if <code>EndDateType</code> is <code>unlimited</code>.</p> <p>If the <code>EndDateType</code> is <code>limited</code>, the Capacity Reservation is cancelled within an hour from the specified time. For example, if you specify 5/31/2019, 13:30:55, the Capacity Reservation is guaranteed to end between 13:30:55 and 14:30:55 on 5/31/2019.</p>"
+          "documentation":"<p>The date and time at which the Capacity Reservation expires. When a Capacity Reservation expires, the reserved capacity is released and you can no longer launch instances into it. The Capacity Reservation's state changes to <code>expired</code> when it reaches its end date and time.</p> <p>You must provide an <code>EndDate</code> value if <code>EndDateType</code> is <code>limited</code>. Omit <code>EndDate</code> if <code>EndDateType</code> is <code>unlimited</code>.</p> <p>If the <code>EndDateType</code> is <code>limited</code>, the Capacity Reservation is cancelled within an hour from the specified time. For example, if you specify 5/31/2019, 13:30:55, the Capacity Reservation is guaranteed to end between 13:30:55 and 14:30:55 on 5/31/2019.</p> <p>If you are requesting a future-dated Capacity Reservation, you can't specify an end date and time that is within the commitment duration.</p>"
         },
         "EndDateType":{
           "shape":"EndDateType",
@@ -12775,7 +13026,7 @@
         },
         "InstanceMatchCriteria":{
           "shape":"InstanceMatchCriteria",
-          "documentation":"<p>Indicates the type of instance launches that the Capacity Reservation accepts. The options include:</p> <ul> <li> <p> <code>open</code> - The Capacity Reservation automatically matches all instances that have matching attributes (instance type, platform, and Availability Zone). Instances that have matching attributes run in the Capacity Reservation automatically without specifying any additional parameters.</p> </li> <li> <p> <code>targeted</code> - The Capacity Reservation only accepts instances that have matching attributes (instance type, platform, and Availability Zone), and explicitly target the Capacity Reservation. This ensures that only permitted instances can use the reserved capacity. </p> </li> </ul> <p>Default: <code>open</code> </p>"
+          "documentation":"<p>Indicates the type of instance launches that the Capacity Reservation accepts. The options include:</p> <ul> <li> <p> <code>open</code> - The Capacity Reservation automatically matches all instances that have matching attributes (instance type, platform, and Availability Zone). Instances that have matching attributes run in the Capacity Reservation automatically without specifying any additional parameters.</p> </li> <li> <p> <code>targeted</code> - The Capacity Reservation only accepts instances that have matching attributes (instance type, platform, and Availability Zone), and explicitly target the Capacity Reservation. This ensures that only permitted instances can use the reserved capacity. </p> </li> </ul> <note> <p>If you are requesting a future-dated Capacity Reservation, you must specify <code>targeted</code>.</p> </note> <p>Default: <code>open</code> </p>"
         },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
@@ -12787,11 +13038,23 @@
         },
         "OutpostArn":{
           "shape":"OutpostArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Outpost on which to create the Capacity Reservation.</p>"
+          "documentation":"<note> <p>Not supported for future-dated Capacity Reservations.</p> </note> <p>The Amazon Resource Name (ARN) of the Outpost on which to create the Capacity Reservation.</p>"
         },
         "PlacementGroupArn":{
           "shape":"PlacementGroupArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster placement group in which to create the Capacity Reservation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cr-cpg.html\"> Capacity Reservations for cluster placement groups</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+          "documentation":"<note> <p>Not supported for future-dated Capacity Reservations.</p> </note> <p>The Amazon Resource Name (ARN) of the cluster placement group in which to create the Capacity Reservation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cr-cpg.html\"> Capacity Reservations for cluster placement groups</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+        },
+        "StartDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<note> <p>Required for future-dated Capacity Reservations only. To create a Capacity Reservation for immediate use, omit this parameter. </p> </note> <p>The date and time at which the future-dated Capacity Reservation should become available for use, in the ISO8601 format in the UTC time zone (<code>YYYY-MM-DDThh:mm:ss.sssZ</code>).</p> <p>You can request a future-dated Capacity Reservation between 5 and 120 days in advance.</p>"
+        },
+        "CommitmentDuration":{
+          "shape":"CapacityReservationCommitmentDuration",
+          "documentation":"<note> <p>Required for future-dated Capacity Reservations only. To create a Capacity Reservation for immediate use, omit this parameter. </p> </note> <p>Specify a commitment duration, in seconds, for the future-dated Capacity Reservation.</p> <p>The commitment duration is a minimum duration for which you commit to having the future-dated Capacity Reservation in the <code>active</code> state in your account after it has been delivered.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cr-concepts.html#cr-commitment-duration\"> Commitment duration</a>.</p>"
+        },
+        "DeliveryPreference":{
+          "shape":"CapacityReservationDeliveryPreference",
+          "documentation":"<note> <p>Required for future-dated Capacity Reservations only. To create a Capacity Reservation for immediate use, omit this parameter. </p> </note> <p>Indicates that the requested capacity will be delivered in addition to any running instances or reserved capacity that you have in your account at the requested date and time.</p> <p>The only supported value is <code>incremental</code>.</p>"
         }
       }
     },
@@ -16556,7 +16819,7 @@
         },
         "InternetGatewayExclusionMode":{
           "shape":"InternetGatewayExclusionMode",
-          "documentation":"<p>The exclusion mode for internet gateway traffic.</p> <ul> <li> <p> <code>bidirectional-access-allowed</code>: Allow all internet traffic to and from the excluded VPCs and subnets.</p> </li> <li> <p> <code>egress-access-allowed</code>: Allow outbound internet traffic from the excluded VPCs and subnets. Block inbound internet traffic to the excluded VPCs and subnets. Only applies when VPC Block Public Access is set to Bidirectional.</p> </li> </ul>"
+          "documentation":"<p>The exclusion mode for internet gateway traffic.</p> <ul> <li> <p> <code>allow-bidirectional</code>: Allow all internet traffic to and from the excluded VPCs and subnets.</p> </li> <li> <p> <code>allow-egress</code>: Allow outbound internet traffic from the excluded VPCs and subnets. Block inbound internet traffic to the excluded VPCs and subnets. Only applies when VPC Block Public Access is set to Bidirectional.</p> </li> </ul>"
         },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
@@ -19785,6 +20048,97 @@
         }
       }
     },
+    "DescribeCapacityBlockExtensionHistoryRequest":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationIds":{
+          "shape":"CapacityReservationIdSet",
+          "documentation":"<p>The IDs of Capacity Block reservations that you want to display the history for.</p>",
+          "locationName":"CapacityReservationId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"DescribeFutureCapacityMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters</p> <ul> <li> <p> <code>availability-zone</code> - The Availability Zone of the extension.</p> </li> <li> <p> <code>availability-zone-id</code> - The Availability Zone ID of the extension.</p> </li> <li> <p> <code>capacity-block-extension-offering-id</code> - The ID of the extension offering.</p> </li> <li> <p> <code>capacity-block-extension-status</code> - The status of the extension (<code>payment-pending</code> | <code>payment-failed</code> | <code>payment-succeeded</code>).</p> </li> <li> <p> <code>capacity-reservation-id</code> - The reservation ID of the extension.</p> </li> <li> <p> <code>instance-type</code> - The instance type of the extension.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeCapacityBlockExtensionHistoryResult":{
+      "type":"structure",
+      "members":{
+        "CapacityBlockExtensions":{
+          "shape":"CapacityBlockExtensionSet",
+          "documentation":"<p>Describes one or more of your Capacity Block extensions. The results describe only the Capacity Block extensions in the Amazon Web Services Region that you're currently using.</p>",
+          "locationName":"capacityBlockExtensionSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribeCapacityBlockExtensionOfferingsMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "DescribeCapacityBlockExtensionOfferingsRequest":{
+      "type":"structure",
+      "required":[
+        "CapacityBlockExtensionDurationHours",
+        "CapacityReservationId"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "CapacityBlockExtensionDurationHours":{
+          "shape":"Integer",
+          "documentation":"<p>The duration of the Capacity Block extension offering in hours.</p>"
+        },
+        "CapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p>The ID of the Capacity reservation to be extended.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"DescribeCapacityBlockExtensionOfferingsMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        }
+      }
+    },
+    "DescribeCapacityBlockExtensionOfferingsResult":{
+      "type":"structure",
+      "members":{
+        "CapacityBlockExtensionOfferings":{
+          "shape":"CapacityBlockExtensionOfferingSet",
+          "documentation":"<p>The recommended Capacity Block extension offerings for the dates specified.</p>",
+          "locationName":"capacityBlockExtensionOfferingSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribeCapacityBlockOfferingsMaxResults":{
       "type":"integer",
       "max":1000,
@@ -21206,6 +21560,11 @@
           "locationName":"nextToken"
         }
       }
+    },
+    "DescribeFutureCapacityMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":1
     },
     "DescribeHostReservationOfferingsRequest":{
       "type":"structure",
@@ -25941,7 +26300,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>Filters for the request:</p> <ul> <li> <p> <code>resource-arn</code> - The Amazon Resource Name (ARN) of a exclusion.</p> </li> <li> <p> <code>internet-gateway-exclusion-mode</code> - The mode of a VPC BPA exclusion. Possible values: <code>bidirectional-access-allowed | egress-access-allowed</code>.</p> </li> <li> <p> <code>state</code> - The state of VPC BPA. Possible values: <code>create-in-progress | create-complete | update-in-progress | update-complete | delete-in-progress | deleted-complete | disable-in-progress | disable-complete</code> </p> </li> <li> <p> <code>tag</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>tag-value</code>: The value of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific value, regardless of the tag key.</p> </li> </ul>",
+          "documentation":"<p>Filters for the request:</p> <ul> <li> <p> <code>resource-arn</code> - The Amazon Resource Name (ARN) of a exclusion.</p> </li> <li> <p> <code>internet-gateway-exclusion-mode</code> - The mode of a VPC BPA exclusion. Possible values: <code>allow-bidirectional | allow-egress</code>.</p> </li> <li> <p> <code>state</code> - The state of VPC BPA. Possible values: <code>create-in-progress | create-complete | update-in-progress | update-complete | delete-in-progress | deleted-complete | disable-in-progress | disable-complete</code> </p> </li> <li> <p> <code>tag</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>tag-value</code>: The value of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific value, regardless of the tag key.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "ExclusionIds":{
@@ -31596,7 +31955,7 @@
         },
         "State":{
           "shape":"CapacityReservationState",
-          "documentation":"<p>The current state of the Capacity Reservation. A Capacity Reservation can be in one of the following states:</p> <ul> <li> <p> <code>active</code> - The Capacity Reservation is active and the capacity is available for your use.</p> </li> <li> <p> <code>expired</code> - The Capacity Reservation expired automatically at the date and time specified in your request. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>cancelled</code> - The Capacity Reservation was cancelled. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>pending</code> - The Capacity Reservation request was successful but the capacity provisioning is still pending.</p> </li> <li> <p> <code>failed</code> - The Capacity Reservation request has failed. A request might fail due to invalid request parameters, capacity constraints, or instance limit constraints. Failed requests are retained for 60 minutes.</p> </li> </ul>",
+          "documentation":"<p>The current state of the Capacity Reservation. A Capacity Reservation can be in one of the following states:</p> <ul> <li> <p> <code>active</code> - The capacity is available for use.</p> </li> <li> <p> <code>expired</code> - The Capacity Reservation expired automatically at the date and time specified in your reservation request. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>cancelled</code> - The Capacity Reservation was canceled. The reserved capacity is no longer available for your use.</p> </li> <li> <p> <code>pending</code> - The Capacity Reservation request was successful but the capacity provisioning is still pending.</p> </li> <li> <p> <code>failed</code> - The Capacity Reservation request has failed. A request can fail due to request parameters that are not valid, capacity constraints, or instance limit constraints. You can view a failed request for 60 minutes.</p> </li> <li> <p> <code>scheduled</code> - (<i>Future-dated Capacity Reservations only</i>) The future-dated Capacity Reservation request was approved and the Capacity Reservation is scheduled for delivery on the requested start date.</p> </li> <li> <p> <code>assessing</code> - (<i>Future-dated Capacity Reservations only</i>) Amazon EC2 is assessing your request for a future-dated Capacity Reservation.</p> </li> <li> <p> <code>delayed</code> - (<i>Future-dated Capacity Reservations only</i>) Amazon EC2 encountered a delay in provisioning the requested future-dated Capacity Reservation. Amazon EC2 is unable to deliver the requested capacity by the requested start date and time.</p> </li> <li> <p> <code>unsupported</code> - (<i>Future-dated Capacity Reservations only</i>) Amazon EC2 can't support the future-dated Capacity Reservation request due to capacity constraints. You can view unsupported requests for 30 days. The Capacity Reservation will not be delivered.</p> </li> </ul>",
           "locationName":"state"
         },
         "InstanceUsages":{
@@ -39147,6 +39506,11 @@
           "shape":"MillisecondDateTime",
           "documentation":"<p>The last successful resource discovery time.</p>",
           "locationName":"lastSuccessfulDiscoveryTime"
+        },
+        "OrganizationalUnitId":{
+          "shape":"String",
+          "documentation":"<p>The ID of an Organizational Unit in Amazon Web Services Organizations.</p>",
+          "locationName":"organizationalUnitId"
         }
       },
       "documentation":"<p>An IPAM discovered account. A discovered account is an Amazon Web Services account that is monitored under a resource discovery. If you have integrated IPAM with Amazon Web Services Organizations, all accounts in the organization are discovered accounts.</p>"
@@ -39494,6 +39858,24 @@
       "type":"list",
       "member":{
         "shape":"IpamOperatingRegion",
+        "locationName":"item"
+      }
+    },
+    "IpamOrganizationalUnitExclusion":{
+      "type":"structure",
+      "members":{
+        "OrganizationsEntityPath":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Web Services Organizations entity path. For more information on the entity path, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_last-accessed-view-data-orgs.html#access_policies_access-advisor-viewing-orgs-entity-path\">Understand the Amazon Web Services Organizations entity path</a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>.</p>",
+          "locationName":"organizationsEntityPath"
+        }
+      },
+      "documentation":"<p>If your IPAM is integrated with Amazon Web Services Organizations and you add an organizational unit (OU) exclusion, IPAM will not manage the IP addresses in accounts in that OU exclusion.</p>"
+    },
+    "IpamOrganizationalUnitExclusionSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamOrganizationalUnitExclusion",
         "locationName":"item"
       }
     },
@@ -40105,6 +40487,11 @@
           "shape":"TagList",
           "documentation":"<p>A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value. You can use tags to search and filter your resources or track your Amazon Web Services costs.</p>",
           "locationName":"tagSet"
+        },
+        "OrganizationalUnitExclusions":{
+          "shape":"IpamOrganizationalUnitExclusionSet",
+          "documentation":"<p>If your IPAM is integrated with Amazon Web Services Organizations and you add an organizational unit (OU) exclusion, IPAM will not manage the IP addresses in accounts in that OU exclusion.</p>",
+          "locationName":"organizationalUnitExclusionSet"
         }
       },
       "documentation":"<p>A resource discovery is an IPAM component that enables IPAM to manage and monitor resources that belong to the owning account.</p>"
@@ -44477,6 +44864,16 @@
           "shape":"RemoveIpamOperatingRegionSet",
           "documentation":"<p>Remove operating Regions.</p>",
           "locationName":"RemoveOperatingRegion"
+        },
+        "AddOrganizationalUnitExclusions":{
+          "shape":"AddIpamOrganizationalUnitExclusionSet",
+          "documentation":"<p>Add an Organizational Unit (OU) exclusion to your IPAM. If your IPAM is integrated with Amazon Web Services Organizations and you add an organizational unit (OU) exclusion, IPAM will not manage the IP addresses in accounts in that OU exclusion. There is a limit on the number of exclusions you can create. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/quotas-ipam.html\">Quotas for your IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>",
+          "locationName":"AddOrganizationalUnitExclusion"
+        },
+        "RemoveOrganizationalUnitExclusions":{
+          "shape":"RemoveIpamOrganizationalUnitExclusionSet",
+          "documentation":"<p>Remove an Organizational Unit (OU) exclusion to your IPAM. If your IPAM is integrated with Amazon Web Services Organizations and you add an organizational unit (OU) exclusion, IPAM will not manage the IP addresses in accounts in that OU exclusion. There is a limit on the number of exclusions you can create. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/quotas-ipam.html\">Quotas for your IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>",
+          "locationName":"RemoveOrganizationalUnitExclusion"
         }
       }
     },
@@ -45790,7 +46187,7 @@
         },
         "InternetGatewayExclusionMode":{
           "shape":"InternetGatewayExclusionMode",
-          "documentation":"<p>The exclusion mode for internet gateway traffic.</p> <ul> <li> <p> <code>bidirectional-access-allowed</code>: Allow all internet traffic to and from the excluded VPCs and subnets.</p> </li> <li> <p> <code>egress-access-allowed</code>: Allow outbound internet traffic from the excluded VPCs and subnets. Block inbound internet traffic to the excluded VPCs and subnets. Only applies when VPC Block Public Access is set to Bidirectional.</p> </li> </ul>"
+          "documentation":"<p>The exclusion mode for internet gateway traffic.</p> <ul> <li> <p> <code>allow-bidirectional</code>: Allow all internet traffic to and from the excluded VPCs and subnets.</p> </li> <li> <p> <code>allow-egress</code>: Allow outbound internet traffic from the excluded VPCs and subnets. Block inbound internet traffic to the excluded VPCs and subnets. Only applies when VPC Block Public Access is set to Bidirectional.</p> </li> </ul>"
         }
       }
     },
@@ -45814,7 +46211,7 @@
         },
         "InternetGatewayBlockMode":{
           "shape":"InternetGatewayBlockMode",
-          "documentation":"<p>The mode of VPC BPA.</p> <ul> <li> <p> <code>bidirectional-access-allowed</code>: VPC BPA is not enabled and traffic is allowed to and from internet gateways and egress-only internet gateways in this Region.</p> </li> <li> <p> <code>bidirectional-access-blocked</code>: Block all traffic to and from internet gateways and egress-only internet gateways in this Region (except for excluded VPCs and subnets).</p> </li> <li> <p> <code>ingress-access-blocked</code>: Block all internet traffic to the VPCs in this Region (except for VPCs or subnets which are excluded). Only traffic to and from NAT gateways and egress-only internet gateways is allowed because these gateways only allow outbound connections to be established.</p> </li> </ul>"
+          "documentation":"<p>The mode of VPC BPA.</p> <ul> <li> <p> <code>off</code>: VPC BPA is not enabled and traffic is allowed to and from internet gateways and egress-only internet gateways in this Region.</p> </li> <li> <p> <code>block-bidirectional</code>: Block all traffic to and from internet gateways and egress-only internet gateways in this Region (except for excluded VPCs and subnets).</p> </li> <li> <p> <code>block-ingress</code>: Block all internet traffic to the VPCs in this Region (except for VPCs or subnets which are excluded). Only traffic to and from NAT gateways and egress-only internet gateways is allowed because these gateways only allow outbound connections to be established.</p> </li> </ul>"
         }
       }
     },
@@ -49987,6 +50384,37 @@
       },
       "documentation":"<p>Describes the result of the purchase.</p>"
     },
+    "PurchaseCapacityBlockExtensionRequest":{
+      "type":"structure",
+      "required":[
+        "CapacityBlockExtensionOfferingId",
+        "CapacityReservationId"
+      ],
+      "members":{
+        "CapacityBlockExtensionOfferingId":{
+          "shape":"OfferingId",
+          "documentation":"<p>The ID of the Capacity Block extension offering to purchase.</p>"
+        },
+        "CapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p>The ID of the Capacity reservation to be extended.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "PurchaseCapacityBlockExtensionResult":{
+      "type":"structure",
+      "members":{
+        "CapacityBlockExtensions":{
+          "shape":"CapacityBlockExtensionSet",
+          "documentation":"<p>The purchased Capacity Block extensions. </p>",
+          "locationName":"capacityBlockExtensionSet"
+        }
+      }
+    },
     "PurchaseCapacityBlockRequest":{
       "type":"structure",
       "required":[
@@ -50805,6 +51233,22 @@
       "type":"list",
       "member":{"shape":"RemoveIpamOperatingRegion"},
       "max":50,
+      "min":0
+    },
+    "RemoveIpamOrganizationalUnitExclusion":{
+      "type":"structure",
+      "members":{
+        "OrganizationsEntityPath":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Web Services Organizations entity path. Build the path for the OU(s) using Amazon Web Services Organizations IDs separated by a <code>/</code>. Include all child OUs by ending the path with <code>/*</code>.</p> <ul> <li> <p>Example 1</p> <ul> <li> <p>Path to a child OU: <code>o-a1b2c3d4e5/r-f6g7h8i9j0example/ou-ghi0-awsccccc/ou-jkl0-awsddddd/</code> </p> </li> <li> <p>In this example, <code>o-a1b2c3d4e5</code> is the organization ID, <code>r-f6g7h8i9j0example</code> is the root ID , <code>ou-ghi0-awsccccc</code> is an OU ID, and <code>ou-jkl0-awsddddd</code> is a child OU ID.</p> </li> <li> <p>IPAM will not manage the IP addresses in accounts in the child OU.</p> </li> </ul> </li> <li> <p>Example 2</p> <ul> <li> <p>Path where all child OUs will be part of the exclusion: <code>o-a1b2c3d4e5/r-f6g7h8i9j0example/ou-ghi0-awsccccc/*</code> </p> </li> <li> <p>In this example, IPAM will not manage the IP addresses in accounts in the OU (<code>ou-ghi0-awsccccc</code>) or in accounts in any OUs that are children of the OU.</p> </li> </ul> </li> </ul> <p>For more information on how to construct an entity path, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_last-accessed-view-data-orgs.html#access_policies_access-advisor-viewing-orgs-entity-path\">Understand the Amazon Web Services Organizations entity path</a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>Remove an Organizational Unit (OU) exclusion to your IPAM. If your IPAM is integrated with Amazon Web Services Organizations and you add an organizational unit (OU) exclusion, IPAM will not manage the IP addresses in accounts in that OU exclusion. There is a limit on the number of exclusions you can create. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/quotas-ipam.html\">Quotas for your IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+    },
+    "RemoveIpamOrganizationalUnitExclusionSet":{
+      "type":"list",
+      "member":{"shape":"RemoveIpamOrganizationalUnitExclusion"},
+      "max":10,
       "min":0
     },
     "RemovePrefixListEntries":{
@@ -62081,7 +62525,7 @@
         },
         "InternetGatewayExclusionMode":{
           "shape":"InternetGatewayExclusionMode",
-          "documentation":"<p>The exclusion mode for internet gateway traffic.</p> <ul> <li> <p> <code>bidirectional-access-allowed</code>: Allow all internet traffic to and from the excluded VPCs and subnets.</p> </li> <li> <p> <code>egress-access-allowed</code>: Allow outbound internet traffic from the excluded VPCs and subnets. Block inbound internet traffic to the excluded VPCs and subnets. Only applies when VPC Block Public Access is set to Bidirectional.</p> </li> </ul>",
+          "documentation":"<p>The exclusion mode for internet gateway traffic.</p> <ul> <li> <p> <code>allow-bidirectional</code>: Allow all internet traffic to and from the excluded VPCs and subnets.</p> </li> <li> <p> <code>allow-egress</code>: Allow outbound internet traffic from the excluded VPCs and subnets. Block inbound internet traffic to the excluded VPCs and subnets. Only applies when VPC Block Public Access is set to Bidirectional.</p> </li> </ul>",
           "locationName":"internetGatewayExclusionMode"
         },
         "ResourceArn":{
@@ -62172,7 +62616,7 @@
         },
         "InternetGatewayBlockMode":{
           "shape":"InternetGatewayBlockMode",
-          "documentation":"<p>The current mode of VPC BPA.</p> <ul> <li> <p> <code>bidirectional-access-allowed</code>: VPC BPA is not enabled and traffic is allowed to and from internet gateways and egress-only internet gateways in this Region.</p> </li> <li> <p> <code>bidirectional-access-blocked</code>: Block all traffic to and from internet gateways and egress-only internet gateways in this Region (except for excluded VPCs and subnets).</p> </li> <li> <p> <code>ingress-access-blocked</code>: Block all internet traffic to the VPCs in this Region (except for VPCs or subnets which are excluded). Only traffic to and from NAT gateways and egress-only internet gateways is allowed because these gateways only allow outbound connections to be established.</p> </li> </ul>",
+          "documentation":"<p>The current mode of VPC BPA.</p> <ul> <li> <p> <code>off</code>: VPC BPA is not enabled and traffic is allowed to and from internet gateways and egress-only internet gateways in this Region.</p> </li> <li> <p> <code>block-bidirectional</code>: Block all traffic to and from internet gateways and egress-only internet gateways in this Region (except for excluded VPCs and subnets).</p> </li> <li> <p> <code>block-ingress</code>: Block all internet traffic to the VPCs in this Region (except for VPCs or subnets which are excluded). Only traffic to and from NAT gateways and egress-only internet gateways is allowed because these gateways only allow outbound connections to be established.</p> </li> </ul>",
           "locationName":"internetGatewayBlockMode"
         },
         "Reason":{
@@ -62186,7 +62630,7 @@
           "locationName":"lastUpdateTimestamp"
         }
       },
-      "documentation":"<p>VPC Block public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. To learn more about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>"
+      "documentation":"<p>VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. To learn more about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "VpcBlockPublicAccessState":{
       "type":"string",

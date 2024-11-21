@@ -128,6 +128,20 @@
       ],
       "documentation":"<p>Describes the Application Auto Scaling scheduled actions for the specified service namespace.</p> <p>You can filter the results using the <code>ResourceId</code>, <code>ScalableDimension</code>, and <code>ScheduledActionNames</code> parameters.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-scheduled-scaling.html\">Scheduled scaling</a> in the <i>Application Auto Scaling User Guide</i>.</p>"
     },
+    "GetPredictiveScalingForecast":{
+      "name":"GetPredictiveScalingForecast",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetPredictiveScalingForecastRequest"},
+      "output":{"shape":"GetPredictiveScalingForecastResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves the forecast data for a predictive scaling policy.</p> <p>Load forecasts are predictions of the hourly load values using historical load data from CloudWatch and an analysis of historical trends. Capacity forecasts are represented as predicted values for the minimum capacity that is needed on an hourly basis, based on the hourly load forecast.</p> <p>A minimum of 24 hours of data is required to create the initial forecasts. However, having a full 14 days of historical data results in more accurate forecasts.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -258,6 +272,24 @@
       "max":1011,
       "min":1,
       "pattern":"^arn:.+:application-autoscaling:.+:[0-9]+:scalable-target\\/[a-zA-Z0-9-]+$"
+    },
+    "CapacityForecast":{
+      "type":"structure",
+      "required":[
+        "Timestamps",
+        "Values"
+      ],
+      "members":{
+        "Timestamps":{
+          "shape":"PredictiveScalingForecastTimestamps",
+          "documentation":"<p> The timestamps for the data points, in UTC format. </p>"
+        },
+        "Values":{
+          "shape":"PredictiveScalingForecastValues",
+          "documentation":"<p> The values of the data points. </p>"
+        }
+      },
+      "documentation":"<p> A <code>GetPredictiveScalingForecast</code> call returns the capacity forecast for a predictive scaling policy. This structure includes the data points for that capacity forecast, along with the timestamps of those data points. </p>"
     },
     "ConcurrentUpdateException":{
       "type":"structure",
@@ -574,6 +606,60 @@
       "documentation":"<p>Failed access to resources caused an exception. This exception is thrown when Application Auto Scaling is unable to retrieve the alarms associated with a scaling policy due to a client error, for example, if the role ARN specified for a scalable target does not have permission to call the CloudWatch <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_DescribeAlarms.html\">DescribeAlarms</a> on your behalf.</p>",
       "exception":true
     },
+    "GetPredictiveScalingForecastRequest":{
+      "type":"structure",
+      "required":[
+        "ServiceNamespace",
+        "ResourceId",
+        "ScalableDimension",
+        "PolicyName",
+        "StartTime",
+        "EndTime"
+      ],
+      "members":{
+        "ServiceNamespace":{
+          "shape":"ServiceNamespace",
+          "documentation":"<p> The namespace of the Amazon Web Services service that provides the resource. For a resource provided by your own application or service, use <code>custom-resource</code> instead. </p>"
+        },
+        "ResourceId":{
+          "shape":"ResourceIdMaxLen1600",
+          "documentation":"<p> The identifier of the resource. </p>"
+        },
+        "ScalableDimension":{
+          "shape":"ScalableDimension",
+          "documentation":"<p> The scalable dimension. </p>"
+        },
+        "PolicyName":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the policy.</p>"
+        },
+        "StartTime":{
+          "shape":"TimestampType",
+          "documentation":"<p> The inclusive start time of the time range for the forecast data to get. At most, the date and time can be one year before the current date and time </p>"
+        },
+        "EndTime":{
+          "shape":"TimestampType",
+          "documentation":"<p> The exclusive end time of the time range for the forecast data to get. The maximum time duration between the start and end time is 30 days. </p>"
+        }
+      }
+    },
+    "GetPredictiveScalingForecastResponse":{
+      "type":"structure",
+      "members":{
+        "LoadForecast":{
+          "shape":"LoadForecasts",
+          "documentation":"<p> The load forecast. </p>"
+        },
+        "CapacityForecast":{
+          "shape":"CapacityForecast",
+          "documentation":"<p> The capacity forecast. </p>"
+        },
+        "UpdateTime":{
+          "shape":"TimestampType",
+          "documentation":"<p> The time the forecast was made. </p>"
+        }
+      }
+    },
     "Id":{
       "type":"string",
       "max":255,
@@ -623,6 +709,33 @@
           "documentation":"<p>A list of tags. Each tag consists of a tag key and a tag value.</p>"
         }
       }
+    },
+    "LoadForecast":{
+      "type":"structure",
+      "required":[
+        "Timestamps",
+        "Values",
+        "MetricSpecification"
+      ],
+      "members":{
+        "Timestamps":{
+          "shape":"PredictiveScalingForecastTimestamps",
+          "documentation":"<p> The timestamps for the data points, in UTC format. </p>"
+        },
+        "Values":{
+          "shape":"PredictiveScalingForecastValues",
+          "documentation":"<p> The values of the data points. </p>"
+        },
+        "MetricSpecification":{
+          "shape":"PredictiveScalingMetricSpecification",
+          "documentation":"<p> The metric specification for the load forecast. </p>"
+        }
+      },
+      "documentation":"<p> A <code>GetPredictiveScalingForecast</code> call returns the load forecast for a predictive scaling policy. This structure includes the data points for that load forecast, along with the timestamps of those data points and the metric specification. </p>"
+    },
+    "LoadForecasts":{
+      "type":"list",
+      "member":{"shape":"LoadForecast"}
     },
     "MaxResults":{"type":"integer"},
     "MetricAggregationType":{
@@ -749,7 +862,8 @@
       "type":"string",
       "enum":[
         "StepScaling",
-        "TargetTrackingScaling"
+        "TargetTrackingScaling",
+        "PredictiveScaling"
       ]
     },
     "PredefinedMetricSpecification":{
@@ -765,7 +879,289 @@
           "documentation":"<p>Identifies the resource associated with the metric type. You can't specify a resource label unless the metric type is <code>ALBRequestCountPerTarget</code> and there is a target group attached to the Spot Fleet or ECS service.</p> <p>You create the resource label by appending the final portion of the load balancer ARN and the final portion of the target group ARN into a single value, separated by a forward slash (/). The format of the resource label is:</p> <p> <code>app/my-alb/778d41231b141a0f/targetgroup/my-alb-target-group/943f017f100becff</code>.</p> <p>Where:</p> <ul> <li> <p>app/&lt;load-balancer-name&gt;/&lt;load-balancer-id&gt; is the final portion of the load balancer ARN</p> </li> <li> <p>targetgroup/&lt;target-group-name&gt;/&lt;target-group-id&gt; is the final portion of the target group ARN.</p> </li> </ul> <p>To find the ARN for an Application Load Balancer, use the <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/APIReference/API_DescribeLoadBalancers.html\">DescribeLoadBalancers</a> API operation. To find the ARN for the target group, use the <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/APIReference/API_DescribeTargetGroups.html\">DescribeTargetGroups</a> API operation.</p>"
         }
       },
-      "documentation":"<p>Represents a predefined metric for a target tracking scaling policy to use with Application Auto Scaling.</p> <p>For more information, <a href=\"https://docs.aws.amazon.com/autoscaling/application/userguide/monitor-cloudwatch-metrics.html#predefined-metrics\">Predefined metrics for target tracking scaling policies</a> in the <i>Application Auto Scaling User Guide</i>.</p>"
+      "documentation":"<p>Represents a predefined metric for a target tracking scaling policy to use with Application Auto Scaling.</p> <p>For more information, <a href=\"https://docs.aws.amazon.com/autoscaling/application/userguide/monitoring-cloudwatch.html#predefined-metrics\">Predefined metrics for target tracking scaling policies</a> in the <i>Application Auto Scaling User Guide</i>.</p>"
+    },
+    "PredictiveScalingCustomizedMetricSpecification":{
+      "type":"structure",
+      "required":["MetricDataQueries"],
+      "members":{
+        "MetricDataQueries":{
+          "shape":"PredictiveScalingMetricDataQueries",
+          "documentation":"<p> One or more metric data queries to provide data points for a metric specification. </p>"
+        }
+      },
+      "documentation":"<p> Represents a CloudWatch metric of your choosing for a predictive scaling policy. </p>"
+    },
+    "PredictiveScalingForecastTimestamps":{
+      "type":"list",
+      "member":{"shape":"TimestampType"}
+    },
+    "PredictiveScalingForecastValues":{
+      "type":"list",
+      "member":{"shape":"MetricScale"}
+    },
+    "PredictiveScalingMaxCapacityBreachBehavior":{
+      "type":"string",
+      "enum":[
+        "HonorMaxCapacity",
+        "IncreaseMaxCapacity"
+      ]
+    },
+    "PredictiveScalingMaxCapacityBuffer":{
+      "type":"integer",
+      "max":100,
+      "min":0
+    },
+    "PredictiveScalingMetric":{
+      "type":"structure",
+      "members":{
+        "Dimensions":{
+          "shape":"PredictiveScalingMetricDimensions",
+          "documentation":"<p> Describes the dimensions of the metric. </p>"
+        },
+        "MetricName":{
+          "shape":"PredictiveScalingMetricName",
+          "documentation":"<p> The name of the metric. </p>"
+        },
+        "Namespace":{
+          "shape":"PredictiveScalingMetricNamespace",
+          "documentation":"<p> The namespace of the metric. </p>"
+        }
+      },
+      "documentation":"<p> Describes the scaling metric. </p>"
+    },
+    "PredictiveScalingMetricDataQueries":{
+      "type":"list",
+      "member":{"shape":"PredictiveScalingMetricDataQuery"}
+    },
+    "PredictiveScalingMetricDataQuery":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"Id",
+          "documentation":"<p> A short name that identifies the object's results in the response. This name must be unique among all <code>MetricDataQuery</code> objects specified for a single scaling policy. If you are performing math expressions on this set of data, this name represents that data and can serve as a variable in the mathematical expression. The valid characters are letters, numbers, and underscores. The first character must be a lowercase letter. </p>"
+        },
+        "Expression":{
+          "shape":"Expression",
+          "documentation":"<p> The math expression to perform on the returned data, if this object is performing a math expression. This expression can use the <code>Id</code> of the other metrics to refer to those metrics, and can also use the <code>Id</code> of other expressions to use the result of those expressions. </p> <p>Conditional: Within each <code>MetricDataQuery</code> object, you must specify either <code>Expression</code> or <code>MetricStat</code>, but not both.</p>"
+        },
+        "MetricStat":{
+          "shape":"PredictiveScalingMetricStat",
+          "documentation":"<p> Information about the metric data to return. </p> <p>Conditional: Within each <code>MetricDataQuery</code> object, you must specify either <code>Expression</code> or <code>MetricStat</code>, but not both.</p>"
+        },
+        "Label":{
+          "shape":"XmlString",
+          "documentation":"<p> A human-readable label for this metric or expression. This is especially useful if this is a math expression, so that you know what the value represents. </p>"
+        },
+        "ReturnData":{
+          "shape":"ReturnData",
+          "documentation":"<p> Indicates whether to return the timestamps and raw data values of this metric. </p> <p>If you use any math expressions, specify <code>true</code> for this value for only the final math expression that the metric specification is based on. You must specify <code>false</code> for <code>ReturnData</code> for all the other metrics and expressions used in the metric specification.</p> <p>If you are only retrieving metrics and not performing any math expressions, do not specify anything for <code>ReturnData</code>. This sets it to its default (<code>true</code>).</p>"
+        }
+      },
+      "documentation":"<p> The metric data to return. Also defines whether this call is returning data for one metric only, or whether it is performing a math expression on the values of returned metric statistics to create a new time series. A time series is a series of data points, each of which is associated with a timestamp. </p>"
+    },
+    "PredictiveScalingMetricDimension":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Value"
+      ],
+      "members":{
+        "Name":{
+          "shape":"PredictiveScalingMetricDimensionName",
+          "documentation":"<p> The name of the dimension. </p>"
+        },
+        "Value":{
+          "shape":"PredictiveScalingMetricDimensionValue",
+          "documentation":"<p> The value of the dimension. </p>"
+        }
+      },
+      "documentation":"<p> Describes the dimension of a metric. </p>"
+    },
+    "PredictiveScalingMetricDimensionName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
+    },
+    "PredictiveScalingMetricDimensionValue":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
+    },
+    "PredictiveScalingMetricDimensions":{
+      "type":"list",
+      "member":{"shape":"PredictiveScalingMetricDimension"}
+    },
+    "PredictiveScalingMetricName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
+    },
+    "PredictiveScalingMetricNamespace":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
+    },
+    "PredictiveScalingMetricSpecification":{
+      "type":"structure",
+      "required":["TargetValue"],
+      "members":{
+        "TargetValue":{
+          "shape":"MetricScale",
+          "documentation":"<p> Specifies the target utilization. </p>"
+        },
+        "PredefinedMetricPairSpecification":{
+          "shape":"PredictiveScalingPredefinedMetricPairSpecification",
+          "documentation":"<p> The predefined metric pair specification that determines the appropriate scaling metric and load metric to use. </p>"
+        },
+        "PredefinedScalingMetricSpecification":{
+          "shape":"PredictiveScalingPredefinedScalingMetricSpecification",
+          "documentation":"<p> The predefined scaling metric specification. </p>"
+        },
+        "PredefinedLoadMetricSpecification":{
+          "shape":"PredictiveScalingPredefinedLoadMetricSpecification",
+          "documentation":"<p> The predefined load metric specification. </p>"
+        },
+        "CustomizedScalingMetricSpecification":{
+          "shape":"PredictiveScalingCustomizedMetricSpecification",
+          "documentation":"<p> The customized scaling metric specification. </p>"
+        },
+        "CustomizedLoadMetricSpecification":{
+          "shape":"PredictiveScalingCustomizedMetricSpecification",
+          "documentation":"<p> The customized load metric specification. </p>"
+        },
+        "CustomizedCapacityMetricSpecification":{
+          "shape":"PredictiveScalingCustomizedMetricSpecification",
+          "documentation":"<p> The customized capacity metric specification. </p>"
+        }
+      },
+      "documentation":"<p> This structure specifies the metrics and target utilization settings for a predictive scaling policy. </p> <p>You must specify either a metric pair, or a load metric and a scaling metric individually. Specifying a metric pair instead of individual metrics provides a simpler way to configure metrics for a scaling policy. You choose the metric pair, and the policy automatically knows the correct sum and average statistics to use for the load metric and the scaling metric.</p>"
+    },
+    "PredictiveScalingMetricSpecifications":{
+      "type":"list",
+      "member":{"shape":"PredictiveScalingMetricSpecification"}
+    },
+    "PredictiveScalingMetricStat":{
+      "type":"structure",
+      "required":[
+        "Metric",
+        "Stat"
+      ],
+      "members":{
+        "Metric":{
+          "shape":"PredictiveScalingMetric",
+          "documentation":"<p> The CloudWatch metric to return, including the metric name, namespace, and dimensions. To get the exact metric name, namespace, and dimensions, inspect the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_Metric.html\">Metric</a> object that is returned by a call to <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_ListMetrics.html\">ListMetrics</a>. </p>"
+        },
+        "Stat":{
+          "shape":"XmlString",
+          "documentation":"<p> The statistic to return. It can include any CloudWatch statistic or extended statistic. For a list of valid values, see the table in <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#Statistic\">Statistics</a> in the <i>Amazon CloudWatch User Guide</i>. </p> <p>The most commonly used metrics for predictive scaling are <code>Average</code> and <code>Sum</code>.</p>"
+        },
+        "Unit":{
+          "shape":"PredictiveScalingMetricUnit",
+          "documentation":"<p> The unit to use for the returned data points. For a complete list of the units that CloudWatch supports, see the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html\">MetricDatum</a> data type in the <i>Amazon CloudWatch API Reference</i>. </p>"
+        }
+      },
+      "documentation":"<p> This structure defines the CloudWatch metric to return, along with the statistic and unit. </p>"
+    },
+    "PredictiveScalingMetricType":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "PredictiveScalingMetricUnit":{
+      "type":"string",
+      "max":1023,
+      "min":1,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
+    },
+    "PredictiveScalingMode":{
+      "type":"string",
+      "enum":[
+        "ForecastOnly",
+        "ForecastAndScale"
+      ]
+    },
+    "PredictiveScalingPolicyConfiguration":{
+      "type":"structure",
+      "required":["MetricSpecifications"],
+      "members":{
+        "MetricSpecifications":{
+          "shape":"PredictiveScalingMetricSpecifications",
+          "documentation":"<p> This structure includes the metrics and target utilization to use for predictive scaling. </p> <p>This is an array, but we currently only support a single metric specification. That is, you can specify a target value and a single metric pair, or a target value and one scaling metric and one load metric.</p>"
+        },
+        "Mode":{
+          "shape":"PredictiveScalingMode",
+          "documentation":"<p> The predictive scaling mode. Defaults to <code>ForecastOnly</code> if not specified. </p>"
+        },
+        "SchedulingBufferTime":{
+          "shape":"PredictiveScalingSchedulingBufferTime",
+          "documentation":"<p> The amount of time, in seconds, that the start time can be advanced. </p> <p>The value must be less than the forecast interval duration of 3600 seconds (60 minutes). Defaults to 300 seconds if not specified. </p>"
+        },
+        "MaxCapacityBreachBehavior":{
+          "shape":"PredictiveScalingMaxCapacityBreachBehavior",
+          "documentation":"<p> Defines the behavior that should be applied if the forecast capacity approaches or exceeds the maximum capacity. Defaults to <code>HonorMaxCapacity</code> if not specified. </p>"
+        },
+        "MaxCapacityBuffer":{
+          "shape":"PredictiveScalingMaxCapacityBuffer",
+          "documentation":"<p> The size of the capacity buffer to use when the forecast capacity is close to or exceeds the maximum capacity. The value is specified as a percentage relative to the forecast capacity. For example, if the buffer is 10, this means a 10 percent buffer, such that if the forecast capacity is 50, and the maximum capacity is 40, then the effective maximum capacity is 55. </p> <p>Required if the <code>MaxCapacityBreachBehavior</code> property is set to <code>IncreaseMaxCapacity</code>, and cannot be used otherwise.</p>"
+        }
+      },
+      "documentation":"<p> Represents a predictive scaling policy configuration. </p>"
+    },
+    "PredictiveScalingPredefinedLoadMetricSpecification":{
+      "type":"structure",
+      "required":["PredefinedMetricType"],
+      "members":{
+        "PredefinedMetricType":{
+          "shape":"PredictiveScalingMetricType",
+          "documentation":"<p> The metric type. </p>"
+        },
+        "ResourceLabel":{
+          "shape":"ResourceLabel",
+          "documentation":"<p> A label that uniquely identifies a target group. </p>"
+        }
+      },
+      "documentation":"<p> Describes a load metric for a predictive scaling policy. </p> <p>When returned in the output of <code>DescribePolicies</code>, it indicates that a predictive scaling policy uses individually specified load and scaling metrics instead of a metric pair.</p>"
+    },
+    "PredictiveScalingPredefinedMetricPairSpecification":{
+      "type":"structure",
+      "required":["PredefinedMetricType"],
+      "members":{
+        "PredefinedMetricType":{
+          "shape":"PredictiveScalingMetricType",
+          "documentation":"<p> Indicates which metrics to use. There are two different types of metrics for each metric type: one is a load metric and one is a scaling metric. </p>"
+        },
+        "ResourceLabel":{
+          "shape":"ResourceLabel",
+          "documentation":"<p> A label that uniquely identifies a specific target group from which to determine the total and average request count. </p>"
+        }
+      },
+      "documentation":"<p> Represents a metric pair for a predictive scaling policy. </p>"
+    },
+    "PredictiveScalingPredefinedScalingMetricSpecification":{
+      "type":"structure",
+      "required":["PredefinedMetricType"],
+      "members":{
+        "PredefinedMetricType":{
+          "shape":"PredictiveScalingMetricType",
+          "documentation":"<p> The metric type. </p>"
+        },
+        "ResourceLabel":{
+          "shape":"ResourceLabel",
+          "documentation":"<p> A label that uniquely identifies a specific target group from which to determine the average request count. </p>"
+        }
+      },
+      "documentation":"<p> Describes a scaling metric for a predictive scaling policy. </p> <p>When returned in the output of <code>DescribePolicies</code>, it indicates that a predictive scaling policy uses individually specified load and scaling metrics instead of a metric pair.</p>"
+    },
+    "PredictiveScalingSchedulingBufferTime":{
+      "type":"integer",
+      "max":3600,
+      "min":0
     },
     "PutScalingPolicyRequest":{
       "type":"structure",
@@ -803,6 +1199,10 @@
         "TargetTrackingScalingPolicyConfiguration":{
           "shape":"TargetTrackingScalingPolicyConfiguration",
           "documentation":"<p>A target tracking scaling policy. Includes support for predefined or customized metrics.</p> <p>This parameter is required if you are creating a policy and the policy type is <code>TargetTrackingScaling</code>.</p>"
+        },
+        "PredictiveScalingPolicyConfiguration":{
+          "shape":"PredictiveScalingPolicyConfiguration",
+          "documentation":"<p> The configuration of the predictive scaling policy. </p>"
         }
       }
     },
@@ -1017,6 +1417,10 @@
           "shape":"ResourceCapacity",
           "documentation":"<p>The maximum value to scale to in response to a scale-out activity.</p>"
         },
+        "PredictedCapacity":{
+          "shape":"ResourceCapacity",
+          "documentation":"<p> The predicted capacity of the scalable target. </p>"
+        },
         "RoleARN":{
           "shape":"ResourceIdMaxLen1600",
           "documentation":"<p>The ARN of an IAM role that allows Application Auto Scaling to modify the scalable target on your behalf.</p>"
@@ -1181,6 +1585,10 @@
         "TargetTrackingScalingPolicyConfiguration":{
           "shape":"TargetTrackingScalingPolicyConfiguration",
           "documentation":"<p>A target tracking scaling policy.</p>"
+        },
+        "PredictiveScalingPolicyConfiguration":{
+          "shape":"PredictiveScalingPolicyConfiguration",
+          "documentation":"<p> The predictive scaling policy configuration. </p>"
         },
         "Alarms":{
           "shape":"Alarms",

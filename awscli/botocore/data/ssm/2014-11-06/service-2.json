@@ -239,7 +239,7 @@
         {"shape":"ResourceDataSyncAlreadyExistsException"},
         {"shape":"ResourceDataSyncInvalidConfigurationException"}
       ],
-      "documentation":"<p>A resource data sync helps you view data from multiple sources in a single location. Amazon Web Services Systems Manager offers two types of resource data sync: <code>SyncToDestination</code> and <code>SyncFromSource</code>.</p> <p>You can configure Systems Manager Inventory to use the <code>SyncToDestination</code> type to synchronize Inventory data from multiple Amazon Web Services Regions to a single Amazon Simple Storage Service (Amazon S3) bucket. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-create-resource-data-sync.html\">Creatinga a resource data sync for Inventory</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <p>You can configure Systems Manager Explorer to use the <code>SyncFromSource</code> type to synchronize operational work items (OpsItems) and operational data (OpsData) from multiple Amazon Web Services Regions to a single Amazon S3 bucket. This type can synchronize OpsItems and OpsData from multiple Amazon Web Services accounts and Amazon Web Services Regions or <code>EntireOrganization</code> by using Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/Explorer-resource-data-sync.html\">Setting up Systems Manager Explorer to display data from multiple accounts and Regions</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <p>A resource data sync is an asynchronous operation that returns immediately. After a successful initial sync is completed, the system continuously syncs data. To check the status of a sync, use the <a>ListResourceDataSync</a>.</p> <note> <p>By default, data isn't encrypted in Amazon S3. We strongly recommend that you enable encryption in Amazon S3 to ensure secure data storage. We also recommend that you secure access to the Amazon S3 bucket by creating a restrictive bucket policy. </p> </note>"
+      "documentation":"<p>A resource data sync helps you view data from multiple sources in a single location. Amazon Web Services Systems Manager offers two types of resource data sync: <code>SyncToDestination</code> and <code>SyncFromSource</code>.</p> <p>You can configure Systems Manager Inventory to use the <code>SyncToDestination</code> type to synchronize Inventory data from multiple Amazon Web Services Regions to a single Amazon Simple Storage Service (Amazon S3) bucket. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-create-resource-data-sync.html\">Creating a resource data sync for Inventory</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <p>You can configure Systems Manager Explorer to use the <code>SyncFromSource</code> type to synchronize operational work items (OpsItems) and operational data (OpsData) from multiple Amazon Web Services Regions to a single Amazon S3 bucket. This type can synchronize OpsItems and OpsData from multiple Amazon Web Services accounts and Amazon Web Services Regions or <code>EntireOrganization</code> by using Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/Explorer-resource-data-sync.html\">Setting up Systems Manager Explorer to display data from multiple accounts and Regions</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <p>A resource data sync is an asynchronous operation that returns immediately. After a successful initial sync is completed, the system continuously syncs data. To check the status of a sync, use the <a>ListResourceDataSync</a>.</p> <note> <p>By default, data isn't encrypted in Amazon S3. We strongly recommend that you enable encryption in Amazon S3 to ensure secure data storage. We also recommend that you secure access to the Amazon S3 bucket by creating a restrictive bucket policy. </p> </note>"
     },
     "DeleteActivation":{
       "name":"DeleteActivation",
@@ -1090,6 +1090,20 @@
       ],
       "documentation":"<p>Gets the contents of the specified Amazon Web Services Systems Manager document (SSM document).</p>"
     },
+    "GetExecutionPreview":{
+      "name":"GetExecutionPreview",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetExecutionPreviewRequest"},
+      "output":{"shape":"GetExecutionPreviewResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Initiates the process of retrieving an existing preview that shows the effects that running a specified Automation runbook would have on the targeted resources.</p>"
+    },
     "GetInventory":{
       "name":"GetInventory",
       "http":{
@@ -1538,6 +1552,41 @@
       ],
       "documentation":"<p>A list of inventory items returned by the request.</p>"
     },
+    "ListNodes":{
+      "name":"ListNodes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListNodesRequest"},
+      "output":{"shape":"ListNodesResult"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"InvalidFilter"},
+        {"shape":"InvalidNextToken"},
+        {"shape":"ResourceDataSyncNotFoundException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p>Takes in filters and returns a list of managed nodes matching the filter criteria.</p>"
+    },
+    "ListNodesSummary":{
+      "name":"ListNodesSummary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListNodesSummaryRequest"},
+      "output":{"shape":"ListNodesSummaryResult"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"InvalidAggregatorException"},
+        {"shape":"InvalidFilter"},
+        {"shape":"InvalidNextToken"},
+        {"shape":"ResourceDataSyncNotFoundException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p>Generates a summary of managed instance/node metadata based on the filters and aggregators you specify. Results are grouped by the input aggregator you specify.</p>"
+    },
     "ListOpsItemEvents":{
       "name":"ListOpsItemEvents",
       "http":{
@@ -1933,6 +1982,20 @@
         {"shape":"AutomationDefinitionNotApprovedException"}
       ],
       "documentation":"<p>Creates a change request for Change Manager. The Automation runbooks specified in the change request run only after all required approvals for the change request have been received.</p>"
+    },
+    "StartExecutionPreview":{
+      "name":"StartExecutionPreview",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartExecutionPreviewRequest"},
+      "output":{"shape":"StartExecutionPreviewResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Initiates the process of creating a preview showing the effects that running a specified Automation runbook would have on the targeted resources.</p>"
     },
     "StartSession":{
       "name":"StartSession",
@@ -2358,6 +2421,15 @@
     "AgentErrorCode":{
       "type":"string",
       "max":10
+    },
+    "AgentType":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "AgentVersion":{
+      "type":"string",
+      "pattern":"^[0-9]{1,6}(\\.[0-9]{1,6}){2,3}$"
     },
     "AggregatorSchemaOnly":{"type":"boolean"},
     "Alarm":{
@@ -3480,6 +3552,36 @@
       "max":36,
       "min":36
     },
+    "AutomationExecutionInputs":{
+      "type":"structure",
+      "members":{
+        "Parameters":{
+          "shape":"AutomationParameterMap",
+          "documentation":"<p>Information about parameters that can be specified for the preview operation. </p>"
+        },
+        "TargetParameterName":{
+          "shape":"AutomationParameterKey",
+          "documentation":"<p>The name of the parameter used as the target resource for the rate-controlled execution. Required if you specify targets.</p>"
+        },
+        "Targets":{
+          "shape":"Targets",
+          "documentation":"<p>Information about the resources that would be included in the actual runbook execution, if it were to be run. Both Targets and TargetMaps can't be specified together.</p>"
+        },
+        "TargetMaps":{
+          "shape":"TargetMaps",
+          "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>"
+        },
+        "TargetLocations":{
+          "shape":"TargetLocations",
+          "documentation":"<p>Information about the Amazon Web Services Regions and Amazon Web Services accounts targeted by the Automation execution preview operation.</p>"
+        },
+        "TargetLocationsURL":{
+          "shape":"TargetLocationsURL",
+          "documentation":"<p>A publicly accessible URL for a file that contains the <code>TargetLocations</code> body. Currently, only files in presigned Amazon S3 buckets are supported.</p>"
+        }
+      },
+      "documentation":"<p>Information about the optional inputs that can be specified for an automation execution preview.</p>"
+    },
     "AutomationExecutionLimitExceededException":{
       "type":"structure",
       "members":{
@@ -3629,6 +3731,28 @@
       },
       "documentation":"<p>There is no automation execution information for the requested automation execution ID.</p>",
       "exception":true
+    },
+    "AutomationExecutionPreview":{
+      "type":"structure",
+      "members":{
+        "StepPreviews":{
+          "shape":"StepPreviewMap",
+          "documentation":"<p>Information about the type of impact a runbook step would have on a resource.</p> <ul> <li> <p> <code>Mutating</code>: The runbook step would make changes to the targets through actions that create, modify, or delete resources.</p> </li> <li> <p> <code>Non_Mutating</code>: The runbook step would retrieve data about resources but not make changes to them. This category generally includes <code>Describe*</code>, <code>List*</code>, <code>Get*</code>, and similar read-only API actions.</p> </li> <li> <p> <code>Undetermined</code>: An undetermined step invokes executions performed by another orchestration service like Lambda, Step Functions, or Amazon Web Services Systems Manager Run Command. An undetermined step might also call a third-party API. Systems Manager Automation doesn't know the outcome of the orchestration processes or third-party API executions, so the results of the steps are undetermined.</p> </li> </ul>"
+        },
+        "Regions":{
+          "shape":"RegionList",
+          "documentation":"<p>Information about the Amazon Web Services Regions targeted by the execution preview.</p>"
+        },
+        "TargetPreviews":{
+          "shape":"TargetPreviewList",
+          "documentation":"<p>Information that provides a preview of what the impact of running the specified Automation runbook would be.</p>"
+        },
+        "TotalAccounts":{
+          "shape":"Integer",
+          "documentation":"<p>Information about the Amazon Web Services accounts that were included in the execution preview.</p>"
+        }
+      },
+      "documentation":"<p>Information about the results of the execution preview.</p>"
     },
     "AutomationExecutionStatus":{
       "type":"string",
@@ -4999,7 +5123,7 @@
         },
         "GlobalFilters":{
           "shape":"PatchFilterGroup",
-          "documentation":"<p>A set of global filters used to include patches in the baseline.</p>"
+          "documentation":"<p>A set of global filters used to include patches in the baseline.</p> <important> <p>The <code>GlobalFilters</code> parameter can be configured only by using the CLI or an Amazon Web Services SDK. It can't be configured from the Patch Manager console, and its value isn't displayed in the console.</p> </important>"
         },
         "ApprovalRules":{
           "shape":"PatchRuleGroup",
@@ -7413,11 +7537,48 @@
       "max":5000,
       "min":1
     },
+    "ExecutionInputs":{
+      "type":"structure",
+      "members":{
+        "Automation":{
+          "shape":"AutomationExecutionInputs",
+          "documentation":"<p>Information about the optional inputs that can be specified for an automation execution preview.</p>"
+        }
+      },
+      "documentation":"<p>Information about the inputs for an execution preview.</p>",
+      "union":true
+    },
     "ExecutionMode":{
       "type":"string",
       "enum":[
         "Auto",
         "Interactive"
+      ]
+    },
+    "ExecutionPreview":{
+      "type":"structure",
+      "members":{
+        "Automation":{
+          "shape":"AutomationExecutionPreview",
+          "documentation":"<p>Information about the changes that would be made if an Automation workflow were run.</p>"
+        }
+      },
+      "documentation":"<p>Information about the changes that would be made if an execution were run.</p>",
+      "union":true
+    },
+    "ExecutionPreviewId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+    },
+    "ExecutionPreviewStatus":{
+      "type":"string",
+      "enum":[
+        "Pending",
+        "InProgress",
+        "Success",
+        "Failed"
       ]
     },
     "ExecutionRoleName":{
@@ -7798,6 +7959,38 @@
           "shape":"ReviewStatus",
           "documentation":"<p>The current review status of a new custom Systems Manager document (SSM document) created by a member of your organization, or of the latest version of an existing SSM document.</p> <p>Only one version of an SSM document can be in the APPROVED state at a time. When a new version is approved, the status of the previous version changes to REJECTED.</p> <p>Only one version of an SSM document can be in review, or PENDING, at a time.</p>"
         }
+      }
+    },
+    "GetExecutionPreviewRequest":{
+      "type":"structure",
+      "required":["ExecutionPreviewId"],
+      "members":{
+        "ExecutionPreviewId":{
+          "shape":"ExecutionPreviewId",
+          "documentation":"<p>The ID of the existing execution preview.</p>"
+        }
+      }
+    },
+    "GetExecutionPreviewResponse":{
+      "type":"structure",
+      "members":{
+        "ExecutionPreviewId":{
+          "shape":"ExecutionPreviewId",
+          "documentation":"<p>The generated ID for the existing execution preview.</p>"
+        },
+        "EndedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>A UTC timestamp indicating when the execution preview operation ended.</p>"
+        },
+        "Status":{
+          "shape":"ExecutionPreviewStatus",
+          "documentation":"<p>The current status of the execution preview operation.</p>"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p>Supplemental information about the current status of the execution preview.</p>"
+        },
+        "ExecutionPreview":{"shape":"ExecutionPreview"}
       }
     },
     "GetInventoryRequest":{
@@ -8656,7 +8849,7 @@
       "members":{
         "SettingId":{
           "shape":"ServiceSettingId",
-          "documentation":"<p>The ID of the service setting to get. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/managed-instance/default-ec2-instance-management-role</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul>"
+          "documentation":"<p>The ID of the service setting to get. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/appmanager/appmanager-enabled</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p>/ssm/automation/enable-adaptive-concurrency</p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/managed-instance/default-ec2-instance-management-role</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>The request body of the GetServiceSetting API operation.</p>"
@@ -8717,6 +8910,14 @@
       },
       "documentation":"<p>Error returned when an idempotent operation is retried and the parameters don't match the original call to the API with the same idempotency token. </p>",
       "exception":true
+    },
+    "ImpactType":{
+      "type":"string",
+      "enum":[
+        "Mutating",
+        "NonMutating",
+        "Undetermined"
+      ]
     },
     "IncompatiblePolicyException":{
       "type":"structure",
@@ -8871,6 +9072,52 @@
       "max":50,
       "min":0
     },
+    "InstanceInfo":{
+      "type":"structure",
+      "members":{
+        "AgentType":{
+          "shape":"AgentType",
+          "documentation":"<p>The type of agent installed on the node.</p>"
+        },
+        "AgentVersion":{
+          "shape":"AgentVersion",
+          "documentation":"<p>The version number of the agent installed on the node.</p>"
+        },
+        "ComputerName":{
+          "shape":"ComputerName",
+          "documentation":"<p>The fully qualified host name of the managed node.</p>"
+        },
+        "InstanceStatus":{
+          "shape":"InstanceStatus",
+          "documentation":"<p>The current status of the managed node.</p>"
+        },
+        "IpAddress":{
+          "shape":"IpAddress",
+          "documentation":"<p>The IP address of the managed node.</p>"
+        },
+        "ManagedStatus":{
+          "shape":"ManagedStatus",
+          "documentation":"<p>Indicates whether the node is managed by Systems Manager.</p>"
+        },
+        "PlatformType":{
+          "shape":"PlatformType",
+          "documentation":"<p>The operating system platform type of the managed node.</p>"
+        },
+        "PlatformName":{
+          "shape":"PlatformName",
+          "documentation":"<p>The name of the operating system platform running on your managed node.</p>"
+        },
+        "PlatformVersion":{
+          "shape":"PlatformVersion",
+          "documentation":"<p>The version of the OS platform running on your managed node. </p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of instance, either an EC2 instance or another supported machine type in a hybrid fleet.</p>"
+        }
+      },
+      "documentation":"<p>Details about a specific managed node.</p>"
+    },
     "InstanceInformation":{
       "type":"structure",
       "members":{
@@ -8898,7 +9145,7 @@
         },
         "PlatformType":{
           "shape":"PlatformType",
-          "documentation":"<p>The operating system platform type. </p>"
+          "documentation":"<p>The operating system platform type.</p>"
         },
         "PlatformName":{
           "shape":"String",
@@ -9270,7 +9517,7 @@
         },
         "PlatformType":{
           "shape":"PlatformType",
-          "documentation":"<p>The operating system platform type of the managed node. For example, Windows.</p>"
+          "documentation":"<p>The operating system platform type of the managed node. For example, Windows Server or Amazon Linux 2.</p>"
         },
         "PlatformName":{
           "shape":"PlatformName",
@@ -9426,6 +9673,11 @@
       "type":"string",
       "max":120
     },
+    "InstanceStatus":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "InstanceTagName":{
       "type":"string",
       "max":255
@@ -9458,7 +9710,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The activation ID isn't valid. Verify the you entered the correct ActivationId or ActivationCode and try again.</p>",
+      "documentation":"<p>The activation ID isn't valid. Verify that you entered the correct ActivationId or ActivationCode and try again.</p>",
       "exception":true
     },
     "InvalidAggregatorException":{
@@ -9466,7 +9718,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The specified aggregator isn't valid for inventory groups. Verify that the aggregator uses a valid inventory type such as <code>AWS:Application</code> or <code>AWS:InstanceInformation</code>.</p>",
+      "documentation":"<p>The specified aggregator isn't valid for the group type. Verify that the aggregator you provided is supported.</p>",
       "exception":true
     },
     "InvalidAllowedPatternException":{
@@ -9602,7 +9854,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The filter name isn't valid. Verify the you entered the correct name and try again.</p>",
+      "documentation":"<p>The filter name isn't valid. Verify that you entered the correct name and try again.</p>",
       "exception":true
     },
     "InvalidFilterKey":{
@@ -10269,6 +10521,12 @@
       "type":"string",
       "max":2500
     },
+    "IpAddress":{
+      "type":"string",
+      "max":46,
+      "min":1,
+      "sensitive":true
+    },
     "IsSubTypeSchema":{"type":"boolean"},
     "ItemContentMismatchException":{
       "type":"structure",
@@ -10731,6 +10989,81 @@
         "Entries":{
           "shape":"InventoryItemEntryList",
           "documentation":"<p>A list of inventory items on the managed nodes.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.</p>"
+        }
+      }
+    },
+    "ListNodesRequest":{
+      "type":"structure",
+      "members":{
+        "SyncName":{
+          "shape":"ResourceDataSyncName",
+          "documentation":"<p>The name of the resource data sync to retrieve information about. Required for cross-account/cross-Region configurations. Optional for single account/single-Region configurations.</p>"
+        },
+        "Filters":{
+          "shape":"NodeFilterList",
+          "documentation":"<p>One or more filters. Use a filter to return a more specific list of managed nodes.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.</p>",
+          "box":true
+        }
+      }
+    },
+    "ListNodesResult":{
+      "type":"structure",
+      "members":{
+        "Nodes":{
+          "shape":"NodeList",
+          "documentation":"<p>A list of managed nodes that match the specified filter criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.</p>"
+        }
+      }
+    },
+    "ListNodesSummaryRequest":{
+      "type":"structure",
+      "required":["Aggregators"],
+      "members":{
+        "SyncName":{
+          "shape":"ResourceDataSyncName",
+          "documentation":"<p>The name of the resource data sync to retrieve information about. Required for cross-account/cross-Region configuration. Optional for single account/single-Region configurations.</p>"
+        },
+        "Filters":{
+          "shape":"NodeFilterList",
+          "documentation":"<p>One or more filters. Use a filter to generate a summary that matches your specified filter criteria.</p>"
+        },
+        "Aggregators":{
+          "shape":"NodeAggregatorList",
+          "documentation":"<p>Specify one or more aggregators to return a count of managed nodes that match that expression. For example, a count of managed nodes by operating system.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.) The call also returns a token that you can specify in a subsequent call to get the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.</p>",
+          "box":true
+        }
+      }
+    },
+    "ListNodesSummaryResult":{
+      "type":"structure",
+      "members":{
+        "Summary":{
+          "shape":"NodeSummaryList",
+          "documentation":"<p>A collection of objects reporting information about your managed nodes, such as the count of nodes by operating system.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -11648,6 +11981,14 @@
       "min":20,
       "pattern":"(^mi-[0-9a-f]{17}$)|(^eks_c:[0-9A-Za-z][A-Za-z0-9\\-_]{0,99}_\\w{17}$)"
     },
+    "ManagedStatus":{
+      "type":"string",
+      "enum":[
+        "All",
+        "Managed",
+        "Unmanaged"
+      ]
+    },
     "MaxConcurrency":{
       "type":"string",
       "max":7,
@@ -11753,6 +12094,225 @@
       }
     },
     "NextToken":{"type":"string"},
+    "Node":{
+      "type":"structure",
+      "members":{
+        "CaptureTime":{
+          "shape":"NodeCaptureTime",
+          "documentation":"<p>The UTC timestamp for when the managed node data was last captured.</p>"
+        },
+        "Id":{
+          "shape":"NodeId",
+          "documentation":"<p>The ID of the managed node.</p>"
+        },
+        "Owner":{
+          "shape":"NodeOwnerInfo",
+          "documentation":"<p>Information about the ownership of the managed node.</p>"
+        },
+        "Region":{
+          "shape":"NodeRegion",
+          "documentation":"<p>The Amazon Web Services Region that a managed node was created in or assigned to.</p>"
+        },
+        "NodeType":{
+          "shape":"NodeType",
+          "documentation":"<p>Information about the type of node.</p>"
+        }
+      },
+      "documentation":"<p>Details about an individual managed node.</p>"
+    },
+    "NodeAccountId":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
+    "NodeAggregator":{
+      "type":"structure",
+      "required":[
+        "AggregatorType",
+        "TypeName",
+        "AttributeName"
+      ],
+      "members":{
+        "AggregatorType":{
+          "shape":"NodeAggregatorType",
+          "documentation":"<p>The aggregator type for limiting a node summary. Currently, only <code>Count</code> is supported.</p>"
+        },
+        "TypeName":{
+          "shape":"NodeTypeName",
+          "documentation":"<p>The data type name to use for viewing counts of nodes. Currently, only <code>Instance</code> is supported.</p>"
+        },
+        "AttributeName":{
+          "shape":"NodeAttributeName",
+          "documentation":"<p>The name of a node attribute on which to limit the count of nodes.</p>"
+        },
+        "Aggregators":{
+          "shape":"NodeAggregatorList",
+          "documentation":"<p>Information about aggregators used to refine a node summary.</p>"
+        }
+      },
+      "documentation":"<p>One or more aggregators for viewing counts of nodes using different dimensions.</p>"
+    },
+    "NodeAggregatorList":{
+      "type":"list",
+      "member":{"shape":"NodeAggregator"},
+      "max":2,
+      "min":1
+    },
+    "NodeAggregatorType":{
+      "type":"string",
+      "enum":["Count"]
+    },
+    "NodeAttributeName":{
+      "type":"string",
+      "enum":[
+        "AgentVersion",
+        "PlatformName",
+        "PlatformType",
+        "PlatformVersion",
+        "Region",
+        "ResourceType"
+      ]
+    },
+    "NodeCaptureTime":{"type":"timestamp"},
+    "NodeFilter":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Values"
+      ],
+      "members":{
+        "Key":{
+          "shape":"NodeFilterKey",
+          "documentation":"<p>The name of the filter.</p>"
+        },
+        "Values":{
+          "shape":"NodeFilterValueList",
+          "documentation":"<p>A filter value supported by the specified key. For example, for the key <code>PlatformType</code>, supported values include <code>Linux</code> and <code>Windows</code>.</p>"
+        },
+        "Type":{
+          "shape":"NodeFilterOperatorType",
+          "documentation":"<p>The type of filter operator.</p>"
+        }
+      },
+      "documentation":"<p>The filters for the operation.</p>"
+    },
+    "NodeFilterKey":{
+      "type":"string",
+      "enum":[
+        "AgentType",
+        "AgentVersion",
+        "ComputerName",
+        "InstanceId",
+        "InstanceStatus",
+        "IpAddress",
+        "ManagedStatus",
+        "PlatformName",
+        "PlatformType",
+        "PlatformVersion",
+        "ResourceType",
+        "OrganizationalUnitId",
+        "OrganizationalUnitPath",
+        "Region",
+        "AccountId"
+      ]
+    },
+    "NodeFilterList":{
+      "type":"list",
+      "member":{"shape":"NodeFilter"},
+      "max":5,
+      "min":1
+    },
+    "NodeFilterOperatorType":{
+      "type":"string",
+      "enum":[
+        "Equal",
+        "NotEqual",
+        "BeginWith"
+      ]
+    },
+    "NodeFilterValue":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+    },
+    "NodeFilterValueList":{
+      "type":"list",
+      "member":{"shape":"NodeFilterValue"},
+      "max":5,
+      "min":1
+    },
+    "NodeId":{
+      "type":"string",
+      "pattern":"(^i-(\\w{8}|\\w{17})$)|(^mi-\\w{17}$)"
+    },
+    "NodeList":{
+      "type":"list",
+      "member":{"shape":"Node"},
+      "max":50,
+      "min":0
+    },
+    "NodeOrganizationalUnitId":{
+      "type":"string",
+      "max":68,
+      "min":1,
+      "pattern":"^ou-[0-9a-z]{4,32}-[a-z0-9]{8,32}$"
+    },
+    "NodeOrganizationalUnitPath":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "NodeOwnerInfo":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"NodeAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the managed node.</p>"
+        },
+        "OrganizationalUnitId":{
+          "shape":"NodeOrganizationalUnitId",
+          "documentation":"<p>The ID of the organization unit (OU) that the account is part of.</p>"
+        },
+        "OrganizationalUnitPath":{
+          "shape":"NodeOrganizationalUnitPath",
+          "documentation":"<p>The path for the organizational unit (OU) that owns the managed node. The path for the OU is built using the IDs of the organization, root, and all OUs in the path down to and including the OU. For example:</p> <p> <code>o-a1b2c3d4e5/r-f6g7h8i9j0example/ou-ghi0-awsccccc/ou-jkl0-awsddddd/</code> </p>"
+        }
+      },
+      "documentation":"<p>Information about ownership of a managed node.</p>"
+    },
+    "NodeRegion":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "NodeSummary":{
+      "type":"map",
+      "key":{"shape":"AttributeName"},
+      "value":{"shape":"AttributeValue"},
+      "max":3,
+      "min":0
+    },
+    "NodeSummaryList":{
+      "type":"list",
+      "member":{"shape":"NodeSummary"},
+      "max":50,
+      "min":0
+    },
+    "NodeType":{
+      "type":"structure",
+      "members":{
+        "Instance":{
+          "shape":"InstanceInfo",
+          "documentation":"<p>Information about a specific managed node.</p>"
+        }
+      },
+      "documentation":"<p>Information about a managed node's type.</p>",
+      "union":true
+    },
+    "NodeTypeName":{
+      "type":"string",
+      "enum":["Instance"]
+    },
     "NonCompliantSummary":{
       "type":"structure",
       "members":{
@@ -13035,7 +13595,7 @@
         },
         "ARN":{
           "shape":"String",
-          "documentation":"<p>The (ARN) of the last user to update the parameter.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the parameter.</p>"
         },
         "Type":{
           "shape":"ParameterType",
@@ -14099,6 +14659,12 @@
       ]
     },
     "Region":{"type":"string"},
+    "RegionList":{
+      "type":"list",
+      "member":{"shape":"Region"},
+      "max":50,
+      "min":1
+    },
     "Regions":{
       "type":"list",
       "member":{"shape":"Region"},
@@ -14389,7 +14955,7 @@
       "members":{
         "SettingId":{
           "shape":"ServiceSettingId",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the service setting to reset. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/managed-instance/default-ec2-instance-management-role</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service setting to reset. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/appmanager/appmanager-enabled</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p>/ssm/automation/enable-adaptive-concurrency</p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/managed-instance/default-ec2-instance-management-role</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>The request body of the ResetServiceSetting API operation.</p>"
@@ -15641,6 +16207,33 @@
         }
       }
     },
+    "StartExecutionPreviewRequest":{
+      "type":"structure",
+      "required":["DocumentName"],
+      "members":{
+        "DocumentName":{
+          "shape":"DocumentName",
+          "documentation":"<p>The name of the Automation runbook to run. The result of the execution preview indicates what the impact would be of running this runbook.</p>"
+        },
+        "DocumentVersion":{
+          "shape":"DocumentVersion",
+          "documentation":"<p>The version of the Automation runbook to run. The default value is <code>$DEFAULT</code>.</p>"
+        },
+        "ExecutionInputs":{
+          "shape":"ExecutionInputs",
+          "documentation":"<p>Information about the inputs that can be specified for the preview operation. </p>"
+        }
+      }
+    },
+    "StartExecutionPreviewResponse":{
+      "type":"structure",
+      "members":{
+        "ExecutionPreviewId":{
+          "shape":"ExecutionPreviewId",
+          "documentation":"<p>The ID of the execution preview generated by the system.</p>"
+        }
+      }
+    },
     "StartSessionRequest":{
       "type":"structure",
       "required":["Target"],
@@ -15864,6 +16457,11 @@
       "type":"list",
       "member":{"shape":"StepExecution"}
     },
+    "StepPreviewMap":{
+      "type":"map",
+      "key":{"shape":"ImpactType"},
+      "value":{"shape":"Integer"}
+    },
     "StopAutomationExecutionRequest":{
       "type":"structure",
       "required":["AutomationExecutionId"],
@@ -16076,6 +16674,26 @@
       "type":"list",
       "member":{"shape":"ParameterValue"}
     },
+    "TargetPreview":{
+      "type":"structure",
+      "members":{
+        "Count":{
+          "shape":"Integer",
+          "documentation":"<p>The number of resources of a certain type included in an execution preview.</p>"
+        },
+        "TargetType":{
+          "shape":"String",
+          "documentation":"<p>A type of resource that was included in the execution preview.</p>"
+        }
+      },
+      "documentation":"<p>Information about the resources that would be included in the actual runbook execution, if it were to be run.</p>"
+    },
+    "TargetPreviewList":{
+      "type":"list",
+      "member":{"shape":"TargetPreview"},
+      "max":50,
+      "min":0
+    },
     "TargetType":{
       "type":"string",
       "max":200,
@@ -16226,6 +16844,14 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>The operating systems you specified isn't supported, or the operation isn't supported for the operating system.</p>",
+      "exception":true
+    },
+    "UnsupportedOperationException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>This operation is not supported for the current account. You must first enable the Systems Manager integrated experience in your account.</p>",
       "exception":true
     },
     "UnsupportedParameterType":{
@@ -16941,7 +17567,7 @@
         },
         "GlobalFilters":{
           "shape":"PatchFilterGroup",
-          "documentation":"<p>A set of global filters used to include patches in the baseline.</p>"
+          "documentation":"<p>A set of global filters used to include patches in the baseline.</p> <important> <p>The <code>GlobalFilters</code> parameter can be configured only by using the CLI or an Amazon Web Services SDK. It can't be configured from the Patch Manager console, and its value isn't displayed in the console.</p> </important>"
         },
         "ApprovalRules":{
           "shape":"PatchRuleGroup",
@@ -17081,11 +17707,11 @@
       "members":{
         "SettingId":{
           "shape":"ServiceSettingId",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the service setting to update. For example, <code>arn:aws:ssm:us-east-1:111122223333:servicesetting/ssm/parameter-store/high-throughput-enabled</code>. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/managed-instance/default-ec2-instance-management-role</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul> <note> <p>Permissions to update the <code>/ssm/managed-instance/default-ec2-instance-management-role</code> setting should only be provided to administrators. Implement least privilege access when allowing individuals to configure or modify the Default Host Management Configuration.</p> </note>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service setting to update. For example, <code>arn:aws:ssm:us-east-1:111122223333:servicesetting/ssm/parameter-store/high-throughput-enabled</code>. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/appmanager/appmanager-enabled</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p>/ssm/automation/enable-adaptive-concurrency</p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/managed-instance/default-ec2-instance-management-role</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul> <note> <p>Permissions to update the <code>/ssm/managed-instance/default-ec2-instance-management-role</code> setting should only be provided to administrators. Implement least privilege access when allowing individuals to configure or modify the Default Host Management Configuration.</p> </note>"
         },
         "SettingValue":{
           "shape":"ServiceSettingValue",
-          "documentation":"<p>The new value to specify for the service setting. The following list specifies the available values for each setting.</p> <ul> <li> <p>For <code>/ssm/managed-instance/default-ec2-instance-management-role</code>, enter the name of an IAM role. </p> </li> <li> <p>For <code>/ssm/automation/customer-script-log-destination</code>, enter <code>CloudWatch</code>.</p> </li> <li> <p>For <code>/ssm/automation/customer-script-log-group-name</code>, enter the name of an Amazon CloudWatch Logs log group.</p> </li> <li> <p>For <code>/ssm/documents/console/public-sharing-permission</code>, enter <code>Enable</code> or <code>Disable</code>.</p> </li> <li> <p>For <code>/ssm/managed-instance/activation-tier</code>, enter <code>standard</code> or <code>advanced</code>.</p> </li> <li> <p> For <code>/ssm/opsinsights/opscenter</code>, enter <code>Enabled</code> or <code>Disabled</code>. </p> </li> <li> <p>For <code>/ssm/parameter-store/default-parameter-tier</code>, enter <code>Standard</code>, <code>Advanced</code>, or <code>Intelligent-Tiering</code> </p> </li> <li> <p>For <code>/ssm/parameter-store/high-throughput-enabled</code>, enter <code>true</code> or <code>false</code>.</p> </li> </ul>"
+          "documentation":"<p>The new value to specify for the service setting. The following list specifies the available values for each setting.</p> <ul> <li> <p>For <code>/ssm/appmanager/appmanager-enabled</code>, enter <code>True</code> or <code>False</code>.</p> </li> <li> <p>For <code>/ssm/automation/customer-script-log-destination</code>, enter <code>CloudWatch</code>.</p> </li> <li> <p>For <code>/ssm/automation/customer-script-log-group-name</code>, enter the name of an Amazon CloudWatch Logs log group.</p> </li> <li> <p>For <code>/ssm/documents/console/public-sharing-permission</code>, enter <code>Enable</code> or <code>Disable</code>.</p> </li> <li> <p>For <code>/ssm/managed-instance/activation-tier</code>, enter <code>standard</code> or <code>advanced</code>.</p> </li> <li> <p>For <code>/ssm/managed-instance/default-ec2-instance-management-role</code>, enter the name of an IAM role. </p> </li> <li> <p> For <code>/ssm/opsinsights/opscenter</code>, enter <code>Enabled</code> or <code>Disabled</code>. </p> </li> <li> <p>For <code>/ssm/parameter-store/default-parameter-tier</code>, enter <code>Standard</code>, <code>Advanced</code>, or <code>Intelligent-Tiering</code> </p> </li> <li> <p>For <code>/ssm/parameter-store/high-throughput-enabled</code>, enter <code>true</code> or <code>false</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The request body of the UpdateServiceSetting API operation.</p>"
@@ -17105,6 +17731,18 @@
     "ValidNextStepList":{
       "type":"list",
       "member":{"shape":"ValidNextStep"}
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"},
+        "ReasonCode":{
+          "shape":"String",
+          "documentation":"<p>The reason code for the invalid request.</p>"
+        }
+      },
+      "documentation":"<p>The request isn't valid. Verify that you entered valid contents for the command and try again.</p>",
+      "exception":true
     },
     "Version":{
       "type":"string",

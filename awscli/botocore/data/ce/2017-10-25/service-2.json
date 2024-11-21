@@ -171,6 +171,21 @@
       ],
       "documentation":"<p>Retrieves estimated usage records for hourly granularity or resource-level data at daily granularity.</p>"
     },
+    "GetCommitmentPurchaseAnalysis":{
+      "name":"GetCommitmentPurchaseAnalysis",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCommitmentPurchaseAnalysisRequest"},
+      "output":{"shape":"GetCommitmentPurchaseAnalysisResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"AnalysisNotFoundException"},
+        {"shape":"DataUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves a commitment purchase analysis result based on the <code>AnalysisId</code>.</p>"
+    },
     "GetCostAndUsage":{
       "name":"GetCostAndUsage",
       "http":{
@@ -416,6 +431,21 @@
       ],
       "documentation":"<p>Retrieves a forecast for how much Amazon Web Services predicts that you will use over the forecast time period that you select, based on your past usage. </p>"
     },
+    "ListCommitmentPurchaseAnalyses":{
+      "name":"ListCommitmentPurchaseAnalyses",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListCommitmentPurchaseAnalysesRequest"},
+      "output":{"shape":"ListCommitmentPurchaseAnalysesResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"DataUnavailableException"}
+      ],
+      "documentation":"<p>Lists the commitment purchase analyses for your account based on the last 30 days.</p>"
+    },
     "ListCostAllocationTagBackfillHistory":{
       "name":"ListCostAllocationTagBackfillHistory",
       "http":{
@@ -498,6 +528,22 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Modifies the feedback property of a given cost anomaly. </p>"
+    },
+    "StartCommitmentPurchaseAnalysis":{
+      "name":"StartCommitmentPurchaseAnalysis",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartCommitmentPurchaseAnalysisRequest"},
+      "output":{"shape":"StartCommitmentPurchaseAnalysisResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"DataUnavailableException"},
+        {"shape":"GenerationExistsException"}
+      ],
+      "documentation":"<p>Specifies the parameters of a planned commitment purchase and starts the generation of the analysis. This enables you to estimate the cost, coverage, and utilization impact of your planned commitment purchases. You can request up to 20 analysis runs per day.</p>"
     },
     "StartCostAllocationTagBackfill":{
       "name":"StartCostAllocationTagBackfill",
@@ -617,6 +663,12 @@
     }
   },
   "shapes":{
+    "AccountId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]{12}"
+    },
     "AccountScope":{
       "type":"string",
       "enum":[
@@ -626,6 +678,89 @@
     },
     "AmortizedRecurringFee":{"type":"string"},
     "AmortizedUpfrontFee":{"type":"string"},
+    "AnalysisDetails":{
+      "type":"structure",
+      "members":{
+        "SavingsPlansPurchaseAnalysisDetails":{
+          "shape":"SavingsPlansPurchaseAnalysisDetails",
+          "documentation":"<p>Details about the Savings Plans purchase analysis.</p>"
+        }
+      },
+      "documentation":"<p>Details about the analysis.</p>"
+    },
+    "AnalysisId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^[\\S\\s]{8}-[\\S\\s]{4}-[\\S\\s]{4}-[\\S\\s]{4}-[\\S\\s]{12}$"
+    },
+    "AnalysisIds":{
+      "type":"list",
+      "member":{"shape":"AnalysisId"},
+      "max":600,
+      "min":0
+    },
+    "AnalysisNotFoundException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The requested analysis can't be found.</p>",
+      "exception":true
+    },
+    "AnalysisStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCEEDED",
+        "PROCESSING",
+        "FAILED"
+      ]
+    },
+    "AnalysisSummary":{
+      "type":"structure",
+      "members":{
+        "EstimatedCompletionTime":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p>The estimated time for when the analysis will complete.</p>"
+        },
+        "AnalysisCompletionTime":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p>The completion time of the analysis.</p>"
+        },
+        "AnalysisStartedTime":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p>The start time of the analysis.</p>"
+        },
+        "AnalysisStatus":{
+          "shape":"AnalysisStatus",
+          "documentation":"<p>The status of the analysis.</p>"
+        },
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code used for the analysis.</p>"
+        },
+        "AnalysisId":{
+          "shape":"AnalysisId",
+          "documentation":"<p>The analysis ID that's associated with the commitment purchase.</p>"
+        },
+        "CommitmentPurchaseAnalysisConfiguration":{
+          "shape":"CommitmentPurchaseAnalysisConfiguration",
+          "documentation":"<p>The analysis configuration for the commitment purchase analysis.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the analysis.</p>"
+    },
+    "AnalysisSummaryList":{
+      "type":"list",
+      "member":{"shape":"AnalysisSummary"}
+    },
+    "AnalysisType":{
+      "type":"string",
+      "enum":[
+        "MAX_SAVINGS",
+        "CUSTOM_COMMITMENT"
+      ]
+    },
     "Anomalies":{
       "type":"list",
       "member":{"shape":"Anomaly"}
@@ -653,7 +788,7 @@
         },
         "DimensionValue":{
           "shape":"GenericString",
-          "documentation":"<p>The dimension for the anomaly (for example, an Amazon Web Servicesservice in a service monitor). </p>"
+          "documentation":"<p>The dimension for the anomaly (for example, an Amazon Web Services service in a service monitor). </p>"
         },
         "RootCauses":{
           "shape":"RootCauses",
@@ -864,6 +999,16 @@
       },
       "documentation":"<p>The requested report expired. Update the date interval and try again.</p>",
       "exception":true
+    },
+    "CommitmentPurchaseAnalysisConfiguration":{
+      "type":"structure",
+      "members":{
+        "SavingsPlansPurchaseAnalysisConfiguration":{
+          "shape":"SavingsPlansPurchaseAnalysisConfiguration",
+          "documentation":"<p>The configuration for the Savings Plans purchase analysis.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the commitment purchase analysis.</p>"
     },
     "Context":{
       "type":"string",
@@ -1136,7 +1281,7 @@
         "Value":{"shape":"CostCategoryValue"},
         "Rule":{
           "shape":"Expression",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html\">Expression</a> object used to categorize costs. This supports dimensions, tags, and nested expressions. Currently the only dimensions supported are <code>LINKED_ACCOUNT</code>, <code>SERVICE_CODE</code>, <code>RECORD_TYPE</code>, <code>LINKED_ACCOUNT_NAME</code>, <code>REGION</code>, and <code>USAGE_TYPE</code>.</p> <p> <code>RECORD_TYPE</code> is a dimension used for Cost Explorer APIs, and is also supported for Cost Category expressions. This dimension uses different terms, depending on whether you're using the console or API/JSON editor. For a detailed comparison, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/manage-cost-categories.html#cost-categories-terms\">Term Comparisons</a> in the <i>Billing and Cost Management User Guide</i>.</p>"
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html\">Expression</a> object used to categorize costs. This supports dimensions, tags, and nested expressions. Currently the only dimensions supported are <code>LINKED_ACCOUNT</code>, <code>SERVICE_CODE</code>, <code>RECORD_TYPE</code>, <code>LINKED_ACCOUNT_NAME</code>, <code>REGION</code>, <code>USAGE_TYPE</code>, and <code>BILLING_ENTITY</code>.</p> <p> <code>RECORD_TYPE</code> is a dimension used for Cost Explorer APIs, and is also supported for Cost Category expressions. This dimension uses different terms, depending on whether you're using the console or API/JSON editor. For a detailed comparison, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/manage-cost-categories.html#cost-categories-terms\">Term Comparisons</a> in the <i>Billing and Cost Management User Guide</i>.</p>"
         },
         "InheritedValue":{
           "shape":"CostCategoryInheritedValueDimension",
@@ -1930,6 +2075,16 @@
       "documentation":"<p>Details about the Amazon ElastiCache reservations that Amazon Web Services recommends that you purchase.</p>"
     },
     "Entity":{"type":"string"},
+    "ErrorCode":{
+      "type":"string",
+      "enum":[
+        "NO_USAGE_FOUND",
+        "INTERNAL_FAILURE",
+        "INVALID_SAVINGS_PLANS_TO_ADD",
+        "INVALID_SAVINGS_PLANS_TO_EXCLUDE",
+        "INVALID_ACCOUNT_ID"
+      ]
+    },
     "ErrorMessage":{"type":"string"},
     "Estimated":{"type":"boolean"},
     "Expression":{
@@ -2219,6 +2374,60 @@
         }
       }
     },
+    "GetCommitmentPurchaseAnalysisRequest":{
+      "type":"structure",
+      "required":["AnalysisId"],
+      "members":{
+        "AnalysisId":{
+          "shape":"AnalysisId",
+          "documentation":"<p>The analysis ID that's associated with the commitment purchase analysis.</p>"
+        }
+      }
+    },
+    "GetCommitmentPurchaseAnalysisResponse":{
+      "type":"structure",
+      "required":[
+        "EstimatedCompletionTime",
+        "AnalysisStartedTime",
+        "AnalysisId",
+        "AnalysisStatus",
+        "CommitmentPurchaseAnalysisConfiguration"
+      ],
+      "members":{
+        "EstimatedCompletionTime":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p>The estimated time for when the analysis will complete.</p>"
+        },
+        "AnalysisCompletionTime":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p>The completion time of the analysis.</p>"
+        },
+        "AnalysisStartedTime":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p>The start time of the analysis.</p>"
+        },
+        "AnalysisId":{
+          "shape":"AnalysisId",
+          "documentation":"<p>The analysis ID that's associated with the commitment purchase analysis.</p>"
+        },
+        "AnalysisStatus":{
+          "shape":"AnalysisStatus",
+          "documentation":"<p>The status of the analysis.</p>"
+        },
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code used for the analysis.</p>"
+        },
+        "AnalysisDetails":{
+          "shape":"AnalysisDetails",
+          "documentation":"<p>Details about the analysis.</p>"
+        },
+        "CommitmentPurchaseAnalysisConfiguration":{
+          "shape":"CommitmentPurchaseAnalysisConfiguration",
+          "documentation":"<p>The configuration for the commitment purchase analysis.</p>"
+        }
+      }
+    },
     "GetCostAndUsageRequest":{
       "type":"structure",
       "required":[
@@ -2447,7 +2656,7 @@
         },
         "Context":{
           "shape":"Context",
-          "documentation":"<p>The context for the call to <code>GetDimensionValues</code>. This can be <code>RESERVATIONS</code> or <code>COST_AND_USAGE</code>. The default value is <code>COST_AND_USAGE</code>. If the context is set to <code>RESERVATIONS</code>, the resulting dimension values can be used in the <code>GetReservationUtilization</code> operation. If the context is set to <code>COST_AND_USAGE</code>, the resulting dimension values can be used in the <code>GetCostAndUsage</code> operation.</p> <p>If you set the context to <code>COST_AND_USAGE</code>, you can use the following dimensions for searching:</p> <ul> <li> <p>AZ - The Availability Zone. An example is <code>us-east-1a</code>.</p> </li> <li> <p>BILLING_ENTITY - The Amazon Web Services seller that your account is with. Possible values are the following:</p> <p>- Amazon Web Services(Amazon Web Services): The entity that sells Amazon Web Servicesservices.</p> <p>- AISPL (Amazon Internet Services Pvt. Ltd.): The local Indian entity that's an acting reseller for Amazon Web Servicesservices in India.</p> <p>- Amazon Web Services Marketplace: The entity that supports the sale of solutions that are built on Amazon Web Services by third-party software providers.</p> </li> <li> <p>CACHE_ENGINE - The Amazon ElastiCache operating system. Examples are Windows or Linux.</p> </li> <li> <p>DEPLOYMENT_OPTION - The scope of Amazon Relational Database Service deployments. Valid values are <code>SingleAZ</code> and <code>MultiAZ</code>.</p> </li> <li> <p>DATABASE_ENGINE - The Amazon Relational Database Service database. Examples are Aurora or MySQL.</p> </li> <li> <p>INSTANCE_TYPE - The type of Amazon EC2 instance. An example is <code>m4.xlarge</code>.</p> </li> <li> <p>INSTANCE_TYPE_FAMILY - A family of instance types optimized to fit different use cases. Examples are <code>Compute Optimized</code> (for example, <code>C4</code>, <code>C5</code>, <code>C6g</code>, and <code>C7g</code>), <code>Memory Optimization</code> (for example, <code>R4</code>, <code>R5n</code>, <code>R5b</code>, and <code>R6g</code>).</p> </li> <li> <p>INVOICING_ENTITY - The name of the entity that issues the Amazon Web Services invoice.</p> </li> <li> <p>LEGAL_ENTITY_NAME - The name of the organization that sells you Amazon Web Services services, such as Amazon Web Services.</p> </li> <li> <p>LINKED_ACCOUNT - The description in the attribute map that includes the full name of the member account. The value field contains the Amazon Web Services ID of the member account.</p> </li> <li> <p>OPERATING_SYSTEM - The operating system. Examples are Windows or Linux.</p> </li> <li> <p>OPERATION - The action performed. Examples include <code>RunInstance</code> and <code>CreateBucket</code>.</p> </li> <li> <p>PLATFORM - The Amazon EC2 operating system. Examples are Windows or Linux.</p> </li> <li> <p>PURCHASE_TYPE - The reservation type of the purchase that this usage is related to. Examples include On-Demand Instances and Standard Reserved Instances.</p> </li> <li> <p>RESERVATION_ID - The unique identifier for an Amazon Web Services Reservation Instance.</p> </li> <li> <p>SAVINGS_PLAN_ARN - The unique identifier for your Savings Plans.</p> </li> <li> <p>SAVINGS_PLANS_TYPE - Type of Savings Plans (EC2 Instance or Compute).</p> </li> <li> <p>SERVICE - The Amazon Web Services service such as Amazon DynamoDB.</p> </li> <li> <p>TENANCY - The tenancy of a resource. Examples are shared or dedicated.</p> </li> <li> <p>USAGE_TYPE - The type of usage. An example is DataTransfer-In-Bytes. The response for the <code>GetDimensionValues</code> operation includes a unit attribute. Examples include GB and Hrs.</p> </li> <li> <p>USAGE_TYPE_GROUP - The grouping of common usage types. An example is Amazon EC2: CloudWatch – Alarms. The response for this operation includes a unit attribute.</p> </li> <li> <p>REGION - The Amazon Web Services Region.</p> </li> <li> <p>RECORD_TYPE - The different types of charges such as Reserved Instance (RI) fees, usage costs, tax refunds, and credits.</p> </li> <li> <p>RESOURCE_ID - The unique identifier of the resource. ResourceId is an opt-in feature only available for last 14 days for EC2-Compute Service.</p> </li> </ul> <p>If you set the context to <code>RESERVATIONS</code>, you can use the following dimensions for searching:</p> <ul> <li> <p>AZ - The Availability Zone. An example is <code>us-east-1a</code>.</p> </li> <li> <p>CACHE_ENGINE - The Amazon ElastiCache operating system. Examples are Windows or Linux.</p> </li> <li> <p>DEPLOYMENT_OPTION - The scope of Amazon Relational Database Service deployments. Valid values are <code>SingleAZ</code> and <code>MultiAZ</code>.</p> </li> <li> <p>INSTANCE_TYPE - The type of Amazon EC2 instance. An example is <code>m4.xlarge</code>.</p> </li> <li> <p>LINKED_ACCOUNT - The description in the attribute map that includes the full name of the member account. The value field contains the Amazon Web Services ID of the member account.</p> </li> <li> <p>PLATFORM - The Amazon EC2 operating system. Examples are Windows or Linux.</p> </li> <li> <p>REGION - The Amazon Web Services Region.</p> </li> <li> <p>SCOPE (Utilization only) - The scope of a Reserved Instance (RI). Values are regional or a single Availability Zone.</p> </li> <li> <p>TAG (Coverage only) - The tags that are associated with a Reserved Instance (RI).</p> </li> <li> <p>TENANCY - The tenancy of a resource. Examples are shared or dedicated.</p> </li> </ul> <p>If you set the context to <code>SAVINGS_PLANS</code>, you can use the following dimensions for searching:</p> <ul> <li> <p>SAVINGS_PLANS_TYPE - Type of Savings Plans (EC2 Instance or Compute)</p> </li> <li> <p>PAYMENT_OPTION - The payment option for the given Savings Plans (for example, All Upfront)</p> </li> <li> <p>REGION - The Amazon Web Services Region.</p> </li> <li> <p>INSTANCE_TYPE_FAMILY - The family of instances (For example, <code>m5</code>)</p> </li> <li> <p>LINKED_ACCOUNT - The description in the attribute map that includes the full name of the member account. The value field contains the Amazon Web Services ID of the member account.</p> </li> <li> <p>SAVINGS_PLAN_ARN - The unique identifier for your Savings Plans.</p> </li> </ul>"
+          "documentation":"<p>The context for the call to <code>GetDimensionValues</code>. This can be <code>RESERVATIONS</code> or <code>COST_AND_USAGE</code>. The default value is <code>COST_AND_USAGE</code>. If the context is set to <code>RESERVATIONS</code>, the resulting dimension values can be used in the <code>GetReservationUtilization</code> operation. If the context is set to <code>COST_AND_USAGE</code>, the resulting dimension values can be used in the <code>GetCostAndUsage</code> operation.</p> <p>If you set the context to <code>COST_AND_USAGE</code>, you can use the following dimensions for searching:</p> <ul> <li> <p>AZ - The Availability Zone. An example is <code>us-east-1a</code>.</p> </li> <li> <p>BILLING_ENTITY - The Amazon Web Services seller that your account is with. Possible values are the following:</p> <p>- Amazon Web Services(Amazon Web Services): The entity that sells Amazon Web Services services.</p> <p>- AISPL (Amazon Internet Services Pvt. Ltd.): The local Indian entity that's an acting reseller for Amazon Web Services services in India.</p> <p>- Amazon Web Services Marketplace: The entity that supports the sale of solutions that are built on Amazon Web Services by third-party software providers.</p> </li> <li> <p>CACHE_ENGINE - The Amazon ElastiCache operating system. Examples are Windows or Linux.</p> </li> <li> <p>DEPLOYMENT_OPTION - The scope of Amazon Relational Database Service deployments. Valid values are <code>SingleAZ</code> and <code>MultiAZ</code>.</p> </li> <li> <p>DATABASE_ENGINE - The Amazon Relational Database Service database. Examples are Aurora or MySQL.</p> </li> <li> <p>INSTANCE_TYPE - The type of Amazon EC2 instance. An example is <code>m4.xlarge</code>.</p> </li> <li> <p>INSTANCE_TYPE_FAMILY - A family of instance types optimized to fit different use cases. Examples are <code>Compute Optimized</code> (for example, <code>C4</code>, <code>C5</code>, <code>C6g</code>, and <code>C7g</code>), <code>Memory Optimization</code> (for example, <code>R4</code>, <code>R5n</code>, <code>R5b</code>, and <code>R6g</code>).</p> </li> <li> <p>INVOICING_ENTITY - The name of the entity that issues the Amazon Web Services invoice.</p> </li> <li> <p>LEGAL_ENTITY_NAME - The name of the organization that sells you Amazon Web Services services, such as Amazon Web Services.</p> </li> <li> <p>LINKED_ACCOUNT - The description in the attribute map that includes the full name of the member account. The value field contains the Amazon Web Services ID of the member account.</p> </li> <li> <p>OPERATING_SYSTEM - The operating system. Examples are Windows or Linux.</p> </li> <li> <p>OPERATION - The action performed. Examples include <code>RunInstance</code> and <code>CreateBucket</code>.</p> </li> <li> <p>PLATFORM - The Amazon EC2 operating system. Examples are Windows or Linux.</p> </li> <li> <p>PURCHASE_TYPE - The reservation type of the purchase that this usage is related to. Examples include On-Demand Instances and Standard Reserved Instances.</p> </li> <li> <p>RESERVATION_ID - The unique identifier for an Amazon Web Services Reservation Instance.</p> </li> <li> <p>SAVINGS_PLAN_ARN - The unique identifier for your Savings Plans.</p> </li> <li> <p>SAVINGS_PLANS_TYPE - Type of Savings Plans (EC2 Instance or Compute).</p> </li> <li> <p>SERVICE - The Amazon Web Services service such as Amazon DynamoDB.</p> </li> <li> <p>TENANCY - The tenancy of a resource. Examples are shared or dedicated.</p> </li> <li> <p>USAGE_TYPE - The type of usage. An example is DataTransfer-In-Bytes. The response for the <code>GetDimensionValues</code> operation includes a unit attribute. Examples include GB and Hrs.</p> </li> <li> <p>USAGE_TYPE_GROUP - The grouping of common usage types. An example is Amazon EC2: CloudWatch – Alarms. The response for this operation includes a unit attribute.</p> </li> <li> <p>REGION - The Amazon Web Services Region.</p> </li> <li> <p>RECORD_TYPE - The different types of charges such as Reserved Instance (RI) fees, usage costs, tax refunds, and credits.</p> </li> <li> <p>RESOURCE_ID - The unique identifier of the resource. ResourceId is an opt-in feature only available for last 14 days for EC2-Compute Service.</p> </li> </ul> <p>If you set the context to <code>RESERVATIONS</code>, you can use the following dimensions for searching:</p> <ul> <li> <p>AZ - The Availability Zone. An example is <code>us-east-1a</code>.</p> </li> <li> <p>CACHE_ENGINE - The Amazon ElastiCache operating system. Examples are Windows or Linux.</p> </li> <li> <p>DEPLOYMENT_OPTION - The scope of Amazon Relational Database Service deployments. Valid values are <code>SingleAZ</code> and <code>MultiAZ</code>.</p> </li> <li> <p>INSTANCE_TYPE - The type of Amazon EC2 instance. An example is <code>m4.xlarge</code>.</p> </li> <li> <p>LINKED_ACCOUNT - The description in the attribute map that includes the full name of the member account. The value field contains the Amazon Web Services ID of the member account.</p> </li> <li> <p>PLATFORM - The Amazon EC2 operating system. Examples are Windows or Linux.</p> </li> <li> <p>REGION - The Amazon Web Services Region.</p> </li> <li> <p>SCOPE (Utilization only) - The scope of a Reserved Instance (RI). Values are regional or a single Availability Zone.</p> </li> <li> <p>TAG (Coverage only) - The tags that are associated with a Reserved Instance (RI).</p> </li> <li> <p>TENANCY - The tenancy of a resource. Examples are shared or dedicated.</p> </li> </ul> <p>If you set the context to <code>SAVINGS_PLANS</code>, you can use the following dimensions for searching:</p> <ul> <li> <p>SAVINGS_PLANS_TYPE - Type of Savings Plans (EC2 Instance or Compute)</p> </li> <li> <p>PAYMENT_OPTION - The payment option for the given Savings Plans (for example, All Upfront)</p> </li> <li> <p>REGION - The Amazon Web Services Region.</p> </li> <li> <p>INSTANCE_TYPE_FAMILY - The family of instances (For example, <code>m5</code>)</p> </li> <li> <p>LINKED_ACCOUNT - The description in the attribute map that includes the full name of the member account. The value field contains the Amazon Web Services ID of the member account.</p> </li> <li> <p>SAVINGS_PLAN_ARN - The unique identifier for your Savings Plans.</p> </li> </ul>"
         },
         "Filter":{"shape":"Expression"},
         "SortBy":{
@@ -2626,7 +2835,7 @@
         },
         "Filter":{
           "shape":"Expression",
-          "documentation":"<p>Filters utilization data by dimensions. You can filter by the following dimensions:</p> <ul> <li> <p>AZ</p> </li> <li> <p>CACHE_ENGINE</p> </li> <li> <p>DEPLOYMENT_OPTION</p> </li> <li> <p>INSTANCE_TYPE</p> </li> <li> <p>LINKED_ACCOUNT</p> </li> <li> <p>OPERATING_SYSTEM</p> </li> <li> <p>PLATFORM</p> </li> <li> <p>REGION</p> </li> <li> <p>SERVICE</p> </li> <li> <p>SCOPE</p> </li> <li> <p>TENANCY</p> </li> </ul> <p> <code>GetReservationUtilization</code> uses the same <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html\">Expression</a> object as the other operations, but only <code>AND</code> is supported among each dimension, and nesting is supported up to only one level deep. If there are multiple values for a dimension, they are OR'd together.</p>"
+          "documentation":"<p>Filters utilization data by dimensions. You can filter by the following dimensions:</p> <ul> <li> <p>AZ</p> </li> <li> <p>CACHE_ENGINE</p> </li> <li> <p>DEPLOYMENT_OPTION</p> </li> <li> <p>INSTANCE_TYPE</p> </li> <li> <p>LINKED_ACCOUNT</p> </li> <li> <p>OPERATING_SYSTEM</p> </li> <li> <p>PLATFORM</p> </li> <li> <p>REGION</p> </li> <li> <p>SERVICE</p> <note> <p>If not specified, the <code>SERVICE</code> filter defaults to Amazon Elastic Compute Cloud - Compute. Supported values for <code>SERVICE</code> are Amazon Elastic Compute Cloud - Compute, Amazon Relational Database Service, Amazon ElastiCache, Amazon Redshift, and Amazon Elasticsearch Service. The value for the <code>SERVICE</code> filter should not exceed \"1\".</p> </note> </li> <li> <p>SCOPE</p> </li> <li> <p>TENANCY</p> </li> </ul> <p> <code>GetReservationUtilization</code> uses the same <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html\">Expression</a> object as the other operations, but only <code>AND</code> is supported among each dimension, and nesting is supported up to only one level deep. If there are multiple values for a dimension, they are OR'd together.</p>"
         },
         "SortBy":{
           "shape":"SortDefinition",
@@ -3169,6 +3378,40 @@
       },
       "documentation":"<p>You made too many calls in a short period of time. Try again later.</p>",
       "exception":true
+    },
+    "ListCommitmentPurchaseAnalysesRequest":{
+      "type":"structure",
+      "members":{
+        "AnalysisStatus":{
+          "shape":"AnalysisStatus",
+          "documentation":"<p>The status of the analysis.</p>"
+        },
+        "NextPageToken":{
+          "shape":"NextPageToken",
+          "documentation":"<p>The token to retrieve the next set of results.</p>"
+        },
+        "PageSize":{
+          "shape":"NonNegativeInteger",
+          "documentation":"<p>The number of analyses that you want returned in a single response object.</p>"
+        },
+        "AnalysisIds":{
+          "shape":"AnalysisIds",
+          "documentation":"<p>The analysis IDs associated with the commitment purchase analyses.</p>"
+        }
+      }
+    },
+    "ListCommitmentPurchaseAnalysesResponse":{
+      "type":"structure",
+      "members":{
+        "AnalysisSummaryList":{
+          "shape":"AnalysisSummaryList",
+          "documentation":"<p>The list of analyses.</p>"
+        },
+        "NextPageToken":{
+          "shape":"NextPageToken",
+          "documentation":"<p>The token to retrieve the next set of results.</p>"
+        }
+      }
     },
     "ListCostAllocationTagBackfillHistoryRequest":{
       "type":"structure",
@@ -4327,7 +4570,7 @@
       "members":{
         "Service":{
           "shape":"GenericString",
-          "documentation":"<p>The Amazon Web Servicesservice name that's associated with the cost anomaly. </p>"
+          "documentation":"<p>The Amazon Web Services service name that's associated with the cost anomaly. </p>"
         },
         "Region":{
           "shape":"GenericString",
@@ -4346,13 +4589,47 @@
           "documentation":"<p>The member account name value that's associated with the cost anomaly.</p>"
         }
       },
-      "documentation":"<p>The combination of Amazon Web Servicesservice, linked account, linked account name, Region, and usage type where a cost anomaly is observed. The linked account name will only be available when the account name can be identified.</p>"
+      "documentation":"<p>The combination of Amazon Web Services service, linked account, linked account name, Region, and usage type where a cost anomaly is observed. The linked account name will only be available when the account name can be identified.</p>"
     },
     "RootCauses":{
       "type":"list",
       "member":{"shape":"RootCause"}
     },
     "SavingsPlanArn":{"type":"string"},
+    "SavingsPlans":{
+      "type":"structure",
+      "members":{
+        "PaymentOption":{
+          "shape":"PaymentOption",
+          "documentation":"<p>The payment option for the Savings Plans commitment.</p>"
+        },
+        "SavingsPlansType":{
+          "shape":"SupportedSavingsPlansType",
+          "documentation":"<p>The Savings Plans type.</p>"
+        },
+        "Region":{
+          "shape":"GenericString",
+          "documentation":"<p>The Region associated with the Savings Plans commitment.</p>"
+        },
+        "InstanceFamily":{
+          "shape":"GenericString",
+          "documentation":"<p>The instance family of the Savings Plans commitment.</p>"
+        },
+        "TermInYears":{
+          "shape":"TermInYears",
+          "documentation":"<p>The term that you want the Savings Plans commitment for.</p>"
+        },
+        "SavingsPlansCommitment":{
+          "shape":"SavingsPlansCommitment",
+          "documentation":"<p>The Savings Plans commitment.</p>"
+        },
+        "OfferingId":{
+          "shape":"GenericString",
+          "documentation":"<p>The unique ID that's used to distinguish commitments from one another.</p>"
+        }
+      },
+      "documentation":"<p>The Savings Plans commitment details.</p>"
+    },
     "SavingsPlansAmortizedCommitment":{
       "type":"structure",
       "members":{
@@ -4370,6 +4647,11 @@
         }
       },
       "documentation":"<p>The amortized amount of Savings Plans purchased in a specific account during a specific time interval.</p>"
+    },
+    "SavingsPlansCommitment":{
+      "type":"double",
+      "max":5000,
+      "min":0.001
     },
     "SavingsPlansCoverage":{
       "type":"structure",
@@ -4442,6 +4724,141 @@
         }
       },
       "documentation":"<p>The attribute details on a specific Savings Plan.</p>"
+    },
+    "SavingsPlansId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^[\\S\\s]{8}-[\\S\\s]{4}-[\\S\\s]{4}-[\\S\\s]{4}-[\\S\\s]{12}$"
+    },
+    "SavingsPlansPurchaseAnalysisConfiguration":{
+      "type":"structure",
+      "required":[
+        "AnalysisType",
+        "SavingsPlansToAdd",
+        "LookBackTimePeriod"
+      ],
+      "members":{
+        "AccountScope":{
+          "shape":"AccountScope",
+          "documentation":"<p>The account scope that you want your analysis for.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account that the analysis is for.</p>"
+        },
+        "AnalysisType":{
+          "shape":"AnalysisType",
+          "documentation":"<p>The type of analysis.</p>"
+        },
+        "SavingsPlansToAdd":{
+          "shape":"SavingsPlansToAdd",
+          "documentation":"<p>Savings Plans to include in the analysis.</p>"
+        },
+        "SavingsPlansToExclude":{
+          "shape":"SavingsPlansToExclude",
+          "documentation":"<p>Savings Plans to exclude from the analysis.</p>"
+        },
+        "LookBackTimePeriod":{
+          "shape":"DateInterval",
+          "documentation":"<p>The time period associated with the analysis.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the Savings Plans purchase analysis.</p>"
+    },
+    "SavingsPlansPurchaseAnalysisDetails":{
+      "type":"structure",
+      "members":{
+        "CurrencyCode":{
+          "shape":"GenericString",
+          "documentation":"<p>The currency code used for the analysis.</p>"
+        },
+        "LookbackPeriodInHours":{
+          "shape":"GenericString",
+          "documentation":"<p>The lookback period in hours that's used to generate the analysis.</p>"
+        },
+        "CurrentAverageCoverage":{
+          "shape":"GenericString",
+          "documentation":"<p>The average value of hourly coverage over the lookback period.</p>"
+        },
+        "CurrentAverageHourlyOnDemandSpend":{
+          "shape":"GenericString",
+          "documentation":"<p>The average value of hourly On-Demand spend over the lookback period.</p>"
+        },
+        "CurrentMaximumHourlyOnDemandSpend":{
+          "shape":"GenericString",
+          "documentation":"<p>The highest value of hourly On-Demand spend over the lookback period.</p>"
+        },
+        "CurrentMinimumHourlyOnDemandSpend":{
+          "shape":"GenericString",
+          "documentation":"<p>The lowest value of hourly On-Demand spend over the lookback period.</p>"
+        },
+        "CurrentOnDemandSpend":{
+          "shape":"GenericString",
+          "documentation":"<p>The current total On-Demand spend over the lookback period.</p>"
+        },
+        "ExistingHourlyCommitment":{
+          "shape":"GenericString",
+          "documentation":"<p>The existing hourly commitment for the Savings Plan type.</p>"
+        },
+        "HourlyCommitmentToPurchase":{
+          "shape":"GenericString",
+          "documentation":"<p>The recommended or custom hourly commitment.</p>"
+        },
+        "EstimatedAverageCoverage":{
+          "shape":"GenericString",
+          "documentation":"<p>The estimated coverage of the Savings Plan.</p>"
+        },
+        "EstimatedAverageUtilization":{
+          "shape":"GenericString",
+          "documentation":"<p>The estimated utilization of the Savings Plan.</p>"
+        },
+        "EstimatedMonthlySavingsAmount":{
+          "shape":"GenericString",
+          "documentation":"<p>The estimated monthly savings amount based on the Savings Plan.</p>"
+        },
+        "EstimatedOnDemandCost":{
+          "shape":"GenericString",
+          "documentation":"<p>The remaining On-Demand cost estimated to not be covered by the commitment, over the length of the lookback period.</p>"
+        },
+        "EstimatedOnDemandCostWithCurrentCommitment":{
+          "shape":"GenericString",
+          "documentation":"<p>The estimated On-Demand cost you expect with no additional commitment, based on your usage of the selected time period and the Savings Plan you own.</p>"
+        },
+        "EstimatedROI":{
+          "shape":"GenericString",
+          "documentation":"<p>The estimated return on investment that's based on the purchase commitment and estimated savings. This is calculated as estimatedSavingsAmount/estimatedSPCost*100.</p>"
+        },
+        "EstimatedSavingsAmount":{
+          "shape":"GenericString",
+          "documentation":"<p>The estimated savings amount that's based on the purchase commitment over the length of the lookback period.</p>"
+        },
+        "EstimatedSavingsPercentage":{
+          "shape":"GenericString",
+          "documentation":"<p>The estimated savings percentage relative to the total cost over the cost calculation lookback period.</p>"
+        },
+        "EstimatedCommitmentCost":{
+          "shape":"GenericString",
+          "documentation":"<p>The estimated cost of the purchase commitment over the length of the lookback period.</p>"
+        },
+        "LatestUsageTimestamp":{
+          "shape":"GenericString",
+          "documentation":"<p>The date and time of the last hour that went into the analysis.</p>"
+        },
+        "UpfrontCost":{
+          "shape":"GenericString",
+          "documentation":"<p>The upfront cost of the Savings Plan, based on the selected payment option.</p>"
+        },
+        "AdditionalMetadata":{
+          "shape":"GenericString",
+          "documentation":"<p>Additional metadata that might be applicable to the commitment.</p>"
+        },
+        "MetricsOverLookbackPeriod":{
+          "shape":"MetricsOverLookbackPeriod",
+          "documentation":"<p>The related hourly cost, coverage, and utilization metrics over the lookback period.</p>"
+        }
+      },
+      "documentation":"<p>Details about the Savings Plans purchase analysis.</p>"
     },
     "SavingsPlansPurchaseRecommendation":{
       "type":"structure",
@@ -4637,6 +5054,18 @@
       },
       "documentation":"<p>The amount of savings that you're accumulating, against the public On-Demand rate of the usage accrued in an account.</p>"
     },
+    "SavingsPlansToAdd":{
+      "type":"list",
+      "member":{"shape":"SavingsPlans"},
+      "max":1,
+      "min":1
+    },
+    "SavingsPlansToExclude":{
+      "type":"list",
+      "member":{"shape":"SavingsPlansId"},
+      "max":1000,
+      "min":0
+    },
     "SavingsPlansUtilization":{
       "type":"structure",
       "members":{
@@ -4790,6 +5219,38 @@
         "ASCENDING",
         "DESCENDING"
       ]
+    },
+    "StartCommitmentPurchaseAnalysisRequest":{
+      "type":"structure",
+      "required":["CommitmentPurchaseAnalysisConfiguration"],
+      "members":{
+        "CommitmentPurchaseAnalysisConfiguration":{
+          "shape":"CommitmentPurchaseAnalysisConfiguration",
+          "documentation":"<p>The configuration for the commitment purchase analysis.</p>"
+        }
+      }
+    },
+    "StartCommitmentPurchaseAnalysisResponse":{
+      "type":"structure",
+      "required":[
+        "AnalysisId",
+        "AnalysisStartedTime",
+        "EstimatedCompletionTime"
+      ],
+      "members":{
+        "AnalysisId":{
+          "shape":"AnalysisId",
+          "documentation":"<p>The analysis ID that's associated with the commitment purchase analysis.</p>"
+        },
+        "AnalysisStartedTime":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p>The start time of the analysis.</p>"
+        },
+        "EstimatedCompletionTime":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p>The estimated time for when the analysis will complete.</p>"
+        }
+      }
     },
     "StartCostAllocationTagBackfillRequest":{
       "type":"structure",

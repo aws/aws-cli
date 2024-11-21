@@ -396,6 +396,23 @@
       ],
       "documentation":"<p>Creates an Amazon Web Services IoT Core certificate provider. You can use Amazon Web Services IoT Core certificate provider to customize how to sign a certificate signing request (CSR) in IoT fleet provisioning. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/provisioning-cert-provider.html\">Customizing certificate signing using Amazon Web Services IoT Core certificate provider</a> from <i>Amazon Web Services IoT Core Developer Guide</i>.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateCertificateProvider</a> action.</p> <important> <p>After you create a certificate provider, the behavior of <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/fleet-provision-api.html#create-cert-csr\"> <code>CreateCertificateFromCsr</code> API for fleet provisioning</a> will change and all API calls to <code>CreateCertificateFromCsr</code> will invoke the certificate provider to create the certificates. It can take up to a few minutes for this behavior to change after a certificate provider is created.</p> </important>"
     },
+    "CreateCommand":{
+      "name":"CreateCommand",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/commands/{commandId}"
+      },
+      "input":{"shape":"CreateCommandRequest"},
+      "output":{"shape":"CreateCommandResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a command. A command contains reusable configurations that can be applied before they are sent to the devices.</p>"
+    },
     "CreateCustomMetric":{
       "name":"CreateCustomMetric",
       "http":{
@@ -995,6 +1012,38 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Deletes a certificate provider.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DeleteCertificateProvider</a> action. </p> <p>If you delete the certificate provider resource, the behavior of <code>CreateCertificateFromCsr</code> will resume, and IoT will create certificates signed by IoT from a certificate signing request (CSR).</p>"
+    },
+    "DeleteCommand":{
+      "name":"DeleteCommand",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/commands/{commandId}"
+      },
+      "input":{"shape":"DeleteCommandRequest"},
+      "output":{"shape":"DeleteCommandResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Delete a command resource.</p>"
+    },
+    "DeleteCommandExecution":{
+      "name":"DeleteCommandExecution",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/command-executions/{executionId}"
+      },
+      "input":{"shape":"DeleteCommandExecutionRequest"},
+      "output":{"shape":"DeleteCommandExecutionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Delete a command execution.</p> <note> <p>Only command executions that enter a terminal state can be deleted from your account.</p> </note>"
     },
     "DeleteCustomMetric":{
       "name":"DeleteCustomMetric",
@@ -2217,6 +2266,38 @@
       ],
       "documentation":"<p>Returns the approximate count of unique values that match the query.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">GetCardinality</a> action.</p>"
     },
+    "GetCommand":{
+      "name":"GetCommand",
+      "http":{
+        "method":"GET",
+        "requestUri":"/commands/{commandId}"
+      },
+      "input":{"shape":"GetCommandRequest"},
+      "output":{"shape":"GetCommandResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets information about the specified command.</p>"
+    },
+    "GetCommandExecution":{
+      "name":"GetCommandExecution",
+      "http":{
+        "method":"GET",
+        "requestUri":"/command-executions/{executionId}"
+      },
+      "input":{"shape":"GetCommandExecutionRequest"},
+      "output":{"shape":"GetCommandExecutionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets information about the specific command execution on a single device.</p>"
+    },
     "GetEffectivePolicies":{
       "name":"GetEffectivePolicies",
       "http":{
@@ -2703,6 +2784,37 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>List the device certificates signed by the specified CA certificate.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListCertificatesByCA</a> action.</p>"
+    },
+    "ListCommandExecutions":{
+      "name":"ListCommandExecutions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/command-executions"
+      },
+      "input":{"shape":"ListCommandExecutionsRequest"},
+      "output":{"shape":"ListCommandExecutionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List all command executions.</p> <important> <p>You must provide only the <code>startedTimeFilter</code> or the <code>completedTimeFilter</code> information. If you provide both time filters, the API will generate an error. You can use this information to find command executions that started within a specific timeframe.</p> </important>"
+    },
+    "ListCommands":{
+      "name":"ListCommands",
+      "http":{
+        "method":"GET",
+        "requestUri":"/commands"
+      },
+      "input":{"shape":"ListCommandsRequest"},
+      "output":{"shape":"ListCommandsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List all commands in your account.</p>"
     },
     "ListCustomMetrics":{
       "name":"ListCustomMetrics",
@@ -4083,6 +4195,23 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates a certificate provider.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">UpdateCertificateProvider</a> action. </p>"
+    },
+    "UpdateCommand":{
+      "name":"UpdateCommand",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/commands/{commandId}"
+      },
+      "input":{"shape":"UpdateCommandRequest"},
+      "output":{"shape":"UpdateCommandResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update information about a command or mark a command for deprecation.</p>"
     },
     "UpdateCustomMetric":{
       "name":"UpdateCustomMetric",
@@ -6074,8 +6203,18 @@
       },
       "documentation":"<p>The properties of a billing group.</p>"
     },
+    "BinaryCommandExecutionResult":{
+      "type":"blob",
+      "min":1
+    },
+    "BinaryParameterValue":{
+      "type":"blob",
+      "min":1
+    },
     "Boolean":{"type":"boolean"},
+    "BooleanCommandExecutionResult":{"type":"boolean"},
     "BooleanKey":{"type":"boolean"},
+    "BooleanParameterValue":{"type":"boolean"},
     "BooleanWrapperObject":{"type":"boolean"},
     "Bucket":{
       "type":"structure",
@@ -6767,6 +6906,251 @@
       "documentation":"<p>Describes the signature for a file.</p>"
     },
     "CognitoIdentityPoolId":{"type":"string"},
+    "CommandArn":{"type":"string"},
+    "CommandDescription":{
+      "type":"string",
+      "max":2028,
+      "pattern":"[^\\p{C}]*"
+    },
+    "CommandExecutionId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "CommandExecutionParameterMap":{
+      "type":"map",
+      "key":{"shape":"CommandParameterName"},
+      "value":{"shape":"CommandParameterValue"},
+      "min":1
+    },
+    "CommandExecutionResult":{
+      "type":"structure",
+      "members":{
+        "S":{
+          "shape":"StringCommandExecutionResult",
+          "documentation":"<p>An attribute of type String. For example:</p> <p> <code>\"S\": \"Hello\"</code> </p>"
+        },
+        "B":{
+          "shape":"BooleanCommandExecutionResult",
+          "documentation":"<p>An attribute of type Boolean. For example:</p> <p> <code>\"BOOL\": true</code> </p>"
+        },
+        "BIN":{
+          "shape":"BinaryCommandExecutionResult",
+          "documentation":"<p>An attribute of type Binary.</p>"
+        }
+      },
+      "documentation":"<p>The result value of the command execution. The device can use the result field to share additional details about the execution such as a return value of a remote function call.</p> <note> <p>This field is not applicable if you use the <code>AWS-IoT-FleetWise</code> namespace.</p> </note>"
+    },
+    "CommandExecutionResultMap":{
+      "type":"map",
+      "key":{"shape":"CommandExecutionResultName"},
+      "value":{"shape":"CommandExecutionResult"},
+      "min":1
+    },
+    "CommandExecutionResultName":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "CommandExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "IN_PROGRESS",
+        "SUCCEEDED",
+        "FAILED",
+        "REJECTED",
+        "TIMED_OUT"
+      ]
+    },
+    "CommandExecutionSummary":{
+      "type":"structure",
+      "members":{
+        "commandArn":{
+          "shape":"CommandArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the command execution.</p>"
+        },
+        "executionId":{
+          "shape":"CommandExecutionId",
+          "documentation":"<p>The unique identifier of the command execution.</p>"
+        },
+        "targetArn":{
+          "shape":"TargetArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the target device for which the command is being executed.</p>"
+        },
+        "status":{
+          "shape":"CommandExecutionStatus",
+          "documentation":"<p>The status of the command executions.</p>"
+        },
+        "createdAt":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time at which the command execution was created for the target device.</p>"
+        },
+        "startedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time at which the command started executing on the target device.</p>"
+        },
+        "completedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time at which the command completed executing on the target device.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a particular command execution.</p>"
+    },
+    "CommandExecutionSummaryList":{
+      "type":"list",
+      "member":{"shape":"CommandExecutionSummary"}
+    },
+    "CommandExecutionTimeoutInSeconds":{
+      "type":"long",
+      "min":1
+    },
+    "CommandId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "CommandMaxResults":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "CommandNamespace":{
+      "type":"string",
+      "enum":[
+        "AWS-IoT",
+        "AWS-IoT-FleetWise"
+      ]
+    },
+    "CommandParameter":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"CommandParameterName",
+          "documentation":"<p>The name of a specific parameter used in a command and command execution.</p>"
+        },
+        "value":{
+          "shape":"CommandParameterValue",
+          "documentation":"<p>The value used to describe the command. When you assign a value to a parameter, it will override any default value that you had already specified.</p>"
+        },
+        "defaultValue":{
+          "shape":"CommandParameterValue",
+          "documentation":"<p>The default value used to describe the command. This is the value assumed by the parameter if no other value is assigned to it.</p>"
+        },
+        "description":{
+          "shape":"CommandParameterDescription",
+          "documentation":"<p>The description of the command parameter.</p>"
+        }
+      },
+      "documentation":"<p>A map of key-value pairs that describe the command.</p>"
+    },
+    "CommandParameterDescription":{
+      "type":"string",
+      "max":2028,
+      "pattern":"[^\\p{C}]*"
+    },
+    "CommandParameterList":{
+      "type":"list",
+      "member":{"shape":"CommandParameter"},
+      "min":1
+    },
+    "CommandParameterName":{
+      "type":"string",
+      "max":192,
+      "min":1,
+      "pattern":"^[.$a-zA-Z0-9_-]+$"
+    },
+    "CommandParameterValue":{
+      "type":"structure",
+      "members":{
+        "S":{
+          "shape":"StringParameterValue",
+          "documentation":"<p>An attribute of type String. For example:</p> <p> <code>\"S\": \"Hello\"</code> </p>"
+        },
+        "B":{
+          "shape":"BooleanParameterValue",
+          "documentation":"<p>An attribute of type Boolean. For example:</p> <p> <code>\"BOOL\": true</code> </p>"
+        },
+        "I":{
+          "shape":"IntegerParameterValue",
+          "documentation":"<p>An attribute of type Integer (Thirty-Two Bits).</p>"
+        },
+        "L":{
+          "shape":"LongParameterValue",
+          "documentation":"<p>An attribute of type Long.</p>"
+        },
+        "D":{
+          "shape":"DoubleParameterValue",
+          "documentation":"<p>An attribute of type Double (Sixty-Four Bits).</p>"
+        },
+        "BIN":{
+          "shape":"BinaryParameterValue",
+          "documentation":"<p>An attribute of type Binary. For example:</p> <p> <code>\"B\": \"dGhpcyB0ZXh0IGlzIGJhc2U2NC1lbmNvZGVk\"</code> </p>"
+        },
+        "UL":{
+          "shape":"UnsignedLongParameterValue",
+          "documentation":"<p>An attribute of type unsigned long.</p>"
+        }
+      },
+      "documentation":"<p>The range of possible values that's used to describe a specific command parameter.</p> <note> <p>The <code>commandParameterValue</code> can only have one of the below fields listed.</p> </note>"
+    },
+    "CommandPayload":{
+      "type":"structure",
+      "members":{
+        "content":{
+          "shape":"CommandPayloadBlob",
+          "documentation":"<p>The static payload file for the command.</p>"
+        },
+        "contentType":{
+          "shape":"MimeType",
+          "documentation":"<p>The content type that specifies the format type of the payload file. This field must use a type/subtype format, such as <code>application/json</code>. For information about various content types, see <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types/Common_types\">Common MIME types</a>.</p>"
+        }
+      },
+      "documentation":"<p>The command payload object that contains the instructions for the device to process.</p>"
+    },
+    "CommandPayloadBlob":{"type":"blob"},
+    "CommandSummary":{
+      "type":"structure",
+      "members":{
+        "commandArn":{
+          "shape":"CommandArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the command.</p>"
+        },
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>The unique identifier of the command.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the command.</p>"
+        },
+        "deprecated":{
+          "shape":"DeprecationFlag",
+          "documentation":"<p>Indicates whether the command has been deprecated.</p>"
+        },
+        "createdAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command was last updated.</p>"
+        },
+        "pendingDeletion":{
+          "shape":"BooleanWrapperObject",
+          "documentation":"<p>Indicates whether the command is pending deletion.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a particular command resource.</p>"
+    },
+    "CommandSummaryList":{
+      "type":"list",
+      "member":{"shape":"CommandSummary"}
+    },
     "Comment":{
       "type":"string",
       "max":2028,
@@ -6837,7 +7221,7 @@
           "documentation":"<p>A resource with the same name already exists.</p>"
         }
       },
-      "documentation":"<p>A resource with the same name already exists.</p>",
+      "documentation":"<p>The request conflicts with the current state of the resource.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -7085,6 +7469,59 @@
         "certificateProviderArn":{
           "shape":"CertificateProviderArn",
           "documentation":"<p>The ARN of the certificate provider.</p>"
+        }
+      }
+    },
+    "CreateCommandRequest":{
+      "type":"structure",
+      "required":["commandId"],
+      "members":{
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>A unique identifier for the command. We recommend using UUID. Alpha-numeric characters, hyphens, and underscores are valid for use here.</p>",
+          "location":"uri",
+          "locationName":"commandId"
+        },
+        "namespace":{
+          "shape":"CommandNamespace",
+          "documentation":"<p>The namespace of the command. The MQTT reserved topics and validations will be used for command executions according to the namespace setting.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The user-friendly name in the console for the command. This name doesn't have to be unique. You can update the user-friendly name after you define it.</p>"
+        },
+        "description":{
+          "shape":"CommandDescription",
+          "documentation":"<p>A short text decription of the command.</p>"
+        },
+        "payload":{
+          "shape":"CommandPayload",
+          "documentation":"<p>The payload object for the command. You must specify this information when using the <code>AWS-IoT</code> namespace.</p> <p>You can upload a static payload file from your local storage that contains the instructions for the device to process. The payload file can use any format. To make sure that the device correctly interprets the payload, we recommend you to specify the payload content type.</p>"
+        },
+        "mandatoryParameters":{
+          "shape":"CommandParameterList",
+          "documentation":"<p>A list of parameters that are required by the <code>StartCommandExecution</code> API. These parameters need to be specified only when using the <code>AWS-IoT-FleetWise</code> namespace. You can either specify them here or when running the command using the <code>StartCommandExecution</code> API.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The IAM role that allows access to create the command.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>Name-value pairs that are used as metadata to manage a command.</p>"
+        }
+      }
+    },
+    "CreateCommandResponse":{
+      "type":"structure",
+      "members":{
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>The unique identifier for the command.</p>"
+        },
+        "commandArn":{
+          "shape":"CommandArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the command. For example, <code>arn:aws:iot:&lt;region&gt;:&lt;accountid&gt;:command/&lt;commandId&gt;</code> </p>"
         }
       }
     },
@@ -7390,7 +7827,7 @@
       "members":{
         "jobId":{
           "shape":"JobId",
-          "documentation":"<p>A job identifier which must be unique for your Amazon Web Services account. We recommend using a UUID. Alpha-numeric characters, \"-\" and \"_\" are valid for use here.</p>",
+          "documentation":"<p>A job identifier which must be unique for your account. We recommend using a UUID. Alpha-numeric characters, \"-\" and \"_\" are valid for use here.</p>",
           "location":"uri",
           "locationName":"jobId"
         },
@@ -8630,6 +9067,54 @@
       },
       "documentation":"<p>The input for the DeleteCertificate operation.</p>"
     },
+    "DeleteCommandExecutionRequest":{
+      "type":"structure",
+      "required":[
+        "executionId",
+        "targetArn"
+      ],
+      "members":{
+        "executionId":{
+          "shape":"CommandExecutionId",
+          "documentation":"<p>The unique identifier of the command execution that you want to delete from your account.</p>",
+          "location":"uri",
+          "locationName":"executionId"
+        },
+        "targetArn":{
+          "shape":"TargetArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the target device for which you want to delete command executions.</p>",
+          "location":"querystring",
+          "locationName":"targetArn"
+        }
+      }
+    },
+    "DeleteCommandExecutionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteCommandRequest":{
+      "type":"structure",
+      "required":["commandId"],
+      "members":{
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>The unique identifier of the command to be deleted.</p>",
+          "location":"uri",
+          "locationName":"commandId"
+        }
+      }
+    },
+    "DeleteCommandResponse":{
+      "type":"structure",
+      "members":{
+        "statusCode":{
+          "shape":"StatusCode",
+          "documentation":"<p>The status code for the command deletion request. The status code is in the 200 range for a successful request.</p> <ul> <li> <p>If the command hasn't been deprecated, or has been deprecated for a duration that is shorter than the maximum time out duration of 12 hours, when calling the <code>DeleteCommand</code> request, the deletion will be scheduled and a 202 status code will be returned. While the command is being deleted, it will be in a <code>pendingDeletion</code> state. Once the time out duration has been reached, the command will be permanently removed from your account.</p> </li> <li> <p>If the command has been deprecated for a duration that is longer than the maximum time out duration of 12 hours, when calling the <code>DeleteCommand</code> request, the command will be deleted immediately and a 204 status code will be returned.</p> </li> </ul>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DeleteConflictException":{
       "type":"structure",
       "members":{
@@ -9237,6 +9722,7 @@
       "documentation":"<p>The output for the DeprecateThingType operation.</p>"
     },
     "DeprecationDate":{"type":"timestamp"},
+    "DeprecationFlag":{"type":"boolean"},
     "DescribeAccountAuditConfigurationRequest":{
       "type":"structure",
       "members":{
@@ -9926,7 +10412,7 @@
         },
         "beforeSubstitution":{
           "shape":"BeforeSubstitutionFlag",
-          "documentation":"<p>A flag that provides a view of the job document before and after the substitution parameters have been resolved with their exact values.</p>",
+          "documentation":"<p>Provides a view of the job document before and after the substitution parameters have been resolved with their exact values.</p>",
           "location":"querystring",
           "locationName":"beforeSubstitution"
         }
@@ -10943,6 +11429,11 @@
       }
     },
     "DisconnectReason":{"type":"string"},
+    "DisplayName":{
+      "type":"string",
+      "max":64,
+      "pattern":"[^\\p{C}]*"
+    },
     "DocumentParameter":{
       "type":"structure",
       "members":{
@@ -11023,6 +11514,7 @@
         "CUSTOMER_MANAGED"
       ]
     },
+    "DoubleParameterValue":{"type":"double"},
     "DurationInMinutes":{
       "type":"integer",
       "max":1430,
@@ -11620,6 +12112,155 @@
         }
       }
     },
+    "GetCommandExecutionRequest":{
+      "type":"structure",
+      "required":[
+        "executionId",
+        "targetArn"
+      ],
+      "members":{
+        "executionId":{
+          "shape":"CommandExecutionId",
+          "documentation":"<p>The unique identifier for the command execution. This information is returned as a response of the <code>StartCommandExecution</code> API request.</p>",
+          "location":"uri",
+          "locationName":"executionId"
+        },
+        "targetArn":{
+          "shape":"TargetArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the device on which the command execution is being performed.</p>",
+          "location":"querystring",
+          "locationName":"targetArn"
+        },
+        "includeResult":{
+          "shape":"BooleanWrapperObject",
+          "documentation":"<p>Can be used to specify whether to include the result of the command execution in the <code>GetCommandExecution</code> API response. Your device can use this field to provide additional information about the command execution. You only need to specify this field when using the <code>AWS-IoT</code> namespace.</p>",
+          "location":"querystring",
+          "locationName":"includeResult"
+        }
+      }
+    },
+    "GetCommandExecutionResponse":{
+      "type":"structure",
+      "members":{
+        "executionId":{
+          "shape":"CommandExecutionId",
+          "documentation":"<p>The unique identifier of the command execution.</p>"
+        },
+        "commandArn":{
+          "shape":"CommandArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the command. For example, <code/>arn:aws:iot:&lt;region&gt;:&lt;accountid&gt;:command/&lt;commandId&gt;</p>"
+        },
+        "targetArn":{
+          "shape":"TargetArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the device on which the command execution is being performed.</p>"
+        },
+        "status":{
+          "shape":"CommandExecutionStatus",
+          "documentation":"<p>The status of the command execution. After your devices receive the command and start performing the operations specified in the command, it can use the <code>UpdateCommandExecution</code> MQTT API to update the status information.</p>"
+        },
+        "statusReason":{
+          "shape":"StatusReason",
+          "documentation":"<p>Your devices can use this parameter to provide additional context about the status of a command execution using a reason code and description.</p>"
+        },
+        "result":{
+          "shape":"CommandExecutionResultMap",
+          "documentation":"<p>The result value for the current state of the command execution. The status provides information about the progress of the command execution. The device can use the result field to share additional details about the execution such as a return value of a remote function call.</p> <note> <p>If you use the <code>AWS-IoT-FleetWise</code> namespace, then this field is not applicable in the API response.</p> </note>"
+        },
+        "parameters":{
+          "shape":"CommandExecutionParameterMap",
+          "documentation":"<p>The list of parameters that the <code>StartCommandExecution</code> API used when performing the command on the device.</p>"
+        },
+        "executionTimeoutSeconds":{
+          "shape":"CommandExecutionTimeoutInSeconds",
+          "documentation":"<p>Specifies the amount of time in seconds that the device can take to finish a command execution. A timer starts when the command execution is created. If the command execution status is not set to another terminal state before the timer expires, it will automatically update to <code>TIMED_OUT</code>.</p>"
+        },
+        "createdAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command execution was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command execution was last updated.</p>"
+        },
+        "startedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command execution was started.</p>"
+        },
+        "completedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command execution was completed.</p>"
+        },
+        "timeToLive":{
+          "shape":"DateType",
+          "documentation":"<p>The time to live (TTL) parameter for the <code>GetCommandExecution</code> API.</p>"
+        }
+      }
+    },
+    "GetCommandRequest":{
+      "type":"structure",
+      "required":["commandId"],
+      "members":{
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>The unique identifier of the command for which you want to retrieve information.</p>",
+          "location":"uri",
+          "locationName":"commandId"
+        }
+      }
+    },
+    "GetCommandResponse":{
+      "type":"structure",
+      "members":{
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>The unique identifier of the command.</p>"
+        },
+        "commandArn":{
+          "shape":"CommandArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the command. For example, <code>arn:aws:iot:&lt;region&gt;:&lt;accountid&gt;:command/&lt;commandId&gt;</code> </p>"
+        },
+        "namespace":{
+          "shape":"CommandNamespace",
+          "documentation":"<p>The namespace of the command.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The user-friendly name in the console for the command.</p>"
+        },
+        "description":{
+          "shape":"CommandDescription",
+          "documentation":"<p>A short text description of the command.</p>"
+        },
+        "mandatoryParameters":{
+          "shape":"CommandParameterList",
+          "documentation":"<p>A list of parameters for the command created.</p>"
+        },
+        "payload":{
+          "shape":"CommandPayload",
+          "documentation":"<p>The payload object that you provided for the command.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The IAM role that allows access to retrieve information about the command.</p>"
+        },
+        "createdAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command was last updated.</p>"
+        },
+        "deprecated":{
+          "shape":"DeprecationFlag",
+          "documentation":"<p>Indicates whether the command has been deprecated.</p>"
+        },
+        "pendingDeletion":{
+          "shape":"BooleanWrapperObject",
+          "documentation":"<p>Indicates whether the command is being deleted.</p>"
+        }
+      }
+    },
     "GetEffectivePoliciesRequest":{
       "type":"structure",
       "members":{
@@ -11678,7 +12319,7 @@
         },
         "beforeSubstitution":{
           "shape":"BeforeSubstitutionFlag",
-          "documentation":"<p>A flag that provides a view of the job document before and after the substitution parameters have been resolved with their exact values.</p>",
+          "documentation":"<p>Provides a view of the job document before and after the substitution parameters have been resolved with their exact values.</p>",
           "location":"querystring",
           "locationName":"beforeSubstitution"
         }
@@ -12343,6 +12984,7 @@
       "max":128,
       "min":1
     },
+    "IntegerParameterValue":{"type":"integer"},
     "InternalException":{
       "type":"structure",
       "members":{
@@ -13729,6 +14371,112 @@
         }
       },
       "documentation":"<p>The output of the ListCertificates operation.</p>"
+    },
+    "ListCommandExecutionsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"CommandMaxResults",
+          "documentation":"<p>The maximum number of results to return in this operation.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <code>null</code> to receive the first set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "namespace":{
+          "shape":"CommandNamespace",
+          "documentation":"<p>The namespace of the command.</p>"
+        },
+        "status":{
+          "shape":"CommandExecutionStatus",
+          "documentation":"<p>List all command executions for the device that have a particular status. For example, you can filter the list to display only command executions that have failed or timed out.</p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Specify whether to list the command executions that were created in the ascending or descending order. By default, the API returns all commands in the descending order based on the start time or completion time of the executions, that are determined by the <code>startTimeFilter</code> and <code>completeTimeFilter</code> parameters.</p>"
+        },
+        "startedTimeFilter":{
+          "shape":"TimeFilter",
+          "documentation":"<p>List all command executions that started any time before or after the date and time that you specify. The date and time uses the format <code>yyyy-MM-dd'T'HH:mm</code>.</p>"
+        },
+        "completedTimeFilter":{
+          "shape":"TimeFilter",
+          "documentation":"<p>List all command executions that completed any time before or after the date and time that you specify. The date and time uses the format <code>yyyy-MM-dd'T'HH:mm</code>.</p>"
+        },
+        "targetArn":{
+          "shape":"TargetArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the target device. You can use this information to list all command executions for a particular device.</p>"
+        },
+        "commandArn":{
+          "shape":"CommandArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the command. You can use this information to list all command executions for a particular command.</p>"
+        }
+      }
+    },
+    "ListCommandExecutionsResponse":{
+      "type":"structure",
+      "members":{
+        "commandExecutions":{
+          "shape":"CommandExecutionSummaryList",
+          "documentation":"<p>The list of command executions.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to get the next set of results, or <code>null</code> if there are no additional results.</p>"
+        }
+      }
+    },
+    "ListCommandsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"CommandMaxResults",
+          "documentation":"<p>The maximum number of results to return in this operation. By default, the API returns up to a maximum of 25 results. You can override this default value to return up to a maximum of 100 results for this operation.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <code>null</code> to receive the first set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "namespace":{
+          "shape":"CommandNamespace",
+          "documentation":"<p>The namespace of the command. By default, the API returns all commands that have been created for both <code>AWS-IoT</code> and <code>AWS-IoT-FleetWise</code> namespaces. You can override this default value if you want to return all commands that have been created only for a specific namespace.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
+        },
+        "commandParameterName":{
+          "shape":"CommandParameterName",
+          "documentation":"<p>A filter that can be used to display the list of commands that have a specific command parameter name.</p>",
+          "location":"querystring",
+          "locationName":"commandParameterName"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Specify whether to list the commands that you have created in the ascending or descending order. By default, the API returns all commands in the descending order based on the time that they were created.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        }
+      }
+    },
+    "ListCommandsResponse":{
+      "type":"structure",
+      "members":{
+        "commands":{
+          "shape":"CommandSummaryList",
+          "documentation":"<p>The list of commands.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to get the next set of results, or <code>null</code> if there are no additional results.</p>"
+        }
+      }
     },
     "ListCustomMetricsRequest":{
       "type":"structure",
@@ -15889,6 +16637,7 @@
       },
       "documentation":"<p>Describes the logging options payload.</p>"
     },
+    "LongParameterValue":{"type":"long"},
     "MachineLearningDetectionConfig":{
       "type":"structure",
       "required":["confidenceLevel"],
@@ -16128,6 +16877,10 @@
         }
       },
       "documentation":"<p>Set configurations for metrics export.</p>"
+    },
+    "MimeType":{
+      "type":"string",
+      "min":1
     },
     "Minimum":{"type":"double"},
     "MinimumNumberOfExecutedThings":{
@@ -18204,11 +18957,11 @@
         },
         "ocspLambdaArn":{
           "shape":"OCSPLambdaArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for a Lambda function that acts as a Request for Comments (RFC) 6960-compliant Online Certificate Status Protocol (OCSP) responder, supporting basic OCSP responses. The Lambda function accepts a JSON string that's Base64-encoded. Therefore, you must convert your OCSP response, which is typically in the Distinguished Encoding Rules (DER) format, into a JSON string that's Base64-encoded. The Lambda function's response is also a Base64-encoded JSON string and the response payload must not exceed 8 kilobytes (KiB) in size. The Lambda function must be in the same Amazon Web Services region and account as the domain configuration.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for a Lambda function that acts as a Request for Comments (RFC) 6960-compliant Online Certificate Status Protocol (OCSP) responder, supporting basic OCSP responses. The Lambda function accepts a base64-encoding of the OCSP request in the Distinguished Encoding Rules (DER) format. The Lambda function's response is also a base64-encoded OCSP response in the DER format. The response size must not exceed 4 kilobytes (KiB). The Lambda function must be in the same Amazon Web Services account and region as the domain configuration. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-custom-endpoints-cert-config.html#iot-custom-endpoints-cert-config-ocsp-private-endpoint.html\">Configuring server certificate OCSP for private endpoints in Amazon Web Services IoT Core</a> from the Amazon Web Services IoT Core developer guide.</p>"
         },
         "ocspAuthorizedResponderArn":{
           "shape":"AcmCertificateArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for an X.509 certificate stored in Amazon Web Services Certificate Manager (ACM). If provided, Amazon Web Services IoT Core will use this certificate to validate the signature of the received OCSP response. The OCSP responder must sign responses using either this authorized responder certificate or the issuing certificate, depending on whether the ARN is provided or not. The certificate must be in the same Amazon Web Services region and account as the domain configuration. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for an X.509 certificate stored in Amazon Web Services Certificate Manager (ACM). If provided, Amazon Web Services IoT Core will use this certificate to validate the signature of the received OCSP response. The OCSP responder must sign responses using either this authorized responder certificate or the issuing certificate, depending on whether the ARN is provided or not. The certificate must be in the same Amazon Web Services account and region as the domain configuration.</p>"
         }
       },
       "documentation":"<p>The server certificate configuration.</p>"
@@ -18255,7 +19008,7 @@
       "members":{
         "message":{"shape":"errorMessage"}
       },
-      "documentation":"<p>A limit has been exceeded.</p>",
+      "documentation":"<p>Service quota has been exceeded.</p>",
       "error":{"httpStatusCode":402},
       "exception":true
     },
@@ -18457,6 +19210,13 @@
     "SnsTopicArn":{
       "type":"string",
       "max":350
+    },
+    "SortOrder":{
+      "type":"string",
+      "enum":[
+        "ASCENDING",
+        "DESCENDING"
+      ]
     },
     "SqlParseException":{
       "type":"structure",
@@ -18723,6 +19483,32 @@
         "Cancelling"
       ]
     },
+    "StatusCode":{"type":"integer"},
+    "StatusReason":{
+      "type":"structure",
+      "required":["reasonCode"],
+      "members":{
+        "reasonCode":{
+          "shape":"StatusReasonCode",
+          "documentation":"<p>A code that provides additional context for the command execution status.</p>"
+        },
+        "reasonDescription":{
+          "shape":"StatusReasonDescription",
+          "documentation":"<p>A literal string for devices to optionally provide additional information about the reason code for a command execution status.</p>"
+        }
+      },
+      "documentation":"<p>Provide additional context about the status of a command execution using a reason code and description.</p>"
+    },
+    "StatusReasonCode":{
+      "type":"string",
+      "max":64,
+      "pattern":"[A-Z0-9_-]+"
+    },
+    "StatusReasonDescription":{
+      "type":"string",
+      "max":1024,
+      "pattern":"[^\\p{C}]*"
+    },
     "StdDeviation":{"type":"double"},
     "StepFunctionsAction":{
       "type":"structure",
@@ -18880,6 +19666,10 @@
       "member":{"shape":"StreamSummary"}
     },
     "String":{"type":"string"},
+    "StringCommandExecutionResult":{
+      "type":"string",
+      "min":1
+    },
     "StringDateTime":{
       "type":"string",
       "max":64,
@@ -18893,6 +19683,10 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"String"}
+    },
+    "StringParameterValue":{
+      "type":"string",
+      "min":1
     },
     "SubnetId":{"type":"string"},
     "SubnetIdList":{
@@ -19606,6 +20400,20 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "TimeFilter":{
+      "type":"structure",
+      "members":{
+        "after":{
+          "shape":"StringDateTime",
+          "documentation":"<p>Filter to display command executions that started or completed only after a particular date and time.</p>"
+        },
+        "before":{
+          "shape":"StringDateTime",
+          "documentation":"<p>Filter to display command executions that started or completed only before a particular date and time.</p>"
+        }
+      },
+      "documentation":"<p>A filter that can be used to list command executions for a device that started or completed before or after a particular date and time.</p>"
+    },
     "TimedOutThings":{"type":"integer"},
     "TimeoutConfig":{
       "type":"structure",
@@ -20061,6 +20869,12 @@
       "type":"long",
       "min":0
     },
+    "UnsignedLongParameterValue":{
+      "type":"string",
+      "max":20,
+      "min":1,
+      "pattern":"^[0-9]*$"
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -20308,6 +21122,55 @@
         }
       },
       "documentation":"<p>The input for the UpdateCertificate operation.</p>"
+    },
+    "UpdateCommandRequest":{
+      "type":"structure",
+      "required":["commandId"],
+      "members":{
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>The unique identifier of the command to be updated.</p>",
+          "location":"uri",
+          "locationName":"commandId"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The new user-friendly name to use in the console for the command.</p>"
+        },
+        "description":{
+          "shape":"CommandDescription",
+          "documentation":"<p>A short text description of the command.</p>"
+        },
+        "deprecated":{
+          "shape":"DeprecationFlag",
+          "documentation":"<p>A boolean that you can use to specify whether to deprecate a command.</p>"
+        }
+      }
+    },
+    "UpdateCommandResponse":{
+      "type":"structure",
+      "members":{
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>The unique identifier of the command.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The updated user-friendly display name in the console for the command.</p>"
+        },
+        "description":{
+          "shape":"CommandDescription",
+          "documentation":"<p>The updated text description of the command.</p>"
+        },
+        "deprecated":{
+          "shape":"DeprecationFlag",
+          "documentation":"<p>The boolean that indicates whether the command was deprecated.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time (epoch timestamp in seconds) when the command was last updated.</p>"
+        }
+      }
     },
     "UpdateCustomMetricRequest":{
       "type":"structure",

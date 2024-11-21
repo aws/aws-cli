@@ -9314,9 +9314,13 @@
         "Members":{
           "shape":"OriginGroupMembers",
           "documentation":"<p>A complex type that contains information about the origins in an origin group.</p>"
+        },
+        "SelectionCriteria":{
+          "shape":"OriginGroupSelectionCriteria",
+          "documentation":"<p>The selection criteria for the origin group. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/high_availability_origin_failover.html#concept_origin_groups.creating\">Create an origin group</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
         }
       },
-      "documentation":"<p>An origin group includes two origins (a primary origin and a second origin to failover to) and a failover criteria that you specify. You create an origin group to support origin failover in CloudFront. When you create or update a distribution, you can specify the origin group instead of a single origin, and CloudFront will failover from the primary origin to the second origin under the failover conditions that you've chosen.</p>"
+      "documentation":"<p>An origin group includes two origins (a primary origin and a secondary origin to failover to) and a failover criteria that you specify. You create an origin group to support origin failover in CloudFront. When you create or update a distribution, you can specify the origin group instead of a single origin, and CloudFront will failover from the primary origin to the secondary origin under the failover conditions that you've chosen.</p> <p>Optionally, you can choose selection criteria for your origin group to specify how your origins are selected when your distribution routes viewer requests.</p>"
     },
     "OriginGroupFailoverCriteria":{
       "type":"structure",
@@ -9375,6 +9379,13 @@
         }
       },
       "documentation":"<p>A complex data type for the origins included in an origin group.</p>"
+    },
+    "OriginGroupSelectionCriteria":{
+      "type":"string",
+      "enum":[
+        "default",
+        "media-quality-based"
+      ]
     },
     "OriginGroups":{
       "type":"structure",

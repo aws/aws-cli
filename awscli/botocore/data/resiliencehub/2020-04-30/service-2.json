@@ -446,6 +446,24 @@
       ],
       "documentation":"<p>Describes the status of importing resources to an application version.</p> <note> <p>If you get a 404 error with <code>ResourceImportStatusNotFoundAppMetadataException</code>, you must call <code>importResourcesToDraftAppVersion</code> after creating the application and before calling <code>describeDraftAppVersionResourcesImportStatus</code> to obtain the status.</p> </note>"
     },
+    "DescribeMetricsExport":{
+      "name":"DescribeMetricsExport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/describe-metrics-export",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeMetricsExportRequest"},
+      "output":{"shape":"DescribeMetricsExportResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the metrics of the application configuration being exported.</p>"
+    },
     "DescribeResiliencyPolicy":{
       "name":"DescribeResiliencyPolicy",
       "http":{
@@ -535,7 +553,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Indicates the list of compliance drifts that were detected while running an assessment.</p>"
+      "documentation":"<p>List of compliance drifts that were detected while running an assessment.</p>"
     },
     "ListAppAssessmentResourceDrifts":{
       "name":"ListAppAssessmentResourceDrifts",
@@ -552,7 +570,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Indicates the list of resource drifts that were detected while running an assessment.</p>"
+      "documentation":"<p>List of resource drifts that were detected while running an assessment.</p>"
     },
     "ListAppAssessments":{
       "name":"ListAppAssessments",
@@ -715,6 +733,23 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists your Resilience Hub applications.</p> <note> <p>You can filter applications using only one filter at a time or without using any filter. If you try to filter applications using multiple filters, you will get the following error:</p> <p> <code>An error occurred (ValidationException) when calling the ListApps operation: Only one filter is supported for this operation.</code> </p> </note>"
+    },
+    "ListMetrics":{
+      "name":"ListMetrics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-metrics",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMetricsRequest"},
+      "output":{"shape":"ListMetricsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the metrics that can be exported.</p>"
     },
     "ListRecommendationTemplates":{
       "name":"ListRecommendationTemplates",
@@ -976,6 +1011,25 @@
       ],
       "documentation":"<p>Creates a new application assessment for an application.</p>"
     },
+    "StartMetricsExport":{
+      "name":"StartMetricsExport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/start-metrics-export",
+        "responseCode":200
+      },
+      "input":{"shape":"StartMetricsExportRequest"},
+      "output":{"shape":"StartMetricsExportResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Initiates the export task of metrics.</p>"
+    },
     "StartResourceGroupingRecommendationTask":{
       "name":"StartResourceGroupingRecommendationTask",
       "http":{
@@ -1159,7 +1213,7 @@
         },
         "entries":{
           "shape":"AcceptGroupingRecommendationEntries",
-          "documentation":"<p>Indicates the list of resource grouping recommendations you want to include in your application.</p>"
+          "documentation":"<p>List of resource grouping recommendations you want to include in your application.</p>"
         }
       }
     },
@@ -1176,7 +1230,7 @@
         },
         "failedEntries":{
           "shape":"FailedGroupingRecommendationEntries",
-          "documentation":"<p>Indicates the list of resource grouping recommendations that could not be included in your application.</p>"
+          "documentation":"<p>List of resource grouping recommendations that could not be included in your application.</p>"
         }
       }
     },
@@ -1342,7 +1396,7 @@
         },
         "creationTime":{
           "shape":"TimeStamp",
-          "documentation":"<p>Date and time when the app was created.</p>"
+          "documentation":"<p>Date and time when the application was created.</p>"
         },
         "description":{
           "shape":"EntityDescription",
@@ -1971,7 +2025,7 @@
       "type":"string",
       "max":63,
       "min":1,
-      "pattern":"^[A-za-z0-9_.-]{0,63}$"
+      "pattern":"^[A-Za-z0-9_.-]{0,63}$"
     },
     "ComplianceDrift":{
       "type":"structure",
@@ -2062,6 +2116,45 @@
     "ComponentRecommendationList":{
       "type":"list",
       "member":{"shape":"ComponentRecommendation"}
+    },
+    "Condition":{
+      "type":"structure",
+      "required":[
+        "field",
+        "operator"
+      ],
+      "members":{
+        "field":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the field in the metric.</p>"
+        },
+        "operator":{
+          "shape":"ConditionOperatorType",
+          "documentation":"<p>Indicates the type of operator or comparison to be used when evaluating a condition against the specified field. </p>"
+        },
+        "value":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the value or data against which a condition is evaluated.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the condition based on which you want to filter the metrics.</p>"
+    },
+    "ConditionList":{
+      "type":"list",
+      "member":{"shape":"Condition"},
+      "max":50,
+      "min":0
+    },
+    "ConditionOperatorType":{
+      "type":"string",
+      "enum":[
+        "Equals",
+        "NotEquals",
+        "GreaterThen",
+        "GreaterOrEquals",
+        "LessThen",
+        "LessOrEquals"
+      ]
     },
     "ConfigRecommendation":{
       "type":"structure",
@@ -2438,11 +2531,11 @@
         },
         "policyDescription":{
           "shape":"EntityDescription",
-          "documentation":"<p>The description for the policy.</p>"
+          "documentation":"<p>Description of the resiliency policy.</p>"
         },
         "policyName":{
           "shape":"EntityName",
-          "documentation":"<p>The name of the policy</p>"
+          "documentation":"<p>Name of the resiliency policy.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -3053,6 +3146,41 @@
         }
       }
     },
+    "DescribeMetricsExportRequest":{
+      "type":"structure",
+      "required":["metricsExportId"],
+      "members":{
+        "metricsExportId":{
+          "shape":"String255",
+          "documentation":"<p>Identifier of the metrics export task.</p>"
+        }
+      }
+    },
+    "DescribeMetricsExportResponse":{
+      "type":"structure",
+      "required":[
+        "metricsExportId",
+        "status"
+      ],
+      "members":{
+        "errorMessage":{
+          "shape":"String500",
+          "documentation":"<p>Explains the error that occurred while exporting the metrics.</p>"
+        },
+        "exportLocation":{
+          "shape":"S3Location",
+          "documentation":"<p>Specifies the name of the Amazon S3 bucket where the exported metrics is stored.</p>"
+        },
+        "metricsExportId":{
+          "shape":"String255",
+          "documentation":"<p>Identifier for the metrics export task.</p>"
+        },
+        "status":{
+          "shape":"MetricsExportStatusType",
+          "documentation":"<p>Indicates the status of the metrics export task.</p>"
+        }
+      }
+    },
     "DescribeResiliencyPolicyRequest":{
       "type":"structure",
       "required":["policyArn"],
@@ -3083,7 +3211,7 @@
         },
         "groupingId":{
           "shape":"String255",
-          "documentation":"<p>Indicates the identifier of the grouping recommendation task.</p>"
+          "documentation":"<p>Identifier of the grouping recommendation task.</p>"
         }
       }
     },
@@ -3096,11 +3224,11 @@
       "members":{
         "errorMessage":{
           "shape":"String500",
-          "documentation":"<p>Indicates the error that occurred while generating a grouping recommendation.</p>"
+          "documentation":"<p>Error that occurred while generating a grouping recommendation.</p>"
         },
         "groupingId":{
           "shape":"String255",
-          "documentation":"<p>Indicates the identifier of the grouping recommendation task.</p>"
+          "documentation":"<p>Identifier of the grouping recommendation task.</p>"
         },
         "status":{
           "shape":"ResourcesGroupingRecGenStatusType",
@@ -3389,6 +3517,37 @@
       },
       "documentation":"<p>Defines a failure policy.</p>"
     },
+    "Field":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "aggregation":{
+          "shape":"FieldAggregationType",
+          "documentation":"<p>(Optional) Indicates the type of aggregation or summary operation (such as Sum, Average, and so on) to be performed on a particular field or set of data.</p>"
+        },
+        "name":{
+          "shape":"String255",
+          "documentation":"<p>Name of the field.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the field or attribute of a resource or data structure on which a condition is being applied or evaluated.</p>"
+    },
+    "FieldAggregationType":{
+      "type":"string",
+      "enum":[
+        "Min",
+        "Max",
+        "Sum",
+        "Avg",
+        "Count"
+      ]
+    },
+    "FieldList":{
+      "type":"list",
+      "member":{"shape":"Field"},
+      "max":50,
+      "min":0
+    },
     "GroupingAppComponent":{
       "type":"structure",
       "required":[
@@ -3670,7 +3829,7 @@
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Indicates the maximum number of compliance drifts requested.</p>"
+          "documentation":"<p>Maximum number of compliance drifts requested.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -3702,7 +3861,7 @@
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Indicates the maximum number of drift results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved.</p>"
+          "documentation":"<p>Maximum number of drift results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -4090,7 +4249,7 @@
         },
         "fromLastAssessmentTime":{
           "shape":"TimeStamp",
-          "documentation":"<p>Indicates the lower limit of the range that is used to filter applications based on their last assessment times.</p>",
+          "documentation":"<p>Lower limit of the range that is used to filter applications based on their last assessment times.</p>",
           "location":"querystring",
           "locationName":"fromLastAssessmentTime"
         },
@@ -4120,7 +4279,7 @@
         },
         "toLastAssessmentTime":{
           "shape":"TimeStamp",
-          "documentation":"<p>Indicates the upper limit of the range that is used to filter the applications based on their last assessment times.</p>",
+          "documentation":"<p>Upper limit of the range that is used to filter the applications based on their last assessment times.</p>",
           "location":"querystring",
           "locationName":"toLastAssessmentTime"
         }
@@ -4137,6 +4296,49 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>Token for the next set of results, or null if there are no more results.</p>"
+        }
+      }
+    },
+    "ListMetricsRequest":{
+      "type":"structure",
+      "members":{
+        "conditions":{
+          "shape":"ConditionList",
+          "documentation":"<p>Indicates the list of all the conditions that were applied on the metrics.</p>"
+        },
+        "dataSource":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the data source of the metrics.</p>"
+        },
+        "fields":{
+          "shape":"FieldList",
+          "documentation":"<p>Indicates the list of fields in the data source.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Maximum number of results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Null, or the token from a previous call to get the next set of results.</p>"
+        },
+        "sorts":{
+          "shape":"SortList",
+          "documentation":"<p>(Optional) Indicates the order in which you want to sort the fields in the metrics. By default, the fields are sorted in the ascending order.</p>"
+        }
+      }
+    },
+    "ListMetricsResponse":{
+      "type":"structure",
+      "required":["rows"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Token for the next set of results, or null if there are no more results.</p>"
+        },
+        "rows":{
+          "shape":"RowList",
+          "documentation":"<p>Specifies all the list of metric values for each row of metrics.</p>"
         }
       }
     },
@@ -4217,7 +4419,7 @@
         },
         "policyName":{
           "shape":"EntityName",
-          "documentation":"<p>The name of the policy</p>",
+          "documentation":"<p>Name of the resiliency policy.</p>",
           "location":"querystring",
           "locationName":"policyName"
         }
@@ -4477,6 +4679,15 @@
       "box":true,
       "max":100,
       "min":1
+    },
+    "MetricsExportStatusType":{
+      "type":"string",
+      "enum":[
+        "Pending",
+        "InProgress",
+        "Failed",
+        "Success"
+      ]
     },
     "NextToken":{
       "type":"string",
@@ -4871,7 +5082,7 @@
         },
         "entries":{
           "shape":"RejectGroupingRecommendationEntries",
-          "documentation":"<p>Indicates the list of resource grouping recommendations you have selected to exclude from your application.</p>"
+          "documentation":"<p>List of resource grouping recommendations you have selected to exclude from your application.</p>"
         }
       }
     },
@@ -4888,7 +5099,7 @@
         },
         "failedEntries":{
           "shape":"FailedGroupingRecommendationEntries",
-          "documentation":"<p>Indicates the list of resource grouping recommendations that failed to get excluded in your application.</p>"
+          "documentation":"<p>List of resource grouping recommendations that failed to get excluded in your application.</p>"
         }
       }
     },
@@ -4982,7 +5193,7 @@
         },
         "policyDescription":{
           "shape":"EntityDescription",
-          "documentation":"<p>The description for the policy.</p>"
+          "documentation":"<p>Description of the resiliency policy.</p>"
         },
         "policyName":{
           "shape":"EntityName",
@@ -5295,6 +5506,14 @@
       "type":"integer",
       "box":true
     },
+    "Row":{
+      "type":"list",
+      "member":{"shape":"String255"}
+    },
+    "RowList":{
+      "type":"list",
+      "member":{"shape":"Row"}
+    },
     "S3Location":{
       "type":"structure",
       "members":{
@@ -5413,6 +5632,27 @@
       "type":"string",
       "enum":["SSM"]
     },
+    "Sort":{
+      "type":"structure",
+      "required":["field"],
+      "members":{
+        "ascending":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates the name or identifier of the field or attribute that should be used as the basis for sorting the metrics.</p>"
+        },
+        "field":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the order in which you want to sort the metrics. By default, the list is sorted in ascending order. To sort the list in descending order, set this field to False.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the sorting order of the fields in the metrics.</p>"
+    },
+    "SortList":{
+      "type":"list",
+      "member":{"shape":"Sort"},
+      "max":50,
+      "min":0
+    },
     "SpecReferenceId":{
       "type":"string",
       "max":500,
@@ -5459,6 +5699,37 @@
         }
       }
     },
+    "StartMetricsExportRequest":{
+      "type":"structure",
+      "members":{
+        "bucketName":{
+          "shape":"EntityName",
+          "documentation":"<p>(Optional) Specifies the name of the Amazon Simple Storage Service bucket where the exported metrics will be stored.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Used for an idempotency token. A client token is a unique, case-sensitive string of up to 64 ASCII characters. You should not reuse the same client token for other API requests.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartMetricsExportResponse":{
+      "type":"structure",
+      "required":[
+        "metricsExportId",
+        "status"
+      ],
+      "members":{
+        "metricsExportId":{
+          "shape":"String255",
+          "documentation":"<p>Identifier of the metrics export task.</p>"
+        },
+        "status":{
+          "shape":"MetricsExportStatusType",
+          "documentation":"<p>Indicates the status of the metrics export task.</p>"
+        }
+      }
+    },
     "StartResourceGroupingRecommendationTaskRequest":{
       "type":"structure",
       "required":["appArn"],
@@ -5483,11 +5754,11 @@
         },
         "errorMessage":{
           "shape":"String500",
-          "documentation":"<p>Indicates the error that occurred while executing a grouping recommendation task.</p>"
+          "documentation":"<p>Error that occurred while executing a grouping recommendation task.</p>"
         },
         "groupingId":{
           "shape":"String255",
-          "documentation":"<p>Indicates the identifier of the grouping recommendation task.</p>"
+          "documentation":"<p>Identifier of the grouping recommendation task.</p>"
         },
         "status":{
           "shape":"ResourcesGroupingRecGenStatusType",
@@ -6011,7 +6282,7 @@
         },
         "policy":{
           "shape":"DisruptionPolicy",
-          "documentation":"<p>The type of resiliency policy to be created, including the recovery time objective (RTO) and recovery point objective (RPO) in seconds.</p>"
+          "documentation":"<p>Resiliency policy to be created, including the recovery time objective (RTO) and recovery point objective (RPO) in seconds.</p>"
         },
         "policyArn":{
           "shape":"Arn",
@@ -6019,11 +6290,11 @@
         },
         "policyDescription":{
           "shape":"EntityDescription",
-          "documentation":"<p>The description for the policy.</p>"
+          "documentation":"<p>Description of the resiliency policy.</p>"
         },
         "policyName":{
           "shape":"EntityName",
-          "documentation":"<p>The name of the policy</p>"
+          "documentation":"<p>Name of the resiliency policy.</p>"
         },
         "tier":{
           "shape":"ResiliencyPolicyTier",
@@ -6037,7 +6308,7 @@
       "members":{
         "policy":{
           "shape":"ResiliencyPolicy",
-          "documentation":"<p>The type of resiliency policy that was updated, including the recovery time objective (RTO) and recovery point objective (RPO) in seconds.</p>"
+          "documentation":"<p>The resiliency policy that was updated, including the recovery time objective (RTO) and recovery point objective (RPO) in seconds.</p>"
         }
       }
     },

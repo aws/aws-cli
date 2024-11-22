@@ -22,11 +22,7 @@ from zlib import error as ZLibError
 from datetime import datetime, timedelta
 from dateutil import tz, parser
 
-import cryptography
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
-from cryptography.hazmat.primitives.serialization import load_der_public_key
+from awscrt.crypto import RSA, RSASignatureAlgorithm
 
 from awscli.customizations.cloudtrail.utils import get_trail_by_arn, \
     get_account_id_from_arn, PublicKeyProvider
@@ -555,20 +551,28 @@ class Sha256RSADigestValidator(object):
         """
         try:
             decoded_key = base64.b64decode(public_key)
-            public_key = load_der_public_key(decoded_key, default_backend())
-            to_sign = self._create_string_to_sign(digest_data, inflated_digest)
-            signature_bytes = binascii.unhexlify(digest_data['_signature'])
-            hashing = hashes.SHA256()
-            public_key.verify(signature_bytes, to_sign, PKCS1v15(), hashing)
-        except ValueError:
+            public_key = RSA.new_public_key_from_der_data(decoded_key)
+        except RuntimeError:
             raise DigestError(
                 ('Digest file\ts3://%s/%s\tINVALID: Unable to load PKCS #1 key'
                  ' with fingerprint %s')
                 % (bucket, key, digest_data['digestPublicKeyFingerprint']))
-        except cryptography.exceptions.InvalidSignature:
-            # Don't display the stack trace of a signature exception to avoid
+
+        to_sign = self._create_string_to_sign(digest_data, inflated_digest)
+        signature_bytes = binascii.unhexlify(digest_data['_signature'])
+
+
+        result = public_key.verify(
+            signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256, 
+            digest=hashlib.sha256(to_sign).digest(), 
+            signature=signature_bytes
+        )
+        if not result:
+            # The previous implementation caught a cryptography.exceptions.InvalidSignature
+            # exception here and re-raised the DigestSignatureError to avoid the stack trace
             # leaking any information about the key.
             raise DigestSignatureError(bucket, key)
+
 
     def _create_string_to_sign(self, digest_data, inflated_digest):
         previous_signature = digest_data['previousDigestSignature']

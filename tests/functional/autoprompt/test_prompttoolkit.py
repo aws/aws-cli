@@ -30,9 +30,9 @@ from awscli.testutils import mock, FileCreator, cd
 from tests import PromptToolkitAppRunner
 
 
-def _ec2_only_command_table(command_table, **kwargs):
+def _cloudwatch_only_command_table(command_table, **kwargs):
     for key in list(command_table):
-        if key != 'ec2':
+        if key != 'cloudwatch':
             del command_table[key]
 
 
@@ -44,7 +44,7 @@ def _generate_index_if_needed(db_connection):
         )
         driver = create_clidriver()
         driver.session.register('building-command-table.main',
-                                _ec2_only_command_table)
+                                _cloudwatch_only_command_table)
         index_generator.generate_index(driver)
 
 
@@ -78,7 +78,7 @@ def history_file(files):
         'version': 1,
         'commands': [
             'accessanalyzer update-findings',
-            'ec2 describe-instances',
+            'cloudwatch describe-alarms',
             's3 ls'
         ]
     }
@@ -141,17 +141,17 @@ class TestPromptToolkitPrompterBuffer:
     @pytest.mark.parametrize(
         'args,expected_input_buffer_text',
         [
-            (['ec2', 'fake'], 'ec2 fake'),
-            (['ec2'], 'ec2 '),
+            (['cloudwatch', 'fake'], 'cloudwatch fake '),
+            (['cloudwatch'], 'cloudwatch '),
             (['s3', 'mv', '/path/to/file/1', 's3://path/to/file/2'],
              's3 mv /path/to/file/1 s3://path/to/file/2 '),
             (['s3', 'ls'], 's3 ls '),
-            (['ec2', 'desc'], 'ec2 desc'),
+            (['cloudwatch', 'desc'], 'cloudwatch desc'),
             (['s3', 'ls '], 's3 ls '),
-            (['ec2', 'fake', '--output'],
-             'ec2 fake --output '),
-            (['ec2', 'describe-instances', '--output'],
-             'ec2 describe-instances --output '),
+            (['cloudwatch', 'fake', '--output'],
+             'cloudwatch fake --output '),
+            (['cloudwatch', 'describe-alarms', '--output'],
+             'cloudwatch describe-alarms --output '),
             ([' '], ' '),
         ]
     )
@@ -211,7 +211,7 @@ class TestPromptToolkitDocBuffer(BasicPromptToolkitTest):
 
     def test_doc_buffer_keeps_position_if_content_dont_change(
             self, prompter, app_runner):
-        prompter.args = ['ec2', 'describe-instances']
+        prompter.args = ['cloudwatch', 'describe-alarms']
         with app_runner.run_app_in_thread():
             # Open the doc panel, focus on it, and go to its top
             app_runner.feed_input(Keys.F3, Keys.F2, 'g')
@@ -224,7 +224,7 @@ class TestPromptToolkitDocBuffer(BasicPromptToolkitTest):
             # Focus on the input buffer
             app_runner.feed_input('q')
             # Add parameters to the currently inputted command
-            app_runner.feed_input('--instances')
+            app_runner.feed_input('--alarm-names')
             # The doc position should not have moved
             self.assert_doc_panel_cursor_position(
                 app_runner.app, expected_row=3)
@@ -234,11 +234,11 @@ class TestPromptToolkitDocBuffer(BasicPromptToolkitTest):
         [
             ([' '], 'AWS Command Line Interface'),
             (['fake'], 'AWS Command Line Interface'),
-            (['ec2'], 'Elastic Compute Cloud'),
-            (['ec2', 'fake'], 'Elastic Compute Cloud'),
-            (['ec2', 'describe-instances'], 'Describes the specified'),
-            (['ec2', 'describe-instances', '--instance-ids'],
-             'Describes the specified'),
+            (['cloudwatch'], 'Amazon CloudWatch'),
+            (['cloudwatch', 'fake'], 'Amazon CloudWatch'),
+            (['cloudwatch', 'describe-alarms '], 'Retrieves the specified'),
+            (['cloudwatch', 'describe-alarms', '--alarm-names'],
+             'The names of the alarms'),
         ]
     )
     def test_doc_panel_content(self, prompter, args, expected_docs):
@@ -302,15 +302,15 @@ class TestHistoryMode(BasicPromptToolkitTest):
 
 class TestCompletions(BasicPromptToolkitTest):
     def test_service_full_name_shown(self, app_runner, prompter):
-        prompter.args = ['e']
+        prompter.args = ['c']
         with app_runner.run_app_in_thread():
             app_runner.wait_for_completions_on_current_buffer()
             first_completion = app_runner.app.current_buffer.\
                 complete_state.completions[0]
-            assert 'Elastic Compute' in first_completion.display_meta_text
+            assert 'Amazon CloudWatch' in first_completion.display_meta_text
 
     def test_switch_to_multicolumn_mode(self, app_runner, prompter):
-        prompter.args = ['ec2']
+        prompter.args = ['cloudwatch']
         with app_runner.run_app_in_thread():
             assert not app_runner.app.multi_column
             app_runner.feed_input(Keys.F4)
@@ -393,7 +393,7 @@ class TestDebugPanel(BasicPromptToolkitTest):
     @mock.patch('awscrt.io.init_logging')
     def test_debug_mode_does_not_allow_crt_logging(
             self, mock_init_logging, app_runner, prompter):
-        args = ['ec2', 'describe-instances', '--debug']
+        args = ['cloudwatch', 'describe-alarms', '--debug']
         with app_runner.run_app_in_thread(
                 target=prompter.prompt_for_args, args=(args,)):
             assert app_runner.app.debug

@@ -169,6 +169,7 @@ class TestDependencyClosure:
             "six",
             "urllib3",
             "wcwidth",
+            "zipp",
         }
         actual_dependencies = set()
         for _, package in awscli_package.runtime_dependencies.walk():

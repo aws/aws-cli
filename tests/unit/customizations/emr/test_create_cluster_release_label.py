@@ -1496,6 +1496,32 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_create_cluster_with_managed_scaling_policy_customer_knobs(self):
+        cmd = (self.prefix + '--release-label emr-5.28.0 --security-configuration MySecurityConfig ' +
+               '--managed-scaling-policy ComputeLimits={MinimumCapacityUnits=2,MaximumCapacityUnits=4,' +
+               'UnitType=Instances,MaximumCoreCapacityUnits=1},ScalingStrategy=ADVANCED,' +
+               'UtilizationPerformanceIndex=1 --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': DEFAULT_INSTANCES,
+                'ReleaseLabel': 'emr-5.28.0',
+                'VisibleToAllUsers': True,
+                'Tags': [],
+                'ManagedScalingPolicy': {
+                   'ComputeLimits': {
+                       'MinimumCapacityUnits': 2,
+                       'MaximumCapacityUnits': 4,
+                       'UnitType': 'Instances',
+                       'MaximumCoreCapacityUnits': 1
+                   },
+                   'ScalingStrategy': 'ADVANCED',
+                   'UtilizationPerformanceIndex': 1,
+                },
+                'SecurityConfiguration': 'MySecurityConfig'
+            }
+        self.assert_params_for_cmd(cmd, result)
+
     def test_create_cluster_with_auto_termination_policy(self):
         cmd = (self.prefix + '--release-label emr-5.34.0 ' +
                '--auto-termination-policy IdleTimeout=100 ' +

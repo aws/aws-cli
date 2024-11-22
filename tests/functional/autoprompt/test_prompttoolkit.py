@@ -143,6 +143,7 @@ class TestPromptToolkitPrompterBuffer:
         [
             (['cloudwatch', 'fake'], 'cloudwatch fake '),
             (['cloudwatch'], 'cloudwatch '),
+            (['cloud'], 'cloud'),
             (['s3', 'mv', '/path/to/file/1', 's3://path/to/file/2'],
              's3 mv /path/to/file/1 s3://path/to/file/2 '),
             (['s3', 'ls'], 's3 ls '),

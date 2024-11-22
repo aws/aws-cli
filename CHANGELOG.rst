@@ -2,6 +2,33 @@
 CHANGELOG
 =========
 
+1.36.8
+======
+
+* api-change:``apigateway``: Added support for custom domain names for private APIs.
+* api-change:``application-autoscaling``: Application Auto Scaling now supports Predictive Scaling to proactively increase the desired capacity ahead of predicted demand, ensuring improved availability and responsiveness for customers' applications. This feature is currently only made available for Amazon ECS Service scalable targets.
+* api-change:``appsync``: Add support for the Amazon Bedrock Runtime.
+* api-change:``ce``: This release introduces three new APIs that enable you to estimate the cost, coverage, and utilization impact of Savings Plans you plan to purchase. The three APIs are StartCommitmentPurchaseAnalysis, GetCommitmentPurchaseAnalysis, and ListCommitmentPurchaseAnalyses.
+* api-change:``cloudfront``: Adds support for Origin Selection between EMPv2 origins based on media quality score.
+* api-change:``cloudtrail``: This release introduces new APIs for creating and managing CloudTrail Lake dashboards. It also adds support for resource-based policies on CloudTrail EventDataStore and Dashboard resource.
+* api-change:``ec2``: Adds support for requesting future-dated Capacity Reservations with a minimum commitment duration, enabling IPAM for organizational units within AWS Organizations, reserving EC2 Capacity Blocks that start in 30 minutes, and extending the end date of existing Capacity Blocks.
+* api-change:``elasticache``: Added support to modify the engine type for existing ElastiCache Users and User Groups. Customers can now modify the engine type from redis to valkey.
+* api-change:``elbv2``: This feature adds support for enabling zonal shift on cross-zone enabled Application Load Balancer, as well as modifying HTTP request and response headers.
+* api-change:``health``: Adds metadata property to an AffectedEntity.
+* api-change:``iot``: General Availability (GA) release of AWS IoT Device Management - Commands, to trigger light-weight remote actions on targeted devices
+* api-change:``iotfleetwise``: AWS IoT FleetWise now includes campaign parameters to store and forward data, configure MQTT topic as a data destination, and collect diagnostic trouble code data. It includes APIs for network agnostic data collection using custom decoding interfaces, and monitoring the last known state of vehicles.
+* api-change:``iot-jobs-data``: General Availability (GA) release of AWS IoT Device Management - Commands, to trigger light-weight remote actions on targeted devices
+* api-change:``lambda``: Adds support for metrics for event source mappings for AWS Lambda
+* api-change:``logs``: Adds "Create field indexes to improve query performance and reduce scan volume" and "Transform logs during ingestion". Updates documentation for "PutLogEvents with Entity".
+* api-change:``notifications``: This release adds support for AWS User Notifications. You can now configure and view notifications from AWS services in a central location using the AWS SDK.
+* api-change:``notificationscontacts``: This release adds support for AWS User Notifications Contacts. You can now configure and view email contacts for AWS User Notifications using the AWS SDK.
+* api-change:``resiliencehub``: AWS Resilience Hub's new summary view visually represents applications' resilience through charts, enabling efficient resilience management. It provides a consolidated view of the app portfolio's resilience state and allows data export for custom stakeholder reporting.
+* api-change:``s3``: Add support for conditional deletes for the S3 DeleteObject and DeleteObjects APIs. Add support for write offset bytes option used to append to objects with the S3 PutObject API.
+* api-change:``ssm``: Added support for providing high-level overviews of managed nodes and previewing the potential impact of a runbook execution.
+* api-change:``ssm-quicksetup``: Add methods that retrieve details about deployed configurations: ListConfigurations, GetConfiguration
+* api-change:``xray``: AWS X-Ray introduces Transaction Search APIs, enabling span ingestion into CloudWatch Logs for high-scale trace data indexing. These APIs support span-level queries, trace graph generation, and metric correlation for deeper application insights.
+
+
 1.36.7
 ======
 

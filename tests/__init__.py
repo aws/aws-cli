@@ -387,7 +387,7 @@ class AppRunContext:
 
 
 class PromptToolkitAppRunner:
-    _EVENT_WAIT_TIMEOUT = 3
+    _EVENT_WAIT_TIMEOUT = 5
 
     def __init__(self, app, pre_run=None):
         self.app = app

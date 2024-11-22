@@ -3,7 +3,7 @@
 The following ``list-configuration-policy-associations`` example lists a summary of configuration associations for the organization. The response include associations with configuration policies and self-managed behavior. ::
 
     aws securityhub list-configuration-policy-associations \
-        --association-type "APPLIED" \
+        --filters '{"AssociationType": "APPLIED"}' \
         --max-items 4
 
 Output::
@@ -47,4 +47,4 @@ Output::
         }
     }
 
-For more information, see `Viewing Security Hub configuration policies <https://docs.aws.amazon.com/securityhub/latest/userguide/view-policy.html>`__ in the *AWS Security Hub User Guide*.
+For more information, see `Viewing configuration policy status and details <https://docs.aws.amazon.com/securityhub/latest/userguide/view-policy.html>`__ in the *AWS Security Hub User Guide*.

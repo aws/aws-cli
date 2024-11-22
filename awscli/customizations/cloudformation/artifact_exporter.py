@@ -30,6 +30,7 @@ import jmespath
 
 LOG = logging.getLogger(__name__)
 
+MODULES = "Modules"
 
 def is_path_value_valid(path):
     return isinstance(path, str)
@@ -651,6 +652,15 @@ class Template(object):
         :return: The template with references to artifacts that have been
         exported to s3.
         """
+
+        # Process modules
+        # TODO
+        if MODULES in self.template_dict:
+            for module in self.template_dict[MODULES]:
+                self.template_dict = process_module(self.template_dict, module)
+        
+            # TODO - Remove the Modules section from the template
+
         self.template_dict = self.export_metadata(self.template_dict)
 
         if "Resources" not in self.template_dict:

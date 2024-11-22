@@ -7358,7 +7358,8 @@
         "OnStartDeepHealthChecks":{
           "shape":"OnStartDeepHealthChecks",
           "documentation":"<p>A flag indicating whether deep health checks should be performed when the cluster instance group is created or updated.</p>"
-        }
+        },
+        "OverrideVpcConfig":{"shape":"VpcConfig"}
       },
       "documentation":"<p>Details of an instance group in a SageMaker HyperPod cluster.</p>"
     },
@@ -7413,7 +7414,8 @@
         "OnStartDeepHealthChecks":{
           "shape":"OnStartDeepHealthChecks",
           "documentation":"<p>A flag indicating whether deep health checks should be performed when the cluster instance group is created or updated.</p>"
-        }
+        },
+        "OverrideVpcConfig":{"shape":"VpcConfig"}
       },
       "documentation":"<p>The specifications of an instance group that you need to define.</p>"
     },
@@ -7603,6 +7605,7 @@
           "shape":"ClusterLifeCycleConfig",
           "documentation":"<p>The LifeCycle configuration applied to the instance.</p>"
         },
+        "OverrideVpcConfig":{"shape":"VpcConfig"},
         "ThreadsPerCore":{
           "shape":"ClusterThreadsPerCore",
           "documentation":"<p>The number of threads per CPU core you specified under <code>CreateCluster</code>.</p>"
@@ -9688,9 +9691,7 @@
       "required":[
         "InferenceComponentName",
         "EndpointName",
-        "VariantName",
-        "Specification",
-        "RuntimeConfig"
+        "Specification"
       ],
       "members":{
         "InferenceComponentName":{
@@ -21358,7 +21359,7 @@
     "ImageVersionArn":{
       "type":"string",
       "max":256,
-      "pattern":"^arn:aws(-[\\w]+)*:sagemaker:.+:[0-9]{12}:image-version/[a-z0-9]([-.]?[a-z0-9])*/[0-9]+$"
+      "pattern":"^(arn:aws(-[\\w]+)*:sagemaker:.+:[0-9]{12}:image-version/[a-z0-9]([-.]?[a-z0-9])*/[0-9]+|None)$"
     },
     "ImageVersionNumber":{
       "type":"integer",
@@ -21496,7 +21497,7 @@
           "documentation":"<p>The maximum MB of memory to allocate to run a model that you assign to an inference component.</p>"
         }
       },
-      "documentation":"<p>Defines the compute resources to allocate to run a model that you assign to an inference component. These resources include CPU cores, accelerators, and memory.</p>"
+      "documentation":"<p>Defines the compute resources to allocate to run a model, plus any adapter models, that you assign to an inference component. These resources include CPU cores, accelerators, and memory.</p>"
     },
     "InferenceComponentContainerSpecification":{
       "type":"structure",
@@ -21580,7 +21581,6 @@
     },
     "InferenceComponentSpecification":{
       "type":"structure",
-      "required":["ComputeResourceRequirements"],
       "members":{
         "ModelName":{
           "shape":"ModelName",
@@ -21596,7 +21596,11 @@
         },
         "ComputeResourceRequirements":{
           "shape":"InferenceComponentComputeResourceRequirements",
-          "documentation":"<p>The compute resources allocated to run the model assigned to the inference component.</p>"
+          "documentation":"<p>The compute resources allocated to run the model, plus any adapter models, that you assign to the inference component.</p> <p>Omit this parameter if your request is meant to create an adapter inference component. An adapter inference component is loaded by a base inference component, and it uses the compute resources of the base inference component.</p>"
+        },
+        "BaseInferenceComponentName":{
+          "shape":"InferenceComponentName",
+          "documentation":"<p>The name of an existing inference component that is to contain the inference component that you're creating with your request.</p> <p>Specify this parameter only if your request is meant to create an adapter inference component. An adapter inference component contains the path to an adapter model. The purpose of the adapter model is to tailor the inference output of a base foundation model, which is hosted by the base inference component. The adapter inference component uses the compute resources that you assigned to the base inference component.</p> <p>When you create an adapter inference component, use the <code>Container</code> parameter to specify the location of the adapter artifacts. In the parameter value, use the <code>ArtifactUrl</code> parameter of the <code>InferenceComponentContainerSpecification</code> data type.</p> <p>Before you can create an adapter inference component, you must have an existing inference component that contains the foundation model that you want to adapt.</p>"
         }
       },
       "documentation":"<p>Details about the resources to deploy with this inference component, including the model, container, and compute resources.</p>"
@@ -21618,7 +21622,11 @@
         },
         "ComputeResourceRequirements":{
           "shape":"InferenceComponentComputeResourceRequirements",
-          "documentation":"<p>The compute resources allocated to run the model assigned to the inference component.</p>"
+          "documentation":"<p>The compute resources allocated to run the model, plus any adapter models, that you assign to the inference component.</p>"
+        },
+        "BaseInferenceComponentName":{
+          "shape":"InferenceComponentName",
+          "documentation":"<p>The name of the base inference component that contains this inference component.</p>"
         }
       },
       "documentation":"<p>Details about the resources that are deployed with this inference component.</p>"
@@ -27099,7 +27107,7 @@
     },
     "ManagedInstanceScalingMinInstanceCount":{
       "type":"integer",
-      "min":1
+      "min":0
     },
     "ManagedInstanceScalingStatus":{
       "type":"string",
@@ -28955,6 +28963,20 @@
       "type":"integer",
       "min":0
     },
+    "ModelShardingConfig":{
+      "type":"structure",
+      "members":{
+        "Image":{
+          "shape":"OptimizationContainerImage",
+          "documentation":"<p>The URI of an LMI DLC in Amazon ECR. SageMaker uses this image to run the optimization.</p>"
+        },
+        "OverrideEnvironment":{
+          "shape":"OptimizationJobEnvironmentVariables",
+          "documentation":"<p>Environment variables that override the default ones in the model container.</p>"
+        }
+      },
+      "documentation":"<p>Settings for the model sharding technique that's applied by a model optimization job.</p>"
+    },
     "ModelSortKey":{
       "type":"string",
       "enum":[
@@ -30427,6 +30449,10 @@
         "ModelCompilationConfig":{
           "shape":"ModelCompilationConfig",
           "documentation":"<p>Settings for the model compilation technique that's applied by a model optimization job.</p>"
+        },
+        "ModelShardingConfig":{
+          "shape":"ModelShardingConfig",
+          "documentation":"<p>Settings for the model sharding technique that's applied by a model optimization job.</p>"
         }
       },
       "documentation":"<p>Settings for an optimization technique that you apply with a model optimization job.</p>",
@@ -32153,6 +32179,24 @@
         "ml.c6i.16xlarge",
         "ml.c6i.24xlarge",
         "ml.c6i.32xlarge",
+        "ml.m6i.large",
+        "ml.m6i.xlarge",
+        "ml.m6i.2xlarge",
+        "ml.m6i.4xlarge",
+        "ml.m6i.8xlarge",
+        "ml.m6i.12xlarge",
+        "ml.m6i.16xlarge",
+        "ml.m6i.24xlarge",
+        "ml.m6i.32xlarge",
+        "ml.r6i.large",
+        "ml.r6i.xlarge",
+        "ml.r6i.2xlarge",
+        "ml.r6i.4xlarge",
+        "ml.r6i.8xlarge",
+        "ml.r6i.12xlarge",
+        "ml.r6i.16xlarge",
+        "ml.r6i.24xlarge",
+        "ml.r6i.32xlarge",
         "ml.g5.xlarge",
         "ml.g5.2xlarge",
         "ml.g5.4xlarge",
@@ -32169,6 +32213,14 @@
         "ml.g6.16xlarge",
         "ml.g6.24xlarge",
         "ml.g6.48xlarge",
+        "ml.g6e.xlarge",
+        "ml.g6e.2xlarge",
+        "ml.g6e.4xlarge",
+        "ml.g6e.8xlarge",
+        "ml.g6e.12xlarge",
+        "ml.g6e.16xlarge",
+        "ml.g6e.24xlarge",
+        "ml.g6e.48xlarge",
         "ml.p4d.24xlarge",
         "ml.c7g.large",
         "ml.c7g.xlarge",
@@ -32230,11 +32282,13 @@
         "ml.trn1.2xlarge",
         "ml.trn1.32xlarge",
         "ml.trn1n.32xlarge",
+        "ml.trn2.48xlarge",
         "ml.inf2.xlarge",
         "ml.inf2.8xlarge",
         "ml.inf2.24xlarge",
         "ml.inf2.48xlarge",
         "ml.p5.48xlarge",
+        "ml.p5e.48xlarge",
         "ml.m7i.large",
         "ml.m7i.xlarge",
         "ml.m7i.2xlarge",

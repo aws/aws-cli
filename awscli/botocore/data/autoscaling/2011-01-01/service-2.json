@@ -2258,6 +2258,10 @@
           "shape":"MetricUnit",
           "documentation":"<p>The unit of the metric. For a complete list of the units that CloudWatch supports, see the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html\">MetricDatum</a> data type in the <i>Amazon CloudWatch API Reference</i>.</p>"
         },
+        "Period":{
+          "shape":"MetricGranularityInSeconds",
+          "documentation":"<p> The period of the metric in seconds. The default value is 60. Accepted values are 10, 30, and 60. For high resolution metric, set the value to less than 60. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/policy-creating-high-resolution-metrics.html\">Create a target tracking policy using high-resolution metrics for faster response</a>. </p>"
+        },
         "Metrics":{
           "shape":"TargetTrackingMetricDataQueries",
           "documentation":"<p>The metrics to include in the target tracking scaling policy, as a metric data query. This can include both raw metric and metric math expressions.</p>"
@@ -4200,6 +4204,10 @@
       "type":"list",
       "member":{"shape":"MetricDimension"}
     },
+    "MetricGranularityInSeconds":{
+      "type":"integer",
+      "min":1
+    },
     "MetricGranularityType":{
       "type":"structure",
       "members":{
@@ -5613,6 +5621,10 @@
           "shape":"XmlStringMetricLabel",
           "documentation":"<p>A human-readable label for this metric or expression. This is especially useful if this is a math expression, so that you know what the value represents.</p>"
         },
+        "Period":{
+          "shape":"MetricGranularityInSeconds",
+          "documentation":"<p> The period of the metric in seconds. The default value is 60. Accepted values are 10, 30, and 60. For high resolution metric, set the value to less than 60. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/policy-creating-high-resolution-metrics.html\">Create a target tracking policy using high-resolution metrics for faster response</a>. </p>"
+        },
         "ReturnData":{
           "shape":"ReturnData",
           "documentation":"<p>Indicates whether to return the timestamps and raw data values of this metric. </p> <p>If you use any math expressions, specify <code>true</code> for this value for only the final math expression that the metric specification is based on. You must specify <code>false</code> for <code>ReturnData</code> for all the other metrics and expressions used in the metric specification.</p> <p>If you are only retrieving metrics and not performing any math expressions, do not specify anything for <code>ReturnData</code>. This sets it to its default (<code>true</code>).</p>"
@@ -5638,6 +5650,10 @@
         "Unit":{
           "shape":"MetricUnit",
           "documentation":"<p>The unit to use for the returned data points. For a complete list of the units that CloudWatch supports, see the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html\">MetricDatum</a> data type in the <i>Amazon CloudWatch API Reference</i>.</p>"
+        },
+        "Period":{
+          "shape":"MetricGranularityInSeconds",
+          "documentation":"<p> The period of the metric in seconds. The default value is 60. Accepted values are 10, 30, and 60. For high resolution metric, set the value to less than 60. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/policy-creating-high-resolution-metrics.html\">Create a target tracking policy using high-resolution metrics for faster response</a>. </p>"
         }
       },
       "documentation":"<p>This structure defines the CloudWatch metric to return, along with the statistic and unit.</p> <p>For more information about the CloudWatch terminology below, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html\">Amazon CloudWatch concepts</a> in the <i>Amazon CloudWatch User Guide</i>.</p>"

@@ -444,7 +444,7 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"DataUnavailableException"}
       ],
-      "documentation":"<p>Lists the commitment purchase analyses for your account based on the last 30 days.</p>"
+      "documentation":"<p>Lists the commitment purchase analyses for your account.</p>"
     },
     "ListCostAllocationTagBackfillHistory":{
       "name":"ListCostAllocationTagBackfillHistory",
@@ -543,7 +543,7 @@
         {"shape":"DataUnavailableException"},
         {"shape":"GenerationExistsException"}
       ],
-      "documentation":"<p>Specifies the parameters of a planned commitment purchase and starts the generation of the analysis. This enables you to estimate the cost, coverage, and utilization impact of your planned commitment purchases. You can request up to 20 analysis runs per day.</p>"
+      "documentation":"<p>Specifies the parameters of a planned commitment purchase and starts the generation of the analysis. This enables you to estimate the cost, coverage, and utilization impact of your planned commitment purchases.</p>"
     },
     "StartCostAllocationTagBackfill":{
       "name":"StartCostAllocationTagBackfill",
@@ -741,11 +741,11 @@
         },
         "AnalysisId":{
           "shape":"AnalysisId",
-          "documentation":"<p>The analysis ID that's associated with the commitment purchase.</p>"
+          "documentation":"<p>The analysis ID that's associated with the commitment purchase analysis.</p>"
         },
         "CommitmentPurchaseAnalysisConfiguration":{
           "shape":"CommitmentPurchaseAnalysisConfiguration",
-          "documentation":"<p>The analysis configuration for the commitment purchase analysis.</p>"
+          "documentation":"<p>The configuration for the commitment purchase analysis.</p>"
         }
       },
       "documentation":"<p>A summary of the analysis.</p>"
@@ -1281,7 +1281,7 @@
         "Value":{"shape":"CostCategoryValue"},
         "Rule":{
           "shape":"Expression",
-          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html\">Expression</a> object used to categorize costs. This supports dimensions, tags, and nested expressions. Currently the only dimensions supported are <code>LINKED_ACCOUNT</code>, <code>SERVICE_CODE</code>, <code>RECORD_TYPE</code>, <code>LINKED_ACCOUNT_NAME</code>, <code>REGION</code>, <code>USAGE_TYPE</code>, and <code>BILLING_ENTITY</code>.</p> <p> <code>RECORD_TYPE</code> is a dimension used for Cost Explorer APIs, and is also supported for Cost Category expressions. This dimension uses different terms, depending on whether you're using the console or API/JSON editor. For a detailed comparison, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/manage-cost-categories.html#cost-categories-terms\">Term Comparisons</a> in the <i>Billing and Cost Management User Guide</i>.</p>"
+          "documentation":"<p>An <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html\">Expression</a> object used to categorize costs. This supports dimensions, tags, and nested expressions. Currently the only dimensions supported are <code>LINKED_ACCOUNT</code>, <code>SERVICE_CODE</code>, <code>RECORD_TYPE</code>, <code>LINKED_ACCOUNT_NAME</code>, <code>REGION</code>, and <code>USAGE_TYPE</code>.</p> <p> <code>RECORD_TYPE</code> is a dimension used for Cost Explorer APIs, and is also supported for Cost Category expressions. This dimension uses different terms, depending on whether you're using the console or API/JSON editor. For a detailed comparison, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/manage-cost-categories.html#cost-categories-terms\">Term Comparisons</a> in the <i>Billing and Cost Management User Guide</i>.</p>"
         },
         "InheritedValue":{
           "shape":"CostCategoryInheritedValueDimension",
@@ -2177,7 +2177,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>A request to generate a recommendation is already in progress.</p>",
+      "documentation":"<p>A request to generate a recommendation or analysis is already in progress.</p>",
       "exception":true
     },
     "GenerationStatus":{
@@ -4226,15 +4226,15 @@
         },
         "AverageUtilization":{
           "shape":"GenericString",
-          "documentation":"<p>The average utilization of your recommendations. Amazon Web Services uses this to calculate your recommended reservation purchases.</p>"
+          "documentation":"<p>The average utilization of your instances. Amazon Web Services uses this to calculate your recommended reservation purchases.</p>"
         },
         "EstimatedBreakEvenInMonths":{
           "shape":"GenericString",
-          "documentation":"<p>How long Amazon Web Services estimates that it takes for this recommendation to start saving you money, in months.</p>"
+          "documentation":"<p>How long Amazon Web Services estimates that it takes for this instance to start saving you money, in months.</p>"
         },
         "CurrencyCode":{
           "shape":"GenericString",
-          "documentation":"<p>The currency code that Amazon Web Services used to calculate the costs for this recommendation.</p>"
+          "documentation":"<p>The currency code that Amazon Web Services used to calculate the costs for this instance.</p>"
         },
         "EstimatedMonthlySavingsAmount":{
           "shape":"GenericString",
@@ -4254,11 +4254,11 @@
         },
         "UpfrontCost":{
           "shape":"GenericString",
-          "documentation":"<p>How much purchasing this recommendation costs you upfront.</p>"
+          "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
         },
         "RecurringStandardMonthlyCost":{
           "shape":"GenericString",
-          "documentation":"<p>How much purchasing this recommendation costs you on a monthly basis.</p>"
+          "documentation":"<p>How much purchasing this instance costs you on a monthly basis.</p>"
         },
         "ReservedCapacityDetails":{
           "shape":"ReservedCapacityDetails",
@@ -4580,16 +4580,31 @@
           "shape":"GenericString",
           "documentation":"<p>The member account value that's associated with the cost anomaly. </p>"
         },
+        "LinkedAccountName":{
+          "shape":"GenericString",
+          "documentation":"<p>The member account name value that's associated with the cost anomaly.</p>"
+        },
         "UsageType":{
           "shape":"GenericString",
           "documentation":"<p>The <code>UsageType</code> value that's associated with the cost anomaly. </p>"
         },
-        "LinkedAccountName":{
-          "shape":"GenericString",
-          "documentation":"<p>The member account name value that's associated with the cost anomaly.</p>"
+        "Impact":{
+          "shape":"RootCauseImpact",
+          "documentation":"<p>The dollar impact for the root cause.</p>"
         }
       },
-      "documentation":"<p>The combination of Amazon Web Services service, linked account, linked account name, Region, and usage type where a cost anomaly is observed. The linked account name will only be available when the account name can be identified.</p>"
+      "documentation":"<p>The combination of Amazon Web Services service, linked account, linked account name, Region, and usage type where a cost anomaly is observed, along with the dollar and percentage amount of the anomaly impact. The linked account name will only be available when the account name can be identified.</p>"
+    },
+    "RootCauseImpact":{
+      "type":"structure",
+      "required":["Contribution"],
+      "members":{
+        "Contribution":{
+          "shape":"GenericDouble",
+          "documentation":"<p>The dollar amount that this root cause contributed to the anomaly's TotalImpact.</p>"
+        }
+      },
+      "documentation":"<p>The dollar value of the root cause.</p>"
     },
     "RootCauses":{
       "type":"list",
@@ -4625,7 +4640,7 @@
         },
         "OfferingId":{
           "shape":"GenericString",
-          "documentation":"<p>The unique ID that's used to distinguish commitments from one another.</p>"
+          "documentation":"<p>The unique ID that's used to distinguish Savings Plans commitments from one another.</p>"
         }
       },
       "documentation":"<p>The Savings Plans commitment details.</p>"
@@ -4819,19 +4834,19 @@
         },
         "EstimatedOnDemandCost":{
           "shape":"GenericString",
-          "documentation":"<p>The remaining On-Demand cost estimated to not be covered by the commitment, over the length of the lookback period.</p>"
+          "documentation":"<p>The remaining On-Demand cost estimated to not be covered by the Savings Plan over the length of the lookback period.</p>"
         },
         "EstimatedOnDemandCostWithCurrentCommitment":{
           "shape":"GenericString",
-          "documentation":"<p>The estimated On-Demand cost you expect with no additional commitment, based on your usage of the selected time period and the Savings Plan you own.</p>"
+          "documentation":"<p>The estimated On-Demand cost you expect with no additional commitment based on your usage of the selected time period and the Savings Plan you own.</p>"
         },
         "EstimatedROI":{
           "shape":"GenericString",
-          "documentation":"<p>The estimated return on investment that's based on the purchase commitment and estimated savings. This is calculated as estimatedSavingsAmount/estimatedSPCost*100.</p>"
+          "documentation":"<p>The estimated return on investment that's based on the Savings Plan and estimated savings. This is calculated as estimatedSavingsAmount/estimatedSPCost*100.</p>"
         },
         "EstimatedSavingsAmount":{
           "shape":"GenericString",
-          "documentation":"<p>The estimated savings amount that's based on the purchase commitment over the length of the lookback period.</p>"
+          "documentation":"<p>The estimated savings amount that's based on the Savings Plan over the length of the lookback period.</p>"
         },
         "EstimatedSavingsPercentage":{
           "shape":"GenericString",
@@ -4839,7 +4854,7 @@
         },
         "EstimatedCommitmentCost":{
           "shape":"GenericString",
-          "documentation":"<p>The estimated cost of the purchase commitment over the length of the lookback period.</p>"
+          "documentation":"<p>The estimated cost of the Savings Plan over the length of the lookback period.</p>"
         },
         "LatestUsageTimestamp":{
           "shape":"GenericString",
@@ -4847,7 +4862,7 @@
         },
         "UpfrontCost":{
           "shape":"GenericString",
-          "documentation":"<p>The upfront cost of the Savings Plan, based on the selected payment option.</p>"
+          "documentation":"<p>The upfront cost of the Savings Plan based on the selected payment option.</p>"
         },
         "AdditionalMetadata":{
           "shape":"GenericString",

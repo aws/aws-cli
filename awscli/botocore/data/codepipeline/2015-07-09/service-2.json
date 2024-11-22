@@ -996,6 +996,10 @@
         "errorDetails":{
           "shape":"ErrorDetails",
           "documentation":"<p>The details of an error returned by a URL external to Amazon Web Services.</p>"
+        },
+        "logStreamARN":{
+          "shape":"LogStreamARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the log stream for the action compute.</p>"
         }
       },
       "documentation":"<p>Represents information about the run of an action.</p>"
@@ -1133,7 +1137,11 @@
           "shape":"Url",
           "documentation":"<p>The deepest external link to the external resource (for example, a repository URL or deployment endpoint) that is used when running the action.</p>"
         },
-        "errorDetails":{"shape":"ErrorDetails"}
+        "errorDetails":{"shape":"ErrorDetails"},
+        "logStreamARN":{
+          "shape":"LogStreamARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the log stream for the action compute.</p>"
+        }
       },
       "documentation":"<p>Execution result information, such as the external execution ID.</p>"
     },
@@ -3268,6 +3276,11 @@
         }
       }
     },
+    "LogStreamARN":{
+      "type":"string",
+      "max":250,
+      "min":1
+    },
     "MatchEquals":{
       "type":"string",
       "max":150,
@@ -3988,7 +4001,7 @@
         },
         "token":{
           "shape":"ApprovalToken",
-          "documentation":"<p>The system-generated token used to identify a unique approval request. The token for each open approval request can be obtained using the <a>GetPipelineState</a> action. It is used to validate that the approval request corresponding to this token is still valid.</p>"
+          "documentation":"<p>The system-generated token used to identify a unique approval request. The token for each open approval request can be obtained using the <a>GetPipelineState</a> action. It is used to validate that the approval request corresponding to this token is still valid.</p> <important> <p>For a pipeline where the execution mode is set to PARALLEL, the token required to approve/reject approval request as detailed above is not available. Instead, use the <code>externalExecutionId</code> from the <code>GetPipelineState</code> action as the token in the approval request.</p> </important>"
         }
       },
       "documentation":"<p>Represents the input of a <code>PutApprovalResult</code> action.</p>"

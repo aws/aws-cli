@@ -103,6 +103,28 @@
       ],
       "documentation":"<p>Invokes an alias of a flow to run the inputs that you specify and return the output of each node as a stream. If there's an error, the error is returned. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/flows-test.html\">Test a flow in Amazon Bedrock</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p> <note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>InvokeFlow</code>.</p> </note>"
     },
+    "InvokeInlineAgent":{
+      "name":"InvokeInlineAgent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/agents/{sessionId}",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeInlineAgentRequest"},
+      "output":{"shape":"InvokeInlineAgentResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"DependencyFailedException"},
+        {"shape":"BadGatewayException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p> Invokes an inline Amazon Bedrock agent using the configurations you provide with the request. </p> <ul> <li> <p>Specify the following fields for security purposes.</p> <ul> <li> <p>(Optional) <code>customerEncryptionKeyArn</code> – The Amazon Resource Name (ARN) of a KMS key to encrypt the creation of the agent.</p> </li> <li> <p>(Optional) <code>idleSessionTTLinSeconds</code> – Specify the number of seconds for which the agent should maintain session information. After this time expires, the subsequent <code>InvokeInlineAgent</code> request begins a new session.</p> </li> </ul> </li> <li> <p>To override the default prompt behavior for agent orchestration and to use advanced prompts, include a <code>promptOverrideConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html\">Advanced prompts</a>.</p> </li> <li> <p>The agent instructions will not be honored if your agent has only one knowledge base, uses default prompts, has no action group, and user input is disabled.</p> </li> </ul> <note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>InvokeInlineAgent</code>.</p> </note>"
+    },
     "OptimizePrompt":{
       "name":"OptimizePrompt",
       "http":{
@@ -168,6 +190,21 @@
     }
   },
   "shapes":{
+    "APISchema":{
+      "type":"structure",
+      "members":{
+        "payload":{
+          "shape":"Payload",
+          "documentation":"<p> The JSON or YAML-formatted payload defining the OpenAPI schema for the action group. </p>"
+        },
+        "s3":{
+          "shape":"S3Identifier",
+          "documentation":"<p> Contains details about the S3 object containing the OpenAPI schema for the action group. </p>"
+        }
+      },
+      "documentation":"<p> Contains details about the OpenAPI schema for the action group. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-api-schema.html\">Action group OpenAPI schemas</a>. You can either include the schema directly in the payload field or you can upload it to an S3 bucket and specify the S3 bucket location in the s3 field. </p>",
+      "union":true
+    },
     "AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -179,6 +216,21 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ActionGroupExecutor":{
+      "type":"structure",
+      "members":{
+        "customControl":{
+          "shape":"CustomControlMethod",
+          "documentation":"<p> To return the action group invocation results directly in the <code>InvokeInlineAgent</code> response, specify <code>RETURN_CONTROL</code>. </p>"
+        },
+        "lambda":{
+          "shape":"LambdaResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action. </p>"
+        }
+      },
+      "documentation":"<p> Contains details about the Lambda function containing the business logic that is carried out upon invoking the action or the custom control method for handling the information elicited from the user. </p>",
+      "union":true
     },
     "ActionGroupInvocationInput":{
       "type":"structure",
@@ -236,6 +288,13 @@
       "type":"string",
       "sensitive":true
     },
+    "ActionGroupSignature":{
+      "type":"string",
+      "enum":[
+        "AMAZON.UserInput",
+        "AMAZON.CodeInterpreter"
+      ]
+    },
     "ActionInvocationType":{
       "type":"string",
       "enum":[
@@ -259,6 +318,41 @@
       "members":{
       },
       "document":true
+    },
+    "AgentActionGroup":{
+      "type":"structure",
+      "required":["actionGroupName"],
+      "members":{
+        "actionGroupExecutor":{
+          "shape":"ActionGroupExecutor",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action or the custom control method for handling the information elicited from the user. </p>"
+        },
+        "actionGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p> The name of the action group. </p>"
+        },
+        "apiSchema":{
+          "shape":"APISchema",
+          "documentation":"<p> Contains either details about the S3 object containing the OpenAPI schema for the action group or the JSON or YAML-formatted payload defining the schema. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-api-schema.html\">Action group OpenAPI schemas</a>. </p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p> A description of the action group. </p>"
+        },
+        "functionSchema":{
+          "shape":"FunctionSchema",
+          "documentation":"<p> Contains details about the function schema for the action group or the JSON or YAML-formatted payload defining the schema. </p>"
+        },
+        "parentActionGroupSignature":{
+          "shape":"ActionGroupSignature",
+          "documentation":"<p> To allow your agent to request the user for additional information when trying to complete a task, set this field to <code>AMAZON.UserInput</code>. You must leave the <code>description</code>, <code>apiSchema</code>, and <code>actionGroupExecutor</code> fields blank for this action group. </p> <p>To allow your agent to generate, run, and troubleshoot code when trying to complete a task, set this field to <code>AMAZON.CodeInterpreter</code>. You must leave the <code>description</code>, <code>apiSchema</code>, and <code>actionGroupExecutor</code> fields blank for this action group.</p> <p>During orchestration, if your agent determines that it needs to invoke an API in an action group, but doesn't have enough information to complete the API request, it will invoke this action group instead and return an <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Observation.html\">Observation</a> reprompting the user for more information.</p>"
+        }
+      },
+      "documentation":"<p> Contains details of the inline agent's action group. </p>"
+    },
+    "AgentActionGroups":{
+      "type":"list",
+      "member":{"shape":"AgentActionGroup"}
     },
     "AgentAliasId":{
       "type":"string",
@@ -421,6 +515,12 @@
       "exception":true,
       "fault":true
     },
+    "BasePromptTemplate":{
+      "type":"string",
+      "max":100000,
+      "min":1,
+      "sensitive":true
+    },
     "BedrockModelArn":{
       "type":"string",
       "max":2048,
@@ -576,6 +676,10 @@
         "DEFAULT",
         "OVERRIDDEN"
       ]
+    },
+    "CustomControlMethod":{
+      "type":"string",
+      "enum":["RETURN_CONTROL"]
     },
     "DateTimestamp":{
       "type":"timestamp",
@@ -1199,6 +1303,34 @@
       "type":"string",
       "sensitive":true
     },
+    "FunctionDefinition":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "description":{
+          "shape":"FunctionDescription",
+          "documentation":"<p> A description of the function and its purpose. </p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p> A name for the function. </p>"
+        },
+        "parameters":{
+          "shape":"ParameterMap",
+          "documentation":"<p> The parameters that the agent elicits from the user to fulfill the function. </p>"
+        },
+        "requireConfirmation":{
+          "shape":"RequireConfirmation",
+          "documentation":"<p> Contains information if user confirmation is required to invoke the function. </p>"
+        }
+      },
+      "documentation":"<p> Defines parameters that the agent needs to invoke from the user to complete the function. Corresponds to an action in an action group. </p>"
+    },
+    "FunctionDescription":{
+      "type":"string",
+      "max":1200,
+      "min":1
+    },
     "FunctionInvocationInput":{
       "type":"structure",
       "required":["actionGroup"],
@@ -1270,6 +1402,21 @@
         }
       },
       "documentation":"<p>Contains information about the function that was called from the action group and the response that was returned.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p>In the <code>returnControlInvocationResults</code> of the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_RequestSyntax\">InvokeAgent request</a> </p> </li> </ul>"
+    },
+    "FunctionSchema":{
+      "type":"structure",
+      "members":{
+        "functions":{
+          "shape":"Functions",
+          "documentation":"<p> A list of functions that each define an action in the action group. </p>"
+        }
+      },
+      "documentation":"<p> Contains details about the function schema for the action group or the JSON or YAML-formatted payload defining the schema. </p>",
+      "union":true
+    },
+    "Functions":{
+      "type":"list",
+      "member":{"shape":"FunctionDefinition"}
     },
     "GeneratedResponsePart":{
       "type":"structure",
@@ -1434,6 +1581,24 @@
       "min":1,
       "pattern":"^(([1-9][0-9]{0,7})|(DRAFT))$"
     },
+    "GuardrailConfigurationWithArn":{
+      "type":"structure",
+      "required":[
+        "guardrailIdentifier",
+        "guardrailVersion"
+      ],
+      "members":{
+        "guardrailIdentifier":{
+          "shape":"GuardrailIdentifierWithArn",
+          "documentation":"<p> The unique identifier for the guardrail. </p>"
+        },
+        "guardrailVersion":{
+          "shape":"GuardrailVersion",
+          "documentation":"<p> The version of the guardrail. </p>"
+        }
+      },
+      "documentation":"<p> The configuration details for the guardrail. </p>"
+    },
     "GuardrailContentFilter":{
       "type":"structure",
       "members":{
@@ -1512,6 +1677,12 @@
       "type":"list",
       "member":{"shape":"GuardrailCustomWord"},
       "sensitive":true
+    },
+    "GuardrailIdentifierWithArn":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^(([a-z0-9]+)|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+))$"
     },
     "GuardrailManagedWord":{
       "type":"structure",
@@ -1717,6 +1888,12 @@
       "documentation":"<p>The trace details used in the Guardrail.</p>",
       "sensitive":true
     },
+    "GuardrailVersion":{
+      "type":"string",
+      "max":5,
+      "min":1,
+      "pattern":"^(([1-9][0-9]{0,7})|(DRAFT))$"
+    },
     "GuardrailWordPolicyAction":{
       "type":"string",
       "enum":["BLOCKED"]
@@ -1778,6 +1955,150 @@
       },
       "documentation":"<p>Specifications about the inference parameters that were provided alongside the prompt. These are specified in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> object that was set when the agent was created or updated. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p>"
     },
+    "InlineAgentFilePart":{
+      "type":"structure",
+      "members":{
+        "files":{
+          "shape":"OutputFiles",
+          "documentation":"<p>Files containing intermediate response for the user.</p>"
+        }
+      },
+      "documentation":"<p>Contains intermediate response for code interpreter if any files have been generated.</p>",
+      "event":true
+    },
+    "InlineAgentPayloadPart":{
+      "type":"structure",
+      "members":{
+        "attribution":{
+          "shape":"Attribution",
+          "documentation":"<p>Contains citations for a part of an agent response.</p>"
+        },
+        "bytes":{
+          "shape":"PartBody",
+          "documentation":"<p>A part of the agent response in bytes.</p>"
+        }
+      },
+      "documentation":"<p>Contains a part of an agent response and citations for it. </p>",
+      "event":true,
+      "sensitive":true
+    },
+    "InlineAgentResponseStream":{
+      "type":"structure",
+      "members":{
+        "accessDeniedException":{
+          "shape":"AccessDeniedException",
+          "documentation":"<p>The request is denied because of missing access permissions. Check your permissions and retry your request.</p>"
+        },
+        "badGatewayException":{
+          "shape":"BadGatewayException",
+          "documentation":"<p>There was an issue with a dependency due to a server issue. Retry your request. </p>"
+        },
+        "chunk":{
+          "shape":"InlineAgentPayloadPart",
+          "documentation":"<p>Contains a part of an agent response and citations for it.</p>"
+        },
+        "conflictException":{
+          "shape":"ConflictException",
+          "documentation":"<p>There was a conflict performing an operation. Resolve the conflict and retry your request. </p>"
+        },
+        "dependencyFailedException":{
+          "shape":"DependencyFailedException",
+          "documentation":"<p>There was an issue with a dependency. Check the resource configurations and retry the request.</p>"
+        },
+        "files":{
+          "shape":"InlineAgentFilePart",
+          "documentation":"<p>Contains intermediate response for code interpreter if any files have been generated.</p>"
+        },
+        "internalServerException":{
+          "shape":"InternalServerException",
+          "documentation":"<p>An internal server error occurred. Retry your request.</p>"
+        },
+        "resourceNotFoundException":{
+          "shape":"ResourceNotFoundException",
+          "documentation":"<p>The specified resource Amazon Resource Name (ARN) was not found. Check the Amazon Resource Name (ARN) and try your request again. </p>"
+        },
+        "returnControl":{
+          "shape":"InlineAgentReturnControlPayload",
+          "documentation":"<p>Contains the parameters and information that the agent elicited from the customer to carry out an action. This information is returned to the system and can be used in your own setup for fulfilling the action.</p>"
+        },
+        "serviceQuotaExceededException":{
+          "shape":"ServiceQuotaExceededException",
+          "documentation":"<p>The number of requests exceeds the service quota. Resubmit your request later.</p>"
+        },
+        "throttlingException":{
+          "shape":"ThrottlingException",
+          "documentation":"<p>The number of requests exceeds the limit. Resubmit your request later.</p>"
+        },
+        "trace":{
+          "shape":"InlineAgentTracePart",
+          "documentation":"<p>Contains information about the agent and session, alongside the agent's reasoning process and results from calling actions and querying knowledge bases and metadata about the trace. You can use the trace to understand how the agent arrived at the response it provided the customer. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/trace-events.html\">Trace events</a>. </p>"
+        },
+        "validationException":{
+          "shape":"ValidationException",
+          "documentation":"<p>Input validation failed. Check your request parameters and retry the request.</p>"
+        }
+      },
+      "documentation":"<p>The response from invoking the agent and associated citations and trace information.</p>",
+      "eventstream":true
+    },
+    "InlineAgentReturnControlPayload":{
+      "type":"structure",
+      "members":{
+        "invocationId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the action group invocation. </p>"
+        },
+        "invocationInputs":{
+          "shape":"InvocationInputs",
+          "documentation":"<p>A list of objects that contain information about the parameters and inputs that need to be sent into the API operation or function, based on what the agent determines from its session with the user.</p>"
+        }
+      },
+      "documentation":"<p>Contains information to return from the action group that the agent has predicted to invoke.</p> <p>This data type is used in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax\">InvokeAgent response</a> API operation.</p>",
+      "event":true,
+      "sensitive":true
+    },
+    "InlineAgentTracePart":{
+      "type":"structure",
+      "members":{
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the session with the agent.</p>"
+        },
+        "trace":{
+          "shape":"Trace",
+          "documentation":"<p>Contains one part of the agent's reasoning process and results from calling API actions and querying knowledge bases. You can use the trace to understand how the agent arrived at the response it provided the customer. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-enablement\">Trace enablement</a>. </p>"
+        }
+      },
+      "documentation":"<p>Contains information about the agent and session, alongside the agent's reasoning process and results from calling API actions and querying knowledge bases and metadata about the trace. You can use the trace to understand how the agent arrived at the response it provided the customer. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-enablement\">Trace enablement</a>.</p>",
+      "event":true,
+      "sensitive":true
+    },
+    "InlineSessionState":{
+      "type":"structure",
+      "members":{
+        "files":{
+          "shape":"InputFiles",
+          "documentation":"<p> Contains information about the files used by code interpreter. </p>"
+        },
+        "invocationId":{
+          "shape":"String",
+          "documentation":"<p> The identifier of the invocation of an action. This value must match the <code>invocationId</code> returned in the <code>InvokeInlineAgent</code> response for the action whose results are provided in the <code>returnControlInvocationResults</code> field. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-returncontrol.html\">Return control to the agent developer</a>. </p>"
+        },
+        "promptSessionAttributes":{
+          "shape":"PromptSessionAttributesMap",
+          "documentation":"<p> Contains attributes that persist across a session and the values of those attributes. </p>"
+        },
+        "returnControlInvocationResults":{
+          "shape":"ReturnControlInvocationResults",
+          "documentation":"<p> Contains information about the results from the action group invocation. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-returncontrol.html\">Return control to the agent developer</a>. </p> <note> <p>If you include this field in the <code>sessionState</code> field, the <code>inputText</code> field will be ignored.</p> </note>"
+        },
+        "sessionAttributes":{
+          "shape":"SessionAttributesMap",
+          "documentation":"<p> Contains attributes that persist across a session and the values of those attributes. </p>"
+        }
+      },
+      "documentation":"<p> Contains parameters that specify various attributes that persist across a session or prompt. You can define session state attributes as key-value pairs when writing a <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html\">Lambda function</a> for an action group or pass them when making an <code>InvokeInlineAgent</code> request. Use session state attributes to control and provide conversational context for your inline agent and to help customize your agent's behavior. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html\">Control session context</a> </p>"
+    },
     "InputFile":{
       "type":"structure",
       "required":[
@@ -1820,6 +2141,11 @@
       "type":"string",
       "max":25000000,
       "min":0,
+      "sensitive":true
+    },
+    "Instruction":{
+      "type":"string",
+      "min":40,
       "sensitive":true
     },
     "Integer":{
@@ -2030,11 +2356,124 @@
       },
       "payload":"responseStream"
     },
+    "InvokeInlineAgentRequest":{
+      "type":"structure",
+      "required":[
+        "foundationModel",
+        "instruction",
+        "sessionId"
+      ],
+      "members":{
+        "actionGroups":{
+          "shape":"AgentActionGroups",
+          "documentation":"<p> A list of action groups with each action group defining the action the inline agent needs to carry out. </p>"
+        },
+        "customerEncryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Amazon Web Services KMS key to use to encrypt your inline agent. </p>"
+        },
+        "enableTrace":{
+          "shape":"Boolean",
+          "documentation":"<p> Specifies whether to turn on the trace or not to track the agent's reasoning process. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/trace-events.html\">Using trace</a>. <pre><code> &lt;/p&gt; </code></pre>"
+        },
+        "endSession":{
+          "shape":"Boolean",
+          "documentation":"<p> Specifies whether to end the session with the inline agent or not. </p>"
+        },
+        "foundationModel":{
+          "shape":"ModelIdentifier",
+          "documentation":"<p> The <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#model-ids-arns\">model identifier (ID)</a> of the model to use for orchestration by the inline agent. For example, <code>meta.llama3-1-70b-instruct-v1:0</code>. </p>"
+        },
+        "guardrailConfiguration":{
+          "shape":"GuardrailConfigurationWithArn",
+          "documentation":"<p> The <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html\">guardrails</a> to assign to the inline agent. </p>"
+        },
+        "idleSessionTTLInSeconds":{
+          "shape":"SessionTTL",
+          "documentation":"<p> The number of seconds for which the inline agent should maintain session information. After this time expires, the subsequent <code>InvokeInlineAgent</code> request begins a new session. </p> <p>A user interaction remains active for the amount of time specified. If no conversation occurs during this time, the session expires and the data provided before the timeout is deleted.</p>"
+        },
+        "inlineSessionState":{
+          "shape":"InlineSessionState",
+          "documentation":"<p> Parameters that specify the various attributes of a sessions. You can include attributes for the session or prompt or, if you configured an action group to return control, results from invocation of the action group. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html\">Control session context</a>. </p> <note> <p>If you include <code>returnControlInvocationResults</code> in the <code>sessionState</code> field, the <code>inputText</code> field will be ignored.</p> </note>"
+        },
+        "inputText":{
+          "shape":"InputText",
+          "documentation":"<p> The prompt text to send to the agent. </p> <note> <p>If you include <code>returnControlInvocationResults</code> in the <code>sessionState</code> field, the <code>inputText</code> field will be ignored.</p> </note>"
+        },
+        "instruction":{
+          "shape":"Instruction",
+          "documentation":"<p> The instructions that tell the inline agent what it should do and how it should interact with users. </p>"
+        },
+        "knowledgeBases":{
+          "shape":"KnowledgeBases",
+          "documentation":"<p> Contains information of the knowledge bases to associate with. </p>"
+        },
+        "promptOverrideConfiguration":{
+          "shape":"PromptOverrideConfiguration",
+          "documentation":"<p> Configurations for advanced prompts used to override the default prompts to enhance the accuracy of the inline agent. </p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p> The unique identifier of the session. Use the same value across requests to continue the same conversation. </p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        }
+      }
+    },
+    "InvokeInlineAgentResponse":{
+      "type":"structure",
+      "required":[
+        "completion",
+        "contentType",
+        "sessionId"
+      ],
+      "members":{
+        "completion":{
+          "shape":"InlineAgentResponseStream",
+          "documentation":"<p> <pre><code> &lt;/p&gt; </code></pre>"
+        },
+        "contentType":{
+          "shape":"MimeType",
+          "documentation":"<p> The MIME type of the input data in the request. The default value is application/json. </p>",
+          "location":"header",
+          "locationName":"x-amzn-bedrock-agent-content-type"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p> The unique identifier of the session with the agent. </p>",
+          "location":"header",
+          "locationName":"x-amz-bedrock-agent-session-id"
+        }
+      },
+      "payload":"completion"
+    },
     "KmsKeyArn":{
       "type":"string",
       "max":2048,
       "min":1,
       "pattern":"^arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}$"
+    },
+    "KnowledgeBase":{
+      "type":"structure",
+      "required":[
+        "description",
+        "knowledgeBaseId"
+      ],
+      "members":{
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p> The description of the knowledge base associated with the inline agent. </p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p> The unique identifier for a knowledge base associated with the inline agent. </p>"
+        },
+        "retrievalConfiguration":{
+          "shape":"KnowledgeBaseRetrievalConfiguration",
+          "documentation":"<p> The configurations to apply to the knowledge base during query. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html\">Query configurations</a>. </p>"
+        }
+      },
+      "documentation":"<p> Details of the knowledge base associated withe inline agent. </p>"
     },
     "KnowledgeBaseConfiguration":{
       "type":"structure",
@@ -2204,7 +2643,17 @@
       "max":100,
       "min":1
     },
+    "KnowledgeBases":{
+      "type":"list",
+      "member":{"shape":"KnowledgeBase"}
+    },
     "LambdaArn":{"type":"string"},
+    "LambdaResourceArn":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$"
+    },
     "MaxResults":{
       "type":"integer",
       "documentation":"<p>Max Results.</p>",
@@ -2287,6 +2736,12 @@
       "sensitive":true
     },
     "MimeType":{"type":"string"},
+    "ModelIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}(([:][a-z0-9-]{1,63}){0,2})?/[a-z0-9]{12})|(:foundation-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})))|(([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2}))|(([0-9a-zA-Z][_-]?)+))$|(^arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{1,20}):(|[0-9]{12}):inference-profile/[a-zA-Z0-9-:.]+)$"
+    },
     "ModelInvocationInput":{
       "type":"structure",
       "members":{
@@ -2603,9 +3058,52 @@
       },
       "documentation":"<p>A parameter for the API request or function.</p>"
     },
+    "ParameterDescription":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "ParameterDetail":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "description":{
+          "shape":"ParameterDescription",
+          "documentation":"<p> A description of the parameter. Helps the foundation model determine how to elicit the parameters from the user. </p>"
+        },
+        "required":{
+          "shape":"Boolean",
+          "documentation":"<p> Whether the parameter is required for the agent to complete the function for action group invocation. </p>"
+        },
+        "type":{
+          "shape":"ParameterType",
+          "documentation":"<p> The data type of the parameter. </p>"
+        }
+      },
+      "documentation":"<p> Contains details about a parameter in a function for an action group. </p>"
+    },
     "ParameterList":{
       "type":"list",
       "member":{"shape":"Parameter"}
+    },
+    "ParameterMap":{
+      "type":"map",
+      "key":{"shape":"ParameterName"},
+      "value":{"shape":"ParameterDetail"}
+    },
+    "ParameterName":{
+      "type":"string",
+      "pattern":"^([0-9a-zA-Z][_-]?){1,100}$"
+    },
+    "ParameterType":{
+      "type":"string",
+      "enum":[
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "array"
+      ]
     },
     "Parameters":{
       "type":"list",
@@ -2615,6 +3113,10 @@
       "type":"blob",
       "max":1000000,
       "min":0,
+      "sensitive":true
+    },
+    "Payload":{
+      "type":"string",
       "sensitive":true
     },
     "PayloadPart":{
@@ -2737,10 +3239,69 @@
       "sensitive":true,
       "union":true
     },
+    "PromptConfiguration":{
+      "type":"structure",
+      "members":{
+        "basePromptTemplate":{
+          "shape":"BasePromptTemplate",
+          "documentation":"<p>Defines the prompt template with which to replace the default prompt template. You can use placeholder variables in the base prompt template to customize the prompt. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html\">Prompt template placeholder variables</a>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts-configure.html\">Configure the prompt templates</a>.</p>"
+        },
+        "inferenceConfiguration":{
+          "shape":"InferenceConfiguration",
+          "documentation":"<p>Contains inference parameters to use when the agent invokes a foundation model in the part of the agent sequence defined by the <code>promptType</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p>"
+        },
+        "parserMode":{
+          "shape":"CreationMode",
+          "documentation":"<p>Specifies whether to override the default parser Lambda function when parsing the raw foundation model output in the part of the agent sequence defined by the <code>promptType</code>. If you set the field as <code>OVERRIDEN</code>, the <code>overrideLambda</code> field in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> must be specified with the ARN of a Lambda function.</p>"
+        },
+        "promptCreationMode":{
+          "shape":"CreationMode",
+          "documentation":"<p>Specifies whether to override the default prompt template for this <code>promptType</code>. Set this value to <code>OVERRIDDEN</code> to use the prompt that you provide in the <code>basePromptTemplate</code>. If you leave it as <code>DEFAULT</code>, the agent uses a default prompt template.</p>"
+        },
+        "promptState":{
+          "shape":"PromptState",
+          "documentation":"<p>Specifies whether to allow the inline agent to carry out the step specified in the <code>promptType</code>. If you set this value to <code>DISABLED</code>, the agent skips that step. The default state for each <code>promptType</code> is as follows.</p> <ul> <li> <p> <code>PRE_PROCESSING</code> – <code>ENABLED</code> </p> </li> <li> <p> <code>ORCHESTRATION</code> – <code>ENABLED</code> </p> </li> <li> <p> <code>KNOWLEDGE_BASE_RESPONSE_GENERATION</code> – <code>ENABLED</code> </p> </li> <li> <p> <code>POST_PROCESSING</code> – <code>DISABLED</code> </p> </li> </ul>"
+        },
+        "promptType":{
+          "shape":"PromptType",
+          "documentation":"<p> The step in the agent sequence that this prompt configuration applies to. </p>"
+        }
+      },
+      "documentation":"<p> Contains configurations to override a prompt template in one part of an agent sequence. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html\">Advanced prompts</a>. </p>"
+    },
+    "PromptConfigurations":{
+      "type":"list",
+      "member":{"shape":"PromptConfiguration"},
+      "max":10,
+      "min":0
+    },
+    "PromptOverrideConfiguration":{
+      "type":"structure",
+      "required":["promptConfigurations"],
+      "members":{
+        "overrideLambda":{
+          "shape":"LambdaResourceArn",
+          "documentation":"<p>The ARN of the Lambda function to use when parsing the raw foundation model output in parts of the agent sequence. If you specify this field, at least one of the <code>promptConfigurations</code> must contain a <code>parserMode</code> value that is set to <code>OVERRIDDEN</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/lambda-parser.html\">Parser Lambda function in Amazon Bedrock Agents</a>. </p>"
+        },
+        "promptConfigurations":{
+          "shape":"PromptConfigurations",
+          "documentation":"<p>Contains configurations to override a prompt template in one part of an agent sequence. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html\">Advanced prompts</a>. </p>"
+        }
+      },
+      "documentation":"<p>Contains configurations to override prompts in different parts of an agent sequence. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html\">Advanced prompts</a>. </p>",
+      "sensitive":true
+    },
     "PromptSessionAttributesMap":{
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"String"}
+    },
+    "PromptState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "PromptTemplate":{
       "type":"structure",
@@ -2762,7 +3323,8 @@
         "PRE_PROCESSING",
         "ORCHESTRATION",
         "KNOWLEDGE_BASE_RESPONSE_GENERATION",
-        "POST_PROCESSING"
+        "POST_PROCESSING",
+        "ROUTING_CLASSIFIER"
       ]
     },
     "PropertyParameters":{
@@ -2855,6 +3417,25 @@
         }
       },
       "documentation":"<p>The parameters in the API request body.</p>"
+    },
+    "RequireConfirmation":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "ResourceDescription":{
+      "type":"string",
+      "documentation":"<p>/ @documentation(&quot;Description of the using the resource.&quot;)</p>",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
+    "ResourceName":{
+      "type":"string",
+      "pattern":"^([0-9a-zA-Z][_-]?){1,100}$",
+      "sensitive":true
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -3324,6 +3905,26 @@
       "event":true,
       "sensitive":true
     },
+    "S3BucketName":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":"^[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"
+    },
+    "S3Identifier":{
+      "type":"structure",
+      "members":{
+        "s3BucketName":{
+          "shape":"S3BucketName",
+          "documentation":"<p> The name of the S3 bucket. </p>"
+        },
+        "s3ObjectKey":{
+          "shape":"S3ObjectKey",
+          "documentation":"<p> The S3 object key for the S3 resource. </p>"
+        }
+      },
+      "documentation":"<p> The identifier information for an Amazon S3 bucket. </p>"
+    },
     "S3ObjectDoc":{
       "type":"structure",
       "required":["uri"],
@@ -3345,6 +3946,12 @@
         }
       },
       "documentation":"<p>Contains details of the s3 object where the source file is located.</p>"
+    },
+    "S3ObjectKey":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^[\\.\\-\\!\\*\\_\\'\\(\\)a-zA-Z0-9][\\.\\-\\!\\*\\_\\'\\(\\)\\/a-zA-Z0-9]*$"
     },
     "S3Uri":{
       "type":"string",
@@ -3411,6 +4018,12 @@
         }
       },
       "documentation":"<p>Contains parameters that specify various attributes that persist across a session or prompt. You can define session state attributes as key-value pairs when writing a <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html\">Lambda function</a> for an action group or pass them when making an <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html\">InvokeAgent</a> request. Use session state attributes to control and provide conversational context for your agent and to help customize your agent's behavior. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html\">Control session context</a>.</p>"
+    },
+    "SessionTTL":{
+      "type":"integer",
+      "box":true,
+      "max":3600,
+      "min":60
     },
     "Source":{
       "type":"string",

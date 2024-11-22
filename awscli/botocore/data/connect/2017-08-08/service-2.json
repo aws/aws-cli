@@ -419,6 +419,27 @@
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Creates an agent status for the specified Amazon Connect instance.</p>"
     },
+    "CreateContact":{
+      "name":"CreateContact",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/contact/create-contact"
+      },
+      "input":{"shape":"CreateContactRequest"},
+      "output":{"shape":"CreateContactResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"IdempotencyException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p/>"
+    },
     "CreateContactFlow":{
       "name":"CreateContactFlow",
       "http":{
@@ -479,6 +500,28 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Publishes a new version of the flow provided. Versions are immutable and monotonically increasing. If a version of the same flow content already exists, no new version is created and instead the existing version number is returned. If the <code>FlowContentSha256</code> provided is different from the <code>FlowContentSha256</code> of the <code>$LATEST</code> published flow content, then an error is returned. This API only supports creating versions for flows of type <code>Campaign</code>.</p>"
+    },
+    "CreateEmailAddress":{
+      "name":"CreateEmailAddress",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/email-addresses/{InstanceId}"
+      },
+      "input":{"shape":"CreateEmailAddressRequest"},
+      "output":{"shape":"CreateEmailAddressResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"IdempotencyException"},
+        {"shape":"DuplicateResourceException"},
+        {"shape":"ResourceConflictException"}
+      ],
+      "documentation":"<p/>"
     },
     "CreateEvaluationForm":{
       "name":"CreateEvaluationForm",
@@ -960,6 +1003,25 @@
       ],
       "documentation":"<p>Deletes the specified flow module.</p>"
     },
+    "DeleteEmailAddress":{
+      "name":"DeleteEmailAddress",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/email-addresses/{InstanceId}/{EmailAddressId}"
+      },
+      "input":{"shape":"DeleteEmailAddressRequest"},
+      "output":{"shape":"DeleteEmailAddressResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceConflictException"}
+      ],
+      "documentation":"<p/>"
+    },
     "DeleteEvaluationForm":{
       "name":"DeleteEvaluationForm",
       "http":{
@@ -1380,6 +1442,24 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Describes the specified flow module.</p> <p>Use the <code>$SAVED</code> alias in the request to describe the <code>SAVED</code> content of a Flow. For example, <code>arn:aws:.../contact-flow/{id}:$SAVED</code>. Once a contact flow is published, <code>$SAVED</code> needs to be supplied to view saved content that has not been published.</p>"
+    },
+    "DescribeEmailAddress":{
+      "name":"DescribeEmailAddress",
+      "http":{
+        "method":"GET",
+        "requestUri":"/email-addresses/{InstanceId}/{EmailAddressId}"
+      },
+      "input":{"shape":"DescribeEmailAddressRequest"},
+      "output":{"shape":"DescribeEmailAddressResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p/>"
     },
     "DescribeEvaluationForm":{
       "name":"DescribeEvaluationForm",
@@ -2187,6 +2267,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Returns a paginated list of all approved origins associated with the instance.</p>"
+    },
+    "ListAssociatedContacts":{
+      "name":"ListAssociatedContacts",
+      "http":{
+        "method":"GET",
+        "requestUri":"/contact/associated/{InstanceId}"
+      },
+      "input":{"shape":"ListAssociatedContactsRequest"},
+      "output":{"shape":"ListAssociatedContactsResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p/>"
     },
     "ListAuthenticationProfiles":{
       "name":"ListAuthenticationProfiles",
@@ -3127,6 +3224,24 @@
       ],
       "documentation":"<p>Searches contacts in an Amazon Connect instance.</p>"
     },
+    "SearchEmailAddresses":{
+      "name":"SearchEmailAddresses",
+      "http":{
+        "method":"POST",
+        "requestUri":"/search-email-addresses"
+      },
+      "input":{"shape":"SearchEmailAddressesRequest"},
+      "output":{"shape":"SearchEmailAddressesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p/>"
+    },
     "SearchHoursOfOperations":{
       "name":"SearchHoursOfOperations",
       "http":{
@@ -3331,6 +3446,25 @@
       ],
       "documentation":"<p>Processes chat integration events from Amazon Web Services or external integrations to Amazon Connect. A chat integration event includes:</p> <ul> <li> <p>SourceId, DestinationId, and Subtype: a set of identifiers, uniquely representing a chat</p> </li> <li> <p> ChatEvent: details of the chat action to perform such as sending a message, event, or disconnecting from a chat</p> </li> </ul> <p>When a chat integration event is sent with chat identifiers that do not map to an active chat contact, a new chat contact is also created before handling chat action. </p> <p>Access to this API is currently restricted to Amazon Pinpoint for supporting SMS integration. </p>"
     },
+    "SendOutboundEmail":{
+      "name":"SendOutboundEmail",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/instance/{InstanceId}/outbound-email"
+      },
+      "input":{"shape":"SendOutboundEmailRequest"},
+      "output":{"shape":"SendOutboundEmailResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"IdempotencyException"}
+      ],
+      "documentation":"<p/>"
+    },
     "StartAttachedFileUpload":{
       "name":"StartAttachedFileUpload",
       "http":{
@@ -3418,6 +3552,25 @@
       ],
       "documentation":"<p> Initiates real-time message streaming for a new chat contact.</p> <p> For more information about message streaming, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-message-streaming.html\">Enable real-time chat message streaming</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <p>For more information about chat, see the following topics in the <i>Amazon Connect Administrator Guide</i>: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/web-and-mobile-chat.html\">Concepts: Web and mobile messaging capabilities in Amazon Connect</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Amazon Connect Chat security best practices</a> </p> </li> </ul>"
     },
+    "StartEmailContact":{
+      "name":"StartEmailContact",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/contact/email"
+      },
+      "input":{"shape":"StartEmailContactRequest"},
+      "output":{"shape":"StartEmailContactResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"IdempotencyException"}
+      ],
+      "documentation":"<p/>"
+    },
     "StartOutboundChatContact":{
       "name":"StartOutboundChatContact",
       "http":{
@@ -3436,6 +3589,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Initiates a new outbound SMS contact to a customer. Response of this API provides the ContactId of the outbound SMS contact created.</p> <p> <b>SourceEndpoint</b> only supports Endpoints with <code>CONNECT_PHONENUMBER_ARN</code> as Type and <b>DestinationEndpoint</b> only supports Endpoints with <code>TELEPHONE_NUMBER</code> as Type. <b>ContactFlowId</b> initiates the flow to manage the new SMS contact created.</p> <p>This API can be used to initiate outbound SMS contacts for an agent or it can also deflect an ongoing contact to an outbound SMS contact by using the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_StartOutboundChatContact.html\">StartOutboundChatContact</a> Flow Action.</p> <p>For more information about using SMS in Amazon Connect, see the following topics in the <i>Amazon Connect Administrator Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-sms-messaging.html\">Set up SMS messaging</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/sms-number.html\">Request an SMS-enabled phone number through AWS End User Messaging SMS</a> </p> </li> </ul>"
+    },
+    "StartOutboundEmailContact":{
+      "name":"StartOutboundEmailContact",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/contact/outbound-email"
+      },
+      "input":{"shape":"StartOutboundEmailContactRequest"},
+      "output":{"shape":"StartOutboundEmailContactResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"IdempotencyException"}
+      ],
+      "documentation":"<p/>"
     },
     "StartOutboundVoiceContact":{
       "name":"StartOutboundVoiceContact",
@@ -3887,6 +4059,25 @@
       ],
       "documentation":"<p>Updates the scheduled time of a task contact that is already scheduled.</p>"
     },
+    "UpdateEmailAddressMetadata":{
+      "name":"UpdateEmailAddressMetadata",
+      "http":{
+        "method":"POST",
+        "requestUri":"/email-addresses/{InstanceId}/{EmailAddressId}"
+      },
+      "input":{"shape":"UpdateEmailAddressMetadataRequest"},
+      "output":{"shape":"UpdateEmailAddressMetadataResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"IdempotencyException"}
+      ],
+      "documentation":"<p/>"
+    },
     "UpdateEvaluationForm":{
       "name":"UpdateEvaluationForm",
       "http":{
@@ -4108,6 +4299,24 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Updates the outbound caller ID name, number, and outbound whisper flow for a specified queue.</p> <important> <ul> <li> <p>If the phone number is claimed to a traffic distribution group that was created in the same Region as the Amazon Connect instance where you are calling this API, then you can use a full phone number ARN or a UUID for <code>OutboundCallerIdNumberId</code>. However, if the phone number is claimed to a traffic distribution group that is in one Region, and you are calling this API from an instance in another Amazon Web Services Region that is associated with the traffic distribution group, you must provide a full phone number ARN. If a UUID is provided in this scenario, you will receive a <code>ResourceNotFoundException</code>.</p> </li> <li> <p>Only use the phone number ARN format that doesn't contain <code>instance</code> in the path, for example, <code>arn:aws:connect:us-east-1:1234567890:phone-number/uuid</code>. This is the same ARN format that is returned when you call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListPhoneNumbersV2.html\">ListPhoneNumbersV2</a> API.</p> </li> <li> <p>If you plan to use IAM policies to allow/deny access to this API for phone number resources claimed to a traffic distribution group, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security_iam_resource-level-policy-examples.html#allow-deny-queue-actions-replica-region\">Allow or Deny queue API actions for phone numbers in a replica Region</a>.</p> </li> </ul> </important>"
+    },
+    "UpdateQueueOutboundEmailConfig":{
+      "name":"UpdateQueueOutboundEmailConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/queues/{InstanceId}/{QueueId}/outbound-email-config"
+      },
+      "input":{"shape":"UpdateQueueOutboundEmailConfigRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConditionalOperationFailedException"}
+      ],
+      "documentation":"<p/>"
     },
     "UpdateQueueStatus":{
       "name":"UpdateQueueStatus",
@@ -4570,6 +4779,20 @@
           "documentation":"<p>A version of the evaluation form.</p>"
         }
       }
+    },
+    "AdditionalEmailRecipients":{
+      "type":"structure",
+      "members":{
+        "ToList":{
+          "shape":"EmailRecipientsList",
+          "documentation":"<p/>"
+        },
+        "CcList":{
+          "shape":"EmailRecipientsList",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
     },
     "AfterContactWorkTimeLimit":{
       "type":"integer",
@@ -5435,6 +5658,52 @@
         }
       }
     },
+    "AssociatedContactSummary":{
+      "type":"structure",
+      "members":{
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p/>"
+        },
+        "ContactArn":{
+          "shape":"ARN",
+          "documentation":"<p/>"
+        },
+        "InitiationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p/>"
+        },
+        "DisconnectTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p/>"
+        },
+        "InitialContactId":{
+          "shape":"ContactId",
+          "documentation":"<p/>"
+        },
+        "PreviousContactId":{
+          "shape":"ContactId",
+          "documentation":"<p/>"
+        },
+        "RelatedContactId":{
+          "shape":"ContactId",
+          "documentation":"<p/>"
+        },
+        "InitiationMethod":{
+          "shape":"ContactInitiationMethod",
+          "documentation":"<p/>"
+        },
+        "Channel":{
+          "shape":"Channel",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "AssociatedContactSummaryList":{
+      "type":"list",
+      "member":{"shape":"AssociatedContactSummary"}
+    },
     "AssociatedQueueIdList":{
       "type":"list",
       "member":{"shape":"QueueId"}
@@ -5529,6 +5798,13 @@
         "INVALID_FILE_NAME"
       ]
     },
+    "AttachedFileServiceQuotaExceededExceptionReason":{
+      "type":"string",
+      "enum":[
+        "TOTAL_FILE_SIZE_EXCEEDED",
+        "TOTAL_FILE_COUNT_EXCEEDED"
+      ]
+    },
     "AttachedFilesList":{
       "type":"list",
       "member":{"shape":"AttachedFile"}
@@ -5552,6 +5828,10 @@
         "Status":{
           "shape":"ReferenceStatus",
           "documentation":"<p>Status of the attachment reference type.</p>"
+        },
+        "Arn":{
+          "shape":"ReferenceArn",
+          "documentation":"<p/>"
         }
       },
       "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>ATTACHMENT</code>. Otherwise, null.</p>"
@@ -5989,6 +6269,12 @@
         "ROUTE_ANY_CHANNEL"
       ]
     },
+    "Body":{
+      "type":"string",
+      "max":5242880,
+      "min":1,
+      "sensitive":true
+    },
     "Boolean":{"type":"boolean"},
     "BotName":{
       "type":"string",
@@ -6020,7 +6306,8 @@
       "enum":[
         "VOICE",
         "CHAT",
-        "TASK"
+        "TASK",
+        "EMAIL"
       ]
     },
     "ChannelList":{
@@ -6035,7 +6322,7 @@
     "Channels":{
       "type":"list",
       "member":{"shape":"Channel"},
-      "max":3
+      "max":4
     },
     "ChatContent":{
       "type":"string",
@@ -6304,6 +6591,15 @@
       },
       "documentation":"<p>A leaf node condition which can be used to specify a ProficiencyName, ProficiencyValue and ProficiencyLimit.</p>"
     },
+    "ConditionalOperationFailedException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"Message"}
+      },
+      "documentation":"<p/>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
     "Conditions":{
       "type":"list",
       "member":{"shape":"Condition"}
@@ -6349,6 +6645,10 @@
         "PreviousContactId":{
           "shape":"ContactId",
           "documentation":"<p>If this contact is not the first contact, this is the ID of the previous contact.</p>"
+        },
+        "ContactAssociationId":{
+          "shape":"ContactId",
+          "documentation":"<p/>"
         },
         "InitiationMethod":{
           "shape":"ContactInitiationMethod",
@@ -6414,6 +6714,14 @@
           "shape":"WisdomInfo",
           "documentation":"<p>Information about Amazon Connect Wisdom.</p>"
         },
+        "CustomerEndpoint":{
+          "shape":"EndpointInfo",
+          "documentation":"<p/>"
+        },
+        "SystemEndpoint":{
+          "shape":"EndpointInfo",
+          "documentation":"<p/>"
+        },
         "QueueTimeAdjustmentSeconds":{
           "shape":"QueueTimeAdjustmentSeconds",
           "documentation":"<p>An integer that represents the queue time adjust to be applied to the contact, in seconds (longer / larger queue time are routed preferentially). Cannot be specified if the QueuePriority is specified. Must be statically defined and a valid integer value.</p>"
@@ -6454,6 +6762,10 @@
         "DisconnectDetails":{
           "shape":"DisconnectDetails",
           "documentation":"<p>Information about the call disconnect experience.</p>"
+        },
+        "AdditionalEmailRecipients":{
+          "shape":"AdditionalEmailRecipients",
+          "documentation":"<p/>"
         },
         "SegmentAttributes":{
           "shape":"SegmentAttributes",
@@ -6880,7 +7192,10 @@
         "API",
         "DISCONNECT",
         "MONITOR",
-        "EXTERNAL_OUTBOUND"
+        "EXTERNAL_OUTBOUND",
+        "WEBRTC_API",
+        "AGENT_REPLY",
+        "FLOW"
       ]
     },
     "ContactNotFoundException":{
@@ -6946,6 +7261,10 @@
         "ScheduledTimestamp":{
           "shape":"timestamp",
           "documentation":"<p>The timestamp, in Unix epoch time format, at which to start running the inbound flow.</p>"
+        },
+        "SegmentAttributes":{
+          "shape":"ContactSearchSummarySegmentAttributes",
+          "documentation":"<p/>"
         }
       },
       "documentation":"<p>Information of returned contact.</p>"
@@ -6977,6 +7296,21 @@
         }
       },
       "documentation":"<p>If this contact was queued, this contains information about the queue.</p>"
+    },
+    "ContactSearchSummarySegmentAttributeValue":{
+      "type":"structure",
+      "members":{
+        "ValueString":{
+          "shape":"SegmentAttributeValueString",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "ContactSearchSummarySegmentAttributes":{
+      "type":"map",
+      "key":{"shape":"SegmentAttributeName"},
+      "value":{"shape":"ContactSearchSummarySegmentAttributeValue"}
     },
     "ContactState":{
       "type":"string",
@@ -7306,6 +7640,130 @@
         "Version":{
           "shape":"ResourceVersion",
           "documentation":"<p>The identifier of the flow version.</p>"
+        }
+      }
+    },
+    "CreateContactRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Channel",
+        "InitiationMethod"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p/>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p/>",
+          "idempotencyToken":true
+        },
+        "RelatedContactId":{
+          "shape":"ContactId",
+          "documentation":"<p/>"
+        },
+        "Attributes":{
+          "shape":"Attributes",
+          "documentation":"<p/>"
+        },
+        "References":{
+          "shape":"ContactReferences",
+          "documentation":"<p/>"
+        },
+        "Channel":{
+          "shape":"Channel",
+          "documentation":"<p/>"
+        },
+        "InitiationMethod":{
+          "shape":"ContactInitiationMethod",
+          "documentation":"<p/>"
+        },
+        "ExpiryDurationInMinutes":{
+          "shape":"ExpiryDurationInMinutes",
+          "documentation":"<p/>"
+        },
+        "UserInfo":{
+          "shape":"UserInfo",
+          "documentation":"<p/>"
+        },
+        "InitiateAs":{
+          "shape":"InitiateAs",
+          "documentation":"<p/>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p/>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p/>"
+        },
+        "SegmentAttributes":{
+          "shape":"SegmentAttributes",
+          "documentation":"<p/>"
+        }
+      }
+    },
+    "CreateContactResponse":{
+      "type":"structure",
+      "members":{
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p/>"
+        },
+        "ContactArn":{
+          "shape":"ARN",
+          "documentation":"<p/>"
+        }
+      }
+    },
+    "CreateEmailAddressRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EmailAddress"
+      ],
+      "members":{
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p/>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p/>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EmailAddress":{
+          "shape":"EmailAddress",
+          "documentation":"<p/>"
+        },
+        "DisplayName":{
+          "shape":"EmailAddressDisplayName",
+          "documentation":"<p/>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p/>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p/>"
+        }
+      }
+    },
+    "CreateEmailAddressResponse":{
+      "type":"structure",
+      "members":{
+        "EmailAddressId":{
+          "shape":"EmailAddressId",
+          "documentation":"<p/>"
+        },
+        "EmailAddressArn":{
+          "shape":"EmailAddressArn",
+          "documentation":"<p/>"
         }
       }
     },
@@ -7696,6 +8154,10 @@
           "shape":"OutboundCallerConfig",
           "documentation":"<p>The outbound caller ID name, number, and outbound whisper flow.</p>"
         },
+        "OutboundEmailConfig":{
+          "shape":"OutboundEmailConfig",
+          "documentation":"<p/>"
+        },
         "HoursOfOperationId":{
           "shape":"HoursOfOperationId",
           "documentation":"<p>The identifier for the hours of operation.</p>"
@@ -7988,6 +8450,10 @@
         "ContactFlowId":{
           "shape":"ContactFlowId",
           "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p>"
+        },
+        "SelfAssignFlowId":{
+          "shape":"ContactFlowId",
+          "documentation":"<p/>"
         },
         "Constraints":{
           "shape":"TaskTemplateConstraints",
@@ -8521,6 +8987,7 @@
       },
       "documentation":"<p>Information about the Customer on the contact.</p>"
     },
+    "CustomerProfileAttributesSerialized":{"type":"string"},
     "CustomerQualityMetrics":{
       "type":"structure",
       "members":{
@@ -8757,6 +9224,32 @@
       }
     },
     "DeleteContactFlowResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteEmailAddressRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EmailAddressId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p/>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EmailAddressId":{
+          "shape":"EmailAddressId",
+          "documentation":"<p/>",
+          "location":"uri",
+          "locationName":"EmailAddressId"
+        }
+      }
+    },
+    "DeleteEmailAddressResponse":{
       "type":"structure",
       "members":{
       }
@@ -9390,6 +9883,64 @@
         "Contact":{
           "shape":"Contact",
           "documentation":"<p>Information about the contact.</p>"
+        }
+      }
+    },
+    "DescribeEmailAddressRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EmailAddressId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p/>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EmailAddressId":{
+          "shape":"EmailAddressId",
+          "documentation":"<p/>",
+          "location":"uri",
+          "locationName":"EmailAddressId"
+        }
+      }
+    },
+    "DescribeEmailAddressResponse":{
+      "type":"structure",
+      "members":{
+        "EmailAddressId":{
+          "shape":"EmailAddressId",
+          "documentation":"<p/>"
+        },
+        "EmailAddressArn":{
+          "shape":"EmailAddressArn",
+          "documentation":"<p/>"
+        },
+        "EmailAddress":{
+          "shape":"EmailAddress",
+          "documentation":"<p/>"
+        },
+        "DisplayName":{
+          "shape":"EmailAddressDisplayName",
+          "documentation":"<p/>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p/>"
+        },
+        "CreateTimestamp":{
+          "shape":"ISO8601Datetime",
+          "documentation":"<p/>"
+        },
+        "ModifiedTimestamp":{
+          "shape":"ISO8601Datetime",
+          "documentation":"<p/>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p/>"
         }
       }
     },
@@ -10475,6 +11026,188 @@
       "type":"string",
       "sensitive":true
     },
+    "EmailAddress":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[^\\s@]+@[^\\s@]+\\.[^\\s@]+",
+      "sensitive":true
+    },
+    "EmailAddressArn":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "EmailAddressDisplayName":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "sensitive":true
+    },
+    "EmailAddressId":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "EmailAddressInfo":{
+      "type":"structure",
+      "required":["EmailAddress"],
+      "members":{
+        "EmailAddress":{
+          "shape":"EmailAddress",
+          "documentation":"<p/>"
+        },
+        "DisplayName":{
+          "shape":"EmailAddressDisplayName",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "EmailAddressList":{
+      "type":"list",
+      "member":{"shape":"EmailAddressMetadata"}
+    },
+    "EmailAddressMetadata":{
+      "type":"structure",
+      "members":{
+        "EmailAddressId":{
+          "shape":"EmailAddressId",
+          "documentation":"<p/>"
+        },
+        "EmailAddressArn":{
+          "shape":"EmailAddressArn",
+          "documentation":"<p/>"
+        },
+        "EmailAddress":{
+          "shape":"EmailAddress",
+          "documentation":"<p/>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p/>"
+        },
+        "DisplayName":{
+          "shape":"EmailAddressDisplayName",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "EmailAddressRecipientList":{
+      "type":"list",
+      "member":{"shape":"EmailAddressInfo"},
+      "max":10,
+      "min":1
+    },
+    "EmailAddressSearchConditionList":{
+      "type":"list",
+      "member":{"shape":"EmailAddressSearchCriteria"}
+    },
+    "EmailAddressSearchCriteria":{
+      "type":"structure",
+      "members":{
+        "OrConditions":{
+          "shape":"EmailAddressSearchConditionList",
+          "documentation":"<p/>"
+        },
+        "AndConditions":{
+          "shape":"EmailAddressSearchConditionList",
+          "documentation":"<p/>"
+        },
+        "StringCondition":{"shape":"StringCondition"}
+      },
+      "documentation":"<p/>"
+    },
+    "EmailAddressSearchFilter":{
+      "type":"structure",
+      "members":{
+        "TagFilter":{"shape":"ControlPlaneTagFilter"}
+      },
+      "documentation":"<p/>"
+    },
+    "EmailAttachment":{
+      "type":"structure",
+      "required":[
+        "FileName",
+        "S3Url"
+      ],
+      "members":{
+        "FileName":{
+          "shape":"FileName",
+          "documentation":"<p/>"
+        },
+        "S3Url":{
+          "shape":"PreSignedAttachmentUrl",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "EmailAttachments":{
+      "type":"list",
+      "member":{"shape":"EmailAttachment"},
+      "max":10,
+      "min":1,
+      "sensitive":true
+    },
+    "EmailHeaderType":{
+      "type":"string",
+      "enum":[
+        "REFERENCES",
+        "MESSAGE_ID",
+        "IN_REPLY_TO",
+        "X_SES_SPAM_VERDICT",
+        "X_SES_VIRUS_VERDICT"
+      ]
+    },
+    "EmailHeaderValue":{
+      "type":"string",
+      "max":20000,
+      "min":1
+    },
+    "EmailHeaders":{
+      "type":"map",
+      "key":{"shape":"EmailHeaderType"},
+      "value":{"shape":"EmailHeaderValue"}
+    },
+    "EmailMessageContentType":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "EmailMessageReference":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ReferenceKey",
+          "documentation":"<p/>"
+        },
+        "Arn":{
+          "shape":"ReferenceArn",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "EmailRecipient":{
+      "type":"structure",
+      "members":{
+        "Address":{
+          "shape":"EndpointAddress",
+          "documentation":"<p/>"
+        },
+        "DisplayName":{
+          "shape":"EndpointDisplayName",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "EmailRecipientsList":{
+      "type":"list",
+      "member":{"shape":"EmailRecipient"}
+    },
     "EmailReference":{
       "type":"structure",
       "members":{
@@ -10542,13 +11275,37 @@
       "max":256,
       "min":0
     },
+    "EndpointDisplayName":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "EndpointInfo":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"EndpointType",
+          "documentation":"<p/>"
+        },
+        "Address":{
+          "shape":"EndpointAddress",
+          "documentation":"<p/>"
+        },
+        "DisplayName":{
+          "shape":"EndpointDisplayName",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
     "EndpointType":{
       "type":"string",
       "enum":[
         "TELEPHONE_NUMBER",
         "VOIP",
         "CONTACT_FLOW",
-        "CONNECT_PHONENUMBER_ARN"
+        "CONNECT_PHONENUMBER_ARN",
+        "EMAIL_ADDRESS"
       ]
     },
     "ErrorCode":{"type":"string"},
@@ -11469,6 +12226,7 @@
       },
       "documentation":"<p>An object to specify the expiration of a routing step.</p>"
     },
+    "ExpiryDurationInMinutes":{"type":"integer"},
     "Expression":{
       "type":"structure",
       "members":{
@@ -11590,6 +12348,7 @@
     "FileIdList":{
       "type":"list",
       "member":{"shape":"FileId"},
+      "max":100,
       "min":1
     },
     "FileName":{
@@ -11614,7 +12373,10 @@
     },
     "FileUseCaseType":{
       "type":"string",
-      "enum":["ATTACHMENT"]
+      "enum":[
+        "EMAIL_MESSAGE",
+        "ATTACHMENT"
+      ]
     },
     "FilterV2":{
       "type":"structure",
@@ -11666,7 +12428,11 @@
     },
     "FlowAssociationResourceType":{
       "type":"string",
-      "enum":["SMS_PHONE_NUMBER"]
+      "enum":[
+        "SMS_PHONE_NUMBER",
+        "INBOUND_EMAIL",
+        "OUTBOUND_EMAIL"
+      ]
     },
     "FlowAssociationSummary":{
       "type":"structure",
@@ -12225,6 +12991,10 @@
         "ContactFlowId":{
           "shape":"ContactFlowId",
           "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p>"
+        },
+        "SelfAssignFlowId":{
+          "shape":"ContactFlowId",
+          "documentation":"<p/>"
         },
         "Constraints":{
           "shape":"TaskTemplateConstraints",
@@ -12938,8 +13708,78 @@
         }
       }
     },
+    "InboundAdditionalRecipients":{
+      "type":"structure",
+      "members":{
+        "ToAddresses":{
+          "shape":"EmailAddressRecipientList",
+          "documentation":"<p/>"
+        },
+        "CcAddresses":{
+          "shape":"EmailAddressRecipientList",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
     "InboundCallsEnabled":{"type":"boolean"},
+    "InboundEmailContent":{
+      "type":"structure",
+      "required":["MessageSourceType"],
+      "members":{
+        "MessageSourceType":{
+          "shape":"InboundMessageSourceType",
+          "documentation":"<p/>"
+        },
+        "RawMessage":{
+          "shape":"InboundRawMessage",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "InboundMessageSourceType":{
+      "type":"string",
+      "enum":["RAW"]
+    },
+    "InboundRawMessage":{
+      "type":"structure",
+      "required":[
+        "Subject",
+        "Body",
+        "ContentType"
+      ],
+      "members":{
+        "Subject":{
+          "shape":"InboundSubject",
+          "documentation":"<p/>"
+        },
+        "Body":{
+          "shape":"Body",
+          "documentation":"<p/>"
+        },
+        "ContentType":{
+          "shape":"EmailMessageContentType",
+          "documentation":"<p/>"
+        },
+        "Headers":{
+          "shape":"EmailHeaders",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "InboundSubject":{
+      "type":"string",
+      "max":998,
+      "min":0,
+      "sensitive":true
+    },
     "Index":{"type":"integer"},
+    "InitiateAs":{
+      "type":"string",
+      "enum":["CONNECTED_TO_USER"]
+    },
     "InitiationMethodList":{
       "type":"list",
       "member":{"shape":"ContactInitiationMethod"}
@@ -13112,7 +13952,8 @@
         "CONTACT_EVALUATIONS",
         "SCREEN_RECORDINGS",
         "REAL_TIME_CONTACT_ANALYSIS_CHAT_SEGMENTS",
-        "REAL_TIME_CONTACT_ANALYSIS_VOICE_SEGMENTS"
+        "REAL_TIME_CONTACT_ANALYSIS_VOICE_SEGMENTS",
+        "EMAIL_MESSAGES"
       ]
     },
     "InstanceSummary":{
@@ -13229,7 +14070,8 @@
         "Q_MESSAGE_TEMPLATES",
         "CASES_DOMAIN",
         "APPLICATION",
-        "FILE_SCANNER"
+        "FILE_SCANNER",
+        "SES_IDENTITY"
       ]
     },
     "InternalServiceException":{
@@ -13601,6 +14443,57 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListAssociatedContactsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p/>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p/>",
+          "location":"querystring",
+          "locationName":"contactId"
+        },
+        "MaxResults":{
+          "shape":"ListAssociatedContactsRequestMaxResults",
+          "documentation":"<p/>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p/>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAssociatedContactsRequestMaxResults":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "ListAssociatedContactsResponse":{
+      "type":"structure",
+      "members":{
+        "ContactSummaryList":{
+          "shape":"AssociatedContactSummaryList",
+          "documentation":"<p/>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p/>"
         }
       }
     },
@@ -14052,7 +14945,11 @@
     },
     "ListFlowAssociationResourceType":{
       "type":"string",
-      "enum":["VOICE_PHONE_NUMBER"]
+      "enum":[
+        "VOICE_PHONE_NUMBER",
+        "INBOUND_EMAIL",
+        "OUTBOUND_EMAIL"
+      ]
     },
     "ListFlowAssociationsRequest":{
       "type":"structure",
@@ -15706,6 +16603,16 @@
     },
     "MeetingId":{"type":"string"},
     "Message":{"type":"string"},
+    "MessageTemplateId":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "MessageTemplateKnowledgeBaseId":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
     "MetadataUrl":{
       "type":"string",
       "max":2000,
@@ -15880,7 +16787,7 @@
     },
     "Name":{
       "type":"string",
-      "max":512,
+      "max":1024,
       "min":0,
       "sensitive":true
     },
@@ -16031,6 +16938,16 @@
       "type":"list",
       "member":{"shape":"Origin"}
     },
+    "OutboundAdditionalRecipients":{
+      "type":"structure",
+      "members":{
+        "CcEmailAddresses":{
+          "shape":"EmailAddressRecipientList",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
     "OutboundCallerConfig":{
       "type":"structure",
       "members":{
@@ -16066,6 +16983,76 @@
       "documentation":"<p>The contact is not permitted.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
+    },
+    "OutboundEmailConfig":{
+      "type":"structure",
+      "members":{
+        "OutboundEmailAddressId":{
+          "shape":"EmailAddressId",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "OutboundEmailContent":{
+      "type":"structure",
+      "required":["MessageSourceType"],
+      "members":{
+        "MessageSourceType":{
+          "shape":"OutboundMessageSourceType",
+          "documentation":"<p/>"
+        },
+        "TemplatedMessageConfig":{
+          "shape":"TemplatedMessageConfig",
+          "documentation":"<p/>"
+        },
+        "RawMessage":{
+          "shape":"OutboundRawMessage",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "OutboundMessageSourceType":{
+      "type":"string",
+      "enum":[
+        "TEMPLATE",
+        "RAW"
+      ]
+    },
+    "OutboundRawMessage":{
+      "type":"structure",
+      "required":[
+        "Subject",
+        "Body",
+        "ContentType"
+      ],
+      "members":{
+        "Subject":{
+          "shape":"OutboundSubject",
+          "documentation":"<p/>"
+        },
+        "Body":{
+          "shape":"Body",
+          "documentation":"<p/>"
+        },
+        "ContentType":{
+          "shape":"EmailMessageContentType",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "OutboundRequestId":{
+      "type":"string",
+      "max":36,
+      "min":36
+    },
+    "OutboundSubject":{
+      "type":"string",
+      "max":998,
+      "min":1,
+      "sensitive":true
     },
     "OutputTypeNotFoundException":{
       "type":"structure",
@@ -16655,6 +17642,11 @@
       "max":128,
       "min":0
     },
+    "PreSignedAttachmentUrl":{
+      "type":"string",
+      "max":2000,
+      "min":1
+    },
     "PredefinedAttribute":{
       "type":"structure",
       "members":{
@@ -17024,6 +18016,10 @@
         "OutboundCallerConfig":{
           "shape":"OutboundCallerConfig",
           "documentation":"<p>The outbound caller ID name, number, and outbound whisper flow.</p>"
+        },
+        "OutboundEmailConfig":{
+          "shape":"OutboundEmailConfig",
+          "documentation":"<p/>"
         },
         "HoursOfOperationId":{
           "shape":"HoursOfOperationId",
@@ -17846,10 +18842,7 @@
     },
     "Reference":{
       "type":"structure",
-      "required":[
-        "Value",
-        "Type"
-      ],
+      "required":["Type"],
       "members":{
         "Value":{
           "shape":"ReferenceValue",
@@ -17858,9 +18851,27 @@
         "Type":{
           "shape":"ReferenceType",
           "documentation":"<p>The type of the reference. <code>DATE</code> must be of type Epoch timestamp. </p>"
+        },
+        "Status":{
+          "shape":"ReferenceStatus",
+          "documentation":"<p/>"
+        },
+        "Arn":{
+          "shape":"ReferenceArn",
+          "documentation":"<p/>"
+        },
+        "StatusReason":{
+          "shape":"ReferenceStatusReason",
+          "documentation":"<p/>"
         }
       },
       "documentation":"<p>Well-formed data on a contact, used by agents to complete a contact request. You can have up to 4,096 UTF-8 bytes across all references for a contact.</p>"
+    },
+    "ReferenceArn":{
+      "type":"string",
+      "max":256,
+      "min":20,
+      "pattern":"^[-:/A-Za-z0-9]+"
     },
     "ReferenceId":{
       "type":"string",
@@ -17875,9 +18886,18 @@
     "ReferenceStatus":{
       "type":"string",
       "enum":[
+        "AVAILABLE",
+        "DELETED",
         "APPROVED",
-        "REJECTED"
+        "REJECTED",
+        "PROCESSING",
+        "FAILED"
       ]
+    },
+    "ReferenceStatusReason":{
+      "type":"string",
+      "max":100,
+      "min":0
     },
     "ReferenceSummary":{
       "type":"structure",
@@ -17889,6 +18909,10 @@
         "Attachment":{
           "shape":"AttachmentReference",
           "documentation":"<p>Information about the reference when the <code>referenceType</code> is <code>ATTACHMENT</code>. Otherwise, null.</p>"
+        },
+        "EmailMessage":{
+          "shape":"EmailMessageReference",
+          "documentation":"<p/>"
         },
         "String":{
           "shape":"StringReference",
@@ -17919,10 +18943,12 @@
       "enum":[
         "URL",
         "ATTACHMENT",
+        "CONTACT_ANALYSIS",
         "NUMBER",
         "STRING",
         "DATE",
-        "EMAIL"
+        "EMAIL",
+        "EMAIL_MESSAGE"
       ]
     },
     "ReferenceTypes":{
@@ -19080,9 +20106,56 @@
         "SearchableContactAttributes":{
           "shape":"SearchableContactAttributes",
           "documentation":"<p>The search criteria based on user-defined contact attributes that have been configured for contact search. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/search-custom-attributes.html\">Search by custom contact attributes</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <important> <p>To use <code>SearchableContactAttributes</code> in a search request, the <code>GetContactAttributes</code> action is required to perform an API request. For more information, see <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonconnect.html#amazonconnect-actions-as-permissions\">https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonconnect.html#amazonconnect-actions-as-permissions</a>Actions defined by Amazon Connect.</p> </important>"
+        },
+        "SearchableSegmentAttributes":{
+          "shape":"SearchableSegmentAttributes",
+          "documentation":"<p/>"
         }
       },
       "documentation":"<p>A structure of search criteria to be used to return contacts.</p>"
+    },
+    "SearchEmailAddressesRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p/>"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p/>"
+        },
+        "NextToken":{
+          "shape":"NextToken2500",
+          "documentation":"<p/>"
+        },
+        "SearchCriteria":{
+          "shape":"EmailAddressSearchCriteria",
+          "documentation":"<p/>"
+        },
+        "SearchFilter":{
+          "shape":"EmailAddressSearchFilter",
+          "documentation":"<p/>"
+        }
+      }
+    },
+    "SearchEmailAddressesResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p/>"
+        },
+        "EmailAddresses":{
+          "shape":"EmailAddressList",
+          "documentation":"<p/>"
+        },
+        "ApproximateTotalCount":{
+          "shape":"ApproximateTotalCount",
+          "documentation":"<p/>"
+        }
+      }
     },
     "SearchHoursOfOperationsRequest":{
       "type":"structure",
@@ -19572,7 +20645,7 @@
     "SearchableContactAttributeKey":{
       "type":"string",
       "max":100,
-      "min":0,
+      "min":1,
       "sensitive":true
     },
     "SearchableContactAttributeValue":{
@@ -19629,6 +20702,64 @@
     "SearchableQueueType":{
       "type":"string",
       "enum":["STANDARD"]
+    },
+    "SearchableSegmentAttributeKey":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "sensitive":true
+    },
+    "SearchableSegmentAttributeValue":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "sensitive":true
+    },
+    "SearchableSegmentAttributeValueList":{
+      "type":"list",
+      "member":{"shape":"SearchableSegmentAttributeValue"},
+      "max":20,
+      "min":1,
+      "sensitive":true
+    },
+    "SearchableSegmentAttributes":{
+      "type":"structure",
+      "required":["Criteria"],
+      "members":{
+        "Criteria":{
+          "shape":"SearchableSegmentAttributesCriteriaList",
+          "documentation":"<p/>"
+        },
+        "MatchType":{
+          "shape":"SearchContactsMatchType",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "SearchableSegmentAttributesCriteria":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Values"
+      ],
+      "members":{
+        "Key":{
+          "shape":"SearchableSegmentAttributeKey",
+          "documentation":"<p/>"
+        },
+        "Values":{
+          "shape":"SearchableSegmentAttributeValueList",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "SearchableSegmentAttributesCriteriaList":{
+      "type":"list",
+      "member":{"shape":"SearchableSegmentAttributesCriteria"},
+      "max":15,
+      "min":1
     },
     "SecurityKey":{
       "type":"structure",
@@ -19844,7 +20975,7 @@
     "SegmentAttributeValueString":{
       "type":"string",
       "max":1024,
-      "min":1
+      "min":0
     },
     "SegmentAttributes":{
       "type":"map",
@@ -19926,14 +21057,78 @@
       },
       "documentation":"<p>Information about the send notification action.</p>"
     },
+    "SendOutboundEmailRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "FromEmailAddress",
+        "DestinationEmailAddress",
+        "EmailMessage",
+        "TrafficType"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p/>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "FromEmailAddress":{
+          "shape":"EmailAddressInfo",
+          "documentation":"<p/>"
+        },
+        "DestinationEmailAddress":{
+          "shape":"EmailAddressInfo",
+          "documentation":"<p/>"
+        },
+        "AdditionalRecipients":{
+          "shape":"OutboundAdditionalRecipients",
+          "documentation":"<p/>"
+        },
+        "EmailMessage":{
+          "shape":"OutboundEmailContent",
+          "documentation":"<p/>"
+        },
+        "TrafficType":{
+          "shape":"TrafficType",
+          "documentation":"<p/>"
+        },
+        "SourceCampaign":{
+          "shape":"SourceCampaign",
+          "documentation":"<p/>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p/>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "SendOutboundEmailResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"Message"}
+        "Message":{"shape":"Message"},
+        "Reason":{"shape":"ServiceQuotaExceededExceptionReason"}
       },
       "documentation":"<p>The service quota has been exceeded.</p>",
       "error":{"httpStatusCode":402},
       "exception":true
+    },
+    "ServiceQuotaExceededExceptionReason":{
+      "type":"structure",
+      "members":{
+        "AttachedFileServiceQuotaExceededExceptionReason":{
+          "shape":"AttachedFileServiceQuotaExceededExceptionReason",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>",
+      "union":true
     },
     "SignInConfig":{
       "type":"structure",
@@ -20049,6 +21244,20 @@
       "max":100,
       "min":1,
       "pattern":"^[a-zA-Z0-9_ -]+$"
+    },
+    "SourceCampaign":{
+      "type":"structure",
+      "members":{
+        "CampaignId":{
+          "shape":"CampaignId",
+          "documentation":"<p/>"
+        },
+        "OutboundRequestId":{
+          "shape":"OutboundRequestId",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
     },
     "SourceId":{
       "type":"string",
@@ -20339,6 +21548,83 @@
         }
       }
     },
+    "StartEmailContactRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "FromEmailAddress",
+        "DestinationEmailAddress",
+        "EmailMessage"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p/>"
+        },
+        "FromEmailAddress":{
+          "shape":"EmailAddressInfo",
+          "documentation":"<p/>"
+        },
+        "DestinationEmailAddress":{
+          "shape":"EmailAddress",
+          "documentation":"<p/>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p/>"
+        },
+        "References":{
+          "shape":"ContactReferences",
+          "documentation":"<p/>"
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p/>"
+        },
+        "EmailMessage":{
+          "shape":"InboundEmailContent",
+          "documentation":"<p/>"
+        },
+        "AdditionalRecipients":{
+          "shape":"InboundAdditionalRecipients",
+          "documentation":"<p/>"
+        },
+        "Attachments":{
+          "shape":"EmailAttachments",
+          "documentation":"<p/>"
+        },
+        "ContactFlowId":{
+          "shape":"ContactFlowId",
+          "documentation":"<p/>"
+        },
+        "RelatedContactId":{
+          "shape":"ContactId",
+          "documentation":"<p/>"
+        },
+        "Attributes":{
+          "shape":"Attributes",
+          "documentation":"<p/>"
+        },
+        "SegmentAttributes":{
+          "shape":"SegmentAttributes",
+          "documentation":"<p/>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p/>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartEmailContactResponse":{
+      "type":"structure",
+      "members":{
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p/>"
+        }
+      }
+    },
     "StartOutboundChatContactRequest":{
       "type":"structure",
       "required":[
@@ -20394,6 +21680,55 @@
         "ContactId":{
           "shape":"ContactId",
           "documentation":"<p>The identifier of this contact within the Amazon Connect instance.</p>"
+        }
+      }
+    },
+    "StartOutboundEmailContactRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactId",
+        "DestinationEmailAddress",
+        "EmailMessage"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p/>"
+        },
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p/>"
+        },
+        "FromEmailAddress":{
+          "shape":"EmailAddressInfo",
+          "documentation":"<p/>"
+        },
+        "DestinationEmailAddress":{
+          "shape":"EmailAddressInfo",
+          "documentation":"<p/>"
+        },
+        "AdditionalRecipients":{
+          "shape":"OutboundAdditionalRecipients",
+          "documentation":"<p/>"
+        },
+        "EmailMessage":{
+          "shape":"OutboundEmailContent",
+          "documentation":"<p/>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p/>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartOutboundEmailContactResponse":{
+      "type":"structure",
+      "members":{
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p/>"
         }
       }
     },
@@ -20555,6 +21890,10 @@
         "RelatedContactId":{
           "shape":"ContactId",
           "documentation":"<p>The contactId that is <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/tasks.html#linked-tasks\">related</a> to this contact. Linking tasks together by using <code>RelatedContactID</code> copies over contact attributes from the related task contact to the new task contact. All updates to user-defined attributes in the new task contact are limited to the individual contact ID, unlike what happens when tasks are linked by using <code>PreviousContactID</code>. There are no limits to the number of contacts that can be linked by using <code>RelatedContactId</code>. </p>"
+        },
+        "SegmentAttributes":{
+          "shape":"SegmentAttributes",
+          "documentation":"<p/>"
         }
       }
     },
@@ -21220,7 +22559,9 @@
         "DATE_TIME",
         "BOOLEAN",
         "SINGLE_SELECT",
-        "EMAIL"
+        "EMAIL",
+        "SELF_ASSIGN",
+        "EXPIRY_DURATION"
       ]
     },
     "TaskTemplateFieldValue":{
@@ -21303,10 +22644,47 @@
       },
       "documentation":"<p>The distribution of traffic between the instance and its replicas.</p>"
     },
+    "TemplateAttributes":{
+      "type":"structure",
+      "members":{
+        "CustomAttributes":{
+          "shape":"Attributes",
+          "documentation":"<p/>"
+        },
+        "CustomerProfileAttributes":{
+          "shape":"CustomerProfileAttributesSerialized",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
     "TemplateId":{
       "type":"string",
       "max":500,
       "min":1
+    },
+    "TemplatedMessageConfig":{
+      "type":"structure",
+      "required":[
+        "KnowledgeBaseId",
+        "MessageTemplateId",
+        "TemplateAttributes"
+      ],
+      "members":{
+        "KnowledgeBaseId":{
+          "shape":"MessageTemplateKnowledgeBaseId",
+          "documentation":"<p/>"
+        },
+        "MessageTemplateId":{
+          "shape":"MessageTemplateId",
+          "documentation":"<p/>"
+        },
+        "TemplateAttributes":{
+          "shape":"TemplateAttributes",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
     },
     "Threshold":{
       "type":"structure",
@@ -22040,6 +23418,10 @@
         "References":{
           "shape":"ContactReferences",
           "documentation":"<p>Well-formed data on contact, shown to agents on Contact Control Panel (CCP).</p>"
+        },
+        "SegmentAttributes":{
+          "shape":"SegmentAttributes",
+          "documentation":"<p/>"
         }
       }
     },
@@ -22111,6 +23493,52 @@
     "UpdateContactScheduleResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "UpdateEmailAddressMetadataRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "EmailAddressId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p/>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "EmailAddressId":{
+          "shape":"EmailAddressId",
+          "documentation":"<p/>",
+          "location":"uri",
+          "locationName":"EmailAddressId"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p/>"
+        },
+        "DisplayName":{
+          "shape":"EmailAddressDisplayName",
+          "documentation":"<p/>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p/>"
+        }
+      }
+    },
+    "UpdateEmailAddressMetadataResponse":{
+      "type":"structure",
+      "members":{
+        "EmailAddressId":{
+          "shape":"EmailAddressId",
+          "documentation":"<p/>"
+        },
+        "EmailAddressArn":{
+          "shape":"EmailAddressArn",
+          "documentation":"<p/>"
+        }
       }
     },
     "UpdateEvaluationFormRequest":{
@@ -22566,6 +23994,32 @@
         }
       }
     },
+    "UpdateQueueOutboundEmailConfigRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "QueueId",
+        "OutboundEmailConfig"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p/>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "QueueId":{
+          "shape":"QueueId",
+          "documentation":"<p/>",
+          "location":"uri",
+          "locationName":"QueueId"
+        },
+        "OutboundEmailConfig":{
+          "shape":"OutboundEmailConfig",
+          "documentation":"<p/>"
+        }
+      }
+    },
     "UpdateQueueStatusRequest":{
       "type":"structure",
       "required":[
@@ -22906,6 +24360,10 @@
           "shape":"ContactFlowId",
           "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p>"
         },
+        "SelfAssignFlowId":{
+          "shape":"ContactFlowId",
+          "documentation":"<p/>"
+        },
         "Constraints":{
           "shape":"TaskTemplateConstraints",
           "documentation":"<p>Constraints that are applicable to the fields listed.</p>"
@@ -22950,6 +24408,10 @@
         "ContactFlowId":{
           "shape":"ContactFlowId",
           "documentation":"<p>The identifier of the flow that runs by default when a task is created by referencing this template.</p>"
+        },
+        "SelfAssignFlowId":{
+          "shape":"ContactFlowId",
+          "documentation":"<p/>"
         },
         "Constraints":{
           "shape":"TaskTemplateConstraints",
@@ -23574,6 +25036,16 @@
         }
       },
       "documentation":"<p>The user's first name and last name.</p>"
+    },
+    "UserInfo":{
+      "type":"structure",
+      "members":{
+        "UserId":{
+          "shape":"AgentResourceId",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
     },
     "UserNotFoundException":{
       "type":"structure",

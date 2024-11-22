@@ -1422,6 +1422,24 @@
       ],
       "documentation":"<p>Describes the result of an existing snapshot job that has finished running.</p> <p>A finished snapshot job will return a <code>COMPLETED</code> or <code>FAILED</code> status when you poll the job with a <code>DescribeDashboardSnapshotJob</code> API call.</p> <p>If the job has not finished running, this operation returns a message that says <code>Dashboard Snapshot Job with id &lt;SnapshotjobId&gt; has not reached a terminal state.</code>.</p>"
     },
+    "DescribeDashboardsQAConfiguration":{
+      "name":"DescribeDashboardsQAConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/dashboards-qa-configuration"
+      },
+      "input":{"shape":"DescribeDashboardsQAConfigurationRequest"},
+      "output":{"shape":"DescribeDashboardsQAConfigurationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes an existing dashboard QA configuration.</p>"
+    },
     "DescribeDataSet":{
       "name":"DescribeDataSet",
       "http":{
@@ -2862,6 +2880,24 @@
       ],
       "documentation":"<p>Use the <code>SearchGroups</code> operation to search groups in a specified Amazon QuickSight namespace using the supplied filters.</p>"
     },
+    "SearchTopics":{
+      "name":"SearchTopics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/search/topics"
+      },
+      "input":{"shape":"SearchTopicsRequest"},
+      "output":{"shape":"SearchTopicsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Searches for any Q topic that exists in an Amazon QuickSight account.</p>"
+    },
     "StartAssetBundleExportJob":{
       "name":"StartAssetBundleExportJob",
       "http":{
@@ -3204,6 +3240,24 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates the published version of a dashboard.</p>"
+    },
+    "UpdateDashboardsQAConfiguration":{
+      "name":"UpdateDashboardsQAConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/dashboards-qa-configuration"
+      },
+      "input":{"shape":"UpdateDashboardsQAConfigurationRequest"},
+      "output":{"shape":"UpdateDashboardsQAConfigurationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates a Dashboard QA configuration.</p>"
     },
     "UpdateDataSet":{
       "name":"UpdateDataSet",
@@ -4133,7 +4187,11 @@
           "shape":"AssetOptions",
           "documentation":"<p>An array of option definitions for an analysis.</p>"
         },
-        "QueryExecutionOptions":{"shape":"QueryExecutionOptions"}
+        "QueryExecutionOptions":{"shape":"QueryExecutionOptions"},
+        "StaticFiles":{
+          "shape":"StaticFileList",
+          "documentation":"<p>The static files for the definition.</p>"
+        }
       },
       "documentation":"<p>The definition of an analysis.</p>"
     },
@@ -5763,11 +5821,11 @@
       "members":{
         "Body":{
           "shape":"AssetBundleImportBodyBlob",
-          "documentation":"<p>The bytes of the base64 encoded asset bundle import zip file. This file can't exceed 20 MB.</p> <p>If you are calling the API operations from the Amazon Web Services SDK for Java, JavaScript, Python, or PHP, the SDK encodes base64 automatically to allow the direct setting of the zip file's bytes. If you are using an SDK for a different language or receiving related errors, try to base64 encode your data.</p>"
+          "documentation":"<p>The bytes of the base64 encoded asset bundle import zip file. This file can't exceed 20 MB. If the size of the file that you want to upload is more than 20 MB, add the file to your Amazon S3 bucket and use <code>S3Uri</code> of the file for this operation.</p> <p>If you are calling the API operations from the Amazon Web Services SDK for Java, JavaScript, Python, or PHP, the SDK encodes base64 automatically to allow the direct setting of the zip file's bytes. If you are using an SDK for a different language or receiving related errors, try to base64 encode your data.</p>"
         },
         "S3Uri":{
           "shape":"S3Uri",
-          "documentation":"<p>The Amazon S3 URI for an asset bundle import file that exists in an Amazon S3 bucket that the caller has read access to. The file must be a zip format file and can't exceed 20 MB.</p>"
+          "documentation":"<p>The Amazon S3 URI for an asset bundle import file that exists in an Amazon S3 bucket that the caller has read access to. The file must be a zip format file and can't exceed 1 GB.</p>"
         }
       },
       "documentation":"<p>The source of the asset bundle zip file that contains the data that you want to import. The file must be in <code>QUICKSIGHT_JSON</code> format.</p>"
@@ -6367,6 +6425,10 @@
         "ColumnHierarchies":{
           "shape":"ColumnHierarchyList",
           "documentation":"<p>The column hierarchy that is used during drill-downs and drill-ups.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A bar chart.</p> <p>The <code>BarChartVisual</code> structure describes a visual that is a member of the bar chart family. The following charts can be described using this structure:</p> <ul> <li> <p>Horizontal bar chart</p> </li> <li> <p>Vertical bar chart</p> </li> <li> <p>Horizontal stacked bar chart</p> </li> <li> <p>Vertical stacked bar chart</p> </li> <li> <p>Horizontal stacked 100% bar chart</p> </li> <li> <p>Vertical stacked 100% bar chart</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/bar-charts.html\">Using bar charts</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -6869,6 +6931,10 @@
         "ColumnHierarchies":{
           "shape":"ColumnHierarchyList",
           "documentation":"<p>The column hierarchy that is used during drill-downs and drill-ups.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A box plot.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/box-plots.html\">Using box plots</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -8112,6 +8178,10 @@
         "ColumnHierarchies":{
           "shape":"ColumnHierarchyList",
           "documentation":"<p>The column hierarchy that is used during drill-downs and drill-ups.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A combo chart.</p> <p>The <code>ComboChartVisual</code> includes stacked bar combo charts and clustered bar combo charts</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/combo-charts.html\">Using combo charts</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -10014,6 +10084,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>Contains a map of the key-value pairs for the resource tag or tags that are assigned to the dataset.</p>"
+        },
+        "FolderArns":{
+          "shape":"FolderArnList",
+          "documentation":"<p>The Folder ARN of the folder that you want the topic to reside in.</p>"
         }
       }
     },
@@ -10386,6 +10460,10 @@
         "DataSetIdentifier":{
           "shape":"DataSetIdentifier",
           "documentation":"<p>The dataset that is used to create the custom content visual. You can't create a visual without a dataset.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A visual that contains custom content.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/custom-visual-content.html\">Using custom visual content</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -10898,6 +10976,10 @@
         "Options":{
           "shape":"AssetOptions",
           "documentation":"<p>An array of option definitions for a dashboard.</p>"
+        },
+        "StaticFiles":{
+          "shape":"StaticFileList",
+          "documentation":"<p>The static files for the definition.</p>"
         }
       },
       "documentation":"<p>The contents of a dashboard.</p>"
@@ -10969,6 +11051,13 @@
         }
       },
       "documentation":"<p>The visual publish options of a visual in a dashboard</p>"
+    },
+    "DashboardsQAStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "DataAggregation":{
       "type":"structure",
@@ -15016,6 +15105,36 @@
         }
       }
     },
+    "DescribeDashboardsQAConfigurationRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the dashboard QA configuration that you want described.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        }
+      }
+    },
+    "DescribeDashboardsQAConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "DashboardsQAStatus":{
+          "shape":"DashboardsQAStatus",
+          "documentation":"<p>The status of dashboards QA configuration that you want described.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DescribeDataSetPermissionsRequest":{
       "type":"structure",
       "required":[
@@ -17264,6 +17383,10 @@
         "Actions":{
           "shape":"VisualCustomActionList",
           "documentation":"<p>The list of custom actions that are configured for a visual.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A filled map.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/filled-maps.html\">Creating filled maps</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -17999,6 +18122,10 @@
         "FontStyle":{
           "shape":"FontStyle",
           "documentation":"<p>Determines the text display face that is inherited by the given font family.</p>"
+        },
+        "FontFamily":{
+          "shape":"String",
+          "documentation":"<p>The font family that you want to use.</p>"
         }
       },
       "documentation":"<p>Configures the display properties of the given text.</p>"
@@ -18021,6 +18148,10 @@
         "Relative":{
           "shape":"RelativeFontSize",
           "documentation":"<p>The lexical name for the text size, proportional to its surrounding context.</p>"
+        },
+        "Absolute":{
+          "shape":"PixelLength",
+          "documentation":"<p>The font size that you want to use in px.</p>"
         }
       },
       "documentation":"<p>The option that determines the text display size.</p>"
@@ -18463,6 +18594,10 @@
         "ColumnHierarchies":{
           "shape":"ColumnHierarchyList",
           "documentation":"<p>The column hierarchy that is used during drill-downs and drill-ups.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A funnel chart.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/funnel-visual-content.html\">Using funnel charts</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -18635,6 +18770,10 @@
         "Actions":{
           "shape":"VisualCustomActionList",
           "documentation":"<p>The list of custom actions that are configured for a visual.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A gauge chart.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/gauge-chart.html\">Using gauge charts</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -18801,6 +18940,108 @@
         "LATITUDE"
       ]
     },
+    "GeospatialCategoricalColor":{
+      "type":"structure",
+      "required":["CategoryDataColors"],
+      "members":{
+        "CategoryDataColors":{
+          "shape":"GeospatialCategoricalDataColorList",
+          "documentation":"<p>A list of categorical data colors for each category.</p>"
+        },
+        "NullDataVisibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The state of visibility for null data.</p>"
+        },
+        "NullDataSettings":{
+          "shape":"GeospatialNullDataSettings",
+          "documentation":"<p>The null data visualization settings.</p>"
+        },
+        "DefaultOpacity":{
+          "shape":"Opacity",
+          "documentation":"<p>The default opacity of a categorical color.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a categorical color.</p>"
+    },
+    "GeospatialCategoricalDataColor":{
+      "type":"structure",
+      "required":[
+        "Color",
+        "DataValue"
+      ],
+      "members":{
+        "Color":{
+          "shape":"HexColorWithTransparency",
+          "documentation":"<p>The color and opacity values for the category data color.</p>"
+        },
+        "DataValue":{
+          "shape":"String",
+          "documentation":"<p>The data value for the category data color.</p>"
+        }
+      },
+      "documentation":"<p>The categorical data color for a single category.</p>"
+    },
+    "GeospatialCategoricalDataColorList":{
+      "type":"list",
+      "member":{"shape":"GeospatialCategoricalDataColor"}
+    },
+    "GeospatialCircleRadius":{
+      "type":"structure",
+      "members":{
+        "Radius":{
+          "shape":"GeospatialRadius",
+          "documentation":"<p>The positive value for the radius of a circle.</p>"
+        }
+      },
+      "documentation":"<p>The geospatial radius for a circle.</p>"
+    },
+    "GeospatialCircleSymbolStyle":{
+      "type":"structure",
+      "members":{
+        "FillColor":{
+          "shape":"GeospatialColor",
+          "documentation":"<p>The color and opacity values for the fill color.</p>"
+        },
+        "StrokeColor":{
+          "shape":"GeospatialColor",
+          "documentation":"<p>The color and opacity values for the stroke color.</p>"
+        },
+        "StrokeWidth":{
+          "shape":"GeospatialLineWidth",
+          "documentation":"<p>The width of the stroke (border).</p>"
+        },
+        "CircleRadius":{
+          "shape":"GeospatialCircleRadius",
+          "documentation":"<p>The radius of the circle.</p>"
+        }
+      },
+      "documentation":"<p>The properties for a circle symbol style.</p>"
+    },
+    "GeospatialColor":{
+      "type":"structure",
+      "members":{
+        "Solid":{
+          "shape":"GeospatialSolidColor",
+          "documentation":"<p>The visualization properties for the solid color.</p>"
+        },
+        "Gradient":{
+          "shape":"GeospatialGradientColor",
+          "documentation":"<p>The visualization properties for the gradient color.</p>"
+        },
+        "Categorical":{
+          "shape":"GeospatialCategoricalColor",
+          "documentation":"<p>The visualization properties for the categorical color.</p>"
+        }
+      },
+      "documentation":"<p>The visualization properties for solid, gradient, and categorical colors.</p>"
+    },
+    "GeospatialColorState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "GeospatialCoordinateBounds":{
       "type":"structure",
       "required":[
@@ -18828,6 +19069,63 @@
         }
       },
       "documentation":"<p>The bound options (north, south, west, east) of the geospatial window options.</p>"
+    },
+    "GeospatialDataSourceItem":{
+      "type":"structure",
+      "members":{
+        "StaticFileDataSource":{
+          "shape":"GeospatialStaticFileSource",
+          "documentation":"<p>The static file data source properties for the geospatial data.</p>"
+        }
+      },
+      "documentation":"<p>The data source properties for the geospatial data.</p>"
+    },
+    "GeospatialGradientColor":{
+      "type":"structure",
+      "required":["StepColors"],
+      "members":{
+        "StepColors":{
+          "shape":"GeospatialGradientStepColorList",
+          "documentation":"<p>A list of gradient step colors for the gradient.</p>"
+        },
+        "NullDataVisibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The state of visibility for null data.</p>"
+        },
+        "NullDataSettings":{
+          "shape":"GeospatialNullDataSettings",
+          "documentation":"<p>The null data visualization settings.</p>"
+        },
+        "DefaultOpacity":{
+          "shape":"Opacity",
+          "documentation":"<p>The default opacity for the gradient color.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a gradient color.</p>"
+    },
+    "GeospatialGradientStepColor":{
+      "type":"structure",
+      "required":[
+        "Color",
+        "DataValue"
+      ],
+      "members":{
+        "Color":{
+          "shape":"HexColorWithTransparency",
+          "documentation":"<p>The color and opacity values for the gradient step color.</p>"
+        },
+        "DataValue":{
+          "shape":"Double",
+          "documentation":"<p>The data value for the gradient step color.</p>"
+        }
+      },
+      "documentation":"<p>The gradient step color for a single step.</p>"
+    },
+    "GeospatialGradientStepColorList":{
+      "type":"list",
+      "member":{"shape":"GeospatialGradientStepColor"},
+      "max":3,
+      "min":2
     },
     "GeospatialHeatmapColorScale":{
       "type":"structure",
@@ -18865,6 +19163,176 @@
       "member":{"shape":"GeospatialHeatmapDataColor"},
       "max":2,
       "min":2
+    },
+    "GeospatialLayerColorField":{
+      "type":"structure",
+      "members":{
+        "ColorDimensionsFields":{
+          "shape":"GeospatialLayerDimensionFieldList",
+          "documentation":"<p>A list of color dimension fields.</p>"
+        },
+        "ColorValuesFields":{
+          "shape":"GeospatialLayerMeasureFieldList",
+          "documentation":"<p>A list of color measure fields.</p>"
+        }
+      },
+      "documentation":"<p>The color field that defines a gradient or categorical style.</p>"
+    },
+    "GeospatialLayerDefinition":{
+      "type":"structure",
+      "members":{
+        "PointLayer":{
+          "shape":"GeospatialPointLayer",
+          "documentation":"<p>The definition for a point layer.</p>"
+        },
+        "LineLayer":{
+          "shape":"GeospatialLineLayer",
+          "documentation":"<p>The definition for a line layer.</p>"
+        },
+        "PolygonLayer":{
+          "shape":"GeospatialPolygonLayer",
+          "documentation":"<p>The definition for a polygon layer.</p>"
+        }
+      },
+      "documentation":"<p>The definition properties for a geospatial layer.</p>"
+    },
+    "GeospatialLayerDimensionFieldList":{
+      "type":"list",
+      "member":{"shape":"DimensionField"},
+      "max":1
+    },
+    "GeospatialLayerItem":{
+      "type":"structure",
+      "required":["LayerId"],
+      "members":{
+        "LayerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the layer.</p>"
+        },
+        "LayerType":{
+          "shape":"GeospatialLayerType",
+          "documentation":"<p>The layer type.</p>"
+        },
+        "DataSource":{
+          "shape":"GeospatialDataSourceItem",
+          "documentation":"<p>The data source for the layer.</p>"
+        },
+        "Label":{
+          "shape":"String",
+          "documentation":"<p>The label that is displayed for the layer.</p>"
+        },
+        "Visibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The state of visibility for the layer.</p>"
+        },
+        "LayerDefinition":{
+          "shape":"GeospatialLayerDefinition",
+          "documentation":"<p>The definition properties for a layer.</p>"
+        },
+        "Tooltip":{"shape":"TooltipOptions"},
+        "JoinDefinition":{
+          "shape":"GeospatialLayerJoinDefinition",
+          "documentation":"<p>The join definition properties for a layer.</p>"
+        },
+        "Actions":{
+          "shape":"LayerCustomActionList",
+          "documentation":"<p>A list of custom actions for a layer.</p>"
+        }
+      },
+      "documentation":"<p>The properties for a single geospatial layer.</p>"
+    },
+    "GeospatialLayerJoinDefinition":{
+      "type":"structure",
+      "members":{
+        "ShapeKeyField":{
+          "shape":"String",
+          "documentation":"<p>The name of the field or property in the geospatial data source.</p>"
+        },
+        "DatasetKeyField":{"shape":"UnaggregatedField"},
+        "ColorField":{
+          "shape":"GeospatialLayerColorField",
+          "documentation":"<p>The geospatial color field for the join definition.</p>"
+        }
+      },
+      "documentation":"<p>The custom actions for a layer.</p>"
+    },
+    "GeospatialLayerMapConfiguration":{
+      "type":"structure",
+      "members":{
+        "Legend":{"shape":"LegendOptions"},
+        "MapLayers":{
+          "shape":"GeospatialMapLayerList",
+          "documentation":"<p>The geospatial layers to visualize on the map.</p>"
+        },
+        "MapState":{
+          "shape":"GeospatialMapState",
+          "documentation":"<p>The map state properties for the map.</p>"
+        },
+        "MapStyle":{
+          "shape":"GeospatialMapStyle",
+          "documentation":"<p>The map style properties for the map.</p>"
+        },
+        "Interactions":{"shape":"VisualInteractionOptions"}
+      },
+      "documentation":"<p>The map definition that defines map state, map style, and geospatial layers.</p>"
+    },
+    "GeospatialLayerMeasureFieldList":{
+      "type":"list",
+      "member":{"shape":"MeasureField"},
+      "max":1
+    },
+    "GeospatialLayerType":{
+      "type":"string",
+      "enum":[
+        "POINT",
+        "LINE",
+        "POLYGON"
+      ]
+    },
+    "GeospatialLineLayer":{
+      "type":"structure",
+      "required":["Style"],
+      "members":{
+        "Style":{
+          "shape":"GeospatialLineStyle",
+          "documentation":"<p>The visualization style for a line layer.</p>"
+        }
+      },
+      "documentation":"<p>The geospatial Line layer.</p>"
+    },
+    "GeospatialLineStyle":{
+      "type":"structure",
+      "members":{
+        "LineSymbolStyle":{
+          "shape":"GeospatialLineSymbolStyle",
+          "documentation":"<p>The symbol style for a line style.</p>"
+        }
+      },
+      "documentation":"<p>The visualization style for a line layer.</p>"
+    },
+    "GeospatialLineSymbolStyle":{
+      "type":"structure",
+      "members":{
+        "FillColor":{
+          "shape":"GeospatialColor",
+          "documentation":"<p>The color and opacity values for the fill color.</p>"
+        },
+        "LineWidth":{
+          "shape":"GeospatialLineWidth",
+          "documentation":"<p>The width value for a line.</p>"
+        }
+      },
+      "documentation":"<p>The symbol style for a line layer.</p>"
+    },
+    "GeospatialLineWidth":{
+      "type":"structure",
+      "members":{
+        "LineWidth":{
+          "shape":"GeospatialWidth",
+          "documentation":"<p>The positive value for the width of a line.</p>"
+        }
+      },
+      "documentation":"<p>The width properties for a line.</p>"
     },
     "GeospatialMapAggregatedFieldWells":{
       "type":"structure",
@@ -18929,6 +19397,46 @@
       },
       "documentation":"<p>The field wells of a <code>GeospatialMapVisual</code>.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
     },
+    "GeospatialMapLayerList":{
+      "type":"list",
+      "member":{"shape":"GeospatialLayerItem"}
+    },
+    "GeospatialMapNavigation":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "GeospatialMapState":{
+      "type":"structure",
+      "members":{
+        "Bounds":{"shape":"GeospatialCoordinateBounds"},
+        "MapNavigation":{
+          "shape":"GeospatialMapNavigation",
+          "documentation":"<p>Enables or disables map navigation for a map.</p>"
+        }
+      },
+      "documentation":"<p>The map state properties for a map.</p>"
+    },
+    "GeospatialMapStyle":{
+      "type":"structure",
+      "members":{
+        "BaseMapStyle":{
+          "shape":"BaseMapStyleType",
+          "documentation":"<p>The selected base map style.</p>"
+        },
+        "BackgroundColor":{
+          "shape":"HexColorWithTransparency",
+          "documentation":"<p>The background color and opacity values for a map.</p>"
+        },
+        "BaseMapVisibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The state of visibility for the base map.</p>"
+        }
+      },
+      "documentation":"<p>The map style properties for a map.</p>"
+    },
     "GeospatialMapStyleOptions":{
       "type":"structure",
       "members":{
@@ -18966,9 +19474,63 @@
         "Actions":{
           "shape":"VisualCustomActionList",
           "documentation":"<p>The list of custom actions that are configured for a visual.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A geospatial map or a points on map visual.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/point-maps.html\">Creating point maps</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
+    },
+    "GeospatialNullDataSettings":{
+      "type":"structure",
+      "required":["SymbolStyle"],
+      "members":{
+        "SymbolStyle":{
+          "shape":"GeospatialNullSymbolStyle",
+          "documentation":"<p>The symbol style for null data.</p>"
+        }
+      },
+      "documentation":"<p>The properties for the visualization of null data.</p>"
+    },
+    "GeospatialNullSymbolStyle":{
+      "type":"structure",
+      "members":{
+        "FillColor":{
+          "shape":"HexColorWithTransparency",
+          "documentation":"<p>The color and opacity values for the fill color.</p>"
+        },
+        "StrokeColor":{
+          "shape":"HexColorWithTransparency",
+          "documentation":"<p>The color and opacity values for the stroke color.</p>"
+        },
+        "StrokeWidth":{
+          "shape":"GeospatialWidth",
+          "documentation":"<p>The width of the border stroke.</p>"
+        }
+      },
+      "documentation":"<p>The symbol style for null data.</p>"
+    },
+    "GeospatialPointLayer":{
+      "type":"structure",
+      "required":["Style"],
+      "members":{
+        "Style":{
+          "shape":"GeospatialPointStyle",
+          "documentation":"<p>The visualization style for a point layer.</p>"
+        }
+      },
+      "documentation":"<p>The geospatial Point layer.</p>"
+    },
+    "GeospatialPointStyle":{
+      "type":"structure",
+      "members":{
+        "CircleSymbolStyle":{
+          "shape":"GeospatialCircleSymbolStyle",
+          "documentation":"<p>The circle symbol style for a point layer.</p>"
+        }
+      },
+      "documentation":"<p>The point style for a point layer.</p>"
     },
     "GeospatialPointStyleOptions":{
       "type":"structure",
@@ -18988,6 +19550,49 @@
       },
       "documentation":"<p>The point style of the geospatial map.</p>"
     },
+    "GeospatialPolygonLayer":{
+      "type":"structure",
+      "required":["Style"],
+      "members":{
+        "Style":{
+          "shape":"GeospatialPolygonStyle",
+          "documentation":"<p>The visualization style for a polygon layer.</p>"
+        }
+      },
+      "documentation":"<p>The geospatial polygon layer.</p>"
+    },
+    "GeospatialPolygonStyle":{
+      "type":"structure",
+      "members":{
+        "PolygonSymbolStyle":{
+          "shape":"GeospatialPolygonSymbolStyle",
+          "documentation":"<p>The polygon symbol style for a polygon layer.</p>"
+        }
+      },
+      "documentation":"<p>The polygon style for a polygon layer.</p>"
+    },
+    "GeospatialPolygonSymbolStyle":{
+      "type":"structure",
+      "members":{
+        "FillColor":{
+          "shape":"GeospatialColor",
+          "documentation":"<p>The color and opacity values for the fill color.</p>"
+        },
+        "StrokeColor":{
+          "shape":"GeospatialColor",
+          "documentation":"<p>The color and opacity values for the stroke color.</p>"
+        },
+        "StrokeWidth":{
+          "shape":"GeospatialLineWidth",
+          "documentation":"<p>The width of the border stroke.</p>"
+        }
+      },
+      "documentation":"<p>The polygon symbol style for a polygon layer.</p>"
+    },
+    "GeospatialRadius":{
+      "type":"double",
+      "min":0
+    },
     "GeospatialSelectedPointStyle":{
       "type":"string",
       "enum":[
@@ -18995,6 +19600,36 @@
         "CLUSTER",
         "HEATMAP"
       ]
+    },
+    "GeospatialSolidColor":{
+      "type":"structure",
+      "required":["Color"],
+      "members":{
+        "Color":{
+          "shape":"HexColorWithTransparency",
+          "documentation":"<p>The color and opacity values for the color.</p>"
+        },
+        "State":{
+          "shape":"GeospatialColorState",
+          "documentation":"<p>Enables and disables the view state of the color.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a solid color.</p>"
+    },
+    "GeospatialStaticFileSource":{
+      "type":"structure",
+      "required":["StaticFileId"],
+      "members":{
+        "StaticFileId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the static file.</p>"
+        }
+      },
+      "documentation":"<p>The source properties for a geospatial static file.</p>"
+    },
+    "GeospatialWidth":{
+      "type":"double",
+      "min":0
     },
     "GeospatialWindowOptions":{
       "type":"structure",
@@ -19595,6 +20230,10 @@
         "Actions":{
           "shape":"VisualCustomActionList",
           "documentation":"<p>The list of custom actions that are configured for a visual.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A heat map.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/heat-map.html\">Using heat maps</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -19732,6 +20371,10 @@
         "Actions":{
           "shape":"VisualCustomActionList",
           "documentation":"<p>The list of custom actions that are configured for a visual.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A histogram.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/histogram-charts.html\">Using histograms</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -19929,6 +20572,91 @@
       },
       "documentation":"<p>The logo image configuration.</p>"
     },
+    "ImageCustomAction":{
+      "type":"structure",
+      "required":[
+        "CustomActionId",
+        "Name",
+        "Trigger",
+        "ActionOperations"
+      ],
+      "members":{
+        "CustomActionId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the custom action.</p>"
+        },
+        "Name":{
+          "shape":"ImageCustomActionName",
+          "documentation":"<p>The name of the custom action.</p>"
+        },
+        "Status":{
+          "shape":"WidgetStatus",
+          "documentation":"<p>The status of the custom action.</p>"
+        },
+        "Trigger":{
+          "shape":"ImageCustomActionTrigger",
+          "documentation":"<p>The trigger of the <code>VisualCustomAction</code>.</p> <p>Valid values are defined as follows:</p> <ul> <li> <p> <code>CLICK</code>: Initiates a custom action by a left pointer click on a data point.</p> </li> <li> <p> <code>MENU</code>: Initiates a custom action by right pointer click from the menu.</p> </li> </ul>"
+        },
+        "ActionOperations":{
+          "shape":"ImageCustomActionOperationList",
+          "documentation":"<p>A list of <code>ImageCustomActionOperations</code>.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
+        }
+      },
+      "documentation":"<p>A custom action defined on an image.</p>"
+    },
+    "ImageCustomActionList":{
+      "type":"list",
+      "member":{"shape":"ImageCustomAction"},
+      "max":10,
+      "min":0
+    },
+    "ImageCustomActionName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ImageCustomActionOperation":{
+      "type":"structure",
+      "members":{
+        "NavigationOperation":{"shape":"CustomActionNavigationOperation"},
+        "URLOperation":{"shape":"CustomActionURLOperation"},
+        "SetParametersOperation":{"shape":"CustomActionSetParametersOperation"}
+      },
+      "documentation":"<p>The operation that is defined by the custom action.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
+    },
+    "ImageCustomActionOperationList":{
+      "type":"list",
+      "member":{"shape":"ImageCustomActionOperation"},
+      "max":2,
+      "min":1
+    },
+    "ImageCustomActionTrigger":{
+      "type":"string",
+      "enum":[
+        "CLICK",
+        "MENU"
+      ]
+    },
+    "ImageInteractionOptions":{
+      "type":"structure",
+      "members":{
+        "ImageMenuOption":{
+          "shape":"ImageMenuOption",
+          "documentation":"<p>The menu options for the image.</p>"
+        }
+      },
+      "documentation":"<p>The general image interactions setup for image publish options.</p>"
+    },
+    "ImageMenuOption":{
+      "type":"structure",
+      "members":{
+        "AvailabilityStatus":{
+          "shape":"DashboardBehavior",
+          "documentation":"<p>The availability status of the image menu. If the value of this property is set to <code>ENABLED</code>, dashboard readers can interact with the image menu.</p>"
+        }
+      },
+      "documentation":"<p>The menu options for the interactions of an image.</p>"
+    },
     "ImageSet":{
       "type":"structure",
       "required":["Original"],
@@ -19973,6 +20701,21 @@
       },
       "documentation":"<p>The source of the image.</p>",
       "union":true
+    },
+    "ImageStaticFile":{
+      "type":"structure",
+      "required":["StaticFileId"],
+      "members":{
+        "StaticFileId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the static file that contains an image.</p>"
+        },
+        "Source":{
+          "shape":"StaticFileSource",
+          "documentation":"<p>The source of the image static file.</p>"
+        }
+      },
+      "documentation":"<p>A static file that contains an image.</p>"
     },
     "IncludeFolderMembers":{
       "type":"string",
@@ -20243,6 +20986,10 @@
         "DataSetIdentifier":{
           "shape":"DataSetIdentifier",
           "documentation":"<p>The dataset that is used in the insight visual.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>An insight visual.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/computational-insights.html\">Working with insights</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -20800,6 +21547,10 @@
         "ColumnHierarchies":{
           "shape":"ColumnHierarchyList",
           "documentation":"<p>The column hierarchy that is used during drill-downs and drill-ups.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A key performance indicator (KPI).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/kpi.html\">Using KPIs</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -20859,6 +21610,99 @@
       "max":90,
       "min":-90
     },
+    "LayerCustomAction":{
+      "type":"structure",
+      "required":[
+        "CustomActionId",
+        "Name",
+        "Trigger",
+        "ActionOperations"
+      ],
+      "members":{
+        "CustomActionId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the custom action.</p>"
+        },
+        "Name":{
+          "shape":"LayerCustomActionName",
+          "documentation":"<p>The name of the custom action.</p>"
+        },
+        "Status":{
+          "shape":"WidgetStatus",
+          "documentation":"<p>The status of the <code>LayerCustomAction</code>.</p>"
+        },
+        "Trigger":{
+          "shape":"LayerCustomActionTrigger",
+          "documentation":"<p>The trigger of the <code>LayerCustomAction</code>.</p> <p>Valid values are defined as follows:</p> <ul> <li> <p> <code>DATA_POINT_CLICK</code>: Initiates a custom action by a left pointer click on a data point.</p> </li> <li> <p> <code>DATA_POINT_MENU</code>: Initiates a custom action by right pointer click from the menu.</p> </li> </ul>"
+        },
+        "ActionOperations":{
+          "shape":"LayerCustomActionOperationList",
+          "documentation":"<p>A list of <code>LayerCustomActionOperations</code>.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
+        }
+      },
+      "documentation":"<p>A layer custom action.</p>"
+    },
+    "LayerCustomActionList":{
+      "type":"list",
+      "member":{"shape":"LayerCustomAction"},
+      "max":10
+    },
+    "LayerCustomActionName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "LayerCustomActionOperation":{
+      "type":"structure",
+      "members":{
+        "FilterOperation":{"shape":"CustomActionFilterOperation"},
+        "NavigationOperation":{"shape":"CustomActionNavigationOperation"},
+        "URLOperation":{"shape":"CustomActionURLOperation"},
+        "SetParametersOperation":{"shape":"CustomActionSetParametersOperation"}
+      },
+      "documentation":"<p>The operation that is defined by the custom action.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
+    },
+    "LayerCustomActionOperationList":{
+      "type":"list",
+      "member":{"shape":"LayerCustomActionOperation"},
+      "max":2,
+      "min":1
+    },
+    "LayerCustomActionTrigger":{
+      "type":"string",
+      "enum":[
+        "DATA_POINT_CLICK",
+        "DATA_POINT_MENU"
+      ]
+    },
+    "LayerMapVisual":{
+      "type":"structure",
+      "required":[
+        "VisualId",
+        "DataSetIdentifier"
+      ],
+      "members":{
+        "VisualId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the visual.</p>"
+        },
+        "Title":{"shape":"VisualTitleLabelOptions"},
+        "Subtitle":{"shape":"VisualSubtitleLabelOptions"},
+        "ChartConfiguration":{
+          "shape":"GeospatialLayerMapConfiguration",
+          "documentation":"<p>The configuration settings of the visual.</p>"
+        },
+        "DataSetIdentifier":{
+          "shape":"DataSetIdentifier",
+          "documentation":"<p>The dataset that is used to create the layer map visual. You can't create a visual without a dataset.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
+        }
+      },
+      "documentation":"<p>A layer map visual.</p>"
+    },
     "Layout":{
       "type":"structure",
       "required":["Configuration"],
@@ -20894,7 +21738,8 @@
         "VISUAL",
         "FILTER_CONTROL",
         "PARAMETER_CONTROL",
-        "TEXT_BOX"
+        "TEXT_BOX",
+        "IMAGE"
       ]
     },
     "LayoutList":{
@@ -20925,7 +21770,8 @@
         "Height":{
           "shape":"PixelLength",
           "documentation":"<p>The height of the legend. If this value is omitted, a default height is used when rendering.</p>"
-        }
+        },
+        "ValueFontConfiguration":{"shape":"FontConfiguration"}
       },
       "documentation":"<p>The options for the legend setup of a visual.</p>"
     },
@@ -21237,6 +22083,10 @@
         "ColumnHierarchies":{
           "shape":"ColumnHierarchyList",
           "documentation":"<p>The column hierarchy that is used during drill-downs and drill-ups.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A line chart.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/line-charts.html\">Using line charts</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -23704,6 +24554,14 @@
         "NamespaceError":{
           "shape":"NamespaceError",
           "documentation":"<p>An error that occurred when the namespace was created.</p>"
+        },
+        "IamIdentityCenterApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the IAM Identity Center application.</p>"
+        },
+        "IamIdentityCenterInstanceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the IAM Identity Center instance.</p>"
         }
       },
       "documentation":"<p>The error type.</p>"
@@ -24259,6 +25117,11 @@
       "type":"string",
       "max":512,
       "min":1
+    },
+    "Opacity":{
+      "type":"double",
+      "max":1,
+      "min":0
     },
     "OperandList":{
       "type":"list",
@@ -25101,6 +25964,10 @@
         "ColumnHierarchies":{
           "shape":"ColumnHierarchyList",
           "documentation":"<p>The column hierarchy that is used during drill-downs and drill-ups.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A pie or donut chart.</p> <p>The <code>PieChartVisual</code> structure describes a visual that is a member of the pie chart family.</p> <p>The following charts can be described by using this structure:</p> <ul> <li> <p>Pie charts</p> </li> <li> <p>Donut charts</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/pie-chart.html\">Using pie charts</a> in the <i>Amazon QuickSight User Guide</i>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/donut-chart.html\">Using donut charts</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -25587,6 +26454,10 @@
         "Actions":{
           "shape":"VisualCustomActionList",
           "documentation":"<p>The list of custom actions that are configured for a visual.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A pivot table.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/pivot-table.html\">Using pivot tables</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -25632,6 +26503,149 @@
     "PixelLength":{
       "type":"string",
       "documentation":"String based length that is composed of value and unit in px"
+    },
+    "PluginVisual":{
+      "type":"structure",
+      "required":[
+        "VisualId",
+        "PluginArn"
+      ],
+      "members":{
+        "VisualId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the visual that you want to use.</p>"
+        },
+        "PluginArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that reflects the plugin and version.</p>"
+        },
+        "Title":{"shape":"VisualTitleLabelOptions"},
+        "Subtitle":{"shape":"VisualSubtitleLabelOptions"},
+        "ChartConfiguration":{
+          "shape":"PluginVisualConfiguration",
+          "documentation":"<p> A description of the plugin field wells and their persisted properties. </p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
+        }
+      },
+      "documentation":"<p>A flexible visualization type that allows engineers to create new custom charts in Amazon QuickSight.</p>"
+    },
+    "PluginVisualAxisName":{
+      "type":"string",
+      "enum":[
+        "GROUP_BY",
+        "VALUE"
+      ]
+    },
+    "PluginVisualConfiguration":{
+      "type":"structure",
+      "members":{
+        "FieldWells":{
+          "shape":"PluginVisualFieldWells",
+          "documentation":"<p>The field wells configuration of the plugin visual.</p>"
+        },
+        "VisualOptions":{
+          "shape":"PluginVisualOptions",
+          "documentation":"<p>The persisted properties of the plugin visual.</p>"
+        },
+        "SortConfiguration":{
+          "shape":"PluginVisualSortConfiguration",
+          "documentation":"<p>The sort configuration of the plugin visual.</p>"
+        }
+      },
+      "documentation":"<p>The plugin visual configuration. This includes the field wells, sorting options, and persisted options of the plugin visual.</p>"
+    },
+    "PluginVisualFieldWell":{
+      "type":"structure",
+      "members":{
+        "AxisName":{
+          "shape":"PluginVisualAxisName",
+          "documentation":"<p>The semantic axis name for the field well.</p>"
+        },
+        "Dimensions":{
+          "shape":"DimensionFieldList",
+          "documentation":"<p>A list of dimensions for the field well.</p>"
+        },
+        "Measures":{
+          "shape":"MeasureFieldList",
+          "documentation":"<p>A list of measures that exist in the field well.</p>"
+        },
+        "Unaggregated":{
+          "shape":"UnaggregatedFieldList",
+          "documentation":"<p>A list of unaggregated fields that exist in the field well.</p>"
+        }
+      },
+      "documentation":"<p>A collection of field wells for a plugin visual.</p>"
+    },
+    "PluginVisualFieldWells":{
+      "type":"list",
+      "member":{"shape":"PluginVisualFieldWell"},
+      "max":10
+    },
+    "PluginVisualItemsLimitConfiguration":{
+      "type":"structure",
+      "members":{
+        "ItemsLimit":{
+          "shape":"Long",
+          "documentation":"<p>Determines how many values are be fetched at once.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>A query limits configuration.</p>"
+    },
+    "PluginVisualOptions":{
+      "type":"structure",
+      "members":{
+        "VisualProperties":{
+          "shape":"PluginVisualPropertiesList",
+          "documentation":"<p>The persisted properties and their values.</p>"
+        }
+      },
+      "documentation":"<p>The options and persisted properties for the plugin visual.</p>"
+    },
+    "PluginVisualPropertiesList":{
+      "type":"list",
+      "member":{"shape":"PluginVisualProperty"}
+    },
+    "PluginVisualProperty":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the plugin visual property.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value of the plugin visual property.</p>"
+        }
+      },
+      "documentation":"<p>The key value pair of the persisted property.</p>"
+    },
+    "PluginVisualSortConfiguration":{
+      "type":"structure",
+      "members":{
+        "PluginVisualTableQuerySort":{
+          "shape":"PluginVisualTableQuerySort",
+          "documentation":"<p>The table query sorting options for the plugin visual.</p>"
+        }
+      },
+      "documentation":"<p>Determines how the plugin visual sorts the data during query.</p>"
+    },
+    "PluginVisualTableQuerySort":{
+      "type":"structure",
+      "members":{
+        "RowSort":{
+          "shape":"RowSortList",
+          "documentation":"<p>Determines how data is sorted in the response.</p>"
+        },
+        "ItemsLimitConfiguration":{
+          "shape":"PluginVisualItemsLimitConfiguration",
+          "documentation":"<p>The maximum amount of data to be returned by a query.</p>"
+        }
+      },
+      "documentation":"<p>The table query sorting options for the plugin visual.</p>"
     },
     "Port":{
       "type":"integer",
@@ -26112,6 +27126,10 @@
         "ColumnHierarchies":{
           "shape":"ColumnHierarchyList",
           "documentation":"<p>The column hierarchy that is used during drill-downs and drill-ups.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A radar chart visual.</p>"
@@ -27423,6 +28441,10 @@
         "Actions":{
           "shape":"VisualCustomActionList",
           "documentation":"<p>The list of custom actions that are configured for a visual.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A sankey diagram.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/sankey-diagram.html\">Using Sankey diagrams</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -27577,6 +28599,10 @@
         "ColumnHierarchies":{
           "shape":"ColumnHierarchyList",
           "documentation":"<p>The column hierarchy that is used during drill-downs and drill-ups.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A scatter plot.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/scatter-plot.html\">Using scatter plots</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -27917,6 +28943,56 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "SearchTopicsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "Filters"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the topic that you want to find.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Filters":{
+          "shape":"TopicSearchFilterList",
+          "documentation":"<p>The filters that you want to use to search for the topic.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned per request.</p>",
+          "box":true
+        }
+      }
+    },
+    "SearchTopicsResponse":{
+      "type":"structure",
+      "members":{
+        "TopicSummaryList":{
+          "shape":"TopicSummaries",
+          "documentation":"<p>A list of topic summaries that is returned by the search topic request.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
         }
       }
     },
@@ -28346,6 +29422,10 @@
         "Name":{
           "shape":"SheetName",
           "documentation":"<p>The name of a sheet. This name is displayed on the sheet's tab in the Amazon QuickSight console.</p>"
+        },
+        "Images":{
+          "shape":"SheetImageList",
+          "documentation":"<p>A list of images on a sheet.</p>"
         }
       },
       "documentation":"<p>A <i>sheet</i>, which is an object that contains a set of visuals that are viewed together on one page in Amazon QuickSight. Every analysis and dashboard contains at least one sheet. Each sheet contains at least one visualization widget, for example a chart, pivot table, or narrative insight. Sheets can be associated with other components, such as controls, filters, and so on.</p>"
@@ -28475,6 +29555,10 @@
           "shape":"SheetTextBoxList",
           "documentation":"<p>The text boxes that are on a sheet.</p>"
         },
+        "Images":{
+          "shape":"SheetImageList",
+          "documentation":"<p>A list of images on a sheet.</p>"
+        },
         "Layouts":{
           "shape":"LayoutList",
           "documentation":"<p>Layouts define how the components of a sheet are arranged.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/types-of-layout.html\">Types of layout</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -28532,6 +29616,114 @@
       "type":"list",
       "member":{"shape":"SheetElementRenderingRule"},
       "max":10000
+    },
+    "SheetImage":{
+      "type":"structure",
+      "required":[
+        "SheetImageId",
+        "Source"
+      ],
+      "members":{
+        "SheetImageId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the sheet image.</p>"
+        },
+        "Source":{
+          "shape":"SheetImageSource",
+          "documentation":"<p>The source of the image.</p>"
+        },
+        "Scaling":{
+          "shape":"SheetImageScalingConfiguration",
+          "documentation":"<p>Determines how the image is scaled.</p>"
+        },
+        "Tooltip":{
+          "shape":"SheetImageTooltipConfiguration",
+          "documentation":"<p>The tooltip to be shown when hovering over the image.</p>"
+        },
+        "ImageContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the image.</p>"
+        },
+        "Interactions":{
+          "shape":"ImageInteractionOptions",
+          "documentation":"<p>The general image interactions setup for an image.</p>"
+        },
+        "Actions":{
+          "shape":"ImageCustomActionList",
+          "documentation":"<p>A list of custom actions that are configured for an image.</p>"
+        }
+      },
+      "documentation":"<p>An image that is located on a sheet.</p>"
+    },
+    "SheetImageList":{
+      "type":"list",
+      "member":{"shape":"SheetImage"},
+      "max":10,
+      "min":0
+    },
+    "SheetImageScalingConfiguration":{
+      "type":"structure",
+      "members":{
+        "ScalingType":{
+          "shape":"SheetImageScalingType",
+          "documentation":"<p>The scaling option to use when fitting the image inside the container.</p> <p>Valid values are defined as follows:</p> <ul> <li> <p> <code>SCALE_TO_WIDTH</code>: The image takes up the entire width of the container. The image aspect ratio is preserved.</p> </li> <li> <p> <code>SCALE_TO_HEIGHT</code>: The image takes up the entire height of the container. The image aspect ratio is preserved.</p> </li> <li> <p> <code>SCALE_TO_CONTAINER</code>: The image takes up the entire width and height of the container. The image aspect ratio is not preserved.</p> </li> <li> <p> <code>SCALE_NONE</code>: The image is displayed in its original size and is not scaled to the container.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Determines how the image is scaled</p>"
+    },
+    "SheetImageScalingType":{
+      "type":"string",
+      "enum":[
+        "SCALE_TO_WIDTH",
+        "SCALE_TO_HEIGHT",
+        "SCALE_TO_CONTAINER",
+        "SCALE_NONE"
+      ]
+    },
+    "SheetImageSource":{
+      "type":"structure",
+      "members":{
+        "SheetImageStaticFileSource":{
+          "shape":"SheetImageStaticFileSource",
+          "documentation":"<p>The source of the static file that contains the image.</p>"
+        }
+      },
+      "documentation":"<p>The source of the image.</p>"
+    },
+    "SheetImageStaticFileSource":{
+      "type":"structure",
+      "required":["StaticFileId"],
+      "members":{
+        "StaticFileId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the static file that contains the image.</p>"
+        }
+      },
+      "documentation":"<p>The source of the static file that contains the image.</p>"
+    },
+    "SheetImageTooltipConfiguration":{
+      "type":"structure",
+      "members":{
+        "TooltipText":{
+          "shape":"SheetImageTooltipText",
+          "documentation":"<p>The text that appears in the tooltip.</p>"
+        },
+        "Visibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The visibility of the tooltip.</p>"
+        }
+      },
+      "documentation":"<p>The tooltip configuration for a sheet image.</p>"
+    },
+    "SheetImageTooltipText":{
+      "type":"structure",
+      "members":{
+        "PlainText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The plain text format.</p>"
+        }
+      },
+      "documentation":"<p>The text that appears in the sheet image tooltip.</p>"
     },
     "SheetLayoutElementMaximizationOption":{
       "type":"structure",
@@ -29184,6 +30376,21 @@
       },
       "documentation":"<p>The parameters for Spark.</p>"
     },
+    "SpatialStaticFile":{
+      "type":"structure",
+      "required":["StaticFileId"],
+      "members":{
+        "StaticFileId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the spatial static file.</p>"
+        },
+        "Source":{
+          "shape":"StaticFileSource",
+          "documentation":"<p>The source of the spatial static file.</p>"
+        }
+      },
+      "documentation":"<p>A static file that contains the geospatial data.</p>"
+    },
     "SpecialValue":{
       "type":"string",
       "enum":[
@@ -29536,6 +30743,74 @@
         }
       },
       "documentation":"<p>The state perssitence configuration of an embedded dashboard.</p>"
+    },
+    "StaticFile":{
+      "type":"structure",
+      "members":{
+        "ImageStaticFile":{
+          "shape":"ImageStaticFile",
+          "documentation":"<p>The image static file.</p>"
+        },
+        "SpatialStaticFile":{
+          "shape":"SpatialStaticFile",
+          "documentation":"<p>The spacial static file.</p>"
+        }
+      },
+      "documentation":"<p>The static file.</p>"
+    },
+    "StaticFileList":{
+      "type":"list",
+      "member":{"shape":"StaticFile"},
+      "max":200,
+      "min":0
+    },
+    "StaticFileS3SourceOptions":{
+      "type":"structure",
+      "required":[
+        "BucketName",
+        "ObjectKey",
+        "Region"
+      ],
+      "members":{
+        "BucketName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon S3 bucket.</p>"
+        },
+        "ObjectKey":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the static file in the Amazon S3 bucket.</p>"
+        },
+        "Region":{
+          "shape":"String",
+          "documentation":"<p>The Region of the Amazon S3 account that contains the bucket.</p>"
+        }
+      },
+      "documentation":"<p>The structure that contains the Amazon S3 location to download the static file from.</p>"
+    },
+    "StaticFileSource":{
+      "type":"structure",
+      "members":{
+        "UrlOptions":{
+          "shape":"StaticFileUrlSourceOptions",
+          "documentation":"<p>The structure that contains the URL to download the static file from.</p>"
+        },
+        "S3Options":{
+          "shape":"StaticFileS3SourceOptions",
+          "documentation":"<p>The structure that contains the Amazon S3 location to download the static file from.</p>"
+        }
+      },
+      "documentation":"<p>The source of the static file.</p>"
+    },
+    "StaticFileUrlSourceOptions":{
+      "type":"structure",
+      "required":["Url"],
+      "members":{
+        "Url":{
+          "shape":"String",
+          "documentation":"<p>The URL to download the static file from.</p>"
+        }
+      },
+      "documentation":"<p>The structure that contains the URL to download the static file from.</p>"
     },
     "Status":{
       "type":"string",
@@ -30336,6 +31611,10 @@
         "Actions":{
           "shape":"VisualCustomActionList",
           "documentation":"<p>The list of custom actions that are configured for a visual.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A table visual.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/tabular.html\">Using tables as visuals</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -30684,7 +31963,11 @@
           "shape":"AssetOptions",
           "documentation":"<p>An array of option definitions for a template.</p>"
         },
-        "QueryExecutionOptions":{"shape":"QueryExecutionOptions"}
+        "QueryExecutionOptions":{"shape":"QueryExecutionOptions"},
+        "StaticFiles":{
+          "shape":"StaticFileList",
+          "documentation":"<p>The static files for the definition.</p>"
+        }
       },
       "documentation":"<p>The detailed definition of a template.</p>"
     },
@@ -31806,6 +33089,25 @@
       },
       "documentation":"<p>A structure that represents a filter used to select items for a topic.</p>"
     },
+    "TopicFilterAttribute":{
+      "type":"string",
+      "enum":[
+        "QUICKSIGHT_USER",
+        "QUICKSIGHT_VIEWER_OR_OWNER",
+        "DIRECT_QUICKSIGHT_VIEWER_OR_OWNER",
+        "QUICKSIGHT_OWNER",
+        "DIRECT_QUICKSIGHT_OWNER",
+        "DIRECT_QUICKSIGHT_SOLE_OWNER",
+        "TOPIC_NAME"
+      ]
+    },
+    "TopicFilterOperator":{
+      "type":"string",
+      "enum":[
+        "StringEquals",
+        "StringLike"
+      ]
+    },
     "TopicFilters":{
       "type":"list",
       "member":{"shape":"TopicFilter"}
@@ -32331,6 +33633,35 @@
         "MONTHLY"
       ]
     },
+    "TopicSearchFilter":{
+      "type":"structure",
+      "required":[
+        "Operator",
+        "Name",
+        "Value"
+      ],
+      "members":{
+        "Operator":{
+          "shape":"TopicFilterOperator",
+          "documentation":"<p>The operator like equals or like.</p>"
+        },
+        "Name":{
+          "shape":"TopicFilterAttribute",
+          "documentation":"<p>The name of the topic search filter.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value of the topic search filter.</p>"
+        }
+      },
+      "documentation":"<p>The filter that is used to search for a topic.</p>"
+    },
+    "TopicSearchFilterList":{
+      "type":"list",
+      "member":{"shape":"TopicSearchFilter"},
+      "max":1,
+      "min":1
+    },
     "TopicSingularFilterConstant":{
       "type":"structure",
       "members":{
@@ -32698,6 +34029,10 @@
         "ColumnHierarchies":{
           "shape":"ColumnHierarchyList",
           "documentation":"<p>The column hierarchy that is used during drill-downs and drill-ups.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A tree map.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/tree-map.html\">Using tree maps</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -33618,6 +34953,43 @@
         "RequestId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "UpdateDashboardsQAConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "DashboardsQAStatus"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the dashboard QA configuration that you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "DashboardsQAStatus":{
+          "shape":"DashboardsQAStatus",
+          "documentation":"<p>The status of dashboards QA configuration that you want to update.</p>"
+        }
+      }
+    },
+    "UpdateDashboardsQAConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "DashboardsQAStatus":{
+          "shape":"DashboardsQAStatus",
+          "documentation":"<p>A value that indicates whether the dashboard QA configuration is enabled or not.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
         }
       }
     },
@@ -35514,6 +36886,10 @@
           "shape":"FilledMapVisual",
           "documentation":"<p>A filled map.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/filled-maps.html\">Creating filled maps</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
         },
+        "LayerMapVisual":{
+          "shape":"LayerMapVisual",
+          "documentation":"<p>The properties for a layer map visual</p>"
+        },
         "FunnelChartVisual":{
           "shape":"FunnelChartVisual",
           "documentation":"<p>A funnel chart.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/funnel-visual-content.html\">Using funnel charts</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -35561,6 +36937,10 @@
         "RadarChartVisual":{
           "shape":"RadarChartVisual",
           "documentation":"<p>A radar chart visual.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/radar-chart.html\">Using radar charts</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
+        },
+        "PluginVisual":{
+          "shape":"PluginVisual",
+          "documentation":"<p>The custom plugin visual type.</p>"
         }
       },
       "documentation":"<p>A visual displayed on a sheet in an analysis, dashboard, or template.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
@@ -35951,6 +37331,10 @@
         "ColumnHierarchies":{
           "shape":"ColumnHierarchyList",
           "documentation":"<p>The column hierarchy that is used during drill-downs and drill-ups.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A waterfall chart.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/waterfall-chart.html\">Using waterfall charts</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
@@ -36146,6 +37530,10 @@
         "ColumnHierarchies":{
           "shape":"ColumnHierarchyList",
           "documentation":"<p>The column hierarchy that is used during drill-downs and drill-ups.</p>"
+        },
+        "VisualContentAltText":{
+          "shape":"LongPlainText",
+          "documentation":"<p>The alt text for the visual.</p>"
         }
       },
       "documentation":"<p>A word cloud.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/word-cloud.html\">Using word clouds</a> in the <i>Amazon QuickSight User Guide</i>.</p>"

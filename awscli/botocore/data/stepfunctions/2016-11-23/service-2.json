@@ -643,7 +643,7 @@
       "errors":[
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Validates the syntax of a state machine definition.</p> <p>You can validate that a state machine definition is correct without creating a state machine resource. Step Functions will implicitly perform the same syntax check when you invoke <code>CreateStateMachine</code> and <code>UpdateStateMachine</code>. State machine definitions are specified using a JSON-based, structured language. For more information on Amazon States Language see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a> (ASL). </p> <p>Suggested uses for <code>ValidateStateMachineDefinition</code>:</p> <ul> <li> <p>Integrate automated checks into your code review or Continuous Integration (CI) process to validate state machine definitions before starting deployments.</p> </li> <li> <p>Run the validation from a Git pre-commit hook to check your state machine definitions before committing them to your source repository.</p> </li> </ul> <note> <p>Errors found in the state machine definition will be returned in the response as a list of <b>diagnostic elements</b>, rather than raise an exception.</p> </note>"
+      "documentation":"<p>Validates the syntax of a state machine definition specified in <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a> (ASL), a JSON-based, structured language.</p> <p>You can validate that a state machine definition is correct without creating a state machine resource.</p> <p>Suggested uses for <code>ValidateStateMachineDefinition</code>:</p> <ul> <li> <p>Integrate automated checks into your code review or Continuous Integration (CI) process to check state machine definitions before starting deployments.</p> </li> <li> <p>Run validation from a Git pre-commit hook to verify the definition before committing to your source repository.</p> </li> </ul> <p>Validation will look for problems in your state machine definition and return a <b>result</b> and a list of <b>diagnostic elements</b>.</p> <p>The <b>result</b> value will be <code>OK</code> when your workflow definition can be successfully created or updated. Note the result can be <code>OK</code> even when diagnostic warnings are present in the response. The <b>result</b> value will be <code>FAIL</code> when the workflow definition contains errors that would prevent you from creating or updating your state machine. </p> <p>The list of <a href=\"https://docs.aws.amazon.com/step-functions/latest/apireference/API_ValidateStateMachineDefinitionDiagnostic.html\">ValidateStateMachineDefinitionDiagnostic</a> data elements can contain zero or more <b>WARNING</b> and/or <b>ERROR</b> elements.</p> <note> <p>The <b>ValidateStateMachineDefinition API</b> might add new diagnostics in the future, adjust diagnostic codes, or change the message wording. Your automated processes should only rely on the value of the <b>result</b> field value (OK, FAIL). Do <b>not</b> rely on the exact order, count, or wording of diagnostic messages.</p> </note>"
     }
   },
   "shapes":{
@@ -810,6 +810,21 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "AssignedVariables":{
+      "type":"map",
+      "key":{"shape":"VariableName"},
+      "value":{"shape":"VariableValue"}
+    },
+    "AssignedVariablesDetails":{
+      "type":"structure",
+      "members":{
+        "truncated":{
+          "shape":"truncated",
+          "documentation":"<p>Indicates whether assigned variables were truncated in the response. Always <code>false</code> for API calls. In CloudWatch logs, the value will be true if the data is truncated due to size limits.</p>"
+        }
+      },
+      "documentation":"<p>Provides details about assigned variables in an execution history event.</p>"
     },
     "BilledDuration":{
       "type":"long",
@@ -1401,6 +1416,10 @@
         "encryptionConfiguration":{
           "shape":"EncryptionConfiguration",
           "documentation":"<p>Settings to configure server-side encryption. </p>"
+        },
+        "variableReferences":{
+          "shape":"VariableReferences",
+          "documentation":"<p>A map of <b>state name</b> to a list of variables referenced by that state. States that do not use variable references will not be shown in the response.</p>"
         }
       }
     },
@@ -1477,6 +1496,10 @@
         "encryptionConfiguration":{
           "shape":"EncryptionConfiguration",
           "documentation":"<p>Settings to configure server-side encryption. </p>"
+        },
+        "variableReferences":{
+          "shape":"VariableReferences",
+          "documentation":"<p>A map of <b>state name</b> to a list of variables referenced by that state. States that do not use variable references will not be shown in the response.</p>"
         }
       }
     },
@@ -1509,6 +1532,35 @@
       ]
     },
     "ErrorMessage":{"type":"string"},
+    "EvaluationFailedEventDetails":{
+      "type":"structure",
+      "required":["state"],
+      "members":{
+        "error":{
+          "shape":"SensitiveError",
+          "documentation":"<p>The error code of the failure.</p>"
+        },
+        "cause":{
+          "shape":"SensitiveCause",
+          "documentation":"<p>A more detailed explanation of the cause of the failure.</p>"
+        },
+        "location":{
+          "shape":"EvaluationFailureLocation",
+          "documentation":"<p>The location of the field in the state in which the evaluation error occurred.</p>"
+        },
+        "state":{
+          "shape":"StateName",
+          "documentation":"<p>The name of the state in which the evaluation error occurred.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about an evaluation failure that occurred while processing a state, for example, when a JSONata expression throws an error. This event will only be present in state machines that have <b> QueryLanguage</b> set to JSONata, or individual states set to JSONata.</p>"
+    },
+    "EvaluationFailureLocation":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "sensitive":true
+    },
     "EventId":{"type":"long"},
     "ExecutionAbortedEventDetails":{
       "type":"structure",
@@ -1919,6 +1971,10 @@
         "mapRunRedrivenEventDetails":{
           "shape":"MapRunRedrivenEventDetails",
           "documentation":"<p>Contains details about the redrive attempt of a Map Run.</p>"
+        },
+        "evaluationFailedEventDetails":{
+          "shape":"EvaluationFailedEventDetails",
+          "documentation":"<p>Contains details about an evaluation failure that occurred while processing a state.</p>"
         }
       },
       "documentation":"<p>Contains details about the events of an execution.</p>"
@@ -1928,7 +1984,7 @@
       "members":{
         "truncated":{
           "shape":"truncated",
-          "documentation":"<p>Indicates whether input or output was truncated in the response. Always <code>false</code> for API calls.</p>"
+          "documentation":"<p>Indicates whether input or output was truncated in the response. Always <code>false</code> for API calls. In CloudWatch logs, the value will be true if the data is truncated due to size limits.</p>"
         }
       },
       "documentation":"<p>Provides details about input or output in an execution history event.</p>"
@@ -2001,7 +2057,8 @@
         "MapRunStarted",
         "MapRunSucceeded",
         "ExecutionRedriven",
-        "MapRunRedriven"
+        "MapRunRedriven",
+        "EvaluationFailed"
       ]
     },
     "Identity":{
@@ -2027,13 +2084,17 @@
           "shape":"SensitiveData",
           "documentation":"<p>The raw state input.</p>"
         },
+        "afterArguments":{
+          "shape":"SensitiveData",
+          "documentation":"<p>The input after Step Functions applies an Arguments filter. This event will only be present when QueryLanguage for the state machine or individual states is set to JSONata. For more info, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/data-transform.html\">Transforming data with Step Functions</a>.</p>"
+        },
         "afterInputPath":{
           "shape":"SensitiveData",
-          "documentation":"<p>The input after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-inputpath\">InputPath</a> filter.</p>"
+          "documentation":"<p>The input after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-inputpath\">InputPath</a> filter. Not populated when QueryLanguage is JSONata.</p>"
         },
         "afterParameters":{
           "shape":"SensitiveData",
-          "documentation":"<p>The effective input after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-parameters\">Parameters</a> filter.</p>"
+          "documentation":"<p>The effective input after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-parameters\">Parameters</a> filter. Not populated when QueryLanguage is JSONata.</p>"
         },
         "result":{
           "shape":"SensitiveData",
@@ -2041,11 +2102,11 @@
         },
         "afterResultSelector":{
           "shape":"SensitiveData",
-          "documentation":"<p>The effective result after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-resultselector\">ResultSelector</a> filter.</p>"
+          "documentation":"<p>The effective result after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-resultselector\">ResultSelector</a> filter. Not populated when QueryLanguage is JSONata.</p>"
         },
         "afterResultPath":{
           "shape":"SensitiveData",
-          "documentation":"<p>The effective result combined with the raw state input after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultpath.html\">ResultPath</a> filter.</p>"
+          "documentation":"<p>The effective result combined with the raw state input after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultpath.html\">ResultPath</a> filter. Not populated when QueryLanguage is JSONata.</p>"
         },
         "request":{
           "shape":"InspectionDataRequest",
@@ -2054,6 +2115,10 @@
         "response":{
           "shape":"InspectionDataResponse",
           "documentation":"<p>The raw HTTP response that is returned when you test an HTTP Task.</p>"
+        },
+        "variables":{
+          "shape":"SensitiveData",
+          "documentation":"<p>JSON string that contains the set of workflow variables after execution of the state. The set will include variables assigned in the state and variables set up as test state input.</p>"
         }
       },
       "documentation":"<p>Contains additional details about the state's execution, including its input and output data processing flow, and HTTP request and response information.</p>",
@@ -3197,6 +3262,14 @@
         "outputDetails":{
           "shape":"HistoryEventExecutionDataDetails",
           "documentation":"<p>Contains details about the output of an execution history event.</p>"
+        },
+        "assignedVariables":{
+          "shape":"AssignedVariables",
+          "documentation":"<p>Map of variable name and value as a serialized JSON representation.</p>"
+        },
+        "assignedVariablesDetails":{
+          "shape":"AssignedVariablesDetails",
+          "documentation":"<p>Provides details about input or output in an execution history event.</p>"
         }
       },
       "documentation":"<p>Contains details about an exit from a state during an execution.</p>"
@@ -3684,10 +3757,7 @@
     },
     "TestStateInput":{
       "type":"structure",
-      "required":[
-        "definition",
-        "roleArn"
-      ],
+      "required":["definition"],
       "members":{
         "definition":{
           "shape":"Definition",
@@ -3708,6 +3778,10 @@
         "revealSecrets":{
           "shape":"RevealSecrets",
           "documentation":"<p>Specifies whether or not to include secret information in the test result. For HTTP Tasks, a secret includes the data that an EventBridge connection adds to modify the HTTP request headers, query parameters, and body. Step Functions doesn't omit any information included in the state definition or the HTTP response.</p> <p>If you set <code>revealSecrets</code> to <code>true</code>, you must make sure that the IAM user that calls the <code>TestState</code> API has permission for the <code>states:RevealSecrets</code> action. For an example of IAM policy that sets the <code>states:RevealSecrets</code> permission, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/test-state-isolation.html#test-state-permissions\">IAM permissions to test a state</a>. Without this permission, Step Functions throws an access denied error.</p> <p>By default, <code>revealSecrets</code> is set to <code>false</code>.</p>"
+        },
+        "variables":{
+          "shape":"SensitiveData",
+          "documentation":"<p>JSON object literal that sets variables used in the state under test. Object keys are the variable names and values are the variable values.</p>"
         }
       }
     },
@@ -3921,7 +3995,10 @@
         }
       }
     },
-    "ValidateStateMachineDefinitionCode":{"type":"string"},
+    "ValidateStateMachineDefinitionCode":{
+      "type":"string",
+      "sensitive":true
+    },
     "ValidateStateMachineDefinitionDiagnostic":{
       "type":"structure",
       "required":[
@@ -3932,7 +4009,7 @@
       "members":{
         "severity":{
           "shape":"ValidateStateMachineDefinitionSeverity",
-          "documentation":"<p>A value of <code>ERROR</code> means that you cannot create or update a state machine with this definition.</p>"
+          "documentation":"<p>A value of <code>ERROR</code> means that you cannot create or update a state machine with this definition.</p> <p> <code>WARNING</code> level diagnostics alert you to potential issues, but they will not prevent you from creating or updating your state machine.</p>"
         },
         "code":{
           "shape":"ValidateStateMachineDefinitionCode",
@@ -3947,7 +4024,7 @@
           "documentation":"<p>Location of the issue in the state machine, if available.</p> <p>For errors specific to a field, the location could be in the format: <code>/States/&lt;StateName&gt;/&lt;FieldName&gt;</code>, for example: <code>/States/FailState/ErrorPath</code>.</p>"
         }
       },
-      "documentation":"<p>Describes an error found during validation. Validation errors found in the definition return in the response as <b>diagnostic elements</b>, rather than raise an exception.</p>"
+      "documentation":"<p>Describes potential issues found during state machine validation. Rather than raise an exception, validation will return a list of <b>diagnostic elements</b> containing diagnostic information. </p> <note> <p>The <a href=\"https://docs.aws.amazon.com/step-functions/latest/apireference/API_ValidateStateMachineDefinition.html\">ValidateStateMachineDefinitionlAPI</a> might add new diagnostics in the future, adjust diagnostic codes, or change the message wording. Your automated processes should only rely on the value of the <b>result</b> field value (OK, FAIL). Do <b>not</b> rely on the exact order, count, or wording of diagnostic messages.</p> </note> <p> <b>List of warning codes</b> </p> <dl> <dt>NO_DOLLAR</dt> <dd> <p>No <code>.$</code> on a field that appears to be a JSONPath or Intrinsic Function.</p> </dd> <dt>NO_PATH</dt> <dd> <p>Field value looks like a path, but field name does not end with 'Path'.</p> </dd> <dt>PASS_RESULT_IS_STATIC</dt> <dd> <p>Attempt to use a path in the result of a pass state.</p> </dd> </dl> <p> <b>List of error codes</b> </p> <dl> <dt>INVALID_JSON_DESCRIPTION</dt> <dd> <p>JSON syntax problem found.</p> </dd> <dt>MISSING_DESCRIPTION</dt> <dd> <p>Received a null or empty workflow input.</p> </dd> <dt>SCHEMA_VALIDATION_FAILED</dt> <dd> <p>Schema validation reported errors.</p> </dd> <dt>INVALID_RESOURCE</dt> <dd> <p>The value of a Task-state resource field is invalid.</p> </dd> <dt>MISSING_END_STATE</dt> <dd> <p>The workflow does not have a terminal state.</p> </dd> <dt>DUPLICATE_STATE_NAME</dt> <dd> <p>The same state name appears more than once.</p> </dd> <dt>INVALID_STATE_NAME</dt> <dd> <p>The state name does not follow the naming convention.</p> </dd> <dt>STATE_MACHINE_NAME_EMPTY</dt> <dd> <p>The state machine name has not been specified.</p> </dd> <dt>STATE_MACHINE_NAME_INVALID</dt> <dd> <p>The state machine name does not follow the naming convention.</p> </dd> <dt>STATE_MACHINE_NAME_TOO_LONG</dt> <dd> <p>The state name exceeds the allowed length.</p> </dd> <dt>STATE_MACHINE_NAME_ALREADY_EXISTS</dt> <dd> <p>The state name already exists.</p> </dd> <dt>DUPLICATE_LABEL_NAME</dt> <dd> <p>A label name appears more than once.</p> </dd> <dt>INVALID_LABEL_NAME</dt> <dd> <p>You have provided an invalid label name.</p> </dd> <dt>MISSING_TRANSITION_TARGET</dt> <dd> <p>The value of \"Next\" field doesn't match a known state name.</p> </dd> <dt>TOO_DEEPLY_NESTED</dt> <dd> <p>The states are too deeply nested.</p> </dd> </dl>"
     },
     "ValidateStateMachineDefinitionDiagnosticList":{
       "type":"list",
@@ -3975,13 +4052,19 @@
         }
       }
     },
-    "ValidateStateMachineDefinitionLocation":{"type":"string"},
+    "ValidateStateMachineDefinitionLocation":{
+      "type":"string",
+      "sensitive":true
+    },
     "ValidateStateMachineDefinitionMaxResult":{
       "type":"integer",
       "max":100,
       "min":0
     },
-    "ValidateStateMachineDefinitionMessage":{"type":"string"},
+    "ValidateStateMachineDefinitionMessage":{
+      "type":"string",
+      "sensitive":true
+    },
     "ValidateStateMachineDefinitionOutput":{
       "type":"structure",
       "required":[
@@ -3995,7 +4078,7 @@
         },
         "diagnostics":{
           "shape":"ValidateStateMachineDefinitionDiagnosticList",
-          "documentation":"<p>If the result is <code>OK</code>, this field will be empty. When there are errors, this field will contain an array of <b>Diagnostic</b> objects to help you troubleshoot.</p>"
+          "documentation":"<p>An array of diagnostic errors and warnings found during validation of the state machine definition. Since <b>warnings</b> do not prevent deploying your workflow definition, the <b>result</b> value could be <code>OK</code> even when warning diagnostics are present in the response.</p>"
         },
         "truncated":{
           "shape":"ValidateStateMachineDefinitionTruncated",
@@ -4041,6 +4124,24 @@
         "CANNOT_UPDATE_COMPLETED_MAP_RUN",
         "INVALID_ROUTING_CONFIGURATION"
       ]
+    },
+    "VariableName":{
+      "type":"string",
+      "sensitive":true
+    },
+    "VariableNameList":{
+      "type":"list",
+      "member":{"shape":"VariableName"}
+    },
+    "VariableReferences":{
+      "type":"map",
+      "key":{"shape":"StateName"},
+      "value":{"shape":"VariableNameList"},
+      "sensitive":true
+    },
+    "VariableValue":{
+      "type":"string",
+      "sensitive":true
     },
     "VersionDescription":{
       "type":"string",

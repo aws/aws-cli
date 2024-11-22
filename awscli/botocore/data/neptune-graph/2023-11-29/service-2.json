@@ -15,6 +15,27 @@
     "uid":"neptune-graph-2023-11-29"
   },
   "operations":{
+    "CancelExportTask":{
+      "name":"CancelExportTask",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/exporttasks/{taskIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelExportTaskInput"},
+      "output":{"shape":"CancelExportTaskOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Cancel the specified export task.</p>",
+      "staticContextParams":{
+        "ApiType":{"value":"ControlPlane"}
+      }
+    },
     "CancelImportTask":{
       "name":"CancelImportTask",
       "http":{
@@ -234,6 +255,26 @@
         "ApiType":{"value":"DataPlane"}
       }
     },
+    "GetExportTask":{
+      "name":"GetExportTask",
+      "http":{
+        "method":"GET",
+        "requestUri":"/exporttasks/{taskIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetExportTaskInput"},
+      "output":{"shape":"GetExportTaskOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves a specified export task.</p>",
+      "staticContextParams":{
+        "ApiType":{"value":"ControlPlane"}
+      }
+    },
     "GetGraph":{
       "name":"GetGraph",
       "http":{
@@ -360,6 +401,26 @@
       },
       "staticContextParams":{
         "ApiType":{"value":"DataPlane"}
+      }
+    },
+    "ListExportTasks":{
+      "name":"ListExportTasks",
+      "http":{
+        "method":"GET",
+        "requestUri":"/exporttasks",
+        "responseCode":200
+      },
+      "input":{"shape":"ListExportTasksInput"},
+      "output":{"shape":"ListExportTasksOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves a list of export tasks.</p>",
+      "staticContextParams":{
+        "ApiType":{"value":"ControlPlane"}
       }
     },
     "ListGraphSnapshots":{
@@ -527,6 +588,27 @@
         "ApiType":{"value":"ControlPlane"}
       }
     },
+    "StartExportTask":{
+      "name":"StartExportTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/exporttasks",
+        "responseCode":201
+      },
+      "input":{"shape":"StartExportTaskInput"},
+      "output":{"shape":"StartExportTaskOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Export data from an existing Neptune Analytics graph to Amazon S3. The graph state should be <code>AVAILABLE</code>.</p>",
+      "staticContextParams":{
+        "ApiType":{"value":"ControlPlane"}
+      }
+    },
     "StartImportTask":{
       "name":"StartImportTask",
       "http":{
@@ -643,6 +725,73 @@
       "type":"boolean",
       "box":true
     },
+    "CancelExportTaskInput":{
+      "type":"structure",
+      "required":["taskIdentifier"],
+      "members":{
+        "taskIdentifier":{
+          "shape":"ExportTaskId",
+          "documentation":"<p>The unique identifier of the export task.</p>",
+          "location":"uri",
+          "locationName":"taskIdentifier"
+        }
+      }
+    },
+    "CancelExportTaskOutput":{
+      "type":"structure",
+      "required":[
+        "graphId",
+        "roleArn",
+        "taskId",
+        "status",
+        "format",
+        "destination",
+        "kmsKeyIdentifier"
+      ],
+      "members":{
+        "graphId":{
+          "shape":"GraphId",
+          "documentation":"<p>The source graph identifier of the cancelled export task.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that will allow the exporting of data to the destination.</p>"
+        },
+        "taskId":{
+          "shape":"ExportTaskId",
+          "documentation":"<p>The unique identifier of the export task.</p>"
+        },
+        "status":{
+          "shape":"ExportTaskStatus",
+          "documentation":"<p>The current status of the export task. The status is <code>CANCELLING</code> when the export task is cancelled.</p>"
+        },
+        "format":{
+          "shape":"ExportFormat",
+          "documentation":"<p>The format of the cancelled export task.</p>"
+        },
+        "destination":{
+          "shape":"CancelExportTaskOutputDestinationString",
+          "documentation":"<p>The Amazon S3 URI of the cancelled export task where data will be exported to.</p>"
+        },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The KMS key identifier of the cancelled export task.</p>"
+        },
+        "parquetType":{
+          "shape":"ParquetType",
+          "documentation":"<p>The parquet type of the cancelled export task.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason that the export task has this status value.</p>"
+        }
+      }
+    },
+    "CancelExportTaskOutputDestinationString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "CancelImportTaskInput":{
       "type":"structure",
       "required":["taskIdentifier"],
@@ -679,6 +828,10 @@
         "format":{
           "shape":"Format",
           "documentation":"<p>Specifies the format of S3 data to be imported. Valid values are <code>CSV</code>, which identifies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html\">Gremlin CSV format</a> or <code>OPENCYPHER</code>, which identies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html\">openCypher load format</a>.</p>"
+        },
+        "parquetType":{
+          "shape":"ParquetType",
+          "documentation":"<p>The parquet type of the cancelled import task.</p>"
         },
         "roleArn":{
           "shape":"RoleArn",
@@ -966,6 +1119,10 @@
           "shape":"Format",
           "documentation":"<p>Specifies the format of S3 data to be imported. Valid values are <code>CSV</code>, which identifies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html\">Gremlin CSV format</a>, <code>OPEN_CYPHER</code>, which identifies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html\">openCypher load format</a>, or <code>ntriples</code>, which identifies the <a href=\"https://docs.aws.amazon.com/neptune-analytics/latest/userguide/using-rdf-data.html\">RDF n-triples</a> format.</p>"
         },
+        "parquetType":{
+          "shape":"ParquetType",
+          "documentation":"<p>The parquet type of the import task.</p>"
+        },
         "blankNodeHandling":{
           "shape":"BlankNodeHandling",
           "documentation":"<p>The method to handle blank nodes in the dataset. Currently, only <code>convertToIri</code> is supported, meaning blank nodes are converted to unique IRIs at load time. Must be provided when format is <code>ntriples</code>. For more information, see <a href=\"https://docs.aws.amazon.com/neptune-analytics/latest/userguide/using-rdf-data.html#rdf-handling\">Handling RDF values</a>.</p>"
@@ -1000,6 +1157,10 @@
         "format":{
           "shape":"Format",
           "documentation":"<p>Specifies the format of S3 data to be imported. Valid values are <code>CSV</code>, which identifies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html\">Gremlin CSV format</a>, <code>OPENCYPHER</code>, which identifies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html\">openCypher load format</a>, or <code>ntriples</code>, which identifies the <a href=\"https://docs.aws.amazon.com/neptune-analytics/latest/userguide/using-rdf-data.html\">RDF n-triples</a> format.</p>"
+        },
+        "parquetType":{
+          "shape":"ParquetType",
+          "documentation":"<p>The parquet type of the import task.</p>"
         },
         "roleArn":{
           "shape":"RoleArn",
@@ -1348,13 +1509,275 @@
         "DETAILS"
       ]
     },
+    "ExportFilter":{
+      "type":"structure",
+      "members":{
+        "vertexFilter":{
+          "shape":"ExportFilterPerLabelMap",
+          "documentation":"<p>Used to specify filters on a per-label basis for vertices. This allows you to control which vertex labels and properties are included in the export.</p>"
+        },
+        "edgeFilter":{
+          "shape":"ExportFilterPerLabelMap",
+          "documentation":"<p>Used to specify filters on a per-label basis for edges. This allows you to control which edge labels and properties are included in the export.</p>"
+        }
+      },
+      "documentation":"<p>This is the top-level field for specifying vertex or edge filters. If the ExportFilter is not provided, then all properties for all labels will be exported. If the ExportFilter is provided but is an empty object, then no data will be exported.</p>"
+    },
+    "ExportFilterElement":{
+      "type":"structure",
+      "members":{
+        "properties":{
+          "shape":"ExportFilterPropertyMap",
+          "documentation":"<p>Each property is defined by a key-value pair, where the key is the desired output property name (e.g. \"name\"), and the value is an object.</p>"
+        }
+      },
+      "documentation":"<p>Specifies whihc properties of that label should be included in the export.</p>"
+    },
+    "ExportFilterLabel":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ExportFilterOutputDataType":{
+      "type":"string",
+      "pattern":"(Any|Byte|Short|Int|Long|Float|Double|String|Bool|Boolean|Float\\[\\]|Double\\[\\])"
+    },
+    "ExportFilterOutputPropertyName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_]+"
+    },
+    "ExportFilterPerLabelMap":{
+      "type":"map",
+      "key":{"shape":"ExportFilterLabel"},
+      "value":{"shape":"ExportFilterElement"}
+    },
+    "ExportFilterPropertyAttributes":{
+      "type":"structure",
+      "members":{
+        "outputType":{
+          "shape":"ExportFilterOutputDataType",
+          "documentation":"<p>Specifies the data type to use for the property in the exported data (e.g. \"String\", \"Int\", \"Float\"). If a type is not provided, the export process will determine the type. If a given property is present as multiple types (e.g. one vertex has \"height\" stored as a double, and another edge has it stored as a string), the type will be of Any type, otherwise, it will be the type of the property as present in vertices.</p>"
+        },
+        "sourcePropertyName":{
+          "shape":"ExportFilterSourcePropertyName",
+          "documentation":"<p>The name of the property as it exists in the original graph data. If not provided, it is assumed that the key matches the desired sourcePropertyName.</p>"
+        },
+        "multiValueHandling":{
+          "shape":"MultiValueHandlingType",
+          "documentation":"<p>Specifies how to handle properties that have multiple values. Can be either <code>TO_LIST</code> to export all values as a list, or <code>PICK_FIRST</code> to export the first value encountered. If not specified, the default value is <code>PICK_FIRST</code>.</p>"
+        }
+      },
+      "documentation":"<p>A structure representing a property's attributes. It is a map object of outputType, sourcePropertyName and multiValueHandling.</p>"
+    },
+    "ExportFilterPropertyMap":{
+      "type":"map",
+      "key":{"shape":"ExportFilterOutputPropertyName"},
+      "value":{"shape":"ExportFilterPropertyAttributes"}
+    },
+    "ExportFilterSourcePropertyName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ExportFormat":{
+      "type":"string",
+      "enum":[
+        "PARQUET",
+        "CSV"
+      ]
+    },
+    "ExportTaskDetails":{
+      "type":"structure",
+      "required":[
+        "startTime",
+        "timeElapsedSeconds",
+        "progressPercentage"
+      ],
+      "members":{
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the export task.</p>"
+        },
+        "timeElapsedSeconds":{
+          "shape":"Long",
+          "documentation":"<p>The time elapsed, in seconds, since the start time of the export task.</p>"
+        },
+        "progressPercentage":{
+          "shape":"Integer",
+          "documentation":"<p>The number of progress percentage of the export task.</p>"
+        },
+        "numVerticesWritten":{
+          "shape":"Long",
+          "documentation":"<p>The number of exported vertices.</p>"
+        },
+        "numEdgesWritten":{
+          "shape":"Long",
+          "documentation":"<p>The number of exported edges.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the specified export task.</p>"
+    },
+    "ExportTaskId":{
+      "type":"string",
+      "pattern":"t-[a-z0-9]{10}"
+    },
+    "ExportTaskStatus":{
+      "type":"string",
+      "enum":[
+        "INITIALIZING",
+        "EXPORTING",
+        "SUCCEEDED",
+        "FAILED",
+        "CANCELLING",
+        "CANCELLED",
+        "DELETED"
+      ]
+    },
+    "ExportTaskSummary":{
+      "type":"structure",
+      "required":[
+        "graphId",
+        "roleArn",
+        "taskId",
+        "status",
+        "format",
+        "destination",
+        "kmsKeyIdentifier"
+      ],
+      "members":{
+        "graphId":{
+          "shape":"GraphId",
+          "documentation":"<p>The source graph identifier of the export task.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that will allow the data to be exported to the destination.</p>"
+        },
+        "taskId":{
+          "shape":"ExportTaskId",
+          "documentation":"<p>The unique identifier of the export task.</p>"
+        },
+        "status":{
+          "shape":"ExportTaskStatus",
+          "documentation":"<p>The current status of the export task.</p>"
+        },
+        "format":{
+          "shape":"ExportFormat",
+          "documentation":"<p>The format of the export task.</p>"
+        },
+        "destination":{
+          "shape":"ExportTaskSummaryDestinationString",
+          "documentation":"<p>The Amazon S3 URI of the export task where data will be exported to.</p>"
+        },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The KMS key identifier of the export task.</p>"
+        },
+        "parquetType":{
+          "shape":"ParquetType",
+          "documentation":"<p>The parquet type of the export task.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason that the export task has this status value.</p>"
+        }
+      },
+      "documentation":"<p>Provides details about an export task.</p>"
+    },
+    "ExportTaskSummaryDestinationString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "ExportTaskSummaryList":{
+      "type":"list",
+      "member":{"shape":"ExportTaskSummary"}
+    },
     "Format":{
       "type":"string",
       "enum":[
         "CSV",
         "OPEN_CYPHER",
+        "PARQUET",
         "NTRIPLES"
       ]
+    },
+    "GetExportTaskInput":{
+      "type":"structure",
+      "required":["taskIdentifier"],
+      "members":{
+        "taskIdentifier":{
+          "shape":"ExportTaskId",
+          "documentation":"<p>The unique identifier of the export task.</p>",
+          "location":"uri",
+          "locationName":"taskIdentifier"
+        }
+      }
+    },
+    "GetExportTaskOutput":{
+      "type":"structure",
+      "required":[
+        "graphId",
+        "roleArn",
+        "taskId",
+        "status",
+        "format",
+        "destination",
+        "kmsKeyIdentifier"
+      ],
+      "members":{
+        "graphId":{
+          "shape":"GraphId",
+          "documentation":"<p>The source graph identifier of the export task.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that will allow data to be exported to the destination.</p>"
+        },
+        "taskId":{
+          "shape":"ExportTaskId",
+          "documentation":"<p>The unique identifier of the export task.</p>"
+        },
+        "status":{
+          "shape":"ExportTaskStatus",
+          "documentation":"<p>The current status of the export task.</p>"
+        },
+        "format":{
+          "shape":"ExportFormat",
+          "documentation":"<p>The format of the export task.</p>"
+        },
+        "destination":{
+          "shape":"GetExportTaskOutputDestinationString",
+          "documentation":"<p>The Amazon S3 URI of the export task where data will be exported.</p>"
+        },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The KMS key identifier of the export task.</p>"
+        },
+        "parquetType":{
+          "shape":"ParquetType",
+          "documentation":"<p>The parquet type of the export task.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason that the export task has this status value.</p>"
+        },
+        "exportTaskDetails":{
+          "shape":"ExportTaskDetails",
+          "documentation":"<p>The details of the export task.</p>"
+        },
+        "exportFilter":{
+          "shape":"ExportFilter",
+          "documentation":"<p>The export filter of the export task.</p>"
+        }
+      }
+    },
+    "GetExportTaskOutputDestinationString":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "GetGraphInput":{
       "type":"structure",
@@ -1558,6 +1981,10 @@
           "shape":"Format",
           "documentation":"<p>Specifies the format of S3 data to be imported. Valid values are <code>CSV</code>, which identifies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html\">Gremlin CSV format</a> or <code>OPENCYPHER</code>, which identies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html\">openCypher load format</a>.</p>"
         },
+        "parquetType":{
+          "shape":"ParquetType",
+          "documentation":"<p>The parquet type of the import task.</p>"
+        },
         "roleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The ARN of the IAM role that will allow access to the data that is to be imported.</p>"
@@ -1576,7 +2003,7 @@
         },
         "attemptNumber":{
           "shape":"Integer",
-          "documentation":"<p>The number of the current attempt to execute the import task.</p>"
+          "documentation":"<p>The number of the current attempts to execute the import task.</p>"
         },
         "statusReason":{
           "shape":"String",
@@ -1942,7 +2369,8 @@
         "SUCCEEDED",
         "FAILED",
         "CANCELLING",
-        "CANCELLED"
+        "CANCELLED",
+        "DELETED"
       ]
     },
     "ImportTaskSummary":{
@@ -1969,6 +2397,10 @@
         "format":{
           "shape":"Format",
           "documentation":"<p>Specifies the format of S3 data to be imported. Valid values are <code>CSV</code>, which identifies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html\">Gremlin CSV format</a> or <code>OPENCYPHER</code>, which identies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html\">openCypher load format</a>.</p>"
+        },
+        "parquetType":{
+          "shape":"ParquetType",
+          "documentation":"<p>The parquet type of the import task.</p>"
         },
         "roleArn":{
           "shape":"RoleArn",
@@ -2009,6 +2441,37 @@
       "max":1024,
       "min":1,
       "pattern":"arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}"
+    },
+    "ListExportTasksInput":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Pagination token used to paginate input.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of export tasks to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListExportTasksOutput":{
+      "type":"structure",
+      "required":["tasks"],
+      "members":{
+        "tasks":{
+          "shape":"ExportTaskSummaryList",
+          "documentation":"<p>The requested list of export tasks.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Pagination token used to paginate output.</p>"
+        }
+      }
     },
     "ListGraphSnapshotsInput":{
       "type":"structure",
@@ -2225,6 +2688,13 @@
       "max":100,
       "min":1
     },
+    "MultiValueHandlingType":{
+      "type":"string",
+      "enum":[
+        "TO_LIST",
+        "PICK_FIRST"
+      ]
+    },
     "NeptuneImportOptions":{
       "type":"structure",
       "required":[
@@ -2299,6 +2769,10 @@
       "type":"string",
       "max":8192,
       "min":1
+    },
+    "ParquetType":{
+      "type":"string",
+      "enum":["COLUMNAR"]
     },
     "PlanCacheType":{
       "type":"string",
@@ -2689,6 +3163,114 @@
         "FAILED"
       ]
     },
+    "StartExportTaskInput":{
+      "type":"structure",
+      "required":[
+        "graphIdentifier",
+        "roleArn",
+        "format",
+        "destination",
+        "kmsKeyIdentifier"
+      ],
+      "members":{
+        "graphIdentifier":{
+          "shape":"GraphIdentifier",
+          "documentation":"<p>The source graph identifier of the export task.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that will allow data to be exported to the destination.</p>"
+        },
+        "format":{
+          "shape":"ExportFormat",
+          "documentation":"<p>The format of the export task.</p>"
+        },
+        "destination":{
+          "shape":"StartExportTaskInputDestinationString",
+          "documentation":"<p>The Amazon S3 URI where data will be exported to.</p>"
+        },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The KMS key identifier of the export task.</p>"
+        },
+        "parquetType":{
+          "shape":"ParquetType",
+          "documentation":"<p>The parquet type of the export task.</p>"
+        },
+        "exportFilter":{
+          "shape":"ExportFilter",
+          "documentation":"<p>The export filter of the export task.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags to be applied to the export task.</p>"
+        }
+      }
+    },
+    "StartExportTaskInputDestinationString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "StartExportTaskOutput":{
+      "type":"structure",
+      "required":[
+        "graphId",
+        "roleArn",
+        "taskId",
+        "status",
+        "format",
+        "destination",
+        "kmsKeyIdentifier"
+      ],
+      "members":{
+        "graphId":{
+          "shape":"GraphId",
+          "documentation":"<p>The source graph identifier of the export task.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that will allow data to be exported to the destination.</p>"
+        },
+        "taskId":{
+          "shape":"ExportTaskId",
+          "documentation":"<p>The unique identifier of the export task.</p>"
+        },
+        "status":{
+          "shape":"ExportTaskStatus",
+          "documentation":"<p>The current status of the export task.</p>"
+        },
+        "format":{
+          "shape":"ExportFormat",
+          "documentation":"<p>The format of the export task.</p>"
+        },
+        "destination":{
+          "shape":"StartExportTaskOutputDestinationString",
+          "documentation":"<p>The Amazon S3 URI of the export task where data will be exported to.</p>"
+        },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The KMS key identifier of the export task.</p>"
+        },
+        "parquetType":{
+          "shape":"ParquetType",
+          "documentation":"<p>The parquet type of the export task.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason that the export task has this status value.</p>"
+        },
+        "exportFilter":{
+          "shape":"ExportFilter",
+          "documentation":"<p>The export filter of the export task.</p>"
+        }
+      }
+    },
+    "StartExportTaskOutputDestinationString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "StartImportTaskInput":{
       "type":"structure",
       "required":[
@@ -2709,6 +3291,10 @@
         "format":{
           "shape":"Format",
           "documentation":"<p>Specifies the format of Amazon S3 data to be imported. Valid values are CSV, which identifies the Gremlin CSV format or OPENCYPHER, which identies the openCypher load format.</p>"
+        },
+        "parquetType":{
+          "shape":"ParquetType",
+          "documentation":"<p>The parquet type of the import task.</p>"
         },
         "blankNodeHandling":{
           "shape":"BlankNodeHandling",
@@ -2750,6 +3336,10 @@
         "format":{
           "shape":"Format",
           "documentation":"<p>Specifies the format of Amazon S3 data to be imported. Valid values are CSV, which identifies the Gremlin CSV format or OPENCYPHER, which identies the openCypher load format.</p>"
+        },
+        "parquetType":{
+          "shape":"ParquetType",
+          "documentation":"<p>The parquet type of the import task.</p>"
         },
         "roleArn":{
           "shape":"RoleArn",

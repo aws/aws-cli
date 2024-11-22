@@ -524,6 +524,28 @@
       "endpoint":{"hostPrefix":"workflows-"},
       "idempotent":true
     },
+    "DeleteS3AccessPolicy":{
+      "name":"DeleteS3AccessPolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/s3accesspolicy/{s3AccessPointArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteS3AccessPolicyRequest"},
+      "output":{"shape":"DeleteS3AccessPolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"NotSupportedOperationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Deletes an access policy for the specified store.</p>",
+      "endpoint":{"hostPrefix":"control-storage-"},
+      "idempotent":true
+    },
     "DeleteSequenceStore":{
       "name":"DeleteSequenceStore",
       "http":{
@@ -938,6 +960,28 @@
       ],
       "documentation":"<p>Gets information about a workflow run task.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
+    },
+    "GetS3AccessPolicy":{
+      "name":"GetS3AccessPolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/s3accesspolicy/{s3AccessPointArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetS3AccessPolicyRequest"},
+      "output":{"shape":"GetS3AccessPolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"NotSupportedOperationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Retrieves details about an access policy on a given store.</p>",
+      "endpoint":{"hostPrefix":"control-storage-"}
     },
     "GetSequenceStore":{
       "name":"GetSequenceStore",
@@ -1490,6 +1534,27 @@
       "documentation":"<p>Retrieves a list of workflows.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
+    "PutS3AccessPolicy":{
+      "name":"PutS3AccessPolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/s3accesspolicy/{s3AccessPointArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"PutS3AccessPolicyRequest"},
+      "output":{"shape":"PutS3AccessPolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"NotSupportedOperationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Adds an access policy to the specified store.</p>",
+      "endpoint":{"hostPrefix":"control-storage-"}
+    },
     "StartAnnotationImportJob":{
       "name":"StartAnnotationImportJob",
       "http":{
@@ -1761,6 +1826,27 @@
       "documentation":"<p>Updates a run group.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
+    "UpdateSequenceStore":{
+      "name":"UpdateSequenceStore",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/sequencestore/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSequenceStoreRequest"},
+      "output":{"shape":"UpdateSequenceStoreResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RequestTimeoutException"}
+      ],
+      "documentation":"<p>Update one or more parameters for the sequence store.</p>",
+      "endpoint":{"hostPrefix":"control-storage-"}
+    },
     "UpdateVariantStore":{
       "name":"UpdateVariantStore",
       "http":{
@@ -1892,6 +1978,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "AccessLogLocation":{
+      "type":"string",
+      "pattern":"$|^s3://([a-z0-9][a-z0-9-.]{1,61}[a-z0-9])/?((.{1,800})/)?"
     },
     "ActivateReadSetFilter":{
       "type":"structure",
@@ -2936,7 +3026,8 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>To ensure that requests don't run multiple times, specify a unique token for each request.</p>"
+          "documentation":"<p>To ensure that requests don't run multiple times, specify a unique token for each request.</p>",
+          "idempotencyToken":true
         },
         "fallbackLocation":{
           "shape":"S3Destination",
@@ -2945,6 +3036,14 @@
         "eTagAlgorithmFamily":{
           "shape":"ETagAlgorithmFamily",
           "documentation":"<p>The ETag algorithm family to use for ingested read sets.</p>"
+        },
+        "propagatedSetLevelTags":{
+          "shape":"PropagatedSetLevelTags",
+          "documentation":"<p>The tags keys to propagate to the S3 objects associated with read sets in the sequence store.</p>"
+        },
+        "s3AccessConfig":{
+          "shape":"S3AccessConfig",
+          "documentation":"<p>S3 access configuration parameters</p>"
         }
       }
     },
@@ -2987,7 +3086,20 @@
         "eTagAlgorithmFamily":{
           "shape":"ETagAlgorithmFamily",
           "documentation":"<p>The algorithm family of the ETag.</p>"
-        }
+        },
+        "status":{
+          "shape":"SequenceStoreStatus",
+          "documentation":"<p>The status of the sequence store.</p>"
+        },
+        "statusMessage":{
+          "shape":"SequenceStoreStatusMessage",
+          "documentation":"<p>The status message of the sequence store.</p>"
+        },
+        "propagatedSetLevelTags":{
+          "shape":"PropagatedSetLevelTags",
+          "documentation":"<p>The tags keys to propagate to the S3 objects associated with read sets in the sequence store.</p>"
+        },
+        "s3Access":{"shape":"SequenceStoreS3Access"}
       }
     },
     "CreateShareRequest":{
@@ -3319,6 +3431,23 @@
           "location":"uri",
           "locationName":"id"
         }
+      }
+    },
+    "DeleteS3AccessPolicyRequest":{
+      "type":"structure",
+      "required":["s3AccessPointArn"],
+      "members":{
+        "s3AccessPointArn":{
+          "shape":"S3AccessPointArn",
+          "documentation":"<p>The S3 access point ARN that has the access policy.</p>",
+          "location":"uri",
+          "locationName":"s3AccessPointArn"
+        }
+      }
+    },
+    "DeleteS3AccessPolicyResponse":{
+      "type":"structure",
+      "members":{
       }
     },
     "DeleteSequenceStoreRequest":{
@@ -4941,6 +5070,45 @@
       "box":true,
       "min":1
     },
+    "GetS3AccessPolicyRequest":{
+      "type":"structure",
+      "required":["s3AccessPointArn"],
+      "members":{
+        "s3AccessPointArn":{
+          "shape":"S3AccessPointArn",
+          "documentation":"<p>The S3 access point ARN that has the access policy.</p>",
+          "location":"uri",
+          "locationName":"s3AccessPointArn"
+        }
+      }
+    },
+    "GetS3AccessPolicyResponse":{
+      "type":"structure",
+      "required":["s3AccessPolicy"],
+      "members":{
+        "s3AccessPointArn":{
+          "shape":"S3AccessPointArn",
+          "documentation":"<p>The S3 access point ARN that has the access policy.</p>"
+        },
+        "storeId":{
+          "shape":"StoreId",
+          "documentation":"<p>The AWS-generated Sequence Store or Reference Store ID.</p>"
+        },
+        "storeType":{
+          "shape":"StoreType",
+          "documentation":"<p>The type of store associated with the access point.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time when the policy was last updated.</p>"
+        },
+        "s3AccessPolicy":{
+          "shape":"S3AccessPolicy",
+          "documentation":"<p>The current resource policy that controls S3 access on the store.</p>",
+          "jsonvalue":true
+        }
+      }
+    },
     "GetSequenceStoreRequest":{
       "type":"structure",
       "required":["id"],
@@ -4996,6 +5164,22 @@
         "eTagAlgorithmFamily":{
           "shape":"ETagAlgorithmFamily",
           "documentation":"<p>The algorithm family of the ETag.</p>"
+        },
+        "status":{
+          "shape":"SequenceStoreStatus",
+          "documentation":"<p>The status of the sequence store.</p>"
+        },
+        "statusMessage":{
+          "shape":"SequenceStoreStatusMessage",
+          "documentation":"<p>The status message of the sequence store.</p>"
+        },
+        "propagatedSetLevelTags":{
+          "shape":"PropagatedSetLevelTags",
+          "documentation":"<p>The tags keys to propagate to the S3 objects associated with read sets in the sequence store.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The last-updated time of the sequence store.</p>"
         }
       }
     },
@@ -6745,6 +6929,49 @@
       "pattern":"[0-9]+"
     },
     "PrimitiveBoolean":{"type":"boolean"},
+    "PropagatedSetLevelTags":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":50,
+      "min":0
+    },
+    "PutS3AccessPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "s3AccessPointArn",
+        "s3AccessPolicy"
+      ],
+      "members":{
+        "s3AccessPointArn":{
+          "shape":"S3AccessPointArn",
+          "documentation":"<p>The S3 access point ARN where you want to put the access policy.</p>",
+          "location":"uri",
+          "locationName":"s3AccessPointArn"
+        },
+        "s3AccessPolicy":{
+          "shape":"S3AccessPolicy",
+          "documentation":"<p>The resource policy that controls S3 access to the store.</p>",
+          "jsonvalue":true
+        }
+      }
+    },
+    "PutS3AccessPolicyResponse":{
+      "type":"structure",
+      "members":{
+        "s3AccessPointArn":{
+          "shape":"S3AccessPointArn",
+          "documentation":"<p>The S3 access point ARN that now has the access policy.</p>"
+        },
+        "storeId":{
+          "shape":"StoreId",
+          "documentation":"<p>The AWS-generated Sequence Store or Reference Store ID.</p>"
+        },
+        "storeType":{
+          "shape":"StoreType",
+          "documentation":"<p>The type of store associated with the access point.</p>"
+        }
+      }
+    },
     "Quote":{
       "type":"string",
       "max":1,
@@ -7882,11 +8109,26 @@
       "min":1,
       "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
     },
+    "S3AccessConfig":{
+      "type":"structure",
+      "members":{
+        "accessLogLocation":{
+          "shape":"AccessLogLocation",
+          "documentation":"<p>Location of the access logs.</p>"
+        }
+      },
+      "documentation":"<p>S3 access configuration parameters.</p>"
+    },
     "S3AccessPointArn":{
       "type":"string",
       "max":1024,
       "min":1,
       "pattern":"arn:[^:]*:s3:[^:]*:[^:]*:accesspoint/.*"
+    },
+    "S3AccessPolicy":{
+      "type":"string",
+      "max":100000,
+      "min":1
     },
     "S3Destination":{
       "type":"string",
@@ -8007,6 +8249,18 @@
         "eTagAlgorithmFamily":{
           "shape":"ETagAlgorithmFamily",
           "documentation":"<p>The algorithm family of the ETag.</p>"
+        },
+        "status":{
+          "shape":"SequenceStoreStatus",
+          "documentation":"<p>Status of the sequence store.</p>"
+        },
+        "statusMessage":{
+          "shape":"SequenceStoreStatusMessage",
+          "documentation":"<p>The status message of the sequence store.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The last-updated time of the Sequence Store.</p>"
         }
       },
       "documentation":"<p>Details about a sequence store.</p>"
@@ -8029,6 +8283,18 @@
         "createdBefore":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The filter's end date.</p>"
+        },
+        "status":{
+          "shape":"SequenceStoreStatus",
+          "documentation":"<p>Filter results based on status.</p>"
+        },
+        "updatedAfter":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>Filter results based on stores updated after the specified time.</p>"
+        },
+        "updatedBefore":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>Filter results based on stores updated before the specified time.</p>"
         }
       },
       "documentation":"<p>A filter for a sequence store.</p>"
@@ -8055,9 +8321,29 @@
         "s3AccessPointArn":{
           "shape":"S3AccessPointArn",
           "documentation":"<p>This is ARN of the access point associated with the S3 bucket storing read sets.</p>"
+        },
+        "accessLogLocation":{
+          "shape":"AccessLogLocation",
+          "documentation":"<p>Location of the access logs.</p>"
         }
       },
       "documentation":"<p>The S3 access metadata of the sequence store.</p>"
+    },
+    "SequenceStoreStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "FAILED"
+      ]
+    },
+    "SequenceStoreStatusMessage":{
+      "type":"string",
+      "max":127,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -8766,6 +9052,12 @@
         "VCF"
       ]
     },
+    "StoreId":{
+      "type":"string",
+      "max":36,
+      "min":10,
+      "pattern":"[0-9]+"
+    },
     "StoreName":{
       "type":"string",
       "max":255,
@@ -8791,6 +9083,13 @@
         "DELETING",
         "ACTIVE",
         "FAILED"
+      ]
+    },
+    "StoreType":{
+      "type":"string",
+      "enum":[
+        "SEQUENCE_STORE",
+        "REFERENCE_STORE"
       ]
     },
     "String":{"type":"string"},
@@ -9309,6 +9608,99 @@
       "box":true,
       "max":100000,
       "min":1
+    },
+    "UpdateSequenceStoreRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"SequenceStoreId",
+          "documentation":"<p>The ID of the sequence store.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "name":{
+          "shape":"SequenceStoreName",
+          "documentation":"<p>A name for the sequence store.</p>"
+        },
+        "description":{
+          "shape":"SequenceStoreDescription",
+          "documentation":"<p>A description for the sequence store.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>To ensure that requests don't run multiple times, specify a unique token for each request.</p>",
+          "idempotencyToken":true
+        },
+        "fallbackLocation":{
+          "shape":"S3Destination",
+          "documentation":"<p>The S3 URI of a bucket and folder to store Read Sets that fail to upload.</p>"
+        },
+        "propagatedSetLevelTags":{
+          "shape":"PropagatedSetLevelTags",
+          "documentation":"<p>The tags keys to propagate to the S3 objects associated with read sets in the sequence store.</p>"
+        },
+        "s3AccessConfig":{
+          "shape":"S3AccessConfig",
+          "documentation":"<p>S3 access configuration parameters.</p>"
+        }
+      }
+    },
+    "UpdateSequenceStoreResponse":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "creationTime"
+      ],
+      "members":{
+        "id":{
+          "shape":"SequenceStoreId",
+          "documentation":"<p>The ID of the sequence store.</p>"
+        },
+        "arn":{
+          "shape":"SequenceStoreArn",
+          "documentation":"<p>The ARN of the sequence store.</p>"
+        },
+        "name":{
+          "shape":"SequenceStoreName",
+          "documentation":"<p>The name of the sequence store.</p>"
+        },
+        "description":{
+          "shape":"SequenceStoreDescription",
+          "documentation":"<p>Description of the sequence store.</p>"
+        },
+        "sseConfig":{"shape":"SseConfig"},
+        "creationTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time when the store was created.</p>"
+        },
+        "updateTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The last-updated time of the Sequence Store.</p>"
+        },
+        "propagatedSetLevelTags":{
+          "shape":"PropagatedSetLevelTags",
+          "documentation":"<p>The tags keys to propagate to the S3 objects associated with read sets in the sequence store.</p>"
+        },
+        "status":{
+          "shape":"SequenceStoreStatus",
+          "documentation":"<p>The status of the sequence store.</p>"
+        },
+        "statusMessage":{
+          "shape":"SequenceStoreStatusMessage",
+          "documentation":"<p>The status message of the sequence store.</p>"
+        },
+        "fallbackLocation":{
+          "shape":"S3Destination",
+          "documentation":"<p>The S3 URI of a bucket and folder to store Read Sets that fail to upload.</p>"
+        },
+        "s3Access":{"shape":"SequenceStoreS3Access"},
+        "eTagAlgorithmFamily":{
+          "shape":"ETagAlgorithmFamily",
+          "documentation":"<p>The ETag algorithm family to use on ingested read sets.</p>"
+        }
+      }
     },
     "UpdateTime":{
       "type":"timestamp",

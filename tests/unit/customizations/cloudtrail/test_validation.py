@@ -19,11 +19,7 @@ from datetime import datetime, timedelta
 from dateutil import parser, tz
 from argparse import Namespace
 
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
-from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
+from awscrt.crypto import RSA, RSASignatureAlgorithm
 
 from awscli.testutils import mock, BaseAWSCommandParamsTest
 from awscli.customizations.cloudtrail.validation import DigestError, \
@@ -350,6 +346,50 @@ class TestValidation(unittest.TestCase):
 
 
 class TestSha256RSADigestValidator(unittest.TestCase):
+    private_key_bytes = (
+        b"-----BEGIN RSA PRIVATE KEY-----\n"
+        b"MIIEowIBAAKCAQEAsVYkrQG55kbh2HTOhdAYK8S/y3SPWiC0c3wqBxcOFXxP7lAc\n"
+        b"a7i6JhMbEa/PepPew+b6tDGQeOHapuaz47Ic2cDHclxjS+lO1zlfGTzr97K9Yggb\n"
+        b"qLOsPiqrBBioFKs9vOOXaoL5hcmtdScvgjXxm1DDid4w4KC9w7NLYBocAN03Ve5E\n"
+        b"AyfahDqI+l4HdoGdjIuDqeI2T2DRiM8/IBPgirkgH6oOsMgIqEZOYYUny4o8c/09\n"
+        b"KoqAIYfbWFLoaj/ISLnegveN75tIjg06DX4/NfUFnqQs4TeGr7YQPa4Y363YGCqG\n"
+        b"inO8Y05SexctpstsAnjaiGXPYee2qqr+SxyyoQIDAQABAoIBABMkOz05bHmAuSwG\n"
+        b"H6yt84315MXvRPHzicbVZivxvyFuk6ojl43BGMa3VTqpgXm3sFnw+qqslu2VY2aU\n"
+        b"jGJNfXO7rUuY0VcGTe5JUQyGWOoZrvt/6IxjKHplXKRKjQn+GeHjpxpmHMzmIgT9\n"
+        b"P9GMRRIAu7qL8zar4w/WsJIk/1TQXeo+5wSBi1amg9eqIFPKPAkHT5jNvLp057Oc\n"
+        b"aL4WhazFCVdm2ot8hS9h2j4YpcIaIwiIiGG0fKpO8W7UIFmr9vYAYJMqyrpSkHDW\n"
+        b"9KNKrWfNsetXDHtqH3WAfw9dg9YnNAvsarkJL1ADtT3Iy39U80ParA3cI3uspV33\n"
+        b"UEkqjKkCgYEAx5nX3OlkbJHhYBf7qPFRn2di5IQLTCTFb+NwiYHUey8hD7lZrujJ\n"
+        b"qJN7YYA64VS4DMjRWDp7TFfKr0reBNcS7Fa/M6BnMpX9ljwK7zXpaWHMgKXLYv9P\n"
+        b"wWCfJJFH43s6i2WaOmkTnTMQyUa2/reNfcTMo+Nd7Gu6q5zUKZpn/KMCgYEA43HM\n"
+        b"YxGjAof1VT7Pzfwn9xQsb1/WkdvNBt2aewvtLvSTI2tNC/SctqYEaCQii47IKDCB\n"
+        b"xgYaaE40UK8XjSnIKKq2CFdVAsqyFFdjAgVr2CCfKBLwrgAQoe4IWjMAQdp1+Gi4\n"
+        b"u68qschE339JDGfhHuwIbQ2umKLv2KgyPBnEo+sCgYBsgzG8stHayHA7Wq6BSThz\n"
+        b"rbQwwayWp8MCsiZjS0bl9VhHASBFm97OG+fOuPTJvdIVeTN+gMS5W10gcVZEUVzD\n"
+        b"SeHGwmR4NtzXSSs0ox2TIg0Yv4nT9zM30TyTl7v6ausID6OKL8fvBW0Rz7T6w3VT\n"
+        b"s6MBUkGkn2irlaYuO/heewKBgHvKtmm9cbGw+jC5jTUZ506tpjnAOfMNZRw1hR0v\n"
+        b"spp595OxlS/KpXksBv3/nOXEguCM9jUnoTvgRM0dX34vnYe00nrbvaNVW3OC1JqH\n"
+        b"BNmPd9DB7klmM6dO/TDKzXsKQmc/6DwO7Pfyfrn+d23PJFJGOZfReJQPKugLM7xO\n"
+        b"ch6dAoGBAJQe65Bvb271syTg9NDEqwMXeHM9j/q3g4ZVX0anwfD3gdDuJlmHyVB1\n"
+        b"d5tmx0P8ReLYPS79A1/tgrZ8wesL4d1o2wyOk6kGr5qpJvXRqk6gdIr2+OZbgpjv\n"
+        b"YE9cpgRbz4SuadWd4cqB790g/I720b46OO0BhImG+vbTFZaEo349\n"
+        b"-----END RSA PRIVATE KEY-----\n"
+    )
+
+    public_key_der_bytes = (
+        b"0\x82\x01\n\x02\x82\x01\x01\x00\xb1V$\xad\x01\xb9\xe6F\xe1\xd8t\xce"
+        b"\x85\xd0\x18+\xc4\xbf\xcbt\x8fZ \xb4s|*\x07\x17\x0e\x15|O\xeeP\x1ck"
+        b"\xb8\xba&\x13\x1b\x11\xaf\xcfz\x93\xde\xc3\xe6\xfa\xb41\x90x\xe1\xda"
+        b"\xa6\xe6\xb3\xe3\xb2\x1c\xd9\xc0\xc7r\\cK\xe9N\xd79_\x19<\xeb\xf7\xb2"
+        b"\xbdb\x08\x1b\xa8\xb3\xac>*\xab\x04\x18\xa8\x14\xab=\xbc\xe3\x97j\x82"
+        b"\xf9\x85\xc9\xadu'/\x825\xf1\x9bP\xc3\x89\xde0\xe0\xa0\xbd\xc3\xb3K`"
+        b"\x1a\x1c\x00\xdd7U\xeeD\x03'\xda\x84:\x88\xfa^\x07v\x81\x9d\x8c\x8b\x83"
+        b"\xa9\xe26O`\xd1\x88\xcf? \x13\xe0\x8a\xb9 \x1f\xaa\x0e\xb0\xc8\x08\xa8FNa"
+        b"\x85'\xcb\x8a<s\xfd=*\x8a\x80!\x87\xdbXR\xe8j?\xc8H\xb9\xde\x82\xf7\x8d"
+        b"\xef\x9bH\x8e\r:\r~?5\xf5\x05\x9e\xa4,\xe17\x86\xaf\xb6\x10=\xae\x18\xdf"
+        b"\xad\xd8\x18*\x86\x8as\xbccNR{\x17-\xa6\xcbl\x02x\xda\x88e\xcfa\xe7\xb6"
+        b"\xaa\xaa\xfeK\x1c\xb2\xa1\x02\x03\x01\x00\x01"
+    )
     def setUp(self):
         self._digest_data = {'digestStartTime': 'baz',
                              'digestEndTime': 'foo',
@@ -362,7 +402,8 @@ class TestSha256RSADigestValidator(unittest.TestCase):
         self._digest_data['_signature'] = 'aeff'
 
     def test_validates_digests(self):
-        private_key = rsa.generate_private_key(65537, 2048, default_backend())
+        private_key = RSA.new_private_key_from_pem_data(self.private_key_bytes)
+        
         sha256_hash = hashlib.sha256(self._inflated_digest)
         string_to_sign = "%s\n%s/%s\n%s\n%s" % (
             self._digest_data['digestEndTime'],
@@ -371,12 +412,15 @@ class TestSha256RSADigestValidator(unittest.TestCase):
             sha256_hash.hexdigest(),
             self._digest_data['previousDigestSignature'])
         to_sign = string_to_sign.encode()
-        signature = private_key.sign(to_sign, PKCS1v15(), hashes.SHA256())
+        
+        signature = private_key.sign(
+            signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
+            digest=hashlib.sha256(to_sign).digest()
+        )
+
         self._digest_data['_signature'] = binascii.hexlify(signature)
         validator = Sha256RSADigestValidator()
-        public_key = private_key.public_key()
-        pub_bytes = public_key.public_bytes(Encoding.DER, PublicFormat.PKCS1)
-        public_key_b64 = base64.b64encode(pub_bytes)
+        public_key_b64 = base64.b64encode(self.public_key_der_bytes)
         validator.validate('b', 'k', public_key_b64, self._digest_data,
                            self._inflated_digest)
 

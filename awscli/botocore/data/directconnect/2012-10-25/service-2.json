@@ -1202,6 +1202,24 @@
         }
       }
     },
+    "AssociatedCoreNetwork":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"CoreNetworkIdentifier",
+          "documentation":"<p>The ID of the Cloud WAN core network.</p>"
+        },
+        "ownerAccount":{
+          "shape":"OwnerAccount",
+          "documentation":"<p>The account owner of the Cloud WAN core network.</p>"
+        },
+        "attachmentId":{
+          "shape":"CoreNetworkAttachmentId",
+          "documentation":"<p>the ID of the Direct Connect attachment</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Cloud WAN core network that the Direct Connect attachment is associated with.</p>"
+    },
     "AssociatedGateway":{
       "type":"structure",
       "members":{
@@ -1549,6 +1567,18 @@
           "documentation":"<p>The connections.</p>"
         }
       }
+    },
+    "CoreNetworkAttachmentId":{
+      "type":"string",
+      "max":28,
+      "min":12,
+      "pattern":"^attachment-([0-9a-f]{1,17})$"
+    },
+    "CoreNetworkIdentifier":{
+      "type":"string",
+      "max":30,
+      "min":14,
+      "pattern":"^core-network-([0-9a-f]{1,17})$"
     },
     "Count":{"type":"integer"},
     "CreateBGPPeerRequest":{
@@ -2424,6 +2454,10 @@
         "allowedPrefixesToDirectConnectGateway":{
           "shape":"RouteFilterPrefixList",
           "documentation":"<p>The Amazon VPC prefixes to advertise to the Direct Connect gateway.</p>"
+        },
+        "associatedCoreNetwork":{
+          "shape":"AssociatedCoreNetwork",
+          "documentation":"<p>The ID of the Cloud WAN core network associated with the Direct Connect attachment.</p>"
         },
         "virtualGatewayId":{
           "shape":"VirtualGatewayId",

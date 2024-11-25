@@ -201,6 +201,24 @@
       ],
       "documentation":"<p>Creates a new device in a global network. If you specify both a site ID and a location, the location of the site is used for visualization in the Network Manager console.</p>"
     },
+    "CreateDirectConnectGatewayAttachment":{
+      "name":"CreateDirectConnectGatewayAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/direct-connect-gateway-attachments"
+      },
+      "input":{"shape":"CreateDirectConnectGatewayAttachmentRequest"},
+      "output":{"shape":"CreateDirectConnectGatewayAttachmentResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates an Amazon Web Services Direct Connect gateway attachment </p>"
+    },
     "CreateGlobalNetwork":{
       "name":"CreateGlobalNetwork",
       "http":{
@@ -823,6 +841,23 @@
       ],
       "documentation":"<p>Gets information about one or more of your devices in a global network.</p>"
     },
+    "GetDirectConnectGatewayAttachment":{
+      "name":"GetDirectConnectGatewayAttachment",
+      "http":{
+        "method":"GET",
+        "requestUri":"/direct-connect-gateway-attachments/{attachmentId}"
+      },
+      "input":{"shape":"GetDirectConnectGatewayAttachmentRequest"},
+      "output":{"shape":"GetDirectConnectGatewayAttachmentResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns information about a specific Amazon Web Services Direct Connect gateway attachment.</p>"
+    },
     "GetLinkAssociations":{
       "name":"GetLinkAssociations",
       "http":{
@@ -1420,6 +1455,24 @@
       ],
       "documentation":"<p>Updates the details for an existing device. To remove information for any of the parameters, specify an empty string.</p>"
     },
+    "UpdateDirectConnectGatewayAttachment":{
+      "name":"UpdateDirectConnectGatewayAttachment",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/direct-connect-gateway-attachments/{attachmentId}"
+      },
+      "input":{"shape":"UpdateDirectConnectGatewayAttachmentRequest"},
+      "output":{"shape":"UpdateDirectConnectGatewayAttachmentResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the edge locations associated with an Amazon Web Services Direct Connect gateway attachment. </p>"
+    },
     "UpdateGlobalNetwork":{
       "name":"UpdateGlobalNetwork",
       "http":{
@@ -1765,7 +1818,11 @@
         },
         "EdgeLocation":{
           "shape":"ExternalRegionCode",
-          "documentation":"<p>The Region where the edge is located.</p>"
+          "documentation":"<p>The Region where the edge is located. This is returned for all attachment types except a Direct Connect gateway attachment, which instead returns <code>EdgeLocations</code>.</p>"
+        },
+        "EdgeLocations":{
+          "shape":"ExternalRegionCodeList",
+          "documentation":"<p>The edge locations that the Direct Connect gateway is associated with. This is returned only for Direct Connect gateway attachments. All other attachment types retrun <code>EdgeLocation</code>.</p>"
         },
         "ResourceArn":{
           "shape":"ResourceArn",
@@ -1842,7 +1899,10 @@
         "SUBNET_UNSUPPORTED_AVAILABILITY_ZONE",
         "SUBNET_NO_IPV6_CIDRS",
         "VPN_CONNECTION_NOT_FOUND",
-        "MAXIMUM_NO_ENCAP_LIMIT_EXCEEDED"
+        "MAXIMUM_NO_ENCAP_LIMIT_EXCEEDED",
+        "DIRECT_CONNECT_GATEWAY_NOT_FOUND",
+        "DIRECT_CONNECT_GATEWAY_EXISTING_ATTACHMENTS",
+        "DIRECT_CONNECT_GATEWAY_NO_PRIVATE_VIF"
       ]
     },
     "AttachmentErrorList":{
@@ -1881,6 +1941,7 @@
         "CONNECT",
         "SITE_TO_SITE_VPN",
         "VPC",
+        "DIRECT_CONNECT_GATEWAY",
         "TRANSIT_GATEWAY_ROUTE_TABLE"
       ]
     },
@@ -3073,6 +3134,46 @@
         }
       }
     },
+    "CreateDirectConnectGatewayAttachmentRequest":{
+      "type":"structure",
+      "required":[
+        "CoreNetworkId",
+        "DirectConnectGatewayArn",
+        "EdgeLocations"
+      ],
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of the Cloud WAN core network that the Direct Connect gateway attachment should be attached to.</p>"
+        },
+        "DirectConnectGatewayArn":{
+          "shape":"DirectConnectGatewayArn",
+          "documentation":"<p>The ARN of the Direct Connect gateway attachment.</p>"
+        },
+        "EdgeLocations":{
+          "shape":"ExternalRegionCodeList",
+          "documentation":"<p>One or more core network edge locations that the Direct Connect gateway attachment is associated with. </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key value tags to apply to the Direct Connect gateway attachment during creation.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>client token</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateDirectConnectGatewayAttachmentResponse":{
+      "type":"structure",
+      "members":{
+        "DirectConnectGatewayAttachment":{
+          "shape":"DirectConnectGatewayAttachment",
+          "documentation":"<p>Describes the details of a <code>CreateDirectConnectGatewayAttachment</code> request.</p>"
+        }
+      }
+    },
     "CreateGlobalNetworkRequest":{
       "type":"structure",
       "members":{
@@ -3805,6 +3906,23 @@
         "UPDATING"
       ]
     },
+    "DirectConnectGatewayArn":{
+      "type":"string",
+      "max":500,
+      "min":0,
+      "pattern":"^arn:[^:]{1,63}:directconnect::[^:]{0,63}:dx-gateway\\/[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$"
+    },
+    "DirectConnectGatewayAttachment":{
+      "type":"structure",
+      "members":{
+        "Attachment":{"shape":"Attachment"},
+        "DirectConnectGatewayArn":{
+          "shape":"DirectConnectGatewayArn",
+          "documentation":"<p>The Direct Connect gateway attachment ARN.</p>"
+        }
+      },
+      "documentation":"<p>Describes a Direct Connect gateway attachment.</p>"
+    },
     "DisassociateConnectPeerRequest":{
       "type":"structure",
       "required":[
@@ -4385,6 +4503,27 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "GetDirectConnectGatewayAttachmentRequest":{
+      "type":"structure",
+      "required":["AttachmentId"],
+      "members":{
+        "AttachmentId":{
+          "shape":"AttachmentId",
+          "documentation":"<p>The ID of the Direct Connect gateway attachment that you want to see details about.</p>",
+          "location":"uri",
+          "locationName":"attachmentId"
+        }
+      }
+    },
+    "GetDirectConnectGatewayAttachmentResponse":{
+      "type":"structure",
+      "members":{
+        "DirectConnectGatewayAttachment":{
+          "shape":"DirectConnectGatewayAttachment",
+          "documentation":"<p>Shows details about the Direct Connect gateway attachment. </p>"
         }
       }
     },
@@ -7107,6 +7246,31 @@
         "Device":{
           "shape":"Device",
           "documentation":"<p>Information about the device.</p>"
+        }
+      }
+    },
+    "UpdateDirectConnectGatewayAttachmentRequest":{
+      "type":"structure",
+      "required":["AttachmentId"],
+      "members":{
+        "AttachmentId":{
+          "shape":"AttachmentId",
+          "documentation":"<p>The ID of the Direct Connect gateway attachment for the updated edge locations. </p>",
+          "location":"uri",
+          "locationName":"attachmentId"
+        },
+        "EdgeLocations":{
+          "shape":"ExternalRegionCodeList",
+          "documentation":"<p>One or more edge locations to update for the Direct Connect gateway attachment. The updated array of edge locations overwrites the previous array of locations. <code>EdgeLocations</code> is only used for Direct Connect gateway attachments. Do</p>"
+        }
+      }
+    },
+    "UpdateDirectConnectGatewayAttachmentResponse":{
+      "type":"structure",
+      "members":{
+        "DirectConnectGatewayAttachment":{
+          "shape":"DirectConnectGatewayAttachment",
+          "documentation":"<p>Returns details of the Direct Connect gateway attachment with the updated edge locations.</p>"
         }
       }
     },

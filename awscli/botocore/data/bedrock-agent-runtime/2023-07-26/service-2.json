@@ -681,6 +681,32 @@
       "type":"string",
       "enum":["RETURN_CONTROL"]
     },
+    "CustomOrchestrationTrace":{
+      "type":"structure",
+      "members":{
+        "event":{
+          "shape":"CustomOrchestrationTraceEvent",
+          "documentation":"<p> The trace event details used with the custom orchestration. </p>"
+        },
+        "traceId":{
+          "shape":"TraceId",
+          "documentation":"<p> The unique identifier of the trace. </p>"
+        }
+      },
+      "documentation":"<p> The trace behavior for the custom orchestration. </p>",
+      "sensitive":true
+    },
+    "CustomOrchestrationTraceEvent":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p> The text that prompted the event at this step. </p>"
+        }
+      },
+      "documentation":"<p> The event in the custom orchestration sequence. </p>",
+      "sensitive":true
+    },
     "DateTimestamp":{
       "type":"timestamp",
       "documentation":"<p>Time Stamp.</p>",
@@ -2279,6 +2305,10 @@
         "sessionState":{
           "shape":"SessionState",
           "documentation":"<p>Contains parameters that specify various attributes of the session. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html\">Control session context</a>.</p> <note> <p>If you include <code>returnControlInvocationResults</code> in the <code>sessionState</code> field, the <code>inputText</code> field will be ignored.</p> </note>"
+        },
+        "streamingConfigurations":{
+          "shape":"StreamingConfigurations",
+          "documentation":"<p> Specifies the configurations for streaming. </p>"
         }
       }
     },
@@ -4064,6 +4094,25 @@
       "max":4,
       "min":0
     },
+    "StreamingConfigurations":{
+      "type":"structure",
+      "members":{
+        "applyGuardrailInterval":{
+          "shape":"StreamingConfigurationsApplyGuardrailIntervalInteger",
+          "documentation":"<p> The guardrail interval to apply as response is generated. </p>"
+        },
+        "streamFinalResponse":{
+          "shape":"Boolean",
+          "documentation":"<p> Specifies whether to enable streaming for the final response. This is set to <code>false</code> by default. </p>"
+        }
+      },
+      "documentation":"<p> Configurations for streaming. </p>"
+    },
+    "StreamingConfigurationsApplyGuardrailIntervalInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "String":{"type":"string"},
     "SummaryText":{
       "type":"string",
@@ -4163,6 +4212,10 @@
     "Trace":{
       "type":"structure",
       "members":{
+        "customOrchestrationTrace":{
+          "shape":"CustomOrchestrationTrace",
+          "documentation":"<p> Details about the custom orchestration step in which the agent determines the order in which actions are executed. </p>"
+        },
         "failureTrace":{
           "shape":"FailureTrace",
           "documentation":"<p>Contains information about the failure of the interaction.</p>"

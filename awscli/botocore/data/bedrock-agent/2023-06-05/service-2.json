@@ -1371,6 +1371,10 @@
           "shape":"DateTimestamp",
           "documentation":"<p>The time at which the agent was created.</p>"
         },
+        "customOrchestration":{
+          "shape":"CustomOrchestration",
+          "documentation":"<p> Contains custom orchestration configurations for the agent. </p>"
+        },
         "customerEncryptionKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key that encrypts the agent.</p>"
@@ -1402,6 +1406,10 @@
         "memoryConfiguration":{
           "shape":"MemoryConfiguration",
           "documentation":"<p>Contains memory configuration for the agent.</p>"
+        },
+        "orchestrationType":{
+          "shape":"OrchestrationType",
+          "documentation":"<p> Specifies the orchestration strategy for the agent. </p>"
         },
         "preparedAt":{
           "shape":"DateTimestamp",
@@ -2401,6 +2409,10 @@
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
           "idempotencyToken":true
         },
+        "customOrchestration":{
+          "shape":"CustomOrchestration",
+          "documentation":"<p> Contains details of the custom orchestration configured for the agent. </p>"
+        },
         "customerEncryptionKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key with which to encrypt the agent.</p>"
@@ -2428,6 +2440,10 @@
         "memoryConfiguration":{
           "shape":"MemoryConfiguration",
           "documentation":"<p> Contains the details of the memory configured for the agent.</p>"
+        },
+        "orchestrationType":{
+          "shape":"OrchestrationType",
+          "documentation":"<p> Specifies the type of orchestration strategy for the agent. This is set to <code>DEFAULT</code> orchestration type, by default. </p>"
         },
         "promptOverrideConfiguration":{
           "shape":"PromptOverrideConfiguration",
@@ -2985,6 +3001,16 @@
     "CustomControlMethod":{
       "type":"string",
       "enum":["RETURN_CONTROL"]
+    },
+    "CustomOrchestration":{
+      "type":"structure",
+      "members":{
+        "executor":{
+          "shape":"OrchestrationExecutor",
+          "documentation":"<p> The structure of the executor invoking the actions in custom orchestration. </p>"
+        }
+      },
+      "documentation":"<p> Details of custom orchestration. </p>"
     },
     "CustomTransformationConfiguration":{
       "type":"structure",
@@ -6533,6 +6559,24 @@
       "min":0,
       "pattern":"^.*$"
     },
+    "OrchestrationExecutor":{
+      "type":"structure",
+      "members":{
+        "lambda":{
+          "shape":"LambdaArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action. </p>"
+        }
+      },
+      "documentation":"<p> Contains details about the Lambda function containing the orchestration logic carried out upon invoking the custom orchestration. </p>",
+      "union":true
+    },
+    "OrchestrationType":{
+      "type":"string",
+      "enum":[
+        "DEFAULT",
+        "CUSTOM_ORCHESTRATION"
+      ]
+    },
     "OutputFlowNodeConfiguration":{
       "type":"structure",
       "members":{
@@ -8443,6 +8487,10 @@
           "shape":"AgentRoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role with permissions to invoke API operations on the agent.</p>"
         },
+        "customOrchestration":{
+          "shape":"CustomOrchestration",
+          "documentation":"<p> Contains details of the custom orchestration configured for the agent. </p>"
+        },
         "customerEncryptionKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key with which to encrypt the agent.</p>"
@@ -8470,6 +8518,10 @@
         "memoryConfiguration":{
           "shape":"MemoryConfiguration",
           "documentation":"<p>Specifies the new memory configuration for the agent. </p>"
+        },
+        "orchestrationType":{
+          "shape":"OrchestrationType",
+          "documentation":"<p> Specifies the type of orchestration strategy for the agent. This is set to <code>DEFAULT</code> orchestration type, by default. </p>"
         },
         "promptOverrideConfiguration":{
           "shape":"PromptOverrideConfiguration",

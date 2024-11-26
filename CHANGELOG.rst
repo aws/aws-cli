@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.36.11
+=======
+
+* api-change:``bedrock-agent``: Custom Orchestration API release for AWSBedrockAgents.
+* api-change:``bedrock-agent-runtime``: Custom Orchestration and Streaming configurations API release for AWSBedrockAgents.
+* api-change:``connect``: Enables access to ValueMap and ValueInteger types for SegmentAttributes and fixes deserialization bug for DescribeContactFlow in AmazonConnect Public API
+* api-change:``ec2``: Adds support for Time-based Copy for EBS Snapshots and Cross Region PrivateLink. Time-based Copy ensures that EBS Snapshots are copied within and across AWS Regions in a specified timeframe. Cross Region PrivateLink enables customers to connect to VPC endpoint services hosted in other AWS Regions.
+* api-change:``qapps``: Private sharing, file upload and data collection feature support for Q Apps
+
+
 1.36.10
 =======
 

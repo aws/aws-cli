@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.36.12
+=======
+
+* api-change:``bedrock-agent``: Add support for specifying embeddingDataType, either FLOAT32 or BINARY
+* api-change:``config``: AWS Config adds support for service-linked recorders, a new type of Config recorder managed by AWS services to record specific subsets of resource configuration data and functioning independently from customer managed AWS Config recorders.
+* api-change:``fsx``: This release adds EFA support to increase FSx for Lustre file systems' throughput performance to a single client instance. This can be done by specifying EfaEnabled=true at the time of creation of Persistent_2 file systems.
+* api-change:``observabilityadmin``: Amazon CloudWatch Observability Admin adds the ability to audit telemetry configuration for AWS resources in customers AWS Accounts and Organizations. The release introduces new APIs to turn on/off the new experience, which supports discovering supported AWS resources and their state of telemetry.
+
+
 1.36.11
 =======
 

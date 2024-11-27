@@ -19,11 +19,7 @@ from datetime import datetime, timedelta
 from dateutil import parser, tz
 from argparse import Namespace
 
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
-from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
+from awscrt.crypto import RSASignatureAlgorithm
 
 from awscli.testutils import mock, BaseAWSCommandParamsTest
 from awscli.customizations.cloudtrail.validation import DigestError, \
@@ -36,6 +32,8 @@ from awscli.testutils import unittest
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.compat import BytesIO
 from botocore.exceptions import ClientError
+from tests import PublicPrivateKeyLoader
+from . import get_private_key_path, get_public_key_path
 
 START_DATE = parser.parse('20140810T000000Z')
 END_DATE = parser.parse('20150810T000000Z')
@@ -362,7 +360,13 @@ class TestSha256RSADigestValidator(unittest.TestCase):
         self._digest_data['_signature'] = 'aeff'
 
     def test_validates_digests(self):
-        private_key = rsa.generate_private_key(65537, 2048, default_backend())
+        (
+            public_key,
+            private_key,
+        ) = PublicPrivateKeyLoader.load_private_key_and_public_key(
+            get_private_key_path(),
+            get_public_key_path()
+        )
         sha256_hash = hashlib.sha256(self._inflated_digest)
         string_to_sign = "%s\n%s/%s\n%s\n%s" % (
             self._digest_data['digestEndTime'],
@@ -371,13 +375,14 @@ class TestSha256RSADigestValidator(unittest.TestCase):
             sha256_hash.hexdigest(),
             self._digest_data['previousDigestSignature'])
         to_sign = string_to_sign.encode()
-        signature = private_key.sign(to_sign, PKCS1v15(), hashes.SHA256())
+        signature = private_key.sign(
+            signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
+            digest=hashlib.sha256(to_sign).digest()
+        )
+
         self._digest_data['_signature'] = binascii.hexlify(signature)
         validator = Sha256RSADigestValidator()
-        public_key = private_key.public_key()
-        pub_bytes = public_key.public_bytes(Encoding.DER, PublicFormat.PKCS1)
-        public_key_b64 = base64.b64encode(pub_bytes)
-        validator.validate('b', 'k', public_key_b64, self._digest_data,
+        validator.validate('b', 'k', public_key, self._digest_data,
                            self._inflated_digest)
 
     def test_does_not_expose_underlying_key_decoding_error(self):

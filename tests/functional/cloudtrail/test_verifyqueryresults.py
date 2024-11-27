@@ -2,13 +2,14 @@ from io import BytesIO
 import json
 import binascii
 import copy
+import hashlib
 import os
 
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
+from awscrt.crypto import RSASignatureAlgorithm
 
 from awscli.testutils import BaseAWSCommandParamsTest
 from tests import PublicPrivateKeyLoader
+from . import get_private_key_path, get_public_key_path
 
 SAMPLE_PUBLIC_KEY_FINGERPRINT = "67b9fa73676d86966b449dd677850753"
 SAMPLE_PUBLIC_KEY = (
@@ -38,26 +39,20 @@ SAMPLE_S3_BUCKET_NAME = "lake-bucket-name"
 SAMPLE_S3_EXPORT_FILE_PREFIX = "lake-export-prefix/"
 
 
-def get_private_key_path():
-    return os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        "test_resource",
-        "sample_private_key.pem",
-    )
-
-
 class TestVerifyQueryResults(BaseAWSCommandParamsTest):
     def test_get_file_form_s3_happy_case(self):
         (
             public_key,
             private_key,
-        ) = PublicPrivateKeyLoader.load_private_key_and_generate_public_key(
-            get_private_key_path()
+        ) = PublicPrivateKeyLoader.load_private_key_and_public_key(
+            get_private_key_path(),
+            get_public_key_path()
         )
 
         sign_file = copy.deepcopy(SAMPLE_SIGNING_FILE)
         signature = private_key.sign(
-            SAMPLE_HASH_VALUE.encode(), PKCS1v15(), hashes.SHA256()
+            signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
+            digest=hashlib.sha256(SAMPLE_HASH_VALUE.encode()).digest()
         )
         sign_file["hashSignature"] = binascii.hexlify(signature).decode()
 
@@ -92,10 +87,15 @@ class TestVerifyQueryResults(BaseAWSCommandParamsTest):
         (
             public_key,
             private_key,
-        ) = PublicPrivateKeyLoader.load_private_key_and_generate_public_key(
-            get_private_key_path()
+        ) = PublicPrivateKeyLoader.load_private_key_and_public_key(
+            get_private_key_path(),
+            get_public_key_path()
         )
-        signature = private_key.sign(b"123", PKCS1v15(), hashes.SHA256())
+        signature = private_key.sign(
+            signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
+            digest=hashlib.sha256("123".encode()).digest()
+        )
+
         sign_file["hashSignature"] = binascii.hexlify(signature).decode()
 
         self.parsed_responses = [
@@ -114,9 +114,10 @@ class TestVerifyQueryResults(BaseAWSCommandParamsTest):
     def test_get_file_form_s3_invalid_sign_file(self):
         (
             public_key,
-            private_key,
-        ) = PublicPrivateKeyLoader.load_private_key_and_generate_public_key(
-            get_private_key_path()
+            _,
+        ) = PublicPrivateKeyLoader.load_private_key_and_public_key(
+            get_private_key_path(),
+            get_public_key_path()
         )
         self.parsed_responses = [
             {"Body": BytesIO(b"123")},
@@ -161,11 +162,13 @@ class TestVerifyQueryResults(BaseAWSCommandParamsTest):
         (
             public_key,
             private_key,
-        ) = PublicPrivateKeyLoader.load_private_key_and_generate_public_key(
-            get_private_key_path()
+        ) = PublicPrivateKeyLoader.load_private_key_and_public_key(
+            get_private_key_path(),
+            get_public_key_path()
         )
         signature = private_key.sign(
-            SAMPLE_HASH_VALUE.encode(), PKCS1v15(), hashes.SHA256()
+            signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
+            digest=hashlib.sha256(SAMPLE_HASH_VALUE.encode()).digest()
         )
         sign_file["hashSignature"] = binascii.hexlify(signature).decode()
 

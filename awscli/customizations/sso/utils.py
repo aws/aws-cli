@@ -73,10 +73,18 @@ def _sso_json_dumps(obj):
     return json.dumps(obj, default=_serialize_utc_timestamp)
 
 
-def do_sso_login(session, sso_region, start_url, token_cache=None,
-                 on_pending_authorization=None, force_refresh=False,
-                 registration_scopes=None, session_name=None,
-                 use_device_code=False):
+def do_sso_login(
+        session,
+        sso_region,
+        start_url,
+        parsed_globals,
+        token_cache=None,
+        on_pending_authorization=None,
+        force_refresh=False,
+        registration_scopes=None,
+        session_name=None,
+        use_device_code=False,
+):
     if token_cache is None:
         token_cache = JSONFileCache(SSO_TOKEN_DIR, dumps_func=_sso_json_dumps)
     if on_pending_authorization is None:
@@ -90,6 +98,7 @@ def do_sso_login(session, sso_region, start_url, token_cache=None,
         token_fetcher = SSOTokenFetcherAuth(
             sso_region=sso_region,
             client_creator=session.create_client,
+            parsed_globals=parsed_globals,
             auth_code_fetcher=AuthCodeFetcher(),
             cache=token_cache,
             on_pending_authorization=on_pending_authorization,
@@ -98,6 +107,7 @@ def do_sso_login(session, sso_region, start_url, token_cache=None,
         token_fetcher = SSOTokenFetcher(
             sso_region=sso_region,
             client_creator=session.create_client,
+            parsed_globals=parsed_globals,
             cache=token_cache,
             on_pending_authorization=on_pending_authorization,
         )

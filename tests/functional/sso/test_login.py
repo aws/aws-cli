@@ -15,6 +15,7 @@ import json
 import os
 import re
 
+from awscli.testutils import mock
 from tests.functional.sso import BaseSSOTest
 
 
@@ -473,3 +474,17 @@ class TestLoginCommand(BaseSSOTest):
         self.assertIn('md/sso#auth',
                       self.last_request_dict['headers']['User-Agent'])
 
+    @mock.patch('botocore.session.Session.create_client')
+    def test_login_custom_ca(self, create_client_patch):
+        # Profile and mock responses aren't wired up so this fails with 255,
+        # but it does get far enough to verify that the internal SSO-OIDC
+        # client is created with the custom CA bundle
+        self.run_cmd(
+            'sso login --ca-bundle /path/to/ca/bundle.pem',
+            expected_rc=255
+        )
+        create_client_patch.assert_called_once_with(
+            'sso-oidc',
+            config=mock.ANY,
+            verify='/path/to/ca/bundle.pem'
+        )

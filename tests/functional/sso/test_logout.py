@@ -127,3 +127,16 @@ class TestLogoutCommand(BaseSSOTest):
         token = self.add_cached_token('token.json')
         self.run_cmd('sso logout', expected_rc=0)
         self.assert_file_does_not_exist(token)
+
+    @mock.patch('botocore.session.Session.create_client')
+    def test_logout_with_custom_ca(self, create_client_patch):
+        token = self.add_cached_token('token.json')
+        creds = self.add_cached_aws_credentials('sso-creds.json')
+        self.run_cmd('sso logout --ca-bundle /path/to/ca/bundle.pem')
+        create_client_patch.assert_called_once_with(
+            'sso',
+            region_name='us-west-2',
+            verify='/path/to/ca/bundle.pem',
+        )
+        self.assert_file_does_not_exist(token)
+        self.assert_file_does_not_exist(creds)

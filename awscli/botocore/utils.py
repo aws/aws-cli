@@ -3070,11 +3070,13 @@ class BaseSSOTokenFetcher(object):
     _USER_AGENT_EXTRA = None
 
     def __init__(
-            self, sso_region, client_creator, cache=None,
+            self, sso_region, client_creator,
+            parsed_globals, cache=None,
             on_pending_authorization=None, time_fetcher=None
     ):
         self._sso_region = sso_region
         self._client_creator = client_creator
+        self._parsed_globals = parsed_globals
         self._on_pending_authorization = on_pending_authorization
 
         if time_fetcher is None:
@@ -3125,7 +3127,11 @@ class BaseSSOTokenFetcher(object):
             signature_version=botocore.UNSIGNED,
             user_agent_extra=self._USER_AGENT_EXTRA,
         )
-        return self._client_creator('sso-oidc', config=config)
+        return self._client_creator(
+            'sso-oidc',
+            config=config,
+            verify=self._parsed_globals.verify_ssl,
+        )
 
     def _generate_client_name(self, session_name):
         if session_name is None:
@@ -3170,6 +3176,7 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
         self,
         sso_region,
         client_creator,
+        parsed_globals,
         cache=None,
         on_pending_authorization=None,
         time_fetcher=None,
@@ -3178,6 +3185,7 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
         super().__init__(
             sso_region,
             client_creator,
+            parsed_globals,
             cache,
             on_pending_authorization,
             time_fetcher,
@@ -3372,6 +3380,7 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
         self,
         sso_region,
         client_creator,
+        parsed_globals,
         auth_code_fetcher,
         cache=None,
         on_pending_authorization=None,
@@ -3380,6 +3389,7 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
         super().__init__(
             sso_region,
             client_creator,
+            parsed_globals,
             cache,
             on_pending_authorization,
             time_fetcher,

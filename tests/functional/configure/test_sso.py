@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.customizations.configure.sso import ConfigureSSOCommand
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest, mock
 from tests.functional.sso import BaseSSOTest
 from unittest.mock import patch
 
@@ -104,3 +104,19 @@ class TestConfigureSSOCommand(BaseSSOTest):
                               'sso_region': 'us-east-1',
                               'start_url': 'https://identitycenter.amazonaws.com/ssoins-1234'}):
             self.run_cmd('configure sso')
+
+    @patch('botocore.session.Session.create_client')
+    def test_configure_custom_ca(self, create_client_patch):
+        # Profile and mock responses aren't wired up so this fails with 255,
+        # but it does get far enough to verify that the internal SSO-OIDC
+        # client is created with the custom CA bundle
+        self.run_cmd(
+            'configure sso --ca-bundle /path/to/ca/bundle.pem',
+            expected_rc=255,
+        )
+
+        create_client_patch.assert_called_once_with(
+            'sso-oidc',
+            config=mock.ANY,
+            verify='/path/to/ca/bundle.pem',
+        )

@@ -1,6 +1,6 @@
 **To get information about the association between a Resolver rule and a VPC**
 
-The following ``get-resolver-rule-association`` example displays details about the association between a specified Resolver rule and a VPC. You associate a resolver rule and a VPC using `associate-resolver-rule <https://docs.aws.amazon.com/cli/latest/reference/route53resolver/associate-resolver-rule.html>`__. ::
+The following ``get-resolver-rule-association`` example displays details about the association between a specified Resolver rule and a VPC. You associate a resolver rule and a VPC using `associate-resolver-rule <https://awscli.amazonaws.com/v2/documentation/api/latest/reference/route53resolver/associate-resolver-rule.html>`__. ::
 
     aws route53resolver get-resolver-rule-association \
         --resolver-rule-association-id rslvr-rrassoc-d61cbb2c8bexample

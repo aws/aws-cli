@@ -22,4 +22,4 @@ Output::
     }
   }
   
-.. _`admin-respond-to-auth-challenge`: https://docs.aws.amazon.com/cli/latest/reference/cognito-idp/admin-respond-to-auth-challenge.html
+.. _`admin-respond-to-auth-challenge`: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/cognito-idp/admin-respond-to-auth-challenge.html

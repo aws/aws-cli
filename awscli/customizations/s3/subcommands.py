@@ -1134,7 +1134,7 @@ class CommandArchitecture(object):
                     file_list.append(components[i].call(files[i]))
             files = file_list
         # This is kinda quirky, but each call through the instructions
-        # will replaces the files attr with the return value of the
+        # will replace the files attr with the return value of the
         # file_list.  The very last call is a single list of
         # [s3_handler], and the s3_handler returns the number of
         # tasks failed and the number of tasks warned.
@@ -1230,6 +1230,11 @@ class CommandParameters(object):
             self.parameters['is_move'] = True
         else:
             self.parameters['is_move'] = False
+
+        if self.cmd == 'sync' and 'delete' in self.parameters and self.parameters['delete']:
+            self.parameters['yield_directories'] = True
+        else:
+            self.parameters['yield_directories'] = False
 
     def add_paths(self, paths):
         """

@@ -3072,6 +3072,7 @@ class TestSSOTokenFetcher(unittest.TestCase):
         self.sso_token_fetcher = SSOTokenFetcher(
             self.sso_region,
             client_creator=self.mock_session.create_client,
+            parsed_globals=mock.Mock(),
             cache=self.cache,
             time_fetcher=self.mock_time_fetcher,
             sleep=self.mock_sleep,
@@ -3336,6 +3337,7 @@ class TestSSOTokenFetcher(unittest.TestCase):
         self.sso_token_fetcher = SSOTokenFetcher(
             self.sso_region,
             client_creator=self.mock_session.create_client,
+            parsed_globals=mock.Mock(),
             cache=self.cache,
             time_fetcher=self.mock_time_fetcher,
             sleep=self.mock_sleep,

@@ -115,7 +115,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a data source connector for a knowledge base.</p> <important> <p>You can't change the <code>chunkingConfiguration</code> after you create the data source connector.</p> </important>",
+      "documentation":"<p>Connects a knowledge base to a data source. You specify the configuration for the specific data source service in the <code>dataSourceConfiguration</code> field.</p> <important> <p>You can't change the <code>chunkingConfiguration</code> after you create the data source connector.</p> </important>",
       "idempotent":true
     },
     "CreateFlow":{
@@ -420,6 +420,26 @@
       "documentation":"<p>Deletes a knowledge base. Before deleting a knowledge base, you should disassociate the knowledge base from any agents that it is associated with by making a <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_DisassociateAgentKnowledgeBase.html\">DisassociateAgentKnowledgeBase</a> request.</p>",
       "idempotent":true
     },
+    "DeleteKnowledgeBaseDocuments":{
+      "name":"DeleteKnowledgeBaseDocuments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents/deleteDocuments",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteKnowledgeBaseDocumentsRequest"},
+      "output":{"shape":"DeleteKnowledgeBaseDocumentsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Deletes documents from a data source and syncs the changes to the knowledge base that is connected to it. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-real-time-ingestion.html\">Ingest documents into a knowledge base in real-time</a> in the Amazon Bedrock User Guide.</p>",
+      "idempotent":true
+    },
     "DeletePrompt":{
       "name":"DeletePrompt",
       "http":{
@@ -658,6 +678,25 @@
       ],
       "documentation":"<p>Gets information about a knoweldge base.</p>"
     },
+    "GetKnowledgeBaseDocuments":{
+      "name":"GetKnowledgeBaseDocuments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents/getDocuments",
+        "responseCode":200
+      },
+      "input":{"shape":"GetKnowledgeBaseDocumentsRequest"},
+      "output":{"shape":"GetKnowledgeBaseDocumentsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Retrieves specific documents from a data source that is connected to a knowledge base. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-real-time-ingestion.html\">Ingest documents into a knowledge base in real-time</a> in the Amazon Bedrock User Guide.</p>"
+    },
     "GetPrompt":{
       "name":"GetPrompt",
       "http":{
@@ -675,6 +714,26 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves information about the working draft (<code>DRAFT</code> version) of a prompt or a version of it, depending on whether you include the <code>promptVersion</code> field or not. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-manage.html#prompt-management-view.html\">View information about prompts using Prompt management</a> and <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-deploy.html#prompt-management-versions-view.html\">View information about a version of your prompt</a> in the Amazon Bedrock User Guide.</p>"
+    },
+    "IngestKnowledgeBaseDocuments":{
+      "name":"IngestKnowledgeBaseDocuments",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents",
+        "responseCode":202
+      },
+      "input":{"shape":"IngestKnowledgeBaseDocumentsRequest"},
+      "output":{"shape":"IngestKnowledgeBaseDocumentsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Ingests documents directly into the knowledge base that is connected to the data source. The <code>dataSourceType</code> specified in the content for each document must match the type of the data source that you specify in the header. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-real-time-ingestion.html\">Ingest documents into a knowledge base in real-time</a> in the Amazon Bedrock User Guide.</p>",
+      "idempotent":true
     },
     "ListAgentActionGroups":{
       "name":"ListAgentActionGroups",
@@ -853,6 +912,25 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists the data ingestion jobs for a data source. The list also includes information about each job.</p>"
+    },
+    "ListKnowledgeBaseDocuments":{
+      "name":"ListKnowledgeBaseDocuments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/documents",
+        "responseCode":200
+      },
+      "input":{"shape":"ListKnowledgeBaseDocumentsRequest"},
+      "output":{"shape":"ListKnowledgeBaseDocumentsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Retrieves all the documents contained in a data source that is connected to a knowledge base. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-real-time-ingestion.html\">Ingest documents into a knowledge base in real-time</a> in the Amazon Bedrock User Guide.</p>"
     },
     "ListKnowledgeBases":{
       "name":"ListKnowledgeBases",
@@ -2082,6 +2160,34 @@
       "min":12,
       "pattern":"^[0-9]{12}$"
     },
+    "ByteContentBlob":{
+      "type":"blob",
+      "max":5242880,
+      "min":1,
+      "sensitive":true
+    },
+    "ByteContentDoc":{
+      "type":"structure",
+      "required":[
+        "data",
+        "mimeType"
+      ],
+      "members":{
+        "data":{
+          "shape":"ByteContentBlob",
+          "documentation":"<p>The base64-encoded string of the content.</p>"
+        },
+        "mimeType":{
+          "shape":"ByteContentDocMimeTypeString",
+          "documentation":"<p>The MIME type of the content. For a list of MIME types, see <a href=\"https://www.iana.org/assignments/media-types/media-types.xhtml\">Media Types</a>. The following MIME types are supported:</p> <ul> <li> <p>text/plain</p> </li> <li> <p>text/html</p> </li> <li> <p>text/csv</p> </li> <li> <p>text/vtt</p> </li> <li> <p>message/rfc822</p> </li> <li> <p>application/xhtml+xml</p> </li> <li> <p>application/pdf</p> </li> <li> <p>application/msword</p> </li> <li> <p>application/vnd.ms-word.document.macroenabled.12</p> </li> <li> <p>application/vnd.ms-word.template.macroenabled.12</p> </li> <li> <p>application/vnd.ms-excel</p> </li> <li> <p>application/vnd.ms-excel.addin.macroenabled.12</p> </li> <li> <p>application/vnd.ms-excel.sheet.macroenabled.12</p> </li> <li> <p>application/vnd.ms-excel.template.macroenabled.12</p> </li> <li> <p>application/vnd.ms-excel.sheet.binary.macroenabled.12</p> </li> <li> <p>application/vnd.ms-spreadsheetml</p> </li> <li> <p>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</p> </li> <li> <p>application/vnd.openxmlformats-officedocument.spreadsheetml.template</p> </li> <li> <p>application/vnd.openxmlformats-officedocument.wordprocessingml.document</p> </li> <li> <p>application/vnd.openxmlformats-officedocument.wordprocessingml.template</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Contains information about content defined inline in bytes.</p>"
+    },
+    "ByteContentDocMimeTypeString":{
+      "type":"string",
+      "pattern":"[a-z]{1,20}/.{1,20}"
+    },
     "ChatPromptTemplateConfiguration":{
       "type":"structure",
       "required":["messages"],
@@ -2258,6 +2364,13 @@
     "ContentBlocks":{
       "type":"list",
       "member":{"shape":"ContentBlock"}
+    },
+    "ContentDataSourceType":{
+      "type":"string",
+      "enum":[
+        "CUSTOM",
+        "S3"
+      ]
     },
     "ConversationRole":{
       "type":"string",
@@ -3002,9 +3115,51 @@
         "OVERRIDDEN"
       ]
     },
+    "CustomContent":{
+      "type":"structure",
+      "required":[
+        "customDocumentIdentifier",
+        "sourceType"
+      ],
+      "members":{
+        "customDocumentIdentifier":{
+          "shape":"CustomDocumentIdentifier",
+          "documentation":"<p>A unique identifier for the document.</p>"
+        },
+        "inlineContent":{
+          "shape":"InlineContent",
+          "documentation":"<p>Contains information about content defined inline to ingest into a knowledge base.</p>"
+        },
+        "s3Location":{
+          "shape":"CustomS3Location",
+          "documentation":"<p>Contains information about the Amazon S3 location of the file from which to ingest data.</p>"
+        },
+        "sourceType":{
+          "shape":"CustomSourceType",
+          "documentation":"<p>The source of the data to ingest.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the content to ingest into a knowledge base connected to a custom data source. Choose a <code>sourceType</code> and include the field that corresponds to it.</p>"
+    },
     "CustomControlMethod":{
       "type":"string",
       "enum":["RETURN_CONTROL"]
+    },
+    "CustomDocumentIdentifier":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"CustomDocumentIdentifierIdString",
+          "documentation":"<p>The identifier of the document to ingest into a custom data source.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the identifier of the document to ingest into a custom data source.</p>"
+    },
+    "CustomDocumentIdentifierIdString":{
+      "type":"string",
+      "max":2048,
+      "min":1
     },
     "CustomOrchestration":{
       "type":"structure",
@@ -3015,6 +3170,28 @@
         }
       },
       "documentation":"<p> Details of custom orchestration. </p>"
+    },
+    "CustomS3Location":{
+      "type":"structure",
+      "required":["uri"],
+      "members":{
+        "bucketOwnerAccountId":{
+          "shape":"BucketOwnerAccountId",
+          "documentation":"<p>The identifier of the Amazon Web Services account that owns the S3 bucket containing the content to ingest.</p>"
+        },
+        "uri":{
+          "shape":"S3ObjectUri",
+          "documentation":"<p>The S3 URI of the file containing the content to ingest.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the Amazon S3 location of the file containing the content to ingest into a knowledge base connected to a custom data source.</p>"
+    },
+    "CustomSourceType":{
+      "type":"string",
+      "enum":[
+        "IN_LINE",
+        "S3_LOCATION"
+      ]
     },
     "CustomTransformationConfiguration":{
       "type":"structure",
@@ -3044,6 +3221,12 @@
         }
       },
       "documentation":"<p>Details about a cyclic connection detected in the flow.</p>"
+    },
+    "Data":{
+      "type":"string",
+      "max":5242880,
+      "min":1,
+      "sensitive":true
     },
     "DataDeletionPolicy":{
       "type":"string",
@@ -3202,7 +3385,8 @@
         "WEB",
         "CONFLUENCE",
         "SALESFORCE",
-        "SHAREPOINT"
+        "SHAREPOINT",
+        "CUSTOM"
       ]
     },
     "DateTimestamp":{
@@ -3528,6 +3712,46 @@
         }
       }
     },
+    "DeleteKnowledgeBaseDocumentsRequest":{
+      "type":"structure",
+      "required":[
+        "dataSourceId",
+        "documentIdentifiers",
+        "knowledgeBaseId"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "dataSourceId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the data source that contains the documents.</p>",
+          "location":"uri",
+          "locationName":"dataSourceId"
+        },
+        "documentIdentifiers":{
+          "shape":"DocumentIdentifiers",
+          "documentation":"<p>A list of objects, each of which contains information to identify a document to delete.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the knowledge base that is connected to the data source.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        }
+      }
+    },
+    "DeleteKnowledgeBaseDocumentsResponse":{
+      "type":"structure",
+      "members":{
+        "documentDetails":{
+          "shape":"KnowledgeBaseDocumentDetails",
+          "documentation":"<p>A list of objects, each of which contains information about the documents that were deleted.</p>"
+        }
+      }
+    },
     "DeleteKnowledgeBaseRequest":{
       "type":"structure",
       "required":["knowledgeBaseId"],
@@ -3639,6 +3863,92 @@
       },
       "document":true
     },
+    "DocumentContent":{
+      "type":"structure",
+      "required":["dataSourceType"],
+      "members":{
+        "custom":{
+          "shape":"CustomContent",
+          "documentation":"<p>Contains information about the content to ingest into a knowledge base connected to a custom data source.</p>"
+        },
+        "dataSourceType":{
+          "shape":"ContentDataSourceType",
+          "documentation":"<p>The type of data source that is connected to the knowledge base to which to ingest this document.</p>"
+        },
+        "s3":{
+          "shape":"S3Content",
+          "documentation":"<p>Contains information about the content to ingest into a knowledge base connected to an Amazon S3 data source</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the content of a document. Choose a <code>dataSourceType</code> and include the field that corresponds to it.</p>"
+    },
+    "DocumentIdentifier":{
+      "type":"structure",
+      "required":["dataSourceType"],
+      "members":{
+        "custom":{
+          "shape":"CustomDocumentIdentifier",
+          "documentation":"<p>Contains information that identifies the document in a custom data source.</p>"
+        },
+        "dataSourceType":{
+          "shape":"ContentDataSourceType",
+          "documentation":"<p>The type of data source connected to the knowledge base that contains the document.</p>"
+        },
+        "s3":{
+          "shape":"S3Location",
+          "documentation":"<p>Contains information that identifies the document in an S3 data source.</p>"
+        }
+      },
+      "documentation":"<p>Contains information that identifies the document.</p>"
+    },
+    "DocumentIdentifiers":{
+      "type":"list",
+      "member":{"shape":"DocumentIdentifier"},
+      "max":10,
+      "min":1
+    },
+    "DocumentMetadata":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "inlineAttributes":{
+          "shape":"DocumentMetadataInlineAttributesList",
+          "documentation":"<p>An array of objects, each of which defines a metadata attribute to associate with the content to ingest. You define the attributes inline.</p>"
+        },
+        "s3Location":{
+          "shape":"CustomS3Location",
+          "documentation":"<p>The Amazon S3 location of the file containing metadata to associate with the content to ingest.</p>"
+        },
+        "type":{
+          "shape":"MetadataSourceType",
+          "documentation":"<p>The type of the source source from which to add metadata.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the metadata associate with the content to ingest into a knowledge base. Choose a <code>type</code> and include the field that corresponds to it.</p>"
+    },
+    "DocumentMetadataInlineAttributesList":{
+      "type":"list",
+      "member":{"shape":"MetadataAttribute"},
+      "max":50,
+      "min":1
+    },
+    "DocumentStatus":{
+      "type":"string",
+      "enum":[
+        "INDEXED",
+        "PARTIALLY_INDEXED",
+        "PENDING",
+        "FAILED",
+        "METADATA_PARTIALLY_INDEXED",
+        "METADATA_UPDATE_FAILED",
+        "IGNORED",
+        "NOT_FOUND",
+        "STARTING",
+        "IN_PROGRESS",
+        "DELETING",
+        "DELETE_IN_PROGRESS"
+      ]
+    },
     "DraftVersion":{
       "type":"string",
       "max":5,
@@ -3683,7 +3993,6 @@
     },
     "EmbeddingDataType":{
       "type":"string",
-      "documentation":"<p>Bedrock models embedding data type. Can be either float32 or binary</p>",
       "enum":[
         "FLOAT32",
         "BINARY"
@@ -4977,6 +5286,41 @@
         }
       }
     },
+    "GetKnowledgeBaseDocumentsRequest":{
+      "type":"structure",
+      "required":[
+        "dataSourceId",
+        "documentIdentifiers",
+        "knowledgeBaseId"
+      ],
+      "members":{
+        "dataSourceId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the data source that contains the documents.</p>",
+          "location":"uri",
+          "locationName":"dataSourceId"
+        },
+        "documentIdentifiers":{
+          "shape":"DocumentIdentifiers",
+          "documentation":"<p>A list of objects, each of which contains information to identify a document for which to retrieve information.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the knowledge base that is connected to the data source.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        }
+      }
+    },
+    "GetKnowledgeBaseDocumentsResponse":{
+      "type":"structure",
+      "members":{
+        "documentDetails":{
+          "shape":"KnowledgeBaseDocumentDetails",
+          "documentation":"<p>A list of objects, each of which contains information about the documents that were retrieved.</p>"
+        }
+      }
+    },
     "GetKnowledgeBaseRequest":{
       "type":"structure",
       "required":["knowledgeBaseId"],
@@ -5184,6 +5528,46 @@
         }
       },
       "documentation":"<p>Contains inference parameters to use when the agent invokes a foundation model in the part of the agent sequence defined by the <code>promptType</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p>"
+    },
+    "IngestKnowledgeBaseDocumentsRequest":{
+      "type":"structure",
+      "required":[
+        "dataSourceId",
+        "documents",
+        "knowledgeBaseId"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "dataSourceId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the data source connected to the knowledge base that you're adding documents to.</p>",
+          "location":"uri",
+          "locationName":"dataSourceId"
+        },
+        "documents":{
+          "shape":"KnowledgeBaseDocuments",
+          "documentation":"<p>A list of objects, each of which contains information about the documents to add.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the knowledge base to ingest the documents into.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        }
+      }
+    },
+    "IngestKnowledgeBaseDocumentsResponse":{
+      "type":"structure",
+      "members":{
+        "documentDetails":{
+          "shape":"KnowledgeBaseDocumentDetails",
+          "documentation":"<p>A list of objects, each of which contains information about the documents that were ingested.</p>"
+        }
+      }
     },
     "IngestionJob":{
       "type":"structure",
@@ -5404,6 +5788,32 @@
       },
       "documentation":"<p>Contains details about a data ingestion job.</p>"
     },
+    "InlineContent":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "byteContent":{
+          "shape":"ByteContentDoc",
+          "documentation":"<p>Contains information about content defined inline in bytes.</p>"
+        },
+        "textContent":{
+          "shape":"TextContentDoc",
+          "documentation":"<p>Contains information about content defined inline in text.</p>"
+        },
+        "type":{
+          "shape":"InlineContentType",
+          "documentation":"<p>The type of inline content to define.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about content defined inline to ingest into a data source. Choose a <code>type</code> and include the field that corresponds to it.</p>"
+    },
+    "InlineContentType":{
+      "type":"string",
+      "enum":[
+        "BYTE",
+        "TEXT"
+      ]
+    },
     "InputFlowNodeConfiguration":{
       "type":"structure",
       "members":{
@@ -5442,6 +5852,12 @@
       "members":{
       },
       "documentation":"<p>Contains configurations for an iterator node in a flow. Takes an input that is an array and iteratively sends each item of the array as an output to the following node. The size of the array is also returned in the output.</p> <p>The output flow node at the end of the flow iteration will return a response for each member of the array. To return only one response, you can include a collector node downstream from the iterator node.</p>"
+    },
+    "Key":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
     },
     "KmsKeyArn":{
       "type":"string",
@@ -5530,6 +5946,67 @@
         }
       },
       "documentation":"<p>Contains details about the vector embeddings configuration of the knowledge base.</p>"
+    },
+    "KnowledgeBaseDocument":{
+      "type":"structure",
+      "required":["content"],
+      "members":{
+        "content":{
+          "shape":"DocumentContent",
+          "documentation":"<p>Contains the content of the document.</p>"
+        },
+        "metadata":{
+          "shape":"DocumentMetadata",
+          "documentation":"<p>Contains the metadata to associate with the document.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a document to ingest into a knowledge base and metadata to associate with it.</p>"
+    },
+    "KnowledgeBaseDocumentDetail":{
+      "type":"structure",
+      "required":[
+        "dataSourceId",
+        "identifier",
+        "knowledgeBaseId",
+        "status"
+      ],
+      "members":{
+        "dataSourceId":{
+          "shape":"Id",
+          "documentation":"<p>The identifier of the data source connected to the knowledge base that the document was ingested into or deleted from.</p>"
+        },
+        "identifier":{
+          "shape":"DocumentIdentifier",
+          "documentation":"<p>Contains information that identifies the document.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"Id",
+          "documentation":"<p>The identifier of the knowledge base that the document was ingested into or deleted from.</p>"
+        },
+        "status":{
+          "shape":"DocumentStatus",
+          "documentation":"<p>The ingestion status of the document. The following statuses are possible:</p> <ul> <li> <p>STARTED – You submitted the ingestion job containing the document.</p> </li> <li> <p>PENDING – The document is waiting to be ingested.</p> </li> <li> <p>IN_PROGRESS – The document is being ingested.</p> </li> <li> <p>INDEXED – The document was successfully indexed.</p> </li> <li> <p>PARTIALLY_INDEXED – The document was partially indexed.</p> </li> <li> <p>METADATA_PARTIALLY_INDEXED – You submitted metadata for an existing document and it was partially indexed.</p> </li> <li> <p>METADATA_UPDATE_FAILED – You submitted a metadata update for an existing document but it failed.</p> </li> <li> <p>FAILED – The document failed to be ingested.</p> </li> <li> <p>NOT_FOUND – The document wasn't found.</p> </li> <li> <p>IGNORED – The document was ignored during ingestion.</p> </li> <li> <p>DELETING – You submitted the delete job containing the document.</p> </li> <li> <p>DELETE_IN_PROGRESS – The document is being deleted.</p> </li> </ul>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the status. Appears alongside the status <code>IGNORED</code>.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The date and time at which the document was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details for a document that was ingested or deleted.</p>"
+    },
+    "KnowledgeBaseDocumentDetails":{
+      "type":"list",
+      "member":{"shape":"KnowledgeBaseDocumentDetail"}
+    },
+    "KnowledgeBaseDocuments":{
+      "type":"list",
+      "member":{"shape":"KnowledgeBaseDocument"},
+      "max":10,
+      "min":1
     },
     "KnowledgeBaseFlowNodeConfiguration":{
       "type":"structure",
@@ -6055,6 +6532,49 @@
         }
       }
     },
+    "ListKnowledgeBaseDocumentsRequest":{
+      "type":"structure",
+      "required":[
+        "dataSourceId",
+        "knowledgeBaseId"
+      ],
+      "members":{
+        "dataSourceId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the data source that contains the documents.</p>",
+          "location":"uri",
+          "locationName":"dataSourceId"
+        },
+        "knowledgeBaseId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the knowledge base that is connected to the data source.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>"
+        }
+      }
+    },
+    "ListKnowledgeBaseDocumentsResponse":{
+      "type":"structure",
+      "required":["documentDetails"],
+      "members":{
+        "documentDetails":{
+          "shape":"KnowledgeBaseDocumentDetails",
+          "documentation":"<p>A list of objects, each of which contains information about the documents that were retrieved.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        }
+      }
+    },
     "ListKnowledgeBasesRequest":{
       "type":"structure",
       "members":{
@@ -6238,6 +6758,73 @@
     "Messages":{
       "type":"list",
       "member":{"shape":"Message"}
+    },
+    "MetadataAttribute":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"Key",
+          "documentation":"<p>The key of the metadata attribute.</p>"
+        },
+        "value":{
+          "shape":"MetadataAttributeValue",
+          "documentation":"<p>Contains the value of the metadata attribute.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a metadata attribute.</p>"
+    },
+    "MetadataAttributeValue":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "booleanValue":{
+          "shape":"Boolean",
+          "documentation":"<p>The value of the Boolean metadata attribute.</p>"
+        },
+        "numberValue":{
+          "shape":"NumberValue",
+          "documentation":"<p>The value of the numeric metadata attribute.</p>"
+        },
+        "stringListValue":{
+          "shape":"MetadataAttributeValueStringListValueList",
+          "documentation":"<p>An array of strings that define the value of the metadata attribute.</p>"
+        },
+        "stringValue":{
+          "shape":"StringValue",
+          "documentation":"<p>The value of the string metadata attribute.</p>"
+        },
+        "type":{
+          "shape":"MetadataValueType",
+          "documentation":"<p>The type of the metadata attribute.</p>"
+        }
+      },
+      "documentation":"<p>Contains the value of the metadata attribute. Choose a <code>type</code> and include the field that corresponds to it.</p>"
+    },
+    "MetadataAttributeValueStringListValueList":{
+      "type":"list",
+      "member":{"shape":"StringValue"},
+      "max":10,
+      "min":1
+    },
+    "MetadataSourceType":{
+      "type":"string",
+      "enum":[
+        "IN_LINE_ATTRIBUTE",
+        "S3_LOCATION"
+      ]
+    },
+    "MetadataValueType":{
+      "type":"string",
+      "enum":[
+        "BOOLEAN",
+        "NUMBER",
+        "STRING",
+        "STRING_LIST"
+      ]
     },
     "Microsoft365TenantId":{
       "type":"string",
@@ -6508,6 +7095,11 @@
     "NonEmptyString":{
       "type":"string",
       "min":1
+    },
+    "NumberValue":{
+      "type":"double",
+      "box":true,
+      "sensitive":true
     },
     "NumericalVersion":{
       "type":"string",
@@ -7464,6 +8056,17 @@
       "min":1,
       "pattern":"^s3://.{1,128}$"
     },
+    "S3Content":{
+      "type":"structure",
+      "required":["s3Location"],
+      "members":{
+        "s3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The S3 location of the file containing the content to ingest.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the content to ingest into a knowledge base connected to an Amazon S3 data source.</p>"
+    },
     "S3DataSourceConfiguration":{
       "type":"structure",
       "required":["bucketArn"],
@@ -7513,6 +8116,12 @@
       "max":1024,
       "min":1,
       "pattern":"^[\\.\\-\\!\\*\\_\\'\\(\\)a-zA-Z0-9][\\.\\-\\!\\*\\_\\'\\(\\)\\/a-zA-Z0-9]*$"
+    },
+    "S3ObjectUri":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^s3://[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]/.{1,1024}$"
     },
     "S3Prefix":{
       "type":"string",
@@ -7924,6 +8533,12 @@
       "union":true
     },
     "String":{"type":"string"},
+    "StringValue":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "sensitive":true
+    },
     "SystemContentBlock":{
       "type":"structure",
       "members":{
@@ -7998,6 +8613,17 @@
       "box":true,
       "max":1,
       "min":0
+    },
+    "TextContentDoc":{
+      "type":"structure",
+      "required":["data"],
+      "members":{
+        "data":{
+          "shape":"Data",
+          "documentation":"<p>The text of the content.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about content defined inline in text.</p>"
     },
     "TextPrompt":{
       "type":"string",

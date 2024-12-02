@@ -1780,7 +1780,7 @@
         {"shape":"ResourceNotFoundFault"},
         {"shape":"InvalidResourceStateFault"}
       ],
-      "documentation":"<p>Disables the HTTP endpoint for the specified DB cluster. Disabling this endpoint disables RDS Data API.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html\">Using RDS Data API</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This operation applies only to Aurora PostgreSQL Serverless v2 and provisioned DB clusters. To disable the HTTP endpoint for Aurora Serverless v1 DB clusters, use the <code>EnableHttpEndpoint</code> parameter of the <code>ModifyDBCluster</code> operation.</p> </note>"
+      "documentation":"<p>Disables the HTTP endpoint for the specified DB cluster. Disabling this endpoint disables RDS Data API.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html\">Using RDS Data API</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This operation applies only to Aurora Serverless v2 and provisioned DB clusters. To disable the HTTP endpoint for Aurora Serverless v1 DB clusters, use the <code>EnableHttpEndpoint</code> parameter of the <code>ModifyDBCluster</code> operation.</p> </note>"
     },
     "DownloadDBLogFilePortion":{
       "name":"DownloadDBLogFilePortion",
@@ -1815,7 +1815,7 @@
         {"shape":"ResourceNotFoundFault"},
         {"shape":"InvalidResourceStateFault"}
       ],
-      "documentation":"<p>Enables the HTTP endpoint for the DB cluster. By default, the HTTP endpoint isn't enabled.</p> <p>When enabled, this endpoint provides a connectionless web service API (RDS Data API) for running SQL queries on the Aurora DB cluster. You can also query your database from inside the RDS console with the RDS query editor.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html\">Using RDS Data API</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This operation applies only to Aurora PostgreSQL Serverless v2 and provisioned DB clusters. To enable the HTTP endpoint for Aurora Serverless v1 DB clusters, use the <code>EnableHttpEndpoint</code> parameter of the <code>ModifyDBCluster</code> operation.</p> </note>"
+      "documentation":"<p>Enables the HTTP endpoint for the DB cluster. By default, the HTTP endpoint isn't enabled.</p> <p>When enabled, this endpoint provides a connectionless web service API (RDS Data API) for running SQL queries on the Aurora DB cluster. You can also query your database from inside the RDS console with the RDS query editor.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html\">Using RDS Data API</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This operation applies only to Aurora Serverless v2 and provisioned DB clusters. To enable the HTTP endpoint for Aurora Serverless v1 DB clusters, use the <code>EnableHttpEndpoint</code> parameter of the <code>ModifyDBCluster</code> operation.</p> </note>"
     },
     "FailoverDBCluster":{
       "name":"FailoverDBCluster",
@@ -4307,6 +4307,10 @@
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) for the IAM role that permits RDS to send Enhanced Monitoring metrics to Amazon CloudWatch Logs. An example is <code>arn:aws:iam:123456789012:role/emaccess</code>. For information on creating a monitoring role, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Monitoring.OS.html#USER_Monitoring.OS.Enabling\">Setting up and enabling Enhanced Monitoring</a> in the <i>Amazon RDS User Guide</i>.</p> <p>If <code>MonitoringInterval</code> is set to a value other than <code>0</code>, supply a <code>MonitoringRoleArn</code> value.</p> <p>Valid for Cluster Type: Multi-AZ DB clusters only</p>"
         },
+        "DatabaseInsightsMode":{
+          "shape":"DatabaseInsightsMode",
+          "documentation":"<p>Specifies the mode of Database Insights to enable for the cluster.</p>"
+        },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether to turn on Performance Insights for the DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html\"> Using Amazon Performance Insights</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Valid for Cluster Type: Multi-AZ DB clusters only</p>"
@@ -4610,6 +4614,10 @@
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication for MySQL and PostgreSQL</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting doesn't apply to the following DB instances:</p> <ul> <li> <p>Amazon Aurora (Mapping Amazon Web Services IAM accounts to database accounts is managed by the DB cluster.)</p> </li> <li> <p>RDS Custom</p> </li> </ul>"
         },
+        "DatabaseInsightsMode":{
+          "shape":"DatabaseInsightsMode",
+          "documentation":"<p>Specifies the mode of Database Insights to enable for the instance.</p>"
+        },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether to enable Performance Insights for the DB instance. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html\">Using Amazon Performance Insights</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
@@ -4773,6 +4781,10 @@
         "EnableIAMDatabaseAuthentication":{
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled.</p> <p>For more information about IAM database authentication, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication for MySQL and PostgreSQL</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
+        },
+        "DatabaseInsightsMode":{
+          "shape":"DatabaseInsightsMode",
+          "documentation":"<p>Specifies the mode of Database Insights.</p>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
@@ -5694,6 +5706,10 @@
         "MonitoringRoleArn":{
           "shape":"String",
           "documentation":"<p>The ARN for the IAM role that permits RDS to send Enhanced Monitoring metrics to Amazon CloudWatch Logs.</p> <p>This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
+        },
+        "DatabaseInsightsMode":{
+          "shape":"DatabaseInsightsMode",
+          "documentation":"<p>The mode of Database Insights that is enabled for the cluster.</p>"
         },
         "PerformanceInsightsEnabled":{
           "shape":"BooleanOptional",
@@ -6938,6 +6954,10 @@
         "IAMDatabaseAuthenticationEnabled":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts is enabled for the DB instance.</p> <p>For a list of engine versions that support IAM database authentication, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RDS_Fea_Regions_DB-eng.Feature.IamDatabaseAuthentication.html\">IAM database authentication</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.Aurora_Fea_Regions_DB-eng.Feature.IAMdbauth.html\">IAM database authentication in Aurora</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+        },
+        "DatabaseInsightsMode":{
+          "shape":"DatabaseInsightsMode",
+          "documentation":"<p>The mode of Database Insights that is enabled for the instance.</p>"
         },
         "PerformanceInsightsEnabled":{
           "shape":"BooleanOptional",
@@ -8698,6 +8718,13 @@
       "max":2048,
       "min":1,
       "pattern":"^arn:[A-Za-z][0-9A-Za-z-:._]*"
+    },
+    "DatabaseInsightsMode":{
+      "type":"string",
+      "enum":[
+        "standard",
+        "advanced"
+      ]
     },
     "DeleteBlueGreenDeploymentRequest":{
       "type":"structure",
@@ -12339,7 +12366,7 @@
         },
         "EnableHttpEndpoint":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether to enable the HTTP endpoint for an Aurora Serverless v1 DB cluster. By default, the HTTP endpoint isn't enabled.</p> <p>When enabled, the HTTP endpoint provides a connectionless web service API (RDS Data API) for running SQL queries on the Aurora Serverless v1 DB cluster. You can also query your database from inside the RDS console with the RDS query editor.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html\">Using RDS Data API</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This parameter applies only to Aurora Serverless v1 DB clusters. To enable or disable the HTTP endpoint for an Aurora PostgreSQL Serverless v2 or provisioned DB cluster, use the <code>EnableHttpEndpoint</code> and <code>DisableHttpEndpoint</code> operations.</p> </note> <p>Valid for Cluster Type: Aurora DB clusters only</p>"
+          "documentation":"<p>Specifies whether to enable the HTTP endpoint for an Aurora Serverless v1 DB cluster. By default, the HTTP endpoint isn't enabled.</p> <p>When enabled, the HTTP endpoint provides a connectionless web service API (RDS Data API) for running SQL queries on the Aurora Serverless v1 DB cluster. You can also query your database from inside the RDS console with the RDS query editor.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html\">Using RDS Data API</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This parameter applies only to Aurora Serverless v1 DB clusters. To enable or disable the HTTP endpoint for an Aurora Serverless v2 or provisioned DB cluster, use the <code>EnableHttpEndpoint</code> and <code>DisableHttpEndpoint</code> operations.</p> </note> <p>Valid for Cluster Type: Aurora DB clusters only</p>"
         },
         "CopyTagsToSnapshot":{
           "shape":"BooleanOptional",
@@ -12376,6 +12403,10 @@
         "MonitoringRoleArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) for the IAM role that permits RDS to send Enhanced Monitoring metrics to Amazon CloudWatch Logs. An example is <code>arn:aws:iam:123456789012:role/emaccess</code>. For information on creating a monitoring role, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Monitoring.html#USER_Monitoring.OS.IAMRole\">To create an IAM role for Amazon RDS Enhanced Monitoring</a> in the <i>Amazon RDS User Guide.</i> </p> <p>If <code>MonitoringInterval</code> is set to a value other than <code>0</code>, supply a <code>MonitoringRoleArn</code> value.</p> <p>Valid for Cluster Type: Multi-AZ DB clusters only</p>"
+        },
+        "DatabaseInsightsMode":{
+          "shape":"DatabaseInsightsMode",
+          "documentation":"<p>Specifies the mode of Database Insights to enable for the cluster.</p>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
@@ -12644,6 +12675,10 @@
         "EnableIAMDatabaseAuthentication":{
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether to enable mapping of Amazon Web Services Identity and Access Management (IAM) accounts to database accounts. By default, mapping isn't enabled.</p> <p>This setting doesn't apply to Amazon Aurora. Mapping Amazon Web Services IAM accounts to database accounts is managed by the DB cluster.</p> <p>For more information about IAM database authentication, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html\"> IAM Database Authentication for MySQL and PostgreSQL</a> in the <i>Amazon RDS User Guide.</i> </p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
+        },
+        "DatabaseInsightsMode":{
+          "shape":"DatabaseInsightsMode",
+          "documentation":"<p>Specifies the mode of Database Insights to enable for the instance.</p>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
@@ -15616,6 +15651,10 @@
         "S3IngestionRoleArn":{
           "shape":"String",
           "documentation":"<p>An Amazon Web Services Identity and Access Management (IAM) role with a trust policy and a permissions policy that allows Amazon RDS to access your Amazon S3 bucket. For information about this role, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Procedural.Importing.html#MySQL.Procedural.Importing.Enabling.IAM\"> Creating an IAM role manually</a> in the <i>Amazon RDS User Guide.</i> </p>"
+        },
+        "DatabaseInsightsMode":{
+          "shape":"DatabaseInsightsMode",
+          "documentation":"<p>Specifies the mode of Database Insights to enable for the instance.</p>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",

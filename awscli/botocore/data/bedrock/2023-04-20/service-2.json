@@ -30,7 +30,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a batch deletion job. A model evaluation job can only be deleted if it has following status <code>FAILED</code>, <code>COMPLETED</code>, and <code>STOPPED</code>. You can request up to 25 model evaluation jobs be deleted in a single request.</p>"
+      "documentation":"<p>Deletes a batch of evaluation jobs. An evaluation job can only be deleted if it has following status <code>FAILED</code>, <code>COMPLETED</code>, and <code>STOPPED</code>. You can request up to 25 model evaluation jobs be deleted in a single request.</p>"
     },
     "CreateEvaluationJob":{
       "name":"CreateEvaluationJob",
@@ -50,7 +50,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>API operation for creating and managing Amazon Bedrock automatic model evaluation jobs and model evaluation jobs that use human workers. To learn more about the requirements for creating a model evaluation job see, <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation.html\">Model evaluation</a>.</p>",
+      "documentation":"<p>Creates an evaluation job.</p>",
       "idempotent":true
     },
     "CreateGuardrail":{
@@ -371,7 +371,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the properties associated with a model evaluation job, including the status of the job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation.html\">Model evaluation</a>.</p>"
+      "documentation":"<p>Gets information about an evaluation job, such as the status of the job.</p>"
     },
     "GetFoundationModel":{
       "name":"GetFoundationModel",
@@ -583,7 +583,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists model evaluation jobs.</p>"
+      "documentation":"<p>Lists all existing evaluation jobs.</p>"
     },
     "ListFoundationModels":{
       "name":"ListFoundationModels",
@@ -793,7 +793,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Stops an in progress model evaluation job.</p>"
+      "documentation":"<p>Stops an evaluation job that is current being created or running.</p>"
     },
     "StopModelCustomizationJob":{
       "name":"StopModelCustomizationJob",
@@ -929,16 +929,43 @@
       "type":"string",
       "pattern":"[0-9]{12}"
     },
+    "AdditionalModelRequestFields":{
+      "type":"map",
+      "key":{"shape":"AdditionalModelRequestFieldsKey"},
+      "value":{"shape":"AdditionalModelRequestFieldsValue"}
+    },
+    "AdditionalModelRequestFieldsKey":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "AdditionalModelRequestFieldsValue":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true
+    },
+    "ApplicationType":{
+      "type":"string",
+      "enum":[
+        "ModelEvaluation",
+        "RagEvaluation"
+      ]
+    },
     "AutomatedEvaluationConfig":{
       "type":"structure",
       "required":["datasetMetricConfigs"],
       "members":{
         "datasetMetricConfigs":{
           "shape":"EvaluationDatasetMetricConfigs",
-          "documentation":"<p>Specifies the required elements for an automatic model evaluation job.</p>"
+          "documentation":"<p>Configuration details of the prompt datasets and metrics you want to use for your evaluation job.</p>"
+        },
+        "evaluatorModelConfig":{
+          "shape":"EvaluatorModelConfig",
+          "documentation":"<p>Contains the evaluator model configuration details. <code>EvaluatorModelConfig</code> is required for evaluation jobs that use a knowledge base or in model evaluation job that use a model as judge. This model computes all evaluation related metrics.</p>"
         }
       },
-      "documentation":"<p>Use to specify a automatic model evaluation job. The <code>EvaluationDatasetMetricConfig</code> object is used to specify the prompt datasets, task type, and metric names.</p>"
+      "documentation":"<p>The configuration details of an automated evaluation job. The <code>EvaluationDatasetMetricConfig</code> object is used to specify the prompt datasets, task type, and metric names.</p>"
     },
     "BaseModelIdentifier":{
       "type":"string",
@@ -955,18 +982,18 @@
       "members":{
         "jobIdentifier":{
           "shape":"EvaluationJobIdentifier",
-          "documentation":"<p>The ARN of the model evaluation job being deleted.</p>"
+          "documentation":"<p>The ARN of the evaluation job being deleted.</p>"
         },
         "code":{
           "shape":"String",
-          "documentation":"<p>A HTTP status code of the model evaluation job being deleted.</p>"
+          "documentation":"<p>A HTTP status code of the evaluation job being deleted.</p>"
         },
         "message":{
           "shape":"String",
-          "documentation":"<p>A status message about the model evaluation job deletion.</p>"
+          "documentation":"<p>A status message about the evaluation job deletion.</p>"
         }
       },
-      "documentation":"<p>A JSON array that provides the status of the model evaluation jobs being deleted.</p>"
+      "documentation":"<p>A JSON array that provides the status of the evaluation jobs being deleted.</p>"
     },
     "BatchDeleteEvaluationJobErrors":{
       "type":"list",
@@ -983,14 +1010,14 @@
       "members":{
         "jobIdentifier":{
           "shape":"EvaluationJobIdentifier",
-          "documentation":"<p>The ARN of model evaluation job to be deleted.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the evaluation job for deletion.</p>"
         },
         "jobStatus":{
           "shape":"EvaluationJobStatus",
-          "documentation":"<p>The status of the job's deletion.</p>"
+          "documentation":"<p>The status of the evaluation job for deletion.</p>"
         }
       },
-      "documentation":"<p>An array of model evaluation jobs to be deleted, and their associated statuses.</p>"
+      "documentation":"<p>An evaluation job for deletion, and it’s current status.</p>"
     },
     "BatchDeleteEvaluationJobItems":{
       "type":"list",
@@ -1002,7 +1029,7 @@
       "members":{
         "jobIdentifiers":{
           "shape":"EvaluationJobIdentifiers",
-          "documentation":"<p>An array of model evaluation job ARNs to be deleted.</p>"
+          "documentation":"<p>A list of one or more evaluation job Amazon Resource Names (ARNs) you want to delete.</p>"
         }
       }
     },
@@ -1015,13 +1042,36 @@
       "members":{
         "errors":{
           "shape":"BatchDeleteEvaluationJobErrors",
-          "documentation":"<p>A JSON object containing the HTTP status codes and the ARNs of model evaluation jobs that failed to be deleted.</p>"
+          "documentation":"<p>A JSON object containing the HTTP status codes and the ARNs of evaluation jobs that failed to be deleted.</p>"
         },
         "evaluationJobs":{
           "shape":"BatchDeleteEvaluationJobItems",
-          "documentation":"<p>The list of model evaluation jobs to be deleted.</p>"
+          "documentation":"<p>The list of evaluation jobs for deletion.</p>"
         }
       }
+    },
+    "BedrockEvaluatorModel":{
+      "type":"structure",
+      "required":["modelIdentifier"],
+      "members":{
+        "modelIdentifier":{
+          "shape":"EvaluatorModelIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the evaluator model used used in knowledge base evaluation job or in model evaluation job that use a model as judge.</p>"
+        }
+      },
+      "documentation":"<p>The evaluator model used in knowledge base evaluation job or in model evaluation job that use a model as judge. This model computes all evaluation related metrics.</p>"
+    },
+    "BedrockEvaluatorModels":{
+      "type":"list",
+      "member":{"shape":"BedrockEvaluatorModel"},
+      "max":1,
+      "min":1
+    },
+    "BedrockModelArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))))|(arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{1,20}):(|[0-9]{12}):inference-profile/[a-zA-Z0-9-:.]+)|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|(([0-9a-zA-Z][_-]?)+)"
     },
     "BedrockModelId":{
       "type":"string",
@@ -1043,6 +1093,35 @@
       "type":"string",
       "max":63,
       "min":3
+    },
+    "ByteContentBlob":{
+      "type":"blob",
+      "max":10485760,
+      "min":1,
+      "sensitive":true
+    },
+    "ByteContentDoc":{
+      "type":"structure",
+      "required":[
+        "identifier",
+        "contentType",
+        "data"
+      ],
+      "members":{
+        "identifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The file name of the document contained in the wrapper object.</p>"
+        },
+        "contentType":{
+          "shape":"ContentType",
+          "documentation":"<p>The MIME type of the document contained in the wrapper object.</p>"
+        },
+        "data":{
+          "shape":"ByteContentBlob",
+          "documentation":"<p>The byte value of the file to upload, encoded as a Base-64 string.</p>"
+        }
+      },
+      "documentation":"<p>Contains the document contained in the wrapper object, along with its attributes/fields.</p>"
     },
     "CloudWatchConfig":{
       "type":"structure",
@@ -1085,6 +1164,10 @@
       },
       "exception":true
     },
+    "ContentType":{
+      "type":"string",
+      "pattern":".*[a-z]{1,20}/.{1,20}.*"
+    },
     "CreateEvaluationJobRequest":{
       "type":"structure",
       "required":[
@@ -1097,11 +1180,11 @@
       "members":{
         "jobName":{
           "shape":"EvaluationJobName",
-          "documentation":"<p>The name of the model evaluation job. Model evaluation job names must unique with your AWS account, and your account's AWS region.</p>"
+          "documentation":"<p>A name for the evaluation job. Names must unique with your Amazon Web Services account, and your account's Amazon Web Services region.</p>"
         },
         "jobDescription":{
           "shape":"EvaluationJobDescription",
-          "documentation":"<p>A description of the model evaluation job.</p>"
+          "documentation":"<p>A description of the evaluation job.</p>"
         },
         "clientRequestToken":{
           "shape":"IdempotencyToken",
@@ -1110,27 +1193,31 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM service role that Amazon Bedrock can assume to perform tasks on your behalf. The service role must have Amazon Bedrock as the service principal, and provide access to any Amazon S3 buckets specified in the <code>EvaluationConfig</code> object. To pass this role to Amazon Bedrock, the caller of this API must have the <code>iam:PassRole</code> permission. To learn more about the required permissions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-security.html\">Required permissions</a>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM service role that Amazon Bedrock can assume to perform tasks on your behalf. To learn more about the required permissions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-security.html\">Required permissions for model evaluations</a>.</p>"
         },
         "customerEncryptionKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>Specify your customer managed key ARN that will be used to encrypt your model evaluation job.</p>"
+          "documentation":"<p>Specify your customer managed encryption key Amazon Resource Name (ARN) that will be used to encrypt your evaluation job.</p>"
         },
         "jobTags":{
           "shape":"TagList",
           "documentation":"<p>Tags to attach to the model evaluation job.</p>"
         },
+        "applicationType":{
+          "shape":"ApplicationType",
+          "documentation":"<p>Specifies whether the evaluation job is for evaluating a model or evaluating a knowledge base (retrieval and response generation).</p>"
+        },
         "evaluationConfig":{
           "shape":"EvaluationConfig",
-          "documentation":"<p>Specifies whether the model evaluation job is automatic or uses human worker.</p>"
+          "documentation":"<p>Contains the configuration details of either an automated or human-based evaluation job.</p>"
         },
         "inferenceConfig":{
           "shape":"EvaluationInferenceConfig",
-          "documentation":"<p>Specify the models you want to use in your model evaluation job. Automatic model evaluation jobs support a single model or <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">inference profile</a>, and model evaluation job that use human workers support two models or inference profiles.</p>"
+          "documentation":"<p>Contains the configuration details of the inference model for the evaluation job.</p> <p>For model evaluation jobs, automated jobs support a single model or <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">inference profile</a>, and jobs that use human workers support two models or inference profiles.</p>"
         },
         "outputDataConfig":{
           "shape":"EvaluationOutputDataConfig",
-          "documentation":"<p>An object that defines where the results of model evaluation job will be saved in Amazon S3.</p>"
+          "documentation":"<p>Contains the configuration details of the Amazon S3 bucket for storing the results of the evaluation job.</p>"
         }
       }
     },
@@ -1140,7 +1227,7 @@
       "members":{
         "jobArn":{
           "shape":"EvaluationJobArn",
-          "documentation":"<p>The ARN of the model evaluation job.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the evaluation job.</p>"
         }
       }
     },
@@ -1772,10 +1859,7 @@
     },
     "EvaluationBedrockModel":{
       "type":"structure",
-      "required":[
-        "modelIdentifier",
-        "inferenceParams"
-      ],
+      "required":["modelIdentifier"],
       "members":{
         "modelIdentifier":{
           "shape":"EvaluationModelIdentifier",
@@ -1786,21 +1870,21 @@
           "documentation":"<p>Each Amazon Bedrock support different inference parameters that change how the model behaves during inference.</p>"
         }
       },
-      "documentation":"<p>Contains the ARN of the Amazon Bedrock model or <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">inference profile</a> specified in your model evaluation job. Each Amazon Bedrock model supports different <code>inferenceParams</code>. To learn more about supported inference parameters for Amazon Bedrock models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p> <p>The <code>inferenceParams</code> are specified using JSON. To successfully insert JSON as string make sure that all quotations are properly escaped. For example, <code>\"temperature\":\"0.25\"</code> key value pair would need to be formatted as <code>\\\"temperature\\\":\\\"0.25\\\"</code> to successfully accepted in the request.</p>"
+      "documentation":"<p>Contains the ARN of the Amazon Bedrock model or <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">inference profile</a> specified in your evaluation job. Each Amazon Bedrock model supports different <code>inferenceParams</code>. To learn more about supported inference parameters for Amazon Bedrock models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p> <p>The <code>inferenceParams</code> are specified using JSON. To successfully insert JSON as string make sure that all quotations are properly escaped. For example, <code>\"temperature\":\"0.25\"</code> key value pair would need to be formatted as <code>\\\"temperature\\\":\\\"0.25\\\"</code> to successfully accepted in the request.</p>"
     },
     "EvaluationConfig":{
       "type":"structure",
       "members":{
         "automated":{
           "shape":"AutomatedEvaluationConfig",
-          "documentation":"<p>Used to specify an automated model evaluation job. See <code>AutomatedEvaluationConfig</code> to view the required parameters.</p>"
+          "documentation":"<p>Contains the configuration details of an automated evaluation job that computes metrics.</p>"
         },
         "human":{
           "shape":"HumanEvaluationConfig",
-          "documentation":"<p>Used to specify a model evaluation job that uses human workers.See <code>HumanEvaluationConfig</code> to view the required parameters.</p>"
+          "documentation":"<p>Contains the configuration details of an evaluation job that uses human workers.</p>"
         }
       },
-      "documentation":"<p>Used to specify either a <code>AutomatedEvaluationConfig</code> or <code>HumanEvaluationConfig</code> object.</p>",
+      "documentation":"<p>The configuration details of either an automated or human-based evaluation job.</p>",
       "union":true
     },
     "EvaluationDataset":{
@@ -1839,7 +1923,7 @@
       "members":{
         "taskType":{
           "shape":"EvaluationTaskType",
-          "documentation":"<p>The task type you want the model to carry out. </p>"
+          "documentation":"<p>The the type of task you want to evaluate for your evaluation job. This applies only to model evaluation jobs and is ignored for knowledge base evaluation jobs.</p>"
         },
         "dataset":{
           "shape":"EvaluationDataset",
@@ -1847,10 +1931,10 @@
         },
         "metricNames":{
           "shape":"EvaluationMetricNames",
-          "documentation":"<p>The names of the metrics used. For automated model evaluation jobs valid values are <code>\"Builtin.Accuracy\"</code>, <code>\"Builtin.Robustness\"</code>, and <code>\"Builtin.Toxicity\"</code>. In human-based model evaluation jobs the array of strings must match the <code>name</code> parameter specified in <code>HumanEvaluationCustomMetric</code>. </p>"
+          "documentation":"<p>The names of the metrics you want to use for your evaluation job.</p> <p>For knowledge base evaluation jobs that evaluate retrieval only, valid values are \"<code>Builtin.ContextRelevance</code>\", \"<code>Builtin.ContextConverage</code>\".</p> <p>For knowledge base evaluation jobs that evaluate retrieval with response generation, valid values are \"<code>Builtin.Correctness</code>\", \"<code>Builtin.Completeness</code>\", \"<code>Builtin.Helpfulness</code>\", \"<code>Builtin.LogicalCoherence</code>\", \"<code>Builtin.Faithfulness</code>\", \"<code>Builtin.Harmfulness</code>\", \"<code>Builtin.Stereotyping</code>\", \"<code>Builtin.Refusal</code>\".</p> <p>For automated model evaluation jobs, valid values are \"<code>Builtin.Accuracy</code>\", \"<code>Builtin.Robustness</code>\", and \"<code>Builtin.Toxicity</code>\". In model evaluation jobs that use a LLM as judge you can specify \"<code>Builtin.Correctness</code>\", \"<code>Builtin.Completeness\"</code>, \"<code>Builtin.Faithfulness\"</code>, \"<code>Builtin.Helpfulness</code>\", \"<code>Builtin.Coherence</code>\", \"<code>Builtin.Relevance</code>\", \"<code>Builtin.FollowingInstructions</code>\", \"<code>Builtin.ProfessionalStyleAndTone</code>\", You can also specify the following responsible AI related metrics only for model evaluation job that use a LLM as judge \"<code>Builtin.Harmfulness</code>\", \"<code>Builtin.Stereotyping</code>\", and \"<code>Builtin.Refusal</code>\".</p> <p>For human-based model evaluation jobs, the list of strings must match the <code>name</code> parameter specified in <code>HumanEvaluationCustomMetric</code>.</p>"
         }
       },
-      "documentation":"<p>Defines the built-in prompt datasets, built-in metric names and custom metric names, and the task type.</p>"
+      "documentation":"<p>Defines the prompt datasets, built-in metric names and custom metric names, and the task type.</p>"
     },
     "EvaluationDatasetMetricConfigs":{
       "type":"list",
@@ -1870,10 +1954,14 @@
       "members":{
         "models":{
           "shape":"EvaluationModelConfigs",
-          "documentation":"<p>Used to specify the models.</p>"
+          "documentation":"<p>Specifies the inference models.</p>"
+        },
+        "ragConfigs":{
+          "shape":"RagConfigs",
+          "documentation":"<p>Contains the configuration details of the inference for a knowledge base evaluation job, including either the retrieval only configuration or the retrieval with response generation configuration.</p>"
         }
       },
-      "documentation":"<p>Used to define the models you want used in your model evaluation job. Automated model evaluation jobs support only a single model. In a human-based model evaluation job, your annotator can compare the responses for up to two different models.</p>",
+      "documentation":"<p>The configuration details of the inference model for an evaluation job.</p> <p>For automated model evaluation jobs, only a single model is supported.</p> <p>For human-based model evaluation jobs, your annotator can compare the responses for up to two different models.</p>",
       "union":true
     },
     "EvaluationJobArn":{
@@ -1943,7 +2031,7 @@
     "EvaluationMetricNames":{
       "type":"list",
       "member":{"shape":"EvaluationMetricName"},
-      "max":10,
+      "max":15,
       "min":1
     },
     "EvaluationModelConfig":{
@@ -1973,7 +2061,7 @@
       "type":"list",
       "member":{"shape":"EvaluationModelIdentifier"},
       "max":2,
-      "min":1
+      "min":0
     },
     "EvaluationModelInferenceParams":{
       "type":"string",
@@ -1987,10 +2075,10 @@
       "members":{
         "s3Uri":{
           "shape":"S3Uri",
-          "documentation":"<p>The Amazon S3 URI where the results of model evaluation job are saved.</p>"
+          "documentation":"<p>The Amazon S3 URI where the results of the evaluation job are saved.</p>"
         }
       },
-      "documentation":"<p>The Amazon S3 location where the results of your model evaluation job are saved.</p>"
+      "documentation":"<p>The Amazon S3 location where the results of your evaluation job are saved.</p>"
     },
     "EvaluationRatingMethod":{
       "type":"string",
@@ -2012,40 +2100,51 @@
         "status",
         "creationTime",
         "jobType",
-        "evaluationTaskTypes",
-        "modelIdentifiers"
+        "evaluationTaskTypes"
       ],
       "members":{
         "jobArn":{
           "shape":"EvaluationJobArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the model evaluation job.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the evaluation job.</p>"
         },
         "jobName":{
           "shape":"EvaluationJobName",
-          "documentation":"<p>The name of the model evaluation job.</p>"
+          "documentation":"<p>The name for the evaluation job.</p>"
         },
         "status":{
           "shape":"EvaluationJobStatus",
-          "documentation":"<p>The current status of the model evaluation job. </p>"
+          "documentation":"<p>The current status of the evaluation job.</p>"
         },
         "creationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>When the model evaluation job was created.</p>"
+          "documentation":"<p>The time the evaluation job was created.</p>"
         },
         "jobType":{
           "shape":"EvaluationJobType",
-          "documentation":"<p>The type, either human or automatic, of model evaluation job.</p>"
+          "documentation":"<p>Specifies whether the evaluation job is automated or human-based.</p>"
         },
         "evaluationTaskTypes":{
           "shape":"EvaluationTaskTypes",
-          "documentation":"<p>What task type was used in the model evaluation job.</p>"
+          "documentation":"<p>The type of task for model evaluation.</p>"
         },
         "modelIdentifiers":{
           "shape":"EvaluationModelIdentifiers",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the model(s) used in the model evaluation job.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the model(s) used for the evaluation job.</p>"
+        },
+        "ragIdentifiers":{
+          "shape":"RAGIdentifiers",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the knowledge base resources used for a knowledge base evaluation job.</p>"
+        },
+        "evaluatorModelIdentifiers":{
+          "shape":"EvaluatorModelIdentifiers",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the models used to compute the metrics for a knowledge base evaluation job.</p>"
+        },
+        "applicationType":{
+          "shape":"ApplicationType",
+          "documentation":"<p>Specifies whether the evaluation job is for evaluating a model or evaluating a knowledge base (retrieval and response generation).</p>"
         }
       },
-      "documentation":"<p>A summary of the model evaluation job.</p>"
+      "documentation":"<p>Summary information of an evaluation job.</p>"
     },
     "EvaluationTaskType":{
       "type":"string",
@@ -2065,6 +2164,134 @@
       "member":{"shape":"EvaluationTaskType"},
       "max":5,
       "min":1
+    },
+    "EvaluatorModelConfig":{
+      "type":"structure",
+      "members":{
+        "bedrockEvaluatorModels":{
+          "shape":"BedrockEvaluatorModels",
+          "documentation":"<p>The evaluator model used in knowledge base evaluation job or in model evaluation job that use a model as judge. This model computes all evaluation related metrics.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the model configuration for the evaluator model. <code>EvaluatorModelConfig</code> is required for evaluation jobs that use a knowledge base or in model evaluation job that use a model as judge. This model computes all evaluation related metrics.</p>",
+      "union":true
+    },
+    "EvaluatorModelIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}$|(^[a-z0-9-]+[.][a-z0-9-]+([.][a-z0-9-]+)*(:[a-z0-9-]+)?$)|^[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12}|)"
+    },
+    "EvaluatorModelIdentifiers":{
+      "type":"list",
+      "member":{"shape":"EvaluatorModelIdentifier"},
+      "max":1,
+      "min":0
+    },
+    "ExternalSource":{
+      "type":"structure",
+      "required":["sourceType"],
+      "members":{
+        "sourceType":{
+          "shape":"ExternalSourceType",
+          "documentation":"<p>The source type of the external source wrapper object.</p>"
+        },
+        "s3Location":{
+          "shape":"S3ObjectDoc",
+          "documentation":"<p>The S3 location of the external source wrapper object.</p>"
+        },
+        "byteContent":{
+          "shape":"ByteContentDoc",
+          "documentation":"<p>The identifier, content type, and data of the external source wrapper object.</p>"
+        }
+      },
+      "documentation":"<p>The unique external source of the content contained in the wrapper object.</p>"
+    },
+    "ExternalSourceType":{
+      "type":"string",
+      "enum":[
+        "S3",
+        "BYTE_CONTENT"
+      ]
+    },
+    "ExternalSources":{
+      "type":"list",
+      "member":{"shape":"ExternalSource"},
+      "max":1,
+      "min":1
+    },
+    "ExternalSourcesGenerationConfiguration":{
+      "type":"structure",
+      "members":{
+        "promptTemplate":{
+          "shape":"PromptTemplate",
+          "documentation":"<p>Contains the template for the prompt for the external source wrapper object.</p>"
+        },
+        "guardrailConfiguration":{
+          "shape":"GuardrailConfiguration",
+          "documentation":"<p>Configuration details for the guardrail.</p>"
+        },
+        "kbInferenceConfig":{
+          "shape":"KbInferenceConfig",
+          "documentation":"<p>Configuration details for inference when using <code>RetrieveAndGenerate</code> to generate responses while using an external source.</p>"
+        },
+        "additionalModelRequestFields":{
+          "shape":"AdditionalModelRequestFields",
+          "documentation":"<p>Additional model parameters and their corresponding values not included in the text inference configuration for an external source. Takes in custom model parameters specific to the language model being used.</p>"
+        }
+      },
+      "documentation":"<p>The response generation configuration of the external source wrapper object.</p>"
+    },
+    "ExternalSourcesRetrieveAndGenerateConfiguration":{
+      "type":"structure",
+      "required":[
+        "modelArn",
+        "sources"
+      ],
+      "members":{
+        "modelArn":{
+          "shape":"BedrockModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the foundation model or <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">inference profile</a> used to generate responses. </p>"
+        },
+        "sources":{
+          "shape":"ExternalSources",
+          "documentation":"<p>The document for the external source wrapper object in the <code>retrieveAndGenerate</code> function.</p>"
+        },
+        "generationConfiguration":{
+          "shape":"ExternalSourcesGenerationConfiguration",
+          "documentation":"<p>Contains configurations details for response generation based on retrieved text chunks.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the external source wrapper object in the <code>retrieveAndGenerate</code> function.</p>"
+    },
+    "FilterAttribute":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"FilterKey",
+          "documentation":"<p>The name of metadata attribute/field, which must match the name in your data source/document metadata.</p>"
+        },
+        "value":{
+          "shape":"FilterValue",
+          "documentation":"<p>The value of the metadata attribute/field.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the name of the metadata attribute/field to apply filters. You must match the name of the attribute/field in your data source/document metadata.</p>"
+    },
+    "FilterKey":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "FilterValue":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true
     },
     "FineTuningJobStatus":{
       "type":"string",
@@ -2202,6 +2429,28 @@
       "type":"list",
       "member":{"shape":"FoundationModelSummary"}
     },
+    "GenerationConfiguration":{
+      "type":"structure",
+      "members":{
+        "promptTemplate":{
+          "shape":"PromptTemplate",
+          "documentation":"<p>Contains the template for the prompt that's sent to the model for response generation.</p>"
+        },
+        "guardrailConfiguration":{
+          "shape":"GuardrailConfiguration",
+          "documentation":"<p>Contains configuration details for the guardrail.</p>"
+        },
+        "kbInferenceConfig":{
+          "shape":"KbInferenceConfig",
+          "documentation":"<p>Contains configuration details for inference for knowledge base retrieval and response generation.</p>"
+        },
+        "additionalModelRequestFields":{
+          "shape":"AdditionalModelRequestFields",
+          "documentation":"<p>Additional model parameters and corresponding values not included in the <code>textInferenceConfig</code> structure for a knowledge base. This allows you to provide custom model parameters specific to the language model being used.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for response generation based on retrieved text chunks.</p>"
+    },
     "GetCustomModelRequest":{
       "type":"structure",
       "required":["modelIdentifier"],
@@ -2290,7 +2539,7 @@
       "members":{
         "jobIdentifier":{
           "shape":"EvaluationJobIdentifier",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the model evaluation job.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the evaluation job you want get information on.</p>",
           "location":"uri",
           "locationName":"jobIdentifier"
         }
@@ -2312,55 +2561,59 @@
       "members":{
         "jobName":{
           "shape":"EvaluationJobName",
-          "documentation":"<p>The name of the model evaluation job.</p>"
+          "documentation":"<p>The name for the evaluation job.</p>"
         },
         "status":{
           "shape":"EvaluationJobStatus",
-          "documentation":"<p>The status of the model evaluation job.</p>"
+          "documentation":"<p>The current status of the evaluation job.</p>"
         },
         "jobArn":{
           "shape":"EvaluationJobArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the model evaluation job.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the evaluation job.</p>"
         },
         "jobDescription":{
           "shape":"EvaluationJobDescription",
-          "documentation":"<p>The description of the model evaluation job.</p>"
+          "documentation":"<p>The description of the evaluation job.</p>"
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role used in the model evaluation job.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role used in the evaluation job.</p>"
         },
         "customerEncryptionKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed key specified when the model evaluation job was created.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed encryption key specified when the evaluation job was created.</p>"
         },
         "jobType":{
           "shape":"EvaluationJobType",
-          "documentation":"<p>The type of model evaluation job.</p>"
+          "documentation":"<p>Specifies whether the evaluation job is automated or human-based.</p>"
+        },
+        "applicationType":{
+          "shape":"ApplicationType",
+          "documentation":"<p>Specifies whether the evaluation job is for evaluating a model or evaluating a knowledge base (retrieval and response generation).</p>"
         },
         "evaluationConfig":{
           "shape":"EvaluationConfig",
-          "documentation":"<p>Contains details about the type of model evaluation job, the metrics used, the task type selected, the datasets used, and any custom metrics you defined.</p>"
+          "documentation":"<p>Contains the configuration details of either an automated or human-based evaluation job.</p>"
         },
         "inferenceConfig":{
           "shape":"EvaluationInferenceConfig",
-          "documentation":"<p>Details about the models you specified in your model evaluation job.</p>"
+          "documentation":"<p>Contains the configuration details of the inference model used for the evaluation job. </p>"
         },
         "outputDataConfig":{
           "shape":"EvaluationOutputDataConfig",
-          "documentation":"<p>Amazon S3 location for where output data is saved.</p>"
+          "documentation":"<p>Contains the configuration details of the Amazon S3 bucket for storing the results of the evaluation job.</p>"
         },
         "creationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>When the model evaluation job was created.</p>"
+          "documentation":"<p>The time the evaluation job was created.</p>"
         },
         "lastModifiedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>When the model evaluation job was last modified.</p>"
+          "documentation":"<p>The time the evaluation job was last modified.</p>"
         },
         "failureMessages":{
           "shape":"ErrorMessages",
-          "documentation":"<p>An array of strings the specify why the model evaluation job has failed.</p>"
+          "documentation":"<p>A list of strings that specify why the evaluation job failed to create.</p>"
         }
       }
     },
@@ -3047,6 +3300,36 @@
       "max":500,
       "min":1,
       "sensitive":true
+    },
+    "GuardrailConfiguration":{
+      "type":"structure",
+      "required":[
+        "guardrailId",
+        "guardrailVersion"
+      ],
+      "members":{
+        "guardrailId":{
+          "shape":"GuardrailConfigurationGuardrailIdString",
+          "documentation":"<p>The unique identifier for the guardrail.</p>"
+        },
+        "guardrailVersion":{
+          "shape":"GuardrailConfigurationGuardrailVersionString",
+          "documentation":"<p>The version of the guardrail.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for the guardrail.</p>"
+    },
+    "GuardrailConfigurationGuardrailIdString":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":"[a-z0-9]+"
+    },
+    "GuardrailConfigurationGuardrailVersionString":{
+      "type":"string",
+      "max":5,
+      "min":1,
+      "pattern":"(([1-9][0-9]{0,7})|(DRAFT))"
     },
     "GuardrailContentFilter":{
       "type":"structure",
@@ -3867,6 +4150,12 @@
       "min":1,
       "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9])*"
     },
+    "Identifier":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "sensitive":true
+    },
     "ImportedModelArn":{
       "type":"string",
       "max":1011,
@@ -4080,6 +4369,16 @@
       "min":1,
       "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9\\+\\-\\.])*"
     },
+    "KbInferenceConfig":{
+      "type":"structure",
+      "members":{
+        "textInferenceConfig":{
+          "shape":"TextInferenceConfig",
+          "documentation":"<p>Contains configuration details for text generation using a language model via the <code>RetrieveAndGenerate</code> function.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration details of the inference for knowledge base retrieval and response generation.</p>"
+    },
     "KeyPrefix":{
       "type":"string",
       "max":1024,
@@ -4096,6 +4395,92 @@
       "max":2048,
       "min":1,
       "pattern":"(arn:aws(-[^:]+)?:kms:[a-zA-Z0-9-]*:[0-9]{12}:((key/[a-zA-Z0-9-]{36})|(alias/[a-zA-Z0-9-_/]+)))|([a-zA-Z0-9-]{36})|(alias/[a-zA-Z0-9-_/]+)"
+    },
+    "KnowledgeBaseConfig":{
+      "type":"structure",
+      "members":{
+        "retrieveConfig":{
+          "shape":"RetrieveConfig",
+          "documentation":"<p>Contains configuration details for retrieving information from a knowledge base.</p>"
+        },
+        "retrieveAndGenerateConfig":{
+          "shape":"RetrieveAndGenerateConfiguration",
+          "documentation":"<p>Contains configuration details for retrieving information from a knowledge base and generating responses.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for retrieving information from a knowledge base and generating responses.</p>",
+      "union":true
+    },
+    "KnowledgeBaseId":{
+      "type":"string",
+      "max":10,
+      "min":0,
+      "pattern":"[0-9a-zA-Z]+"
+    },
+    "KnowledgeBaseRetrievalConfiguration":{
+      "type":"structure",
+      "required":["vectorSearchConfiguration"],
+      "members":{
+        "vectorSearchConfiguration":{
+          "shape":"KnowledgeBaseVectorSearchConfiguration",
+          "documentation":"<p>Contains configuration details for returning the results from the vector search.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration details for retrieving information from a knowledge base.</p>"
+    },
+    "KnowledgeBaseRetrieveAndGenerateConfiguration":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseId",
+        "modelArn"
+      ],
+      "members":{
+        "knowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier of the knowledge base.</p>"
+        },
+        "modelArn":{
+          "shape":"BedrockModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the foundation model or <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">inference profile</a> used to generate responses.</p>"
+        },
+        "retrievalConfiguration":{
+          "shape":"KnowledgeBaseRetrievalConfiguration",
+          "documentation":"<p>Contains configuration details for retrieving text chunks.</p>"
+        },
+        "generationConfiguration":{
+          "shape":"GenerationConfiguration",
+          "documentation":"<p>Contains configurations details for response generation based on retrieved text chunks.</p>"
+        },
+        "orchestrationConfiguration":{
+          "shape":"OrchestrationConfiguration",
+          "documentation":"<p>Contains configuration details for the model to process the prompt prior to retrieval and response generation.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration details for retrieving information from a knowledge base and generating responses.</p>"
+    },
+    "KnowledgeBaseVectorSearchConfiguration":{
+      "type":"structure",
+      "members":{
+        "numberOfResults":{
+          "shape":"KnowledgeBaseVectorSearchConfigurationNumberOfResultsInteger",
+          "documentation":"<p>The number of text chunks to retrieve; the number of results to return.</p>"
+        },
+        "overrideSearchType":{
+          "shape":"SearchType",
+          "documentation":"<p>By default, Amazon Bedrock decides a search strategy for you. If you're using an Amazon OpenSearch Serverless vector store that contains a filterable text field, you can specify whether to query the knowledge base with a <code>HYBRID</code> search using both vector embeddings and raw text, or <code>SEMANTIC</code> search using only vector embeddings. For other vector store configurations, only <code>SEMANTIC</code> search is available.</p>"
+        },
+        "filter":{
+          "shape":"RetrievalFilter",
+          "documentation":"<p>Specifies the filters to use on the metadata fields in the knowledge base data sources before returning results.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for returning the results from the knowledge base vector search.</p>"
+    },
+    "KnowledgeBaseVectorSearchConfigurationNumberOfResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
     },
     "ListCustomModelsRequest":{
       "type":"structure",
@@ -4180,25 +4565,31 @@
       "members":{
         "creationTimeAfter":{
           "shape":"Timestamp",
-          "documentation":"<p>A filter that includes model evaluation jobs created after the time specified.</p>",
+          "documentation":"<p>A filter to only list evaluation jobs created after a specified time.</p>",
           "location":"querystring",
           "locationName":"creationTimeAfter"
         },
         "creationTimeBefore":{
           "shape":"Timestamp",
-          "documentation":"<p>A filter that includes model evaluation jobs created prior to the time specified.</p>",
+          "documentation":"<p>A filter to only list evaluation jobs created before a specified time.</p>",
           "location":"querystring",
           "locationName":"creationTimeBefore"
         },
         "statusEquals":{
           "shape":"EvaluationJobStatus",
-          "documentation":"<p>Only return jobs where the status condition is met.</p>",
+          "documentation":"<p>A filter to only list evaluation jobs that are of a certain status.</p>",
           "location":"querystring",
           "locationName":"statusEquals"
         },
+        "applicationTypeEquals":{
+          "shape":"ApplicationType",
+          "documentation":"<p>A filter to only list evaluation jobs that are either model evaluations or knowledge base evaluations.</p>",
+          "location":"querystring",
+          "locationName":"applicationTypeEquals"
+        },
         "nameContains":{
           "shape":"EvaluationJobName",
-          "documentation":"<p>Query parameter string for model evaluation job names.</p>",
+          "documentation":"<p>A filter to only list evaluation jobs that contain a specified string in the job name.</p>",
           "location":"querystring",
           "locationName":"nameContains"
         },
@@ -4216,13 +4607,13 @@
         },
         "sortBy":{
           "shape":"SortJobsBy",
-          "documentation":"<p>Allows you to sort model evaluation jobs by when they were created.</p>",
+          "documentation":"<p>Specifies a creation time to sort the list of evaluation jobs by when they were created.</p>",
           "location":"querystring",
           "locationName":"sortBy"
         },
         "sortOrder":{
           "shape":"SortOrder",
-          "documentation":"<p>How you want the order of jobs sorted.</p>",
+          "documentation":"<p>Specifies whether to sort the list of evaluation jobs by either ascending or descending order.</p>",
           "location":"querystring",
           "locationName":"sortOrder"
         }
@@ -4237,7 +4628,7 @@
         },
         "jobSummaries":{
           "shape":"EvaluationSummaries",
-          "documentation":"<p>A summary of the model evaluation jobs.</p>"
+          "documentation":"<p>A list of summaries of the evaluation jobs.</p>"
         }
       }
     },
@@ -4816,6 +5207,12 @@
       "max":1000,
       "min":1
     },
+    "MaxTokens":{
+      "type":"integer",
+      "box":true,
+      "max":65536,
+      "min":0
+    },
     "Message":{
       "type":"string",
       "max":2048,
@@ -5301,6 +5698,17 @@
       "type":"string",
       "pattern":"[\\s\\S]*"
     },
+    "OrchestrationConfiguration":{
+      "type":"structure",
+      "required":["queryTransformationConfiguration"],
+      "members":{
+        "queryTransformationConfiguration":{
+          "shape":"QueryTransformationConfiguration",
+          "documentation":"<p>Contains configuration details for transforming the prompt.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for the model to process the prompt prior to retrieval and response generation.</p>"
+    },
     "OutputDataConfig":{
       "type":"structure",
       "required":["s3Uri"],
@@ -5322,6 +5730,16 @@
       "type":"integer",
       "box":true,
       "min":1
+    },
+    "PromptTemplate":{
+      "type":"structure",
+      "members":{
+        "textPromptTemplate":{
+          "shape":"TextPromptTemplate",
+          "documentation":"<p>The template for the prompt that's sent to the model for response generation. You can include prompt placeholders, which become replaced before the prompt is sent to the model to provide instructions and context to the model. In addition, you can include XML tags to delineate meaningful sections of the prompt template.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html\">Knowledge base prompt template</a> and <a href=\"https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/use-xml-tags\">Use XML tags with Anthropic Claude models</a>.</p>"
+        }
+      },
+      "documentation":"<p>The template for the prompt that's sent to the model for response generation.</p>"
     },
     "Provider":{
       "type":"string",
@@ -5435,6 +5853,55 @@
       "members":{
       }
     },
+    "QueryTransformationConfiguration":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"QueryTransformationType",
+          "documentation":"<p>The type of transformation to apply to the prompt.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for transforming the prompt.</p>"
+    },
+    "QueryTransformationType":{
+      "type":"string",
+      "enum":["QUERY_DECOMPOSITION"]
+    },
+    "RAGConfig":{
+      "type":"structure",
+      "members":{
+        "knowledgeBaseConfig":{
+          "shape":"KnowledgeBaseConfig",
+          "documentation":"<p>Contains configuration details for knowledge base retrieval and response generation.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration details for retrieval of information and response generation.</p>",
+      "union":true
+    },
+    "RAGIdentifiers":{
+      "type":"list",
+      "member":{"shape":"KnowledgeBaseId"},
+      "max":1,
+      "min":0
+    },
+    "RAGStopSequences":{
+      "type":"list",
+      "member":{"shape":"RAGStopSequencesMemberString"},
+      "max":4,
+      "min":0
+    },
+    "RAGStopSequencesMemberString":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
+    "RagConfigs":{
+      "type":"list",
+      "member":{"shape":"RAGConfig"},
+      "max":1,
+      "min":1
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -5446,6 +5913,115 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "RetrievalFilter":{
+      "type":"structure",
+      "members":{
+        "equals":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources are returned if they contain a metadata attribute whose name matches the key and whose value matches the value in this object.</p> <p>The following example would return data sources with an animal attribute whose value is 'cat': <code>\"equals\": { \"key\": \"animal\", \"value\": \"cat\" }</code> </p>"
+        },
+        "notEquals":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources that contain a metadata attribute whose name matches the key and whose value doesn't match the value in this object are returned.</p> <p>The following example would return data sources that don't contain an animal attribute whose value is 'cat': <code>\"notEquals\": { \"key\": \"animal\", \"value\": \"cat\" }</code> </p>"
+        },
+        "greaterThan":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources are returned if they contain a metadata attribute whose name matches the key and whose value is greater than the value in this object.</p> <p>The following example would return data sources with an year attribute whose value is greater than '1989': <code>\"greaterThan\": { \"key\": \"year\", \"value\": 1989 }</code> </p>"
+        },
+        "greaterThanOrEquals":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources are returned if they contain a metadata attribute whose name matches the key and whose value is greater than or equal to the value in this object.</p> <p>The following example would return data sources with an year attribute whose value is greater than or equal to '1989': <code>\"greaterThanOrEquals\": { \"key\": \"year\", \"value\": 1989 }</code> </p>"
+        },
+        "lessThan":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources are returned if they contain a metadata attribute whose name matches the key and whose value is less than the value in this object.</p> <p>The following example would return data sources with an year attribute whose value is less than to '1989': <code>\"lessThan\": { \"key\": \"year\", \"value\": 1989 }</code> </p>"
+        },
+        "lessThanOrEquals":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources are returned if they contain a metadata attribute whose name matches the key and whose value is less than or equal to the value in this object.</p> <p>The following example would return data sources with an year attribute whose value is less than or equal to '1989': <code>\"lessThanOrEquals\": { \"key\": \"year\", \"value\": 1989 }</code> </p>"
+        },
+        "in":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources are returned if they contain a metadata attribute whose name matches the key and whose value is in the list specified in the value in this object.</p> <p>The following example would return data sources with an animal attribute that is either 'cat' or 'dog': <code>\"in\": { \"key\": \"animal\", \"value\": [\"cat\", \"dog\"] }</code> </p>"
+        },
+        "notIn":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources are returned if they contain a metadata attribute whose name matches the key and whose value isn't in the list specified in the value in this object.</p> <p>The following example would return data sources whose animal attribute is neither 'cat' nor 'dog': <code>\"notIn\": { \"key\": \"animal\", \"value\": [\"cat\", \"dog\"] }</code> </p>"
+        },
+        "startsWith":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources are returned if they contain a metadata attribute whose name matches the key and whose value starts with the value in this object. This filter is currently only supported for Amazon OpenSearch Serverless vector stores.</p> <p>The following example would return data sources with an animal attribute starts with 'ca' (for example, 'cat' or 'camel'). <code>\"startsWith\": { \"key\": \"animal\", \"value\": \"ca\" }</code> </p>"
+        },
+        "listContains":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources are returned if they contain a metadata attribute whose name matches the key and whose value is a list that contains the value as one of its members.</p> <p>The following example would return data sources with an animals attribute that is a list containing a cat member (for example, <code>[\"dog\", \"cat\"]</code>): <code>\"listContains\": { \"key\": \"animals\", \"value\": \"cat\" }</code> </p>"
+        },
+        "stringContains":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources are returned if they contain a metadata attribute whose name matches the key and whose value is one of the following:</p> <p>A string that contains the value as a substring. The following example would return data sources with an animal attribute that contains the substring at (for example, 'cat'): <code>\"stringContains\": { \"key\": \"animal\", \"value\": \"at\" }</code> </p> <p>A list with a member that contains the value as a substring. The following example would return data sources with an animals attribute that is a list containing a member that contains the substring at (for example, <code>[\"dog\", \"cat\"]</code>): <code>\"stringContains\": { \"key\": \"animals\", \"value\": \"at\" }</code> </p>"
+        },
+        "andAll":{
+          "shape":"RetrievalFilterList",
+          "documentation":"<p>Knowledge base data sources are returned if their metadata attributes fulfill all the filter conditions inside this list.</p>"
+        },
+        "orAll":{
+          "shape":"RetrievalFilterList",
+          "documentation":"<p>Knowledge base data sources are returned if their metadata attributes fulfill at least one of the filter conditions inside this list.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the filters to use on the metadata attributes/fields in the knowledge base data sources before returning results.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "RetrievalFilterList":{
+      "type":"list",
+      "member":{"shape":"RetrievalFilter"},
+      "min":2
+    },
+    "RetrieveAndGenerateConfiguration":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"RetrieveAndGenerateType",
+          "documentation":"<p>The type of resource that contains your data for retrieving information and generating responses.</p> <p>If you choose to use <code>EXTERNAL_SOURCES</code>, then currently only Claude 3 Sonnet models for knowledge bases are supported.</p>"
+        },
+        "knowledgeBaseConfiguration":{
+          "shape":"KnowledgeBaseRetrieveAndGenerateConfiguration",
+          "documentation":"<p>Contains configuration details for the knowledge base retrieval and response generation.</p>"
+        },
+        "externalSourcesConfiguration":{
+          "shape":"ExternalSourcesRetrieveAndGenerateConfiguration",
+          "documentation":"<p>The configuration for the external source wrapper object in the <code>retrieveAndGenerate</code> function.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration details for a knowledge base retrieval and response generation.</p>"
+    },
+    "RetrieveAndGenerateType":{
+      "type":"string",
+      "enum":[
+        "KNOWLEDGE_BASE",
+        "EXTERNAL_SOURCES"
+      ]
+    },
+    "RetrieveConfig":{
+      "type":"structure",
+      "required":[
+        "knowledgeBaseId",
+        "knowledgeBaseRetrievalConfiguration"
+      ],
+      "members":{
+        "knowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier of the knowledge base.</p>"
+        },
+        "knowledgeBaseRetrievalConfiguration":{
+          "shape":"KnowledgeBaseRetrievalConfiguration",
+          "documentation":"<p>Contains configuration details for knowledge base retrieval.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for retrieving information from a knowledge base.</p>"
     },
     "RoleArn":{
       "type":"string",
@@ -5484,6 +6060,17 @@
       "type":"string",
       "enum":["JSONL"]
     },
+    "S3ObjectDoc":{
+      "type":"structure",
+      "required":["uri"],
+      "members":{
+        "uri":{
+          "shape":"kBS3Uri",
+          "documentation":"<p>The S3 URI location for the wrapper object of the document.</p>"
+        }
+      },
+      "documentation":"<p>The unique wrapper object of the document from the S3 location.</p>"
+    },
     "S3Uri":{
       "type":"string",
       "max":1024,
@@ -5495,6 +6082,13 @@
       "max":1024,
       "min":0,
       "pattern":"arn:aws(-[^:]+)?:sagemaker:[a-z0-9-]{1,20}:[0-9]{12}:flow-definition/.*"
+    },
+    "SearchType":{
+      "type":"string",
+      "enum":[
+        "HYBRID",
+        "SEMANTIC"
+      ]
     },
     "SecurityGroupId":{
       "type":"string",
@@ -5545,7 +6139,7 @@
       "members":{
         "jobIdentifier":{
           "shape":"EvaluationJobIdentifier",
-          "documentation":"<p>The ARN of the model evaluation job you want to stop.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the evaluation job you want to stop.</p>",
           "location":"uri",
           "locationName":"jobIdentifier"
         }
@@ -5673,6 +6267,40 @@
       "min":20,
       "pattern":".*(^[a-zA-Z0-9][a-zA-Z0-9\\-]*$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:([0-9]{12}|)((:(fine-tuning-job|model-customization-job|custom-model)/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12})$)|(:guardrail/[a-z0-9]+$)|(:(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+$)|(:(provisioned-model|model-invocation-job|model-evaluation-job|evaluation-job|model-import-job|imported-model)/[a-z0-9]{12}$))).*"
     },
+    "Temperature":{
+      "type":"float",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "TextInferenceConfig":{
+      "type":"structure",
+      "members":{
+        "temperature":{
+          "shape":"Temperature",
+          "documentation":"<p>Controls the random-ness of text generated by the language model, influencing how much the model sticks to the most predictable next words versus exploring more surprising options. A lower temperature value (e.g. 0.2 or 0.3) makes model outputs more deterministic or predictable, while a higher temperature (e.g. 0.8 or 0.9) makes the outputs more creative or unpredictable.</p>"
+        },
+        "topP":{
+          "shape":"TopP",
+          "documentation":"<p>A probability distribution threshold which controls what the model considers for the set of possible next tokens. The model will only consider the top p% of the probability distribution when generating the next token.</p>"
+        },
+        "maxTokens":{
+          "shape":"MaxTokens",
+          "documentation":"<p>The maximum number of tokens to generate in the output text. Do not use the minimum of 0 or the maximum of 65536. The limit values described here are arbitrary values, for actual values consult the limits defined by your specific model.</p>"
+        },
+        "stopSequences":{
+          "shape":"RAGStopSequences",
+          "documentation":"<p>A list of sequences of characters that, if generated, will cause the model to stop generating further tokens. Do not use a minimum length of 1 or a maximum length of 1000. The limit values described here are arbitrary values, for actual values consult the limits defined by your specific model.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for text generation using a language model via the <code>RetrieveAndGenerate</code> function.</p>"
+    },
+    "TextPromptTemplate":{
+      "type":"string",
+      "max":100000,
+      "min":1,
+      "sensitive":true
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -5704,6 +6332,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "TopP":{
+      "type":"float",
+      "box":true,
+      "max":1,
+      "min":0
     },
     "TrainingDataConfig":{
       "type":"structure",
@@ -5928,6 +6562,12 @@
         }
       },
       "documentation":"<p>The configuration of a virtual private cloud (VPC). For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/usingVPC.html\">Protect your data using Amazon Virtual Private Cloud and Amazon Web Services PrivateLink</a>.</p>"
+    },
+    "kBS3Uri":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"s3://[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]/.{1,1024}"
     }
   },
   "documentation":"<p>Describes the API operations for creating, managing, fine-turning, and evaluating Amazon Bedrock models.</p>"

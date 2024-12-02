@@ -72,6 +72,46 @@
       "documentation":"<p>Creates and Amazon Q in Connect AI Agent version.</p>",
       "idempotent":true
     },
+    "CreateAIGuardrail":{
+      "name":"CreateAIGuardrail",
+      "http":{
+        "method":"POST",
+        "requestUri":"/assistants/{assistantId}/aiguardrails",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAIGuardrailRequest"},
+      "output":{"shape":"CreateAIGuardrailResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an Amazon Q in Connect AI Guardrail.</p>",
+      "idempotent":true
+    },
+    "CreateAIGuardrailVersion":{
+      "name":"CreateAIGuardrailVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/assistants/{assistantId}/aiguardrails/{aiGuardrailId}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAIGuardrailVersionRequest"},
+      "output":{"shape":"CreateAIGuardrailVersionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an Amazon Q in Connect AI Guardrail version.</p>",
+      "idempotent":true
+    },
     "CreateAIPrompt":{
       "name":"CreateAIPrompt",
       "http":{
@@ -356,6 +396,44 @@
       "documentation":"<p>Deletes an Amazon Q in Connect AI Agent Version.</p>",
       "idempotent":true
     },
+    "DeleteAIGuardrail":{
+      "name":"DeleteAIGuardrail",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/assistants/{assistantId}/aiguardrails/{aiGuardrailId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteAIGuardrailRequest"},
+      "output":{"shape":"DeleteAIGuardrailResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes an Amazon Q in Connect AI Guardrail.</p>",
+      "idempotent":true
+    },
+    "DeleteAIGuardrailVersion":{
+      "name":"DeleteAIGuardrailVersion",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/assistants/{assistantId}/aiguardrails/{aiGuardrailId}/versions/{versionNumber}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteAIGuardrailVersionRequest"},
+      "output":{"shape":"DeleteAIGuardrailVersionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Delete and Amazon Q in Connect AI Guardrail version.</p>",
+      "idempotent":true
+    },
     "DeleteAIPrompt":{
       "name":"DeleteAIPrompt",
       "http":{
@@ -569,6 +647,23 @@
       ],
       "documentation":"<p>Gets an Amazon Q in Connect AI Agent.</p>"
     },
+    "GetAIGuardrail":{
+      "name":"GetAIGuardrail",
+      "http":{
+        "method":"GET",
+        "requestUri":"/assistants/{assistantId}/aiguardrails/{aiGuardrailId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAIGuardrailRequest"},
+      "output":{"shape":"GetAIGuardrailResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets the Amazon Q in Connect AI Guardrail.</p>"
+    },
     "GetAIPrompt":{
       "name":"GetAIPrompt",
       "http":{
@@ -715,6 +810,22 @@
       ],
       "documentation":"<p>Retrieves the Amazon Q in Connect message template. The message template identifier can contain an optional qualifier, for example, <code>&lt;message-template-id&gt;:&lt;qualifier&gt;</code>, which is either an actual version number or an Amazon Q Connect managed qualifier <code>$ACTIVE_VERSION</code> | <code>$LATEST</code>. If it is not supplied, then <code>$LATEST</code> is assumed implicitly.</p>"
     },
+    "GetNextMessage":{
+      "name":"GetNextMessage",
+      "http":{
+        "method":"GET",
+        "requestUri":"/assistants/{assistantId}/sessions/{sessionId}/messages/next",
+        "responseCode":200
+      },
+      "input":{"shape":"GetNextMessageRequest"},
+      "output":{"shape":"GetNextMessageResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves next message on an Amazon Q in Connect session.</p>"
+    },
     "GetQuickResponse":{
       "name":"GetQuickResponse",
       "http":{
@@ -798,6 +909,40 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists AI Agents.</p>"
+    },
+    "ListAIGuardrailVersions":{
+      "name":"ListAIGuardrailVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/assistants/{assistantId}/aiguardrails/{aiGuardrailId}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAIGuardrailVersionsRequest"},
+      "output":{"shape":"ListAIGuardrailVersionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists AI Guardrail versions.</p>"
+    },
+    "ListAIGuardrails":{
+      "name":"ListAIGuardrails",
+      "http":{
+        "method":"GET",
+        "requestUri":"/assistants/{assistantId}/aiguardrails",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAIGuardrailsRequest"},
+      "output":{"shape":"ListAIGuardrailsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the AI Guardrails available on the Amazon Q in Connect assistant.</p>"
     },
     "ListAIPromptVersions":{
       "name":"ListAIPromptVersions",
@@ -959,6 +1104,22 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists all the available Amazon Q in Connect message templates for the specified knowledge base.</p>"
+    },
+    "ListMessages":{
+      "name":"ListMessages",
+      "http":{
+        "method":"GET",
+        "requestUri":"/assistants/{assistantId}/sessions/{sessionId}/messages",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMessagesRequest"},
+      "output":{"shape":"ListMessagesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists messages on an Amazon Q in Connect session.</p>"
     },
     "ListQuickResponses":{
       "name":"ListQuickResponses",
@@ -1160,6 +1321,26 @@
       ],
       "documentation":"<p>Searches for sessions.</p>"
     },
+    "SendMessage":{
+      "name":"SendMessage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/assistants/{assistantId}/sessions/{sessionId}/message",
+        "responseCode":200
+      },
+      "input":{"shape":"SendMessageRequest"},
+      "output":{"shape":"SendMessageResponse"},
+      "errors":[
+        {"shape":"RequestTimeoutException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Submits a message to the Amazon Q in Connect session.</p>",
+      "idempotent":true
+    },
     "StartContentUpload":{
       "name":"StartContentUpload",
       "http":{
@@ -1243,6 +1424,25 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Updates an AI Agent.</p>",
+      "idempotent":true
+    },
+    "UpdateAIGuardrail":{
+      "name":"UpdateAIGuardrail",
+      "http":{
+        "method":"POST",
+        "requestUri":"/assistants/{assistantId}/aiguardrails/{aiGuardrailId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAIGuardrailRequest"},
+      "output":{"shape":"UpdateAIGuardrailResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates an AI Guardrail.</p>",
       "idempotent":true
     },
     "UpdateAIPrompt":{
@@ -1416,6 +1616,10 @@
         "manualSearchAIAgentConfiguration":{
           "shape":"ManualSearchAIAgentConfiguration",
           "documentation":"<p>The configuration for AI Agents of type <code>MANUAL_SEARCH</code>.</p>"
+        },
+        "selfServiceAIAgentConfiguration":{
+          "shape":"SelfServiceAIAgentConfiguration",
+          "documentation":"<p>The configuration for AI Agents of type SELF_SERVICE.</p>"
         }
       },
       "documentation":"<p>A typed union that specifies the configuration based on the type of AI Agent.</p>",
@@ -1580,7 +1784,8 @@
       "type":"string",
       "enum":[
         "MANUAL_SEARCH",
-        "ANSWER_RECOMMENDATION"
+        "ANSWER_RECOMMENDATION",
+        "SELF_SERVICE"
       ]
     },
     "AIAgentVersionSummariesList":{
@@ -1600,6 +1805,241 @@
         }
       },
       "documentation":"<p>The summary of the AI Agent version.</p>"
+    },
+    "AIGuardrailBlockedMessaging":{
+      "type":"string",
+      "documentation":"<p>Messaging for when violations are detected in text</p>",
+      "max":500,
+      "min":1,
+      "sensitive":true
+    },
+    "AIGuardrailContentPolicyConfig":{
+      "type":"structure",
+      "required":["filtersConfig"],
+      "members":{
+        "filtersConfig":{
+          "shape":"GuardrailContentFiltersConfig",
+          "documentation":"<p>Contains the type of the content filter and how strongly it should apply to prompts and model responses.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about how to handle harmful content.</p>"
+    },
+    "AIGuardrailContextualGroundingPolicyConfig":{
+      "type":"structure",
+      "required":["filtersConfig"],
+      "members":{
+        "filtersConfig":{
+          "shape":"GuardrailContextualGroundingFiltersConfig",
+          "documentation":"<p>The filter configuration details for the AI Guardrails contextual grounding policy.</p>"
+        }
+      },
+      "documentation":"<p>The policy configuration details for the AI Guardrail's contextual grounding policy.</p>"
+    },
+    "AIGuardrailData":{
+      "type":"structure",
+      "required":[
+        "aiGuardrailArn",
+        "aiGuardrailId",
+        "assistantArn",
+        "assistantId",
+        "blockedInputMessaging",
+        "blockedOutputsMessaging",
+        "name",
+        "visibilityStatus"
+      ],
+      "members":{
+        "aiGuardrailArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AI Guardrail.</p>"
+        },
+        "aiGuardrailId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI Guardrail.</p>"
+        },
+        "assistantArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.</p>"
+        },
+        "assistantId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>"
+        },
+        "blockedInputMessaging":{
+          "shape":"AIGuardrailBlockedMessaging",
+          "documentation":"<p>The message to return when the AI Guardrail blocks a prompt.</p>"
+        },
+        "blockedOutputsMessaging":{
+          "shape":"AIGuardrailBlockedMessaging",
+          "documentation":"<p>The message to return when the AI Guardrail blocks a model response.</p>"
+        },
+        "contentPolicyConfig":{
+          "shape":"AIGuardrailContentPolicyConfig",
+          "documentation":"<p>Contains details about how to handle harmful content.</p>"
+        },
+        "contextualGroundingPolicyConfig":{
+          "shape":"AIGuardrailContextualGroundingPolicyConfig",
+          "documentation":"<p>The policy configuration details for the AI Guardrail's contextual grounding policy.</p>"
+        },
+        "description":{
+          "shape":"AIGuardrailDescription",
+          "documentation":"<p>A description of the AI Guardrail.</p>"
+        },
+        "modifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the AI Guardrail was last modified.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the AI Guardrail.</p>"
+        },
+        "sensitiveInformationPolicyConfig":{
+          "shape":"AIGuardrailSensitiveInformationPolicyConfig",
+          "documentation":"<p>Contains details about PII entities and regular expressions to configure for the AI Guardrail.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the AI Guardrail.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "topicPolicyConfig":{
+          "shape":"AIGuardrailTopicPolicyConfig",
+          "documentation":"<p>Contains details about topics that the AI Guardrail should identify and deny.</p>"
+        },
+        "visibilityStatus":{
+          "shape":"VisibilityStatus",
+          "documentation":"<p>The visibility status of the AI Guardrail.</p>"
+        },
+        "wordPolicyConfig":{
+          "shape":"AIGuardrailWordPolicyConfig",
+          "documentation":"<p>Contains details about the word policy to configured for the AI Guardrail.</p>"
+        }
+      },
+      "documentation":"<p>The data for the AI Guardrail</p>"
+    },
+    "AIGuardrailDescription":{
+      "type":"string",
+      "documentation":"<p>Description of the guardrail or its version</p>",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
+    "AIGuardrailSensitiveInformationPolicyConfig":{
+      "type":"structure",
+      "members":{
+        "piiEntitiesConfig":{
+          "shape":"GuardrailPiiEntitiesConfig",
+          "documentation":"<p>A list of PII entities to configure to the AI Guardrail.</p>"
+        },
+        "regexesConfig":{
+          "shape":"GuardrailRegexesConfig",
+          "documentation":"<p>A list of regular expressions to configure to the AI Guardrail.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about PII entities and regular expressions to configure for the AI Guardrail.</p>"
+    },
+    "AIGuardrailSummariesList":{
+      "type":"list",
+      "member":{"shape":"AIGuardrailSummary"}
+    },
+    "AIGuardrailSummary":{
+      "type":"structure",
+      "required":[
+        "aiGuardrailArn",
+        "aiGuardrailId",
+        "assistantArn",
+        "assistantId",
+        "name",
+        "visibilityStatus"
+      ],
+      "members":{
+        "aiGuardrailArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AI Guardrail.</p>"
+        },
+        "aiGuardrailId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI Guardrail.</p>"
+        },
+        "assistantArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.</p>"
+        },
+        "assistantId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>"
+        },
+        "description":{
+          "shape":"AIGuardrailDescription",
+          "documentation":"<p>A description of the AI Guardrail.</p>"
+        },
+        "modifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the AI Guardrail was last modified.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the AI Guardrail.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the AI Guardrail.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "visibilityStatus":{
+          "shape":"VisibilityStatus",
+          "documentation":"<p>The visibility status of the AI Guardrail.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the AI Guardrail.</p>"
+    },
+    "AIGuardrailTopicPolicyConfig":{
+      "type":"structure",
+      "required":["topicsConfig"],
+      "members":{
+        "topicsConfig":{
+          "shape":"GuardrailTopicsConfig",
+          "documentation":"<p>A list of policies related to topics that the AI Guardrail should deny.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about topics that the AI Guardrail should identify and deny.</p>"
+    },
+    "AIGuardrailVersionSummariesList":{
+      "type":"list",
+      "member":{"shape":"AIGuardrailVersionSummary"}
+    },
+    "AIGuardrailVersionSummary":{
+      "type":"structure",
+      "members":{
+        "aiGuardrailSummary":{
+          "shape":"AIGuardrailSummary",
+          "documentation":"<p>The data for the summary of the AI Guardrail version.</p>"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number for this AI Guardrail version.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the AI Guardrail version.</p>"
+    },
+    "AIGuardrailWordPolicyConfig":{
+      "type":"structure",
+      "members":{
+        "managedWordListsConfig":{
+          "shape":"GuardrailManagedWordListsConfig",
+          "documentation":"<p>A list of managed words to configure for the AI Guardrail.</p>"
+        },
+        "wordsConfig":{
+          "shape":"GuardrailWordsConfig",
+          "documentation":"<p>A list of words to configure for the AI Guardrail.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the word policy to configured for the AI Guardrail.</p>"
     },
     "AIPromptAPIFormat":{
       "type":"string",
@@ -1798,7 +2238,9 @@
       "enum":[
         "ANSWER_GENERATION",
         "INTENT_LABELING_GENERATION",
-        "QUERY_REFORMULATION"
+        "QUERY_REFORMULATION",
+        "SELF_SERVICE_PRE_PROCESSING",
+        "SELF_SERVICE_ANSWER_GENERATION"
       ]
     },
     "AIPromptVersionSummariesList":{
@@ -1910,6 +2352,10 @@
     "AnswerRecommendationAIAgentConfiguration":{
       "type":"structure",
       "members":{
+        "answerGenerationAIGuardrailId":{
+          "shape":"UuidWithQualifier",
+          "documentation":"<p>The AI Guardrail identifier for the Answer Generation Guardrail used by the <code>ANSWER_RECOMMENDATION</code> AI Agent.</p>"
+        },
         "answerGenerationAIPromptId":{
           "shape":"UuidWithQualifier",
           "documentation":"<p>The AI Prompt identifier for the Answer Generation prompt used by the <code>ANSWER_RECOMMENDATION</code> AI Agent.</p>"
@@ -2762,6 +3208,48 @@
       "type":"string",
       "pattern":"^(text/(plain|html|csv))|(application/(pdf|vnd\\.openxmlformats-officedocument\\.wordprocessingml\\.document))|(application/x\\.wisdom-json;source=(salesforce|servicenow|zendesk))$"
     },
+    "ConversationContext":{
+      "type":"structure",
+      "required":["selfServiceConversationHistory"],
+      "members":{
+        "selfServiceConversationHistory":{
+          "shape":"SelfServiceConversationHistoryList",
+          "documentation":"<p>The self service conversation history before the Amazon Q in Connect session.</p>"
+        }
+      },
+      "documentation":"<p>The conversation context to include in SendMessage.</p>"
+    },
+    "ConversationState":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "reason":{
+          "shape":"ConversationStatusReason",
+          "documentation":"<p>The reason of the conversation state.</p>"
+        },
+        "status":{
+          "shape":"ConversationStatus",
+          "documentation":"<p>The status of the conversation state.</p>"
+        }
+      },
+      "documentation":"<p>The conversation state associated to a message.</p>"
+    },
+    "ConversationStatus":{
+      "type":"string",
+      "enum":[
+        "CLOSED",
+        "READY",
+        "PROCESSING"
+      ]
+    },
+    "ConversationStatusReason":{
+      "type":"string",
+      "enum":[
+        "SUCCESS",
+        "FAILED",
+        "REJECTED"
+      ]
+    },
     "CreateAIAgentRequest":{
       "type":"structure",
       "required":[
@@ -2858,6 +3346,125 @@
         "versionNumber":{
           "shape":"Version",
           "documentation":"<p>The version number of the AI Agent version.</p>"
+        }
+      }
+    },
+    "CreateAIGuardrailRequest":{
+      "type":"structure",
+      "required":[
+        "assistantId",
+        "blockedInputMessaging",
+        "blockedOutputsMessaging",
+        "name",
+        "visibilityStatus"
+      ],
+      "members":{
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "blockedInputMessaging":{
+          "shape":"AIGuardrailBlockedMessaging",
+          "documentation":"<p>The message to return when the AI Guardrail blocks a prompt.</p>"
+        },
+        "blockedOutputsMessaging":{
+          "shape":"AIGuardrailBlockedMessaging",
+          "documentation":"<p>The message to return when the AI Guardrail blocks a model response.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>..</p>",
+          "idempotencyToken":true
+        },
+        "contentPolicyConfig":{
+          "shape":"AIGuardrailContentPolicyConfig",
+          "documentation":"<p>The content filter policies to configure for the AI Guardrail.</p>"
+        },
+        "contextualGroundingPolicyConfig":{
+          "shape":"AIGuardrailContextualGroundingPolicyConfig",
+          "documentation":"<p>The contextual grounding policy configuration used to create an AI Guardrail.</p>"
+        },
+        "description":{
+          "shape":"AIGuardrailDescription",
+          "documentation":"<p>A description of the AI Guardrail.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the AI Guardrail.</p>"
+        },
+        "sensitiveInformationPolicyConfig":{
+          "shape":"AIGuardrailSensitiveInformationPolicyConfig",
+          "documentation":"<p>The sensitive information policy to configure for the AI Guardrail.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "topicPolicyConfig":{
+          "shape":"AIGuardrailTopicPolicyConfig",
+          "documentation":"<p>The topic policies to configure for the AI Guardrail.</p>"
+        },
+        "visibilityStatus":{
+          "shape":"VisibilityStatus",
+          "documentation":"<p>The visibility status of the AI Guardrail.</p>"
+        },
+        "wordPolicyConfig":{
+          "shape":"AIGuardrailWordPolicyConfig",
+          "documentation":"<p>The word policy you configure for the AI Guardrail.</p>"
+        }
+      }
+    },
+    "CreateAIGuardrailResponse":{
+      "type":"structure",
+      "members":{
+        "aiGuardrail":{
+          "shape":"AIGuardrailData",
+          "documentation":"<p>The data of the AI Guardrail.</p>"
+        }
+      }
+    },
+    "CreateAIGuardrailVersionRequest":{
+      "type":"structure",
+      "required":[
+        "aiGuardrailId",
+        "assistantId"
+      ],
+      "members":{
+        "aiGuardrailId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI Guardrail.</p>",
+          "location":"uri",
+          "locationName":"aiGuardrailId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>..</p>",
+          "idempotencyToken":true
+        },
+        "modifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the AI Guardrail was last modified.</p>"
+        }
+      }
+    },
+    "CreateAIGuardrailVersionResponse":{
+      "type":"structure",
+      "members":{
+        "aiGuardrail":{
+          "shape":"AIGuardrailData",
+          "documentation":"<p>The data of the AI Guardrail version.</p>"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the AI Guardrail version.</p>"
         }
       }
     },
@@ -3888,6 +4495,65 @@
       "members":{
       }
     },
+    "DeleteAIGuardrailRequest":{
+      "type":"structure",
+      "required":[
+        "aiGuardrailId",
+        "assistantId"
+      ],
+      "members":{
+        "aiGuardrailId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI Guardrail. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"aiGuardrailId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        }
+      }
+    },
+    "DeleteAIGuardrailResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteAIGuardrailVersionRequest":{
+      "type":"structure",
+      "required":[
+        "aiGuardrailId",
+        "assistantId",
+        "versionNumber"
+      ],
+      "members":{
+        "aiGuardrailId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI Guardrail.</p>",
+          "location":"uri",
+          "locationName":"aiGuardrailId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the AI Guardrail version to be deleted.</p>",
+          "location":"uri",
+          "locationName":"versionNumber"
+        }
+      }
+    },
+    "DeleteAIGuardrailVersionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteAIPromptRequest":{
       "type":"structure",
       "required":[
@@ -4555,6 +5221,40 @@
         }
       }
     },
+    "GetAIGuardrailRequest":{
+      "type":"structure",
+      "required":[
+        "aiGuardrailId",
+        "assistantId"
+      ],
+      "members":{
+        "aiGuardrailId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI Guardrail.</p>",
+          "location":"uri",
+          "locationName":"aiGuardrailId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        }
+      }
+    },
+    "GetAIGuardrailResponse":{
+      "type":"structure",
+      "members":{
+        "aiGuardrail":{
+          "shape":"AIGuardrailData",
+          "documentation":"<p>The data of the AI Guardrail.</p>"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the AI Guardrail version (returned if an AI Guardrail version was specified via use of a qualifier for the <code>aiGuardrailId</code> on the request). </p>"
+        }
+      }
+    },
     "GetAIPromptRequest":{
       "type":"structure",
       "required":[
@@ -4818,6 +5518,69 @@
         }
       }
     },
+    "GetNextMessageRequest":{
+      "type":"structure",
+      "required":[
+        "assistantId",
+        "nextMessageToken",
+        "sessionId"
+      ],
+      "members":{
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "nextMessageToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next message. Use the value returned in the SendMessage or previous response in the next request to retrieve the next message.</p>",
+          "location":"querystring",
+          "locationName":"nextMessageToken"
+        },
+        "sessionId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect session.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        }
+      }
+    },
+    "GetNextMessageResponse":{
+      "type":"structure",
+      "required":[
+        "conversationState",
+        "requestMessageId",
+        "response",
+        "type"
+      ],
+      "members":{
+        "conversationSessionData":{
+          "shape":"RuntimeSessionDataList",
+          "documentation":"<p>The conversation data stored on an Amazon Q in Connect Session.</p>"
+        },
+        "conversationState":{
+          "shape":"ConversationState",
+          "documentation":"<p>The state of current conversation.</p>"
+        },
+        "nextMessageToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next message.</p>"
+        },
+        "requestMessageId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the submitted message.</p>"
+        },
+        "response":{
+          "shape":"MessageOutput",
+          "documentation":"<p>The message response to the requested message.</p>"
+        },
+        "type":{
+          "shape":"MessageType",
+          "documentation":"<p>The type of message response.</p>"
+        }
+      }
+    },
     "GetQuickResponseRequest":{
       "type":"structure",
       "required":[
@@ -4954,6 +5717,335 @@
     "GroupingValues":{
       "type":"list",
       "member":{"shape":"GroupingValue"}
+    },
+    "GuardrailContentFilterConfig":{
+      "type":"structure",
+      "required":[
+        "inputStrength",
+        "outputStrength",
+        "type"
+      ],
+      "members":{
+        "inputStrength":{
+          "shape":"GuardrailFilterStrength",
+          "documentation":"<p>The strength of the content filter to apply to prompts. As you increase the filter strength, the likelihood of filtering harmful content increases and the probability of seeing harmful content in your application reduces.</p>"
+        },
+        "outputStrength":{
+          "shape":"GuardrailFilterStrength",
+          "documentation":"<p>The strength of the content filter to apply to model responses. As you increase the filter strength, the likelihood of filtering harmful content increases and the probability of seeing harmful content in your application reduces.</p>"
+        },
+        "type":{
+          "shape":"GuardrailContentFilterType",
+          "documentation":"<p>The harmful category that the content filter is applied to.</p>"
+        }
+      },
+      "documentation":"<p>Contains filter strengths for harmful content. AI Guardrail's support the following content filters to detect and filter harmful user inputs and FM-generated outputs.</p> <ul> <li> <p> <b>Hate</b>: Describes input prompts and model responses that discriminate, criticize, insult, denounce, or dehumanize a person or group on the basis of an identity (such as race, ethnicity, gender, religion, sexual orientation, ability, and national origin).</p> </li> <li> <p> <b>Insults</b>: Describes input prompts and model responses that includes demeaning, humiliating, mocking, insulting, or belittling language. This type of language is also labeled as bullying.</p> </li> <li> <p> <b>Sexual</b>: Describes input prompts and model responses that indicates sexual interest, activity, or arousal using direct or indirect references to body parts, physical traits, or sex.</p> </li> <li> <p> <b>Violence</b>: Describes input prompts and model responses that includes glorification of, or threats to inflict physical pain, hurt, or injury toward a person, group, or thing.</p> </li> </ul> <p>Content filtering depends on the confidence classification of user inputs and FM responses across each of the four harmful categories. All input and output statements are classified into one of four confidence levels (NONE, LOW, MEDIUM, HIGH) for each harmful category. For example, if a statement is classified as <i>Hate</i> with HIGH confidence, the likelihood of the statement representing hateful content is high. A single statement can be classified across multiple categories with varying confidence levels. For example, a single statement can be classified as <i>Hate</i> with HIGH confidence, <i> Insults</i> with LOW confidence, <i>Sexual</i> with NONE confidence, and <i>Violence</i> with MEDIUM confidence.</p>"
+    },
+    "GuardrailContentFilterType":{
+      "type":"string",
+      "documentation":"<p>Type of text to text filter in content policy</p>",
+      "enum":[
+        "SEXUAL",
+        "VIOLENCE",
+        "HATE",
+        "INSULTS",
+        "MISCONDUCT",
+        "PROMPT_ATTACK"
+      ],
+      "sensitive":true
+    },
+    "GuardrailContentFiltersConfig":{
+      "type":"list",
+      "member":{"shape":"GuardrailContentFilterConfig"},
+      "documentation":"<p>List of content filter configs in content policy.</p>",
+      "max":6,
+      "min":1
+    },
+    "GuardrailContextualGroundingFilterConfig":{
+      "type":"structure",
+      "required":[
+        "threshold",
+        "type"
+      ],
+      "members":{
+        "threshold":{
+          "shape":"GuardrailContextualGroundingFilterThreshold",
+          "documentation":"<p>The threshold details for the AI Guardrail's contextual grounding filter.</p>"
+        },
+        "type":{
+          "shape":"GuardrailContextualGroundingFilterType",
+          "documentation":"<p>The filter type for the AI Guardrail's contextual grounding filter.</p>"
+        }
+      },
+      "documentation":"<p>The filter configuration details for the AI Guardrail's contextual grounding filter.</p>"
+    },
+    "GuardrailContextualGroundingFilterThreshold":{
+      "type":"double",
+      "documentation":"<p>The threshold for this filter.</p>",
+      "min":0,
+      "sensitive":true
+    },
+    "GuardrailContextualGroundingFilterType":{
+      "type":"string",
+      "documentation":"<p>Type of contextual grounding filter</p>",
+      "enum":[
+        "GROUNDING",
+        "RELEVANCE"
+      ],
+      "sensitive":true
+    },
+    "GuardrailContextualGroundingFiltersConfig":{
+      "type":"list",
+      "member":{"shape":"GuardrailContextualGroundingFilterConfig"},
+      "documentation":"<p>List of contextual grounding filter configs.</p>",
+      "min":1
+    },
+    "GuardrailFilterStrength":{
+      "type":"string",
+      "documentation":"<p>Strength for filters</p>",
+      "enum":[
+        "NONE",
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "sensitive":true
+    },
+    "GuardrailManagedWordListsConfig":{
+      "type":"list",
+      "member":{"shape":"GuardrailManagedWordsConfig"},
+      "documentation":"<p>A config for the list of managed words.</p>"
+    },
+    "GuardrailManagedWordsConfig":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"GuardrailManagedWordsType",
+          "documentation":"<p>The managed word type to configure for the AI Guardrail.</p>"
+        }
+      },
+      "documentation":"<p>The managed word list to configure for the AI Guardrail.</p>"
+    },
+    "GuardrailManagedWordsType":{
+      "type":"string",
+      "documentation":"<p>Options for managed words.</p>",
+      "enum":["PROFANITY"],
+      "sensitive":true
+    },
+    "GuardrailPiiEntitiesConfig":{
+      "type":"list",
+      "member":{"shape":"GuardrailPiiEntityConfig"},
+      "documentation":"<p>List of entities.</p>",
+      "min":1
+    },
+    "GuardrailPiiEntityConfig":{
+      "type":"structure",
+      "required":[
+        "action",
+        "type"
+      ],
+      "members":{
+        "action":{
+          "shape":"GuardrailSensitiveInformationAction",
+          "documentation":"<p>Configure AI Guardrail's action when the PII entity is detected.</p>"
+        },
+        "type":{
+          "shape":"GuardrailPiiEntityType",
+          "documentation":"<p>Configure AI Guardrail type when the PII entity is detected.</p> <p>The following PIIs are used to block or mask sensitive information:</p> <ul> <li> <p> <b>General</b> </p> <ul> <li> <p> <b>ADDRESS</b> </p> <p>A physical address, such as \"100 Main Street, Anytown, USA\" or \"Suite #12, Building 123\". An address can include information such as the street, building, location, city, state, country, county, zip code, precinct, and neighborhood. </p> </li> <li> <p> <b>AGE</b> </p> <p>An individual's age, including the quantity and unit of time. For example, in the phrase \"I am 40 years old,\" Guarrails recognizes \"40 years\" as an age. </p> </li> <li> <p> <b>NAME</b> </p> <p>An individual's name. This entity type does not include titles, such as Dr., Mr., Mrs., or Miss. AI Guardrail doesn't apply this entity type to names that are part of organizations or addresses. For example, AI Guardrail recognizes the \"John Doe Organization\" as an organization, and it recognizes \"Jane Doe Street\" as an address. </p> </li> <li> <p> <b>EMAIL</b> </p> <p>An email address, such as <i>marymajor@email.com</i>.</p> </li> <li> <p> <b>PHONE</b> </p> <p>A phone number. This entity type also includes fax and pager numbers. </p> </li> <li> <p> <b>USERNAME</b> </p> <p>A user name that identifies an account, such as a login name, screen name, nick name, or handle. </p> </li> <li> <p> <b>PASSWORD</b> </p> <p>An alphanumeric string that is used as a password, such as \"*<i> very20special#pass*</i>\". </p> </li> <li> <p> <b>DRIVER_ID</b> </p> <p>The number assigned to a driver's license, which is an official document permitting an individual to operate one or more motorized vehicles on a public road. A driver's license number consists of alphanumeric characters. </p> </li> <li> <p> <b>LICENSE_PLATE</b> </p> <p>A license plate for a vehicle is issued by the state or country where the vehicle is registered. The format for passenger vehicles is typically five to eight digits, consisting of upper-case letters and numbers. The format varies depending on the location of the issuing state or country. </p> </li> <li> <p> <b>VEHICLE_IDENTIFICATION_NUMBER</b> </p> <p>A Vehicle Identification Number (VIN) uniquely identifies a vehicle. VIN content and format are defined in the <i>ISO 3779</i> specification. Each country has specific codes and formats for VINs. </p> </li> </ul> </li> <li> <p> <b>Finance</b> </p> <ul> <li> <p> <b>REDIT_DEBIT_CARD_CVV</b> </p> <p>A three-digit card verification code (CVV) that is present on VISA, MasterCard, and Discover credit and debit cards. For American Express credit or debit cards, the CVV is a four-digit numeric code. </p> </li> <li> <p> <b>CREDIT_DEBIT_CARD_EXPIRY</b> </p> <p>The expiration date for a credit or debit card. This number is usually four digits long and is often formatted as <i>month/year</i> or <i>MM/YY</i>. AI Guardrail recognizes expiration dates such as <i>01/21</i>, <i>01/2021</i>, and <i>Jan 2021</i>. </p> </li> <li> <p> <b>CREDIT_DEBIT_CARD_NUMBER</b> </p> <p>The number for a credit or debit card. These numbers can vary from 13 to 16 digits in length. However, Amazon Comprehend also recognizes credit or debit card numbers when only the last four digits are present. </p> </li> <li> <p> <b>PIN</b> </p> <p>A four-digit personal identification number (PIN) with which you can access your bank account. </p> </li> <li> <p> <b>INTERNATIONAL_BANK_ACCOUNT_NUMBER</b> </p> <p>An International Bank Account Number has specific formats in each country. For more information, see <a href=\"https://www.iban.com/structure\"> www.iban.com/structure</a>.</p> </li> <li> <p> <b>SWIFT_CODE</b> </p> <p>A SWIFT code is a standard format of Bank Identifier Code (BIC) used to specify a particular bank or branch. Banks use these codes for money transfers such as international wire transfers.</p> <p>SWIFT codes consist of eight or 11 characters. The 11-digit codes refer to specific branches, while eight-digit codes (or 11-digit codes ending in 'XXX') refer to the head or primary office.</p> </li> </ul> </li> <li> <p> <b>IT</b> </p> <ul> <li> <p> <b>IP_ADDRESS</b> </p> <p>An IPv4 address, such as <i>198.51.100.0</i>. </p> </li> <li> <p> <b>MAC_ADDRESS</b> </p> <p>A <i>media access control</i> (MAC) address is a unique identifier assigned to a network interface controller (NIC). </p> </li> <li> <p> <b>URL</b> </p> <p>A web address, such as <i>www.example.com</i>. </p> </li> <li> <p> <b>AWS_ACCESS_KEY</b> </p> <p>A unique identifier that's associated with a secret access key; you use the access key ID and secret access key to sign programmatic Amazon Web Services requests cryptographically. </p> </li> <li> <p> <b>AWS_SECRET_KEY</b> </p> <p>A unique identifier that's associated with an access key. You use the access key ID and secret access key to sign programmatic Amazon Web Services requests cryptographically. </p> </li> </ul> </li> <li> <p> <b>USA specific</b> </p> <ul> <li> <p> <b>US_BANK_ACCOUNT_NUMBER</b> </p> <p>A US bank account number, which is typically 10 to 12 digits long. </p> </li> <li> <p> <b>US_BANK_ROUTING_NUMBER</b> </p> <p>A US bank account routing number. These are typically nine digits long, </p> </li> <li> <p> <b>US_INDIVIDUAL_TAX_IDENTIFICATION_NUMBER</b> </p> <p>A US Individual Taxpayer Identification Number (ITIN) is a nine-digit number that starts with a \"9\" and contain a \"7\" or \"8\" as the fourth digit. An ITIN can be formatted with a space or a dash after the third and forth digits. </p> </li> <li> <p> <b>US_PASSPORT_NUMBER</b> </p> <p>A US passport number. Passport numbers range from six to nine alphanumeric characters. </p> </li> <li> <p> <b>US_SOCIAL_SECURITY_NUMBER</b> </p> <p>A US Social Security Number (SSN) is a nine-digit number that is issued to US citizens, permanent residents, and temporary working residents. </p> </li> </ul> </li> <li> <p> <b>Canada specific</b> </p> <ul> <li> <p> <b>CA_HEALTH_NUMBER</b> </p> <p>A Canadian Health Service Number is a 10-digit unique identifier, required for individuals to access healthcare benefits. </p> </li> <li> <p> <b>CA_SOCIAL_INSURANCE_NUMBER</b> </p> <p>A Canadian Social Insurance Number (SIN) is a nine-digit unique identifier, required for individuals to access government programs and benefits.</p> <p>The SIN is formatted as three groups of three digits, such as <i> 123-456-789</i>. A SIN can be validated through a simple check-digit process called the <a href=\"https://www.wikipedia.org/wiki/Luhn_algorithm\">Luhn algorithm</a> .</p> </li> </ul> </li> <li> <p> <b>UK Specific</b> </p> <ul> <li> <p> <b>UK_NATIONAL_HEALTH_SERVICE_NUMBER</b> </p> <p>A UK National Health Service Number is a 10-17 digit number, such as <i>485 555 3456</i>. The current system formats the 10-digit number with spaces after the third and sixth digits. The final digit is an error-detecting checksum.</p> </li> <li> <p> <b>UK_NATIONAL_INSURANCE_NUMBER</b> </p> <p>A UK National Insurance Number (NINO) provides individuals with access to National Insurance (social security) benefits. It is also used for some purposes in the UK tax system.</p> <p>The number is nine digits long and starts with two letters, followed by six numbers and one letter. A NINO can be formatted with a space or a dash after the two letters and after the second, forth, and sixth digits.</p> </li> <li> <p> <b>UK_UNIQUE_TAXPAYER_REFERENCE_NUMBER</b> </p> <p>A UK Unique Taxpayer Reference (UTR) is a 10-digit number that identifies a taxpayer or a business. </p> </li> </ul> </li> <li> <p> <b>Custom</b> </p> <ul> <li> <p> <b>Regex filter</b> - You can use a regular expressions to define patterns for an AI Guardrail to recognize and act upon such as serial number, booking ID etc..</p> </li> </ul> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The PII entity to configure for the AI Guardrail.</p>"
+    },
+    "GuardrailPiiEntityType":{
+      "type":"string",
+      "documentation":"<p>The currently supported PII entities</p>",
+      "enum":[
+        "ADDRESS",
+        "AGE",
+        "AWS_ACCESS_KEY",
+        "AWS_SECRET_KEY",
+        "CA_HEALTH_NUMBER",
+        "CA_SOCIAL_INSURANCE_NUMBER",
+        "CREDIT_DEBIT_CARD_CVV",
+        "CREDIT_DEBIT_CARD_EXPIRY",
+        "CREDIT_DEBIT_CARD_NUMBER",
+        "DRIVER_ID",
+        "EMAIL",
+        "INTERNATIONAL_BANK_ACCOUNT_NUMBER",
+        "IP_ADDRESS",
+        "LICENSE_PLATE",
+        "MAC_ADDRESS",
+        "NAME",
+        "PASSWORD",
+        "PHONE",
+        "PIN",
+        "SWIFT_CODE",
+        "UK_NATIONAL_HEALTH_SERVICE_NUMBER",
+        "UK_NATIONAL_INSURANCE_NUMBER",
+        "UK_UNIQUE_TAXPAYER_REFERENCE_NUMBER",
+        "URL",
+        "USERNAME",
+        "US_BANK_ACCOUNT_NUMBER",
+        "US_BANK_ROUTING_NUMBER",
+        "US_INDIVIDUAL_TAX_IDENTIFICATION_NUMBER",
+        "US_PASSPORT_NUMBER",
+        "US_SOCIAL_SECURITY_NUMBER",
+        "VEHICLE_IDENTIFICATION_NUMBER"
+      ],
+      "sensitive":true
+    },
+    "GuardrailRegexConfig":{
+      "type":"structure",
+      "required":[
+        "action",
+        "name",
+        "pattern"
+      ],
+      "members":{
+        "action":{
+          "shape":"GuardrailSensitiveInformationAction",
+          "documentation":"<p>The AI Guardrail action to configure when matching regular expression is detected.</p>"
+        },
+        "description":{
+          "shape":"GuardrailRegexDescription",
+          "documentation":"<p>The description of the regular expression to configure for the AI Guardrail.</p>"
+        },
+        "name":{
+          "shape":"GuardrailRegexName",
+          "documentation":"<p>The name of the regular expression to configure for the AI Guardrail.</p>"
+        },
+        "pattern":{
+          "shape":"GuardrailRegexPattern",
+          "documentation":"<p>The regular expression pattern to configure for the AI Guardrail.</p>"
+        }
+      },
+      "documentation":"<p>The regular expression to configure for the AI Guardrail.</p>"
+    },
+    "GuardrailRegexDescription":{
+      "type":"string",
+      "documentation":"<p>The regex description.</p>",
+      "max":1000,
+      "min":1,
+      "sensitive":true
+    },
+    "GuardrailRegexName":{
+      "type":"string",
+      "documentation":"<p>The regex name.</p>",
+      "max":100,
+      "min":1,
+      "sensitive":true
+    },
+    "GuardrailRegexPattern":{
+      "type":"string",
+      "documentation":"<p>The regex pattern.</p>",
+      "min":1,
+      "sensitive":true
+    },
+    "GuardrailRegexesConfig":{
+      "type":"list",
+      "member":{"shape":"GuardrailRegexConfig"},
+      "documentation":"<p>List of regex.</p>",
+      "min":1
+    },
+    "GuardrailSensitiveInformationAction":{
+      "type":"string",
+      "documentation":"<p>Options for sensitive information action.</p>",
+      "enum":[
+        "BLOCK",
+        "ANONYMIZE"
+      ],
+      "sensitive":true
+    },
+    "GuardrailTopicConfig":{
+      "type":"structure",
+      "required":[
+        "definition",
+        "name",
+        "type"
+      ],
+      "members":{
+        "definition":{
+          "shape":"GuardrailTopicDefinition",
+          "documentation":"<p>A definition of the topic to deny.</p>"
+        },
+        "examples":{
+          "shape":"GuardrailTopicExamples",
+          "documentation":"<p>A list of prompts, each of which is an example of a prompt that can be categorized as belonging to the topic.</p>"
+        },
+        "name":{
+          "shape":"GuardrailTopicName",
+          "documentation":"<p>The name of the topic to deny.</p>"
+        },
+        "type":{
+          "shape":"GuardrailTopicType",
+          "documentation":"<p>Specifies to deny the topic.</p>"
+        }
+      },
+      "documentation":"<p>Details about topics for the AI Guardrail to identify and deny.</p>"
+    },
+    "GuardrailTopicDefinition":{
+      "type":"string",
+      "documentation":"<p>Definition of topic in topic policy</p>",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
+    "GuardrailTopicExample":{
+      "type":"string",
+      "documentation":"<p>Text example in topic policy</p>",
+      "max":100,
+      "min":1,
+      "sensitive":true
+    },
+    "GuardrailTopicExamples":{
+      "type":"list",
+      "member":{"shape":"GuardrailTopicExample"},
+      "documentation":"<p>List of text examples</p>",
+      "min":0
+    },
+    "GuardrailTopicName":{
+      "type":"string",
+      "documentation":"<p>Name of topic in topic policy</p>",
+      "max":100,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z-_ !?.]+$",
+      "sensitive":true
+    },
+    "GuardrailTopicType":{
+      "type":"string",
+      "documentation":"<p>Type of topic in a policy</p>",
+      "enum":["DENY"],
+      "sensitive":true
+    },
+    "GuardrailTopicsConfig":{
+      "type":"list",
+      "member":{"shape":"GuardrailTopicConfig"},
+      "documentation":"<p>List of topic configs in topic policy.</p>",
+      "min":1
+    },
+    "GuardrailWordConfig":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{
+          "shape":"GuardrailWordText",
+          "documentation":"<p>Text of the word configured for the AI Guardrail to block.</p>"
+        }
+      },
+      "documentation":"<p>A word to configure for the AI Guardrail.</p>"
+    },
+    "GuardrailWordText":{
+      "type":"string",
+      "documentation":"<p>The custom word text.</p>",
+      "min":1,
+      "sensitive":true
+    },
+    "GuardrailWordsConfig":{
+      "type":"list",
+      "member":{"shape":"GuardrailWordConfig"},
+      "documentation":"<p>List of custom word configs.</p>",
+      "min":1
     },
     "Headers":{
       "type":"map",
@@ -5166,6 +6258,10 @@
     "ImportJobType":{
       "type":"string",
       "enum":["QUICK_RESPONSES"]
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
     },
     "IntentDetectedDataDetails":{
       "type":"structure",
@@ -5478,6 +6574,91 @@
         "aiAgentSummaries":{
           "shape":"AIAgentSummaryList",
           "documentation":"<p>The summaries of AI Agents.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListAIGuardrailVersionsRequest":{
+      "type":"structure",
+      "required":[
+        "aiGuardrailId",
+        "assistantId"
+      ],
+      "members":{
+        "aiGuardrailId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI Guardrail for which versions are to be listed.</p>",
+          "location":"uri",
+          "locationName":"aiGuardrailId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAIGuardrailVersionsResponse":{
+      "type":"structure",
+      "required":["aiGuardrailVersionSummaries"],
+      "members":{
+        "aiGuardrailVersionSummaries":{
+          "shape":"AIGuardrailVersionSummariesList",
+          "documentation":"<p>The summaries of the AI Guardrail versions.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListAIGuardrailsRequest":{
+      "type":"structure",
+      "required":["assistantId"],
+      "members":{
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAIGuardrailsResponse":{
+      "type":"structure",
+      "required":["aiGuardrailSummaries"],
+      "members":{
+        "aiGuardrailSummaries":{
+          "shape":"AIGuardrailSummariesList",
+          "documentation":"<p>The summaries of the AI Guardrails.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -5890,6 +7071,53 @@
         }
       }
     },
+    "ListMessagesRequest":{
+      "type":"structure",
+      "required":[
+        "assistantId",
+        "sessionId"
+      ],
+      "members":{
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sessionId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect session.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        }
+      }
+    },
+    "ListMessagesResponse":{
+      "type":"structure",
+      "required":["messages"],
+      "members":{
+        "messages":{
+          "shape":"MessageList",
+          "documentation":"<p>The message information.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
+    },
     "ListQuickResponsesRequest":{
       "type":"structure",
       "required":["knowledgeBaseId"],
@@ -5968,6 +7196,10 @@
     "ManualSearchAIAgentConfiguration":{
       "type":"structure",
       "members":{
+        "answerGenerationAIGuardrailId":{
+          "shape":"UuidWithQualifier",
+          "documentation":"<p>The AI Guardrail identifier for the Answer Generation guardrail used by the MANUAL_SEARCH AI Agent.</p>"
+        },
         "answerGenerationAIPromptId":{
           "shape":"UuidWithQualifier",
           "documentation":"<p>The AI Prompt identifier for the Answer Generation prompt used by the MANUAL_SEARCH AI Agent.</p>"
@@ -5984,6 +7216,60 @@
       "box":true,
       "max":100,
       "min":1
+    },
+    "MessageData":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"TextMessage",
+          "documentation":"<p>The message data in text type.</p>"
+        }
+      },
+      "documentation":"<p>The message data.</p>",
+      "union":true
+    },
+    "MessageInput":{
+      "type":"structure",
+      "required":["value"],
+      "members":{
+        "value":{
+          "shape":"MessageData",
+          "documentation":"<p>The message input value.</p>"
+        }
+      },
+      "documentation":"<p>The message input.</p>"
+    },
+    "MessageList":{
+      "type":"list",
+      "member":{"shape":"MessageOutput"}
+    },
+    "MessageOutput":{
+      "type":"structure",
+      "required":[
+        "messageId",
+        "participant",
+        "timestamp",
+        "value"
+      ],
+      "members":{
+        "messageId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of a message.</p>"
+        },
+        "participant":{
+          "shape":"Participant",
+          "documentation":"<p>The participant of a message.</p>"
+        },
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of a message.</p>"
+        },
+        "value":{
+          "shape":"MessageData",
+          "documentation":"<p>The value of a message data.</p>"
+        }
+      },
+      "documentation":"<p>The message output.</p>"
     },
     "MessageTemplateAttachment":{
       "type":"structure",
@@ -6531,6 +7817,10 @@
       "type":"list",
       "member":{"shape":"MessageTemplateVersionSummary"}
     },
+    "MessageType":{
+      "type":"string",
+      "enum":["TEXT"]
+    },
     "Name":{
       "type":"string",
       "max":255,
@@ -6689,6 +7979,14 @@
     "ParsingStrategy":{
       "type":"string",
       "enum":["BEDROCK_FOUNDATION_MODEL"]
+    },
+    "Participant":{
+      "type":"string",
+      "enum":[
+        "CUSTOMER",
+        "AGENT",
+        "BOT"
+      ]
     },
     "PreconditionFailedException":{
       "type":"structure",
@@ -7974,6 +9272,53 @@
       "max":100,
       "min":1
     },
+    "SelfServiceAIAgentConfiguration":{
+      "type":"structure",
+      "members":{
+        "associationConfigurations":{
+          "shape":"AssociationConfigurationList",
+          "documentation":"<p>The association configurations for overriding behavior on this AI Agent.</p>"
+        },
+        "selfServiceAIGuardrailId":{
+          "shape":"UuidWithQualifier",
+          "documentation":"<p>The AI Guardrail identifier used by the SELF_SERVICE AI Agent.</p>"
+        },
+        "selfServiceAnswerGenerationAIPromptId":{
+          "shape":"UuidWithQualifier",
+          "documentation":"<p>The AI Prompt identifier for the Self Service Answer Generation prompt used by the SELF_SERVICE AI Agent</p>"
+        },
+        "selfServicePreProcessingAIPromptId":{
+          "shape":"UuidWithQualifier",
+          "documentation":"<p>The AI Prompt identifier for the Self Service Pre-Processing prompt used by the SELF_SERVICE AI Agent</p>"
+        }
+      },
+      "documentation":"<p>The configuration for AI Agents of type SELF_SERVICE.</p>"
+    },
+    "SelfServiceConversationHistory":{
+      "type":"structure",
+      "required":["turnNumber"],
+      "members":{
+        "botResponse":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The bot response of the conversation history data.</p>"
+        },
+        "inputTranscript":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The input transcript of the conversation history data.</p>"
+        },
+        "turnNumber":{
+          "shape":"Integer",
+          "documentation":"<p>The number of turn of the conversation history data.</p>"
+        }
+      },
+      "documentation":"<p>The conversation history data to included in conversation context data before the the Amazon Q in Connect session..</p>"
+    },
+    "SelfServiceConversationHistoryList":{
+      "type":"list",
+      "member":{"shape":"SelfServiceConversationHistory"},
+      "max":10,
+      "min":0
+    },
     "SemanticChunkingConfiguration":{
       "type":"structure",
       "required":[
@@ -8013,6 +9358,63 @@
       "type":"integer",
       "box":true,
       "min":1
+    },
+    "SendMessageRequest":{
+      "type":"structure",
+      "required":[
+        "assistantId",
+        "message",
+        "sessionId",
+        "type"
+      ],
+      "members":{
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the AWS SDK populates this field.For more information about idempotency, see Making retries safe with idempotent APIs.</p>",
+          "idempotencyToken":true
+        },
+        "conversationContext":{
+          "shape":"ConversationContext",
+          "documentation":"<p>The conversation context before the Amazon Q in Connect session.</p>"
+        },
+        "message":{
+          "shape":"MessageInput",
+          "documentation":"<p>The message data to submit to the Amazon Q in Connect session.</p>"
+        },
+        "sessionId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect session.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        },
+        "type":{
+          "shape":"MessageType",
+          "documentation":"<p>The message type.</p>"
+        }
+      }
+    },
+    "SendMessageResponse":{
+      "type":"structure",
+      "required":[
+        "nextMessageToken",
+        "requestMessageId"
+      ],
+      "members":{
+        "nextMessageToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next message, used by GetNextMessage.</p>"
+        },
+        "requestMessageId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the submitted message.</p>"
+        }
+      }
     },
     "SensitiveString":{
       "type":"string",
@@ -8450,6 +9852,22 @@
       },
       "documentation":"<p>The configuration for a prompt template that supports full textual prompt configuration using a YAML prompt.</p>"
     },
+    "TextMessage":{
+      "type":"structure",
+      "members":{
+        "value":{
+          "shape":"TextMessageValueString",
+          "documentation":"<p>The value of the message data in text type.</p>"
+        }
+      },
+      "documentation":"<p>The message data in text type.</p>"
+    },
+    "TextMessageValueString":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "sensitive":true
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -8558,6 +9976,80 @@
         "aiAgent":{
           "shape":"AIAgentData",
           "documentation":"<p>The data of the updated Amazon Q in Connect AI Agent.</p>"
+        }
+      }
+    },
+    "UpdateAIGuardrailRequest":{
+      "type":"structure",
+      "required":[
+        "aiGuardrailId",
+        "assistantId",
+        "blockedInputMessaging",
+        "blockedOutputsMessaging",
+        "visibilityStatus"
+      ],
+      "members":{
+        "aiGuardrailId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI Guardrail.</p>",
+          "location":"uri",
+          "locationName":"aiGuardrailId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "blockedInputMessaging":{
+          "shape":"AIGuardrailBlockedMessaging",
+          "documentation":"<p>The message to return when the AI Guardrail blocks a prompt.</p>"
+        },
+        "blockedOutputsMessaging":{
+          "shape":"AIGuardrailBlockedMessaging",
+          "documentation":"<p>The message to return when the AI Guardrail blocks a model response.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>..</p>",
+          "idempotencyToken":true
+        },
+        "contentPolicyConfig":{
+          "shape":"AIGuardrailContentPolicyConfig",
+          "documentation":"<p>The content filter policies to configure for the AI Guardrail.</p>"
+        },
+        "contextualGroundingPolicyConfig":{
+          "shape":"AIGuardrailContextualGroundingPolicyConfig",
+          "documentation":"<p>The contextual grounding policy configuration used to create an AI Guardrail.</p>"
+        },
+        "description":{
+          "shape":"AIGuardrailDescription",
+          "documentation":"<p>A description of the AI Guardrail.</p>"
+        },
+        "sensitiveInformationPolicyConfig":{
+          "shape":"AIGuardrailSensitiveInformationPolicyConfig",
+          "documentation":"<p>The sensitive information policy to configure for the AI Guardrail.</p>"
+        },
+        "topicPolicyConfig":{
+          "shape":"AIGuardrailTopicPolicyConfig",
+          "documentation":"<p>The topic policies to configure for the AI Guardrail.</p>"
+        },
+        "visibilityStatus":{
+          "shape":"VisibilityStatus",
+          "documentation":"<p>The visibility status of the Amazon Q in Connect AI Guardrail.</p>"
+        },
+        "wordPolicyConfig":{
+          "shape":"AIGuardrailWordPolicyConfig",
+          "documentation":"<p>The word policy you configure for the AI Guardrail.</p>"
+        }
+      }
+    },
+    "UpdateAIGuardrailResponse":{
+      "type":"structure",
+      "members":{
+        "aiGuardrail":{
+          "shape":"AIGuardrailData",
+          "documentation":"<p>The data of the updated Amazon Q in Connect AI Guardrail.</p>"
         }
       }
     },

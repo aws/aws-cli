@@ -1563,6 +1563,85 @@
       "type":"list",
       "member":{"shape":"ActionTarget"}
     },
+    "Actor":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ID of the threat actor. </p>"
+        },
+        "User":{
+          "shape":"ActorUser",
+          "documentation":"<p> Contains information about the user credentials used by the threat actor.</p>"
+        },
+        "Session":{
+          "shape":"ActorSession",
+          "documentation":"<p> Contains information about the user session where the activity initiated.</p>"
+        }
+      },
+      "documentation":"<p> Information about the threat actor identified in an Amazon GuardDuty Extended Threat Detection attack sequence. GuardDuty generates an attack sequence finding when multiple events align to a potentially suspicious activity. To receive GuardDuty attack sequence findings in Security Hub, you must have GuardDuty and GuardDuty S3 Protection enabled. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html\">GuardDuty Extended Threat Detection </a> in the <i>Amazon GuardDuty User Guide</i>.</p>"
+    },
+    "ActorSession":{
+      "type":"structure",
+      "members":{
+        "Uid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Unique identifier of the session. </p>"
+        },
+        "MfaStatus":{
+          "shape":"ActorSessionMfaStatus",
+          "documentation":"<p> Indicates whether multi-factor authentication (MFA) was used for authentication during the session.</p> <p>In CloudTrail, you can find this value as <code>userIdentity.sessionContext.attributes.mfaAuthenticated</code>.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Long",
+          "documentation":"<p>The timestamp for when the session was created. </p> <p>In CloudTrail, you can find this value as <code>userIdentity.sessionContext.attributes.creationDate</code>.</p>"
+        },
+        "Issuer":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The issuer of the session. </p> <p>In CloudTrail, you can find this value as <code>userIdentity.sessionContext.sessionIssuer.arn</code>.</p>"
+        }
+      },
+      "documentation":"<p> Contains information about the authenticated session used by the threat actor identified in an Amazon GuardDuty Extended Threat Detection attack sequence. GuardDuty generates an attack sequence finding when multiple events align to a potentially suspicious activity. To receive GuardDuty attack sequence findings in Security Hub, you must have GuardDuty and GuardDuty S3 Protection enabled. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html\">GuardDuty Extended Threat Detection </a> in the <i>Amazon GuardDuty User Guide</i>.</p>"
+    },
+    "ActorSessionMfaStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "ActorUser":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the threat actor. </p>"
+        },
+        "Uid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The unique identifier of the threat actor. </p>"
+        },
+        "Type":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The type of user. </p>"
+        },
+        "CredentialUid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Unique identifier of the threat actor’s user credentials. </p>"
+        },
+        "Account":{
+          "shape":"UserAccount",
+          "documentation":"<p> The account of the threat actor. </p>"
+        }
+      },
+      "documentation":"<p> Contains information about the credentials used by the threat actor identified in an Amazon GuardDuty Extended Threat Detection attack sequence. GuardDuty generates an attack sequence finding when multiple events align to a potentially suspicious activity. To receive GuardDuty attack sequence findings in Security Hub, you must have GuardDuty and GuardDuty S3 Protection enabled. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html\">GuardDuty Extended Threat Detection </a> in the <i>Amazon GuardDuty User Guide</i>.</p>"
+    },
+    "ActorsList":{
+      "type":"list",
+      "member":{"shape":"Actor"},
+      "max":10,
+      "min":0
+    },
     "Adjustment":{
       "type":"structure",
       "members":{
@@ -13878,6 +13957,10 @@
         "AwsAccountName":{
           "shape":"NonEmptyString",
           "documentation":"<p>The name of the Amazon Web Services account from which a finding was generated. </p> <p>Length Constraints: Minimum length of 1. Maximum length of 50. </p>"
+        },
+        "Detection":{
+          "shape":"Detection",
+          "documentation":"<p> Provides details about an Amazon GuardDuty Extended Threat Detection attack sequence. GuardDuty generates an attack sequence finding when multiple events align to a potentially suspicious activity. To receive GuardDuty attack sequence findings in Security Hub, you must have GuardDuty and GuardDuty S3 Protection enabled. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html\">GuardDuty Extended Threat Detection </a> in the <i>Amazon GuardDuty User Guide</i>. </p>"
         }
       },
       "documentation":"<p>Provides a consistent format for Security Hub findings. <code>AwsSecurityFinding</code> format allows you to share findings between Amazon Web Services security services and third-party solutions.</p> <note> <p>A finding is a potential security issue generated either by Amazon Web Services services or by the integrated third-party solutions and standards checks.</p> </note>"
@@ -16016,6 +16099,13 @@
       "type":"list",
       "member":{"shape":"ConfigurationPolicySummary"}
     },
+    "ConnectionDirection":{
+      "type":"string",
+      "enum":[
+        "INBOUND",
+        "OUTBOUND"
+      ]
+    },
     "ContainerDetails":{
       "type":"structure",
       "members":{
@@ -16764,6 +16854,16 @@
           "documentation":"<p>The pagination token to use to request the next page of results.</p>"
         }
       }
+    },
+    "Detection":{
+      "type":"structure",
+      "members":{
+        "Sequence":{
+          "shape":"Sequence",
+          "documentation":"<p> Provides details about an attack sequence. </p>"
+        }
+      },
+      "documentation":"<p> A top-level object field that provides details about an Amazon GuardDuty Extended Threat Detection attack sequence. GuardDuty generates an attack sequence finding when multiple events align to a potentially suspicious activity. To receive GuardDuty attack sequence findings in Security Hub, you must have GuardDuty and GuardDuty S3 Protection enabled. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html\">GuardDuty Extended Threat Detection </a> in the <i>Amazon GuardDuty User Guide</i>.</p>"
     },
     "DisableImportFindingsForProductRequest":{
       "type":"structure",
@@ -17643,6 +17743,34 @@
       "type":"list",
       "member":{"shape":"ImportFindingsError"}
     },
+    "Indicator":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the indicator that’s present in the attack sequence finding. </p>"
+        },
+        "Values":{
+          "shape":"NonEmptyStringList",
+          "documentation":"<p>Values associated with each indicator key. For example, if the indicator key is <code>SUSPICIOUS_NETWORK</code>, then the value will be the name of the network. If the indicator key is <code>ATTACK_TACTIC</code>, then the value will be one of the MITRE tactics.</p>"
+        },
+        "Title":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The title describing the indicator. </p>"
+        },
+        "Type":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The type of indicator. </p>"
+        }
+      },
+      "documentation":"<p> Contains information about the indicators observed in an Amazon GuardDuty Extended Threat Detection attack sequence. Indicators include a set of signals, which can be API activities or findings that GuardDuty uses to detect an attack sequence finding. GuardDuty generates an attack sequence finding when multiple signals align to a potentially suspicious activity. To receive GuardDuty attack sequence findings in Security Hub, you must have GuardDuty and GuardDuty S3 Protection enabled. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html\">GuardDuty Extended Threat Detection </a> in the <i>Amazon GuardDuty User Guide</i>. </p>"
+    },
+    "IndicatorsList":{
+      "type":"list",
+      "member":{"shape":"Indicator"},
+      "max":100,
+      "min":0
+    },
     "Insight":{
       "type":"structure",
       "required":[
@@ -18476,6 +18604,30 @@
       },
       "documentation":"<p>The details of network-related information about a finding.</p>"
     },
+    "NetworkAutonomousSystem":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name associated with the AS. </p>"
+        },
+        "Number":{
+          "shape":"Integer",
+          "documentation":"<p> The unique number that identifies the AS. </p>"
+        }
+      },
+      "documentation":"<p> Contains information about the Autonomous System (AS) of the network endpoints involved in an Amazon GuardDuty Extended Threat Detection attack sequence. GuardDuty generates an attack sequence finding when multiple events align to a potentially suspicious activity. To receive GuardDuty attack sequence findings in Security Hub, you must have GuardDuty and GuardDuty S3 Protection enabled. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html\">GuardDuty Extended Threat Detection </a> in the <i>Amazon GuardDuty User Guide</i>. </p>"
+    },
+    "NetworkConnection":{
+      "type":"structure",
+      "members":{
+        "Direction":{
+          "shape":"ConnectionDirection",
+          "documentation":"<p> The direction in which the network traffic is flowing. </p>"
+        }
+      },
+      "documentation":"<p> Contains information about the network connection involved in an Amazon GuardDuty Extended Threat Detection attack sequence. GuardDuty generates an attack sequence finding when multiple events align to a potentially suspicious activity. To receive GuardDuty attack sequence findings in Security Hub, you must have GuardDuty and GuardDuty S3 Protection enabled. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html\">GuardDuty Extended Threat Detection </a> in the <i>Amazon GuardDuty User Guide</i>. </p>"
+    },
     "NetworkConnectionAction":{
       "type":"structure",
       "members":{
@@ -18512,6 +18664,68 @@
         "IN",
         "OUT"
       ]
+    },
+    "NetworkEndpoint":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The identifier of the network endpoint involved in the attack sequence. </p>"
+        },
+        "Ip":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The IP address used in the network endpoint. </p>"
+        },
+        "Domain":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The domain information for the network endpoint. </p>"
+        },
+        "Port":{
+          "shape":"Integer",
+          "documentation":"<p> The port number associated with the network endpoint. </p>"
+        },
+        "Location":{
+          "shape":"NetworkGeoLocation",
+          "documentation":"<p> Information about the location of the network endpoint. </p>"
+        },
+        "AutonomousSystem":{
+          "shape":"NetworkAutonomousSystem",
+          "documentation":"<p> The Autonomous System Number (ASN) of the network endpoint. </p>"
+        },
+        "Connection":{
+          "shape":"NetworkConnection",
+          "documentation":"<p> Information about the network connection. </p>"
+        }
+      },
+      "documentation":"<p> Contains information about network endpoints involved in an Amazon GuardDuty Extended Threat Detection attack sequence. GuardDuty generates an attack sequence finding when multiple events align to a potentially suspicious activity. To receive GuardDuty attack sequence findings in Security Hub, you must have GuardDuty and GuardDuty S3 Protection enabled. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html\">GuardDuty Extended Threat Detection </a> in the <i>Amazon GuardDuty User Guide</i>. </p> <p>This field can provide information about the network endpoints associated with the resource in the attack sequence finding, or about a specific network endpoint used for the attack.</p>"
+    },
+    "NetworkEndpointsList":{
+      "type":"list",
+      "member":{"shape":"NetworkEndpoint"},
+      "max":10,
+      "min":0
+    },
+    "NetworkGeoLocation":{
+      "type":"structure",
+      "members":{
+        "City":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the city. </p>"
+        },
+        "Country":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the country. </p>"
+        },
+        "Lat":{
+          "shape":"Double",
+          "documentation":"<p> The latitude information of the endpoint location. </p>"
+        },
+        "Lon":{
+          "shape":"Double",
+          "documentation":"<p> The longitude information of the endpoint location. </p>"
+        }
+      },
+      "documentation":"<p> Contains information about the location of a network endpoint involved in an Amazon GuardDuty Extended Threat Detection attack sequence. GuardDuty generates an attack sequence finding when multiple events align to a potentially suspicious activity. To receive GuardDuty attack sequence findings in Security Hub, you must have GuardDuty and GuardDuty S3 Protection enabled. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html\">GuardDuty Extended Threat Detection </a> in the <i>Amazon GuardDuty User Guide</i>. </p>"
     },
     "NetworkHeader":{
       "type":"structure",
@@ -20320,6 +20534,32 @@
       "type":"list",
       "member":{"shape":"SensitiveDataResult"}
     },
+    "Sequence":{
+      "type":"structure",
+      "members":{
+        "Uid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Unique identifier of the attack sequence. </p>"
+        },
+        "Actors":{
+          "shape":"ActorsList",
+          "documentation":"<p> Provides information about the actors involved in the attack sequence. </p>"
+        },
+        "Endpoints":{
+          "shape":"NetworkEndpointsList",
+          "documentation":"<p> Contains information about the network endpoints that were used in the attack sequence. </p>"
+        },
+        "Signals":{
+          "shape":"SignalsList",
+          "documentation":"<p> Contains information about the signals involved in the attack sequence. </p>"
+        },
+        "SequenceIndicators":{
+          "shape":"IndicatorsList",
+          "documentation":"<p> Contains information about the indicators observed in the attack sequence. The values for <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_Signal.html\">SignalIndicators</a> are a subset of the values for <code>SequenceIndicators</code>, but the values for these fields don't always match 1:1.</p>"
+        }
+      },
+      "documentation":"<p> Contains information about an Amazon GuardDuty Extended Threat Detection attack sequence finding. GuardDuty generates an attack sequence finding when multiple events align to a potentially suspicious activity. To receive GuardDuty attack sequence findings in Security Hub, you must have GuardDuty and GuardDuty S3 Protection enabled. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html\">GuardDuty Extended Threat Detection </a> in the <i>Amazon GuardDuty User Guide</i>. </p>"
+    },
     "Severity":{
       "type":"structure",
       "members":{
@@ -20378,6 +20618,78 @@
         }
       },
       "documentation":"<p>Updates to the severity information for a finding.</p>"
+    },
+    "Signal":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The type of the signal used to identify an attack sequence. </p> <p>Signals can be GuardDuty findings or activities observed in data sources that GuardDuty monitors. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_data-sources.html\">GuardDuty foundational data sources</a> in the <i>Amazon GuardDuty User Guide</i>.</p> <p>A signal type can be one of the following values. Here are the related descriptions:</p> <ul> <li> <p> <code>FINDING</code> - Individually generated GuardDuty finding.</p> </li> <li> <p> <code>CLOUD_TRAIL</code> - Activity observed from CloudTrail logs</p> </li> <li> <p> <code>S3_DATA_EVENTS</code> - Activity observed from CloudTrail data events for Amazon Simple Storage Service (S3). Activities associated with this type will show up only when you have enabled GuardDuty S3 Protection feature in your account. For more information about S3 Protection and the steps to enable it, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/s3-protection.html\">S3 Protection</a> in the <i>Amazon GuardDuty User Guide</i>.</p> </li> </ul>"
+        },
+        "Id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The identifier of the signal. </p>"
+        },
+        "Title":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The description of the GuardDuty finding. </p>"
+        },
+        "ProductArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the product that generated the signal. </p>"
+        },
+        "ResourceIds":{
+          "shape":"NonEmptyStringList",
+          "documentation":"<p> The ARN or ID of the Amazon Web Services resource associated with the signal. </p>"
+        },
+        "SignalIndicators":{
+          "shape":"IndicatorsList",
+          "documentation":"<p> Contains information about the indicators associated with the signals in this attack sequence finding. The values for <code>SignalIndicators</code> are a subset of the values for <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_Sequence.html\">SequenceIndicators</a>, but the values for these fields don't always match 1:1. </p>"
+        },
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the GuardDuty signal. For example, when signal type is <code>FINDING</code>, the signal name is the name of the finding. </p>"
+        },
+        "CreatedAt":{
+          "shape":"Long",
+          "documentation":"<p> The timestamp when the first finding or activity related to this signal was observed. </p>"
+        },
+        "UpdatedAt":{
+          "shape":"Long",
+          "documentation":"<p> The timestamp when this signal was last observed. </p>"
+        },
+        "FirstSeenAt":{
+          "shape":"Long",
+          "documentation":"<p> The timestamp when the first finding or activity related to this signal was observed. </p>"
+        },
+        "LastSeenAt":{
+          "shape":"Long",
+          "documentation":"<p> The timestamp when the last finding or activity related to this signal was observed. </p>"
+        },
+        "Severity":{
+          "shape":"Double",
+          "documentation":"<p>The severity associated with the signal. For more information about severity, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings-severity.html\">Findings severity levels</a> in the <i>Amazon GuardDuty User Guide</i>.</p>"
+        },
+        "Count":{
+          "shape":"Integer",
+          "documentation":"<p> The number of times this signal was observed. </p>"
+        },
+        "ActorIds":{
+          "shape":"NonEmptyStringList",
+          "documentation":"<p> The IDs of the threat actors involved in the signal. </p>"
+        },
+        "EndpointIds":{
+          "shape":"NonEmptyStringList",
+          "documentation":"<p>Information about the endpoint IDs associated with this signal.</p>"
+        }
+      },
+      "documentation":"<p> Contains information about the signals involved in an Amazon GuardDuty Extended Threat Detection attack sequence. An attack sequence is a type of threat detected by GuardDuty. GuardDuty generates an attack sequence finding when multiple events, or signals, align to a potentially suspicious activity. When GuardDuty and Security Hub are integrated, GuardDuty sends attack sequence findings to Security Hub.</p> <p>A signal can be an API activity or a finding that GuardDuty uses to detect an attack sequence finding.</p>"
+    },
+    "SignalsList":{
+      "type":"list",
+      "member":{"shape":"Signal"},
+      "max":100,
+      "min":1
     },
     "SizeBytes":{"type":"long"},
     "SoftwarePackage":{
@@ -20916,7 +21228,7 @@
       "members":{
         "ReasonCode":{
           "shape":"NonEmptyString",
-          "documentation":"<p>A code that represents a reason for the control status. For the list of status reason codes and their meanings, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-standards-results.html#securityhub-standards-results-asff\">Standards-related information in the ASFF</a> in the <i>Security Hub User Guide</i>. </p>"
+          "documentation":"<p>A code that represents a reason for the control status. For the list of status reason codes and their meanings, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/controls-findings-create-update.html#control-findings-asff-compliance\">Compliance details for control findings</a> in the <i>Security Hub User Guide</i>. </p>"
         },
         "Description":{
           "shape":"NonEmptyString",
@@ -21655,6 +21967,20 @@
         "READY",
         "UPDATING"
       ]
+    },
+    "UserAccount":{
+      "type":"structure",
+      "members":{
+        "Uid":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The unique identifier of the user account involved in the attack sequence. </p>"
+        },
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the user account involved in the attack sequence. </p>"
+        }
+      },
+      "documentation":"<p> Provides Amazon Web Services account information of the user involved in an Amazon GuardDuty Extended Threat Detection attack sequence. GuardDuty generates an attack sequence finding when multiple events align to a potentially suspicious activity. To receive GuardDuty attack sequence findings in Security Hub, you must have GuardDuty and GuardDuty S3 Protection enabled. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-extended-threat-detection.html\">GuardDuty Extended Threat Detection </a> in the <i>Amazon GuardDuty User Guide</i>. </p>"
     },
     "VerificationState":{
       "type":"string",

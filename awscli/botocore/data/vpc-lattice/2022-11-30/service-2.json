@@ -5,11 +5,13 @@
     "endpointPrefix":"vpc-lattice",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon VPC Lattice",
     "serviceId":"VPC Lattice",
     "signatureVersion":"v4",
     "signingName":"vpc-lattice",
-    "uid":"vpc-lattice-2022-11-30"
+    "uid":"vpc-lattice-2022-11-30",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "BatchUpdateRule":{
@@ -71,6 +73,48 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates a listener for a service. Before you start using your Amazon VPC Lattice service, you must add one or more listeners. A listener is a process that checks for connection requests to your services. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/listeners.html\">Listeners</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>",
+      "idempotent":true
+    },
+    "CreateResourceConfiguration":{
+      "name":"CreateResourceConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/resourceconfigurations",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateResourceConfigurationRequest"},
+      "output":{"shape":"CreateResourceConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a resource configuration. A resource configuration defines a specific resource. You can associate a resource configuration with a service network or a VPC endpoint.</p>",
+      "idempotent":true
+    },
+    "CreateResourceGateway":{
+      "name":"CreateResourceGateway",
+      "http":{
+        "method":"POST",
+        "requestUri":"/resourcegateways",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateResourceGatewayRequest"},
+      "output":{"shape":"CreateResourceGatewayResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a resource gateway.</p>",
       "idempotent":true
     },
     "CreateRule":{
@@ -136,6 +180,27 @@
       "documentation":"<p>Creates a service network. A service network is a logical boundary for a collection of services. You can associate services and VPCs with a service network.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-networks.html\">Service networks</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>",
       "idempotent":true
     },
+    "CreateServiceNetworkResourceAssociation":{
+      "name":"CreateServiceNetworkResourceAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/servicenetworkresourceassociations",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateServiceNetworkResourceAssociationRequest"},
+      "output":{"shape":"CreateServiceNetworkResourceAssociationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Associates the specified service network with the specified resource configuration. This allows the resource configuration to receive connections through the service network, including through a service network VPC endpoint.</p>",
+      "idempotent":true
+    },
     "CreateServiceNetworkServiceAssociation":{
       "name":"CreateServiceNetworkServiceAssociation",
       "http":{
@@ -154,7 +219,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Associates a service with a service network. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-network-associations.html#service-network-service-associations\">Manage service associations</a> in the <i>Amazon VPC Lattice User Guide</i>.</p> <p>You can't use this operation if the service and service network are already associated or if there is a disassociation or deletion in progress. If the association fails, you can retry the operation by deleting the association and recreating it.</p> <p>You cannot associate a service and service network that are shared with a caller. The caller must own either the service or the service network.</p> <p>As a result of this operation, the association is created in the service network account and the association owner account.</p>",
+      "documentation":"<p>Associates the specified service with the specified service network. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-network-associations.html#service-network-service-associations\">Manage service associations</a> in the <i>Amazon VPC Lattice User Guide</i>.</p> <p>You can't use this operation if the service and service network are already associated or if there is a disassociation or deletion in progress. If the association fails, you can retry the operation by deleting the association and recreating it.</p> <p>You cannot associate a service and service network that are shared with a caller. The caller must own either the service or the service network.</p> <p>As a result of this operation, the association is created in the service network account and the association owner account.</p>",
       "idempotent":true
     },
     "CreateServiceNetworkVpcAssociation":{
@@ -257,6 +322,65 @@
       "documentation":"<p>Deletes the specified listener.</p>",
       "idempotent":true
     },
+    "DeleteResourceConfiguration":{
+      "name":"DeleteResourceConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/resourceconfigurations/{resourceConfigurationIdentifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteResourceConfigurationRequest"},
+      "output":{"shape":"DeleteResourceConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes the specified resource configuration.</p>",
+      "idempotent":true
+    },
+    "DeleteResourceEndpointAssociation":{
+      "name":"DeleteResourceEndpointAssociation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/resourceendpointassociations/{resourceEndpointAssociationIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteResourceEndpointAssociationRequest"},
+      "output":{"shape":"DeleteResourceEndpointAssociationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Disassociates the resource configuration from the resource VPC endpoint.</p>",
+      "idempotent":true
+    },
+    "DeleteResourceGateway":{
+      "name":"DeleteResourceGateway",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/resourcegateways/{resourceGatewayIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteResourceGatewayRequest"},
+      "output":{"shape":"DeleteResourceGatewayResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes the specified resource gateway.</p>",
+      "idempotent":true
+    },
     "DeleteResourcePolicy":{
       "name":"DeleteResourcePolicy",
       "http":{
@@ -336,6 +460,26 @@
       "documentation":"<p>Deletes a service network. You can only delete the service network if there is no service or VPC associated with it. If you delete a service network, all resources related to the service network, such as the resource policy, auth policy, and access log subscriptions, are also deleted. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-networks.html#delete-service-network\">Delete a service network</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>",
       "idempotent":true
     },
+    "DeleteServiceNetworkResourceAssociation":{
+      "name":"DeleteServiceNetworkResourceAssociation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/servicenetworkresourceassociations/{serviceNetworkResourceAssociationIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteServiceNetworkResourceAssociationRequest"},
+      "output":{"shape":"DeleteServiceNetworkResourceAssociationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes the association between a service network and a resource configuration.</p>",
+      "idempotent":true
+    },
     "DeleteServiceNetworkServiceAssociation":{
       "name":"DeleteServiceNetworkServiceAssociation",
       "http":{
@@ -353,7 +497,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes the association between a specified service and the specific service network. This operation fails if an association is still in progress.</p>",
+      "documentation":"<p>Deletes the association between a service and a service network. This operation fails if an association is still in progress.</p>",
       "idempotent":true
     },
     "DeleteServiceNetworkVpcAssociation":{
@@ -469,6 +613,42 @@
       ],
       "documentation":"<p>Retrieves information about the specified listener for the specified service.</p>"
     },
+    "GetResourceConfiguration":{
+      "name":"GetResourceConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/resourceconfigurations/{resourceConfigurationIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetResourceConfigurationRequest"},
+      "output":{"shape":"GetResourceConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about the specified resource configuration.</p>"
+    },
+    "GetResourceGateway":{
+      "name":"GetResourceGateway",
+      "http":{
+        "method":"GET",
+        "requestUri":"/resourcegateways/{resourceGatewayIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetResourceGatewayRequest"},
+      "output":{"shape":"GetResourceGatewayResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about the specified resource gateway.</p>"
+    },
     "GetResourcePolicy":{
       "name":"GetResourcePolicy",
       "http":{
@@ -485,7 +665,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the resource policy. The resource policy is an IAM policy created on behalf of the resource owner when they share a resource.</p>"
+      "documentation":"<p>Retrieves information about the specified resource policy. The resource policy is an IAM policy created on behalf of the resource owner when they share a resource.</p>"
     },
     "GetRule":{
       "name":"GetRule",
@@ -503,7 +683,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about listener rules. You can also retrieve information about the default listener rule. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/listeners.html#listener-rules\">Listener rules</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>"
+      "documentation":"<p>Retrieves information about the specified listener rules. You can also retrieve information about the default listener rule. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/listeners.html#listener-rules\">Listener rules</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>"
     },
     "GetService":{
       "name":"GetService",
@@ -541,6 +721,24 @@
       ],
       "documentation":"<p>Retrieves information about the specified service network.</p>"
     },
+    "GetServiceNetworkResourceAssociation":{
+      "name":"GetServiceNetworkResourceAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/servicenetworkresourceassociations/{serviceNetworkResourceAssociationIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetServiceNetworkResourceAssociationRequest"},
+      "output":{"shape":"GetServiceNetworkResourceAssociationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about the specified association between a service network and a resource configuration.</p>"
+    },
     "GetServiceNetworkServiceAssociation":{
       "name":"GetServiceNetworkServiceAssociation",
       "http":{
@@ -575,7 +773,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the association between a service network and a VPC.</p>"
+      "documentation":"<p>Retrieves information about the specified association between a service network and a VPC.</p>"
     },
     "GetTargetGroup":{
       "name":"GetTargetGroup",
@@ -610,7 +808,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists all access log subscriptions for the specified service network or service.</p>"
+      "documentation":"<p>Lists the access log subscriptions for the specified service network or service.</p>"
     },
     "ListListeners":{
       "name":"ListListeners",
@@ -630,6 +828,57 @@
       ],
       "documentation":"<p>Lists the listeners for the specified service.</p>"
     },
+    "ListResourceConfigurations":{
+      "name":"ListResourceConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/resourceconfigurations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListResourceConfigurationsRequest"},
+      "output":{"shape":"ListResourceConfigurationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the resource configurations owned by or shared with this account.</p>"
+    },
+    "ListResourceEndpointAssociations":{
+      "name":"ListResourceEndpointAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/resourceendpointassociations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListResourceEndpointAssociationsRequest"},
+      "output":{"shape":"ListResourceEndpointAssociationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the associations for the specified VPC endpoint.</p>"
+    },
+    "ListResourceGateways":{
+      "name":"ListResourceGateways",
+      "http":{
+        "method":"GET",
+        "requestUri":"/resourcegateways",
+        "responseCode":200
+      },
+      "input":{"shape":"ListResourceGatewaysRequest"},
+      "output":{"shape":"ListResourceGatewaysResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the resource gateways that you own or that were shared with you.</p>"
+    },
     "ListRules":{
       "name":"ListRules",
       "http":{
@@ -646,7 +895,24 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the rules for the listener.</p>"
+      "documentation":"<p>Lists the rules for the specified listener.</p>"
+    },
+    "ListServiceNetworkResourceAssociations":{
+      "name":"ListServiceNetworkResourceAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/servicenetworkresourceassociations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListServiceNetworkResourceAssociationsRequest"},
+      "output":{"shape":"ListServiceNetworkResourceAssociationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the associations between a service network and a resource configuration.</p>"
     },
     "ListServiceNetworkServiceAssociations":{
       "name":"ListServiceNetworkServiceAssociations",
@@ -663,7 +929,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the associations between the service network and the service. You can filter the list either by service or service network. You must provide either the service network identifier or the service identifier.</p> <p>Every association in Amazon VPC Lattice is given a unique Amazon Resource Name (ARN), such as when a service network is associated with a VPC or when a service is associated with a service network. If the association is for a resource that is shared with another account, the association includes the local account ID as the prefix in the ARN for each account the resource is shared with.</p>"
+      "documentation":"<p>Lists the associations between a service network and a service. You can filter the list either by service or service network. You must provide either the service network identifier or the service identifier.</p> <p>Every association in Amazon VPC Lattice has a unique Amazon Resource Name (ARN), such as when a service network is associated with a VPC or when a service is associated with a service network. If the association is for a resource is shared with another account, the association includes the local account ID as the prefix in the ARN.</p>"
     },
     "ListServiceNetworkVpcAssociations":{
       "name":"ListServiceNetworkVpcAssociations",
@@ -680,7 +946,24 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the service network and VPC associations. You can filter the list either by VPC or service network. You must provide either the service network identifier or the VPC identifier.</p>"
+      "documentation":"<p>Lists the associations between a service network and a VPC. You can filter the list either by VPC or service network. You must provide either the ID of the service network identifier or the ID of the VPC.</p>"
+    },
+    "ListServiceNetworkVpcEndpointAssociations":{
+      "name":"ListServiceNetworkVpcEndpointAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/servicenetworkvpcendpointassociations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListServiceNetworkVpcEndpointAssociationsRequest"},
+      "output":{"shape":"ListServiceNetworkVpcEndpointAssociationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the associations between a service network and a VPC endpoint.</p>"
     },
     "ListServiceNetworks":{
       "name":"ListServiceNetworks",
@@ -697,7 +980,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the service networks owned by the caller account or shared with the caller account. Also includes the account ID in the ARN to show which account owns the service network.</p>"
+      "documentation":"<p>Lists the service networks owned by or shared with this account. The account ID in the ARN shows which account owns the service network.</p>"
     },
     "ListServices":{
       "name":"ListServices",
@@ -896,10 +1179,48 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates the specified listener for the specified service.</p>",
       "idempotent":true
+    },
+    "UpdateResourceConfiguration":{
+      "name":"UpdateResourceConfiguration",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/resourceconfigurations/{resourceConfigurationIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateResourceConfigurationRequest"},
+      "output":{"shape":"UpdateResourceConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the specified resource configuration.</p>"
+    },
+    "UpdateResourceGateway":{
+      "name":"UpdateResourceGateway",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/resourcegateways/{resourceGatewayIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateResourceGatewayRequest"},
+      "output":{"shape":"UpdateResourceGatewayResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the specified resource gateway.</p>"
     },
     "UpdateRule":{
       "name":"UpdateRule",
@@ -916,9 +1237,10 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates a rule for the listener. You can't modify a default listener rule. To modify a default listener rule, use <code>UpdateListener</code>.</p>",
+      "documentation":"<p>Updates a specified rule for the listener. You can't modify a default listener rule. To modify a default listener rule, use <code>UpdateListener</code>.</p>",
       "idempotent":true
     },
     "UpdateService":{
@@ -936,6 +1258,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates the specified service.</p>"
@@ -977,7 +1300,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates the service network and VPC association. If you add a security group to the service network and VPC association, the association must continue to always have at least one security group. You can add or edit security groups at any time. However, to remove all security groups, you must first delete the association and recreate it without security groups.</p>",
+      "documentation":"<p>Updates the service network and VPC association. If you add a security group to the service network and VPC association, the association must continue to have at least one security group. You can add or edit security groups at any time. However, to remove all security groups, you must first delete the association and then recreate it without security groups.</p>",
       "idempotent":true
     },
     "UpdateTargetGroup":{
@@ -995,6 +1318,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates the specified target group.</p>",
@@ -1061,7 +1385,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the access log subscription was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the access log subscription was created, in ISO-8601 format.</p>"
         },
         "destinationArn":{
           "shape":"AccessLogDestinationArn",
@@ -1073,7 +1397,7 @@
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the access log subscription was last updated, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the access log subscription was last updated, in ISO-8601 format.</p>"
         },
         "resourceArn":{
           "shape":"ResourceArn",
@@ -1082,6 +1406,10 @@
         "resourceId":{
           "shape":"ResourceId",
           "documentation":"<p>The ID of the service or service network.</p>"
+        },
+        "serviceNetworkLogType":{
+          "shape":"ServiceNetworkLogType",
+          "documentation":"<p>Log type of the service network.</p>"
         }
       },
       "documentation":"<p>Summary information about an access log subscription.</p>"
@@ -1097,6 +1425,16 @@
       "max":1224,
       "min":0,
       "pattern":"^arn:[a-z0-9][-.a-z0-9]{0,62}:vpc-lattice:([a-z0-9][-.a-z0-9]{0,62})?:\\d{12}?:[^/].{0,1023}$"
+    },
+    "ArnResource":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"WildcardArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
     },
     "AuthPolicyState":{
       "type":"string",
@@ -1127,7 +1465,7 @@
       "members":{
         "listenerIdentifier":{
           "shape":"ListenerIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the listener.</p>",
+          "documentation":"<p>The ID or ARN of the listener.</p>",
           "location":"uri",
           "locationName":"listenerIdentifier"
         },
@@ -1137,7 +1475,7 @@
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or ARN of the service.</p>",
           "location":"uri",
           "locationName":"serviceIdentifier"
         }
@@ -1215,7 +1553,11 @@
         },
         "resourceIdentifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service network or service.</p>"
+          "documentation":"<p>The ID or ARN of the service network or service.</p>"
+        },
+        "serviceNetworkLogType":{
+          "shape":"ServiceNetworkLogType",
+          "documentation":"<p>The type of log that monitors your Amazon VPC Lattice service networks.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -1252,6 +1594,10 @@
         "resourceId":{
           "shape":"ResourceId",
           "documentation":"<p>The ID of the service network or service.</p>"
+        },
+        "serviceNetworkLogType":{
+          "shape":"ServiceNetworkLogType",
+          "documentation":"<p>The type of log that monitors your Amazon VPC Lattice service networks.</p>"
         }
       }
     },
@@ -1287,7 +1633,7 @@
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or ARN of the service.</p>",
           "location":"uri",
           "locationName":"serviceIdentifier"
         },
@@ -1334,6 +1680,195 @@
         }
       }
     },
+    "CreateResourceConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type"
+      ],
+      "members":{
+        "allowAssociationToShareableServiceNetwork":{
+          "shape":"Boolean",
+          "documentation":"<p>(SINGLE, GROUP, ARN) Specifies whether the resource configuration can be associated with a sharable service network. The default is false.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request that completed successfully using the same client token and parameters, the retry succeeds without performing any actions. If the parameters aren't identical, the retry fails.</p>",
+          "idempotencyToken":true
+        },
+        "name":{
+          "shape":"ResourceConfigurationName",
+          "documentation":"<p>The name of the resource configuration. The name must be unique within the account. The valid characters are a-z, 0-9, and hyphens (-). You can't use a hyphen as the first or last character, or immediately after another hyphen.</p>"
+        },
+        "portRanges":{
+          "shape":"PortRangeList",
+          "documentation":"<p>(SINGLE, GROUP, CHILD) The TCP port ranges that a consumer can use to access a resource configuration (for example: 1-65535). You can separate port ranges using commas (for example: 1,2,22-30).</p>"
+        },
+        "protocol":{
+          "shape":"ProtocolType",
+          "documentation":"<p>(SINGLE, GROUP) The protocol accepted by the resource configuration.</p>"
+        },
+        "resourceConfigurationDefinition":{
+          "shape":"ResourceConfigurationDefinition",
+          "documentation":"<p>(SINGLE, CHILD, ARN) The resource configuration.</p>"
+        },
+        "resourceConfigurationGroupIdentifier":{
+          "shape":"ResourceConfigurationIdentifier",
+          "documentation":"<p>(CHILD) The ID or ARN of the parent resource configuration (type is <code>GROUP</code>). This is used to associate a child resource configuration with a group resource configuration.</p>"
+        },
+        "resourceGatewayIdentifier":{
+          "shape":"ResourceGatewayIdentifier",
+          "documentation":"<p>(SINGLE, GROUP, ARN) The ID or ARN of the resource gateway used to connect to the resource configuration. For a child resource configuration, this value is inherited from the parent resource configuration.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags for the resource configuration.</p>"
+        },
+        "type":{
+          "shape":"ResourceConfigurationType",
+          "documentation":"<p>The type of resource configuration.</p> <ul> <li> <p> <code>SINGLE</code> - A single resource.</p> </li> <li> <p> <code>GROUP</code> - A group of resources. You must create a group resource configuration before you create a child resource configuration.</p> </li> <li> <p> <code>CHILD</code> - A single resource that is part of a group resource configuration.</p> </li> <li> <p> <code>ARN</code> - An Amazon Web Services resource.</p> </li> </ul>"
+        }
+      }
+    },
+    "CreateResourceConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "allowAssociationToShareableServiceNetwork":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the resource configuration can be associated with a sharable service network.</p>"
+        },
+        "arn":{
+          "shape":"ResourceConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource configuration.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the resource configuration was created, in ISO-8601 format.</p>"
+        },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p>The reason that the request failed.</p>"
+        },
+        "id":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The ID of the resource configuration.</p>"
+        },
+        "name":{
+          "shape":"ResourceConfigurationName",
+          "documentation":"<p>The name of the resource configuration.</p>"
+        },
+        "portRanges":{
+          "shape":"PortRangeList",
+          "documentation":"<p>The port range.</p>"
+        },
+        "protocol":{
+          "shape":"ProtocolType",
+          "documentation":"<p>The protocol.</p>"
+        },
+        "resourceConfigurationDefinition":{
+          "shape":"ResourceConfigurationDefinition",
+          "documentation":"<p>The resource configuration.</p>"
+        },
+        "resourceConfigurationGroupId":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The ID of the parent resource configuration (type is GROUP).</p>"
+        },
+        "resourceGatewayId":{
+          "shape":"ResourceGatewayId",
+          "documentation":"<p>The ID of the resource gateway associated with the resource configuration.</p>"
+        },
+        "status":{
+          "shape":"ResourceConfigurationStatus",
+          "documentation":"<p>The current status of the resource configuration.</p>"
+        },
+        "type":{
+          "shape":"ResourceConfigurationType",
+          "documentation":"<p>The type of resource configuration.</p>"
+        }
+      }
+    },
+    "CreateResourceGatewayRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "subnetIds",
+        "vpcIdentifier"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request that completed successfully using the same client token and parameters, the retry succeeds without performing any actions. If the parameters aren't identical, the retry fails.</p>",
+          "idempotencyToken":true
+        },
+        "ipAddressType":{
+          "shape":"ResourceGatewayIpAddressType",
+          "documentation":"<p>The type of IP address used by the resource gateway.</p>"
+        },
+        "name":{
+          "shape":"ResourceGatewayName",
+          "documentation":"<p>The name of the resource gateway.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"CreateResourceGatewayRequestSecurityGroupIdsList",
+          "documentation":"<p>The IDs of the security groups to apply to the resource gateway. The security groups must be in the same VPC.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetList",
+          "documentation":"<p>The IDs of the VPC subnets in which to create the resource gateway.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags for the resource gateway.</p>"
+        },
+        "vpcIdentifier":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC for the resource gateway.</p>"
+        }
+      }
+    },
+    "CreateResourceGatewayRequestSecurityGroupIdsList":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"},
+      "max":5,
+      "min":0
+    },
+    "CreateResourceGatewayResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ResourceGatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource gateway.</p>"
+        },
+        "id":{
+          "shape":"ResourceGatewayId",
+          "documentation":"<p>The ID of the resource gateway.</p>"
+        },
+        "ipAddressType":{
+          "shape":"ResourceGatewayIpAddressType",
+          "documentation":"<p>The type of IP address for the resource gateway.</p>"
+        },
+        "name":{
+          "shape":"ResourceGatewayName",
+          "documentation":"<p>The name of the resource gateway.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupList",
+          "documentation":"<p>The IDs of the security groups for the resource gateway.</p>"
+        },
+        "status":{
+          "shape":"ResourceGatewayStatus",
+          "documentation":"<p>The status of the resource gateway.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetList",
+          "documentation":"<p>The IDs of the resource gateway subnets.</p>"
+        },
+        "vpcIdentifier":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC.</p>"
+        }
+      }
+    },
     "CreateRuleRequest":{
       "type":"structure",
       "required":[
@@ -1356,7 +1891,7 @@
         },
         "listenerIdentifier":{
           "shape":"ListenerIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the listener.</p>",
+          "documentation":"<p>The ID or ARN of the listener.</p>",
           "location":"uri",
           "locationName":"listenerIdentifier"
         },
@@ -1374,7 +1909,7 @@
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or ARN of the service.</p>",
           "location":"uri",
           "locationName":"serviceIdentifier"
         },
@@ -1430,9 +1965,60 @@
           "shape":"ServiceNetworkName",
           "documentation":"<p>The name of the service network. The name must be unique to the account. The valid characters are a-z, 0-9, and hyphens (-). You can't use a hyphen as the first or last character, or immediately after another hyphen.</p>"
         },
+        "sharingConfig":{
+          "shape":"SharingConfig",
+          "documentation":"<p>Specify if the service network should be enabled for sharing.</p>"
+        },
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags for the service network.</p>"
+        }
+      }
+    },
+    "CreateServiceNetworkResourceAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "resourceConfigurationIdentifier",
+        "serviceNetworkIdentifier"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request that completed successfully using the same client token and parameters, the retry succeeds without performing any actions. If the parameters aren't identical, the retry fails.</p>",
+          "idempotencyToken":true
+        },
+        "resourceConfigurationIdentifier":{
+          "shape":"ResourceConfigurationIdentifier",
+          "documentation":"<p>The ID of the resource configuration to associate with the service network.</p>"
+        },
+        "serviceNetworkIdentifier":{
+          "shape":"ServiceNetworkIdentifierWithoutRegex",
+          "documentation":"<p>The ID of the service network to associate with the resource configuration.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags for the association.</p>"
+        }
+      }
+    },
+    "CreateServiceNetworkResourceAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ServiceNetworkResourceAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the association.</p>"
+        },
+        "createdBy":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that created the association.</p>"
+        },
+        "id":{
+          "shape":"ServiceNetworkResourceAssociationId",
+          "documentation":"<p>The ID of the association.</p>"
+        },
+        "status":{
+          "shape":"ServiceNetworkResourceAssociationStatus",
+          "documentation":"<p>The status of the association.</p>"
         }
       }
     },
@@ -1454,6 +2040,10 @@
         "name":{
           "shape":"ServiceNetworkName",
           "documentation":"<p>The name of the service network.</p>"
+        },
+        "sharingConfig":{
+          "shape":"SharingConfig",
+          "documentation":"<p>Specifies if the service network is enabled for sharing.</p>"
         }
       }
     },
@@ -1471,11 +2061,11 @@
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>"
+          "documentation":"<p>The ID or ARN of the service.</p>"
         },
         "serviceNetworkIdentifier":{
           "shape":"ServiceNetworkIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service network. You must use the ARN if the resources specified in the operation are in different accounts.</p>"
+          "documentation":"<p>The ID or ARN of the service network. You must use an ARN if the resources are in different accounts.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -1530,7 +2120,7 @@
         },
         "serviceNetworkIdentifier":{
           "shape":"ServiceNetworkIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service network. You must use the ARN when the resources specified in the operation are in different accounts.</p>"
+          "documentation":"<p>The ID or ARN of the service network. You must use an ARN if the resources are in different accounts.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -1706,7 +2296,7 @@
       "members":{
         "accessLogSubscriptionIdentifier":{
           "shape":"AccessLogSubscriptionIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the access log subscription.</p>",
+          "documentation":"<p>The ID or ARN of the access log subscription.</p>",
           "location":"uri",
           "locationName":"accessLogSubscriptionIdentifier"
         }
@@ -1723,7 +2313,7 @@
       "members":{
         "resourceIdentifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the resource.</p>",
+          "documentation":"<p>The ID or ARN of the resource.</p>",
           "location":"uri",
           "locationName":"resourceIdentifier"
         }
@@ -1743,13 +2333,13 @@
       "members":{
         "listenerIdentifier":{
           "shape":"ListenerIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the listener.</p>",
+          "documentation":"<p>The ID or ARN of the listener.</p>",
           "location":"uri",
           "locationName":"listenerIdentifier"
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or ARN of the service.</p>",
           "location":"uri",
           "locationName":"serviceIdentifier"
         }
@@ -1758,6 +2348,93 @@
     "DeleteListenerResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "DeleteResourceConfigurationRequest":{
+      "type":"structure",
+      "required":["resourceConfigurationIdentifier"],
+      "members":{
+        "resourceConfigurationIdentifier":{
+          "shape":"ResourceConfigurationIdentifier",
+          "documentation":"<p>The ID or ARN of the resource configuration.</p>",
+          "location":"uri",
+          "locationName":"resourceConfigurationIdentifier"
+        }
+      }
+    },
+    "DeleteResourceConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteResourceEndpointAssociationRequest":{
+      "type":"structure",
+      "required":["resourceEndpointAssociationIdentifier"],
+      "members":{
+        "resourceEndpointAssociationIdentifier":{
+          "shape":"ResourceEndpointAssociationIdentifier",
+          "documentation":"<p>The ID or ARN of the association.</p>",
+          "location":"uri",
+          "locationName":"resourceEndpointAssociationIdentifier"
+        }
+      }
+    },
+    "DeleteResourceEndpointAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ResourceEndpointAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the association.</p>"
+        },
+        "id":{
+          "shape":"ResourceEndpointAssociationId",
+          "documentation":"<p>The ID of the association.</p>"
+        },
+        "resourceConfigurationArn":{
+          "shape":"ResourceConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource configuration associated with the VPC endpoint of type resource.</p>"
+        },
+        "resourceConfigurationId":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The ID of the resource configuration.</p>"
+        },
+        "vpcEndpointId":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The ID of the resource VPC endpoint that is associated with the resource configuration.</p>"
+        }
+      }
+    },
+    "DeleteResourceGatewayRequest":{
+      "type":"structure",
+      "required":["resourceGatewayIdentifier"],
+      "members":{
+        "resourceGatewayIdentifier":{
+          "shape":"ResourceGatewayIdentifier",
+          "documentation":"<p>The ID or ARN of the resource gateway.</p>",
+          "location":"uri",
+          "locationName":"resourceGatewayIdentifier"
+        }
+      }
+    },
+    "DeleteResourceGatewayResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ResourceGatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource gateway.</p>"
+        },
+        "id":{
+          "shape":"ResourceGatewayId",
+          "documentation":"<p>The ID of the resource gateway.</p>"
+        },
+        "name":{
+          "shape":"ResourceGatewayName",
+          "documentation":"<p>The name of the resource gateway.</p>"
+        },
+        "status":{
+          "shape":"ResourceGatewayStatus",
+          "documentation":"<p>The status of the resource gateway.</p>"
+        }
       }
     },
     "DeleteResourcePolicyRequest":{
@@ -1787,19 +2464,19 @@
       "members":{
         "listenerIdentifier":{
           "shape":"ListenerIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the listener.</p>",
+          "documentation":"<p>The ID or ARN of the listener.</p>",
           "location":"uri",
           "locationName":"listenerIdentifier"
         },
         "ruleIdentifier":{
           "shape":"RuleIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the rule.</p>",
+          "documentation":"<p>The ID or ARN of the rule.</p>",
           "location":"uri",
           "locationName":"ruleIdentifier"
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or ARN of the service.</p>",
           "location":"uri",
           "locationName":"serviceIdentifier"
         }
@@ -1816,9 +2493,38 @@
       "members":{
         "serviceNetworkIdentifier":{
           "shape":"ServiceNetworkIdentifier",
-          "documentation":"<p>The Amazon Resource Name (ARN) or ID of the service network.</p>",
+          "documentation":"<p>The ID or ARN of the service network.</p>",
           "location":"uri",
           "locationName":"serviceNetworkIdentifier"
+        }
+      }
+    },
+    "DeleteServiceNetworkResourceAssociationRequest":{
+      "type":"structure",
+      "required":["serviceNetworkResourceAssociationIdentifier"],
+      "members":{
+        "serviceNetworkResourceAssociationIdentifier":{
+          "shape":"ServiceNetworkResourceAssociationIdentifier",
+          "documentation":"<p>The ID of the association.</p>",
+          "location":"uri",
+          "locationName":"serviceNetworkResourceAssociationIdentifier"
+        }
+      }
+    },
+    "DeleteServiceNetworkResourceAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ServiceNetworkResourceAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the association.</p>"
+        },
+        "id":{
+          "shape":"ServiceNetworkResourceAssociationId",
+          "documentation":"<p>The ID of the association.</p>"
+        },
+        "status":{
+          "shape":"ServiceNetworkResourceAssociationStatus",
+          "documentation":"<p>The status of the association.</p>"
         }
       }
     },
@@ -1833,7 +2539,7 @@
       "members":{
         "serviceNetworkServiceAssociationIdentifier":{
           "shape":"ServiceNetworkServiceAssociationIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the association.</p>",
+          "documentation":"<p>The ID or ARN of the association.</p>",
           "location":"uri",
           "locationName":"serviceNetworkServiceAssociationIdentifier"
         }
@@ -1862,7 +2568,7 @@
       "members":{
         "serviceNetworkVpcAssociationIdentifier":{
           "shape":"ServiceNetworkVpcAssociationIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the association.</p>",
+          "documentation":"<p>The ID or ARN of the association.</p>",
           "location":"uri",
           "locationName":"serviceNetworkVpcAssociationIdentifier"
         }
@@ -1891,7 +2597,7 @@
       "members":{
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or ARN of the service.</p>",
           "location":"uri",
           "locationName":"serviceIdentifier"
         }
@@ -1924,7 +2630,7 @@
       "members":{
         "targetGroupIdentifier":{
           "shape":"TargetGroupIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the target group.</p>",
+          "documentation":"<p>The ID or ARN of the target group.</p>",
           "location":"uri",
           "locationName":"targetGroupIdentifier"
         }
@@ -1956,7 +2662,7 @@
       "members":{
         "targetGroupIdentifier":{
           "shape":"TargetGroupIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the target group.</p>",
+          "documentation":"<p>The ID or ARN of the target group.</p>",
           "location":"uri",
           "locationName":"targetGroupIdentifier"
         },
@@ -1999,6 +2705,25 @@
       },
       "documentation":"<p>Describes the DNS information of a service.</p>"
     },
+    "DnsResource":{
+      "type":"structure",
+      "members":{
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The domain name of the resource.</p>"
+        },
+        "ipAddressType":{
+          "shape":"ResourceConfigurationIpAddressType",
+          "documentation":"<p>The type of IP address.</p>"
+        }
+      },
+      "documentation":"<p>The DNS name of the resource.</p>"
+    },
+    "DomainName":{
+      "type":"string",
+      "max":255,
+      "min":3
+    },
     "FailureCode":{"type":"string"},
     "FailureMessage":{"type":"string"},
     "FixedResponseAction":{
@@ -2029,7 +2754,7 @@
       "members":{
         "accessLogSubscriptionIdentifier":{
           "shape":"AccessLogSubscriptionIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the access log subscription.</p>",
+          "documentation":"<p>The ID or ARN of the access log subscription.</p>",
           "location":"uri",
           "locationName":"accessLogSubscriptionIdentifier"
         }
@@ -2053,7 +2778,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the access log subscription was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the access log subscription was created, in ISO-8601 format.</p>"
         },
         "destinationArn":{
           "shape":"AccessLogDestinationArn",
@@ -2065,7 +2790,7 @@
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the access log subscription was last updated, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the access log subscription was last updated, in ISO-8601 format.</p>"
         },
         "resourceArn":{
           "shape":"ResourceArn",
@@ -2074,6 +2799,10 @@
         "resourceId":{
           "shape":"ResourceId",
           "documentation":"<p>The ID of the service network or service.</p>"
+        },
+        "serviceNetworkLogType":{
+          "shape":"ServiceNetworkLogType",
+          "documentation":"<p>The log type for the service network.</p>"
         }
       }
     },
@@ -2083,7 +2812,7 @@
       "members":{
         "resourceIdentifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service network or service.</p>",
+          "documentation":"<p>The ID or ARN of the service network or service.</p>",
           "location":"uri",
           "locationName":"resourceIdentifier"
         }
@@ -2094,11 +2823,11 @@
       "members":{
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the auth policy was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the auth policy was created, in ISO-8601 format.</p>"
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the auth policy was last updated, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the auth policy was last updated, in ISO-8601 format.</p>"
         },
         "policy":{
           "shape":"AuthPolicyString",
@@ -2119,13 +2848,13 @@
       "members":{
         "listenerIdentifier":{
           "shape":"ListenerIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the listener.</p>",
+          "documentation":"<p>The ID or ARN of the listener.</p>",
           "location":"uri",
           "locationName":"listenerIdentifier"
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or ARN of the service.</p>",
           "location":"uri",
           "locationName":"serviceIdentifier"
         }
@@ -2140,7 +2869,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the listener was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the listener was created, in ISO-8601 format.</p>"
         },
         "defaultAction":{
           "shape":"RuleAction",
@@ -2152,7 +2881,7 @@
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the listener was last updated, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the listener was last updated, in ISO-8601 format.</p>"
         },
         "name":{
           "shape":"ListenerName",
@@ -2173,6 +2902,144 @@
         "serviceId":{
           "shape":"ServiceId",
           "documentation":"<p>The ID of the service.</p>"
+        }
+      }
+    },
+    "GetResourceConfigurationRequest":{
+      "type":"structure",
+      "required":["resourceConfigurationIdentifier"],
+      "members":{
+        "resourceConfigurationIdentifier":{
+          "shape":"ResourceConfigurationIdentifier",
+          "documentation":"<p>The ID of the resource configuration.</p>",
+          "location":"uri",
+          "locationName":"resourceConfigurationIdentifier"
+        }
+      }
+    },
+    "GetResourceConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "allowAssociationToShareableServiceNetwork":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the resource configuration is associated with a sharable service network.</p>"
+        },
+        "amazonManaged":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the resource configuration was created and is managed by Amazon.</p>"
+        },
+        "arn":{
+          "shape":"ResourceConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource configuration.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the resource configuration was created, in ISO-8601 format.</p>"
+        },
+        "customDomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The custom domain name of the resource configuration.</p>"
+        },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p>The reason the create-resource-configuration request failed.</p>"
+        },
+        "id":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The ID of the resource configuration.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent date and time that the resource configuration was updated, in ISO-8601 format.</p>"
+        },
+        "name":{
+          "shape":"ResourceConfigurationName",
+          "documentation":"<p>The name of the resource configuration.</p>"
+        },
+        "portRanges":{
+          "shape":"PortRangeList",
+          "documentation":"<p>The TCP port ranges that a consumer can use to access a resource configuration. You can separate port ranges with a comma. Example: 1-65535 or 1,2,22-30</p>"
+        },
+        "protocol":{
+          "shape":"ProtocolType",
+          "documentation":"<p>The TCP protocol accepted by the specified resource configuration.</p>"
+        },
+        "resourceConfigurationDefinition":{
+          "shape":"ResourceConfigurationDefinition",
+          "documentation":"<p>The resource configuration.</p>"
+        },
+        "resourceConfigurationGroupId":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The ID of the group resource configuration.</p>"
+        },
+        "resourceGatewayId":{
+          "shape":"ResourceGatewayId",
+          "documentation":"<p>The ID of the resource gateway used to connect to the resource configuration in a given VPC. You can specify the resource gateway identifier only for resource configurations with type SINGLE, GROUP, or ARN.</p>"
+        },
+        "status":{
+          "shape":"ResourceConfigurationStatus",
+          "documentation":"<p>The status of the resource configuration.</p>"
+        },
+        "type":{
+          "shape":"ResourceConfigurationType",
+          "documentation":"<p>The type of resource configuration.</p> <ul> <li> <p> <code>SINGLE</code> - A single resource.</p> </li> <li> <p> <code>GROUP</code> - A group of resources.</p> </li> <li> <p> <code>CHILD</code> - A single resource that is part of a group resource configuration.</p> </li> <li> <p> <code>ARN</code> - An Amazon Web Services resource.</p> </li> </ul>"
+        }
+      }
+    },
+    "GetResourceGatewayRequest":{
+      "type":"structure",
+      "required":["resourceGatewayIdentifier"],
+      "members":{
+        "resourceGatewayIdentifier":{
+          "shape":"ResourceGatewayIdentifier",
+          "documentation":"<p>The ID of the resource gateway.</p>",
+          "location":"uri",
+          "locationName":"resourceGatewayIdentifier"
+        }
+      }
+    },
+    "GetResourceGatewayResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ResourceGatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource gateway.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the resource gateway was created, in ISO-8601 format.</p>"
+        },
+        "id":{
+          "shape":"ResourceGatewayId",
+          "documentation":"<p>The ID of the resource gateway.</p>"
+        },
+        "ipAddressType":{
+          "shape":"ResourceGatewayIpAddressType",
+          "documentation":"<p>The type of IP address for the resource gateway.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the resource gateway was last updated, in ISO-8601 format.</p>"
+        },
+        "name":{
+          "shape":"ResourceGatewayName",
+          "documentation":"<p>The name of the resource gateway.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupList",
+          "documentation":"<p>The security group IDs associated with the resource gateway.</p>"
+        },
+        "status":{
+          "shape":"ResourceGatewayStatus",
+          "documentation":"<p>The status for the resource gateway.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetList",
+          "documentation":"<p>The IDs of the VPC subnets for resource gateway.</p>"
+        },
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC for the resource gateway.</p>"
         }
       }
     },
@@ -2207,19 +3074,19 @@
       "members":{
         "listenerIdentifier":{
           "shape":"ListenerIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the listener.</p>",
+          "documentation":"<p>The ID or ARN of the listener.</p>",
           "location":"uri",
           "locationName":"listenerIdentifier"
         },
         "ruleIdentifier":{
           "shape":"RuleIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the listener rule.</p>",
+          "documentation":"<p>The ID or ARN of the listener rule.</p>",
           "location":"uri",
           "locationName":"ruleIdentifier"
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or ARN of the service.</p>",
           "location":"uri",
           "locationName":"serviceIdentifier"
         }
@@ -2238,7 +3105,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the listener rule was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the listener rule was created, in ISO-8601 format.</p>"
         },
         "id":{
           "shape":"RuleId",
@@ -2250,7 +3117,7 @@
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the listener rule was last updated, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the listener rule was last updated, in ISO-8601 format.</p>"
         },
         "match":{
           "shape":"RuleMatch",
@@ -2272,9 +3139,94 @@
       "members":{
         "serviceNetworkIdentifier":{
           "shape":"ServiceNetworkIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service network.</p>",
+          "documentation":"<p>The ID or ARN of the service network.</p>",
           "location":"uri",
           "locationName":"serviceNetworkIdentifier"
+        }
+      }
+    },
+    "GetServiceNetworkResourceAssociationRequest":{
+      "type":"structure",
+      "required":["serviceNetworkResourceAssociationIdentifier"],
+      "members":{
+        "serviceNetworkResourceAssociationIdentifier":{
+          "shape":"ServiceNetworkResourceAssociationIdentifier",
+          "documentation":"<p>The ID of the association.</p>",
+          "location":"uri",
+          "locationName":"serviceNetworkResourceAssociationIdentifier"
+        }
+      }
+    },
+    "GetServiceNetworkResourceAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ServiceNetworkResourceAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the association.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the association was created, in ISO-8601 format.</p>"
+        },
+        "createdBy":{
+          "shape":"AccountId",
+          "documentation":"<p>The account that created the association.</p>"
+        },
+        "dnsEntry":{
+          "shape":"DnsEntry",
+          "documentation":"<p>The DNS entry for the service.</p>"
+        },
+        "failureCode":{
+          "shape":"String",
+          "documentation":"<p>The failure code.</p>"
+        },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p>The reason the association request failed.</p>"
+        },
+        "id":{
+          "shape":"ServiceNetworkResourceAssociationId",
+          "documentation":"<p>The ID of the association.</p>"
+        },
+        "isManagedAssociation":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the association is managed by Amazon.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent date and time that the association was updated, in ISO-8601 format.</p>"
+        },
+        "privateDnsEntry":{
+          "shape":"DnsEntry",
+          "documentation":"<p>The private DNS entry for the service.</p>"
+        },
+        "resourceConfigurationArn":{
+          "shape":"ResourceConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the association.</p>"
+        },
+        "resourceConfigurationId":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The ID of the resource configuration that is associated with the service network.</p>"
+        },
+        "resourceConfigurationName":{
+          "shape":"ResourceConfigurationName",
+          "documentation":"<p>The name of the resource configuration that is associated with the service network.</p>"
+        },
+        "serviceNetworkArn":{
+          "shape":"ServiceNetworkIdentifierWithoutRegex",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service network that is associated with the resource configuration.</p>"
+        },
+        "serviceNetworkId":{
+          "shape":"ServiceNetworkIdentifierWithoutRegex",
+          "documentation":"<p>The ID of the service network that is associated with the resource configuration.</p>"
+        },
+        "serviceNetworkName":{
+          "shape":"ServiceNetworkNameWithoutRegex",
+          "documentation":"<p>The name of the service network that is associated with the resource configuration.</p>"
+        },
+        "status":{
+          "shape":"ServiceNetworkResourceAssociationStatus",
+          "documentation":"<p>The status of the association.</p>"
         }
       }
     },
@@ -2291,7 +3243,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the service network was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the service network was created, in ISO-8601 format.</p>"
         },
         "id":{
           "shape":"ServiceNetworkId",
@@ -2299,7 +3251,7 @@
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time of the last update, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time of the last update, in ISO-8601 format.</p>"
         },
         "name":{
           "shape":"ServiceNetworkName",
@@ -2312,6 +3264,10 @@
         "numberOfAssociatedVPCs":{
           "shape":"Long",
           "documentation":"<p>The number of VPCs associated with the service network.</p>"
+        },
+        "sharingConfig":{
+          "shape":"SharingConfig",
+          "documentation":"<p>Specifies if the service network is enabled for sharing.</p>"
         }
       }
     },
@@ -2321,7 +3277,7 @@
       "members":{
         "serviceNetworkServiceAssociationIdentifier":{
           "shape":"ServiceNetworkServiceAssociationIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the association.</p>",
+          "documentation":"<p>The ID or ARN of the association.</p>",
           "location":"uri",
           "locationName":"serviceNetworkServiceAssociationIdentifier"
         }
@@ -2336,7 +3292,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the association was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the association was created, in ISO-8601 format.</p>"
         },
         "createdBy":{
           "shape":"AccountId",
@@ -2398,7 +3354,7 @@
       "members":{
         "serviceNetworkVpcAssociationIdentifier":{
           "shape":"ServiceNetworkVpcAssociationIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the association.</p>",
+          "documentation":"<p>The ID or ARN of the association.</p>",
           "location":"uri",
           "locationName":"serviceNetworkVpcAssociationIdentifier"
         }
@@ -2413,7 +3369,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the association was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the association was created, in ISO-8601 format.</p>"
         },
         "createdBy":{
           "shape":"AccountId",
@@ -2429,11 +3385,11 @@
         },
         "id":{
           "shape":"ServiceNetworkVpcAssociationId",
-          "documentation":"<p>The ID of the specified association between the service network and the VPC.</p>"
+          "documentation":"<p>The ID of the association.</p>"
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the association was last updated, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the association was last updated, in ISO-8601 format.</p>"
         },
         "securityGroupIds":{
           "shape":"SecurityGroupList",
@@ -2467,7 +3423,7 @@
       "members":{
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or ARN of the service.</p>",
           "location":"uri",
           "locationName":"serviceIdentifier"
         }
@@ -2490,7 +3446,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the service was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the service was created, in ISO-8601 format.</p>"
         },
         "customDomainName":{
           "shape":"ServiceCustomDomainName",
@@ -2514,7 +3470,7 @@
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the service was last updated, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the service was last updated, in ISO-8601 format.</p>"
         },
         "name":{
           "shape":"ServiceName",
@@ -2532,7 +3488,7 @@
       "members":{
         "targetGroupIdentifier":{
           "shape":"TargetGroupIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the target group.</p>",
+          "documentation":"<p>The ID or ARN of the target group.</p>",
           "location":"uri",
           "locationName":"targetGroupIdentifier"
         }
@@ -2551,7 +3507,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the target group was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the target group was created, in ISO-8601 format.</p>"
         },
         "failureCode":{
           "shape":"String",
@@ -2567,7 +3523,7 @@
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the target group was last updated, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the target group was last updated, in ISO-8601 format.</p>"
         },
         "name":{
           "shape":"TargetGroupName",
@@ -2794,12 +3750,27 @@
       "fault":true,
       "retryable":{"throttling":false}
     },
+    "IpAddress":{
+      "type":"string",
+      "max":39,
+      "min":4
+    },
     "IpAddressType":{
       "type":"string",
       "enum":[
         "IPV4",
         "IPV6"
       ]
+    },
+    "IpResource":{
+      "type":"structure",
+      "members":{
+        "ipAddress":{
+          "shape":"IpAddress",
+          "documentation":"<p>The IP address of the IP resource.</p>"
+        }
+      },
+      "documentation":"<p>Describes an IP resource.</p>"
     },
     "LambdaEventStructureVersion":{
       "type":"string",
@@ -2826,7 +3797,7 @@
         },
         "resourceIdentifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service network or service.</p>",
+          "documentation":"<p>The ID or ARN of the service network or service.</p>",
           "location":"querystring",
           "locationName":"resourceIdentifier"
         }
@@ -2864,7 +3835,7 @@
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or ARN of the service.</p>",
           "location":"uri",
           "locationName":"serviceIdentifier"
         }
@@ -2884,6 +3855,134 @@
         }
       }
     },
+    "ListResourceConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum page size.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "resourceConfigurationGroupIdentifier":{
+          "shape":"ResourceConfigurationIdentifier",
+          "documentation":"<p>The ID of the group resource configuration.</p>",
+          "location":"querystring",
+          "locationName":"resourceConfigurationGroupIdentifier"
+        },
+        "resourceGatewayIdentifier":{
+          "shape":"ResourceGatewayIdentifier",
+          "documentation":"<p>The ID of the resource gateway for the resource configuration.</p>",
+          "location":"querystring",
+          "locationName":"resourceGatewayIdentifier"
+        }
+      }
+    },
+    "ListResourceConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ResourceConfigurationSummaryList",
+          "documentation":"<p>Information about the resource configurations.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, a pagination token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListResourceEndpointAssociationsRequest":{
+      "type":"structure",
+      "required":["resourceConfigurationIdentifier"],
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum page size.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "resourceConfigurationIdentifier":{
+          "shape":"ResourceConfigurationIdentifier",
+          "documentation":"<p>The ID for the resource configuration associated with the VPC endpoint.</p>",
+          "location":"querystring",
+          "locationName":"resourceConfigurationIdentifier"
+        },
+        "resourceEndpointAssociationIdentifier":{
+          "shape":"ResourceEndpointAssociationIdentifier",
+          "documentation":"<p>The ID of the association.</p>",
+          "location":"querystring",
+          "locationName":"resourceEndpointAssociationIdentifier"
+        },
+        "vpcEndpointId":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The ID of the VPC endpoint in the association.</p>",
+          "location":"querystring",
+          "locationName":"vpcEndpointId"
+        },
+        "vpcEndpointOwner":{
+          "shape":"VpcEndpointOwner",
+          "documentation":"<p>The owner of the VPC endpoint in the association.</p>",
+          "location":"querystring",
+          "locationName":"vpcEndpointOwner"
+        }
+      }
+    },
+    "ListResourceEndpointAssociationsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"ResourceEndpointAssociationList",
+          "documentation":"<p>Information about the VPC endpoint associations.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, a pagination token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListResourceGatewaysRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum page size.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, a pagination token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListResourceGatewaysResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ResourceGatewayList",
+          "documentation":"<p>Information about the resource gateways.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, a pagination token for the next page of results.</p>"
+        }
+      }
+    },
     "ListRulesRequest":{
       "type":"structure",
       "required":[
@@ -2893,7 +3992,7 @@
       "members":{
         "listenerIdentifier":{
           "shape":"ListenerIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the listener.</p>",
+          "documentation":"<p>The ID or ARN of the listener.</p>",
           "location":"uri",
           "locationName":"listenerIdentifier"
         },
@@ -2911,7 +4010,7 @@
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or ARN of the service.</p>",
           "location":"uri",
           "locationName":"serviceIdentifier"
         }
@@ -2924,6 +4023,49 @@
         "items":{
           "shape":"RuleSummaryList",
           "documentation":"<p>Information about the rules.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, a pagination token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListServiceNetworkResourceAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum page size.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, a pagination token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "resourceConfigurationIdentifier":{
+          "shape":"ResourceConfigurationIdentifier",
+          "documentation":"<p>The ID of the resource configurationk.</p>",
+          "location":"querystring",
+          "locationName":"resourceConfigurationIdentifier"
+        },
+        "serviceNetworkIdentifier":{
+          "shape":"ServiceNetworkIdentifier",
+          "documentation":"<p>The ID of the service network.</p>",
+          "location":"querystring",
+          "locationName":"serviceNetworkIdentifier"
+        }
+      }
+    },
+    "ListServiceNetworkResourceAssociationsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"ServiceNetworkResourceAssociationList",
+          "documentation":"<p>Information about the associations.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -2948,13 +4090,13 @@
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or ARN of the service.</p>",
           "location":"querystring",
           "locationName":"serviceIdentifier"
         },
         "serviceNetworkIdentifier":{
           "shape":"ServiceNetworkIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service network.</p>",
+          "documentation":"<p>The ID or ARN of the service network.</p>",
           "location":"querystring",
           "locationName":"serviceNetworkIdentifier"
         }
@@ -2991,13 +4133,13 @@
         },
         "serviceNetworkIdentifier":{
           "shape":"ServiceNetworkIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service network.</p>",
+          "documentation":"<p>The ID or ARN of the service network.</p>",
           "location":"querystring",
           "locationName":"serviceNetworkIdentifier"
         },
         "vpcIdentifier":{
           "shape":"VpcId",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the VPC.</p>",
+          "documentation":"<p>The ID or ARN of the VPC.</p>",
           "location":"querystring",
           "locationName":"vpcIdentifier"
         }
@@ -3010,6 +4152,44 @@
         "items":{
           "shape":"ServiceNetworkVpcAssociationList",
           "documentation":"<p>Information about the associations.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, a pagination token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListServiceNetworkVpcEndpointAssociationsRequest":{
+      "type":"structure",
+      "required":["serviceNetworkIdentifier"],
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum page size.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, a pagination token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "serviceNetworkIdentifier":{
+          "shape":"ServiceNetworkIdentifier",
+          "documentation":"<p>The ID of the service network associated with the VPC endpoint.</p>",
+          "location":"querystring",
+          "locationName":"serviceNetworkIdentifier"
+        }
+      }
+    },
+    "ListServiceNetworkVpcEndpointAssociationsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"ServiceNetworkVpcEndpointAssociationList",
+          "documentation":"<p>Information about the association between the VPC endpoint and service network.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -3122,7 +4302,7 @@
         },
         "vpcIdentifier":{
           "shape":"VpcId",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the VPC.</p>",
+          "documentation":"<p>The ID or ARN of the VPC.</p>",
           "location":"querystring",
           "locationName":"vpcIdentifier"
         }
@@ -3159,7 +4339,7 @@
         },
         "targetGroupIdentifier":{
           "shape":"TargetGroupIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the target group.</p>",
+          "documentation":"<p>The ID or ARN of the target group.</p>",
           "location":"uri",
           "locationName":"targetGroupIdentifier"
         },
@@ -3230,7 +4410,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the listener was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the listener was created, in ISO-8601 format.</p>"
         },
         "id":{
           "shape":"ListenerId",
@@ -3238,7 +4418,7 @@
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the listener was last updated, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the listener was last updated, in ISO-8601 format.</p>"
         },
         "name":{
           "shape":"ListenerName",
@@ -3339,6 +4519,20 @@
       "max":65535,
       "min":1
     },
+    "PortRange":{
+      "type":"string",
+      "max":11,
+      "min":1,
+      "pattern":"^((\\d{1,5}\\-\\d{1,5})|(\\d+))$"
+    },
+    "PortRangeList":{
+      "type":"list",
+      "member":{"shape":"PortRange"}
+    },
+    "ProtocolType":{
+      "type":"string",
+      "enum":["TCP"]
+    },
     "PutAuthPolicyRequest":{
       "type":"structure",
       "required":[
@@ -3352,7 +4546,7 @@
         },
         "resourceIdentifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service network or service for which the policy is created.</p>",
+          "documentation":"<p>The ID or ARN of the service network or service for which the policy is created.</p>",
           "location":"uri",
           "locationName":"resourceIdentifier"
         }
@@ -3384,7 +4578,7 @@
         },
         "resourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service network or service for which the policy is created.</p>",
+          "documentation":"<p>The ID or ARN of the service network or service for which the policy is created.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -3404,7 +4598,7 @@
       "members":{
         "targetGroupIdentifier":{
           "shape":"TargetGroupIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the target group.</p>",
+          "documentation":"<p>The ID or ARN of the target group.</p>",
           "location":"uri",
           "locationName":"targetGroupIdentifier"
         },
@@ -3437,7 +4631,287 @@
       "type":"string",
       "max":200,
       "min":20,
-      "pattern":"^arn(:[a-z0-9]+([.-][a-z0-9]+)*){2}(:([a-z0-9]+([.-][a-z0-9]+)*)?){2}:((servicenetwork/sn)|(service/svc))-[0-9a-z]{17}$"
+      "pattern":"^arn(:[a-z0-9]+([.-][a-z0-9]+)*){2}(:([a-z0-9]+([.-][a-z0-9]+)*)?){2}:((servicenetwork/sn)|(service/svc)|(resourceconfiguration/rcfg))-[0-9a-z]{17}$"
+    },
+    "ResourceConfigurationArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:[a-z0-9f\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceconfiguration/rcfg-[0-9a-z]{17}$"
+    },
+    "ResourceConfigurationDefinition":{
+      "type":"structure",
+      "members":{
+        "arnResource":{
+          "shape":"ArnResource",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
+        },
+        "dnsResource":{
+          "shape":"DnsResource",
+          "documentation":"<p>The DNS name of the resource.</p>"
+        },
+        "ipResource":{
+          "shape":"IpResource",
+          "documentation":"<p>The IP resource.</p>"
+        }
+      },
+      "documentation":"<p>Describes a resource configuration.</p>",
+      "union":true
+    },
+    "ResourceConfigurationId":{
+      "type":"string",
+      "max":22,
+      "min":22,
+      "pattern":"^rcfg-[0-9a-z]{17}$"
+    },
+    "ResourceConfigurationIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^((rcfg-[0-9a-z]{17})|(arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceconfiguration/rcfg-[0-9a-z]{17}))$"
+    },
+    "ResourceConfigurationIpAddressType":{
+      "type":"string",
+      "enum":[
+        "IPV4",
+        "IPV6",
+        "DUALSTACK"
+      ]
+    },
+    "ResourceConfigurationName":{
+      "type":"string",
+      "max":40,
+      "min":3,
+      "pattern":"^(?!rcfg-)(?![-])(?!.*[-]$)(?!.*[-]{2})[a-z0-9-]+$"
+    },
+    "ResourceConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "CREATE_IN_PROGRESS",
+        "UPDATE_IN_PROGRESS",
+        "DELETE_IN_PROGRESS",
+        "CREATE_FAILED",
+        "UPDATE_FAILED",
+        "DELETE_FAILED"
+      ]
+    },
+    "ResourceConfigurationSummary":{
+      "type":"structure",
+      "members":{
+        "amazonManaged":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the resource configuration was created and is managed by Amazon.</p>"
+        },
+        "arn":{
+          "shape":"ResourceConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource configuration.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the resource configuration was created, in ISO-8601 format.</p>"
+        },
+        "id":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The ID of the resource configuration.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent date and time that the resource configuration was updated, in ISO-8601 format.</p>"
+        },
+        "name":{
+          "shape":"ResourceConfigurationName",
+          "documentation":"<p>The name of the resource configuration.</p>"
+        },
+        "resourceConfigurationGroupId":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The ID of the group resource configuration.</p>"
+        },
+        "resourceGatewayId":{
+          "shape":"ResourceGatewayId",
+          "documentation":"<p>The ID of the resource gateway.</p>"
+        },
+        "status":{
+          "shape":"ResourceConfigurationStatus",
+          "documentation":"<p>The status of the resource configuration.</p>"
+        },
+        "type":{
+          "shape":"ResourceConfigurationType",
+          "documentation":"<p>The type of resource configuration.</p> <ul> <li> <p> <code>SINGLE</code> - A single resource.</p> </li> <li> <p> <code>GROUP</code> - A group of resources.</p> </li> <li> <p> <code>CHILD</code> - A single resource that is part of a group resource configuration.</p> </li> <li> <p> <code>ARN</code> - An Amazon Web Services resource.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Summary information about a resource configuration.</p>"
+    },
+    "ResourceConfigurationSummaryList":{
+      "type":"list",
+      "member":{"shape":"ResourceConfigurationSummary"}
+    },
+    "ResourceConfigurationType":{
+      "type":"string",
+      "enum":[
+        "GROUP",
+        "CHILD",
+        "SINGLE",
+        "ARN"
+      ]
+    },
+    "ResourceEndpointAssociationArn":{
+      "type":"string",
+      "max":2048,
+      "min":21,
+      "pattern":"^arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceendpointassociation/rea-[0-9a-f]{17}$"
+    },
+    "ResourceEndpointAssociationId":{
+      "type":"string",
+      "max":21,
+      "min":21,
+      "pattern":"^rea-[0-9a-f]{17}$"
+    },
+    "ResourceEndpointAssociationIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":21,
+      "pattern":"^((rea-[0-9a-f]{17})|(arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceendpointassociation/rea-[0-9a-f]{17}))$"
+    },
+    "ResourceEndpointAssociationList":{
+      "type":"list",
+      "member":{"shape":"ResourceEndpointAssociationSummary"}
+    },
+    "ResourceEndpointAssociationSummary":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ResourceEndpointAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the VPC endpoint association.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the VPC endpoint association was created, in ISO-8601 format.</p>"
+        },
+        "createdBy":{
+          "shape":"AccountId",
+          "documentation":"<p>The account that created the association.</p>"
+        },
+        "id":{
+          "shape":"ResourceEndpointAssociationId",
+          "documentation":"<p>The ID of the VPC endpoint association.</p>"
+        },
+        "resourceConfigurationArn":{
+          "shape":"ResourceConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource configuration.</p>"
+        },
+        "resourceConfigurationId":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The ID of the resource configuration.</p>"
+        },
+        "resourceConfigurationName":{
+          "shape":"ResourceConfigurationName",
+          "documentation":"<p>The name of the resource configuration.</p>"
+        },
+        "vpcEndpointId":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The ID of the VPC endpoint.</p>"
+        },
+        "vpcEndpointOwner":{
+          "shape":"VpcEndpointOwner",
+          "documentation":"<p>The owner of the VPC endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a VPC endpoint association.</p>"
+    },
+    "ResourceGatewayArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourcegateway/rgw-[0-9a-z]{17}$"
+    },
+    "ResourceGatewayId":{
+      "type":"string",
+      "max":21,
+      "min":21,
+      "pattern":"^rgw-[0-9a-z]{17}$"
+    },
+    "ResourceGatewayIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":17,
+      "pattern":"^((rgw-[0-9a-z]{17})|(arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourcegateway/rgw-[0-9a-z]{17}))$"
+    },
+    "ResourceGatewayIpAddressType":{
+      "type":"string",
+      "enum":[
+        "IPV4",
+        "IPV6",
+        "DUALSTACK"
+      ]
+    },
+    "ResourceGatewayList":{
+      "type":"list",
+      "member":{"shape":"ResourceGatewaySummary"}
+    },
+    "ResourceGatewayName":{
+      "type":"string",
+      "max":40,
+      "min":3,
+      "pattern":"^(?!rgw-)(?![-])(?!.*[-]$)(?!.*[-]{2})[a-z0-9-]+$"
+    },
+    "ResourceGatewayStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "CREATE_IN_PROGRESS",
+        "UPDATE_IN_PROGRESS",
+        "DELETE_IN_PROGRESS",
+        "CREATE_FAILED",
+        "UPDATE_FAILED",
+        "DELETE_FAILED"
+      ]
+    },
+    "ResourceGatewaySummary":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ResourceGatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource gateway.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the VPC endpoint association was created, in ISO-8601 format.</p>"
+        },
+        "id":{
+          "shape":"ResourceGatewayId",
+          "documentation":"<p>The ID of the resource gateway.</p>"
+        },
+        "ipAddressType":{
+          "shape":"ResourceGatewayIpAddressType",
+          "documentation":"<p>The type of IP address used by the resource gateway.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent date and time that the resource gateway was updated, in ISO-8601 format.</p>"
+        },
+        "name":{
+          "shape":"ResourceGatewayName",
+          "documentation":"<p>The name of the resource gateway.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupList",
+          "documentation":"<p>The IDs of the security groups applied to the resource gateway.</p>"
+        },
+        "status":{
+          "shape":"ResourceGatewayStatus",
+          "documentation":"<p>The name of the resource gateway.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetList",
+          "documentation":"<p>The IDs of the VPC subnets for the resource gateway.</p>"
+        },
+        "vpcIdentifier":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC for the resource gateway.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a resource gateway.</p>"
     },
     "ResourceId":{
       "type":"string",
@@ -3449,7 +4923,7 @@
       "type":"string",
       "max":200,
       "min":17,
-      "pattern":"^((((sn)|(svc))-[0-9a-z]{17})|(arn(:[a-z0-9]+([.-][a-z0-9]+)*){2}(:([a-z0-9]+([.-][a-z0-9]+)*)?){2}:((servicenetwork/sn)|(service/svc))-[0-9a-z]{17}))$"
+      "pattern":"^((((sn)|(svc)|(rcfg))-[0-9a-z]{17})|(arn(:[a-z0-9]+([.-][a-z0-9]+)*){2}(:([a-z0-9]+([.-][a-z0-9]+)*)?){2}:((servicenetwork/sn)|(resourceconfiguration/rcfg)|(service/svc))-[0-9a-z]{17}))$"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -3541,7 +5015,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the listener rule was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the listener rule was created, in ISO-8601 format.</p>"
         },
         "id":{
           "shape":"RuleId",
@@ -3553,7 +5027,7 @@
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the listener rule was last updated, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the listener rule was last updated, in ISO-8601 format.</p>"
         },
         "name":{
           "shape":"RuleName",
@@ -3564,7 +5038,7 @@
           "documentation":"<p>The priority of the rule.</p>"
         }
       },
-      "documentation":"<p>Summary information about the listener rule.</p>"
+      "documentation":"<p>Summary information about a listener rule.</p>"
     },
     "RuleSummaryList":{
       "type":"list",
@@ -3588,7 +5062,7 @@
         },
         "ruleIdentifier":{
           "shape":"RuleIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the rule.</p>"
+          "documentation":"<p>The ID or ARN of the rule.</p>"
         }
       },
       "documentation":"<p>Describes a rule update.</p>"
@@ -3606,7 +5080,7 @@
         },
         "ruleIdentifier":{
           "shape":"RuleIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the rule.</p>"
+          "documentation":"<p>The ID or ARN of the rule.</p>"
         }
       },
       "documentation":"<p>Describes a rule update that failed.</p>"
@@ -3712,10 +5186,49 @@
       "min":32,
       "pattern":"^arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:servicenetwork/sn-[0-9a-z]{17}$"
     },
+    "ServiceNetworkArnWithoutRegex":{
+      "type":"string",
+      "max":2048,
+      "min":10
+    },
+    "ServiceNetworkEndpointAssociation":{
+      "type":"structure",
+      "members":{
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the association was created, in ISO-8601 format.</p>"
+        },
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The ID of the association.</p>"
+        },
+        "serviceNetworkArn":{
+          "shape":"ServiceNetworkArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service network.</p>"
+        },
+        "state":{
+          "shape":"String",
+          "documentation":"<p>The state of the association.</p>"
+        },
+        "vpcEndpointId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the VPC endpoint associated with the service network.</p>"
+        },
+        "vpcEndpointOwnerId":{
+          "shape":"String",
+          "documentation":"<p>The owner of the VPC endpoint associated with the service network.</p>"
+        },
+        "vpcId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the VPC for the association.</p>"
+        }
+      },
+      "documentation":"<p>Describes the association between a service network and a VPC endpoint.</p>"
+    },
     "ServiceNetworkId":{
       "type":"string",
-      "max":32,
-      "min":32,
+      "max":20,
+      "min":20,
       "pattern":"^sn-[0-9a-z]{17}$"
     },
     "ServiceNetworkIdentifier":{
@@ -3724,15 +5237,131 @@
       "min":3,
       "pattern":"^((sn-[0-9a-z]{17})|(arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:servicenetwork/sn-[0-9a-z]{17}))$"
     },
+    "ServiceNetworkIdentifierWithoutRegex":{
+      "type":"string",
+      "max":2048,
+      "min":3
+    },
     "ServiceNetworkList":{
       "type":"list",
       "member":{"shape":"ServiceNetworkSummary"}
+    },
+    "ServiceNetworkLogType":{
+      "type":"string",
+      "enum":[
+        "SERVICE",
+        "RESOURCE"
+      ]
     },
     "ServiceNetworkName":{
       "type":"string",
       "max":63,
       "min":3,
       "pattern":"^(?![-])(?!.*[-]$)(?!.*[-]{2})[a-z0-9-]+$"
+    },
+    "ServiceNetworkNameWithoutRegex":{
+      "type":"string",
+      "max":100,
+      "min":3
+    },
+    "ServiceNetworkResourceAssociationArn":{
+      "type":"string",
+      "max":2048,
+      "min":22,
+      "pattern":"^arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:servicenetworkresourceassociation/snra-[0-9a-f]{17}$"
+    },
+    "ServiceNetworkResourceAssociationId":{
+      "type":"string",
+      "max":22,
+      "min":22,
+      "pattern":"^snra-[0-9a-f]{17}$"
+    },
+    "ServiceNetworkResourceAssociationIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":22,
+      "pattern":"^((snra-[0-9a-z]{17})|(arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:servicenetworkresourceassociation/snra-[0-9a-f]{17}))$"
+    },
+    "ServiceNetworkResourceAssociationList":{
+      "type":"list",
+      "member":{"shape":"ServiceNetworkResourceAssociationSummary"}
+    },
+    "ServiceNetworkResourceAssociationStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_IN_PROGRESS",
+        "ACTIVE",
+        "PARTIAL",
+        "DELETE_IN_PROGRESS",
+        "CREATE_FAILED",
+        "DELETE_FAILED"
+      ]
+    },
+    "ServiceNetworkResourceAssociationSummary":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ServiceNetworkResourceAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the association.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the association was created, in ISO-8601 format.</p>"
+        },
+        "createdBy":{
+          "shape":"AccountId",
+          "documentation":"<p>The account that created the association.</p>"
+        },
+        "dnsEntry":{
+          "shape":"DnsEntry",
+          "documentation":"<p>The DNS entry for the service.</p>"
+        },
+        "failureCode":{
+          "shape":"String",
+          "documentation":"<p>The failure code.</p>"
+        },
+        "id":{
+          "shape":"ServiceNetworkResourceAssociationId",
+          "documentation":"<p>The ID of the association between the service network and resource configuration.</p>"
+        },
+        "isManagedAssociation":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the association is managed by Amazon.</p>"
+        },
+        "privateDnsEntry":{
+          "shape":"DnsEntry",
+          "documentation":"<p>The private DNS entry for the service.</p>"
+        },
+        "resourceConfigurationArn":{
+          "shape":"ResourceConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the association.</p>"
+        },
+        "resourceConfigurationId":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The ID of the resource configuration associated with the service network.</p>"
+        },
+        "resourceConfigurationName":{
+          "shape":"ResourceConfigurationName",
+          "documentation":"<p>The name of the resource configuration associated with the service network.</p>"
+        },
+        "serviceNetworkArn":{
+          "shape":"ServiceNetworkArnWithoutRegex",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service network associated with the resource configuration.</p>"
+        },
+        "serviceNetworkId":{
+          "shape":"ServiceNetworkIdentifierWithoutRegex",
+          "documentation":"<p>The ID of the service network associated with the resource configuration.</p>"
+        },
+        "serviceNetworkName":{
+          "shape":"ServiceNetworkNameWithoutRegex",
+          "documentation":"<p>The name of the service network associated with the resource configuration.</p>"
+        },
+        "status":{
+          "shape":"ServiceNetworkResourceAssociationStatus",
+          "documentation":"<p>The status of the service network associated with the resource configuration.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an association between a service network and a resource configuration.</p>"
     },
     "ServiceNetworkServiceAssociationArn":{
       "type":"string",
@@ -3769,7 +5398,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the association was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the association was created, in ISO-8601 format.</p>"
         },
         "createdBy":{
           "shape":"AccountId",
@@ -3816,7 +5445,7 @@
           "documentation":"<p>The status. If the deletion fails, try to delete again.</p>"
         }
       },
-      "documentation":"<p>Summary information about the association between a service network and a service.</p>"
+      "documentation":"<p>Summary information about an association between a service network and a service.</p>"
     },
     "ServiceNetworkSummary":{
       "type":"structure",
@@ -3827,7 +5456,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the service network was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the service network was created, in ISO-8601 format.</p>"
         },
         "id":{
           "shape":"ServiceNetworkId",
@@ -3835,11 +5464,15 @@
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the service network was last updated, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the service network was last updated, in ISO-8601 format.</p>"
         },
         "name":{
           "shape":"ServiceNetworkName",
           "documentation":"<p>The name of the service network.</p>"
+        },
+        "numberOfAssociatedResourceConfigurations":{
+          "shape":"Long",
+          "documentation":"<p>The number of resource configurations associated with a service network.</p>"
         },
         "numberOfAssociatedServices":{
           "shape":"Long",
@@ -3895,7 +5528,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the association was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the association was created, in ISO-8601 format.</p>"
         },
         "createdBy":{
           "shape":"AccountId",
@@ -3907,7 +5540,7 @@
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the association was last updated, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the association was last updated, in ISO-8601 format.</p>"
         },
         "serviceNetworkArn":{
           "shape":"ServiceNetworkArn",
@@ -3931,6 +5564,10 @@
         }
       },
       "documentation":"<p>Summary information about an association between a service network and a VPC.</p>"
+    },
+    "ServiceNetworkVpcEndpointAssociationList":{
+      "type":"list",
+      "member":{"shape":"ServiceNetworkEndpointAssociation"}
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -3985,7 +5622,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the service was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the service was created, in ISO-8601 format.</p>"
         },
         "customDomainName":{
           "shape":"ServiceCustomDomainName",
@@ -4001,7 +5638,7 @@
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the service was last updated. The format is ISO-8601.</p>"
+          "documentation":"<p>The date and time that the service was last updated, in ISO-8601 format.</p>"
         },
         "name":{
           "shape":"ServiceName",
@@ -4014,7 +5651,26 @@
       },
       "documentation":"<p>Summary information about a service.</p>"
     },
+    "SharingConfig":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies if the service network is enabled for sharing.</p>"
+        }
+      },
+      "documentation":"<p>Specifies if the service network should be enabled for sharing.</p>"
+    },
     "String":{"type":"string"},
+    "SubnetId":{
+      "type":"string",
+      "max":200,
+      "min":5
+    },
+    "SubnetList":{
+      "type":"list",
+      "member":{"shape":"SubnetId"}
+    },
     "TagKey":{
       "type":"string",
       "max":128,
@@ -4206,7 +5862,7 @@
         },
         "createdAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the target group was created, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the target group was created, in ISO-8601 format.</p>"
         },
         "id":{
           "shape":"TargetGroupId",
@@ -4222,7 +5878,7 @@
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time that the target group was last updated, specified in ISO-8601 format.</p>"
+          "documentation":"<p>The date and time that the target group was last updated, in ISO-8601 format.</p>"
         },
         "name":{
           "shape":"TargetGroupName",
@@ -4389,7 +6045,7 @@
       "members":{
         "accessLogSubscriptionIdentifier":{
           "shape":"AccessLogSubscriptionIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the access log subscription.</p>",
+          "documentation":"<p>The ID or ARN of the access log subscription.</p>",
           "location":"uri",
           "locationName":"accessLogSubscriptionIdentifier"
         },
@@ -4445,13 +6101,13 @@
         },
         "listenerIdentifier":{
           "shape":"ListenerIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the listener.</p>",
+          "documentation":"<p>The ID or ARN of the listener.</p>",
           "location":"uri",
           "locationName":"listenerIdentifier"
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or ARN of the service.</p>",
           "location":"uri",
           "locationName":"serviceIdentifier"
         }
@@ -4494,6 +6150,138 @@
         }
       }
     },
+    "UpdateResourceConfigurationRequest":{
+      "type":"structure",
+      "required":["resourceConfigurationIdentifier"],
+      "members":{
+        "allowAssociationToShareableServiceNetwork":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to add the resource configuration to service networks that are shared with other accounts.</p>"
+        },
+        "portRanges":{
+          "shape":"PortRangeList",
+          "documentation":"<p>The TCP port ranges that a consumer can use to access a resource configuration. You can separate port ranges with a comma. Example: 1-65535 or 1,2,22-30</p>"
+        },
+        "resourceConfigurationDefinition":{
+          "shape":"ResourceConfigurationDefinition",
+          "documentation":"<p>The resource configuration.</p>"
+        },
+        "resourceConfigurationIdentifier":{
+          "shape":"ResourceConfigurationIdentifier",
+          "documentation":"<p>The ID of the resource configuration.</p>",
+          "location":"uri",
+          "locationName":"resourceConfigurationIdentifier"
+        }
+      }
+    },
+    "UpdateResourceConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "allowAssociationToShareableServiceNetwork":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to add the resource configuration to service networks that are shared with other accounts.</p>"
+        },
+        "arn":{
+          "shape":"ResourceConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource configuration.</p>"
+        },
+        "id":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The ID of the resource configuration.</p>"
+        },
+        "name":{
+          "shape":"ResourceConfigurationName",
+          "documentation":"<p>The name of the resource configuration.</p>"
+        },
+        "portRanges":{
+          "shape":"PortRangeList",
+          "documentation":"<p>The TCP port ranges that a consumer can use to access a resource configuration. You can separate port ranges with a comma. Example: 1-65535 or 1,2,22-30</p>"
+        },
+        "protocol":{
+          "shape":"ProtocolType",
+          "documentation":"<p>The TCP protocol accepted by the specified resource configuration.</p>"
+        },
+        "resourceConfigurationDefinition":{
+          "shape":"ResourceConfigurationDefinition",
+          "documentation":"<p>The resource configuration.</p>"
+        },
+        "resourceConfigurationGroupId":{
+          "shape":"ResourceConfigurationId",
+          "documentation":"<p>The ID of the group resource configuration.</p>"
+        },
+        "resourceGatewayId":{
+          "shape":"ResourceGatewayId",
+          "documentation":"<p>The ID of the resource gateway associated with the resource configuration.</p>"
+        },
+        "status":{
+          "shape":"ResourceConfigurationStatus",
+          "documentation":"<p>The status of the resource configuration.</p>"
+        },
+        "type":{
+          "shape":"ResourceConfigurationType",
+          "documentation":"<p>The type of resource configuration.</p> <ul> <li> <p> <code>SINGLE</code> - A single resource.</p> </li> <li> <p> <code>GROUP</code> - A group of resources.</p> </li> <li> <p> <code>CHILD</code> - A single resource that is part of a group resource configuration.</p> </li> <li> <p> <code>ARN</code> - An Amazon Web Services resource.</p> </li> </ul>"
+        }
+      }
+    },
+    "UpdateResourceGatewayRequest":{
+      "type":"structure",
+      "required":["resourceGatewayIdentifier"],
+      "members":{
+        "resourceGatewayIdentifier":{
+          "shape":"ResourceGatewayIdentifier",
+          "documentation":"<p>The ID or ARN of the resource gateway.</p>",
+          "location":"uri",
+          "locationName":"resourceGatewayIdentifier"
+        },
+        "securityGroupIds":{
+          "shape":"UpdateResourceGatewayRequestSecurityGroupIdsList",
+          "documentation":"<p>The IDs of the security groups associated with the resource gateway.</p>"
+        }
+      }
+    },
+    "UpdateResourceGatewayRequestSecurityGroupIdsList":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"},
+      "max":5,
+      "min":0
+    },
+    "UpdateResourceGatewayResponse":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ResourceGatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource gateway.</p>"
+        },
+        "id":{
+          "shape":"ResourceGatewayId",
+          "documentation":"<p>The ID of the resource gateway.</p>"
+        },
+        "ipAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The type of IP address used by the resource gateway.</p>"
+        },
+        "name":{
+          "shape":"ResourceGatewayName",
+          "documentation":"<p>The name of the resource gateway.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupList",
+          "documentation":"<p>The IDs of the security groups associated with the resource gateway.</p>"
+        },
+        "status":{
+          "shape":"ResourceGatewayStatus",
+          "documentation":"<p>The status of the resource gateway.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetList",
+          "documentation":"<p>The IDs of the VPC subnets for the resource gateway.</p>"
+        },
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC for the resource gateway.</p>"
+        }
+      }
+    },
     "UpdateRuleRequest":{
       "type":"structure",
       "required":[
@@ -4508,7 +6296,7 @@
         },
         "listenerIdentifier":{
           "shape":"ListenerIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the listener.</p>",
+          "documentation":"<p>The ID or ARN of the listener.</p>",
           "location":"uri",
           "locationName":"listenerIdentifier"
         },
@@ -4522,13 +6310,13 @@
         },
         "ruleIdentifier":{
           "shape":"RuleIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the rule.</p>",
+          "documentation":"<p>The ID or ARN of the rule.</p>",
           "location":"uri",
           "locationName":"ruleIdentifier"
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or ARN of the service.</p>",
           "location":"uri",
           "locationName":"serviceIdentifier"
         }
@@ -4580,7 +6368,7 @@
         },
         "serviceNetworkIdentifier":{
           "shape":"ServiceNetworkIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service network.</p>",
+          "documentation":"<p>The ID or ARN of the service network.</p>",
           "location":"uri",
           "locationName":"serviceNetworkIdentifier"
         }
@@ -4620,7 +6408,7 @@
         },
         "serviceNetworkVpcAssociationIdentifier":{
           "shape":"ServiceNetworkVpcAssociationIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the association.</p>",
+          "documentation":"<p>The ID or ARN of the association.</p>",
           "location":"uri",
           "locationName":"serviceNetworkVpcAssociationIdentifier"
         }
@@ -4671,7 +6459,7 @@
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or ARN of the service.</p>",
           "location":"uri",
           "locationName":"serviceIdentifier"
         }
@@ -4719,7 +6507,7 @@
         },
         "targetGroupIdentifier":{
           "shape":"TargetGroupIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the target group.</p>",
+          "documentation":"<p>The ID or ARN of the target group.</p>",
           "location":"uri",
           "locationName":"targetGroupIdentifier"
         }
@@ -4809,6 +6597,18 @@
         "other"
       ]
     },
+    "VpcEndpointId":{
+      "type":"string",
+      "max":22,
+      "min":22,
+      "pattern":"^vpce-[0-9a-f]{17}$"
+    },
+    "VpcEndpointOwner":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^\\d{12}$"
+    },
     "VpcId":{
       "type":"string",
       "max":50,
@@ -4821,7 +6621,7 @@
       "members":{
         "targetGroupIdentifier":{
           "shape":"TargetGroupIdentifier",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the target group.</p>"
+          "documentation":"<p>The ID or ARN of the target group.</p>"
         },
         "weight":{
           "shape":"TargetGroupWeight",
@@ -4835,6 +6635,12 @@
       "member":{"shape":"WeightedTargetGroup"},
       "max":10,
       "min":1
+    },
+    "WildcardArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:[a-z0-9][-.a-z0-9]{0,62}:[a-z0-9][-.a-z0-9]{0,62}:([a-z0-9][-.a-z0-9]{0,62})?:\\d{12}?:[^/].{0,1023}$"
     }
   },
   "documentation":"<p>Amazon VPC Lattice is a fully managed application networking service that you use to connect, secure, and monitor all of your services across multiple accounts and virtual private clouds (VPCs). Amazon VPC Lattice interconnects your microservices and legacy services within a logical boundary, so that you can discover and manage them more efficiently. For more information, see the <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/\">Amazon VPC Lattice User Guide</a> </p>"

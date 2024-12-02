@@ -93,9 +93,29 @@
         {"shape":"InvalidCredentialsException"},
         {"shape":"TagQuotaPerResourceExceeded"},
         {"shape":"ACLNotFoundFault"},
-        {"shape":"InvalidACLStateFault"}
+        {"shape":"InvalidACLStateFault"},
+        {"shape":"MultiRegionClusterNotFoundFault"},
+        {"shape":"InvalidMultiRegionClusterStateFault"}
       ],
       "documentation":"<p>Creates a cluster. All nodes in the cluster run the same protocol-compliant engine software.</p>"
+    },
+    "CreateMultiRegionCluster":{
+      "name":"CreateMultiRegionCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateMultiRegionClusterRequest"},
+      "output":{"shape":"CreateMultiRegionClusterResponse"},
+      "errors":[
+        {"shape":"MultiRegionClusterAlreadyExistsFault"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MultiRegionParameterGroupNotFoundFault"},
+        {"shape":"ClusterQuotaForCustomerExceededFault"},
+        {"shape":"TagQuotaPerResourceExceeded"}
+      ],
+      "documentation":"<p>Creates a new multi-Region cluster.</p>"
     },
     "CreateParameterGroup":{
       "name":"CreateParameterGroup",
@@ -204,7 +224,22 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"InvalidParameterCombinationException"}
       ],
-      "documentation":"<p>Deletes a cluster. It also deletes all associated nodes and node endpoints</p>"
+      "documentation":"<p>Deletes a cluster. It also deletes all associated nodes and node endpoints.</p> <note> <p> <code>CreateSnapshot</code> permission is required to create a final snapshot. Without this permission, the API call will fail with an <code>Access Denied</code> exception.</p> </note>"
+    },
+    "DeleteMultiRegionCluster":{
+      "name":"DeleteMultiRegionCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteMultiRegionClusterRequest"},
+      "output":{"shape":"DeleteMultiRegionClusterResponse"},
+      "errors":[
+        {"shape":"MultiRegionClusterNotFoundFault"},
+        {"shape":"InvalidMultiRegionClusterStateFault"},
+        {"shape":"InvalidParameterValueException"}
+      ],
+      "documentation":"<p>Deletes an existing multi-Region cluster.</p>"
     },
     "DeleteParameterGroup":{
       "name":"DeleteParameterGroup",
@@ -282,7 +317,7 @@
         {"shape":"ACLNotFoundFault"},
         {"shape":"InvalidParameterCombinationException"}
       ],
-      "documentation":"<p>Returns a list of ACLs</p>"
+      "documentation":"<p>Returns a list of ACLs.</p>"
     },
     "DescribeClusters":{
       "name":"DescribeClusters",
@@ -313,7 +348,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"InvalidParameterCombinationException"}
       ],
-      "documentation":"<p>Returns a list of the available engine versions.</p>"
+      "documentation":"<p>Returns a list of the available Redis OSS engine versions.</p>"
     },
     "DescribeEvents":{
       "name":"DescribeEvents",
@@ -329,6 +364,22 @@
         {"shape":"InvalidParameterCombinationException"}
       ],
       "documentation":"<p>Returns events related to clusters, security groups, and parameter groups. You can obtain events specific to a particular cluster, security group, or parameter group by providing the name as a parameter. By default, only the events occurring within the last hour are returned; however, you can retrieve up to 14 days' worth of events if necessary.</p>"
+    },
+    "DescribeMultiRegionClusters":{
+      "name":"DescribeMultiRegionClusters",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeMultiRegionClustersRequest"},
+      "output":{"shape":"DescribeMultiRegionClustersResponse"},
+      "errors":[
+        {"shape":"ClusterNotFoundFault"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MultiRegionClusterNotFoundFault"}
+      ],
+      "documentation":"<p>Returns details about one or more multi-Region clusters.</p>"
     },
     "DescribeParameterGroups":{
       "name":"DescribeParameterGroups",
@@ -406,7 +457,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"InvalidParameterCombinationException"}
       ],
-      "documentation":"<p>Returns details of the service updates</p>"
+      "documentation":"<p>Returns details of the service updates.</p>"
     },
     "DescribeSnapshots":{
       "name":"DescribeSnapshots",
@@ -472,6 +523,21 @@
       ],
       "documentation":"<p>Used to failover a shard. This API is designed for testing the behavior of your application in case of MemoryDB failover. It is not designed to be used as a production-level tool for initiating a failover to overcome a problem you may have with the cluster. Moreover, in certain conditions such as large scale operational events, Amazon may block this API. </p>"
     },
+    "ListAllowedMultiRegionClusterUpdates":{
+      "name":"ListAllowedMultiRegionClusterUpdates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAllowedMultiRegionClusterUpdatesRequest"},
+      "output":{"shape":"ListAllowedMultiRegionClusterUpdatesResponse"},
+      "errors":[
+        {"shape":"MultiRegionClusterNotFoundFault"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"InvalidParameterValueException"}
+      ],
+      "documentation":"<p>Lists the allowed updates for a multi-Region cluster.</p>"
+    },
     "ListAllowedNodeTypeUpdates":{
       "name":"ListAllowedNodeTypeUpdates",
       "http":{
@@ -505,9 +571,11 @@
         {"shape":"InvalidARNFault"},
         {"shape":"ServiceLinkedRoleNotFoundFault"},
         {"shape":"UserNotFoundFault"},
-        {"shape":"ACLNotFoundFault"}
+        {"shape":"ACLNotFoundFault"},
+        {"shape":"MultiRegionClusterNotFoundFault"},
+        {"shape":"MultiRegionParameterGroupNotFoundFault"}
       ],
-      "documentation":"<p>Lists all tags currently on a named resource. A tag is a key-value pair where the key and value are case-sensitive. You can use tags to categorize and track your MemoryDB resources. For more information, see <a href=\"https://docs.aws.amazon.com/MemoryDB/latest/devguide/Tagging-Resources.html\">Tagging your MemoryDB resources</a> </p>"
+      "documentation":"<p>Lists all tags currently on a named resource. A tag is a key-value pair where the key and value are case-sensitive. You can use tags to categorize and track your MemoryDB resources. For more information, see <a href=\"https://docs.aws.amazon.com/MemoryDB/latest/devguide/Tagging-Resources.html\">Tagging your MemoryDB resources</a>.</p>"
     },
     "PurchaseReservedNodesOffering":{
       "name":"PurchaseReservedNodesOffering",
@@ -561,9 +629,12 @@
         {"shape":"SnapshotNotFoundFault"},
         {"shape":"UserNotFoundFault"},
         {"shape":"ACLNotFoundFault"},
+        {"shape":"MultiRegionClusterNotFoundFault"},
+        {"shape":"MultiRegionParameterGroupNotFoundFault"},
         {"shape":"TagQuotaPerResourceExceeded"},
         {"shape":"InvalidARNFault"},
-        {"shape":"ServiceLinkedRoleNotFoundFault"}
+        {"shape":"ServiceLinkedRoleNotFoundFault"},
+        {"shape":"InvalidParameterValueException"}
       ],
       "documentation":"<p>A tag is a key-value pair where the key and value are case-sensitive. You can use tags to categorize and track all your MemoryDB resources. When you add or remove tags on clusters, those actions will be replicated to all nodes in the cluster. For more information, see <a href=\"https://docs.aws.amazon.com/MemoryDB/latest/devguide/iam.resourcelevelpermissions.html\">Resource-level permissions</a>.</p> <p>For example, you can use cost-allocation tags to your MemoryDB resources, Amazon generates a cost allocation report as a comma-separated value (CSV) file with your usage and costs aggregated by your tags. You can apply tags that represent business categories (such as cost centers, application names, or owners) to organize your costs across multiple services. For more information, see <a href=\"https://docs.aws.amazon.com/MemoryDB/latest/devguide/tagging.html\">Using Cost Allocation Tags</a>.</p>"
     },
@@ -585,9 +656,12 @@
         {"shape":"TagNotFoundFault"},
         {"shape":"ServiceLinkedRoleNotFoundFault"},
         {"shape":"UserNotFoundFault"},
-        {"shape":"ACLNotFoundFault"}
+        {"shape":"ACLNotFoundFault"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MultiRegionClusterNotFoundFault"},
+        {"shape":"MultiRegionParameterGroupNotFoundFault"}
       ],
-      "documentation":"<p>Use this operation to remove tags on a resource</p>"
+      "documentation":"<p>Use this operation to remove tags on a resource.</p>"
     },
     "UpdateACL":{
       "name":"UpdateACL",
@@ -635,6 +709,23 @@
         {"shape":"InvalidParameterCombinationException"}
       ],
       "documentation":"<p>Modifies the settings for a cluster. You can use this operation to change one or more cluster configuration settings by specifying the settings and the new values.</p>"
+    },
+    "UpdateMultiRegionCluster":{
+      "name":"UpdateMultiRegionCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateMultiRegionClusterRequest"},
+      "output":{"shape":"UpdateMultiRegionClusterResponse"},
+      "errors":[
+        {"shape":"MultiRegionClusterNotFoundFault"},
+        {"shape":"MultiRegionParameterGroupNotFoundFault"},
+        {"shape":"InvalidMultiRegionClusterStateFault"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"InvalidParameterValueException"}
+      ],
+      "documentation":"<p>Updates the configuration of an existing multi-Region cluster.</p>"
     },
     "UpdateParameterGroup":{
       "name":"UpdateParameterGroup",
@@ -898,6 +989,10 @@
           "shape":"ClusterPendingUpdates",
           "documentation":"<p>A group of settings that are currently being applied.</p>"
         },
+        "MultiRegionClusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the multi-Region cluster that this cluster belongs to.</p>"
+        },
         "NumberOfShards":{
           "shape":"IntegerOptional",
           "documentation":"<p>The number of shards in the cluster</p>"
@@ -920,15 +1015,15 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p> The Redis OSS or Valkey engine used by the cluster.</p>"
+          "documentation":"<p>The name of the engine used by the cluster.</p>"
         },
         "EngineVersion":{
           "shape":"String",
-          "documentation":"<p>The Redis engine version used by the cluster</p>"
+          "documentation":"<p>The Redis OSS engine version used by the cluster</p>"
         },
         "EnginePatchVersion":{
           "shape":"String",
-          "documentation":"<p>The engine patch version used by the cluster</p>"
+          "documentation":"<p>The Redis OSS engine patch version used by the cluster</p>"
         },
         "ParameterGroupName":{
           "shape":"String",
@@ -1017,11 +1112,11 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The configuration for the Redis OSS or Valkey engine used by the cluster.</p>"
+          "documentation":"<p>The name of the engine used by the cluster configuration.</p>"
         },
         "EngineVersion":{
           "shape":"String",
-          "documentation":"<p>The engine version used by the cluster</p>"
+          "documentation":"<p>The Redis OSS engine version used by the cluster</p>"
         },
         "MaintenanceWindow":{
           "shape":"String",
@@ -1062,6 +1157,14 @@
         "Shards":{
           "shape":"ShardDetails",
           "documentation":"<p>The list of shards in the cluster</p>"
+        },
+        "MultiRegionParameterGroupName":{
+          "shape":"String",
+          "documentation":"<p>The name of the multi-Region parameter group associated with the cluster configuration.</p>"
+        },
+        "MultiRegionClusterName":{
+          "shape":"String",
+          "documentation":"<p>The name for the multi-Region cluster associated with the cluster configuration.</p>"
         }
       },
       "documentation":"<p>A list of cluster configuration options. </p>"
@@ -1188,6 +1291,10 @@
           "shape":"String",
           "documentation":"<p>The compute and memory capacity of the nodes in the cluster.</p>"
         },
+        "MultiRegionClusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the multi-Region cluster to be created.</p>"
+        },
         "ParameterGroupName":{
           "shape":"String",
           "documentation":"<p>The name of the parameter group associated with the cluster.</p>"
@@ -1258,11 +1365,11 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The name of the engine to be used for the nodes in this cluster. The value must be set to either Redis or Valkey.</p>"
+          "documentation":"<p>The name of the engine to be used for the cluster.</p>"
         },
         "EngineVersion":{
           "shape":"String",
-          "documentation":"<p>The version number of the engine to be used for the cluster.</p>"
+          "documentation":"<p>The version number of the Redis OSS engine to be used for the cluster.</p>"
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
@@ -1280,6 +1387,60 @@
         "Cluster":{
           "shape":"Cluster",
           "documentation":"<p>The newly-created cluster.</p>"
+        }
+      }
+    },
+    "CreateMultiRegionClusterRequest":{
+      "type":"structure",
+      "required":[
+        "MultiRegionClusterNameSuffix",
+        "NodeType"
+      ],
+      "members":{
+        "MultiRegionClusterNameSuffix":{
+          "shape":"String",
+          "documentation":"<p>A suffix to be added to the multi-Region cluster name.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description for the multi-Region cluster.</p>"
+        },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The name of the engine to be used for the multi-Region cluster.</p>"
+        },
+        "EngineVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the engine to be used for the multi-Region cluster.</p>"
+        },
+        "NodeType":{
+          "shape":"String",
+          "documentation":"<p>The node type to be used for the multi-Region cluster.</p>"
+        },
+        "MultiRegionParameterGroupName":{
+          "shape":"String",
+          "documentation":"<p>The name of the multi-Region parameter group to be associated with the cluster.</p>"
+        },
+        "NumShards":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The number of shards for the multi-Region cluster.</p>"
+        },
+        "TLSEnabled":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Whether to enable TLS encryption for the multi-Region cluster.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags to be applied to the multi-Region cluster.</p>"
+        }
+      }
+    },
+    "CreateMultiRegionClusterResponse":{
+      "type":"structure",
+      "members":{
+        "MultiRegionCluster":{
+          "shape":"MultiRegionCluster",
+          "documentation":"<p>Details about the newly created multi-Region cluster.</p>"
         }
       }
     },
@@ -1381,7 +1542,7 @@
       "members":{
         "SubnetGroup":{
           "shape":"SubnetGroup",
-          "documentation":"<p>The newly-created subnet group</p>"
+          "documentation":"<p>The newly-created subnet group.</p>"
         }
       }
     },
@@ -1440,7 +1601,7 @@
       "members":{
         "ACLName":{
           "shape":"String",
-          "documentation":"<p>The name of the Access Control List to delete</p>"
+          "documentation":"<p>The name of the Access Control List to delete.</p>"
         }
       }
     },
@@ -1461,6 +1622,10 @@
           "shape":"String",
           "documentation":"<p>The name of the cluster to be deleted</p>"
         },
+        "MultiRegionClusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the multi-Region cluster to be deleted.</p>"
+        },
         "FinalSnapshotName":{
           "shape":"String",
           "documentation":"<p>The user-supplied name of a final cluster snapshot. This is the unique name that identifies the snapshot. MemoryDB creates the snapshot, and then deletes the cluster immediately afterward.</p>"
@@ -1472,7 +1637,26 @@
       "members":{
         "Cluster":{
           "shape":"Cluster",
-          "documentation":"<p>The cluster object that has been deleted</p>"
+          "documentation":"<p>The cluster object that has been deleted.</p>"
+        }
+      }
+    },
+    "DeleteMultiRegionClusterRequest":{
+      "type":"structure",
+      "required":["MultiRegionClusterName"],
+      "members":{
+        "MultiRegionClusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the multi-Region cluster to be deleted.</p>"
+        }
+      }
+    },
+    "DeleteMultiRegionClusterResponse":{
+      "type":"structure",
+      "members":{
+        "MultiRegionCluster":{
+          "shape":"MultiRegionCluster",
+          "documentation":"<p>Details about the deleted multi-Region cluster.</p>"
         }
       }
     },
@@ -1501,7 +1685,7 @@
       "members":{
         "SnapshotName":{
           "shape":"String",
-          "documentation":"<p>The name of the snapshot to delete</p>"
+          "documentation":"<p>The name of the snapshot to delete.</p>"
         }
       }
     },
@@ -1520,7 +1704,7 @@
       "members":{
         "SubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>The name of the subnet group to delete</p>"
+          "documentation":"<p>The name of the subnet group to delete.</p>"
         }
       }
     },
@@ -1557,7 +1741,7 @@
       "members":{
         "ACLName":{
           "shape":"String",
-          "documentation":"<p>The name of the ACL</p>"
+          "documentation":"<p>The name of the ACL.</p>"
         },
         "MaxResults":{
           "shape":"IntegerOptional",
@@ -1574,7 +1758,7 @@
       "members":{
         "ACLs":{
           "shape":"ACLList",
-          "documentation":"<p>The list of ACLs</p>"
+          "documentation":"<p>The list of ACLs.</p>"
         },
         "NextToken":{
           "shape":"String",
@@ -1587,7 +1771,7 @@
       "members":{
         "ClusterName":{
           "shape":"String",
-          "documentation":"<p>The name of the cluster</p>"
+          "documentation":"<p>The name of the cluster.</p>"
         },
         "MaxResults":{
           "shape":"IntegerOptional",
@@ -1621,11 +1805,11 @@
       "members":{
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The engine version to return. Valid values are either valkey or redis.</p>"
+          "documentation":"<p>The name of the engine for which to list available versions.</p>"
         },
         "EngineVersion":{
           "shape":"String",
-          "documentation":"<p>The engine version.</p>"
+          "documentation":"<p>The Redis OSS engine version</p>"
         },
         "ParameterGroupFamily":{
           "shape":"String",
@@ -1701,6 +1885,40 @@
         "Events":{
           "shape":"EventList",
           "documentation":"<p>A list of events. Each element in the list contains detailed information about one event.</p>"
+        }
+      }
+    },
+    "DescribeMultiRegionClustersRequest":{
+      "type":"structure",
+      "members":{
+        "MultiRegionClusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of a specific multi-Region cluster to describe.</p>"
+        },
+        "MaxResults":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A token to specify where to start paginating.</p>"
+        },
+        "ShowClusterDetails":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Details about the multi-Region cluster.</p>"
+        }
+      }
+    },
+    "DescribeMultiRegionClustersResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A token to use to retrieve the next page of results.</p>"
+        },
+        "MultiRegionClusters":{
+          "shape":"MultiRegionClusterList",
+          "documentation":"<p>A list of multi-Region clusters.</p>"
         }
       }
     },
@@ -1862,11 +2080,11 @@
         },
         "ClusterNames":{
           "shape":"ClusterNameList",
-          "documentation":"<p>The list of cluster names to identify service updates to apply</p>"
+          "documentation":"<p>The list of cluster names to identify service updates to apply.</p>"
         },
         "Status":{
           "shape":"ServiceUpdateStatusList",
-          "documentation":"<p>The status(es) of the service updates to filter on</p>"
+          "documentation":"<p>The status(es) of the service updates to filter on.</p>"
         },
         "MaxResults":{
           "shape":"IntegerOptional",
@@ -1968,7 +2186,7 @@
       "members":{
         "UserName":{
           "shape":"UserName",
-          "documentation":"<p>The name of the user</p>"
+          "documentation":"<p>The name of the user.</p>"
         },
         "Filters":{
           "shape":"FilterList",
@@ -2024,7 +2242,7 @@
       "members":{
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The version of the Redis OSS or Valkey engine used by the cluster.</p>"
+          "documentation":"<p>The name of the engine for which version information is provided.</p>"
         },
         "EngineVersion":{
           "shape":"String",
@@ -2039,7 +2257,7 @@
           "documentation":"<p>Specifies the name of the parameter group family to which the engine default parameters apply.</p>"
         }
       },
-      "documentation":"<p>Provides details of the engine version.</p>"
+      "documentation":"<p>Provides details of the Redis OSS engine version</p>"
     },
     "EngineVersionInfoList":{
       "type":"list",
@@ -2080,11 +2298,11 @@
       "members":{
         "ClusterName":{
           "shape":"String",
-          "documentation":"<p>The cluster being failed over</p>"
+          "documentation":"<p>The cluster being failed over.</p>"
         },
         "ShardName":{
           "shape":"String",
-          "documentation":"<p>The name of the shard</p>"
+          "documentation":"<p>The name of the shard.</p>"
         }
       }
     },
@@ -2093,7 +2311,7 @@
       "members":{
         "Cluster":{
           "shape":"Cluster",
-          "documentation":"<p>The cluster being failed over</p>"
+          "documentation":"<p>The cluster being failed over.</p>"
         }
       }
     },
@@ -2183,6 +2401,13 @@
       "documentation":"<p/>",
       "exception":true
     },
+    "InvalidMultiRegionClusterStateFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The requested operation cannot be performed on the multi-Region cluster in its current state.</p>",
+      "exception":true
+    },
     "InvalidNodeStateFault":{
       "type":"structure",
       "members":{
@@ -2251,6 +2476,29 @@
       "type":"string",
       "max":2048
     },
+    "ListAllowedMultiRegionClusterUpdatesRequest":{
+      "type":"structure",
+      "required":["MultiRegionClusterName"],
+      "members":{
+        "MultiRegionClusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the multi-Region cluster.</p>"
+        }
+      }
+    },
+    "ListAllowedMultiRegionClusterUpdatesResponse":{
+      "type":"structure",
+      "members":{
+        "ScaleUpNodeTypes":{
+          "shape":"NodeTypeList",
+          "documentation":"<p>The node types that the cluster can be scaled up to.</p>"
+        },
+        "ScaleDownNodeTypes":{
+          "shape":"NodeTypeList",
+          "documentation":"<p>The node types that the cluster can be scaled down to.</p>"
+        }
+      }
+    },
     "ListAllowedNodeTypeUpdatesRequest":{
       "type":"structure",
       "required":["ClusterName"],
@@ -2280,7 +2528,7 @@
       "members":{
         "ResourceArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for which you want the list of tags</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for which you want the list of tags.</p>"
         }
       }
     },
@@ -2292,6 +2540,81 @@
           "documentation":"<p>A list of tags as key-value pairs.</p>"
         }
       }
+    },
+    "MultiRegionCluster":{
+      "type":"structure",
+      "members":{
+        "MultiRegionClusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the multi-Region cluster.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the multi-Region cluster.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The current status of the multi-Region cluster.</p>"
+        },
+        "NodeType":{
+          "shape":"String",
+          "documentation":"<p>The node type used by the multi-Region cluster.</p>"
+        },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The name of the engine used by the multi-Region cluster.</p>"
+        },
+        "EngineVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the engine used by the multi-Region cluster.</p>"
+        },
+        "NumberOfShards":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The number of shards in the multi-Region cluster.</p>"
+        },
+        "Clusters":{
+          "shape":"RegionalClusterList",
+          "documentation":"<p>The clusters in this multi-Region cluster.</p>"
+        },
+        "MultiRegionParameterGroupName":{
+          "shape":"String",
+          "documentation":"<p>The name of the multi-Region parameter group associated with the cluster.</p>"
+        },
+        "TLSEnabled":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indiciates if the multi-Region cluster is TLS enabled.</p>"
+        },
+        "ARN":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the multi-Region cluster.</p>"
+        }
+      },
+      "documentation":"<p>Represents a multi-Region cluster.</p>"
+    },
+    "MultiRegionClusterAlreadyExistsFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>A multi-Region cluster with the specified name already exists.</p>",
+      "exception":true
+    },
+    "MultiRegionClusterList":{
+      "type":"list",
+      "member":{"shape":"MultiRegionCluster"}
+    },
+    "MultiRegionClusterNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified multi-Region cluster does not exist.</p>",
+      "exception":true
+    },
+    "MultiRegionParameterGroupNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified multi-Region parameter group does not exist.</p>",
+      "exception":true
     },
     "NoOperationFault":{
       "type":"structure",
@@ -2523,6 +2846,33 @@
       "type":"list",
       "member":{"shape":"RecurringCharge"}
     },
+    "RegionalCluster":{
+      "type":"structure",
+      "members":{
+        "ClusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Regional cluster</p>"
+        },
+        "Region":{
+          "shape":"String",
+          "documentation":"<p>The Region the current Regional cluster is assigned to.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The status of the Regional cluster.</p>"
+        },
+        "ARN":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) the Regional cluster</p>"
+        }
+      },
+      "documentation":"<p>Represents a Regional cluster</p>",
+      "wrapper":true
+    },
+    "RegionalClusterList":{
+      "type":"list",
+      "member":{"shape":"RegionalCluster"}
+    },
     "ReplicaConfigurationRequest":{
       "type":"structure",
       "members":{
@@ -2744,7 +3094,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The MemoryDB engine to which the update applies. The values are either Redis or Valkey.</p>"
+          "documentation":"<p>The name of the engine for which a service update is available.</p>"
         },
         "NodesUpdated":{
           "shape":"String",
@@ -3119,7 +3469,7 @@
       "members":{
         "ResourceArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to which the tags are to be added</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to which the tags are to be added.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -3179,11 +3529,11 @@
       "members":{
         "ResourceArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to which the tags are to be removed</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to which the tags are to be removed.</p>"
         },
         "TagKeys":{
           "shape":"KeyList",
-          "documentation":"<p>The list of keys of the tags that are to be removed</p>"
+          "documentation":"<p>The list of keys of the tags that are to be removed.</p>"
         }
       }
     },
@@ -3192,7 +3542,7 @@
       "members":{
         "TagList":{
           "shape":"TagList",
-          "documentation":"<p>The list of tags removed</p>"
+          "documentation":"<p>The list of tags removed.</p>"
         }
       }
     },
@@ -3202,15 +3552,15 @@
       "members":{
         "ACLName":{
           "shape":"String",
-          "documentation":"<p>The name of the Access Control List</p>"
+          "documentation":"<p>The name of the Access Control List.</p>"
         },
         "UserNamesToAdd":{
           "shape":"UserNameListInput",
-          "documentation":"<p>The list of users to add to the Access Control List</p>"
+          "documentation":"<p>The list of users to add to the Access Control List.</p>"
         },
         "UserNamesToRemove":{
           "shape":"UserNameListInput",
-          "documentation":"<p>The list of users to remove from the Access Control List</p>"
+          "documentation":"<p>The list of users to remove from the Access Control List.</p>"
         }
       }
     },
@@ -3219,7 +3569,7 @@
       "members":{
         "ACL":{
           "shape":"ACL",
-          "documentation":"<p>The updated Access Control List</p>"
+          "documentation":"<p>The updated Access Control List.</p>"
         }
       }
     },
@@ -3229,15 +3579,15 @@
       "members":{
         "ClusterName":{
           "shape":"String",
-          "documentation":"<p>The name of the cluster to update</p>"
+          "documentation":"<p>The name of the cluster to update.</p>"
         },
         "Description":{
           "shape":"String",
-          "documentation":"<p>The description of the cluster to update</p>"
+          "documentation":"<p>The description of the cluster to update.</p>"
         },
         "SecurityGroupIds":{
           "shape":"SecurityGroupIdsList",
-          "documentation":"<p>The SecurityGroupIds to update</p>"
+          "documentation":"<p>The SecurityGroupIds to update.</p>"
         },
         "MaintenanceWindow":{
           "shape":"String",
@@ -3245,7 +3595,7 @@
         },
         "SnsTopicArn":{
           "shape":"String",
-          "documentation":"<p>The SNS topic ARN to update</p>"
+          "documentation":"<p>The SNS topic ARN to update.</p>"
         },
         "SnsTopicStatus":{
           "shape":"String",
@@ -3253,7 +3603,7 @@
         },
         "ParameterGroupName":{
           "shape":"String",
-          "documentation":"<p>The name of the parameter group to update</p>"
+          "documentation":"<p>The name of the parameter group to update.</p>"
         },
         "SnapshotWindow":{
           "shape":"String",
@@ -3269,7 +3619,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The name of the engine to be used for the nodes in this cluster. The value must be set to either Redis or Valkey.</p>"
+          "documentation":"<p>The name of the engine to be used for the cluster.</p>"
         },
         "EngineVersion":{
           "shape":"String",
@@ -3277,15 +3627,15 @@
         },
         "ReplicaConfiguration":{
           "shape":"ReplicaConfigurationRequest",
-          "documentation":"<p>The number of replicas that will reside in each shard</p>"
+          "documentation":"<p>The number of replicas that will reside in each shard.</p>"
         },
         "ShardConfiguration":{
           "shape":"ShardConfigurationRequest",
-          "documentation":"<p>The number of shards in the cluster</p>"
+          "documentation":"<p>The number of shards in the cluster.</p>"
         },
         "ACLName":{
           "shape":"ACLName",
-          "documentation":"<p>The Access Control List that is associated with the cluster</p>"
+          "documentation":"<p>The Access Control List that is associated with the cluster.</p>"
         }
       }
     },
@@ -3294,7 +3644,47 @@
       "members":{
         "Cluster":{
           "shape":"Cluster",
-          "documentation":"<p>The updated cluster</p>"
+          "documentation":"<p>The updated cluster.</p>"
+        }
+      }
+    },
+    "UpdateMultiRegionClusterRequest":{
+      "type":"structure",
+      "required":["MultiRegionClusterName"],
+      "members":{
+        "MultiRegionClusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the multi-Region cluster to be updated.</p>"
+        },
+        "NodeType":{
+          "shape":"String",
+          "documentation":"<p>The new node type to be used for the multi-Region cluster.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A new description for the multi-Region cluster.</p>"
+        },
+        "EngineVersion":{
+          "shape":"String",
+          "documentation":"<p>The new engine version to be used for the multi-Region cluster.</p>"
+        },
+        "ShardConfiguration":{"shape":"ShardConfigurationRequest"},
+        "MultiRegionParameterGroupName":{
+          "shape":"String",
+          "documentation":"<p>The new multi-Region parameter group to be associated with the cluster.</p>"
+        },
+        "UpdateStrategy":{
+          "shape":"UpdateStrategy",
+          "documentation":"<p>Whether to force the update even if it may cause data loss.</p>"
+        }
+      }
+    },
+    "UpdateMultiRegionClusterResponse":{
+      "type":"structure",
+      "members":{
+        "MultiRegionCluster":{
+          "shape":"MultiRegionCluster",
+          "documentation":"<p>The status of updating the multi-Region cluster.</p>"
         }
       }
     },
@@ -3323,6 +3713,13 @@
           "documentation":"<p>The updated parameter group</p>"
         }
       }
+    },
+    "UpdateStrategy":{
+      "type":"string",
+      "enum":[
+        "coordinated",
+        "uncoordinated"
+      ]
     },
     "UpdateSubnetGroupRequest":{
       "type":"structure",
@@ -3452,5 +3849,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>MemoryDB for Redis is a fully managed, Redis-compatible, in-memory database that delivers ultra-fast performance and Multi-AZ durability for modern applications built using microservices architectures. MemoryDB stores the entire database in-memory, enabling low latency and high throughput data access. It is compatible with Redis, a popular open source data store, enabling you to leverage Redis’ flexible and friendly data structures, APIs, and commands.</p>"
+  "documentation":"<p>MemoryDB is a fully managed, Redis OSS-compatible, in-memory database that delivers ultra-fast performance and Multi-AZ durability for modern applications built using microservices architectures. MemoryDB stores the entire database in-memory, enabling low latency and high throughput data access. It is compatible with Redis OSS, a popular open source data store, enabling you to leverage Redis OSS’ flexible and friendly data structures, APIs, and commands.</p>"
 }

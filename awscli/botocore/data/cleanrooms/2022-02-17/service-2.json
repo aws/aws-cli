@@ -2153,6 +2153,57 @@
         "CLEAN_ROOMS_SQL"
       ]
     },
+    "AthenaDatabaseName":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"[a-zA-Z0-9_](([a-zA-Z0-9_]+-)*([a-zA-Z0-9_]+))?"
+    },
+    "AthenaOutputLocation":{
+      "type":"string",
+      "max":1024,
+      "min":8,
+      "pattern":"s3://[a-z0-9.-]{3,63}(.*)"
+    },
+    "AthenaTableName":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"[a-zA-Z0-9_](([a-zA-Z0-9_ ]+-)*([a-zA-Z0-9_ ]+))?"
+    },
+    "AthenaTableReference":{
+      "type":"structure",
+      "required":[
+        "workGroup",
+        "databaseName",
+        "tableName"
+      ],
+      "members":{
+        "workGroup":{
+          "shape":"AthenaWorkGroup",
+          "documentation":"<p> The workgroup of the Athena table reference.</p>"
+        },
+        "outputLocation":{
+          "shape":"AthenaOutputLocation",
+          "documentation":"<p> The output location for the Athena table.</p>"
+        },
+        "databaseName":{
+          "shape":"AthenaDatabaseName",
+          "documentation":"<p> The database name.</p>"
+        },
+        "tableName":{
+          "shape":"AthenaTableName",
+          "documentation":"<p> The table reference.</p>"
+        }
+      },
+      "documentation":"<p> A reference to a table within Athena.</p>"
+    },
+    "AthenaWorkGroup":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"([a-zA-Z0-9._-])*"
+    },
     "BatchGetCollaborationAnalysisTemplateError":{
       "type":"structure",
       "required":[
@@ -3109,7 +3160,7 @@
           "documentation":"<p>The type of the column.</p>"
         }
       },
-      "documentation":"<p>A column within a schema relation, derived from the underlying Glue table.</p>"
+      "documentation":"<p>A column within a schema relation, derived from the underlying table.</p>"
     },
     "ColumnList":{
       "type":"list",
@@ -3338,7 +3389,7 @@
         },
         "tableReference":{
           "shape":"TableReference",
-          "documentation":"<p>The Glue table that this configured table represents.</p>"
+          "documentation":"<p>The table that this configured table represents.</p>"
         },
         "createTime":{
           "shape":"Timestamp",
@@ -4097,7 +4148,7 @@
         },
         "tableReference":{
           "shape":"TableReference",
-          "documentation":"<p>A reference to the Glue table being configured.</p>"
+          "documentation":"<p>A reference to the table being configured.</p>"
         },
         "allowedColumns":{
           "shape":"AllowedColumnList",
@@ -8296,6 +8347,12 @@
       "documentation":"<p>Information about the schema type properties.</p>",
       "union":true
     },
+    "SecretsManagerArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws:secretsmanager:[a-z]{2}-[a-z]+-[0-9]:\\d{12}:secret:.*"
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "required":[
@@ -8320,6 +8377,103 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SnowflakeAccountIdentifier":{
+      "type":"string",
+      "max":256,
+      "min":3,
+      "pattern":"[\\p{L}\\p{M}\\p{N}\\p{Pc}\\p{Pd}\\p{Zs}.]+"
+    },
+    "SnowflakeDatabaseName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\p{L}\\p{M}\\p{N}\\p{Pc}\\p{Pd}\\p{Zs}]+"
+    },
+    "SnowflakeSchemaName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\p{L}\\p{M}\\p{N}\\p{Pc}\\p{Pd}\\p{Zs}]+"
+    },
+    "SnowflakeTableName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\p{L}\\p{M}\\p{N}\\p{Pc}\\p{Pd}\\p{Zs}]+"
+    },
+    "SnowflakeTableReference":{
+      "type":"structure",
+      "required":[
+        "secretArn",
+        "accountIdentifier",
+        "databaseName",
+        "tableName",
+        "schemaName",
+        "tableSchema"
+      ],
+      "members":{
+        "secretArn":{
+          "shape":"SecretsManagerArn",
+          "documentation":"<p> The secret ARN of the Snowflake table reference.</p>"
+        },
+        "accountIdentifier":{
+          "shape":"SnowflakeAccountIdentifier",
+          "documentation":"<p> The account identifier for the Snowflake table reference.</p>"
+        },
+        "databaseName":{
+          "shape":"SnowflakeDatabaseName",
+          "documentation":"<p> The name of the database the Snowflake table belongs to.</p>"
+        },
+        "tableName":{
+          "shape":"SnowflakeTableName",
+          "documentation":"<p> The name of the Snowflake table.</p>"
+        },
+        "schemaName":{
+          "shape":"SnowflakeSchemaName",
+          "documentation":"<p> The schema name of the Snowflake table reference.</p>"
+        },
+        "tableSchema":{
+          "shape":"SnowflakeTableSchema",
+          "documentation":"<p> The schema of the Snowflake table.</p>"
+        }
+      },
+      "documentation":"<p> A reference to a table within Snowflake.</p>"
+    },
+    "SnowflakeTableSchema":{
+      "type":"structure",
+      "members":{
+        "v1":{
+          "shape":"SnowflakeTableSchemaList",
+          "documentation":"<p> The schema of a Snowflake table.</p>"
+        }
+      },
+      "documentation":"<p> The schema of a Snowflake table.</p>",
+      "union":true
+    },
+    "SnowflakeTableSchemaList":{
+      "type":"list",
+      "member":{"shape":"SnowflakeTableSchemaV1"},
+      "max":250,
+      "min":1
+    },
+    "SnowflakeTableSchemaV1":{
+      "type":"structure",
+      "required":[
+        "columnName",
+        "columnType"
+      ],
+      "members":{
+        "columnName":{
+          "shape":"ColumnName",
+          "documentation":"<p> The column name.</p>"
+        },
+        "columnType":{
+          "shape":"ColumnTypeString",
+          "documentation":"<p> The column's data type. Supported data types: <code>ARRAY</code>, <code>BIGINT</code>, <code>BOOLEAN</code>, <code>CHAR</code>, <code>DATE</code>, <code>DECIMAL</code>, <code>DOUBLE</code>, <code>DOUBLE PRECISION</code>, <code>FLOAT</code>, <code>FLOAT4</code>, <code>INT</code>, <code>INTEGER</code>, <code>MAP</code>, <code>NUMERIC</code>, <code>NUMBER</code>, <code>REAL</code>, <code>SMALLINT</code>, <code>STRING</code>, <code>TIMESTAMP</code>, <code>TIMESTAMP_LTZ</code>, <code>TIMESTAMP_NTZ</code>, <code>DATETIME</code>, <code>TINYINT</code>, <code>VARCHAR</code>, <code>TEXT</code>, <code>CHARACTER</code>.</p>"
+        }
+      },
+      "documentation":"<p> The Snowflake table schema.</p>"
     },
     "StartProtectedQueryInput":{
       "type":"structure",
@@ -8388,9 +8542,17 @@
         "glue":{
           "shape":"GlueTableReference",
           "documentation":"<p>If present, a reference to the Glue table referred to by this table reference.</p>"
+        },
+        "snowflake":{
+          "shape":"SnowflakeTableReference",
+          "documentation":"<p> If present, a reference to the Snowflake table referred to by this table reference.</p>"
+        },
+        "athena":{
+          "shape":"AthenaTableReference",
+          "documentation":"<p> If present, a reference to the Athena table referred to by this table reference.</p>"
         }
       },
-      "documentation":"<p>A pointer to the dataset that underlies this table. Currently, this can only be an Glue table.</p>",
+      "documentation":"<p>A pointer to the dataset that underlies this table.</p>",
       "union":true
     },
     "TagKey":{

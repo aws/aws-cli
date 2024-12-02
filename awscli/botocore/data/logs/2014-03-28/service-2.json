@@ -257,6 +257,22 @@
       ],
       "documentation":"<p>Deletes a log-group level field index policy that was applied to a single log group. The indexing of the log events that happened before you delete the policy will still be used for as many as 30 days to improve CloudWatch Logs Insights queries.</p> <p>You can't use this operation to delete an account-level index policy. Instead, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DeleteAccountPolicy.html\">DeletAccountPolicy</a>.</p> <p>If you delete a log-group level field index policy and there is an account-level field index policy, in a few minutes the log group begins using that account-wide policy to index new incoming log events. </p>"
     },
+    "DeleteIntegration":{
+      "name":"DeleteIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIntegrationRequest"},
+      "output":{"shape":"DeleteIntegrationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes the integration between CloudWatch Logs and OpenSearch Service. If your integration has active vended logs dashboards, you must specify <code>true</code> for the <code>force</code> parameter, otherwise the operation will fail. If you delete the integration by setting <code>force</code> to <code>true</code>, all your vended logs dashboards powered by OpenSearch Service will be deleted and the data that was on them will no longer be accessible.</p>"
+    },
     "DeleteLogAnomalyDetector":{
       "name":"DeleteLogAnomalyDetector",
       "http":{
@@ -748,6 +764,21 @@
       ],
       "documentation":"<p>Retrieves complete information about one delivery source.</p>"
     },
+    "GetIntegration":{
+      "name":"GetIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIntegrationRequest"},
+      "output":{"shape":"GetIntegrationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns information about one integration between CloudWatch Logs and OpenSearch Service. </p>"
+    },
     "GetLogAnomalyDetector":{
       "name":"GetLogAnomalyDetector",
       "http":{
@@ -857,6 +888,20 @@
         {"shape":"OperationAbortedException"}
       ],
       "documentation":"<p>Returns a list of anomalies that log anomaly detectors have found. For details about the structure format of each anomaly object that is returned, see the example in this section.</p>"
+    },
+    "ListIntegrations":{
+      "name":"ListIntegrations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListIntegrationsRequest"},
+      "output":{"shape":"ListIntegrationsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns a list of integrations between CloudWatch Logs and other services in this account. Currently, only one integration can be created in an account, and this integration must be with OpenSearch Service.</p>"
     },
     "ListLogAnomalyDetectors":{
       "name":"ListLogAnomalyDetectors",
@@ -1051,6 +1096,22 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Creates or updates a <i>field index policy</i> for the specified log group. Only log groups in the Standard log class support field index policies. For more information about log classes, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch_Logs_Log_Classes.html\">Log classes</a>.</p> <p>You can use field index policies to create <i>field indexes</i> on fields found in log events in the log group. Creating field indexes speeds up and lowers the costs for CloudWatch Logs Insights queries that reference those field indexes, because these queries attempt to skip the processing of log events that are known to not match the indexed field. Good fields to index are fields that you often need to query for and fields or values that match only a small fraction of the total log events. Common examples of indexes include request ID, session ID, userID, and instance IDs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs-Field-Indexing.html\">Create field indexes to improve query performance and reduce costs</a>.</p> <p>To find the fields that are in your log group events, use the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogGroupFields.html\">GetLogGroupFields</a> operation.</p> <p>For example, suppose you have created a field index for <code>requestId</code>. Then, any CloudWatch Logs Insights query on that log group that includes <code>requestId = <i>value</i> </code> or <code>requestId IN [<i>value</i>, <i>value</i>, ...]</code> will process fewer log events to reduce costs, and have improved performance.</p> <p>Each index policy has the following quotas and restrictions:</p> <ul> <li> <p>As many as 20 fields can be included in the policy.</p> </li> <li> <p>Each field name can include as many as 100 characters.</p> </li> </ul> <p>Matches of log events to the names of indexed fields are case-sensitive. For example, a field index of <code>RequestId</code> won't match a log event containing <code>requestId</code>.</p> <p>Log group-level field index policies created with <code>PutIndexPolicy</code> override account-level field index policies created with <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutAccountPolicy.html\">PutAccountPolicy</a>. If you use <code>PutIndexPolicy</code> to create a field index policy for a log group, that log group uses only that policy. The log group ignores any account-wide field index policy that you might have created.</p>"
+    },
+    "PutIntegration":{
+      "name":"PutIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutIntegrationRequest"},
+      "output":{"shape":"PutIntegrationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates an integration between CloudWatch Logs and another service in this account. Currently, only integrations with OpenSearch Service are supported, and currently you can have only one integration in your account.</p> <p>Integrating with OpenSearch Service makes it possible for you to create curated vended logs dashboards, powered by OpenSearch Service analytics. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs-OpenSearch-Dashboards.html\">Vended log dashboards powered by Amazon OpenSearch Service</a>.</p> <p>You can use this operation only to create a new integration. You can't modify an existing integration.</p>"
     },
     "PutLogEvents":{
       "name":"PutLogEvents",
@@ -1709,6 +1770,11 @@
       "min":36,
       "pattern":"\\S{36,128}"
     },
+    "CollectionRetentionDays":{
+      "type":"integer",
+      "max":30,
+      "min":1
+    },
     "Column":{
       "type":"string",
       "max":128,
@@ -2006,6 +2072,10 @@
         }
       }
     },
+    "DashboardViewerPrincipals":{
+      "type":"list",
+      "member":{"shape":"Arn"}
+    },
     "DataAlreadyAcceptedException":{
       "type":"structure",
       "members":{
@@ -2156,6 +2226,25 @@
       }
     },
     "DeleteIndexPolicyResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteIntegrationRequest":{
+      "type":"structure",
+      "required":["integrationName"],
+      "members":{
+        "integrationName":{
+          "shape":"IntegrationName",
+          "documentation":"<p>The name of the integration to delete. To find the name of your integration, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListIntegrations.html\">ListIntegrations</a>.</p>"
+        },
+        "force":{
+          "shape":"Force",
+          "documentation":"<p>Specify <code>true</code> to force the deletion of the integration even if vended logs dashboards currently exist.</p> <p>The default is <code>false</code>.</p>"
+        }
+      }
+    },
+    "DeleteIntegrationResponse":{
       "type":"structure",
       "members":{
       }
@@ -2862,7 +2951,11 @@
           "shape":"DescribeQueriesMaxResults",
           "documentation":"<p>Limits the number of returned queries to the specified number.</p>"
         },
-        "nextToken":{"shape":"NextToken"}
+        "nextToken":{"shape":"NextToken"},
+        "queryLanguage":{
+          "shape":"QueryLanguage",
+          "documentation":"<p>Limits the returned queries to only the queries that use the specified query language.</p>"
+        }
       }
     },
     "DescribeQueriesResponse":{
@@ -2878,6 +2971,10 @@
     "DescribeQueryDefinitionsRequest":{
       "type":"structure",
       "members":{
+        "queryLanguage":{
+          "shape":"QueryLanguage",
+          "documentation":"<p>The query language used for this query. For more information about the query languages that CloudWatch Logs supports, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_AnalyzeLogData_Languages.html\">Supported query languages</a>.</p>"
+        },
         "queryDefinitionNamePrefix":{
           "shape":"QueryDefinitionName",
           "documentation":"<p>Use this parameter to filter your results to only the query definitions that have names that start with the prefix you specify.</p>"
@@ -3411,6 +3508,7 @@
         "last"
       ]
     },
+    "Force":{"type":"boolean"},
     "ForceUpdate":{"type":"boolean"},
     "FromKey":{
       "type":"string",
@@ -3517,6 +3615,37 @@
         "deliverySource":{
           "shape":"DeliverySource",
           "documentation":"<p>A structure containing information about the delivery source.</p>"
+        }
+      }
+    },
+    "GetIntegrationRequest":{
+      "type":"structure",
+      "required":["integrationName"],
+      "members":{
+        "integrationName":{
+          "shape":"IntegrationName",
+          "documentation":"<p>The name of the integration that you want to find information about. To find the name of your integration, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListIntegrations.html\">ListIntegrations</a> </p>"
+        }
+      }
+    },
+    "GetIntegrationResponse":{
+      "type":"structure",
+      "members":{
+        "integrationName":{
+          "shape":"IntegrationName",
+          "documentation":"<p>The name of the integration.</p>"
+        },
+        "integrationType":{
+          "shape":"IntegrationType",
+          "documentation":"<p>The type of integration. Integrations with OpenSearch Service have the type <code>OPENSEARCH</code>.</p>"
+        },
+        "integrationStatus":{
+          "shape":"IntegrationStatus",
+          "documentation":"<p>The current status of this integration.</p>"
+        },
+        "integrationDetails":{
+          "shape":"IntegrationDetails",
+          "documentation":"<p>A structure that contains information about the integration configuration. For an integration with OpenSearch Service, this includes information about OpenSearch Service resources such as the collection, the workspace, and policies.</p>"
         }
       }
     },
@@ -3689,6 +3818,10 @@
     "GetQueryResultsResponse":{
       "type":"structure",
       "members":{
+        "queryLanguage":{
+          "shape":"QueryLanguage",
+          "documentation":"<p>The query language used for this query. For more information about the query languages that CloudWatch Logs supports, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_AnalyzeLogData_Languages.html\">Supported query languages</a>.</p>"
+        },
         "results":{
           "shape":"QueryResults",
           "documentation":"<p>The log events that matched the query criteria during the most recent time it ran.</p> <p>The <code>results</code> value is an array of arrays. Each log event is one object in the top-level array. Each of these log event objects is an array of <code>field</code>/<code>value</code> pairs.</p>"
@@ -3844,6 +3977,67 @@
       "min":1
     },
     "Integer":{"type":"integer"},
+    "IntegrationDetails":{
+      "type":"structure",
+      "members":{
+        "openSearchIntegrationDetails":{
+          "shape":"OpenSearchIntegrationDetails",
+          "documentation":"<p>This structure contains complete information about one integration between CloudWatch Logs and OpenSearch Service.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about the integration configuration. For an integration with OpenSearch Service, this includes information about OpenSearch Service resources such as the collection, the workspace, and policies.</p> <p>This structure is returned by a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetIntegration.html\">GetIntegration</a> operation.</p>",
+      "union":true
+    },
+    "IntegrationName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\.\\-_/#A-Za-z0-9]+"
+    },
+    "IntegrationNamePrefix":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\.\\-_/#A-Za-z0-9]+"
+    },
+    "IntegrationStatus":{
+      "type":"string",
+      "enum":[
+        "PROVISIONING",
+        "ACTIVE",
+        "FAILED"
+      ]
+    },
+    "IntegrationStatusMessage":{
+      "type":"string",
+      "min":1
+    },
+    "IntegrationSummaries":{
+      "type":"list",
+      "member":{"shape":"IntegrationSummary"}
+    },
+    "IntegrationSummary":{
+      "type":"structure",
+      "members":{
+        "integrationName":{
+          "shape":"IntegrationName",
+          "documentation":"<p>The name of this integration.</p>"
+        },
+        "integrationType":{
+          "shape":"IntegrationType",
+          "documentation":"<p>The type of integration. Integrations with OpenSearch Service have the type <code>OPENSEARCH</code>.</p>"
+        },
+        "integrationStatus":{
+          "shape":"IntegrationStatus",
+          "documentation":"<p>The current status of this integration.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about one CloudWatch Logs integration. This structure is returned by a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListIntegrations.html\">ListIntegrations</a> operation.</p>"
+    },
+    "IntegrationType":{
+      "type":"string",
+      "enum":["OPENSEARCH"]
+    },
     "Interleaved":{"type":"boolean"},
     "InvalidOperationException":{
       "type":"structure",
@@ -3925,6 +4119,32 @@
           "documentation":"<p>An array of structures, where each structure contains information about one anomaly that a log anomaly detector has found.</p>"
         },
         "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListIntegrationsRequest":{
+      "type":"structure",
+      "members":{
+        "integrationNamePrefix":{
+          "shape":"IntegrationNamePrefix",
+          "documentation":"<p>To limit the results to integrations that start with a certain name prefix, specify that name prefix here.</p>"
+        },
+        "integrationType":{
+          "shape":"IntegrationType",
+          "documentation":"<p>To limit the results to integrations of a certain type, specify that type here.</p>"
+        },
+        "integrationStatus":{
+          "shape":"IntegrationStatus",
+          "documentation":"<p>To limit the results to integrations with a certain status, specify that status here.</p>"
+        }
+      }
+    },
+    "ListIntegrationsResponse":{
+      "type":"structure",
+      "members":{
+        "integrationSummaries":{
+          "shape":"IntegrationSummaries",
+          "documentation":"<p>An array, where each object in the array contains information about one CloudWatch Logs integration in this account. </p>"
+        }
       }
     },
     "ListLogAnomalyDetectorsLimit":{
@@ -4547,6 +4767,257 @@
       "max":128,
       "min":1
     },
+    "OpenSearchApplication":{
+      "type":"structure",
+      "members":{
+        "applicationEndpoint":{
+          "shape":"OpenSearchApplicationEndpoint",
+          "documentation":"<p>The endpoint of the application.</p>"
+        },
+        "applicationArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the application.</p>"
+        },
+        "applicationId":{
+          "shape":"OpenSearchApplicationId",
+          "documentation":"<p>The ID of the application.</p>"
+        },
+        "status":{
+          "shape":"OpenSearchResourceStatus",
+          "documentation":"<p>This structure contains information about the status of this OpenSearch Service resource.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about the OpenSearch Service application used for this integration. An OpenSearch Service application is the web application created by the integration with CloudWatch Logs. It hosts the vended logs dashboards.</p>"
+    },
+    "OpenSearchApplicationEndpoint":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^https://[\\.\\-_/#:A-Za-z0-9]+\\.com$"
+    },
+    "OpenSearchApplicationId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\.\\-_/#A-Za-z0-9]+"
+    },
+    "OpenSearchCollection":{
+      "type":"structure",
+      "members":{
+        "collectionEndpoint":{
+          "shape":"OpenSearchCollectionEndpoint",
+          "documentation":"<p>The endpoint of the collection.</p>"
+        },
+        "collectionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the collection.</p>"
+        },
+        "status":{
+          "shape":"OpenSearchResourceStatus",
+          "documentation":"<p>This structure contains information about the status of this OpenSearch Service resource.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about the OpenSearch Service collection used for this integration. An OpenSearch Service collection is a logical grouping of one or more indexes that represent an analytics workload. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-collections.html\">Creating and managing OpenSearch Service Serverless collections</a>.</p>"
+    },
+    "OpenSearchCollectionEndpoint":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^https://[\\.\\-_/#:A-Za-z0-9]+\\.com$"
+    },
+    "OpenSearchDataAccessPolicy":{
+      "type":"structure",
+      "members":{
+        "policyName":{
+          "shape":"OpenSearchPolicyName",
+          "documentation":"<p>The name of the data access policy.</p>"
+        },
+        "status":{
+          "shape":"OpenSearchResourceStatus",
+          "documentation":"<p>This structure contains information about the status of this OpenSearch Service resource.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about the OpenSearch Service data access policy used for this integration. The access policy defines the access controls for the collection. This data access policy was automatically created as part of the integration setup. For more information about OpenSearch Service data access policies, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-data-access.html\">Data access control for Amazon OpenSearch Serverless</a> in the OpenSearch Service Developer Guide.</p>"
+    },
+    "OpenSearchDataSource":{
+      "type":"structure",
+      "members":{
+        "dataSourceName":{
+          "shape":"OpenSearchDataSourceName",
+          "documentation":"<p>The name of the OpenSearch Service data source.</p>"
+        },
+        "status":{
+          "shape":"OpenSearchResourceStatus",
+          "documentation":"<p>This structure contains information about the status of this OpenSearch Service resource.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about the OpenSearch Service data source used for this integration. This data source was created as part of the integration setup. An OpenSearch Service data source defines the source and destination for OpenSearch Service queries. It includes the role required to execute queries and write to collections.</p> <p>For more information about OpenSearch Service data sources , see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/direct-query-s3-creating.html\">Creating OpenSearch Service data source integrations with Amazon S3.</a> </p>"
+    },
+    "OpenSearchDataSourceName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\.\\-_/#A-Za-z0-9]+"
+    },
+    "OpenSearchEncryptionPolicy":{
+      "type":"structure",
+      "members":{
+        "policyName":{
+          "shape":"OpenSearchPolicyName",
+          "documentation":"<p>The name of the encryption policy.</p>"
+        },
+        "status":{
+          "shape":"OpenSearchResourceStatus",
+          "documentation":"<p>This structure contains information about the status of this OpenSearch Service resource.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about the OpenSearch Service encryption policy used for this integration. The encryption policy was created automatically when you created the integration. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-encryption.html#serverless-encryption-policies\">Encryption policies</a> in the OpenSearch Service Developer Guide. </p>"
+    },
+    "OpenSearchIntegrationDetails":{
+      "type":"structure",
+      "members":{
+        "dataSource":{
+          "shape":"OpenSearchDataSource",
+          "documentation":"<p>This structure contains information about the OpenSearch Service data source used for this integration. This data source was created as part of the integration setup. An OpenSearch Service data source defines the source and destination for OpenSearch Service queries. It includes the role required to execute queries and write to collections.</p> <p>For more information about OpenSearch Service data sources , see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/direct-query-s3-creating.html\">Creating OpenSearch Service data source integrations with Amazon S3.</a> </p>"
+        },
+        "application":{
+          "shape":"OpenSearchApplication",
+          "documentation":"<p>This structure contains information about the OpenSearch Service application used for this integration. An OpenSearch Service application is the web application that was created by the integration with CloudWatch Logs. It hosts the vended logs dashboards.</p>"
+        },
+        "collection":{
+          "shape":"OpenSearchCollection",
+          "documentation":"<p>This structure contains information about the OpenSearch Service collection used for this integration. This collection was created as part of the integration setup. An OpenSearch Service collection is a logical grouping of one or more indexes that represent an analytics workload. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-collections.html\">Creating and managing OpenSearch Service Serverless collections</a>.</p>"
+        },
+        "workspace":{
+          "shape":"OpenSearchWorkspace",
+          "documentation":"<p>This structure contains information about the OpenSearch Service workspace used for this integration. An OpenSearch Service workspace is the collection of dashboards along with other OpenSearch Service tools. This workspace was created automatically as part of the integration setup. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/application.html\">Centralized OpenSearch user interface (Dashboards) with OpenSearch Service</a>.</p>"
+        },
+        "encryptionPolicy":{
+          "shape":"OpenSearchEncryptionPolicy",
+          "documentation":"<p>This structure contains information about the OpenSearch Service encryption policy used for this integration. The encryption policy was created automatically when you created the integration. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-encryption.html#serverless-encryption-policies\">Encryption policies</a> in the OpenSearch Service Developer Guide. </p>"
+        },
+        "networkPolicy":{
+          "shape":"OpenSearchNetworkPolicy",
+          "documentation":"<p>This structure contains information about the OpenSearch Service network policy used for this integration. The network policy assigns network access settings to collections. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-network.html#serverless-network-policies\">Network policies</a> in the OpenSearch Service Developer Guide.</p>"
+        },
+        "accessPolicy":{
+          "shape":"OpenSearchDataAccessPolicy",
+          "documentation":"<p>This structure contains information about the OpenSearch Service data access policy used for this integration. The access policy defines the access controls for the collection. This data access policy was automatically created as part of the integration setup. For more information about OpenSearch Service data access policies, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-data-access.html\">Data access control for Amazon OpenSearch Serverless</a> in the OpenSearch Service Developer Guide.</p>"
+        },
+        "lifecyclePolicy":{
+          "shape":"OpenSearchLifecyclePolicy",
+          "documentation":"<p>This structure contains information about the OpenSearch Service data lifecycle policy used for this integration. The lifecycle policy determines the lifespan of the data in the collection. It was automatically created as part of the integration setup.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-lifecycle.html\">Using data lifecycle policies with OpenSearch Service Serverless</a> in the OpenSearch Service Developer Guide.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains complete information about one CloudWatch Logs integration. This structure is returned by a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetIntegration.html\">GetIntegration</a> operation.</p>"
+    },
+    "OpenSearchLifecyclePolicy":{
+      "type":"structure",
+      "members":{
+        "policyName":{
+          "shape":"OpenSearchPolicyName",
+          "documentation":"<p>The name of the lifecycle policy.</p>"
+        },
+        "status":{
+          "shape":"OpenSearchResourceStatus",
+          "documentation":"<p>This structure contains information about the status of this OpenSearch Service resource.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about the OpenSearch Service data lifecycle policy used for this integration. The lifecycle policy determines the lifespan of the data in the collection. It was automatically created as part of the integration setup.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-lifecycle.html\">Using data lifecycle policies with OpenSearch Service Serverless</a> in the OpenSearch Service Developer Guide.</p>"
+    },
+    "OpenSearchNetworkPolicy":{
+      "type":"structure",
+      "members":{
+        "policyName":{
+          "shape":"OpenSearchPolicyName",
+          "documentation":"<p>The name of the network policy.</p>"
+        },
+        "status":{
+          "shape":"OpenSearchResourceStatus",
+          "documentation":"<p>This structure contains information about the status of this OpenSearch Service resource.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about the OpenSearch Service network policy used for this integration. The network policy assigns network access settings to collections. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-network.html#serverless-network-policies\">Network policies</a> in the OpenSearch Service Developer Guide.</p>"
+    },
+    "OpenSearchPolicyName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\.\\-_/#A-Za-z0-9]+"
+    },
+    "OpenSearchResourceConfig":{
+      "type":"structure",
+      "required":[
+        "dataSourceRoleArn",
+        "dashboardViewerPrincipals",
+        "retentionDays"
+      ],
+      "members":{
+        "kmsKeyArn":{
+          "shape":"Arn",
+          "documentation":"<p>To have the vended dashboard data encrypted with KMS instead of the CloudWatch Logs default encryption method, specify the ARN of the KMS key that you want to use.</p>"
+        },
+        "dataSourceRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>Specify the ARN of an IAM role that CloudWatch Logs will use to create the integration. This role must have the permissions necessary to access the OpenSearch Service collection to be able to create the dashboards. For more information about the permissions needed, see <a href=\"https://docs.aws.amazon.com/OpenSearch-Dashboards-CreateRole\">Create an IAM role to access the OpenSearch Service collection</a> in the CloudWatch Logs User Guide.</p>"
+        },
+        "dashboardViewerPrincipals":{
+          "shape":"DashboardViewerPrincipals",
+          "documentation":"<p>Specify the ARNs of IAM roles and IAM users who you want to grant permission to for viewing the dashboards.</p> <important> <p>In addition to specifying these users here, you must also grant them the <b>CloudWatchOpenSearchDashboardsAccess</b> IAM policy. For more information, see </p> </important>"
+        },
+        "applicationArn":{
+          "shape":"Arn",
+          "documentation":"<p>If you want to use an existing OpenSearch Service application for your integration with OpenSearch Service, specify it here. If you omit this, a new application will be created.</p>"
+        },
+        "retentionDays":{
+          "shape":"CollectionRetentionDays",
+          "documentation":"<p>Specify how many days that you want the data derived by OpenSearch Service to be retained in the index that the dashboard refers to. This also sets the maximum time period that you can choose when viewing data in the dashboard. Choosing a longer time frame will incur additional costs. </p>"
+        }
+      },
+      "documentation":"<p>This structure contains configuration details about an integration between CloudWatch Logs and OpenSearch Service.</p>"
+    },
+    "OpenSearchResourceStatus":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"OpenSearchResourceStatusType",
+          "documentation":"<p>The current status of this resource.</p>"
+        },
+        "statusMessage":{
+          "shape":"IntegrationStatusMessage",
+          "documentation":"<p>A message with additional information about the status of this resource.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about the status of an OpenSearch Service resource.</p>"
+    },
+    "OpenSearchResourceStatusType":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "NOT_FOUND",
+        "ERROR"
+      ]
+    },
+    "OpenSearchWorkspace":{
+      "type":"structure",
+      "members":{
+        "workspaceId":{
+          "shape":"OpenSearchWorkspaceId",
+          "documentation":"<p>The ID of this workspace.</p>"
+        },
+        "status":{
+          "shape":"OpenSearchResourceStatus",
+          "documentation":"<p>This structure contains information about the status of an OpenSearch Service resource.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about the OpenSearch Service workspace used for this integration. An OpenSearch Service workspace is the collection of dashboards along with other OpenSearch Service tools. This workspace was created automatically as part of the integration setup. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/application.html\">Centralized OpenSearch user interface (Dashboards) with OpenSearch Service</a>.</p>"
+    },
+    "OpenSearchWorkspaceId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\.\\-_/#A-Za-z0-9]+"
+    },
     "OperationAbortedException":{
       "type":"structure",
       "members":{
@@ -5128,6 +5599,41 @@
         }
       }
     },
+    "PutIntegrationRequest":{
+      "type":"structure",
+      "required":[
+        "integrationName",
+        "resourceConfig",
+        "integrationType"
+      ],
+      "members":{
+        "integrationName":{
+          "shape":"IntegrationName",
+          "documentation":"<p>A name for the integration.</p>"
+        },
+        "resourceConfig":{
+          "shape":"ResourceConfig",
+          "documentation":"<p>A structure that contains configuration information for the integration that you are creating.</p>"
+        },
+        "integrationType":{
+          "shape":"IntegrationType",
+          "documentation":"<p>The type of integration. Currently, the only supported type is <code>OPENSEARCH</code>.</p>"
+        }
+      }
+    },
+    "PutIntegrationResponse":{
+      "type":"structure",
+      "members":{
+        "integrationName":{
+          "shape":"IntegrationName",
+          "documentation":"<p>The name of the integration that you just created.</p>"
+        },
+        "integrationStatus":{
+          "shape":"IntegrationStatus",
+          "documentation":"<p>The status of the integration that you just created.</p> <p>After you create an integration, it takes a few minutes to complete. During this time, you'll see the status as <code>PROVISIONING</code>.</p>"
+        }
+      }
+    },
     "PutLogEventsRequest":{
       "type":"structure",
       "required":[
@@ -5213,6 +5719,10 @@
         "queryString"
       ],
       "members":{
+        "queryLanguage":{
+          "shape":"QueryLanguage",
+          "documentation":"<p>Specify the query language to use for this query. The options are Logs Insights QL, OpenSearch PPL, and OpenSearch SQL. For more information about the query languages that CloudWatch Logs supports, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_AnalyzeLogData_Languages.html\">Supported query languages</a>.</p>"
+        },
         "name":{
           "shape":"QueryDefinitionName",
           "documentation":"<p>A name for the query definition. If you are saving numerous query definitions, we recommend that you name them. This way, you can find the ones you want by using the first part of the name as a filter in the <code>queryDefinitionNamePrefix</code> parameter of <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeQueryDefinitions.html\">DescribeQueryDefinitions</a>.</p>"
@@ -5223,7 +5733,7 @@
         },
         "logGroupNames":{
           "shape":"LogGroupNames",
-          "documentation":"<p>Use this parameter to include specific log groups as part of your query definition.</p> <p>If you are updating a query definition and you omit this parameter, then the updated definition will contain no log groups.</p>"
+          "documentation":"<p>Use this parameter to include specific log groups as part of your query definition. If your query uses the OpenSearch Service query language, you specify the log group names inside the <code>querystring</code> instead of here.</p> <p>If you are updating an existing query definition for the Logs Insights QL or OpenSearch Service PPL and you omit this parameter, then the updated definition will contain no log groups.</p>"
         },
         "queryString":{
           "shape":"QueryDefinitionString",
@@ -5369,6 +5879,10 @@
     "QueryDefinition":{
       "type":"structure",
       "members":{
+        "queryLanguage":{
+          "shape":"QueryLanguage",
+          "documentation":"<p>The query language used for this query. For more information about the query languages that CloudWatch Logs supports, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_AnalyzeLogData_Languages.html\">Supported query languages</a>.</p>"
+        },
         "queryDefinitionId":{
           "shape":"QueryId",
           "documentation":"<p>The unique ID of the query definition.</p>"
@@ -5414,6 +5928,10 @@
     "QueryInfo":{
       "type":"structure",
       "members":{
+        "queryLanguage":{
+          "shape":"QueryLanguage",
+          "documentation":"<p>The query language used for this query. For more information about the query languages that CloudWatch Logs supports, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_AnalyzeLogData_Languages.html\">Supported query languages</a>.</p>"
+        },
         "queryId":{
           "shape":"QueryId",
           "documentation":"<p>The unique ID number of this query.</p>"
@@ -5440,6 +5958,14 @@
     "QueryInfoList":{
       "type":"list",
       "member":{"shape":"QueryInfo"}
+    },
+    "QueryLanguage":{
+      "type":"string",
+      "enum":[
+        "CWLI",
+        "SQL",
+        "PPL"
+      ]
     },
     "QueryListMaxResults":{
       "type":"integer",
@@ -5610,6 +6136,17 @@
     "ResourceArns":{
       "type":"list",
       "member":{"shape":"Arn"}
+    },
+    "ResourceConfig":{
+      "type":"structure",
+      "members":{
+        "openSearchResourceConfig":{
+          "shape":"OpenSearchResourceConfig",
+          "documentation":"<p>This structure contains configuration details about an integration between CloudWatch Logs and OpenSearch Service.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains configuration details about an integration between CloudWatch Logs and another entity.</p>",
+      "union":true
     },
     "ResourceIdentifier":{
       "type":"string",
@@ -5909,17 +6446,21 @@
         "queryString"
       ],
       "members":{
+        "queryLanguage":{
+          "shape":"QueryLanguage",
+          "documentation":"<p>Specify the query language to use for this query. The options are Logs Insights QL, OpenSearch PPL, and OpenSearch SQL. For more information about the query languages that CloudWatch Logs supports, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_AnalyzeLogData_Languages.html\">Supported query languages</a>.</p>"
+        },
         "logGroupName":{
           "shape":"LogGroupName",
-          "documentation":"<p>The log group on which to perform the query.</p>"
+          "documentation":"<p>The log group on which to perform the query.</p> <note> <p>A <code>StartQuery</code> operation must include exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code>. The exception is queries using the OpenSearch Service SQL query language, where you specify the log group names inside the <code>querystring</code> instead of here.</p> </note>"
         },
         "logGroupNames":{
           "shape":"LogGroupNames",
-          "documentation":"<p>The list of log groups to be queried. You can include up to 50 log groups.</p>"
+          "documentation":"<p>The list of log groups to be queried. You can include up to 50 log groups.</p> <note> <p>A <code>StartQuery</code> operation must include exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code>. The exception is queries using the OpenSearch Service SQL query language, where you specify the log group names inside the <code>querystring</code> instead of here.</p> </note>"
         },
         "logGroupIdentifiers":{
           "shape":"LogGroupIdentifiers",
-          "documentation":"<p>The list of log groups to query. You can include up to 50 log groups.</p> <p>You can specify them by the log group name or ARN. If a log group that you're querying is in a source account and you're using a monitoring account, you must specify the ARN of the log group here. The query definition must also be defined in the monitoring account.</p> <p>If you specify an ARN, use the format arn:aws:logs:<i>region</i>:<i>account-id</i>:log-group:<i>log_group_name</i> Don't include an * at the end.</p> <p>A <code>StartQuery</code> operation must include exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code>. </p>"
+          "documentation":"<p>The list of log groups to query. You can include up to 50 log groups.</p> <p>You can specify them by the log group name or ARN. If a log group that you're querying is in a source account and you're using a monitoring account, you must specify the ARN of the log group here. The query definition must also be defined in the monitoring account.</p> <p>If you specify an ARN, use the format arn:aws:logs:<i>region</i>:<i>account-id</i>:log-group:<i>log_group_name</i> Don't include an * at the end.</p> <p>A <code>StartQuery</code> operation must include exactly one of the following parameters: <code>logGroupName</code>, <code>logGroupNames</code>, or <code>logGroupIdentifiers</code>. The exception is queries using the OpenSearch Service SQL query language, where you specify the log group names inside the <code>querystring</code> instead of here. </p>"
         },
         "startTime":{
           "shape":"Timestamp",

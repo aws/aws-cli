@@ -1286,6 +1286,10 @@
           "shape":"StringList",
           "documentation":"<p>The architectures that the version supports.</p>"
         },
+        "computeTypes":{
+          "shape":"StringList",
+          "documentation":"<p>Indicates the compute type of the addon version.</p>"
+        },
         "compatibilities":{
           "shape":"Compatibilities",
           "documentation":"<p>An object representing the compatibilities of a version.</p>"
@@ -1485,6 +1489,16 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "BlockStorage":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates if the block storage capability is enabled on your EKS Auto Mode cluster. If the block storage capability is enabled, EKS Auto Mode will create and delete EBS volumes in your Amazon Web Services account.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the current configuration of the block storage capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled. If the block storage capability is enabled, EKS Auto Mode will create and delete EBS volumes in your Amazon Web Services account. For more information, see EKS Auto Mode block storage capability in the EKS User Guide.</p>"
+    },
     "Boolean":{"type":"boolean"},
     "BoxedBoolean":{
       "type":"boolean",
@@ -1669,6 +1683,18 @@
         "zonalShiftConfig":{
           "shape":"ZonalShiftConfigResponse",
           "documentation":"<p>The configuration for zonal shift for the cluster.</p>"
+        },
+        "remoteNetworkConfig":{
+          "shape":"RemoteNetworkConfigResponse",
+          "documentation":"<p>The configuration in the cluster for EKS Hybrid Nodes. You can't change or update this configuration after the cluster is created.</p>"
+        },
+        "computeConfig":{
+          "shape":"ComputeConfigResponse",
+          "documentation":"<p>Indicates the current configuration of the compute capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled. If the compute capability is enabled, EKS Auto Mode will create and delete EC2 Managed Instances in your Amazon Web Services account. For more information, see EKS Auto Mode compute capability in the EKS User Guide.</p>"
+        },
+        "storageConfig":{
+          "shape":"StorageConfigResponse",
+          "documentation":"<p>Indicates the current configuration of the block storage capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled. If the block storage capability is enabled, EKS Auto Mode will create and delete EBS volumes in your Amazon Web Services account. For more information, see EKS Auto Mode block storage capability in the EKS User Guide.</p>"
         }
       },
       "documentation":"<p>An object representing an Amazon EKS cluster.</p>"
@@ -1767,6 +1793,42 @@
         }
       },
       "documentation":"<p>Compatibility information.</p>"
+    },
+    "ComputeConfigRequest":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Request to enable or disable the compute capability on your EKS Auto Mode cluster. If the compute capability is enabled, EKS Auto Mode will create and delete EC2 Managed Instances in your Amazon Web Services account.</p>"
+        },
+        "nodePools":{
+          "shape":"StringList",
+          "documentation":"<p>Configuration for node pools that defines the compute resources for your EKS Auto Mode cluster. For more information, see EKS Auto Mode Node Pools in the EKS User Guide.</p>"
+        },
+        "nodeRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the IAM Role EKS will assign to EC2 Managed Instances in your EKS Auto Mode cluster. This value cannot be changed after the compute capability of EKS Auto Mode is enabled. For more information, see the IAM Reference in the EKS User Guide.</p>"
+        }
+      },
+      "documentation":"<p>Request to update the configuration of the compute capability of your EKS Auto Mode cluster. For example, enable the capability. For more information, see EKS Auto Mode compute capability in the EKS User Guide.</p>"
+    },
+    "ComputeConfigResponse":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates if the compute capability is enabled on your EKS Auto Mode cluster. If the compute capability is enabled, EKS Auto Mode will create and delete EC2 Managed Instances in your Amazon Web Services account.</p>"
+        },
+        "nodePools":{
+          "shape":"StringList",
+          "documentation":"<p>Indicates the current configuration of node pools in your EKS Auto Mode cluster. For more information, see EKS Auto Mode Node Pools in the EKS User Guide.</p>"
+        },
+        "nodeRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the IAM Role EKS will assign to EC2 Managed Instances in your EKS Auto Mode cluster.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the status of the request to update the compute capability of your EKS Auto Mode cluster.</p>"
     },
     "ConnectorConfigProvider":{
       "type":"string",
@@ -2024,6 +2086,18 @@
         "zonalShiftConfig":{
           "shape":"ZonalShiftConfigRequest",
           "documentation":"<p>Enable or disable ARC zonal shift for the cluster. If zonal shift is enabled, Amazon Web Services configures zonal autoshift for the cluster.</p> <p>Zonal shift is a feature of Amazon Application Recovery Controller (ARC). ARC zonal shift is designed to be a temporary measure that allows you to move traffic for a resource away from an impaired AZ until the zonal shift expires or you cancel it. You can extend the zonal shift if necessary.</p> <p>You can start a zonal shift for an EKS cluster, or you can allow Amazon Web Services to do it for you by enabling <i>zonal autoshift</i>. This shift updates the flow of east-to-west network traffic in your cluster to only consider network endpoints for Pods running on worker nodes in healthy AZs. Additionally, any ALB or NLB handling ingress traffic for applications in your EKS cluster will automatically route traffic to targets in the healthy AZs. For more information about zonal shift in EKS, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/zone-shift.html\">Learn about Amazon Application Recovery Controller (ARC) Zonal Shift in Amazon EKS</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p>"
+        },
+        "remoteNetworkConfig":{
+          "shape":"RemoteNetworkConfigRequest",
+          "documentation":"<p>The configuration in the cluster for EKS Hybrid Nodes. You can't change or update this configuration after the cluster is created.</p>"
+        },
+        "computeConfig":{
+          "shape":"ComputeConfigRequest",
+          "documentation":"<p>Enable or disable the compute capability of EKS Auto Mode when creating your EKS Auto Mode cluster. If the compute capability is enabled, EKS Auto Mode will create and delete EC2 Managed Instances in your Amazon Web Services account</p>"
+        },
+        "storageConfig":{
+          "shape":"StorageConfigRequest",
+          "documentation":"<p>Enable or disable the block storage capability of EKS Auto Mode when creating your EKS Auto Mode cluster. If the block storage capability is enabled, EKS Auto Mode will create and delete EBS volumes in your Amazon Web Services account.</p>"
         }
       }
     },
@@ -3076,6 +3150,16 @@
       "type":"string",
       "enum":["MONTHS"]
     },
+    "ElasticLoadBalancing":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates if the load balancing capability is enabled on your EKS Auto Mode cluster. If the load balancing capability is enabled, EKS Auto Mode will create and delete load balancers in your Amazon Web Services account.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the current configuration of the load balancing capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled. For more information, see EKS Auto Mode load balancing capability in the EKS User Guide.</p>"
+    },
     "EncryptionConfig":{
       "type":"structure",
       "members":{
@@ -3584,6 +3668,10 @@
         "ipFamily":{
           "shape":"IpFamily",
           "documentation":"<p>Specify which IP family is used to assign Kubernetes pod and service IP addresses. If you don't specify a value, <code>ipv4</code> is used by default. You can only specify an IP family when you create a cluster and can't change this value once the cluster is created. If you specify <code>ipv6</code>, the VPC and subnets that you specify for cluster creation must have both <code>IPv4</code> and <code>IPv6</code> CIDR blocks assigned to them. You can't specify <code>ipv6</code> for clusters in China Regions.</p> <p>You can only specify <code>ipv6</code> for <code>1.21</code> and later clusters that use version <code>1.10.1</code> or later of the Amazon VPC CNI add-on. If you specify <code>ipv6</code>, then ensure that your VPC meets the requirements listed in the considerations listed in <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/cni-ipv6.html\">Assigning IPv6 addresses to pods and services</a> in the Amazon EKS User Guide. Kubernetes assigns services <code>IPv6</code> addresses from the unique local address range <code>(fc00::/7)</code>. You can't specify a custom <code>IPv6</code> CIDR block. Pod addresses are assigned from the subnet's <code>IPv6</code> CIDR.</p>"
+        },
+        "elasticLoadBalancing":{
+          "shape":"ElasticLoadBalancing",
+          "documentation":"<p>Request to enable or disable the load balancing capability on your EKS Auto Mode cluster. For more information, see EKS Auto Mode load balancing capability in the EKS User Guide.</p>"
         }
       },
       "documentation":"<p>The Kubernetes network configuration for the cluster.</p>"
@@ -3602,6 +3690,10 @@
         "ipFamily":{
           "shape":"IpFamily",
           "documentation":"<p>The IP family used to assign Kubernetes <code>Pod</code> and <code>Service</code> objects IP addresses. The IP family is always <code>ipv4</code>, unless you have a <code>1.21</code> or later cluster running version <code>1.10.1</code> or later of the Amazon VPC CNI plugin for Kubernetes and specified <code>ipv6</code> when you created the cluster. </p>"
+        },
+        "elasticLoadBalancing":{
+          "shape":"ElasticLoadBalancing",
+          "documentation":"<p>Indicates the current configuration of the load balancing capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled.</p>"
         }
       },
       "documentation":"<p>The Kubernetes network configuration for the cluster. The response contains a value for <b>serviceIpv6Cidr</b> or <b>serviceIpv4Cidr</b>, but not both. </p>"
@@ -4766,6 +4858,64 @@
       },
       "documentation":"<p>An object representing the remote access configuration for the managed node group.</p>"
     },
+    "RemoteNetworkConfigRequest":{
+      "type":"structure",
+      "members":{
+        "remoteNodeNetworks":{
+          "shape":"RemoteNodeNetworkList",
+          "documentation":"<p>The list of network CIDRs that can contain hybrid nodes.</p>"
+        },
+        "remotePodNetworks":{
+          "shape":"RemotePodNetworkList",
+          "documentation":"<p>The list of network CIDRs that can contain pods that run Kubernetes webhooks on hybrid nodes.</p>"
+        }
+      },
+      "documentation":"<p>The configuration in the cluster for EKS Hybrid Nodes. You can't change or update this configuration after the cluster is created.</p>"
+    },
+    "RemoteNetworkConfigResponse":{
+      "type":"structure",
+      "members":{
+        "remoteNodeNetworks":{
+          "shape":"RemoteNodeNetworkList",
+          "documentation":"<p>The list of network CIDRs that can contain hybrid nodes.</p>"
+        },
+        "remotePodNetworks":{
+          "shape":"RemotePodNetworkList",
+          "documentation":"<p>The list of network CIDRs that can contain pods that run Kubernetes webhooks on hybrid nodes.</p>"
+        }
+      },
+      "documentation":"<p>The configuration in the cluster for EKS Hybrid Nodes. You can't change or update this configuration after the cluster is created.</p>"
+    },
+    "RemoteNodeNetwork":{
+      "type":"structure",
+      "members":{
+        "cidrs":{
+          "shape":"StringList",
+          "documentation":"<p>A network CIDR that can contain hybrid nodes.</p>"
+        }
+      },
+      "documentation":"<p>A network CIDR that can contain hybrid nodes.</p>"
+    },
+    "RemoteNodeNetworkList":{
+      "type":"list",
+      "member":{"shape":"RemoteNodeNetwork"},
+      "max":1
+    },
+    "RemotePodNetwork":{
+      "type":"structure",
+      "members":{
+        "cidrs":{
+          "shape":"StringList",
+          "documentation":"<p>A network CIDR that can contain pods that run Kubernetes webhooks on hybrid nodes.</p>"
+        }
+      },
+      "documentation":"<p>A network CIDR that can contain pods that run Kubernetes webhooks on hybrid nodes.</p>"
+    },
+    "RemotePodNetworkList":{
+      "type":"list",
+      "member":{"shape":"RemotePodNetwork"},
+      "max":1
+    },
     "ResolveConflicts":{
       "type":"string",
       "enum":[
@@ -4912,6 +5062,26 @@
       "error":{"httpStatusCode":503},
       "exception":true,
       "fault":true
+    },
+    "StorageConfigRequest":{
+      "type":"structure",
+      "members":{
+        "blockStorage":{
+          "shape":"BlockStorage",
+          "documentation":"<p>Request to configure EBS Block Storage settings for your EKS Auto Mode cluster.</p>"
+        }
+      },
+      "documentation":"<p>Request to update the configuration of the storage capability of your EKS Auto Mode cluster. For example, enable the capability. For more information, see EKS Auto Mode block storage capability in the EKS User Guide.</p>"
+    },
+    "StorageConfigResponse":{
+      "type":"structure",
+      "members":{
+        "blockStorage":{
+          "shape":"BlockStorage",
+          "documentation":"<p>Indicates the current configuration of the block storage capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the status of the request to update the block storage capability of your EKS Auto Mode cluster.</p>"
     },
     "String":{"type":"string"},
     "StringList":{
@@ -5217,6 +5387,15 @@
         "zonalShiftConfig":{
           "shape":"ZonalShiftConfigRequest",
           "documentation":"<p>Enable or disable ARC zonal shift for the cluster. If zonal shift is enabled, Amazon Web Services configures zonal autoshift for the cluster.</p> <p>Zonal shift is a feature of Amazon Application Recovery Controller (ARC). ARC zonal shift is designed to be a temporary measure that allows you to move traffic for a resource away from an impaired AZ until the zonal shift expires or you cancel it. You can extend the zonal shift if necessary.</p> <p>You can start a zonal shift for an EKS cluster, or you can allow Amazon Web Services to do it for you by enabling <i>zonal autoshift</i>. This shift updates the flow of east-to-west network traffic in your cluster to only consider network endpoints for Pods running on worker nodes in healthy AZs. Additionally, any ALB or NLB handling ingress traffic for applications in your EKS cluster will automatically route traffic to targets in the healthy AZs. For more information about zonal shift in EKS, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/zone-shift.html\">Learn about Amazon Application Recovery Controller (ARC) Zonal Shift in Amazon EKS</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p>"
+        },
+        "computeConfig":{
+          "shape":"ComputeConfigRequest",
+          "documentation":"<p>Update the configuration of the compute capability of your EKS Auto Mode cluster. For example, enable the capability.</p>"
+        },
+        "kubernetesNetworkConfig":{"shape":"KubernetesNetworkConfigRequest"},
+        "storageConfig":{
+          "shape":"StorageConfigRequest",
+          "documentation":"<p>Update the configuration of the block storage capability of your EKS Auto Mode cluster. For example, enable the capability.</p>"
         }
       }
     },
@@ -5448,7 +5627,10 @@
         "AuthenticationMode",
         "PodIdentityAssociations",
         "UpgradePolicy",
-        "ZonalShiftConfig"
+        "ZonalShiftConfig",
+        "ComputeConfig",
+        "StorageConfig",
+        "KubernetesNetworkConfig"
       ]
     },
     "UpdateParams":{
@@ -5531,7 +5713,8 @@
         "VpcConfigUpdate",
         "AccessConfigUpdate",
         "UpgradePolicyUpdate",
-        "ZonalShiftConfigUpdate"
+        "ZonalShiftConfigUpdate",
+        "AutoModeUpdate"
       ]
     },
     "UpgradePolicyRequest":{

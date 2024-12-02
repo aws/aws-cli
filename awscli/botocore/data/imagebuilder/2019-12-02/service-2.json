@@ -662,6 +662,24 @@
       ],
       "documentation":"<p>Get details for the specified image lifecycle policy.</p>"
     },
+    "GetMarketplaceResource":{
+      "name":"GetMarketplaceResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetMarketplaceResource"
+      },
+      "input":{"shape":"GetMarketplaceResourceRequest"},
+      "output":{"shape":"GetMarketplaceResourceResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"CallRateLimitExceededException"}
+      ],
+      "documentation":"<p>Verify the subscription and perform resource dependency checks on the requested Amazon Web Services Marketplace resource. For Amazon Web Services Marketplace components, the response contains fields to download the components and their artifacts.</p>"
+    },
     "GetWorkflow":{
       "name":"GetWorkflow",
       "http":{
@@ -1664,7 +1682,7 @@
         },
         "state":{
           "shape":"ComponentState",
-          "documentation":"<p>Describes the current status of the component. This is used for components that are no longer active.</p>"
+          "documentation":"<p>Describes the current status of the component.</p>"
         },
         "parameters":{
           "shape":"ComponentParameterDetailList",
@@ -1701,6 +1719,10 @@
         "obfuscate":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether component source is hidden from view in the console, and from component detail results for API, CLI, or SDK operations.</p>"
+        },
+        "productCodes":{
+          "shape":"ProductCodeList",
+          "documentation":"<p>Contains product codes that are used for billing purposes for Amazon Web Services Marketplace components.</p>"
         }
       },
       "documentation":"<p>A detailed view of a component.</p>"
@@ -1830,7 +1852,11 @@
     },
     "ComponentStatus":{
       "type":"string",
-      "enum":["DEPRECATED"]
+      "enum":[
+        "DEPRECATED",
+        "DISABLED",
+        "ACTIVE"
+      ]
     },
     "ComponentSummary":{
       "type":"structure",
@@ -1943,6 +1969,14 @@
         "dateCreated":{
           "shape":"DateTime",
           "documentation":"<p>The date that the component was created.</p>"
+        },
+        "status":{
+          "shape":"ComponentStatus",
+          "documentation":"<p>Describes the current status of the component version.</p>"
+        },
+        "productCodes":{
+          "shape":"ProductCodeList",
+          "documentation":"<p>Contains product codes that are used for billing purposes for Amazon Web Services Marketplace components.</p>"
         }
       },
       "documentation":"<p>The defining characteristics of a specific version of an Amazon Web Services TOE component.</p>"
@@ -3385,7 +3419,7 @@
     },
     "FilterValue":{
       "type":"string",
-      "pattern":"^[0-9a-zA-Z./_ :-]{1,1024}$"
+      "pattern":"^[0-9a-zA-Z./_ :,{}\"-]{1,1024}$"
     },
     "FilterValues":{
       "type":"list",
@@ -3718,6 +3752,44 @@
         "lifecyclePolicy":{
           "shape":"LifecyclePolicy",
           "documentation":"<p>The ARN of the image lifecycle policy resource that was returned.</p>"
+        }
+      }
+    },
+    "GetMarketplaceResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceType",
+        "resourceArn"
+      ],
+      "members":{
+        "resourceType":{
+          "shape":"MarketplaceResourceType",
+          "documentation":"<p>Specifies which type of Amazon Web Services Marketplace resource Image Builder retrieves.</p>"
+        },
+        "resourceArn":{
+          "shape":"ImageBuilderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an Amazon Web Services Marketplace resource.</p>"
+        },
+        "resourceLocation":{
+          "shape":"MarketplaceResourceLocation",
+          "documentation":"<p>The bucket path that you can specify to download the resource from Amazon S3.</p>"
+        }
+      }
+    },
+    "GetMarketplaceResourceResponse":{
+      "type":"structure",
+      "members":{
+        "resourceArn":{
+          "shape":"ImageBuilderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Amazon Web Services Marketplace resource that was requested.</p>"
+        },
+        "url":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The obfuscated S3 URL to download the component artifact from.</p>"
+        },
+        "data":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Returns obfuscated data that contains the YAML content of the component.</p>"
         }
       }
     },
@@ -4060,14 +4132,14 @@
       "members":{
         "packageName":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The name of the package as reported to the operating system package manager.</p>"
+          "documentation":"<p>The name of the package that's reported to the operating system package manager.</p>"
         },
         "packageVersion":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The version of the package as reported to the operating system package manager.</p>"
+          "documentation":"<p>The version of the package that's reported to the operating system package manager.</p>"
         }
       },
-      "documentation":"<p>Represents a package installed on an Image Builder image.</p>"
+      "documentation":"<p>A software package that's installed on top of the base image to create a customized image.</p>"
     },
     "ImagePackageList":{
       "type":"list",
@@ -4563,7 +4635,7 @@
         },
         "timeoutMinutes":{
           "shape":"ImageTestsTimeoutMinutes",
-          "documentation":"<p>The maximum time in minutes that tests are permitted to run.</p> <note> <p>The timeoutMinutes attribute is not currently active. This value is ignored.</p> </note>"
+          "documentation":"<p>The maximum time in minutes that tests are permitted to run.</p> <note> <p>The timeout attribute is not currently active. This value is ignored.</p> </note>"
         }
       },
       "documentation":"<p>Configure image tests for your pipeline build. Tests run after building the image, to verify that the AMI or container image is valid before distributing it.</p>"
@@ -6466,6 +6538,18 @@
       },
       "documentation":"<p>Logging configuration defines where Image Builder uploads your logs.</p>"
     },
+    "MarketplaceResourceLocation":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^s3://[^/]+/.+[^/]$"
+    },
+    "MarketplaceResourceType":{
+      "type":"string",
+      "enum":[
+        "COMPONENT_DATA",
+        "COMPONENT_ARTIFACT"
+      ]
+    },
     "MaxParallelLaunches":{
       "type":"integer",
       "min":1
@@ -6542,7 +6626,8 @@
         "Self",
         "Shared",
         "Amazon",
-        "ThirdParty"
+        "ThirdParty",
+        "AWSMarketplace"
       ]
     },
     "PackageArchitecture":{"type":"string"},
@@ -6648,6 +6733,36 @@
         "Linux",
         "macOS"
       ]
+    },
+    "ProductCodeId":{
+      "type":"string",
+      "pattern":"^[A-Za-z0-9]{1,25}$"
+    },
+    "ProductCodeList":{
+      "type":"list",
+      "member":{"shape":"ProductCodeListItem"}
+    },
+    "ProductCodeListItem":{
+      "type":"structure",
+      "required":[
+        "productCodeId",
+        "productCodeType"
+      ],
+      "members":{
+        "productCodeId":{
+          "shape":"ProductCodeId",
+          "documentation":"<p>For Amazon Web Services Marketplace components, this contains the product code ID that can be stamped onto an EC2 AMI to ensure that components are billed correctly. If this property is empty, it might mean that the component is not published.</p>"
+        },
+        "productCodeType":{
+          "shape":"ProductCodeType",
+          "documentation":"<p>The owner of the product code that's billed. If this property is empty, it might mean that the component is not published.</p>"
+        }
+      },
+      "documentation":"<p>Information about a single product code.</p>"
+    },
+    "ProductCodeType":{
+      "type":"string",
+      "enum":["marketplace"]
     },
     "PutComponentPolicyRequest":{
       "type":"structure",
@@ -7232,7 +7347,7 @@
         },
         "repositoryName":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The name of the container repository where the output container image is stored. This name is prefixed by the repository location.</p>"
+          "documentation":"<p>The name of the container repository where the output container image is stored. This name is prefixed by the repository location. For example, <code>&lt;repository location url&gt;/repository_name</code>.</p>"
         }
       },
       "documentation":"<p>The container repository where the output container image is stored.</p>"

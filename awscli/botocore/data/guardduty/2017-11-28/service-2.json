@@ -1242,6 +1242,27 @@
       "error":{"httpStatusCode":403},
       "exception":true
     },
+    "AccessKey":{
+      "type":"structure",
+      "members":{
+        "PrincipalId":{
+          "shape":"String",
+          "documentation":"<p>Principal ID of the user.</p>",
+          "locationName":"principalId"
+        },
+        "UserName":{
+          "shape":"String",
+          "documentation":"<p>Name of the user.</p>",
+          "locationName":"userName"
+        },
+        "UserType":{
+          "shape":"String",
+          "documentation":"<p>Type of the user.</p>",
+          "locationName":"userType"
+        }
+      },
+      "documentation":"<p>Contains information about the access keys.</p>"
+    },
     "AccessKeyDetails":{
       "type":"structure",
       "members":{
@@ -1267,6 +1288,23 @@
         }
       },
       "documentation":"<p>Contains information about the access keys.</p>"
+    },
+    "Account":{
+      "type":"structure",
+      "required":["Uid"],
+      "members":{
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>ID of the member's Amazon Web Services account</p>",
+          "locationName":"uid"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>Name of the member's Amazon Web Services account.</p>",
+          "locationName":"account"
+        }
+      },
+      "documentation":"<p>Contains information about the account.</p>"
     },
     "AccountDetail":{
       "type":"structure",
@@ -1419,6 +1457,38 @@
         }
       },
       "documentation":"<p>Contains information about actions.</p>"
+    },
+    "Actor":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>ID of the threat actor.</p>",
+          "locationName":"id"
+        },
+        "User":{
+          "shape":"User",
+          "documentation":"<p>Contains information about the user credentials used by the threat actor.</p>",
+          "locationName":"user"
+        },
+        "Session":{
+          "shape":"Session",
+          "documentation":"<p>Contains information about the user session where the activity initiated.</p>",
+          "locationName":"session"
+        }
+      },
+      "documentation":"<p>Information about the actors involved in an attack sequence.</p>"
+    },
+    "ActorIds":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":400
+    },
+    "Actors":{
+      "type":"list",
+      "member":{"shape":"Actor"},
+      "max":400
     },
     "AddonDetails":{
       "type":"structure",
@@ -1608,6 +1678,26 @@
         "ALL",
         "NONE"
       ]
+    },
+    "AutonomousSystem":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Number"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>Name associated with the Autonomous System (AS).</p>",
+          "locationName":"name"
+        },
+        "Number":{
+          "shape":"Integer",
+          "documentation":"<p>The unique number that identifies the Autonomous System (AS).</p>",
+          "locationName":"number"
+        }
+      },
+      "documentation":"<p>Contains information about the Autonomous System (AS) associated with the network endpoints involved in an attack sequence.</p>"
     },
     "AwsApiCallAction":{
       "type":"structure",
@@ -3287,6 +3377,11 @@
           "shape":"Anomaly",
           "documentation":"<p>The details about the anomalous activity that caused GuardDuty to generate the finding.</p>",
           "locationName":"anomaly"
+        },
+        "Sequence":{
+          "shape":"Sequence",
+          "documentation":"<p>The details about the attack sequence.</p>",
+          "locationName":"sequence"
         }
       },
       "documentation":"<p>Contains information about the detected behavior.</p>"
@@ -3641,6 +3736,93 @@
       },
       "documentation":"<p>Describes the configuration of scanning EBS volumes as a data source.</p>"
     },
+    "Ec2Instance":{
+      "type":"structure",
+      "members":{
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The availability zone of the Amazon EC2 instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-availability-zones\">Availability zones</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "locationName":"availabilityZone"
+        },
+        "ImageDescription":{
+          "shape":"String",
+          "documentation":"<p>The image description of the Amazon EC2 instance.</p>",
+          "locationName":"imageDescription"
+        },
+        "InstanceState":{
+          "shape":"String",
+          "documentation":"<p>The state of the Amazon EC2 instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Amazon EC2 instance state changes</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "locationName":"instanceState"
+        },
+        "IamInstanceProfile":{"shape":"IamInstanceProfile"},
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>Type of the Amazon EC2 instance.</p>",
+          "locationName":"instanceType"
+        },
+        "OutpostArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Outpost. This shows applicable Amazon Web Services Outposts instances.</p>",
+          "locationName":"outpostArn"
+        },
+        "Platform":{
+          "shape":"String",
+          "documentation":"<p>The platform of the Amazon EC2 instance.</p>",
+          "locationName":"platform"
+        },
+        "ProductCodes":{
+          "shape":"ProductCodes",
+          "documentation":"<p>The product code of the Amazon EC2 instance.</p>",
+          "locationName":"productCodes"
+        },
+        "Ec2NetworkInterfaceUids":{
+          "shape":"Ec2NetworkInterfaceUids",
+          "documentation":"<p>The ID of the network interface.</p>",
+          "locationName":"ec2NetworkInterfaceUids"
+        }
+      },
+      "documentation":"<p>Details about the potentially impacted Amazon EC2 instance resource.</p>"
+    },
+    "Ec2NetworkInterface":{
+      "type":"structure",
+      "members":{
+        "Ipv6Addresses":{
+          "shape":"Ipv6Addresses",
+          "documentation":"<p>A list of IPv6 addresses for the Amazon EC2 instance.</p>",
+          "locationName":"ipv6Addresses"
+        },
+        "PrivateIpAddresses":{
+          "shape":"PrivateIpAddresses",
+          "documentation":"<p>Other private IP address information of the Amazon EC2 instance.</p>",
+          "locationName":"privateIpAddresses"
+        },
+        "PublicIp":{
+          "shape":"String",
+          "documentation":"<p>The public IP address of the Amazon EC2 instance.</p>",
+          "locationName":"publicIp"
+        },
+        "SecurityGroups":{
+          "shape":"SecurityGroups",
+          "documentation":"<p>The security groups associated with the Amazon EC2 instance.</p>",
+          "locationName":"securityGroups"
+        },
+        "SubNetId":{
+          "shape":"String",
+          "documentation":"<p>The subnet ID of the Amazon EC2 instance.</p>",
+          "locationName":"subNetId"
+        },
+        "VpcId":{
+          "shape":"String",
+          "documentation":"<p>The VPC ID of the Amazon EC2 instance.</p>",
+          "locationName":"vpcId"
+        }
+      },
+      "documentation":"<p>Contains information about the elastic network interface of the Amazon EC2 instance.</p>"
+    },
+    "Ec2NetworkInterfaceUids":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "EcsClusterDetails":{
       "type":"structure",
       "members":{
@@ -3805,6 +3987,11 @@
       "type":"structure",
       "members":{
       }
+    },
+    "EndpointIds":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":400
     },
     "Eq":{
       "type":"list",
@@ -4038,6 +4225,11 @@
           "shape":"String",
           "documentation":"<p>The time and date when the finding was last updated.</p>",
           "locationName":"updatedAt"
+        },
+        "AssociatedAttackSequenceArn":{
+          "shape":"String",
+          "documentation":"<p>Amazon Resource Name (ARN) associated with the attack sequence finding.</p>",
+          "locationName":"associatedAttackSequenceArn"
         }
       },
       "documentation":"<p>Contains information about the finding that is generated when abnormal or suspicious activity is detected.</p>"
@@ -4070,6 +4262,16 @@
         "FIFTEEN_MINUTES",
         "ONE_HOUR",
         "SIX_HOURS"
+      ]
+    },
+    "FindingResourceType":{
+      "type":"string",
+      "enum":[
+        "EC2_INSTANCE",
+        "EC2_NETWORK_INTERFACE",
+        "S3_BUCKET",
+        "S3_OBJECT",
+        "ACCESS_KEY"
       ]
     },
     "FindingStatisticType":{
@@ -5016,6 +5218,64 @@
         }
       },
       "documentation":"<p>Contains information about the impersonated user.</p>"
+    },
+    "Indicator":{
+      "type":"structure",
+      "required":["Key"],
+      "members":{
+        "Key":{
+          "shape":"IndicatorType",
+          "documentation":"<p>Specific indicator keys observed in the attack sequence.</p>",
+          "locationName":"key"
+        },
+        "Values":{
+          "shape":"IndicatorValues",
+          "documentation":"<p>Values associated with each indicator key. For example, if the indicator key is <code>SUSPICIOUS_NETWORK</code>, then the value will be the name of the network. If the indicator key is <code>ATTACK_TACTIC</code>, then the value will be one of the MITRE tactics. </p> <p>For more information about the values associated with the key, see GuardDuty Extended Threat Detection in the <i>GuardDuty User Guide.</i> </p>",
+          "locationName":"values"
+        },
+        "Title":{
+          "shape":"IndicatorTitle",
+          "documentation":"<p>Title describing the indicator.</p>",
+          "locationName":"title"
+        }
+      },
+      "documentation":"<p>Contains information about the indicators that include a set of signals observed in an attack sequence.</p>"
+    },
+    "IndicatorTitle":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "IndicatorType":{
+      "type":"string",
+      "enum":[
+        "SUSPICIOUS_USER_AGENT",
+        "SUSPICIOUS_NETWORK",
+        "MALICIOUS_IP",
+        "TOR_IP",
+        "ATTACK_TACTIC",
+        "HIGH_RISK_API",
+        "ATTACK_TECHNIQUE",
+        "UNUSUAL_API_FOR_ACCOUNT",
+        "UNUSUAL_ASN_FOR_ACCOUNT",
+        "UNUSUAL_ASN_FOR_USER"
+      ]
+    },
+    "IndicatorValueString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "IndicatorValues":{
+      "type":"list",
+      "member":{"shape":"IndicatorValueString"},
+      "max":400,
+      "min":1
+    },
+    "Indicators":{
+      "type":"list",
+      "member":{"shape":"Indicator"},
+      "max":400
     },
     "InstanceArn":{
       "type":"string",
@@ -6543,6 +6803,13 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "MfaStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "Name":{
       "type":"string",
       "max":300,
@@ -6551,6 +6818,18 @@
     "Neq":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "NetworkConnection":{
+      "type":"structure",
+      "required":["Direction"],
+      "members":{
+        "Direction":{
+          "shape":"NetworkDirection",
+          "documentation":"<p>The direction in which the network traffic is flowing.</p>",
+          "locationName":"direction"
+        }
+      },
+      "documentation":"<p>Contains information about the network connection.</p>"
     },
     "NetworkConnectionAction":{
       "type":"structure",
@@ -6597,6 +6876,92 @@
         }
       },
       "documentation":"<p>Contains information about the NETWORK_CONNECTION action described in the finding.</p>"
+    },
+    "NetworkDirection":{
+      "type":"string",
+      "enum":[
+        "INBOUND",
+        "OUTBOUND"
+      ]
+    },
+    "NetworkEndpoint":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The ID of the network endpoint.</p>",
+          "locationName":"id"
+        },
+        "Ip":{
+          "shape":"String",
+          "documentation":"<p>The IP address associated with the network endpoint.</p>",
+          "locationName":"ip"
+        },
+        "Domain":{
+          "shape":"String",
+          "documentation":"<p>The domain information for the network endpoint.</p>",
+          "locationName":"domain"
+        },
+        "Port":{
+          "shape":"Integer",
+          "documentation":"<p>The port number associated with the network endpoint.</p>",
+          "locationName":"port"
+        },
+        "Location":{
+          "shape":"NetworkGeoLocation",
+          "documentation":"<p>Information about the location of the network endpoint.</p>",
+          "locationName":"location"
+        },
+        "AutonomousSystem":{
+          "shape":"AutonomousSystem",
+          "documentation":"<p>The Autonomous System (AS) of the network endpoint.</p>",
+          "locationName":"autonomousSystem"
+        },
+        "Connection":{
+          "shape":"NetworkConnection",
+          "documentation":"<p>Information about the network connection.</p>",
+          "locationName":"connection"
+        }
+      },
+      "documentation":"<p>Contains information about network endpoints that were observed in the attack sequence.</p>"
+    },
+    "NetworkEndpoints":{
+      "type":"list",
+      "member":{"shape":"NetworkEndpoint"},
+      "max":400
+    },
+    "NetworkGeoLocation":{
+      "type":"structure",
+      "required":[
+        "City",
+        "Country",
+        "Latitude",
+        "Longitude"
+      ],
+      "members":{
+        "City":{
+          "shape":"String",
+          "documentation":"<p>The name of the city.</p>",
+          "locationName":"city"
+        },
+        "Country":{
+          "shape":"String",
+          "documentation":"<p>The name of the country.</p>",
+          "locationName":"country"
+        },
+        "Latitude":{
+          "shape":"Double",
+          "documentation":"<p>The latitude information of the endpoint location.</p>",
+          "locationName":"lat"
+        },
+        "Longitude":{
+          "shape":"Double",
+          "documentation":"<p>The longitude information of the endpoint location.</p>",
+          "locationName":"lon"
+        }
+      },
+      "documentation":"<p>Contains information about network endpoint location.</p>"
     },
     "NetworkInterface":{
       "type":"structure",
@@ -7318,6 +7683,53 @@
       },
       "documentation":"<p>Describes the public access policies that apply to the S3 bucket.</p>"
     },
+    "PublicAccessConfiguration":{
+      "type":"structure",
+      "members":{
+        "PublicAclAccess":{
+          "shape":"PublicAccessStatus",
+          "documentation":"<p>Indicates whether or not there is a setting that allows public access to the Amazon S3 buckets through access control lists (ACLs).</p>",
+          "locationName":"publicAclAccess"
+        },
+        "PublicPolicyAccess":{
+          "shape":"PublicAccessStatus",
+          "documentation":"<p>Indicates whether or not there is a setting that allows public access to the Amazon S3 bucket policy.</p>",
+          "locationName":"publicPolicyAccess"
+        },
+        "PublicAclIgnoreBehavior":{
+          "shape":"PublicAclIgnoreBehavior",
+          "documentation":"<p>Indicates whether or not there is a setting that ignores all public access control lists (ACLs) on the Amazon S3 bucket and the objects that it contains.</p>",
+          "locationName":"publicAclIgnoreBehavior"
+        },
+        "PublicBucketRestrictBehavior":{
+          "shape":"PublicBucketRestrictBehavior",
+          "documentation":"<p>Indicates whether or not there is a setting that restricts access to the bucket with specified policies.</p>",
+          "locationName":"publicBucketRestrictBehavior"
+        }
+      },
+      "documentation":"<p>Describes public access policies that apply to the Amazon S3 bucket.</p> <p>For information about each of the following settings, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html\">Blocking public access to your Amazon S3 storage</a> in the <i>Amazon S3 User Guide</i>.</p>"
+    },
+    "PublicAccessStatus":{
+      "type":"string",
+      "enum":[
+        "BLOCKED",
+        "ALLOWED"
+      ]
+    },
+    "PublicAclIgnoreBehavior":{
+      "type":"string",
+      "enum":[
+        "IGNORED",
+        "NOT_IGNORED"
+      ]
+    },
+    "PublicBucketRestrictBehavior":{
+      "type":"string",
+      "enum":[
+        "RESTRICTED",
+        "NOT_RESTRICTED"
+      ]
+    },
     "PublishingStatus":{
       "type":"string",
       "enum":[
@@ -7431,7 +7843,7 @@
         },
         "Tags":{
           "shape":"Tags",
-          "documentation":"<p>Information about the tag-key value pair.</p>",
+          "documentation":"<p>Information about the tag key-value pair.</p>",
           "locationName":"tags"
         }
       },
@@ -7593,6 +8005,37 @@
       "type":"string",
       "pattern":"^arn:[A-Za-z-]+:[A-Za-z0-9]+:[A-Za-z0-9-]+:\\d+:(([A-Za-z0-9-]+)[:\\/])?[A-Za-z0-9-]*$"
     },
+    "ResourceData":{
+      "type":"structure",
+      "members":{
+        "S3Bucket":{
+          "shape":"S3Bucket",
+          "documentation":"<p>Contains information about the Amazon S3 bucket.</p>",
+          "locationName":"s3Bucket"
+        },
+        "Ec2Instance":{
+          "shape":"Ec2Instance",
+          "documentation":"<p>Contains information about the Amazon EC2 instance.</p>",
+          "locationName":"ec2Instance"
+        },
+        "AccessKey":{
+          "shape":"AccessKey",
+          "documentation":"<p>Contains information about the IAM access key details of a user that involved in the GuardDuty finding.</p>",
+          "locationName":"accessKey"
+        },
+        "Ec2NetworkInterface":{
+          "shape":"Ec2NetworkInterface",
+          "documentation":"<p>Contains information about the elastic network interface of the Amazon EC2 instance.</p>",
+          "locationName":"ec2NetworkInterface"
+        },
+        "S3Object":{
+          "shape":"S3Object",
+          "documentation":"<p>Contains information about the Amazon S3 object.</p>",
+          "locationName":"s3Object"
+        }
+      },
+      "documentation":"<p>Contains information about the Amazon Web Services resource that is associated with the activity that prompted GuardDuty to generate a finding.</p>"
+    },
     "ResourceDetails":{
       "type":"structure",
       "members":{
@@ -7664,6 +8107,71 @@
         "ECS",
         "EC2"
       ]
+    },
+    "ResourceUids":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":400
+    },
+    "ResourceV2":{
+      "type":"structure",
+      "required":[
+        "Uid",
+        "ResourceType"
+      ],
+      "members":{
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the resource.</p>",
+          "locationName":"uid"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the resource.</p>",
+          "locationName":"name"
+        },
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID to which the resource belongs.</p>",
+          "locationName":"accountId"
+        },
+        "ResourceType":{
+          "shape":"FindingResourceType",
+          "documentation":"<p>The type of the Amazon Web Services resource.</p>",
+          "locationName":"resourceType"
+        },
+        "Region":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the resource belongs.</p>",
+          "locationName":"region"
+        },
+        "Service":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services service of the resource.</p>",
+          "locationName":"service"
+        },
+        "CloudPartition":{
+          "shape":"String",
+          "documentation":"<p>The cloud partition within the Amazon Web Services Region to which the resource belongs.</p>",
+          "locationName":"cloudPartition"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Contains information about the tags associated with the resource.</p>",
+          "locationName":"tags"
+        },
+        "Data":{
+          "shape":"ResourceData",
+          "documentation":"<p>Contains information about the Amazon Web Services resource associated with the activity that prompted GuardDuty to generate a finding.</p>",
+          "locationName":"data"
+        }
+      },
+      "documentation":"<p>Contains information about the Amazon Web Services resource that is associated with the GuardDuty finding.</p>"
+    },
+    "Resources":{
+      "type":"list",
+      "member":{"shape":"ResourceV2"},
+      "max":400
     },
     "RuntimeContext":{
       "type":"structure",
@@ -7812,6 +8320,62 @@
       },
       "documentation":"<p>Information about the process and any required context values for a specific finding.</p>"
     },
+    "S3Bucket":{
+      "type":"structure",
+      "members":{
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The owner ID of the associated S3Amazon S3bucket.</p>",
+          "locationName":"ownerId"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the Amazon S3 bucket was created.</p>",
+          "locationName":"createdAt"
+        },
+        "EncryptionType":{
+          "shape":"String",
+          "documentation":"<p>The type of encryption used for the Amazon S3 buckets and its objects. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html\">Protecting data with server-side encryption</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "locationName":"encryptionType"
+        },
+        "EncryptionKeyArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the encryption key that is used to encrypt the Amazon S3 bucket and its objects.</p>",
+          "locationName":"encryptionKeyArn"
+        },
+        "EffectivePermission":{
+          "shape":"String",
+          "documentation":"<p>Describes the effective permissions on this S3 bucket, after factoring all the attached policies.</p>",
+          "locationName":"effectivePermission"
+        },
+        "PublicReadAccess":{
+          "shape":"PublicAccessStatus",
+          "documentation":"<p>Indicates whether or not the public read access is allowed for an Amazon S3 bucket.</p>",
+          "locationName":"publicReadAccess"
+        },
+        "PublicWriteAccess":{
+          "shape":"PublicAccessStatus",
+          "documentation":"<p>Indicates whether or not the public write access is allowed for an Amazon S3 bucket.</p>",
+          "locationName":"publicWriteAccess"
+        },
+        "AccountPublicAccess":{
+          "shape":"PublicAccessConfiguration",
+          "documentation":"<p>Contains information about the public access policies that apply to the Amazon S3 bucket at the account level.</p>",
+          "locationName":"accountPublicAccess"
+        },
+        "BucketPublicAccess":{
+          "shape":"PublicAccessConfiguration",
+          "documentation":"<p>Contains information about public access policies that apply to the Amazon S3 bucket.</p>",
+          "locationName":"bucketPublicAccess"
+        },
+        "S3ObjectUids":{
+          "shape":"S3ObjectUids",
+          "documentation":"<p>Represents a list of Amazon S3 object identifiers.</p>",
+          "locationName":"s3ObjectUids"
+        }
+      },
+      "documentation":"<p>Contains information about the Amazon S3 bucket policies and encryption.</p>"
+    },
     "S3BucketDetail":{
       "type":"structure",
       "members":{
@@ -7891,6 +8455,27 @@
       },
       "documentation":"<p>Describes whether S3 data event logs will be enabled as a data source.</p>"
     },
+    "S3Object":{
+      "type":"structure",
+      "members":{
+        "ETag":{
+          "shape":"String",
+          "documentation":"<p>The entity tag is a hash of the Amazon S3 object. The ETag reflects changes only to the contents of an object, and not its metadata.</p>",
+          "locationName":"eTag"
+        },
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>The key of the Amazon S3 object.</p>",
+          "locationName":"key"
+        },
+        "VersionId":{
+          "shape":"String",
+          "documentation":"<p>The version Id of the Amazon S3 object.</p>",
+          "locationName":"versionId"
+        }
+      },
+      "documentation":"<p>Contains information about the Amazon S3 object.</p>"
+    },
     "S3ObjectDetail":{
       "type":"structure",
       "members":{
@@ -7925,6 +8510,10 @@
     "S3ObjectDetails":{
       "type":"list",
       "member":{"shape":"S3ObjectDetail"}
+    },
+    "S3ObjectUids":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "Scan":{
       "type":"structure",
@@ -8266,6 +8855,56 @@
       "type":"string",
       "sensitive":true
     },
+    "Sequence":{
+      "type":"structure",
+      "required":[
+        "Uid",
+        "Description",
+        "Signals"
+      ],
+      "members":{
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>Unique identifier of the attack sequence.</p>",
+          "locationName":"uid"
+        },
+        "Description":{
+          "shape":"SequenceDescription",
+          "documentation":"<p>Description of the attack sequence.</p>",
+          "locationName":"description"
+        },
+        "Actors":{
+          "shape":"Actors",
+          "documentation":"<p>Contains information about the actors involved in the attack sequence.</p>",
+          "locationName":"actors"
+        },
+        "Resources":{
+          "shape":"Resources",
+          "documentation":"<p>Contains information about the resources involved in the attack sequence.</p>",
+          "locationName":"resources"
+        },
+        "Endpoints":{
+          "shape":"NetworkEndpoints",
+          "documentation":"<p>Contains information about the network endpoints that were used in the attack sequence.</p>",
+          "locationName":"endpoints"
+        },
+        "Signals":{
+          "shape":"Signals",
+          "documentation":"<p>Contains information about the signals involved in the attack sequence.</p>",
+          "locationName":"signals"
+        },
+        "SequenceIndicators":{
+          "shape":"Indicators",
+          "documentation":"<p>Contains information about the indicators observed in the attack sequence.</p>",
+          "locationName":"sequenceIndicators"
+        }
+      },
+      "documentation":"<p>Contains information about the GuardDuty attack sequence finding.</p>"
+    },
+    "SequenceDescription":{
+      "type":"string",
+      "max":4096
+    },
     "Service":{
       "type":"structure",
       "members":{
@@ -8368,6 +9007,32 @@
       },
       "documentation":"<p>Additional information about the generated finding.</p>"
     },
+    "Session":{
+      "type":"structure",
+      "members":{
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the session.</p>",
+          "locationName":"uid"
+        },
+        "MfaStatus":{
+          "shape":"MfaStatus",
+          "documentation":"<p>Indicates whether or not multi-factor authencation (MFA) was used during authentication.</p> <p>In Amazon Web Services CloudTrail, you can find this value as <code>userIdentity.sessionContext.attributes.mfaAuthenticated</code>.</p>",
+          "locationName":"mfaStatus"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the session was created.</p> <p>In Amazon Web Services CloudTrail, you can find this value as <code>userIdentity.sessionContext.attributes.creationDate</code>.</p>",
+          "locationName":"createdTime"
+        },
+        "Issuer":{
+          "shape":"String",
+          "documentation":"<p>Identifier of the session issuer.</p> <p>In Amazon Web Services CloudTrail, you can find this value as <code>userIdentity.sessionContext.sessionIssuer.arn</code>.</p>",
+          "locationName":"issuer"
+        }
+      },
+      "documentation":"<p>Contains information about the authenticated session.</p>"
+    },
     "SessionNameList":{
       "type":"list",
       "member":{"shape":"String"}
@@ -8392,6 +9057,110 @@
         }
       },
       "documentation":"<p>Information about severity level for each finding type.</p>"
+    },
+    "Signal":{
+      "type":"structure",
+      "required":[
+        "Uid",
+        "Type",
+        "Name",
+        "CreatedAt",
+        "UpdatedAt",
+        "FirstSeenAt",
+        "LastSeenAt",
+        "Count"
+      ],
+      "members":{
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the signal.</p>",
+          "locationName":"uid"
+        },
+        "Type":{
+          "shape":"SignalType",
+          "documentation":"<p>The type of the signal used to identify an attack sequence.</p> <p>Signals can be GuardDuty findings or activities observed in data sources that GuardDuty monitors. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_data-sources.html\">Foundational data sources</a> in the <i>GuardDuty User Guide</i>.</p> <p>A signal type can be one of the valid values listed in this API. Here are the related descriptions:</p> <ul> <li> <p> <code>FINDING</code> - Individually generated GuardDuty finding.</p> </li> <li> <p> <code>CLOUD_TRAIL</code> - Activity observed from CloudTrail logs</p> </li> <li> <p> <code>S3_DATA_EVENTS</code> - Activity observed from CloudTrail data events for S3. Activities associated with this type will show up only when you have enabled GuardDuty S3 Protection feature in your account. For more information about S3 Protection and steps to enable it, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/s3-protection.html\">S3 Protection</a> in the <i>GuardDuty User Guide</i>.</p> </li> </ul>",
+          "locationName":"type"
+        },
+        "Description":{
+          "shape":"SignalDescription",
+          "documentation":"<p>The description of the signal.</p>",
+          "locationName":"description"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the signal. For example, when signal type is <code>FINDING</code>, the signal name is the name of the finding.</p>",
+          "locationName":"name"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the first finding or activity related to this signal was observed.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this signal was last observed.</p>",
+          "locationName":"updatedAt"
+        },
+        "FirstSeenAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the first finding or activity related to this signal was observed.</p>",
+          "locationName":"firstSeenAt"
+        },
+        "LastSeenAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the last finding or activity related to this signal was observed.</p>",
+          "locationName":"lastSeenAt"
+        },
+        "Severity":{
+          "shape":"Double",
+          "documentation":"<p>The severity associated with the signal. For more information about severity, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings-severity.html\">Findings severity levels</a> in the <i>GuardDuty User Guide</i>.</p>",
+          "locationName":"severity"
+        },
+        "Count":{
+          "shape":"Integer",
+          "documentation":"<p>The number of times this signal was observed.</p>",
+          "locationName":"count"
+        },
+        "ResourceUids":{
+          "shape":"ResourceUids",
+          "documentation":"<p>Information about the unique identifiers of the resources involved in the signal.</p>",
+          "locationName":"resourceUids"
+        },
+        "ActorIds":{
+          "shape":"ActorIds",
+          "documentation":"<p>Information about the IDs of the threat actors involved in the signal.</p>",
+          "locationName":"actorIds"
+        },
+        "EndpointIds":{
+          "shape":"EndpointIds",
+          "documentation":"<p>Information about the endpoint IDs associated with this signal.</p>",
+          "locationName":"endpointIds"
+        },
+        "SignalIndicators":{
+          "shape":"Indicators",
+          "documentation":"<p>Contains information about the indicators associated with the signals.</p>",
+          "locationName":"signalIndicators"
+        }
+      },
+      "documentation":"<p>Contains information about the signals involved in the attack sequence.</p>"
+    },
+    "SignalDescription":{
+      "type":"string",
+      "max":2000
+    },
+    "SignalType":{
+      "type":"string",
+      "enum":[
+        "FINDING",
+        "CLOUD_TRAIL",
+        "S3_DATA_EVENTS"
+      ]
+    },
+    "Signals":{
+      "type":"list",
+      "member":{"shape":"Signal"},
+      "max":100,
+      "min":2
     },
     "SortCriteria":{
       "type":"structure",
@@ -9431,6 +10200,42 @@
     "UsageTopAccountsResultList":{
       "type":"list",
       "member":{"shape":"UsageTopAccountsResult"}
+    },
+    "User":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Uid",
+        "Type"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the user.</p>",
+          "locationName":"name"
+        },
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the user.</p>",
+          "locationName":"uid"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The type of the user.</p>",
+          "locationName":"type"
+        },
+        "CredentialUid":{
+          "shape":"String",
+          "documentation":"<p>The credentials of the user ID.</p>",
+          "locationName":"credentialUid"
+        },
+        "Account":{
+          "shape":"Account",
+          "documentation":"<p>Contains information about the Amazon Web Services account.</p>",
+          "locationName":"account"
+        }
+      },
+      "documentation":"<p>Contains information about the user involved in the attack sequence.</p>"
     },
     "Volume":{
       "type":"structure",

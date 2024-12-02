@@ -7844,7 +7844,7 @@
             }
         },
         {
-            "documentation": "Data Plane with short AZ",
+            "documentation": "Data Plane with short zone name",
             "expect": {
                 "endpoint": {
                     "properties": {
@@ -7858,7 +7858,7 @@
                         ],
                         "backend": "S3Express"
                     },
-                    "url": "https://mybucket--use1-az1--x-s3.s3express-use1-az1.us-east-1.amazonaws.com"
+                    "url": "https://mybucket--abcd-ab1--x-s3.s3express-abcd-ab1.us-east-1.amazonaws.com"
                 }
             },
             "operationInputs": [
@@ -7868,14 +7868,14 @@
                     },
                     "operationName": "GetObject",
                     "operationParams": {
-                        "Bucket": "mybucket--use1-az1--x-s3",
+                        "Bucket": "mybucket--abcd-ab1--x-s3",
                         "Key": "key"
                     }
                 }
             ],
             "params": {
                 "Region": "us-east-1",
-                "Bucket": "mybucket--use1-az1--x-s3",
+                "Bucket": "mybucket--abcd-ab1--x-s3",
                 "UseFIPS": false,
                 "UseDualStack": false,
                 "Accelerate": false,
@@ -7883,7 +7883,124 @@
             }
         },
         {
-            "documentation": "Data Plane with short AZ fips",
+            "documentation": "Data Plane with short zone names (13 chars)",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test-zone-ab1--x-s3.s3express-test-zone-ab1.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2"
+                    },
+                    "operationName": "GetObject",
+                    "operationParams": {
+                        "Bucket": "mybucket--test-zone-ab1--x-s3",
+                        "Key": "key"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test-zone-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane with medium zone names (14 chars)",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-zone-ab1--x-s3.s3express-test1-zone-ab1.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2"
+                    },
+                    "operationName": "GetObject",
+                    "operationParams": {
+                        "Bucket": "mybucket--test1-zone-ab1--x-s3",
+                        "Key": "key"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-zone-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane with long zone names (20 chars)",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-long1-zone-ab1--x-s3.s3express-test1-long1-zone-ab1.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2"
+                    },
+                    "operationName": "GetObject",
+                    "operationParams": {
+                        "Bucket": "mybucket--test1-long1-zone-ab1--x-s3",
+                        "Key": "key"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-long1-zone-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane with short zone fips",
             "expect": {
                 "endpoint": {
                     "properties": {
@@ -7897,7 +8014,7 @@
                         ],
                         "backend": "S3Express"
                     },
-                    "url": "https://mybucket--use1-az1--x-s3.s3express-fips-use1-az1.us-east-1.amazonaws.com"
+                    "url": "https://mybucket--test-ab1--x-s3.s3express-fips-test-ab1.us-east-1.amazonaws.com"
                 }
             },
             "operationInputs": [
@@ -7908,14 +8025,134 @@
                     },
                     "operationName": "GetObject",
                     "operationParams": {
-                        "Bucket": "mybucket--use1-az1--x-s3",
+                        "Bucket": "mybucket--test-ab1--x-s3",
                         "Key": "key"
                     }
                 }
             ],
             "params": {
                 "Region": "us-east-1",
-                "Bucket": "mybucket--use1-az1--x-s3",
+                "Bucket": "mybucket--test-ab1--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane with short zone (13 chars) fips",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test-zone-ab1--x-s3.s3express-fips-test-zone-ab1.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "GetObject",
+                    "operationParams": {
+                        "Bucket": "mybucket--test-zone-ab1--x-s3",
+                        "Key": "key"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test-zone-ab1--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane with medium zone (14 chars) fips",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-zone-ab1--x-s3.s3express-fips-test1-zone-ab1.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "GetObject",
+                    "operationParams": {
+                        "Bucket": "mybucket--test1-zone-ab1--x-s3",
+                        "Key": "key"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-zone-ab1--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane with long zone (20 chars) fips",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-long1-zone-ab1--x-s3.s3express-fips-test1-long1-zone-ab1.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "GetObject",
+                    "operationParams": {
+                        "Bucket": "mybucket--test1-long1-zone-ab1--x-s3",
+                        "Key": "key"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-long1-zone-ab1--x-s3",
                 "UseFIPS": true,
                 "UseDualStack": false,
                 "Accelerate": false,
@@ -7931,30 +8168,30 @@
                             {
                                 "name": "sigv4-s3express",
                                 "signingName": "s3express",
-                                "signingRegion": "ap-northeast-1",
+                                "signingRegion": "us-west-2",
                                 "disableDoubleEncoding": true
                             }
                         ],
                         "backend": "S3Express"
                     },
-                    "url": "https://mybucket--apne1-az1--x-s3.s3express-apne1-az1.ap-northeast-1.amazonaws.com"
+                    "url": "https://mybucket--test1-az1--x-s3.s3express-test1-az1.us-west-2.amazonaws.com"
                 }
             },
             "operationInputs": [
                 {
                     "builtInParams": {
-                        "AWS::Region": "ap-northeast-1"
+                        "AWS::Region": "us-west-2"
                     },
                     "operationName": "GetObject",
                     "operationParams": {
-                        "Bucket": "mybucket--apne1-az1--x-s3",
+                        "Bucket": "mybucket--test1-az1--x-s3",
                         "Key": "key"
                     }
                 }
             ],
             "params": {
-                "Region": "ap-northeast-1",
-                "Bucket": "mybucket--apne1-az1--x-s3",
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-az1--x-s3",
                 "UseFIPS": false,
                 "UseDualStack": false,
                 "Accelerate": false,
@@ -7970,31 +8207,31 @@
                             {
                                 "name": "sigv4-s3express",
                                 "signingName": "s3express",
-                                "signingRegion": "ap-northeast-1",
+                                "signingRegion": "us-west-2",
                                 "disableDoubleEncoding": true
                             }
                         ],
                         "backend": "S3Express"
                     },
-                    "url": "https://mybucket--apne1-az1--x-s3.s3express-fips-apne1-az1.ap-northeast-1.amazonaws.com"
+                    "url": "https://mybucket--test1-az1--x-s3.s3express-fips-test1-az1.us-west-2.amazonaws.com"
                 }
             },
             "operationInputs": [
                 {
                     "builtInParams": {
-                        "AWS::Region": "ap-northeast-1",
+                        "AWS::Region": "us-west-2",
                         "AWS::UseFIPS": true
                     },
                     "operationName": "GetObject",
                     "operationParams": {
-                        "Bucket": "mybucket--apne1-az1--x-s3",
+                        "Bucket": "mybucket--test1-az1--x-s3",
                         "Key": "key"
                     }
                 }
             ],
             "params": {
-                "Region": "ap-northeast-1",
-                "Bucket": "mybucket--apne1-az1--x-s3",
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-az1--x-s3",
                 "UseFIPS": true,
                 "UseDualStack": false,
                 "Accelerate": false,
@@ -8016,7 +8253,7 @@
                         ],
                         "backend": "S3Express"
                     },
-                    "url": "https://s3express-control.us-east-1.amazonaws.com/mybucket--use1-az1--x-s3"
+                    "url": "https://s3express-control.us-east-1.amazonaws.com/mybucket--test-ab1--x-s3"
                 }
             },
             "operationInputs": [
@@ -8026,13 +8263,13 @@
                     },
                     "operationName": "CreateBucket",
                     "operationParams": {
-                        "Bucket": "mybucket--use1-az1--x-s3"
+                        "Bucket": "mybucket--test-ab1--x-s3"
                     }
                 }
             ],
             "params": {
                 "Region": "us-east-1",
-                "Bucket": "mybucket--use1-az1--x-s3",
+                "Bucket": "mybucket--test-ab1--x-s3",
                 "UseFIPS": false,
                 "UseDualStack": false,
                 "Accelerate": false,
@@ -8055,7 +8292,7 @@
                         ],
                         "backend": "S3Express"
                     },
-                    "url": "https://s3express-control-fips.us-east-1.amazonaws.com/mybucket--use1-az1--x-s3"
+                    "url": "https://s3express-control-fips.us-east-1.amazonaws.com/mybucket--test-ab1--x-s3"
                 }
             },
             "operationInputs": [
@@ -8066,13 +8303,13 @@
                     },
                     "operationName": "CreateBucket",
                     "operationParams": {
-                        "Bucket": "mybucket--use1-az1--x-s3"
+                        "Bucket": "mybucket--test-ab1--x-s3"
                     }
                 }
             ],
             "params": {
                 "Region": "us-east-1",
-                "Bucket": "mybucket--use1-az1--x-s3",
+                "Bucket": "mybucket--test-ab1--x-s3",
                 "UseFIPS": true,
                 "UseDualStack": false,
                 "Accelerate": false,
@@ -8179,6 +8416,33 @@
             }
         },
         {
+            "documentation": "Data Plane sigv4 auth with short zone (13 chars)",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test-zone-ab1--x-s3.s3express-test-zone-ab1.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test-zone-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
             "documentation": "Data Plane sigv4 auth with short AZ fips",
             "expect": {
                 "endpoint": {
@@ -8206,6 +8470,33 @@
             }
         },
         {
+            "documentation": "Data Plane sigv4 auth with short zone (13 chars) fips",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test-zone-ab1--x-s3.s3express-fips-test-zone-ab1.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test-zone-ab1--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
             "documentation": "Data Plane sigv4 auth with long AZ",
             "expect": {
                 "endpoint": {
@@ -8214,18 +8505,74 @@
                             {
                                 "name": "sigv4",
                                 "signingName": "s3express",
-                                "signingRegion": "ap-northeast-1",
+                                "signingRegion": "us-west-2",
                                 "disableDoubleEncoding": true
                             }
                         ],
                         "backend": "S3Express"
                     },
-                    "url": "https://mybucket--apne1-az1--x-s3.s3express-apne1-az1.ap-northeast-1.amazonaws.com"
+                    "url": "https://mybucket--test1-az1--x-s3.s3express-test1-az1.us-west-2.amazonaws.com"
                 }
             },
             "params": {
-                "Region": "ap-northeast-1",
-                "Bucket": "mybucket--apne1-az1--x-s3",
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-az1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with medium zone(14 chars)",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-zone-ab1--x-s3.s3express-test1-zone-ab1.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-zone-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with long zone(20 chars)",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-long1-zone-ab1--x-s3.s3express-test1-long1-zone-ab1.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-long1-zone-ab1--x-s3",
                 "UseFIPS": false,
                 "UseDualStack": false,
                 "Accelerate": false,
@@ -8242,18 +8589,74 @@
                             {
                                 "name": "sigv4",
                                 "signingName": "s3express",
-                                "signingRegion": "ap-northeast-1",
+                                "signingRegion": "us-west-2",
                                 "disableDoubleEncoding": true
                             }
                         ],
                         "backend": "S3Express"
                     },
-                    "url": "https://mybucket--apne1-az1--x-s3.s3express-fips-apne1-az1.ap-northeast-1.amazonaws.com"
+                    "url": "https://mybucket--test1-az1--x-s3.s3express-fips-test1-az1.us-west-2.amazonaws.com"
                 }
             },
             "params": {
-                "Region": "ap-northeast-1",
-                "Bucket": "mybucket--apne1-az1--x-s3",
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-az1--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with medium zone (14 chars) fips",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-zone-ab1--x-s3.s3express-fips-test1-zone-ab1.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-zone-ab1--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with long zone (20 chars) fips",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-long1-zone-ab1--x-s3.s3express-fips-test1-long1-zone-ab1.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-long1-zone-ab1--x-s3",
                 "UseFIPS": true,
                 "UseDualStack": false,
                 "Accelerate": false,
@@ -8493,14 +8896,14 @@
                     },
                     "operationName": "GetObject",
                     "operationParams": {
-                        "Bucket": "mybucket--use1-az1--x-s3",
+                        "Bucket": "mybucket--test-ab1--x-s3",
                         "Key": "key"
                     }
                 }
             ],
             "params": {
                 "Region": "us-east-1",
-                "Bucket": "mybucket--use1-az1--x-s3",
+                "Bucket": "mybucket--test-ab1--x-s3",
                 "UseFIPS": false,
                 "UseDualStack": true,
                 "Accelerate": false,
@@ -8520,14 +8923,14 @@
                     },
                     "operationName": "GetObject",
                     "operationParams": {
-                        "Bucket": "mybucket--use1-az1--x-s3",
+                        "Bucket": "mybucket--test-ab1--x-s3",
                         "Key": "key"
                     }
                 }
             ],
             "params": {
                 "Region": "us-east-1",
-                "Bucket": "mybucket--use1-az1--x-s3",
+                "Bucket": "mybucket--test-ab1--x-s3",
                 "UseFIPS": false,
                 "UseDualStack": false,
                 "Accelerate": true,
@@ -8546,14 +8949,14 @@
                     },
                     "operationName": "GetObject",
                     "operationParams": {
-                        "Bucket": "my.bucket--use1-az1--x-s3",
+                        "Bucket": "my.bucket--test-ab1--x-s3",
                         "Key": "key"
                     }
                 }
             ],
             "params": {
                 "Region": "us-east-1",
-                "Bucket": "my.bucket--use1-az1--x-s3",
+                "Bucket": "my.bucket--test-ab1--x-s3",
                 "UseFIPS": false,
                 "UseDualStack": false,
                 "Accelerate": false,

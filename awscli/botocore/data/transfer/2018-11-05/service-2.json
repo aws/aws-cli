@@ -123,6 +123,23 @@
       "documentation":"<p>Creates a user and associates them with an existing file transfer protocol-enabled server. You can only create and associate users with servers that have the <code>IdentityProviderType</code> set to <code>SERVICE_MANAGED</code>. Using parameters for <code>CreateUser</code>, you can specify the user name, set the home directory, store the user's public key, and assign the user's Identity and Access Management (IAM) role. You can also optionally add a session policy, and assign metadata with tags that can be used to group and search for users.</p>",
       "idempotent":true
     },
+    "CreateWebApp":{
+      "name":"CreateWebApp",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateWebAppRequest"},
+      "output":{"shape":"CreateWebAppResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a web app based on specified parameters, and returns the ID for the new web app.</p>"
+    },
     "CreateWorkflow":{
       "name":"CreateWorkflow",
       "http":{
@@ -283,6 +300,41 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Deletes the user belonging to a file transfer protocol-enabled server you specify.</p> <p>No response returns from this operation.</p> <note> <p>When you delete a user from a server, the user's information is lost.</p> </note>",
+      "idempotent":true
+    },
+    "DeleteWebApp":{
+      "name":"DeleteWebApp",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteWebAppRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes the specified web app.</p>",
+      "idempotent":true
+    },
+    "DeleteWebAppCustomization":{
+      "name":"DeleteWebAppCustomization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteWebAppCustomizationRequest"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes the <code>WebAppCustomization</code> object that corresponds to the web app ID specified.</p>",
       "idempotent":true
     },
     "DeleteWorkflow":{
@@ -461,6 +513,40 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Describes the user assigned to the specific file transfer protocol-enabled server, as identified by its <code>ServerId</code> property.</p> <p>The response from this call returns the properties of the user associated with the <code>ServerId</code> value that was specified.</p>"
+    },
+    "DescribeWebApp":{
+      "name":"DescribeWebApp",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeWebAppRequest"},
+      "output":{"shape":"DescribeWebAppResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the web app that's identified by <code>WebAppId</code>.</p>"
+    },
+    "DescribeWebAppCustomization":{
+      "name":"DescribeWebAppCustomization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeWebAppCustomizationRequest"},
+      "output":{"shape":"DescribeWebAppCustomizationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the web app customization object that's identified by <code>WebAppId</code>.</p>"
     },
     "DescribeWorkflow":{
       "name":"DescribeWorkflow",
@@ -729,6 +815,22 @@
         {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Lists the users for a file transfer protocol-enabled server that you specify by passing the <code>ServerId</code> parameter.</p>"
+    },
+    "ListWebApps":{
+      "name":"ListWebApps",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListWebAppsRequest"},
+      "output":{"shape":"ListWebAppsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidNextTokenException"}
+      ],
+      "documentation":"<p>Lists all web apps associated with your Amazon Web Services account for your current region.</p>"
     },
     "ListWorkflows":{
       "name":"ListWorkflows",
@@ -1033,6 +1135,42 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Assigns new properties to a user. Parameters you pass modify any or all of the following: the home directory, role, and policy for the <code>UserName</code> and <code>ServerId</code> you specify.</p> <p>The response returns the <code>ServerId</code> and the <code>UserName</code> for the updated user.</p> <p>In the console, you can select <i>Restricted</i> when you create or update a user. This ensures that the user can't access anything outside of their home directory. The programmatic way to configure this behavior is to update the user. Set their <code>HomeDirectoryType</code> to <code>LOGICAL</code>, and specify <code>HomeDirectoryMappings</code> with <code>Entry</code> as root (<code>/</code>) and <code>Target</code> as their home directory.</p> <p>For example, if the user's home directory is <code>/test/admin-user</code>, the following command updates the user so that their configuration in the console shows the <i>Restricted</i> flag as selected.</p> <p> <code> aws transfer update-user --server-id &lt;server-id&gt; --user-name admin-user --home-directory-type LOGICAL --home-directory-mappings \"[{\\\"Entry\\\":\\\"/\\\", \\\"Target\\\":\\\"/test/admin-user\\\"}]\"</code> </p>"
+    },
+    "UpdateWebApp":{
+      "name":"UpdateWebApp",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateWebAppRequest"},
+      "output":{"shape":"UpdateWebAppResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Assigns new properties to a web app. You can modify the access point, identity provider details, and the web app units.</p>"
+    },
+    "UpdateWebAppCustomization":{
+      "name":"UpdateWebAppCustomization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateWebAppCustomizationRequest"},
+      "output":{"shape":"UpdateWebAppCustomizationResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Assigns new customization properties to a web app. You can modify the icon file, logo file, and title.</p>"
     }
   },
   "shapes":{
@@ -1495,7 +1633,7 @@
         },
         "IdentityProviderDetails":{
           "shape":"IdentityProviderDetails",
-          "documentation":"<p>Required when <code>IdentityProviderType</code> is set to <code>AWS_DIRECTORY_SERVICE</code>, <code>Amazon Web Services_LAMBDA</code> or <code>API_GATEWAY</code>. Accepts an array containing all of the information required to use a directory in <code>AWS_DIRECTORY_SERVICE</code> or invoke a customer-supplied authentication API, including the API Gateway URL. Not required when <code>IdentityProviderType</code> is set to <code>SERVICE_MANAGED</code>.</p>"
+          "documentation":"<p>Required when <code>IdentityProviderType</code> is set to <code>AWS_DIRECTORY_SERVICE</code>, <code>Amazon Web Services_LAMBDA</code> or <code>API_GATEWAY</code>. Accepts an array containing all of the information required to use a directory in <code>AWS_DIRECTORY_SERVICE</code> or invoke a customer-supplied authentication API, including the API Gateway URL. Cannot be specified when <code>IdentityProviderType</code> is set to <code>SERVICE_MANAGED</code>.</p>"
         },
         "IdentityProviderType":{
           "shape":"IdentityProviderType",
@@ -1617,6 +1755,38 @@
         "UserName":{
           "shape":"UserName",
           "documentation":"<p>A unique string that identifies a Transfer Family user.</p>"
+        }
+      }
+    },
+    "CreateWebAppRequest":{
+      "type":"structure",
+      "required":["IdentityProviderDetails"],
+      "members":{
+        "IdentityProviderDetails":{
+          "shape":"WebAppIdentityProviderDetails",
+          "documentation":"<p>You can provide a structure that contains the details for the identity provider to use with your web app.</p>"
+        },
+        "AccessEndpoint":{
+          "shape":"WebAppAccessEndpoint",
+          "documentation":"<p>The <code>AccessEndpoint</code> is the URL that you provide to your users for them to interact with the Transfer Family web app. You can specify a custom URL or use the default value.</p>"
+        },
+        "WebAppUnits":{
+          "shape":"WebAppUnits",
+          "documentation":"<p>A union that contains the value for number of concurrent connections or the user sessions on your web app.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Key-value pairs that can be used to group and search for web apps.</p>"
+        }
+      }
+    },
+    "CreateWebAppResponse":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Returns a unique identifier for the web app.</p>"
         }
       }
     },
@@ -1865,6 +2035,26 @@
         "UserName":{
           "shape":"UserName",
           "documentation":"<p>A unique string that identifies a user that is being deleted from a server.</p>"
+        }
+      }
+    },
+    "DeleteWebAppCustomizationRequest":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Provide the unique identifier for the web app that contains the customizations that you are deleting.</p>"
+        }
+      }
+    },
+    "DeleteWebAppRequest":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Provide the unique identifier for the web app that you are deleting.</p>"
         }
       }
     },
@@ -2131,6 +2321,46 @@
         "User":{
           "shape":"DescribedUser",
           "documentation":"<p>An array containing the properties of the Transfer Family user for the <code>ServerID</code> value that you specified.</p>"
+        }
+      }
+    },
+    "DescribeWebAppCustomizationRequest":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Provide the unique identifier for the web app.</p>"
+        }
+      }
+    },
+    "DescribeWebAppCustomizationResponse":{
+      "type":"structure",
+      "required":["WebAppCustomization"],
+      "members":{
+        "WebAppCustomization":{
+          "shape":"DescribedWebAppCustomization",
+          "documentation":"<p>Returns a structure that contains the details of the web app customizations.</p>"
+        }
+      }
+    },
+    "DescribeWebAppRequest":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Provide the unique identifier for the web app.</p>"
+        }
+      }
+    },
+    "DescribeWebAppResponse":{
+      "type":"structure",
+      "required":["WebApp"],
+      "members":{
+        "WebApp":{
+          "shape":"DescribedWebApp",
+          "documentation":"<p>Returns a structure that contains the details of the web app.</p>"
         }
       }
     },
@@ -2412,6 +2642,24 @@
       },
       "documentation":"<p>The details for a server host key.</p>"
     },
+    "DescribedIdentityCenterConfig":{
+      "type":"structure",
+      "members":{
+        "ApplicationArn":{
+          "shape":"IdentityCenterApplicationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the IAM Identity Center application: this value is set automatically when you create your web app.</p>"
+        },
+        "InstanceArn":{
+          "shape":"IdentityCenterInstanceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the IAM Identity Center used for the web app.</p>"
+        },
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The IAM role in IAM Identity Center used for the web app.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the details of the IAM Identity Center used for your web app. Returned during a call to <code>DescribeWebApp</code>.</p>"
+    },
     "DescribedProfile":{
       "type":"structure",
       "required":["Arn"],
@@ -2627,6 +2875,85 @@
         }
       },
       "documentation":"<p>Describes the properties of a user that was specified.</p>"
+    },
+    "DescribedWebApp":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "WebAppId"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web app.</p>"
+        },
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>The unique identifier for the web app.</p>"
+        },
+        "DescribedIdentityProviderDetails":{
+          "shape":"DescribedWebAppIdentityProviderDetails",
+          "documentation":"<p>A structure that contains the details for the identity provider used by the web app.</p>"
+        },
+        "AccessEndpoint":{
+          "shape":"WebAppAccessEndpoint",
+          "documentation":"<p>The <code>AccessEndpoint</code> is the URL that you provide to your users for them to interact with the Transfer Family web app. You can specify a custom URL or use the default value.</p>"
+        },
+        "WebAppEndpoint":{
+          "shape":"WebAppEndpoint",
+          "documentation":"<p>The <code>WebAppEndpoint</code> is the unique URL for your Transfer Family web app. This is the value that you use when you configure <b>Origins</b> on CloudFront.</p>"
+        },
+        "WebAppUnits":{
+          "shape":"WebAppUnits",
+          "documentation":"<p>A union that contains the value for number of concurrent connections or the user sessions on your web app.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Key-value pairs that can be used to group and search for web apps. Tags are metadata attached to web apps for any purpose.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes the parameters for the web app, as identified by the <code>WebAppId</code>.</p>"
+    },
+    "DescribedWebAppCustomization":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "WebAppId"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>Returns the Amazon Resource Name (ARN) for the web app.</p>"
+        },
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Returns the unique identifier for your web app.</p>"
+        },
+        "Title":{
+          "shape":"WebAppTitle",
+          "documentation":"<p>Returns the page title that you defined for your web app.</p>"
+        },
+        "LogoFile":{
+          "shape":"WebAppLogoFile",
+          "documentation":"<p>Returns a logo file data string (in base64 encoding).</p>"
+        },
+        "FaviconFile":{
+          "shape":"WebAppFaviconFile",
+          "documentation":"<p>Returns a icon file data string (in base64 encoding).</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the customization fields for the web app. You can provide a title, logo, and icon to customize the appearance of your web app.</p>"
+    },
+    "DescribedWebAppIdentityProviderDetails":{
+      "type":"structure",
+      "members":{
+        "IdentityCenterConfig":{
+          "shape":"DescribedIdentityCenterConfig",
+          "documentation":"<p>Returns a structure for your identity provider details. This structure contains the instance ARN and role being used for the web app.</p>"
+        }
+      },
+      "documentation":"<p>Returns a structure that contains the identity provider details for your web app.</p>",
+      "union":true
     },
     "DescribedWorkflow":{
       "type":"structure",
@@ -2949,6 +3276,32 @@
       "pattern":"hostkey-[0-9a-f]{17}"
     },
     "HostKeyType":{"type":"string"},
+    "IdentityCenterApplicationArn":{
+      "type":"string",
+      "max":1224,
+      "min":10,
+      "pattern":"arn:[\\w-]+:sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}"
+    },
+    "IdentityCenterConfig":{
+      "type":"structure",
+      "members":{
+        "InstanceArn":{
+          "shape":"IdentityCenterInstanceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the IAM Identity Center used for the web app.</p>"
+        },
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The IAM role in IAM Identity Center used for the web app.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes the values to use for the IAM Identity Center settings when you create or update a web app.</p>"
+    },
+    "IdentityCenterInstanceArn":{
+      "type":"string",
+      "max":1224,
+      "min":10,
+      "pattern":"arn:[\\w-]+:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}"
+    },
     "IdentityProviderDetails":{
       "type":"structure",
       "members":{
@@ -3171,7 +3524,7 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Specifies the maximum number of access SIDs to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3210,7 +3563,7 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of agreements to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3241,7 +3594,7 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of certificates to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3268,7 +3621,7 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of connectors to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3296,7 +3649,7 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Specifies the maximum number of executions to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3374,7 +3727,7 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of host keys to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3412,7 +3765,7 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of profiles to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3566,12 +3919,39 @@
         }
       }
     },
+    "ListWebAppsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to return.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Returns the <code>NextToken</code> parameter in the output. You can then pass the <code>NextToken</code> parameter in a subsequent command to continue listing additional web apps.</p>"
+        }
+      }
+    },
+    "ListWebAppsResponse":{
+      "type":"structure",
+      "required":["WebApps"],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Provide this value for the <code>NextToken</code> parameter in a subsequent command to continue listing additional web apps.</p>"
+        },
+        "WebApps":{
+          "shape":"ListedWebApps",
+          "documentation":"<p>Returns, for each listed web app, a structure that contains details for the web app.</p>"
+        }
+      }
+    },
     "ListWorkflowsRequest":{
       "type":"structure",
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Specifies the maximum number of workflows to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3885,6 +4265,36 @@
     "ListedUsers":{
       "type":"list",
       "member":{"shape":"ListedUser"}
+    },
+    "ListedWebApp":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "WebAppId"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the web app.</p>"
+        },
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>The unique identifier for the web app.</p>"
+        },
+        "AccessEndpoint":{
+          "shape":"WebAppAccessEndpoint",
+          "documentation":"<p>The <code>AccessEndpoint</code> is the URL that you provide to your users for them to interact with the Transfer Family web app. You can specify a custom URL or use the default value.</p>"
+        },
+        "WebAppEndpoint":{
+          "shape":"WebAppEndpoint",
+          "documentation":"<p>The <code>WebAppEndpoint</code> is the unique URL for your Transfer Family web app. This is the value that you use when you configure <b>Origins</b> on CloudFront.</p>"
+        }
+      },
+      "documentation":"<p> a structure that contains details for the web app.</p>"
+    },
+    "ListedWebApps":{
+      "type":"list",
+      "member":{"shape":"ListedWebApp"}
     },
     "ListedWorkflow":{
       "type":"structure",
@@ -5234,6 +5644,91 @@
       },
       "documentation":"<p> <code>UpdateUserResponse</code> returns the user name and identifier for the request to update a user's properties.</p>"
     },
+    "UpdateWebAppCustomizationRequest":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Provide the identifier of the web app that you are updating.</p>"
+        },
+        "Title":{
+          "shape":"WebAppTitle",
+          "documentation":"<p>Provide an updated title.</p>"
+        },
+        "LogoFile":{
+          "shape":"WebAppLogoFile",
+          "documentation":"<p>Specify logo file data string (in base64 encoding).</p>"
+        },
+        "FaviconFile":{
+          "shape":"WebAppFaviconFile",
+          "documentation":"<p>Specify icon file data string (in base64 encoding).</p>"
+        }
+      }
+    },
+    "UpdateWebAppCustomizationResponse":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Returns the unique identifier for the web app being updated.</p>"
+        }
+      }
+    },
+    "UpdateWebAppIdentityCenterConfig":{
+      "type":"structure",
+      "members":{
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The IAM role used to access IAM Identity Center.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes the values to use for the IAM Identity Center settings when you update a web app.</p>"
+    },
+    "UpdateWebAppIdentityProviderDetails":{
+      "type":"structure",
+      "members":{
+        "IdentityCenterConfig":{
+          "shape":"UpdateWebAppIdentityCenterConfig",
+          "documentation":"<p>A structure that describes the values to use for the IAM Identity Center settings when you update a web app.</p>"
+        }
+      },
+      "documentation":"<p>A union that contains the <code>UpdateWebAppIdentityCenterConfig</code> object.</p>",
+      "union":true
+    },
+    "UpdateWebAppRequest":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Provide the identifier of the web app that you are updating.</p>"
+        },
+        "IdentityProviderDetails":{
+          "shape":"UpdateWebAppIdentityProviderDetails",
+          "documentation":"<p>Provide updated identity provider values in a <code>WebAppIdentityProviderDetails</code> object.</p>"
+        },
+        "AccessEndpoint":{
+          "shape":"WebAppAccessEndpoint",
+          "documentation":"<p>The <code>AccessEndpoint</code> is the URL that you provide to your users for them to interact with the Transfer Family web app. You can specify a custom URL or use the default value.</p>"
+        },
+        "WebAppUnits":{
+          "shape":"WebAppUnits",
+          "documentation":"<p>A union that contains the value for number of concurrent connections or the user sessions on your web app.</p>"
+        }
+      }
+    },
+    "UpdateWebAppResponse":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Returns the unique identifier for the web app being updated.</p>"
+        }
+      }
+    },
     "Url":{
       "type":"string",
       "max":255,
@@ -5284,6 +5779,66 @@
       "pattern":"vpce-[0-9a-f]{17}"
     },
     "VpcId":{"type":"string"},
+    "WebAppAccessEndpoint":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "WebAppEndpoint":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "WebAppFaviconFile":{
+      "type":"blob",
+      "max":20960,
+      "min":1,
+      "sensitive":true
+    },
+    "WebAppId":{
+      "type":"string",
+      "max":24,
+      "min":24,
+      "pattern":"webapp-[0-9a-f]{17}"
+    },
+    "WebAppIdentityProviderDetails":{
+      "type":"structure",
+      "members":{
+        "IdentityCenterConfig":{
+          "shape":"IdentityCenterConfig",
+          "documentation":"<p>A structure that describes the values to use for the IAM Identity Center settings when you create a web app.</p>"
+        }
+      },
+      "documentation":"<p>A union that contains the <code>IdentityCenterConfig</code> object.</p>",
+      "union":true
+    },
+    "WebAppLogoFile":{
+      "type":"blob",
+      "max":51200,
+      "min":1,
+      "sensitive":true
+    },
+    "WebAppTitle":{
+      "type":"string",
+      "max":100,
+      "min":0
+    },
+    "WebAppUnitCount":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "WebAppUnits":{
+      "type":"structure",
+      "members":{
+        "Provisioned":{
+          "shape":"WebAppUnitCount",
+          "documentation":"<p>An integer that represents the number of units for your desired number of concurrent connections, or the number of user sessions on your web app at the same time.</p> <p>Each increment allows an additional 250 concurrent sessions: a value of <code>1</code> sets the number of concurrent sessions to 250; <code>2</code> sets a value of 500, and so on. </p>"
+        }
+      },
+      "documentation":"<p>Contains an integer value that represents the value for number of concurrent connections or the user sessions on your web app.</p>",
+      "union":true
+    },
     "WorkflowDescription":{
       "type":"string",
       "max":256,

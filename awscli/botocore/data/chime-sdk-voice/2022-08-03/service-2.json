@@ -406,6 +406,26 @@
       ],
       "documentation":"<p>Deletes the emergency calling details from the specified Amazon Chime SDK Voice Connector.</p>"
     },
+    "DeleteVoiceConnectorExternalSystemsConfiguration":{
+      "name":"DeleteVoiceConnectorExternalSystemsConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/voice-connectors/{voiceConnectorId}/external-systems-configuration",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteVoiceConnectorExternalSystemsConfigurationRequest"},
+      "errors":[
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Deletes the external systems configuration for a Voice Connector.</p>",
+      "idempotent":true
+    },
     "DeleteVoiceConnectorGroup":{
       "name":"DeleteVoiceConnectorGroup",
       "http":{
@@ -841,6 +861,26 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Retrieves the emergency calling configuration details for the specified Voice Connector.</p>"
+    },
+    "GetVoiceConnectorExternalSystemsConfiguration":{
+      "name":"GetVoiceConnectorExternalSystemsConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/voice-connectors/{voiceConnectorId}/external-systems-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetVoiceConnectorExternalSystemsConfigurationRequest"},
+      "output":{"shape":"GetVoiceConnectorExternalSystemsConfigurationResponse"},
+      "errors":[
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Gets information about an external systems configuration for a Voice Connector.</p>"
     },
     "GetVoiceConnectorGroup":{
       "name":"GetVoiceConnectorGroup",
@@ -1357,6 +1397,28 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Updates a Voice Connector's emergency calling configuration.</p>"
+    },
+    "PutVoiceConnectorExternalSystemsConfiguration":{
+      "name":"PutVoiceConnectorExternalSystemsConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/voice-connectors/{voiceConnectorId}/external-systems-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"PutVoiceConnectorExternalSystemsConfigurationRequest"},
+      "output":{"shape":"PutVoiceConnectorExternalSystemsConfigurationResponse"},
+      "errors":[
+        {"shape":"UnauthorizedClientException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottledClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Adds an external systems configuration to a Voice Connector.</p>",
+      "idempotent":true
     },
     "PutVoiceConnectorLoggingConfiguration":{
       "name":"PutVoiceConnectorLoggingConfiguration",
@@ -2206,6 +2268,19 @@
       "error":{"httpStatusCode":409},
       "exception":true
     },
+    "ContactCenterSystemType":{
+      "type":"string",
+      "enum":[
+        "GENESYS_ENGAGE_ON_PREMISES",
+        "AVAYA_AURA_CALL_CENTER_ELITE",
+        "AVAYA_AURA_CONTACT_CENTER",
+        "CISCO_UNIFIED_CONTACT_CENTER_ENTERPRISE"
+      ]
+    },
+    "ContactCenterSystemTypeList":{
+      "type":"list",
+      "member":{"shape":"ContactCenterSystemType"}
+    },
     "Country":{
       "type":"string",
       "pattern":"^$|^[A-Z]{2,2}$"
@@ -2463,6 +2538,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags assigned to the Voice Connector.</p>"
+        },
+        "IntegrationType":{
+          "shape":"VoiceConnectorIntegrationType",
+          "documentation":"<p>The connectors for use with Amazon Connect.</p> <p>The following options are available:</p> <ul> <li> <p> <code>CONNECT_CALL_TRANSFER_CONNECTOR</code> - Enables enterprises to integrate Amazon Connect with other voice systems to directly transfer voice calls and metadata without using the public telephone network. They can use Amazon Connect telephony and Interactive Voice Response (IVR) with their existing voice systems to modernize the IVR experience of their existing contact center and their enterprise and branch voice systems. Additionally, enterprises migrating their contact center to Amazon Connect can start with Connect telephony and IVR for immediate modernization ahead of agent migration.</p> </li> <li> <p> <code>CONNECT_ANALYTICS_CONNECTOR</code> - Enables enterprises to integrate Amazon Connect with other voice systems for real-time and post-call analytics. They can use Amazon Connect Contact Lens with their existing voice systems to provides call recordings, conversational analytics (including contact transcript, sensitive data redaction, content categorization, theme detection, sentiment analysis, real-time alerts, and post-contact summary), and agent performance evaluations (including evaluation forms, automated evaluation, supervisor review) with a rich user experience to display, search and filter customer interactions, and programmatic access to data streams and the data lake. Additionally, enterprises migrating their contact center to Amazon Connect can start with Contact Lens analytics and performance insights ahead of agent migration.</p> </li> </ul>"
         }
       }
     },
@@ -2644,6 +2723,18 @@
         "VoiceConnectorId":{
           "shape":"NonEmptyString",
           "documentation":"<p>The Voice Connector ID.</p>",
+          "location":"uri",
+          "locationName":"voiceConnectorId"
+        }
+      }
+    },
+    "DeleteVoiceConnectorExternalSystemsConfigurationRequest":{
+      "type":"structure",
+      "required":["VoiceConnectorId"],
+      "members":{
+        "VoiceConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID of the Voice Connector for which to delete the external system configuration.</p>",
           "location":"uri",
           "locationName":"voiceConnectorId"
         }
@@ -2859,6 +2950,20 @@
         "PhoneNumberAssociationsExist",
         "Gone"
       ]
+    },
+    "ExternalSystemsConfiguration":{
+      "type":"structure",
+      "members":{
+        "SessionBorderControllerTypes":{
+          "shape":"SessionBorderControllerTypeList",
+          "documentation":"<p>The session border controllers.</p>"
+        },
+        "ContactCenterSystemTypes":{
+          "shape":"ContactCenterSystemTypeList",
+          "documentation":"<p>The contact center system.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an external systems configuration for a Voice Connector.</p>"
     },
     "ForbiddenException":{
       "type":"structure",
@@ -3125,6 +3230,27 @@
         "EmergencyCallingConfiguration":{
           "shape":"EmergencyCallingConfiguration",
           "documentation":"<p>The details of the emergency calling configuration.</p>"
+        }
+      }
+    },
+    "GetVoiceConnectorExternalSystemsConfigurationRequest":{
+      "type":"structure",
+      "required":["VoiceConnectorId"],
+      "members":{
+        "VoiceConnectorId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID of the Voice Connector for which to return information about the external system configuration.</p>",
+          "location":"uri",
+          "locationName":"voiceConnectorId"
+        }
+      }
+    },
+    "GetVoiceConnectorExternalSystemsConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "ExternalSystemsConfiguration":{
+          "shape":"ExternalSystemsConfiguration",
+          "documentation":"<p>An object that contains information about an external systems configuration for a Voice Connector.</p>"
         }
       }
     },
@@ -4437,6 +4563,35 @@
         }
       }
     },
+    "PutVoiceConnectorExternalSystemsConfigurationRequest":{
+      "type":"structure",
+      "required":["VoiceConnectorId"],
+      "members":{
+        "VoiceConnectorId":{
+          "shape":"NonEmptyString128",
+          "documentation":"<p>The ID of the Voice Connector for which to add the external system configuration.</p>",
+          "location":"uri",
+          "locationName":"voiceConnectorId"
+        },
+        "SessionBorderControllerTypes":{
+          "shape":"SessionBorderControllerTypeList",
+          "documentation":"<p>The session border controllers to use.</p>"
+        },
+        "ContactCenterSystemTypes":{
+          "shape":"ContactCenterSystemTypeList",
+          "documentation":"<p>The contact center system to use.</p>"
+        }
+      }
+    },
+    "PutVoiceConnectorExternalSystemsConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "ExternalSystemsConfiguration":{
+          "shape":"ExternalSystemsConfiguration",
+          "documentation":"<p>An object that contains information about an external systems configuration for a Voice Connector.</p>"
+        }
+      }
+    },
     "PutVoiceConnectorLoggingConfigurationRequest":{
       "type":"structure",
       "required":[
@@ -4761,6 +4916,20 @@
       "error":{"httpStatusCode":503},
       "exception":true,
       "fault":true
+    },
+    "SessionBorderControllerType":{
+      "type":"string",
+      "enum":[
+        "RIBBON_SBC",
+        "ORACLE_ACME_PACKET_SBC",
+        "AVAYA_SBCE",
+        "CISCO_UNIFIED_BORDER_ELEMENT",
+        "AUDIOCODES_MEDIANT_SBC"
+      ]
+    },
+    "SessionBorderControllerTypeList":{
+      "type":"list",
+      "member":{"shape":"SessionBorderControllerType"}
     },
     "SipApplicationPriority":{
       "type":"integer",
@@ -5780,6 +5949,10 @@
         "VoiceConnectorArn":{
           "shape":"NonEmptyString",
           "documentation":"<p>The ARN of the Voice Connector.</p>"
+        },
+        "IntegrationType":{
+          "shape":"VoiceConnectorIntegrationType",
+          "documentation":"<p>The connectors for use with Amazon Connect.</p>"
         }
       },
       "documentation":"<p>The Amazon Chime SDK Voice Connector configuration, including outbound host name and encryption settings.</p>"
@@ -5842,6 +6015,13 @@
       "max":256,
       "min":1,
       "pattern":"[a-zA-Z0-9 _.-]+"
+    },
+    "VoiceConnectorIntegrationType":{
+      "type":"string",
+      "enum":[
+        "CONNECT_CALL_TRANSFER_CONNECTOR",
+        "CONNECT_ANALYTICS_CONNECTOR"
+      ]
     },
     "VoiceConnectorItem":{
       "type":"structure",

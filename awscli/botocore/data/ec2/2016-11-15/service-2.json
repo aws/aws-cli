@@ -491,6 +491,16 @@
       "input":{"shape":"CancelConversionRequest"},
       "documentation":"<p>Cancels an active conversion task. The task can be the import of an instance or volume. The action removes all artifacts of the conversion, including a partially uploaded volume or instance. If the conversion is complete or is in the process of transferring the final disk image, the command fails and returns an exception.</p>"
     },
+    "CancelDeclarativePoliciesReport":{
+      "name":"CancelDeclarativePoliciesReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelDeclarativePoliciesReportRequest"},
+      "output":{"shape":"CancelDeclarativePoliciesReportResult"},
+      "documentation":"<p>Cancels the generation of an account status report.</p> <p>You can only cancel a report while it has the <code>running</code> status. Reports with other statuses (<code>complete</code>, <code>cancelled</code>, or <code>error</code>) can't be canceled.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_declarative_status-report.html\">Generating the account status report for declarative policies</a> in the <i>Amazon Web Services Organizations User Guide</i>.</p>"
+    },
     "CancelExportTask":{
       "name":"CancelExportTask",
       "http":{
@@ -2507,6 +2517,16 @@
       "output":{"shape":"DescribeCustomerGatewaysResult"},
       "documentation":"<p>Describes one or more of your VPN customer gateways.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpn/latest/s2svpn/VPC_VPN.html\">Amazon Web Services Site-to-Site VPN</a> in the <i>Amazon Web Services Site-to-Site VPN User Guide</i>.</p>"
     },
+    "DescribeDeclarativePoliciesReports":{
+      "name":"DescribeDeclarativePoliciesReports",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDeclarativePoliciesReportsRequest"},
+      "output":{"shape":"DescribeDeclarativePoliciesReportsResult"},
+      "documentation":"<p>Describes the metadata of an account status report, including the status of the report.</p> <p>To view the full report, download it from the Amazon S3 bucket where it was saved. Reports are accessible only when they have the <code>complete</code> status. Reports with other statuses (<code>running</code>, <code>cancelled</code>, or <code>error</code>) are not available in the S3 bucket. For more information about downloading objects from an S3 bucket, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/download-objects.html\">Downloading objects</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_declarative_status-report.html\">Generating the account status report for declarative policies</a> in the <i>Amazon Web Services Organizations User Guide</i>.</p>"
+    },
     "DescribeDhcpOptions":{
       "name":"DescribeDhcpOptions",
       "http":{
@@ -2715,7 +2735,7 @@
       },
       "input":{"shape":"DescribeImagesRequest"},
       "output":{"shape":"DescribeImagesResult"},
-      "documentation":"<p>Describes the specified images (AMIs, AKIs, and ARIs) available to you or all of the images available to you.</p> <p>The images available to you include public images, private images that you own, and private images owned by other Amazon Web Services accounts for which you have explicit launch permissions.</p> <p>Recently deregistered images appear in the returned results for a short interval and then return empty results. After all instances that reference a deregistered AMI are terminated, specifying the ID of the image will eventually return an error indicating that the AMI ID cannot be found.</p> <important> <p>We strongly recommend using only paginated requests. Unpaginated requests are susceptible to throttling and timeouts.</p> </important> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
+      "documentation":"<p>Describes the specified images (AMIs, AKIs, and ARIs) available to you or all of the images available to you.</p> <p>The images available to you include public images, private images that you own, and private images owned by other Amazon Web Services accounts for which you have explicit launch permissions.</p> <p>Recently deregistered images appear in the returned results for a short interval and then return empty results. After all instances that reference a deregistered AMI are terminated, specifying the ID of the image will eventually return an error indicating that the AMI ID cannot be found.</p> <p>When Allowed AMIs is set to <code>enabled</code>, only allowed images are returned in the results, with the <code>imageAllowed</code> field set to <code>true</code> for each image. In <code>audit-mode</code>, the <code>imageAllowed</code> field is set to <code>true</code> for images that meet the account's Allowed AMIs criteria, and <code>false</code> for images that don't meet the criteria. For more information, see <a>EnableAllowedImagesSettings</a>.</p> <important> <p>We strongly recommend using only paginated requests. Unpaginated requests are susceptible to throttling and timeouts.</p> </important> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
     },
     "DescribeImportImageTasks":{
       "name":"DescribeImportImageTasks",
@@ -2795,7 +2815,7 @@
       },
       "input":{"shape":"DescribeInstanceImageMetadataRequest"},
       "output":{"shape":"DescribeInstanceImageMetadataResult"},
-      "documentation":"<p>Describes the AMI that was used to launch an instance, even if the AMI is deprecated, deregistered, or made private (no longer public or shared with your account).</p> <p>If you specify instance IDs, the output includes information for only the specified instances. If you specify filters, the output includes information for only those instances that meet the filter criteria. If you do not specify instance IDs or filters, the output includes information for all instances, which can affect performance.</p> <p>If you specify an instance ID that is not valid, an instance that doesn't exist, or an instance that you do not own, an error (<code>InvalidInstanceID.NotFound</code>) is returned.</p> <p>Recently terminated instances might appear in the returned results. This interval is usually less than one hour.</p> <p>In the rare case where an Availability Zone is experiencing a service disruption and you specify instance IDs that are in the affected Availability Zone, or do not specify any instance IDs at all, the call fails. If you specify only instance IDs that are in an unaffected Availability Zone, the call works normally.</p> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
+      "documentation":"<p>Describes the AMI that was used to launch an instance, even if the AMI is deprecated, deregistered, made private (no longer public or shared with your account), or not allowed.</p> <p>If you specify instance IDs, the output includes information for only the specified instances. If you specify filters, the output includes information for only those instances that meet the filter criteria. If you do not specify instance IDs or filters, the output includes information for all instances, which can affect performance.</p> <p>If you specify an instance ID that is not valid, an instance that doesn't exist, or an instance that you do not own, an error (<code>InvalidInstanceID.NotFound</code>) is returned.</p> <p>Recently terminated instances might appear in the returned results. This interval is usually less than one hour.</p> <p>In the rare case where an Availability Zone is experiencing a service disruption and you specify instance IDs that are in the affected Availability Zone, or do not specify any instance IDs at all, the call fails. If you specify only instance IDs that are in an unaffected Availability Zone, the call works normally.</p> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
     },
     "DescribeInstanceStatus":{
       "name":"DescribeInstanceStatus",
@@ -3747,6 +3767,16 @@
       "output":{"shape":"DescribeVpcClassicLinkDnsSupportResult"},
       "documentation":"<note> <p>This action is deprecated.</p> </note> <p>Describes the ClassicLink DNS support status of one or more VPCs. If enabled, the DNS hostname of a linked EC2-Classic instance resolves to its private IP address when addressed from an instance in the VPC to which it's linked. Similarly, the DNS hostname of an instance in a VPC resolves to its private IP address when addressed from a linked EC2-Classic instance.</p>"
     },
+    "DescribeVpcEndpointAssociations":{
+      "name":"DescribeVpcEndpointAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeVpcEndpointAssociationsRequest"},
+      "output":{"shape":"DescribeVpcEndpointAssociationsResult"},
+      "documentation":"<p>Describes the VPC resources, VPC endpoint services, Amazon Lattice services, or service networks associated with the VPC endpoint.</p>"
+    },
     "DescribeVpcEndpointConnectionNotifications":{
       "name":"DescribeVpcEndpointConnectionNotifications",
       "http":{
@@ -3913,6 +3943,16 @@
       "input":{"shape":"DisableAddressTransferRequest"},
       "output":{"shape":"DisableAddressTransferResult"},
       "documentation":"<p>Disables Elastic IP address transfer. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html#transfer-EIPs-intro\">Transfer Elastic IP addresses</a> in the <i>Amazon VPC User Guide</i>.</p>"
+    },
+    "DisableAllowedImagesSettings":{
+      "name":"DisableAllowedImagesSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisableAllowedImagesSettingsRequest"},
+      "output":{"shape":"DisableAllowedImagesSettingsResult"},
+      "documentation":"<p>Disables Allowed AMIs for your account in the specified Amazon Web Services Region. When set to <code>disabled</code>, the image criteria in your Allowed AMIs settings do not apply, and no restrictions are placed on AMI discoverability or usage. Users in your account can launch instances using any public AMI or AMI shared with your account.</p> <note> <p>The Allowed AMIs feature does not restrict the AMIs owned by your account. Regardless of the criteria you set, the AMIs created by your account will always be discoverable and usable by users in your account.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-allowed-amis.html\">Control the discovery and use of AMIs in Amazon EC2 with Allowed AMIs</a> in <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DisableAwsNetworkPerformanceMetricSubscription":{
       "name":"DisableAwsNetworkPerformanceMetricSubscription",
@@ -4241,6 +4281,16 @@
       "output":{"shape":"EnableAddressTransferResult"},
       "documentation":"<p>Enables Elastic IP address transfer. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html#transfer-EIPs-intro\">Transfer Elastic IP addresses</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
+    "EnableAllowedImagesSettings":{
+      "name":"EnableAllowedImagesSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EnableAllowedImagesSettingsRequest"},
+      "output":{"shape":"EnableAllowedImagesSettingsResult"},
+      "documentation":"<p>Enables Allowed AMIs for your account in the specified Amazon Web Services Region. Two values are accepted:</p> <ul> <li> <p> <code>enabled</code>: The image criteria in your Allowed AMIs settings are applied. As a result, only AMIs matching these criteria are discoverable and can be used by your account to launch instances.</p> </li> <li> <p> <code>audit-mode</code>: The image criteria in your Allowed AMIs settings are not applied. No restrictions are placed on AMI discoverability or usage. Users in your account can launch instances using any public AMI or AMI shared with your account.</p> <p>The purpose of <code>audit-mode</code> is to indicate which AMIs will be affected when Allowed AMIs is <code>enabled</code>. In <code>audit-mode</code>, each AMI displays either <code>\"ImageAllowed\": true</code> or <code>\"ImageAllowed\": false</code> to indicate whether the AMI will be discoverable and available to users in the account when Allowed AMIs is enabled.</p> </li> </ul> <note> <p>The Allowed AMIs feature does not restrict the AMIs owned by your account. Regardless of the criteria you set, the AMIs created by your account will always be discoverable and usable by users in your account.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-allowed-amis.html\">Control the discovery and use of AMIs in Amazon EC2 with Allowed AMIs</a> in <i>Amazon EC2 User Guide</i>.</p>"
+    },
     "EnableAwsNetworkPerformanceMetricSubscription":{
       "name":"EnableAwsNetworkPerformanceMetricSubscription",
       "http":{
@@ -4449,6 +4499,26 @@
       "output":{"shape":"ExportTransitGatewayRoutesResult"},
       "documentation":"<p>Exports routes from the specified transit gateway route table to the specified S3 bucket. By default, all routes are exported. Alternatively, you can filter by CIDR range.</p> <p>The routes are saved to the specified bucket in a JSON file. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-route-tables.html#tgw-export-route-tables\">Export route tables to Amazon S3</a> in the <i>Amazon Web Services Transit Gateways Guide</i>.</p>"
     },
+    "ExportVerifiedAccessInstanceClientConfiguration":{
+      "name":"ExportVerifiedAccessInstanceClientConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ExportVerifiedAccessInstanceClientConfigurationRequest"},
+      "output":{"shape":"ExportVerifiedAccessInstanceClientConfigurationResult"},
+      "documentation":"<p>Exports the client configuration for a Verified Access instance.</p>"
+    },
+    "GetAllowedImagesSettings":{
+      "name":"GetAllowedImagesSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAllowedImagesSettingsRequest"},
+      "output":{"shape":"GetAllowedImagesSettingsResult"},
+      "documentation":"<p>Gets the current state of the Allowed AMIs setting and the list of Allowed AMIs criteria at the account level in the specified Region.</p> <note> <p>The Allowed AMIs feature does not restrict the AMIs owned by your account. Regardless of the criteria you set, the AMIs created by your account will always be discoverable and usable by users in your account.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-allowed-amis.html\">Control the discovery and use of AMIs in Amazon EC2 with Allowed AMIs</a> in <i>Amazon EC2 User Guide</i>.</p>"
+    },
     "GetAssociatedEnclaveCertificateIamRoles":{
       "name":"GetAssociatedEnclaveCertificateIamRoles",
       "http":{
@@ -4518,6 +4588,16 @@
       "input":{"shape":"GetConsoleScreenshotRequest"},
       "output":{"shape":"GetConsoleScreenshotResult"},
       "documentation":"<p>Retrieve a JPG-format screenshot of a running instance to help with troubleshooting.</p> <p>The returned content is Base64-encoded.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/troubleshoot-unreachable-instance.html#instance-console-console-output\">Instance console output</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
+    "GetDeclarativePoliciesReportSummary":{
+      "name":"GetDeclarativePoliciesReportSummary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDeclarativePoliciesReportSummaryRequest"},
+      "output":{"shape":"GetDeclarativePoliciesReportSummaryResult"},
+      "documentation":"<p>Retrieves a summary of the account status report.</p> <p>To view the full report, download it from the Amazon S3 bucket where it was saved. Reports are accessible only when they have the <code>complete</code> status. Reports with other statuses (<code>running</code>, <code>cancelled</code>, or <code>error</code>) are not available in the S3 bucket. For more information about downloading objects from an S3 bucket, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/download-objects.html\">Downloading objects</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_declarative_status-report.html\">Generating the account status report for declarative policies</a> in the <i>Amazon Web Services Organizations User Guide</i>.</p>"
     },
     "GetDefaultCreditSpecification":{
       "name":"GetDefaultCreditSpecification",
@@ -4898,6 +4978,16 @@
       "input":{"shape":"GetVerifiedAccessEndpointPolicyRequest"},
       "output":{"shape":"GetVerifiedAccessEndpointPolicyResult"},
       "documentation":"<p>Get the Verified Access policy associated with the endpoint.</p>"
+    },
+    "GetVerifiedAccessEndpointTargets":{
+      "name":"GetVerifiedAccessEndpointTargets",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetVerifiedAccessEndpointTargetsRequest"},
+      "output":{"shape":"GetVerifiedAccessEndpointTargetsResult"},
+      "documentation":"<p>Gets the targets for the specified network CIDR endpoint for Verified Access.</p>"
     },
     "GetVerifiedAccessGroupPolicy":{
       "name":"GetVerifiedAccessGroupPolicy",
@@ -5978,6 +6068,16 @@
       "output":{"shape":"ReplaceIamInstanceProfileAssociationResult"},
       "documentation":"<p>Replaces an IAM instance profile for the specified running instance. You can use this action to change the IAM instance profile that's associated with an instance without having to disassociate the existing IAM instance profile first.</p> <p>Use <a>DescribeIamInstanceProfileAssociations</a> to get the association ID.</p>"
     },
+    "ReplaceImageCriteriaInAllowedImagesSettings":{
+      "name":"ReplaceImageCriteriaInAllowedImagesSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ReplaceImageCriteriaInAllowedImagesSettingsRequest"},
+      "output":{"shape":"ReplaceImageCriteriaInAllowedImagesSettingsResult"},
+      "documentation":"<p>Sets or replaces the criteria for Allowed AMIs.</p> <note> <p>The Allowed AMIs feature does not restrict the AMIs owned by your account. Regardless of the criteria you set, the AMIs created by your account will always be discoverable and usable by users in your account.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-allowed-amis.html\">Control the discovery and use of AMIs in Amazon EC2 with Allowed AMIs</a> in <i>Amazon EC2 User Guide</i>.</p>"
+    },
     "ReplaceNetworkAclAssociation":{
       "name":"ReplaceNetworkAclAssociation",
       "http":{
@@ -6269,6 +6369,16 @@
       },
       "input":{"shape":"SendDiagnosticInterruptRequest"},
       "documentation":"<p>Sends a diagnostic interrupt to the specified Amazon EC2 instance to trigger a <i>kernel panic</i> (on Linux instances), or a <i>blue screen</i>/<i>stop error</i> (on Windows instances). For instances based on Intel and AMD processors, the interrupt is received as a <i>non-maskable interrupt</i> (NMI).</p> <p>In general, the operating system crashes and reboots when a kernel panic or stop error is triggered. The operating system can also be configured to perform diagnostic tasks, such as generating a memory dump file, loading a secondary kernel, or obtaining a call trace.</p> <p>Before sending a diagnostic interrupt to your instance, ensure that its operating system is configured to perform the required diagnostic tasks.</p> <p>For more information about configuring your operating system to generate a crash dump when a kernel panic or stop error occurs, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/diagnostic-interrupt.html\">Send a diagnostic interrupt (for advanced users)</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
+    "StartDeclarativePoliciesReport":{
+      "name":"StartDeclarativePoliciesReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartDeclarativePoliciesReportRequest"},
+      "output":{"shape":"StartDeclarativePoliciesReportResult"},
+      "documentation":"<p>Generates an account status report. The report is generated asynchronously, and can take several hours to complete.</p> <p>The report provides the current status of all attributes supported by declarative policies for the accounts within the specified scope. The scope is determined by the specified <code>TargetId</code>, which can represent an individual account, or all the accounts that fall under the specified organizational unit (OU) or root (the entire Amazon Web Services Organization).</p> <p>The report is saved to your specified S3 bucket, using the following path structure (with the <i>italicized placeholders</i> representing your specific values):</p> <p> <code>s3://<i>amzn-s3-demo-bucket</i>/<i>your-optional-s3-prefix</i>/ec2_<i>targetId</i>_<i>reportId</i>_<i>yyyyMMdd</i>T<i>hhmm</i>Z.csv</code> </p> <p class=\"title\"> <b>Prerequisites for generating a report</b> </p> <ul> <li> <p>The <code>StartDeclarativePoliciesReport</code> API can only be called by the management account or delegated administrators for the organization.</p> </li> <li> <p>An S3 bucket must be available before generating the report (you can create a new one or use an existing one), and it must have an appropriate bucket policy. For a sample S3 policy, see <i>Sample Amazon S3 policy</i> under .</p> </li> <li> <p>Trusted access must be enabled for the service for which the declarative policy will enforce a baseline configuration. If you use the Amazon Web Services Organizations console, this is done automatically when you enable declarative policies. The API uses the following service principal to identify the EC2 service: <code>ec2.amazonaws.com</code>. For more information on how to enable trusted access with the Amazon Web Services CLI and Amazon Web Services SDKs, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_integrate_services.html\">Using Organizations with other Amazon Web Services services</a> in the <i>Amazon Web Services Organizations User Guide</i>.</p> </li> <li> <p>Only one report per organization can be generated at a time. Attempting to generate a report while another is in progress will result in an error.</p> </li> </ul> <p>For more information, including the required IAM permissions to run this API, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_declarative_status-report.html\">Generating the account status report for declarative policies</a> in the <i>Amazon Web Services Organizations User Guide</i>.</p>"
     },
     "StartInstances":{
       "name":"StartInstances",
@@ -7556,6 +7666,17 @@
     "AllocationType":{
       "type":"string",
       "enum":["used"]
+    },
+    "AllowedImagesSettingsDisabledState":{
+      "type":"string",
+      "enum":["disabled"]
+    },
+    "AllowedImagesSettingsEnabledState":{
+      "type":"string",
+      "enum":[
+        "enabled",
+        "audit-mode"
+      ]
     },
     "AllowedInstanceType":{
       "type":"string",
@@ -9306,6 +9427,44 @@
       },
       "documentation":"<p>Describes a value for a resource attribute that is a Boolean value.</p>"
     },
+    "AttributeSummary":{
+      "type":"structure",
+      "members":{
+        "AttributeName":{
+          "shape":"String",
+          "documentation":"<p>The name of the attribute.</p>",
+          "locationName":"attributeName"
+        },
+        "MostFrequentValue":{
+          "shape":"String",
+          "documentation":"<p>The configuration value that is most frequently observed for the attribute.</p>",
+          "locationName":"mostFrequentValue"
+        },
+        "NumberOfMatchedAccounts":{
+          "shape":"Integer",
+          "documentation":"<p>The number of accounts with the same configuration value for the attribute that is most frequently observed.</p>",
+          "locationName":"numberOfMatchedAccounts"
+        },
+        "NumberOfUnmatchedAccounts":{
+          "shape":"Integer",
+          "documentation":"<p>The number of accounts with a configuration value different from the most frequently observed value for the attribute.</p>",
+          "locationName":"numberOfUnmatchedAccounts"
+        },
+        "RegionalSummaries":{
+          "shape":"RegionalSummaryList",
+          "documentation":"<p>The summary report for each Region for the attribute.</p>",
+          "locationName":"regionalSummarySet"
+        }
+      },
+      "documentation":"<p>A summary report for the attribute across all Regions.</p>"
+    },
+    "AttributeSummaryList":{
+      "type":"list",
+      "member":{
+        "shape":"AttributeSummary",
+        "locationName":"item"
+      }
+    },
     "AttributeValue":{
       "type":"structure",
       "members":{
@@ -10241,6 +10400,30 @@
           "shape":"String",
           "documentation":"<p>The reason for canceling the conversion task.</p>",
           "locationName":"reasonMessage"
+        }
+      }
+    },
+    "CancelDeclarativePoliciesReportRequest":{
+      "type":"structure",
+      "required":["ReportId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "ReportId":{
+          "shape":"DeclarativePoliciesReportId",
+          "documentation":"<p>The ID of the report.</p>"
+        }
+      }
+    },
+    "CancelDeclarativePoliciesReportResult":{
+      "type":"structure",
+      "members":{
+        "Return":{
+          "shape":"Boolean",
+          "documentation":"<p>Is <code>true</code> if the request succeeds, and an error otherwise.</p>",
+          "locationName":"return"
         }
       }
     },
@@ -16377,6 +16560,30 @@
         }
       }
     },
+    "CreateVerifiedAccessEndpointCidrOptions":{
+      "type":"structure",
+      "members":{
+        "Protocol":{
+          "shape":"VerifiedAccessEndpointProtocol",
+          "documentation":"<p>The protocol.</p>"
+        },
+        "SubnetIds":{
+          "shape":"CreateVerifiedAccessEndpointSubnetIdList",
+          "documentation":"<p>The IDs of the subnets.</p>",
+          "locationName":"SubnetId"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR.</p>"
+        },
+        "PortRanges":{
+          "shape":"CreateVerifiedAccessEndpointPortRangeList",
+          "documentation":"<p>The port ranges.</p>",
+          "locationName":"PortRange"
+        }
+      },
+      "documentation":"<p>Describes the CIDR options for a Verified Access endpoint.</p>"
+    },
     "CreateVerifiedAccessEndpointEniOptions":{
       "type":"structure",
       "members":{
@@ -16391,6 +16598,11 @@
         "Port":{
           "shape":"VerifiedAccessEndpointPortNumber",
           "documentation":"<p>The IP port number.</p>"
+        },
+        "PortRanges":{
+          "shape":"CreateVerifiedAccessEndpointPortRangeList",
+          "documentation":"<p>The port ranges.</p>",
+          "locationName":"PortRange"
         }
       },
       "documentation":"<p>Describes the network interface options when creating an Amazon Web Services Verified Access endpoint using the <code>network-interface</code> type.</p>"
@@ -16414,19 +16626,77 @@
           "shape":"CreateVerifiedAccessEndpointSubnetIdList",
           "documentation":"<p>The IDs of the subnets.</p>",
           "locationName":"SubnetId"
+        },
+        "PortRanges":{
+          "shape":"CreateVerifiedAccessEndpointPortRangeList",
+          "documentation":"<p>The port ranges.</p>",
+          "locationName":"PortRange"
         }
       },
       "documentation":"<p>Describes the load balancer options when creating an Amazon Web Services Verified Access endpoint using the <code>load-balancer</code> type.</p>"
+    },
+    "CreateVerifiedAccessEndpointPortRange":{
+      "type":"structure",
+      "members":{
+        "FromPort":{
+          "shape":"VerifiedAccessEndpointPortNumber",
+          "documentation":"<p>The start of the port range.</p>"
+        },
+        "ToPort":{
+          "shape":"VerifiedAccessEndpointPortNumber",
+          "documentation":"<p>The end of the port range.</p>"
+        }
+      },
+      "documentation":"<p>Describes the port range for a Verified Access endpoint.</p>"
+    },
+    "CreateVerifiedAccessEndpointPortRangeList":{
+      "type":"list",
+      "member":{
+        "shape":"CreateVerifiedAccessEndpointPortRange",
+        "locationName":"item"
+      }
+    },
+    "CreateVerifiedAccessEndpointRdsOptions":{
+      "type":"structure",
+      "members":{
+        "Protocol":{
+          "shape":"VerifiedAccessEndpointProtocol",
+          "documentation":"<p>The protocol.</p>"
+        },
+        "Port":{
+          "shape":"VerifiedAccessEndpointPortNumber",
+          "documentation":"<p>The port.</p>"
+        },
+        "RdsDbInstanceArn":{
+          "shape":"RdsDbInstanceArn",
+          "documentation":"<p>The ARN of the RDS instance.</p>"
+        },
+        "RdsDbClusterArn":{
+          "shape":"RdsDbClusterArn",
+          "documentation":"<p>The ARN of the DB cluster.</p>"
+        },
+        "RdsDbProxyArn":{
+          "shape":"RdsDbProxyArn",
+          "documentation":"<p>The ARN of the RDS proxy.</p>"
+        },
+        "RdsEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The RDS endpoint.</p>"
+        },
+        "SubnetIds":{
+          "shape":"CreateVerifiedAccessEndpointSubnetIdList",
+          "documentation":"<p>The IDs of the subnets.</p>",
+          "locationName":"SubnetId"
+        }
+      },
+      "documentation":"<p>Describes the RDS options for a Verified Access endpoint.</p>"
     },
     "CreateVerifiedAccessEndpointRequest":{
       "type":"structure",
       "required":[
         "VerifiedAccessGroupId",
         "EndpointType",
-        "AttachmentType",
-        "DomainCertificateArn",
-        "ApplicationDomain",
-        "EndpointDomainPrefix"
+        "AttachmentType"
       ],
       "members":{
         "VerifiedAccessGroupId":{
@@ -16491,6 +16761,14 @@
         "SseSpecification":{
           "shape":"VerifiedAccessSseSpecificationRequest",
           "documentation":"<p>The options for server side encryption.</p>"
+        },
+        "RdsOptions":{
+          "shape":"CreateVerifiedAccessEndpointRdsOptions",
+          "documentation":"<p>The RDS details. This parameter is required if the endpoint type is <code>rds</code>.</p>"
+        },
+        "CidrOptions":{
+          "shape":"CreateVerifiedAccessEndpointCidrOptions",
+          "documentation":"<p>The CIDR options. This parameter is required if the endpoint type is <code>cidr</code>.</p>"
         }
       }
     },
@@ -16581,6 +16859,10 @@
         "FIPSEnabled":{
           "shape":"Boolean",
           "documentation":"<p>Enable or disable support for Federal Information Processing Standards (FIPS) on the instance.</p>"
+        },
+        "CidrEndpointsCustomSubDomain":{
+          "shape":"String",
+          "documentation":"<p>The custom subdomain.</p>"
         }
       }
     },
@@ -16593,6 +16875,44 @@
           "locationName":"verifiedAccessInstance"
         }
       }
+    },
+    "CreateVerifiedAccessNativeApplicationOidcOptions":{
+      "type":"structure",
+      "members":{
+        "PublicSigningKeyEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The public signing key endpoint.</p>"
+        },
+        "Issuer":{
+          "shape":"String",
+          "documentation":"<p>The OIDC issuer identifier of the IdP.</p>"
+        },
+        "AuthorizationEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The authorization endpoint of the IdP.</p>"
+        },
+        "TokenEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The token endpoint of the IdP.</p>"
+        },
+        "UserInfoEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The user info endpoint of the IdP.</p>"
+        },
+        "ClientId":{
+          "shape":"String",
+          "documentation":"<p>The OAuth 2.0 client identifier.</p>"
+        },
+        "ClientSecret":{
+          "shape":"ClientSecretType",
+          "documentation":"<p>The OAuth 2.0 client secret.</p>"
+        },
+        "Scope":{
+          "shape":"String",
+          "documentation":"<p>The set of user claims to be requested from the IdP.</p>"
+        }
+      },
+      "documentation":"<p>Describes the OpenID Connect (OIDC) options.</p>"
     },
     "CreateVerifiedAccessTrustProviderDeviceOptions":{
       "type":"structure",
@@ -16694,6 +17014,10 @@
         "SseSpecification":{
           "shape":"VerifiedAccessSseSpecificationRequest",
           "documentation":"<p>The options for server side encryption.</p>"
+        },
+        "NativeApplicationOidcOptions":{
+          "shape":"CreateVerifiedAccessNativeApplicationOidcOptions",
+          "documentation":"<p>The OpenID Connect (OIDC) options.</p>"
         }
       }
     },
@@ -16897,10 +17221,7 @@
     },
     "CreateVpcEndpointRequest":{
       "type":"structure",
-      "required":[
-        "VpcId",
-        "ServiceName"
-      ],
+      "required":["VpcId"],
       "members":{
         "DryRun":{
           "shape":"Boolean",
@@ -16962,6 +17283,14 @@
           "shape":"SubnetConfigurationsList",
           "documentation":"<p>The subnet configurations for the endpoint.</p>",
           "locationName":"SubnetConfiguration"
+        },
+        "ServiceNetworkArn":{
+          "shape":"ServiceNetworkArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a service network that will be associated with the VPC endpoint of type service-network.</p>"
+        },
+        "ResourceConfigurationArn":{
+          "shape":"ResourceConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a resource configuration that will be associated with the VPC endpoint of type resource.</p>"
         },
         "ServiceRegion":{
           "shape":"String",
@@ -17460,6 +17789,65 @@
       ]
     },
     "DateTime":{"type":"timestamp"},
+    "DeclarativePoliciesMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "DeclarativePoliciesReport":{
+      "type":"structure",
+      "members":{
+        "ReportId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the report.</p>",
+          "locationName":"reportId"
+        },
+        "S3Bucket":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon S3 bucket where the report is located.</p>",
+          "locationName":"s3Bucket"
+        },
+        "S3Prefix":{
+          "shape":"String",
+          "documentation":"<p>The prefix for your S3 object.</p>",
+          "locationName":"s3Prefix"
+        },
+        "TargetId":{
+          "shape":"String",
+          "documentation":"<p>The root ID, organizational unit ID, or account ID.</p> <p>Format:</p> <ul> <li> <p>For root: <code>r-ab12</code> </p> </li> <li> <p>For OU: <code>ou-ab12-cdef1234</code> </p> </li> <li> <p>For account: <code>123456789012</code> </p> </li> </ul>",
+          "locationName":"targetId"
+        },
+        "StartTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The time when the report generation started.</p>",
+          "locationName":"startTime"
+        },
+        "EndTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The time when the report generation ended.</p>",
+          "locationName":"endTime"
+        },
+        "Status":{
+          "shape":"ReportState",
+          "documentation":"<p>The current status of the report.</p>",
+          "locationName":"status"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Any tags assigned to the report.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes the metadata of the account status report.</p>"
+    },
+    "DeclarativePoliciesReportId":{"type":"string"},
+    "DeclarativePoliciesReportList":{
+      "type":"list",
+      "member":{
+        "shape":"DeclarativePoliciesReport",
+        "locationName":"item"
+      }
+    },
     "DedicatedHostFlag":{"type":"boolean"},
     "DedicatedHostId":{"type":"string"},
     "DedicatedHostIdList":{
@@ -20798,6 +21186,43 @@
       },
       "documentation":"<p>Contains the output of DescribeCustomerGateways.</p>"
     },
+    "DescribeDeclarativePoliciesReportsRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "MaxResults":{
+          "shape":"DeclarativePoliciesMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "ReportIds":{
+          "shape":"ValueStringList",
+          "documentation":"<p>One or more report IDs.</p>",
+          "locationName":"ReportId"
+        }
+      }
+    },
+    "DescribeDeclarativePoliciesReportsResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>",
+          "locationName":"nextToken"
+        },
+        "Reports":{
+          "shape":"DeclarativePoliciesReportList",
+          "documentation":"<p>The report metadata.</p>",
+          "locationName":"reportSet"
+        }
+      }
+    },
     "DescribeDhcpOptionsMaxResults":{
       "type":"integer",
       "max":1000,
@@ -21861,7 +22286,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>architecture</code> - The image architecture (<code>i386</code> | <code>x86_64</code> | <code>arm64</code> | <code>x86_64_mac</code> | <code>arm64_mac</code>).</p> </li> <li> <p> <code>block-device-mapping.delete-on-termination</code> - A Boolean value that indicates whether the Amazon EBS volume is deleted on instance termination.</p> </li> <li> <p> <code>block-device-mapping.device-name</code> - The device name specified in the block device mapping (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p> </li> <li> <p> <code>block-device-mapping.snapshot-id</code> - The ID of the snapshot used for the Amazon EBS volume.</p> </li> <li> <p> <code>block-device-mapping.volume-size</code> - The volume size of the Amazon EBS volume, in GiB.</p> </li> <li> <p> <code>block-device-mapping.volume-type</code> - The volume type of the Amazon EBS volume (<code>io1</code> | <code>io2</code> | <code>gp2</code> | <code>gp3</code> | <code>sc1 </code>| <code>st1</code> | <code>standard</code>).</p> </li> <li> <p> <code>block-device-mapping.encrypted</code> - A Boolean that indicates whether the Amazon EBS volume is encrypted.</p> </li> <li> <p> <code>creation-date</code> - The time when the image was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2021-09-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>description</code> - The description of the image (provided during image creation).</p> </li> <li> <p> <code>ena-support</code> - A Boolean that indicates whether enhanced networking with ENA is enabled.</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor type (<code>ovm</code> | <code>xen</code>).</p> </li> <li> <p> <code>image-id</code> - The ID of the image.</p> </li> <li> <p> <code>image-type</code> - The image type (<code>machine</code> | <code>kernel</code> | <code>ramdisk</code>).</p> </li> <li> <p> <code>is-public</code> - A Boolean that indicates whether the image is public.</p> </li> <li> <p> <code>kernel-id</code> - The kernel ID.</p> </li> <li> <p> <code>manifest-location</code> - The location of the image manifest.</p> </li> <li> <p> <code>name</code> - The name of the AMI (provided during image creation).</p> </li> <li> <p> <code>owner-alias</code> - The owner alias (<code>amazon</code> | <code>aws-backup-vault</code> | <code>aws-marketplace</code>). The valid aliases are defined in an Amazon-maintained list. This is not the Amazon Web Services account alias that can be set using the IAM console. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the owner. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>platform</code> - The platform. The only supported value is <code>windows</code>.</p> </li> <li> <p> <code>product-code</code> - The product code.</p> </li> <li> <p> <code>product-code.type</code> - The type of the product code (<code>marketplace</code>).</p> </li> <li> <p> <code>ramdisk-id</code> - The RAM disk ID.</p> </li> <li> <p> <code>root-device-name</code> - The device name of the root device volume (for example, <code>/dev/sda1</code>).</p> </li> <li> <p> <code>root-device-type</code> - The type of the root device volume (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>source-instance-id</code> - The ID of the instance that the AMI was created from if the AMI was created using CreateImage. This filter is applicable only if the AMI was created using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>.</p> </li> <li> <p> <code>state</code> - The state of the image (<code>available</code> | <code>pending</code> | <code>failed</code>).</p> </li> <li> <p> <code>state-reason-code</code> - The reason code for the state change.</p> </li> <li> <p> <code>state-reason-message</code> - The message for the state change.</p> </li> <li> <p> <code>sriov-net-support</code> - A value of <code>simple</code> indicates that enhanced networking with the Intel 82599 VF interface is enabled.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>virtualization-type</code> - The virtualization type (<code>paravirtual</code> | <code>hvm</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>architecture</code> - The image architecture (<code>i386</code> | <code>x86_64</code> | <code>arm64</code> | <code>x86_64_mac</code> | <code>arm64_mac</code>).</p> </li> <li> <p> <code>block-device-mapping.delete-on-termination</code> - A Boolean value that indicates whether the Amazon EBS volume is deleted on instance termination.</p> </li> <li> <p> <code>block-device-mapping.device-name</code> - The device name specified in the block device mapping (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p> </li> <li> <p> <code>block-device-mapping.snapshot-id</code> - The ID of the snapshot used for the Amazon EBS volume.</p> </li> <li> <p> <code>block-device-mapping.volume-size</code> - The volume size of the Amazon EBS volume, in GiB.</p> </li> <li> <p> <code>block-device-mapping.volume-type</code> - The volume type of the Amazon EBS volume (<code>io1</code> | <code>io2</code> | <code>gp2</code> | <code>gp3</code> | <code>sc1 </code>| <code>st1</code> | <code>standard</code>).</p> </li> <li> <p> <code>block-device-mapping.encrypted</code> - A Boolean that indicates whether the Amazon EBS volume is encrypted.</p> </li> <li> <p> <code>creation-date</code> - The time when the image was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2021-09-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>description</code> - The description of the image (provided during image creation).</p> </li> <li> <p> <code>ena-support</code> - A Boolean that indicates whether enhanced networking with ENA is enabled.</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor type (<code>ovm</code> | <code>xen</code>).</p> </li> <li> <p> <code>image-allowed</code> - A Boolean that indicates whether the image meets the criteria specified for Allowed AMIs.</p> </li> <li> <p> <code>image-id</code> - The ID of the image.</p> </li> <li> <p> <code>image-type</code> - The image type (<code>machine</code> | <code>kernel</code> | <code>ramdisk</code>).</p> </li> <li> <p> <code>is-public</code> - A Boolean that indicates whether the image is public.</p> </li> <li> <p> <code>kernel-id</code> - The kernel ID.</p> </li> <li> <p> <code>manifest-location</code> - The location of the image manifest.</p> </li> <li> <p> <code>name</code> - The name of the AMI (provided during image creation).</p> </li> <li> <p> <code>owner-alias</code> - The owner alias (<code>amazon</code> | <code>aws-backup-vault</code> | <code>aws-marketplace</code>). The valid aliases are defined in an Amazon-maintained list. This is not the Amazon Web Services account alias that can be set using the IAM console. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the owner. We recommend that you use the <b>Owner</b> request parameter instead of this filter.</p> </li> <li> <p> <code>platform</code> - The platform. The only supported value is <code>windows</code>.</p> </li> <li> <p> <code>product-code</code> - The product code.</p> </li> <li> <p> <code>product-code.type</code> - The type of the product code (<code>marketplace</code>).</p> </li> <li> <p> <code>ramdisk-id</code> - The RAM disk ID.</p> </li> <li> <p> <code>root-device-name</code> - The device name of the root device volume (for example, <code>/dev/sda1</code>).</p> </li> <li> <p> <code>root-device-type</code> - The type of the root device volume (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>source-image-id</code> - The ID of the source AMI from which the AMI was created.</p> </li> <li> <p> <code>source-image-region</code> - The Region of the source AMI.</p> </li> <li> <p> <code>source-instance-id</code> - The ID of the instance that the AMI was created from if the AMI was created using CreateImage. This filter is applicable only if the AMI was created using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>.</p> </li> <li> <p> <code>state</code> - The state of the image (<code>available</code> | <code>pending</code> | <code>failed</code>).</p> </li> <li> <p> <code>state-reason-code</code> - The reason code for the state change.</p> </li> <li> <p> <code>state-reason-message</code> - The message for the state change.</p> </li> <li> <p> <code>sriov-net-support</code> - A value of <code>simple</code> indicates that enhanced networking with the Intel 82599 VF interface is enabled.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>virtualization-type</code> - The virtualization type (<code>paravirtual</code> | <code>hvm</code>).</p> </li> </ul>",
           "locationName":"Filter"
         }
       }
@@ -22148,7 +22573,7 @@
       "members":{
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>availability-zone</code> - The name of the Availability Zone (for example, <code>us-west-2a</code>) or Local Zone (for example, <code>us-west-2-lax-1b</code>) of the instance.</p> </li> <li> <p> <code>instance-id</code> - The ID of the instance.</p> </li> <li> <p> <code>instance-state-name</code> - The state of the instance (<code>pending</code> | <code>running</code> | <code>shutting-down</code> | <code>terminated</code> | <code>stopping</code> | <code>stopped</code>).</p> </li> <li> <p> <code>instance-type</code> - The type of instance (for example, <code>t3.micro</code>).</p> </li> <li> <p> <code>launch-time</code> - The time when the instance was launched, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2023-09-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2023-09-29T*</code>, which matches an entire day. </p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>zone-id</code> - The ID of the Availability Zone (for example, <code>usw2-az2</code>) or Local Zone (for example, <code>usw2-lax1-az1</code>) of the instance.</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>availability-zone</code> - The name of the Availability Zone (for example, <code>us-west-2a</code>) or Local Zone (for example, <code>us-west-2-lax-1b</code>) of the instance.</p> </li> <li> <p> <code>instance-id</code> - The ID of the instance.</p> </li> <li> <p> <code>image-allowed</code> - A Boolean that indicates whether the image meets the criteria specified for Allowed AMIs.</p> </li> <li> <p> <code>instance-state-name</code> - The state of the instance (<code>pending</code> | <code>running</code> | <code>shutting-down</code> | <code>terminated</code> | <code>stopping</code> | <code>stopped</code>).</p> </li> <li> <p> <code>instance-type</code> - The type of instance (for example, <code>t3.micro</code>).</p> </li> <li> <p> <code>launch-time</code> - The time when the instance was launched, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2023-09-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2023-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>owner-alias</code> - The owner alias (<code>amazon</code> | <code>aws-marketplace</code> | <code>aws-backup-vault</code>). The valid aliases are defined in an Amazon-maintained list. This is not the Amazon Web Services account alias that can be set using the IAM console. We recommend that you use the <code>Owner</code> request parameter instead of this filter.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the owner. We recommend that you use the <code>Owner</code> request parameter instead of this filter.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>zone-id</code> - The ID of the Availability Zone (for example, <code>usw2-az2</code>) or Local Zone (for example, <code>usw2-lax1-az1</code>) of the instance.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "InstanceIds":{
@@ -24702,7 +25127,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>description</code> - A description of the snapshot.</p> </li> <li> <p> <code>encrypted</code> - Indicates whether the snapshot is encrypted (<code>true</code> | <code>false</code>)</p> </li> <li> <p> <code>owner-alias</code> - The owner alias, from an Amazon-maintained list (<code>amazon</code>). This is not the user-configured Amazon Web Services account alias set using the IAM console. We recommend that you use the related parameter instead of this filter.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the owner. We recommend that you use the related parameter instead of this filter.</p> </li> <li> <p> <code>progress</code> - The progress of the snapshot, as a percentage (for example, 80%).</p> </li> <li> <p> <code>snapshot-id</code> - The snapshot ID.</p> </li> <li> <p> <code>start-time</code> - The time stamp when the snapshot was initiated.</p> </li> <li> <p> <code>status</code> - The status of the snapshot (<code>pending</code> | <code>completed</code> | <code>error</code>).</p> </li> <li> <p> <code>storage-tier</code> - The storage tier of the snapshot (<code>archive</code> | <code>standard</code>).</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>volume-id</code> - The ID of the volume the snapshot is for.</p> </li> <li> <p> <code>volume-size</code> - The size of the volume, in GiB.</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>description</code> - A description of the snapshot.</p> </li> <li> <p> <code>encrypted</code> - Indicates whether the snapshot is encrypted (<code>true</code> | <code>false</code>)</p> </li> <li> <p> <code>owner-alias</code> - The owner alias, from an Amazon-maintained list (<code>amazon</code>). This is not the user-configured Amazon Web Services account alias set using the IAM console. We recommend that you use the related parameter instead of this filter.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the owner. We recommend that you use the related parameter instead of this filter.</p> </li> <li> <p> <code>progress</code> - The progress of the snapshot, as a percentage (for example, 80%).</p> </li> <li> <p> <code>snapshot-id</code> - The snapshot ID.</p> </li> <li> <p> <code>start-time</code> - The time stamp when the snapshot was initiated.</p> </li> <li> <p> <code>status</code> - The status of the snapshot (<code>pending</code> | <code>completed</code> | <code>error</code>).</p> </li> <li> <p> <code>storage-tier</code> - The storage tier of the snapshot (<code>archive</code> | <code>standard</code>).</p> </li> <li> <p> <code>transfer-type</code> - The type of operation used to create the snapshot (<code>time-based</code> | <code>standard</code>).</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>volume-id</code> - The ID of the volume the snapshot is for.</p> </li> <li> <p> <code>volume-size</code> - The size of the volume, in GiB.</p> </li> </ul>",
           "locationName":"Filter"
         }
       }
@@ -26444,6 +26869,48 @@
         }
       }
     },
+    "DescribeVpcEndpointAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "VpcEndpointIds":{
+          "shape":"VpcEndpointIdList",
+          "documentation":"<p>The IDs of the VPC endpoints.</p>",
+          "locationName":"VpcEndpointId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>vpc-endpoint-id</code> - The ID of the VPC endpoint.</p> </li> <li> <p> <code>associated-resource-accessibility</code> - The association state. When the state is <code>accessible</code>, it returns <code>AVAILABLE</code>. When the state is <code>inaccessible</code>, it returns <code>PENDING</code> or <code>FAILED</code>.</p> </li> <li> <p> <code>association-id</code> - The ID of the VPC endpoint association.</p> </li> <li> <p> <code>associated-resource-id</code> - The ID of the associated resource configuration.</p> </li> <li> <p> <code>service-network-arn</code> - The Amazon Resource Name (ARN) of the associated service network. Only VPC endpoints of type service network will be returned.</p> </li> <li> <p> <code>resource-configuration-group-arn</code> - The Amazon Resource Name (ARN) of the resource configuration of type GROUP.</p> </li> <li> <p> <code>service-network-resource-association-id</code> - The ID of the association.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"maxResults",
+          "documentation":"<p>The maximum page size.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token.</p>"
+        }
+      }
+    },
+    "DescribeVpcEndpointAssociationsResult":{
+      "type":"structure",
+      "members":{
+        "VpcEndpointAssociations":{
+          "shape":"VpcEndpointAssociationSet",
+          "documentation":"<p>Details of the endpoint associations.</p>",
+          "locationName":"vpcEndpointAssociationSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribeVpcEndpointConnectionNotificationsRequest":{
       "type":"structure",
       "members":{
@@ -27101,6 +27568,13 @@
         "jumpcloud"
       ]
     },
+    "DeviceTrustProviderTypeList":{
+      "type":"list",
+      "member":{
+        "shape":"DeviceTrustProviderType",
+        "locationName":"item"
+      }
+    },
     "DeviceType":{
       "type":"string",
       "enum":[
@@ -27221,6 +27695,25 @@
           "shape":"AddressTransfer",
           "documentation":"<p>An Elastic IP address transfer.</p>",
           "locationName":"addressTransfer"
+        }
+      }
+    },
+    "DisableAllowedImagesSettingsRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DisableAllowedImagesSettingsResult":{
+      "type":"structure",
+      "members":{
+        "AllowedImagesSettingsState":{
+          "shape":"AllowedImagesSettingsDisabledState",
+          "documentation":"<p>Returns <code>disabled</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"allowedImagesSettingsState"
         }
       }
     },
@@ -28636,7 +29129,7 @@
         },
         "Operator":{
           "shape":"OperatorResponse",
-          "documentation":"<p>The entity that manages the EBS volume.</p>",
+          "documentation":"<p>The service provider that manages the EBS volume.</p>",
           "locationName":"operator"
         }
       },
@@ -29219,6 +29712,30 @@
           "shape":"AddressTransfer",
           "documentation":"<p>An Elastic IP address transfer.</p>",
           "locationName":"addressTransfer"
+        }
+      }
+    },
+    "EnableAllowedImagesSettingsRequest":{
+      "type":"structure",
+      "required":["AllowedImagesSettingsState"],
+      "members":{
+        "AllowedImagesSettingsState":{
+          "shape":"AllowedImagesSettingsEnabledState",
+          "documentation":"<p>Specify <code>enabled</code> to apply the image criteria specified by the Allowed AMIs settings. Specify <code>audit-mode</code> so that you can check which AMIs will be allowed or not allowed by the image criteria.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "EnableAllowedImagesSettingsResult":{
+      "type":"structure",
+      "members":{
+        "AllowedImagesSettingsState":{
+          "shape":"AllowedImagesSettingsEnabledState",
+          "documentation":"<p>Returns <code>enabled</code> or <code>audit-mode</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"allowedImagesSettingsState"
         }
       }
     },
@@ -30635,6 +31152,55 @@
         }
       }
     },
+    "ExportVerifiedAccessInstanceClientConfigurationRequest":{
+      "type":"structure",
+      "required":["VerifiedAccessInstanceId"],
+      "members":{
+        "VerifiedAccessInstanceId":{
+          "shape":"VerifiedAccessInstanceId",
+          "documentation":"<p>The ID of the Verified Access instance.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ExportVerifiedAccessInstanceClientConfigurationResult":{
+      "type":"structure",
+      "members":{
+        "Version":{
+          "shape":"String",
+          "documentation":"<p>The version.</p>",
+          "locationName":"version"
+        },
+        "VerifiedAccessInstanceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Verified Access instance.</p>",
+          "locationName":"verifiedAccessInstanceId"
+        },
+        "Region":{
+          "shape":"String",
+          "documentation":"<p>The Region.</p>",
+          "locationName":"region"
+        },
+        "DeviceTrustProviders":{
+          "shape":"DeviceTrustProviderTypeList",
+          "documentation":"<p>The device trust providers.</p>",
+          "locationName":"deviceTrustProviderSet"
+        },
+        "UserTrustProvider":{
+          "shape":"VerifiedAccessInstanceUserTrustProviderClientConfiguration",
+          "documentation":"<p>The user identity trust provider.</p>",
+          "locationName":"userTrustProvider"
+        },
+        "OpenVpnConfigurations":{
+          "shape":"VerifiedAccessInstanceOpenVpnClientConfigurationList",
+          "documentation":"<p>The Open VPN configuration.</p>",
+          "locationName":"openVpnConfigurationSet"
+        }
+      }
+    },
     "ExportVmTaskId":{"type":"string"},
     "FailedCapacityReservationFleetCancellationResult":{
       "type":"structure",
@@ -31815,6 +32381,35 @@
       "type":"string",
       "enum":["ipsec.1"]
     },
+    "GetAllowedImagesSettingsRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetAllowedImagesSettingsResult":{
+      "type":"structure",
+      "members":{
+        "State":{
+          "shape":"String",
+          "documentation":"<p>The current state of the Allowed AMIs setting at the account level in the specified Amazon Web Services Region.</p> <p>Possible values:</p> <ul> <li> <p> <code>disabled</code>: All AMIs are allowed.</p> </li> <li> <p> <code>audit-mode</code>: All AMIs are allowed, but the <code>ImageAllowed</code> field is set to <code>true</code> if the AMI would be allowed with the current list of criteria if allowed AMIs was enabled.</p> </li> <li> <p> <code>enabled</code>: Only AMIs matching the image criteria are discoverable and available for use.</p> </li> </ul>",
+          "locationName":"state"
+        },
+        "ImageCriteria":{
+          "shape":"ImageCriterionList",
+          "documentation":"<p>The list of criteria for images that are discoverable and usable in the account in the specified Amazon Web Services Region.</p>",
+          "locationName":"imageCriterionSet"
+        },
+        "ManagedBy":{
+          "shape":"ManagedBy",
+          "documentation":"<p>The entity that manages the Allowed AMIs settings. Possible values include:</p> <ul> <li> <p> <code>account</code> - The Allowed AMIs settings is managed by the account.</p> </li> <li> <p> <code>declarative-policy</code> - The Allowed AMIs settings is managed by a declarative policy and can't be modified by the account.</p> </li> </ul>",
+          "locationName":"managedBy"
+        }
+      }
+    },
     "GetAssociatedEnclaveCertificateIamRolesRequest":{
       "type":"structure",
       "required":["CertificateArn"],
@@ -32112,6 +32707,70 @@
         }
       }
     },
+    "GetDeclarativePoliciesReportSummaryRequest":{
+      "type":"structure",
+      "required":["ReportId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "ReportId":{
+          "shape":"DeclarativePoliciesReportId",
+          "documentation":"<p>The ID of the report.</p>"
+        }
+      }
+    },
+    "GetDeclarativePoliciesReportSummaryResult":{
+      "type":"structure",
+      "members":{
+        "ReportId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the report.</p>",
+          "locationName":"reportId"
+        },
+        "S3Bucket":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon S3 bucket where the report is located.</p>",
+          "locationName":"s3Bucket"
+        },
+        "S3Prefix":{
+          "shape":"String",
+          "documentation":"<p>The prefix for your S3 object.</p>",
+          "locationName":"s3Prefix"
+        },
+        "TargetId":{
+          "shape":"String",
+          "documentation":"<p>The root ID, organizational unit ID, or account ID.</p> <p>Format:</p> <ul> <li> <p>For root: <code>r-ab12</code> </p> </li> <li> <p>For OU: <code>ou-ab12-cdef1234</code> </p> </li> <li> <p>For account: <code>123456789012</code> </p> </li> </ul>",
+          "locationName":"targetId"
+        },
+        "StartTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The time when the report generation started.</p>",
+          "locationName":"startTime"
+        },
+        "EndTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The time when the report generation ended.</p>",
+          "locationName":"endTime"
+        },
+        "NumberOfAccounts":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of accounts associated with the specified <code>targetId</code>.</p>",
+          "locationName":"numberOfAccounts"
+        },
+        "NumberOfFailedAccounts":{
+          "shape":"Integer",
+          "documentation":"<p>The number of accounts where attributes could not be retrieved in any Region.</p>",
+          "locationName":"numberOfFailedAccounts"
+        },
+        "AttributeSummaries":{
+          "shape":"AttributeSummaryList",
+          "documentation":"<p>The attributes described in the report.</p>",
+          "locationName":"attributeSummarySet"
+        }
+      }
+    },
     "GetDefaultCreditSpecificationRequest":{
       "type":"structure",
       "required":["InstanceFamily"],
@@ -32316,6 +32975,11 @@
           "shape":"String",
           "documentation":"<p>The current state of block public access for AMIs at the account level in the specified Amazon Web Services Region.</p> <p>Possible values:</p> <ul> <li> <p> <code>block-new-sharing</code> - Any attempt to publicly share your AMIs in the specified Region is blocked.</p> </li> <li> <p> <code>unblocked</code> - Your AMIs in the specified Region can be publicly shared.</p> </li> </ul>",
           "locationName":"imageBlockPublicAccessState"
+        },
+        "ManagedBy":{
+          "shape":"ManagedBy",
+          "documentation":"<p>The entity that manages the state for block public access for AMIs. Possible values include:</p> <ul> <li> <p> <code>account</code> - The state is managed by the account.</p> </li> <li> <p> <code>declarative-policy</code> - The state is managed by a declarative policy and can't be modified by the account.</p> </li> </ul>",
+          "locationName":"managedBy"
         }
       }
     },
@@ -33185,6 +33849,11 @@
           "shape":"Boolean",
           "documentation":"<p>If <code>true</code>, access to the EC2 serial console of all instances is enabled for your account. If <code>false</code>, access to the EC2 serial console of all instances is disabled for your account.</p>",
           "locationName":"serialConsoleAccessEnabled"
+        },
+        "ManagedBy":{
+          "shape":"ManagedBy",
+          "documentation":"<p>The entity that manages access to the serial console. Possible values include:</p> <ul> <li> <p> <code>account</code> - Access is managed by the account.</p> </li> <li> <p> <code>declarative-policy</code> - Access is managed by a declarative policy and can't be modified by the account.</p> </li> </ul>",
+          "locationName":"managedBy"
         }
       }
     },
@@ -33204,6 +33873,11 @@
           "shape":"SnapshotBlockPublicAccessState",
           "documentation":"<p>The current state of block public access for snapshots. Possible values include:</p> <ul> <li> <p> <code>block-all-sharing</code> - All public sharing of snapshots is blocked. Users in the account can't request new public sharing. Additionally, snapshots that were already publicly shared are treated as private and are not publicly available.</p> </li> <li> <p> <code>block-new-sharing</code> - Only new public sharing of snapshots is blocked. Users in the account can't request new public sharing. However, snapshots that were already publicly shared, remain publicly available.</p> </li> <li> <p> <code>unblocked</code> - Public sharing is not blocked. Users can publicly share snapshots.</p> </li> </ul>",
           "locationName":"state"
+        },
+        "ManagedBy":{
+          "shape":"ManagedBy",
+          "documentation":"<p>The entity that manages the state for block public access for snapshots. Possible values include:</p> <ul> <li> <p> <code>account</code> - The state is managed by the account.</p> </li> <li> <p> <code>declarative-policy</code> - The state is managed by a declarative policy and can't be modified by the account.</p> </li> </ul>",
+          "locationName":"managedBy"
         }
       }
     },
@@ -33633,6 +34307,48 @@
           "shape":"String",
           "documentation":"<p>The Verified Access policy document.</p>",
           "locationName":"policyDocument"
+        }
+      }
+    },
+    "GetVerifiedAccessEndpointTargetsMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
+    "GetVerifiedAccessEndpointTargetsRequest":{
+      "type":"structure",
+      "required":["VerifiedAccessEndpointId"],
+      "members":{
+        "VerifiedAccessEndpointId":{
+          "shape":"VerifiedAccessEndpointId",
+          "documentation":"<p>The ID of the network CIDR endpoint.</p>"
+        },
+        "MaxResults":{
+          "shape":"GetVerifiedAccessEndpointTargetsMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetVerifiedAccessEndpointTargetsResult":{
+      "type":"structure",
+      "members":{
+        "VerifiedAccessEndpointTargets":{
+          "shape":"VerifiedAccessEndpointTargetList",
+          "documentation":"<p>The Verified Access targets.</p>",
+          "locationName":"verifiedAccessEndpointTargetSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
         }
       }
     },
@@ -34614,6 +35330,11 @@
           "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the AMI was last used to launch an EC2 instance. When the AMI is used to launch an instance, there is a 24-hour delay before that usage is reported.</p> <note> <p> <code>lastLaunchedTime</code> data is available starting April 2017.</p> </note>",
           "locationName":"lastLaunchedTime"
         },
+        "ImageAllowed":{
+          "shape":"Boolean",
+          "documentation":"<p>If <code>true</code>, the AMI satisfies the criteria for Allowed AMIs and can be discovered and used in the account. If <code>false</code> and Allowed AMIs is set to <code>enabled</code>, the AMI can't be discovered or used in the account. If <code>false</code> and Allowed AMIs is set to <code>audit-mode</code>, the AMI can be discovered and used in the account.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-allowed-amis.html\">Control the discovery and use of AMIs in Amazon EC2 with Allowed AMIs</a> in <i>Amazon EC2 User Guide</i>.</p>",
+          "locationName":"imageAllowed"
+        },
         "SourceImageId":{
           "shape":"String",
           "documentation":"<p>The ID of the source AMI from which the AMI was created.</p> <p>The ID only appears if the AMI was created using <a>CreateImage</a>, <a>CopyImage</a>, or <a>CreateRestoreImageTask</a>. The ID does not appear if the AMI was created using any other API. For some older AMIs, the ID might not be available. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/identify-source-ami-used-to-create-new-ami.html\">Identify the source AMI used to create a new AMI</a> in the <i>Amazon EC2 User Guide</i>.</p>",
@@ -34789,6 +35510,42 @@
       "type":"string",
       "enum":["block-new-sharing"]
     },
+    "ImageCriterion":{
+      "type":"structure",
+      "members":{
+        "ImageProviders":{
+          "shape":"ImageProviderList",
+          "documentation":"<p>A list of AMI providers whose AMIs are discoverable and useable in the account. Up to a total of 200 values can be specified.</p> <p>Possible values:</p> <p> <code>amazon</code>: Allow AMIs created by Amazon Web Services.</p> <p> <code>aws-marketplace</code>: Allow AMIs created by verified providers in the Amazon Web Services Marketplace.</p> <p> <code>aws-backup-vault</code>: Allow AMIs created by Amazon Web Services Backup. </p> <p>12-digit account ID: Allow AMIs created by this account. One or more account IDs can be specified.</p> <p> <code>none</code>: Allow AMIs created by your own account only.</p>",
+          "locationName":"imageProviderSet"
+        }
+      },
+      "documentation":"<p>The list of criteria that are evaluated to determine whch AMIs are discoverable and usable in the account in the specified Amazon Web Services Region. Currently, the only criteria that can be specified are AMI providers. </p> <p>Up to 10 <code>imageCriteria</code> objects can be specified, and up to a total of 200 values for all <code>imageProviders</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-allowed-amis.html#allowed-amis-json-configuration\">JSON configuration for the Allowed AMIs criteria</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
+    "ImageCriterionList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageCriterion",
+        "locationName":"item"
+      }
+    },
+    "ImageCriterionRequest":{
+      "type":"structure",
+      "members":{
+        "ImageProviders":{
+          "shape":"ImageProviderRequestList",
+          "documentation":"<p>A list of image providers whose AMIs are discoverable and useable in the account. Up to a total of 200 values can be specified.</p> <p>Possible values:</p> <p> <code>amazon</code>: Allow AMIs created by Amazon Web Services.</p> <p> <code>aws-marketplace</code>: Allow AMIs created by verified providers in the Amazon Web Services Marketplace.</p> <p> <code>aws-backup-vault</code>: Allow AMIs created by Amazon Web Services Backup. </p> <p>12-digit account ID: Allow AMIs created by this account. One or more account IDs can be specified.</p> <p> <code>none</code>: Allow AMIs created by your own account only. When <code>none</code> is specified, no other values can be specified.</p>",
+          "locationName":"ImageProvider"
+        }
+      },
+      "documentation":"<p>The list of criteria that are evaluated to determine whch AMIs are discoverable and usable in the account in the specified Amazon Web Services Region. Currently, the only criteria that can be specified are AMI providers. </p> <p>Up to 10 <code>imageCriteria</code> objects can be specified, and up to a total of 200 values for all <code>imageProviders</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-allowed-amis.html#allowed-amis-json-configuration\">JSON configuration for the Allowed AMIs criteria</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+    },
+    "ImageCriterionRequestList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageCriterionRequest",
+        "locationName":"ImageCriterion"
+      }
+    },
     "ImageDiskContainer":{
       "type":"structure",
       "members":{
@@ -34886,6 +35643,11 @@
           "documentation":"<p>The deprecation date and time of the AMI, in UTC, in the following format: <i>YYYY</i>-<i>MM</i>-<i>DD</i>T<i>HH</i>:<i>MM</i>:<i>SS</i>Z.</p>",
           "locationName":"deprecationTime"
         },
+        "ImageAllowed":{
+          "shape":"Boolean",
+          "documentation":"<p>If <code>true</code>, the AMI satisfies the criteria for Allowed AMIs and can be discovered and used in the account. If <code>false</code>, the AMI can't be discovered or used in the account.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-allowed-amis.html\">Control the discovery and use of AMIs in Amazon EC2 with Allowed AMIs</a> in <i>Amazon EC2 User Guide</i>.</p>",
+          "locationName":"imageAllowed"
+        },
         "IsPublic":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the AMI has public launch permissions. A value of <code>true</code> means this AMI has public launch permissions, while <code>false</code> means it has only implicit (AMI owner) or explicit (shared with your account) launch permissions.</p>",
@@ -34893,6 +35655,22 @@
         }
       },
       "documentation":"<p>Information about the AMI.</p>"
+    },
+    "ImageProvider":{"type":"string"},
+    "ImageProviderList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageProvider",
+        "locationName":"item"
+      }
+    },
+    "ImageProviderRequest":{"type":"string"},
+    "ImageProviderRequestList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageProviderRequest",
+        "locationName":"item"
+      }
     },
     "ImageRecycleBinInfo":{
       "type":"structure",
@@ -35963,7 +36741,7 @@
         },
         "Operator":{
           "shape":"OperatorResponse",
-          "documentation":"<p>The entity that manages the instance.</p>",
+          "documentation":"<p>The service provider that manages the instance.</p>",
           "locationName":"operator"
         },
         "InstanceId":{
@@ -36902,6 +37680,16 @@
           "shape":"InstanceMetadataTagsState",
           "documentation":"<p>Indicates whether access to instance tags from the instance metadata is enabled or disabled. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with instance tags using the instance metadata</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"instanceMetadataTags"
+        },
+        "ManagedBy":{
+          "shape":"ManagedBy",
+          "documentation":"<p>The entity that manages the IMDS default settings. Possible values include:</p> <ul> <li> <p> <code>account</code> - The IMDS default settings are managed by the account.</p> </li> <li> <p> <code>declarative-policy</code> - The IMDS default settings are managed by a declarative policy and can't be modified by the account.</p> </li> </ul>",
+          "locationName":"managedBy"
+        },
+        "ManagedExceptionMessage":{
+          "shape":"String",
+          "documentation":"<p>The customized exception message that is specified in the declarative policy.</p>",
+          "locationName":"managedExceptionMessage"
         }
       },
       "documentation":"<p>The default instance metadata service (IMDS) settings that were set at the account level in the specified Amazon Web Services&#x2028; Region.</p>"
@@ -37119,7 +37907,7 @@
         },
         "Operator":{
           "shape":"OperatorResponse",
-          "documentation":"<p>The entity that manages the network interface.</p>",
+          "documentation":"<p>The service provider that manages the network interface.</p>",
           "locationName":"operator"
         }
       },
@@ -37720,7 +38508,7 @@
         },
         "Operator":{
           "shape":"OperatorResponse",
-          "documentation":"<p>The entity that manages the instance.</p>",
+          "documentation":"<p>The service provider that manages the instance.</p>",
           "locationName":"operator"
         },
         "Events":{
@@ -38809,7 +39597,25 @@
         "x8g.24xlarge",
         "x8g.48xlarge",
         "x8g.metal-24xl",
-        "x8g.metal-48xl"
+        "x8g.metal-48xl",
+        "i7ie.large",
+        "i7ie.xlarge",
+        "i7ie.2xlarge",
+        "i7ie.3xlarge",
+        "i7ie.6xlarge",
+        "i7ie.12xlarge",
+        "i7ie.18xlarge",
+        "i7ie.24xlarge",
+        "i7ie.48xlarge",
+        "i8g.large",
+        "i8g.xlarge",
+        "i8g.2xlarge",
+        "i8g.4xlarge",
+        "i8g.8xlarge",
+        "i8g.12xlarge",
+        "i8g.16xlarge",
+        "i8g.24xlarge",
+        "i8g.metal-24xl"
       ]
     },
     "InstanceTypeHypervisor":{
@@ -43471,6 +44277,13 @@
       },
       "documentation":"<p>Details for Site-to-Site VPN tunnel endpoint maintenance events.</p>"
     },
+    "ManagedBy":{
+      "type":"string",
+      "enum":[
+        "account",
+        "declarative-policy"
+      ]
+    },
     "ManagedPrefixList":{
       "type":"structure",
       "members":{
@@ -45725,6 +46538,17 @@
         }
       }
     },
+    "ModifyVerifiedAccessEndpointCidrOptions":{
+      "type":"structure",
+      "members":{
+        "PortRanges":{
+          "shape":"ModifyVerifiedAccessEndpointPortRangeList",
+          "documentation":"<p>The port ranges.</p>",
+          "locationName":"PortRange"
+        }
+      },
+      "documentation":"<p>The CIDR options for a Verified Access endpoint.</p>"
+    },
     "ModifyVerifiedAccessEndpointEniOptions":{
       "type":"structure",
       "members":{
@@ -45735,6 +46559,11 @@
         "Port":{
           "shape":"VerifiedAccessEndpointPortNumber",
           "documentation":"<p>The IP port number.</p>"
+        },
+        "PortRanges":{
+          "shape":"ModifyVerifiedAccessEndpointPortRangeList",
+          "documentation":"<p>The port ranges.</p>",
+          "locationName":"PortRange"
         }
       },
       "documentation":"<p>Describes the options when modifying a Verified Access endpoint with the <code>network-interface</code> type.</p>"
@@ -45754,6 +46583,11 @@
         "Port":{
           "shape":"VerifiedAccessEndpointPortNumber",
           "documentation":"<p>The IP port number.</p>"
+        },
+        "PortRanges":{
+          "shape":"ModifyVerifiedAccessEndpointPortRangeList",
+          "documentation":"<p>The port ranges.</p>",
+          "locationName":"PortRange"
         }
       },
       "documentation":"<p>Describes a load balancer when creating an Amazon Web Services Verified Access endpoint using the <code>load-balancer</code> type.</p>"
@@ -45809,6 +46643,46 @@
         }
       }
     },
+    "ModifyVerifiedAccessEndpointPortRange":{
+      "type":"structure",
+      "members":{
+        "FromPort":{
+          "shape":"VerifiedAccessEndpointPortNumber",
+          "documentation":"<p>The start of the port range.</p>"
+        },
+        "ToPort":{
+          "shape":"VerifiedAccessEndpointPortNumber",
+          "documentation":"<p>The end of the port range.</p>"
+        }
+      },
+      "documentation":"<p>Describes the port range for a Verified Access endpoint.</p>"
+    },
+    "ModifyVerifiedAccessEndpointPortRangeList":{
+      "type":"list",
+      "member":{
+        "shape":"ModifyVerifiedAccessEndpointPortRange",
+        "locationName":"item"
+      }
+    },
+    "ModifyVerifiedAccessEndpointRdsOptions":{
+      "type":"structure",
+      "members":{
+        "SubnetIds":{
+          "shape":"ModifyVerifiedAccessEndpointSubnetIdList",
+          "documentation":"<p>The IDs of the subnets.</p>",
+          "locationName":"SubnetId"
+        },
+        "Port":{
+          "shape":"VerifiedAccessEndpointPortNumber",
+          "documentation":"<p>The port.</p>"
+        },
+        "RdsEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The RDS endpoint.</p>"
+        }
+      },
+      "documentation":"<p>The RDS options for a Verified Access endpoint.</p>"
+    },
     "ModifyVerifiedAccessEndpointRequest":{
       "type":"structure",
       "required":["VerifiedAccessEndpointId"],
@@ -45841,6 +46715,14 @@
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "RdsOptions":{
+          "shape":"ModifyVerifiedAccessEndpointRdsOptions",
+          "documentation":"<p>The RDS options.</p>"
+        },
+        "CidrOptions":{
+          "shape":"ModifyVerifiedAccessEndpointCidrOptions",
+          "documentation":"<p>The CIDR options.</p>"
         }
       }
     },
@@ -46005,6 +46887,10 @@
           "shape":"String",
           "documentation":"<p>A unique, case-sensitive token that you provide to ensure idempotency of your modification request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
           "idempotencyToken":true
+        },
+        "CidrEndpointsCustomSubDomain":{
+          "shape":"String",
+          "documentation":"<p>The custom subdomain.</p>"
         }
       }
     },
@@ -46018,12 +46904,50 @@
         }
       }
     },
+    "ModifyVerifiedAccessNativeApplicationOidcOptions":{
+      "type":"structure",
+      "members":{
+        "PublicSigningKeyEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The public signing key endpoint.</p>"
+        },
+        "Issuer":{
+          "shape":"String",
+          "documentation":"<p>The OIDC issuer identifier of the IdP.</p>"
+        },
+        "AuthorizationEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The authorization endpoint of the IdP.</p>"
+        },
+        "TokenEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The token endpoint of the IdP.</p>"
+        },
+        "UserInfoEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The user info endpoint of the IdP.</p>"
+        },
+        "ClientId":{
+          "shape":"String",
+          "documentation":"<p>The OAuth 2.0 client identifier.</p>"
+        },
+        "ClientSecret":{
+          "shape":"ClientSecretType",
+          "documentation":"<p>The OAuth 2.0 client secret.</p>"
+        },
+        "Scope":{
+          "shape":"String",
+          "documentation":"<p>The set of user claims to be requested from the IdP.</p>"
+        }
+      },
+      "documentation":"<p>Describes the OpenID Connect (OIDC) options.</p>"
+    },
     "ModifyVerifiedAccessTrustProviderDeviceOptions":{
       "type":"structure",
       "members":{
         "PublicSigningKeyUrl":{
           "shape":"String",
-          "documentation":"<p> The URL Amazon Web Services Verified Access will use to verify the authenticity of the device tokens. </p>"
+          "documentation":"<p> The URL Amazon Web Services Verified Access will use to verify the authenticity of the device tokens.</p>"
         }
       },
       "documentation":"<p>Modifies the configuration of the specified device-based Amazon Web Services Verified Access trust provider.</p>"
@@ -46094,6 +47018,10 @@
         "SseSpecification":{
           "shape":"VerifiedAccessSseSpecificationRequest",
           "documentation":"<p>The options for server side encryption.</p>"
+        },
+        "NativeApplicationOidcOptions":{
+          "shape":"ModifyVerifiedAccessNativeApplicationOidcOptions",
+          "documentation":"<p>The OpenID Connect (OIDC) options.</p>"
         }
       }
     },
@@ -47168,6 +48096,47 @@
         "deleted"
       ]
     },
+    "NativeApplicationOidcOptions":{
+      "type":"structure",
+      "members":{
+        "PublicSigningKeyEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The public signing key endpoint.</p>",
+          "locationName":"publicSigningKeyEndpoint"
+        },
+        "Issuer":{
+          "shape":"String",
+          "documentation":"<p>The OIDC issuer identifier of the IdP.</p>",
+          "locationName":"issuer"
+        },
+        "AuthorizationEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The authorization endpoint of the IdP.</p>",
+          "locationName":"authorizationEndpoint"
+        },
+        "TokenEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The token endpoint of the IdP.</p>",
+          "locationName":"tokenEndpoint"
+        },
+        "UserInfoEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The user info endpoint of the IdP.</p>",
+          "locationName":"userInfoEndpoint"
+        },
+        "ClientId":{
+          "shape":"String",
+          "documentation":"<p>The OAuth 2.0 client identifier.</p>",
+          "locationName":"clientId"
+        },
+        "Scope":{
+          "shape":"String",
+          "documentation":"<p>The set of user claims to be requested from the IdP.</p>",
+          "locationName":"scope"
+        }
+      },
+      "documentation":"<p>Describes the OpenID Connect (OIDC) options.</p>"
+    },
     "NetmaskLength":{"type":"integer"},
     "NetworkAcl":{
       "type":"structure",
@@ -47928,7 +48897,7 @@
         },
         "Operator":{
           "shape":"OperatorResponse",
-          "documentation":"<p>The entity that manages the network interface.</p>",
+          "documentation":"<p>The service provider that manages the network interface.</p>",
           "locationName":"operator"
         }
       },
@@ -48580,26 +49549,26 @@
       "members":{
         "Principal":{
           "shape":"String",
-          "documentation":"<p>The entity that manages the resource.</p>"
+          "documentation":"<p>The service provider that manages the resource.</p>"
         }
       },
-      "documentation":"<p>The entity that manages the resource.</p>"
+      "documentation":"<p>The service provider that manages the resource.</p>"
     },
     "OperatorResponse":{
       "type":"structure",
       "members":{
         "Managed":{
           "shape":"Boolean",
-          "documentation":"<p>If <code>true</code>, the resource is managed by an entity.</p>",
+          "documentation":"<p>If <code>true</code>, the resource is managed by an service provider.</p>",
           "locationName":"managed"
         },
         "Principal":{
           "shape":"String",
-          "documentation":"<p>If <code>managed</code> is <code>true</code>, then the principal is returned. The principal is the entity that manages the resource.</p>",
+          "documentation":"<p>If <code>managed</code> is <code>true</code>, then the principal is returned. The principal is the service provider that manages the resource.</p>",
           "locationName":"principal"
         }
       },
-      "documentation":"<p>Describes whether the resource is managed by an entity and, if so, describes the entity that manages it.</p>"
+      "documentation":"<p>Describes whether the resource is managed by an service provider and, if so, describes the service provider that manages it.</p>"
     },
     "OrganizationArnStringList":{
       "type":"list",
@@ -50673,6 +51642,9 @@
       ]
     },
     "RamdiskId":{"type":"string"},
+    "RdsDbClusterArn":{"type":"string"},
+    "RdsDbInstanceArn":{"type":"string"},
+    "RdsDbProxyArn":{"type":"string"},
     "ReasonCodesList":{
       "type":"list",
       "member":{
@@ -50794,6 +51766,34 @@
       "member":{"shape":"String"},
       "max":10,
       "min":0
+    },
+    "RegionalSummary":{
+      "type":"structure",
+      "members":{
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region.</p>",
+          "locationName":"regionName"
+        },
+        "NumberOfMatchedAccounts":{
+          "shape":"Integer",
+          "documentation":"<p>The number of accounts in the Region with the same configuration value for the attribute that is most frequently observed.</p>",
+          "locationName":"numberOfMatchedAccounts"
+        },
+        "NumberOfUnmatchedAccounts":{
+          "shape":"Integer",
+          "documentation":"<p>The number of accounts in the Region with a configuration value different from the most frequently observed value for the attribute.</p>",
+          "locationName":"numberOfUnmatchedAccounts"
+        }
+      },
+      "documentation":"<p>A summary report for the attribute for a Region.</p>"
+    },
+    "RegionalSummaryList":{
+      "type":"list",
+      "member":{
+        "shape":"RegionalSummary",
+        "locationName":"item"
+      }
     },
     "RegisterImageRequest":{
       "type":"structure",
@@ -51328,6 +52328,30 @@
         }
       }
     },
+    "ReplaceImageCriteriaInAllowedImagesSettingsRequest":{
+      "type":"structure",
+      "members":{
+        "ImageCriteria":{
+          "shape":"ImageCriterionRequestList",
+          "documentation":"<p>The list of criteria that are evaluated to determine whether AMIs are discoverable and usable in the account in the specified Amazon Web Services Region.</p>",
+          "locationName":"ImageCriterion"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ReplaceImageCriteriaInAllowedImagesSettingsResult":{
+      "type":"structure",
+      "members":{
+        "ReturnValue":{
+          "shape":"Boolean",
+          "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"return"
+        }
+      }
+    },
     "ReplaceNetworkAclAssociationRequest":{
       "type":"structure",
       "required":[
@@ -51769,6 +52793,15 @@
     "ReportInstanceStatusRequestDescription":{
       "type":"string",
       "sensitive":true
+    },
+    "ReportState":{
+      "type":"string",
+      "enum":[
+        "running",
+        "cancelled",
+        "complete",
+        "error"
+      ]
     },
     "ReportStatusType":{
       "type":"string",
@@ -52941,6 +53974,7 @@
       "max":1283,
       "min":1
     },
+    "ResourceConfigurationArn":{"type":"string"},
     "ResourceIdList":{
       "type":"list",
       "member":{"shape":"TaggableResourceId"}
@@ -52992,6 +54026,7 @@
         "customer-gateway",
         "carrier-gateway",
         "coip-pool",
+        "declarative-policies-report",
         "dedicated-host",
         "dhcp-options",
         "egress-only-internet-gateway",
@@ -53073,6 +54108,7 @@
         "ipam-resource-discovery",
         "ipam-resource-discovery-association",
         "instance-connect-endpoint",
+        "verified-access-endpoint-target",
         "ipam-external-resource-verification-token"
       ]
     },
@@ -55666,6 +56702,7 @@
         "locationName":"item"
       }
     },
+    "ServiceNetworkArn":{"type":"string"},
     "ServiceState":{
       "type":"string",
       "enum":[
@@ -57094,6 +58131,46 @@
         "locationName":"item"
       }
     },
+    "StartDeclarativePoliciesReportRequest":{
+      "type":"structure",
+      "required":[
+        "S3Bucket",
+        "TargetId"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "S3Bucket":{
+          "shape":"String",
+          "documentation":"<p>The name of the S3 bucket where the report will be saved.</p>"
+        },
+        "S3Prefix":{
+          "shape":"String",
+          "documentation":"<p>The prefix for your S3 object.</p>"
+        },
+        "TargetId":{
+          "shape":"String",
+          "documentation":"<p>The root ID, organizational unit ID, or account ID.</p> <p>Format:</p> <ul> <li> <p>For root: <code>r-ab12</code> </p> </li> <li> <p>For OU: <code>ou-ab12-cdef1234</code> </p> </li> <li> <p>For account: <code>123456789012</code> </p> </li> </ul>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply.</p>",
+          "locationName":"TagSpecification"
+        }
+      }
+    },
+    "StartDeclarativePoliciesReportResult":{
+      "type":"structure",
+      "members":{
+        "ReportId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the report.</p>",
+          "locationName":"reportId"
+        }
+      }
+    },
     "StartInstancesRequest":{
       "type":"structure",
       "required":["InstanceIds"],
@@ -57243,7 +58320,8 @@
         "Deleted",
         "Rejected",
         "Failed",
-        "Expired"
+        "Expired",
+        "Partial"
       ]
     },
     "StateReason":{
@@ -57675,6 +58753,29 @@
       "member":{
         "shape":"SubnetId",
         "locationName":"SubnetId"
+      }
+    },
+    "SubnetIpPrefixes":{
+      "type":"structure",
+      "members":{
+        "SubnetId":{
+          "shape":"String",
+          "documentation":"<p>ID of the subnet.</p>",
+          "locationName":"subnetId"
+        },
+        "IpPrefixes":{
+          "shape":"ValueStringList",
+          "documentation":"<p>Array of SubnetIpPrefixes objects.</p>",
+          "locationName":"ipPrefixSet"
+        }
+      },
+      "documentation":"<p>Prefixes of the subnet IP.</p>"
+    },
+    "SubnetIpPrefixesList":{
+      "type":"list",
+      "member":{
+        "shape":"SubnetIpPrefixes",
+        "locationName":"item"
       }
     },
     "SubnetIpv6CidrBlockAssociation":{
@@ -61297,6 +62398,16 @@
           "shape":"VerifiedAccessSseSpecificationResponse",
           "documentation":"<p>The options in use for server side encryption.</p>",
           "locationName":"sseSpecification"
+        },
+        "RdsOptions":{
+          "shape":"VerifiedAccessEndpointRdsOptions",
+          "documentation":"<p>The options for an RDS endpoint.</p>",
+          "locationName":"rdsOptions"
+        },
+        "CidrOptions":{
+          "shape":"VerifiedAccessEndpointCidrOptions",
+          "documentation":"<p>The options for a CIDR endpoint.</p>",
+          "locationName":"cidrOptions"
         }
       },
       "documentation":"<p>An Amazon Web Services Verified Access endpoint specifies the application that Amazon Web Services Verified Access provides access to. It must be attached to an Amazon Web Services Verified Access group. An Amazon Web Services Verified Access endpoint must also have an attached access policy before you attached it to a group.</p>"
@@ -61304,6 +62415,32 @@
     "VerifiedAccessEndpointAttachmentType":{
       "type":"string",
       "enum":["vpc"]
+    },
+    "VerifiedAccessEndpointCidrOptions":{
+      "type":"structure",
+      "members":{
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR.</p>",
+          "locationName":"cidr"
+        },
+        "PortRanges":{
+          "shape":"VerifiedAccessEndpointPortRangeList",
+          "documentation":"<p>The port ranges.</p>",
+          "locationName":"portRangeSet"
+        },
+        "Protocol":{
+          "shape":"VerifiedAccessEndpointProtocol",
+          "documentation":"<p>The protocol.</p>",
+          "locationName":"protocol"
+        },
+        "SubnetIds":{
+          "shape":"VerifiedAccessEndpointSubnetIdList",
+          "documentation":"<p>The IDs of the subnets.</p>",
+          "locationName":"subnetIdSet"
+        }
+      },
+      "documentation":"<p>Describes the CIDR options for a Verified Access endpoint.</p>"
     },
     "VerifiedAccessEndpointEniOptions":{
       "type":"structure",
@@ -61322,6 +62459,11 @@
           "shape":"VerifiedAccessEndpointPortNumber",
           "documentation":"<p>The IP port number.</p>",
           "locationName":"port"
+        },
+        "PortRanges":{
+          "shape":"VerifiedAccessEndpointPortRangeList",
+          "documentation":"<p>The port ranges.</p>",
+          "locationName":"portRangeSet"
         }
       },
       "documentation":"<p>Options for a network-interface type endpoint.</p>"
@@ -61363,6 +62505,11 @@
           "shape":"VerifiedAccessEndpointSubnetIdList",
           "documentation":"<p>The IDs of the subnets.</p>",
           "locationName":"subnetIdSet"
+        },
+        "PortRanges":{
+          "shape":"VerifiedAccessEndpointPortRangeList",
+          "documentation":"<p>The port ranges.</p>",
+          "locationName":"portRangeSet"
         }
       },
       "documentation":"<p>Describes a load balancer when creating an Amazon Web Services Verified Access endpoint using the <code>load-balancer</code> type.</p>"
@@ -61372,12 +62519,77 @@
       "max":65535,
       "min":1
     },
+    "VerifiedAccessEndpointPortRange":{
+      "type":"structure",
+      "members":{
+        "FromPort":{
+          "shape":"VerifiedAccessEndpointPortNumber",
+          "documentation":"<p>The start of the port range.</p>",
+          "locationName":"fromPort"
+        },
+        "ToPort":{
+          "shape":"VerifiedAccessEndpointPortNumber",
+          "documentation":"<p>The end of the port range.</p>",
+          "locationName":"toPort"
+        }
+      },
+      "documentation":"<p>Describes a port range.</p>"
+    },
+    "VerifiedAccessEndpointPortRangeList":{
+      "type":"list",
+      "member":{
+        "shape":"VerifiedAccessEndpointPortRange",
+        "locationName":"item"
+      }
+    },
     "VerifiedAccessEndpointProtocol":{
       "type":"string",
       "enum":[
         "http",
-        "https"
+        "https",
+        "tcp"
       ]
+    },
+    "VerifiedAccessEndpointRdsOptions":{
+      "type":"structure",
+      "members":{
+        "Protocol":{
+          "shape":"VerifiedAccessEndpointProtocol",
+          "documentation":"<p>The protocol.</p>",
+          "locationName":"protocol"
+        },
+        "Port":{
+          "shape":"VerifiedAccessEndpointPortNumber",
+          "documentation":"<p>The port.</p>",
+          "locationName":"port"
+        },
+        "RdsDbInstanceArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the RDS instance.</p>",
+          "locationName":"rdsDbInstanceArn"
+        },
+        "RdsDbClusterArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the DB cluster.</p>",
+          "locationName":"rdsDbClusterArn"
+        },
+        "RdsDbProxyArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the RDS proxy.</p>",
+          "locationName":"rdsDbProxyArn"
+        },
+        "RdsEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The RDS endpoint.</p>",
+          "locationName":"rdsEndpoint"
+        },
+        "SubnetIds":{
+          "shape":"VerifiedAccessEndpointSubnetIdList",
+          "documentation":"<p>The IDs of the subnets.</p>",
+          "locationName":"subnetIdSet"
+        }
+      },
+      "documentation":"<p>Describes the RDS options for a Verified Access endpoint.</p>"
     },
     "VerifiedAccessEndpointStatus":{
       "type":"structure",
@@ -61412,11 +62624,41 @@
         "locationName":"item"
       }
     },
+    "VerifiedAccessEndpointTarget":{
+      "type":"structure",
+      "members":{
+        "VerifiedAccessEndpointId":{
+          "shape":"VerifiedAccessEndpointId",
+          "documentation":"<p>The ID of the Verified Access endpoint.</p>",
+          "locationName":"verifiedAccessEndpointId"
+        },
+        "VerifiedAccessEndpointTargetIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address of the target.</p>",
+          "locationName":"verifiedAccessEndpointTargetIpAddress"
+        },
+        "VerifiedAccessEndpointTargetDns":{
+          "shape":"String",
+          "documentation":"<p>The DNS name of the target.</p>",
+          "locationName":"verifiedAccessEndpointTargetDns"
+        }
+      },
+      "documentation":"<p>Describes the targets for the specified Verified Access endpoint.</p>"
+    },
+    "VerifiedAccessEndpointTargetList":{
+      "type":"list",
+      "member":{
+        "shape":"VerifiedAccessEndpointTarget",
+        "locationName":"item"
+      }
+    },
     "VerifiedAccessEndpointType":{
       "type":"string",
       "enum":[
         "load-balancer",
-        "network-interface"
+        "network-interface",
+        "rds",
+        "cidr"
       ]
     },
     "VerifiedAccessGroup":{
@@ -61527,9 +62769,30 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether support for Federal Information Processing Standards (FIPS) is enabled on the instance.</p>",
           "locationName":"fipsEnabled"
+        },
+        "CidrEndpointsCustomSubDomain":{
+          "shape":"VerifiedAccessInstanceCustomSubDomain",
+          "documentation":"<p>The custom subdomain.</p>",
+          "locationName":"cidrEndpointsCustomSubDomain"
         }
       },
       "documentation":"<p>Describes a Verified Access instance.</p>"
+    },
+    "VerifiedAccessInstanceCustomSubDomain":{
+      "type":"structure",
+      "members":{
+        "SubDomain":{
+          "shape":"String",
+          "documentation":"<p>The subdomain.</p>",
+          "locationName":"subDomain"
+        },
+        "Nameservers":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The name servers.</p>",
+          "locationName":"nameserverSet"
+        }
+      },
+      "documentation":"<p>Describes a custom subdomain for a network CIDR endpoint for Verified Access.</p>"
     },
     "VerifiedAccessInstanceId":{"type":"string"},
     "VerifiedAccessInstanceIdList":{
@@ -61568,6 +62831,103 @@
         "shape":"VerifiedAccessInstanceLoggingConfiguration",
         "locationName":"item"
       }
+    },
+    "VerifiedAccessInstanceOpenVpnClientConfiguration":{
+      "type":"structure",
+      "members":{
+        "Config":{
+          "shape":"String",
+          "documentation":"<p>The base64-encoded Open VPN client configuration.</p>",
+          "locationName":"config"
+        },
+        "Routes":{
+          "shape":"VerifiedAccessInstanceOpenVpnClientConfigurationRouteList",
+          "documentation":"<p>The routes.</p>",
+          "locationName":"routeSet"
+        }
+      },
+      "documentation":"<p>Describes a set of routes.</p>"
+    },
+    "VerifiedAccessInstanceOpenVpnClientConfigurationList":{
+      "type":"list",
+      "member":{
+        "shape":"VerifiedAccessInstanceOpenVpnClientConfiguration",
+        "locationName":"item"
+      }
+    },
+    "VerifiedAccessInstanceOpenVpnClientConfigurationRoute":{
+      "type":"structure",
+      "members":{
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR block.</p>",
+          "locationName":"cidr"
+        }
+      },
+      "documentation":"<p>Describes a route.</p>"
+    },
+    "VerifiedAccessInstanceOpenVpnClientConfigurationRouteList":{
+      "type":"list",
+      "member":{
+        "shape":"VerifiedAccessInstanceOpenVpnClientConfigurationRoute",
+        "locationName":"item"
+      }
+    },
+    "VerifiedAccessInstanceUserTrustProviderClientConfiguration":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"UserTrustProviderType",
+          "documentation":"<p>The trust provider type.</p>",
+          "locationName":"type"
+        },
+        "Scopes":{
+          "shape":"String",
+          "documentation":"<p>The set of user claims to be requested from the IdP.</p>",
+          "locationName":"scopes"
+        },
+        "Issuer":{
+          "shape":"String",
+          "documentation":"<p>The OIDC issuer identifier of the IdP.</p>",
+          "locationName":"issuer"
+        },
+        "AuthorizationEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The authorization endpoint of the IdP.</p>",
+          "locationName":"authorizationEndpoint"
+        },
+        "PublicSigningKeyEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The public signing key endpoint.</p>",
+          "locationName":"publicSigningKeyEndpoint"
+        },
+        "TokenEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The token endpoint of the IdP.</p>",
+          "locationName":"tokenEndpoint"
+        },
+        "UserInfoEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The user info endpoint of the IdP.</p>",
+          "locationName":"userInfoEndpoint"
+        },
+        "ClientId":{
+          "shape":"String",
+          "documentation":"<p>The OAuth 2.0 client identifier.</p>",
+          "locationName":"clientId"
+        },
+        "ClientSecret":{
+          "shape":"ClientSecretType",
+          "documentation":"<p>The OAuth 2.0 client secret.</p>",
+          "locationName":"clientSecret"
+        },
+        "PkceEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether Proof of Key Code Exchange (PKCE) is enabled.</p>",
+          "locationName":"pkceEnabled"
+        }
+      },
+      "documentation":"<p>Describes the trust provider.</p>"
     },
     "VerifiedAccessLogCloudWatchLogsDestination":{
       "type":"structure",
@@ -61867,6 +63227,11 @@
           "shape":"VerifiedAccessSseSpecificationResponse",
           "documentation":"<p>The options in use for server side encryption.</p>",
           "locationName":"sseSpecification"
+        },
+        "NativeApplicationOidcOptions":{
+          "shape":"NativeApplicationOidcOptions",
+          "documentation":"<p>The OpenID Connect (OIDC) options.</p>",
+          "locationName":"nativeApplicationOidcOptions"
         }
       },
       "documentation":"<p>Describes a Verified Access trust provider.</p>"
@@ -62047,7 +63412,7 @@
         },
         "Operator":{
           "shape":"OperatorResponse",
-          "documentation":"<p>The entity that manages the volume.</p>",
+          "documentation":"<p>The service provider that manages the volume.</p>",
           "locationName":"operator"
         },
         "VolumeId":{
@@ -62695,6 +64060,13 @@
         "disable-complete"
       ]
     },
+    "VpcBlockPublicAccessExclusionsAllowed":{
+      "type":"string",
+      "enum":[
+        "allowed",
+        "not-allowed"
+      ]
+    },
     "VpcBlockPublicAccessOptions":{
       "type":"structure",
       "members":{
@@ -62727,6 +64099,16 @@
           "shape":"MillisecondDateTime",
           "documentation":"<p>The last time the VPC BPA mode was updated.</p>",
           "locationName":"lastUpdateTimestamp"
+        },
+        "ManagedBy":{
+          "shape":"ManagedBy",
+          "documentation":"<p>The entity that manages the state of VPC BPA. Possible values include:</p> <ul> <li> <p> <code>account</code> - The state is managed by the account.</p> </li> <li> <p> <code>declarative-policy</code> - The state is managed by a declarative policy and can't be modified by the account.</p> </li> </ul>",
+          "locationName":"managedBy"
+        },
+        "ExclusionsAllowed":{
+          "shape":"VpcBlockPublicAccessExclusionsAllowed",
+          "documentation":"<p>Determines if exclusions are allowed. If you have <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html#security-vpc-bpa-exclusions-orgs\">enabled VPC BPA at the Organization level</a>, exclusions may be <code>not-allowed</code>. Otherwise, they are <code>allowed</code>.</p>",
+          "locationName":"exclusionsAllowed"
         }
       },
       "documentation":"<p>VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. To learn more about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>"
@@ -62928,6 +64310,31 @@
           "documentation":"<p>The last error that occurred for endpoint.</p>",
           "locationName":"lastError"
         },
+        "Ipv4Prefixes":{
+          "shape":"SubnetIpPrefixesList",
+          "documentation":"<p>Array of IPv4 prefixes.</p>",
+          "locationName":"ipv4PrefixSet"
+        },
+        "Ipv6Prefixes":{
+          "shape":"SubnetIpPrefixesList",
+          "documentation":"<p>Array of IPv6 prefixes.</p>",
+          "locationName":"ipv6PrefixSet"
+        },
+        "FailureReason":{
+          "shape":"String",
+          "documentation":"<p>Reason for the failure.</p>",
+          "locationName":"failureReason"
+        },
+        "ServiceNetworkArn":{
+          "shape":"ServiceNetworkArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service network.</p>",
+          "locationName":"serviceNetworkArn"
+        },
+        "ResourceConfigurationArn":{
+          "shape":"ResourceConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource configuration.</p>",
+          "locationName":"resourceConfigurationArn"
+        },
         "ServiceRegion":{
           "shape":"String",
           "documentation":"<p>The Region where the service is hosted.</p>",
@@ -62935,6 +64342,79 @@
         }
       },
       "documentation":"<p>Describes a VPC endpoint.</p>"
+    },
+    "VpcEndpointAssociation":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The ID of the VPC endpoint association.</p>",
+          "locationName":"id"
+        },
+        "VpcEndpointId":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The ID of the VPC endpoint.</p>",
+          "locationName":"vpcEndpointId"
+        },
+        "ServiceNetworkArn":{
+          "shape":"ServiceNetworkArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service network.</p>",
+          "locationName":"serviceNetworkArn"
+        },
+        "ServiceNetworkName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service network.</p>",
+          "locationName":"serviceNetworkName"
+        },
+        "AssociatedResourceAccessibility":{
+          "shape":"String",
+          "documentation":"<p>The connectivity status of the resources associated to a VPC endpoint. The resource is accessible if the associated resource configuration is <code>AVAILABLE</code>, otherwise the resource is inaccessible.</p>",
+          "locationName":"associatedResourceAccessibility"
+        },
+        "FailureReason":{
+          "shape":"String",
+          "documentation":"<p>A message related to why an VPC endpoint association failed.</p>",
+          "locationName":"failureReason"
+        },
+        "FailureCode":{
+          "shape":"String",
+          "documentation":"<p>An error code related to why an VPC endpoint association failed.</p>",
+          "locationName":"failureCode"
+        },
+        "DnsEntry":{
+          "shape":"DnsEntry",
+          "documentation":"<p>The DNS entry of the VPC endpoint association.</p>",
+          "locationName":"dnsEntry"
+        },
+        "PrivateDnsEntry":{
+          "shape":"DnsEntry",
+          "documentation":"<p>The private DNS entry of the VPC endpoint association.</p>",
+          "locationName":"privateDnsEntry"
+        },
+        "AssociatedResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the associated resource.</p>",
+          "locationName":"associatedResourceArn"
+        },
+        "ResourceConfigurationGroupArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource configuration group.</p>",
+          "locationName":"resourceConfigurationGroupArn"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to apply to the VPC endpoint association.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes the VPC resources, VPC endpoint services, Lattice services, or service networks associated with the VPC endpoint.</p>"
+    },
+    "VpcEndpointAssociationSet":{
+      "type":"list",
+      "member":{
+        "shape":"VpcEndpointAssociation",
+        "locationName":"item"
+      }
     },
     "VpcEndpointConnection":{
       "type":"structure",
@@ -63058,7 +64538,9 @@
       "enum":[
         "Interface",
         "Gateway",
-        "GatewayLoadBalancer"
+        "GatewayLoadBalancer",
+        "Resource",
+        "ServiceNetwork"
       ]
     },
     "VpcFlowLogId":{"type":"string"},
@@ -63796,6 +65278,11 @@
     "customerGatewayConfiguration":{
       "type":"string",
       "sensitive":true
+    },
+    "maxResults":{
+      "type":"integer",
+      "max":100,
+      "min":1
     },
     "preSharedKey":{
       "type":"string",

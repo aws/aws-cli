@@ -117,6 +117,23 @@
       ],
       "documentation":"<p>Creates an event stream, which is a subscription to real-time events, such as when profiles are created and updated through Amazon Connect Customer Profiles.</p> <p>Each event stream can be associated with only one Kinesis Data Stream destination in the same region and Amazon Web Services account as the customer profiles domain</p>"
     },
+    "CreateEventTrigger":{
+      "name":"CreateEventTrigger",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/event-triggers/{EventTriggerName}"
+      },
+      "input":{"shape":"CreateEventTriggerRequest"},
+      "output":{"shape":"CreateEventTriggerResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates an event trigger, which specifies the rules when to perform action based on customer's ingested data.</p> <p>Each event stream can be associated with only one integration in the same region and AWS account as the event stream. </p>"
+    },
     "CreateIntegrationWorkflow":{
       "name":"CreateIntegrationWorkflow",
       "http":{
@@ -255,6 +272,23 @@
       ],
       "documentation":"<p>Disables and deletes the specified event stream.</p>",
       "idempotent":true
+    },
+    "DeleteEventTrigger":{
+      "name":"DeleteEventTrigger",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{DomainName}/event-triggers/{EventTriggerName}"
+      },
+      "input":{"shape":"DeleteEventTriggerRequest"},
+      "output":{"shape":"DeleteEventTriggerResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Disable and deletes the Event Trigger.</p> <note> <p>You cannot delete an Event Trigger with an active Integration associated.</p> </note>"
     },
     "DeleteIntegration":{
       "name":"DeleteIntegration",
@@ -478,6 +512,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns information about the specified event stream in a specific domain.</p>"
+    },
+    "GetEventTrigger":{
+      "name":"GetEventTrigger",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/event-triggers/{EventTriggerName}"
+      },
+      "input":{"shape":"GetEventTriggerRequest"},
+      "output":{"shape":"GetEventTriggerResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Get a specific Event Trigger from the domain.</p>"
     },
     "GetIdentityResolutionJob":{
       "name":"GetIdentityResolutionJob",
@@ -770,6 +821,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns a list of all the event streams in a specific domain.</p>"
+    },
+    "ListEventTriggers":{
+      "name":"ListEventTriggers",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/event-triggers"
+      },
+      "input":{"shape":"ListEventTriggersRequest"},
+      "output":{"shape":"ListEventTriggersResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List all Event Triggers under a domain.</p>"
     },
     "ListIdentityResolutionJobs":{
       "name":"ListIdentityResolutionJobs",
@@ -1104,6 +1172,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates the properties of a domain, including creating or selecting a dead letter queue or an encryption key.</p> <p>After a domain is created, the name can’t be changed.</p> <p>Use this API or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_CreateDomain.html\">CreateDomain</a> to enable <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">identity resolution</a>: set <code>Matching</code> to true.</p> <p>To prevent cross-service impersonation when you call this API, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html\">Cross-service confused deputy prevention</a> for sample policies that you should apply. </p> <p>To add or remove tags on an existing Domain, see <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_TagResource.html\">TagResource</a>/<a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UntagResource.html\">UntagResource</a>.</p>"
+    },
+    "UpdateEventTrigger":{
+      "name":"UpdateEventTrigger",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/domains/{DomainName}/event-triggers/{EventTriggerName}"
+      },
+      "input":{"shape":"UpdateEventTriggerRequest"},
+      "output":{"shape":"UpdateEventTriggerResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update the properties of an Event Trigger.</p>"
     },
     "UpdateProfile":{
       "name":"UpdateProfile",
@@ -1808,6 +1893,26 @@
       "key":{"shape":"typeName"},
       "value":{"shape":"CalculatedAttributeDimension"}
     },
+    "ComparisonOperator":{
+      "type":"string",
+      "enum":[
+        "INCLUSIVE",
+        "EXCLUSIVE",
+        "CONTAINS",
+        "BEGINS_WITH",
+        "ENDS_WITH",
+        "GREATER_THAN",
+        "LESS_THAN",
+        "GREATER_THAN_OR_EQUAL",
+        "LESS_THAN_OR_EQUAL",
+        "EQUAL",
+        "BEFORE",
+        "AFTER",
+        "ON",
+        "BETWEEN",
+        "NOT_BETWEEN"
+      ]
+    },
     "ConditionOverrides":{
       "type":"structure",
       "members":{
@@ -2125,6 +2230,94 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateEventTriggerRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "EventTriggerName",
+        "ObjectTypeName",
+        "EventTriggerConditions"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "EventTriggerName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the event trigger.</p>",
+          "location":"uri",
+          "locationName":"EventTriggerName"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the object type.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>The description of the event trigger.</p>"
+        },
+        "EventTriggerConditions":{
+          "shape":"EventTriggerConditions",
+          "documentation":"<p>A list of conditions that determine when an event should trigger the destination.</p>"
+        },
+        "SegmentFilter":{
+          "shape":"name",
+          "documentation":"<p>The destination is triggered only for profiles that meet the criteria of a segment definition.</p>"
+        },
+        "EventTriggerLimits":{
+          "shape":"EventTriggerLimits",
+          "documentation":"<p>Defines limits controlling whether an event triggers the destination, based on ingestion latency and the number of invocations per profile over specific time periods.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>An array of key-value pairs to apply to this resource.</p>"
+        }
+      }
+    },
+    "CreateEventTriggerResponse":{
+      "type":"structure",
+      "members":{
+        "EventTriggerName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the event trigger.</p>"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the object type.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>The description of the event trigger.</p>"
+        },
+        "EventTriggerConditions":{
+          "shape":"EventTriggerConditions",
+          "documentation":"<p>A list of conditions that determine when an event should trigger the destination.</p>"
+        },
+        "SegmentFilter":{
+          "shape":"name",
+          "documentation":"<p>The destination is triggered only for profiles that meet the criteria of a segment definition.</p>"
+        },
+        "EventTriggerLimits":{
+          "shape":"EventTriggerLimits",
+          "documentation":"<p>Defines limits controlling whether an event triggers the destination, based on ingestion latency and the number of invocations per profile over specific time periods.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the event trigger was created.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the event trigger was most recently updated.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>An array of key-value pairs to apply to this resource.</p>"
         }
       }
     },
@@ -2593,6 +2786,37 @@
       "members":{
       }
     },
+    "DeleteEventTriggerRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "EventTriggerName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "EventTriggerName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the event trigger.</p>",
+          "location":"uri",
+          "locationName":"EventTriggerName"
+        }
+      }
+    },
+    "DeleteEventTriggerResponse":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"message",
+          "documentation":"<p>A message that indicates the delete request is done.</p>"
+        }
+      }
+    },
     "DeleteIntegrationRequest":{
       "type":"structure",
       "required":[
@@ -3046,6 +3270,117 @@
     "EventStreamSummaryList":{
       "type":"list",
       "member":{"shape":"EventStreamSummary"}
+    },
+    "EventTriggerCondition":{
+      "type":"structure",
+      "required":[
+        "EventTriggerDimensions",
+        "LogicalOperator"
+      ],
+      "members":{
+        "EventTriggerDimensions":{
+          "shape":"EventTriggerDimensions",
+          "documentation":"<p>A list of dimensions to be evaluated for the event.</p>"
+        },
+        "LogicalOperator":{
+          "shape":"EventTriggerLogicalOperator",
+          "documentation":"<p>The operator used to combine multiple dimensions.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the circumstances under which the event should trigger the destination.</p>"
+    },
+    "EventTriggerConditions":{
+      "type":"list",
+      "member":{"shape":"EventTriggerCondition"},
+      "max":5,
+      "min":1,
+      "sensitive":true
+    },
+    "EventTriggerDimension":{
+      "type":"structure",
+      "required":["ObjectAttributes"],
+      "members":{
+        "ObjectAttributes":{
+          "shape":"ObjectAttributes",
+          "documentation":"<p>A list of object attributes to be evaluated.</p>"
+        }
+      },
+      "documentation":"<p>A specific event dimension to be assessed.</p>"
+    },
+    "EventTriggerDimensions":{
+      "type":"list",
+      "member":{"shape":"EventTriggerDimension"},
+      "max":10,
+      "min":1
+    },
+    "EventTriggerLimits":{
+      "type":"structure",
+      "members":{
+        "EventExpiration":{
+          "shape":"optionalLong",
+          "documentation":"<p>In milliseconds. Specifies that an event will only trigger the destination if it is processed within a certain latency period.</p>"
+        },
+        "Periods":{
+          "shape":"Periods",
+          "documentation":"<p>A list of time periods during which the limits apply.</p>"
+        }
+      },
+      "documentation":"<p>Defines limits controlling whether an event triggers the destination, based on ingestion latency and the number of invocations per profile over specific time periods.</p>"
+    },
+    "EventTriggerLogicalOperator":{
+      "type":"string",
+      "enum":[
+        "ANY",
+        "ALL",
+        "NONE"
+      ]
+    },
+    "EventTriggerNames":{
+      "type":"list",
+      "member":{"shape":"name"},
+      "max":1,
+      "min":1
+    },
+    "EventTriggerSummaryItem":{
+      "type":"structure",
+      "members":{
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the object type.</p>"
+        },
+        "EventTriggerName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the event trigger.</p>"
+        },
+        "Description":{
+          "shape":"text",
+          "documentation":"<p>The description of the event trigger.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the event trigger was created.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the event trigger was most recently updated.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>An array of key-value pairs to apply to this resource.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the event trigger.</p>"
+    },
+    "EventTriggerSummaryList":{
+      "type":"list",
+      "member":{"shape":"EventTriggerSummaryItem"},
+      "sensitive":true
+    },
+    "EventTriggerValues":{
+      "type":"list",
+      "member":{"shape":"string1To255"},
+      "max":10,
+      "min":1
     },
     "ExportingConfig":{
       "type":"structure",
@@ -3658,6 +3993,68 @@
         }
       }
     },
+    "GetEventTriggerRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "EventTriggerName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "EventTriggerName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the event trigger.</p>",
+          "location":"uri",
+          "locationName":"EventTriggerName"
+        }
+      }
+    },
+    "GetEventTriggerResponse":{
+      "type":"structure",
+      "members":{
+        "EventTriggerName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the event trigger.</p>"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the object type.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>The description of the event trigger.</p>"
+        },
+        "EventTriggerConditions":{
+          "shape":"EventTriggerConditions",
+          "documentation":"<p>A list of conditions that determine when an event should trigger the destination.</p>"
+        },
+        "SegmentFilter":{
+          "shape":"name",
+          "documentation":"<p>The destination is triggered only for profiles that meet the criteria of a segment definition.</p>"
+        },
+        "EventTriggerLimits":{
+          "shape":"EventTriggerLimits",
+          "documentation":"<p>Defines limits controlling whether an event triggers the destination, based on ingestion latency and the number of invocations per profile over specific time periods.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the event trigger was created.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the event trigger was most recently updated.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>An array of key-value pairs to apply to this resource.</p>"
+        }
+      }
+    },
     "GetIdentityResolutionJobRequest":{
       "type":"structure",
       "required":[
@@ -3795,6 +4192,10 @@
         "RoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role. The Integration uses this role to make Customer Profiles requests on your behalf.</p>"
+        },
+        "EventTriggerNames":{
+          "shape":"EventTriggerNames",
+          "documentation":"<p>A list of unique names for active event triggers associated with the integration. This list would be empty if no Event Trigger is associated with the integration.</p>"
         }
       }
     },
@@ -4859,6 +5260,43 @@
         }
       }
     },
+    "ListEventTriggersRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token to use with ListEventTriggers.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListEventTriggersResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"EventTriggerSummaryList",
+          "documentation":"<p>The list of Event Triggers.</p>"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call to ListEventTriggers.</p>"
+        }
+      }
+    },
     "ListIdentityResolutionJobsRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -4944,6 +5382,10 @@
         "RoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role. The Integration uses this role to make Customer Profiles requests on your behalf.</p>"
+        },
+        "EventTriggerNames":{
+          "shape":"EventTriggerNames",
+          "documentation":"<p>A list of unique names for active event triggers associated with the integration.</p>"
         }
       },
       "documentation":"<p>An integration in list of integrations.</p>"
@@ -5644,6 +6086,38 @@
       "max":512,
       "pattern":"\\S+"
     },
+    "ObjectAttribute":{
+      "type":"structure",
+      "required":[
+        "ComparisonOperator",
+        "Values"
+      ],
+      "members":{
+        "Source":{
+          "shape":"text",
+          "documentation":"<p>An attribute contained within a source object.</p>"
+        },
+        "FieldName":{
+          "shape":"fieldName",
+          "documentation":"<p>A field defined within an object type.</p>"
+        },
+        "ComparisonOperator":{
+          "shape":"ComparisonOperator",
+          "documentation":"<p>The operator used to compare an attribute against a list of values.</p>"
+        },
+        "Values":{
+          "shape":"EventTriggerValues",
+          "documentation":"<p>A list of attribute values used for comparison.</p>"
+        }
+      },
+      "documentation":"<p>The criteria that a specific object attribute must meet to trigger the destination.</p>"
+    },
+    "ObjectAttributes":{
+      "type":"list",
+      "member":{"shape":"ObjectAttribute"},
+      "max":10,
+      "min":1
+    },
     "ObjectCount":{
       "type":"integer",
       "max":100,
@@ -5752,6 +6226,47 @@
         "OTHER"
       ],
       "sensitive":true
+    },
+    "Period":{
+      "type":"structure",
+      "required":[
+        "Unit",
+        "Value"
+      ],
+      "members":{
+        "Unit":{
+          "shape":"PeriodUnit",
+          "documentation":"<p>The unit of time.</p>"
+        },
+        "Value":{
+          "shape":"maxSize24",
+          "documentation":"<p>The amount of time of the specified unit.</p>"
+        },
+        "MaxInvocationsPerProfile":{
+          "shape":"maxSize1000",
+          "documentation":"<p>The maximum allowed number of destination invocations per profile.</p>"
+        },
+        "Unlimited":{
+          "shape":"boolean",
+          "documentation":"<p>If set to true, there is no limit on the number of destination invocations per profile. The default is false.</p>"
+        }
+      },
+      "documentation":"<p>Defines a limit and the time period during which it is enforced.</p>"
+    },
+    "PeriodUnit":{
+      "type":"string",
+      "enum":[
+        "HOURS",
+        "DAYS",
+        "WEEKS",
+        "MONTHS"
+      ]
+    },
+    "Periods":{
+      "type":"list",
+      "member":{"shape":"Period"},
+      "max":4,
+      "min":1
     },
     "PhoneNumberList":{
       "type":"list",
@@ -6165,6 +6680,10 @@
         "RoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role. The Integration uses this role to make Customer Profiles requests on your behalf.</p>"
+        },
+        "EventTriggerNames":{
+          "shape":"EventTriggerNames",
+          "documentation":"<p>A list of unique names for active event triggers associated with the integration.</p>"
         }
       }
     },
@@ -6216,6 +6735,10 @@
         "RoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role. The Integration uses this role to make Customer Profiles requests on your behalf.</p>"
+        },
+        "EventTriggerNames":{
+          "shape":"EventTriggerNames",
+          "documentation":"<p>A list of unique names for active event triggers associated with the integration. This list would be empty if no Event Trigger is associated with the integration.</p>"
         }
       }
     },
@@ -7417,6 +7940,88 @@
         }
       }
     },
+    "UpdateEventTriggerRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "EventTriggerName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "EventTriggerName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the event trigger.</p>",
+          "location":"uri",
+          "locationName":"EventTriggerName"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the object type.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>The description of the event trigger.</p>"
+        },
+        "EventTriggerConditions":{
+          "shape":"EventTriggerConditions",
+          "documentation":"<p>A list of conditions that determine when an event should trigger the destination.</p>"
+        },
+        "SegmentFilter":{
+          "shape":"name",
+          "documentation":"<p>The destination is triggered only for profiles that meet the criteria of a segment definition.</p>"
+        },
+        "EventTriggerLimits":{
+          "shape":"EventTriggerLimits",
+          "documentation":"<p>Defines limits controlling whether an event triggers the destination, based on ingestion latency and the number of invocations per profile over specific time periods.</p>"
+        }
+      }
+    },
+    "UpdateEventTriggerResponse":{
+      "type":"structure",
+      "members":{
+        "EventTriggerName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the event trigger.</p>"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the object type.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>The description of the event trigger.</p>"
+        },
+        "EventTriggerConditions":{
+          "shape":"EventTriggerConditions",
+          "documentation":"<p>A list of conditions that determine when an event should trigger the destination.</p>"
+        },
+        "SegmentFilter":{
+          "shape":"name",
+          "documentation":"<p>The destination is triggered only for profiles that meet the criteria of a segment definition.</p>"
+        },
+        "EventTriggerLimits":{
+          "shape":"EventTriggerLimits",
+          "documentation":"<p>Defines limits controlling whether an event triggers the destination, based on ingestion latency and the number of invocations per profile over specific time periods.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the event trigger was created.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the event trigger was most recently updated.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>An array of key-value pairs to apply to this resource.</p>"
+        }
+      }
+    },
     "UpdateProfileRequest":{
       "type":"structure",
       "required":[
@@ -7656,6 +8261,12 @@
       "max":1098,
       "min":1
     },
+    "fieldName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_.-]+$"
+    },
     "foundByList":{
       "type":"list",
       "member":{"shape":"FoundByKeyValue"},
@@ -7679,6 +8290,16 @@
       "max":100,
       "min":1
     },
+    "maxSize1000":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "maxSize24":{
+      "type":"integer",
+      "max":24,
+      "min":1
+    },
     "message":{"type":"string"},
     "minSize0":{
       "type":"integer",
@@ -7689,6 +8310,7 @@
       "min":1
     },
     "optionalBoolean":{"type":"boolean"},
+    "optionalLong":{"type":"long"},
     "requestValueList":{
       "type":"list",
       "member":{"shape":"string1To255"}

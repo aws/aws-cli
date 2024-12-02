@@ -359,6 +359,27 @@
       "documentation":"<p>Creates outbound requests for the specified campaign Amazon Connect account. This API is idempotent.</p>",
       "idempotent":true
     },
+    "PutProfileOutboundRequestBatch":{
+      "name":"PutProfileOutboundRequestBatch",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v2/campaigns/{id}/profile-outbound-requests",
+        "responseCode":200
+      },
+      "input":{"shape":"PutProfileOutboundRequestBatchRequest"},
+      "output":{"shape":"PutProfileOutboundRequestBatchResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidCampaignStateException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Takes in a list of profile outbound requests to be placed as part of an outbound campaign. This API is idempotent.</p>",
+      "idempotent":true
+    },
     "ResumeCampaign":{
       "name":"ResumeCampaign",
       "http":{
@@ -1251,6 +1272,13 @@
       "documentation":"<p>Server-side encryption type.</p>",
       "enum":["KMS"]
     },
+    "EventTrigger":{
+      "type":"structure",
+      "members":{
+        "customerProfilesDomainArn":{"shape":"Arn"}
+      },
+      "documentation":"<p>Event trigger of the campaign</p>"
+    },
     "EventType":{
       "type":"string",
       "documentation":"<p>Enumeration of Customer Profiles event type</p>",
@@ -1274,6 +1302,22 @@
       "member":{"shape":"FailedCampaignStateResponse"},
       "documentation":"<p>List of failed requests of campaign state</p>",
       "max":25,
+      "min":0
+    },
+    "FailedProfileOutboundRequest":{
+      "type":"structure",
+      "members":{
+        "clientToken":{"shape":"ClientToken"},
+        "id":{"shape":"ProfileOutboundRequestId"},
+        "failureCode":{"shape":"ProfileOutboundRequestFailureCode"}
+      },
+      "documentation":"<p>Failure details for a profile outbound request</p>"
+    },
+    "FailedProfileOutboundRequestList":{
+      "type":"list",
+      "member":{"shape":"FailedProfileOutboundRequest"},
+      "documentation":"<p>List of failed profile outbound requests</p>",
+      "max":20,
       "min":0
     },
     "FailedRequest":{
@@ -1729,6 +1773,49 @@
       },
       "documentation":"<p>Predictive config</p>"
     },
+    "ProfileId":{
+      "type":"string",
+      "documentation":"<p>Identifier of the customer profile</p>",
+      "pattern":"[a-f0-9]{32}"
+    },
+    "ProfileOutboundRequest":{
+      "type":"structure",
+      "required":[
+        "clientToken",
+        "profileId"
+      ],
+      "members":{
+        "clientToken":{"shape":"ClientToken"},
+        "profileId":{"shape":"ProfileId"},
+        "expirationTime":{"shape":"TimeStamp"}
+      },
+      "documentation":"<p>Information about a profile outbound request</p>"
+    },
+    "ProfileOutboundRequestFailureCode":{
+      "type":"string",
+      "documentation":"<p>Predefined code indicating the error that caused the failure</p>",
+      "enum":[
+        "UnknownError",
+        "ResourceNotFound",
+        "Conflict",
+        "RequestThrottled",
+        "InvalidInput"
+      ]
+    },
+    "ProfileOutboundRequestId":{
+      "type":"string",
+      "documentation":"<p>Identifier of the profile outbound request</p>",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9_\\-.]*"
+    },
+    "ProfileOutboundRequestList":{
+      "type":"list",
+      "member":{"shape":"ProfileOutboundRequest"},
+      "documentation":"<p>List of profile outbound requests</p>",
+      "max":20,
+      "min":1
+    },
     "ProgressiveConfig":{
       "type":"structure",
       "required":["bandwidthAllocation"],
@@ -1776,6 +1863,30 @@
         "failedRequests":{"shape":"FailedRequestList"}
       },
       "documentation":"<p>The response for PutOutboundRequestBatch API.</p>"
+    },
+    "PutProfileOutboundRequestBatchRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "profileOutboundRequests"
+      ],
+      "members":{
+        "id":{
+          "shape":"CampaignId",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "profileOutboundRequests":{"shape":"ProfileOutboundRequestList"}
+      },
+      "documentation":"<p>The request for PutProfileOutboundRequestBatch API</p>"
+    },
+    "PutProfileOutboundRequestBatchResponse":{
+      "type":"structure",
+      "members":{
+        "successfulRequests":{"shape":"SuccessfulProfileOutboundRequestList"},
+        "failedRequests":{"shape":"FailedProfileOutboundRequestList"}
+      },
+      "documentation":"<p>The response for PutProfileOutboundRequestBatch API</p>"
     },
     "QConnectIntegrationConfig":{
       "type":"structure",
@@ -1956,7 +2067,8 @@
     "Source":{
       "type":"structure",
       "members":{
-        "customerProfilesSegmentArn":{"shape":"Arn"}
+        "customerProfilesSegmentArn":{"shape":"Arn"},
+        "eventTrigger":{"shape":"EventTrigger"}
       },
       "documentation":"<p>Source of the campaign</p>",
       "union":true
@@ -2028,6 +2140,21 @@
       "member":{"shape":"SuccessfulCampaignStateResponse"},
       "documentation":"<p>List of successful response of campaign state</p>",
       "max":25,
+      "min":0
+    },
+    "SuccessfulProfileOutboundRequest":{
+      "type":"structure",
+      "members":{
+        "clientToken":{"shape":"ClientToken"},
+        "id":{"shape":"ProfileOutboundRequestId"}
+      },
+      "documentation":"<p>Success details for a profile outbound request</p>"
+    },
+    "SuccessfulProfileOutboundRequestList":{
+      "type":"list",
+      "member":{"shape":"SuccessfulProfileOutboundRequest"},
+      "documentation":"<p>List of successful profile outbound requests</p>",
+      "max":20,
       "min":0
     },
     "SuccessfulRequest":{

@@ -2,6 +2,41 @@
 CHANGELOG
 =========
 
+1.36.13
+=======
+
+* api-change:``bedrock``: Add support for Knowledge Base Evaluations & LLM as a judge
+* api-change:``bedrock-agent``: This release introduces APIs to upload documents directly into a Knowledge Base
+* api-change:``bedrock-agent-runtime``: This release introduces a new Rerank API to leverage reranking models (with integration into Knowledge Bases); APIs to upload documents directly into Knowledge Base; RetrieveAndGenerateStream API for streaming response; Guardrails on Retrieve API; and ability to automatically generate filters
+* api-change:``chime-sdk-voice``: This release adds supports for enterprises to integrate Amazon Connect with other voice systems. It supports directly transferring voice calls and metadata without using the public telephone network. It also supports real-time and post-call analytics.
+* api-change:``cleanrooms``: This release allows customers and their partners to easily collaborate with data stored in Snowflake and Amazon Athena, without having to move or share their underlying data among collaborators.
+* api-change:``connect``: Adds support for WhatsApp Business messaging, IVR call recording, enabling Contact Lens for existing on-premise contact centers and telephony platforms, and enabling telephony and IVR migration to Amazon Connect independent of their contact center agents.
+* api-change:``connectcampaignsv2``: Amazon Connect Outbound Campaigns V2 / Features : Adds support for Event-Triggered Campaigns.
+* api-change:``customer-profiles``: This release introduces Event Trigger APIs as part of Amazon Connect Customer Profiles service.
+* api-change:``ec2``: Adds support for declarative policies that allow you to enforce desired configuration across an AWS organization through configuring account attributes. Adds support for Allowed AMIs that allows you to limit the use of AMIs in AWS accounts. Adds support for connectivity over non-HTTP protocols.
+* api-change:``ecs``: This release adds support for Container Insights with Enhanced Observability for Amazon ECS.
+* api-change:``eks``: Added support for Auto Mode Clusters, Hybrid Nodes, and specifying computeTypes in the DescribeAddonVersions API.
+* api-change:``events``: Call private APIs by configuring Connections with VPC connectivity through PrivateLink and VPC Lattice
+* api-change:``fsx``: FSx API changes to support the public launch of the Amazon FSx Intelligent Tiering for OpenZFS storage class.
+* api-change:``guardduty``: Add new Multi Domain Correlation findings.
+* api-change:``imagebuilder``: Added support for EC2 Image Builder's integration with AWS Marketplace for Marketplace components.
+* api-change:``invoicing``: AWS Invoice Configuration allows you to receive separate AWS invoices based on your organizational needs. You can use the AWS SDKs to manage Invoice Units and programmatically fetch the information of the invoice receiver.
+* api-change:``logs``: Adds PutIntegration, GetIntegration, ListIntegrations and DeleteIntegration APIs. Adds QueryLanguage support to StartQuery, GetQueryResults, DescribeQueries, DescribeQueryDefinitions, and PutQueryDefinition APIs.
+* api-change:``memorydb``: Amazon MemoryDB SDK now supports all APIs for Multi-Region. Please refer to the updated Amazon MemoryDB public documentation for detailed information on API usage.
+* api-change:``networkflowmonitor``: This release adds documentation for a new feature in Amazon CloudWatch called Network Flow Monitor. You can use Network Flow Monitor to get near real-time metrics, including retransmissions and data transferred, for your actual workloads.
+* api-change:``opensearch``: This feature introduces support for CRUDL APIs, enabling the creation and management of Connected data sources.
+* api-change:``organizations``: Add support for policy operations on the DECLARATIVE_POLICY_EC2 policy type.
+* api-change:``qbusiness``: Amazon Q Business now supports capabilities to extract insights and answer questions from visual elements embedded within documents, a browser extension for Google Chrome, Mozilla Firefox, and Microsoft Edge, and attachments across conversations.
+* api-change:``qconnect``: This release adds following capabilities: Configuring safeguards via AIGuardrails for Q in Connect inferencing, and APIs to support Q&A self-service use cases
+* api-change:``rds``: Amazon RDS supports CloudWatch Database Insights. You can use the SDK to create, modify, and describe the DatabaseInsightsMode for your DB instances and clusters.
+* api-change:``s3``: Amazon S3 introduces support for AWS Dedicated Local Zones
+* api-change:``s3control``: Amazon S3 introduces support for AWS Dedicated Local Zones
+* api-change:``securityhub``: Add new Multi Domain Correlation findings.
+* api-change:``security-ir``: AWS Security Incident Response is a purpose-built security incident solution designed to help customers prepare for, respond to, and recover from security incidents.
+* api-change:``transfer``: AWS Transfer Family now offers Web apps that enables simple and secure access to data stored in Amazon S3.
+* api-change:``vpc-lattice``: Lattice APIs that allow sharing and access of VPC resources across accounts.
+
+
 1.36.12
 =======
 

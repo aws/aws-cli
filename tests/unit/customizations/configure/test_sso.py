@@ -834,6 +834,7 @@ class TestConfigureSSOCommand:
     ):
         expected_kwargs = {
             "sso_region": expected_sso_region,
+            "parsed_globals": mock.ANY,
             "start_url": expected_start_url,
             "on_pending_authorization": None,
             "token_cache": None,

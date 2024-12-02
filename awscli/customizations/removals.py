@@ -57,7 +57,8 @@ def register_removals(event_handler):
                          remove_commands=['invoke-agent',
                                           'invoke-flow',
                                           'invoke-inline-agent',
-                                          'optimize-prompt'])
+                                          'optimize-prompt',
+                                          'retrieve-and-generate-stream'])
     cmd_remover.remove(on_event='building-command-table.qbusiness',
                         remove_commands=['chat'])
     cmd_remover.remove(on_event='building-command-table.iotsitewise',

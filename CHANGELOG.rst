@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.22.9
+======
+
+* api-change:``s3control``: It allows customers to pass CRC64NVME as a header in S3 Batch Operations copy requests
+* api-change:``socialmessaging``: Added support for passing role arn corresponding to the supported event destination
+* api-change:``bedrock-runtime``: Add an API parameter that allows customers to set performance configuration for invoking a model.
+
+
 2.22.8
 ======
 

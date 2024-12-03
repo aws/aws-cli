@@ -1335,6 +1335,10 @@
     "CatalogResource":{
       "type":"structure",
       "members":{
+        "Id":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>An identifier for the catalog resource.</p>"
+        }
       },
       "documentation":"<p>A structure for the catalog object.</p>"
     },
@@ -1415,6 +1419,16 @@
       },
       "documentation":"<p>Two processes are trying to modify a resource simultaneously.</p>",
       "exception":true
+    },
+    "Condition":{
+      "type":"structure",
+      "members":{
+        "Expression":{
+          "shape":"ExpressionString",
+          "documentation":"<p>An expression written based on the Cedar Policy Language used to match the principal attributes.</p>"
+        }
+      },
+      "documentation":"<p>A Lake Formation condition, which applies to permissions and opt-ins that contain an expression.</p>"
     },
     "ContextKey":{
       "type":"string",
@@ -2070,6 +2084,10 @@
     "Expression":{
       "type":"list",
       "member":{"shape":"LFTag"}
+    },
+    "ExpressionString":{
+      "type":"string",
+      "max":3000
     },
     "ExtendTransactionRequest":{
       "type":"structure",
@@ -2927,6 +2945,10 @@
       "members":{
         "Resource":{"shape":"Resource"},
         "Principal":{"shape":"DataLakePrincipal"},
+        "Condition":{
+          "shape":"Condition",
+          "documentation":"<p>A Lake Formation condition, which applies to permissions and opt-ins that contain an expression.</p>"
+        },
         "LastModified":{
           "shape":"LastModifiedTimestamp",
           "documentation":"<p>The last modified date and time of the record.</p>"
@@ -3337,7 +3359,9 @@
         "CREATE_LF_TAG",
         "ASSOCIATE",
         "GRANT_WITH_LF_TAG_EXPRESSION",
-        "CREATE_LF_TAG_EXPRESSION"
+        "CREATE_LF_TAG_EXPRESSION",
+        "CREATE_CATALOG",
+        "SUPER_USER"
       ]
     },
     "PermissionList":{
@@ -3426,6 +3450,10 @@
         "Resource":{
           "shape":"Resource",
           "documentation":"<p>The resource where permissions are to be granted or revoked.</p>"
+        },
+        "Condition":{
+          "shape":"Condition",
+          "documentation":"<p>A Lake Formation condition, which applies to permissions and opt-ins that contain an expression.</p>"
         },
         "Permissions":{
           "shape":"PermissionList",

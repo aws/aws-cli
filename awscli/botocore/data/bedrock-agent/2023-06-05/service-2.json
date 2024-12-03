@@ -14,6 +14,27 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "AssociateAgentCollaborator":{
+      "name":"AssociateAgentCollaborator",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateAgentCollaboratorRequest"},
+      "output":{"shape":"AssociateAgentCollaboratorResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Makes an agent a collaborator for another agent.</p>",
+      "idempotent":true
+    },
     "AssociateAgentKnowledgeBase":{
       "name":"AssociateAgentKnowledgeBase",
       "http":{
@@ -460,6 +481,26 @@
       "documentation":"<p>Deletes a prompt or a version of it, depending on whether you include the <code>promptVersion</code> field or not. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-manage.html#prompt-management-delete.html\">Delete prompts from the Prompt management tool</a> and <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-deploy.html#prompt-management-versions-delete.html\">Delete a version of a prompt from the Prompt management tool</a> in the Amazon Bedrock User Guide.</p>",
       "idempotent":true
     },
+    "DisassociateAgentCollaborator":{
+      "name":"DisassociateAgentCollaborator",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/{collaboratorId}/",
+        "responseCode":204
+      },
+      "input":{"shape":"DisassociateAgentCollaboratorRequest"},
+      "output":{"shape":"DisassociateAgentCollaboratorResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Disassociates an agent collaborator.</p>",
+      "idempotent":true
+    },
     "DisassociateAgentKnowledgeBase":{
       "name":"DisassociateAgentKnowledgeBase",
       "http":{
@@ -533,6 +574,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Gets information about an alias of an agent.</p>"
+    },
+    "GetAgentCollaborator":{
+      "name":"GetAgentCollaborator",
+      "http":{
+        "method":"GET",
+        "requestUri":"/agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/{collaboratorId}/",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAgentCollaboratorRequest"},
+      "output":{"shape":"GetAgentCollaboratorResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves information about an agent's collaborator.</p>"
     },
     "GetAgentKnowledgeBase":{
       "name":"GetAgentKnowledgeBase",
@@ -770,6 +829,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists the aliases of an agent and information about each one.</p>"
+    },
+    "ListAgentCollaborators":{
+      "name":"ListAgentCollaborators",
+      "http":{
+        "method":"POST",
+        "requestUri":"/agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAgentCollaboratorsRequest"},
+      "output":{"shape":"ListAgentCollaboratorsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieve a list of an agent's collaborators.</p>"
     },
     "ListAgentKnowledgeBases":{
       "name":"ListAgentKnowledgeBases",
@@ -1167,6 +1244,27 @@
       "documentation":"<p>Updates configurations for an alias of an agent.</p>",
       "idempotent":true
     },
+    "UpdateAgentCollaborator":{
+      "name":"UpdateAgentCollaborator",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/agents/{agentId}/agentversions/{agentVersion}/agentcollaborators/{collaboratorId}/",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAgentCollaboratorRequest"},
+      "output":{"shape":"UpdateAgentCollaboratorResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Updates an agent's collaborator.</p>",
+      "idempotent":true
+    },
     "UpdateAgentKnowledgeBase":{
       "name":"UpdateAgentKnowledgeBase",
       "http":{
@@ -1420,6 +1518,10 @@
         "agentArn":{
           "shape":"AgentArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the agent.</p>"
+        },
+        "agentCollaboration":{
+          "shape":"AgentCollaboration",
+          "documentation":"<p>The agent's collaboration settings.</p>"
         },
         "agentId":{
           "shape":"Id",
@@ -1758,6 +1860,139 @@
       "min":0,
       "pattern":"^arn:aws:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:agent/[0-9a-zA-Z]{10}$"
     },
+    "AgentCollaboration":{
+      "type":"string",
+      "enum":[
+        "SUPERVISOR",
+        "SUPERVISOR_ROUTER",
+        "DISABLED"
+      ]
+    },
+    "AgentCollaborator":{
+      "type":"structure",
+      "required":[
+        "agentDescriptor",
+        "agentId",
+        "agentVersion",
+        "collaborationInstruction",
+        "collaboratorId",
+        "collaboratorName",
+        "createdAt",
+        "lastUpdatedAt"
+      ],
+      "members":{
+        "agentDescriptor":{
+          "shape":"AgentDescriptor",
+          "documentation":"<p>The collaborator's agent descriptor.</p>"
+        },
+        "agentId":{
+          "shape":"Id",
+          "documentation":"<p>The collaborator's agent ID.</p>"
+        },
+        "agentVersion":{
+          "shape":"Version",
+          "documentation":"<p>The collaborator's agent version.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The collaborator's client token.</p>"
+        },
+        "collaborationInstruction":{
+          "shape":"CollaborationInstruction",
+          "documentation":"<p>The collaborator's instructions.</p>"
+        },
+        "collaboratorId":{
+          "shape":"Id",
+          "documentation":"<p>The collaborator's collaborator ID.</p>"
+        },
+        "collaboratorName":{
+          "shape":"Name",
+          "documentation":"<p>The collaborator's collaborator name.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>When the collaborator was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>When the collaborator was updated.</p>"
+        },
+        "relayConversationHistory":{
+          "shape":"RelayConversationHistory",
+          "documentation":"<p>The collaborator's relay conversation history.</p>"
+        }
+      },
+      "documentation":"<p>An agent collaborator.</p>"
+    },
+    "AgentCollaboratorSummaries":{
+      "type":"list",
+      "member":{"shape":"AgentCollaboratorSummary"},
+      "max":10,
+      "min":0
+    },
+    "AgentCollaboratorSummary":{
+      "type":"structure",
+      "required":[
+        "agentDescriptor",
+        "agentId",
+        "agentVersion",
+        "collaborationInstruction",
+        "collaboratorId",
+        "collaboratorName",
+        "createdAt",
+        "lastUpdatedAt",
+        "relayConversationHistory"
+      ],
+      "members":{
+        "agentDescriptor":{
+          "shape":"AgentDescriptor",
+          "documentation":"<p>The collaborator's agent descriptor.</p>"
+        },
+        "agentId":{
+          "shape":"Id",
+          "documentation":"<p>The collaborator's agent ID.</p>"
+        },
+        "agentVersion":{
+          "shape":"Version",
+          "documentation":"<p>The collaborator's agent version.</p>"
+        },
+        "collaborationInstruction":{
+          "shape":"CollaborationInstruction",
+          "documentation":"<p>The collaborator's collaboration instruction.</p>"
+        },
+        "collaboratorId":{
+          "shape":"Id",
+          "documentation":"<p>The collaborator's ID.</p>"
+        },
+        "collaboratorName":{
+          "shape":"Name",
+          "documentation":"<p>The collaborator's name.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>When the collaborator was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>When the collaborator was last updated.</p>"
+        },
+        "relayConversationHistory":{
+          "shape":"RelayConversationHistory",
+          "documentation":"<p>The collaborator's relay conversation history.</p>"
+        }
+      },
+      "documentation":"<p>An agent collaborator summary.</p>"
+    },
+    "AgentDescriptor":{
+      "type":"structure",
+      "members":{
+        "aliasArn":{
+          "shape":"AgentAliasArn",
+          "documentation":"<p>The agent's alias ARN.</p>"
+        }
+      },
+      "documentation":"<p>An agent descriptor.</p>"
+    },
     "AgentFlowNodeConfiguration":{
       "type":"structure",
       "required":["agentAliasArn"],
@@ -1928,6 +2163,10 @@
           "shape":"AgentArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the agent that the version belongs to.</p>"
         },
+        "agentCollaboration":{
+          "shape":"AgentCollaboration",
+          "documentation":"<p>The agent's collaboration settings.</p>"
+        },
         "agentId":{
           "shape":"Id",
           "documentation":"<p>The unique identifier of the agent that the version belongs to.</p>"
@@ -2051,6 +2290,61 @@
       "members":{
       },
       "documentation":"<p>Defines tools, at least one of which must be requested by the model. No text is generated but the results of tool use are sent back to the model to help generate a response. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Use a tool to complete an Amazon Bedrock model response</a>.</p>"
+    },
+    "AssociateAgentCollaboratorRequest":{
+      "type":"structure",
+      "required":[
+        "agentDescriptor",
+        "agentId",
+        "agentVersion",
+        "collaborationInstruction",
+        "collaboratorName"
+      ],
+      "members":{
+        "agentDescriptor":{
+          "shape":"AgentDescriptor",
+          "documentation":"<p>The alias of the collaborator agent.</p>"
+        },
+        "agentId":{
+          "shape":"Id",
+          "documentation":"<p>The agent's ID.</p>",
+          "location":"uri",
+          "locationName":"agentId"
+        },
+        "agentVersion":{
+          "shape":"DraftVersion",
+          "documentation":"<p>An agent version.</p>",
+          "location":"uri",
+          "locationName":"agentVersion"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A client token.</p>",
+          "idempotencyToken":true
+        },
+        "collaborationInstruction":{
+          "shape":"CollaborationInstruction",
+          "documentation":"<p>Instruction for the collaborator.</p>"
+        },
+        "collaboratorName":{
+          "shape":"Name",
+          "documentation":"<p>A name for the collaborator.</p>"
+        },
+        "relayConversationHistory":{
+          "shape":"RelayConversationHistory",
+          "documentation":"<p>A relay conversation history for the collaborator.</p>"
+        }
+      }
+    },
+    "AssociateAgentCollaboratorResponse":{
+      "type":"structure",
+      "required":["agentCollaborator"],
+      "members":{
+        "agentCollaborator":{
+          "shape":"AgentCollaborator",
+          "documentation":"<p>Details about the collaborator.</p>"
+        }
+      }
     },
     "AssociateAgentKnowledgeBaseRequest":{
       "type":"structure",
@@ -2249,6 +2543,12 @@
       "max":256,
       "min":33,
       "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,256}$"
+    },
+    "CollaborationInstruction":{
+      "type":"string",
+      "max":4000,
+      "min":1,
+      "sensitive":true
     },
     "CollectorFlowNodeConfiguration":{
       "type":"structure",
@@ -2513,6 +2813,10 @@
       "type":"structure",
       "required":["agentName"],
       "members":{
+        "agentCollaboration":{
+          "shape":"AgentCollaboration",
+          "documentation":"<p>The agent's collaboration role.</p>"
+        },
         "agentName":{
           "shape":"Name",
           "documentation":"<p>A name for the agent that you create.</p>"
@@ -3824,6 +4128,39 @@
       "max":4096,
       "min":0
     },
+    "DisassociateAgentCollaboratorRequest":{
+      "type":"structure",
+      "required":[
+        "agentId",
+        "agentVersion",
+        "collaboratorId"
+      ],
+      "members":{
+        "agentId":{
+          "shape":"Id",
+          "documentation":"<p>An agent ID.</p>",
+          "location":"uri",
+          "locationName":"agentId"
+        },
+        "agentVersion":{
+          "shape":"DraftVersion",
+          "documentation":"<p>The agent's version.</p>",
+          "location":"uri",
+          "locationName":"agentVersion"
+        },
+        "collaboratorId":{
+          "shape":"Id",
+          "documentation":"<p>The collaborator's ID.</p>",
+          "location":"uri",
+          "locationName":"collaboratorId"
+        }
+      }
+    },
+    "DisassociateAgentCollaboratorResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DisassociateAgentKnowledgeBaseRequest":{
       "type":"structure",
       "required":[
@@ -3993,6 +4330,7 @@
     },
     "EmbeddingDataType":{
       "type":"string",
+      "documentation":"<p>Bedrock models embedding data type. Can be either float32 or binary.</p>",
       "enum":[
         "FLOAT32",
         "BINARY"
@@ -4906,6 +5244,44 @@
         "agentAlias":{
           "shape":"AgentAlias",
           "documentation":"<p>Contains information about the alias.</p>"
+        }
+      }
+    },
+    "GetAgentCollaboratorRequest":{
+      "type":"structure",
+      "required":[
+        "agentId",
+        "agentVersion",
+        "collaboratorId"
+      ],
+      "members":{
+        "agentId":{
+          "shape":"Id",
+          "documentation":"<p>The agent's ID.</p>",
+          "location":"uri",
+          "locationName":"agentId"
+        },
+        "agentVersion":{
+          "shape":"Version",
+          "documentation":"<p>The agent's version.</p>",
+          "location":"uri",
+          "locationName":"agentVersion"
+        },
+        "collaboratorId":{
+          "shape":"Id",
+          "documentation":"<p>The collaborator's ID.</p>",
+          "location":"uri",
+          "locationName":"collaboratorId"
+        }
+      }
+    },
+    "GetAgentCollaboratorResponse":{
+      "type":"structure",
+      "required":["agentCollaborator"],
+      "members":{
+        "agentCollaborator":{
+          "shape":"AgentCollaborator",
+          "documentation":"<p>Details about the collaborator.</p>"
         }
       }
     },
@@ -6236,6 +6612,49 @@
         }
       }
     },
+    "ListAgentCollaboratorsRequest":{
+      "type":"structure",
+      "required":[
+        "agentId",
+        "agentVersion"
+      ],
+      "members":{
+        "agentId":{
+          "shape":"Id",
+          "documentation":"<p>The agent's ID.</p>",
+          "location":"uri",
+          "locationName":"agentId"
+        },
+        "agentVersion":{
+          "shape":"Version",
+          "documentation":"<p>The agent's version.</p>",
+          "location":"uri",
+          "locationName":"agentVersion"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of agent collaborators to return in one page of results.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ListAgentCollaboratorsResponse":{
+      "type":"structure",
+      "required":["agentCollaboratorSummaries"],
+      "members":{
+        "agentCollaboratorSummaries":{
+          "shape":"AgentCollaboratorSummaries",
+          "documentation":"<p>A list of collaborator summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>"
+        }
+      }
+    },
     "ListAgentKnowledgeBasesRequest":{
       "type":"structure",
       "required":[
@@ -7441,6 +7860,10 @@
           "shape":"BasePromptTemplate",
           "documentation":"<p>Defines the prompt template with which to replace the default prompt template. You can use placeholder variables in the base prompt template to customize the prompt. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html\">Prompt template placeholder variables</a>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts-configure.html\">Configure the prompt templates</a>.</p>"
         },
+        "foundationModel":{
+          "shape":"ModelIdentifier",
+          "documentation":"<p>The agent's foundation model.</p>"
+        },
         "inferenceConfiguration":{
           "shape":"InferenceConfiguration",
           "documentation":"<p>Contains inference parameters to use when the agent invokes a foundation model in the part of the agent sequence defined by the <code>promptType</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p>"
@@ -7985,9 +8408,16 @@
       "min":0,
       "pattern":"^.*$"
     },
+    "RelayConversationHistory":{
+      "type":"string",
+      "enum":[
+        "TO_COLLABORATOR",
+        "DISABLED"
+      ]
+    },
     "RequireConfirmation":{
       "type":"string",
-      "documentation":"<p>ENUM to check if action requires user confirmation</p>",
+      "documentation":"<p>Whether the action requires user confirmation.</p>",
       "enum":[
         "ENABLED",
         "DISABLED"
@@ -9056,6 +9486,63 @@
         }
       }
     },
+    "UpdateAgentCollaboratorRequest":{
+      "type":"structure",
+      "required":[
+        "agentDescriptor",
+        "agentId",
+        "agentVersion",
+        "collaborationInstruction",
+        "collaboratorId",
+        "collaboratorName"
+      ],
+      "members":{
+        "agentDescriptor":{
+          "shape":"AgentDescriptor",
+          "documentation":"<p>An agent descriptor for the agent collaborator.</p>"
+        },
+        "agentId":{
+          "shape":"Id",
+          "documentation":"<p>The agent's ID.</p>",
+          "location":"uri",
+          "locationName":"agentId"
+        },
+        "agentVersion":{
+          "shape":"DraftVersion",
+          "documentation":"<p>The agent's version.</p>",
+          "location":"uri",
+          "locationName":"agentVersion"
+        },
+        "collaborationInstruction":{
+          "shape":"CollaborationInstruction",
+          "documentation":"<p>Instruction for the collaborator.</p>"
+        },
+        "collaboratorId":{
+          "shape":"Id",
+          "documentation":"<p>The collaborator's ID.</p>",
+          "location":"uri",
+          "locationName":"collaboratorId"
+        },
+        "collaboratorName":{
+          "shape":"Name",
+          "documentation":"<p>The collaborator's name.</p>"
+        },
+        "relayConversationHistory":{
+          "shape":"RelayConversationHistory",
+          "documentation":"<p>A relay conversation history for the collaborator.</p>"
+        }
+      }
+    },
+    "UpdateAgentCollaboratorResponse":{
+      "type":"structure",
+      "required":["agentCollaborator"],
+      "members":{
+        "agentCollaborator":{
+          "shape":"AgentCollaborator",
+          "documentation":"<p>Details about the collaborator.</p>"
+        }
+      }
+    },
     "UpdateAgentKnowledgeBaseRequest":{
       "type":"structure",
       "required":[
@@ -9111,6 +9598,10 @@
         "foundationModel"
       ],
       "members":{
+        "agentCollaboration":{
+          "shape":"AgentCollaboration",
+          "documentation":"<p>The agent's collaboration role.</p>"
+        },
         "agentId":{
           "shape":"Id",
           "documentation":"<p>The unique identifier of the agent.</p>",

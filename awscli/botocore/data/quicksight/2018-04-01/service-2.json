@@ -741,6 +741,23 @@
       ],
       "documentation":"<p>Deletes the data source permanently. This operation breaks all the datasets that reference the deleted data source.</p>"
     },
+    "DeleteDefaultQBusinessApplication":{
+      "name":"DeleteDefaultQBusinessApplication",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/default-qbusiness-application"
+      },
+      "input":{"shape":"DeleteDefaultQBusinessApplicationRequest"},
+      "output":{"shape":"DeleteDefaultQBusinessApplicationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes a linked Amazon Q Business application from an Amazon QuickSight account</p>"
+    },
     "DeleteFolder":{
       "name":"DeleteFolder",
       "http":{
@@ -1527,6 +1544,23 @@
       ],
       "documentation":"<p>Describes the resource permissions for a data source.</p>"
     },
+    "DescribeDefaultQBusinessApplication":{
+      "name":"DescribeDefaultQBusinessApplication",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/default-qbusiness-application"
+      },
+      "input":{"shape":"DescribeDefaultQBusinessApplicationRequest"},
+      "output":{"shape":"DescribeDefaultQBusinessApplicationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes a Amazon Q Business application that is linked to an Amazon QuickSight account.</p>"
+    },
     "DescribeFolder":{
       "name":"DescribeFolder",
       "http":{
@@ -1725,6 +1759,24 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Describes a personalization configuration.</p>"
+    },
+    "DescribeQuickSightQSearchConfiguration":{
+      "name":"DescribeQuickSightQSearchConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/quicksight-q-search-configuration"
+      },
+      "input":{"shape":"DescribeQuickSightQSearchConfigurationRequest"},
+      "output":{"shape":"DescribeQuickSightQSearchConfigurationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes the state of a Amazon QuickSight Q Search configuration.</p>"
     },
     "DescribeRefreshSchedule":{
       "name":"DescribeRefreshSchedule",
@@ -2040,6 +2092,27 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Generates an embed URL that you can use to embed an Amazon QuickSight experience in your website. This action can be used for any type of user registered in an Amazon QuickSight account. Before you use this action, make sure that you have configured the relevant Amazon QuickSight resource and permissions.</p> <p>The following rules apply to the generated URL:</p> <ul> <li> <p>It contains a temporary bearer token. It is valid for 5 minutes after it is generated. Once redeemed within this period, it cannot be re-used again.</p> </li> <li> <p>The URL validity period should not be confused with the actual session lifetime that can be customized using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_GenerateEmbedUrlForRegisteredUser.html#QS-GenerateEmbedUrlForRegisteredUser-request-SessionLifetimeInMinutes\">SessionLifetimeInMinutes</a> </code> parameter.</p> <p>The resulting user session is valid for 15 minutes (minimum) to 10 hours (maximum). The default session duration is 10 hours.</p> </li> <li> <p>You are charged only when the URL is used or there is interaction with Amazon QuickSight.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/embedded-analytics.html\">Embedded Analytics</a> in the <i>Amazon QuickSight User Guide</i>.</p> <p>For more information about the high-level steps for embedding and for an interactive demo of the ways you can customize embedding, visit the <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-portal.html\">Amazon QuickSight Developer Portal</a>.</p>"
+    },
+    "GenerateEmbedUrlForRegisteredUserWithIdentity":{
+      "name":"GenerateEmbedUrlForRegisteredUserWithIdentity",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/embed-url/registered-user-with-identity"
+      },
+      "input":{"shape":"GenerateEmbedUrlForRegisteredUserWithIdentityRequest"},
+      "output":{"shape":"GenerateEmbedUrlForRegisteredUserWithIdentityResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"QuickSightUserNotFoundException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"SessionLifetimeInMinutesInvalidException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"UnsupportedPricingPlanException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Generates an embed URL that you can use to embed an Amazon QuickSight experience in your website. This action can be used for any type of user that is registered in an Amazon QuickSight account that uses IAM Identity Center for authentication. This API requires <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/trustedidentitypropagation-overview.html#types-identity-enhanced-iam-role-sessions\">identity-enhanced IAM Role sessions</a> for the authenticated user that the API call is being made for.</p> <p>This API uses <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/trustedidentitypropagation.html\">trusted identity propagation</a> to ensure that an end user is authenticated and receives the embed URL that is specific to that user. The IAM Identity Center application that the user has logged into needs to have <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/trustedidentitypropagation-using-customermanagedapps-specify-trusted-apps.html\">trusted Identity Propagation enabled for Amazon QuickSight</a> with the scope value set to <code>quicksight:read</code>. Before you use this action, make sure that you have configured the relevant Amazon QuickSight resource and permissions.</p>"
     },
     "GetDashboardEmbedUrl":{
       "name":"GetDashboardEmbedUrl",
@@ -2707,6 +2780,22 @@
       ],
       "documentation":"<p>Lists all of the VPC connections in the current set Amazon Web Services Region of an Amazon Web Services account.</p>"
     },
+    "PredictQAResults":{
+      "name":"PredictQAResults",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/qa/predict"
+      },
+      "input":{"shape":"PredictQAResultsRequest"},
+      "output":{"shape":"PredictQAResultsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Predicts existing visuals or generates new visuals to answer a given query.</p>"
+    },
     "PutDataSetRefreshProperties":{
       "name":"PutDataSetRefreshProperties",
       "http":{
@@ -3086,6 +3175,25 @@
       ],
       "documentation":"<p>Updates the read and write permissions for an analysis.</p>"
     },
+    "UpdateApplicationWithTokenExchangeGrant":{
+      "name":"UpdateApplicationWithTokenExchangeGrant",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/application-with-token-exchange-grant"
+      },
+      "input":{"shape":"UpdateApplicationWithTokenExchangeGrantRequest"},
+      "output":{"shape":"UpdateApplicationWithTokenExchangeGrantResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates an Amazon QuickSight application with a token exchange grant. This operation only supports Amazon QuickSight applications that are registered with IAM Identity Center.</p>"
+    },
     "UpdateBrand":{
       "name":"UpdateBrand",
       "http":{
@@ -3334,6 +3442,24 @@
       ],
       "documentation":"<p>Updates the permissions to a data source.</p>"
     },
+    "UpdateDefaultQBusinessApplication":{
+      "name":"UpdateDefaultQBusinessApplication",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/default-qbusiness-application"
+      },
+      "input":{"shape":"UpdateDefaultQBusinessApplicationRequest"},
+      "output":{"shape":"UpdateDefaultQBusinessApplicationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates a Amazon Q Business application that is linked to a Amazon QuickSight account.</p>"
+    },
     "UpdateFolder":{
       "name":"UpdateFolder",
       "http":{
@@ -3498,6 +3624,24 @@
         {"shape":"ResourceUnavailableException"}
       ],
       "documentation":"<p>Updates a personalization configuration.</p>"
+    },
+    "UpdateQuickSightQSearchConfiguration":{
+      "name":"UpdateQuickSightQSearchConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/quicksight-q-search-configuration"
+      },
+      "input":{"shape":"UpdateQuickSightQSearchConfigurationRequest"},
+      "output":{"shape":"UpdateQuickSightQSearchConfigurationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates the state of a Amazon QuickSight Q Search configuration.</p>"
     },
     "UpdateRefreshSchedule":{
       "name":"UpdateRefreshSchedule",
@@ -11052,6 +11196,44 @@
       },
       "documentation":"<p>The visual publish options of a visual in a dashboard</p>"
     },
+    "DashboardVisualResult":{
+      "type":"structure",
+      "members":{
+        "DashboardId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the dashboard.</p>"
+        },
+        "DashboardName":{
+          "shape":"DashboardName",
+          "documentation":"<p>The name of the dashboard.</p>"
+        },
+        "SheetId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the sheet.</p>"
+        },
+        "SheetName":{
+          "shape":"SheetName",
+          "documentation":"<p>The name of the sheet.</p>"
+        },
+        "VisualId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the visual.</p>"
+        },
+        "VisualTitle":{
+          "shape":"VisualTitle",
+          "documentation":"<p>The title of the visual.</p>"
+        },
+        "VisualSubtitle":{
+          "shape":"VisualSubtitle",
+          "documentation":"<p>The subtitle of the visual.</p>"
+        },
+        "DashboardUrl":{
+          "shape":"QAUrl",
+          "documentation":"<p>The URL of the dashboard.</p>"
+        }
+      },
+      "documentation":"<p>The QA result that is made from dashboard visual.</p>"
+    },
     "DashboardsQAStatus":{
       "type":"string",
       "enum":[
@@ -13263,6 +13445,38 @@
         }
       }
     },
+    "DeleteDefaultQBusinessApplicationRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon QuickSight account that you want to disconnect from a Amazon Q Business application.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The Amazon QuickSight namespace that you want to delete a linked Amazon Q Business application from. If this field is left blank, the Amazon Q Business application is deleted from the default namespace. Currently, the default namespace is the only valid value for this parameter.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
+        }
+      }
+    },
+    "DeleteDefaultQBusinessApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DeleteFolderMembershipRequest":{
       "type":"structure",
       "required":[
@@ -15346,6 +15560,42 @@
         }
       }
     },
+    "DescribeDefaultQBusinessApplicationRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon QuickSight account that is linked to the Amazon Q Business application that you want described.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The Amazon QuickSight namespace that contains the linked Amazon Q Business application. If this field is left blank, the default namespace is used. Currently, the default namespace is the only valid value for this parameter.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
+        }
+      }
+    },
+    "DescribeDefaultQBusinessApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "ApplicationId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Q Business application that is linked to the Amazon QuickSight account.</p>"
+        }
+      }
+    },
     "DescribeFolderPermissionsRequest":{
       "type":"structure",
       "required":[
@@ -15855,6 +16105,36 @@
         "PersonalizationMode":{
           "shape":"PersonalizationMode",
           "documentation":"<p>A value that indicates whether personalization is enabled or not.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "DescribeQuickSightQSearchConfigurationRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Amazon QuickSight Q Search configuration that the user wants described.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        }
+      }
+    },
+    "DescribeQuickSightQSearchConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "QSearchStatus":{
+          "shape":"QSearchStatus",
+          "documentation":"<p>The status of Amazon QuickSight Q Search configuration.</p>"
         },
         "RequestId":{
           "shape":"String",
@@ -18902,6 +19182,99 @@
         }
       }
     },
+    "GenerateEmbedUrlForRegisteredUserWithIdentityRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "ExperienceConfiguration"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services registered user.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "SessionLifetimeInMinutes":{
+          "shape":"SessionLifetimeInMinutes",
+          "documentation":"<p>The validity of the session in minutes.</p>"
+        },
+        "ExperienceConfiguration":{"shape":"RegisteredUserEmbeddingExperienceConfiguration"},
+        "AllowedDomains":{
+          "shape":"StringList",
+          "documentation":"<p>A list of domains to be allowed to generate the embed URL.</p>"
+        }
+      }
+    },
+    "GenerateEmbedUrlForRegisteredUserWithIdentityResponse":{
+      "type":"structure",
+      "required":[
+        "EmbedUrl",
+        "Status",
+        "RequestId"
+      ],
+      "members":{
+        "EmbedUrl":{
+          "shape":"EmbeddingUrl",
+          "documentation":"<p>The generated embed URL for the registered user.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "GeneratedAnswerResult":{
+      "type":"structure",
+      "members":{
+        "QuestionText":{
+          "shape":"QAQueryText",
+          "documentation":"<p>The question text.</p>"
+        },
+        "AnswerStatus":{
+          "shape":"GeneratedAnswerStatus",
+          "documentation":"<p>The answer status of the generated answer.</p>"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic.</p>"
+        },
+        "TopicName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the topic.</p>"
+        },
+        "Restatement":{
+          "shape":"QAQueryText",
+          "documentation":"<p>The restatement for the answer.</p>"
+        },
+        "QuestionId":{
+          "shape":"QuestionId",
+          "documentation":"<p>The ID of the question.</p>"
+        },
+        "AnswerId":{
+          "shape":"AnswerId",
+          "documentation":"<p>The ID of the answer.</p>"
+        },
+        "QuestionUrl":{
+          "shape":"QAUrl",
+          "documentation":"<p>The URL of the question.</p>"
+        }
+      },
+      "documentation":"<p>The QA result that is made from generated answer.</p>"
+    },
+    "GeneratedAnswerStatus":{
+      "type":"string",
+      "enum":[
+        "ANSWER_GENERATED",
+        "ANSWER_RETRIEVED",
+        "ANSWER_DOWNGRADE"
+      ]
+    },
     "GeoSpatialColumnGroup":{
       "type":"structure",
       "required":[
@@ -20723,6 +21096,20 @@
         "RECURSE",
         "ONE_LEVEL",
         "NONE"
+      ]
+    },
+    "IncludeGeneratedAnswer":{
+      "type":"string",
+      "enum":[
+        "INCLUDE",
+        "EXCLUDE"
+      ]
+    },
+    "IncludeQuickSightQIndex":{
+      "type":"string",
+      "enum":[
+        "INCLUDE",
+        "EXCLUDE"
       ]
     },
     "IncrementalRefresh":{
@@ -24216,6 +24603,11 @@
       "max":100,
       "min":1
     },
+    "MaxTopicsToConsider":{
+      "type":"integer",
+      "max":4,
+      "min":1
+    },
     "MaximumLabelType":{
       "type":"structure",
       "members":{
@@ -26724,6 +27116,59 @@
       "max":10,
       "min":1
     },
+    "PredictQAResultsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "QueryText"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that the user wants to execute Predict QA results in.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "QueryText":{
+          "shape":"QAQueryText",
+          "documentation":"<p>The query text to be used to predict QA results.</p>"
+        },
+        "IncludeQuickSightQIndex":{
+          "shape":"IncludeQuickSightQIndex",
+          "documentation":"<p>Indicates whether Q indicies are included or excluded.</p>"
+        },
+        "IncludeGeneratedAnswer":{
+          "shape":"IncludeGeneratedAnswer",
+          "documentation":"<p>Indicates whether generated answers are included or excluded.</p>"
+        },
+        "MaxTopicsToConsider":{
+          "shape":"MaxTopicsToConsider",
+          "documentation":"<p>The number of maximum topics to be considered to predict QA results.</p>"
+        }
+      }
+    },
+    "PredictQAResultsResponse":{
+      "type":"structure",
+      "members":{
+        "PrimaryResult":{
+          "shape":"QAResult",
+          "documentation":"<p>The primary visual response.</p>"
+        },
+        "AdditionalResults":{
+          "shape":"QAResults",
+          "documentation":"<p>Additional visual responses.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "PredictionInterval":{
       "type":"integer",
       "max":95,
@@ -26871,6 +27316,50 @@
         }
       }
     },
+    "QAQueryText":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "sensitive":true
+    },
+    "QAResult":{
+      "type":"structure",
+      "members":{
+        "ResultType":{
+          "shape":"QAResultType",
+          "documentation":"<p>The type of QA result.</p>"
+        },
+        "DashboardVisual":{
+          "shape":"DashboardVisualResult",
+          "documentation":"<p>The representation of a dashboard visual result.</p>"
+        },
+        "GeneratedAnswer":{
+          "shape":"GeneratedAnswerResult",
+          "documentation":"<p>The representation of a generated answer result.</p>"
+        }
+      },
+      "documentation":"<p>The QA result that is made from the <code>DashboardVisual</code> or <code>GeneratedAnswer</code>.</p>"
+    },
+    "QAResultType":{
+      "type":"string",
+      "enum":[
+        "DASHBOARD_VISUAL",
+        "GENERATED_ANSWER",
+        "NO_ANSWER"
+      ]
+    },
+    "QAResults":{
+      "type":"list",
+      "member":{"shape":"QAResult"}
+    },
+    "QAUrl":{"type":"string"},
+    "QSearchStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "Query":{
       "type":"string",
       "max":256,
@@ -26892,6 +27381,11 @@
         }
       },
       "documentation":"<p>A structure that describes the query execution options.</p>"
+    },
+    "QuestionId":{
+      "type":"string",
+      "max":64,
+      "pattern":"^[a-zA-Z0-9-]+$"
     },
     "QueueInfo":{
       "type":"structure",
@@ -29301,7 +29795,10 @@
     },
     "ServiceType":{
       "type":"string",
-      "enum":["REDSHIFT"]
+      "enum":[
+        "REDSHIFT",
+        "QBUSINESS"
+      ]
     },
     "SessionLifetimeInMinutes":{
       "type":"long",
@@ -34553,6 +35050,41 @@
         }
       }
     },
+    "UpdateApplicationWithTokenExchangeGrantRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "Namespace"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account to be updated with a token exchange grant.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace of the Amazon QuickSight application.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
+        }
+      }
+    },
+    "UpdateApplicationWithTokenExchangeGrantResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "UpdateBrandAssignmentRequest":{
       "type":"structure",
       "required":[
@@ -35258,6 +35790,45 @@
         }
       }
     },
+    "UpdateDefaultQBusinessApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "ApplicationId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon QuickSight account that is connected to the Amazon Q Business application that you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The Amazon QuickSight namespace that contains the linked Amazon Q Business application. If this field is left blank, the default namespace is used. Currently, the default namespace is the only valid value for this parameter.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
+        },
+        "ApplicationId":{
+          "shape":"LimitedString",
+          "documentation":"<p>The ID of the Amazon Q Business application that you want to update.</p>"
+        }
+      }
+    },
+    "UpdateDefaultQBusinessApplicationResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "UpdateFolderPermissionsRequest":{
       "type":"structure",
       "required":[
@@ -35665,6 +36236,43 @@
         "PersonalizationMode":{
           "shape":"PersonalizationMode",
           "documentation":"<p>The personalization mode that is used for the personalization configuration.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "UpdateQuickSightQSearchConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "QSearchStatus"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Amazon QuickSight Q Search configuration that you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "QSearchStatus":{
+          "shape":"QSearchStatus",
+          "documentation":"<p>The status of the Amazon QuickSight Q Search configuration that the user wants to update.</p>"
+        }
+      }
+    },
+    "UpdateQuickSightQSearchConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "QSearchStatus":{
+          "shape":"QSearchStatus",
+          "documentation":"<p>The status of the Amazon QuickSight Q Search configuration.</p>"
         },
         "RequestId":{
           "shape":"String",
@@ -37095,6 +37703,11 @@
         "FRAGMENT"
       ]
     },
+    "VisualSubtitle":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "VisualSubtitleLabelOptions":{
       "type":"structure",
       "members":{
@@ -37108,6 +37721,11 @@
         }
       },
       "documentation":"<p>The subtitle label options for a visual.</p>"
+    },
+    "VisualTitle":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "VisualTitleLabelOptions":{
       "type":"structure",

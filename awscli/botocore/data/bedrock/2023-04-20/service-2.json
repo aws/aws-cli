@@ -72,7 +72,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a guardrail to block topics and to implement safeguards for your generative AI applications.</p> <p>You can configure the following policies in a guardrail to avoid undesirable and harmful content, filter out denied topics and words, and remove sensitive information for privacy protection.</p> <ul> <li> <p> <b>Content filters</b> - Adjust filter strengths to block input prompts or model responses containing harmful content.</p> </li> <li> <p> <b>Denied topics</b> - Define a set of topics that are undesirable in the context of your application. These topics will be blocked if detected in user queries or model responses.</p> </li> <li> <p> <b>Word filters</b> - Configure filters to block undesirable words, phrases, and profanity. Such words can include offensive terms, competitor names etc.</p> </li> <li> <p> <b>Sensitive information filters</b> - Block or mask sensitive information such as personally identifiable information (PII) or custom regex in user inputs and model responses.</p> </li> </ul> <p>In addition to the above policies, you can also configure the messages to be returned to the user if a user input or model response is in violation of the policies defined in the guardrail.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html\">Guardrails for Amazon Bedrock</a> in the <i>Amazon Bedrock User Guide</i>.</p>"
+      "documentation":"<p>Creates a guardrail to block topics and to implement safeguards for your generative AI applications.</p> <p>You can configure the following policies in a guardrail to avoid undesirable and harmful content, filter out denied topics and words, and remove sensitive information for privacy protection.</p> <ul> <li> <p> <b>Content filters</b> - Adjust filter strengths to block input prompts or model responses containing harmful content.</p> </li> <li> <p> <b>Denied topics</b> - Define a set of topics that are undesirable in the context of your application. These topics will be blocked if detected in user queries or model responses.</p> </li> <li> <p> <b>Word filters</b> - Configure filters to block undesirable words, phrases, and profanity. Such words can include offensive terms, competitor names etc.</p> </li> <li> <p> <b>Sensitive information filters</b> - Block or mask sensitive information such as personally identifiable information (PII) or custom regex in user inputs and model responses.</p> </li> </ul> <p>In addition to the above policies, you can also configure the messages to be returned to the user if a user input or model response is in violation of the policies defined in the guardrail.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html\">Amazon Bedrock Guardrails</a> in the <i>Amazon Bedrock User Guide</i>.</p>"
     },
     "CreateGuardrailVersion":{
       "name":"CreateGuardrailVersion",
@@ -515,7 +515,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Gets details about a batch inference job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-manage.html#batch-inference-view\">View details about a batch inference job</a> </p>"
+      "documentation":"<p>Gets details about a batch inference job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-monitor\">Monitor batch inference jobs</a> </p>"
     },
     "GetModelInvocationLoggingConfiguration":{
       "name":"GetModelInvocationLoggingConfiguration",
@@ -721,7 +721,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists all batch inference jobs in the account. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-manage.html#batch-inference-view\">View details about a batch inference job</a>.</p>"
+      "documentation":"<p>Lists all batch inference jobs in the account. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-view.html\">View details about a batch inference job</a>.</p>"
     },
     "ListProvisionedModelThroughputs":{
       "name":"ListProvisionedModelThroughputs",
@@ -832,7 +832,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Stops a batch inference job. You're only charged for tokens that were already processed. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-manage.html#batch-inference-stop\">Stop a batch inference job</a>.</p>"
+      "documentation":"<p>Stops a batch inference job. You're only charged for tokens that were already processed. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-stop.html\">Stop a batch inference job</a>.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1447,8 +1447,7 @@
         "roleArn",
         "baseModelIdentifier",
         "trainingDataConfig",
-        "outputDataConfig",
-        "hyperParameters"
+        "outputDataConfig"
       ],
       "members":{
         "jobName":{
@@ -1507,6 +1506,10 @@
         "vpcConfig":{
           "shape":"VpcConfig",
           "documentation":"<p>The configuration of the Virtual Private Cloud (VPC) that contains the resources that you're using for this job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/vpc-model-customization.html\">Protect your model customization jobs using a VPC</a>.</p>"
+        },
+        "customizationConfig":{
+          "shape":"CustomizationConfig",
+          "documentation":"<p>The customization configuration for the model customization job.</p>"
         }
       }
     },
@@ -1614,7 +1617,7 @@
         },
         "vpcConfig":{
           "shape":"VpcConfig",
-          "documentation":"<p>The configuration of the Virtual Private Cloud (VPC) for the data in the batch inference job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-vpc\">Protect batch inference jobs using a VPC</a>.</p>"
+          "documentation":"<p>The configuration of the Virtual Private Cloud (VPC) for the data in the batch inference job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-vpc\">Protect batch inference jobs using a VPC</a>.</p>"
         },
         "timeoutDurationInHours":{
           "shape":"ModelInvocationJobTimeoutDurationInHours",
@@ -1738,11 +1741,23 @@
       "type":"list",
       "member":{"shape":"CustomModelSummary"}
     },
+    "CustomizationConfig":{
+      "type":"structure",
+      "members":{
+        "distillationConfig":{
+          "shape":"DistillationConfig",
+          "documentation":"<p>The distillation configuration for the custom model.</p>"
+        }
+      },
+      "documentation":"<p>A model customization configuration</p>",
+      "union":true
+    },
     "CustomizationType":{
       "type":"string",
       "enum":[
         "FINE_TUNING",
-        "CONTINUED_PRE_TRAINING"
+        "CONTINUED_PRE_TRAINING",
+        "DISTILLATION"
       ]
     },
     "DeleteCustomModelRequest":{
@@ -1845,6 +1860,17 @@
       "type":"structure",
       "members":{
       }
+    },
+    "DistillationConfig":{
+      "type":"structure",
+      "required":["teacherModelConfig"],
+      "members":{
+        "teacherModelConfig":{
+          "shape":"TeacherModelConfig",
+          "documentation":"<p>The teacher model configuration.</p>"
+        }
+      },
+      "documentation":"<p>Settings for distilling a foundation model into a smaller and more efficient model.</p>"
     },
     "ErrorMessage":{
       "type":"string",
@@ -2530,6 +2556,10 @@
         "creationTime":{
           "shape":"Timestamp",
           "documentation":"<p>Creation time of the model.</p>"
+        },
+        "customizationConfig":{
+          "shape":"CustomizationConfig",
+          "documentation":"<p>The customization configuration for the custom model.</p>"
         }
       }
     },
@@ -2948,7 +2978,6 @@
         "roleArn",
         "creationTime",
         "baseModelArn",
-        "hyperParameters",
         "trainingDataConfig",
         "validationDataConfig",
         "outputDataConfig"
@@ -3037,6 +3066,10 @@
         "vpcConfig":{
           "shape":"VpcConfig",
           "documentation":"<p>VPC configuration for the custom model job.</p>"
+        },
+        "customizationConfig":{
+          "shape":"CustomizationConfig",
+          "documentation":"<p>The customization configuration for the model customization job.</p>"
         }
       }
     },
@@ -3154,7 +3187,7 @@
         },
         "status":{
           "shape":"ModelInvocationJobStatus",
-          "documentation":"<p>The status of the batch inference job.</p>"
+          "documentation":"<p>The status of the batch inference job.</p> <p>The following statuses are possible:</p> <ul> <li> <p>Submitted – This job has been submitted to a queue for validation.</p> </li> <li> <p>Validating – This job is being validated for the requirements described in <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data.html\">Format and upload your batch inference data</a>. The criteria include the following:</p> <ul> <li> <p>Your IAM service role has access to the Amazon S3 buckets containing your files.</p> </li> <li> <p>Your files are .jsonl files and each individual record is a JSON object in the correct format. Note that validation doesn't check if the <code>modelInput</code> value matches the request body for the model.</p> </li> <li> <p>Your files fulfill the requirements for file size and number of records. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html\">Quotas for Amazon Bedrock</a>.</p> </li> </ul> </li> <li> <p>Scheduled – This job has been validated and is now in a queue. The job will automatically start when it reaches its turn.</p> </li> <li> <p>Expired – This job timed out because it was scheduled but didn't begin before the set timeout duration. Submit a new job request.</p> </li> <li> <p>InProgress – This job has begun. You can start viewing the results in the output S3 location.</p> </li> <li> <p>Completed – This job has successfully completed. View the output files in the output S3 location.</p> </li> <li> <p>PartiallyCompleted – This job has partially completed. Not all of your records could be processed in time. View the output files in the output S3 location.</p> </li> <li> <p>Failed – This job has failed. Check the failure message for any further details. For further assistance, reach out to the <a href=\"https://console.aws.amazon.com/support/home/\">Amazon Web Services Support Center</a>.</p> </li> <li> <p>Stopped – This job was stopped by a user.</p> </li> <li> <p>Stopping – This job is being stopped by a user.</p> </li> </ul>"
         },
         "message":{
           "shape":"Message",
@@ -3182,7 +3215,7 @@
         },
         "vpcConfig":{
           "shape":"VpcConfig",
-          "documentation":"<p>The configuration of the Virtual Private Cloud (VPC) for the data in the batch inference job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-vpc\">Protect batch inference jobs using a VPC</a>.</p>"
+          "documentation":"<p>The configuration of the Virtual Private Cloud (VPC) for the data in the batch inference job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-vpc\">Protect batch inference jobs using a VPC</a>.</p>"
         },
         "timeoutDurationInHours":{
           "shape":"ModelInvocationJobTimeoutDurationInHours",
@@ -4353,6 +4386,10 @@
       "type":"boolean",
       "box":true
     },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
     "InternalServerException":{
       "type":"structure",
       "members":{
@@ -4362,6 +4399,36 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "InvocationLogSource":{
+      "type":"structure",
+      "members":{
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The URI of an invocation log in a bucket.</p>"
+        }
+      },
+      "documentation":"<p>A storage location for invocation logs.</p>",
+      "union":true
+    },
+    "InvocationLogsConfig":{
+      "type":"structure",
+      "required":["invocationLogSource"],
+      "members":{
+        "usePromptResponse":{
+          "shape":"UsePromptResponse",
+          "documentation":"<p>Whether to use the model's response for training, or just the prompt. The default value is <code>False</code>.</p>"
+        },
+        "invocationLogSource":{
+          "shape":"InvocationLogSource",
+          "documentation":"<p>The source of the invocation logs.</p>"
+        },
+        "requestMetadataFilters":{
+          "shape":"RequestMetadataFilters",
+          "documentation":"<p>Rules for filtering invocation logs based on request metadata.</p>"
+        }
+      },
+      "documentation":"<p>Settings for using invocation logs to customize a model.</p>"
     },
     "JobName":{
       "type":"string",
@@ -5030,7 +5097,7 @@
         },
         "statusEquals":{
           "shape":"ModelInvocationJobStatus",
-          "documentation":"<p>Specify a status to filter for batch inference jobs whose statuses match the string you specify.</p>",
+          "documentation":"<p>Specify a status to filter for batch inference jobs whose statuses match the string you specify.</p> <p>The following statuses are possible:</p> <ul> <li> <p>Submitted – This job has been submitted to a queue for validation.</p> </li> <li> <p>Validating – This job is being validated for the requirements described in <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data.html\">Format and upload your batch inference data</a>. The criteria include the following:</p> <ul> <li> <p>Your IAM service role has access to the Amazon S3 buckets containing your files.</p> </li> <li> <p>Your files are .jsonl files and each individual record is a JSON object in the correct format. Note that validation doesn't check if the <code>modelInput</code> value matches the request body for the model.</p> </li> <li> <p>Your files fulfill the requirements for file size and number of records. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html\">Quotas for Amazon Bedrock</a>.</p> </li> </ul> </li> <li> <p>Scheduled – This job has been validated and is now in a queue. The job will automatically start when it reaches its turn.</p> </li> <li> <p>Expired – This job timed out because it was scheduled but didn't begin before the set timeout duration. Submit a new job request.</p> </li> <li> <p>InProgress – This job has begun. You can start viewing the results in the output S3 location.</p> </li> <li> <p>Completed – This job has successfully completed. View the output files in the output S3 location.</p> </li> <li> <p>PartiallyCompleted – This job has partially completed. Not all of your records could be processed in time. View the output files in the output S3 location.</p> </li> <li> <p>Failed – This job has failed. Check the failure message for any further details. For further assistance, reach out to the <a href=\"https://console.aws.amazon.com/support/home/\">Amazon Web Services Support Center</a>.</p> </li> <li> <p>Stopped – This job was stopped by a user.</p> </li> <li> <p>Stopping – This job is being stopped by a user.</p> </li> </ul>",
           "location":"querystring",
           "locationName":"statusEquals"
         },
@@ -5197,6 +5264,10 @@
         "embeddingDataDeliveryEnabled":{
           "shape":"Boolean",
           "documentation":"<p>Set to include embeddings data in the log delivery.</p>"
+        },
+        "videoDataDeliveryEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to include video data in the log delivery.</p>"
         }
       },
       "documentation":"<p>Configuration fields for invocation logging.</p>"
@@ -5310,7 +5381,8 @@
       "type":"string",
       "enum":[
         "FINE_TUNING",
-        "CONTINUED_PRE_TRAINING"
+        "CONTINUED_PRE_TRAINING",
+        "DISTILLATION"
       ]
     },
     "ModelCustomizationHyperParameters":{
@@ -5629,7 +5701,7 @@
         },
         "status":{
           "shape":"ModelInvocationJobStatus",
-          "documentation":"<p>The status of the batch inference job.</p>"
+          "documentation":"<p>The status of the batch inference job.</p> <p>The following statuses are possible:</p> <ul> <li> <p>Submitted – This job has been submitted to a queue for validation.</p> </li> <li> <p>Validating – This job is being validated for the requirements described in <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data.html\">Format and upload your batch inference data</a>. The criteria include the following:</p> <ul> <li> <p>Your IAM service role has access to the Amazon S3 buckets containing your files.</p> </li> <li> <p>Your files are .jsonl files and each individual record is a JSON object in the correct format. Note that validation doesn't check if the <code>modelInput</code> value matches the request body for the model.</p> </li> <li> <p>Your files fulfill the requirements for file size and number of records. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html\">Quotas for Amazon Bedrock</a>.</p> </li> </ul> </li> <li> <p>Scheduled – This job has been validated and is now in a queue. The job will automatically start when it reaches its turn.</p> </li> <li> <p>Expired – This job timed out because it was scheduled but didn't begin before the set timeout duration. Submit a new job request.</p> </li> <li> <p>InProgress – This job has begun. You can start viewing the results in the output S3 location.</p> </li> <li> <p>Completed – This job has successfully completed. View the output files in the output S3 location.</p> </li> <li> <p>PartiallyCompleted – This job has partially completed. Not all of your records could be processed in time. View the output files in the output S3 location.</p> </li> <li> <p>Failed – This job has failed. Check the failure message for any further details. For further assistance, reach out to the <a href=\"https://console.aws.amazon.com/support/home/\">Amazon Web Services Support Center</a>.</p> </li> <li> <p>Stopped – This job was stopped by a user.</p> </li> <li> <p>Stopping – This job is being stopped by a user.</p> </li> </ul>"
         },
         "message":{
           "shape":"Message",
@@ -5657,7 +5729,7 @@
         },
         "vpcConfig":{
           "shape":"VpcConfig",
-          "documentation":"<p>The configuration of the Virtual Private Cloud (VPC) for the data in the batch inference job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-vpc\">Protect batch inference jobs using a VPC</a>.</p>"
+          "documentation":"<p>The configuration of the Virtual Private Cloud (VPC) for the data in the batch inference job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-vpc\">Protect batch inference jobs using a VPC</a>.</p>"
         },
         "timeoutDurationInHours":{
           "shape":"ModelInvocationJobTimeoutDurationInHours",
@@ -5901,6 +5973,69 @@
       "member":{"shape":"RAGConfig"},
       "max":1,
       "min":1
+    },
+    "RequestMetadataBaseFilters":{
+      "type":"structure",
+      "members":{
+        "equals":{
+          "shape":"RequestMetadataMap",
+          "documentation":"<p>Include results where the key equals the value.</p>"
+        },
+        "notEquals":{
+          "shape":"RequestMetadataMap",
+          "documentation":"<p>Include results where the key does not equal the value.</p>"
+        }
+      },
+      "documentation":"<p>A mapping of a metadata key to a value that it should or should not equal.</p>"
+    },
+    "RequestMetadataFilters":{
+      "type":"structure",
+      "members":{
+        "equals":{
+          "shape":"RequestMetadataMap",
+          "documentation":"<p>Include results where the key equals the value.</p>"
+        },
+        "notEquals":{
+          "shape":"RequestMetadataMap",
+          "documentation":"<p>Include results where the key does not equal the value.</p>"
+        },
+        "andAll":{
+          "shape":"RequestMetadataFiltersList",
+          "documentation":"<p>Include results where all of the based filters match.</p>"
+        },
+        "orAll":{
+          "shape":"RequestMetadataFiltersList",
+          "documentation":"<p>Include results where any of the base filters match.</p>"
+        }
+      },
+      "documentation":"<p>Rules for filtering invocation logs. A filter can be a mapping of a metadata key to a value that it should or should not equal (a base filter), or a list of base filters that are all applied with <code>AND</code> or <code>OR</code> logical operators</p>",
+      "union":true
+    },
+    "RequestMetadataFiltersList":{
+      "type":"list",
+      "member":{"shape":"RequestMetadataBaseFilters"},
+      "max":16,
+      "min":1
+    },
+    "RequestMetadataMap":{
+      "type":"map",
+      "key":{"shape":"RequestMetadataMapKeyString"},
+      "value":{"shape":"RequestMetadataMapValueString"},
+      "max":1,
+      "min":1,
+      "sensitive":true
+    },
+    "RequestMetadataMapKeyString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\s._:/=+$@-]{1,256}"
+    },
+    "RequestMetadataMapValueString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9\\s._:/=+$@-]{0,256}"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -6265,7 +6400,26 @@
       "type":"string",
       "max":1011,
       "min":20,
-      "pattern":".*(^[a-zA-Z0-9][a-zA-Z0-9\\-]*$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:([0-9]{12}|)((:(fine-tuning-job|model-customization-job|custom-model)/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12})$)|(:guardrail/[a-z0-9]+$)|(:(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+$)|(:(provisioned-model|model-invocation-job|model-evaluation-job|evaluation-job|model-import-job|imported-model)/[a-z0-9]{12}$))).*"
+      "pattern":".*(^[a-zA-Z0-9][a-zA-Z0-9\\-]*$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:([0-9]{12}|)((:(fine-tuning-job|model-customization-job|custom-model)/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12})$)|(:guardrail/[a-z0-9]+$)|(:(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+$)|(:(provisioned-model|model-invocation-job|model-evaluation-job|evaluation-job|model-import-job|imported-model|async-invoke)/[a-z0-9]{12}$))).*"
+    },
+    "TeacherModelConfig":{
+      "type":"structure",
+      "required":["teacherModelIdentifier"],
+      "members":{
+        "teacherModelIdentifier":{
+          "shape":"TeacherModelIdentifier",
+          "documentation":"<p>The identifier of the teacher model.</p>"
+        },
+        "maxResponseLengthForInference":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of tokens requested when the customization job invokes the teacher model.</p>"
+        }
+      },
+      "documentation":"<p>Details about a teacher model used for model customization.</p>"
+    },
+    "TeacherModelIdentifier":{
+      "type":"string",
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})|(([0-9a-zA-Z][_-]?)+)"
     },
     "Temperature":{
       "type":"float",
@@ -6341,11 +6495,14 @@
     },
     "TrainingDataConfig":{
       "type":"structure",
-      "required":["s3Uri"],
       "members":{
         "s3Uri":{
           "shape":"S3Uri",
           "documentation":"<p>The S3 URI where the training data is stored.</p>"
+        },
+        "invocationLogsConfig":{
+          "shape":"InvocationLogsConfig",
+          "documentation":"<p>Settings for using invocation logs to customize a model.</p>"
         }
       },
       "documentation":"<p>S3 Location of the training data.</p>"
@@ -6491,6 +6648,7 @@
       "members":{
       }
     },
+    "UsePromptResponse":{"type":"boolean"},
     "ValidationDataConfig":{
       "type":"structure",
       "required":["validators"],

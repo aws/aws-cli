@@ -278,7 +278,7 @@
         {"shape":"UnsupportedOperationFault"},
         {"shape":"RedshiftIdcApplicationNotExistsFault"}
       ],
-      "documentation":"<p>Creates a new cluster with the specified parameters.</p> <p>To create a cluster in Virtual Private Cloud (VPC), you must provide a cluster subnet group name. The cluster subnet group identifies the subnets of your VPC that Amazon Redshift uses when creating the cluster. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
+      "documentation":"<p>Creates a new cluster with the specified parameters.</p> <p>To create a cluster in Virtual Private Cloud (VPC), you must provide a cluster subnet group name. The cluster subnet group identifies the subnets of your VPC that Amazon Redshift uses when creating the cluster. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. If a subnet group for a provisioned cluster is in an account with VPC BPA turned on, the following capabilities are blocked:</p> <ul> <li> <p>Creating a public cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA turned on to the subnet group when there's at least one public cluster within the group</p> </li> </ul> <p>For more information about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "CreateClusterParameterGroup":{
       "name":"CreateClusterParameterGroup",
@@ -930,6 +930,24 @@
         {"shape":"UnsupportedOperationFault"}
       ],
       "documentation":"<p>Deletes a usage limit from a cluster.</p>"
+    },
+    "DeregisterNamespace":{
+      "name":"DeregisterNamespace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeregisterNamespaceInputMessage"},
+      "output":{
+        "shape":"DeregisterNamespaceOutputMessage",
+        "resultWrapper":"DeregisterNamespaceResult"
+      },
+      "errors":[
+        {"shape":"ClusterNotFoundFault"},
+        {"shape":"InvalidNamespaceFault"},
+        {"shape":"InvalidClusterStateFault"}
+      ],
+      "documentation":"<p>Deregisters a cluster or serverless namespace from the Amazon Web Services Glue Data Catalog.</p>"
     },
     "DescribeAccountAttributes":{
       "name":"DescribeAccountAttributes",
@@ -1910,7 +1928,7 @@
         {"shape":"CustomCnameAssociationFault"},
         {"shape":"Ipv6CidrBlockNotFoundFault"}
       ],
-      "documentation":"<p>Modifies the settings for a cluster.</p> <p>You can also change node type and the number of nodes to scale up or down the cluster. When resizing a cluster, you must specify both the number of nodes and the node type even if one of the parameters does not change.</p> <p>You can add another security or parameter group, or change the admin user password. Resetting a cluster password or modifying the security groups associated with a cluster do not need a reboot. However, modifying a parameter group requires a reboot for parameters to take effect. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
+      "documentation":"<p>Modifies the settings for a cluster.</p> <p>You can also change node type and the number of nodes to scale up or down the cluster. When resizing a cluster, you must specify both the number of nodes and the node type even if one of the parameters does not change.</p> <p>You can add another security or parameter group, or change the admin user password. Resetting a cluster password or modifying the security groups associated with a cluster do not need a reboot. However, modifying a parameter group requires a reboot for parameters to take effect. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. If a subnet group for a provisioned cluster is in an account with VPC BPA turned on, the following capabilities are blocked:</p> <ul> <li> <p>Creating a public cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA turned on to the subnet group when there's at least one public cluster within the group</p> </li> </ul> <p>For more information about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "ModifyClusterDbRevision":{
       "name":"ModifyClusterDbRevision",
@@ -2033,7 +2051,7 @@
         {"shape":"UnauthorizedOperation"},
         {"shape":"DependentServiceRequestThrottlingFault"}
       ],
-      "documentation":"<p>Modifies a cluster subnet group to include the specified list of VPC subnets. The operation replaces the existing list of subnets with the new list of subnets.</p>"
+      "documentation":"<p>Modifies a cluster subnet group to include the specified list of VPC subnets. The operation replaces the existing list of subnets with the new list of subnets.</p> <p>VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. If a subnet group for a provisioned cluster is in an account with VPC BPA turned on, the following capabilities are blocked:</p> <ul> <li> <p>Creating a public cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA turned on to the subnet group when there's at least one public cluster within the group</p> </li> </ul> <p>For more information about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "ModifyCustomDomainAssociation":{
       "name":"ModifyCustomDomainAssociation",
@@ -2289,6 +2307,24 @@
       ],
       "documentation":"<p>Reboots a cluster. This action is taken as soon as possible. It results in a momentary outage to the cluster, during which the cluster status is set to <code>rebooting</code>. A cluster event is created when the reboot is completed. Any pending cluster modifications (see <a>ModifyCluster</a>) are applied at this reboot. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>"
     },
+    "RegisterNamespace":{
+      "name":"RegisterNamespace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RegisterNamespaceInputMessage"},
+      "output":{
+        "shape":"RegisterNamespaceOutputMessage",
+        "resultWrapper":"RegisterNamespaceResult"
+      },
+      "errors":[
+        {"shape":"ClusterNotFoundFault"},
+        {"shape":"InvalidNamespaceFault"},
+        {"shape":"InvalidClusterStateFault"}
+      ],
+      "documentation":"<p>Registers a cluster or serverless namespace to the Amazon Web Services Glue Data Catalog.</p>"
+    },
     "RejectDataShare":{
       "name":"RejectDataShare",
       "http":{
@@ -2398,7 +2434,7 @@
         {"shape":"UnsupportedOperationFault"},
         {"shape":"Ipv6CidrBlockNotFoundFault"}
       ],
-      "documentation":"<p>Creates a new cluster from a snapshot. By default, Amazon Redshift creates the resulting cluster with the same configuration as the original cluster from which the snapshot was created, except that the new cluster is created with the default cluster security and parameter groups. After Amazon Redshift creates the cluster, you can use the <a>ModifyCluster</a> API to associate a different security group and different parameter group with the restored cluster. If you are using a DS node type, you can also choose to change to another DS node type of the same size during restore.</p> <p>If you restore a cluster into a VPC, you must provide a cluster subnet group where you want the cluster restored.</p> <p> For more information about working with snapshots, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshots.html\">Amazon Redshift Snapshots</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
+      "documentation":"<p>Creates a new cluster from a snapshot. By default, Amazon Redshift creates the resulting cluster with the same configuration as the original cluster from which the snapshot was created, except that the new cluster is created with the default cluster security and parameter groups. After Amazon Redshift creates the cluster, you can use the <a>ModifyCluster</a> API to associate a different security group and different parameter group with the restored cluster. If you are using a DS node type, you can also choose to change to another DS node type of the same size during restore.</p> <p>If you restore a cluster into a VPC, you must provide a cluster subnet group where you want the cluster restored.</p> <p>VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. If a subnet group for a provisioned cluster is in an account with VPC BPA turned on, the following capabilities are blocked:</p> <ul> <li> <p>Creating a public cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA turned on to the subnet group when there's at least one public cluster within the group</p> </li> </ul> <p>For more information about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p> <p> For more information about working with snapshots, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshots.html\">Amazon Redshift Snapshots</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
     },
     "RestoreTableFromClusterSnapshot":{
       "name":"RestoreTableFromClusterSnapshot",
@@ -4069,6 +4105,12 @@
       },
       "exception":true
     },
+    "ConsumerIdentifierList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":1,
+      "min":1
+    },
     "CopyClusterSnapshotMessage":{
       "type":"structure",
       "required":[
@@ -4952,6 +4994,10 @@
         "ManagedBy":{
           "shape":"String",
           "documentation":"<p>The identifier of a datashare to show its managing entity.</p>"
+        },
+        "DataShareType":{
+          "shape":"DataShareType",
+          "documentation":"<p> The type of the datashare created by RegisterNamespace.</p>"
         }
       }
     },
@@ -5024,6 +5070,10 @@
         "DEAUTHORIZED",
         "REJECTED"
       ]
+    },
+    "DataShareType":{
+      "type":"string",
+      "enum":["INTERNAL"]
     },
     "DataTransferProgress":{
       "type":"structure",
@@ -5416,6 +5466,32 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "DeregisterNamespaceInputMessage":{
+      "type":"structure",
+      "required":[
+        "NamespaceIdentifier",
+        "ConsumerIdentifiers"
+      ],
+      "members":{
+        "NamespaceIdentifier":{
+          "shape":"NamespaceIdentifierUnion",
+          "documentation":"<p>The unique identifier of the cluster or serverless namespace that you want to deregister.</p>"
+        },
+        "ConsumerIdentifiers":{
+          "shape":"ConsumerIdentifierList",
+          "documentation":"<p>An array containing the ID of the consumer account that you want to deregister the cluster or serverless namespace from.</p>"
+        }
+      }
+    },
+    "DeregisterNamespaceOutputMessage":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"NamespaceRegistrationStatus",
+          "documentation":"<p>The registration status of the cluster or serverless namespace.</p>"
+        }
+      }
     },
     "DescribeAccountAttributesMessage":{
       "type":"structure",
@@ -8946,6 +9022,28 @@
         }
       }
     },
+    "NamespaceIdentifierUnion":{
+      "type":"structure",
+      "members":{
+        "ServerlessIdentifier":{
+          "shape":"ServerlessIdentifier",
+          "documentation":"<p>The identifier for a serverless namespace.</p>"
+        },
+        "ProvisionedIdentifier":{
+          "shape":"ProvisionedIdentifier",
+          "documentation":"<p>The identifier for a provisioned cluster.</p>"
+        }
+      },
+      "documentation":"<p>Object to store union of values for a provisioned cluster or serverless namespace’s identifier.</p>",
+      "union":true
+    },
+    "NamespaceRegistrationStatus":{
+      "type":"string",
+      "enum":[
+        "Registering",
+        "Deregistering"
+      ]
+    },
     "NetworkInterface":{
       "type":"structure",
       "members":{
@@ -9394,6 +9492,17 @@
       },
       "documentation":"<p>Describes cluster attributes that are in a pending state. A change to one or more the attributes was requested and is in progress or will be applied.</p>"
     },
+    "ProvisionedIdentifier":{
+      "type":"structure",
+      "required":["ClusterIdentifier"],
+      "members":{
+        "ClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the provisioned cluster.</p>"
+        }
+      },
+      "documentation":"<p>The identifier for a provisioned cluster.</p>"
+    },
     "PurchaseReservedNodeOfferingMessage":{
       "type":"structure",
       "required":["ReservedNodeOfferingId"],
@@ -9700,6 +9809,32 @@
       "member":{
         "shape":"ReferenceLink",
         "locationName":"ReferenceLink"
+      }
+    },
+    "RegisterNamespaceInputMessage":{
+      "type":"structure",
+      "required":[
+        "NamespaceIdentifier",
+        "ConsumerIdentifiers"
+      ],
+      "members":{
+        "NamespaceIdentifier":{
+          "shape":"NamespaceIdentifierUnion",
+          "documentation":"<p>The unique identifier of the cluster or serverless namespace that you want to register. </p>"
+        },
+        "ConsumerIdentifiers":{
+          "shape":"ConsumerIdentifierList",
+          "documentation":"<p>An array containing the ID of the consumer account that you want to register the namespace to.</p>"
+        }
+      }
+    },
+    "RegisterNamespaceOutputMessage":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"NamespaceRegistrationStatus",
+          "documentation":"<p>The registration status of the cluster or serverless namespace.</p>"
+        }
       }
     },
     "RejectDataShareMessage":{
@@ -10885,6 +11020,24 @@
     "SensitiveString":{
       "type":"string",
       "sensitive":true
+    },
+    "ServerlessIdentifier":{
+      "type":"structure",
+      "required":[
+        "NamespaceIdentifier",
+        "WorkgroupIdentifier"
+      ],
+      "members":{
+        "NamespaceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the serverless namespace.</p>"
+        },
+        "WorkgroupIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the workgroup associated with the serverless namespace.</p>"
+        }
+      },
+      "documentation":"<p>The identifier for a serverless namespace.</p>"
     },
     "ServiceAuthorization":{
       "type":"string",

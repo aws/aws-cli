@@ -243,6 +243,28 @@
       ],
       "documentation":"<p>Creates a custom asset type.</p>"
     },
+    "CreateConnection":{
+      "name":"CreateConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/connections",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateConnectionInput"},
+      "output":{"shape":"CreateConnectionOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Creates a new connection. In Amazon DataZone, a connection enables you to connect your resources (domains, projects, and environments) to external resources and services.</p>",
+      "idempotent":true
+    },
     "CreateDataProduct":{
       "name":"CreateDataProduct",
       "http":{
@@ -556,6 +578,27 @@
       ],
       "documentation":"<p>Creates a project membership in Amazon DataZone.</p>"
     },
+    "CreateProjectProfile":{
+      "name":"CreateProjectProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/project-profiles",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateProjectProfileInput"},
+      "output":{"shape":"CreateProjectProfileOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Creates a project profile.</p>"
+    },
     "CreateRule":{
       "name":"CreateRule",
       "http":{
@@ -718,6 +761,26 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Deletes an asset type in Amazon DataZone.</p>"
+    },
+    "DeleteConnection":{
+      "name":"DeleteConnection",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/connections/{identifier}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteConnectionInput"},
+      "output":{"shape":"DeleteConnectionOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes and connection. In Amazon DataZone, a connection enables you to connect your resources (domains, projects, and environments) to external resources and services.</p>",
+      "idempotent":true
     },
     "DeleteDataProduct":{
       "name":"DeleteDataProduct",
@@ -1005,6 +1068,26 @@
       "documentation":"<p>Deletes project membership in Amazon DataZone.</p>",
       "idempotent":true
     },
+    "DeleteProjectProfile":{
+      "name":"DeleteProjectProfile",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/project-profiles/{identifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteProjectProfileInput"},
+      "output":{"shape":"DeleteProjectProfileOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes a project profile.</p>",
+      "idempotent":true
+    },
     "DeleteRule":{
       "name":"DeleteRule",
       "http":{
@@ -1180,6 +1263,25 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Gets an Amazon DataZone asset type.</p>"
+    },
+    "GetConnection":{
+      "name":"GetConnection",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/connections/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConnectionInput"},
+      "output":{"shape":"GetConnectionOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets a connection. In Amazon DataZone, a connection enables you to connect your resources (domains, projects, and environments) to external resources and services.</p>"
     },
     "GetDataProduct":{
       "name":"GetDataProduct",
@@ -1491,6 +1593,44 @@
       ],
       "documentation":"<p>Gets the data portal URL for the specified Amazon DataZone domain.</p>"
     },
+    "GetJobRun":{
+      "name":"GetJobRun",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/jobRuns/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetJobRunInput"},
+      "output":{"shape":"GetJobRunOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>The details of the job run.</p>"
+    },
+    "GetLineageEvent":{
+      "name":"GetLineageEvent",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/lineage/events/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetLineageEventInput"},
+      "output":{"shape":"GetLineageEventOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Describes the lineage event.</p>"
+    },
     "GetLineageNode":{
       "name":"GetLineageNode",
       "http":{
@@ -1566,6 +1706,25 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Gets a project in Amazon DataZone.</p>"
+    },
+    "GetProjectProfile":{
+      "name":"GetProjectProfile",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/project-profiles/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetProjectProfileInput"},
+      "output":{"shape":"GetProjectProfileOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>The details of the project profile.</p>"
     },
     "GetRule":{
       "name":"GetRule",
@@ -1737,6 +1896,24 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Lists the revisions for the asset.</p>"
+    },
+    "ListConnections":{
+      "name":"ListConnections",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/connections",
+        "responseCode":200
+      },
+      "input":{"shape":"ListConnectionsInput"},
+      "output":{"shape":"ListConnectionsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists connections. In Amazon DataZone, a connection enables you to connect your resources (domains, projects, and environments) to external resources and services.</p>"
     },
     "ListDataProductRevisions":{
       "name":"ListDataProductRevisions",
@@ -1969,6 +2146,43 @@
       ],
       "documentation":"<p>Lists Amazon DataZone environments.</p>"
     },
+    "ListJobRuns":{
+      "name":"ListJobRuns",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/jobs/{jobIdentifier}/runs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListJobRunsInput"},
+      "output":{"shape":"ListJobRunsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists job runs.</p>"
+    },
+    "ListLineageEvents":{
+      "name":"ListLineageEvents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/lineage/events",
+        "responseCode":200
+      },
+      "input":{"shape":"ListLineageEventsInput"},
+      "output":{"shape":"ListLineageEventsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists lineage events.</p>"
+    },
     "ListLineageNodeHistory":{
       "name":"ListLineageNodeHistory",
       "http":{
@@ -2062,6 +2276,24 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Lists all members of the specified project.</p>"
+    },
+    "ListProjectProfiles":{
+      "name":"ListProjectProfiles",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/project-profiles",
+        "responseCode":200
+      },
+      "input":{"shape":"ListProjectProfilesInput"},
+      "output":{"shape":"ListProjectProfilesOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists project profiles.</p>"
     },
     "ListProjects":{
       "name":"ListProjects",
@@ -2576,6 +2808,28 @@
       "documentation":"<p>Updates an asset filter.</p>",
       "idempotent":true
     },
+    "UpdateConnection":{
+      "name":"UpdateConnection",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/connections/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateConnectionInput"},
+      "output":{"shape":"UpdateConnectionOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Updates a connection. In Amazon DataZone, a connection enables you to connect your resources (domains, projects, and environments) to external resources and services.</p>",
+      "idempotent":true
+    },
     "UpdateDataSource":{
       "name":"UpdateDataSource",
       "http":{
@@ -2783,6 +3037,28 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Updates the specified project in Amazon DataZone.</p>",
+      "idempotent":true
+    },
+    "UpdateProjectProfile":{
+      "name":"UpdateProjectProfile",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/project-profiles/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateProjectProfileInput"},
+      "output":{"shape":"UpdateProjectProfileOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Updates a project profile.</p>",
       "idempotent":true
     },
     "UpdateRule":{
@@ -3803,6 +4079,51 @@
       "members":{
       }
     },
+    "AthenaPropertiesInput":{
+      "type":"structure",
+      "members":{
+        "workgroupName":{
+          "shape":"AthenaPropertiesInputWorkgroupNameString",
+          "documentation":"<p>The Amazon Athena workgroup name of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Athena properties of a connection.</p>"
+    },
+    "AthenaPropertiesInputWorkgroupNameString":{
+      "type":"string",
+      "max":64,
+      "min":0
+    },
+    "AthenaPropertiesOutput":{
+      "type":"structure",
+      "members":{
+        "workgroupName":{
+          "shape":"AthenaPropertiesOutputWorkgroupNameString",
+          "documentation":"<p>The Amazon Athena workgroup name of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Athena properties of a connection.</p>"
+    },
+    "AthenaPropertiesOutputWorkgroupNameString":{
+      "type":"string",
+      "max":64,
+      "min":0
+    },
+    "AthenaPropertiesPatch":{
+      "type":"structure",
+      "members":{
+        "workgroupName":{
+          "shape":"AthenaPropertiesPatchWorkgroupNameString",
+          "documentation":"<p>The Amazon Athena workgroup name of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Athena properties patch of a connection.</p>"
+    },
+    "AthenaPropertiesPatchWorkgroupNameString":{
+      "type":"string",
+      "max":64,
+      "min":0
+    },
     "Attribute":{
       "type":"string",
       "max":128,
@@ -3815,6 +4136,116 @@
         "DISABLED"
       ]
     },
+    "AuthenticationConfiguration":{
+      "type":"structure",
+      "members":{
+        "authenticationType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>The authentication type of a connection.</p>"
+        },
+        "oAuth2Properties":{
+          "shape":"OAuth2Properties",
+          "documentation":"<p>The oAuth2 properties of a connection.</p>"
+        },
+        "secretArn":{
+          "shape":"AuthenticationConfigurationSecretArnString",
+          "documentation":"<p>The secret ARN of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The authentication configuration of a connection.</p>"
+    },
+    "AuthenticationConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "authenticationType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>The authentication type of a connection.</p>"
+        },
+        "basicAuthenticationCredentials":{
+          "shape":"BasicAuthenticationCredentials",
+          "documentation":"<p>The basic authentication credentials of a connection.</p>"
+        },
+        "customAuthenticationCredentials":{
+          "shape":"CredentialMap",
+          "documentation":"<p>The custom authentication credentials of a connection.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"AuthenticationConfigurationInputKmsKeyArnString",
+          "documentation":"<p>The KMS key ARN of a connection.</p>"
+        },
+        "oAuth2Properties":{
+          "shape":"OAuth2Properties",
+          "documentation":"<p>The oAuth2 properties of a connection.</p>"
+        },
+        "secretArn":{
+          "shape":"AuthenticationConfigurationInputSecretArnString",
+          "documentation":"<p>The secret ARN of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The authentication configuration of a connection.</p>"
+    },
+    "AuthenticationConfigurationInputKmsKeyArnString":{
+      "type":"string",
+      "pattern":"^$|arn:aws[a-z0-9-]*:kms:.*$"
+    },
+    "AuthenticationConfigurationInputSecretArnString":{
+      "type":"string",
+      "pattern":"^arn:aws(-(cn|us-gov|iso(-[bef])?))?:secretsmanager:.*$"
+    },
+    "AuthenticationConfigurationPatch":{
+      "type":"structure",
+      "members":{
+        "basicAuthenticationCredentials":{
+          "shape":"BasicAuthenticationCredentials",
+          "documentation":"<p>The basic authentication credentials of a connection.</p>"
+        },
+        "secretArn":{
+          "shape":"AuthenticationConfigurationPatchSecretArnString",
+          "documentation":"<p>The secret ARN of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The authentication configuration patch of a connection. </p>"
+    },
+    "AuthenticationConfigurationPatchSecretArnString":{
+      "type":"string",
+      "pattern":"^arn:aws(-(cn|us-gov|iso(-[bef])?))?:secretsmanager:.*$"
+    },
+    "AuthenticationConfigurationSecretArnString":{
+      "type":"string",
+      "pattern":"^arn:aws(-(cn|us-gov|iso(-[bef])?))?:secretsmanager:.*$"
+    },
+    "AuthenticationType":{
+      "type":"string",
+      "enum":[
+        "BASIC",
+        "OAUTH2",
+        "CUSTOM"
+      ]
+    },
+    "AuthorizationCodeProperties":{
+      "type":"structure",
+      "members":{
+        "authorizationCode":{
+          "shape":"AuthorizationCodePropertiesAuthorizationCodeString",
+          "documentation":"<p>The authorization code of a connection.</p>"
+        },
+        "redirectUri":{
+          "shape":"AuthorizationCodePropertiesRedirectUriString",
+          "documentation":"<p>The redirect URI of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The authorization code properties of a connection.</p>"
+    },
+    "AuthorizationCodePropertiesAuthorizationCodeString":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "AuthorizationCodePropertiesRedirectUriString":{
+      "type":"string",
+      "max":512,
+      "min":0
+    },
     "AuthorizedPrincipalIdentifier":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9:/._-]*$"
@@ -3824,6 +4255,21 @@
       "member":{"shape":"AuthorizedPrincipalIdentifier"},
       "max":10,
       "min":1
+    },
+    "AwsAccount":{
+      "type":"structure",
+      "members":{
+        "awsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The account ID of a project.</p>"
+        },
+        "awsAccountIdPath":{
+          "shape":"ParameterStorePath",
+          "documentation":"<p>The account ID path of a project.</p>"
+        }
+      },
+      "documentation":"<p>The account ID of a project.</p>",
+      "union":true
     },
     "AwsAccountId":{
       "type":"string",
@@ -3839,9 +4285,62 @@
       },
       "documentation":"<p>The parameters of the console link specified as part of the environment action.</p>"
     },
+    "AwsLocation":{
+      "type":"structure",
+      "members":{
+        "accessRole":{
+          "shape":"AwsLocationAccessRoleString",
+          "documentation":"<p>The access role of a connection.</p>"
+        },
+        "awsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The account ID of a connection.</p>"
+        },
+        "awsRegion":{
+          "shape":"AwsRegion",
+          "documentation":"<p>The Region of a connection.</p>"
+        },
+        "iamConnectionId":{
+          "shape":"ConnectionId",
+          "documentation":"<p>The IAM connection ID of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The location of a project.</p>"
+    },
+    "AwsLocationAccessRoleString":{
+      "type":"string",
+      "pattern":"^arn:aws[^:]*:iam::\\d{12}:(role|role/service-role)/[\\w+=,.@-]*$"
+    },
     "AwsRegion":{
       "type":"string",
       "pattern":"^[a-z]{2}-[a-z]{4,10}-\\d$"
+    },
+    "BasicAuthenticationCredentials":{
+      "type":"structure",
+      "members":{
+        "password":{
+          "shape":"BasicAuthenticationCredentialsPasswordString",
+          "documentation":"<p>The password for a connection.</p>"
+        },
+        "userName":{
+          "shape":"BasicAuthenticationCredentialsUserNameString",
+          "documentation":"<p>The user name for the connecion.</p>"
+        }
+      },
+      "documentation":"<p>The basic authentication credentials of a connection.</p>",
+      "sensitive":true
+    },
+    "BasicAuthenticationCredentialsPasswordString":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"^.*$"
+    },
+    "BasicAuthenticationCredentialsUserNameString":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"^\\S+$"
     },
     "Boolean":{
       "type":"boolean",
@@ -4001,6 +4500,20 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "ComputeEnvironments":{
+      "type":"string",
+      "enum":[
+        "SPARK",
+        "ATHENA",
+        "PYTHON"
+      ]
+    },
+    "ComputeEnvironmentsList":{
+      "type":"list",
+      "member":{"shape":"ComputeEnvironments"},
+      "max":50,
+      "min":1
+    },
     "ConfigurableActionParameter":{
       "type":"structure",
       "members":{
@@ -4060,6 +4573,237 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ConnectionCredentials":{
+      "type":"structure",
+      "members":{
+        "accessKeyId":{
+          "shape":"String",
+          "documentation":"<p>The access key ID of a connection.</p>"
+        },
+        "expiration":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The expiration of the connection credentials.</p>"
+        },
+        "secretAccessKey":{
+          "shape":"String",
+          "documentation":"<p>The secret access key of a connection.</p>"
+        },
+        "sessionToken":{
+          "shape":"String",
+          "documentation":"<p>The session token of a connection credentials.</p>"
+        }
+      },
+      "documentation":"<p>The credentials of a connection.</p>",
+      "sensitive":true
+    },
+    "ConnectionId":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "ConnectionName":{
+      "type":"string",
+      "max":64,
+      "min":0
+    },
+    "ConnectionProperties":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"ConnectionPropertiesValueString"}
+    },
+    "ConnectionPropertiesInput":{
+      "type":"structure",
+      "members":{
+        "athenaProperties":{
+          "shape":"AthenaPropertiesInput",
+          "documentation":"<p>The Amazon Athena properties of a connection.</p>"
+        },
+        "glueProperties":{
+          "shape":"GluePropertiesInput",
+          "documentation":"<p>The Amazon Web Services Glue properties of a connection.</p>"
+        },
+        "hyperPodProperties":{
+          "shape":"HyperPodPropertiesInput",
+          "documentation":"<p>The hyper pod properties of a connection.</p>"
+        },
+        "iamProperties":{
+          "shape":"IamPropertiesInput",
+          "documentation":"<p>The IAM properties of a connection.</p>"
+        },
+        "redshiftProperties":{
+          "shape":"RedshiftPropertiesInput",
+          "documentation":"<p>The Amazon Redshift properties of a connection.</p>"
+        },
+        "sparkEmrProperties":{
+          "shape":"SparkEmrPropertiesInput",
+          "documentation":"<p>The Spark EMR properties of a connection.</p>"
+        },
+        "sparkGlueProperties":{
+          "shape":"SparkGluePropertiesInput",
+          "documentation":"<p>The Spark Amazon Web Services Glue properties of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The properties of a connection.</p>",
+      "union":true
+    },
+    "ConnectionPropertiesOutput":{
+      "type":"structure",
+      "members":{
+        "athenaProperties":{
+          "shape":"AthenaPropertiesOutput",
+          "documentation":"<p>The Amazon Athena properties of a connection.</p>"
+        },
+        "glueProperties":{
+          "shape":"GluePropertiesOutput",
+          "documentation":"<p>The Amazon Web Services Glue properties of a connection.</p>"
+        },
+        "hyperPodProperties":{
+          "shape":"HyperPodPropertiesOutput",
+          "documentation":"<p>The hyper pod properties of a connection.</p>"
+        },
+        "iamProperties":{
+          "shape":"IamPropertiesOutput",
+          "documentation":"<p>The IAM properties of a connection.</p>"
+        },
+        "redshiftProperties":{
+          "shape":"RedshiftPropertiesOutput",
+          "documentation":"<p>The Amazon Redshift properties of a connection.</p>"
+        },
+        "sparkEmrProperties":{
+          "shape":"SparkEmrPropertiesOutput",
+          "documentation":"<p>The Spark EMR properties of a connection.</p>"
+        },
+        "sparkGlueProperties":{
+          "shape":"SparkGluePropertiesOutput",
+          "documentation":"<p>The Spark Amazon Web Services Glue properties of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The properties of a connection.</p>",
+      "union":true
+    },
+    "ConnectionPropertiesPatch":{
+      "type":"structure",
+      "members":{
+        "athenaProperties":{
+          "shape":"AthenaPropertiesPatch",
+          "documentation":"<p>The Amazon Athena properties of a connection properties patch.</p>"
+        },
+        "glueProperties":{
+          "shape":"GluePropertiesPatch",
+          "documentation":"<p>The Amazon Web Services Glue properties of a connection properties patch.</p>"
+        },
+        "iamProperties":{
+          "shape":"IamPropertiesPatch",
+          "documentation":"<p>The IAM properties of a connection properties patch.</p>"
+        },
+        "redshiftProperties":{
+          "shape":"RedshiftPropertiesPatch",
+          "documentation":"<p>The Amazon Redshift properties of a connection properties patch.</p>"
+        },
+        "sparkEmrProperties":{
+          "shape":"SparkEmrPropertiesPatch",
+          "documentation":"<p>The Spark EMR properties of a connection properties patch.</p>"
+        }
+      },
+      "documentation":"<p>The connection properties patch.</p>",
+      "union":true
+    },
+    "ConnectionPropertiesValueString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "ConnectionStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "CREATE_FAILED",
+        "DELETING",
+        "DELETE_FAILED",
+        "READY",
+        "UPDATING",
+        "UPDATE_FAILED",
+        "DELETED"
+      ]
+    },
+    "ConnectionSummaries":{
+      "type":"list",
+      "member":{"shape":"ConnectionSummary"}
+    },
+    "ConnectionSummary":{
+      "type":"structure",
+      "required":[
+        "connectionId",
+        "domainId",
+        "domainUnitId",
+        "name",
+        "physicalEndpoints",
+        "type"
+      ],
+      "members":{
+        "connectionId":{
+          "shape":"ConnectionId",
+          "documentation":"<p>The ID of a connection.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The domain ID of a connection.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The domain unit ID of a connection.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The environment ID of a connection.</p>"
+        },
+        "name":{
+          "shape":"ConnectionName",
+          "documentation":"<p>The connection name.</p>"
+        },
+        "physicalEndpoints":{
+          "shape":"PhysicalEndpoints",
+          "documentation":"<p>The connection physical endpoints.</p>"
+        },
+        "projectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The connection project ID.</p>"
+        },
+        "props":{
+          "shape":"ConnectionPropertiesOutput",
+          "documentation":"<p>The connection props.</p>"
+        },
+        "type":{
+          "shape":"ConnectionType",
+          "documentation":"<p>The connection type.</p>"
+        }
+      },
+      "documentation":"<p>The summary of a connection.</p>"
+    },
+    "ConnectionType":{
+      "type":"string",
+      "enum":[
+        "ATHENA",
+        "BIGQUERY",
+        "DATABRICKS",
+        "DOCUMENTDB",
+        "DYNAMODB",
+        "HYPERPOD",
+        "IAM",
+        "MYSQL",
+        "OPENSEARCH",
+        "ORACLE",
+        "POSTGRESQL",
+        "REDSHIFT",
+        "SAPHANA",
+        "SNOWFLAKE",
+        "SPARK",
+        "SQLSERVER",
+        "TERADATA",
+        "VERTICA",
+        "WORKFLOWS_MWAA"
+      ]
     },
     "CreateAssetFilterInput":{
       "type":"structure",
@@ -4550,6 +5294,106 @@
       },
       "documentation":"<p>The details of the policy grant.</p>"
     },
+    "CreateConnectionInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "environmentIdentifier",
+        "name"
+      ],
+      "members":{
+        "awsLocation":{
+          "shape":"AwsLocation",
+          "documentation":"<p>The location where the connection is created.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "description":{
+          "shape":"CreateConnectionInputDescriptionString",
+          "documentation":"<p>A connection description.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the connection is created.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "environmentIdentifier":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the environment where the connection is created.</p>"
+        },
+        "name":{
+          "shape":"ConnectionName",
+          "documentation":"<p>The connection name.</p>"
+        },
+        "props":{
+          "shape":"ConnectionPropertiesInput",
+          "documentation":"<p>The connection props.</p>"
+        }
+      }
+    },
+    "CreateConnectionInputDescriptionString":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "sensitive":true
+    },
+    "CreateConnectionOutput":{
+      "type":"structure",
+      "required":[
+        "connectionId",
+        "domainId",
+        "domainUnitId",
+        "name",
+        "physicalEndpoints",
+        "type"
+      ],
+      "members":{
+        "connectionId":{
+          "shape":"ConnectionId",
+          "documentation":"<p>The ID of the connection.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The connection description.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the connection is created.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit where the connection is created.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the environment where the connection is created.</p>"
+        },
+        "name":{
+          "shape":"ConnectionName",
+          "documentation":"<p>The connection name.</p>"
+        },
+        "physicalEndpoints":{
+          "shape":"PhysicalEndpoints",
+          "documentation":"<p>The physical endpoints of the connection.</p>"
+        },
+        "projectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the project where the connection is created.</p>"
+        },
+        "props":{
+          "shape":"ConnectionPropertiesOutput",
+          "documentation":"<p>The connection props.</p>"
+        },
+        "type":{
+          "shape":"ConnectionType",
+          "documentation":"<p>The connection type.</p>"
+        }
+      }
+    },
     "CreateDataProductInput":{
       "type":"structure",
       "required":[
@@ -4784,7 +5628,6 @@
       "type":"structure",
       "required":[
         "domainIdentifier",
-        "environmentIdentifier",
         "name",
         "projectIdentifier",
         "type"
@@ -4803,6 +5646,10 @@
           "shape":"DataSourceConfigurationInput",
           "documentation":"<p>Specifies the configuration of the data source. It can be set to either <code>glueRunConfiguration</code> or <code>redshiftRunConfiguration</code>.</p>"
         },
+        "connectionIdentifier":{
+          "shape":"CreateDataSourceInputConnectionIdentifierString",
+          "documentation":"<p>The ID of the connection.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the data source.</p>"
@@ -4818,7 +5665,7 @@
           "documentation":"<p>Specifies whether the data source is enabled.</p>"
         },
         "environmentIdentifier":{
-          "shape":"String",
+          "shape":"CreateDataSourceInputEnvironmentIdentifierString",
           "documentation":"<p>The unique identifier of the Amazon DataZone environment to which the data source publishes assets. </p>"
         },
         "name":{
@@ -4826,7 +5673,7 @@
           "documentation":"<p>The name of the data source.</p>"
         },
         "projectIdentifier":{
-          "shape":"String",
+          "shape":"CreateDataSourceInputProjectIdentifierString",
           "documentation":"<p>The identifier of the Amazon DataZone project in which you want to add this data source.</p>"
         },
         "publishOnImport":{
@@ -4847,11 +5694,22 @@
         }
       }
     },
+    "CreateDataSourceInputConnectionIdentifierString":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "CreateDataSourceInputEnvironmentIdentifierString":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "CreateDataSourceInputProjectIdentifierString":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
     "CreateDataSourceOutput":{
       "type":"structure",
       "required":[
         "domainId",
-        "environmentId",
         "id",
         "name",
         "projectId"
@@ -4864,6 +5722,10 @@
         "configuration":{
           "shape":"DataSourceConfigurationOutput",
           "documentation":"<p>Specifies the configuration of the data source. It can be set to either <code>glueRunConfiguration</code> or <code>redshiftRunConfiguration</code>.</p>"
+        },
+        "connectionId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the connection.</p>"
         },
         "createdAt":{
           "shape":"DateTime",
@@ -4959,6 +5821,10 @@
           "shape":"RoleArn",
           "documentation":"<p>The domain execution role that is created when an Amazon DataZone domain is created. The domain execution role is created in the Amazon Web Services account that houses the Amazon DataZone domain.</p>"
         },
+        "domainVersion":{
+          "shape":"DomainVersion",
+          "documentation":"<p>The version of the domain that is created.</p>"
+        },
         "kmsKeyIdentifier":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The identifier of the Amazon Web Services Key Management Service (KMS) key that is used to encrypt the Amazon DataZone domain, metadata, and reporting data. </p>"
@@ -4966,6 +5832,10 @@
         "name":{
           "shape":"String",
           "documentation":"<p>The name of the Amazon DataZone domain.</p>"
+        },
+        "serviceRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>The service role of the domain that is created.</p>"
         },
         "singleSignOn":{
           "shape":"SingleSignOn",
@@ -4993,6 +5863,10 @@
           "shape":"RoleArn",
           "documentation":"<p>The domain execution role that is created when an Amazon DataZone domain is created. The domain execution role is created in the Amazon Web Services account that houses the Amazon DataZone domain.</p>"
         },
+        "domainVersion":{
+          "shape":"DomainVersion",
+          "documentation":"<p>The version of the domain that is created.</p>"
+        },
         "id":{
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain.</p>"
@@ -5012,6 +5886,10 @@
         "rootDomainUnitId":{
           "shape":"DomainUnitId",
           "documentation":"<p>The ID of the root domain unit.</p>"
+        },
+        "serviceRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>Te service role of the domain that is created.</p>"
         },
         "singleSignOn":{
           "shape":"SingleSignOn",
@@ -5198,6 +6076,10 @@
         "projectIdentifier"
       ],
       "members":{
+        "deploymentOrder":{
+          "shape":"Integer",
+          "documentation":"<p>The deployment order of the environment.</p>"
+        },
         "description":{
           "shape":"String",
           "documentation":"<p>The description of the Amazon DataZone environment.</p>"
@@ -5219,6 +6101,10 @@
         "environmentBlueprintIdentifier":{
           "shape":"String",
           "documentation":"<p>The ID of the blueprint with which the environment is being created.</p>"
+        },
+        "environmentConfigurationId":{
+          "shape":"String",
+          "documentation":"<p>The configuration ID of the environment.</p>"
         },
         "environmentProfileIdentifier":{
           "shape":"EnvironmentProfileId",
@@ -5814,6 +6700,20 @@
         }
       }
     },
+    "CreateProjectFromProjectProfilePolicyGrantDetail":{
+      "type":"structure",
+      "members":{
+        "includeChildDomainUnits":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to include child domain units when creating a project from project profile policy grant details</p>"
+        },
+        "projectProfiles":{
+          "shape":"ProjectProfileList",
+          "documentation":"<p>Specifies project profiles when creating a project from project profile policy grant details</p>"
+        }
+      },
+      "documentation":"<p>Specifies whether to create a project from project profile policy grant details.</p>"
+    },
     "CreateProjectInput":{
       "type":"structure",
       "required":[
@@ -5842,6 +6742,14 @@
         "name":{
           "shape":"ProjectName",
           "documentation":"<p>The name of the Amazon DataZone project.</p>"
+        },
+        "projectProfileId":{
+          "shape":"ProjectProfileId",
+          "documentation":"<p>The ID of the project profile.</p>"
+        },
+        "userParameters":{
+          "shape":"EnvironmentConfigurationUserParametersList",
+          "documentation":"<p>The user parameters of the project.</p>"
         }
       }
     },
@@ -5910,6 +6818,10 @@
           "shape":"DomainUnitId",
           "documentation":"<p>The ID of the domain unit.</p>"
         },
+        "environmentDeploymentDetails":{
+          "shape":"EnvironmentDeploymentDetails",
+          "documentation":"<p>The environment deployment details.</p>"
+        },
         "failureReasons":{
           "shape":"FailureReasons",
           "documentation":"<p>Specifies the error message that is returned if the operation cannot be successfully completed.</p>"
@@ -5930,9 +6842,17 @@
           "shape":"ProjectName",
           "documentation":"<p>The name of the project.</p>"
         },
+        "projectProfileId":{
+          "shape":"ProjectProfileId",
+          "documentation":"<p>The project profile ID.</p>"
+        },
         "projectStatus":{
           "shape":"ProjectStatus",
           "documentation":"<p>The status of the Amazon DataZone project that was created.</p>"
+        },
+        "userParameters":{
+          "shape":"EnvironmentConfigurationUserParametersList",
+          "documentation":"<p>The user parameters of the project.</p>"
         }
       }
     },
@@ -5945,6 +6865,92 @@
         }
       },
       "documentation":"<p>The details of the policy grant.</p>"
+    },
+    "CreateProjectProfileInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "name"
+      ],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of a project profile.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>A domain ID of the project profile.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "domainUnitIdentifier":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>A domain unit ID of the project profile.</p>"
+        },
+        "environmentConfigurations":{
+          "shape":"EnvironmentConfigurationsList",
+          "documentation":"<p>Environment configurations of the project profile.</p>"
+        },
+        "name":{
+          "shape":"ProjectProfileName",
+          "documentation":"<p>Project profile name.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>Project profile status.</p>"
+        }
+      }
+    },
+    "CreateProjectProfileOutput":{
+      "type":"structure",
+      "required":[
+        "createdBy",
+        "domainId",
+        "id",
+        "name"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>A timestamp at which a project profile is created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>A user who created a project profile.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A project profile description.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where a project profile is created.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit where a project profile is created.</p>"
+        },
+        "environmentConfigurations":{
+          "shape":"EnvironmentConfigurationsList",
+          "documentation":"<p>Environment configurations of a project profile.</p>"
+        },
+        "id":{
+          "shape":"ProjectProfileId",
+          "documentation":"<p>Project profile ID.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>A timestamp when a project profile was last updated.</p>"
+        },
+        "name":{
+          "shape":"ProjectProfileName",
+          "documentation":"<p>Project profile name.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>Project profile status.</p>"
+        }
+      }
     },
     "CreateRuleInput":{
       "type":"structure",
@@ -6059,8 +7065,7 @@
       "required":[
         "domainIdentifier",
         "environmentIdentifier",
-        "grantedEntity",
-        "subscriptionTargetIdentifier"
+        "grantedEntity"
       ],
       "members":{
         "assetTargetNames":{
@@ -6314,7 +7319,7 @@
           "locationName":"environmentIdentifier"
         },
         "manageAccessRole":{
-          "shape":"String",
+          "shape":"IamRoleArn",
           "documentation":"<p>The manage access role that is used to create the subscription target.</p>"
         },
         "name":{
@@ -6345,7 +7350,6 @@
         "domainId",
         "environmentId",
         "id",
-        "manageAccessRole",
         "name",
         "projectId",
         "provider",
@@ -6382,7 +7386,7 @@
           "documentation":"<p>The ID of the subscription target.</p>"
         },
         "manageAccessRole":{
-          "shape":"String",
+          "shape":"IamRoleArn",
           "documentation":"<p>The manage access role with which the subscription target was created.</p>"
         },
         "name":{
@@ -6467,11 +7471,27 @@
     },
     "CreatedAt":{"type":"timestamp"},
     "CreatedBy":{"type":"string"},
+    "CredentialMap":{
+      "type":"map",
+      "key":{"shape":"CredentialMapKeyString"},
+      "value":{"shape":"CredentialMapValueString"},
+      "sensitive":true
+    },
+    "CredentialMapKeyString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "CredentialMapValueString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "CronString":{
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"cron\\((\\b[0-5]?[0-9]\\b) (\\b2[0-3]\\b|\\b[0-1]?[0-9]\\b) (.*){1,5} (.*){1,5} (.*){1,5} (.*){1,5}\\)"
+      "pattern":"cron\\((\\b[0-5]?[0-9]\\b) (\\b2[0-3]\\b|\\b[0-1]?[0-9]\\b) ([-?*,/\\dLW]){1,83} ([-*,/\\d]|[a-zA-Z]{3}){1,23} ([-?#*,/\\dL]|[a-zA-Z]{3}){1,13} ([^\\)]+)\\)"
     },
     "CustomParameter":{
       "type":"structure",
@@ -6785,6 +7805,10 @@
         "redshiftRunConfiguration":{
           "shape":"RedshiftRunConfigurationInput",
           "documentation":"<p>The configuration of the Amazon Redshift data source.</p>"
+        },
+        "sageMakerRunConfiguration":{
+          "shape":"SageMakerRunConfigurationInput",
+          "documentation":"<p>The Amazon SageMaker run configuration.</p>"
         }
       },
       "documentation":"<p>The configuration of the data source.</p>",
@@ -6800,6 +7824,10 @@
         "redshiftRunConfiguration":{
           "shape":"RedshiftRunConfigurationOutput",
           "documentation":"<p>The configuration of the Amazon Redshift data source.</p>"
+        },
+        "sageMakerRunConfiguration":{
+          "shape":"SageMakerRunConfigurationOutput",
+          "documentation":"<p>The Amazon SageMaker run configuration.</p>"
         }
       },
       "documentation":"<p>The configuration of the data source.</p>",
@@ -6873,6 +7901,10 @@
           "documentation":"<p>The database included in the data source run activity.</p>"
         },
         "errorMessage":{"shape":"DataSourceErrorMessage"},
+        "lineageSummary":{
+          "shape":"LineageInfo",
+          "documentation":"<p>The data lineage summary.</p>"
+        },
         "projectId":{
           "shape":"ProjectId",
           "documentation":"<p>The project ID included in the data source run activity.</p>"
@@ -6895,6 +7927,16 @@
     "DataSourceRunId":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "DataSourceRunLineageSummary":{
+      "type":"structure",
+      "members":{
+        "importStatus":{
+          "shape":"LineageImportStatus",
+          "documentation":"<p>The import status that's part of the run lineage summary of a data source.</p>"
+        }
+      },
+      "documentation":"<p>The run lineage summary of a data source.</p>"
     },
     "DataSourceRunStatus":{
       "type":"string",
@@ -6934,6 +7976,10 @@
         "id":{
           "shape":"DataSourceRunId",
           "documentation":"<p>The identifier of the data source run.</p>"
+        },
+        "lineageSummary":{
+          "shape":"DataSourceRunLineageSummary",
+          "documentation":"<p>The run lineage summary of a data source.</p>"
         },
         "projectId":{
           "shape":"ProjectId",
@@ -6992,12 +8038,15 @@
       "required":[
         "dataSourceId",
         "domainId",
-        "environmentId",
         "name",
         "status",
         "type"
       ],
       "members":{
+        "connectionId":{
+          "shape":"String",
+          "documentation":"<p>The connection ID that's part of the data source summary.</p>"
+        },
         "createdAt":{
           "shape":"DateTime",
           "documentation":"<p>The timestamp of when the data source was created.</p>"
@@ -7005,6 +8054,10 @@
         "dataSourceId":{
           "shape":"DataSourceId",
           "documentation":"<p>The ID of the data source.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The data source description.</p>"
         },
         "domainId":{
           "shape":"DomainId",
@@ -7015,7 +8068,7 @@
           "documentation":"<p>Specifies whether the data source is enabled.</p>"
         },
         "environmentId":{
-          "shape":"EnvironmentId",
+          "shape":"String",
           "documentation":"<p>The ID of the environment in which the data source exists.</p>"
         },
         "lastRunAssetCount":{
@@ -7150,6 +8203,36 @@
       "members":{
       }
     },
+    "DeleteConnectionInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the connection is deleted.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"ConnectionId",
+          "documentation":"<p>The ID of the connection that is deleted.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "DeleteConnectionOutput":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"String",
+          "documentation":"<p>The status of the action.</p>"
+        }
+      }
+    },
     "DeleteDataProductInput":{
       "type":"structure",
       "required":[
@@ -7186,6 +8269,8 @@
         "clientToken":{
           "shape":"String",
           "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This field is no longer required for idempotency.",
           "idempotencyToken":true,
           "location":"querystring",
           "locationName":"clientToken"
@@ -7214,7 +8299,6 @@
       "type":"structure",
       "required":[
         "domainId",
-        "environmentId",
         "id",
         "name",
         "projectId"
@@ -7227,6 +8311,10 @@
         "configuration":{
           "shape":"DataSourceConfigurationOutput",
           "documentation":"<p>The configuration of the data source that is deleted.</p>"
+        },
+        "connectionId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the connection that is deleted.</p>"
         },
         "createdAt":{
           "shape":"DateTime",
@@ -7630,6 +8718,32 @@
       "members":{
       }
     },
+    "DeleteProjectProfileInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where a project profile is deleted.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"ProjectProfileId",
+          "documentation":"<p>The ID of the project profile that is deleted.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "DeleteProjectProfileOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteRuleInput":{
       "type":"structure",
       "required":[
@@ -7869,6 +8983,19 @@
       "type":"list",
       "member":{"shape":"DeploymentMessage"}
     },
+    "DeploymentMode":{
+      "type":"string",
+      "enum":[
+        "ON_CREATE",
+        "ON_DEMAND"
+      ]
+    },
+    "DeploymentOrder":{
+      "type":"integer",
+      "box":true,
+      "max":16,
+      "min":0
+    },
     "DeploymentProperties":{
       "type":"structure",
       "members":{
@@ -8018,6 +9145,10 @@
         "description":{
           "shape":"DomainDescription",
           "documentation":"<p>A description of an Amazon DataZone domain.</p>"
+        },
+        "domainVersion":{
+          "shape":"DomainVersion",
+          "documentation":"<p>The domain version.</p>"
         },
         "id":{
           "shape":"DomainId",
@@ -8197,6 +9328,13 @@
       },
       "documentation":"<p>The properties of the domain unit user.</p>"
     },
+    "DomainVersion":{
+      "type":"string",
+      "enum":[
+        "V1",
+        "V2"
+      ]
+    },
     "EdgeDirection":{
       "type":"string",
       "enum":[
@@ -8309,6 +9447,10 @@
           "shape":"EnvironmentBlueprintId",
           "documentation":"<p>The identifier of the environment blueprint.</p>"
         },
+        "environmentRolePermissionBoundary":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The environment role permission boundary.</p>"
+        },
         "manageAccessRoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The ARN of the manage access role specified in the environment blueprint configuration.</p>"
@@ -8390,6 +9532,146 @@
       },
       "documentation":"<p>The details of an environment blueprint summary.</p>"
     },
+    "EnvironmentConfiguration":{
+      "type":"structure",
+      "required":[
+        "awsAccount",
+        "awsRegion",
+        "environmentBlueprintId",
+        "name"
+      ],
+      "members":{
+        "awsAccount":{
+          "shape":"AwsAccount",
+          "documentation":"<p>The Amazon Web Services account of the environment.</p>"
+        },
+        "awsRegion":{
+          "shape":"Region",
+          "documentation":"<p>The Amazon Web Services Region of the environment.</p>"
+        },
+        "configurationParameters":{
+          "shape":"EnvironmentConfigurationParametersDetails",
+          "documentation":"<p>The configuration parameters of the environment.</p>"
+        },
+        "deploymentMode":{
+          "shape":"DeploymentMode",
+          "documentation":"<p>The deployment mode of the environment.</p>"
+        },
+        "deploymentOrder":{
+          "shape":"DeploymentOrder",
+          "documentation":"<p>The deployment order of the environment.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The environment description.</p>"
+        },
+        "environmentBlueprintId":{
+          "shape":"EnvironmentBlueprintId",
+          "documentation":"<p>The environment blueprint ID.</p>"
+        },
+        "id":{
+          "shape":"EnvironmentConfigurationId",
+          "documentation":"<p>The environment ID.</p>"
+        },
+        "name":{
+          "shape":"EnvironmentConfigurationName",
+          "documentation":"<p>The environment name.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of an environment.</p>"
+    },
+    "EnvironmentConfigurationId":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$",
+      "sensitive":true
+    },
+    "EnvironmentConfigurationName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[\\w -]+$",
+      "sensitive":true
+    },
+    "EnvironmentConfigurationParameter":{
+      "type":"structure",
+      "members":{
+        "isEditable":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the environment parameter is editable.</p>"
+        },
+        "name":{
+          "shape":"EnvironmentConfigurationParameterName",
+          "documentation":"<p>The name of the environment configuration parameter.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value of the environment configuration parameter.</p>"
+        }
+      },
+      "documentation":"<p>The environment configuration parameter.</p>"
+    },
+    "EnvironmentConfigurationParameterName":{
+      "type":"string",
+      "pattern":"^[a-zA-Z_][a-zA-Z0-9_]*$"
+    },
+    "EnvironmentConfigurationParametersDetails":{
+      "type":"structure",
+      "members":{
+        "parameterOverrides":{
+          "shape":"EnvironmentConfigurationParametersList",
+          "documentation":"<p>The parameter overrides.</p>"
+        },
+        "resolvedParameters":{
+          "shape":"EnvironmentConfigurationParametersList",
+          "documentation":"<p>The resolved environment configuration parameters.</p>"
+        },
+        "ssmPath":{
+          "shape":"ParameterStorePath",
+          "documentation":"<p>Ssm path environment configuration parameters.</p>"
+        }
+      },
+      "documentation":"<p>The details of the environment configuration parameter.</p>"
+    },
+    "EnvironmentConfigurationParametersList":{
+      "type":"list",
+      "member":{"shape":"EnvironmentConfigurationParameter"}
+    },
+    "EnvironmentConfigurationUserParameter":{
+      "type":"structure",
+      "members":{
+        "environmentConfigurationName":{
+          "shape":"EnvironmentConfigurationName",
+          "documentation":"<p>The environment configuration name.</p>"
+        },
+        "environmentParameters":{
+          "shape":"EnvironmentParametersList",
+          "documentation":"<p>The environment parameters.</p>"
+        }
+      },
+      "documentation":"<p>The environment configuration user parameters.</p>"
+    },
+    "EnvironmentConfigurationUserParametersList":{
+      "type":"list",
+      "member":{"shape":"EnvironmentConfigurationUserParameter"}
+    },
+    "EnvironmentConfigurationsList":{
+      "type":"list",
+      "member":{"shape":"EnvironmentConfiguration"}
+    },
+    "EnvironmentDeploymentDetails":{
+      "type":"structure",
+      "members":{
+        "environmentFailureReasons":{
+          "shape":"EnvironmentFailureReasons",
+          "documentation":"<p>Environment failure reasons.</p>"
+        },
+        "overallDeploymentStatus":{
+          "shape":"OverallDeploymentStatus",
+          "documentation":"<p>The overall deployment status of the environment.</p>"
+        }
+      },
+      "documentation":"<p>The environment deployment details.</p>"
+    },
     "EnvironmentError":{
       "type":"structure",
       "required":["message"],
@@ -8404,6 +9686,15 @@
         }
       },
       "documentation":"<p>The failure reasons for the environment deployment.</p>"
+    },
+    "EnvironmentFailureReasons":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"EnvironmentFailureReasonsList"}
+    },
+    "EnvironmentFailureReasonsList":{
+      "type":"list",
+      "member":{"shape":"EnvironmentError"}
     },
     "EnvironmentId":{
       "type":"string",
@@ -8612,11 +9903,27 @@
       "documentation":"<p>Specifies whether the value is equal to an expression.</p>"
     },
     "ErrorMessage":{"type":"string"},
+    "EventSummary":{
+      "type":"structure",
+      "members":{
+        "openLineageRunEventSummary":{
+          "shape":"OpenLineageRunEventSummary",
+          "documentation":"<p>The open lineage run event summary.</p>"
+        }
+      },
+      "documentation":"<p>The event summary.</p>",
+      "union":true
+    },
     "ExternalIdentifier":{
       "type":"string",
-      "max":256,
-      "min":1,
-      "sensitive":true
+      "max":600,
+      "min":1
+    },
+    "FailedQueryProcessingErrorMessages":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":10,
+      "min":0
     },
     "FailureCause":{
       "type":"structure",
@@ -9238,6 +10545,94 @@
         }
       }
     },
+    "GetConnectionInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where we get the connection.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"ConnectionId",
+          "documentation":"<p>The connection ID.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "withSecret":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether a connection has a secret.</p>",
+          "location":"querystring",
+          "locationName":"withSecret"
+        }
+      }
+    },
+    "GetConnectionOutput":{
+      "type":"structure",
+      "required":[
+        "connectionId",
+        "domainId",
+        "domainUnitId",
+        "name",
+        "physicalEndpoints",
+        "type"
+      ],
+      "members":{
+        "connectionCredentials":{
+          "shape":"ConnectionCredentials",
+          "documentation":"<p>Connection credentials.</p>"
+        },
+        "connectionId":{
+          "shape":"ConnectionId",
+          "documentation":"<p>The ID of the connection.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>Connection description.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The domain ID of the connection.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The domain unit ID of the connection.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the environment.</p>"
+        },
+        "environmentUserRole":{
+          "shape":"String",
+          "documentation":"<p>The environment user role.</p>"
+        },
+        "name":{
+          "shape":"ConnectionName",
+          "documentation":"<p>The name of the connection.</p>"
+        },
+        "physicalEndpoints":{
+          "shape":"PhysicalEndpoints",
+          "documentation":"<p>The physical endpoints of the connection.</p>"
+        },
+        "projectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the project.</p>"
+        },
+        "props":{
+          "shape":"ConnectionPropertiesOutput",
+          "documentation":"<p>Connection props.</p>"
+        },
+        "type":{
+          "shape":"ConnectionType",
+          "documentation":"<p>The type of the connection.</p>"
+        }
+      }
+    },
     "GetDataProductInput":{
       "type":"structure",
       "required":[
@@ -9359,7 +10754,6 @@
       "type":"structure",
       "required":[
         "domainId",
-        "environmentId",
         "id",
         "name",
         "projectId"
@@ -9372,6 +10766,10 @@
         "configuration":{
           "shape":"DataSourceConfigurationOutput",
           "documentation":"<p>The configuration of the data source.</p>"
+        },
+        "connectionId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the connection.</p>"
         },
         "createdAt":{
           "shape":"DateTime",
@@ -9513,6 +10911,10 @@
           "shape":"DataSourceRunId",
           "documentation":"<p>The ID of the data source run.</p>"
         },
+        "lineageSummary":{
+          "shape":"DataSourceRunLineageSummary",
+          "documentation":"<p>The summary of the data lineage.</p>"
+        },
         "projectId":{
           "shape":"ProjectId",
           "documentation":"<p>The ID of the project in which this data source run occured.</p>"
@@ -9579,6 +10981,10 @@
           "shape":"RoleArn",
           "documentation":"<p>The domain execution role with which the Amazon DataZone domain is created.</p>"
         },
+        "domainVersion":{
+          "shape":"DomainVersion",
+          "documentation":"<p>The version of the domain.</p>"
+        },
         "id":{
           "shape":"DomainId",
           "documentation":"<p>The identifier of the specified Amazon DataZone domain.</p>"
@@ -9602,6 +11008,10 @@
         "rootDomainUnitId":{
           "shape":"DomainUnitId",
           "documentation":"<p>The ID of the root domain in Amazon Datazone.</p>"
+        },
+        "serviceRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>The service role of the domain.</p>"
         },
         "singleSignOn":{
           "shape":"SingleSignOn",
@@ -9796,6 +11206,10 @@
         "environmentBlueprintId":{
           "shape":"EnvironmentBlueprintId",
           "documentation":"<p>The ID of the blueprint.</p>"
+        },
+        "environmentRolePermissionBoundary":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The environment role permissions boundary.</p>"
         },
         "manageAccessRoleArn":{
           "shape":"RoleArn",
@@ -10440,6 +11854,147 @@
         }
       }
     },
+    "GetJobRunInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"RunIdentifier",
+          "documentation":"<p>The ID of the job run.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetJobRunOutput":{
+      "type":"structure",
+      "members":{
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the job run was created.</p>"
+        },
+        "createdBy":{
+          "shape":"String",
+          "documentation":"<p>The user who created the job run.</p>"
+        },
+        "details":{
+          "shape":"JobRunDetails",
+          "documentation":"<p>The details of the job run.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the job run ended.</p>"
+        },
+        "error":{
+          "shape":"JobRunError",
+          "documentation":"<p>The error generated if the action is not completed successfully.</p>"
+        },
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The ID of the job run.</p>"
+        },
+        "jobId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the job run.</p>"
+        },
+        "jobType":{
+          "shape":"JobType",
+          "documentation":"<p>The type of the job run.</p>"
+        },
+        "runMode":{
+          "shape":"JobRunMode",
+          "documentation":"<p>The mode of the job run.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the job run started.</p>"
+        },
+        "status":{
+          "shape":"JobRunStatus",
+          "documentation":"<p>The status of the job run.</p>"
+        }
+      }
+    },
+    "GetLineageEventInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"LineageEventIdentifier",
+          "documentation":"<p>The ID of the lineage event.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetLineageEventOutput":{
+      "type":"structure",
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp of when the lineage event was created.</p>",
+          "location":"header",
+          "locationName":"Created-At"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the lineage event.</p>",
+          "location":"header",
+          "locationName":"Created-By"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain.</p>",
+          "location":"header",
+          "locationName":"Domain-Id"
+        },
+        "event":{
+          "shape":"LineageEvent",
+          "documentation":"<p>The lineage event details.</p>"
+        },
+        "eventTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time of the lineage event.</p>",
+          "location":"header",
+          "locationName":"Event-Time"
+        },
+        "id":{
+          "shape":"LineageEventIdentifier",
+          "documentation":"<p>The ID of the lineage event.</p>",
+          "location":"header",
+          "locationName":"Id"
+        },
+        "processingStatus":{
+          "shape":"LineageEventProcessingStatus",
+          "documentation":"<p>The progressing status of the lineage event.</p>",
+          "location":"header",
+          "locationName":"Processing-Status"
+        }
+      },
+      "payload":"event"
+    },
     "GetLineageNodeInput":{
       "type":"structure",
       "required":[
@@ -10731,6 +12286,10 @@
           "shape":"DomainUnitId",
           "documentation":"<p>The ID of the domain unit.</p>"
         },
+        "environmentDeploymentDetails":{
+          "shape":"EnvironmentDeploymentDetails",
+          "documentation":"<p>The environment deployment status of a project.</p>"
+        },
         "failureReasons":{
           "shape":"FailureReasons",
           "documentation":"<p>Specifies the error message that is returned if the operation cannot be successfully completed.</p>"
@@ -10751,9 +12310,89 @@
           "shape":"ProjectName",
           "documentation":"<p>The name of the project.</p>"
         },
+        "projectProfileId":{
+          "shape":"ProjectProfileId",
+          "documentation":"<p>The ID of the project profile of a project.</p>"
+        },
         "projectStatus":{
           "shape":"ProjectStatus",
           "documentation":"<p>The status of the project.</p>"
+        },
+        "userParameters":{
+          "shape":"EnvironmentConfigurationUserParametersList",
+          "documentation":"<p>The user parameters of a project.</p>"
+        }
+      }
+    },
+    "GetProjectProfileInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"ProjectProfileId",
+          "documentation":"<p>The ID of the project profile.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetProjectProfileOutput":{
+      "type":"structure",
+      "required":[
+        "createdBy",
+        "domainId",
+        "id",
+        "name"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of when the project profile was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the project profile.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the project profile.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain of the project profile.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit of the project profile.</p>"
+        },
+        "environmentConfigurations":{
+          "shape":"EnvironmentConfigurationsList",
+          "documentation":"<p>The environment configurations of the project profile.</p>"
+        },
+        "id":{
+          "shape":"ProjectProfileId",
+          "documentation":"<p>The ID of the project profile.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of when project profile was last updated.</p>"
+        },
+        "name":{
+          "shape":"ProjectProfileName",
+          "documentation":"<p>The name of the project profile.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the project profile.</p>"
         }
       }
     },
@@ -11164,7 +12803,6 @@
         "domainId",
         "environmentId",
         "id",
-        "manageAccessRole",
         "name",
         "projectId",
         "provider",
@@ -11201,7 +12839,7 @@
           "documentation":"<p>The ID of the subscription target.</p>"
         },
         "manageAccessRole":{
-          "shape":"String",
+          "shape":"IamRoleArn",
           "documentation":"<p>The manage access role with which the subscription target was created.</p>"
         },
         "name":{
@@ -11510,6 +13148,281 @@
       "max":20,
       "min":1
     },
+    "GlueConnection":{
+      "type":"structure",
+      "members":{
+        "athenaProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The Amazon Athena properties of the Amazon Web Services Glue connection.</p>"
+        },
+        "authenticationConfiguration":{
+          "shape":"AuthenticationConfiguration",
+          "documentation":"<p>The authentication configuration of the Amazon Web Services Glue connection.</p>"
+        },
+        "compatibleComputeEnvironments":{
+          "shape":"ComputeEnvironmentsList",
+          "documentation":"<p>The compatible compute environments of the Amazon Web Services Glue connection.</p>"
+        },
+        "connectionProperties":{
+          "shape":"ConnectionProperties",
+          "documentation":"<p>The properties of the Amazon Web Services Glue connection.</p>"
+        },
+        "connectionSchemaVersion":{
+          "shape":"GlueConnectionConnectionSchemaVersionInteger",
+          "documentation":"<p>The connection schema version of the Amazon Web Services Glue connection.</p>"
+        },
+        "connectionType":{
+          "shape":"ConnectionType",
+          "documentation":"<p>The type of the Amazon Web Services Glue connection.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation time of the Amazon Web Services Glue connection.</p>"
+        },
+        "description":{
+          "shape":"GlueConnectionDescriptionString",
+          "documentation":"<p>The description of the Amazon Web Services Glue connection.</p>"
+        },
+        "lastConnectionValidationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last validation time of the Amazon Web Services Glue connection.</p>"
+        },
+        "lastUpdatedBy":{
+          "shape":"String",
+          "documentation":"<p>The user who last updated the Amazon Web Services Glue connection.</p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the Amazon Web Services Glue connection was last updated.</p>"
+        },
+        "matchCriteria":{
+          "shape":"MatchCriteria",
+          "documentation":"<p>The match criteria of the Amazon Web Services Glue connection.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon Web Services Glue connection.</p>"
+        },
+        "physicalConnectionRequirements":{
+          "shape":"PhysicalConnectionRequirements",
+          "documentation":"<p>The physical connection requirements of the Amazon Web Services Glue connection.</p>"
+        },
+        "pythonProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The Python properties of the Amazon Web Services Glue connection.</p>"
+        },
+        "sparkProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The Spark properties of the Amazon Web Services Glue connection.</p>"
+        },
+        "status":{
+          "shape":"ConnectionStatus",
+          "documentation":"<p>The status of the Amazon Web Services Glue connection.</p>"
+        },
+        "statusReason":{
+          "shape":"GlueConnectionStatusReasonString",
+          "documentation":"<p>The status reason of the Amazon Web Services Glue connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Glue connection.</p>"
+    },
+    "GlueConnectionConnectionSchemaVersionInteger":{
+      "type":"integer",
+      "box":true,
+      "max":2,
+      "min":1
+    },
+    "GlueConnectionDescriptionString":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
+    "GlueConnectionInput":{
+      "type":"structure",
+      "members":{
+        "athenaProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The Amazon Athena properties of the Amazon Web Services Glue connection.</p>"
+        },
+        "authenticationConfiguration":{
+          "shape":"AuthenticationConfigurationInput",
+          "documentation":"<p>The authentication configuration of the Amazon Web Services Glue connection.</p>"
+        },
+        "connectionProperties":{
+          "shape":"ConnectionProperties",
+          "documentation":"<p>The connection properties of the Amazon Web Services Glue connection.</p>"
+        },
+        "connectionType":{
+          "shape":"GlueConnectionType",
+          "documentation":"<p>The connection type of the Amazon Web Services Glue connection.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the Amazon Web Services Glue connection.</p>"
+        },
+        "matchCriteria":{
+          "shape":"GlueConnectionInputMatchCriteriaString",
+          "documentation":"<p>The match criteria of the Amazon Web Services Glue connection.</p>"
+        },
+        "name":{
+          "shape":"GlueConnectionInputNameString",
+          "documentation":"<p>The name of the Amazon Web Services Glue connection.</p>"
+        },
+        "physicalConnectionRequirements":{
+          "shape":"PhysicalConnectionRequirements",
+          "documentation":"<p>The physical connection requirements for the Amazon Web Services Glue connection.</p>"
+        },
+        "pythonProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The Python properties of the Amazon Web Services Glue connection.</p>"
+        },
+        "sparkProperties":{
+          "shape":"PropertyMap",
+          "documentation":"<p>The Spark properties of the Amazon Web Services Glue connection.</p>"
+        },
+        "validateCredentials":{
+          "shape":"Boolean",
+          "documentation":"<p>Speciefies whether to validate credentials of the Amazon Web Services Glue connection.</p>"
+        },
+        "validateForComputeEnvironments":{
+          "shape":"ComputeEnvironmentsList",
+          "documentation":"<p>Speciefies whether to validate for compute environments of the Amazon Web Services Glue connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Glue connecton input.</p>"
+    },
+    "GlueConnectionInputMatchCriteriaString":{
+      "type":"string",
+      "max":10,
+      "min":0
+    },
+    "GlueConnectionInputNameString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "GlueConnectionPatch":{
+      "type":"structure",
+      "members":{
+        "authenticationConfiguration":{
+          "shape":"AuthenticationConfigurationPatch",
+          "documentation":"<p>The authentication configuration of the Amazon Web Services Glue connection patch.</p>"
+        },
+        "connectionProperties":{
+          "shape":"ConnectionProperties",
+          "documentation":"<p>The properties of the Amazon Web Services Glue connection patch.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the Amazon Web Services Glue connection patch.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Glue connection patch.</p>"
+    },
+    "GlueConnectionStatusReasonString":{
+      "type":"string",
+      "max":16384,
+      "min":1
+    },
+    "GlueConnectionType":{
+      "type":"string",
+      "enum":[
+        "SNOWFLAKE",
+        "BIGQUERY",
+        "DOCUMENTDB",
+        "DYNAMODB",
+        "MYSQL",
+        "OPENSEARCH",
+        "ORACLE",
+        "POSTGRESQL",
+        "REDSHIFT",
+        "SAPHANA",
+        "SQLSERVER",
+        "TERADATA",
+        "VERTICA"
+      ]
+    },
+    "GlueOAuth2Credentials":{
+      "type":"structure",
+      "members":{
+        "accessToken":{
+          "shape":"GlueOAuth2CredentialsAccessTokenString",
+          "documentation":"<p>The access token of a connection.</p>"
+        },
+        "jwtToken":{
+          "shape":"GlueOAuth2CredentialsJwtTokenString",
+          "documentation":"<p>The jwt token of the connection.</p>"
+        },
+        "refreshToken":{
+          "shape":"GlueOAuth2CredentialsRefreshTokenString",
+          "documentation":"<p>The refresh token of the connection.</p>"
+        },
+        "userManagedClientApplicationClientSecret":{
+          "shape":"GlueOAuth2CredentialsUserManagedClientApplicationClientSecretString",
+          "documentation":"<p>The user managed client application client secret of the connection. </p>"
+        }
+      },
+      "documentation":"<p>The GlueOAuth2 credentials of a connection.</p>",
+      "sensitive":true
+    },
+    "GlueOAuth2CredentialsAccessTokenString":{
+      "type":"string",
+      "max":4096,
+      "min":0,
+      "pattern":"^[\\x20-\\x7E]*$"
+    },
+    "GlueOAuth2CredentialsJwtTokenString":{
+      "type":"string",
+      "max":8000,
+      "min":0,
+      "pattern":"^([a-zA-Z0-9_=]+)\\.([a-zA-Z0-9_=]+)\\.([a-zA-Z0-9_\\-\\+\\/=]*)$"
+    },
+    "GlueOAuth2CredentialsRefreshTokenString":{
+      "type":"string",
+      "max":4096,
+      "min":0,
+      "pattern":"^[\\x20-\\x7E]*$"
+    },
+    "GlueOAuth2CredentialsUserManagedClientApplicationClientSecretString":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"^[\\x20-\\x7E]*$"
+    },
+    "GluePropertiesInput":{
+      "type":"structure",
+      "members":{
+        "glueConnectionInput":{
+          "shape":"GlueConnectionInput",
+          "documentation":"<p>The Amazon Web Services Glue connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Glue properties of a connection.</p>"
+    },
+    "GluePropertiesOutput":{
+      "type":"structure",
+      "members":{
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message generated if the action is not completed successfully.</p>"
+        },
+        "status":{
+          "shape":"ConnectionStatus",
+          "documentation":"<p>The status of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The properties of the Amazon Web Services Glue connection.</p>"
+    },
+    "GluePropertiesPatch":{
+      "type":"structure",
+      "members":{
+        "glueConnectionInput":{
+          "shape":"GlueConnectionPatch",
+          "documentation":"<p>The Amazon Web Services Glue properties patch of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Glue properties patch of a connection.</p>"
+    },
     "GlueRunConfigurationInput":{
       "type":"structure",
       "required":["relationalFilterConfigurations"],
@@ -11517,6 +13430,10 @@
         "autoImportDataQualityResult":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether to automatically import data quality metrics as part of the data source run.</p>"
+        },
+        "catalogName":{
+          "shape":"GlueRunConfigurationInputCatalogNameString",
+          "documentation":"<p>The catalog name in the Amazon Web Services Glue run configuration.</p>"
         },
         "dataAccessRole":{
           "shape":"GlueRunConfigurationInputDataAccessRoleString",
@@ -11528,6 +13445,11 @@
         }
       },
       "documentation":"<p>The configuration details of the Amazon Web Services Glue data source.</p>"
+    },
+    "GlueRunConfigurationInputCatalogNameString":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "GlueRunConfigurationInputDataAccessRoleString":{
       "type":"string",
@@ -11544,6 +13466,10 @@
         "autoImportDataQualityResult":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether to automatically import data quality metrics as part of the data source run.</p>"
+        },
+        "catalogName":{
+          "shape":"GlueRunConfigurationOutputCatalogNameString",
+          "documentation":"<p>The catalog name in the Amazon Web Services Glue run configuration.</p>"
         },
         "dataAccessRole":{
           "shape":"GlueRunConfigurationOutputDataAccessRoleString",
@@ -11566,6 +13492,11 @@
       "min":12,
       "pattern":"^\\d{12}$"
     },
+    "GlueRunConfigurationOutputCatalogNameString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
     "GlueRunConfigurationOutputDataAccessRoleString":{
       "type":"string",
       "pattern":"^arn:aws[^:]*:iam::\\d{12}:(role|role/service-role)/[\\w+=,.@-]{1,128}$"
@@ -11586,6 +13517,13 @@
         }
       },
       "documentation":"<p>The details of the self granting status.</p>"
+    },
+    "GovernanceType":{
+      "type":"string",
+      "enum":[
+        "AWS_MANAGED",
+        "USER_MANAGED"
+      ]
     },
     "GrantedEntity":{
       "type":"structure",
@@ -11728,6 +13666,86 @@
         "DATAZONE_SSO_GROUP"
       ]
     },
+    "HyperPodOrchestrator":{
+      "type":"string",
+      "enum":[
+        "EKS",
+        "SLURM"
+      ]
+    },
+    "HyperPodPropertiesInput":{
+      "type":"structure",
+      "required":["clusterName"],
+      "members":{
+        "clusterName":{
+          "shape":"HyperPodPropertiesInputClusterNameString",
+          "documentation":"<p>The cluster name the hyper pod properties.</p>"
+        }
+      },
+      "documentation":"<p>The hyper pod properties of a Amazon Web Services Glue properties patch.</p>"
+    },
+    "HyperPodPropertiesInputClusterNameString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "HyperPodPropertiesOutput":{
+      "type":"structure",
+      "required":["clusterName"],
+      "members":{
+        "clusterArn":{
+          "shape":"String",
+          "documentation":"<p>The cluster ARN of the hyper pod properties.</p>"
+        },
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The cluster name the hyper pod properties.</p>"
+        },
+        "orchestrator":{
+          "shape":"HyperPodOrchestrator",
+          "documentation":"<p>The orchestrator of the hyper pod properties.</p>"
+        }
+      },
+      "documentation":"<p>The hyper pod properties of a Amazon Web Services Glue properties patch.</p>"
+    },
+    "IamPropertiesInput":{
+      "type":"structure",
+      "members":{
+        "glueLineageSyncEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether Amazon Web Services Glue lineage sync is enabled for a connection.</p>"
+        }
+      },
+      "documentation":"<p>The IAM properties of a connection.</p>"
+    },
+    "IamPropertiesOutput":{
+      "type":"structure",
+      "members":{
+        "environmentId":{
+          "shape":"String",
+          "documentation":"<p>The environment ID of the connection.</p>"
+        },
+        "glueLineageSyncEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether Amazon Web Services Glue lineage sync is enabled for a connection.</p>"
+        }
+      },
+      "documentation":"<p>The IAM properties of a connection.</p>"
+    },
+    "IamPropertiesPatch":{
+      "type":"structure",
+      "members":{
+        "glueLineageSyncEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether Amazon Web Services Glue lineage sync is enabled for a connection.</p>"
+        }
+      },
+      "documentation":"<p>The IAM properties patch of a connection.</p>"
+    },
+    "IamRoleArn":{
+      "type":"string",
+      "pattern":"^arn:aws(|-cn|-us-gov):iam::\\d{12}:(role|role/service-role)/[\\w+=,.@-]*$"
+    },
     "IamUserProfileDetails":{
       "type":"structure",
       "members":{
@@ -11833,6 +13851,106 @@
       "max":2,
       "min":1
     },
+    "JobRunDetails":{
+      "type":"structure",
+      "members":{
+        "lineageRunDetails":{
+          "shape":"LineageRunDetails",
+          "documentation":"<p>The data lineage details of a job run.</p>"
+        }
+      },
+      "documentation":"<p>The details of a job run.</p>",
+      "union":true
+    },
+    "JobRunError":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The job run error message.</p>"
+        }
+      },
+      "documentation":"<p>The job run error.</p>"
+    },
+    "JobRunMode":{
+      "type":"string",
+      "enum":[
+        "SCHEDULED",
+        "ON_DEMAND"
+      ]
+    },
+    "JobRunStatus":{
+      "type":"string",
+      "enum":[
+        "SCHEDULED",
+        "IN_PROGRESS",
+        "SUCCESS",
+        "PARTIALLY_SUCCEEDED",
+        "FAILED",
+        "ABORTED",
+        "TIMED_OUT",
+        "CANCELED"
+      ]
+    },
+    "JobRunSummaries":{
+      "type":"list",
+      "member":{"shape":"JobRunSummary"}
+    },
+    "JobRunSummary":{
+      "type":"structure",
+      "members":{
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which job run was created.</p>"
+        },
+        "createdBy":{
+          "shape":"String",
+          "documentation":"<p>The user who created the job run.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The domain ID of the job run.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time of a job run.</p>"
+        },
+        "error":{
+          "shape":"JobRunError",
+          "documentation":"<p>The error of a job run.</p>"
+        },
+        "jobId":{
+          "shape":"String",
+          "documentation":"<p>The job ID of a job run.</p>"
+        },
+        "jobType":{
+          "shape":"JobType",
+          "documentation":"<p>The job type of a job run.</p>"
+        },
+        "runId":{
+          "shape":"String",
+          "documentation":"<p>The run ID of a job run.</p>"
+        },
+        "runMode":{
+          "shape":"JobRunMode",
+          "documentation":"<p>The run mode of a job run.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of a job run.</p>"
+        },
+        "status":{
+          "shape":"JobRunStatus",
+          "documentation":"<p>The status of a job run.</p>"
+        }
+      },
+      "documentation":"<p>The job run summary.</p>"
+    },
+    "JobType":{
+      "type":"string",
+      "enum":["LINEAGE"]
+    },
     "KmsKeyArn":{
       "type":"string",
       "max":1024,
@@ -11916,6 +14034,85 @@
       "max":300000,
       "min":0,
       "sensitive":true
+    },
+    "LineageEventErrorMessage":{"type":"string"},
+    "LineageEventIdentifier":{
+      "type":"string",
+      "pattern":"^[a-z0-9]{14}$"
+    },
+    "LineageEventProcessingStatus":{
+      "type":"string",
+      "enum":[
+        "REQUESTED",
+        "PROCESSING",
+        "SUCCESS",
+        "FAILED"
+      ]
+    },
+    "LineageEventSummaries":{
+      "type":"list",
+      "member":{"shape":"LineageEventSummary"}
+    },
+    "LineageEventSummary":{
+      "type":"structure",
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which data lineage event was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the data lineage event.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The domain ID of the lineage event.</p>"
+        },
+        "eventSummary":{
+          "shape":"EventSummary",
+          "documentation":"<p>The summary of the data lineate event.</p>"
+        },
+        "eventTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time of the data lineage event.</p>"
+        },
+        "id":{
+          "shape":"LineageEventIdentifier",
+          "documentation":"<p>The ID of the data lineage event.</p>"
+        },
+        "processingStatus":{
+          "shape":"LineageEventProcessingStatus",
+          "documentation":"<p>The processing status of the data lineage event.</p>"
+        }
+      },
+      "documentation":"<p>The data lineage event summary.</p>"
+    },
+    "LineageImportStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "SUCCESS",
+        "FAILED",
+        "PARTIALLY_SUCCEEDED"
+      ]
+    },
+    "LineageInfo":{
+      "type":"structure",
+      "members":{
+        "errorMessage":{
+          "shape":"LineageEventErrorMessage",
+          "documentation":"<p>The data lineage error message.</p>"
+        },
+        "eventId":{
+          "shape":"String",
+          "documentation":"<p>The data lineage event ID.</p>"
+        },
+        "eventStatus":{
+          "shape":"LineageEventProcessingStatus",
+          "documentation":"<p>The data lineage event status.</p>"
+        }
+      },
+      "documentation":"<p>The data lineage information.</p>"
     },
     "LineageNodeId":{
       "type":"string",
@@ -12056,6 +14253,56 @@
       },
       "documentation":"<p>The details of a data lineage node type.</p>"
     },
+    "LineageRunDetails":{
+      "type":"structure",
+      "members":{
+        "sqlQueryRunDetails":{
+          "shape":"LineageSqlQueryRunDetails",
+          "documentation":"<p>The SQL query run details of a data lineage run.</p>"
+        }
+      },
+      "documentation":"<p>The data lineage run details.</p>"
+    },
+    "LineageSqlQueryRunDetails":{
+      "type":"structure",
+      "members":{
+        "errorMessages":{
+          "shape":"FailedQueryProcessingErrorMessages",
+          "documentation":"<p>The error message of the SQL query run details of a data lineage run.</p>"
+        },
+        "numQueriesFailed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of queries that failed in the SQL query run details of a data lineage run.</p>"
+        },
+        "queryEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The query end time in the SQL query run details of a data lineage run.</p>"
+        },
+        "queryStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The query start time in the SQL query run details of a data lineage run.</p>"
+        },
+        "totalQueriesProcessed":{
+          "shape":"Integer",
+          "documentation":"<p>The total queries processed in the SQL query run details of a data lineage run.</p>"
+        }
+      },
+      "documentation":"<p>The SQL query run details of a data lineage run.</p>"
+    },
+    "LineageSyncSchedule":{
+      "type":"structure",
+      "members":{
+        "schedule":{
+          "shape":"LineageSyncScheduleScheduleString",
+          "documentation":"<p>The lineage sync schedule.</p>"
+        }
+      },
+      "documentation":"<p>The lineage sync schedule.</p>"
+    },
+    "LineageSyncScheduleScheduleString":{
+      "type":"string",
+      "pattern":"^cron\\((\\b[0-5]?[0-9]\\b) (\\b2[0-3]\\b|\\b[0-1]?[0-9]\\b) ([-?*,/\\dLW]){1,83} ([-*,/\\d]|[a-zA-Z]{3}){1,23} ([-?#*,/\\dL]|[a-zA-Z]{3}){1,13} ([^\\)]+)\\)$"
+    },
     "ListAssetFiltersInput":{
       "type":"structure",
       "required":[
@@ -12152,6 +14399,83 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>When the number of revisions is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of revisions, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListAssetRevisions</code> to list the next set of revisions.</p>"
+        }
+      }
+    },
+    "ListConnectionsInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "projectIdentifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to list connections.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "environmentIdentifier":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the environment where you want to list connections.</p>",
+          "location":"querystring",
+          "locationName":"environmentIdentifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of connections to return in a single call to ListConnections. When the number of connections to be listed is greater than the value of MaxResults, the response contains a NextToken value that you can use in a subsequent call to ListConnections to list the next set of connections.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "name":{
+          "shape":"ConnectionName",
+          "documentation":"<p>The name of the connection.</p>",
+          "location":"querystring",
+          "locationName":"name"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of connections is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of connections, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListConnections to list the next set of connections.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "projectIdentifier":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the project where you want to list connections.</p>",
+          "location":"querystring",
+          "locationName":"projectIdentifier"
+        },
+        "sortBy":{
+          "shape":"SortFieldConnection",
+          "documentation":"<p>Specifies how you want to sort the listed connections.</p>",
+          "location":"querystring",
+          "locationName":"sortBy"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Specifies the sort order for the listed connections.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        },
+        "type":{
+          "shape":"ConnectionType",
+          "documentation":"<p>The type of connection.</p>",
+          "location":"querystring",
+          "locationName":"type"
+        }
+      }
+    },
+    "ListConnectionsOutput":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"ConnectionSummaries",
+          "documentation":"<p>The results of the ListConnections action.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of connections is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of connections, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListConnections to list the next set of connections.</p>"
         }
       }
     },
@@ -12315,6 +14639,12 @@
         "projectIdentifier"
       ],
       "members":{
+        "connectionIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of the connection.</p>",
+          "location":"querystring",
+          "locationName":"connectionIdentifier"
+        },
         "domainIdentifier":{
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain in which to list the data sources.</p>",
@@ -12811,6 +15141,129 @@
         }
       }
     },
+    "ListJobRunsInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "jobIdentifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to list job runs.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "jobIdentifier":{
+          "shape":"ListJobRunsInputJobIdentifierString",
+          "documentation":"<p>The ID of the job run.</p>",
+          "location":"uri",
+          "locationName":"jobIdentifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of job runs to return in a single call to ListJobRuns. When the number of job runs to be listed is greater than the value of MaxResults, the response contains a NextToken value that you can use in a subsequent call to ListJobRuns to list the next set of job runs.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of job runs is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of job runs, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListJobRuns to list the next set of job runs.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Specifies the order in which job runs are to be sorted.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        },
+        "status":{
+          "shape":"JobRunStatus",
+          "documentation":"<p>The status of a job run.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        }
+      }
+    },
+    "ListJobRunsInputJobIdentifierString":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "ListJobRunsOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"JobRunSummaries",
+          "documentation":"<p>The results of the ListJobRuns action.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of job runs is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of job runs, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListJobRuns to list the next set of job runs.</p>"
+        }
+      }
+    },
+    "ListLineageEventsInput":{
+      "type":"structure",
+      "required":["domainIdentifier"],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to list lineage events.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of lineage events to return in a single call to ListLineageEvents. When the number of lineage events to be listed is greater than the value of MaxResults, the response contains a NextToken value that you can use in a subsequent call to ListLineageEvents to list the next set of lineage events.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of lineage events is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of lineage events, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListLineageEvents to list the next set of lineage events.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "processingStatus":{
+          "shape":"LineageEventProcessingStatus",
+          "documentation":"<p>The processing status of a lineage event.</p>",
+          "location":"querystring",
+          "locationName":"processingStatus"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order of the lineage events.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        },
+        "timestampAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>The after timestamp of a lineage event.</p>",
+          "location":"querystring",
+          "locationName":"timestampAfter"
+        },
+        "timestampBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>The before timestamp of a lineage event.</p>",
+          "location":"querystring",
+          "locationName":"timestampBefore"
+        }
+      }
+    },
+    "ListLineageEventsOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"LineageEventSummaries",
+          "documentation":"<p>The results of the ListLineageEvents action.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of lineage events is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of lineage events, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListLineageEvents to list the next set of lineage events.</p>"
+        }
+      }
+    },
     "ListLineageNodeHistoryInput":{
       "type":"structure",
       "required":[
@@ -13117,6 +15570,61 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>When the number of memberships is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of memberships, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListProjectMemberships</code> to list the next set of memberships.</p>"
+        }
+      }
+    },
+    "ListProjectProfilesInput":{
+      "type":"structure",
+      "required":["domainIdentifier"],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to list project profiles.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of project profiles to return in a single call to ListProjectProfiles. When the number of project profiles to be listed is greater than the value of MaxResults, the response contains a NextToken value that you can use in a subsequent call to ListProjectProfiles to list the next set of project profiles.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "name":{
+          "shape":"ProjectProfileName",
+          "documentation":"<p>The name of a project profile.</p>",
+          "location":"querystring",
+          "locationName":"name"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of project profiles is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of project profiles, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListProjectProfiles to list the next set of project profiles.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortBy":{
+          "shape":"SortFieldProject",
+          "documentation":"<p>Specifies by what to sort project profiles.</p>",
+          "location":"querystring",
+          "locationName":"sortBy"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Specifies the sort order of the project profiles.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        }
+      }
+    },
+    "ListProjectProfilesOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ProjectProfileSummaries",
+          "documentation":"<p>The results of the ListProjectProfiles action.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of project profiles is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of project profiles, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListProjectProfiles to list the next set of project profiles.</p>"
         }
       }
     },
@@ -13788,8 +16296,16 @@
         "CREATE_PROJECT",
         "CREATE_ENVIRONMENT_PROFILE",
         "DELEGATE_CREATE_ENVIRONMENT_PROFILE",
-        "CREATE_ENVIRONMENT"
+        "CREATE_ENVIRONMENT",
+        "CREATE_ENVIRONMENT_FROM_BLUEPRINT",
+        "CREATE_PROJECT_FROM_PROJECT_PROFILE"
       ]
+    },
+    "MatchCriteria":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":10,
+      "min":0
     },
     "MaxResults":{
       "type":"integer",
@@ -14015,6 +16531,24 @@
       "min":1,
       "sensitive":true
     },
+    "NameIdentifier":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name in the name identifier.</p>"
+        },
+        "namespace":{
+          "shape":"String",
+          "documentation":"<p>The namespace in the name identifier.</p>"
+        }
+      },
+      "documentation":"<p>The name identifier.</p>"
+    },
+    "NameIdentifiers":{
+      "type":"list",
+      "member":{"shape":"NameIdentifier"}
+    },
     "NotEqualToExpression":{
       "type":"structure",
       "required":[
@@ -14181,6 +16715,123 @@
       "type":"list",
       "member":{"shape":"NotificationOutput"}
     },
+    "OAuth2ClientApplication":{
+      "type":"structure",
+      "members":{
+        "aWSManagedClientApplicationReference":{
+          "shape":"OAuth2ClientApplicationAWSManagedClientApplicationReferenceString",
+          "documentation":"<p>The Amazon Web Services managed client application reference in the OAuth2Client application.</p>"
+        },
+        "userManagedClientApplicationClientId":{
+          "shape":"OAuth2ClientApplicationUserManagedClientApplicationClientIdString",
+          "documentation":"<p>The user managed client application client ID in the OAuth2Client application.</p>"
+        }
+      },
+      "documentation":"<p>The OAuth2Client application.</p>"
+    },
+    "OAuth2ClientApplicationAWSManagedClientApplicationReferenceString":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^\\S+$"
+    },
+    "OAuth2ClientApplicationUserManagedClientApplicationClientIdString":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^\\S+$"
+    },
+    "OAuth2GrantType":{
+      "type":"string",
+      "enum":[
+        "AUTHORIZATION_CODE",
+        "CLIENT_CREDENTIALS",
+        "JWT_BEARER"
+      ]
+    },
+    "OAuth2Properties":{
+      "type":"structure",
+      "members":{
+        "authorizationCodeProperties":{
+          "shape":"AuthorizationCodeProperties",
+          "documentation":"<p>The authorization code properties of the OAuth2 properties.</p>"
+        },
+        "oAuth2ClientApplication":{
+          "shape":"OAuth2ClientApplication",
+          "documentation":"<p>The OAuth2 client application of the OAuth2 properties.</p>"
+        },
+        "oAuth2Credentials":{
+          "shape":"GlueOAuth2Credentials",
+          "documentation":"<p>The OAuth2 credentials of the OAuth2 properties.</p>"
+        },
+        "oAuth2GrantType":{
+          "shape":"OAuth2GrantType",
+          "documentation":"<p>The OAuth2 grant type of the OAuth2 properties.</p>"
+        },
+        "tokenUrl":{
+          "shape":"OAuth2PropertiesTokenUrlString",
+          "documentation":"<p>The OAuth2 token URL of the OAuth2 properties.</p>"
+        },
+        "tokenUrlParametersMap":{
+          "shape":"TokenUrlParametersMap",
+          "documentation":"<p>The OAuth2 token URL parameter map of the OAuth2 properties.</p>"
+        }
+      },
+      "documentation":"<p>The OAuth2 properties.</p>"
+    },
+    "OAuth2PropertiesTokenUrlString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^(https?)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]$"
+    },
+    "OpenLineageRunEventSummary":{
+      "type":"structure",
+      "members":{
+        "eventType":{
+          "shape":"OpenLineageRunState",
+          "documentation":"<p>The event type of the open lineage run event summary.</p>"
+        },
+        "inputs":{
+          "shape":"NameIdentifiers",
+          "documentation":"<p>The inputs of the open lineage run event summary.</p>"
+        },
+        "job":{
+          "shape":"NameIdentifier",
+          "documentation":"<p>The job of the open lineage run event summary.</p>"
+        },
+        "outputs":{
+          "shape":"NameIdentifiers",
+          "documentation":"<p>The outputs of the open lineage run event summary.</p>"
+        },
+        "runId":{
+          "shape":"String",
+          "documentation":"<p>The runID of the open lineage run event summary.</p>"
+        }
+      },
+      "documentation":"<p>The open lineage run event summary.</p>"
+    },
+    "OpenLineageRunState":{
+      "type":"string",
+      "enum":[
+        "START",
+        "RUNNING",
+        "COMPLETE",
+        "ABORT",
+        "FAIL",
+        "OTHER"
+      ]
+    },
+    "OverallDeploymentStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING_DEPLOYMENT",
+        "IN_PROGRESS",
+        "SUCCESSFUL",
+        "FAILED_VALIDATION",
+        "FAILED_DEPLOYMENT"
+      ]
+    },
     "OverrideDomainUnitOwnersPolicyGrantDetail":{
       "type":"structure",
       "members":{
@@ -14278,6 +16929,86 @@
       "max":8192,
       "min":1
     },
+    "ParameterStorePath":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "Password":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "sensitive":true
+    },
+    "PhysicalConnectionRequirements":{
+      "type":"structure",
+      "members":{
+        "availabilityZone":{
+          "shape":"PhysicalConnectionRequirementsAvailabilityZoneString",
+          "documentation":"<p>The availability zone of the physical connection requirements of a connection. </p>"
+        },
+        "securityGroupIdList":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>The group ID list of the physical connection requirements of a connection. </p>"
+        },
+        "subnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The subnet ID of the physical connection requirements of a connection. </p>"
+        },
+        "subnetIdList":{
+          "shape":"SubnetIdList",
+          "documentation":"<p>The subnet ID list of the physical connection requirements of a connection. </p>"
+        }
+      },
+      "documentation":"<p>Physical connection requirements of a connection.</p>"
+    },
+    "PhysicalConnectionRequirementsAvailabilityZoneString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "PhysicalEndpoint":{
+      "type":"structure",
+      "members":{
+        "awsLocation":{
+          "shape":"AwsLocation",
+          "documentation":"<p>The location of a connection.</p>"
+        },
+        "glueConnection":{
+          "shape":"GlueConnection",
+          "documentation":"<p>The Amazon Web Services Glue connection.</p>"
+        },
+        "glueConnectionName":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Glue connection name.</p>"
+        },
+        "host":{
+          "shape":"String",
+          "documentation":"<p>The host in the physical endpoints of a connection.</p>"
+        },
+        "port":{
+          "shape":"Integer",
+          "documentation":"<p>The port in the physical endpoints of a connection.</p>"
+        },
+        "protocol":{
+          "shape":"Protocol",
+          "documentation":"<p>The protocol in the physical endpoints of a connection.</p>"
+        },
+        "stage":{
+          "shape":"String",
+          "documentation":"<p>The stage in the physical endpoints of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The physical endpoints of a connection.</p>"
+    },
+    "PhysicalEndpoints":{
+      "type":"list",
+      "member":{"shape":"PhysicalEndpoint"}
+    },
+    "PolicyArn":{
+      "type":"string",
+      "pattern":"^arn:aws[^:]*:iam::(aws|\\d{12}):policy/[\\w+=,.@-]*$"
+    },
     "PolicyGrantDetail":{
       "type":"structure",
       "members":{
@@ -14297,6 +17028,7 @@
           "shape":"Unit",
           "documentation":"<p>Specifies that this is a create environment policy.</p>"
         },
+        "createEnvironmentFromBlueprint":{"shape":"Unit"},
         "createEnvironmentProfile":{
           "shape":"CreateEnvironmentProfilePolicyGrantDetail",
           "documentation":"<p>Specifies that this is a create environment profile policy.</p>"
@@ -14312,6 +17044,10 @@
         "createProject":{
           "shape":"CreateProjectPolicyGrantDetail",
           "documentation":"<p>Specifies that this is a create project policy.</p>"
+        },
+        "createProjectFromProjectProfile":{
+          "shape":"CreateProjectFromProjectProfilePolicyGrantDetail",
+          "documentation":"<p>Specifies whether to create a project from project profile.</p>"
         },
         "delegateCreateEnvironmentProfile":{
           "shape":"Unit",
@@ -14389,8 +17125,8 @@
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
           "idempotencyToken":true,
-          "location":"querystring",
-          "locationName":"clientToken"
+          "location":"header",
+          "locationName":"Client-Token"
         },
         "domainIdentifier":{
           "shape":"DomainId",
@@ -14408,6 +17144,14 @@
     "PostLineageEventOutput":{
       "type":"structure",
       "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain.</p>"
+        },
+        "id":{
+          "shape":"LineageEventIdentifier",
+          "documentation":"<p>The ID of the lineage event.</p>"
+        }
       }
     },
     "PostTimeSeriesDataPointsInput":{
@@ -14572,6 +17316,73 @@
       },
       "documentation":"<p>The project policy grant principal.</p>"
     },
+    "ProjectProfileId":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "ProjectProfileList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "ProjectProfileName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[\\w -]+$",
+      "sensitive":true
+    },
+    "ProjectProfileSummaries":{
+      "type":"list",
+      "member":{"shape":"ProjectProfileSummary"}
+    },
+    "ProjectProfileSummary":{
+      "type":"structure",
+      "required":[
+        "createdBy",
+        "domainId",
+        "id",
+        "name"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp of when the project profile was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the project profile.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the project profile.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The domain ID of the project profile.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The domain unit ID of the project profile.</p>"
+        },
+        "id":{
+          "shape":"ProjectProfileId",
+          "documentation":"<p>The ID of the project profile.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which a project profile was last updated.</p>"
+        },
+        "name":{
+          "shape":"ProjectProfileName",
+          "documentation":"<p>The name of a project profile.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of a project profile.</p>"
+        }
+      },
+      "documentation":"<p>The summary of a project profile.</p>"
+    },
     "ProjectStatus":{
       "type":"string",
       "enum":[
@@ -14651,6 +17462,33 @@
       },
       "documentation":"<p>Specifies projects in which the rule is created.</p>"
     },
+    "PropertyMap":{
+      "type":"map",
+      "key":{"shape":"PropertyMapKeyString"},
+      "value":{"shape":"PropertyMapValueString"}
+    },
+    "PropertyMapKeyString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "PropertyMapValueString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "Protocol":{
+      "type":"string",
+      "enum":[
+        "ATHENA",
+        "GLUE_INTERACTIVE_SESSION",
+        "HTTPS",
+        "JDBC",
+        "LIVY",
+        "ODBC",
+        "PRISM"
+      ]
+    },
     "ProvisioningConfiguration":{
       "type":"structure",
       "members":{
@@ -14701,6 +17539,10 @@
           "location":"uri",
           "locationName":"environmentBlueprintIdentifier"
         },
+        "environmentRolePermissionBoundary":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The environment role permissions boundary.</p>"
+        },
         "manageAccessRoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The ARN of the manage access role.</p>"
@@ -14741,6 +17583,10 @@
         "environmentBlueprintId":{
           "shape":"EnvironmentBlueprintId",
           "documentation":"<p>The identifier of the environment blueprint.</p>"
+        },
+        "environmentRolePermissionBoundary":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The environment role permissions boundary.</p>"
         },
         "manageAccessRoleArn":{
           "shape":"RoleArn",
@@ -14808,13 +17654,183 @@
       "min":0,
       "pattern":"^arn:aws[^:]*:secretsmanager:[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]:\\d{12}:secret:.*$"
     },
+    "RedshiftCredentials":{
+      "type":"structure",
+      "members":{
+        "secretArn":{
+          "shape":"RedshiftCredentialsSecretArnString",
+          "documentation":"<p>The secret ARN of the Amazon Redshift credentials of a connection.</p>"
+        },
+        "usernamePassword":{
+          "shape":"UsernamePassword",
+          "documentation":"<p>The username and password of the Amazon Redshift credentials of a connection.</p>"
+        }
+      },
+      "documentation":"<p>Amazon Redshift credentials of a connection.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "RedshiftCredentialsSecretArnString":{
+      "type":"string",
+      "pattern":"^arn:aws[^:]*:secretsmanager:[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]:\\d{12}:secret:.*$"
+    },
+    "RedshiftLineageSyncConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the Amaon Redshift lineage sync configuration is enabled.</p>"
+        },
+        "schedule":{
+          "shape":"LineageSyncSchedule",
+          "documentation":"<p>The schedule of the Amaon Redshift lineage sync configuration.</p>"
+        }
+      },
+      "documentation":"<p>The Amaon Redshift lineage sync configuration.</p>"
+    },
+    "RedshiftLineageSyncConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the Amaon Redshift lineage sync configuration is enabled.</p>"
+        },
+        "lineageJobId":{
+          "shape":"String",
+          "documentation":"<p>The lineage job ID of the Amaon Redshift lineage sync configuration.</p>"
+        },
+        "schedule":{
+          "shape":"LineageSyncSchedule",
+          "documentation":"<p>The schedule of teh Amaon Redshift lineage sync configuration.</p>"
+        }
+      },
+      "documentation":"<p>The Amaon Redshift lineage sync configuration.</p>"
+    },
+    "RedshiftPropertiesInput":{
+      "type":"structure",
+      "members":{
+        "credentials":{
+          "shape":"RedshiftCredentials",
+          "documentation":"<p>The Amaon Redshift credentials.</p>"
+        },
+        "databaseName":{
+          "shape":"RedshiftPropertiesInputDatabaseNameString",
+          "documentation":"<p>The Amazon Redshift database name.</p>"
+        },
+        "host":{
+          "shape":"RedshiftPropertiesInputHostString",
+          "documentation":"<p>The Amazon Redshift host.</p>"
+        },
+        "lineageSync":{
+          "shape":"RedshiftLineageSyncConfigurationInput",
+          "documentation":"<p>The lineage sync of the Amazon Redshift.</p>"
+        },
+        "port":{
+          "shape":"Integer",
+          "documentation":"<p>The Amaon Redshift port.</p>"
+        },
+        "storage":{
+          "shape":"RedshiftStorageProperties",
+          "documentation":"<p>The Amazon Redshift storage.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Redshift properties.</p>"
+    },
+    "RedshiftPropertiesInputDatabaseNameString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "RedshiftPropertiesInputHostString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "RedshiftPropertiesOutput":{
+      "type":"structure",
+      "members":{
+        "credentials":{
+          "shape":"RedshiftCredentials",
+          "documentation":"<p>The Amazon Redshift credentials.</p>"
+        },
+        "databaseName":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Redshift database name.</p>"
+        },
+        "isProvisionedSecret":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether Amaon Redshift properties has a provisioned secret.</p>"
+        },
+        "jdbcIamUrl":{
+          "shape":"String",
+          "documentation":"<p>The jdbcIam URL of the Amazon Redshift properties.</p>"
+        },
+        "jdbcUrl":{
+          "shape":"String",
+          "documentation":"<p>The jdbcURL of the Amazon Redshift properties. </p>"
+        },
+        "lineageSync":{
+          "shape":"RedshiftLineageSyncConfigurationOutput",
+          "documentation":"<p>The lineage syn of the Amazon Redshift properties.</p>"
+        },
+        "redshiftTempDir":{
+          "shape":"String",
+          "documentation":"<p>The redshiftTempDir of the Amazon Redshift properties.</p>"
+        },
+        "status":{
+          "shape":"ConnectionStatus",
+          "documentation":"<p>The status in the Amazon Redshift properties.</p>"
+        },
+        "storage":{
+          "shape":"RedshiftStorageProperties",
+          "documentation":"<p>The storage in the Amazon Redshift properties.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Redshift properties.</p>"
+    },
+    "RedshiftPropertiesPatch":{
+      "type":"structure",
+      "members":{
+        "credentials":{
+          "shape":"RedshiftCredentials",
+          "documentation":"<p>The credentials in the Amazon Redshift properties patch.</p>"
+        },
+        "databaseName":{
+          "shape":"RedshiftPropertiesPatchDatabaseNameString",
+          "documentation":"<p>The name in the Amazon Redshift properties patch.</p>"
+        },
+        "host":{
+          "shape":"RedshiftPropertiesPatchHostString",
+          "documentation":"<p>The host in the Amazon Redshift properties patch.</p>"
+        },
+        "lineageSync":{
+          "shape":"RedshiftLineageSyncConfigurationInput",
+          "documentation":"<p>The lineage sync in the Amazon Redshift properties patch.</p>"
+        },
+        "port":{
+          "shape":"Integer",
+          "documentation":"<p>The port in the Amazon Redshift properties patch.</p>"
+        },
+        "storage":{
+          "shape":"RedshiftStorageProperties",
+          "documentation":"<p>The storage in the Amazon Redshift properties patch.</p>"
+        }
+      },
+      "documentation":"<p>Amazon Redshift properties patch.</p>"
+    },
+    "RedshiftPropertiesPatchDatabaseNameString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "RedshiftPropertiesPatchHostString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
     "RedshiftRunConfigurationInput":{
       "type":"structure",
-      "required":[
-        "redshiftCredentialConfiguration",
-        "redshiftStorage",
-        "relationalFilterConfigurations"
-      ],
+      "required":["relationalFilterConfigurations"],
       "members":{
         "dataAccessRole":{
           "shape":"RedshiftRunConfigurationInputDataAccessRoleString",
@@ -14836,7 +17852,6 @@
     "RedshiftRunConfigurationOutput":{
       "type":"structure",
       "required":[
-        "redshiftCredentialConfiguration",
         "redshiftStorage",
         "relationalFilterConfigurations"
       ],
@@ -14919,6 +17934,46 @@
         }
       },
       "documentation":"<p>The details of the Amazon Redshift storage as part of the configuration of an Amazon Redshift data source run.</p>",
+      "union":true
+    },
+    "RedshiftStorageProperties":{
+      "type":"structure",
+      "members":{
+        "clusterName":{
+          "shape":"RedshiftStoragePropertiesClusterNameString",
+          "documentation":"<p>The cluster name in the Amazon Redshift storage properties.</p>"
+        },
+        "workgroupName":{
+          "shape":"RedshiftStoragePropertiesWorkgroupNameString",
+          "documentation":"<p>The workgroup name in the Amazon Redshift storage properties.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Redshift storage properties.</p>",
+      "union":true
+    },
+    "RedshiftStoragePropertiesClusterNameString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "RedshiftStoragePropertiesWorkgroupNameString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "Region":{
+      "type":"structure",
+      "members":{
+        "regionName":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region name.</p>"
+        },
+        "regionNamePath":{
+          "shape":"ParameterStorePath",
+          "documentation":"<p>The region name path.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Region.</p>",
       "union":true
     },
     "RegionName":{
@@ -15649,6 +18704,10 @@
       "type":"string",
       "enum":["METADATA_FORM_ENFORCEMENT"]
     },
+    "RunIdentifier":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
     "RunStatisticsForAssets":{
       "type":"structure",
       "members":{
@@ -15686,6 +18745,57 @@
       "member":{"shape":"S3Location"},
       "max":20,
       "min":0
+    },
+    "SageMakerAssetType":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "SageMakerResourceArn":{
+      "type":"string",
+      "pattern":"^arn:aws[^:]*:sagemaker:[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]:\\d{12}:[\\w+=,.@-]{1,128}/[\\w+=,.@-]{1,256}$"
+    },
+    "SageMakerRunConfigurationInput":{
+      "type":"structure",
+      "required":["trackingAssets"],
+      "members":{
+        "trackingAssets":{
+          "shape":"TrackingAssets",
+          "documentation":"<p>The tracking assets of the Amazon SageMaker run.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon SageMaker run configuration.</p>"
+    },
+    "SageMakerRunConfigurationOutput":{
+      "type":"structure",
+      "required":["trackingAssets"],
+      "members":{
+        "accountId":{
+          "shape":"SageMakerRunConfigurationOutputAccountIdString",
+          "documentation":"<p>The Amazon SageMaker account ID.</p>"
+        },
+        "region":{
+          "shape":"SageMakerRunConfigurationOutputRegionString",
+          "documentation":"<p>The Amazon SageMaker Region.</p>"
+        },
+        "trackingAssets":{
+          "shape":"TrackingAssets",
+          "documentation":"<p>The tracking assets of the Amazon SageMaker.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon SageMaker run configuration.</p>"
+    },
+    "SageMakerRunConfigurationOutputAccountIdString":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^\\d{12}$"
+    },
+    "SageMakerRunConfigurationOutputRegionString":{
+      "type":"string",
+      "max":16,
+      "min":4,
+      "pattern":"[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]"
     },
     "ScheduleConfiguration":{
       "type":"structure",
@@ -16097,6 +19207,17 @@
         }
       }
     },
+    "SecurityGroupIdList":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupIdListMemberString"},
+      "max":50,
+      "min":0
+    },
+    "SecurityGroupIdListMemberString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "SelfGrantStatus":{
       "type":"string",
       "enum":[
@@ -16202,6 +19323,10 @@
       "max":100000,
       "min":1
     },
+    "SortFieldConnection":{
+      "type":"string",
+      "enum":["NAME"]
+    },
     "SortFieldProject":{
       "type":"string",
       "enum":["NAME"]
@@ -16219,6 +19344,303 @@
         "ASCENDING",
         "DESCENDING"
       ]
+    },
+    "SparkEmrPropertiesInput":{
+      "type":"structure",
+      "members":{
+        "computeArn":{
+          "shape":"SparkEmrPropertiesInputComputeArnString",
+          "documentation":"<p>The compute ARN of Spark EMR.</p>"
+        },
+        "instanceProfileArn":{
+          "shape":"SparkEmrPropertiesInputInstanceProfileArnString",
+          "documentation":"<p>The instance profile ARN of Spark EMR.</p>"
+        },
+        "javaVirtualEnv":{
+          "shape":"SparkEmrPropertiesInputJavaVirtualEnvString",
+          "documentation":"<p>The java virtual env of the Spark EMR.</p>"
+        },
+        "logUri":{
+          "shape":"SparkEmrPropertiesInputLogUriString",
+          "documentation":"<p>The log URI of the Spark EMR.</p>"
+        },
+        "pythonVirtualEnv":{
+          "shape":"SparkEmrPropertiesInputPythonVirtualEnvString",
+          "documentation":"<p>The Python virtual env of the Spark EMR.</p>"
+        },
+        "runtimeRole":{
+          "shape":"SparkEmrPropertiesInputRuntimeRoleString",
+          "documentation":"<p>The runtime role of the Spark EMR.</p>"
+        },
+        "trustedCertificatesS3Uri":{
+          "shape":"SparkEmrPropertiesInputTrustedCertificatesS3UriString",
+          "documentation":"<p>The certificates S3 URI of the Spark EMR.</p>"
+        }
+      },
+      "documentation":"<p>The Spark EMR properties.</p>"
+    },
+    "SparkEmrPropertiesInputComputeArnString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkEmrPropertiesInputInstanceProfileArnString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkEmrPropertiesInputJavaVirtualEnvString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkEmrPropertiesInputLogUriString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkEmrPropertiesInputPythonVirtualEnvString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkEmrPropertiesInputRuntimeRoleString":{
+      "type":"string",
+      "pattern":"^arn:aws[^:]*:iam::\\d{12}:(role|role/service-role)/[\\w+=,.@-]*$"
+    },
+    "SparkEmrPropertiesInputTrustedCertificatesS3UriString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkEmrPropertiesOutput":{
+      "type":"structure",
+      "members":{
+        "computeArn":{
+          "shape":"String",
+          "documentation":"<p>The compute ARN of the Spark EMR.</p>"
+        },
+        "credentials":{
+          "shape":"UsernamePassword",
+          "documentation":"<p>The credentials of the Spark EMR.</p>"
+        },
+        "credentialsExpiration":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The credential expiration of the Spark EMR.</p>"
+        },
+        "governanceType":{
+          "shape":"GovernanceType",
+          "documentation":"<p>The governance type of the Spark EMR.</p>"
+        },
+        "instanceProfileArn":{
+          "shape":"String",
+          "documentation":"<p>The instance profile ARN of the Spark EMR.</p>"
+        },
+        "javaVirtualEnv":{
+          "shape":"String",
+          "documentation":"<p>The Java virtual env of the Spark EMR.</p>"
+        },
+        "livyEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The livy endpoint of the Spark EMR.</p>"
+        },
+        "logUri":{
+          "shape":"String",
+          "documentation":"<p>The log URI of the Spark EMR.</p>"
+        },
+        "pythonVirtualEnv":{
+          "shape":"String",
+          "documentation":"<p>The Python virtual env of the Spark EMR.</p>"
+        },
+        "runtimeRole":{
+          "shape":"String",
+          "documentation":"<p>The runtime role of the Spark EMR.</p>"
+        },
+        "trustedCertificatesS3Uri":{
+          "shape":"String",
+          "documentation":"<p>The trusted certificate S3 URL of the Spark EMR.</p>"
+        }
+      },
+      "documentation":"<p>The Spark EMR properties.</p>"
+    },
+    "SparkEmrPropertiesPatch":{
+      "type":"structure",
+      "members":{
+        "computeArn":{
+          "shape":"SparkEmrPropertiesPatchComputeArnString",
+          "documentation":"<p>The compute ARN in the Spark EMR properties patch.</p>"
+        },
+        "instanceProfileArn":{
+          "shape":"SparkEmrPropertiesPatchInstanceProfileArnString",
+          "documentation":"<p>The instance profile ARN in the Spark EMR properties patch.</p>"
+        },
+        "javaVirtualEnv":{
+          "shape":"SparkEmrPropertiesPatchJavaVirtualEnvString",
+          "documentation":"<p>The Java virtual evn in the Spark EMR properties patch.</p>"
+        },
+        "logUri":{
+          "shape":"SparkEmrPropertiesPatchLogUriString",
+          "documentation":"<p>The log URI in the Spark EMR properties patch.</p>"
+        },
+        "pythonVirtualEnv":{
+          "shape":"SparkEmrPropertiesPatchPythonVirtualEnvString",
+          "documentation":"<p>The Python virtual env in the Spark EMR properties patch.</p>"
+        },
+        "runtimeRole":{
+          "shape":"SparkEmrPropertiesPatchRuntimeRoleString",
+          "documentation":"<p>The runtime role in the Spark EMR properties patch.</p>"
+        },
+        "trustedCertificatesS3Uri":{
+          "shape":"SparkEmrPropertiesPatchTrustedCertificatesS3UriString",
+          "documentation":"<p>The trusted certificates S3 URI in the Spark EMR properties patch.</p>"
+        }
+      },
+      "documentation":"<p>The Spark EMR properties patch.</p>"
+    },
+    "SparkEmrPropertiesPatchComputeArnString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkEmrPropertiesPatchInstanceProfileArnString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkEmrPropertiesPatchJavaVirtualEnvString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkEmrPropertiesPatchLogUriString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkEmrPropertiesPatchPythonVirtualEnvString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkEmrPropertiesPatchRuntimeRoleString":{
+      "type":"string",
+      "pattern":"^arn:aws[^:]*:iam::\\d{12}:(role|role/service-role)/[\\w+=,.@-]*$"
+    },
+    "SparkEmrPropertiesPatchTrustedCertificatesS3UriString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkGlueArgs":{
+      "type":"structure",
+      "members":{
+        "connection":{
+          "shape":"String",
+          "documentation":"<p>The connection in the Spark Amazon Web Services Glue args.</p>"
+        }
+      },
+      "documentation":"<p>The Spark Amazon Web Services Glue args.</p>"
+    },
+    "SparkGluePropertiesInput":{
+      "type":"structure",
+      "members":{
+        "additionalArgs":{
+          "shape":"SparkGlueArgs",
+          "documentation":"<p>The additional args in the Spark Amazon Web Services Glue properties.</p>"
+        },
+        "glueConnectionName":{
+          "shape":"SparkGluePropertiesInputGlueConnectionNameString",
+          "documentation":"<p>The Amazon Web Services Glue connection name in the Spark Amazon Web Services Glue properties.</p>"
+        },
+        "glueVersion":{
+          "shape":"SparkGluePropertiesInputGlueVersionString",
+          "documentation":"<p>The Amazon Web Services Glue version in the Spark Amazon Web Services Glue properties.</p>"
+        },
+        "idleTimeout":{
+          "shape":"Integer",
+          "documentation":"<p>The idle timeout in the Spark Amazon Web Services Glue properties.</p>"
+        },
+        "javaVirtualEnv":{
+          "shape":"SparkGluePropertiesInputJavaVirtualEnvString",
+          "documentation":"<p>The Java virtual env in the Spark Amazon Web Services Glue properties. </p>"
+        },
+        "numberOfWorkers":{
+          "shape":"Integer",
+          "documentation":"<p>The number of workers in the Spark Amazon Web Services Glue properties. </p>"
+        },
+        "pythonVirtualEnv":{
+          "shape":"SparkGluePropertiesInputPythonVirtualEnvString",
+          "documentation":"<p>The Python virtual env in the Spark Amazon Web Services Glue properties. </p>"
+        },
+        "workerType":{
+          "shape":"SparkGluePropertiesInputWorkerTypeString",
+          "documentation":"<p>The worker type in the Spark Amazon Web Services Glue properties. </p>"
+        }
+      },
+      "documentation":"<p>The Spark Amazon Web Services Glue properties. </p>"
+    },
+    "SparkGluePropertiesInputGlueConnectionNameString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkGluePropertiesInputGlueVersionString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkGluePropertiesInputJavaVirtualEnvString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkGluePropertiesInputPythonVirtualEnvString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkGluePropertiesInputWorkerTypeString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "SparkGluePropertiesOutput":{
+      "type":"structure",
+      "members":{
+        "additionalArgs":{
+          "shape":"SparkGlueArgs",
+          "documentation":"<p>The additional args in the Spark Amazon Web Services Glue properties. </p>"
+        },
+        "glueConnectionName":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Glue connection name in the Spark Amazon Web Services Glue properties. </p>"
+        },
+        "glueVersion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Glue version in the Spark Amazon Web Services Glue properties. </p>"
+        },
+        "idleTimeout":{
+          "shape":"Integer",
+          "documentation":"<p>The idle timeout in the Spark Amazon Web Services Glue properties. </p>"
+        },
+        "javaVirtualEnv":{
+          "shape":"String",
+          "documentation":"<p>The Java virtual env in the Spark Amazon Web Services Glue properties. </p>"
+        },
+        "numberOfWorkers":{
+          "shape":"Integer",
+          "documentation":"<p>The number of workers in the Spark Amazon Web Services Glue properties. </p>"
+        },
+        "pythonVirtualEnv":{
+          "shape":"String",
+          "documentation":"<p>The Python virtual env in the Spark Amazon Web Services Glue properties. </p>"
+        },
+        "workerType":{
+          "shape":"String",
+          "documentation":"<p>The worker type in the Spark Amazon Web Services Glue properties. </p>"
+        }
+      },
+      "documentation":"<p>The Spark Amazon Web Services Glue properties. </p>"
     },
     "SsoUserProfileDetails":{
       "type":"structure",
@@ -16402,10 +19824,29 @@
         }
       }
     },
+    "Status":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "String":{"type":"string"},
     "StringList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "SubnetId":{
+      "type":"string",
+      "max":32,
+      "min":0,
+      "pattern":"^subnet-[a-z0-9]+$"
+    },
+    "SubnetIdList":{
+      "type":"list",
+      "member":{"shape":"SubnetId"},
+      "max":50,
+      "min":1
     },
     "SubscribedAsset":{
       "type":"structure",
@@ -16949,7 +20390,6 @@
         "domainId",
         "environmentId",
         "id",
-        "manageAccessRole",
         "name",
         "projectId",
         "provider",
@@ -16986,7 +20426,7 @@
           "documentation":"<p>The identifier of the subscription target.</p>"
         },
         "manageAccessRole":{
-          "shape":"String",
+          "shape":"IamRoleArn",
           "documentation":"<p>The manage access role specified in the subscription target.</p>"
         },
         "name":{
@@ -17356,6 +20796,21 @@
       "min":0,
       "sensitive":true
     },
+    "TokenUrlParametersMap":{
+      "type":"map",
+      "key":{"shape":"TokenUrlParametersMapKeyString"},
+      "value":{"shape":"TokenUrlParametersMapValueString"}
+    },
+    "TokenUrlParametersMapKeyString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TokenUrlParametersMapValueString":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
     "Topic":{
       "type":"structure",
       "required":[
@@ -17375,6 +20830,19 @@
         }
       },
       "documentation":"<p>The topic of the notification.</p>"
+    },
+    "TrackingAssetArns":{
+      "type":"list",
+      "member":{"shape":"SageMakerResourceArn"},
+      "max":500,
+      "min":0
+    },
+    "TrackingAssets":{
+      "type":"map",
+      "key":{"shape":"SageMakerAssetType"},
+      "value":{"shape":"TrackingAssetArns"},
+      "max":1,
+      "min":1
     },
     "TypeName":{
       "type":"string",
@@ -17531,6 +20999,98 @@
         }
       }
     },
+    "UpdateConnectionInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "awsLocation":{
+          "shape":"AwsLocation",
+          "documentation":"<p>The location where a connection is to be updated.</p>"
+        },
+        "description":{
+          "shape":"UpdateConnectionInputDescriptionString",
+          "documentation":"<p>The description of a connection.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where a connection is to be updated.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"ConnectionId",
+          "documentation":"<p>The ID of the connection to be updated.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "props":{
+          "shape":"ConnectionPropertiesPatch",
+          "documentation":"<p>The connection props.</p>"
+        }
+      }
+    },
+    "UpdateConnectionInputDescriptionString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "sensitive":true
+    },
+    "UpdateConnectionOutput":{
+      "type":"structure",
+      "required":[
+        "connectionId",
+        "domainId",
+        "domainUnitId",
+        "name",
+        "physicalEndpoints",
+        "type"
+      ],
+      "members":{
+        "connectionId":{
+          "shape":"ConnectionId",
+          "documentation":"<p>The ID of the connection.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The connection description.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where a connection is to be updated.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit where a connection is to be updated.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the environment where a connection is to be updated.</p>"
+        },
+        "name":{
+          "shape":"ConnectionName",
+          "documentation":"<p>The name of the connection.</p>"
+        },
+        "physicalEndpoints":{
+          "shape":"PhysicalEndpoints",
+          "documentation":"<p>The physical endpoints of the connection.</p>"
+        },
+        "projectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The project ID of the connection.</p>"
+        },
+        "props":{
+          "shape":"ConnectionPropertiesOutput",
+          "documentation":"<p>The connection props.</p>"
+        },
+        "type":{
+          "shape":"ConnectionType",
+          "documentation":"<p>The connection type.</p>"
+        }
+      }
+    },
     "UpdateDataSourceInput":{
       "type":"structure",
       "required":[
@@ -17592,7 +21152,6 @@
       "type":"structure",
       "required":[
         "domainId",
-        "environmentId",
         "id",
         "name",
         "projectId"
@@ -17605,6 +21164,10 @@
         "configuration":{
           "shape":"DataSourceConfigurationOutput",
           "documentation":"<p>The configuration to be updated as part of the <code>UpdateDataSource</code> action.</p>"
+        },
+        "connectionId":{
+          "shape":"String",
+          "documentation":"<p>The connection ID.</p>"
         },
         "createdAt":{
           "shape":"DateTime",
@@ -17717,6 +21280,10 @@
           "shape":"String",
           "documentation":"<p>The name to be updated as part of the <code>UpdateDomain</code> action.</p>"
         },
+        "serviceRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>The service role of the domain.</p>"
+        },
         "singleSignOn":{
           "shape":"SingleSignOn",
           "documentation":"<p>The single sign-on option to be updated as part of the <code>UpdateDomain</code> action.</p>"
@@ -17750,6 +21317,10 @@
         "rootDomainUnitId":{
           "shape":"DomainUnitId",
           "documentation":"<p>The ID of the root domain unit.</p>"
+        },
+        "serviceRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>The service role of the domain.</p>"
         },
         "singleSignOn":{
           "shape":"SingleSignOn",
@@ -18369,6 +21940,10 @@
           "location":"uri",
           "locationName":"domainIdentifier"
         },
+        "environmentDeploymentDetails":{
+          "shape":"EnvironmentDeploymentDetails",
+          "documentation":"<p>The environment deployment details of the project.</p>"
+        },
         "glossaryTerms":{
           "shape":"GlossaryTerms",
           "documentation":"<p>The glossary terms to be updated as part of the <code>UpdateProject</code> action.</p>"
@@ -18414,6 +21989,10 @@
           "shape":"DomainUnitId",
           "documentation":"<p>The ID of the domain unit.</p>"
         },
+        "environmentDeploymentDetails":{
+          "shape":"EnvironmentDeploymentDetails",
+          "documentation":"<p>The environment deployment details of the project.</p>"
+        },
         "failureReasons":{
           "shape":"FailureReasons",
           "documentation":"<p>Specifies the error message that is returned if the operation cannot be successfully completed.</p>"
@@ -18434,9 +22013,109 @@
           "shape":"ProjectName",
           "documentation":"<p>The name of the project that is to be updated.</p>"
         },
+        "projectProfileId":{
+          "shape":"ProjectProfileId",
+          "documentation":"<p>The ID of the project profile.</p>"
+        },
         "projectStatus":{
           "shape":"ProjectStatus",
           "documentation":"<p>The status of the project.</p>"
+        },
+        "userParameters":{
+          "shape":"EnvironmentConfigurationUserParametersList",
+          "documentation":"<p>The user parameters of the project.</p>"
+        }
+      }
+    },
+    "UpdateProjectProfileInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of a project profile.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where a project profile is to be updated.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "domainUnitIdentifier":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit where a project profile is to be updated.</p>"
+        },
+        "environmentConfigurations":{
+          "shape":"EnvironmentConfigurationsList",
+          "documentation":"<p>The environment configurations of a project profile.</p>"
+        },
+        "identifier":{
+          "shape":"ProjectProfileId",
+          "documentation":"<p>The ID of a project profile that is to be updated.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "name":{
+          "shape":"ProjectProfileName",
+          "documentation":"<p>The name of a project profile.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of a project profile.</p>"
+        }
+      }
+    },
+    "UpdateProjectProfileOutput":{
+      "type":"structure",
+      "required":[
+        "createdBy",
+        "domainId",
+        "id",
+        "name"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which a project profile is created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created a project profile.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of a project profile.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where project profile is to be updated.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The domain unit ID of the project profile to be updated.</p>"
+        },
+        "environmentConfigurations":{
+          "shape":"EnvironmentConfigurationsList",
+          "documentation":"<p>The environment configurations of a project profile.</p>"
+        },
+        "id":{
+          "shape":"ProjectProfileId",
+          "documentation":"<p>The ID of the project profile.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp at which a project profile was last updated.</p>"
+        },
+        "name":{
+          "shape":"ProjectProfileName",
+          "documentation":"<p>The name of the project profile.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the project profile.</p>"
         }
       }
     },
@@ -18799,7 +22478,7 @@
           "locationName":"identifier"
         },
         "manageAccessRole":{
-          "shape":"String",
+          "shape":"IamRoleArn",
           "documentation":"<p>The manage access role to be updated as part of the <code>UpdateSubscriptionTarget</code> action.</p>"
         },
         "name":{
@@ -18826,7 +22505,6 @@
         "domainId",
         "environmentId",
         "id",
-        "manageAccessRole",
         "name",
         "projectId",
         "provider",
@@ -18863,7 +22541,7 @@
           "documentation":"<p>Identifier of the subscription target that is to be updated.</p>"
         },
         "manageAccessRole":{
-          "shape":"String",
+          "shape":"IamRoleArn",
           "documentation":"<p>The manage access role to be updated as part of the <code>UpdateSubscriptionTarget</code> action.</p>"
         },
         "name":{
@@ -19091,6 +22769,30 @@
         "IAM_ROLE",
         "SSO_USER"
       ]
+    },
+    "Username":{
+      "type":"string",
+      "max":64,
+      "min":0
+    },
+    "UsernamePassword":{
+      "type":"structure",
+      "required":[
+        "password",
+        "username"
+      ],
+      "members":{
+        "password":{
+          "shape":"Password",
+          "documentation":"<p>The password of a connection.</p>"
+        },
+        "username":{
+          "shape":"Username",
+          "documentation":"<p>The username of a connection.</p>"
+        }
+      },
+      "documentation":"<p>The username and password of a connection.</p>",
+      "sensitive":true
     },
     "ValidationException":{
       "type":"structure",

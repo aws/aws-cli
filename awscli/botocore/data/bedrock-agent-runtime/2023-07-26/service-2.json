@@ -249,6 +249,12 @@
       "documentation":"<p> Contains details about the OpenAPI schema for the action group. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-api-schema.html\">Action group OpenAPI schemas</a>. You can either include the schema directly in the payload field or you can upload it to an S3 bucket and specify the S3 bucket location in the s3 field. </p>",
       "union":true
     },
+    "AWSResourceARN":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:agent/[0-9a-zA-Z]{10}$"
+    },
     "AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -398,11 +404,93 @@
       "type":"list",
       "member":{"shape":"AgentActionGroup"}
     },
+    "AgentAliasArn":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:agent-alias/[0-9a-zA-Z]{10}/[0-9a-zA-Z]{10}$"
+    },
     "AgentAliasId":{
       "type":"string",
       "max":10,
       "min":0,
       "pattern":"^[0-9a-zA-Z]+$"
+    },
+    "AgentCollaboratorInputPayload":{
+      "type":"structure",
+      "members":{
+        "returnControlResults":{
+          "shape":"ReturnControlResults",
+          "documentation":"<p>An action invocation result.</p>"
+        },
+        "text":{
+          "shape":"AgentCollaboratorPayloadString",
+          "documentation":"<p>Input text.</p>"
+        },
+        "type":{
+          "shape":"PayloadType",
+          "documentation":"<p>The input type.</p>"
+        }
+      },
+      "documentation":"<p>Input for an agent collaborator. The input can be text or an action invocation result.</p>"
+    },
+    "AgentCollaboratorInvocationInput":{
+      "type":"structure",
+      "members":{
+        "agentCollaboratorAliasArn":{
+          "shape":"AgentAliasArn",
+          "documentation":"<p>The collaborator's alias ARN.</p>"
+        },
+        "agentCollaboratorName":{
+          "shape":"String",
+          "documentation":"<p>The collaborator's name.</p>"
+        },
+        "input":{
+          "shape":"AgentCollaboratorInputPayload",
+          "documentation":"<p>Text or action invocation result input for the collaborator.</p>"
+        }
+      },
+      "documentation":"<p>An agent collaborator invocation input.</p>"
+    },
+    "AgentCollaboratorInvocationOutput":{
+      "type":"structure",
+      "members":{
+        "agentCollaboratorAliasArn":{
+          "shape":"AgentAliasArn",
+          "documentation":"<p>The output's agent collaborator alias ARN.</p>"
+        },
+        "agentCollaboratorName":{
+          "shape":"String",
+          "documentation":"<p>The output's agent collaborator name.</p>"
+        },
+        "output":{
+          "shape":"AgentCollaboratorOutputPayload",
+          "documentation":"<p>The output's output.</p>"
+        }
+      },
+      "documentation":"<p>Output from an agent collaborator.</p>"
+    },
+    "AgentCollaboratorOutputPayload":{
+      "type":"structure",
+      "members":{
+        "returnControlPayload":{
+          "shape":"ReturnControlPayload",
+          "documentation":"<p>An action invocation result.</p>"
+        },
+        "text":{
+          "shape":"AgentCollaboratorPayloadString",
+          "documentation":"<p>Text output.</p>"
+        },
+        "type":{
+          "shape":"PayloadType",
+          "documentation":"<p>The type of output.</p>"
+        }
+      },
+      "documentation":"<p>Output from an agent collaborator. The output can be text or an action invocation result.</p>"
+    },
+    "AgentCollaboratorPayloadString":{
+      "type":"string",
+      "sensitive":true
     },
     "AgentId":{
       "type":"string",
@@ -445,9 +533,17 @@
           "shape":"ActionInvocationType",
           "documentation":"<p>Contains information about the API operation to invoke.</p>"
         },
+        "agentId":{
+          "shape":"String",
+          "documentation":"<p>The agent's ID.</p>"
+        },
         "apiPath":{
           "shape":"ApiPath",
           "documentation":"<p>The path to the API operation.</p>"
+        },
+        "collaboratorName":{
+          "shape":"Name",
+          "documentation":"<p>The agent collaborator's name.</p>"
         },
         "httpMethod":{
           "shape":"String",
@@ -507,6 +603,10 @@
         "actionGroup":{
           "shape":"String",
           "documentation":"<p>The action group that the API operation belongs to.</p>"
+        },
+        "agentId":{
+          "shape":"String",
+          "documentation":"<p>The agent's ID.</p>"
         },
         "apiPath":{
           "shape":"ApiPath",
@@ -673,6 +773,21 @@
       },
       "documentation":"<p>The property contains the file to chat with, along with its attributes.</p>"
     },
+    "Caller":{
+      "type":"structure",
+      "members":{
+        "agentAliasArn":{
+          "shape":"AgentAliasArn",
+          "documentation":"<p>The caller's agent alias ARN.</p>"
+        }
+      },
+      "documentation":"<p>Details about a caller.</p>",
+      "union":true
+    },
+    "CallerChain":{
+      "type":"list",
+      "member":{"shape":"Caller"}
+    },
     "Citation":{
       "type":"structure",
       "members":{
@@ -757,6 +872,22 @@
       },
       "exception":true
     },
+    "ContentBlock":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The block's text.</p>"
+        }
+      },
+      "documentation":"<p>A content block.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "ContentBlocks":{
+      "type":"list",
+      "member":{"shape":"ContentBlock"}
+    },
     "ContentBody":{
       "type":"structure",
       "members":{
@@ -775,6 +906,23 @@
     "ContentType":{
       "type":"string",
       "pattern":"[a-z]{1,20}/.{1,20}"
+    },
+    "ConversationHistory":{
+      "type":"structure",
+      "members":{
+        "messages":{
+          "shape":"Messages",
+          "documentation":"<p>The conversation's messages.</p>"
+        }
+      },
+      "documentation":"<p>A conversation history.</p>"
+    },
+    "ConversationRole":{
+      "type":"string",
+      "enum":[
+        "user",
+        "assistant"
+      ]
     },
     "CreationMode":{
       "type":"string",
@@ -1502,6 +1650,14 @@
           "shape":"ActionInvocationType",
           "documentation":"<p>Contains information about the function to invoke,</p>"
         },
+        "agentId":{
+          "shape":"String",
+          "documentation":"<p>The agent's ID.</p>"
+        },
+        "collaboratorName":{
+          "shape":"Name",
+          "documentation":"<p>The collaborator's name.</p>"
+        },
         "function":{
           "shape":"String",
           "documentation":"<p>The name of the function.</p>"
@@ -1542,6 +1698,10 @@
         "actionGroup":{
           "shape":"String",
           "documentation":"<p>The action group that the function belongs to.</p>"
+        },
+        "agentId":{
+          "shape":"String",
+          "documentation":"<p>The agent's ID.</p>"
         },
         "confirmationState":{
           "shape":"ConfirmationState",
@@ -2357,6 +2517,10 @@
           "shape":"ActionGroupInvocationInput",
           "documentation":"<p>Contains information about the action group to be invoked.</p>"
         },
+        "agentCollaboratorInvocationInput":{
+          "shape":"AgentCollaboratorInvocationInput",
+          "documentation":"<p>The collaborator's invocation input.</p>"
+        },
         "codeInterpreterInvocationInput":{
           "shape":"CodeInterpreterInvocationInput",
           "documentation":"<p>Contains information about the code interpreter to be invoked.</p>"
@@ -2419,7 +2583,8 @@
         "ACTION_GROUP",
         "KNOWLEDGE_BASE",
         "FINISH",
-        "ACTION_GROUP_CODE_INTERPRETER"
+        "ACTION_GROUP_CODE_INTERPRETER",
+        "AGENT_COLLABORATOR"
       ]
     },
     "InvokeAgentRequest":{
@@ -2467,6 +2632,12 @@
         "sessionState":{
           "shape":"SessionState",
           "documentation":"<p>Contains parameters that specify various attributes of the session. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html\">Control session context</a>.</p> <note> <p>If you include <code>returnControlInvocationResults</code> in the <code>sessionState</code> field, the <code>inputText</code> field will be ignored.</p> </note>"
+        },
+        "sourceArn":{
+          "shape":"AWSResourceARN",
+          "documentation":"<p>The ARN of the resource making the request.</p>",
+          "location":"header",
+          "locationName":"x-amz-source-arn"
         },
         "streamingConfigurations":{
           "shape":"StreamingConfigurations",
@@ -2924,6 +3095,28 @@
       "type":"string",
       "enum":["SESSION_SUMMARY"]
     },
+    "Message":{
+      "type":"structure",
+      "required":[
+        "content",
+        "role"
+      ],
+      "members":{
+        "content":{
+          "shape":"ContentBlocks",
+          "documentation":"<p>The message's content.</p>"
+        },
+        "role":{
+          "shape":"ConversationRole",
+          "documentation":"<p>The message's role.</p>"
+        }
+      },
+      "documentation":"<p>Details about a message.</p>"
+    },
+    "Messages":{
+      "type":"list",
+      "member":{"shape":"Message"}
+    },
     "Metadata":{
       "type":"structure",
       "members":{
@@ -3002,6 +3195,10 @@
     "ModelInvocationInput":{
       "type":"structure",
       "members":{
+        "foundationModel":{
+          "shape":"ModelIdentifier",
+          "documentation":"<p>The identifier of a foundation model.</p>"
+        },
         "inferenceConfiguration":{
           "shape":"InferenceConfiguration",
           "documentation":"<p>Specifications about the inference parameters that were provided alongside the prompt. These are specified in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> object that was set when the agent was created or updated. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p>"
@@ -3032,6 +3229,11 @@
         }
       },
       "documentation":"<p>The input for the pre-processing step.</p> <ul> <li> <p>The <code>type</code> matches the agent step.</p> </li> <li> <p>The <code>text</code> contains the prompt.</p> </li> <li> <p>The <code>inferenceConfiguration</code>, <code>parserMode</code>, and <code>overrideLambda</code> values are set in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> object that was set when the agent was created or updated.</p> </li> </ul>",
+      "sensitive":true
+    },
+    "Name":{
+      "type":"string",
+      "pattern":"^([0-9a-zA-Z][_-]?){1,100}$",
       "sensitive":true
     },
     "NextToken":{
@@ -3074,6 +3276,10 @@
         "actionGroupInvocationOutput":{
           "shape":"ActionGroupInvocationOutput",
           "documentation":"<p>Contains the JSON-formatted string returned by the API invoked by the action group.</p>"
+        },
+        "agentCollaboratorInvocationOutput":{
+          "shape":"AgentCollaboratorInvocationOutput",
+          "documentation":"<p>A collaborator's invocation output.</p>"
         },
         "codeInterpreterInvocationOutput":{
           "shape":"CodeInterpreterInvocationOutput",
@@ -3391,6 +3597,13 @@
       "documentation":"<p>Contains a part of an agent response and citations for it.</p>",
       "event":true,
       "sensitive":true
+    },
+    "PayloadType":{
+      "type":"string",
+      "enum":[
+        "TEXT",
+        "RETURN_CONTROL"
+      ]
     },
     "PostProcessingModelInvocationOutput":{
       "type":"structure",
@@ -4514,6 +4727,63 @@
       "event":true,
       "sensitive":true
     },
+    "ReturnControlResults":{
+      "type":"structure",
+      "members":{
+        "invocationId":{
+          "shape":"String",
+          "documentation":"<p>The action's invocation ID.</p>"
+        },
+        "returnControlInvocationResults":{
+          "shape":"ReturnControlInvocationResults",
+          "documentation":"<p>The action invocation result.</p>"
+        }
+      },
+      "documentation":"<p>An action invocation result.</p>"
+    },
+    "RoutingClassifierModelInvocationOutput":{
+      "type":"structure",
+      "members":{
+        "metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The invocation's metadata.</p>"
+        },
+        "rawResponse":{
+          "shape":"RawResponse",
+          "documentation":"<p>The invocation's raw response.</p>"
+        },
+        "traceId":{
+          "shape":"TraceId",
+          "documentation":"<p>The invocation's trace ID.</p>"
+        }
+      },
+      "documentation":"<p>Invocation output from a routing classifier model.</p>",
+      "sensitive":true
+    },
+    "RoutingClassifierTrace":{
+      "type":"structure",
+      "members":{
+        "invocationInput":{
+          "shape":"InvocationInput",
+          "documentation":"<p>The classifier's invocation input.</p>"
+        },
+        "modelInvocationInput":{
+          "shape":"ModelInvocationInput",
+          "documentation":"<p>The classifier's model invocation input.</p>"
+        },
+        "modelInvocationOutput":{
+          "shape":"RoutingClassifierModelInvocationOutput",
+          "documentation":"<p>The classifier's model invocation output.</p>"
+        },
+        "observation":{
+          "shape":"Observation",
+          "documentation":"<p>The classifier's observation.</p>"
+        }
+      },
+      "documentation":"<p>A trace for a routing classifier.</p>",
+      "sensitive":true,
+      "union":true
+    },
     "S3BucketName":{
       "type":"string",
       "max":63,
@@ -4601,6 +4871,10 @@
     "SessionState":{
       "type":"structure",
       "members":{
+        "conversationHistory":{
+          "shape":"ConversationHistory",
+          "documentation":"<p>The state's conversation history.</p>"
+        },
         "files":{
           "shape":"InputFiles",
           "documentation":"<p>Contains information about the files used by code interpreter.</p>"
@@ -4814,6 +5088,10 @@
         "preProcessingTrace":{
           "shape":"PreProcessingTrace",
           "documentation":"<p>Details about the pre-processing step, in which the agent contextualizes and categorizes user inputs.</p>"
+        },
+        "routingClassifierTrace":{
+          "shape":"RoutingClassifierTrace",
+          "documentation":"<p>A routing classifier's trace.</p>"
         }
       },
       "documentation":"<p>Contains one part of the agent's reasoning process and results from calling API actions and querying knowledge bases. You can use the trace to understand how the agent arrived at the response it provided the customer. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-enablement\">Trace enablement</a>.</p>",
@@ -4844,6 +5122,14 @@
           "shape":"AgentVersion",
           "documentation":"<p>The version of the agent.</p>"
         },
+        "callerChain":{
+          "shape":"CallerChain",
+          "documentation":"<p>The part's caller chain.</p>"
+        },
+        "collaboratorName":{
+          "shape":"Name",
+          "documentation":"<p>The part's collaborator name.</p>"
+        },
         "sessionId":{
           "shape":"SessionId",
           "documentation":"<p>The unique identifier of the session with the agent.</p>"
@@ -4861,6 +5147,7 @@
       "type":"string",
       "enum":[
         "ACTION_GROUP",
+        "AGENT_COLLABORATOR",
         "KNOWLEDGE_BASE",
         "FINISH",
         "ASK_USER",

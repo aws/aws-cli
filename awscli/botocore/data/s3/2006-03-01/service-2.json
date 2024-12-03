@@ -79,6 +79,22 @@
         "UseS3ExpressControlEndpoint":{"value":true}
       }
     },
+    "CreateBucketMetadataTableConfiguration":{
+      "name":"CreateBucketMetadataTableConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/{Bucket}?metadataTable"
+      },
+      "input":{"shape":"CreateBucketMetadataTableConfigurationRequest"},
+      "documentation":"<p>Creates a metadata table configuration for a general purpose bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-overview.html\">Accelerating data discovery with S3 Metadata</a> in the <i>Amazon S3 User Guide</i>. </p> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have the following permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\">Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>.</p> <p>If you also want to integrate your table bucket with Amazon Web Services analytics services so that you can query your metadata table, you need additional permissions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-integrating-aws.html\"> Integrating Amazon S3 Tables with Amazon Web Services analytics services</a> in the <i>Amazon S3 User Guide</i>.</p> <ul> <li> <p> <code>s3:CreateBucketMetadataTableConfiguration</code> </p> </li> <li> <p> <code>s3tables:CreateNamespace</code> </p> </li> <li> <p> <code>s3tables:GetTable</code> </p> </li> <li> <p> <code>s3tables:CreateTable</code> </p> </li> <li> <p> <code>s3tables:PutTablePolicy</code> </p> </li> </ul> </dd> </dl> <p>The following operations are related to <code>CreateBucketMetadataTableConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketMetadataTableConfiguration.html\">DeleteBucketMetadataTableConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketMetadataTableConfiguration.html\">GetBucketMetadataTableConfiguration</a> </p> </li> </ul>",
+      "httpChecksum":{
+        "requestAlgorithmMember":"ChecksumAlgorithm",
+        "requestChecksumRequired":true
+      },
+      "staticContextParams":{
+        "UseS3ExpressControlEndpoint":{"value":true}
+      }
+    },
     "CreateMultipartUpload":{
       "name":"CreateMultipartUpload",
       "http":{
@@ -197,6 +213,19 @@
       "input":{"shape":"DeleteBucketLifecycleRequest"},
       "documentationUrl":"http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTBucketDELETElifecycle.html",
       "documentation":"<p>Deletes the lifecycle configuration from the specified bucket. Amazon S3 removes all the lifecycle configuration rules in the lifecycle subresource associated with the bucket. Your objects never expire, and Amazon S3 no longer automatically deletes any objects on the basis of rules contained in the deleted lifecycle configuration.</p> <dl> <dt>Permissions</dt> <dd> <ul> <li> <p> <b>General purpose bucket permissions</b> - By default, all Amazon S3 resources are private, including buckets, objects, and related subresources (for example, lifecycle configuration and website configuration). Only the resource owner (that is, the Amazon Web Services account that created it) can access the resource. The resource owner can optionally grant access permissions to others by writing an access policy. For this operation, a user must have the <code>s3:PutLifecycleConfiguration</code> permission.</p> <p>For more information about permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html\">Managing Access Permissions to Your Amazon S3 Resources</a>.</p> </li> </ul> <ul> <li> <p> <b>Directory bucket permissions</b> - You must have the <code>s3express:PutLifecycleConfiguration</code> permission in an IAM identity-based policy to use this operation. Cross-account access to this API operation isn't supported. The resource owner can optionally grant access permissions to others by creating a role or user for them as long as they are within the same account as the owner and resource.</p> <p>For more information about directory bucket policies and permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-security-iam.html\">Authorizing Regional endpoint APIs with IAM</a> in the <i>Amazon S3 User Guide</i>.</p> <note> <p> <b>Directory buckets </b> - For directory buckets, you must make requests for this API operation to the Regional endpoint. These endpoints support path-style requests in the format <code>https://s3express-control.<i>region-code</i>.amazonaws.com/<i>bucket-name</i> </code>. Virtual-hosted-style requests aren't supported. For more information about endpoints in Availability Zones, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-Regions-and-Zones.html\">Regional and Zonal endpoints for directory buckets in Availability Zones</a> in the <i>Amazon S3 User Guide</i>. For more information about endpoints in Local Zones, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-lzs-for-directory-buckets.html\">Available Local Zone for directory buckets</a> in the <i>Amazon S3 User Guide</i>.</p> </note> </li> </ul> </dd> </dl> <dl> <dt>HTTP Host header syntax</dt> <dd> <p> <b>Directory buckets </b> - The HTTP Host header syntax is <code>s3express-control.<i>region</i>.amazonaws.com</code>.</p> </dd> </dl> <p>For more information about the object expiration, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/intro-lifecycle-rules.html#intro-lifecycle-rules-actions\">Elements to Describe Lifecycle Actions</a>.</p> <p>Related actions include:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketLifecycleConfiguration.html\">PutBucketLifecycleConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketLifecycleConfiguration.html\">GetBucketLifecycleConfiguration</a> </p> </li> </ul>",
+      "staticContextParams":{
+        "UseS3ExpressControlEndpoint":{"value":true}
+      }
+    },
+    "DeleteBucketMetadataTableConfiguration":{
+      "name":"DeleteBucketMetadataTableConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/{Bucket}?metadataTable",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteBucketMetadataTableConfigurationRequest"},
+      "documentation":"<p> Deletes a metadata table configuration from a general purpose bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-overview.html\">Accelerating data discovery with S3 Metadata</a> in the <i>Amazon S3 User Guide</i>. </p> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have the <code>s3:DeleteBucketMetadataTableConfiguration</code> permission. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\">Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>. </p> </dd> </dl> <p>The following operations are related to <code>DeleteBucketMetadataTableConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataTableConfiguration.html\">CreateBucketMetadataTableConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketMetadataTableConfiguration.html\">GetBucketMetadataTableConfiguration</a> </p> </li> </ul>",
       "staticContextParams":{
         "UseS3ExpressControlEndpoint":{"value":true}
       }
@@ -479,6 +508,19 @@
       "output":{"shape":"GetBucketLoggingOutput"},
       "documentationUrl":"http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTBucketGETlogging.html",
       "documentation":"<note> <p>This operation is not supported for directory buckets.</p> </note> <p>Returns the logging status of a bucket and the permissions users have to view and modify that status.</p> <p>The following operations are related to <code>GetBucketLogging</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucket.html\">CreateBucket</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketLogging.html\">PutBucketLogging</a> </p> </li> </ul>",
+      "staticContextParams":{
+        "UseS3ExpressControlEndpoint":{"value":true}
+      }
+    },
+    "GetBucketMetadataTableConfiguration":{
+      "name":"GetBucketMetadataTableConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/{Bucket}?metadataTable"
+      },
+      "input":{"shape":"GetBucketMetadataTableConfigurationRequest"},
+      "output":{"shape":"GetBucketMetadataTableConfigurationOutput"},
+      "documentation":"<p> Retrieves the metadata table configuration for a general purpose bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-overview.html\">Accelerating data discovery with S3 Metadata</a> in the <i>Amazon S3 User Guide</i>. </p> <dl> <dt>Permissions</dt> <dd> <p>To use this operation, you must have the <code>s3:GetBucketMetadataTableConfiguration</code> permission. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/metadata-tables-permissions.html\">Setting up permissions for configuring metadata tables</a> in the <i>Amazon S3 User Guide</i>. </p> </dd> </dl> <p>The following operations are related to <code>GetBucketMetadataTableConfiguration</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucketMetadataTableConfiguration.html\">CreateBucketMetadataTableConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketMetadataTableConfiguration.html\">DeleteBucketMetadataTableConfiguration</a> </p> </li> </ul>",
       "staticContextParams":{
         "UseS3ExpressControlEndpoint":{"value":true}
       }
@@ -2709,6 +2751,47 @@
       },
       "documentation":"<p>The configuration information for the bucket.</p>"
     },
+    "CreateBucketMetadataTableConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "Bucket",
+        "MetadataTableConfiguration"
+      ],
+      "members":{
+        "Bucket":{
+          "shape":"BucketName",
+          "documentation":"<p> The general purpose bucket that you want to create the metadata table configuration in. </p>",
+          "contextParam":{"name":"Bucket"},
+          "location":"uri",
+          "locationName":"Bucket"
+        },
+        "ContentMD5":{
+          "shape":"ContentMD5",
+          "documentation":"<p> The <code>Content-MD5</code> header for the metadata table configuration. </p>",
+          "location":"header",
+          "locationName":"Content-MD5"
+        },
+        "ChecksumAlgorithm":{
+          "shape":"ChecksumAlgorithm",
+          "documentation":"<p> The checksum algorithm to use with your metadata table configuration. </p>",
+          "location":"header",
+          "locationName":"x-amz-sdk-checksum-algorithm"
+        },
+        "MetadataTableConfiguration":{
+          "shape":"MetadataTableConfiguration",
+          "documentation":"<p> The contents of your metadata table configuration. </p>",
+          "locationName":"MetadataTableConfiguration",
+          "xmlNamespace":{"uri":"http://s3.amazonaws.com/doc/2006-03-01/"}
+        },
+        "ExpectedBucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p> The expected owner of the general purpose bucket that contains your metadata table configuration. </p>",
+          "location":"header",
+          "locationName":"x-amz-expected-bucket-owner"
+        }
+      },
+      "payload":"MetadataTableConfiguration"
+    },
     "CreateBucketOutput":{
       "type":"structure",
       "members":{
@@ -3321,6 +3404,25 @@
         }
       }
     },
+    "DeleteBucketMetadataTableConfigurationRequest":{
+      "type":"structure",
+      "required":["Bucket"],
+      "members":{
+        "Bucket":{
+          "shape":"BucketName",
+          "documentation":"<p> The general purpose bucket that you want to remove the metadata table configuration from. </p>",
+          "contextParam":{"name":"Bucket"},
+          "location":"uri",
+          "locationName":"Bucket"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p> The expected bucket owner of the general purpose bucket that you want to remove the metadata table configuration from. </p>",
+          "location":"header",
+          "locationName":"x-amz-expected-bucket-owner"
+        }
+      }
+    },
     "DeleteBucketMetricsConfigurationRequest":{
       "type":"structure",
       "required":[
@@ -3892,6 +3994,20 @@
       "documentation":"<p>Container for all error elements.</p>"
     },
     "ErrorCode":{"type":"string"},
+    "ErrorDetails":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p> If the <code>CreateBucketMetadataTableConfiguration</code> request succeeds, but S3 Metadata was unable to create the table, this structure contains the error code. The possible error codes and error messages are as follows: </p> <ul> <li> <p> <code>AccessDeniedCreatingResources</code> - You don't have sufficient permissions to create the required resources. Make sure that you have <code>s3tables:CreateNamespace</code>, <code>s3tables:CreateTable</code>, <code>s3tables:GetTable</code> and <code>s3tables:PutTablePolicy</code> permissions, and then try again. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration. </p> </li> <li> <p> <code>AccessDeniedWritingToTable</code> - Unable to write to the metadata table because of missing resource permissions. To fix the resource policy, Amazon S3 needs to create a new metadata table. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>DestinationTableNotFound</code> - The destination table doesn't exist. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>ServerInternalError</code> - An internal error has occurred. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>TableAlreadyExists</code> - The table that you specified already exists in the table bucket's namespace. Specify a different table name. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>TableBucketNotFound</code> - The table bucket that you specified doesn't exist in this Amazon Web Services Region and account. Create or choose a different table bucket. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> </ul>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p> If the <code>CreateBucketMetadataTableConfiguration</code> request succeeds, but S3 Metadata was unable to create the table, this structure contains the error message. The possible error codes and error messages are as follows: </p> <ul> <li> <p> <code>AccessDeniedCreatingResources</code> - You don't have sufficient permissions to create the required resources. Make sure that you have <code>s3tables:CreateNamespace</code>, <code>s3tables:CreateTable</code>, <code>s3tables:GetTable</code> and <code>s3tables:PutTablePolicy</code> permissions, and then try again. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration. </p> </li> <li> <p> <code>AccessDeniedWritingToTable</code> - Unable to write to the metadata table because of missing resource permissions. To fix the resource policy, Amazon S3 needs to create a new metadata table. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>DestinationTableNotFound</code> - The destination table doesn't exist. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>ServerInternalError</code> - An internal error has occurred. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>TableAlreadyExists</code> - The table that you specified already exists in the table bucket's namespace. Specify a different table name. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> <li> <p> <code>TableBucketNotFound</code> - The table bucket that you specified doesn't exist in this Amazon Web Services Region and account. Create or choose a different table bucket. To create a new metadata table, you must delete the metadata configuration for this bucket, and then create a new metadata configuration.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p> If the <code>CreateBucketMetadataTableConfiguration</code> request succeeds, but S3 Metadata was unable to create the table, this structure contains the error code and error message. </p>"
+    },
     "ErrorDocument":{
       "type":"structure",
       "required":["Key"],
@@ -4386,6 +4502,57 @@
           "locationName":"x-amz-expected-bucket-owner"
         }
       }
+    },
+    "GetBucketMetadataTableConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "GetBucketMetadataTableConfigurationResult":{
+          "shape":"GetBucketMetadataTableConfigurationResult",
+          "documentation":"<p> The metadata table configuration for the general purpose bucket. </p>"
+        }
+      },
+      "payload":"GetBucketMetadataTableConfigurationResult"
+    },
+    "GetBucketMetadataTableConfigurationRequest":{
+      "type":"structure",
+      "required":["Bucket"],
+      "members":{
+        "Bucket":{
+          "shape":"BucketName",
+          "documentation":"<p> The general purpose bucket that contains the metadata table configuration that you want to retrieve. </p>",
+          "contextParam":{"name":"Bucket"},
+          "location":"uri",
+          "locationName":"Bucket"
+        },
+        "ExpectedBucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p> The expected owner of the general purpose bucket that you want to retrieve the metadata table configuration from. </p>",
+          "location":"header",
+          "locationName":"x-amz-expected-bucket-owner"
+        }
+      }
+    },
+    "GetBucketMetadataTableConfigurationResult":{
+      "type":"structure",
+      "required":[
+        "MetadataTableConfigurationResult",
+        "Status"
+      ],
+      "members":{
+        "MetadataTableConfigurationResult":{
+          "shape":"MetadataTableConfigurationResult",
+          "documentation":"<p> The metadata table configuration for a general purpose bucket. </p>"
+        },
+        "Status":{
+          "shape":"MetadataTableStatus",
+          "documentation":"<p> The status of the metadata table. The status values are: </p> <ul> <li> <p> <code>CREATING</code> - The metadata table is in the process of being created in the specified table bucket.</p> </li> <li> <p> <code>ACTIVE</code> - The metadata table has been created successfully and records are being delivered to the table. </p> </li> <li> <p> <code>FAILED</code> - Amazon S3 is unable to create the metadata table, or Amazon S3 is unable to deliver records. See <code>ErrorDetails</code> for details.</p> </li> </ul>"
+        },
+        "Error":{
+          "shape":"ErrorDetails",
+          "documentation":"<p> If the <code>CreateBucketMetadataTableConfiguration</code> request succeeds, but S3 Metadata was unable to create the table, this structure contains the error code and error message. </p>"
+        }
+      },
+      "documentation":"<p> The metadata table configuration for a general purpose bucket. </p>"
     },
     "GetBucketMetricsConfigurationOutput":{
       "type":"structure",
@@ -7553,6 +7720,29 @@
       "documentation":"<p>A metadata key-value pair to store with an object.</p>"
     },
     "MetadataKey":{"type":"string"},
+    "MetadataTableConfiguration":{
+      "type":"structure",
+      "required":["S3TablesDestination"],
+      "members":{
+        "S3TablesDestination":{
+          "shape":"S3TablesDestination",
+          "documentation":"<p> The destination information for the metadata table configuration. The destination table bucket must be in the same Region and Amazon Web Services account as the general purpose bucket. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p>"
+        }
+      },
+      "documentation":"<p> The metadata table configuration for a general purpose bucket. </p>"
+    },
+    "MetadataTableConfigurationResult":{
+      "type":"structure",
+      "required":["S3TablesDestinationResult"],
+      "members":{
+        "S3TablesDestinationResult":{
+          "shape":"S3TablesDestinationResult",
+          "documentation":"<p> The destination information for the metadata table configuration. The destination table bucket must be in the same Region and Amazon Web Services account as the general purpose bucket. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p>"
+        }
+      },
+      "documentation":"<p> The metadata table configuration for a general purpose bucket. The destination table bucket must be in the same Region and Amazon Web Services account as the general purpose bucket. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p>"
+    },
+    "MetadataTableStatus":{"type":"string"},
     "MetadataValue":{"type":"string"},
     "Metrics":{
       "type":"structure",
@@ -10541,6 +10731,56 @@
       },
       "documentation":"<p>Describes an Amazon S3 location that will receive the results of the restore request.</p>"
     },
+    "S3TablesArn":{"type":"string"},
+    "S3TablesBucketArn":{"type":"string"},
+    "S3TablesDestination":{
+      "type":"structure",
+      "required":[
+        "TableBucketArn",
+        "TableName"
+      ],
+      "members":{
+        "TableBucketArn":{
+          "shape":"S3TablesBucketArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) for the table bucket that's specified as the destination in the metadata table configuration. The destination table bucket must be in the same Region and Amazon Web Services account as the general purpose bucket. </p>"
+        },
+        "TableName":{
+          "shape":"S3TablesName",
+          "documentation":"<p> The name for the metadata table in your metadata table configuration. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p>"
+        }
+      },
+      "documentation":"<p> The destination information for the metadata table configuration. The destination table bucket must be in the same Region and Amazon Web Services account as the general purpose bucket. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p>"
+    },
+    "S3TablesDestinationResult":{
+      "type":"structure",
+      "required":[
+        "TableBucketArn",
+        "TableName",
+        "TableArn",
+        "TableNamespace"
+      ],
+      "members":{
+        "TableBucketArn":{
+          "shape":"S3TablesBucketArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) for the table bucket that's specified as the destination in the metadata table configuration. The destination table bucket must be in the same Region and Amazon Web Services account as the general purpose bucket. </p>"
+        },
+        "TableName":{
+          "shape":"S3TablesName",
+          "documentation":"<p> The name for the metadata table in your metadata table configuration. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p>"
+        },
+        "TableArn":{
+          "shape":"S3TablesArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) for the metadata table in the metadata table configuration. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p>"
+        },
+        "TableNamespace":{
+          "shape":"S3TablesNamespace",
+          "documentation":"<p> The table bucket namespace for the metadata table in your metadata table configuration. This value is always <code>aws_s3_metadata</code>. </p>"
+        }
+      },
+      "documentation":"<p> The destination information for the metadata table configuration. The destination table bucket must be in the same Region and Amazon Web Services account as the general purpose bucket. The specified metadata table name must be unique within the <code>aws_s3_metadata</code> namespace in the destination table bucket. </p>"
+    },
+    "S3TablesName":{"type":"string"},
+    "S3TablesNamespace":{"type":"string"},
     "SSECustomerAlgorithm":{"type":"string"},
     "SSECustomerKey":{
       "type":"string",

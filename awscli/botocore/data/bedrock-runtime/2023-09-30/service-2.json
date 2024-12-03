@@ -30,7 +30,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>The action to apply a guardrail.</p>"
+      "documentation":"<p>The action to apply a guardrail.</p> <p>For troubleshooting some of the common errors you might encounter when using the <code>ApplyGuardrail</code> API, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html\">Troubleshooting Amazon Bedrock API Error Codes</a> in the Amazon Bedrock User Guide</p>"
     },
     "Converse":{
       "name":"Converse",
@@ -75,6 +75,23 @@
         {"shape":"ModelErrorException"}
       ],
       "documentation":"<p>Sends messages to the specified Amazon Bedrock model and returns the response in a stream. <code>ConverseStream</code> provides a consistent API that works with all Amazon Bedrock models that support messages. This allows you to write code once and use it with different models. Should a model have unique inference parameters, you can also pass those unique parameters to the model. </p> <p>To find out if a model supports streaming, call <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetFoundationModel.html\">GetFoundationModel</a> and check the <code>responseStreamingSupported</code> field in the response.</p> <note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>ConverseStream</code>.</p> </note> <p>Amazon Bedrock doesn't store any text, images, or documents that you provide as content. The data is only used to generate the response.</p> <p>You can submit a prompt by including it in the <code>messages</code> field, specifying the <code>modelId</code> of a foundation model or inference profile to run inference on it, and including any other fields that are relevant to your use case.</p> <p>You can also submit a prompt from Prompt management by specifying the ARN of the prompt version and including a map of variables to values in the <code>promptVariables</code> field. You can append more messages to the prompt by using the <code>messages</code> field. If you use a prompt from Prompt management, you can't include the following fields in the request: <code>additionalModelRequestFields</code>, <code>inferenceConfig</code>, <code>system</code>, or <code>toolConfig</code>. Instead, these fields must be defined through Prompt management. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-use.html\">Use a prompt from Prompt management</a>.</p> <p>For information about the Converse API, see <i>Use the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a guardrail, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a tool with a model, see <i>Tool use (Function calling)</i> in the <i>Amazon Bedrock User Guide</i> </p> <p>For example code, see <i>Conversation streaming example</i> in the <i>Amazon Bedrock User Guide</i>. </p> <p>This operation requires permission for the <code>bedrock:InvokeModelWithResponseStream</code> action.</p> <important> <p>To deny all inference access to resources that you specify in the modelId field, you need to deny access to the <code>bedrock:InvokeModel</code> and <code>bedrock:InvokeModelWithResponseStream</code> actions. Doing this also denies access to the resource through the base inference actions (<a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html\">InvokeModel</a> and <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModelWithResponseStream.html\">InvokeModelWithResponseStream</a>). For more information see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/security_iam_id-based-policy-examples.html#security_iam_id-based-policy-examples-deny-inference\">Deny access for inference on specific models</a>. </p> </important> <p>For troubleshooting some of the common errors you might encounter when using the <code>ConverseStream</code> API, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html\">Troubleshooting Amazon Bedrock API Error Codes</a> in the Amazon Bedrock User Guide</p>"
+    },
+    "GetAsyncInvoke":{
+      "name":"GetAsyncInvoke",
+      "http":{
+        "method":"GET",
+        "requestUri":"/async-invoke/{invocationArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAsyncInvokeRequest"},
+      "output":{"shape":"GetAsyncInvokeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieve information about an asynchronous invocation.</p>"
     },
     "InvokeModel":{
       "name":"InvokeModel",
@@ -122,6 +139,45 @@
         {"shape":"ModelErrorException"}
       ],
       "documentation":"<p>Invoke the specified Amazon Bedrock model to run inference using the prompt and inference parameters provided in the request body. The response is returned in a stream.</p> <p>To see if a model supports streaming, call <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetFoundationModel.html\">GetFoundationModel</a> and check the <code>responseStreamingSupported</code> field in the response.</p> <note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>InvokeModelWithResponseStream</code>.</p> </note> <p>For example code, see <i>Invoke model with streaming code example</i> in the <i>Amazon Bedrock User Guide</i>. </p> <p>This operation requires permissions to perform the <code>bedrock:InvokeModelWithResponseStream</code> action. </p> <important> <p>To deny all inference access to resources that you specify in the modelId field, you need to deny access to the <code>bedrock:InvokeModel</code> and <code>bedrock:InvokeModelWithResponseStream</code> actions. Doing this also denies access to the resource through the Converse API actions (<a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> and <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a>). For more information see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/security_iam_id-based-policy-examples.html#security_iam_id-based-policy-examples-deny-inference\">Deny access for inference on specific models</a>. </p> </important> <p>For troubleshooting some of the common errors you might encounter when using the <code>InvokeModelWithResponseStream</code> API, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html\">Troubleshooting Amazon Bedrock API Error Codes</a> in the Amazon Bedrock User Guide</p>"
+    },
+    "ListAsyncInvokes":{
+      "name":"ListAsyncInvokes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/async-invoke",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAsyncInvokesRequest"},
+      "output":{"shape":"ListAsyncInvokesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists asynchronous invocations.</p>"
+    },
+    "StartAsyncInvoke":{
+      "name":"StartAsyncInvoke",
+      "http":{
+        "method":"POST",
+        "requestUri":"/async-invoke",
+        "responseCode":200
+      },
+      "input":{"shape":"StartAsyncInvokeRequest"},
+      "output":{"shape":"StartAsyncInvokeResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Starts an asynchronous invocation.</p> <p>This operation requires permission for the <code>bedrock:InvokeModel</code> action.</p> <important> <p>To deny all inference access to resources that you specify in the modelId field, you need to deny access to the <code>bedrock:InvokeModel</code> and <code>bedrock:InvokeModelWithResponseStream</code> actions. Doing this also denies access to the resource through the Converse API actions (<a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> and <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a>). For more information see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/security_iam_id-based-policy-examples.html#security_iam_id-based-policy-examples-deny-inference\">Deny access for inference on specific models</a>. </p> </important>",
+      "idempotent":true
     }
   },
   "shapes":{
@@ -136,6 +192,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "AccountId":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
     },
     "AnyToolChoice":{
       "type":"structure",
@@ -205,6 +265,120 @@
         }
       }
     },
+    "AsyncInvokeArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:[a-z0-9\\-]+:bedrock:[a-z0-9\\-]*:[0-9]*:(provisioned-model|foundation-model)/.+"
+    },
+    "AsyncInvokeIdempotencyToken":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[!-~]*"
+    },
+    "AsyncInvokeIdentifier":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z_\\.\\-/0-9:]+"
+    },
+    "AsyncInvokeMessage":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "sensitive":true
+    },
+    "AsyncInvokeOutputDataConfig":{
+      "type":"structure",
+      "members":{
+        "s3OutputDataConfig":{
+          "shape":"AsyncInvokeS3OutputDataConfig",
+          "documentation":"<p>A storage location for the output data in an S3 bucket</p>"
+        }
+      },
+      "documentation":"<p>Asynchronous invocation output data settings.</p>",
+      "union":true
+    },
+    "AsyncInvokeS3OutputDataConfig":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>An object URI starting with <code>s3://</code>.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>A KMS encryption key ID.</p>"
+        },
+        "bucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p>If the bucket belongs to another AWS account, specify that account's ID.</p>"
+        }
+      },
+      "documentation":"<p>Asynchronous invocation output data settings.</p>"
+    },
+    "AsyncInvokeStatus":{
+      "type":"string",
+      "enum":[
+        "InProgress",
+        "Completed",
+        "Failed"
+      ]
+    },
+    "AsyncInvokeSummaries":{
+      "type":"list",
+      "member":{"shape":"AsyncInvokeSummary"}
+    },
+    "AsyncInvokeSummary":{
+      "type":"structure",
+      "required":[
+        "invocationArn",
+        "modelArn",
+        "submitTime",
+        "outputDataConfig"
+      ],
+      "members":{
+        "invocationArn":{
+          "shape":"InvocationArn",
+          "documentation":"<p>The invocation's ARN.</p>"
+        },
+        "modelArn":{
+          "shape":"AsyncInvokeArn",
+          "documentation":"<p>The invoked model's ARN.</p>"
+        },
+        "clientRequestToken":{
+          "shape":"AsyncInvokeIdempotencyToken",
+          "documentation":"<p>The invocation's idempotency token.</p>"
+        },
+        "status":{
+          "shape":"AsyncInvokeStatus",
+          "documentation":"<p>The invocation's status.</p>"
+        },
+        "failureMessage":{
+          "shape":"AsyncInvokeMessage",
+          "documentation":"<p>An error message.</p>"
+        },
+        "submitTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the invocation was submitted.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the invocation was last modified.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the invocation ended.</p>"
+        },
+        "outputDataConfig":{
+          "shape":"AsyncInvokeOutputDataConfig",
+          "documentation":"<p>The invocation's output data settings.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an asynchronous invocation.</p>"
+    },
     "AutoToolChoice":{
       "type":"structure",
       "members":{
@@ -216,6 +390,18 @@
       "max":25000000,
       "min":0,
       "sensitive":true
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"NonBlankString"}
+      },
+      "documentation":"<p>Error occurred because of a conflict while performing an operation.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
     },
     "ContentBlock":{
       "type":"structure",
@@ -231,6 +417,10 @@
         "document":{
           "shape":"DocumentBlock",
           "documentation":"<p>A document to include in the message.</p>"
+        },
+        "video":{
+          "shape":"VideoBlock",
+          "documentation":"<p>Video to include in the message. </p>"
         },
         "toolUse":{
           "shape":"ToolUseBlock",
@@ -387,7 +577,7 @@
         },
         "toolConfig":{
           "shape":"ToolConfiguration",
-          "documentation":"<p>Configuration information for the tools that the model can use when generating a response. </p> <note> <p>This field is only supported by Anthropic Claude 3, Cohere Command R, Cohere Command R+, and Mistral Large models.</p> </note>"
+          "documentation":"<p>Configuration information for the tools that the model can use when generating a response. </p> <p>For information about models that support tool use, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference.html#conversation-inference-supported-models-features\">Supported models and model features</a>.</p>"
         },
         "guardrailConfig":{
           "shape":"GuardrailConfiguration",
@@ -404,6 +594,10 @@
         "additionalModelResponseFieldPaths":{
           "shape":"ConverseRequestAdditionalModelResponseFieldPathsList",
           "documentation":"<p>Additional model parameters field paths to return in the response. <code>Converse</code> and <code>ConverseStream</code> return the requested fields as a JSON Pointer object in the <code>additionalModelResponseFields</code> field. The following is example JSON for <code>additionalModelResponseFieldPaths</code>.</p> <p> <code>[ \"/stop_sequence\" ]</code> </p> <p>For information about the JSON Pointer syntax, see the <a href=\"https://datatracker.ietf.org/doc/html/rfc6901\">Internet Engineering Task Force (IETF)</a> documentation.</p> <p> <code>Converse</code> and <code>ConverseStream</code> reject an empty JSON Pointer or incorrectly structured JSON Pointer with a <code>400</code> error code. if the JSON Pointer is valid, but the requested field is not in the model response, it is ignored by <code>Converse</code>.</p>"
+        },
+        "requestMetadata":{
+          "shape":"RequestMetadata",
+          "documentation":"<p>Key-value pairs that you can use to filter invocation logs.</p>"
         },
         "performanceConfig":{
           "shape":"PerformanceConfiguration",
@@ -536,11 +730,11 @@
         },
         "validationException":{
           "shape":"ValidationException",
-          "documentation":"<p>Input validation failed. Check your request parameters and retry the request.</p>"
+          "documentation":"<p>The input fails to satisfy the constraints specified by <i>Amazon Bedrock</i>. For troubleshooting this error, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html#ts-validation-error\">ValidationError</a> in the Amazon Bedrock User Guide</p>"
         },
         "throttlingException":{
           "shape":"ThrottlingException",
-          "documentation":"<p>The number of requests exceeds the limit. Resubmit your request later.</p>"
+          "documentation":"<p>Your request was denied due to exceeding the account quotas for <i>Amazon Bedrock</i>. For troubleshooting this error, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html#ts-throttling-exception\">ThrottlingException</a> in the Amazon Bedrock User Guide</p>"
         },
         "serviceUnavailableException":{
           "shape":"ServiceUnavailableException",
@@ -574,7 +768,7 @@
         },
         "toolConfig":{
           "shape":"ToolConfiguration",
-          "documentation":"<p>Configuration information for the tools that the model can use when generating a response.</p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
+          "documentation":"<p>Configuration information for the tools that the model can use when generating a response.</p> <p>For information about models that support streaming tool use, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference.html#conversation-inference-supported-models-features\">Supported models and model features</a>.</p>"
         },
         "guardrailConfig":{
           "shape":"GuardrailStreamConfiguration",
@@ -591,6 +785,10 @@
         "additionalModelResponseFieldPaths":{
           "shape":"ConverseStreamRequestAdditionalModelResponseFieldPathsList",
           "documentation":"<p>Additional model parameters field paths to return in the response. <code>Converse</code> and <code>ConverseStream</code> return the requested fields as a JSON Pointer object in the <code>additionalModelResponseFields</code> field. The following is example JSON for <code>additionalModelResponseFieldPaths</code>.</p> <p> <code>[ \"/stop_sequence\" ]</code> </p> <p>For information about the JSON Pointer syntax, see the <a href=\"https://datatracker.ietf.org/doc/html/rfc6901\">Internet Engineering Task Force (IETF)</a> documentation.</p> <p> <code>Converse</code> and <code>ConverseStream</code> reject an empty JSON Pointer or incorrectly structured JSON Pointer with a <code>400</code> error code. if the JSON Pointer is valid, but the requested field is not in the model response, it is ignored by <code>Converse</code>.</p>"
+        },
+        "requestMetadata":{
+          "shape":"RequestMetadata",
+          "documentation":"<p>Key-value pairs that you can use to filter invocation logs.</p>"
         },
         "performanceConfig":{
           "shape":"PerformanceConfiguration",
@@ -701,6 +899,66 @@
     "DocumentSourceBytesBlob":{
       "type":"blob",
       "min":1
+    },
+    "GetAsyncInvokeRequest":{
+      "type":"structure",
+      "required":["invocationArn"],
+      "members":{
+        "invocationArn":{
+          "shape":"InvocationArn",
+          "documentation":"<p>The invocation's ARN.</p>",
+          "location":"uri",
+          "locationName":"invocationArn"
+        }
+      }
+    },
+    "GetAsyncInvokeResponse":{
+      "type":"structure",
+      "required":[
+        "invocationArn",
+        "modelArn",
+        "status",
+        "submitTime",
+        "outputDataConfig"
+      ],
+      "members":{
+        "invocationArn":{
+          "shape":"InvocationArn",
+          "documentation":"<p>The invocation's ARN.</p>"
+        },
+        "modelArn":{
+          "shape":"AsyncInvokeArn",
+          "documentation":"<p>The invocation's model ARN.</p>"
+        },
+        "clientRequestToken":{
+          "shape":"AsyncInvokeIdempotencyToken",
+          "documentation":"<p>The invocation's idempotency token.</p>"
+        },
+        "status":{
+          "shape":"AsyncInvokeStatus",
+          "documentation":"<p>The invocation's status.</p>"
+        },
+        "failureMessage":{
+          "shape":"AsyncInvokeMessage",
+          "documentation":"<p>An error message.</p>"
+        },
+        "submitTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the invocation request was submitted.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The invocation's last modified time.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the invocation ended.</p>"
+        },
+        "outputDataConfig":{
+          "shape":"AsyncInvokeOutputDataConfig",
+          "documentation":"<p>Output data settings.</p>"
+        }
+      }
     },
     "GuardrailAction":{
       "type":"string",
@@ -1529,6 +1787,12 @@
       "exception":true,
       "fault":true
     },
+    "InvocationArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:async-invoke/[a-z0-9]{12}"
+    },
     "InvokeModelIdentifier":{
       "type":"string",
       "max":2048,
@@ -1693,9 +1957,81 @@
       },
       "payload":"body"
     },
+    "KmsKeyId":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:kms:[a-zA-Z0-9-]*:[0-9]{12}:((key/[a-zA-Z0-9-]{36})|(alias/[a-zA-Z0-9-_/]+))"
+    },
+    "ListAsyncInvokesRequest":{
+      "type":"structure",
+      "members":{
+        "submitTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Include invocations submitted after this time.</p>",
+          "location":"querystring",
+          "locationName":"submitTimeAfter"
+        },
+        "submitTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Include invocations submitted before this time.</p>",
+          "location":"querystring",
+          "locationName":"submitTimeBefore"
+        },
+        "statusEquals":{
+          "shape":"AsyncInvokeStatus",
+          "documentation":"<p>Filter invocations by status.</p>",
+          "location":"querystring",
+          "locationName":"statusEquals"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of invocations to return in one page of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortBy":{
+          "shape":"SortAsyncInvocationBy",
+          "documentation":"<p>How to sort the response.</p>",
+          "location":"querystring",
+          "locationName":"sortBy"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sorting order for the response.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        }
+      }
+    },
+    "ListAsyncInvokesResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>"
+        },
+        "asyncInvokeSummaries":{
+          "shape":"AsyncInvokeSummaries",
+          "documentation":"<p>A list of invocation summaries.</p>"
+        }
+      }
+    },
     "Long":{
       "type":"long",
       "box":true
+    },
+    "MaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
     },
     "Message":{
       "type":"structure",
@@ -1768,6 +2104,13 @@
       },
       "exception":true
     },
+    "ModelInputPayload":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true,
+      "sensitive":true
+    },
     "ModelNotReadyException":{
       "type":"structure",
       "members":{
@@ -1830,6 +2173,12 @@
       "box":true,
       "min":0
     },
+    "PaginationToken":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"\\S*"
+    },
     "PartBody":{
       "type":"blob",
       "max":1000000,
@@ -1882,6 +2231,26 @@
       "documentation":"<p>Contains a map of variables in a prompt from Prompt management to an object containing the values to fill in for them when running model invocation. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-how.html\">How Prompt management works</a>.</p>",
       "union":true
     },
+    "RequestMetadata":{
+      "type":"map",
+      "key":{"shape":"RequestMetadataKeyString"},
+      "value":{"shape":"RequestMetadataValueString"},
+      "max":16,
+      "min":1,
+      "sensitive":true
+    },
+    "RequestMetadataKeyString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\s:_@$#=/+,-.]{1,256}"
+    },
+    "RequestMetadataValueString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9\\s:_@$#=/+,-.]{0,256}"
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -1929,6 +2298,27 @@
       "documentation":"<p>Definition of content in the response stream.</p>",
       "eventstream":true
     },
+    "S3Location":{
+      "type":"structure",
+      "required":["uri"],
+      "members":{
+        "uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>An object URI starting with <code>s3://</code>.</p>"
+        },
+        "bucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p>If the bucket belongs to another AWS account, specify that account's ID.</p>"
+        }
+      },
+      "documentation":"<p>A storage location in an S3 bucket.</p>"
+    },
+    "S3Uri":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -1951,6 +2341,17 @@
       "exception":true,
       "fault":true
     },
+    "SortAsyncInvocationBy":{
+      "type":"string",
+      "enum":["SubmissionTime"]
+    },
+    "SortOrder":{
+      "type":"string",
+      "enum":[
+        "Ascending",
+        "Descending"
+      ]
+    },
     "SpecificToolChoice":{
       "type":"structure",
       "required":["name"],
@@ -1961,6 +2362,47 @@
         }
       },
       "documentation":"<p>The model must request a specific tool. For example, <code>{\"tool\" : {\"name\" : \"Your tool name\"}}</code>.</p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
+    },
+    "StartAsyncInvokeRequest":{
+      "type":"structure",
+      "required":[
+        "modelId",
+        "modelInput",
+        "outputDataConfig"
+      ],
+      "members":{
+        "clientRequestToken":{
+          "shape":"AsyncInvokeIdempotencyToken",
+          "documentation":"<p>Specify idempotency token to ensure that requests are not duplicated.</p>",
+          "idempotencyToken":true
+        },
+        "modelId":{
+          "shape":"AsyncInvokeIdentifier",
+          "documentation":"<p>The model to invoke.</p>"
+        },
+        "modelInput":{
+          "shape":"ModelInputPayload",
+          "documentation":"<p>Input to send to the model.</p>"
+        },
+        "outputDataConfig":{
+          "shape":"AsyncInvokeOutputDataConfig",
+          "documentation":"<p>Where to store the output.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags to apply to the invocation.</p>"
+        }
+      }
+    },
+    "StartAsyncInvokeResponse":{
+      "type":"structure",
+      "required":["invocationArn"],
+      "members":{
+        "invocationArn":{
+          "shape":"InvocationArn",
+          "documentation":"<p>The ARN of the invocation.</p>"
+        }
+      }
     },
     "StatusCode":{
       "type":"integer",
@@ -1999,6 +2441,42 @@
       "type":"list",
       "member":{"shape":"SystemContentBlock"}
     },
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"TagKey",
+          "documentation":"<p>The tag's key.</p>"
+        },
+        "value":{
+          "shape":"TagValue",
+          "documentation":"<p>The tag's value.</p>"
+        }
+      },
+      "documentation":"<p>A tag.</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\s._:/=+@-]*"
+    },
+    "TagList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "max":200,
+      "min":0
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9\\s._:/=+@-]*"
+    },
     "TextCharactersGuarded":{
       "type":"integer",
       "box":true
@@ -2018,6 +2496,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "Timestamp":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
     },
     "TokenUsage":{
       "type":"structure",
@@ -2100,7 +2582,7 @@
           "documentation":"<p>If supported by model, forces the model to request a tool.</p>"
         }
       },
-      "documentation":"<p>Configuration information for the tools that you pass to a model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Tool use (function calling)</a> in the Amazon Bedrock User Guide.</p> <note> <p>This field is only supported by Anthropic Claude 3, Cohere Command R, Cohere Command R+, and Mistral Large models.</p> </note>"
+      "documentation":"<p>Configuration information for the tools that you pass to a model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Tool use (function calling)</a> in the Amazon Bedrock User Guide.</p>"
     },
     "ToolConfigurationToolsList":{
       "type":"list",
@@ -2164,6 +2646,10 @@
         "document":{
           "shape":"DocumentBlock",
           "documentation":"<p>A tool result that is a document.</p>"
+        },
+        "video":{
+          "shape":"VideoBlock",
+          "documentation":"<p>A tool result that is video.</p>"
         }
       },
       "documentation":"<p>The tool result content block.</p>",
@@ -2278,6 +2764,57 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "VideoBlock":{
+      "type":"structure",
+      "required":[
+        "format",
+        "source"
+      ],
+      "members":{
+        "format":{
+          "shape":"VideoFormat",
+          "documentation":"<p>The block's format.</p>"
+        },
+        "source":{
+          "shape":"VideoSource",
+          "documentation":"<p>The block's source.</p>"
+        }
+      },
+      "documentation":"<p>A video block.</p>"
+    },
+    "VideoFormat":{
+      "type":"string",
+      "enum":[
+        "mkv",
+        "mov",
+        "mp4",
+        "webm",
+        "flv",
+        "mpeg",
+        "mpg",
+        "wmv",
+        "three_gp"
+      ]
+    },
+    "VideoSource":{
+      "type":"structure",
+      "members":{
+        "bytes":{
+          "shape":"VideoSourceBytesBlob",
+          "documentation":"<p>Video content encoded in base64.</p>"
+        },
+        "s3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The location of a video object in an S3 bucket.</p>"
+        }
+      },
+      "documentation":"<p>A video source. You can upload a smaller video as a base64-encoded string as long as the encoded file is less than 25MB. You can also transfer videos up to 1GB in size from an S3 bucket.</p>",
+      "union":true
+    },
+    "VideoSourceBytesBlob":{
+      "type":"blob",
+      "min":1
     }
   },
   "documentation":"<p>Describes the API operations for running inference using Amazon Bedrock models.</p>"

@@ -27,11 +27,18 @@ from botocore.model import ServiceId
 from botocore.exceptions import NoRegionError, UnknownSignatureVersionError
 from botocore.exceptions import UnknownClientMethodError, ParamValidationError
 from botocore.exceptions import UnsupportedSignatureVersionError
-from botocore.signers import RequestSigner, S3PostPresigner, CloudFrontSigner
-from botocore.signers import generate_db_auth_token
+from botocore.signers import (
+    CloudFrontSigner,
+    RequestSigner,
+    S3PostPresigner,
+    _dsql_generate_db_auth_token,
+    dsql_generate_db_connect_admin_auth_token,
+    dsql_generate_db_connect_auth_token,
+    generate_db_auth_token,
+)
+from tests import FreezeTime, assert_url_equal, mock, unittest
 
-from tests import assert_url_equal, mock, unittest
-
+DATE = datetime.datetime(2024, 11, 7, 17, 39, 33, tzinfo=tzutc())
 
 class BaseSignerTest(unittest.TestCase):
     def setUp(self):
@@ -1033,3 +1040,78 @@ class TestGenerateDBAuthToken(BaseSignerTest):
         self.assertIn(region, result)
         # The hostname won't be changed even if a different region is specified
         self.assertIn(hostname, result)
+
+
+class TestDSQLGenerateDBAuthToken(BaseSignerTest):
+    def setUp(self):
+        self.session = botocore.session.get_session()
+        self.client = self.session.create_client(
+            'dsql',
+            region_name='us-east-1',
+            aws_access_key_id='ACCESS_KEY',
+            aws_secret_access_key='SECRET_KEY',
+            aws_session_token="SESSION_TOKEN",
+        )
+        self.hostname = 'test.dsql.us-east-1.on.aws'
+        self.action = 'DbConnect'
+
+    @FreezeTime(botocore.auth.datetime, date=DATE)
+    def test_dsql_generate_db_auth_token(self):
+        result = _dsql_generate_db_auth_token(
+            self.client, self.hostname, self.action
+        )
+
+        expected_result = (
+            'test.dsql.us-east-1.on.aws/?Action=DbConnect'
+            '&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential='
+            'ACCESS_KEY%2F20241107%2Fus-east-1%2Fdsql%2Faws4_request'
+            '&X-Amz-Date=20241107T173933Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host'
+            '&X-Amz-Security-Token=SESSION_TOKEN&X-Amz-Signature='
+            '57fe03e060348aaa21405c239bf02572bbc911076e94dcd65c12ae569dd8fcf4'
+        )
+
+        # A scheme needs to be appended to the beginning or urlsplit may fail
+        # on certain systems.
+        assert_url_equal('https://' + result, 'https://' + expected_result)
+
+    @FreezeTime(botocore.auth.datetime, date=DATE)
+    def test_dsql_generate_db_connect_auth_token(self):
+        result = dsql_generate_db_connect_auth_token(
+            self.client, self.hostname
+        )
+
+        expected_result = (
+            'test.dsql.us-east-1.on.aws/?Action=DbConnect'
+            '&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential='
+            'ACCESS_KEY%2F20241107%2Fus-east-1%2Fdsql%2Faws4_request'
+            '&X-Amz-Date=20241107T173933Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host'
+            '&X-Amz-Security-Token=SESSION_TOKEN&X-Amz-Signature='
+            '57fe03e060348aaa21405c239bf02572bbc911076e94dcd65c12ae569dd8fcf4'
+        )
+
+        # A scheme needs to be appended to the beginning or urlsplit may fail
+        # on certain systems.
+        assert_url_equal('https://' + result, 'https://' + expected_result)
+
+    @FreezeTime(botocore.auth.datetime, date=DATE)
+    def test_dsql_generate_db_connect_admin_auth_token(self):
+        result = dsql_generate_db_connect_admin_auth_token(
+            self.client, self.hostname
+        )
+
+        expected_result = (
+            'test.dsql.us-east-1.on.aws/?Action=DbConnectAdmin'
+            '&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential='
+            'ACCESS_KEY%2F20241107%2Fus-east-1%2Fdsql%2Faws4_request'
+            '&X-Amz-Date=20241107T173933Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host'
+            '&X-Amz-Security-Token=SESSION_TOKEN&X-Amz-Signature='
+            '5ac084bc7cabccc19a52a5d1b5c24b50d3ce143f43b659bd484c91aaf555e190'
+        )
+
+        # A scheme needs to be appended to the beginning or urlsplit may fail
+        # on certain systems.
+        assert_url_equal('https://' + result, 'https://' + expected_result)
+
+    def test_dsql_generate_db_auth_token_invalid_action(self):
+        with self.assertRaises(ParamValidationError):
+            _dsql_generate_db_auth_token(self.client, self.hostname, "FooBar")

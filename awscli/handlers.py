@@ -76,6 +76,7 @@ from awscli.customizations.paginate import register_pagination
 from awscli.customizations.putmetricdata import register_put_metric_data
 from awscli.customizations.rds import register_rds_modify_split
 from awscli.customizations.rds import register_add_generate_db_auth_token
+from awscli.customizations.dsql import register_dsql_customizations
 from awscli.customizations.rekognition import register_rekognition_detect_labels
 from awscli.customizations.removals import register_removals
 from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
@@ -141,6 +142,7 @@ def awscli_initialize(event_handlers):
     register_rds_modify_split(event_handlers)
     register_rekognition_detect_labels(event_handlers)
     register_add_generate_db_auth_token(event_handlers)
+    register_dsql_customizations(event_handlers)
     register_put_metric_data(event_handlers)
     register_ses_send_email(event_handlers)
     IAMVMFAWrapper(event_handlers)

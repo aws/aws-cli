@@ -2,6 +2,29 @@
 CHANGELOG
 =========
 
+1.36.15
+=======
+
+* api-change:``athena``: Add FEDERATED type to CreateDataCatalog. This creates Athena Data Catalog, AWS Lambda connector, and AWS Glue connection. Create/DeleteDataCatalog returns DataCatalog. Add Status, ConnectionType, and Error to DataCatalog and DataCatalogSummary. Add DeleteCatalogOnly to delete Athena Catalog only.
+* api-change:``bedrock``: Tagging support for Async Invoke resources. Added support for Distillation in CreateModelCustomizationJob API. Support for videoDataDeliveryEnabled flag in invocation logging.
+* api-change:``bedrock-agent``: Releasing SDK for Multi-Agent Collaboration.
+* api-change:``bedrock-agent-runtime``: Releasing SDK for multi agent collaboration
+* api-change:``bedrock-runtime``: Added support for Async Invoke Operations Start, List and Get. Support for invocation logs with `requestMetadata` field in Converse, ConverseStream, Invoke and InvokeStream. Video content blocks in Converse/ConverseStream accept raw bytes or S3 URI.
+* api-change:``cloudwatch``: Support for configuring AiOps investigation as alarm action
+* api-change:``datazone``: Adds support for Connections, ProjectProfiles, and JobRuns APIs. Supports the new Lineage feature at GA. Adjusts optionality of a parameter for DataSource and SubscriptionTarget APIs which may adjust types in some clients.
+* api-change:``dsql``: Add new API operations for Amazon Aurora DSQL. Amazon Aurora DSQL is a serverless, distributed SQL database with virtually unlimited scale, highest availability, and zero infrastructure management.
+* api-change:``dynamodb``: This change adds support for global tables with multi-Region strong consistency (in preview). The UpdateTable API now supports a new attribute MultiRegionConsistency to set consistency when creating global tables. The DescribeTable output now optionally includes the MultiRegionConsistency attribute.
+* api-change:``glue``: This release includes(1)Zero-ETL integration to ingest data from 3P SaaS and DynamoDB to Redshift/Redlake (2)new properties on Connections to enable reuse; new connection APIs for retrieve/preview metadata (3)support of CRUD operations for Multi-catalog (4)support of automatic statistics collections
+* api-change:``lakeformation``: This release added two new LakeFormation Permissions (CREATE_CATALOG, SUPER_USER) and added Id field for CatalogResource. It also added new conditon and expression field.
+* api-change:``qapps``: Add support for 11 new plugins as action cards to help automate repetitive tasks and improve productivity.
+* api-change:``qbusiness``: Amazon Q Business now supports customization options for your web experience, 11 new Plugins, and QuickSight support. Amazon Q index allows software providers to enrich their native generative AI experiences with their customer's enterprise knowledge and user context spanning multiple applications.
+* api-change:``quicksight``: This release includes API needed to support for Unstructured Data in Q in QuickSight Q&A (IDC).
+* api-change:``redshift``: Adds support for Amazon Redshift RegisterNamespace and DeregisterNamespace APIs to share data to AWS Glue Data Catalog.
+* api-change:``redshift-serverless``: Adds support for the ListManagedWorkgroups API to get an overview of existing managed workgroups.
+* api-change:``s3``: Amazon S3 Metadata stores object metadata in read-only, fully managed Apache Iceberg metadata tables that you can query. You can create metadata table configurations for S3 general purpose buckets.
+* api-change:``s3tables``: Amazon S3 Tables deliver the first cloud object store with built-in open table format support, and the easiest way to store tabular data at scale.
+
+
 1.36.14
 =======
 

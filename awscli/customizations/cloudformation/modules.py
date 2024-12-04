@@ -11,6 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+from awscli.customizations.cloudformation import exceptions
+from awscli.customizations.cloudformation import yamlhelper
+import os
+
 RESOURCES = "Resources"
 METADATA = "Metadata"
 OVERRIDES = "Overrides"
@@ -22,6 +26,18 @@ DELETIONPOLICY = "DeletionPolicy"
 UPDATEREPLACEPOLICY = "UpdateReplacePolicy"
 CONDITION = "Condition"
 DEFAULT = "Default"
+NAME = "Name"
+SOURCE = "Source"
+
+
+def read_source(source):
+    "Read the source file and return the content as a string"
+
+    if not isinstance(source, str) or not os.path.isfile(source):
+        raise exceptions.InvalidModulePathError(source=source)
+
+    with open(source, "r") as s:
+        return s.read()
 
 
 class Module:
@@ -53,23 +69,28 @@ class Module:
     Modules can contain other modules, with no limit to the levels of nesting.
     """
 
-    def __init__(self, template, name, source, props, overrides):
-        "Initialize the module with values from the parent template"
+    def __init__(self, template, module_config):
+        """
+        Initialize the module with values from the parent template
+
+        :param template The parent template dictionary
+        :param module_config The configuration from the parent Modules section
+        """
 
         # The parent template dictionary
         self.template = template
 
         # The name of the module, which is used as a logical id prefix
-        self.name = name
+        self.name = module_config[NAME]
 
         # The location of the source for the module, a URI string
-        self.source = source
+        self.source = module_config[SOURCE]
 
         # The Properties from the parent template
-        self.props = props
+        self.props = module_config[PROPERTIES]
 
         # The Overrides from the parent template
-        self.overrides = overrides
+        self.overrides = module_config[OVERRIDES]
 
         # Resources defined in the module
         self.resources = {}
@@ -77,22 +98,43 @@ class Module:
         # Parameters defined in the module
         self.params = {}
 
+    def __str__(self):
+        "Print out a string with module details for logs"
+        return (
+            f"module name: {self.name}, "
+            + f"source: {self.source}, props: {self.props}"
+        )
+
     def process(self):
         """
         Read the module source and return a dictionary that looks like a
         template, with keys such as 'Resources' that have the processed
         elements to be injected into the parent.
+
+        :return: The modified parent template dictionary
         """
-        retval = {}
-        retval[RESOURCES] = {}
 
-        # TODO - Read the module file
+        content = read_source(self.source)
 
-        # TODO - Parse the text as if it were a template
+        module_dict = yamlhelper.yaml_parse(content)
+        if RESOURCES not in module_dict:
+            msg = "Modules must have a Resources section"
+            raise exceptions.InvalidModuleError(msg=msg)
 
-        # TODO - Validate Overrides to make sure the resource exists
+        self.validate_overrides()
 
         # TODO - For each resource in the module:
+        for logical_id, resource in module_dict[RESOURCES].items():
+            self.process_resource(logical_id, resource)
+
+        return self.template
+
+    def validate_overrides(self):
+        "Make sure resources referenced by overrides actually exist"
+        pass  # TODO
+
+    def process_resource(self, logical_id, resource):
+        "Process a single resource"
 
         # TODO - For each property (and property-like attribute),
         #        replace the value if it appears in parent overrides.
@@ -106,4 +148,4 @@ class Module:
         # TODO - Resolve refs, subs, and getatts
         #        (Process module Parameters and parent Properties)
 
-        return retval
+        self.template[RESOURCES]["Prefix?" + logical_id] = resource

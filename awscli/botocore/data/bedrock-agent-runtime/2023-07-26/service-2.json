@@ -37,6 +37,28 @@
       "documentation":"<p>Deletes memory from the specified memory identifier.</p>",
       "idempotent":true
     },
+    "GenerateQuery":{
+      "name":"GenerateQuery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/generateQuery",
+        "responseCode":200
+      },
+      "input":{"shape":"GenerateQueryRequest"},
+      "output":{"shape":"GenerateQueryResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"DependencyFailedException"},
+        {"shape":"BadGatewayException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Generates an SQL query from a natural language query. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-generate-query.html\">Generate a query for structured data</a> in the Amazon Bedrock User Guide.</p>"
+    },
     "GetAgentMemory":{
       "name":"GetAgentMemory",
       "http":{
@@ -1737,6 +1759,56 @@
       "type":"list",
       "member":{"shape":"FunctionDefinition"}
     },
+    "GenerateQueryRequest":{
+      "type":"structure",
+      "required":[
+        "queryGenerationInput",
+        "transformationConfiguration"
+      ],
+      "members":{
+        "queryGenerationInput":{
+          "shape":"QueryGenerationInput",
+          "documentation":"<p>Specifies information about a natural language query to transform into SQL.</p>"
+        },
+        "transformationConfiguration":{
+          "shape":"TransformationConfiguration",
+          "documentation":"<p>Specifies configurations for transforming the natural language query into SQL.</p>"
+        }
+      }
+    },
+    "GenerateQueryResponse":{
+      "type":"structure",
+      "members":{
+        "queries":{
+          "shape":"GeneratedQueries",
+          "documentation":"<p>A list of objects, each of which defines a generated query that can correspond to the natural language queries.</p>"
+        }
+      }
+    },
+    "GeneratedQueries":{
+      "type":"list",
+      "member":{"shape":"GeneratedQuery"},
+      "min":0
+    },
+    "GeneratedQuery":{
+      "type":"structure",
+      "members":{
+        "sql":{
+          "shape":"String",
+          "documentation":"<p>An SQL query that corresponds to the natural language query.</p>"
+        },
+        "type":{
+          "shape":"GeneratedQueryType",
+          "documentation":"<p>The type of transformed query.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a query generated for a natural language query.</p>",
+      "sensitive":true
+    },
+    "GeneratedQueryType":{
+      "type":"string",
+      "enum":["REDSHIFT_SQL"]
+    },
     "GeneratedResponsePart":{
       "type":"structure",
       "members":{
@@ -2485,6 +2557,10 @@
       "documentation":"<p>Contains information about the prompt to optimize.</p>",
       "union":true
     },
+    "InputQueryType":{
+      "type":"string",
+      "enum":["TEXT"]
+    },
     "InputText":{
       "type":"string",
       "max":25000000,
@@ -2838,6 +2914,12 @@
       },
       "documentation":"<p> Details of the knowledge base associated withe inline agent. </p>"
     },
+    "KnowledgeBaseArn":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"^arn:aws(|-cn|-us-gov):bedrock:[a-zA-Z0-9-]*:[0-9]{12}:knowledge-base/[0-9a-zA-Z]+$"
+    },
     "KnowledgeBaseConfiguration":{
       "type":"structure",
       "required":[
@@ -2929,7 +3011,7 @@
       "members":{
         "content":{
           "shape":"RetrievalResultContent",
-          "documentation":"<p>Contains a chunk of text from a data source in the knowledge base.</p>"
+          "documentation":"<p>Contains information about the content of the chunk.</p>"
         },
         "location":{
           "shape":"RetrievalResultLocation",
@@ -3807,6 +3889,30 @@
       },
       "documentation":"<p>Contains the parameters in the request body.</p>"
     },
+    "QueryGenerationInput":{
+      "type":"structure",
+      "required":[
+        "text",
+        "type"
+      ],
+      "members":{
+        "text":{
+          "shape":"QueryGenerationInputTextString",
+          "documentation":"<p>The text of the query.</p>"
+        },
+        "type":{
+          "shape":"InputQueryType",
+          "documentation":"<p>The type of the query.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a natural language query to transform into SQL.</p>",
+      "sensitive":true
+    },
+    "QueryGenerationInputTextString":{
+      "type":"string",
+      "max":20000,
+      "min":1
+    },
     "QueryTransformationConfiguration":{
       "type":"structure",
       "required":["type"],
@@ -3817,6 +3923,10 @@
         }
       },
       "documentation":"<p>To split up the prompt and retrieve multiple sources, set the transformation type to <code>QUERY_DECOMPOSITION</code>.</p>"
+    },
+    "QueryTransformationMode":{
+      "type":"string",
+      "enum":["TEXT_TO_SQL"]
     },
     "QueryTransformationType":{
       "type":"string",
@@ -4286,15 +4396,69 @@
     },
     "RetrievalResultContent":{
       "type":"structure",
-      "required":["text"],
       "members":{
+        "byteContent":{
+          "shape":"String",
+          "documentation":"<p>A data URI with base64-encoded content from the data source. The URI is in the following format: returned in the following format: <code>data:image/jpeg;base64,${base64-encoded string}</code>.</p>"
+        },
+        "row":{
+          "shape":"RetrievalResultContentRow",
+          "documentation":"<p>Specifies information about the rows with the cells to return in retrieval.</p>"
+        },
         "text":{
           "shape":"String",
           "documentation":"<p>The cited text from the data source.</p>"
+        },
+        "type":{
+          "shape":"RetrievalResultContentType",
+          "documentation":"<p>The type of content in the retrieval result.</p>"
         }
       },
-      "documentation":"<p>Contains the cited text from the data source.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax\">Retrieve response</a> – in the <code>content</code> field</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax\">RetrieveAndGenerate response</a> – in the <code>content</code> field</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax\">InvokeAgent response</a> – in the <code>content</code> field</p> </li> </ul>",
+      "documentation":"<p>Contains information about a chunk of text from a data source in the knowledge base. If the result is from a structured data source, the cell in the database and the type of the value is also identified.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax\">Retrieve response</a> – in the <code>content</code> field</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax\">RetrieveAndGenerate response</a> – in the <code>content</code> field</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax\">InvokeAgent response</a> – in the <code>content</code> field</p> </li> </ul>",
       "sensitive":true
+    },
+    "RetrievalResultContentColumn":{
+      "type":"structure",
+      "members":{
+        "columnName":{
+          "shape":"String",
+          "documentation":"<p>The name of the column.</p>"
+        },
+        "columnValue":{
+          "shape":"String",
+          "documentation":"<p>The value in the column.</p>"
+        },
+        "type":{
+          "shape":"RetrievalResultContentColumnType",
+          "documentation":"<p>The data type of the value.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a column with a cell to return in retrieval.</p>",
+      "sensitive":true
+    },
+    "RetrievalResultContentColumnType":{
+      "type":"string",
+      "enum":[
+        "BLOB",
+        "BOOLEAN",
+        "DOUBLE",
+        "NULL",
+        "LONG",
+        "STRING"
+      ]
+    },
+    "RetrievalResultContentRow":{
+      "type":"list",
+      "member":{"shape":"RetrievalResultContentColumn"},
+      "sensitive":true
+    },
+    "RetrievalResultContentType":{
+      "type":"string",
+      "enum":[
+        "TEXT",
+        "IMAGE",
+        "ROW"
+      ]
     },
     "RetrievalResultCustomDocumentLocation":{
       "type":"structure",
@@ -4305,6 +4469,16 @@
         }
       },
       "documentation":"<p>Contains information about the location of a document in a custom data source.</p>"
+    },
+    "RetrievalResultKendraDocumentLocation":{
+      "type":"structure",
+      "members":{
+        "uri":{
+          "shape":"String",
+          "documentation":"<p>The document's uri.</p>"
+        }
+      },
+      "documentation":"<p>The location of a result in Amazon Kendra.</p>"
     },
     "RetrievalResultLocation":{
       "type":"structure",
@@ -4318,6 +4492,10 @@
           "shape":"RetrievalResultCustomDocumentLocation",
           "documentation":"<p>Specifies the location of a document in a custom data source.</p>"
         },
+        "kendraDocumentLocation":{
+          "shape":"RetrievalResultKendraDocumentLocation",
+          "documentation":"<p>The location of a document in Amazon Kendra.</p>"
+        },
         "s3Location":{
           "shape":"RetrievalResultS3Location",
           "documentation":"<p>The S3 data source location.</p>"
@@ -4330,6 +4508,10 @@
           "shape":"RetrievalResultSharePointLocation",
           "documentation":"<p>The SharePoint data source location.</p>"
         },
+        "sqlLocation":{
+          "shape":"RetrievalResultSqlLocation",
+          "documentation":"<p>Specifies information about the SQL query used to retrieve the result.</p>"
+        },
         "type":{
           "shape":"RetrievalResultLocationType",
           "documentation":"<p>The type of data source location.</p>"
@@ -4339,7 +4521,7 @@
           "documentation":"<p>The web URL/URLs data source location.</p>"
         }
       },
-      "documentation":"<p>Contains information about the data source location.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax\">Retrieve response</a> – in the <code>location</code> field</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax\">RetrieveAndGenerate response</a> – in the <code>location</code> field</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax\">InvokeAgent response</a> – in the <code>locatino</code> field</p> </li> </ul>",
+      "documentation":"<p>Contains information about the data source location.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax\">Retrieve response</a> – in the <code>location</code> field</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax\">RetrieveAndGenerate response</a> – in the <code>location</code> field</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax\">InvokeAgent response</a> – in the <code>location</code> field</p> </li> </ul>",
       "sensitive":true
     },
     "RetrievalResultLocationType":{
@@ -4350,7 +4532,9 @@
         "CONFLUENCE",
         "SALESFORCE",
         "SHAREPOINT",
-        "CUSTOM"
+        "CUSTOM",
+        "KENDRA",
+        "SQL"
       ]
     },
     "RetrievalResultMetadata":{
@@ -4400,6 +4584,16 @@
         }
       },
       "documentation":"<p>The SharePoint data source location.</p>"
+    },
+    "RetrievalResultSqlLocation":{
+      "type":"structure",
+      "members":{
+        "query":{
+          "shape":"String",
+          "documentation":"<p>The SQL query used to retrieve the result.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the SQL query used to retrieve the result.</p>"
     },
     "RetrievalResultWebLocation":{
       "type":"structure",
@@ -5038,6 +5232,36 @@
       "documentation":"<p>Contains the part of the generated text that contains a citation, alongside where it begins and ends.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax\">RetrieveAndGenerate response</a> – in the <code>textResponsePart</code> field</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax\">InvokeAgent response</a> – in the <code>textResponsePart</code> field</p> </li> </ul>",
       "sensitive":true
     },
+    "TextToSqlConfiguration":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "knowledgeBaseConfiguration":{
+          "shape":"TextToSqlKnowledgeBaseConfiguration",
+          "documentation":"<p>Specifies configurations for a knowledge base to use in transformation.</p>"
+        },
+        "type":{
+          "shape":"TextToSqlConfigurationType",
+          "documentation":"<p>The type of resource to use in transformation.</p>"
+        }
+      },
+      "documentation":"<p>Contains configurations for transforming text to SQL.</p>"
+    },
+    "TextToSqlConfigurationType":{
+      "type":"string",
+      "enum":["KNOWLEDGE_BASE"]
+    },
+    "TextToSqlKnowledgeBaseConfiguration":{
+      "type":"structure",
+      "required":["knowledgeBaseArn"],
+      "members":{
+        "knowledgeBaseArn":{
+          "shape":"KnowledgeBaseArn",
+          "documentation":"<p>The ARN of the knowledge base</p>"
+        }
+      },
+      "documentation":"<p>Contains configurations for a knowledge base to use in transformation.</p>"
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -5142,6 +5366,21 @@
       "documentation":"<p>Contains information about the agent and session, alongside the agent's reasoning process and results from calling API actions and querying knowledge bases and metadata about the trace. You can use the trace to understand how the agent arrived at the response it provided the customer. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-enablement\">Trace enablement</a>.</p>",
       "event":true,
       "sensitive":true
+    },
+    "TransformationConfiguration":{
+      "type":"structure",
+      "required":["mode"],
+      "members":{
+        "mode":{
+          "shape":"QueryTransformationMode",
+          "documentation":"<p>The mode of the transformation.</p>"
+        },
+        "textToSqlConfiguration":{
+          "shape":"TextToSqlConfiguration",
+          "documentation":"<p>Specifies configurations for transforming text to SQL.</p>"
+        }
+      },
+      "documentation":"<p>Contains configurations for transforming the natural language query into SQL.</p>"
     },
     "Type":{
       "type":"string",

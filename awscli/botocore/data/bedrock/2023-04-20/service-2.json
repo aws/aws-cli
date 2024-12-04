@@ -116,6 +116,26 @@
       "documentation":"<p>Creates an application inference profile to track metrics and costs when invoking a model. To create an application inference profile for a foundation model in one region, specify the ARN of the model in that region. To create an application inference profile for a foundation model across multiple regions, specify the ARN of the system-defined inference profile that contains the regions that you want to route requests to. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">Increase throughput and resilience with cross-region inference in Amazon Bedrock</a>. in the Amazon Bedrock User Guide.</p>",
       "idempotent":true
     },
+    "CreateMarketplaceModelEndpoint":{
+      "name":"CreateMarketplaceModelEndpoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/marketplace-model/endpoints",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateMarketplaceModelEndpointRequest"},
+      "output":{"shape":"CreateMarketplaceModelEndpointResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an endpoint for a model from Amazon Bedrock Marketplace. The endpoint is hosted by Amazon SageMaker.</p>"
+    },
     "CreateModelCopyJob":{
       "name":"CreateModelCopyJob",
       "http":{
@@ -300,6 +320,25 @@
       "documentation":"<p>Deletes an application inference profile. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">Increase throughput and resilience with cross-region inference in Amazon Bedrock</a>. in the Amazon Bedrock User Guide.</p>",
       "idempotent":true
     },
+    "DeleteMarketplaceModelEndpoint":{
+      "name":"DeleteMarketplaceModelEndpoint",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/marketplace-model/endpoints/{endpointArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteMarketplaceModelEndpointRequest"},
+      "output":{"shape":"DeleteMarketplaceModelEndpointResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes an endpoint for a model from Amazon Bedrock Marketplace.</p>",
+      "idempotent":true
+    },
     "DeleteModelInvocationLoggingConfiguration":{
       "name":"DeleteModelInvocationLoggingConfiguration",
       "http":{
@@ -336,6 +375,25 @@
       ],
       "documentation":"<p>Deletes a Provisioned Throughput. You can't delete a Provisioned Throughput before the commitment term is over. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "idempotent":true
+    },
+    "DeregisterMarketplaceModelEndpoint":{
+      "name":"DeregisterMarketplaceModelEndpoint",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/marketplace-model/endpoints/{endpointArn}/registration",
+        "responseCode":200
+      },
+      "input":{"shape":"DeregisterMarketplaceModelEndpointRequest"},
+      "output":{"shape":"DeregisterMarketplaceModelEndpointResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deregisters an endpoint for a model from Amazon Bedrock Marketplace. This operation removes the endpoint's association with Amazon Bedrock but does not delete the underlying Amazon SageMaker endpoint.</p>"
     },
     "GetCustomModel":{
       "name":"GetCustomModel",
@@ -445,6 +503,24 @@
       ],
       "documentation":"<p>Gets information about an inference profile. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">Increase throughput and resilience with cross-region inference in Amazon Bedrock</a>. in the Amazon Bedrock User Guide.</p>"
     },
+    "GetMarketplaceModelEndpoint":{
+      "name":"GetMarketplaceModelEndpoint",
+      "http":{
+        "method":"GET",
+        "requestUri":"/marketplace-model/endpoints/{endpointArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMarketplaceModelEndpointRequest"},
+      "output":{"shape":"GetMarketplaceModelEndpointResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves details about a specific endpoint for a model from Amazon Bedrock Marketplace.</p>"
+    },
     "GetModelCopyJob":{
       "name":"GetModelCopyJob",
       "http":{
@@ -532,6 +608,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Get the current configuration values for model invocation logging.</p>"
+    },
+    "GetPromptRouter":{
+      "name":"GetPromptRouter",
+      "http":{
+        "method":"GET",
+        "requestUri":"/prompt-routers/{promptRouterArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPromptRouterRequest"},
+      "output":{"shape":"GetPromptRouterResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves details about a prompt router.</p>"
     },
     "GetProvisionedModelThroughput":{
       "name":"GetProvisionedModelThroughput",
@@ -654,6 +748,24 @@
       ],
       "documentation":"<p>Returns a list of inference profiles that you can use. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">Increase throughput and resilience with cross-region inference in Amazon Bedrock</a>. in the Amazon Bedrock User Guide.</p>"
     },
+    "ListMarketplaceModelEndpoints":{
+      "name":"ListMarketplaceModelEndpoints",
+      "http":{
+        "method":"GET",
+        "requestUri":"/marketplace-model/endpoints",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMarketplaceModelEndpointsRequest"},
+      "output":{"shape":"ListMarketplaceModelEndpointsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the endpoints for models from Amazon Bedrock Marketplace in your Amazon Web Services account.</p>"
+    },
     "ListModelCopyJobs":{
       "name":"ListModelCopyJobs",
       "http":{
@@ -723,6 +835,23 @@
       ],
       "documentation":"<p>Lists all batch inference jobs in the account. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-view.html\">View details about a batch inference job</a>.</p>"
     },
+    "ListPromptRouters":{
+      "name":"ListPromptRouters",
+      "http":{
+        "method":"GET",
+        "requestUri":"/prompt-routers",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPromptRoutersRequest"},
+      "output":{"shape":"ListPromptRoutersResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a list of prompt routers.</p>"
+    },
     "ListProvisionedModelThroughputs":{
       "name":"ListProvisionedModelThroughputs",
       "http":{
@@ -775,6 +904,25 @@
       ],
       "documentation":"<p>Set the configuration values for model invocation logging.</p>",
       "idempotent":true
+    },
+    "RegisterMarketplaceModelEndpoint":{
+      "name":"RegisterMarketplaceModelEndpoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/marketplace-model/endpoints/{endpointIdentifier}/registration",
+        "responseCode":200
+      },
+      "input":{"shape":"RegisterMarketplaceModelEndpointRequest"},
+      "output":{"shape":"RegisterMarketplaceModelEndpointResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Registers an existing Amazon SageMaker endpoint with Amazon Bedrock Marketplace, allowing it to be used with Amazon Bedrock APIs.</p>"
     },
     "StopEvaluationJob":{
       "name":"StopEvaluationJob",
@@ -892,6 +1040,26 @@
       "documentation":"<p>Updates a guardrail with the values you specify.</p> <ul> <li> <p>Specify a <code>name</code> and optional <code>description</code>.</p> </li> <li> <p>Specify messages for when the guardrail successfully blocks a prompt or a model response in the <code>blockedInputMessaging</code> and <code>blockedOutputsMessaging</code> fields.</p> </li> <li> <p>Specify topics for the guardrail to deny in the <code>topicPolicyConfig</code> object. Each <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GuardrailTopicConfig.html\">GuardrailTopicConfig</a> object in the <code>topicsConfig</code> list pertains to one topic.</p> <ul> <li> <p>Give a <code>name</code> and <code>description</code> so that the guardrail can properly identify the topic.</p> </li> <li> <p>Specify <code>DENY</code> in the <code>type</code> field.</p> </li> <li> <p>(Optional) Provide up to five prompts that you would categorize as belonging to the topic in the <code>examples</code> list.</p> </li> </ul> </li> <li> <p>Specify filter strengths for the harmful categories defined in Amazon Bedrock in the <code>contentPolicyConfig</code> object. Each <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GuardrailContentFilterConfig.html\">GuardrailContentFilterConfig</a> object in the <code>filtersConfig</code> list pertains to a harmful category. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-content-filters\">Content filters</a>. For more information about the fields in a content filter, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GuardrailContentFilterConfig.html\">GuardrailContentFilterConfig</a>.</p> <ul> <li> <p>Specify the category in the <code>type</code> field.</p> </li> <li> <p>Specify the strength of the filter for prompts in the <code>inputStrength</code> field and for model responses in the <code>strength</code> field of the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GuardrailContentFilterConfig.html\">GuardrailContentFilterConfig</a>.</p> </li> </ul> </li> <li> <p>(Optional) For security, include the ARN of a KMS key in the <code>kmsKeyId</code> field.</p> </li> </ul>",
       "idempotent":true
     },
+    "UpdateMarketplaceModelEndpoint":{
+      "name":"UpdateMarketplaceModelEndpoint",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/marketplace-model/endpoints/{endpointArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateMarketplaceModelEndpointRequest"},
+      "output":{"shape":"UpdateMarketplaceModelEndpointResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates the configuration of an existing endpoint for a model from Amazon Bedrock Marketplace.</p>"
+    },
     "UpdateProvisionedModelThroughput":{
       "name":"UpdateProvisionedModelThroughput",
       "http":{
@@ -913,6 +1081,7 @@
     }
   },
   "shapes":{
+    "AcceptEula":{"type":"boolean"},
     "AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -951,6 +1120,11 @@
         "ModelEvaluation",
         "RagEvaluation"
       ]
+    },
+    "Arn":{
+      "type":"string",
+      "max":2048,
+      "min":0
     },
     "AutomatedEvaluationConfig":{
       "type":"structure",
@@ -1399,6 +1573,51 @@
         }
       }
     },
+    "CreateMarketplaceModelEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "modelSourceIdentifier",
+        "endpointConfig",
+        "endpointName"
+      ],
+      "members":{
+        "modelSourceIdentifier":{
+          "shape":"ModelSourceIdentifier",
+          "documentation":"<p>The ARN of the model from Amazon Bedrock Marketplace that you want to deploy to the endpoint.</p>"
+        },
+        "endpointConfig":{
+          "shape":"EndpointConfig",
+          "documentation":"<p>The configuration for the endpoint, including the number and type of instances to use.</p>"
+        },
+        "acceptEula":{
+          "shape":"AcceptEula",
+          "documentation":"<p>Indicates whether you accept the end-user license agreement (EULA) for the model. Set to <code>true</code> to accept the EULA.</p>"
+        },
+        "endpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint. This name must be unique within your Amazon Web Services account and region.</p>"
+        },
+        "clientRequestToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This token is listed as not required because Amazon Web Services SDKs automatically generate it for you and set this parameter. If you're not using the Amazon Web Services SDK or the CLI, you must provide this token or the action will fail.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of key-value pairs to apply to the underlying Amazon SageMaker endpoint. You can use these tags to organize and identify your Amazon Web Services resources.</p>"
+        }
+      }
+    },
+    "CreateMarketplaceModelEndpointResponse":{
+      "type":"structure",
+      "required":["marketplaceModelEndpoint"],
+      "members":{
+        "marketplaceModelEndpoint":{
+          "shape":"MarketplaceModelEndpoint",
+          "documentation":"<p>Details about the created endpoint.</p>"
+        }
+      }
+    },
     "CreateModelCopyJobRequest":{
       "type":"structure",
       "required":[
@@ -1834,6 +2053,23 @@
       "members":{
       }
     },
+    "DeleteMarketplaceModelEndpointRequest":{
+      "type":"structure",
+      "required":["endpointArn"],
+      "members":{
+        "endpointArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint you want to delete.</p>",
+          "location":"uri",
+          "locationName":"endpointArn"
+        }
+      }
+    },
+    "DeleteMarketplaceModelEndpointResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteModelInvocationLoggingConfigurationRequest":{
       "type":"structure",
       "members":{
@@ -1861,6 +2097,23 @@
       "members":{
       }
     },
+    "DeregisterMarketplaceModelEndpointRequest":{
+      "type":"structure",
+      "required":["endpointArn"],
+      "members":{
+        "endpointArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint you want to deregister.</p>",
+          "location":"uri",
+          "locationName":"endpointArn"
+        }
+      }
+    },
+    "DeregisterMarketplaceModelEndpointResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DistillationConfig":{
       "type":"structure",
       "required":["teacherModelConfig"],
@@ -1871,6 +2124,22 @@
         }
       },
       "documentation":"<p>Settings for distilling a foundation model into a smaller and more efficient model.</p>"
+    },
+    "EndpointConfig":{
+      "type":"structure",
+      "members":{
+        "sageMaker":{
+          "shape":"SageMakerEndpoint",
+          "documentation":"<p>The configuration specific to Amazon SageMaker for the endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the configuration for the endpoint.</p>",
+      "union":true
+    },
+    "EndpointName":{
+      "type":"string",
+      "max":30,
+      "min":1
     },
     "ErrorMessage":{
       "type":"string",
@@ -2081,7 +2350,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:((:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:provisioned-model/[a-z0-9]{12})|([0-9]{12}:imported-model/[a-z0-9]{12})|([0-9]{12}:application-inference-profile/[a-z0-9]{12})|([0-9]{12}:inference-profile/(([a-z]{2}.)[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))))|(([a-z]{2}[.]{1})([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))"
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:((:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:provisioned-model/[a-z0-9]{12})|([0-9]{12}:imported-model/[a-z0-9]{12})|([0-9]{12}:application-inference-profile/[a-z0-9]{12})|([0-9]{12}:inference-profile/(([a-z-]{2,8}.)[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))|([0-9]{12}:default-prompt-router/[a-zA-Z0-9-:.]+)))|(([a-z]{2}[.]{1})([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|arn:aws(-[^:]+)?:sagemaker:[a-z0-9-]{1,20}:[0-9]{12}:endpoint/[a-z0-9-]{1,63}"
     },
     "EvaluationModelIdentifiers":{
       "type":"list",
@@ -2888,6 +3157,27 @@
         }
       }
     },
+    "GetMarketplaceModelEndpointRequest":{
+      "type":"structure",
+      "required":["endpointArn"],
+      "members":{
+        "endpointArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint you want to get information about.</p>",
+          "location":"uri",
+          "locationName":"endpointArn"
+        }
+      }
+    },
+    "GetMarketplaceModelEndpointResponse":{
+      "type":"structure",
+      "members":{
+        "marketplaceModelEndpoint":{
+          "shape":"MarketplaceModelEndpoint",
+          "documentation":"<p>Details about the requested endpoint.</p>"
+        }
+      }
+    },
     "GetModelCopyJobRequest":{
       "type":"structure",
       "required":["jobArn"],
@@ -3241,6 +3531,72 @@
         }
       }
     },
+    "GetPromptRouterRequest":{
+      "type":"structure",
+      "required":["promptRouterArn"],
+      "members":{
+        "promptRouterArn":{
+          "shape":"PromptRouterArn",
+          "documentation":"<p>The prompt router's ARN</p>",
+          "location":"uri",
+          "locationName":"promptRouterArn"
+        }
+      }
+    },
+    "GetPromptRouterResponse":{
+      "type":"structure",
+      "required":[
+        "promptRouterName",
+        "routingCriteria",
+        "promptRouterArn",
+        "models",
+        "fallbackModel",
+        "status",
+        "type"
+      ],
+      "members":{
+        "promptRouterName":{
+          "shape":"PromptRouterName",
+          "documentation":"<p>The router's name.</p>"
+        },
+        "routingCriteria":{
+          "shape":"RoutingCriteria",
+          "documentation":"<p>The router's routing criteria.</p>"
+        },
+        "description":{
+          "shape":"PromptRouterDescription",
+          "documentation":"<p>The router's description.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the router was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the router was updated.</p>"
+        },
+        "promptRouterArn":{
+          "shape":"PromptRouterArn",
+          "documentation":"<p>The prompt router's ARN</p>"
+        },
+        "models":{
+          "shape":"PromptRouterTargetModels",
+          "documentation":"<p>The router's models.</p>"
+        },
+        "fallbackModel":{
+          "shape":"PromptRouterTargetModel",
+          "documentation":"<p>The router's fallback model.</p>"
+        },
+        "status":{
+          "shape":"PromptRouterStatus",
+          "documentation":"<p>The router's status.</p>"
+        },
+        "type":{
+          "shape":"PromptRouterType",
+          "documentation":"<p>The router's type.</p>"
+        }
+      }
+    },
     "GetProvisionedModelThroughputRequest":{
       "type":"structure",
       "required":["provisionedModelId"],
@@ -3383,6 +3739,14 @@
         "outputStrength":{
           "shape":"GuardrailFilterStrength",
           "documentation":"<p>The strength of the content filter to apply to model responses. As you increase the filter strength, the likelihood of filtering harmful content increases and the probability of seeing harmful content in your application reduces.</p>"
+        },
+        "inputModalities":{
+          "shape":"GuardrailModalities",
+          "documentation":"<p>The input modalities selected for the guardrail content filter.</p>"
+        },
+        "outputModalities":{
+          "shape":"GuardrailModalities",
+          "documentation":"<p>The output modalities selected for the guardrail content filter.</p>"
         }
       },
       "documentation":"<p>Contains filter strengths for harmful content. Guardrails support the following content filters to detect and filter harmful user inputs and FM-generated outputs.</p> <ul> <li> <p> <b>Hate</b> – Describes language or a statement that discriminates, criticizes, insults, denounces, or dehumanizes a person or group on the basis of an identity (such as race, ethnicity, gender, religion, sexual orientation, ability, and national origin).</p> </li> <li> <p> <b>Insults</b> – Describes language or a statement that includes demeaning, humiliating, mocking, insulting, or belittling language. This type of language is also labeled as bullying.</p> </li> <li> <p> <b>Sexual</b> – Describes language or a statement that indicates sexual interest, activity, or arousal using direct or indirect references to body parts, physical traits, or sex.</p> </li> <li> <p> <b>Violence</b> – Describes language or a statement that includes glorification of or threats to inflict physical pain, hurt, or injury toward a person, group or thing.</p> </li> </ul> <p>Content filtering depends on the confidence classification of user inputs and FM responses across each of the four harmful categories. All input and output statements are classified into one of four confidence levels (NONE, LOW, MEDIUM, HIGH) for each harmful category. For example, if a statement is classified as <i>Hate</i> with HIGH confidence, the likelihood of the statement representing hateful content is high. A single statement can be classified across multiple categories with varying confidence levels. For example, a single statement can be classified as <i>Hate</i> with HIGH confidence, <i>Insults</i> with LOW confidence, <i>Sexual</i> with NONE confidence, and <i>Violence</i> with MEDIUM confidence.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-filters.html\">Guardrails content filters</a>.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetGuardrail.html#API_GetGuardrail_ResponseSyntax\">GetGuardrail response body</a> </p> </li> </ul>"
@@ -3406,6 +3770,14 @@
         "outputStrength":{
           "shape":"GuardrailFilterStrength",
           "documentation":"<p>The strength of the content filter to apply to model responses. As you increase the filter strength, the likelihood of filtering harmful content increases and the probability of seeing harmful content in your application reduces.</p>"
+        },
+        "inputModalities":{
+          "shape":"GuardrailModalities",
+          "documentation":"<p>The input modalities selected for the guardrail content filter configuration.</p>"
+        },
+        "outputModalities":{
+          "shape":"GuardrailModalities",
+          "documentation":"<p>The output modalities selected for the guardrail content filter configuration.</p>"
         }
       },
       "documentation":"<p>Contains filter strengths for harmful content. Guardrails support the following content filters to detect and filter harmful user inputs and FM-generated outputs.</p> <ul> <li> <p> <b>Hate</b> – Describes language or a statement that discriminates, criticizes, insults, denounces, or dehumanizes a person or group on the basis of an identity (such as race, ethnicity, gender, religion, sexual orientation, ability, and national origin).</p> </li> <li> <p> <b>Insults</b> – Describes language or a statement that includes demeaning, humiliating, mocking, insulting, or belittling language. This type of language is also labeled as bullying.</p> </li> <li> <p> <b>Sexual</b> – Describes language or a statement that indicates sexual interest, activity, or arousal using direct or indirect references to body parts, physical traits, or sex.</p> </li> <li> <p> <b>Violence</b> – Describes language or a statement that includes glorification of or threats to inflict physical pain, hurt, or injury toward a person, group or thing.</p> </li> </ul> <p>Content filtering depends on the confidence classification of user inputs and FM responses across each of the four harmful categories. All input and output statements are classified into one of four confidence levels (NONE, LOW, MEDIUM, HIGH) for each harmful category. For example, if a statement is classified as <i>Hate</i> with HIGH confidence, the likelihood of the statement representing hateful content is high. A single statement can be classified across multiple categories with varying confidence levels. For example, a single statement can be classified as <i>Hate</i> with HIGH confidence, <i>Insults</i> with LOW confidence, <i>Sexual</i> with NONE confidence, and <i>Violence</i> with MEDIUM confidence.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-filters.html\">Guardrails content filters</a>.</p>"
@@ -3618,6 +3990,20 @@
       "type":"string",
       "enum":["PROFANITY"]
     },
+    "GuardrailModalities":{
+      "type":"list",
+      "member":{"shape":"GuardrailModality"},
+      "max":2,
+      "min":1
+    },
+    "GuardrailModality":{
+      "type":"string",
+      "enum":[
+        "TEXT",
+        "IMAGE"
+      ],
+      "sensitive":true
+    },
     "GuardrailName":{
       "type":"string",
       "max":50,
@@ -3648,7 +4034,7 @@
       "members":{
         "type":{
           "shape":"GuardrailPiiEntityType",
-          "documentation":"<p>The type of PII entity. For exampvle, Social Security Number.</p>"
+          "documentation":"<p>The type of PII entity. For example, Social Security Number.</p>"
         },
         "action":{
           "shape":"GuardrailSensitiveInformationAction",
@@ -3666,7 +4052,7 @@
       "members":{
         "type":{
           "shape":"GuardrailPiiEntityType",
-          "documentation":"<p>Configure guardrail type when the PII entity is detected.</p> <p>The following PIIs are used to block or mask sensitive information:</p> <ul> <li> <p> <b>General</b> </p> <ul> <li> <p> <b>ADDRESS</b> </p> <p>A physical address, such as \"100 Main Street, Anytown, USA\" or \"Suite #12, Building 123\". An address can include information such as the street, building, location, city, state, country, county, zip code, precinct, and neighborhood. </p> </li> <li> <p> <b>AGE</b> </p> <p>An individual's age, including the quantity and unit of time. For example, in the phrase \"I am 40 years old,\" Guarrails recognizes \"40 years\" as an age. </p> </li> <li> <p> <b>NAME</b> </p> <p>An individual's name. This entity type does not include titles, such as Dr., Mr., Mrs., or Miss. guardrails doesn't apply this entity type to names that are part of organizations or addresses. For example, guardrails recognizes the \"John Doe Organization\" as an organization, and it recognizes \"Jane Doe Street\" as an address. </p> </li> <li> <p> <b>EMAIL</b> </p> <p>An email address, such as <i>marymajor@email.com</i>.</p> </li> <li> <p> <b>PHONE</b> </p> <p>A phone number. This entity type also includes fax and pager numbers. </p> </li> <li> <p> <b>USERNAME</b> </p> <p>A user name that identifies an account, such as a login name, screen name, nick name, or handle. </p> </li> <li> <p> <b>PASSWORD</b> </p> <p>An alphanumeric string that is used as a password, such as \"*<i>very20special#pass*</i>\". </p> </li> <li> <p> <b>DRIVER_ID</b> </p> <p>The number assigned to a driver's license, which is an official document permitting an individual to operate one or more motorized vehicles on a public road. A driver's license number consists of alphanumeric characters. </p> </li> <li> <p> <b>LICENSE_PLATE</b> </p> <p>A license plate for a vehicle is issued by the state or country where the vehicle is registered. The format for passenger vehicles is typically five to eight digits, consisting of upper-case letters and numbers. The format varies depending on the location of the issuing state or country. </p> </li> <li> <p> <b>VEHICLE_IDENTIFICATION_NUMBER</b> </p> <p>A Vehicle Identification Number (VIN) uniquely identifies a vehicle. VIN content and format are defined in the <i>ISO 3779</i> specification. Each country has specific codes and formats for VINs. </p> </li> </ul> </li> <li> <p> <b>Finance</b> </p> <ul> <li> <p> <b>REDIT_DEBIT_CARD_CVV</b> </p> <p>A three-digit card verification code (CVV) that is present on VISA, MasterCard, and Discover credit and debit cards. For American Express credit or debit cards, the CVV is a four-digit numeric code. </p> </li> <li> <p> <b>CREDIT_DEBIT_CARD_EXPIRY</b> </p> <p>The expiration date for a credit or debit card. This number is usually four digits long and is often formatted as <i>month/year</i> or <i>MM/YY</i>. Guardrails recognizes expiration dates such as <i>01/21</i>, <i>01/2021</i>, and <i>Jan 2021</i>. </p> </li> <li> <p> <b>CREDIT_DEBIT_CARD_NUMBER</b> </p> <p>The number for a credit or debit card. These numbers can vary from 13 to 16 digits in length. However, Amazon Comprehend also recognizes credit or debit card numbers when only the last four digits are present. </p> </li> <li> <p> <b>PIN</b> </p> <p>A four-digit personal identification number (PIN) with which you can access your bank account. </p> </li> <li> <p> <b>INTERNATIONAL_BANK_ACCOUNT_NUMBER</b> </p> <p>An International Bank Account Number has specific formats in each country. For more information, see <a href=\"https://www.iban.com/structure\">www.iban.com/structure</a>.</p> </li> <li> <p> <b>SWIFT_CODE</b> </p> <p>A SWIFT code is a standard format of Bank Identifier Code (BIC) used to specify a particular bank or branch. Banks use these codes for money transfers such as international wire transfers.</p> <p>SWIFT codes consist of eight or 11 characters. The 11-digit codes refer to specific branches, while eight-digit codes (or 11-digit codes ending in 'XXX') refer to the head or primary office.</p> </li> </ul> </li> <li> <p> <b>IT</b> </p> <ul> <li> <p> <b>IP_ADDRESS</b> </p> <p>An IPv4 address, such as <i>198.51.100.0</i>. </p> </li> <li> <p> <b>MAC_ADDRESS</b> </p> <p>A <i>media access control</i> (MAC) address is a unique identifier assigned to a network interface controller (NIC). </p> </li> <li> <p> <b>URL</b> </p> <p>A web address, such as <i>www.example.com</i>. </p> </li> <li> <p> <b>AWS_ACCESS_KEY</b> </p> <p>A unique identifier that's associated with a secret access key; you use the access key ID and secret access key to sign programmatic Amazon Web Services requests cryptographically. </p> </li> <li> <p> <b>AWS_SECRET_KEY</b> </p> <p>A unique identifier that's associated with an access key. You use the access key ID and secret access key to sign programmatic Amazon Web Services requests cryptographically. </p> </li> </ul> </li> <li> <p> <b>USA specific</b> </p> <ul> <li> <p> <b>US_BANK_ACCOUNT_NUMBER</b> </p> <p>A US bank account number, which is typically 10 to 12 digits long. </p> </li> <li> <p> <b>US_BANK_ROUTING_NUMBER</b> </p> <p>A US bank account routing number. These are typically nine digits long, </p> </li> <li> <p> <b>US_INDIVIDUAL_TAX_IDENTIFICATION_NUMBER</b> </p> <p>A US Individual Taxpayer Identification Number (ITIN) is a nine-digit number that starts with a \"9\" and contain a \"7\" or \"8\" as the fourth digit. An ITIN can be formatted with a space or a dash after the third and forth digits. </p> </li> <li> <p> <b>US_PASSPORT_NUMBER</b> </p> <p>A US passport number. Passport numbers range from six to nine alphanumeric characters. </p> </li> <li> <p> <b>US_SOCIAL_SECURITY_NUMBER</b> </p> <p>A US Social Security Number (SSN) is a nine-digit number that is issued to US citizens, permanent residents, and temporary working residents. </p> </li> </ul> </li> <li> <p> <b>Canada specific</b> </p> <ul> <li> <p> <b>CA_HEALTH_NUMBER</b> </p> <p>A Canadian Health Service Number is a 10-digit unique identifier, required for individuals to access healthcare benefits. </p> </li> <li> <p> <b>CA_SOCIAL_INSURANCE_NUMBER</b> </p> <p>A Canadian Social Insurance Number (SIN) is a nine-digit unique identifier, required for individuals to access government programs and benefits.</p> <p>The SIN is formatted as three groups of three digits, such as <i>123-456-789</i>. A SIN can be validated through a simple check-digit process called the <a href=\"https://www.wikipedia.org/wiki/Luhn_algorithm\">Luhn algorithm</a>.</p> </li> </ul> </li> <li> <p> <b>UK Specific</b> </p> <ul> <li> <p> <b>UK_NATIONAL_HEALTH_SERVICE_NUMBER</b> </p> <p>A UK National Health Service Number is a 10-17 digit number, such as <i>485 777 3456</i>. The current system formats the 10-digit number with spaces after the third and sixth digits. The final digit is an error-detecting checksum.</p> </li> <li> <p> <b>UK_NATIONAL_INSURANCE_NUMBER</b> </p> <p>A UK National Insurance Number (NINO) provides individuals with access to National Insurance (social security) benefits. It is also used for some purposes in the UK tax system.</p> <p>The number is nine digits long and starts with two letters, followed by six numbers and one letter. A NINO can be formatted with a space or a dash after the two letters and after the second, forth, and sixth digits.</p> </li> <li> <p> <b>UK_UNIQUE_TAXPAYER_REFERENCE_NUMBER</b> </p> <p>A UK Unique Taxpayer Reference (UTR) is a 10-digit number that identifies a taxpayer or a business. </p> </li> </ul> </li> <li> <p> <b>Custom</b> </p> <ul> <li> <p> <b>Regex filter</b> - You can use a regular expressions to define patterns for a guardrail to recognize and act upon such as serial number, booking ID etc..</p> </li> </ul> </li> </ul>"
+          "documentation":"<p>Configure guardrail type when the PII entity is detected.</p> <p>The following PIIs are used to block or mask sensitive information:</p> <ul> <li> <p> <b>General</b> </p> <ul> <li> <p> <b>ADDRESS</b> </p> <p>A physical address, such as \"100 Main Street, Anytown, USA\" or \"Suite #12, Building 123\". An address can include information such as the street, building, location, city, state, country, county, zip code, precinct, and neighborhood. </p> </li> <li> <p> <b>AGE</b> </p> <p>An individual's age, including the quantity and unit of time. For example, in the phrase \"I am 40 years old,\" Guardrails recognizes \"40 years\" as an age. </p> </li> <li> <p> <b>NAME</b> </p> <p>An individual's name. This entity type does not include titles, such as Dr., Mr., Mrs., or Miss. guardrails doesn't apply this entity type to names that are part of organizations or addresses. For example, guardrails recognizes the \"John Doe Organization\" as an organization, and it recognizes \"Jane Doe Street\" as an address. </p> </li> <li> <p> <b>EMAIL</b> </p> <p>An email address, such as <i>marymajor@email.com</i>.</p> </li> <li> <p> <b>PHONE</b> </p> <p>A phone number. This entity type also includes fax and pager numbers. </p> </li> <li> <p> <b>USERNAME</b> </p> <p>A user name that identifies an account, such as a login name, screen name, nick name, or handle. </p> </li> <li> <p> <b>PASSWORD</b> </p> <p>An alphanumeric string that is used as a password, such as \"*<i>very20special#pass*</i>\". </p> </li> <li> <p> <b>DRIVER_ID</b> </p> <p>The number assigned to a driver's license, which is an official document permitting an individual to operate one or more motorized vehicles on a public road. A driver's license number consists of alphanumeric characters. </p> </li> <li> <p> <b>LICENSE_PLATE</b> </p> <p>A license plate for a vehicle is issued by the state or country where the vehicle is registered. The format for passenger vehicles is typically five to eight digits, consisting of upper-case letters and numbers. The format varies depending on the location of the issuing state or country. </p> </li> <li> <p> <b>VEHICLE_IDENTIFICATION_NUMBER</b> </p> <p>A Vehicle Identification Number (VIN) uniquely identifies a vehicle. VIN content and format are defined in the <i>ISO 3779</i> specification. Each country has specific codes and formats for VINs. </p> </li> </ul> </li> <li> <p> <b>Finance</b> </p> <ul> <li> <p> <b>CREDIT_DEBIT_CARD_CVV</b> </p> <p>A three-digit card verification code (CVV) that is present on VISA, MasterCard, and Discover credit and debit cards. For American Express credit or debit cards, the CVV is a four-digit numeric code. </p> </li> <li> <p> <b>CREDIT_DEBIT_CARD_EXPIRY</b> </p> <p>The expiration date for a credit or debit card. This number is usually four digits long and is often formatted as <i>month/year</i> or <i>MM/YY</i>. Guardrails recognizes expiration dates such as <i>01/21</i>, <i>01/2021</i>, and <i>Jan 2021</i>. </p> </li> <li> <p> <b>CREDIT_DEBIT_CARD_NUMBER</b> </p> <p>The number for a credit or debit card. These numbers can vary from 13 to 16 digits in length. However, Amazon Comprehend also recognizes credit or debit card numbers when only the last four digits are present. </p> </li> <li> <p> <b>PIN</b> </p> <p>A four-digit personal identification number (PIN) with which you can access your bank account. </p> </li> <li> <p> <b>INTERNATIONAL_BANK_ACCOUNT_NUMBER</b> </p> <p>An International Bank Account Number has specific formats in each country. For more information, see <a href=\"https://www.iban.com/structure\">www.iban.com/structure</a>.</p> </li> <li> <p> <b>SWIFT_CODE</b> </p> <p>A SWIFT code is a standard format of Bank Identifier Code (BIC) used to specify a particular bank or branch. Banks use these codes for money transfers such as international wire transfers.</p> <p>SWIFT codes consist of eight or 11 characters. The 11-digit codes refer to specific branches, while eight-digit codes (or 11-digit codes ending in 'XXX') refer to the head or primary office.</p> </li> </ul> </li> <li> <p> <b>IT</b> </p> <ul> <li> <p> <b>IP_ADDRESS</b> </p> <p>An IPv4 address, such as <i>198.51.100.0</i>. </p> </li> <li> <p> <b>MAC_ADDRESS</b> </p> <p>A <i>media access control</i> (MAC) address is a unique identifier assigned to a network interface controller (NIC). </p> </li> <li> <p> <b>URL</b> </p> <p>A web address, such as <i>www.example.com</i>. </p> </li> <li> <p> <b>AWS_ACCESS_KEY</b> </p> <p>A unique identifier that's associated with a secret access key; you use the access key ID and secret access key to sign programmatic Amazon Web Services requests cryptographically. </p> </li> <li> <p> <b>AWS_SECRET_KEY</b> </p> <p>A unique identifier that's associated with an access key. You use the access key ID and secret access key to sign programmatic Amazon Web Services requests cryptographically. </p> </li> </ul> </li> <li> <p> <b>USA specific</b> </p> <ul> <li> <p> <b>US_BANK_ACCOUNT_NUMBER</b> </p> <p>A US bank account number, which is typically 10 to 12 digits long. </p> </li> <li> <p> <b>US_BANK_ROUTING_NUMBER</b> </p> <p>A US bank account routing number. These are typically nine digits long, </p> </li> <li> <p> <b>US_INDIVIDUAL_TAX_IDENTIFICATION_NUMBER</b> </p> <p>A US Individual Taxpayer Identification Number (ITIN) is a nine-digit number that starts with a \"9\" and contain a \"7\" or \"8\" as the fourth digit. An ITIN can be formatted with a space or a dash after the third and forth digits. </p> </li> <li> <p> <b>US_PASSPORT_NUMBER</b> </p> <p>A US passport number. Passport numbers range from six to nine alphanumeric characters. </p> </li> <li> <p> <b>US_SOCIAL_SECURITY_NUMBER</b> </p> <p>A US Social Security Number (SSN) is a nine-digit number that is issued to US citizens, permanent residents, and temporary working residents. </p> </li> </ul> </li> <li> <p> <b>Canada specific</b> </p> <ul> <li> <p> <b>CA_HEALTH_NUMBER</b> </p> <p>A Canadian Health Service Number is a 10-digit unique identifier, required for individuals to access healthcare benefits. </p> </li> <li> <p> <b>CA_SOCIAL_INSURANCE_NUMBER</b> </p> <p>A Canadian Social Insurance Number (SIN) is a nine-digit unique identifier, required for individuals to access government programs and benefits.</p> <p>The SIN is formatted as three groups of three digits, such as <i>123-456-789</i>. A SIN can be validated through a simple check-digit process called the <a href=\"https://www.wikipedia.org/wiki/Luhn_algorithm\">Luhn algorithm</a>.</p> </li> </ul> </li> <li> <p> <b>UK Specific</b> </p> <ul> <li> <p> <b>UK_NATIONAL_HEALTH_SERVICE_NUMBER</b> </p> <p>A UK National Health Service Number is a 10-17 digit number, such as <i>485 777 3456</i>. The current system formats the 10-digit number with spaces after the third and sixth digits. The final digit is an error-detecting checksum.</p> </li> <li> <p> <b>UK_NATIONAL_INSURANCE_NUMBER</b> </p> <p>A UK National Insurance Number (NINO) provides individuals with access to National Insurance (social security) benefits. It is also used for some purposes in the UK tax system.</p> <p>The number is nine digits long and starts with two letters, followed by six numbers and one letter. A NINO can be formatted with a space or a dash after the two letters and after the second, forth, and sixth digits.</p> </li> <li> <p> <b>UK_UNIQUE_TAXPAYER_REFERENCE_NUMBER</b> </p> <p>A UK Unique Taxpayer Reference (UTR) is a 10-digit number that identifies a taxpayer or a business. </p> </li> </ul> </li> <li> <p> <b>Custom</b> </p> <ul> <li> <p> <b>Regex filter</b> - You can use a regular expressions to define patterns for a guardrail to recognize and act upon such as serial number, booking ID etc..</p> </li> </ul> </li> </ul>"
         },
         "action":{
           "shape":"GuardrailSensitiveInformationAction",
@@ -4382,6 +4768,16 @@
       "type":"list",
       "member":{"shape":"InferenceType"}
     },
+    "InstanceCount":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "InstanceType":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
     "InstructSupported":{
       "type":"boolean",
       "box":true
@@ -4870,6 +5266,42 @@
         }
       }
     },
+    "ListMarketplaceModelEndpointsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. If more results are available, the operation returns a <code>NextToken</code> value.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of results. You receive this token from a previous <code>ListMarketplaceModelEndpoints</code> call.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "modelSourceEquals":{
+          "shape":"ModelSourceIdentifier",
+          "documentation":"<p>If specified, only endpoints for the given model source identifier are returned.</p>",
+          "location":"querystring",
+          "locationName":"modelSourceIdentifier"
+        }
+      }
+    },
+    "ListMarketplaceModelEndpointsResponse":{
+      "type":"structure",
+      "members":{
+        "marketplaceModelEndpoints":{
+          "shape":"MarketplaceModelEndpointSummaries",
+          "documentation":"<p>An array of endpoint summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of results. Use this token to get the next set of results.</p>"
+        }
+      }
+    },
     "ListModelCopyJobsRequest":{
       "type":"structure",
       "members":{
@@ -5146,6 +5578,36 @@
         }
       }
     },
+    "ListPromptRoutersRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of prompt routers to return in one page of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListPromptRoutersResponse":{
+      "type":"structure",
+      "members":{
+        "promptRouterSummaries":{
+          "shape":"PromptRouterSummaries",
+          "documentation":"<p>A list of prompt router summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>"
+        }
+      }
+    },
     "ListProvisionedModelThroughputsRequest":{
       "type":"structure",
       "members":{
@@ -5271,6 +5733,98 @@
         }
       },
       "documentation":"<p>Configuration fields for invocation logging.</p>"
+    },
+    "MarketplaceModelEndpoint":{
+      "type":"structure",
+      "required":[
+        "endpointArn",
+        "modelSourceIdentifier",
+        "createdAt",
+        "updatedAt",
+        "endpointConfig",
+        "endpointStatus"
+      ],
+      "members":{
+        "endpointArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint.</p>"
+        },
+        "modelSourceIdentifier":{
+          "shape":"ModelSourceIdentifier",
+          "documentation":"<p>The ARN of the model from Amazon Bedrock Marketplace that is deployed on this endpoint.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The overall status of the endpoint in Amazon Bedrock Marketplace (e.g., ACTIVE, INACTIVE).</p>"
+        },
+        "statusMessage":{
+          "shape":"String",
+          "documentation":"<p>Additional information about the overall status, if available.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the endpoint was registered.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the endpoint was last updated.</p>"
+        },
+        "endpointConfig":{
+          "shape":"EndpointConfig",
+          "documentation":"<p>The configuration of the endpoint, including the number and type of instances used.</p>"
+        },
+        "endpointStatus":{
+          "shape":"String",
+          "documentation":"<p>The current status of the endpoint (e.g., Creating, InService, Updating, Failed).</p>"
+        },
+        "endpointStatusMessage":{
+          "shape":"String",
+          "documentation":"<p>Additional information about the endpoint status, if available.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about an endpoint for a model from Amazon Bedrock Marketplace.</p>"
+    },
+    "MarketplaceModelEndpointSummaries":{
+      "type":"list",
+      "member":{"shape":"MarketplaceModelEndpointSummary"},
+      "max":1000,
+      "min":0
+    },
+    "MarketplaceModelEndpointSummary":{
+      "type":"structure",
+      "required":[
+        "endpointArn",
+        "modelSourceIdentifier",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "endpointArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint.</p>"
+        },
+        "modelSourceIdentifier":{
+          "shape":"ModelSourceIdentifier",
+          "documentation":"<p>The ARN of the model from Amazon Bedrock Marketplace that is deployed on this endpoint.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The overall status of the endpoint in Amazon Bedrock Marketplace.</p>"
+        },
+        "statusMessage":{
+          "shape":"String",
+          "documentation":"<p>Additional information about the overall status, if available.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the endpoint was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the endpoint was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Provides a summary of an endpoint for a model from Amazon Bedrock Marketplace.</p>"
     },
     "MaxResults":{
       "type":"integer",
@@ -5766,6 +6320,12 @@
       "min":1,
       "pattern":"([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63})"
     },
+    "ModelSourceIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":".*arn:aws:sagemaker:.*:hub-content/SageMakerPublicHub/Model/.*"
+    },
     "NonBlankString":{
       "type":"string",
       "pattern":"[\\s\\S]*"
@@ -5802,6 +6362,115 @@
       "type":"integer",
       "box":true,
       "min":1
+    },
+    "PromptRouterArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:default-prompt-router/[a-zA-Z0-9-:.]+"
+    },
+    "PromptRouterDescription":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"([0-9a-zA-Z:.][ _-]?)+",
+      "sensitive":true
+    },
+    "PromptRouterName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"([0-9a-zA-Z][ _-]?)+"
+    },
+    "PromptRouterStatus":{
+      "type":"string",
+      "enum":["AVAILABLE"]
+    },
+    "PromptRouterSummaries":{
+      "type":"list",
+      "member":{"shape":"PromptRouterSummary"}
+    },
+    "PromptRouterSummary":{
+      "type":"structure",
+      "required":[
+        "promptRouterName",
+        "routingCriteria",
+        "promptRouterArn",
+        "models",
+        "fallbackModel",
+        "status",
+        "type"
+      ],
+      "members":{
+        "promptRouterName":{
+          "shape":"PromptRouterName",
+          "documentation":"<p>The router's name.</p>"
+        },
+        "routingCriteria":{
+          "shape":"RoutingCriteria",
+          "documentation":"<p>The router's routing criteria.</p>"
+        },
+        "description":{
+          "shape":"PromptRouterDescription",
+          "documentation":"<p>The router's description.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the router was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the router was updated.</p>"
+        },
+        "promptRouterArn":{
+          "shape":"PromptRouterArn",
+          "documentation":"<p>The router's ARN.</p>"
+        },
+        "models":{
+          "shape":"PromptRouterTargetModels",
+          "documentation":"<p>The router's models.</p>"
+        },
+        "fallbackModel":{
+          "shape":"PromptRouterTargetModel",
+          "documentation":"<p>The router's fallback model.</p>"
+        },
+        "status":{
+          "shape":"PromptRouterStatus",
+          "documentation":"<p>The router's status.</p>"
+        },
+        "type":{
+          "shape":"PromptRouterType",
+          "documentation":"<p>The summary's type.</p>"
+        }
+      },
+      "documentation":"<p>Details about a prompt router.</p>"
+    },
+    "PromptRouterTargetModel":{
+      "type":"structure",
+      "members":{
+        "modelArn":{
+          "shape":"PromptRouterTargetModelArn",
+          "documentation":"<p>The target model's ARN.</p>"
+        }
+      },
+      "documentation":"<p>The target model for a prompt router.</p>"
+    },
+    "PromptRouterTargetModelArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":".*(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})|(^arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{0,20}):(|[0-9]{12}):inference-profile/[a-zA-Z0-9-:.]+)"
+    },
+    "PromptRouterTargetModels":{
+      "type":"list",
+      "member":{"shape":"PromptRouterTargetModel"}
+    },
+    "PromptRouterType":{
+      "type":"string",
+      "enum":[
+        "custom",
+        "default"
+      ]
     },
     "PromptTemplate":{
       "type":"structure",
@@ -5973,6 +6642,35 @@
       "member":{"shape":"RAGConfig"},
       "max":1,
       "min":1
+    },
+    "RegisterMarketplaceModelEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "endpointIdentifier",
+        "modelSourceIdentifier"
+      ],
+      "members":{
+        "endpointIdentifier":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the Amazon SageMaker endpoint you want to register with Amazon Bedrock Marketplace.</p>",
+          "location":"uri",
+          "locationName":"endpointIdentifier"
+        },
+        "modelSourceIdentifier":{
+          "shape":"ModelSourceIdentifier",
+          "documentation":"<p>The ARN of the model from Amazon Bedrock Marketplace that is deployed on the endpoint.</p>"
+        }
+      }
+    },
+    "RegisterMarketplaceModelEndpointResponse":{
+      "type":"structure",
+      "required":["marketplaceModelEndpoint"],
+      "members":{
+        "marketplaceModelEndpoint":{
+          "shape":"MarketplaceModelEndpoint",
+          "documentation":"<p>Details about the registered endpoint.</p>"
+        }
+      }
     },
     "RequestMetadataBaseFilters":{
       "type":"structure",
@@ -6165,6 +6863,23 @@
       "min":0,
       "pattern":"arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+"
     },
+    "RoutingCriteria":{
+      "type":"structure",
+      "required":["responseQualityDifference"],
+      "members":{
+        "responseQualityDifference":{
+          "shape":"RoutingCriteriaResponseQualityDifferenceDouble",
+          "documentation":"<p>The criteria's response quality difference.</p>"
+        }
+      },
+      "documentation":"<p>Routing criteria for a prompt router.</p>"
+    },
+    "RoutingCriteriaResponseQualityDifferenceDouble":{
+      "type":"double",
+      "box":true,
+      "max":1,
+      "min":0
+    },
     "S3Config":{
       "type":"structure",
       "required":["bucketName"],
@@ -6212,6 +6927,37 @@
       "min":1,
       "pattern":"s3://[a-z0-9][-.a-z0-9]{1,61}(?:/[-!_*'().a-z0-9A-Z]+(?:/[-!_*'().a-z0-9A-Z]+)*)?/?"
     },
+    "SageMakerEndpoint":{
+      "type":"structure",
+      "required":[
+        "initialInstanceCount",
+        "instanceType",
+        "executionRole"
+      ],
+      "members":{
+        "initialInstanceCount":{
+          "shape":"InstanceCount",
+          "documentation":"<p>The number of Amazon EC2 compute instances to deploy for initial endpoint creation.</p>"
+        },
+        "instanceType":{
+          "shape":"InstanceType",
+          "documentation":"<p>The Amazon EC2 compute instance type to deploy for hosting the model.</p>"
+        },
+        "executionRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that Amazon SageMaker can assume to access model artifacts and docker image for deployment on Amazon EC2 compute instances or for batch transform jobs.</p>"
+        },
+        "kmsEncryptionKey":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Web Services KMS key that Amazon SageMaker uses to encrypt data on the storage volume attached to the Amazon EC2 compute instance that hosts the endpoint.</p>"
+        },
+        "vpc":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The VPC configuration for the endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the configuration for a Amazon SageMaker endpoint.</p>"
+    },
     "SageMakerFlowDefinitionArn":{
       "type":"string",
       "max":1024,
@@ -6249,6 +6995,16 @@
       },
       "exception":true
     },
+    "ServiceUnavailableException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"NonBlankString"}
+      },
+      "documentation":"<p>Returned if the service cannot complete the request.</p>",
+      "error":{"httpStatusCode":503},
+      "exception":true,
+      "fault":true
+    },
     "SortByProvisionedModels":{
       "type":"string",
       "enum":["CreationTime"]
@@ -6266,6 +7022,13 @@
       "enum":[
         "Ascending",
         "Descending"
+      ]
+    },
+    "Status":{
+      "type":"string",
+      "enum":[
+        "REGISTERED",
+        "INCOMPATIBLE_ENDPOINT"
       ]
     },
     "StopEvaluationJobRequest":{
@@ -6620,6 +7383,40 @@
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time at which the guardrail was updated.</p>"
+        }
+      }
+    },
+    "UpdateMarketplaceModelEndpointRequest":{
+      "type":"structure",
+      "required":[
+        "endpointArn",
+        "endpointConfig"
+      ],
+      "members":{
+        "endpointArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint you want to update.</p>",
+          "location":"uri",
+          "locationName":"endpointArn"
+        },
+        "endpointConfig":{
+          "shape":"EndpointConfig",
+          "documentation":"<p>The new configuration for the endpoint, including the number and type of instances to use.</p>"
+        },
+        "clientRequestToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This token is listed as not required because Amazon Web Services SDKs automatically generate it for you and set this parameter. If you're not using the Amazon Web Services SDK or the CLI, you must provide this token or the action will fail.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateMarketplaceModelEndpointResponse":{
+      "type":"structure",
+      "required":["marketplaceModelEndpoint"],
+      "members":{
+        "marketplaceModelEndpoint":{
+          "shape":"MarketplaceModelEndpoint",
+          "documentation":"<p>Details about the updated endpoint.</p>"
         }
       }
     },

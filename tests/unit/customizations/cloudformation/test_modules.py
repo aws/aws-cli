@@ -1,6 +1,8 @@
 from awscli.testutils import unittest
 from awscli.customizations.cloudformation import yamlhelper
 from awscli.customizations.cloudformation import modules
+from awscli.customizations.cloudformation.parse_sub import SubWord, WordType
+from awscli.customizations.cloudformation.parse_sub import parse_sub
 
 MODULES = "Modules"
 
@@ -9,6 +11,49 @@ class TestPackageModules(unittest.TestCase):
 
     def setUp(self):
         pass
+
+    def test_parse_sub(self):
+        cases = {
+            "ABC": [SubWord(WordType.STR, "ABC")],
+            "ABC-${XYZ}-123": [
+                SubWord(WordType.STR, "ABC-"),
+                SubWord(WordType.REF, "XYZ"),
+                SubWord(WordType.STR, "-123"),
+            ],
+            "ABC-${!Literal}-1": [SubWord(WordType.STR, "ABC-${Literal}-1")],
+            "${ABC}": [SubWord(WordType.REF, "ABC")],
+            "${ABC.XYZ}": [SubWord(WordType.GETATT, "ABC.XYZ")],
+            "ABC${AWS::AccountId}XYZ": [
+                SubWord(WordType.STR, "ABC"),
+                SubWord(WordType.AWS, "AccountId"),
+                SubWord(WordType.STR, "XYZ"),
+            ],
+            "BAZ${ABC$XYZ}FOO$BAR": [
+                SubWord(WordType.STR, "BAZ"),
+                SubWord(WordType.REF, "ABC$XYZ"),
+                SubWord(WordType.STR, "FOO$BAR"),
+            ],
+        }
+
+        for sub, expect in cases.items():
+            words = parse_sub(sub, False)
+            self.assertEqual(
+                len(expect),
+                len(words),
+                f'"{sub}": words len is {len(words)}, expected {len(expect)}',
+            )
+            for i, w in enumerate(expect):
+                self.assertEqual(
+                    words[i].T, w.T, f'"{sub}": got {words[i]}, expected {w}'
+                )
+                self.assertEqual(
+                    words[i].W, w.W, f'"{sub}": got {words[i]}, expected {w}'
+                )
+
+        # Invalid strings should fail
+        sub = "${AAA"
+        with self.assertRaises(Exception, msg=f'"{sub}": should have failed'):
+            parse_sub(sub, False)
 
     def test_merge_props(self):
         original = {"b": "c", "d": {"e": "f", "i": [1, 2, 3]}}

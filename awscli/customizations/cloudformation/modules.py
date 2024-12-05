@@ -379,8 +379,16 @@ class Module:
                     break
 
     def resolve_sub(self, k, v, d, n):
+        """
+        Parse the Sub string and break it into tokens.
+
+        If we can fully resolve it, we can replace it with a string.
+
+        Use the same logic as with resolve_ref.
+        """
         pass
-        # TODO
+
+    # TODO
 
     def resolve_getatt(self, k, v, d, n):
         pass

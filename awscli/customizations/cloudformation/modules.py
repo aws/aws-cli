@@ -14,6 +14,7 @@
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation import yamlhelper
 import os
+from collections import OrderedDict
 
 RESOURCES = "Resources"
 METADATA = "Metadata"
@@ -34,6 +35,10 @@ GETATT = "Fn::GetAtt"
 PARAMETERS = "Parameters"
 
 
+def isdict(v):
+    return type(v) is dict or isinstance(v, OrderedDict)
+
+
 def read_source(source):
     "Read the source file and return the content as a string"
 
@@ -46,8 +51,8 @@ def read_source(source):
 
 def merge_props(original, overrides):
     """
-    Merge props merges dicts, replacing values in the original with overrides.
-    This function is recursive and can act on lists and scalars.
+    This function merges dicts, replacing values in the original with
+    overrides.  This function is recursive and can act on lists and scalars.
 
     :return A new value with the overridden properties
 
@@ -75,13 +80,13 @@ def merge_props(original, overrides):
     """
     original_type = type(original)
     override_type = type(overrides)
-    if override_type is not dict and override_type is not list:
+    if not isdict(overrides) and override_type is not list:
         return overrides
 
     if original_type is not override_type:
         return overrides
 
-    if original_type is dict:
+    if isdict(original):
         retval = original.copy()
         for k in original:
             if k in overrides:
@@ -133,6 +138,9 @@ class Module:
 
         # The parent template dictionary
         self.template = template
+        if RESOURCES not in self.template:
+            # The parent might only have Modules
+            self.template[RESOURCES] = {}
 
         # The name of the module, which is used as a logical id prefix
         self.name = module_config[NAME]
@@ -155,6 +163,9 @@ class Module:
 
         # Parameters defined in the module
         self.params = {}
+
+        # TODO: What about Conditions, Mappings, Outputs?
+        # Is there a use case for importing those into the parent?
 
     def __str__(self):
         "Print out a string with module details for logs"
@@ -180,6 +191,8 @@ class Module:
 
         if PARAMETERS in module_dict:
             self.params = module_dict[PARAMETERS]
+
+        # TODO: Recurse on nested modules
 
         self.validate_overrides()
 
@@ -212,7 +225,9 @@ class Module:
 
         # Resolve refs, subs, and getatts
         #    (Process module Parameters and parent Properties)
-        self.resolve(logical_id, resource)
+        container = {}
+        container[RESOURCES] = self.resources
+        self.resolve(logical_id, resource, container, RESOURCES)
 
         self.template[RESOURCES][self.name + logical_id] = resource
 
@@ -270,31 +285,55 @@ class Module:
         overrides = resource_overrides[attr_name]
         resource[attr_name] = merge_props(original, overrides)
 
-    def resolve(self, k, v):
+    def resolve(self, k, v, d, n):
         """
         Resolve Refs, Subs, and GetAtts recursively.
 
         :param k The name of the node
         :param v The value of the node
+        :param d The dict that is the parent of the dict that holds k, v
+        :param n The name of the dict that holds k, v
 
+        Example
+
+        Resources:
+          Bucket:
+            Type: AWS::S3::Bucket
+            Properties:
+              BucketName: !Ref Name
+
+        In the above example,
+            k = !Ref, v = Name, d = Properties{}, n = BucketName
+
+        So we can set d[n] = resolved_value (which replaces {k,v})
+
+        In the prior iteration,
+            k = BucketName, v = {!Ref, Name}, d = Bucket{}, n = Properties
         """
+
+        print(f"resolve k={k}, v={v}, d={d}, n={n}")
+
         if k == REF:
-            self.resolve_ref(v)
+            self.resolve_ref(k, v, d, n)
         elif k == SUB:
-            self.resolve_sub(v)
+            self.resolve_sub(k, v, d, n)
         elif k == GETATT:
-            self.resolve_getatt(v)
+            self.resolve_getatt(k, v, d, n)
         else:
-            if type(v) is dict:
-                for k2, v2 in v.items():
-                    self.resolve(k2, v2)
+            if isdict(v):
+                vc = v.copy()
+                for k2, v2 in vc.items():
+                    self.resolve(k2, v2, d[n], k)
             elif type(v) is list:
                 for v2 in v:
-                    if type(v2) is dict:
-                        for k3, v3 in v2.items():
-                            self.resolve(k3, v3)
+                    if isdict(v2):
+                        v2c = v2.copy()
+                        for k3, v3 in v2c.items():
+                            self.resolve(k3, v3, d[n], k)
+            else:
+                print(f"{v}: type(v) is {type(v)}")
 
-    def resolve_ref(v):
+    def resolve_ref(self, k, v, d, n):
         """
         Look for the Ref in the parent template Properties if it matches
         a module Parameter name. If it's not there, use the default if
@@ -309,12 +348,40 @@ class Module:
         if type(v) is not str:
             msg = f"Ref should be a string: {v}"
             raise exceptions.InvalidModuleError(msg=msg)
-        # TODO
 
-    def resolve_sub(v):
+        if not isdict(d):
+            # TODO: This is a bug, shouldn't happen
+            msg = f"{k}: expected {d} to be a dict"
+            raise exceptions.InvalidModuleError(msg=msg)
+
+        if v in self.props:
+            if v not in self.params:
+                # The parent tried to set a property that doesn't exist
+                # in the Parameters section of this module
+                msg = f"{v} not found in module Parameters: {self.source}"
+                raise exceptions.InvalidModuleException(msg=msg)
+            prop = self.props[v]
+            print(f"About to set {n} to {prop}, d is {d}")
+            d[n] = prop
+        elif v in self.params:
+            param = self.params[v]
+            if DEFAULT in param:
+                # Use the default value of the Parameter
+                d[n] = param[DEFAULT]
+            else:
+                msg = f"{v} does not have a Default and is not a Property"
+                raise exceptions.InvalidModuleError(msg=msg)
+        else:
+            for k in self.resources:
+                if v == k:
+                    # Simply rename local references to include the module name
+                    d[n] = self.name + v
+                    break
+
+    def resolve_sub(self, k, v, d, n):
         pass
         # TODO
 
-    def resolve_getatt(v):
+    def resolve_getatt(self, k, v, d, n):
         pass
         # TODO

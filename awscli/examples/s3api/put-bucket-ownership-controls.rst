@@ -3,7 +3,7 @@
 The following ``put-bucket-ownership-controls`` example updates the bucket ownership settings of a bucket. ::
 
     aws s3api put-bucket-ownership-controls \
-        --bucket DOC-EXAMPLE-BUCKET \
+        --bucket amzn-s3-demo-bucket \
         --ownership-controls="Rules=[{ObjectOwnership=BucketOwnerEnforced}]"
 
 This command produces no output.

@@ -19,7 +19,7 @@ Output::
                     "Mode": "MULTI_CLASS"
                 }
             },
-            "DataLakeS3Uri": "s3://DOC-EXAMPLE-BUCKET/flywheel-entity/schemaVersion=1/20230616T200543Z/",
+            "DataLakeS3Uri": "s3://amzn-s3-demo-bucket/flywheel-entity/schemaVersion=1/20230616T200543Z/",
             "DataSecurityConfig": {},
             "Status": "ACTIVE",
             "ModelType": "DOCUMENT_CLASSIFIER",

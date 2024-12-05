@@ -5,7 +5,7 @@ The following ``create-document-classifier`` example begins the training process
     aws comprehend create-document-classifier \
         --document-classifier-name example-classifier \
         --data-access-arn arn:aws:comprehend:us-west-2:111122223333:pii-entities-detection-job/123456abcdeb0e11022f22a11EXAMPLE \
-        --input-data-config "S3Uri=s3://DOC-EXAMPLE-BUCKET/" \
+        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket/" \
         --language-code en
     
 Output:: 

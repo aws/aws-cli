@@ -1788,6 +1788,66 @@ class TestS3RegionRedirector(unittest.TestCase):
             request_dict, response, self.operation)
         self.assertIsNone(redirect_response)
 
+    def test_redirects_on_illegal_location_constraint_from_opt_in_region(self):
+        request_dict = {
+            'url': 'https://il-central-1.amazonaws.com/foo',
+            'context': {
+                's3_redirect': {
+                    'bucket': 'foo',
+                    'redirected': False,
+                    'params': {'Bucket': 'foo'},
+                },
+                'signing': {},
+            },
+        }
+        response = (
+            None,
+            {
+                'Error': {'Code': 'IllegalLocationConstraintException'},
+                'ResponseMetadata': {
+                    'HTTPHeaders': {'x-amz-bucket-region': 'eu-central-1'}
+                },
+            },
+        )
+
+        self.operation.name = 'GetObject'
+        redirect_response = self.redirector.redirect_from_error(
+            request_dict, response, self.operation
+        )
+        self.assertEqual(redirect_response, 0)
+
+    def test_no_redirect_on_illegal_location_constraint_from_bad_location_constraint(
+            self,
+    ):
+        request_dict = {
+            'url': 'https://us-west-2.amazonaws.com/foo',
+            'context': {
+                's3_redirect': {
+                    'bucket': 'foo',
+                    'redirected': False,
+                    'params': {
+                        'Bucket': 'foo',
+                        'CreateBucketConfiguration': {
+                            'LocationConstraint': 'eu-west-2',
+                        },
+                    },
+                },
+                'signing': {},
+            },
+        }
+        response = (
+            None,
+            {
+                'Error': {'Code': 'IllegalLocationConstraintException'},
+            },
+        )
+
+        self.operation.name = 'CreateBucket'
+        redirect_response = self.redirector.redirect_from_error(
+            request_dict, response, self.operation
+        )
+        self.assertIsNone(redirect_response)
+
     def test_get_region_from_response(self):
         response = (None, {
             'Error': {

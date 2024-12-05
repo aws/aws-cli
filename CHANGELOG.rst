@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.22.12
+=======
+
+* api-change:``qbusiness``: This release removes the deprecated UserId and UserGroups fields from SearchRelevantContent api's request parameters.
+* api-change:``partnercentral-selling``: Introducing the preview of new partner central selling APIs designed to transform how AWS partners collaborate and co-sell with multiple partners. This enables multiple partners to seamlessly engage and jointly pursue customer opportunities, fostering a new era of collaborative selling.
+
+
 2.22.11
 =======
 

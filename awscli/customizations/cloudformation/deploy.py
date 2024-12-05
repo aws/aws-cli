@@ -354,6 +354,7 @@ class DeployCommand(BasicCommand):
                 "s3",
                 config=Config(signature_version='s3v4'),
                 region_name=parsed_globals.region,
+                endpoint_url=parsed_globals.endpoint_url,
                 verify=parsed_globals.verify_ssl)
 
             s3_uploader = S3Uploader(s3_client,

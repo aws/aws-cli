@@ -103,9 +103,12 @@ class TestDoSSOLogin(unittest.TestCase):
 
     def test_do_sso_login(self):
         do_sso_login(
-            session=self.session, sso_region=self.region,
-            start_url=self.start_url, token_cache=self.token_cache,
-            on_pending_authorization=self.on_pending_authorization_mock
+            session=self.session,
+            sso_region=self.region,
+            parsed_globals=mock.Mock(),
+            start_url=self.start_url,
+            token_cache=self.token_cache,
+            on_pending_authorization=self.on_pending_authorization_mock,
         )
         # We just want to make some quick checks to make sure all of the
         # parameters were plumbed in correctly.
@@ -124,9 +127,12 @@ class TestDoSSOLogin(unittest.TestCase):
             }
         ]
         do_sso_login(
-            session=self.session, sso_region=self.region,
-            start_url=self.start_url, token_cache=self.token_cache,
-            on_pending_authorization=self.on_pending_authorization_mock
+            session=self.session,
+            sso_region=self.region,
+            parsed_globals=mock.Mock(),
+            start_url=self.start_url,
+            token_cache=self.token_cache,
+            on_pending_authorization=self.on_pending_authorization_mock,
         )
         self.assert_client_called_with_start_url()
         self.assert_used_sso_region()

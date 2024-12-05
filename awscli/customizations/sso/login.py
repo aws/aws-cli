@@ -46,6 +46,7 @@ class LoginCommand(BaseSSOCommand):
             on_pending_authorization = PrintOnlyHandler()
         do_sso_login(
             session=self._session,
+            parsed_globals=parsed_globals,
             sso_region=sso_config['sso_region'],
             start_url=sso_config['sso_start_url'],
             on_pending_authorization=on_pending_authorization,

@@ -35,7 +35,7 @@ class LogoutCommand(BasicCommand):
     ARG_TABLE = []
 
     def _run_main(self, parsed_args, parsed_globals):
-        SSOTokenSweeper(self._session).delete_credentials(SSO_TOKEN_DIR)
+        SSOTokenSweeper(self._session, parsed_globals).delete_credentials(SSO_TOKEN_DIR)
         SSOCredentialSweeper().delete_credentials(AWS_CREDS_CACHE_DIR)
         return 0
 
@@ -73,8 +73,9 @@ class BaseCredentialSweeper(object):
 
 
 class SSOTokenSweeper(BaseCredentialSweeper):
-    def __init__(self, session):
+    def __init__(self, session, parsed_globals):
         self._session = session
+        self._parsed_globals = parsed_globals
 
     def _should_delete(self, contents):
         return 'accessToken' in contents
@@ -84,11 +85,15 @@ class SSOTokenSweeper(BaseCredentialSweeper):
         # and invoke the logout api to invalidate the token before deleting it.
         sso_region = contents.get('region')
         if sso_region:
-            sso = self._session.create_client('sso', region_name=sso_region)
+            sso = self._session.create_client(
+                'sso',
+                region_name=sso_region,
+                verify=self._parsed_globals.verify_ssl,
+            )
             try:
                 sso.logout(accessToken=contents['accessToken'])
             except ClientError:
-                # The token may alread be expired or otherwise invalid. If we
+                # The token may already be expired or otherwise invalid. If we
                 # get a client error on logout just log and continue on
                 LOG.debug('Failed to call logout API:', exc_info=True)
 

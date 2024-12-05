@@ -1,10 +1,10 @@
 **To get metadata for a specified stream**
 
-The following ``get-stream-session`` example gets the metadata configuration for the specified channel ARN (Amazon Resource Name) and the specified stream; if streamId is not provided, the most recent stream for the channel is selected. ::
+The following ``get-stream-session`` example gets the metadata configuration for the specified channel ARN (Amazon Resource Name) and the specified stream. If ``streamId`` is not provided, the most recent stream for the channel is selected. ::
 
     aws ivs get-stream-session \
         --channel-arn arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh \
-        --stream-id "mystream"
+        --stream-id 'mystream'
 
 Output::
 
@@ -18,10 +18,6 @@ Output::
                 "latencyMode": "LOW",
                 "type": "STANDARD",
                 "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABcdef34ghIJ",
-                "srt": {
-                    "endpoint": "a1b2c3d4e5f6.srt.live-video.net",
-                    "passphrase": "AB1C2defGHijkLMNo3PqQRstUvwxyzaBCDEfghh4ijklMN5opqrStuVWxyzAbCDEfghIJ"
-                },
                 "ingestEndpoint": "a1b2c3d4e5f6.global-contribute.live-video.net",
                 "playbackUrl": "url-string",
                 "authorized": false,
@@ -76,6 +72,17 @@ Output::
                 }
             },
             "truncatedEvents": [
+                {
+                    "code": "StreamTakeoverInvalidPriority",
+                    "name": "Stream Takeover Failure",
+                    "type": "IVS Stream State Change",
+                    "eventTime": "2023-06-26T19:09:48+00:00"
+                },
+                 {
+                    "name": "Stream Takeover",
+                    "type": "IVS Stream State Change",
+                    "eventTime": "2023-06-26T19:09:47+00:00"
+                },
                 {
                     "name": "Recording Start",
                     "type": "IVS Recording State Change",

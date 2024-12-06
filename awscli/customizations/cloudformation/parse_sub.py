@@ -1,4 +1,18 @@
-import re
+"""
+This module parses CloudFormation Sub strings.
+
+For example:
+
+    !Sub abc-${AWS::Region}-def-${Foo}
+
+The string is broken down into "words" that are one of four types:
+
+    String: A literal string component
+    Ref: A reference to another resource or paramter like ${Foo}
+    AWS: An AWS pseudo-parameter like ${AWS::Region}
+    GetAtt: A reference to an attribute like ${Foo.Bar}
+"""
+#pylint: disable=too-few-public-methods
 
 DATA = ' '  # Any other character
 DOLLAR = '$'
@@ -7,28 +21,36 @@ CLOSE = '}'
 BANG = '!'
 
 class WordType:
+    "Word type enumeration"
     STR = 0    # A literal string fragment
     REF = 1    # ${ParamOrResourceName}
     AWS = 2    # ${AWS::X}
     GETATT = 3 # ${X.Y}
 
 class State:
+    "State machine enumeration"
     READSTR = 0
     READVAR = 1
     MAYBE = 2
     READLIT = 3
 
-
-
 class SubWord:
+    "A single word with a type and the word itself"
     def __init__(self, word_type, word):
-        self.T = word_type
-        self.W = word  # Does not include the ${} if it's not a STR
-    
-    def __str__(self):
-        return f"{self.T} {self.W}"
+        self.t = word_type
+        self.w = word  # Does not include the ${} if it's not a STR
 
+    def __str__(self):
+        return f"{self.t} {self.w}"
+
+#pylint: disable=too-many-branches,too-many-statements
 def parse_sub(sub_str, leave_bang=False):
+    """
+    Parse a Sub string
+
+    :param leave_bang If this is True, leave the ! in literals
+    :return list of words
+    """
     words = []
     state = State.READSTR
     buf = ''
@@ -41,7 +63,6 @@ def parse_sub(sub_str, leave_bang=False):
                 state = State.MAYBE
             else:
                 # This is a literal $ inside a variable: "${AB$C}"
-                # TODO: Should that be an error? Is it valid?
                 buf += char
         elif char == OPEN:
             if state == State.MAYBE:
@@ -102,4 +123,3 @@ def parse_sub(sub_str, leave_bang=False):
         raise ValueError("invalid string, unclosed variable")
 
     return words
-

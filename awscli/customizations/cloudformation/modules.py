@@ -11,13 +11,18 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+"This file implements local module support for the package command"
+
+# pylint: disable=fixme
+
+import os
+from collections import OrderedDict
+
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation import yamlhelper
 
 from awscli.customizations.cloudformation.parse_sub import WordType
 from awscli.customizations.cloudformation.parse_sub import parse_sub
-import os
-from collections import OrderedDict
 
 RESOURCES = "Resources"
 METADATA = "Metadata"
@@ -39,7 +44,8 @@ PARAMETERS = "Parameters"
 
 
 def isdict(v):
-    return type(v) is dict or isinstance(v, OrderedDict)
+    "Returns True if the type is a dict or OrderedDict"
+    return isinstance(v, (dict, OrderedDict))
 
 
 def read_source(source):
@@ -48,7 +54,7 @@ def read_source(source):
     if not isinstance(source, str) or not os.path.isfile(source):
         raise exceptions.InvalidModulePathError(source=source)
 
-    with open(source, "r") as s:
+    with open(source, "r", encoding="utf-8") as s:
         return s.read()
 
 
@@ -98,8 +104,8 @@ def merge_props(original, overrides):
             if k not in original:
                 retval[k] = overrides[k]
         return retval
-    else:
-        return original + overrides
+
+    return original + overrides
 
 
 class Module:
@@ -206,7 +212,10 @@ class Module:
 
     def validate_overrides(self):
         "Make sure resources referenced by overrides actually exist"
-        pass  # TODO
+        for logical_id in self.overrides:
+            if logical_id not in self.resources:
+                msg = f"Override {logical_id} not found in {self.source}"
+                raise exceptions.InvalidModuleError(msg=msg)
 
     def process_resource(self, logical_id, resource):
         "Process a single resource"
@@ -325,7 +334,7 @@ class Module:
                 vc = v.copy()
                 for k2, v2 in vc.items():
                     self.resolve(k2, v2, d[n], k)
-            elif type(v) is list:
+            elif isinstance(v, list):
                 for v2 in v:
                     if isdict(v2):
                         v2c = v2.copy()
@@ -344,7 +353,7 @@ class Module:
         Otherwise just leave it be and assume the module author is
         expecting the parent template to have that Reference.
         """
-        if type(v) is not str:
+        if not isinstance(v, str):
             msg = f"Ref should be a string: {v}"
             raise exceptions.InvalidModuleError(msg=msg)
 
@@ -358,29 +367,39 @@ class Module:
             d[n] = found
 
     def find_ref(self, v):
+        """
+        Find a Ref.
+
+        A Ref might be to a module Parameter with a matching parent
+        template Property, or a Parameter Default. It could also
+        be a reference to another resource in this module.
+
+        :return The referenced element or None
+        """
         if v in self.props:
             if v not in self.params:
                 # The parent tried to set a property that doesn't exist
                 # in the Parameters section of this module
                 msg = f"{v} not found in module Parameters: {self.source}"
-                raise exceptions.InvalidModuleException(msg=msg)
+                raise exceptions.InvalidModuleError(msg=msg)
             return self.props[v]
-        elif v in self.params:
+
+        if v in self.params:
             param = self.params[v]
             if DEFAULT in param:
                 # Use the default value of the Parameter
                 return param[DEFAULT]
-            else:
-                msg = f"{v} does not have a Default and is not a Property"
-                raise exceptions.InvalidModuleError(msg=msg)
-        else:
-            for k in self.resources:
-                if v == k:
-                    # Simply rename local references to include the module name
-                    return self.name + v
-                    break
+            msg = f"{v} does not have a Default and is not a Property"
+            raise exceptions.InvalidModuleError(msg=msg)
+
+        for k in self.resources:
+            if v == k:
+                # Simply rename local references to include the module name
+                return self.name + v
+
         return None
 
+    # pylint: disable=too-many-branches,unused-argument
     def resolve_sub(self, k, v, d, n):
         """
         Parse the Sub string and break it into tokens.
@@ -393,16 +412,16 @@ class Module:
         sub = ""
         need_sub = False
         for word in words:
-            if word.T == WordType.STR:
-                sub += word.W
-            elif word.T == WordType.AWS:
-                sub += "${AWS::" + word.W + "}"
+            if word.t == WordType.STR:
+                sub += word.w
+            elif word.t == WordType.AWS:
+                sub += "${AWS::" + word.w + "}"
                 need_sub = True
-            elif word.T == WordType.REF:
-                resolved = f"${word.W}"
-                found = self.find_ref(word.W)
+            elif word.t == WordType.REF:
+                resolved = f"${word.w}"
+                found = self.find_ref(word.w)
                 if found is not None:
-                    if type(found) is str:
+                    if isinstance(found, str):
                         resolved = found
                     else:
                         need_sub = True
@@ -410,11 +429,11 @@ class Module:
                             resolved = "${" + found[REF] + "}"
                         # TODO: else what is this?
                 sub += resolved
-            elif word.T == WordType.GETATT:
+            elif word.t == WordType.GETATT:
                 need_sub = True
-                tokens = word.W.split()
+                tokens = word.w.split()
                 if len(tokens) != 2:
-                    msg = "GetAtt {word.W} has unexpected number of tokens"
+                    msg = "GetAtt {word.w} has unexpected number of tokens"
                     raise exceptions.InvalidModuleError(msg=msg)
                 if tokens[0] in self.resources:
                     tokens[0] = self.name + tokens[0]
@@ -430,7 +449,7 @@ class Module:
 
         !GetAtt Foo.Bar becomes !GetAtt ModuleNameFoo.Bar
         """
-        if type(v) is not list:
+        if not isinstance(v, list):
             msg = f"GetAtt {v} is not a list"
             raise exceptions.InvalidModuleError(msg=msg)
         logical_id = self.name + v[0]

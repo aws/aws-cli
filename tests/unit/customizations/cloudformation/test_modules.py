@@ -1,3 +1,7 @@
+"Tests for module support in the package command"
+
+# pylint: disable=fixme
+
 from awscli.testutils import unittest
 from awscli.customizations.cloudformation import yamlhelper
 from awscli.customizations.cloudformation import modules
@@ -8,11 +12,13 @@ MODULES = "Modules"
 
 
 class TestPackageModules(unittest.TestCase):
+    "Module tests"
 
     def setUp(self):
-        pass
+        "Initialize the tests"
 
     def test_parse_sub(self):
+        "Test the parse_sub function"
         cases = {
             "ABC": [SubWord(WordType.STR, "ABC")],
             "ABC-${XYZ}-123": [
@@ -44,10 +50,10 @@ class TestPackageModules(unittest.TestCase):
             )
             for i, w in enumerate(expect):
                 self.assertEqual(
-                    words[i].T, w.T, f'"{sub}": got {words[i]}, expected {w}'
+                    words[i].t, w.t, f'"{sub}": got {words[i]}, expected {w}'
                 )
                 self.assertEqual(
-                    words[i].W, w.W, f'"{sub}": got {words[i]}, expected {w}'
+                    words[i].w, w.w, f'"{sub}": got {words[i]}, expected {w}'
                 )
 
         # Invalid strings should fail
@@ -56,6 +62,8 @@ class TestPackageModules(unittest.TestCase):
             parse_sub(sub, False)
 
     def test_merge_props(self):
+        "Test the merge_props function"
+
         original = {"b": "c", "d": {"e": "f", "i": [1, 2, 3]}}
         overrides = {"b": "cc", "d": {"e": "ff", "g": "h", "i": [4, 5]}}
         expect = {"b": "cc", "d": {"e": "ff", "g": "h", "i": [1, 2, 3, 4, 5]}}
@@ -64,6 +72,9 @@ class TestPackageModules(unittest.TestCase):
         # TODO: More complex examples (especially merging Policies)
 
     def test_main(self):
+        "Run tests on sample templates that include local modules"
+
+        # TODO: Port tests over from Rain
         base = "tests/unit/customizations/cloudformation/modules"
         t = modules.read_source(f"{base}/basic-template.yaml")
         td = yamlhelper.yaml_parse(t)

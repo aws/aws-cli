@@ -314,8 +314,6 @@ class Module:
             k = BucketName, v = {!Ref, Name}, d = Bucket{}, n = Properties
         """
 
-        print(f"resolve k={k}, v={v}, d={d}, n={n}")
-
         if k == REF:
             self.resolve_ref(k, v, d, n)
         elif k == SUB:
@@ -333,8 +331,6 @@ class Module:
                         v2c = v2.copy()
                         for k3, v3 in v2c.items():
                             self.resolve(k3, v3, d[n], k)
-            else:
-                print(f"{v}: type(v) is {type(v)}")
 
     def resolve_ref(self, k, v, d, n):
         """
@@ -397,7 +393,6 @@ class Module:
         sub = ""
         need_sub = False
         for word in words:
-            print(f"resolve_sub word {word}")
             if word.T == WordType.STR:
                 sub += word.W
             elif word.T == WordType.AWS:
@@ -406,7 +401,6 @@ class Module:
             elif word.T == WordType.REF:
                 resolved = f"${word.W}"
                 found = self.find_ref(word.W)
-                print("found", found)
                 if found is not None:
                     if type(found) is str:
                         resolved = found
@@ -425,13 +419,19 @@ class Module:
                 if tokens[0] in self.resources:
                     tokens[0] = self.name + tokens[0]
 
-        print("need_sub", need_sub, "d", d, "n", n, "sub", sub)
-
         if need_sub:
             d[n] = {SUB: sub}
         else:
             d[n] = sub
 
     def resolve_getatt(self, k, v, d, n):
-        pass
-        # TODO
+        """
+        Resolve a GetAtt. All we do here is add the prefix.
+
+        !GetAtt Foo.Bar becomes !GetAtt ModuleNameFoo.Bar
+        """
+        if type(v) is not list:
+            msg = f"GetAtt {v} is not a list"
+            raise exceptions.InvalidModuleError(msg=msg)
+        logical_id = self.name + v[0]
+        d[n] = {k: [logical_id, v[1]]}

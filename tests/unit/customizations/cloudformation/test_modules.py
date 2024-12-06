@@ -74,6 +74,8 @@ class TestPackageModules(unittest.TestCase):
             relative_path = module_config[modules.SOURCE]
             module_config[modules.SOURCE] = f"{base}/{relative_path}"
             module = modules.Module(td, module_config)
-            td2 = module.process()
-            t2 = yamlhelper.yaml_dump(td2)
-            self.assertEqual(e, t2)
+            td = module.process()
+
+        del td[MODULES]
+        processed = yamlhelper.yaml_dump(td)
+        self.assertEqual(e, processed)

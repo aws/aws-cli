@@ -67,7 +67,7 @@ Also, ensure your commit messages match this format::
     Describe your changes in the imperative mood, e.g.
     "Add foo to bar", "Update foo component for bar",
     "Fix race condition for foo".
-    
+
     The body of the commit message can include:
 
     * an explanation of the problem and what this change
@@ -119,6 +119,28 @@ can run these commands::
 
 When you push to your remote, the output will contain a URL you
 can use to open a pull request.
+
+Codestyle
+---------
+This project uses `ruff <https://github.com/astral-sh/ruff>`__ to enforce
+codstyle requirements. We've codified this process using a tool called
+`pre-commit <https://pre-commit.com/>`__. pre-commit allows us to specify a
+config file with all tools required for code linting, and surfaces either a
+git commit hook, or single command, for enforcing these.
+
+To validate your pull request prior to publishing, you can use the following
+`installation guide <https://pre-commit.com/#install>`__ to setup pre-commit.
+
+If you don't want to use the git commit hook, you can run the below command
+to automatically perform the codestyle validation:
+
+.. code-block:: bash
+
+    $ pre-commit run
+
+This will automatically perform simple updates (such as white space clean up)
+and provide a list of any failing checks. After these are addressed,
+you can commit the changes prior to publishing the pull request.
 
 
 Reporting Issues

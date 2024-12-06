@@ -1,0 +1,29 @@
+exclude: "\
+    ^(\
+    .changes|\
+    .github|\
+    awscli/examples|\
+    awscli/topics|\
+    awscli/botocore|\
+    awscli/s3transfer|\
+    awscli/doc|\
+    exe/assets|\
+    tests/functional/cloudformation/deploy_templates/booleans/input.yml|\
+    tests/functional/cloudformation/deploy_templates/nested-tag/input.yml|\
+    tests/|\
+    CHANGELOG.rst|\
+    configure\
+    )"
+repos:
+  - repo: 'https://github.com/pre-commit/pre-commit-hooks'
+    rev: v4.5.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.8
+    hooks:
+      - id: ruff
+        args: [ --fix ]
+      - id: ruff-format

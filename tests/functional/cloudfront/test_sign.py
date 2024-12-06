@@ -64,9 +64,17 @@ class TestSign(BaseAWSCommandParamsTest):
         cmdline = (
             self.prefix + '--private-key file://' + self.private_key_file +
             ' --date-less-than 2016-1-1')
+        expected_signature = (
+            "UiEmtMsInU-gXoa1O7-bTRJmZ~ocphB0ONMxyEHs2r8Y9dwzeB~DkbgzPMX3jbdb"
+            "wIwVX3f4VcY4HBLdPSkbF~D6KbUlxPw1ju8mlXeu2C436XxZdrJrrJaiEDaTpKsl"
+            "Xpn9ngaCzVfCVPfkC3a0NBWBySi5ezCG2yzb0c-djNgI1wkogwtmtZuOxAoKF1sR"
+            "TyFX9ZitUiUIl~65nkJ94s~GGwxzTf1kMi7Wdm~9rFrJpx0O7nJEBy5O578s2UHr"
+            "ejtwyedUR5BqXTkgu~A51NcjAN9LErATV7SVBYicoZ76AOfB-TKay7g6-MWCK6-T"
+            "-4Q5x6XH4yzII3JpbCmVwA__"
+        )
         expected_params = {
             'Key-Pair-Id': ['my_id'],
-            'Expires': ['1451606400'], 'Signature': [mock.ANY]}
+            'Expires': ['1451606400'], 'Signature': [expected_signature]}
         self.assertDesiredUrl(
             self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params)
 
@@ -74,8 +82,16 @@ class TestSign(BaseAWSCommandParamsTest):
         cmdline = (
             self.prefix + '--private-key file://' + self.private_key_file +
             ' --date-less-than 2016-1-1 --ip-address 12.34.56.78')
+        expected_signature = (
+            "Vw-WG18WJJXim7YSGWS-zW~XmFB9MjCDOvgC~2Gz-1wiMQzCrXzYYbSE7-aF6JGO"
+            "Ob5ewArpMqmu2g5mohnqgieZX1NY6IOteDoXYgqaNj1DafHWQD6UJ3IKVfkxISU9"
+            "OmFPoG7H~VSPWEzOxdjOqdIPvAU2pW2mJ5oWu2aL62s0VVtLGCAm-DahiSQisl0J"
+            "bzpPyG1pofvPbT75qc71r9uiqSAbPjUF5nmLCZazVnFjDkj3zIgMRYa5aV54VDa6"
+            "-wEizzmjQ3-m6UMoYgcGHQXEjoFIWTfpZvbZBYkmK9lk3d16cgvaHafTJ-CPegn1"
+            "bKxfgNEjSAoPWS0OvBkRmg__"
+        )
         expected_params = {
             'Key-Pair-Id': ['my_id'],
-            'Policy': [mock.ANY], 'Signature': [mock.ANY]}
+            'Policy': [mock.ANY], 'Signature': [expected_signature]}
         self.assertDesiredUrl(
             self.run_cmd(cmdline)[0], 'http://example.com/hi', expected_params)

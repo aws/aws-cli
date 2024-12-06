@@ -75,7 +75,7 @@ class TestPackageModules(unittest.TestCase):
         "Run tests on sample templates that include local modules"
 
         # TODO: Port tests over from Rain
-        base = "tests/unit/customizations/cloudformation/modules"
+        base = "unit/customizations/cloudformation/modules"
         t = modules.read_source(f"{base}/basic-template.yaml")
         td = yamlhelper.yaml_parse(t)
         e = modules.read_source(f"{base}/basic-expect.yaml")

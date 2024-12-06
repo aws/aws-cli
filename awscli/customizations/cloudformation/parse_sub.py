@@ -24,6 +24,9 @@ class SubWord:
     def __init__(self, word_type, word):
         self.T = word_type
         self.W = word  # Does not include the ${} if it's not a STR
+    
+    def __str__(self):
+        return f"{self.T} {self.W}"
 
 def parse_sub(sub_str, leave_bang=False):
     words = []

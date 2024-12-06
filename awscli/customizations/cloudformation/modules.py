@@ -13,6 +13,9 @@
 
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation import yamlhelper
+
+from awscli.customizations.cloudformation.parse_sub import WordType
+from awscli.customizations.cloudformation.parse_sub import parse_sub
 import os
 from collections import OrderedDict
 
@@ -354,20 +357,23 @@ class Module:
             msg = f"{k}: expected {d} to be a dict"
             raise exceptions.InvalidModuleError(msg=msg)
 
+        found = self.find_ref(v)
+        if found is not None:
+            d[n] = found
+
+    def find_ref(self, v):
         if v in self.props:
             if v not in self.params:
                 # The parent tried to set a property that doesn't exist
                 # in the Parameters section of this module
                 msg = f"{v} not found in module Parameters: {self.source}"
                 raise exceptions.InvalidModuleException(msg=msg)
-            prop = self.props[v]
-            print(f"About to set {n} to {prop}, d is {d}")
-            d[n] = prop
+            return self.props[v]
         elif v in self.params:
             param = self.params[v]
             if DEFAULT in param:
                 # Use the default value of the Parameter
-                d[n] = param[DEFAULT]
+                return param[DEFAULT]
             else:
                 msg = f"{v} does not have a Default and is not a Property"
                 raise exceptions.InvalidModuleError(msg=msg)
@@ -375,8 +381,9 @@ class Module:
             for k in self.resources:
                 if v == k:
                     # Simply rename local references to include the module name
-                    d[n] = self.name + v
+                    return self.name + v
                     break
+        return None
 
     def resolve_sub(self, k, v, d, n):
         """
@@ -386,9 +393,44 @@ class Module:
 
         Use the same logic as with resolve_ref.
         """
-        pass
+        words = parse_sub(v, True)
+        sub = ""
+        need_sub = False
+        for word in words:
+            print(f"resolve_sub word {word}")
+            if word.T == WordType.STR:
+                sub += word.W
+            elif word.T == WordType.AWS:
+                sub += "${AWS::" + word.W + "}"
+                need_sub = True
+            elif word.T == WordType.REF:
+                resolved = f"${word.W}"
+                found = self.find_ref(word.W)
+                print("found", found)
+                if found is not None:
+                    if type(found) is str:
+                        resolved = found
+                    else:
+                        need_sub = True
+                        if REF in found:
+                            resolved = "${" + found[REF] + "}"
+                        # TODO: else what is this?
+                sub += resolved
+            elif word.T == WordType.GETATT:
+                need_sub = True
+                tokens = word.W.split()
+                if len(tokens) != 2:
+                    msg = "GetAtt {word.W} has unexpected number of tokens"
+                    raise exceptions.InvalidModuleError(msg=msg)
+                if tokens[0] in self.resources:
+                    tokens[0] = self.name + tokens[0]
 
-    # TODO
+        print("need_sub", need_sub, "d", d, "n", n, "sub", sub)
+
+        if need_sub:
+            d[n] = {SUB: sub}
+        else:
+            d[n] = sub
 
     def resolve_getatt(self, k, v, d, n):
         pass

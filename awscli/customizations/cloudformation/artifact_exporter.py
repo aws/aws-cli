@@ -25,11 +25,13 @@ from contextlib import contextmanager
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
     yaml_parse
+from awscli.customizations.cloudformation import modules
 import jmespath
 
 
 LOG = logging.getLogger(__name__)
 
+MODULES = "Modules"
 
 def is_path_value_valid(path):
     return isinstance(path, str)
@@ -591,7 +593,6 @@ class Template(object):
             raise ValueError("parent_dir parameter must be "
                              "an absolute path to a folder {0}"
                              .format(parent_dir))
-
         abs_template_path = make_abs_path(parent_dir, template_path)
         template_dir = os.path.dirname(abs_template_path)
 
@@ -651,6 +652,22 @@ class Template(object):
         :return: The template with references to artifacts that have been
         exported to s3.
         """
+
+        # Process modules
+        if MODULES in self.template_dict:
+            # Process each Module node separately
+            for module_name, module_config in self.template_dict[MODULES].items():
+                module_config[modules.NAME] = module_name
+                # Fix the source path
+                relative_path = module_config[modules.SOURCE]
+                module_config[modules.SOURCE] = f"{self.template_dir}/{relative_path}"
+                module = modules.Module(self.template_dict, module_config)
+                # Insert the content from the module and replace the dict
+                self.template_dict = module.process()
+        
+            # Remove the Modules section from the template
+            del self.template_dict[MODULES]
+
         self.template_dict = self.export_metadata(self.template_dict)
 
         if "Resources" not in self.template_dict:

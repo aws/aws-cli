@@ -52,4 +52,4 @@ Output::
         ]
     }
 
-For more information, see `Allocating Dedicated Hosts <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-dedicated-hosts-work.html#dedicated-hosts-allocating>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Allocate a Dedicated Host <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-hosts-allocating.html>`__ in the *Amazon EC2 User Guide*.

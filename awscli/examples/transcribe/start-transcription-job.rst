@@ -11,7 +11,7 @@ Contents of ``myfile.json``::
         "TranscriptionJobName": "cli-simple-transcription-job",
         "LanguageCode": "the-language-of-your-transcription-job",
         "Media": {
-            "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-prefix/your-media-file-name.file-extension"
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
         }
     }
 
@@ -30,7 +30,7 @@ Contents of ``mysecondfile.json``::
         "TranscriptionJobName": "cli-channelid-job",
         "LanguageCode": "the-language-of-your-transcription-job",
         "Media": {
-            "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-prefix/your-media-file-name.file-extension"
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
         },
         "Settings":{
             "ChannelIdentification":true
@@ -45,7 +45,7 @@ Output::
             "TranscriptionJobStatus": "IN_PROGRESS",
             "LanguageCode": "the-language-of-your-transcription-job",
             "Media": {
-                "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-prefix/your-media-file-name.file-extension"
+                "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
             },
             "StartTime": "2020-09-17T16:07:56.817000+00:00",
             "CreationTime": "2020-09-17T16:07:56.784000+00:00",
@@ -70,7 +70,7 @@ Contents of ``mythirdfile.json``::
         "TranscriptionJobName": "cli-speakerid-job",
         "LanguageCode": "the-language-of-your-transcription-job",
         "Media": {
-            "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-prefix/your-media-file-name.file-extension"
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
         },
         "Settings":{
         "ShowSpeakerLabels": true,
@@ -86,7 +86,7 @@ Output::
             "TranscriptionJobStatus": "IN_PROGRESS",
             "LanguageCode": "the-language-of-your-transcription-job",
             "Media": {
-                "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-prefix/your-media-file-name.file-extension"
+                "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
             },
             "StartTime": "2020-09-17T16:22:59.696000+00:00",
             "CreationTime": "2020-09-17T16:22:59.676000+00:00",
@@ -112,7 +112,7 @@ Contents of ``myfourthfile.json``::
         "TranscriptionJobName": "cli-filter-mask-job",
         "LanguageCode": "the-language-of-your-transcription-job",
         "Media": {
-              "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-prefix/your-media-file-name.file-extension"
+              "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
         },
         "Settings":{
             "VocabularyFilterName": "your-vocabulary-filter",
@@ -154,7 +154,7 @@ Contents of ``myfifthfile.json``::
         "TranscriptionJobName": "cli-filter-remove-job",
         "LanguageCode": "the-language-of-your-transcription-job",
         "Media": {
-            "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-prefix/your-media-file-name.file-extension"
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
         },
         "Settings":{
             "VocabularyFilterName": "your-vocabulary-filter",
@@ -170,7 +170,7 @@ Output::
             "TranscriptionJobStatus": "IN_PROGRESS",
             "LanguageCode": "the-language-of-your-transcription-job",
             "Media": {
-                "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-prefix/your-media-file-name.file-extension"
+                "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
             },
             "StartTime": "2020-09-18T16:36:18.568000+00:00",
             "CreationTime": "2020-09-18T16:36:18.547000+00:00",
@@ -196,7 +196,7 @@ Contents of ``mysixthfile.json``::
         "TranscriptionJobName": "cli-vocab-job",
         "LanguageCode": "the-language-of-your-transcription-job",
         "Media": {
-            "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-prefix/your-media-file-name.file-extension"
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
         },
         "Settings":{
             "VocabularyName": "your-vocabulary"
@@ -211,7 +211,7 @@ Output::
             "TranscriptionJobStatus": "IN_PROGRESS",
             "LanguageCode": "the-language-of-your-transcription-job",
             "Media": {
-                "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-prefix/your-media-file-name.file-extension"
+                "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
             },
             "StartTime": "2020-09-18T16:36:18.568000+00:00",
             "CreationTime": "2020-09-18T16:36:18.547000+00:00",
@@ -236,7 +236,7 @@ Contents of ``myseventhfile.json``::
         "TranscriptionJobName": "cli-identify-language-transcription-job",
         "IdentifyLanguage": true,
         "Media": {
-            "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-prefix/your-media-file-name.file-extension"
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
         }
     }
 
@@ -247,7 +247,7 @@ Output::
             "TranscriptionJobName": "cli-identify-language-transcription-job",
             "TranscriptionJobStatus": "IN_PROGRESS",
             "Media": {
-                "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-prefix/your-media-file-name.file-extension"
+                "MediaFileUri": "s3://amzn-s3-demo-bucket/Amazon-S3-prefix/your-media-file-name.file-extension"
             },
             "StartTime": "2020-09-18T22:27:23.970000+00:00",
             "CreationTime": "2020-09-18T22:27:23.948000+00:00",
@@ -354,7 +354,7 @@ Contents of ``mytenthfile.json``::
         "TranscriptionJobName": "cli-clm-2-job-1",
         "LanguageCode": "language-code",
         "Media": {
-            "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.file-extension"
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.file-extension"
         },
         "ModelSettings": {
             "LanguageModelName":"cli-clm-2"
@@ -369,7 +369,7 @@ Output::
             "TranscriptionJobStatus": "IN_PROGRESS",
             "LanguageCode": "language-code",
             "Media": {
-                "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.file-extension"
+                "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.file-extension"
             },
             "StartTime": "2020-09-28T17:56:01.835000+00:00",
             "CreationTime": "2020-09-28T17:56:01.801000+00:00",

@@ -6,7 +6,7 @@ The following ``create-language-model`` example creates a custom language model.
         --language-code language-code \
         --base-model-name base-model-name \
         --model-name cli-clm-example \
-        --input-data-config S3Uri="s3://DOC-EXAMPLE-BUCKET/Amazon-S3-Prefix-for-training-data",TuningDataS3Uri="s3://DOC-EXAMPLE-BUCKET/Amazon-S3-Prefix-for-tuning-data",DataAccessRoleArn="arn:aws:iam::AWS-account-number:role/IAM-role-with-permissions-to-create-a-custom-language-model"
+        --input-data-config S3Uri="s3://amzn-s3-demo-bucket/Amazon-S3-Prefix-for-training-data",TuningDataS3Uri="s3://amzn-s3-demo-bucket/Amazon-S3-Prefix-for-tuning-data",DataAccessRoleArn="arn:aws:iam::AWS-account-number:role/IAM-role-with-permissions-to-create-a-custom-language-model"
 
 Output::
 
@@ -15,8 +15,8 @@ Output::
         "BaseModelName": "base-model-name",
         "ModelName": "cli-clm-example",
         "InputDataConfig": {
-            "S3Uri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-Prefix/",
-            "TuningDataS3Uri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-Prefix/",
+            "S3Uri": "s3://amzn-s3-demo-bucket/Amazon-S3-Prefix/",
+            "TuningDataS3Uri": "s3://amzn-s3-demo-bucket/Amazon-S3-Prefix/",
             "DataAccessRoleArn": "arn:aws:iam::AWS-account-number:role/IAM-role-with-permissions-create-a-custom-language-model"
         },
         "ModelStatus": "IN_PROGRESS"
@@ -32,7 +32,7 @@ The following ``create-language-model`` example transcribes your audio file. You
         --language-code en-US \
         --base-model-name base-model-name \
         --model-name cli-clm-example \
-        --input-data-config S3Uri="s3://DOC-EXAMPLE-BUCKET/Amazon-S3-Prefix-For-Training-Data",DataAccessRoleArn="arn:aws:iam::AWS-account-number:role/IAM-role-with-permissions-to-create-a-custom-language-model"
+        --input-data-config S3Uri="s3://amzn-s3-demo-bucket/Amazon-S3-Prefix-For-Training-Data",DataAccessRoleArn="arn:aws:iam::AWS-account-number:role/IAM-role-with-permissions-to-create-a-custom-language-model"
 
 Output::
 
@@ -41,7 +41,7 @@ Output::
         "BaseModelName": "base-model-name",
         "ModelName": "cli-clm-example",
         "InputDataConfig": {
-            "S3Uri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-Prefix-For-Training-Data/",
+            "S3Uri": "s3://amzn-s3-demo-bucket/Amazon-S3-Prefix-For-Training-Data/",
             "DataAccessRoleArn": "arn:aws:iam::your-AWS-account-number:role/IAM-role-with-permissions-to-create-a-custom-language-model"
         },
         "ModelStatus": "IN_PROGRESS"

@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.22.13
+=======
+
+* api-change:``keyspaces``: Amazon Keyspaces: adding the list of IAM actions required by the UpdateKeyspace API.
+* bugfix:``sso``: Support the ``--ca-bundle`` and ``--no-verify-ssl`` options on SSO commands.
+* api-change:``appsync``: Provides description of new Amazon Bedrock runtime datasource.
+* api-change:``ec2``: This release includes a new API for modifying instance network-performance-options after launch.
+* api-change:``medialive``: H265 outputs now support disabling the deblocking filter.
+* bugfix:``s3``: Follow ``IllegalLocationConstraintException`` redirects for ``s3``.
+* api-change:``ecs``: This is a documentation only update to address various tickets for Amazon ECS.
+* api-change:``cognito-idp``: Change `CustomDomainConfig` from a required to an optional parameter for the `UpdateUserPoolDomain` operation.
+* api-change:``workspaces``: Added text to clarify case-sensitivity
+
+
 2.22.12
 =======
 

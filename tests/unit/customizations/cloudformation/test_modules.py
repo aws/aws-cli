@@ -9,6 +9,9 @@ from awscli.customizations.cloudformation.parse_sub import SubWord, WordType
 from awscli.customizations.cloudformation.parse_sub import parse_sub
 
 MODULES = "Modules"
+RESOURCES = "Resources"
+TYPE = "Type"
+LOCAL_MODULE = "LocalModule"
 
 
 class TestPackageModules(unittest.TestCase):
@@ -75,18 +78,42 @@ class TestPackageModules(unittest.TestCase):
         "Run tests on sample templates that include local modules"
 
         # TODO: Port tests over from Rain
-        base = "unit/customizations/cloudformation/modules"
-        t = modules.read_source(f"{base}/basic-template.yaml")
-        td = yamlhelper.yaml_parse(t)
-        e = modules.read_source(f"{base}/basic-expect.yaml")
 
-        for module_name, module_config in td[MODULES].items():
-            module_config[modules.NAME] = module_name
-            relative_path = module_config[modules.SOURCE]
-            module_config[modules.SOURCE] = f"{base}/{relative_path}"
-            module = modules.Module(td, module_config)
-            td = module.process()
+        # The tests are in the modules directory.
+        # Each test has 3 files:
+        # test-template.yaml, test-module.yaml, and test-expect.yaml
+        tests = ["basic", "type"]
+        for test in tests:
+            base = "unit/customizations/cloudformation/modules"
+            t = modules.read_source(f"{base}/{test}-template.yaml")
+            td = yamlhelper.yaml_parse(t)
+            e = modules.read_source(f"{base}/{test}-expect.yaml")
 
-        del td[MODULES]
+            # Modules section
+            if MODULES in td:
+                for module_name, module_config in td[MODULES].items():
+                    module_config[modules.NAME] = module_name
+                    relative_path = module_config[modules.SOURCE]
+                    module_config[modules.SOURCE] = f"{base}/{relative_path}"
+                    module = modules.Module(td, module_config)
+                    td = module.process()
+                del td[MODULES]
+
+            # Resources with Type LocalModule
+            for k, v in td[RESOURCES].copy().items():
+                if TYPE in v and v[TYPE] == LOCAL_MODULE:
+                    module_config = {}
+                    module_config[modules.NAME] = k
+                    relative_path = v[modules.SOURCE]
+                    module_config[modules.SOURCE] = f"{base}/{relative_path}"
+                    props = modules.PROPERTIES
+                    if props in v:
+                        module_config[props] = v[props]
+                    if modules.OVERRIDES in v:
+                        module_config[modules.OVERRIDES] = v[modules.OVERRIDES]
+                    module = modules.Module(td, module_config)
+                    td = module.process()
+                    del td[RESOURCES][k]
+
         processed = yamlhelper.yaml_dump(td)
         self.assertEqual(e, processed)

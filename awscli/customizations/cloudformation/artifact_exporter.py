@@ -32,6 +32,9 @@ import jmespath
 LOG = logging.getLogger(__name__)
 
 MODULES = "Modules"
+RESOURCES = "Resources"
+TYPE = "Type"
+LOCAL_MODULE = "LocalModule"
 
 def is_path_value_valid(path):
     return isinstance(path, str)
@@ -662,7 +665,6 @@ class Template(object):
                 relative_path = module_config[modules.SOURCE]
                 module_config[modules.SOURCE] = f"{self.template_dir}/{relative_path}"
                 module = modules.Module(self.template_dict, module_config)
-                # Insert the content from the module and replace the dict
                 self.template_dict = module.process()
         
             # Remove the Modules section from the template
@@ -670,12 +672,31 @@ class Template(object):
 
         self.template_dict = self.export_metadata(self.template_dict)
 
-        if "Resources" not in self.template_dict:
+        if RESOURCES not in self.template_dict:
             return self.template_dict
+
+        # Process modules that are specified as Resources, not in Modules
+        for k, v in self.template_dict[RESOURCES].copy().items():
+            if TYPE in v and v[TYPE] == LOCAL_MODULE:
+                module_config = {}
+                module_config[modules.NAME] = k
+                if modules.SOURCE not in v:
+                    msg = f"{k} missing {modules.SOURCE}"
+                    raise exceptions.InvalidModulePathError(msg=msg)
+                relative_path = v[modules.SOURCE]
+                module_config[modules.SOURCE] = f"{self.template_dir}/{relative_path}"
+                if modules.PROPERTIES in v:
+                    module_config[modules.PROPERTIES] = v[modules.PROPERTIES]
+                if modules.OVERRIDES in v:
+                    module_config[modules.OVERRIDES] = v[modules.OVERRIDES]
+                module = modules.Module(self.template_dict, module_config)
+                self.template_dict = module.process()
+                del self.template_dict[RESOURCES][k]
+
 
         self.template_dict = self.export_global_artifacts(self.template_dict)
 
-        self.export_resources(self.template_dict["Resources"])
+        self.export_resources(self.template_dict[RESOURCES])
 
         return self.template_dict
 

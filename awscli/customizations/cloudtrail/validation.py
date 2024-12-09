@@ -561,7 +561,6 @@ class Sha256RSADigestValidator(object):
         to_sign = self._create_string_to_sign(digest_data, inflated_digest)
         signature_bytes = binascii.unhexlify(digest_data['_signature'])
 
-
         result = public_key.verify(
             signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256, 
             digest=hashlib.sha256(to_sign).digest(), 
@@ -572,7 +571,6 @@ class Sha256RSADigestValidator(object):
             # exception here and re-raised the DigestSignatureError to avoid the stack trace
             # leaking any information about the key.
             raise DigestSignatureError(bucket, key)
-
 
     def _create_string_to_sign(self, digest_data, inflated_digest):
         previous_signature = digest_data['previousDigestSignature']

@@ -2,7 +2,7 @@
 
 The following ``disassociate-resolver-endpoint-ip-address`` example removes an IP address from a specified Resolver inbound or outbound endpoint. 
 
-**Note** An endpoint must have at least two IP addresses. If an endpoint currently has only two IP addresses and you want to replace one address with another address, you must first use `associate-resolver-endpoint-ip-address <https://docs.aws.amazon.com/cli/latest/reference/route53resolver/associate-resolver-endpoint-ip-address.html>`__ to associate the new IP address. Then you can disassociate one of the original IP addresses from the endpoint. ::
+**Note** An endpoint must have at least two IP addresses. If an endpoint currently has only two IP addresses and you want to replace one address with another address, you must first use `associate-resolver-endpoint-ip-address <https://awscli.amazonaws.com/v2/documentation/api/latest/reference/route53resolver/associate-resolver-endpoint-ip-address.html>`__ to associate the new IP address. Then you can disassociate one of the original IP addresses from the endpoint. ::
 
     aws route53resolver disassociate-resolver-endpoint-ip-address \
         --resolver-endpoint-id rslvr-in-f9ab8a03f1example \

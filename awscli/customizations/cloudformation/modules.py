@@ -331,25 +331,29 @@ class Module:
             k = BucketName, v = {!Ref, Name}, d = Bucket{}, n = Properties
         """
 
+        # print(f"k: {k}, v: {v}, d: {d}, n: {n}")
+
         if k == REF:
-            self.resolve_ref(k, v, d, n)
+            self.resolve_ref(v, d, n)
         elif k == SUB:
-            self.resolve_sub(k, v, d, n)
+            self.resolve_sub(v, d, n)
         elif k == GETATT:
-            self.resolve_getatt(k, v, d, n)
+            self.resolve_getatt(v, d, n)
         else:
             if isdict(v):
                 vc = v.copy()
                 for k2, v2 in vc.items():
                     self.resolve(k2, v2, d[n], k)
             elif isinstance(v, list):
+                idx = -1
                 for v2 in v:
+                    idx = idx + 1
                     if isdict(v2):
                         v2c = v2.copy()
                         for k3, v3 in v2c.items():
-                            self.resolve(k3, v3, d[n], k)
+                            self.resolve(k3, v3, v, idx)
 
-    def resolve_ref(self, k, v, d, n):
+    def resolve_ref(self, v, d, n):
         """
         Look for the Ref in the parent template Properties if it matches
         a module Parameter name. If it's not there, use the default if
@@ -363,11 +367,6 @@ class Module:
         """
         if not isinstance(v, str):
             msg = f"Ref should be a string: {v}"
-            raise exceptions.InvalidModuleError(msg=msg)
-
-        if not isdict(d):
-            # TODO: This is a bug, shouldn't happen
-            msg = f"{k}: expected {d} to be a dict"
             raise exceptions.InvalidModuleError(msg=msg)
 
         found = self.find_ref(v)
@@ -384,6 +383,7 @@ class Module:
 
         :return The referenced element or None
         """
+        # print(f"find_ref {v}, props: {self.props}")
         if v in self.props:
             if v not in self.params:
                 # The parent tried to set a property that doesn't exist
@@ -403,12 +403,12 @@ class Module:
         for k in self.resources:
             if v == k:
                 # Simply rename local references to include the module name
-                return self.name + v
+                return {REF: self.name + v}
 
         return None
 
     # pylint: disable=too-many-branches,unused-argument
-    def resolve_sub(self, k, v, d, n):
+    def resolve_sub(self, v, d, n):
         """
         Parse the Sub string and break it into tokens.
 
@@ -416,6 +416,7 @@ class Module:
 
         Use the same logic as with resolve_ref.
         """
+        # print(f"resolve_sub v: {v}, d: {d}, n: {n}")
         words = parse_sub(v, True)
         sub = ""
         need_sub = False
@@ -435,7 +436,8 @@ class Module:
                         need_sub = True
                         if REF in found:
                             resolved = "${" + found[REF] + "}"
-                        # TODO: else what is this?
+                        elif SUB in found:
+                            resolved = found[SUB]
                 sub += resolved
             elif word.t == WordType.GETATT:
                 need_sub = True
@@ -451,7 +453,7 @@ class Module:
         else:
             d[n] = sub
 
-    def resolve_getatt(self, k, v, d, n):
+    def resolve_getatt(self, v, d, n):
         """
         Resolve a GetAtt. All we do here is add the prefix.
 
@@ -461,4 +463,4 @@ class Module:
             msg = f"GetAtt {v} is not a list"
             raise exceptions.InvalidModuleError(msg=msg)
         logical_id = self.name + v[0]
-        d[n] = {k: [logical_id, v[1]]}
+        d[n] = {GETATT: [logical_id, v[1]]}

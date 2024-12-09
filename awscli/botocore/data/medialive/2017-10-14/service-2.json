@@ -11209,6 +11209,11 @@
           "shape": "__integerMin1Max51",
           "locationName": "minQp",
           "documentation": "Sets the minimum QP. If you aren't familiar with quantization adjustment, leave the field empty. MediaLive will\napply an appropriate value."
+        },
+        "Deblocking": {
+          "shape": "H265Deblocking",
+          "locationName": "deblocking",
+          "documentation": "Enable or disable the deblocking filter for this codec. The filter reduces blocking artifacts at block boundaries,\nwhich improves overall video quality. If the filter is disabled, visible block edges might appear in the output,\nespecially at lower bitrates."
         }
       },
       "documentation": "H265 Settings",
@@ -18891,7 +18896,10 @@
         "Tags": {
           "shape": "Tags",
           "locationName": "tags",
-          "documentation": "A collection of key-value pairs."
+          "documentation": "A collection of key-value pairs.",
+          "deprecated": true,
+          "deprecatedMessage": "This API is deprecated. You must use UpdateTagsForResource instead.",
+          "deprecatedSince": "2024-11-20"
         },
         "WhitelistRules": {
           "shape": "__listOfInputWhitelistRuleCidr",
@@ -28078,6 +28086,14 @@
         }
       },
       "documentation": "Multiplex M2ts Settings"
+    },
+    "H265Deblocking": {
+      "type": "string",
+      "documentation": "H265 Deblocking",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
+      ]
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

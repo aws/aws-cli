@@ -16,6 +16,7 @@
 # pylint: disable=fixme
 
 import os
+import traceback
 from collections import OrderedDict
 
 from awscli.customizations.cloudformation import exceptions
@@ -41,6 +42,51 @@ REF = "Ref"
 SUB = "Fn::Sub"
 GETATT = "Fn::GetAtt"
 PARAMETERS = "Parameters"
+MODULES = "Modules"
+TYPE = "Type"
+LOCAL_MODULE = "LocalModule"
+
+
+def process_module_section(template, base_path):
+    "Recursively process the Modules section of a template"
+    if MODULES in template:
+
+        # Process each Module node separately
+        for module_name, module_config in template[MODULES].items():
+            module_config[NAME] = module_name
+            # Fix the source path
+            relative_path = module_config[SOURCE]
+            module_config[SOURCE] = os.path.join(base_path, relative_path)
+            module_config[SOURCE] = os.path.normpath(module_config[SOURCE])
+            module = Module(template, module_config)
+            template = module.process()
+
+        # Remove the Modules section from the template
+        del template[MODULES]
+
+    return template
+
+
+def process_resources_section(template, base_path):
+    "Recursively process the Resources section of the template"
+    for k, v in template[RESOURCES].copy().items():
+        if TYPE in v and v[TYPE] == LOCAL_MODULE:
+            module_config = {}
+            module_config[NAME] = k
+            if SOURCE not in v:
+                msg = f"{k} missing {SOURCE}"
+                raise exceptions.InvalidModulePathError(msg=msg)
+            relative_path = v[SOURCE]
+            module_config[SOURCE] = os.path.join(base_path, relative_path)
+            module_config[SOURCE] = os.path.normpath(module_config[SOURCE])
+            if PROPERTIES in v:
+                module_config[PROPERTIES] = v[PROPERTIES]
+            if OVERRIDES in v:
+                module_config[OVERRIDES] = v[OVERRIDES]
+            module = Module(template, module_config)
+            template = module.process()
+            del template[RESOURCES][k]
+    return template
 
 
 def isdict(v):
@@ -202,14 +248,26 @@ class Module:
 
         module_dict = yamlhelper.yaml_parse(content)
         if RESOURCES not in module_dict:
-            msg = "Modules must have a Resources section"
-            raise exceptions.InvalidModuleError(msg=msg)
-        self.resources = module_dict[RESOURCES]
+            # The module may only have sub modules in the Modules section
+            self.resources = {}
+        else:
+            self.resources = module_dict[RESOURCES]
 
         if PARAMETERS in module_dict:
             self.params = module_dict[PARAMETERS]
 
-        # TODO: Recurse on nested modules
+        # Recurse on nested modules
+        base_path = os.path.dirname(self.source)
+        section = ""
+        try:
+            section = MODULES
+            module_dict = process_module_section(module_dict, base_path)
+            section = RESOURCES
+            module_dict = process_resources_section(module_dict, base_path)
+        except Exception as e:
+            traceback.print_exc()
+            msg = f"Failed to process {section} section: {e}"
+            raise exceptions.InvalidModuleError(msg=msg)
 
         self.validate_overrides()
 
@@ -427,13 +485,14 @@ class Module:
                 sub += "${AWS::" + word.w + "}"
                 need_sub = True
             elif word.t == WordType.REF:
-                resolved = f"${word.w}"
+                resolved = "${" + word.w + "}"
+                need_sub = True
                 found = self.find_ref(word.w)
                 if found is not None:
                     if isinstance(found, str):
+                        need_sub = False
                         resolved = found
                     else:
-                        need_sub = True
                         if REF in found:
                             resolved = "${" + found[REF] + "}"
                         elif SUB in found:

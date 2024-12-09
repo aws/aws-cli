@@ -1,10 +1,9 @@
 **To get a device**
 
-The following ``admin-get-device`` example displays one device for the user ``diego``. ::
+The following ``get-device`` example displays one device for currently signed-in user. ::
 
-    aws cognito-idp admin-get-device \
-        --user-pool-id us-west-2_EXAMPLE \
-        --username diego \
+    aws cognito-idp get-device \
+        --access-token eyJra456defEXAMPLE \
         --device-key us-west-2_a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::

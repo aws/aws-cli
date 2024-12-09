@@ -17,4 +17,4 @@ Output::
         }
     }
 
-For more information, see `Deleting a public repository <https://docs.aws.amazon.com/AmazonECR/latest/public/public-repository-delete.html>`__ in the *Amazon ECR Public User Guide*.
+For more information, see `Deleting a public repository <https://docs.aws.amazon.com/AmazonECR/latest/public/public-repository-delete.html>`__ in the *Amazon ECR Public*.

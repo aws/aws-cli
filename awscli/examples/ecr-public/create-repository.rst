@@ -1,6 +1,6 @@
 **Example 1: To create a repository in a public registry**
 
-The following ``create-repository`` example creates a repository named ``project-a/nginx-web-app`` in a public registry. ::
+The following ``create-repository`` example creates a repository named `project-a/nginx-web-app` in a public registry. ::
 
     aws ecr-public create-repository \
         --repository-name project-a/nginx-web-app
@@ -22,11 +22,12 @@ For more information, see `Creating a public repository <https://docs.aws.amazon
 
 **Example 2: To create a repository in a public registry with short description of the contents of the repository, system and operating architecture that the images in the repository are compatible with**
 
-The following ``create-repository`` example creates a repository named ``project-a/nginx-web-app`` in a public registry with short description of the contents of the repository, system and operating architecture that the images in the repository are compatible with. ::
+The following ``create-repository`` example creates a repository named `project-a/nginx-web-app` in a public registry with short description of the contents of the repository, system and operating architecture that the images in the repository are compatible with. ::
 
     aws ecr-public create-repository \
         --repository-name project-a/nginx-web-app \
         --catalog-data 'description=My project-a ECR Public Repository,architectures=ARM,ARM 64,x86,x86-64,operatingSystems=Linux'
+
 
 Output::
 

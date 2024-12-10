@@ -57,3 +57,9 @@ class DeployBucketRequiredError(CloudFormationCommandError):
 
 class InvalidForEachIntrinsicFunctionError(CloudFormationCommandError):
     fmt = 'The value of {resource_id} has an invalid "Fn::ForEach::" format: Must be a list of three entries'
+
+class InvalidModulePathError(CloudFormationCommandError):
+    fmt = 'The value of {source} is not a valid path to a local file'
+
+class InvalidModuleError(CloudFormationCommandError):
+    fmt = 'Invalid module: {msg}'

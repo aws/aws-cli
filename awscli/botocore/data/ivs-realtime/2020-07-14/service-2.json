@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2020-07-14",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"ivsrealtime",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"ivsrealtime",
     "serviceFullName":"Amazon Interactive Video Service RealTime",
     "serviceId":"IVS RealTime",
@@ -673,6 +674,10 @@
         "mediaTypes":{
           "shape":"ParticipantRecordingMediaTypeList",
           "documentation":"<p>Types of media to be recorded. Default: <code>AUDIO_VIDEO</code>.</p>"
+        },
+        "thumbnailConfiguration":{
+          "shape":"ParticipantThumbnailConfiguration",
+          "documentation":"<p>A complex type that allows you to enable/disable the recording of thumbnails for individual participant recording and modify the interval at which thumbnails are generated for the live session.</p>"
         }
       },
       "documentation":"<p>Object specifying a configuration for individual participant recording.</p>"
@@ -821,6 +826,26 @@
     "CompositionSummaryList":{
       "type":"list",
       "member":{"shape":"CompositionSummary"}
+    },
+    "CompositionThumbnailConfiguration":{
+      "type":"structure",
+      "members":{
+        "targetIntervalSeconds":{
+          "shape":"ThumbnailIntervalSeconds",
+          "documentation":"<p>The targeted thumbnail-generation interval in seconds. Default: 60.</p>"
+        },
+        "storage":{
+          "shape":"ThumbnailStorageTypeList",
+          "documentation":"<p>Indicates the format in which thumbnails are recorded. <code>SEQUENTIAL</code> records all generated thumbnails in a serial manner, to the media/thumbnails/(width)x(height) directory, where (width) and (height) are the width and height of the thumbnail. <code>LATEST</code> saves the latest thumbnail in media/latest_thumbnail/(width)x(height)/thumb.jpg and overwrites it at the interval specified by <code>targetIntervalSeconds</code>. You can enable both <code>SEQUENTIAL</code> and <code>LATEST</code>. Default: <code>SEQUENTIAL</code>.</p>"
+        }
+      },
+      "documentation":"<p>An object representing a configuration of thumbnails for recorded video for a <a>Composition</a>.</p>"
+    },
+    "CompositionThumbnailConfigurationList":{
+      "type":"list",
+      "member":{"shape":"CompositionThumbnailConfiguration"},
+      "max":1,
+      "min":0
     },
     "ConflictException":{
       "type":"structure",
@@ -2268,7 +2293,8 @@
       "type":"string",
       "enum":[
         "AUDIO_VIDEO",
-        "AUDIO_ONLY"
+        "AUDIO_ONLY",
+        "NONE"
       ]
     },
     "ParticipantRecordingMediaTypeList":{
@@ -2336,6 +2362,24 @@
         }
       },
       "documentation":"<p>Summary object describing a participant that has joined a stage.</p>"
+    },
+    "ParticipantThumbnailConfiguration":{
+      "type":"structure",
+      "members":{
+        "targetIntervalSeconds":{
+          "shape":"ThumbnailIntervalSeconds",
+          "documentation":"<p>The targeted thumbnail-generation interval in seconds. This is configurable only if <code>recordingMode</code> is <code>INTERVAL</code>. Default: 60.</p>"
+        },
+        "storage":{
+          "shape":"ThumbnailStorageTypeList",
+          "documentation":"<p>Indicates the format in which thumbnails are recorded. <code>SEQUENTIAL</code> records all generated thumbnails in a serial manner, to the media/thumbnails/high directory. <code>LATEST</code> saves the latest thumbnail in media/latest_thumbnail/high/thumb.jpg and overwrites it at the interval specified by <code>targetIntervalSeconds</code>. You can enable both <code>SEQUENTIAL</code> and <code>LATEST</code>. Default: <code>SEQUENTIAL</code>.</p>"
+        },
+        "recordingMode":{
+          "shape":"ThumbnailRecordingMode",
+          "documentation":"<p>Thumbnail recording mode. Default: <code>DISABLED</code>.</p>"
+        }
+      },
+      "documentation":"<p>An object representing a configuration of thumbnails for recorded video from an individual participant.</p>"
     },
     "ParticipantToken":{
       "type":"structure",
@@ -2657,6 +2701,10 @@
         "recordingConfiguration":{
           "shape":"RecordingConfiguration",
           "documentation":"<p>Array of maps, each of the form <code>string:string (key:value)</code>. This is an optional customer specification, currently used only to specify the recording format for storing a recording in Amazon S3.</p>"
+        },
+        "thumbnailConfigurations":{
+          "shape":"CompositionThumbnailConfigurationList",
+          "documentation":"<p>A complex type that allows you to enable/disable the recording of thumbnails for a <a>Composition</a> and modify the interval at which thumbnails are generated for the live session.</p>"
         }
       },
       "documentation":"<p>A complex type that describes an S3 location where recorded videos will be stored.</p>"
@@ -3008,6 +3056,32 @@
       "key":{"shape":"TagKey"},
       "value":{"shape":"TagValue"},
       "max":50,
+      "min":0
+    },
+    "ThumbnailIntervalSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":86400,
+      "min":1
+    },
+    "ThumbnailRecordingMode":{
+      "type":"string",
+      "enum":[
+        "INTERVAL",
+        "DISABLED"
+      ]
+    },
+    "ThumbnailStorageType":{
+      "type":"string",
+      "enum":[
+        "SEQUENTIAL",
+        "LATEST"
+      ]
+    },
+    "ThumbnailStorageTypeList":{
+      "type":"list",
+      "member":{"shape":"ThumbnailStorageType"},
+      "max":2,
       "min":0
     },
     "Time":{

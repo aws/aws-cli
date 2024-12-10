@@ -666,6 +666,24 @@
       ],
       "documentation":"<p>Creates a prompt. For more information about prompts, such as supported file types and maximum length, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/prompts.html\">Create prompts</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
+    "CreatePushNotificationRegistration":{
+      "name":"CreatePushNotificationRegistration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/push-notification/{InstanceId}/registrations"
+      },
+      "input":{"shape":"CreatePushNotificationRegistrationRequest"},
+      "output":{"shape":"CreatePushNotificationRegistrationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates registration for a device token and a chat contact to receive real-time push notifications. For more information about push notifications, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/set-up-push-notifications-for-mobile-chat.html\">Set up push notifications in Amazon Connect for mobile chat</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+    },
     "CreateQueue":{
       "name":"CreateQueue",
       "http":{
@@ -1117,6 +1135,23 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Deletes a prompt.</p>"
+    },
+    "DeletePushNotificationRegistration":{
+      "name":"DeletePushNotificationRegistration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/push-notification/{InstanceId}/registrations/{RegistrationId}"
+      },
+      "input":{"shape":"DeletePushNotificationRegistrationRequest"},
+      "output":{"shape":"DeletePushNotificationRegistrationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes registration for a device token and a chat contact.</p>"
     },
     "DeleteQueue":{
       "name":"DeleteQueue",
@@ -6786,6 +6821,25 @@
       },
       "documentation":"<p>A structure that defines search criteria for contacts using analysis outputs from Amazon Connect Contact Lens.</p>"
     },
+    "ContactConfiguration":{
+      "type":"structure",
+      "required":["ContactId"],
+      "members":{
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact within the Amazon Connect instance.</p>"
+        },
+        "ParticipantRole":{
+          "shape":"ParticipantRole",
+          "documentation":"<p>The role of the participant in the chat conversation.</p>"
+        },
+        "IncludeRawMessage":{
+          "shape":"IncludeRawMessage",
+          "documentation":"<p>Whether to include raw connect message in the push notification payload. Default is <code>False</code>.</p>"
+        }
+      },
+      "documentation":"<p>The contact configuration for push notification registration.</p>"
+    },
     "ContactDataRequest":{
       "type":"structure",
       "members":{
@@ -8134,6 +8188,55 @@
         }
       }
     },
+    "CreatePushNotificationRegistrationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "PinpointAppArn",
+        "DeviceToken",
+        "DeviceType",
+        "ContactConfiguration"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "PinpointAppArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Pinpoint application.</p>"
+        },
+        "DeviceToken":{
+          "shape":"DeviceToken",
+          "documentation":"<p>The push notification token issued by the Apple or Google gateways.</p>"
+        },
+        "DeviceType":{
+          "shape":"DeviceType",
+          "documentation":"<p>The device type to use when sending the message.</p>"
+        },
+        "ContactConfiguration":{
+          "shape":"ContactConfiguration",
+          "documentation":"<p>The contact configuration for push notification registration.</p>"
+        }
+      }
+    },
+    "CreatePushNotificationRegistrationResponse":{
+      "type":"structure",
+      "required":["RegistrationId"],
+      "members":{
+        "RegistrationId":{
+          "shape":"RegistrationId",
+          "documentation":"<p>The identifier for the registration.</p>"
+        }
+      }
+    },
     "CreateQueueRequest":{
       "type":"structure",
       "required":[
@@ -9384,6 +9487,39 @@
         }
       }
     },
+    "DeletePushNotificationRegistrationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "RegistrationId",
+        "ContactId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "RegistrationId":{
+          "shape":"RegistrationId",
+          "documentation":"<p>The identifier for the registration.</p>",
+          "location":"uri",
+          "locationName":"RegistrationId"
+        },
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact within the Amazon Connect instance.</p>",
+          "location":"querystring",
+          "locationName":"contactId"
+        }
+      }
+    },
+    "DeletePushNotificationRegistrationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteQueueRequest":{
       "type":"structure",
       "required":[
@@ -10551,6 +10687,19 @@
         }
       },
       "documentation":"<p>Information regarding the device.</p>"
+    },
+    "DeviceToken":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "DeviceType":{
+      "type":"string",
+      "enum":[
+        "GCM",
+        "APNS",
+        "APNS_SANDBOX"
+      ]
     },
     "Dimensions":{
       "type":"structure",
@@ -13783,6 +13932,7 @@
       "min":0,
       "sensitive":true
     },
+    "IncludeRawMessage":{"type":"boolean"},
     "Index":{"type":"integer"},
     "InitiateAs":{
       "type":"string",
@@ -18996,6 +19146,11 @@
     "RegionName":{
       "type":"string",
       "pattern":"[a-z]{2}(-[a-z]+){1,2}(-[0-9])?"
+    },
+    "RegistrationId":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "RehydrationType":{
       "type":"string",

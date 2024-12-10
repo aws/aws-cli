@@ -312,7 +312,7 @@ class CLIParser(object):
         return is_command_name and (remaining_parts or not is_part_of_command)
 
     def _handle_positional(self, current, state, remaining_parts, parsed):
-        # This is can either be a subcommand or a positional argument
+        # This can either be a subcommand or a positional argument
         #
         # First we can check if this is a valid subcommand given our lineage.
         # We're one off here, we need to compute a new *potential*
@@ -331,10 +331,10 @@ class CLIParser(object):
             # has a positional argument. This will require an additional
             # select on the argument index.
             positional_argname = self._get_positional_argname(state)
-        if (positional_argname and
+        if (not state.current_param and positional_argname and
             positional_argname not in parsed.parsed_params):
             # Parse the current string to be a positional argument
-            # if the command has the a positional arg and the positional arg
+            # if the command has a positional arg and the positional arg
             # has not already been parsed.
             if not remaining_parts:
                 # We are currently parsing the positional argument
@@ -353,8 +353,9 @@ class CLIParser(object):
             if not remaining_parts:
                 # If this is the last chunk of the command line but
                 # it's not a subcommand then we'll mark it as the last
-                # fragment.  This is likely a partially entered
-                # command, e.g 'aws ec2 run-instan'
+                # fragment. This could either be a partially entered command
+                # (e.g 'aws ec2 run-instan') or a value for an option
+                # (e.g 'aws ec2 describe-instances --profile ')
                 parsed.current_fragment = current
             elif current:
                 outfile_arg = self._index.get_argument_data(

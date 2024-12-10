@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.36.19
+=======
+
+* api-change:``application-autoscaling``: Doc only update for AAS Predictive Scaling policy configuration API.
+* api-change:``bcm-pricing-calculator``: Updated condition key inference from Workload Estimate, Bill Scenario, and Bill Estimate resources. Updated documentation links.
+* api-change:``connect``: Add support for Push Notifications for Amazon Connect chat. With Push Notifications enabled an alert could be sent to customers about new messages even when they aren't actively using the mobile application.
+* api-change:``finspace``: Update KxCommandLineArgument value parameter regex to allow for spaces and semicolons
+* api-change:``ivs-realtime``: IVS Real-Time now offers customers the ability to customize thumbnails recording mode and interval for both Individual Participant Recording (IPR) and Server-Side Compositions (SSC).
+* api-change:``sesv2``: Introduces support for creating DEED (Deterministic Easy-DKIM) identities.
+
+
 1.36.18
 =======
 

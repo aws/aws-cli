@@ -24,4 +24,4 @@ Output::
     }
   }
   
-.. _`initiate-auth`: https://docs.aws.amazon.com/cli/latest/reference/cognito-idp/initiate-auth.html
+.. _`initiate-auth`: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/cognito-idp/initiate-auth.html

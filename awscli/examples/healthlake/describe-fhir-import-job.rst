@@ -4,8 +4,7 @@ The following ``describe-fhir-import-job`` example shows how to learn the proper
 
     aws healthlake describe-fhir-import-job \
         --datastore-id (Datastore ID) \
-        --job-id c145fbb27b192af392f8ce6e7838e34f \
-        --region us-east-1
+        --job-id c145fbb27b192af392f8ce6e7838e34f
 
 Output::
 

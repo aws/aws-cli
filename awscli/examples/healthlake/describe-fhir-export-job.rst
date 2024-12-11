@@ -1,6 +1,6 @@
 **To describe a FHIR export job**
 
-The following ``describe-fhir-export-job`` example shows how to find the properties of a FHIR export job in Amazon HealthLake. ::
+The following ``describe-fhir-export-job`` example shows how to find the properties of a FHIR export job in AWS HealthLake. ::
 
     aws healthlake describe-fhir-export-job \
         --datastore-id (Datastore ID) \
@@ -26,4 +26,4 @@ Output::
         }
     }
 
-For more information, see `Exporting files from a FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/export-datastore.html>`__ in the *Amazon HealthLake Developer Guide*.
+For more information, see `Exporting files from a FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/export-datastore.html>`__ in the *AWS HealthLake Developer Guide*.

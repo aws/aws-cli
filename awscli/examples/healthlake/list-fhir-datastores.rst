@@ -1,6 +1,6 @@
 **To list FHIR Data Stores**
 
-The following ``list-fhir-datastores`` example shows to how to use the command and how users can filter results based on Data Store status in Amazon HealthLake. ::
+The following ``list-fhir-datastores`` example shows to how to use the command and how users can filter results based on Data Store status in AWS HealthLake. ::
 
     aws healthlake list-fhir-datastores \
         --filter DatastoreStatus=ACTIVE
@@ -34,4 +34,4 @@ Output::
         ]
     }
 
-For more information, see `Creating and monitoring a FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/working-with-FHIR-healthlake.html>`__ in the *Amazon HealthLake Developer Guide*.
+For more information, see `Creating and monitoring a FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/working-with-FHIR-healthlake.html>`__ in the *AWS HealthLake Developer Guide*.

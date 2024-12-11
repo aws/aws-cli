@@ -35,4 +35,4 @@ Output::
         ]
     }
 
-For more information, see `Exporting files from a FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/export-datastore.html>`__ in the Amazon HealthLake Developer Guide.
+For more information, see `Exporting files from a FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/export-datastore.html>`__ in the AWS HealthLake Developer Guide.

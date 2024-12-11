@@ -45,4 +45,4 @@ Output::
     }
 
 
-For more information, see `Importing files to FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/import-examples.html>`__ in the Amazon HealthLake Developer Guide.
+For more information, see `Importing files to FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/import-examples.html>`__ in the AWS HealthLake Developer Guide.

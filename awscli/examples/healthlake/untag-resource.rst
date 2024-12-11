@@ -8,4 +8,4 @@ The following ``untag-resource`` example shows how to remove tags from a Data St
 
 This command produces no output.
 
-For more information, see `Removing tags from a Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/remove-tags.html>`__ in the *Amazon HealthLake Developer Guide*.
+For more information, see `Removing tags from a Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/remove-tags.html>`__ in the *AWS HealthLake Developer Guide*.

@@ -1,6 +1,6 @@
 **To describe a FHIR Data Store**
 
-The following ``describe-fhir-datastore`` example demonstrates how to find the properties of a Data Store in Amazon HealthLake. ::
+The following ``describe-fhir-datastore`` example demonstrates how to find the properties of a Data Store in AWS HealthLake. ::
 
     aws healthlake describe-fhir-datastore \
         --datastore-id "1f2f459836ac6c513ce899f9e4f66a59"
@@ -33,4 +33,4 @@ Output::
         }
     }
 
-For more information, see `Creating and monitoring a FHIR Data Stores <https://docs.aws.amazon.com/healthlake/latest/devguide/working-with-FHIR-healthlake.html>`__ in the *Amazon HealthLake Developer Guide*.
+For more information, see `Creating and monitoring a FHIR Data Stores <https://docs.aws.amazon.com/healthlake/latest/devguide/working-with-FHIR-healthlake.html>`__ in the *AWS HealthLake Developer Guide*.

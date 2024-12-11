@@ -1,6 +1,6 @@
 **To describe a FHIR import job**
 
-The following ``describe-fhir-import-job`` example shows how to learn the properties of a FHIR import job using Amazon HealthLake. ::
+The following ``describe-fhir-import-job`` example shows how to learn the properties of a FHIR import job using AWS HealthLake. ::
 
     aws healthlake describe-fhir-import-job \
         --datastore-id (Datastore ID) \
@@ -23,4 +23,4 @@ Output::
         }
     }
 
-For more information, see `Importing files to a FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/import-datastore.html>`__ in the *Amazon HealthLake Developer Guide*.
+For more information, see `Importing files to a FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/import-datastore.html>`__ in the *AWS HealthLake Developer Guide*.

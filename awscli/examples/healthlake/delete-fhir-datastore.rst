@@ -1,6 +1,6 @@
 **To delete a FHIR Data Store**
 
-The following ``delete-fhir-datastore`` example demonstrates how to delete a Data Store and all of its contents in Amazon HealthLake. ::
+The following ``delete-fhir-datastore`` example demonstrates how to delete a Data Store and all of its contents in AWS HealthLake. ::
 
     aws healthlake delete-fhir-datastore \
         --datastore-id (Data Store ID)
@@ -14,4 +14,4 @@ Output::
         "DatastoreId": "(Datastore ID)"
     }
 
-For more information, see `Creating and monitoring a FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/working-with-FHIR-healthlake.html>` in the *Amazon HealthLake Developer Guide*.
+For more information, see `Creating and monitoring a FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/working-with-FHIR-healthlake.html>` in the *AWS HealthLake Developer Guide*.

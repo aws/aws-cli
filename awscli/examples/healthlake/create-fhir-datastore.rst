@@ -1,6 +1,6 @@
 **To create a FHIR Data Store.**
 
-The following ``create-fhir-datastore`` example demonstrates how to create a new Data Store in Amazon HealthLake. ::
+The following ``create-fhir-datastore`` example demonstrates how to create a new Data Store in AWS HealthLake. ::
 
 **Example 1: Create a SigV4-enabled HealthLake data store**
 
@@ -44,4 +44,4 @@ Output::
         "DatastoreId": "(Datastore ID)"
     }
 
-For more information, see `Creating and monitoring a FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/working-with-FHIR-healthlake.html>`__ in the *Amazon HealthLake Developer Guide*.
+For more information, see `Creating and monitoring a FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/working-with-FHIR-healthlake.html>`__ in the *AWS HealthLake Developer Guide*.

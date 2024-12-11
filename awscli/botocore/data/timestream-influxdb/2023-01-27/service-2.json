@@ -163,6 +163,7 @@
       },
       "input":{"shape":"TagResourceRequest"},
       "errors":[
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Tags are composed of a Key/Value pairs. You can use tags to categorize and track your Timestream for InfluxDB resources.</p>",
@@ -275,7 +276,7 @@
         },
         "password":{
           "shape":"Password",
-          "documentation":"<p>The password of the initial admin user created in InfluxDB. This password will allow you to access the InfluxDB UI to perform various administrative tasks and also use the InfluxDB CLI to create an operator token. These attributes will be stored in a Secret created in AWS SecretManager in your account.</p>"
+          "documentation":"<p>The password of the initial admin user created in InfluxDB. This password will allow you to access the InfluxDB UI to perform various administrative tasks and also use the InfluxDB CLI to create an operator token. These attributes will be stored in a Secret created in Amazon Web Services SecretManager in your account.</p>"
         },
         "organization":{
           "shape":"Organization",
@@ -328,6 +329,10 @@
         "port":{
           "shape":"Port",
           "documentation":"<p>The port number on which InfluxDB accepts connections.</p> <p>Valid Values: 1024-65535</p> <p>Default: 8086</p> <p>Constraints: The value can't be 2375-2376, 7788-7799, 8090, or 51678-51680</p>"
+        },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Specifies whether the networkType of the Timestream for InfluxDB instance is IPV4, which can communicate over IPv4 protocol only, or DUAL, which can communicate over both IPv4 and IPv6 protocols.</p>"
         }
       }
     },
@@ -363,6 +368,10 @@
         "port":{
           "shape":"Port",
           "documentation":"<p>The port number on which InfluxDB accepts connections. The default value is 8086.</p>"
+        },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Specifies whether the networkType of the Timestream for InfluxDB instance is IPV4, which can communicate over IPv4 protocol only, or DUAL, which can communicate over both IPv4 and IPv6 protocols.</p>"
         },
         "dbInstanceType":{
           "shape":"DbInstanceType",
@@ -410,7 +419,7 @@
         },
         "influxAuthParametersSecretArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
         }
       }
     },
@@ -503,7 +512,7 @@
         },
         "name":{
           "shape":"DbInstanceName",
-          "documentation":"<p>This customer-supplied name uniquely identifies the DB instance when interacting with the Amazon Timestream for InfluxDB API and AWS CLI commands.</p>"
+          "documentation":"<p>This customer-supplied name uniquely identifies the DB instance when interacting with the Amazon Timestream for InfluxDB API and Amazon Web Services CLI commands.</p>"
         },
         "arn":{
           "shape":"Arn",
@@ -520,6 +529,10 @@
         "port":{
           "shape":"Port",
           "documentation":"<p>The port number on which InfluxDB accepts connections.</p>"
+        },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Specifies whether the networkType of the Timestream for InfluxDB instance is IPV4, which can communicate over IPv4 protocol only, or DUAL, which can communicate over both IPv4 and IPv6 protocols.</p>"
         },
         "dbInstanceType":{
           "shape":"DbInstanceType",
@@ -657,6 +670,10 @@
           "shape":"Port",
           "documentation":"<p>The port number on which InfluxDB accepts connections.</p>"
         },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Specifies whether the networkType of the Timestream for InfluxDB instance is IPV4, which can communicate over IPv4 protocol only, or DUAL, which can communicate over both IPv4 and IPv6 protocols.</p>"
+        },
         "dbInstanceType":{
           "shape":"DbInstanceType",
           "documentation":"<p>The Timestream for InfluxDB instance type that InfluxDB runs on.</p>"
@@ -703,7 +720,7 @@
         },
         "influxAuthParametersSecretArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
         }
       }
     },
@@ -789,6 +806,10 @@
           "shape":"Port",
           "documentation":"<p>The port number on which InfluxDB accepts connections.</p>"
         },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Specifies whether the networkType of the Timestream for InfluxDB instance is IPV4, which can communicate over IPv4 protocol only, or DUAL, which can communicate over both IPv4 and IPv6 protocols.</p>"
+        },
         "dbInstanceType":{
           "shape":"DbInstanceType",
           "documentation":"<p>The Timestream for InfluxDB instance type that InfluxDB runs on.</p>"
@@ -835,7 +856,7 @@
         },
         "influxAuthParametersSecretArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
         }
       }
     },
@@ -1236,6 +1257,13 @@
       "max":100,
       "min":1
     },
+    "NetworkType":{
+      "type":"string",
+      "enum":[
+        "IPV4",
+        "DUAL"
+      ]
+    },
     "NextToken":{
       "type":"string",
       "min":1
@@ -1468,7 +1496,7 @@
         },
         "name":{
           "shape":"DbInstanceName",
-          "documentation":"<p>This customer-supplied name uniquely identifies the DB instance when interacting with the Amazon Timestream for InfluxDB API and AWS CLI commands.</p>"
+          "documentation":"<p>This customer-supplied name uniquely identifies the DB instance when interacting with the Amazon Timestream for InfluxDB API and Amazon Web Services CLI commands.</p>"
         },
         "arn":{
           "shape":"Arn",
@@ -1485,6 +1513,10 @@
         "port":{
           "shape":"Port",
           "documentation":"<p>The port number on which InfluxDB accepts connections.</p>"
+        },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Specifies whether the networkType of the Timestream for InfluxDB instance is IPV4, which can communicate over IPv4 protocol only, or DUAL, which can communicate over both IPv4 and IPv6 protocols.</p>"
         },
         "dbInstanceType":{
           "shape":"DbInstanceType",
@@ -1532,7 +1564,7 @@
         },
         "influxAuthParametersSecretArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
         }
       }
     },
@@ -1590,5 +1622,5 @@
       "min":1
     }
   },
-  "documentation":"<p>Amazon Timestream for InfluxDB is a managed time-series database engine that makes it easy for application developers and DevOps teams to run InfluxDB databases on AWS for near real-time time-series applications using open-source APIs. With Amazon Timestream for InfluxDB, it is easy to set up, operate, and scale time-series workloads that can answer queries with single-digit millisecond query response time.</p>"
+  "documentation":"<p>Amazon Timestream for InfluxDB is a managed time-series database engine that makes it easy for application developers and DevOps teams to run InfluxDB databases on Amazon Web Services for near real-time time-series applications using open-source APIs. With Amazon Timestream for InfluxDB, it is easy to set up, operate, and scale time-series workloads that can answer queries with single-digit millisecond query response time.</p>"
 }

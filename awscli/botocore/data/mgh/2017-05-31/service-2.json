@@ -5,11 +5,13 @@
     "endpointPrefix":"mgh",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"AWS Migration Hub",
     "serviceId":"Migration Hub",
     "signatureVersion":"v4",
     "targetPrefix":"AWSMigrationHub",
-    "uid":"AWSMigrationHub-2017-05-31"
+    "uid":"AWSMigrationHub-2017-05-31",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AssociateCreatedArtifact":{
@@ -54,6 +56,26 @@
         {"shape":"HomeRegionNotSetException"}
       ],
       "documentation":"<p>Associates a discovered resource ID from Application Discovery Service with a migration task.</p>"
+    },
+    "AssociateSourceResource":{
+      "name":"AssociateSourceResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateSourceResourceRequest"},
+      "output":{"shape":"AssociateSourceResourceResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"DryRunOperation"},
+        {"shape":"UnauthorizedOperation"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Associates a source resource with a migration task. For example, the source resource can be a source server, an application, or a migration wave.</p>"
     },
     "CreateProgressUpdateStream":{
       "name":"CreateProgressUpdateStream",
@@ -177,6 +199,26 @@
       ],
       "documentation":"<p>Disassociate an Application Discovery Service discovered resource from a migration task.</p>"
     },
+    "DisassociateSourceResource":{
+      "name":"DisassociateSourceResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateSourceResourceRequest"},
+      "output":{"shape":"DisassociateSourceResourceResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"DryRunOperation"},
+        {"shape":"UnauthorizedOperation"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Removes the association between a source resource and a migration task.</p>"
+    },
     "ImportMigrationTask":{
       "name":"ImportMigrationTask",
       "http":{
@@ -254,6 +296,24 @@
       ],
       "documentation":"<p>Lists discovered resources associated with the given <code>MigrationTask</code>.</p>"
     },
+    "ListMigrationTaskUpdates":{
+      "name":"ListMigrationTaskUpdates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListMigrationTaskUpdatesRequest"},
+      "output":{"shape":"ListMigrationTaskUpdatesResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>This is a paginated API that returns all the migration-task states for the specified <code>MigrationTaskName</code> and <code>ProgressUpdateStream</code>.</p>"
+    },
     "ListMigrationTasks":{
       "name":"ListMigrationTasks",
       "http":{
@@ -291,6 +351,24 @@
         {"shape":"HomeRegionNotSetException"}
       ],
       "documentation":"<p>Lists progress update streams associated with the user account making this call.</p>"
+    },
+    "ListSourceResources":{
+      "name":"ListSourceResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListSourceResourcesRequest"},
+      "output":{"shape":"ListSourceResourcesResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all the source resource that are associated with the specified <code>MigrationTaskName</code> and <code>ProgressUpdateStream</code>.</p>"
     },
     "NotifyApplicationState":{
       "name":"NotifyApplicationState",
@@ -468,6 +546,37 @@
       }
     },
     "AssociateDiscoveredResourceResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "AssociateSourceResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ProgressUpdateStream",
+        "MigrationTaskName",
+        "SourceResource"
+      ],
+      "members":{
+        "ProgressUpdateStream":{
+          "shape":"ProgressUpdateStream",
+          "documentation":"<p>The name of the progress-update stream, which is used for access control as well as a namespace for migration-task names that is implicitly linked to your AWS account. The progress-update stream must uniquely identify the migration tool as it is used for all updates made by the tool; however, it does not need to be unique for each AWS account because it is scoped to the AWS account.</p>"
+        },
+        "MigrationTaskName":{
+          "shape":"MigrationTaskName",
+          "documentation":"<p>A unique identifier that references the migration task. <i>Do not include sensitive data in this field.</i> </p>"
+        },
+        "SourceResource":{
+          "shape":"SourceResource",
+          "documentation":"<p>The source resource that you want to associate.</p>"
+        },
+        "DryRun":{
+          "shape":"DryRun",
+          "documentation":"<p>This is an optional parameter that you can use to test whether the call will succeed. Set this parameter to <code>true</code> to verify that you have the permissions that are required to make the call, and that you have specified the other parameters in the call correctly.</p>"
+        }
+      }
+    },
+    "AssociateSourceResourceResult":{
       "type":"structure",
       "members":{
       }
@@ -654,6 +763,37 @@
       }
     },
     "DisassociateDiscoveredResourceResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DisassociateSourceResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ProgressUpdateStream",
+        "MigrationTaskName",
+        "SourceResourceName"
+      ],
+      "members":{
+        "ProgressUpdateStream":{
+          "shape":"ProgressUpdateStream",
+          "documentation":"<p>The name of the progress-update stream, which is used for access control as well as a namespace for migration-task names that is implicitly linked to your AWS account. The progress-update stream must uniquely identify the migration tool as it is used for all updates made by the tool; however, it does not need to be unique for each AWS account because it is scoped to the AWS account.</p>"
+        },
+        "MigrationTaskName":{
+          "shape":"MigrationTaskName",
+          "documentation":"<p>A unique identifier that references the migration task. <i>Do not include sensitive data in this field.</i> </p>"
+        },
+        "SourceResourceName":{
+          "shape":"SourceResourceName",
+          "documentation":"<p>The name that was specified for the source resource.</p>"
+        },
+        "DryRun":{
+          "shape":"DryRun",
+          "documentation":"<p>This is an optional parameter that you can use to test whether the call will succeed. Set this parameter to <code>true</code> to verify that you have the permissions that are required to make the call, and that you have specified the other parameters in the call correctly.</p>"
+        }
+      }
+    },
+    "DisassociateSourceResourceResult":{
       "type":"structure",
       "members":{
       }
@@ -856,6 +996,44 @@
         }
       }
     },
+    "ListMigrationTaskUpdatesRequest":{
+      "type":"structure",
+      "required":[
+        "ProgressUpdateStream",
+        "MigrationTaskName"
+      ],
+      "members":{
+        "ProgressUpdateStream":{
+          "shape":"ProgressUpdateStream",
+          "documentation":"<p>The name of the progress-update stream, which is used for access control as well as a namespace for migration-task names that is implicitly linked to your AWS account. The progress-update stream must uniquely identify the migration tool as it is used for all updates made by the tool; however, it does not need to be unique for each AWS account because it is scoped to the AWS account.</p>"
+        },
+        "MigrationTaskName":{
+          "shape":"MigrationTaskName",
+          "documentation":"<p>A unique identifier that references the migration task. <i>Do not include sensitive data in this field.</i> </p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>If <code>NextToken</code> was returned by a previous call, there are more results available. The value of <code>NextToken</code> is a unique pagination token for each page. To retrieve the next page of results, specify the <code>NextToken</code> value that the previous call returned. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to include in the response. If more results exist than the value that you specify here for <code>MaxResults</code>, the response will include a token that you can use to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListMigrationTaskUpdatesResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>If the response includes a <code>NextToken</code> value, that means that there are more results available. The value of <code>NextToken</code> is a unique pagination token for each page. To retrieve the next page of results, call this API again and specify this <code>NextToken</code> value in the request. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.</p>"
+        },
+        "MigrationTaskUpdateList":{
+          "shape":"MigrationTaskUpdateList",
+          "documentation":"<p>The list of migration-task updates.</p>"
+        }
+      }
+    },
     "ListMigrationTasksRequest":{
       "type":"structure",
       "members":{
@@ -912,6 +1090,44 @@
         }
       }
     },
+    "ListSourceResourcesRequest":{
+      "type":"structure",
+      "required":[
+        "ProgressUpdateStream",
+        "MigrationTaskName"
+      ],
+      "members":{
+        "ProgressUpdateStream":{
+          "shape":"ProgressUpdateStream",
+          "documentation":"<p>The name of the progress-update stream, which is used for access control as well as a namespace for migration-task names that is implicitly linked to your AWS account. The progress-update stream must uniquely identify the migration tool as it is used for all updates made by the tool; however, it does not need to be unique for each AWS account because it is scoped to the AWS account.</p>"
+        },
+        "MigrationTaskName":{
+          "shape":"MigrationTaskName",
+          "documentation":"<p>A unique identifier that references the migration task. <i>Do not store confidential data in this field.</i> </p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>If <code>NextToken</code> was returned by a previous call, there are more results available. The value of <code>NextToken</code> is a unique pagination token for each page. To retrieve the next page of results, specify the <code>NextToken</code> value that the previous call returned. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResultsSourceResources",
+          "documentation":"<p>The maximum number of results to include in the response. If more results exist than the value that you specify here for <code>MaxResults</code>, the response will include a token that you can use to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListSourceResourcesResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>If the response includes a <code>NextToken</code> value, that means that there are more results available. The value of <code>NextToken</code> is a unique pagination token for each page. To retrieve the next page of results, call this API again and specify this <code>NextToken</code> value in the request. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.</p>"
+        },
+        "SourceResourceList":{
+          "shape":"SourceResourceList",
+          "documentation":"<p>The list of source resources.</p>"
+        }
+      }
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -925,6 +1141,12 @@
       "min":1
     },
     "MaxResultsResources":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "MaxResultsSourceResources":{
       "type":"integer",
       "box":true,
       "max":10,
@@ -995,6 +1217,25 @@
     "MigrationTaskSummaryList":{
       "type":"list",
       "member":{"shape":"MigrationTaskSummary"}
+    },
+    "MigrationTaskUpdate":{
+      "type":"structure",
+      "members":{
+        "UpdateDateTime":{
+          "shape":"UpdateDateTime",
+          "documentation":"<p>The timestamp for the update.</p>"
+        },
+        "UpdateType":{
+          "shape":"UpdateType",
+          "documentation":"<p>The type of the update.</p>"
+        },
+        "MigrationTaskState":{"shape":"Task"}
+      },
+      "documentation":"<p>A migration-task progress update.</p>"
+    },
+    "MigrationTaskUpdateList":{
+      "type":"list",
+      "member":{"shape":"MigrationTaskUpdate"}
     },
     "NextUpdateSeconds":{
       "type":"integer",
@@ -1205,6 +1446,40 @@
       "exception":true,
       "fault":true
     },
+    "SourceResource":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"SourceResourceName",
+          "documentation":"<p>This is the name that you want to use to identify the resource. If the resource is an AWS resource, we recommend that you set this parameter to the ARN of the resource.</p>"
+        },
+        "Description":{
+          "shape":"SourceResourceDescription",
+          "documentation":"<p>A description that can be free-form text to record additional detail about the resource for clarity or later reference.</p>"
+        },
+        "StatusDetail":{
+          "shape":"StatusDetail",
+          "documentation":"<p>A free-form description of the status of the resource.</p>"
+        }
+      },
+      "documentation":"<p>A source resource can be a source server, a migration wave, an application, or any other resource that you track.</p>"
+    },
+    "SourceResourceDescription":{
+      "type":"string",
+      "max":500,
+      "min":0,
+      "pattern":"^.{0,500}$"
+    },
+    "SourceResourceList":{
+      "type":"list",
+      "member":{"shape":"SourceResource"}
+    },
+    "SourceResourceName":{
+      "type":"string",
+      "max":1600,
+      "min":1
+    },
     "Status":{
       "type":"string",
       "enum":[
@@ -1216,9 +1491,9 @@
     },
     "StatusDetail":{
       "type":"string",
-      "max":500,
+      "max":2500,
       "min":0,
-      "pattern":"^.{0,500}$"
+      "pattern":"^.{0,2500}$"
     },
     "Task":{
       "type":"structure",
@@ -1269,7 +1544,11 @@
       "documentation":"<p>Exception raised to indicate a request was not authorized when the <code>DryRun</code> flag is set to \"true\".</p>",
       "exception":true
     },
-    "UpdateDateTime":{"type":"timestamp"}
+    "UpdateDateTime":{"type":"timestamp"},
+    "UpdateType":{
+      "type":"string",
+      "enum":["MIGRATION_TASK_STATE_UPDATED"]
+    }
   },
   "documentation":"<p>The AWS Migration Hub API methods help to obtain server and application migration status and integrate your resource-specific migration tool by providing a programmatic interface to Migration Hub.</p> <p>Remember that you must set your AWS Migration Hub home region before you call any of these APIs, or a <code>HomeRegionNotSetException</code> error will be returned. Also, you must make the API calls while in your home region.</p>"
 }

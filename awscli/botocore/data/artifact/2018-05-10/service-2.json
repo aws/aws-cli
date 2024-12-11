@@ -92,6 +92,23 @@
       ],
       "documentation":"<p>Get the Term content associated with a single report.</p>"
     },
+    "ListCustomerAgreements":{
+      "name":"ListCustomerAgreements",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/customer-agreement/list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCustomerAgreementsRequest"},
+      "output":{"shape":"ListCustomerAgreementsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>List active customer-agreements applicable to calling identity.</p>"
+    },
     "ListReports":{
       "name":"ListReports",
       "http":{
@@ -164,6 +181,20 @@
       },
       "documentation":"<p>Account settings for the customer.</p>"
     },
+    "AgreementTerms":{
+      "type":"list",
+      "member":{"shape":"LongStringAttribute"},
+      "max":10,
+      "min":0
+    },
+    "AgreementType":{
+      "type":"string",
+      "enum":[
+        "CUSTOM",
+        "DEFAULT",
+        "MODIFIED"
+      ]
+    },
     "ConflictException":{
       "type":"structure",
       "required":[
@@ -188,6 +219,80 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "CustomerAgreementIdAttribute":{
+      "type":"string",
+      "pattern":"customer-agreement-[a-zA-Z0-9]{16}"
+    },
+    "CustomerAgreementList":{
+      "type":"list",
+      "member":{"shape":"CustomerAgreementSummary"}
+    },
+    "CustomerAgreementState":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "CUSTOMER_TERMINATED",
+        "AWS_TERMINATED"
+      ]
+    },
+    "CustomerAgreementSummary":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"LongStringAttribute",
+          "documentation":"<p>Name of the customer-agreement resource.</p>"
+        },
+        "arn":{
+          "shape":"LongStringAttribute",
+          "documentation":"<p>ARN of the customer-agreement resource.</p>"
+        },
+        "id":{
+          "shape":"CustomerAgreementIdAttribute",
+          "documentation":"<p>Identifier of the customer-agreement resource.</p>"
+        },
+        "agreementArn":{
+          "shape":"LongStringAttribute",
+          "documentation":"<p>ARN of the agreement resource the customer-agreement resource represents.</p>"
+        },
+        "awsAccountId":{
+          "shape":"ShortStringAttribute",
+          "documentation":"<p>AWS account Id that owns the resource.</p>"
+        },
+        "organizationArn":{
+          "shape":"LongStringAttribute",
+          "documentation":"<p>ARN of the organization that owns the resource.</p>"
+        },
+        "effectiveStart":{
+          "shape":"TimestampAttribute",
+          "documentation":"<p>Timestamp indicating when the agreement became effective.</p>"
+        },
+        "effectiveEnd":{
+          "shape":"TimestampAttribute",
+          "documentation":"<p>Timestamp indicating when the agreement was terminated.</p>"
+        },
+        "state":{
+          "shape":"CustomerAgreementState",
+          "documentation":"<p>State of the resource.</p>"
+        },
+        "description":{
+          "shape":"LongStringAttribute",
+          "documentation":"<p>Description of the resource.</p>"
+        },
+        "acceptanceTerms":{
+          "shape":"AgreementTerms",
+          "documentation":"<p>Terms required to accept the agreement resource.</p>"
+        },
+        "terminateTerms":{
+          "shape":"AgreementTerms",
+          "documentation":"<p>Terms required to terminate the customer-agreement resource.</p>"
+        },
+        "type":{
+          "shape":"AgreementType",
+          "documentation":"<p>Type of the customer-agreement resource.</p>"
+        }
+      },
+      "documentation":"<p>Summary for customer-agreement resource.</p>"
     },
     "GetAccountSettingsRequest":{
       "type":"structure",
@@ -325,6 +430,37 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "ListCustomerAgreementsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResultsAttribute",
+          "documentation":"<p>Maximum number of resources to return in the paginated response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextTokenAttribute",
+          "documentation":"<p>Pagination token to request the next page of resources.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListCustomerAgreementsResponse":{
+      "type":"structure",
+      "required":["customerAgreements"],
+      "members":{
+        "customerAgreements":{
+          "shape":"CustomerAgreementList",
+          "documentation":"<p>List of customer-agreement resources.</p>"
+        },
+        "nextToken":{
+          "shape":"NextTokenAttribute",
+          "documentation":"<p>Pagination token to request the next page of resources.</p>"
+        }
+      }
     },
     "ListReportsRequest":{
       "type":"structure",

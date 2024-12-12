@@ -18,8 +18,6 @@ Output::
         }
     }
 
-For more information, see `Replace a root volume <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-restoring-volume.html#replace-root>`__ in the *Amazon Elastic Compute Cloud User Guide*.
-
 **Example 2: To restore a root volume to a specific snapshot**
 
 The following ``create-replace-root-volume-task`` example restores the root volume of instance i-0123456789abcdefa to snapshot snap-0abcdef1234567890. ::
@@ -41,4 +39,4 @@ Output::
         }
     }
 
-For more information, see `Replace a root volume <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-restoring-volume.html#replace-root>`__ in the *Amazon Elastic Compute Cloud User Guide*.
+For more information, see `Replace a root volume <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/replace-root.html>`__ in the *Amazon EC2 User Guide*.

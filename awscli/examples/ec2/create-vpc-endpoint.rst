@@ -23,7 +23,7 @@ Output::
         }
     }
 
-For more information, see `Creating a gateway endpoint <https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-gateway.html#create-gateway-endpoint>`__ in the *AWSPrivateLink Guide*.
+For more information, see `Create a gateway endpoint <https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html#create-gateway-endpoint-s3>`__ in the *AWS PrivateLink User Guide*.
 
 **Example 2: To create an interface endpoint**
 
@@ -82,7 +82,7 @@ Output::
         }
     }
 
-For more information, see `Creating an interface endpoint <https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-interface.html#create-interface-endpoint>`__ in the *User Guide for AWSPrivateLink*.
+For more information, see `Create an interface VPC endpoint <https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html>`__ in the *AWS PrivateLink User Guide*.
 
 **Example 3: To create a Gateway Load Balancer endpoint**
 
@@ -115,4 +115,4 @@ Output::
         }
     }
 
-For more information, see `Gateway Load Balancer endpoints <https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-gateway-load-balancer.html>`__ in the *User Guide for AWSPrivateLink*.
+For more information, see `Gateway Load Balancer endpoints <https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-load-balancer-endpoints.html>`__ in the *AWS PrivateLink User Guide*.

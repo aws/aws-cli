@@ -11,4 +11,4 @@ Output::
         "Return": true
     }
 
-For more information, see `Canceling a Capacity Reservation <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-using.html#capacity-reservations-release>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Cancel a Capacity Reservation <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-release.html>`__ in the *Amazon EC2 User Guide*.

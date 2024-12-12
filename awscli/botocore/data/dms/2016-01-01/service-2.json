@@ -364,7 +364,8 @@
       "output":{"shape":"DeleteEventSubscriptionResponse"},
       "errors":[
         {"shape":"ResourceNotFoundFault"},
-        {"shape":"InvalidResourceStateFault"}
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"AccessDeniedFault"}
       ],
       "documentation":"<p> Deletes an DMS event subscription. </p>"
     },
@@ -469,7 +470,8 @@
       "output":{"shape":"DeleteReplicationSubnetGroupResponse"},
       "errors":[
         {"shape":"InvalidResourceStateFault"},
-        {"shape":"ResourceNotFoundFault"}
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"AccessDeniedFault"}
       ],
       "documentation":"<p>Deletes a subnet group.</p>"
     },
@@ -1063,7 +1065,8 @@
       "output":{"shape":"DescribeTableStatisticsResponse"},
       "errors":[
         {"shape":"ResourceNotFoundFault"},
-        {"shape":"InvalidResourceStateFault"}
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"AccessDeniedFault"}
       ],
       "documentation":"<p>Returns table statistics on the database migration task, including table name, rows inserted, rows updated, and rows deleted.</p> <p>Note that the \"last updated\" column the DMS console only indicates the time that DMS last updated the table statistics record for a table. It does not indicate the time of the last update to the table.</p>"
     },
@@ -1188,7 +1191,8 @@
         {"shape":"KMSDisabledFault"},
         {"shape":"KMSInvalidStateFault"},
         {"shape":"KMSNotFoundFault"},
-        {"shape":"KMSThrottlingFault"}
+        {"shape":"KMSThrottlingFault"},
+        {"shape":"AccessDeniedFault"}
       ],
       "documentation":"<p>Modifies an existing DMS event notification subscription. </p>"
     },
@@ -2694,7 +2698,7 @@
           "documentation":"<p>The amount of storage (in gigabytes) to be initially allocated for the replication instance.</p>"
         },
         "ReplicationInstanceClass":{
-          "shape":"String",
+          "shape":"ReplicationInstanceClass",
           "documentation":"<p>The compute and memory capacity of the replication instance as defined for the specified replication instance class. For example to specify the instance class dms.c4.large, set this parameter to <code>\"dms.c4.large\"</code>.</p> <p>For more information on the settings and capacities for the available replication instance classes, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.Types.html \"> Choosing the right DMS replication instance</a>; and, <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.SizingReplicationInstance.html\">Selecting the best size for a replication instance</a>. </p>"
         },
         "VpcSecurityGroupIds":{
@@ -2748,6 +2752,10 @@
         "NetworkType":{
           "shape":"String",
           "documentation":"<p>The type of IP address protocol used by a replication instance, such as IPv4 only or Dual-stack that supports both IPv4 and IPv6 addressing. IPv6 only is not yet supported.</p>"
+        },
+        "KerberosAuthenticationSettings":{
+          "shape":"KerberosAuthenticationSettings",
+          "documentation":"<p>Specifies the ID of the secret that stores the key cache file required for kerberos authentication, when creating a replication instance.</p>"
         }
       },
       "documentation":"<p/>"
@@ -3745,7 +3753,7 @@
       "members":{
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>Filters applied to the data providers described in the form of key-value pairs.</p> <p>Valid filter names: data-provider-identifier</p>"
+          "documentation":"<p>Filters applied to the data providers described in the form of key-value pairs.</p> <p>Valid filter names and values: data-provider-identifier, data provider arn or name</p>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -4193,7 +4201,7 @@
       "members":{
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>Filters applied to the instance profiles described in the form of key-value pairs.</p>"
+          "documentation":"<p>Filters applied to the instance profiles described in the form of key-value pairs.</p> <p>Valid filter names and values: instance-profile-identifier, instance profile arn or name</p>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -4398,7 +4406,7 @@
       "members":{
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>Filters applied to the migration projects described in the form of key-value pairs.</p>"
+          "documentation":"<p>Filters applied to the migration projects described in the form of key-value pairs.</p> <p>Valid filter names and values:</p> <ul> <li> <p>instance-profile-identifier, instance profile arn or name</p> </li> <li> <p>data-provider-identifier, data provider arn or name</p> </li> <li> <p>migration-project-identifier, migration project arn or name</p> </li> </ul>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -6107,6 +6115,10 @@
         "SslEndpointIdentificationAlgorithm":{
           "shape":"KafkaSslEndpointIdentificationAlgorithm",
           "documentation":"<p>Sets hostname verification for the certificate. This setting is supported in DMS version 3.5.1 and later. </p>"
+        },
+        "UseLargeIntegerValue":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies using the large integer value with Kafka.</p>"
         }
       },
       "documentation":"<p>Provides information that describes an Apache Kafka endpoint. This information includes the output format of records applied to the endpoint and details of transaction and control table data information.</p>"
@@ -6117,6 +6129,24 @@
         "none",
         "https"
       ]
+    },
+    "KerberosAuthenticationSettings":{
+      "type":"structure",
+      "members":{
+        "KeyCacheSecretId":{
+          "shape":"String",
+          "documentation":"<p>Specifies the secret ID of the key cache for the replication instance.</p>"
+        },
+        "KeyCacheSecretIamArn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the IAM role that grants Amazon Web Services DMS access to the secret containing key cache file for the replication instance.</p>"
+        },
+        "Krb5FileContents":{
+          "shape":"String",
+          "documentation":"<p>Specifies the ID of the secret that stores the key cache file required for kerberos authentication of the replication instance.</p>"
+        }
+      },
+      "documentation":"<p>Specifies using Kerberos authentication settings for use with DMS.</p>"
     },
     "KeyList":{
       "type":"list",
@@ -6164,6 +6194,10 @@
         "NoHexPrefix":{
           "shape":"BooleanOptional",
           "documentation":"<p>Set this optional parameter to <code>true</code> to avoid adding a '0x' prefix to raw data in hexadecimal format. For example, by default, DMS adds a '0x' prefix to the LOB column type in hexadecimal format moving from an Oracle source to an Amazon Kinesis target. Use the <code>NoHexPrefix</code> endpoint setting to enable migration of RAW data type columns without adding the '0x' prefix.</p>"
+        },
+        "UseLargeIntegerValue":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies using the large integer value with Kinesis.</p>"
         }
       },
       "documentation":"<p>Provides information that describes an Amazon Kinesis Data Stream endpoint. This information includes the output format of records applied to the endpoint and details of transaction and control table data information.</p>"
@@ -6339,6 +6373,10 @@
         "ForceLobLookup":{
           "shape":"BooleanOptional",
           "documentation":"<p>Forces LOB lookup on inline LOB.</p>"
+        },
+        "AuthenticationMethod":{
+          "shape":"SqlServerAuthenticationMethod",
+          "documentation":"<p>Specifies using Kerberos authentication with Microsoft SQL Server.</p>"
         }
       },
       "documentation":"<p>Provides information that defines a Microsoft SQL Server endpoint.</p>"
@@ -6893,7 +6931,7 @@
           "documentation":"<p>Indicates whether the changes should be applied immediately or during the next maintenance window.</p>"
         },
         "ReplicationInstanceClass":{
-          "shape":"String",
+          "shape":"ReplicationInstanceClass",
           "documentation":"<p>The compute and memory capacity of the replication instance as defined for the specified replication instance class. For example to specify the instance class dms.c4.large, set this parameter to <code>\"dms.c4.large\"</code>.</p> <p>For more information on the settings and capacities for the available replication instance classes, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.html#CHAP_ReplicationInstance.InDepth\"> Selecting the right DMS replication instance for your migration</a>. </p>"
         },
         "VpcSecurityGroupIds":{
@@ -6927,6 +6965,10 @@
         "NetworkType":{
           "shape":"String",
           "documentation":"<p>The type of IP address protocol used by a replication instance, such as IPv4 only or Dual-stack that supports both IPv4 and IPv6 addressing. IPv6 only is not yet supported.</p>"
+        },
+        "KerberosAuthenticationSettings":{
+          "shape":"KerberosAuthenticationSettings",
+          "documentation":"<p>Specifies the ID of the secret that stores the key cache file required for kerberos authentication, when modifying a replication instance.</p>"
         }
       },
       "documentation":"<p/>"
@@ -7295,6 +7337,13 @@
         "one"
       ]
     },
+    "OracleAuthenticationMethod":{
+      "type":"string",
+      "enum":[
+        "password",
+        "kerberos"
+      ]
+    },
     "OracleDataProviderSettings":{
       "type":"structure",
       "members":{
@@ -7402,7 +7451,7 @@
         },
         "ArchivedLogsOnly":{
           "shape":"BooleanOptional",
-          "documentation":"<p>When this field is set to <code>Y</code>, DMS only accesses the archived redo logs. If the archived redo logs are stored on Automatic Storage Management (ASM) only, the DMS user account needs to be granted ASM privileges.</p>"
+          "documentation":"<p>When this field is set to <code>True</code>, DMS only accesses the archived redo logs. If the archived redo logs are stored on Automatic Storage Management (ASM) only, the DMS user account needs to be granted ASM privileges.</p>"
         },
         "AsmPassword":{
           "shape":"SecretString",
@@ -7478,15 +7527,15 @@
         },
         "UseBFile":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Set this attribute to Y to capture change data using the Binary Reader utility. Set <code>UseLogminerReader</code> to N to set this attribute to Y. To use Binary Reader with Amazon RDS for Oracle as the source, you set additional attributes. For more information about using this setting with Oracle Automatic Storage Management (ASM), see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.Oracle.html#CHAP_Source.Oracle.CDC\"> Using Oracle LogMiner or DMS Binary Reader for CDC</a>.</p>"
+          "documentation":"<p>Set this attribute to True to capture change data using the Binary Reader utility. Set <code>UseLogminerReader</code> to False to set this attribute to True. To use Binary Reader with Amazon RDS for Oracle as the source, you set additional attributes. For more information about using this setting with Oracle Automatic Storage Management (ASM), see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.Oracle.html#CHAP_Source.Oracle.CDC\"> Using Oracle LogMiner or DMS Binary Reader for CDC</a>.</p>"
         },
         "UseDirectPathFullLoad":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Set this attribute to Y to have DMS use a direct path full load. Specify this value to use the direct path protocol in the Oracle Call Interface (OCI). By using this OCI protocol, you can bulk-load Oracle target tables during a full load.</p>"
+          "documentation":"<p>Set this attribute to True to have DMS use a direct path full load. Specify this value to use the direct path protocol in the Oracle Call Interface (OCI). By using this OCI protocol, you can bulk-load Oracle target tables during a full load.</p>"
         },
         "UseLogminerReader":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Set this attribute to Y to capture change data using the Oracle LogMiner utility (the default). Set this attribute to N if you want to access the redo logs as a binary file. When you set <code>UseLogminerReader</code> to N, also set <code>UseBfile</code> to Y. For more information on this setting and using Oracle ASM, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.Oracle.html#CHAP_Source.Oracle.CDC\"> Using Oracle LogMiner or DMS Binary Reader for CDC</a> in the <i>DMS User Guide</i>.</p>"
+          "documentation":"<p>Set this attribute to True to capture change data using the Oracle LogMiner utility (the default). Set this attribute to False if you want to access the redo logs as a binary file. When you set <code>UseLogminerReader</code> to False, also set <code>UseBfile</code> to True. For more information on this setting and using Oracle ASM, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.Oracle.html#CHAP_Source.Oracle.CDC\"> Using Oracle LogMiner or DMS Binary Reader for CDC</a> in the <i>DMS User Guide</i>.</p>"
         },
         "SecretsManagerAccessRoleArn":{
           "shape":"String",
@@ -7514,7 +7563,11 @@
         },
         "OpenTransactionWindow":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The timeframe in minutes to check for open transactions for a CDC-only task.</p> <p>You can specify an integer value between 0 (the default) and 240 (the maximum). </p> <note> <p>This parameter is only valid in DMS version 3.5.0 and later. DMS supports a window of up to 9.5 hours including the value for <code>OpenTransactionWindow</code>.</p> </note>"
+          "documentation":"<p>The timeframe in minutes to check for open transactions for a CDC-only task.</p> <p>You can specify an integer value between 0 (the default) and 240 (the maximum). </p> <note> <p>This parameter is only valid in DMS version 3.5.0 and later.</p> </note>"
+        },
+        "AuthenticationMethod":{
+          "shape":"OracleAuthenticationMethod",
+          "documentation":"<p>Specifies using Kerberos authentication with Oracle.</p>"
         }
       },
       "documentation":"<p>Provides information that defines an Oracle endpoint.</p>"
@@ -7527,7 +7580,7 @@
           "documentation":"<p>The version of the replication engine.</p>"
         },
         "ReplicationInstanceClass":{
-          "shape":"String",
+          "shape":"ReplicationInstanceClass",
           "documentation":"<p>The compute and memory capacity of the replication instance as defined for the specified replication instance class. For example to specify the instance class dms.c4.large, set this parameter to <code>\"dms.c4.large\"</code>.</p> <p>For more information on the settings and capacities for the available replication instance classes, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.html#CHAP_ReplicationInstance.InDepth\"> Selecting the right DMS replication instance for your migration</a>. </p>"
         },
         "StorageType":{
@@ -7634,11 +7687,11 @@
         },
         "CaptureDdls":{
           "shape":"BooleanOptional",
-          "documentation":"<p>To capture DDL events, DMS creates various artifacts in the PostgreSQL database when the task starts. You can later remove these artifacts.</p> <p>If this value is set to <code>N</code>, you don't have to create tables or triggers on the source database.</p>"
+          "documentation":"<p>To capture DDL events, DMS creates various artifacts in the PostgreSQL database when the task starts. You can later remove these artifacts.</p> <p>The default value is <code>true</code>.</p> <p>If this value is set to <code>N</code>, you don't have to create tables or triggers on the source database.</p>"
         },
         "MaxFileSize":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Specifies the maximum size (in KB) of any .csv file used to transfer data to PostgreSQL.</p> <p>Example: <code>maxFileSize=512</code> </p>"
+          "documentation":"<p>Specifies the maximum size (in KB) of any .csv file used to transfer data to PostgreSQL.</p> <p>The default value is 32,768 KB (32 MB).</p> <p>Example: <code>maxFileSize=512</code> </p>"
         },
         "DatabaseName":{
           "shape":"String",
@@ -7646,7 +7699,7 @@
         },
         "DdlArtifactsSchema":{
           "shape":"String",
-          "documentation":"<p>The schema in which the operational DDL database artifacts are created.</p> <p>Example: <code>ddlArtifactsSchema=xyzddlschema;</code> </p>"
+          "documentation":"<p>The schema in which the operational DDL database artifacts are created.</p> <p>The default value is <code>public</code>.</p> <p>Example: <code>ddlArtifactsSchema=xyzddlschema;</code> </p>"
         },
         "ExecuteTimeout":{
           "shape":"IntegerOptional",
@@ -7654,19 +7707,19 @@
         },
         "FailTasksOnLobTruncation":{
           "shape":"BooleanOptional",
-          "documentation":"<p>When set to <code>true</code>, this value causes a task to fail if the actual size of a LOB column is greater than the specified <code>LobMaxSize</code>.</p> <p>If task is set to Limited LOB mode and this option is set to true, the task fails instead of truncating the LOB data.</p>"
+          "documentation":"<p>When set to <code>true</code>, this value causes a task to fail if the actual size of a LOB column is greater than the specified <code>LobMaxSize</code>.</p> <p>The default value is <code>false</code>.</p> <p>If task is set to Limited LOB mode and this option is set to true, the task fails instead of truncating the LOB data.</p>"
         },
         "HeartbeatEnable":{
           "shape":"BooleanOptional",
-          "documentation":"<p>The write-ahead log (WAL) heartbeat feature mimics a dummy transaction. By doing this, it prevents idle logical replication slots from holding onto old WAL logs, which can result in storage full situations on the source. This heartbeat keeps <code>restart_lsn</code> moving and prevents storage full scenarios.</p>"
+          "documentation":"<p>The write-ahead log (WAL) heartbeat feature mimics a dummy transaction. By doing this, it prevents idle logical replication slots from holding onto old WAL logs, which can result in storage full situations on the source. This heartbeat keeps <code>restart_lsn</code> moving and prevents storage full scenarios.</p> <p>The default value is <code>false</code>.</p>"
         },
         "HeartbeatSchema":{
           "shape":"String",
-          "documentation":"<p>Sets the schema in which the heartbeat artifacts are created.</p>"
+          "documentation":"<p>Sets the schema in which the heartbeat artifacts are created.</p> <p>The default value is <code>public</code>.</p>"
         },
         "HeartbeatFrequency":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Sets the WAL heartbeat frequency (in minutes).</p>"
+          "documentation":"<p>Sets the WAL heartbeat frequency (in minutes).</p> <p>The default value is 5 minutes.</p>"
         },
         "Password":{
           "shape":"SecretString",
@@ -7690,7 +7743,7 @@
         },
         "PluginName":{
           "shape":"PluginNameValue",
-          "documentation":"<p>Specifies the plugin to use to create a replication slot.</p>"
+          "documentation":"<p>Specifies the plugin to use to create a replication slot.</p> <p>The default value is <code>pglogical</code>.</p>"
         },
         "SecretsManagerAccessRoleArn":{
           "shape":"String",
@@ -7706,15 +7759,15 @@
         },
         "MapBooleanAsBoolean":{
           "shape":"BooleanOptional",
-          "documentation":"<p>When true, lets PostgreSQL migrate the boolean type as boolean. By default, PostgreSQL migrates booleans as <code>varchar(5)</code>. You must set this setting on both the source and target endpoints for it to take effect.</p>"
+          "documentation":"<p>When true, lets PostgreSQL migrate the boolean type as boolean. By default, PostgreSQL migrates booleans as <code>varchar(5)</code>. You must set this setting on both the source and target endpoints for it to take effect.</p> <p>The default value is <code>false</code>.</p>"
         },
         "MapJsonbAsClob":{
           "shape":"BooleanOptional",
-          "documentation":"<p>When true, DMS migrates JSONB values as CLOB.</p>"
+          "documentation":"<p>When true, DMS migrates JSONB values as CLOB.</p> <p>The default value is <code>false</code>.</p>"
         },
         "MapLongVarcharAs":{
           "shape":"LongVarcharMappingType",
-          "documentation":"<p>When true, DMS migrates LONG values as VARCHAR.</p>"
+          "documentation":"<p>Sets what datatype to map LONG values as.</p> <p>The default value is <code>wstring</code>.</p>"
         },
         "DatabaseMode":{
           "shape":"DatabaseMode",
@@ -7723,6 +7776,10 @@
         "BabelfishDatabaseName":{
           "shape":"String",
           "documentation":"<p>The Babelfish for Aurora PostgreSQL database name for the endpoint.</p>"
+        },
+        "DisableUnicodeSourceFilter":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Disables the Unicode source filter with PostgreSQL, for values passed into the Selection rule filter on Source Endpoint column values. By default DMS performs source filter comparisons using a Unicode string which can cause look ups to ignore the indexes in the text columns and slow down migrations.</p> <p>Unicode support should only be disabled when using a selection rule filter is on a text column in the Source database that is indexed.</p>"
         }
       },
       "documentation":"<p>Provides information that defines a PostgreSQL endpoint.</p>"
@@ -8372,7 +8429,7 @@
         },
         "StartReplicationType":{
           "shape":"String",
-          "documentation":"<p>The replication type.</p>"
+          "documentation":"<p>The type of replication to start.</p>"
         },
         "CdcStartTime":{
           "shape":"TStamp",
@@ -8478,7 +8535,7 @@
           "documentation":"<p>The replication instance identifier is a required parameter. This parameter is stored as a lowercase string.</p> <p>Constraints:</p> <ul> <li> <p>Must contain 1-63 alphanumeric characters or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Cannot end with a hyphen or contain two consecutive hyphens.</p> </li> </ul> <p>Example: <code>myrepinstance</code> </p>"
         },
         "ReplicationInstanceClass":{
-          "shape":"String",
+          "shape":"ReplicationInstanceClass",
           "documentation":"<p>The compute and memory capacity of the replication instance as defined for the specified replication instance class. It is a required parameter, although a default value is pre-selected in the DMS console.</p> <p>For more information on the settings and capacities for the available replication instance classes, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.html#CHAP_ReplicationInstance.InDepth\"> Selecting the right DMS replication instance for your migration</a>. </p>"
         },
         "ReplicationInstanceStatus":{
@@ -8574,9 +8631,17 @@
         "NetworkType":{
           "shape":"String",
           "documentation":"<p>The type of IP address protocol used by a replication instance, such as IPv4 only or Dual-stack that supports both IPv4 and IPv6 addressing. IPv6 only is not yet supported.</p>"
+        },
+        "KerberosAuthenticationSettings":{
+          "shape":"KerberosAuthenticationSettings",
+          "documentation":"<p>Specifies the ID of the secret that stores the key cache file required for kerberos authentication, when replicating an instance.</p>"
         }
       },
       "documentation":"<p>Provides information that defines a replication instance.</p>"
+    },
+    "ReplicationInstanceClass":{
+      "type":"string",
+      "max":30
     },
     "ReplicationInstanceIpv6AddressList":{
       "type":"list",
@@ -8624,7 +8689,7 @@
       "type":"structure",
       "members":{
         "ReplicationInstanceClass":{
-          "shape":"String",
+          "shape":"ReplicationInstanceClass",
           "documentation":"<p>The compute and memory capacity of the replication instance as defined for the specified replication instance class.</p> <p>For more information on the settings and capacities for the available replication instance classes, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.html#CHAP_ReplicationInstance.InDepth\"> Selecting the right DMS replication instance for your migration</a>. </p>"
         },
         "AllocatedStorage":{
@@ -8786,7 +8851,7 @@
         },
         "StopReason":{
           "shape":"String",
-          "documentation":"<p>The reason the replication task was stopped. This response parameter can return one of the following values:</p> <ul> <li> <p> <code>\"Stop Reason NORMAL\"</code> </p> </li> <li> <p> <code>\"Stop Reason RECOVERABLE_ERROR\"</code> </p> </li> <li> <p> <code>\"Stop Reason FATAL_ERROR\"</code> </p> </li> <li> <p> <code>\"Stop Reason FULL_LOAD_ONLY_FINISHED\"</code> </p> </li> <li> <p> <code>\"Stop Reason STOPPED_AFTER_FULL_LOAD\"</code> – Full load completed, with cached changes not applied</p> </li> <li> <p> <code>\"Stop Reason STOPPED_AFTER_CACHED_EVENTS\"</code> – Full load completed, with cached changes applied</p> </li> <li> <p> <code>\"Stop Reason EXPRESS_LICENSE_LIMITS_REACHED\"</code> </p> </li> <li> <p> <code>\"Stop Reason STOPPED_AFTER_DDL_APPLY\"</code> – User-defined stop task after DDL applied</p> </li> <li> <p> <code>\"Stop Reason STOPPED_DUE_TO_LOW_MEMORY\"</code> </p> </li> <li> <p> <code>\"Stop Reason STOPPED_DUE_TO_LOW_DISK\"</code> </p> </li> <li> <p> <code>\"Stop Reason STOPPED_AT_SERVER_TIME\"</code> – User-defined server time for stopping task</p> </li> <li> <p> <code>\"Stop Reason STOPPED_AT_COMMIT_TIME\"</code> – User-defined commit time for stopping task</p> </li> <li> <p> <code>\"Stop Reason RECONFIGURATION_RESTART\"</code> </p> </li> <li> <p> <code>\"Stop Reason RECYCLE_TASK\"</code> </p> </li> </ul>"
+          "documentation":"<p>The reason the replication task was stopped. This response parameter can return one of the following values:</p> <ul> <li> <p> <code>\"Stop Reason NORMAL\"</code> – The task completed successfully with no additional information returned.</p> </li> <li> <p> <code>\"Stop Reason RECOVERABLE_ERROR\"</code> </p> </li> <li> <p> <code>\"Stop Reason FATAL_ERROR\"</code> </p> </li> <li> <p> <code>\"Stop Reason FULL_LOAD_ONLY_FINISHED\"</code> – The task completed the full load phase. DMS applied cached changes if you set <code>StopTaskCachedChangesApplied</code> to <code>true</code>.</p> </li> <li> <p> <code>\"Stop Reason STOPPED_AFTER_FULL_LOAD\"</code> – Full load completed, with cached changes not applied</p> </li> <li> <p> <code>\"Stop Reason STOPPED_AFTER_CACHED_EVENTS\"</code> – Full load completed, with cached changes applied</p> </li> <li> <p> <code>\"Stop Reason EXPRESS_LICENSE_LIMITS_REACHED\"</code> </p> </li> <li> <p> <code>\"Stop Reason STOPPED_AFTER_DDL_APPLY\"</code> – User-defined stop task after DDL applied</p> </li> <li> <p> <code>\"Stop Reason STOPPED_DUE_TO_LOW_MEMORY\"</code> </p> </li> <li> <p> <code>\"Stop Reason STOPPED_DUE_TO_LOW_DISK\"</code> </p> </li> <li> <p> <code>\"Stop Reason STOPPED_AT_SERVER_TIME\"</code> – User-defined server time for stopping task</p> </li> <li> <p> <code>\"Stop Reason STOPPED_AT_COMMIT_TIME\"</code> – User-defined commit time for stopping task</p> </li> <li> <p> <code>\"Stop Reason RECONFIGURATION_RESTART\"</code> </p> </li> <li> <p> <code>\"Stop Reason RECYCLE_TASK\"</code> </p> </li> </ul>"
         },
         "ReplicationTaskCreationDate":{
           "shape":"TStamp",
@@ -8855,7 +8920,7 @@
           "documentation":"<p> The task assessment results in JSON format. </p> <p>The response object only contains this field if you provide <a>DescribeReplicationTaskAssessmentResultsMessage$ReplicationTaskArn</a> in the request.</p>"
         },
         "S3ObjectUrl":{
-          "shape":"String",
+          "shape":"SecretString",
           "documentation":"<p> The URL of the S3 object containing the task assessment results. </p> <p>The response object only contains this field if you provide <a>DescribeReplicationTaskAssessmentResultsMessage$ReplicationTaskArn</a> in the request.</p>"
         }
       },
@@ -8878,7 +8943,7 @@
         },
         "Status":{
           "shape":"String",
-          "documentation":"<p>Assessment run status. </p> <p>This status can have one of the following values:</p> <ul> <li> <p> <code>\"cancelling\"</code> – The assessment run was canceled by the <code>CancelReplicationTaskAssessmentRun</code> operation.</p> </li> <li> <p> <code>\"deleting\"</code> – The assessment run was deleted by the <code>DeleteReplicationTaskAssessmentRun</code> operation.</p> </li> <li> <p> <code>\"failed\"</code> – At least one individual assessment completed with a <code>failed</code> status.</p> </li> <li> <p> <code>\"error-provisioning\"</code> – An internal error occurred while resources were provisioned (during <code>provisioning</code> status).</p> </li> <li> <p> <code>\"error-executing\"</code> – An internal error occurred while individual assessments ran (during <code>running</code> status).</p> </li> <li> <p> <code>\"invalid state\"</code> – The assessment run is in an unknown state.</p> </li> <li> <p> <code>\"passed\"</code> – All individual assessments have completed, and none has a <code>failed</code> status.</p> </li> <li> <p> <code>\"provisioning\"</code> – Resources required to run individual assessments are being provisioned.</p> </li> <li> <p> <code>\"running\"</code> – Individual assessments are being run.</p> </li> <li> <p> <code>\"starting\"</code> – The assessment run is starting, but resources are not yet being provisioned for individual assessments.</p> </li> </ul>"
+          "documentation":"<p>Assessment run status. </p> <p>This status can have one of the following values:</p> <ul> <li> <p> <code>\"cancelling\"</code> – The assessment run was canceled by the <code>CancelReplicationTaskAssessmentRun</code> operation.</p> </li> <li> <p> <code>\"deleting\"</code> – The assessment run was deleted by the <code>DeleteReplicationTaskAssessmentRun</code> operation.</p> </li> <li> <p> <code>\"failed\"</code> – At least one individual assessment completed with a <code>failed</code> status.</p> </li> <li> <p> <code>\"error-provisioning\"</code> – An internal error occurred while resources were provisioned (during <code>provisioning</code> status).</p> </li> <li> <p> <code>\"error-executing\"</code> – An internal error occurred while individual assessments ran (during <code>running</code> status).</p> </li> <li> <p> <code>\"invalid state\"</code> – The assessment run is in an unknown state.</p> </li> <li> <p> <code>\"passed\"</code> – All individual assessments have completed, and none has a <code>failed</code> status.</p> </li> <li> <p> <code>\"provisioning\"</code> – Resources required to run individual assessments are being provisioned.</p> </li> <li> <p> <code>\"running\"</code> – Individual assessments are being run.</p> </li> <li> <p> <code>\"starting\"</code> – The assessment run is starting, but resources are not yet being provisioned for individual assessments.</p> </li> <li> <p> <code>\"warning\"</code> – At least one individual assessment completed with a <code>warning</code> status.</p> </li> </ul>"
         },
         "ReplicationTaskAssessmentRunCreationDate":{
           "shape":"TStamp",
@@ -9499,6 +9564,13 @@
       "type":"string",
       "enum":["replication-instance"]
     },
+    "SqlServerAuthenticationMethod":{
+      "type":"string",
+      "enum":[
+        "password",
+        "kerberos"
+      ]
+    },
     "SslSecurityProtocolValue":{
       "type":"string",
       "enum":[
@@ -9755,7 +9827,7 @@
         },
         "StartReplicationType":{
           "shape":"String",
-          "documentation":"<p>The replication type.</p>"
+          "documentation":"<p>The replication type.</p> <p>When the replication type is <code>full-load</code> or <code>full-load-and-cdc</code>, the only valid value for the first run of the replication is <code>start-replication</code>. This option will start the replication.</p> <p>You can also use <a>ReloadTables</a> to reload specific tables that failed during replication instead of restarting the replication.</p> <p>The <code>resume-processing</code> option isn't applicable for a full-load replication, because you can't resume partially loaded tables during the full load phase.</p> <p>For a <code>full-load-and-cdc</code> replication, DMS migrates table data, and then applies data changes that occur on the source. To load all the tables again, and start capturing source changes, use <code>reload-target</code>. Otherwise use <code>resume-processing</code>, to replicate the changes from the last stop position.</p>"
         },
         "CdcStartTime":{
           "shape":"TStamp",

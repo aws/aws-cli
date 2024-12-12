@@ -561,6 +561,25 @@
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Creates hours of operation. </p>"
     },
+    "CreateHoursOfOperationOverride":{
+      "name":"CreateHoursOfOperationOverride",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides"
+      },
+      "input":{"shape":"CreateHoursOfOperationOverrideRequest"},
+      "output":{"shape":"CreateHoursOfOperationOverrideResponse"},
+      "errors":[
+        {"shape":"DuplicateResourceException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Creates an hours of operation override in an Amazon Connect hours of operation resource</p>"
+    },
     "CreateInstance":{
       "name":"CreateInstance",
       "http":{
@@ -701,7 +720,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Creates a new queue for the specified Amazon Connect instance.</p> <important> <ul> <li> <p>If the phone number is claimed to a traffic distribution group that was created in the same Region as the Amazon Connect instance where you are calling this API, then you can use a full phone number ARN or a UUID for <code>OutboundCallerIdNumberId</code>. However, if the phone number is claimed to a traffic distribution group that is in one Region, and you are calling this API from an instance in another Amazon Web Services Region that is associated with the traffic distribution group, you must provide a full phone number ARN. If a UUID is provided in this scenario, you will receive a <code>ResourceNotFoundException</code>.</p> </li> <li> <p>Only use the phone number ARN format that doesn't contain <code>instance</code> in the path, for example, <code>arn:aws:connect:us-east-1:1234567890:phone-number/uuid</code>. This is the same ARN format that is returned when you call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListPhoneNumbersV2.html\">ListPhoneNumbersV2</a> API.</p> </li> <li> <p>If you plan to use IAM policies to allow/deny access to this API for phone number resources claimed to a traffic distribution group, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security_iam_resource-level-policy-examples.html#allow-deny-queue-actions-replica-region\">Allow or Deny queue API actions for phone numbers in a replica Region</a>.</p> </li> </ul> </important>"
+      "documentation":"<p>Creates a new queue for the specified Amazon Connect instance.</p> <important> <ul> <li> <p>If the phone number is claimed to a traffic distribution group that was created in the same Region as the Amazon Connect instance where you are calling this API, then you can use a full phone number ARN or a UUID for <code>OutboundCallerIdNumberId</code>. However, if the phone number is claimed to a traffic distribution group that is in one Region, and you are calling this API from an instance in another Amazon Web Services Region that is associated with the traffic distribution group, you must provide a full phone number ARN. If a UUID is provided in this scenario, you will receive a <code>ResourceNotFoundException</code>.</p> </li> <li> <p>Only use the phone number ARN format that doesn't contain <code>instance</code> in the path, for example, <code>arn:aws:connect:us-east-1:1234567890:phone-number/uuid</code>. This is the same ARN format that is returned when you call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListPhoneNumbersV2.html\">ListPhoneNumbersV2</a> API.</p> </li> <li> <p>If you plan to use IAM policies to allow/deny access to this API for phone number resources claimed to a traffic distribution group, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security_iam_resource-level-policy-examples.html#allow-deny-queue-actions-replica-region\">Allow or Deny queue API actions for phone numbers in a replica Region</a>.</p> </li> </ul> </important>"
     },
     "CreateQuickConnect":{
       "name":"CreateQuickConnect",
@@ -1072,6 +1091,22 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Deletes an hours of operation.</p>"
+    },
+    "DeleteHoursOfOperationOverride":{
+      "name":"DeleteHoursOfOperationOverride",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides/{HoursOfOperationOverrideId}"
+      },
+      "input":{"shape":"DeleteHoursOfOperationOverrideRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Deletes an hours of operation override in an Amazon Connect hours of operation resource</p>"
     },
     "DeleteInstance":{
       "name":"DeleteInstance",
@@ -1528,6 +1563,23 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Describes the hours of operation.</p>"
+    },
+    "DescribeHoursOfOperationOverride":{
+      "name":"DescribeHoursOfOperationOverride",
+      "http":{
+        "method":"GET",
+        "requestUri":"/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides/{HoursOfOperationOverrideId}"
+      },
+      "input":{"shape":"DescribeHoursOfOperationOverrideRequest"},
+      "output":{"shape":"DescribeHoursOfOperationOverrideResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Describes the hours of operation override.</p>"
     },
     "DescribeInstance":{
       "name":"DescribeInstance",
@@ -2113,6 +2165,23 @@
       ],
       "documentation":"<p>Gets the real-time active user data from the specified Amazon Connect instance. </p>"
     },
+    "GetEffectiveHoursOfOperations":{
+      "name":"GetEffectiveHoursOfOperations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/effective-hours-of-operations/{InstanceId}/{HoursOfOperationId}"
+      },
+      "input":{"shape":"GetEffectiveHoursOfOperationsRequest"},
+      "output":{"shape":"GetEffectiveHoursOfOperationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Get the hours of operations with the effective override applied.</p>"
+    },
     "GetFederationToken":{
       "name":"GetFederationToken",
       "http":{
@@ -2504,6 +2573,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>List the flow association based on the filters.</p>"
+    },
+    "ListHoursOfOperationOverrides":{
+      "name":"ListHoursOfOperationOverrides",
+      "http":{
+        "method":"GET",
+        "requestUri":"/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides"
+      },
+      "input":{"shape":"ListHoursOfOperationOverridesRequest"},
+      "output":{"shape":"ListHoursOfOperationOverridesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>List the hours of operation overrides.</p>"
     },
     "ListHoursOfOperations":{
       "name":"ListHoursOfOperations",
@@ -3276,6 +3362,23 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Searches email address in an instance, with optional filtering.</p>"
+    },
+    "SearchHoursOfOperationOverrides":{
+      "name":"SearchHoursOfOperationOverrides",
+      "http":{
+        "method":"POST",
+        "requestUri":"/search-hours-of-operation-overrides"
+      },
+      "input":{"shape":"SearchHoursOfOperationOverridesRequest"},
+      "output":{"shape":"SearchHoursOfOperationOverridesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Searches the hours of operation overrides.</p>"
     },
     "SearchHoursOfOperations":{
       "name":"SearchHoursOfOperations",
@@ -4150,6 +4253,24 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Updates the hours of operation.</p>"
+    },
+    "UpdateHoursOfOperationOverride":{
+      "name":"UpdateHoursOfOperationOverride",
+      "http":{
+        "method":"POST",
+        "requestUri":"/hours-of-operations/{InstanceId}/{HoursOfOperationId}/overrides/{HoursOfOperationOverrideId}"
+      },
+      "input":{"shape":"UpdateHoursOfOperationOverrideRequest"},
+      "errors":[
+        {"shape":"DuplicateResourceException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ConditionalOperationFailedException"}
+      ],
+      "documentation":"<p>Update the hours of operation override.</p>"
     },
     "UpdateInstanceAttribute":{
       "name":"UpdateInstanceAttribute",
@@ -6560,6 +6681,14 @@
       "type":"list",
       "member":{"shape":"CommonAttributeAndCondition"}
     },
+    "CommonHumanReadableDescription":{
+      "type":"string",
+      "pattern":"^[\\P{C}\\r\\n\\t]{1,250}$"
+    },
+    "CommonHumanReadableName":{
+      "type":"string",
+      "pattern":"^[\\P{C}\\r\\n\\t]{1,127}$"
+    },
     "CommonNameLength127":{
       "type":"string",
       "max":127,
@@ -6633,7 +6762,7 @@
       "members":{
         "Message":{"shape":"Message"}
       },
-      "documentation":"<p>A conditional check failed.</p>",
+      "documentation":"<p>Request processing failed because dependent condition failed.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -6831,7 +6960,7 @@
         },
         "ParticipantRole":{
           "shape":"ParticipantRole",
-          "documentation":"<p>The role of the participant in the chat conversation.</p>"
+          "documentation":"<p>The role of the participant in the chat conversation.</p> <note> <p>Only <code>CUSTOMER</code> is currently supported. Any other values other than <code>CUSTOMER</code> will result in an exception (4xx error).</p> </note>"
         },
         "IncludeRawMessage":{
           "shape":"IncludeRawMessage",
@@ -7029,7 +7158,15 @@
           "shape":"ContactFlowModuleSearchConditionList",
           "documentation":"<p>A list of conditions which would be applied together with an <code>AND</code> condition.</p>"
         },
-        "StringCondition":{"shape":"StringCondition"}
+        "StringCondition":{"shape":"StringCondition"},
+        "StateCondition":{
+          "shape":"ContactFlowModuleState",
+          "documentation":"<p>The state of the flow.</p>"
+        },
+        "StatusCondition":{
+          "shape":"ContactFlowModuleStatus",
+          "documentation":"<p>The status of the flow.</p>"
+        }
       },
       "documentation":"<p>The search criteria to be used to return flow modules.</p>"
     },
@@ -7878,6 +8015,60 @@
         "EvaluationFormArn":{
           "shape":"ARN",
           "documentation":"<p>The Amazon Resource Name (ARN) for the evaluation form resource.</p>"
+        }
+      }
+    },
+    "CreateHoursOfOperationOverrideRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "HoursOfOperationId",
+        "Name",
+        "Config",
+        "EffectiveFrom",
+        "EffectiveTill"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "HoursOfOperationId":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>The identifier for the hours of operation</p>",
+          "location":"uri",
+          "locationName":"HoursOfOperationId"
+        },
+        "Name":{
+          "shape":"CommonHumanReadableName",
+          "documentation":"<p>The name of the hours of operation override.</p>"
+        },
+        "Description":{
+          "shape":"CommonHumanReadableDescription",
+          "documentation":"<p>The description of the hours of operation override.</p>"
+        },
+        "Config":{
+          "shape":"HoursOfOperationOverrideConfigList",
+          "documentation":"<p>Configuration information for the hours of operation override: day, start time, and end time.</p>"
+        },
+        "EffectiveFrom":{
+          "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
+          "documentation":"<p>The date from when the hours of operation override would be effective.</p>"
+        },
+        "EffectiveTill":{
+          "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
+          "documentation":"<p>The date until when the hours of operation override would be effective.</p>"
+        }
+      }
+    },
+    "CreateHoursOfOperationOverrideResponse":{
+      "type":"structure",
+      "members":{
+        "HoursOfOperationOverrideId":{
+          "shape":"HoursOfOperationOverrideId",
+          "documentation":"<p>The identifier for the hours of operation override.</p>"
         }
       }
     },
@@ -9130,6 +9321,34 @@
       "type":"list",
       "member":{"shape":"DataSetId"}
     },
+    "DateComparisonType":{
+      "type":"string",
+      "enum":[
+        "GREATER_THAN",
+        "LESS_THAN",
+        "GREATER_THAN_OR_EQUAL_TO",
+        "LESS_THAN_OR_EQUAL_TO",
+        "EQUAL_TO"
+      ]
+    },
+    "DateCondition":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"String",
+          "documentation":"<p>An object to specify the hours of operation override date field.</p>"
+        },
+        "Value":{
+          "shape":"DateYearMonthDayFormat",
+          "documentation":"<p>An object to specify the hours of operation override date value.</p>"
+        },
+        "ComparisonType":{
+          "shape":"DateComparisonType",
+          "documentation":"<p>An object to specify the hours of operation override date condition <code>comparisonType</code>.</p>"
+        }
+      },
+      "documentation":"<p>An object to specify the hours of operation override date condition.</p>"
+    },
     "DateReference":{
       "type":"structure",
       "members":{
@@ -9143,6 +9362,10 @@
         }
       },
       "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>DATE</code>. Otherwise, null.</p>"
+    },
+    "DateYearMonthDayFormat":{
+      "type":"string",
+      "pattern":"^\\d{4}-\\d{2}-\\d{2}$"
     },
     "DeactivateEvaluationFormRequest":{
       "type":"structure",
@@ -9388,6 +9611,34 @@
           "box":true,
           "location":"querystring",
           "locationName":"version"
+        }
+      }
+    },
+    "DeleteHoursOfOperationOverrideRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "HoursOfOperationId",
+        "HoursOfOperationOverrideId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "HoursOfOperationId":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>The identifier for the hours of operation.</p>",
+          "location":"uri",
+          "locationName":"HoursOfOperationId"
+        },
+        "HoursOfOperationOverrideId":{
+          "shape":"HoursOfOperationOverrideId",
+          "documentation":"<p>The identifier for the hours of operation override.</p>",
+          "location":"uri",
+          "locationName":"HoursOfOperationOverrideId"
         }
       }
     },
@@ -10121,6 +10372,43 @@
         "EvaluationForm":{
           "shape":"EvaluationForm",
           "documentation":"<p>Information about the evaluation form.</p>"
+        }
+      }
+    },
+    "DescribeHoursOfOperationOverrideRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "HoursOfOperationId",
+        "HoursOfOperationOverrideId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "HoursOfOperationId":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>The identifier for the hours of operation.</p>",
+          "location":"uri",
+          "locationName":"HoursOfOperationId"
+        },
+        "HoursOfOperationOverrideId":{
+          "shape":"HoursOfOperationOverrideId",
+          "documentation":"<p>The identifier for the hours of operation override.</p>",
+          "location":"uri",
+          "locationName":"HoursOfOperationOverrideId"
+        }
+      }
+    },
+    "DescribeHoursOfOperationOverrideResponse":{
+      "type":"structure",
+      "members":{
+        "HoursOfOperationOverride":{
+          "shape":"HoursOfOperationOverride",
+          "documentation":"<p>Information about the hours of operations override. </p>"
         }
       }
     },
@@ -11177,6 +11465,24 @@
       "exception":true
     },
     "DurationInSeconds":{"type":"integer"},
+    "EffectiveHoursOfOperationList":{
+      "type":"list",
+      "member":{"shape":"EffectiveHoursOfOperations"}
+    },
+    "EffectiveHoursOfOperations":{
+      "type":"structure",
+      "members":{
+        "Date":{
+          "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
+          "documentation":"<p>The date that the hours of operation or overrides applies to.</p>"
+        },
+        "OperationalHours":{
+          "shape":"OperationalHours",
+          "documentation":"<p>Information about the hours of operations with the effective override applied.</p>"
+        }
+      },
+      "documentation":"<p>Information about the hours of operations with the effective override applied.</p>"
+    },
     "Email":{
       "type":"string",
       "sensitive":true
@@ -12852,6 +13158,54 @@
         }
       }
     },
+    "GetEffectiveHoursOfOperationsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "HoursOfOperationId",
+        "FromDate",
+        "ToDate"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "HoursOfOperationId":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>The identifier for the hours of operation.</p>",
+          "location":"uri",
+          "locationName":"HoursOfOperationId"
+        },
+        "FromDate":{
+          "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
+          "documentation":"<p>The Date from when the hours of operation are listed.</p>",
+          "location":"querystring",
+          "locationName":"fromDate"
+        },
+        "ToDate":{
+          "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
+          "documentation":"<p>The Date until when the hours of operation are listed.</p>",
+          "location":"querystring",
+          "locationName":"toDate"
+        }
+      }
+    },
+    "GetEffectiveHoursOfOperationsResponse":{
+      "type":"structure",
+      "members":{
+        "EffectiveHoursOfOperationList":{
+          "shape":"EffectiveHoursOfOperationList",
+          "documentation":"<p>Information about the effective hours of operations</p>"
+        },
+        "TimeZone":{
+          "shape":"TimeZone",
+          "documentation":"<p>The time zone for the hours of operation.</p>"
+        }
+      }
+    },
     "GetFederationTokenRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -13733,6 +14087,104 @@
       "member":{"shape":"HoursOfOperation"}
     },
     "HoursOfOperationName":{"type":"string"},
+    "HoursOfOperationOverride":{
+      "type":"structure",
+      "members":{
+        "HoursOfOperationOverrideId":{
+          "shape":"HoursOfOperationOverrideId",
+          "documentation":"<p>The identifier for the hours of operation override.</p>"
+        },
+        "HoursOfOperationId":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>The identifier for the hours of operation.</p>"
+        },
+        "HoursOfOperationArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the hours of operation.</p>"
+        },
+        "Name":{
+          "shape":"CommonHumanReadableName",
+          "documentation":"<p>The name of the hours of operation override.</p>"
+        },
+        "Description":{
+          "shape":"CommonHumanReadableDescription",
+          "documentation":"<p>The description of the hours of operation override.</p>"
+        },
+        "Config":{
+          "shape":"HoursOfOperationOverrideConfigList",
+          "documentation":"<p>Configuration information for the hours of operation override: day, start time, and end time.</p>"
+        },
+        "EffectiveFrom":{
+          "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
+          "documentation":"<p>The date from which the hours of operation override would be effective.</p>"
+        },
+        "EffectiveTill":{
+          "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
+          "documentation":"<p>The date till which the hours of operation override would be effective.</p>"
+        }
+      },
+      "documentation":"<p>Information about the hours of operations override.</p>"
+    },
+    "HoursOfOperationOverrideConfig":{
+      "type":"structure",
+      "members":{
+        "Day":{
+          "shape":"OverrideDays",
+          "documentation":"<p>The day that the hours of operation override applies to.</p>"
+        },
+        "StartTime":{
+          "shape":"OverrideTimeSlice",
+          "documentation":"<p>The start time when your contact center opens if overrides are applied.</p>"
+        },
+        "EndTime":{
+          "shape":"OverrideTimeSlice",
+          "documentation":"<p>The end time that your contact center closes if overrides are applied.</p>"
+        }
+      },
+      "documentation":"<p>Information about the hours of operation override config: day, start time, and end time.</p>"
+    },
+    "HoursOfOperationOverrideConfigList":{
+      "type":"list",
+      "member":{"shape":"HoursOfOperationOverrideConfig"},
+      "max":100,
+      "min":0
+    },
+    "HoursOfOperationOverrideId":{
+      "type":"string",
+      "max":36,
+      "min":1
+    },
+    "HoursOfOperationOverrideList":{
+      "type":"list",
+      "member":{"shape":"HoursOfOperationOverride"}
+    },
+    "HoursOfOperationOverrideSearchConditionList":{
+      "type":"list",
+      "member":{"shape":"HoursOfOperationOverrideSearchCriteria"}
+    },
+    "HoursOfOperationOverrideSearchCriteria":{
+      "type":"structure",
+      "members":{
+        "OrConditions":{
+          "shape":"HoursOfOperationOverrideSearchConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an OR condition.</p>"
+        },
+        "AndConditions":{
+          "shape":"HoursOfOperationOverrideSearchConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an AND condition.</p>"
+        },
+        "StringCondition":{"shape":"StringCondition"},
+        "DateCondition":{
+          "shape":"DateCondition",
+          "documentation":"<p>A leaf node condition which can be used to specify a date condition.</p>"
+        }
+      },
+      "documentation":"<p>The search criteria to be used to return hours of operations overrides.</p>"
+    },
+    "HoursOfOperationOverrideYearMonthDayDateFormat":{
+      "type":"string",
+      "pattern":"^\\d{4}-\\d{2}-\\d{2}$"
+    },
     "HoursOfOperationSearchConditionList":{
       "type":"list",
       "member":{"shape":"HoursOfOperationSearchCriteria"}
@@ -15158,6 +15610,61 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListHoursOfOperationOverridesRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "HoursOfOperationId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "HoursOfOperationId":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>The identifier for the hours of operation</p>",
+          "location":"uri",
+          "locationName":"HoursOfOperationId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page. The default MaxResult size is 100. Valid Range: Minimum value of 1. Maximum value of 1000.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListHoursOfOperationOverridesResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "HoursOfOperationOverrideList":{
+          "shape":"HoursOfOperationOverrideList",
+          "documentation":"<p>Information about the hours of operation override.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The AWS Region where this resource was last modified.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this resource was last modified.</p>"
         }
       }
     },
@@ -17096,6 +17603,24 @@
       "max":128,
       "min":0
     },
+    "OperationalHour":{
+      "type":"structure",
+      "members":{
+        "Start":{
+          "shape":"OverrideTimeSlice",
+          "documentation":"<p>The start time that your contact center opens.</p>"
+        },
+        "End":{
+          "shape":"OverrideTimeSlice",
+          "documentation":"<p>The end time that your contact center closes.</p>"
+        }
+      },
+      "documentation":"<p>Information about the hours of operations with the effective override applied.</p>"
+    },
+    "OperationalHours":{
+      "type":"list",
+      "member":{"shape":"OperationalHour"}
+    },
     "Origin":{
       "type":"string",
       "max":267
@@ -17228,6 +17753,38 @@
       "documentation":"<p>Thrown for analyzed content when requested OutputType was not enabled for a given contact. For example, if an OutputType.Raw was requested for a contact that had `RedactedOnly` Redaction policy set in the flow.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
+    },
+    "OverrideDays":{
+      "type":"string",
+      "enum":[
+        "SUNDAY",
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY"
+      ]
+    },
+    "OverrideTimeSlice":{
+      "type":"structure",
+      "required":[
+        "Hours",
+        "Minutes"
+      ],
+      "members":{
+        "Hours":{
+          "shape":"Hours24Format",
+          "documentation":"<p>The hours.</p>",
+          "box":true
+        },
+        "Minutes":{
+          "shape":"MinutesLimit60",
+          "documentation":"<p>The minutes.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>The start time or end time for an hours of operation override.</p>"
     },
     "PEM":{
       "type":"string",
@@ -20339,6 +20896,47 @@
         "ApproximateTotalCount":{
           "shape":"ApproximateTotalCount",
           "documentation":"<p>The total number of email addresses which matched your search query.</p>"
+        }
+      }
+    },
+    "SearchHoursOfOperationOverridesRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken2500",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. Length Constraints: Minimum length of 1. Maximum length of 2500.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page. Valid Range: Minimum value of 1. Maximum value of 100.</p>",
+          "box":true
+        },
+        "SearchFilter":{"shape":"HoursOfOperationSearchFilter"},
+        "SearchCriteria":{
+          "shape":"HoursOfOperationOverrideSearchCriteria",
+          "documentation":"<p>The search criteria to be used to return hours of operations overrides.</p>"
+        }
+      }
+    },
+    "SearchHoursOfOperationOverridesResponse":{
+      "type":"structure",
+      "members":{
+        "HoursOfOperationOverrides":{
+          "shape":"HoursOfOperationOverrideList",
+          "documentation":"<p>Information about the hours of operations overrides.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken2500",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results. Length Constraints: Minimum length of 1. Maximum length of 2500.</p>"
+        },
+        "ApproximateTotalCount":{
+          "shape":"ApproximateTotalCount",
+          "documentation":"<p>The total number of hours of operations which matched your search query.</p>"
         }
       }
     },
@@ -23845,6 +24443,54 @@
       "max":250,
       "min":0
     },
+    "UpdateHoursOfOperationOverrideRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "HoursOfOperationId",
+        "HoursOfOperationOverrideId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "HoursOfOperationId":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>The identifier for the hours of operation.</p>",
+          "location":"uri",
+          "locationName":"HoursOfOperationId"
+        },
+        "HoursOfOperationOverrideId":{
+          "shape":"HoursOfOperationOverrideId",
+          "documentation":"<p>The identifier for the hours of operation override.</p>",
+          "location":"uri",
+          "locationName":"HoursOfOperationOverrideId"
+        },
+        "Name":{
+          "shape":"CommonHumanReadableName",
+          "documentation":"<p>The name of the hours of operation override.</p>"
+        },
+        "Description":{
+          "shape":"CommonHumanReadableDescription",
+          "documentation":"<p>The description of the hours of operation override.</p>"
+        },
+        "Config":{
+          "shape":"HoursOfOperationOverrideConfigList",
+          "documentation":"<p>Configuration information for the hours of operation override: day, start time, and end time.</p>"
+        },
+        "EffectiveFrom":{
+          "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
+          "documentation":"<p>The date from when the hours of operation override would be effective.</p>"
+        },
+        "EffectiveTill":{
+          "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
+          "documentation":"<p>The date till when the hours of operation override would be effective.</p>"
+        }
+      }
+    },
     "UpdateHoursOfOperationRequest":{
       "type":"structure",
       "required":[
@@ -25225,11 +25871,11 @@
       "members":{
         "FirstName":{
           "shape":"AgentFirstName",
-          "documentation":"<p>The first name. This is required if you are using Amazon Connect or SAML for identity management.</p>"
+          "documentation":"<p>The first name. This is required if you are using Amazon Connect or SAML for identity management. Inputs must be in Unicode Normalization Form C (NFC). Text containing characters in a non-NFC form (for example, decomposed characters or combining marks) are not accepted.</p>"
         },
         "LastName":{
           "shape":"AgentLastName",
-          "documentation":"<p>The last name. This is required if you are using Amazon Connect or SAML for identity management.</p>"
+          "documentation":"<p>The last name. This is required if you are using Amazon Connect or SAML for identity management. Inputs must be in Unicode Normalization Form C (NFC). Text containing characters in a non-NFC form (for example, decomposed characters or combining marks) are not accepted.</p>"
         },
         "Email":{
           "shape":"Email",

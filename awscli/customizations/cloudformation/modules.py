@@ -54,6 +54,10 @@ def process_module_section(template, base_path):
     "Recursively process the Modules section of a template"
     if MODULES in template:
 
+        if not isdict(template[MODULES]):
+            msg = "Modules section is invalid"
+            raise exceptions.InvalidModuleError(msg=msg)
+
         # Process each Module node separately
         for module_name, module_config in template[MODULES].items():
             module_config[NAME] = module_name
@@ -192,6 +196,9 @@ class Module:
     that are actually strings and leaving others to be resolved at deploy time.
 
     Modules can contain other modules, with no limit to the levels of nesting.
+
+    Modules can define Outputs, which are key-value pairs that can be
+    referenced by the parent.
     """
 
     def __init__(self, template, module_config):
@@ -346,7 +353,7 @@ class Module:
             elif word.t == WordType.GETATT:
                 resolved = "${" + word.w + "}"
                 tokens = word.w.split(".")
-                if len(tokens) != 2:
+                if len(tokens) < 2:
                     msg = f"GetAtt {word.w} has unexpected number of tokens"
                     raise exceptions.InvalidModuleError(msg=msg)
                 # !Sub ${Content.BucketArn} -> !Sub ${ContentBucket.Arn}
@@ -395,7 +402,7 @@ class Module:
                     elif word.t == WordType.GETATT:
                         resolved = "${" + word.w + "}"
                         tokens = word.w.split(".")
-                        if len(tokens) != 2:
+                        if len(tokens) < 2:
                             msg = f"GetAtt {word.w} unexpected length"
                             raise exceptions.InvalidModuleError(msg=msg)
                         if tokens[0] in self.resources:
@@ -432,6 +439,7 @@ class Module:
         # Resolve refs, subs, and getatts
         #    (Process module Parameters and parent Properties)
         container = {}
+        # We need the container for the first iteration of the recursion
         container[RESOURCES] = self.resources
         self.resolve(logical_id, resource, container, RESOURCES)
 

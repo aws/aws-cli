@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.36.22
+=======
+
+* api-change:``cloudhsmv2``: Add support for Dual-Stack hsm2m.medium clusters. The customers will now be able to create hsm2m.medium clusters having both IPv4 and IPv6 connection capabilities by specifying a new param called NetworkType=DUALSTACK during cluster creation.
+* api-change:``ec2``: This release adds GroupId to the response for DeleteSecurityGroup.
+* api-change:``eks``: Add NodeRepairConfig in CreateNodegroupRequest and UpdateNodegroupConfigRequest
+* api-change:``logs``: Limit PutIntegration IntegrationName and ListIntegrations IntegrationNamePrefix parameters to 50 characters
+* api-change:``mediaconnect``: AWS Elemental MediaConnect Gateway now supports Source Specific Multicast (SSM) for ingress bridges. This enables you to specify a source IP address in addition to a multicast IP when creating or updating an ingress bridge source.
+* api-change:``networkmanager``: There was a sentence fragment in UpdateDirectConnectGatewayAttachment that was causing customer confusion as to whether it's an incomplete sentence or if it was a typo. Removed the fragment.
+* api-change:``servicediscovery``: AWS Cloud Map now supports service-level attributes, allowing you to associate custom metadata directly with services. These attributes can be retrieved, updated, and deleted using the new GetServiceAttributes, UpdateServiceAttributes, and DeleteServiceAttributes API calls.
+
+
 1.36.21
 =======
 

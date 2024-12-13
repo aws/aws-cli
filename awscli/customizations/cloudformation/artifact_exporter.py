@@ -14,7 +14,6 @@
 import logging
 import os
 import tempfile
-import traceback
 import zipfile
 import contextlib
 import uuid
@@ -661,8 +660,8 @@ class Template(object):
                     self.template_dict, 
                     self.template_dir)
         except Exception as e:
-            traceback.print_exc()
             msg=f"Failed to process Modules section: {e}"
+            LOG.exception(msg)
             raise exceptions.InvalidModuleError(msg=msg)
 
         self.template_dict = self.export_metadata(self.template_dict)
@@ -676,8 +675,8 @@ class Template(object):
                     self.template_dict, 
                     self.template_dir)
         except Exception as e:
-            traceback.print_exc()
             msg=f"Failed to process modules in Resources: {e}"
+            LOG.exception(msg)
             raise exceptions.InvalidModuleError(msg=msg)
 
 

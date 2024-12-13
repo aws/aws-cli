@@ -15,8 +15,8 @@
 
 # pylint: disable=fixme,too-many-instance-attributes
 
+import logging
 import os
-import traceback
 from collections import OrderedDict
 
 from awscli.customizations.cloudformation import exceptions
@@ -24,6 +24,8 @@ from awscli.customizations.cloudformation import yamlhelper
 
 from awscli.customizations.cloudformation.parse_sub import WordType
 from awscli.customizations.cloudformation.parse_sub import parse_sub
+
+LOG = logging.getLogger(__name__)
 
 RESOURCES = "Resources"
 METADATA = "Metadata"
@@ -265,12 +267,12 @@ class Module:
         section = ""
         try:
             section = MODULES
-            module_dict = process_module_section(module_dict, base_path)
+            process_module_section(module_dict, base_path)
             section = RESOURCES
-            module_dict = process_resources_section(module_dict, base_path)
+            process_resources_section(module_dict, base_path)
         except Exception as e:
-            traceback.print_exc()
             msg = f"Failed to process {section} section: {e}"
+            LOG.exception(msg)
             raise exceptions.InvalidModuleError(msg=msg)
 
         self.validate_overrides()
@@ -359,6 +361,7 @@ class Module:
 
         d[n] = {SUB: sub}
 
+    # pylint:disable=too-many-branches
     def resolve_output_getatt(self, v, d, n):
         "Resolve a GetAtt that refers to a module output"
         if not isinstance(v, list) or len(v) < 2:
@@ -368,6 +371,9 @@ class Module:
             output = self.outputs[v[1]]
             if GETATT in output:
                 getatt = output[GETATT]
+                if len(getatt) < 2:
+                    msg = f"GetAtt {getatt} in Output {v[1]} is invalid"
+                    raise exceptions.InvalidModuleError(msg=msg)
                 d[n] = {GETATT: [self.name + getatt[0], getatt[1]]}
             elif SUB in output:
                 # Parse the Sub in the module output

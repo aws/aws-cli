@@ -57,10 +57,8 @@ def parse_sub(sub_str, leave_bang=False):
     words = []
     state = State.READSTR
     buf = ''
-    i = -1
     last = ''
-    for char in sub_str:
-        i += 1
+    for i, char in enumerate(sub_str):
         if char == DOLLAR:
             if state != State.READVAR:
                 state = State.MAYBE

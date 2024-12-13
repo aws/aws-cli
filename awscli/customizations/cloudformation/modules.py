@@ -13,7 +13,7 @@
 
 "This file implements local module support for the package command"
 
-# pylint: disable=fixme
+# pylint: disable=fixme,too-many-instance-attributes
 
 import os
 import traceback
@@ -45,6 +45,7 @@ PARAMETERS = "Parameters"
 MODULES = "Modules"
 TYPE = "Type"
 LOCAL_MODULE = "LocalModule"
+OUTPUTS = "Outputs"
 
 
 def process_module_section(template, base_path):
@@ -227,8 +228,8 @@ class Module:
         # Parameters defined in the module
         self.params = {}
 
-        # TODO: What about Conditions, Mappings, Outputs?
-        # Is there a use case for importing those into the parent?
+        # Outputs defined in the module
+        self.outputs = {}
 
     def __str__(self):
         "Print out a string with module details for logs"
@@ -256,6 +257,9 @@ class Module:
         if PARAMETERS in module_dict:
             self.params = module_dict[PARAMETERS]
 
+        if OUTPUTS in module_dict:
+            self.outputs = module_dict[OUTPUTS]
+
         # Recurse on nested modules
         base_path = os.path.dirname(self.source)
         section = ""
@@ -274,7 +278,125 @@ class Module:
         for logical_id, resource in self.resources.items():
             self.process_resource(logical_id, resource)
 
+        self.process_outputs()
+
         return self.template
+
+    def process_outputs(self):
+        """
+        Fix parent template output references.
+
+        In the parent you can !GetAtt ModuleName.OutputName
+        This will be converted to !GetAtt ModuleName + OutputValue
+
+        Recurse over all sections in the parent template looking for
+        GetAtts and Subs that reference a module output value.
+        """
+        sections = [RESOURCES, OUTPUTS]  # TODO: Any others?
+        for section in sections:
+            if section not in self.template:
+                continue
+            for k, v in self.template[section].items():
+                self.resolve_outputs(k, v, self.template, section)
+
+    def resolve_outputs(self, k, v, d, n):
+        """
+        Recursively resolve GetAtts and Subs that reference module outputs.
+
+        :param name The name of the output
+        :param output The output dict
+        :param k The name of the node
+        :param v The value of the node
+        :param d The dict that holds the parent of k
+        :param n The name of the node that holds k
+
+        If a reference is found, this function sets the value of d[n]
+        """
+        if k == SUB:
+            self.resolve_output_sub(v, d, n)
+        elif k == GETATT:
+            self.resolve_output_getatt(v, d, n)
+        else:
+            if isdict(v):
+                for k2, v2 in v.copy().items():
+                    self.resolve_outputs(k2, v2, d[n], k)
+            elif isinstance(v, list):
+                idx = -1
+                for v2 in v:
+                    idx = idx + 1
+                    if isdict(v2):
+                        for k3, v3 in v2.copy().items():
+                            self.resolve_outputs(k3, v3, v, idx)
+
+    def resolve_output_sub(self, v, d, n):
+        "Resolve a Sub that refers to a module output"
+        words = parse_sub(v, True)
+        sub = ""
+        for word in words:
+            if word.t == WordType.STR:
+                sub += word.w
+            elif word.t == WordType.AWS:
+                sub += "${AWS::" + word.w + "}"
+            elif word.t == WordType.REF:
+                # A reference to an output has to be a getatt
+                resolved = "${" + word.w + "}"
+                sub += resolved
+            elif word.t == WordType.GETATT:
+                resolved = "${" + word.w + "}"
+                tokens = word.w.split(".")
+                if len(tokens) != 2:
+                    msg = f"GetAtt {word.w} has unexpected number of tokens"
+                    raise exceptions.InvalidModuleError(msg=msg)
+                # !Sub ${Content.BucketArn} -> !Sub ${ContentBucket.Arn}
+                if tokens[0] == self.name and tokens[1] in self.outputs:
+                    output = self.outputs[tokens[1]]
+                    if GETATT in output:
+                        getatt = output[GETATT]
+                        resolved = "${" + self.name + ".".join(getatt) + "}"
+                    elif SUB in output:
+                        resolved = "${" + self.name + output[SUB] + "}"
+                sub += resolved
+
+        d[n] = {SUB: sub}
+
+    def resolve_output_getatt(self, v, d, n):
+        "Resolve a GetAtt that refers to a module output"
+        if not isinstance(v, list) or len(v) < 2:
+            msg = f"GetAtt {v} invalid"
+            raise exceptions.InvalidModuleError(msg=msg)
+        if v[0] == self.name and v[1] in self.outputs:
+            output = self.outputs[v[1]]
+            if GETATT in output:
+                getatt = output[GETATT]
+                d[n] = {GETATT: [self.name + getatt[0], getatt[1]]}
+            elif SUB in output:
+                # Parse the Sub in the module output
+                words = parse_sub(output[SUB], True)
+                sub = ""
+                for word in words:
+                    if word.t == WordType.STR:
+                        sub += word.w
+                    elif word.t == WordType.AWS:
+                        sub += "${AWS::" + word.w + "}"
+                    elif word.t == WordType.REF:
+                        # This is a ref to a param or resource
+                        # TODO: If it's a ref to a param...? is this allowed?
+                        # If it's a resource, concatenante the name
+                        resolved = "${" + word.w + "}"
+                        if word.w in self.resources:
+                            resolved = "${" + self.name + word.w + "}"
+                        sub += resolved
+                    elif word.t == WordType.GETATT:
+                        resolved = "${" + word.w + "}"
+                        tokens = word.w.split(".")
+                        if len(tokens) != 2:
+                            msg = f"GetAtt {word.w} unexpected length"
+                            raise exceptions.InvalidModuleError(msg=msg)
+                        if tokens[0] in self.resources:
+                            resolved = "${" + self.name + word.w + "}"
+                        sub += resolved
+
+                d[n] = {SUB: sub}
 
     def validate_overrides(self):
         "Make sure resources referenced by overrides actually exist"
@@ -500,12 +622,15 @@ class Module:
                 sub += resolved
             elif word.t == WordType.GETATT:
                 need_sub = True
-                tokens = word.w.split()
-                if len(tokens) != 2:
-                    msg = "GetAtt {word.w} has unexpected number of tokens"
+                resolved = "${" + word.w + "}"
+                tokens = word.w.split(".")
+                if len(tokens) < 2:
+                    msg = f"GetAtt {word.w} has unexpected number of tokens"
                     raise exceptions.InvalidModuleError(msg=msg)
                 if tokens[0] in self.resources:
                     tokens[0] = self.name + tokens[0]
+                resolved = "${" + tokens[0] + "." + tokens[1] + "}"
+                sub += resolved
 
         if need_sub:
             d[n] = {SUB: sub}

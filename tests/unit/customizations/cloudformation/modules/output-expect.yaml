@@ -1,0 +1,17 @@
+Outputs:
+  ExampleOutput:
+    Value:
+      Fn::GetAtt:
+      - ContentBucket
+      - Arn
+  ExampleSub:
+    Value:
+      Fn::Sub: ${ContentBucket.Arn}
+  ExampleGetSub:
+    Value:
+      Fn::Sub: ${ContentBucket.Arn}
+Resources:
+  ContentBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: foo

@@ -82,7 +82,7 @@ class TestPackageModules(unittest.TestCase):
         # The tests are in the modules directory.
         # Each test has 3 files:
         # test-template.yaml, test-module.yaml, and test-expect.yaml
-        tests = ["basic", "type", "sub", "modinmod"]
+        tests = ["basic", "type", "sub", "modinmod", "output"]
         for test in tests:
             base = "unit/customizations/cloudformation/modules"
             t = modules.read_source(f"{base}/{test}-template.yaml")

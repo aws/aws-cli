@@ -14,6 +14,8 @@ The string is broken down into "words" that are one of four types:
 """
 #pylint: disable=too-few-public-methods
 
+from enum import Enum
+
 DATA = ' '  # Any other character
 DOLLAR = '$'
 OPEN = '{'
@@ -21,14 +23,14 @@ CLOSE = '}'
 BANG = '!'
 SPACE = ' '
 
-class WordType:
+class WordType(Enum):
     "Word type enumeration"
     STR = 0    # A literal string fragment
     REF = 1    # ${ParamOrResourceName}
     AWS = 2    # ${AWS::X}
     GETATT = 3 # ${X.Y}
 
-class State:
+class State(Enum):
     "State machine enumeration"
     READSTR = 0
     READVAR = 1

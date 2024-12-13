@@ -42,6 +42,9 @@ class TestPackageModules(unittest.TestCase):
                 SubWord(WordType.REF, "ABC$XYZ"),
                 SubWord(WordType.STR, "FOO$BAR"),
             ],
+            "${ ABC }": [SubWord(WordType.REF, "ABC")],
+            "${  ABC  }": [SubWord(WordType.REF, "ABC")],
+            " ABC ": [SubWord(WordType.STR, " ABC ")],
         }
 
         for sub, expect in cases.items():

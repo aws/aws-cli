@@ -287,7 +287,7 @@ class Module:
         Fix parent template output references.
 
         In the parent you can !GetAtt ModuleName.OutputName
-        This will be converted to !GetAtt ModuleName + OutputValue
+        This will be converted so that it's correct in the packaged template.
 
         Recurse over all sections in the parent template looking for
         GetAtts and Subs that reference a module output value.

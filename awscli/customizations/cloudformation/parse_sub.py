@@ -19,6 +19,7 @@ DOLLAR = '$'
 OPEN = '{'
 CLOSE = '}'
 BANG = '!'
+SPACE = ' '
 
 class WordType:
     "Word type enumeration"
@@ -105,6 +106,10 @@ def parse_sub(sub_str, leave_bang=False):
                     buf += char
             else:
                 # This is a ! somewhere not related to a LITERAL
+                buf += char
+        elif char == SPACE:
+            # Ignore spaces around Refs. ${ ABC } == ${ABC}
+            if state != State.READVAR:
                 buf += char
         else:
             if state == State.MAYBE:

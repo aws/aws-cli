@@ -2279,6 +2279,10 @@
           "shape":"NodegroupUpdateConfig",
           "documentation":"<p>The node group update configuration.</p>"
         },
+        "nodeRepairConfig":{
+          "shape":"NodeRepairConfig",
+          "documentation":"<p>The node auto repair configuration for the node group.</p>"
+        },
         "capacityType":{
           "shape":"CapacityTypes",
           "documentation":"<p>The capacity type for your node group.</p>"
@@ -4341,6 +4345,16 @@
       },
       "documentation":"<p>Information about an Amazon EKS add-on from the Amazon Web Services Marketplace.</p>"
     },
+    "NodeRepairConfig":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether to enable node auto repair for the node group. Node auto repair is disabled by default.</p>"
+        }
+      },
+      "documentation":"<p>The node auto repair configuration for the node group.</p>"
+    },
     "Nodegroup":{
       "type":"structure",
       "members":{
@@ -4427,6 +4441,10 @@
         "updateConfig":{
           "shape":"NodegroupUpdateConfig",
           "documentation":"<p>The node group update configuration.</p>"
+        },
+        "nodeRepairConfig":{
+          "shape":"NodeRepairConfig",
+          "documentation":"<p>The node auto repair configuration for the node group.</p>"
         },
         "launchTemplate":{
           "shape":"LaunchTemplateSpecification",
@@ -4863,11 +4881,11 @@
       "members":{
         "remoteNodeNetworks":{
           "shape":"RemoteNodeNetworkList",
-          "documentation":"<p>The list of network CIDRs that can contain hybrid nodes.</p>"
+          "documentation":"<p>The list of network CIDRs that can contain hybrid nodes.</p> <p>These CIDR blocks define the expected IP address range of the hybrid nodes that join the cluster. These blocks are typically determined by your network administrator. </p> <p>Enter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for example, <code> 10.2.0.0/16</code>).</p> <p>It must satisfy the following requirements:</p> <ul> <li> <p>Each block must be within an <code>IPv4</code> RFC-1918 network range. Minimum allowed size is /24, maximum allowed size is /8. Publicly-routable addresses aren't supported.</p> </li> <li> <p>Each block cannot overlap with the range of the VPC CIDR blocks for your EKS resources, or the block of the Kubernetes service IP range.</p> </li> <li> <p>Each block must have a route to the VPC that uses the VPC CIDR blocks, not public IPs or Elastic IPs. There are many options including Transit Gateway, Site-to-Site VPN, or Direct Connect.</p> </li> <li> <p>Each host must allow outbound connection to the EKS cluster control plane on TCP ports <code>443</code> and <code>10250</code>.</p> </li> <li> <p>Each host must allow inbound connection from the EKS cluster control plane on TCP port 10250 for logs, exec and port-forward operations.</p> </li> <li> <p> Each host must allow TCP and UDP network connectivity to and from other hosts that are running <code>CoreDNS</code> on UDP port <code>53</code> for service and pod DNS names.</p> </li> </ul>"
         },
         "remotePodNetworks":{
           "shape":"RemotePodNetworkList",
-          "documentation":"<p>The list of network CIDRs that can contain pods that run Kubernetes webhooks on hybrid nodes.</p>"
+          "documentation":"<p>The list of network CIDRs that can contain pods that run Kubernetes webhooks on hybrid nodes.</p> <p>These CIDR blocks are determined by configuring your Container Network Interface (CNI) plugin. We recommend the Calico CNI or Cilium CNI. Note that the Amazon VPC CNI plugin for Kubernetes isn't available for on-premises and edge locations.</p> <p>Enter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for example, <code> 10.2.0.0/16</code>).</p> <p>It must satisfy the following requirements:</p> <ul> <li> <p>Each block must be within an <code>IPv4</code> RFC-1918 network range. Minimum allowed size is /24, maximum allowed size is /8. Publicly-routable addresses aren't supported.</p> </li> <li> <p>Each block cannot overlap with the range of the VPC CIDR blocks for your EKS resources, or the block of the Kubernetes service IP range.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The configuration in the cluster for EKS Hybrid Nodes. You can't change or update this configuration after the cluster is created.</p>"
@@ -4891,10 +4909,10 @@
       "members":{
         "cidrs":{
           "shape":"StringList",
-          "documentation":"<p>A network CIDR that can contain hybrid nodes.</p>"
+          "documentation":"<p>A network CIDR that can contain hybrid nodes.</p> <p>These CIDR blocks define the expected IP address range of the hybrid nodes that join the cluster. These blocks are typically determined by your network administrator. </p> <p>Enter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for example, <code> 10.2.0.0/16</code>).</p> <p>It must satisfy the following requirements:</p> <ul> <li> <p>Each block must be within an <code>IPv4</code> RFC-1918 network range. Minimum allowed size is /24, maximum allowed size is /8. Publicly-routable addresses aren't supported.</p> </li> <li> <p>Each block cannot overlap with the range of the VPC CIDR blocks for your EKS resources, or the block of the Kubernetes service IP range.</p> </li> <li> <p>Each block must have a route to the VPC that uses the VPC CIDR blocks, not public IPs or Elastic IPs. There are many options including Transit Gateway, Site-to-Site VPN, or Direct Connect.</p> </li> <li> <p>Each host must allow outbound connection to the EKS cluster control plane on TCP ports <code>443</code> and <code>10250</code>.</p> </li> <li> <p>Each host must allow inbound connection from the EKS cluster control plane on TCP port 10250 for logs, exec and port-forward operations.</p> </li> <li> <p> Each host must allow TCP and UDP network connectivity to and from other hosts that are running <code>CoreDNS</code> on UDP port <code>53</code> for service and pod DNS names.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>A network CIDR that can contain hybrid nodes.</p>"
+      "documentation":"<p>A network CIDR that can contain hybrid nodes.</p> <p>These CIDR blocks define the expected IP address range of the hybrid nodes that join the cluster. These blocks are typically determined by your network administrator. </p> <p>Enter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for example, <code> 10.2.0.0/16</code>).</p> <p>It must satisfy the following requirements:</p> <ul> <li> <p>Each block must be within an <code>IPv4</code> RFC-1918 network range. Minimum allowed size is /24, maximum allowed size is /8. Publicly-routable addresses aren't supported.</p> </li> <li> <p>Each block cannot overlap with the range of the VPC CIDR blocks for your EKS resources, or the block of the Kubernetes service IP range.</p> </li> <li> <p>Each block must have a route to the VPC that uses the VPC CIDR blocks, not public IPs or Elastic IPs. There are many options including Transit Gateway, Site-to-Site VPN, or Direct Connect.</p> </li> <li> <p>Each host must allow outbound connection to the EKS cluster control plane on TCP ports <code>443</code> and <code>10250</code>.</p> </li> <li> <p>Each host must allow inbound connection from the EKS cluster control plane on TCP port 10250 for logs, exec and port-forward operations.</p> </li> <li> <p> Each host must allow TCP and UDP network connectivity to and from other hosts that are running <code>CoreDNS</code> on UDP port <code>53</code> for service and pod DNS names.</p> </li> </ul>"
     },
     "RemoteNodeNetworkList":{
       "type":"list",
@@ -4906,10 +4924,10 @@
       "members":{
         "cidrs":{
           "shape":"StringList",
-          "documentation":"<p>A network CIDR that can contain pods that run Kubernetes webhooks on hybrid nodes.</p>"
+          "documentation":"<p>A network CIDR that can contain pods that run Kubernetes webhooks on hybrid nodes.</p> <p>These CIDR blocks are determined by configuring your Container Network Interface (CNI) plugin. We recommend the Calico CNI or Cilium CNI. Note that the Amazon VPC CNI plugin for Kubernetes isn't available for on-premises and edge locations.</p> <p>Enter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for example, <code> 10.2.0.0/16</code>).</p> <p>It must satisfy the following requirements:</p> <ul> <li> <p>Each block must be within an <code>IPv4</code> RFC-1918 network range. Minimum allowed size is /24, maximum allowed size is /8. Publicly-routable addresses aren't supported.</p> </li> <li> <p>Each block cannot overlap with the range of the VPC CIDR blocks for your EKS resources, or the block of the Kubernetes service IP range.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>A network CIDR that can contain pods that run Kubernetes webhooks on hybrid nodes.</p>"
+      "documentation":"<p>A network CIDR that can contain pods that run Kubernetes webhooks on hybrid nodes.</p> <p>These CIDR blocks are determined by configuring your Container Network Interface (CNI) plugin. We recommend the Calico CNI or Cilium CNI. Note that the Amazon VPC CNI plugin for Kubernetes isn't available for on-premises and edge locations.</p> <p>Enter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for example, <code> 10.2.0.0/16</code>).</p> <p>It must satisfy the following requirements:</p> <ul> <li> <p>Each block must be within an <code>IPv4</code> RFC-1918 network range. Minimum allowed size is /24, maximum allowed size is /8. Publicly-routable addresses aren't supported.</p> </li> <li> <p>Each block cannot overlap with the range of the VPC CIDR blocks for your EKS resources, or the block of the Kubernetes service IP range.</p> </li> </ul>"
     },
     "RemotePodNetworkList":{
       "type":"list",
@@ -5520,6 +5538,10 @@
           "shape":"NodegroupUpdateConfig",
           "documentation":"<p>The node group update configuration.</p>"
         },
+        "nodeRepairConfig":{
+          "shape":"NodeRepairConfig",
+          "documentation":"<p>The node auto repair configuration for the node group.</p>"
+        },
         "clientRequestToken":{
           "shape":"String",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
@@ -5621,6 +5643,7 @@
         "ResolveConflicts",
         "MaxUnavailable",
         "MaxUnavailablePercentage",
+        "NodeRepairEnabled",
         "ConfigurationValues",
         "SecurityGroups",
         "Subnets",

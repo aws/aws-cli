@@ -30,7 +30,7 @@ The following ``create-mesh`` example creates a service mesh with multiple tags.
 
     aws appmesh create-mesh \
         --mesh-name app2 \
-        --tags key=key1,value=value1 key=key2,value=value2 key=key3,value=value3
+        --tags key=key1,value=value1 key=key2,value=value2
 
 Output::
 

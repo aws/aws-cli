@@ -53,7 +53,7 @@ def resolve_types(parsed_args, **kwargs):
 def _resolve_arg(parsed_args, name):
     value = getattr(parsed_args, name, None)
     if value is not None:
-        new_value = getattr(sys.modules[__name__], '_resolve_%s' % name)(value)
+        new_value = getattr(sys.modules[__name__], f'_resolve_{name}')(value)
         setattr(parsed_args, name, new_value)
 
 
@@ -62,7 +62,7 @@ def _resolve_query(value):
         return jmespath.compile(value)
     except Exception as e:
         raise ParamValidationError(
-            "Bad value for --query %s: %s" % (value, str(e))
+            f"Bad value for --query {value}: {str(e)}"
         )
 
 
@@ -72,9 +72,9 @@ def _resolve_endpoint_url(value):
     # that contains a scheme, so we'll verify that up front.
     if not parsed.scheme:
         raise ParamValidationError(
-            'Bad value for --endpoint-url "%s": scheme is '
+            f'Bad value for --endpoint-url "{value}": scheme is '
             'missing.  Must be of the form '
-            'http://<hostname>/ or https://<hostname>/' % value
+            'http://<hostname>/ or https://<hostname>/'
         )
     return value
 

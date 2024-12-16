@@ -95,7 +95,7 @@ class CodeCommitGetCommand(BasicCommand):
     ]
 
     def __init__(self, session):
-        super(CodeCommitGetCommand, self).__init__(session)
+        super().__init__(session)
 
     def _run_main(self, args, parsed_globals):
         git_parameters = self.read_git_parameters()
@@ -135,7 +135,7 @@ class CodeCommitGetCommand(BasicCommand):
         return parsed
 
     def extract_url(self, parameters):
-        url = '{0}://{1}/{2}'.format(
+        url = '{}://{}/{}'.format(
             parameters['protocol'], parameters['host'], parameters['path']
         )
         return url
@@ -170,7 +170,7 @@ class CodeCommitGetCommand(BasicCommand):
         logger.debug('StringToSign:\n%s', string_to_sign)
         signature = signer.signature(string_to_sign, request)
         logger.debug('Signature:\n%s', signature)
-        return '{0}Z{1}'.format(request.context['timestamp'], signature)
+        return '{}Z{}'.format(request.context['timestamp'], signature)
 
 
 class CodeCommitCommand(BasicCommand):

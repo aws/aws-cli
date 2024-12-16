@@ -79,7 +79,7 @@ def register(event_handler):
 
 
 def unique_string(prefix='cli'):
-    return '%s-%s-%s' % (prefix, int(time.time()), random.randint(1, 1000000))
+    return f'{prefix}-{int(time.time())}-{random.randint(1, 1000000)}'
 
 
 def _add_paths(argument_table, **kwargs):
@@ -93,7 +93,7 @@ class PathsArgument(CustomArgument):
             'The space-separated paths to be invalidated.'
             ' Note: --invalidation-batch and --paths are mutually exclusive.'
         )
-        super(PathsArgument, self).__init__('paths', nargs='+', help_text=doc)
+        super().__init__('paths', nargs='+', help_text=doc)
 
     def add_to_params(self, parameters, value):
         if value is not None:
@@ -114,7 +114,7 @@ class ExclusiveArgument(CustomArgument):
         help_text='',
     ):
         argument_table[exclusive_to].required = False
-        super(ExclusiveArgument, self).__init__(
+        super().__init__(
             name, help_text=self.DOC % (help_text, exclusive_to)
         )
 
@@ -139,7 +139,7 @@ class ExclusiveArgument(CustomArgument):
 
 class OriginDomainName(ExclusiveArgument):
     def __init__(self, argument_table):
-        super(OriginDomainName, self).__init__(
+        super().__init__(
             'origin-domain-name',
             argument_table,
             help_text='The domain name for your origin.',
@@ -175,7 +175,7 @@ class OriginDomainName(ExclusiveArgument):
 
 class CreateDefaultRootObject(ExclusiveArgument):
     def __init__(self, argument_table, help_text=''):
-        super(CreateDefaultRootObject, self).__init__(
+        super().__init__(
             'default-root-object',
             argument_table,
             help_text=help_text
@@ -195,7 +195,7 @@ class CreateDefaultRootObject(ExclusiveArgument):
 
 class UpdateDefaultRootObject(CreateDefaultRootObject):
     def __init__(self, context, argument_table):
-        super(UpdateDefaultRootObject, self).__init__(
+        super().__init__(
             argument_table,
             help_text=(
                 'The object that you want CloudFront to return (for example, '

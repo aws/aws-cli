@@ -10183,7 +10183,7 @@
         "TimedMetadataBehavior": {
           "shape": "Fmp4TimedMetadataBehavior",
           "locationName": "timedMetadataBehavior",
-          "documentation": "When set to passthrough, timed metadata is passed through from input to output."
+          "documentation": "Set to PASSTHROUGH to enable ID3 metadata insertion. To include metadata, you configure other parameters in the output group or individual outputs, or you add an ID3 action to the channel schedule."
         }
       },
       "documentation": "Fmp4 Hls Settings"
@@ -11651,15 +11651,15 @@
         "Tag": {
           "shape": "__string",
           "locationName": "tag",
-          "documentation": "ID3 tag to insert into each segment. Supports special keyword identifiers to substitute in segment-related values.\\nSupported keyword identifiers: https://docs.aws.amazon.com/medialive/latest/ug/variable-data-identifiers.html"
+          "documentation": "Complete this parameter if you want to specify only the metadata, not the entire frame. MediaLive will insert the metadata in a TXXX frame. Enter the value as plain text. You can include standard MediaLive variable data such as the current segment number."
         },
         "Id3": {
           "shape": "__string",
           "locationName": "id3",
-          "documentation": "Base64 string formatted according to the ID3 specification: http://id3.org/id3v2.4.0-structure"
+          "documentation": "Complete this parameter if you want to specify the entire ID3 metadata. Enter a base64 string that contains one or more fully formed ID3 tags, according to the ID3 specification: http://id3.org/id3v2.4.0-structure"
         }
       },
-      "documentation": "Settings for the action to insert a user-defined ID3 tag in each HLS segment"
+      "documentation": "Settings for the action to insert ID3 metadata in every segment, in HLS output groups."
     },
     "HlsId3SegmentTaggingState": {
       "type": "string",
@@ -11928,10 +11928,10 @@
         "Id3": {
           "shape": "__string",
           "locationName": "id3",
-          "documentation": "Base64 string formatted according to the ID3 specification: http://id3.org/id3v2.4.0-structure"
+          "documentation": "Enter a base64 string that contains one or more fully formed ID3 tags.See the ID3 specification: http://id3.org/id3v2.4.0-structure"
         }
       },
-      "documentation": "Settings for the action to emit HLS metadata",
+      "documentation": "Settings for the action to insert ID3 metadata (as a one-time action) in HLS output groups.",
       "required": [
         "Id3"
       ]
@@ -14444,7 +14444,7 @@
         "TimedMetadataBehavior": {
           "shape": "M3u8TimedMetadataBehavior",
           "locationName": "timedMetadataBehavior",
-          "documentation": "When set to passthrough, timed metadata is passed through from input to output."
+          "documentation": "Set to PASSTHROUGH to enable ID3 metadata insertion. To include metadata, you configure other parameters in the output group or individual outputs, or you add an ID3 action to the channel schedule."
         },
         "TimedMetadataPid": {
           "shape": "__string",
@@ -14607,6 +14607,16 @@
           "shape": "__stringMin1",
           "locationName": "channelId",
           "documentation": "ID of the channel in MediaPackage that is the destination for this output group. You do not need to specify the individual inputs in MediaPackage; MediaLive will handle the connection of the two MediaLive pipelines to the two MediaPackage inputs. The MediaPackage channel and MediaLive channel must be in the same region."
+        },
+        "ChannelGroup": {
+          "shape": "__stringMin1",
+          "locationName": "channelGroup",
+          "documentation": "Name of the channel group in MediaPackageV2. Only use if you are sending CMAF Ingest output to a CMAF ingest endpoint on a MediaPackage channel that uses MediaPackage v2."
+        },
+        "ChannelName": {
+          "shape": "__stringMin1",
+          "locationName": "channelName",
+          "documentation": "Name of the channel in MediaPackageV2. Only use if you are sending CMAF Ingest output to a CMAF ingest endpoint on a MediaPackage channel that uses MediaPackage v2."
         }
       },
       "documentation": "MediaPackage Output Destination Settings"
@@ -16679,12 +16689,12 @@
         "HlsId3SegmentTaggingSettings": {
           "shape": "HlsId3SegmentTaggingScheduleActionSettings",
           "locationName": "hlsId3SegmentTaggingSettings",
-          "documentation": "Action to insert HLS ID3 segment tagging"
+          "documentation": "Action to insert ID3 metadata in every segment, in HLS output groups"
         },
         "HlsTimedMetadataSettings": {
           "shape": "HlsTimedMetadataScheduleActionSettings",
           "locationName": "hlsTimedMetadataSettings",
-          "documentation": "Action to insert HLS metadata"
+          "documentation": "Action to insert ID3 metadata once, in HLS output groups"
         },
         "InputPrepareSettings": {
           "shape": "InputPrepareScheduleActionSettings",
@@ -20599,6 +20609,26 @@
           "shape": "__integerMin0Max2000",
           "locationName": "sendDelayMs",
           "documentation": "Number of milliseconds to delay the output from the second pipeline."
+        },
+        "KlvBehavior": {
+          "shape": "CmafKLVBehavior",
+          "locationName": "klvBehavior",
+          "documentation": "If set to passthrough, passes any KLV data from the input source to this output."
+        },
+        "KlvNameModifier": {
+          "shape": "__stringMax100",
+          "locationName": "klvNameModifier",
+          "documentation": "Change the modifier that MediaLive automatically adds to the Streams() name that identifies a KLV track. The default is \"klv\", which means the default name will be Streams(klv.cmfm). Any string you enter here will replace the \"klv\" string.\\nThe modifier can only contain: numbers, letters, plus (+), minus (-), underscore (_) and period (.) and has a maximum length of 100 characters."
+        },
+        "NielsenId3NameModifier": {
+          "shape": "__stringMax100",
+          "locationName": "nielsenId3NameModifier",
+          "documentation": "Change the modifier that MediaLive automatically adds to the Streams() name that identifies a Nielsen ID3 track. The default is \"nid3\", which means the default name will be Streams(nid3.cmfm). Any string you enter here will replace the \"nid3\" string.\\nThe modifier can only contain: numbers, letters, plus (+), minus (-), underscore (_) and period (.) and has a maximum length of 100 characters."
+        },
+        "Scte35NameModifier": {
+          "shape": "__stringMax100",
+          "locationName": "scte35NameModifier",
+          "documentation": "Change the modifier that MediaLive automatically adds to the Streams() name for a SCTE 35 track. The default is \"scte\", which means the default name will be Streams(scte.cmfm). Any string you enter here will replace the \"scte\" string.\\nThe modifier can only contain: numbers, letters, plus (+), minus (-), underscore (_) and period (.) and has a maximum length of 100 characters."
         }
       },
       "documentation": "Cmaf Ingest Group Settings",
@@ -28094,6 +28124,19 @@
         "DISABLED",
         "ENABLED"
       ]
+    },
+    "CmafKLVBehavior": {
+      "type": "string",
+      "documentation": "Cmaf KLVBehavior",
+      "enum": [
+        "NO_PASSTHROUGH",
+        "PASSTHROUGH"
+      ]
+    },
+    "__stringMax100": {
+      "type": "string",
+      "max": 100,
+      "documentation": "Placeholder documentation for __stringMax100"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

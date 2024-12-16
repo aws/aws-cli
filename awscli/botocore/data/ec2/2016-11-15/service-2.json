@@ -1097,7 +1097,7 @@
       },
       "input":{"shape":"CreateSnapshotRequest"},
       "output":{"shape":"Snapshot"},
-      "documentation":"<p>Creates a snapshot of an EBS volume and stores it in Amazon S3. You can use snapshots for backups, to make copies of EBS volumes, and to save data before shutting down an instance.</p> <p>You can create snapshots of volumes in a Region and volumes on an Outpost. If you create a snapshot of a volume in a Region, the snapshot must be stored in the same Region as the volume. If you create a snapshot of a volume on an Outpost, the snapshot can be stored on the same Outpost as the volume, or in the Region for that Outpost.</p> <p>When a snapshot is created, any Amazon Web Services Marketplace product codes that are associated with the source volume are propagated to the snapshot.</p> <p>You can take a snapshot of an attached volume that is in use. However, snapshots only capture data that has been written to your Amazon EBS volume at the time the snapshot command is issued; this might exclude any data that has been cached by any applications or the operating system. If you can pause any file systems on the volume long enough to take a snapshot, your snapshot should be complete. However, if you cannot pause all file writes to the volume, you should unmount the volume from within the instance, issue the snapshot command, and then remount the volume to ensure a consistent and complete snapshot. You may remount and use your volume while the snapshot status is <code>pending</code>.</p> <p>When you create a snapshot for an EBS volume that serves as a root device, we recommend that you stop the instance before taking the snapshot.</p> <p>Snapshots that are taken from encrypted volumes are automatically encrypted. Volumes that are created from encrypted snapshots are also automatically encrypted. Your encrypted volumes and any associated snapshots always remain protected.</p> <p>You can tag your snapshots during creation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html\">Tag your Amazon EC2 resources</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/what-is-ebs.html\">Amazon EBS</a> and <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-encryption.html\">Amazon EBS encryption</a> in the <i>Amazon EBS User Guide</i>.</p>"
+      "documentation":"<p>Creates a snapshot of an EBS volume and stores it in Amazon S3. You can use snapshots for backups, to make copies of EBS volumes, and to save data before shutting down an instance.</p> <p>The location of the source EBS volume determines where you can create the snapshot.</p> <ul> <li> <p>If the source volume is in a Region, you must create the snapshot in the same Region as the volume.</p> </li> <li> <p>If the source volume is in a Local Zone, you can create the snapshot in the same Local Zone or in parent Amazon Web Services Region.</p> </li> <li> <p>If the source volume is on an Outpost, you can create the snapshot on the same Outpost or in its parent Amazon Web Services Region.</p> </li> </ul> <p>When a snapshot is created, any Amazon Web Services Marketplace product codes that are associated with the source volume are propagated to the snapshot.</p> <p>You can take a snapshot of an attached volume that is in use. However, snapshots only capture data that has been written to your Amazon EBS volume at the time the snapshot command is issued; this might exclude any data that has been cached by any applications or the operating system. If you can pause any file systems on the volume long enough to take a snapshot, your snapshot should be complete. However, if you cannot pause all file writes to the volume, you should unmount the volume from within the instance, issue the snapshot command, and then remount the volume to ensure a consistent and complete snapshot. You may remount and use your volume while the snapshot status is <code>pending</code>.</p> <p>When you create a snapshot for an EBS volume that serves as a root device, we recommend that you stop the instance before taking the snapshot.</p> <p>Snapshots that are taken from encrypted volumes are automatically encrypted. Volumes that are created from encrypted snapshots are also automatically encrypted. Your encrypted volumes and any associated snapshots always remain protected. For more information, <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-encryption.html\">Amazon EBS encryption</a> in the <i>Amazon EBS User Guide</i>.</p>"
     },
     "CreateSnapshots":{
       "name":"CreateSnapshots",
@@ -1107,7 +1107,7 @@
       },
       "input":{"shape":"CreateSnapshotsRequest"},
       "output":{"shape":"CreateSnapshotsResult"},
-      "documentation":"<p>Creates crash-consistent snapshots of multiple EBS volumes and stores the data in S3. Volumes are chosen by specifying an instance. Any attached volumes will produce one snapshot each that is crash-consistent across the instance.</p> <p>You can include all of the volumes currently attached to the instance, or you can exclude the root volume or specific data (non-root) volumes from the multi-volume snapshot set.</p> <p>You can create multi-volume snapshots of instances in a Region and instances on an Outpost. If you create snapshots from an instance in a Region, the snapshots must be stored in the same Region as the instance. If you create snapshots from an instance on an Outpost, the snapshots can be stored on the same Outpost as the instance, or in the Region for that Outpost.</p>"
+      "documentation":"<p>Creates crash-consistent snapshots of multiple EBS volumes attached to an Amazon EC2 instance. Volumes are chosen by specifying an instance. Each volume attached to the specified instance will produce one snapshot that is crash-consistent across the instance. You can include all of the volumes currently attached to the instance, or you can exclude the root volume or specific data (non-root) volumes from the multi-volume snapshot set.</p> <p>The location of the source instance determines where you can create the snapshots.</p> <ul> <li> <p>If the source instance is in a Region, you must create the snapshots in the same Region as the instance.</p> </li> <li> <p>If the source instance is in a Local Zone, you can create the snapshots in the same Local Zone or in parent Amazon Web Services Region.</p> </li> <li> <p>If the source instance is on an Outpost, you can create the snapshots on the same Outpost or in its parent Amazon Web Services Region.</p> </li> </ul>"
     },
     "CreateSpotDatafeedSubscription":{
       "name":"CreateSpotDatafeedSubscription",
@@ -15606,7 +15606,7 @@
         },
         "OutpostArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Outpost on which to create a local snapshot.</p> <ul> <li> <p>To create a snapshot of a volume in a Region, omit this parameter. The snapshot is created in the same Region as the volume.</p> </li> <li> <p>To create a snapshot of a volume on an Outpost and store the snapshot in the Region, omit this parameter. The snapshot is created in the Region for the Outpost.</p> </li> <li> <p>To create a snapshot of a volume on an Outpost and store the snapshot on an Outpost, specify the ARN of the destination Outpost. The snapshot must be created on the same Outpost as the volume.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/snapshots-outposts.html#create-snapshot\">Create local snapshots from volumes on an Outpost</a> in the <i>Amazon EBS User Guide</i>.</p>"
+          "documentation":"<note> <p>Only supported for volumes on Outposts. If the source volume is not on an Outpost, omit this parameter.</p> </note> <ul> <li> <p>To create the snapshot on the same Outpost as the source volume, specify the ARN of that Outpost. The snapshot must be created on the same Outpost as the volume.</p> </li> <li> <p>To create the snapshot in the parent Region of the Outpost, omit this parameter.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/snapshots-outposts.html#create-snapshot\">Create local snapshots from volumes on an Outpost</a> in the <i>Amazon EBS User Guide</i>.</p>"
         },
         "VolumeId":{
           "shape":"VolumeId",
@@ -15616,6 +15616,10 @@
           "shape":"TagSpecificationList",
           "documentation":"<p>The tags to apply to the snapshot during creation.</p>",
           "locationName":"TagSpecification"
+        },
+        "Location":{
+          "shape":"SnapshotLocationEnum",
+          "documentation":"<note> <p>Only supported for volumes in Local Zones. If the source volume is not in a Local Zone, omit this parameter.</p> </note> <ul> <li> <p>To create a local snapshot in the same Local Zone as the source volume, specify <code>local</code>.</p> </li> <li> <p>To create a regional snapshot in the parent Region of the Local Zone, specify <code>regional</code> or omit this parameter.</p> </li> </ul> <p>Default value: <code>regional</code> </p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -15638,7 +15642,7 @@
         },
         "OutpostArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Outpost on which to create the local snapshots.</p> <ul> <li> <p>To create snapshots from an instance in a Region, omit this parameter. The snapshots are created in the same Region as the instance.</p> </li> <li> <p>To create snapshots from an instance on an Outpost and store the snapshots in the Region, omit this parameter. The snapshots are created in the Region for the Outpost.</p> </li> <li> <p>To create snapshots from an instance on an Outpost and store the snapshots on an Outpost, specify the ARN of the destination Outpost. The snapshots must be created on the same Outpost as the instance.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/snapshots-outposts.html#create-multivol-snapshot\"> Create multi-volume local snapshots from instances on an Outpost</a> in the <i>Amazon EBS User Guide</i>.</p>"
+          "documentation":"<note> <p>Only supported for instances on Outposts. If the source instance is not on an Outpost, omit this parameter.</p> </note> <ul> <li> <p>To create the snapshots on the same Outpost as the source instance, specify the ARN of that Outpost. The snapshots must be created on the same Outpost as the instance.</p> </li> <li> <p>To create the snapshots in the parent Region of the Outpost, omit this parameter.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/snapshots-outposts.html#create-snapshot\"> Create local snapshots from volumes on an Outpost</a> in the <i>Amazon EBS User Guide</i>.</p>"
         },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
@@ -15652,6 +15656,10 @@
         "CopyTagsFromSource":{
           "shape":"CopyTagsFromSource",
           "documentation":"<p>Copies the tags from the specified volume to corresponding snapshot.</p>"
+        },
+        "Location":{
+          "shape":"SnapshotLocationEnum",
+          "documentation":"<note> <p>Only supported for instances in Local Zones. If the source instance is not in a Local Zone, omit this parameter.</p> </note> <ul> <li> <p>To create local snapshots in the same Local Zone as the source instance, specify <code>local</code>.</p> </li> <li> <p>To create a regional snapshots in the parent Region of the Local Zone, specify <code>regional</code> or omit this parameter.</p> </li> </ul> <p>Default value: <code>regional</code> </p>"
         }
       }
     },
@@ -56961,6 +56969,11 @@
           "documentation":"<p>Reserved for future use.</p>",
           "locationName":"sseType"
         },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone or Local Zone of the snapshot. For example, <code>us-west-1a</code> (Availability Zone) or <code>us-west-2-lax-1a</code> (Local Zone).</p>",
+          "locationName":"availabilityZone"
+        },
         "TransferType":{
           "shape":"TransferType",
           "documentation":"<note> <p>Only for snapshot copies.</p> </note> <p>Indicates whether the snapshot copy was created with a standard or time-based snapshot copy operation. Time-based snapshot copy operations complete within the completion duration specified in the request. Standard snapshot copy operations are completed on a best-effort basis.</p> <ul> <li> <p> <code>standard</code> - The snapshot copy was created with a standard snapshot copy operation.</p> </li> <li> <p> <code>time-based</code> - The snapshot copy was created with a time-based snapshot copy operation.</p> </li> </ul>",
@@ -57215,6 +57228,11 @@
           "shape":"SSEType",
           "documentation":"<p>Reserved for future use.</p>",
           "locationName":"sseType"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone or Local Zone of the snapshots. For example, <code>us-west-1a</code> (Availability Zone) or <code>us-west-2-lax-1a</code> (Local Zone).</p>",
+          "locationName":"availabilityZone"
         }
       },
       "documentation":"<p>Information about a snapshot.</p>"
@@ -57225,6 +57243,13 @@
         "shape":"Snapshot",
         "locationName":"item"
       }
+    },
+    "SnapshotLocationEnum":{
+      "type":"string",
+      "enum":[
+        "regional",
+        "local"
+      ]
     },
     "SnapshotRecycleBinInfo":{
       "type":"structure",

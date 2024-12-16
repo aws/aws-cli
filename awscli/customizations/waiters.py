@@ -69,7 +69,7 @@ class WaitCommand(BasicCommand):
             model=self._model,
             service_model=self._service_model,
         )
-        super(WaitCommand, self).__init__(session)
+        super().__init__(session)
 
     def _run_main(self, parsed_args, parsed_globals):
         if parsed_args.subcommand is None:
@@ -77,7 +77,7 @@ class WaitCommand(BasicCommand):
         return 0
 
     def _build_subcommand_table(self):
-        subcommand_table = super(WaitCommand, self)._build_subcommand_table()
+        subcommand_table = super()._build_subcommand_table()
         self.waiter_cmd_builder.build_all_waiter_state_cmds(subcommand_table)
         self._add_lineage(subcommand_table)
         return subcommand_table
@@ -187,7 +187,7 @@ class WaiterStateDocBuilder:
         # description about what resource is looked at.
         if matcher in ['path', 'pathAny', 'pathAll']:
             resource_description = (
-                'JMESPath query %s returns ' % acceptor.argument
+                f'JMESPath query {acceptor.argument} returns '
             )
             # Prepend the resource description to the template description
             success_description = resource_description + success_description
@@ -197,13 +197,13 @@ class WaiterStateDocBuilder:
 
     def _build_operation_description(self, operation):
         operation_name = xform_name(operation).replace('_', '-')
-        return 'when polling with ``%s``.' % operation_name
+        return f'when polling with ``{operation_name}``.'
 
     def _build_polling_description(self, delay, max_attempts):
         description = (
-            ' It will poll every %s seconds until a successful state '
+            f' It will poll every {delay} seconds until a successful state '
             'has been reached. This will exit with a return code of 255 '
-            'after %s failed checks.' % (delay, max_attempts)
+            f'after {max_attempts} failed checks.'
         )
         return description
 
@@ -229,7 +229,7 @@ class WaiterStateCommand(ServiceOperation):
     DESCRIPTION = ''
 
     def create_help_command(self):
-        help_command = super(WaiterStateCommand, self).create_help_command()
+        help_command = super().create_help_command()
         # Change the operation object's description by changing it to the
         # description for a waiter state command.
         self._operation_model.documentation = self.DESCRIPTION

@@ -77,14 +77,14 @@ def pull_up_bool(argument_table, event_handler, **kwargs):
                     serialized_name=value._serialized_name,
                 )
                 argument_table[value.name] = new_arg
-                negative_name = 'no-%s' % value.name
+                negative_name = f'no-{value.name}'
                 negative_arg = NegativeBooleanParameter(
                     negative_name,
                     arg_model,
                     value._operation_model,
                     value._event_emitter,
                     action='store_true',
-                    dest='no_%s' % new_arg.py_name,
+                    dest=f'no_{new_arg.py_name}',
                     group_name=value.name,
                     serialized_name=value._serialized_name,
                 )
@@ -105,8 +105,8 @@ def validate_boolean_mutex_groups(boolean_pairs, parsed_args, **kwargs):
             and getattr(parsed_args, negative.py_name) is not _NOT_SPECIFIED
         ):
             raise ParamValidationError(
-                'Cannot specify both the "%s" option and '
-                'the "%s" option.' % (positive.cli_name, negative.cli_name)
+                f'Cannot specify both the "{positive.cli_name}" option and '
+                f'the "{negative.cli_name}" option.'
             )
 
 
@@ -120,7 +120,7 @@ class PositiveBooleanArgument(arguments.CLIArgument):
         serialized_name,
         group_name,
     ):
-        super(PositiveBooleanArgument, self).__init__(
+        super().__init__(
             name,
             argument_model,
             operation_model,
@@ -172,7 +172,7 @@ class NegativeBooleanParameter(arguments.BooleanArgument):
         dest=None,
         group_name=None,
     ):
-        super(NegativeBooleanParameter, self).__init__(
+        super().__init__(
             name,
             argument_model,
             operation_model,

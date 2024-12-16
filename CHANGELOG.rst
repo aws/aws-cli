@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.36.23
+=======
+
+* api-change:``cloud9``: Added information about Ubuntu 18.04 will be removed from the available imageIds for Cloud9 because Ubuntu 18.04 has ended standard support on May 31, 2023.
+* api-change:``dlm``: This release adds support for Local Zones in Amazon Data Lifecycle Manager EBS snapshot lifecycle policies.
+* api-change:``ec2``: This release adds support for EBS local snapshots in AWS Dedicated Local Zones, which allows you to store snapshots of EBS volumes locally in Dedicated Local Zones.
+* api-change:``greengrassv2``: Add support for runtime in GetCoreDevice and ListCoreDevices APIs.
+* api-change:``medialive``: AWS Elemental MediaLive adds three new features: MediaPackage v2 endpoint support for live stream delivery, KLV metadata passthrough in CMAF Ingest output groups, and Metadata Name Modifier in CMAF Ingest output groups for customizing metadata track names in output streams.
+* api-change:``rds``: This release adds support for the "MYSQL_CACHING_SHA2_PASSWORD" enum value for RDS Proxy ClientPasswordAuthType.
+
+
 1.36.22
 =======
 

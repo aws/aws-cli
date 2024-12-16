@@ -12,9 +12,9 @@ Contents of ``myfile.json``::
         "LanguageCode": "language-code",
         "Specialty": "PRIMARYCARE",
         "Type": "DICTATION",
-        "OutputBucketName":"DOC-EXAMPLE-BUCKET",
+        "OutputBucketName":"amzn-s3-demo-bucket",
         "Media": {
-            "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.extension"
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
         }
     }
 
@@ -26,7 +26,7 @@ Output::
             "TranscriptionJobStatus": "IN_PROGRESS",
             "LanguageCode": "language-code",
             "Media": {
-                "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.extension"
+                "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
             },
             "StartTime": "2020-09-20T00:35:22.256000+00:00",
             "CreationTime": "2020-09-20T00:35:22.218000+00:00",
@@ -51,9 +51,9 @@ Contents of ``mysecondfile.json``::
         "LanguageCode": "language-code",
         "Specialty": "PRIMARYCARE",
         "Type": "CONVERSATION",
-        "OutputBucketName":"DOC-EXAMPLE-BUCKET",
+        "OutputBucketName":"amzn-s3-demo-bucket",
         "Media": {
-            "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.extension"
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
         }
     }
 
@@ -65,7 +65,7 @@ Output::
             "TranscriptionJobStatus": "IN_PROGRESS",
             "LanguageCode": "language-code",
             "Media": {
-                "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.extension"
+                "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
             },
             "StartTime": "2020-09-20T23:19:49.965000+00:00",
             "CreationTime": "2020-09-20T23:19:49.941000+00:00",
@@ -90,9 +90,9 @@ Contents of ``mythirdfile.json``::
         "LanguageCode": "language-code",
         "Specialty": "PRIMARYCARE",
         "Type": "CONVERSATION",
-        "OutputBucketName":"DOC-EXAMPLE-BUCKET",
+        "OutputBucketName":"amzn-s3-demo-bucket",
             "Media": {
-              "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.extension"
+              "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
             },
             "Settings":{
               "ChannelIdentification": true
@@ -107,7 +107,7 @@ Output::
             "TranscriptionJobStatus": "IN_PROGRESS",
             "LanguageCode": "language-code",
             "Media": {
-                "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.extension"
+                "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
             },
             "StartTime": "2020-09-20T23:46:44.081000+00:00",
             "CreationTime": "2020-09-20T23:46:44.053000+00:00",
@@ -135,9 +135,9 @@ Contents of ``myfourthfile.json``::
         "LanguageCode": "language-code",
         "Specialty": "PRIMARYCARE",
         "Type": "CONVERSATION",
-        "OutputBucketName":"DOC-EXAMPLE-BUCKET",
+        "OutputBucketName":"amzn-s3-demo-bucket",
         "Media": {
-            "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.extension"
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
             },
         "Settings":{
             "ShowSpeakerLabels": true,
@@ -153,7 +153,7 @@ Output::
             "TranscriptionJobStatus": "IN_PROGRESS",
             "LanguageCode": "language-code",
             "Media": {
-                "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.extension"
+                "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
             },
             "StartTime": "2020-09-21T18:43:37.265000+00:00",
             "CreationTime": "2020-09-21T18:43:37.157000+00:00",
@@ -182,9 +182,9 @@ Contents of ``myfifthfile.json``::
         "LanguageCode": "language-code",
         "Specialty": "PRIMARYCARE",
         "Type": "CONVERSATION",
-        "OutputBucketName":"DOC-EXAMPLE-BUCKET",
+        "OutputBucketName":"amzn-s3-demo-bucket",
         "Media": {
-            "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.extension"
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
         },
         "Settings":{
             "ShowAlternatives": true,
@@ -200,7 +200,7 @@ Output::
             "TranscriptionJobStatus": "IN_PROGRESS",
             "LanguageCode": "language-code",
             "Media": {
-                "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.extension"
+                "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
             },
             "StartTime": "2020-09-21T19:09:18.199000+00:00",
             "CreationTime": "2020-09-21T19:09:18.171000+00:00",
@@ -229,9 +229,9 @@ Contents of ``mysixthfile.json``::
         "LanguageCode": "language-code",
         "Specialty": "PRIMARYCARE",
         "Type": "DICTATION",
-        "OutputBucketName":"DOC-EXAMPLE-BUCKET",
+        "OutputBucketName":"amzn-s3-demo-bucket",
         "Media": {
-            "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.extension"
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
         },
         "Settings":{
               "ShowAlternatives": true,
@@ -247,7 +247,7 @@ Output::
             "TranscriptionJobStatus": "IN_PROGRESS",
             "LanguageCode": "language-code",
             "Media": {
-                "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.extension"
+                "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
             },
             "StartTime": "2020-09-21T21:01:14.592000+00:00",
             "CreationTime": "2020-09-21T21:01:14.569000+00:00",
@@ -276,9 +276,9 @@ Contents of ``mysixthfile.json``::
         "LanguageCode": "language-code",
         "Specialty": "PRIMARYCARE",
         "Type": "DICTATION",
-        "OutputBucketName":"DOC-EXAMPLE-BUCKET",
+        "OutputBucketName":"amzn-s3-demo-bucket",
         "Media": {
-            "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.extension"
+            "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
         },
         "Settings":{
             "VocabularyName": "cli-medical-vocab-1"
@@ -293,7 +293,7 @@ Output::
             "TranscriptionJobStatus": "IN_PROGRESS",
             "LanguageCode": "language-code",
             "Media": {
-                "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.extension"
+                "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.extension"
             },
             "StartTime": "2020-09-21T21:17:27.045000+00:00",
             "CreationTime": "2020-09-21T21:17:27.016000+00:00",

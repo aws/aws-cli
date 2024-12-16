@@ -8,7 +8,7 @@ When the flywheel is created, a data lake is created at the ``--input-data-lake`
         --flywheel-name example-flywheel \
         --active-model-arn arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-model/version/1 \
         --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role \
-        --data-lake-s3-uri "s3://DOC-EXAMPLE-BUCKET"
+        --data-lake-s3-uri "s3://amzn-s3-demo-bucket"
 
 Output::
 

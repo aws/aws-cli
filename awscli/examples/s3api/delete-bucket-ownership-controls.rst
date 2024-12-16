@@ -3,7 +3,7 @@
 The following ``delete-bucket-ownership-controls`` example removes the bucket ownership settings of a bucket. ::
 
     aws s3api delete-bucket-ownership-controls \
-        --bucket DOC-EXAMPLE-BUCKET
+        --bucket amzn-s3-demo-bucket
 
 This command produces no output.
 

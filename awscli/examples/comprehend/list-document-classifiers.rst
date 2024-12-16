@@ -18,7 +18,7 @@ Output::
                 "TrainingEndTime": "2023-06-13T19:41:35.080000+00:00",
                 "InputDataConfig": {
                     "DataFormat": "COMPREHEND_CSV",
-                    "S3Uri": "s3://DOC-EXAMPLE-BUCKET/trainingdata"
+                    "S3Uri": "s3://amzn-s3-demo-bucket/trainingdata"
                 },
                 "OutputDataConfig": {},
                 "ClassifierMetadata": {
@@ -46,7 +46,7 @@ Output::
                 "SubmitTime": "2023-06-13T21:20:28.690000+00:00",
                 "InputDataConfig": {
                     "DataFormat": "COMPREHEND_CSV",
-                    "S3Uri": "s3://DOC-EXAMPLE-BUCKET/trainingdata"
+                    "S3Uri": "s3://amzn-s3-demo-bucket/trainingdata"
                 },
                 "OutputDataConfig": {},
                 "DataAccessRoleArn": "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-testorle",

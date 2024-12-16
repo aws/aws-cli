@@ -7,8 +7,8 @@ which lists the classification of each document. The Json output is printed on o
 
     aws comprehend start-document-classification-job \
         --job-name exampleclassificationjob \
-        --input-data-config "S3Uri=s3://DOC-EXAMPLE-BUCKET-INPUT/jobdata/" \
-        --output-data-config "S3Uri=s3://DOC-EXAMPLE-DESTINATION-BUCKET/testfolder/" \
+        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket-INPUT/jobdata/" \
+        --output-data-config "S3Uri=s3://amzn-s3-demo-destination-bucket/testfolder/" \
         --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role \
         --document-classifier-arn arn:aws:comprehend:us-west-2:111122223333:document-classifier/mymodel/version/12
 

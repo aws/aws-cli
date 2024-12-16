@@ -8,8 +8,8 @@ which contains the dominant language of each of the text files as well as the pr
     aws comprehend start-dominant-language-detection-job \
         --job-name example_language_analysis_job \
         --language-code en \
-        --input-data-config "S3Uri=s3://DOC-EXAMPLE-BUCKET/" \
-        --output-data-config "S3Uri=s3://DOC-EXAMPLE-DESTINATION-BUCKET/testfolder/" \
+        --input-data-config "S3Uri=s3://amzn-s3-demo-bucket/" \
+        --output-data-config "S3Uri=s3://amzn-s3-demo-destination-bucket/testfolder/" \
         --data-access-role-arn arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role \
         --language-code en
 

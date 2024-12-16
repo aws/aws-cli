@@ -108,11 +108,11 @@ def add_paging_description(help_command, **kwargs):
         return
     help_command.doc.style.new_paragraph()
     help_command.doc.writeln(
-        
+
             f'``{help_command.name}`` is a paginated operation. Multiple API calls may be issued '
             'in order to retrieve the entire data set of results. You can '
             'disable pagination by providing the ``--no-paginate`` argument.'
-        
+
     )
     # Only include result key information if it is present.
     if paginator_config.get('result_key'):
@@ -121,11 +121,11 @@ def add_paging_description(help_command, **kwargs):
             queries = [queries]
         queries = ", ".join([(f'``{s}``') for s in queries])
         help_command.doc.writeln(
-            
+
                 'When using ``--output text`` and the ``--query`` argument on a '
                 'paginated response, the ``--query`` argument must extract data '
                 f'from the results of the following query expressions: {queries}'
-            
+
         )
 
 

@@ -1,8 +1,6 @@
 import logging
-import copy
 import os
 
-from botocore import model
 from botocore.compat import OrderedDict
 from botocore.validate import validate_parameters
 
@@ -14,7 +12,6 @@ from awscli.clidocs import OperationDocumentEventHandler
 from awscli.commands import CLICommand
 from awscli.bcdoc import docevents
 from awscli.help import HelpCommand
-from awscli.schema import SchemaTransformer
 from awscli.utils import add_command_lineage_to_user_agent_extra
 from awscli.customizations.exceptions import ParamValidationError
 
@@ -22,7 +19,7 @@ LOG = logging.getLogger(__name__)
 _open = open
 
 
-class _FromFile(object):
+class _FromFile:
     def __init__(self, *paths, **kwargs):
         """
         ``**kwargs`` can contain a ``root_module`` argument

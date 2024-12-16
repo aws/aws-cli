@@ -13,6 +13,7 @@ if you want to see the generated completion data without modifying existing
 files.
 
 """
+
 import argparse
 import json
 import sys
@@ -37,8 +38,10 @@ def generate_completion_data(args):
         model = session.get_service_model(service_name)
         completion_data = gen.generate_completion_descriptions(model)
         out_filename = os.path.join(
-            BOTOCORE_DATA_PATH, service_name,
-            model.api_version, 'completions-1.json'
+            BOTOCORE_DATA_PATH,
+            service_name,
+            model.api_version,
+            'completions-1.json',
         )
         to_json = _pretty_json_dump(completion_data)
         if args.only_print:

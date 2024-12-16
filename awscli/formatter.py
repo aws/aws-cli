@@ -78,7 +78,8 @@ class FullyBufferedFormatter(Formatter):
         else:
             response_data = response
         response_data = self._get_transformed_response_for_output(
-            response_data)
+            response_data
+        )
         try:
             self._format_response(command_name, response_data, stream)
         except IOError as e:
@@ -92,15 +93,19 @@ class FullyBufferedFormatter(Formatter):
 
 
 class JSONFormatter(FullyBufferedFormatter):
-
     def _format_response(self, command_name, response, stream):
         # For operations that have no response body (e.g. s3 put-object)
         # the response will be an empty string.  We don't want to print
         # that out to the user but other "falsey" values like an empty
         # dictionary should be printed.
         if response != {}:
-            json.dump(response, stream, indent=4, default=json_encoder,
-                    ensure_ascii=False)
+            json.dump(
+                response,
+                stream,
+                indent=4,
+                default=json_encoder,
+                ensure_ascii=False,
+            )
             stream.write('\n')
 
 
@@ -178,7 +183,8 @@ class StreamedYAMLFormatter(Formatter):
     def _get_response_stream(self, response):
         if is_response_paginated(response):
             return compat.imap(
-                self._get_transformed_response_for_output, response)
+                self._get_transformed_response_for_output, response
+            )
         else:
             output = self._get_transformed_response_for_output(response)
             if output == {}:
@@ -196,19 +202,23 @@ class TableFormatter(FullyBufferedFormatter):
     using the output definition from the model.
 
     """
+
     def __init__(self, args, table=None):
         super(TableFormatter, self).__init__(args)
         if args.color == 'auto':
-            self.table = MultiTable(initial_section=False,
-                                    column_separator='|')
+            self.table = MultiTable(
+                initial_section=False, column_separator='|'
+            )
         elif args.color == 'off':
             styler = Styler()
-            self.table = MultiTable(initial_section=False,
-                                    column_separator='|', styler=styler)
+            self.table = MultiTable(
+                initial_section=False, column_separator='|', styler=styler
+            )
         elif args.color == 'on':
             styler = ColorizedStyler()
-            self.table = MultiTable(initial_section=False,
-                                    column_separator='|', styler=styler)
+            self.table = MultiTable(
+                initial_section=False, column_separator='|', styler=styler
+            )
         else:
             raise ValueError("Unknown color option: %s" % args.color)
 
@@ -257,8 +267,9 @@ class TableFormatter(FullyBufferedFormatter):
             self.table.add_row_header(headers)
             self.table.add_row([current[k] for k in headers])
         for remaining in more:
-            self._build_table(remaining, current[remaining],
-                              indent_level=indent_level + 1)
+            self._build_table(
+                remaining, current[remaining], indent_level=indent_level + 1
+            )
 
     def _build_sub_table_from_list(self, current, indent_level, title):
         headers, more = self._group_scalar_keys_from_list(current)
@@ -266,8 +277,7 @@ class TableFormatter(FullyBufferedFormatter):
         first = True
         for element in current:
             if not first and more:
-                self.table.new_section(title,
-                                       indent_level=indent_level)
+                self.table.new_section(title, indent_level=indent_level)
                 self.table.add_row_header(headers)
             first = False
             # Use .get() to account for the fact that sometimes an element
@@ -278,8 +288,11 @@ class TableFormatter(FullyBufferedFormatter):
                 # be in every single element of the list, so we need to
                 # check this condition before recursing.
                 if remaining in element:
-                    self._build_table(remaining, element[remaining],
-                                    indent_level=indent_level + 1)
+                    self._build_table(
+                        remaining,
+                        element[remaining],
+                        indent_level=indent_level + 1,
+                    )
 
     def _scalar_type(self, element):
         return not isinstance(element, (list, dict))
@@ -315,7 +328,6 @@ class TableFormatter(FullyBufferedFormatter):
 
 
 class TextFormatter(Formatter):
-
     def __call__(self, command_name, response, stream=None):
         if stream is None:
             stream = self._get_default_stream()
@@ -331,9 +343,7 @@ class TextFormatter(Formatter):
                     for result_key in result_keys:
                         data = result_key.search(page)
                         set_value_from_jmespath(
-                            current,
-                            result_key.expression,
-                            data
+                            current, result_key.expression, data
                         )
                     self._format_response(current, stream)
                 if response.resume_token:
@@ -341,7 +351,8 @@ class TextFormatter(Formatter):
                     # if they want.
                     self._format_response(
                         {'NextToken': {'NextToken': response.resume_token}},
-                        stream)
+                        stream,
+                    )
             else:
                 self._remove_request_id(response)
                 self._format_response(response, stream)

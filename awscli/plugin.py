@@ -80,6 +80,9 @@ def _import_plugins(plugin_mapping):
 
 def _add_plugin_path_to_sys_path(plugin_path):
     for dirname in plugin_path.split(os.pathsep):
-        log.debug("Adding additional path from cli_legacy_plugin_path "
-                  "configuration: %s", dirname)
+        log.debug(
+            "Adding additional path from cli_legacy_plugin_path "
+            "configuration: %s",
+            dirname,
+        )
         sys.path.append(dirname)

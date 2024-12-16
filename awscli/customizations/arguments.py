@@ -151,7 +151,7 @@ class QueryOutFileArgument(StatefulArgument):
                 os.chmod(self.value, self.perm)
 
 
-class NestedBlobArgumentHoister(object):
+class NestedBlobArgumentHoister:
     """Can be registered to update a single argument / model value combination
     mapping that to a new top-level argument.
     Currently limited to blob argument types as these are the only ones

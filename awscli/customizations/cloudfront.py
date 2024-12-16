@@ -302,7 +302,7 @@ class SignCommand(BasicCommand):
         return 0
 
 
-class RSASigner(object):
+class RSASigner:
     def __init__(self, private_key):
         backend = default_backend()
         key_bytes = private_key.encode('utf8')

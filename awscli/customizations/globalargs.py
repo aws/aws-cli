@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
-import os
 
 from botocore.client import Config
 from botocore.endpoint import DEFAULT_TIMEOUT

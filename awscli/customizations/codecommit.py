@@ -11,11 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import os
 import re
 import sys
 import logging
-import fileinput
 import datetime
 
 from botocore.auth import SigV4Auth
@@ -119,9 +117,9 @@ class CodeCommitGetCommand(BasicCommand):
         # Python will add a \r to the line ending for a text stdout in Windows.
         # Git does not like the \r, so switch to binary
         with NonTranslatedStdout() as binary_stdout:
-            binary_stdout.write('username={0}\n'.format(username))
+            binary_stdout.write(f'username={username}\n')
             logger.debug('username\n%s', username)
-            binary_stdout.write('password={0}\n'.format(signature))
+            binary_stdout.write(f'password={signature}\n')
             # need to explicitly flush the buffer here,
             # before we turn the stream back to text for windows
             binary_stdout.flush()
@@ -165,9 +163,7 @@ class CodeCommitGetCommand(BasicCommand):
         split = urlsplit(request.url)
         # we don't want to include the port number in the signature
         hostname = split.netloc.split(':')[0]
-        canonical_request = '{0}\n{1}\n\nhost:{2}\n\nhost\n'.format(
-            request.method, split.path, hostname
-        )
+        canonical_request = f'{request.method}\n{split.path}\n\nhost:{hostname}\n\nhost\n'
         logger.debug("Calculating signature using v4 auth.")
         logger.debug('CanonicalRequest:\n%s', canonical_request)
         string_to_sign = signer.string_to_sign(request, canonical_request)

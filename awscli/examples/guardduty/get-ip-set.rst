@@ -10,7 +10,7 @@ Output::
 
     {
         "Status": "ACTIVE",
-        "Location": "s3://AWSDOC-EXAMPLE-BUCKET.s3-us-west-2.amazonaws.com/customlist.csv",
+        "Location": "s3://amzn-s3-demo-bucket.s3-us-west-2.amazonaws.com/customlist.csv",
         "Tags": {},
         "Format": "TXT",
         "Name": "test-ip-set"

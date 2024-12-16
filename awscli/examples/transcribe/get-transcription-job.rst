@@ -15,7 +15,7 @@ Output::
             "MediaSampleRateHertz": 48000,
             "MediaFormat": "mp4",
             "Media": {
-                "MediaFileUri": "s3://DOC-EXAMPLE-BUCKET/your-audio-file.file-extension"
+                "MediaFileUri": "s3://amzn-s3-demo-bucket/your-audio-file.file-extension"
             },
             "Transcript": {
                 "TranscriptFileUri": "https://Amazon-S3-file-location-of-transcription-output"

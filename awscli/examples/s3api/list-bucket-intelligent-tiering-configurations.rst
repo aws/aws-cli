@@ -3,7 +3,7 @@
 The following ``list-bucket-intelligent-tiering-configurations`` example retrieves all S3 Intelligent-Tiering configuration on a bucket. ::
 
     aws s3api list-bucket-intelligent-tiering-configurations \
-        --bucket DOC-EXAMPLE-BUCKET
+        --bucket amzn-s3-demo-bucket
 
 Output::
 

@@ -196,7 +196,7 @@ def benchmark_command(
 
     try:
         for i in range(num_iterations):
-            out_file = 'performance%s.csv' % i
+            out_file = f'performance{i}.csv'
             out_file = os.path.join(performance_dir, out_file)
             benchmark_args = [
                 benchmark_script,

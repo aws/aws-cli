@@ -23,6 +23,7 @@ For any operation that can be paginated, we will:
     * Add a ``--starting-token`` and a ``--max-items`` argument.
 
 """
+
 import logging
 import sys
 from functools import partial
@@ -87,7 +88,8 @@ def get_paginator_config(session, service_name, operation_name):
         return None
     try:
         operation_paginator_config = paginator_model.get_paginator(
-            operation_name)
+            operation_name
+        )
     except ValueError:
         return None
     return operation_paginator_config
@@ -100,15 +102,19 @@ def add_paging_description(help_command, **kwargs):
         return
     service_name = help_command.obj.service_model.service_name
     paginator_config = get_paginator_config(
-        help_command.session, service_name, help_command.obj.name)
+        help_command.session, service_name, help_command.obj.name
+    )
     if not paginator_config:
         return
     help_command.doc.style.new_paragraph()
     help_command.doc.writeln(
-        ('``%s`` is a paginated operation. Multiple API calls may be issued '
-         'in order to retrieve the entire data set of results. You can '
-         'disable pagination by providing the ``--no-paginate`` argument.')
-        % help_command.name)
+        (
+            '``%s`` is a paginated operation. Multiple API calls may be issued '
+            'in order to retrieve the entire data set of results. You can '
+            'disable pagination by providing the ``--no-paginate`` argument.'
+        )
+        % help_command.name
+    )
     # Only include result key information if it is present.
     if paginator_config.get('result_key'):
         queries = paginator_config['result_key']
@@ -116,33 +122,48 @@ def add_paging_description(help_command, **kwargs):
             queries = [queries]
         queries = ", ".join([('``%s``' % s) for s in queries])
         help_command.doc.writeln(
-            ('When using ``--output text`` and the ``--query`` argument on a '
-             'paginated response, the ``--query`` argument must extract data '
-             'from the results of the following query expressions: %s')
-            % queries)
+            (
+                'When using ``--output text`` and the ``--query`` argument on a '
+                'paginated response, the ``--query`` argument must extract data '
+                'from the results of the following query expressions: %s'
+            )
+            % queries
+        )
 
 
-def unify_paging_params(argument_table, operation_model, event_name,
-                        session, **kwargs):
+def unify_paging_params(
+    argument_table, operation_model, event_name, session, **kwargs
+):
     paginator_config = get_paginator_config(
-        session, operation_model.service_model.service_name,
-        operation_model.name)
+        session,
+        operation_model.service_model.service_name,
+        operation_model.name,
+    )
     if paginator_config is None:
         # We only apply these customizations to paginated responses.
         return
-    logger.debug("Modifying paging parameters for operation: %s",
-                 operation_model.name)
+    logger.debug(
+        "Modifying paging parameters for operation: %s", operation_model.name
+    )
     _remove_existing_paging_arguments(argument_table, paginator_config)
-    parsed_args_event = event_name.replace('building-argument-table.',
-                                           'operation-args-parsed.')
-    call_parameters_event = event_name.replace('building-argument-table',
-                                               'calling-command')
+    parsed_args_event = event_name.replace(
+        'building-argument-table.', 'operation-args-parsed.'
+    )
+    call_parameters_event = event_name.replace(
+        'building-argument-table', 'calling-command'
+    )
     shadowed_args = {}
-    add_paging_argument(argument_table, 'starting-token',
-                        PageArgument('starting-token', STARTING_TOKEN_HELP,
-                                     parse_type='string',
-                                     serialized_name='StartingToken'),
-                        shadowed_args)
+    add_paging_argument(
+        argument_table,
+        'starting-token',
+        PageArgument(
+            'starting-token',
+            STARTING_TOKEN_HELP,
+            parse_type='string',
+            serialized_name='StartingToken',
+        ),
+        shadowed_args,
+    )
     input_members = operation_model.input_shape.members
     type_name = 'integer'
     if 'limit_key' in paginator_config:
@@ -150,21 +171,38 @@ def unify_paging_params(argument_table, operation_model, event_name,
         type_name = limit_key_shape.type_name
         if type_name not in PageArgument.type_map:
             raise TypeError(
-                ('Unsupported pagination type {0} for operation {1}'
-                 ' and parameter {2}').format(
-                    type_name, operation_model.name,
-                    paginator_config['limit_key']))
-        add_paging_argument(argument_table, 'page-size',
-                            PageArgument('page-size', PAGE_SIZE_HELP,
-                                         parse_type=type_name,
-                                         serialized_name='PageSize'),
-                            shadowed_args)
+                (
+                    'Unsupported pagination type {0} for operation {1}'
+                    ' and parameter {2}'
+                ).format(
+                    type_name,
+                    operation_model.name,
+                    paginator_config['limit_key'],
+                )
+            )
+        add_paging_argument(
+            argument_table,
+            'page-size',
+            PageArgument(
+                'page-size',
+                PAGE_SIZE_HELP,
+                parse_type=type_name,
+                serialized_name='PageSize',
+            ),
+            shadowed_args,
+        )
 
-    add_paging_argument(argument_table, 'max-items',
-                        PageArgument('max-items', MAX_ITEMS_HELP,
-                                     parse_type=type_name,
-                                     serialized_name='MaxItems'),
-                        shadowed_args)
+    add_paging_argument(
+        argument_table,
+        'max-items',
+        PageArgument(
+            'max-items',
+            MAX_ITEMS_HELP,
+            parse_type=type_name,
+            serialized_name='MaxItems',
+        ),
+        shadowed_args,
+    )
     # We will register two pagination handlers.
     #
     # The first is focused on analyzing the CLI arguments passed to see
@@ -179,13 +217,20 @@ def unify_paging_params(argument_table, operation_model, event_name,
     # directly and this bypasses all of the CLI args processing.
     session.register(
         parsed_args_event,
-        partial(check_should_enable_pagination,
-                list(_get_all_cli_input_tokens(paginator_config)),
-                shadowed_args, argument_table))
+        partial(
+            check_should_enable_pagination,
+            list(_get_all_cli_input_tokens(paginator_config)),
+            shadowed_args,
+            argument_table,
+        ),
+    )
     session.register(
         call_parameters_event,
-        partial(check_should_enable_pagination_call_parameters,
-                list(_get_all_input_tokens(paginator_config))))
+        partial(
+            check_should_enable_pagination_call_parameters,
+            list(_get_all_input_tokens(paginator_config)),
+        ),
+    )
 
 
 def add_paging_argument(argument_table, arg_name, argument, shadowed_args):
@@ -199,17 +244,27 @@ def add_paging_argument(argument_table, arg_name, argument, shadowed_args):
     argument_table[arg_name] = argument
 
 
-def check_should_enable_pagination(input_tokens, shadowed_args, argument_table,
-                                   parsed_args, parsed_globals, **kwargs):
+def check_should_enable_pagination(
+    input_tokens,
+    shadowed_args,
+    argument_table,
+    parsed_args,
+    parsed_globals,
+    **kwargs,
+):
     normalized_paging_args = ['start_token', 'max_items']
     for token in input_tokens:
         py_name = token.replace('-', '_')
-        if getattr(parsed_args, py_name) is not None and \
-                py_name not in normalized_paging_args:
+        if (
+            getattr(parsed_args, py_name) is not None
+            and py_name not in normalized_paging_args
+        ):
             # The user has specified a manual (undocumented) pagination arg.
             # We need to automatically turn pagination off.
-            logger.debug("User has specified a manual pagination arg. "
-                         "Automatically setting --no-paginate.")
+            logger.debug(
+                "User has specified a manual pagination arg. "
+                "Automatically setting --no-paginate."
+            )
             parsed_globals.paginate = False
 
     if not parsed_globals.paginate:
@@ -229,12 +284,16 @@ def check_should_enable_pagination(input_tokens, shadowed_args, argument_table,
 def ensure_paging_params_not_set(parsed_args, shadowed_args):
     paging_params = ['starting_token', 'page_size', 'max_items']
     shadowed_params = [p.replace('-', '_') for p in shadowed_args.keys()]
-    params_used = [p for p in paging_params if
-                   p not in shadowed_params and getattr(parsed_args, p, None)]
+    params_used = [
+        p
+        for p in paging_params
+        if p not in shadowed_params and getattr(parsed_args, p, None)
+    ]
 
     if len(params_used) > 0:
         converted_params = ', '.join(
-            ["--" + p.replace('_', '-') for p in params_used])
+            ["--" + p.replace('_', '-') for p in params_used]
+        )
         raise ParamValidationError(
             "Cannot specify --no-paginate along with pagination "
             "arguments: %s" % converted_params
@@ -291,11 +350,14 @@ def _get_cli_name(param_objects, token_name):
 # and would be missed by the processing above.  This function gets
 # called on the calling-command event.
 def check_should_enable_pagination_call_parameters(
-        input_tokens, call_parameters, parsed_args, parsed_globals, **kwargs):
+    input_tokens, call_parameters, parsed_args, parsed_globals, **kwargs
+):
     for param in call_parameters:
         if param in input_tokens:
-            logger.debug("User has specified a manual pagination arg. "
-                         "Automatically setting --no-paginate.")
+            logger.debug(
+                "User has specified a manual pagination arg. "
+                "Automatically setting --no-paginate."
+            )
             parsed_globals.paginate = False
 
 
@@ -317,7 +379,8 @@ class PageArgument(BaseCLIArgument):
     def _emit_non_positive_max_items_warning(self):
         uni_print(
             "warning: Non-positive values for --max-items may result in undefined behavior.\n",
-            sys.stderr)
+            sys.stderr,
+        )
 
     @property
     def cli_name(self):
@@ -340,8 +403,11 @@ class PageArgument(BaseCLIArgument):
         return self._documentation
 
     def add_to_parser(self, parser):
-        parser.add_argument(self.cli_name, dest=self.py_name,
-                            type=self.type_map[self._parse_type])
+        parser.add_argument(
+            self.cli_name,
+            dest=self.py_name,
+            type=self.type_map[self._parse_type],
+        )
 
     def add_to_params(self, parameters, value):
         if value is not None:

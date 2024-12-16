@@ -94,7 +94,7 @@ class LockFileBuilder:
 
     def _overwrite_paths(self, output_path: Path):
         rel_output_path = os.path.relpath(output_path, self.build_directory)
-        with open(output_path, "r") as f:
+        with open(output_path) as f:
             content = f.read()
         # Overwrite absolute path in --output-file argument.
         content = content.replace(str(output_path), str(rel_output_path))
@@ -120,7 +120,7 @@ def show_files(build_directory: Path, include_sdist: bool, include_base: bool):
 
 def show_file(path: Path):
     print(path)
-    with open(path, 'r') as f:
+    with open(path) as f:
         print(f.read())
 
 

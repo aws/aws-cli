@@ -1,0 +1,19 @@
+Parameters:
+  Role:
+    Type: String
+  BucketName:
+    Default: foo
+Resources:
+  Policy:
+    Type: AWS::IAM::RolePolicy
+    Properties:
+      PolicyDocument: 
+        Statement:
+          - Effect: ALLOW
+            Action: s3:List*
+            Resource: 
+              - !Sub arn:aws:s3:::${BucketName}
+              - !Sub arn:aws:s3:::${BucketName}/*
+      PolicyName: my-policy
+      RoleName: !Ref Role
+

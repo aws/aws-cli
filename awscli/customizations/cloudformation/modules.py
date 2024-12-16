@@ -50,10 +50,9 @@ LOCAL_MODULE = "LocalModule"
 OUTPUTS = "Outputs"
 
 
-def process_module_section(template, base_path):
+def process_module_section(template, base_path, parent_path):
     "Recursively process the Modules section of a template"
     if MODULES in template:
-
         if not isdict(template[MODULES]):
             msg = "Modules section is invalid"
             raise exceptions.InvalidModuleError(msg=msg)
@@ -65,6 +64,9 @@ def process_module_section(template, base_path):
             relative_path = module_config[SOURCE]
             module_config[SOURCE] = os.path.join(base_path, relative_path)
             module_config[SOURCE] = os.path.normpath(module_config[SOURCE])
+            if module_config[SOURCE] == parent_path:
+                msg = f"Module refers to itself: {parent_path}"
+                raise exceptions.InvalidModuleError(msg=msg)
             module = Module(template, module_config)
             template = module.process()
 
@@ -74,7 +76,7 @@ def process_module_section(template, base_path):
     return template
 
 
-def process_resources_section(template, base_path):
+def process_resources_section(template, base_path, parent_path):
     "Recursively process the Resources section of the template"
     for k, v in template[RESOURCES].copy().items():
         if TYPE in v and v[TYPE] == LOCAL_MODULE:
@@ -86,6 +88,9 @@ def process_resources_section(template, base_path):
             relative_path = v[SOURCE]
             module_config[SOURCE] = os.path.join(base_path, relative_path)
             module_config[SOURCE] = os.path.normpath(module_config[SOURCE])
+            if module_config[SOURCE] == parent_path:
+                msg = f"Module refers to itself: {parent_path}"
+                raise exceptions.InvalidModuleError(msg=msg)
             if PROPERTIES in v:
                 module_config[PROPERTIES] = v[PROPERTIES]
             if OVERRIDES in v:
@@ -158,7 +163,13 @@ def merge_props(original, overrides):
                 retval[k] = overrides[k]
         return retval
 
-    return original + overrides
+    # original and overrides are lists
+    new_list = []
+    for item in original:
+        new_list.append(item)
+    for item in overrides:
+        new_list.append(item)
+    return new_list
 
 
 class Module:
@@ -274,9 +285,9 @@ class Module:
         section = ""
         try:
             section = MODULES
-            process_module_section(module_dict, base_path)
+            process_module_section(module_dict, base_path, self.source)
             section = RESOURCES
-            process_resources_section(module_dict, base_path)
+            process_resources_section(module_dict, base_path, self.source)
         except Exception as e:
             msg = f"Failed to process {section} section: {e}"
             LOG.exception(msg)

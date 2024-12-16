@@ -595,6 +595,7 @@ class Template(object):
                              "an absolute path to a folder {0}"
                              .format(parent_dir))
         abs_template_path = make_abs_path(parent_dir, template_path)
+        self.module_parent_path = abs_template_path
         template_dir = os.path.dirname(abs_template_path)
 
         with open(abs_template_path, "r") as handle:
@@ -658,7 +659,8 @@ class Template(object):
         try:
             self.template_dict = modules.process_module_section(
                     self.template_dict, 
-                    self.template_dir)
+                    self.template_dir,
+                    self.module_parent_path)
         except Exception as e:
             msg=f"Failed to process Modules section: {e}"
             LOG.exception(msg)
@@ -673,7 +675,8 @@ class Template(object):
         try:
             self.template_dict = modules.process_resources_section(
                     self.template_dict, 
-                    self.template_dir)
+                    self.template_dir, 
+                    self.module_parent_path)
         except Exception as e:
             msg=f"Failed to process modules in Resources: {e}"
             LOG.exception(msg)

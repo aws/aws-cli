@@ -16,6 +16,7 @@ You can instead say `--ebs-optimized/--no-ebs-optimized`.
 
 
 """
+
 import logging
 from functools import partial
 
@@ -34,17 +35,20 @@ _NOT_SPECIFIED = object()
 
 
 def register_bool_params(event_handler):
-    event_handler.register('building-argument-table.ec2.*',
-                           partial(pull_up_bool,
-                                   event_handler=event_handler))
+    event_handler.register(
+        'building-argument-table.ec2.*',
+        partial(pull_up_bool, event_handler=event_handler),
+    )
 
 
 def _qualifies_for_simplification(arg_model):
     if detect_shape_structure(arg_model) == 'structure(scalar)':
         members = arg_model.members
-        if (len(members) == 1 and
-            list(members.keys())[0] == 'Value' and
-            list(members.values())[0].type_name == 'boolean'):
+        if (
+            len(members) == 1
+            and list(members.keys())[0] == 'Value'
+            and list(members.values())[0].type_name == 'boolean'
+        ):
             return True
     return False
 
@@ -56,8 +60,8 @@ def pull_up_bool(argument_table, event_handler, **kwargs):
     boolean_pairs = []
     event_handler.register(
         'operation-args-parsed.ec2.*',
-        partial(validate_boolean_mutex_groups,
-                boolean_pairs=boolean_pairs))
+        partial(validate_boolean_mutex_groups, boolean_pairs=boolean_pairs),
+    )
     for value in list(argument_table.values()):
         if hasattr(value, 'argument_model'):
             arg_model = value.argument_model
@@ -66,18 +70,25 @@ def pull_up_bool(argument_table, event_handler, **kwargs):
                 # one that supports --option and --option <some value>
                 # and another arg of --no-option.
                 new_arg = PositiveBooleanArgument(
-                    value.name, arg_model, value._operation_model,
+                    value.name,
+                    arg_model,
+                    value._operation_model,
                     value._event_emitter,
                     group_name=value.name,
-                    serialized_name=value._serialized_name)
+                    serialized_name=value._serialized_name,
+                )
                 argument_table[value.name] = new_arg
                 negative_name = 'no-%s' % value.name
                 negative_arg = NegativeBooleanParameter(
-                    negative_name, arg_model, value._operation_model,
+                    negative_name,
+                    arg_model,
+                    value._operation_model,
                     value._event_emitter,
-                    action='store_true', dest='no_%s' % new_arg.py_name,
+                    action='store_true',
+                    dest='no_%s' % new_arg.py_name,
                     group_name=value.name,
-                    serialized_name=value._serialized_name)
+                    serialized_name=value._serialized_name,
+                )
                 argument_table[negative_name] = negative_arg
                 # If we've pulled up a structure(scalar) arg
                 # into a pair of top level boolean args, we need
@@ -90,19 +101,33 @@ def pull_up_bool(argument_table, event_handler, **kwargs):
 def validate_boolean_mutex_groups(boolean_pairs, parsed_args, **kwargs):
     # Validate we didn't pass in an --option and a --no-option.
     for positive, negative in boolean_pairs:
-        if getattr(parsed_args, positive.py_name) is not _NOT_SPECIFIED and \
-                getattr(parsed_args, negative.py_name) is not _NOT_SPECIFIED:
+        if (
+            getattr(parsed_args, positive.py_name) is not _NOT_SPECIFIED
+            and getattr(parsed_args, negative.py_name) is not _NOT_SPECIFIED
+        ):
             raise ParamValidationError(
                 'Cannot specify both the "%s" option and '
-                'the "%s" option.' % (positive.cli_name, negative.cli_name))
+                'the "%s" option.' % (positive.cli_name, negative.cli_name)
+            )
 
 
 class PositiveBooleanArgument(arguments.CLIArgument):
-    def __init__(self, name, argument_model, operation_model,
-                 event_emitter, serialized_name, group_name):
+    def __init__(
+        self,
+        name,
+        argument_model,
+        operation_model,
+        event_emitter,
+        serialized_name,
+        group_name,
+    ):
         super(PositiveBooleanArgument, self).__init__(
-            name, argument_model, operation_model, event_emitter,
-            serialized_name=serialized_name)
+            name,
+            argument_model,
+            operation_model,
+            event_emitter,
+            serialized_name=serialized_name,
+        )
         self._group_name = group_name
 
     @property
@@ -113,11 +138,13 @@ class PositiveBooleanArgument(arguments.CLIArgument):
         # We need to support three forms:
         # --option-name
         # --option-name Value=(true|false)
-        parser.add_argument(self.cli_name,
-                            help=self.documentation,
-                            action='store',
-                            default=_NOT_SPECIFIED,
-                            nargs='?')
+        parser.add_argument(
+            self.cli_name,
+            help=self.documentation,
+            action='store',
+            default=_NOT_SPECIFIED,
+            nargs='?',
+        )
 
     def add_to_params(self, parameters, value):
         if value is _NOT_SPECIFIED:
@@ -131,17 +158,29 @@ class PositiveBooleanArgument(arguments.CLIArgument):
             parameters[self._serialized_name] = {'Value': True}
         else:
             # Otherwise the arg was specified with a value.
-            parameters[self._serialized_name] = self._unpack_argument(
-                value)
+            parameters[self._serialized_name] = self._unpack_argument(value)
 
 
 class NegativeBooleanParameter(arguments.BooleanArgument):
-    def __init__(self, name, argument_model, operation_model,
-                 event_emitter, serialized_name, action='store_true',
-                 dest=None, group_name=None):
+    def __init__(
+        self,
+        name,
+        argument_model,
+        operation_model,
+        event_emitter,
+        serialized_name,
+        action='store_true',
+        dest=None,
+        group_name=None,
+    ):
         super(NegativeBooleanParameter, self).__init__(
-            name, argument_model, operation_model, event_emitter,
-            default=_NOT_SPECIFIED, serialized_name=serialized_name)
+            name,
+            argument_model,
+            operation_model,
+            event_emitter,
+            default=_NOT_SPECIFIED,
+            serialized_name=serialized_name,
+        )
         self._group_name = group_name
 
     def add_to_params(self, parameters, value):

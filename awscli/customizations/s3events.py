@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 """Add S3 specific event streaming output arg."""
+
 from awscli.arguments import CustomArgument
 
 
@@ -24,28 +25,29 @@ class DocSectionNotFoundError(Exception):
 def register_event_stream_arg(event_handlers):
     event_handlers.register(
         'building-argument-table.s3api.select-object-content',
-        add_event_stream_output_arg)
+        add_event_stream_output_arg,
+    )
 
     event_handlers.register_last(
-        'doc-output.s3api.select-object-content',
-        replace_event_stream_docs
+        'doc-output.s3api.select-object-content', replace_event_stream_docs
     )
 
 
 def register_document_expires_string(event_handlers):
-    event_handlers.register_last(
-        'doc-output.s3api',
-        document_expires_string
-    )
+    event_handlers.register_last('doc-output.s3api', document_expires_string)
 
 
-def add_event_stream_output_arg(argument_table, operation_model,
-                                session, **kwargs):
+def add_event_stream_output_arg(
+    argument_table, operation_model, session, **kwargs
+):
     argument_table['outfile'] = S3SelectStreamOutputArgument(
-        name='outfile', help_text=STREAM_HELP_TEXT,
-        cli_type_name='string', positional_arg=True,
+        name='outfile',
+        help_text=STREAM_HELP_TEXT,
+        cli_type_name='string',
+        positional_arg=True,
         stream_key=operation_model.output_shape.serialization['payload'],
-        session=session)
+        session=session,
+    )
 
 
 def replace_event_stream_docs(help_command, **kwargs):
@@ -59,10 +61,13 @@ def replace_event_stream_docs(help_command, **kwargs):
             # we should be raising something with a helpful error message.
             raise DocSectionNotFoundError(
                 'Could not find the "output" section for the command: %s'
-                % help_command)
+                % help_command
+            )
     doc.write('======\nOutput\n======\n')
-    doc.write("This command generates no output.  The selected "
-              "object content is written to the specified outfile.\n")
+    doc.write(
+        "This command generates no output.  The selected "
+        "object content is written to the specified outfile.\n"
+    )
 
 
 def document_expires_string(help_command, **kwargs):
@@ -81,7 +86,7 @@ def document_expires_string(help_command, **kwargs):
         f'\n\n{" " * doc.style.indentation * doc.style.indent_width}',
         'ExpiresString -> (string)\n\n',
         '\tThe raw, unparsed value of the ``Expires`` field.',
-        f'\n\n{" " * doc.style.indentation * doc.style.indent_width}'
+        f'\n\n{" " * doc.style.indentation * doc.style.indent_width}',
     ]
 
     for idx, write in enumerate(deprecation_note_and_expires_string):
@@ -103,8 +108,9 @@ class S3SelectStreamOutputArgument(CustomArgument):
 
     def add_to_params(self, parameters, value):
         self._output_file = value
-        self._session.register('after-call.s3.SelectObjectContent',
-                               self.save_file)
+        self._session.register(
+            'after-call.s3.SelectObjectContent', self.save_file
+        )
 
     def save_file(self, parsed, **kwargs):
         # This method is hooked into after-call which fires

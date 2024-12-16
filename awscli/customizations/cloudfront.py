@@ -30,37 +30,52 @@ def register(event_handler):
 
     # Provides a simpler --paths for ``aws cloudfront create-invalidation``
     event_handler.register(
-        'building-argument-table.cloudfront.create-invalidation', _add_paths)
+        'building-argument-table.cloudfront.create-invalidation', _add_paths
+    )
     event_handler.register(
         'operation-args-parsed.cloudfront.create-invalidation',
-        validate_mutually_exclusive_handler(['invalidation_batch'], ['paths']))
+        validate_mutually_exclusive_handler(['invalidation_batch'], ['paths']),
+    )
 
     event_handler.register(
         'operation-args-parsed.cloudfront.create-distribution',
         validate_mutually_exclusive_handler(
             ['default_root_object', 'origin_domain_name'],
-            ['distribution_config']))
+            ['distribution_config'],
+        ),
+    )
     event_handler.register(
         'building-argument-table.cloudfront.create-distribution',
         lambda argument_table, **kwargs: argument_table.__setitem__(
-            'origin-domain-name', OriginDomainName(argument_table)))
+            'origin-domain-name', OriginDomainName(argument_table)
+        ),
+    )
     event_handler.register(
         'building-argument-table.cloudfront.create-distribution',
         lambda argument_table, **kwargs: argument_table.__setitem__(
-            'default-root-object', CreateDefaultRootObject(argument_table)))
+            'default-root-object', CreateDefaultRootObject(argument_table)
+        ),
+    )
 
     context = {}
     event_handler.register(
-        'top-level-args-parsed', context.update, unique_id='cloudfront')
+        'top-level-args-parsed', context.update, unique_id='cloudfront'
+    )
     event_handler.register(
         'operation-args-parsed.cloudfront.update-distribution',
         validate_mutually_exclusive_handler(
-            ['default_root_object'], ['distribution_config']))
+            ['default_root_object'], ['distribution_config']
+        ),
+    )
     event_handler.register(
         'building-argument-table.cloudfront.update-distribution',
         lambda argument_table, **kwargs: argument_table.__setitem__(
-            'default-root-object', UpdateDefaultRootObject(
-                context=context, argument_table=argument_table)))
+            'default-root-object',
+            UpdateDefaultRootObject(
+                context=context, argument_table=argument_table
+            ),
+        ),
+    )
 
 
 def unique_string(prefix='cli'):
@@ -73,7 +88,6 @@ def _add_paths(argument_table, **kwargs):
 
 
 class PathsArgument(CustomArgument):
-
     def __init__(self):
         doc = (
             'The space-separated paths to be invalidated.'
@@ -86,17 +100,23 @@ class PathsArgument(CustomArgument):
             parameters['InvalidationBatch'] = {
                 "CallerReference": unique_string(),
                 "Paths": {"Quantity": len(value), "Items": value},
-                }
+            }
 
 
 class ExclusiveArgument(CustomArgument):
     DOC = '%s This argument and --%s are mutually exclusive.'
 
-    def __init__(self, name, argument_table,
-                 exclusive_to='distribution-config', help_text=''):
+    def __init__(
+        self,
+        name,
+        argument_table,
+        exclusive_to='distribution-config',
+        help_text='',
+    ):
         argument_table[exclusive_to].required = False
         super(ExclusiveArgument, self).__init__(
-            name, help_text=self.DOC % (help_text, exclusive_to))
+            name, help_text=self.DOC % (help_text, exclusive_to)
+        )
 
     def distribution_config_template(self):
         return {
@@ -108,12 +128,9 @@ class ExclusiveArgument(CustomArgument):
                     "QueryString": False,
                     "Cookies": {"Forward": "none"},
                 },
-                "TrustedSigners": {
-                    "Enabled": False,
-                    "Quantity": 0
-                },
+                "TrustedSigners": {"Enabled": False, "Quantity": 0},
                 "ViewerProtocolPolicy": "allow-all",
-                "MinTTL": 0
+                "MinTTL": 0,
             },
             "Enabled": True,
             "Comment": "",
@@ -123,14 +140,17 @@ class ExclusiveArgument(CustomArgument):
 class OriginDomainName(ExclusiveArgument):
     def __init__(self, argument_table):
         super(OriginDomainName, self).__init__(
-            'origin-domain-name', argument_table,
-            help_text='The domain name for your origin.')
+            'origin-domain-name',
+            argument_table,
+            help_text='The domain name for your origin.',
+        )
 
     def add_to_params(self, parameters, value):
         if value is None:
             return
         parameters.setdefault(
-            'DistributionConfig', self.distribution_config_template())
+            'DistributionConfig', self.distribution_config_template()
+        )
         origin_id = unique_string(prefix=value)
         item = {"Id": origin_id, "DomainName": value, "OriginPath": ''}
         if item['DomainName'].endswith('.s3.amazonaws.com'):
@@ -140,36 +160,50 @@ class OriginDomainName(ExclusiveArgument):
             item["S3OriginConfig"] = {"OriginAccessIdentity": ""}
         else:
             item["CustomOriginConfig"] = {
-                'HTTPPort': 80, 'HTTPSPort': 443,
-                'OriginProtocolPolicy': 'http-only'}
+                'HTTPPort': 80,
+                'HTTPSPort': 443,
+                'OriginProtocolPolicy': 'http-only',
+            }
         parameters['DistributionConfig']['Origins'] = {
-            "Quantity": 1, "Items": [item]}
+            "Quantity": 1,
+            "Items": [item],
+        }
         parameters['DistributionConfig']['DefaultCacheBehavior'][
-            'TargetOriginId'] = origin_id
+            'TargetOriginId'
+        ] = origin_id
 
 
 class CreateDefaultRootObject(ExclusiveArgument):
     def __init__(self, argument_table, help_text=''):
         super(CreateDefaultRootObject, self).__init__(
-            'default-root-object', argument_table, help_text=help_text or (
+            'default-root-object',
+            argument_table,
+            help_text=help_text
+            or (
                 'The object that you want CloudFront to return (for example, '
-                'index.html) when a viewer request points to your root URL.'))
+                'index.html) when a viewer request points to your root URL.'
+            ),
+        )
 
     def add_to_params(self, parameters, value):
         if value is not None:
             parameters.setdefault(
-                'DistributionConfig', self.distribution_config_template())
+                'DistributionConfig', self.distribution_config_template()
+            )
             parameters['DistributionConfig']['DefaultRootObject'] = value
 
 
 class UpdateDefaultRootObject(CreateDefaultRootObject):
     def __init__(self, context, argument_table):
         super(UpdateDefaultRootObject, self).__init__(
-            argument_table, help_text=(
+            argument_table,
+            help_text=(
                 'The object that you want CloudFront to return (for example, '
                 'index.html) when a viewer request points to your root URL. '
                 'CLI will automatically make a get-distribution-config call '
-                'to load and preserve your other settings.'))
+                'to load and preserve your other settings.'
+            ),
+        )
         self.context = context
 
     def add_to_params(self, parameters, value):
@@ -178,7 +212,8 @@ class UpdateDefaultRootObject(CreateDefaultRootObject):
                 'cloudfront',
                 region_name=self.context['parsed_args'].region,
                 endpoint_url=self.context['parsed_args'].endpoint_url,
-                verify=self.context['parsed_args'].verify_ssl)
+                verify=self.context['parsed_args'].verify_ssl,
+            )
             response = client.get_distribution_config(Id=parameters['Id'])
             parameters['IfMatch'] = response['ETag']
             parameters['DistributionConfig'] = response['DistributionConfig']
@@ -210,7 +245,8 @@ class SignCommand(BasicCommand):
             'required': True,
             'help_text': (
                 "The active CloudFront key pair Id for the key pair "
-                "that you're using to generate the signature."),
+                "that you're using to generate the signature."
+            ),
         },
         {
             'name': 'private-key',
@@ -218,39 +254,49 @@ class SignCommand(BasicCommand):
             'help_text': 'file://path/to/your/private-key.pem',
         },
         {
-            'name': 'date-less-than', 'required': True,
-            'help_text':
-                'The expiration date and time for the URL. ' + DATE_FORMAT,
+            'name': 'date-less-than',
+            'required': True,
+            'help_text': 'The expiration date and time for the URL. '
+            + DATE_FORMAT,
         },
         {
             'name': 'date-greater-than',
-            'help_text':
-                'An optional start date and time for the URL. ' + DATE_FORMAT,
+            'help_text': 'An optional start date and time for the URL. '
+            + DATE_FORMAT,
         },
         {
             'name': 'ip-address',
             'help_text': (
                 'An optional IP address or IP address range to allow client '
-                'making the GET request from. Format: x.x.x.x/x or x.x.x.x'),
+                'making the GET request from. Format: x.x.x.x/x or x.x.x.x'
+            ),
         },
     ]
 
     def _run_main(self, args, parsed_globals):
         signer = CloudFrontSigner(
-            args.key_pair_id, RSASigner(args.private_key).sign)
+            args.key_pair_id, RSASigner(args.private_key).sign
+        )
         date_less_than = parse_to_aware_datetime(args.date_less_than)
         date_greater_than = args.date_greater_than
         if date_greater_than is not None:
             date_greater_than = parse_to_aware_datetime(date_greater_than)
         if date_greater_than is not None or args.ip_address is not None:
             policy = signer.build_policy(
-                args.url, date_less_than, date_greater_than=date_greater_than,
-                ip_address=args.ip_address)
-            sys.stdout.write(signer.generate_presigned_url(
-                args.url, policy=policy))
+                args.url,
+                date_less_than,
+                date_greater_than=date_greater_than,
+                ip_address=args.ip_address,
+            )
+            sys.stdout.write(
+                signer.generate_presigned_url(args.url, policy=policy)
+            )
         else:
-            sys.stdout.write(signer.generate_presigned_url(
-                args.url, date_less_than=date_less_than))
+            sys.stdout.write(
+                signer.generate_presigned_url(
+                    args.url, date_less_than=date_less_than
+                )
+            )
         return 0
 
 

@@ -78,7 +78,7 @@ class ShorthandParseError(Exception):
             next_newline = self.index + self.value[self.index :].index('\n')
             consumed = self.value[:next_newline]
             remaining = self.value[next_newline:]
-        return '%s\n%s%s' % (consumed, (' ' * num_spaces) + '^', remaining)
+        return '{}\n{}{}'.format(consumed, (' ' * num_spaces) + '^', remaining)
 
 
 class ShorthandParseSyntaxError(ShorthandParseError):
@@ -88,14 +88,10 @@ class ShorthandParseSyntaxError(ShorthandParseError):
         self.actual = actual
         self.index = index
         msg = self._construct_msg()
-        super(ShorthandParseSyntaxError, self).__init__(msg)
+        super().__init__(msg)
 
     def _construct_msg(self):
-        msg = ("Expected: '%s', received: '%s' for input:\n" "%s") % (
-            self.expected,
-            self.actual,
-            self._error_location(),
-        )
+        msg = (f"Expected: '{self.expected}', received: '{self.actual}' for input:\n" f"{self._error_location()}")
         return msg
 
 
@@ -105,14 +101,14 @@ class DuplicateKeyInObjectError(ShorthandParseError):
         self.value = value
         self.index = index
         msg = self._construct_msg()
-        super(DuplicateKeyInObjectError, self).__init__(msg)
+        super().__init__(msg)
 
     def _construct_msg(self):
         msg = (
-            "Second instance of key \"%s\" encountered for input:\n%s\n"
+            f"Second instance of key \"{self.key}\" encountered for input:\n{self._error_location()}\n"
             "This is often because there is a preceding \",\" instead of a "
             "space."
-        ) % (self.key, self._error_location())
+        )
         return msg
 
 
@@ -347,7 +343,7 @@ class ShorthandParser:
     def _consume_quoted(self, regex, escaped_char=None):
         value = self._must_consume_regex(regex)[1:-1]
         if escaped_char is not None:
-            value = value.replace("\\%s" % escaped_char, escaped_char)
+            value = value.replace(f"\\{escaped_char}", escaped_char)
             value = value.replace("\\\\", "\\")
         return value
 
@@ -399,7 +395,7 @@ class ShorthandParser:
         if result is not None:
             return self._consume_matched_regex(result)
         raise ShorthandParseSyntaxError(
-            self._input_value, '<%s>' % regex.name, '<none>', self._index
+            self._input_value, f'<{regex.name}>', '<none>', self._index
         )
 
     def _consume_matched_regex(self, result):
@@ -433,7 +429,7 @@ class ModelVisitor:
 
     def _visit(self, parent, shape, name, value):
         method = getattr(
-            self, '_visit_%s' % shape.type_name, self._visit_scalar
+            self, f'_visit_{shape.type_name}', self._visit_scalar
         )
         method(parent, shape, name, value)
 
@@ -480,7 +476,7 @@ class BackCompatVisitor(ModelVisitor):
                 raise ShorthandParseError(
                     'Shorthand syntax does not support document types. Use '
                     'JSON input for top-level argument to specify nested '
-                    'parameter: %s' % member_name
+                    f'parameter: {member_name}'
                 )
 
     def _visit_list(self, parent, shape, name, value):
@@ -490,7 +486,7 @@ class BackCompatVisitor(ModelVisitor):
             if value is not None:
                 parent[name] = [value]
         else:
-            return super(BackCompatVisitor, self)._visit_list(
+            return super()._visit_list(
                 parent, shape, name, value
             )
 

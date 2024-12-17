@@ -122,7 +122,7 @@ class AliasCommandInjector(BaseAliasCommandInjector):
         :type alias_loader: awscli.alias.AliasLoader
         :param alias_loader: The alias loader to use
         """
-        super(AliasCommandInjector, self).__init__(alias_loader)
+        super().__init__(alias_loader)
         self._session = session
 
     def inject_aliases(self, command_table, parser):
@@ -151,7 +151,7 @@ class AliasCommandInjector(BaseAliasCommandInjector):
 
 class AliasSubCommandInjector(BaseAliasCommandInjector):
     def __init__(self, alias_loader):
-        super(AliasSubCommandInjector, self).__init__(alias_loader)
+        super().__init__(alias_loader)
         self._global_cmd_driver = None
         self._global_args_parser = None
 
@@ -250,7 +250,7 @@ class BaseInternalAliasCommand(BaseAliasCommand):
     UNSUPPORTED_GLOBAL_PARAMETERS = ['debug', 'profile']
 
     def __init__(self, alias_name, alias_value, session):
-        super(BaseInternalAliasCommand, self).__init__(alias_name, alias_value)
+        super().__init__(alias_name, alias_value)
         self._session = session
 
     def _get_alias_args(self):
@@ -258,9 +258,8 @@ class BaseInternalAliasCommand(BaseAliasCommand):
             alias_args = shlex.split(self._alias_value)
         except ValueError as e:
             raise InvalidAliasException(
-                'Value of alias "%s" could not be parsed. '
-                'Received error: %s when parsing:\n%s'
-                % (self._alias_name, e, self._alias_value)
+                f'Value of alias "{self._alias_name}" could not be parsed. '
+                f'Received error: {e} when parsing:\n{self._alias_value}'
             )
 
         alias_args = [arg.strip(os.linesep) for arg in alias_args]
@@ -302,9 +301,8 @@ class BaseInternalAliasCommand(BaseAliasCommand):
             if arg_parser.get_default(parsed_param) != value:
                 if parsed_param in self.UNSUPPORTED_GLOBAL_PARAMETERS:
                     raise InvalidAliasException(
-                        'Global parameter "--%s" detected in alias "%s" '
+                        f'Global parameter "--{parsed_param}" detected in alias "{self._alias_name}" '
                         'which is not support in subcommand aliases.'
-                        % (parsed_param, self._alias_name)
                     )
                 else:
                     global_params_to_update.append(parsed_param)
@@ -351,7 +349,7 @@ class ServiceAliasCommand(BaseInternalAliasCommand):
             to this command as opposed to proxy to itself in the command
             table
         """
-        super(ServiceAliasCommand, self).__init__(
+        super().__init__(
             alias_name, alias_value, session
         )
         self._command_table = command_table
@@ -411,7 +409,7 @@ class ExternalAliasCommand(BaseAliasCommand):
         :param invoker: Callable to run arguments of external alias. The
             signature should match that of ``subprocess.call``
         """
-        super(ExternalAliasCommand, self).__init__(alias_name, alias_value)
+        super().__init__(alias_name, alias_value)
         self._invoker = invoker
 
     def __call__(self, args, parsed_globals):
@@ -437,7 +435,7 @@ class InternalAliasSubCommand(BaseInternalAliasCommand):
         session,
         proxied_sub_command=None,
     ):
-        super(InternalAliasSubCommand, self).__init__(
+        super().__init__(
             alias_name, alias_value, session
         )
         self._command_object = command_object

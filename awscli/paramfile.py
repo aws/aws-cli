@@ -83,13 +83,13 @@ def get_file(prefix, path, mode):
             return f.read()
     except UnicodeDecodeError:
         raise ResourceLoadingError(
-            'Unable to load paramfile (%s), text contents could '
+            f'Unable to load paramfile ({file_path}), text contents could '
             'not be decoded.  If this is a binary file, please use the '
-            'fileb:// prefix instead of the file:// prefix.' % file_path
+            'fileb:// prefix instead of the file:// prefix.'
         )
     except OSError as e:
         raise ResourceLoadingError(
-            'Unable to load paramfile %s: %s' % (path, e)
+            f'Unable to load paramfile {path}: {e}'
         )
 
 

@@ -170,4 +170,4 @@ class ShapeNameGenerator:
     def new_shape_name(self, type_name):
         self._name_cache[type_name] += 1
         current_index = self._name_cache[type_name]
-        return '%sType%s' % (type_name.capitalize(), current_index)
+        return f'{type_name.capitalize()}Type{current_index}'

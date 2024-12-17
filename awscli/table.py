@@ -138,7 +138,7 @@ def convert_to_vertical_table(sections):
             sections[i] = new_section
 
 
-class IndentedStream(object):
+class IndentedStream:
     def __init__(
         self, stream, indent_level, left_indent_char='|', right_indent_char='|'
     ):
@@ -160,7 +160,7 @@ class IndentedStream(object):
         return getattr(self._stream, attr)
 
 
-class Styler(object):
+class Styler:
     def style_title(self, text):
         return text
 
@@ -204,7 +204,7 @@ class ColorizedStyler(Styler):
         )
 
 
-class MultiTable(object):
+class MultiTable:
     def __init__(
         self,
         terminal_width=None,
@@ -381,7 +381,7 @@ class MultiTable(object):
         self._write_line_break(stream, widths)
 
 
-class Section(object):
+class Section:
     def __init__(self):
         self.title = ''
         self.headers = []

@@ -210,7 +210,7 @@ def _unpack_complex_cli_arg(argument_model, value, cli_name):
             return [
                 _unpack_cli_arg(member_shape_model, v, cli_name) for v in value
             ]
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError):
             # The list params don't have a name/cli_name attached to them
             # so they will have bad error messages.  We're going to
             # attach the parent parameter to this error message to provide
@@ -274,7 +274,7 @@ def _is_complex_shape(model):
     return True
 
 
-class ParamShorthand(object):
+class ParamShorthand:
     def _uses_old_list_case(self, command_name, operation_name, argument_name):
         """
         Determines whether a given operation for a service needs to use the

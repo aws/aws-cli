@@ -76,7 +76,7 @@ raw_input = input
 class StdinMissingError(Exception):
     def __init__(self):
         message = 'stdin is required for this operation, but is not available.'
-        super(StdinMissingError, self).__init__(message)
+        super().__init__(message)
 
 
 class NonTranslatedStdout:
@@ -108,7 +108,7 @@ def ensure_text_type(s):
         return s
     if isinstance(s, bytes):
         return s.decode('utf-8')
-    raise ValueError("Expected str, unicode or bytes, received %s." % type(s))
+    raise ValueError(f"Expected str, unicode or bytes, received {type(s)}.")
 
 
 def get_binary_stdin():
@@ -282,7 +282,7 @@ def _windows_shell_quote(s):
     if ' ' in new_s or '\t' in new_s:
         # If there are any spaces or tabs then the string needs to be double
         # quoted.
-        return '"%s"' % new_s
+        return f'"{new_s}"'
     return new_s
 
 

@@ -141,7 +141,7 @@ class YAMLDumper:
 
 class YAMLFormatter(FullyBufferedFormatter):
     def __init__(self, args, yaml_dumper=None):
-        super(YAMLFormatter, self).__init__(args)
+        super().__init__(args)
         self._yaml_dumper = yaml_dumper
         if yaml_dumper is None:
             self._yaml_dumper = YAMLDumper()
@@ -154,7 +154,7 @@ class YAMLFormatter(FullyBufferedFormatter):
 
 class StreamedYAMLFormatter(Formatter):
     def __init__(self, args, yaml_dumper=None):
-        super(StreamedYAMLFormatter, self).__init__(args)
+        super().__init__(args)
         self._yaml_dumper = yaml_dumper
         if yaml_dumper is None:
             self._yaml_dumper = YAMLDumper()
@@ -204,7 +204,7 @@ class TableFormatter(FullyBufferedFormatter):
     """
 
     def __init__(self, args, table=None):
-        super(TableFormatter, self).__init__(args)
+        super().__init__(args)
         if args.color == 'auto':
             self.table = MultiTable(
                 initial_section=False, column_separator='|'
@@ -220,7 +220,7 @@ class TableFormatter(FullyBufferedFormatter):
                 initial_section=False, column_separator='|', styler=styler
             )
         else:
-            raise ValueError("Unknown color option: %s" % args.color)
+            raise ValueError(f"Unknown color option: {args.color}")
 
     def _format_response(self, command_name, response, stream):
         if self._build_table(command_name, response):
@@ -379,6 +379,6 @@ CLI_OUTPUT_FORMATS = {
 
 def get_formatter(format_type, args):
     if format_type not in CLI_OUTPUT_FORMATS:
-        raise ValueError("Unknown output type: %s" % format_type)
+        raise ValueError(f"Unknown output type: {format_type}")
     format_type_cls = CLI_OUTPUT_FORMATS[format_type]
     return format_type_cls(args)

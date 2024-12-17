@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.36.24
+=======
+
+* api-change:``account``: Update endpoint configuration.
+* api-change:``backup``: Add Support for Backup Indexing
+* api-change:``backupsearch``: Add support for searching backups
+* api-change:``batch``: This feature allows AWS Batch on Amazon EKS to support configuration of Pod Annotations, overriding Namespace on which the Batch job's Pod runs on, and allows Subpath and Persistent Volume claim to be set for AWS Batch on Amazon EKS jobs.
+* api-change:``cleanroomsml``: Add support for SQL compute configuration for StartAudienceGenerationJob API.
+* api-change:``cloudfront``: Adds support for OriginReadTimeout and OriginKeepaliveTimeout to create CloudFront Distributions with VPC Origins.
+* api-change:``codepipeline``: AWS CodePipeline V2 type pipelines now support Managed Compute Rule.
+* api-change:``ecs``: Added support for enableFaultInjection task definition parameter which can be used to enable Fault Injection feature on ECS tasks.
+* api-change:``m2``: This release adds support for AWS Mainframe Modernization(M2) Service to allow specifying network type(ipv4, dual) for the environment instances. For dual network type, m2 environment applications will serve both IPv4 and IPv6 requests, whereas for ipv4 it will serve only IPv4 requests.
+* api-change:``synthetics``: Add support to toggle outbound IPv6 traffic on canaries connected to dualstack subnets.  This behavior can be controlled via the new Ipv6AllowedForDualStack parameter of the VpcConfig input object in CreateCanary and UpdateCanary APIs.
+
+
 1.36.23
 =======
 

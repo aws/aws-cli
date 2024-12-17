@@ -21,6 +21,7 @@ from awscli.customizations.configure.importer import (
     ConfigureImportCommand,
     CSVCredentialParser,
     CredentialParserError,
+    ConfigureImportError,
 )
 from awscli.customizations.configure.writer import ConfigFileWriter
 
@@ -86,6 +87,10 @@ class TestConfigureImportCommand(unittest.TestCase):
         content = 'User name,Secret access key\n'
         with self.assertRaises(CredentialParserError):
             self.import_command(args=['--csv', content], parsed_globals=None)
+
+    def test_import_fails_if_suspected_file_without_uri_prefix(self):
+        with self.assertRaises(ConfigureImportError):
+            self.import_command(args=['--csv', './README.rst'], parsed_globals=None)
 
 
 class TestCSVCredentialParser(unittest.TestCase):

@@ -3,7 +3,7 @@
 The following ``list-fhir-import-jobs`` example shows how to use the command to view a list of all import jobs associated with an account. ::
 
     aws healthlake list-fhir-import-jobs \
-        --datastore-id (Datastore ID) \
+        --datastore-id (Data store ID) \
         --submitted-before (DATE like 2024-10-13T19:00:00Z) \
         --submitted-after (DATE like 2020-10-13T19:00:00Z ) \
         --job-name "FHIR-IMPORT" \
@@ -19,7 +19,7 @@ Output::
                 "JobStatus": "COMPLETED",
                 "SubmitTime": "2024-11-20T10:08:46.813000-05:00",
                 "EndTime": "2024-11-20T10:10:09.093000-05:00",
-                "DatastoreId": "(Datastore ID)",
+                "DatastoreId": "(Data store ID)",
                 "InputDataConfig": {
                     "S3Uri": "s3://(Bucket Name)/(Prefix Name)/"
                 },
@@ -45,4 +45,4 @@ Output::
     }
 
 
-For more information, see `Importing files to FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/import-examples.html>`__ in the AWS HealthLake Developer Guide.
+For more information, see `Importing files to FHIR data store <https://docs.aws.amazon.com/healthlake/latest/devguide/import-examples.html>`__ in the AWS HealthLake Developer Guide.

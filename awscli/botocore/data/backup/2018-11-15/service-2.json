@@ -722,6 +722,23 @@
       "documentation":"<p>This action returns details for a specified legal hold. The details are the body of a legal hold in JSON format, in addition to metadata.</p>",
       "idempotent":true
     },
+    "GetRecoveryPointIndexDetails":{
+      "name":"GetRecoveryPointIndexDetails",
+      "http":{
+        "method":"GET",
+        "requestUri":"/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/index"
+      },
+      "input":{"shape":"GetRecoveryPointIndexDetailsInput"},
+      "output":{"shape":"GetRecoveryPointIndexDetailsOutput"},
+      "errors":[
+        {"shape":"MissingParameterValueException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This operation returns the metadata and details specific to the backup index associated with the specified recovery point.</p>",
+      "idempotent":true
+    },
     "GetRecoveryPointRestoreMetadata":{
       "name":"GetRecoveryPointRestoreMetadata",
       "http":{
@@ -968,6 +985,22 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Returns a list of all frameworks for an Amazon Web Services account and Amazon Web Services Region.</p>"
+    },
+    "ListIndexedRecoveryPoints":{
+      "name":"ListIndexedRecoveryPoints",
+      "http":{
+        "method":"GET",
+        "requestUri":"/indexes/recovery-point/"
+      },
+      "input":{"shape":"ListIndexedRecoveryPointsInput"},
+      "output":{"shape":"ListIndexedRecoveryPointsOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This operation returns a list of recovery points that have an associated index, belonging to the specified account.</p> <p>Optional parameters you can include are: MaxResults; NextToken; SourceResourceArns; CreatedBefore; CreatedAfter; and ResourceType.</p>",
+      "idempotent":true
     },
     "ListLegalHolds":{
       "name":"ListLegalHolds",
@@ -1428,6 +1461,24 @@
         {"shape":"InvalidRequestException"}
       ],
       "documentation":"<p>Updates whether the Amazon Web Services account is opted in to cross-account backup. Returns an error if the account is not an Organizations management account. Use the <code>DescribeGlobalSettings</code> API to determine the current settings.</p>"
+    },
+    "UpdateRecoveryPointIndexSettings":{
+      "name":"UpdateRecoveryPointIndexSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/backup-vaults/{backupVaultName}/recovery-points/{recoveryPointArn}/index"
+      },
+      "input":{"shape":"UpdateRecoveryPointIndexSettingsInput"},
+      "output":{"shape":"UpdateRecoveryPointIndexSettingsOutput"},
+      "errors":[
+        {"shape":"MissingParameterValueException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This operation updates the settings of a recovery point index.</p> <p>Required: BackupVaultName, RecoveryPointArn, and IAMRoleArn</p>",
+      "idempotent":true
     },
     "UpdateRecoveryPointLifecycle":{
       "name":"UpdateRecoveryPointLifecycle",
@@ -1938,6 +1989,10 @@
         "ScheduleExpressionTimezone":{
           "shape":"Timezone",
           "documentation":"<p>The timezone in which the schedule expression is set. By default, ScheduleExpressions are in UTC. You can modify this to a specified timezone.</p>"
+        },
+        "IndexActions":{
+          "shape":"IndexActions",
+          "documentation":"<p>IndexActions is an array you use to specify how backup data should be indexed.</p> <p>eEach BackupRule can have 0 or 1 IndexAction, as each backup can have up to one index associated with it.</p> <p>Within the array is ResourceType. Only one will be accepted for each BackupRule.</p>"
         }
       },
       "documentation":"<p>Specifies a scheduled task used to back up a selection of resources.</p>"
@@ -1988,6 +2043,10 @@
         "ScheduleExpressionTimezone":{
           "shape":"Timezone",
           "documentation":"<p>The timezone in which the schedule expression is set. By default, ScheduleExpressions are in UTC. You can modify this to a specified timezone.</p>"
+        },
+        "IndexActions":{
+          "shape":"IndexActions",
+          "documentation":"<p>There can up to one IndexAction in each BackupRule, as each backup can have 0 or 1 backup index associated with it.</p> <p>Within the array is ResourceTypes. Only 1 resource type will be accepted for each BackupRule. Valid values:</p> <ul> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>S3</code> for Amazon Simple Storage Service (Amazon S3)</p> </li> </ul>"
         }
       },
       "documentation":"<p>Specifies a scheduled task used to back up a selection of resources.</p>"
@@ -3627,6 +3686,14 @@
         "VaultType":{
           "shape":"VaultType",
           "documentation":"<p>The type of vault in which the described recovery point is stored.</p>"
+        },
+        "IndexStatus":{
+          "shape":"IndexStatus",
+          "documentation":"<p>This is the current status for the backup index associated with the specified recovery point.</p> <p>Statuses are: <code>PENDING</code> | <code>ACTIVE</code> | <code>FAILED</code> | <code>DELETING</code> </p> <p>A recovery point with an index that has the status of <code>ACTIVE</code> can be included in a search.</p>"
+        },
+        "IndexStatusMessage":{
+          "shape":"string",
+          "documentation":"<p>A string in the form of a detailed message explaining the status of a backup index associated with the recovery point.</p>"
         }
       }
     },
@@ -4183,6 +4250,68 @@
         }
       }
     },
+    "GetRecoveryPointIndexDetailsInput":{
+      "type":"structure",
+      "required":[
+        "BackupVaultName",
+        "RecoveryPointArn"
+      ],
+      "members":{
+        "BackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created.</p> <p>Accepted characters include lowercase letters, numbers, and hyphens.</p>",
+          "location":"uri",
+          "locationName":"backupVaultName"
+        },
+        "RecoveryPointArn":{
+          "shape":"ARN",
+          "documentation":"<p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>",
+          "location":"uri",
+          "locationName":"recoveryPointArn"
+        }
+      }
+    },
+    "GetRecoveryPointIndexDetailsOutput":{
+      "type":"structure",
+      "members":{
+        "RecoveryPointArn":{
+          "shape":"ARN",
+          "documentation":"<p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+        },
+        "BackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>An ARN that uniquely identifies the backup vault where the recovery point index is stored.</p> <p>For example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
+        },
+        "SourceResourceArn":{
+          "shape":"ARN",
+          "documentation":"<p>A string of the Amazon Resource Name (ARN) that uniquely identifies the source resource.</p>"
+        },
+        "IndexCreationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time that a backup index was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "IndexDeletionDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time that a backup index was deleted, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "IndexCompletionDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time that a backup index finished creation, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "IndexStatus":{
+          "shape":"IndexStatus",
+          "documentation":"<p>This is the current status for the backup index associated with the specified recovery point.</p> <p>Statuses are: <code>PENDING</code> | <code>ACTIVE</code> | <code>FAILED</code> | <code>DELETING</code> </p> <p>A recovery point with an index that has the status of <code>ACTIVE</code> can be included in a search.</p>"
+        },
+        "IndexStatusMessage":{
+          "shape":"string",
+          "documentation":"<p>A detailed message explaining the status of a backup index associated with the recovery point.</p>"
+        },
+        "TotalItemsIndexed":{
+          "shape":"Long",
+          "documentation":"<p>Count of items within the backup index associated with the recovery point.</p>"
+        }
+      }
+    },
     "GetRecoveryPointRestoreMetadataInput":{
       "type":"structure",
       "required":[
@@ -4364,6 +4493,82 @@
     "GlobalSettingsValue":{"type":"string"},
     "IAMPolicy":{"type":"string"},
     "IAMRoleArn":{"type":"string"},
+    "Index":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "IndexAction":{
+      "type":"structure",
+      "members":{
+        "ResourceTypes":{
+          "shape":"ResourceTypes",
+          "documentation":"<p>0 or 1 index action will be accepted for each BackupRule.</p> <p>Valid values:</p> <ul> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>S3</code> for Amazon Simple Storage Service (Amazon S3)</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>This is an optional array within a BackupRule.</p> <p>IndexAction consists of one ResourceTypes.</p>"
+    },
+    "IndexActions":{
+      "type":"list",
+      "member":{"shape":"IndexAction"}
+    },
+    "IndexStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "ACTIVE",
+        "FAILED",
+        "DELETING"
+      ]
+    },
+    "IndexedRecoveryPoint":{
+      "type":"structure",
+      "members":{
+        "RecoveryPointArn":{
+          "shape":"ARN",
+          "documentation":"<p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code> </p>"
+        },
+        "SourceResourceArn":{
+          "shape":"ARN",
+          "documentation":"<p>A string of the Amazon Resource Name (ARN) that uniquely identifies the source resource.</p>"
+        },
+        "IamRoleArn":{
+          "shape":"ARN",
+          "documentation":"<p>This specifies the IAM role ARN used for this operation.</p> <p>For example, arn:aws:iam::123456789012:role/S3Access</p>"
+        },
+        "BackupCreationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time that a backup was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The resource type of the indexed recovery point.</p> <ul> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>S3</code> for Amazon Simple Storage Service (Amazon S3)</p> </li> </ul>"
+        },
+        "IndexCreationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time that a backup index was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "IndexStatus":{
+          "shape":"IndexStatus",
+          "documentation":"<p>This is the current status for the backup index associated with the specified recovery point.</p> <p>Statuses are: <code>PENDING</code> | <code>ACTIVE</code> | <code>FAILED</code> | <code>DELETING</code> </p> <p>A recovery point with an index that has the status of <code>ACTIVE</code> can be included in a search.</p>"
+        },
+        "IndexStatusMessage":{
+          "shape":"string",
+          "documentation":"<p>A string in the form of a detailed message explaining the status of a backup index associated with the recovery point.</p>"
+        },
+        "BackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>An ARN that uniquely identifies the backup vault where the recovery point index is stored.</p> <p>For example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
+        }
+      },
+      "documentation":"<p>This is a recovery point that has an associated backup index.</p> <p>Only recovery points with a backup index can be included in a search.</p>"
+    },
+    "IndexedRecoveryPointList":{
+      "type":"list",
+      "member":{"shape":"IndexedRecoveryPoint"}
+    },
     "InvalidParameterValueException":{
       "type":"structure",
       "members":{
@@ -5049,6 +5254,66 @@
         "NextToken":{
           "shape":"string",
           "documentation":"<p>An identifier that was returned from the previous call to this operation, which can be used to return the next set of items in the list.</p>"
+        }
+      }
+    },
+    "ListIndexedRecoveryPointsInput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned recovery points.</p> <p>For example, if a request is made to return <code>MaxResults</code> number of indexed recovery points, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of resource list items to be returned.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "SourceResourceArn":{
+          "shape":"ARN",
+          "documentation":"<p>A string of the Amazon Resource Name (ARN) that uniquely identifies the source resource.</p>",
+          "location":"querystring",
+          "locationName":"sourceResourceArn"
+        },
+        "CreatedBefore":{
+          "shape":"timestamp",
+          "documentation":"<p>Returns only indexed recovery points that were created before the specified date.</p>",
+          "location":"querystring",
+          "locationName":"createdBefore"
+        },
+        "CreatedAfter":{
+          "shape":"timestamp",
+          "documentation":"<p>Returns only indexed recovery points that were created after the specified date.</p>",
+          "location":"querystring",
+          "locationName":"createdAfter"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>Returns a list of indexed recovery points for the specified resource type(s).</p> <p>Accepted values include:</p> <ul> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>S3</code> for Amazon Simple Storage Service (Amazon S3)</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"resourceType"
+        },
+        "IndexStatus":{
+          "shape":"IndexStatus",
+          "documentation":"<p>Include this parameter to filter the returned list by the indicated statuses.</p> <p>Accepted values: <code>PENDING</code> | <code>ACTIVE</code> | <code>FAILED</code> | <code>DELETING</code> </p> <p>A recovery point with an index that has the status of <code>ACTIVE</code> can be included in a search.</p>",
+          "location":"querystring",
+          "locationName":"indexStatus"
+        }
+      }
+    },
+    "ListIndexedRecoveryPointsOutput":{
+      "type":"structure",
+      "members":{
+        "IndexedRecoveryPoints":{
+          "shape":"IndexedRecoveryPointList",
+          "documentation":"<p>This is a list of recovery points that have an associated index, belonging to the specified account.</p>"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned recovery points.</p> <p>For example, if a request is made to return <code>MaxResults</code> number of indexed recovery points, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
         }
       }
     },
@@ -5979,6 +6244,14 @@
         "VaultType":{
           "shape":"VaultType",
           "documentation":"<p>The type of vault in which the described recovery point is stored.</p>"
+        },
+        "IndexStatus":{
+          "shape":"IndexStatus",
+          "documentation":"<p>This is the current status for the backup index associated with the specified recovery point.</p> <p>Statuses are: <code>PENDING</code> | <code>ACTIVE</code> | <code>FAILED</code> | <code>DELETING</code> </p> <p>A recovery point with an index that has the status of <code>ACTIVE</code> can be included in a search.</p>"
+        },
+        "IndexStatusMessage":{
+          "shape":"string",
+          "documentation":"<p>A string in the form of a detailed message explaining the status of a backup index associated with the recovery point.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about the recovery points stored in a backup vault.</p>"
@@ -6033,6 +6306,14 @@
         "VaultType":{
           "shape":"VaultType",
           "documentation":"<p>The type of vault in which the described recovery point is stored.</p>"
+        },
+        "IndexStatus":{
+          "shape":"IndexStatus",
+          "documentation":"<p>This is the current status for the backup index associated with the specified recovery point.</p> <p>Statuses are: <code>PENDING</code> | <code>ACTIVE</code> | <code>FAILED</code> | <code>DELETING</code> </p> <p>A recovery point with an index that has the status of <code>ACTIVE</code> can be included in a search.</p>"
+        },
+        "IndexStatusMessage":{
+          "shape":"string",
+          "documentation":"<p>A string in the form of a detailed message explaining the status of a backup index associated with the recovery point.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a saved recovery point.</p>"
@@ -6925,6 +7206,10 @@
         "BackupOptions":{
           "shape":"BackupOptions",
           "documentation":"<p>The backup option for a selected resource. This option is only available for Windows Volume Shadow Copy Service (VSS) backup jobs.</p> <p>Valid values: Set to <code>\"WindowsVSS\":\"enabled\"</code> to enable the <code>WindowsVSS</code> backup option and create a Windows VSS backup. Set to <code>\"WindowsVSS\"\"disabled\"</code> to create a regular backup. The <code>WindowsVSS</code> option is not enabled by default.</p>"
+        },
+        "Index":{
+          "shape":"Index",
+          "documentation":"<p>Include this parameter to enable index creation if your backup job has a resource type that supports backup indexes.</p> <p>Resource types that support backup indexes include:</p> <ul> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>S3</code> for Amazon Simple Storage Service (Amazon S3)</p> </li> </ul> <p>Index can have 1 of 2 possible values, either <code>ENABLED</code> or <code>DISABLED</code>.</p> <p>To create a backup index for an eligible <code>ACTIVE</code> recovery point that does not yet have a backup index, set value to <code>ENABLED</code>.</p> <p>To delete a backup index, set value to <code>DISABLED</code>.</p>"
         }
       }
     },
@@ -7232,6 +7517,57 @@
         "GlobalSettings":{
           "shape":"GlobalSettings",
           "documentation":"<p>A value for <code>isCrossAccountBackupEnabled</code> and a Region. Example: <code>update-global-settings --global-settings isCrossAccountBackupEnabled=false --region us-west-2</code>.</p>"
+        }
+      }
+    },
+    "UpdateRecoveryPointIndexSettingsInput":{
+      "type":"structure",
+      "required":[
+        "BackupVaultName",
+        "RecoveryPointArn",
+        "Index"
+      ],
+      "members":{
+        "BackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created.</p> <p>Accepted characters include lowercase letters, numbers, and hyphens.</p>",
+          "location":"uri",
+          "locationName":"backupVaultName"
+        },
+        "RecoveryPointArn":{
+          "shape":"ARN",
+          "documentation":"<p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>",
+          "location":"uri",
+          "locationName":"recoveryPointArn"
+        },
+        "IamRoleArn":{
+          "shape":"IAMRoleArn",
+          "documentation":"<p>This specifies the IAM role ARN used for this operation.</p> <p>For example, arn:aws:iam::123456789012:role/S3Access</p>"
+        },
+        "Index":{
+          "shape":"Index",
+          "documentation":"<p>Index can have 1 of 2 possible values, either <code>ENABLED</code> or <code>DISABLED</code>.</p> <p>To create a backup index for an eligible <code>ACTIVE</code> recovery point that does not yet have a backup index, set value to <code>ENABLED</code>.</p> <p>To delete a backup index, set value to <code>DISABLED</code>.</p>"
+        }
+      }
+    },
+    "UpdateRecoveryPointIndexSettingsOutput":{
+      "type":"structure",
+      "members":{
+        "BackupVaultName":{
+          "shape":"BackupVaultName",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created.</p>"
+        },
+        "RecoveryPointArn":{
+          "shape":"ARN",
+          "documentation":"<p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+        },
+        "IndexStatus":{
+          "shape":"IndexStatus",
+          "documentation":"<p>This is the current status for the backup index associated with the specified recovery point.</p> <p>Statuses are: <code>PENDING</code> | <code>ACTIVE</code> | <code>FAILED</code> | <code>DELETING</code> </p> <p>A recovery point with an index that has the status of <code>ACTIVE</code> can be included in a search.</p>"
+        },
+        "Index":{
+          "shape":"Index",
+          "documentation":"<p>Index can have 1 of 2 possible values, either <code>ENABLED</code> or <code>DISABLED</code>.</p> <p>A value of <code>ENABLED</code> means a backup index for an eligible <code>ACTIVE</code> recovery point has been created.</p> <p>A value of <code>DISABLED</code> means a backup index was deleted.</p>"
         }
       }
     },

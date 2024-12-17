@@ -1742,6 +1742,11 @@
       },
       "documentation":"<p>The properties for a task definition that describes the container and volume definitions of an Amazon ECS task. You can specify which Docker images to use, the required resources, and other configurations related to launching the task definition through an Amazon ECS service or task.</p>"
     },
+    "EksAnnotationsMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
     "EksAttemptContainerDetail":{
       "type":"structure",
       "members":{
@@ -2037,6 +2042,10 @@
           "shape":"String",
           "documentation":"<p>The path on the container where the volume is mounted.</p>"
         },
+        "subPath":{
+          "shape":"String",
+          "documentation":"<p>A sub-path inside the referenced volume instead of its root.</p>"
+        },
         "readOnly":{
           "shape":"Boolean",
           "documentation":"<p>If this value is <code>true</code>, the container has read-only access to the volume. Otherwise, the container can write to the volume. The default value is <code>false</code>.</p>"
@@ -2092,9 +2101,32 @@
         "labels":{
           "shape":"EksLabelsMap",
           "documentation":"<p>Key-value pairs used to identify, sort, and organize cube resources. Can contain up to 63 uppercase letters, lowercase letters, numbers, hyphens (-), and underscores (_). Labels can be added or modified at any time. Each resource can have multiple labels, but each key must be unique for a given object.</p>"
+        },
+        "annotations":{
+          "shape":"EksAnnotationsMap",
+          "documentation":"<p>Key-value pairs used to attach arbitrary, non-identifying metadata to Kubernetes objects. Valid annotation keys have two segments: an optional prefix and a name, separated by a slash (/). </p> <ul> <li> <p>The prefix is optional and must be 253 characters or less. If specified, the prefix must be a DNS subdomain− a series of DNS labels separated by dots (.), and it must end with a slash (/).</p> </li> <li> <p>The name segment is required and must be 63 characters or less. It can include alphanumeric characters ([a-z0-9A-Z]), dashes (-), underscores (_), and dots (.), but must begin and end with an alphanumeric character.</p> </li> </ul> <note> <p>Annotation values must be 255 characters or less.</p> </note> <p>Annotations can be added or modified at any time. Each resource can have multiple annotations. </p>"
+        },
+        "namespace":{
+          "shape":"String",
+          "documentation":"<p>The namespace of the Amazon EKS cluster. In Kubernetes, namespaces provide a mechanism for isolating groups of resources within a single cluster. Names of resources need to be unique within a namespace, but not across namespaces. Batch places Batch Job pods in this namespace. If this field is provided, the value can't be empty or null. It must meet the following requirements:</p> <ul> <li> <p>1-63 characters long</p> </li> <li> <p>Can't be set to default</p> </li> <li> <p>Can't start with <code>kube</code> </p> </li> <li> <p>Must match the following regular expression: <code>^[a-z0-9]([-a-z0-9]*[a-z0-9])?$</code> </p> </li> </ul> <p> For more information, see <a href=\"https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/\">Namespaces</a> in the <i>Kubernetes documentation</i>. This namespace can be different from the <code>kubernetesNamespace</code> set in the compute environment's <code>EksConfiguration</code>, but must have identical role-based access control (RBAC) roles as the compute environment's <code>kubernetesNamespace</code>. For multi-node parallel jobs, the same value must be provided across all the node ranges.</p>"
         }
       },
-      "documentation":"<p>Describes and uniquely identifies Kubernetes resources. For example, the compute environment that a pod runs in or the <code>jobID</code> for a job running in the pod. For more information, see <a href=\"https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/\">Understanding Kubernetes Objects</a> in the <i>Kubernetes documentation</i>.</p>"
+      "documentation":"<p>Describes and uniquely identifies Kubernetes resources. For example, the compute environment that a pod runs in or the <code>jobID</code> for a job running in the pod. For more information, see <a href=\"https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/\"> Understanding Kubernetes Objects</a> in the <i>Kubernetes documentation</i>.</p>"
+    },
+    "EksPersistentVolumeClaim":{
+      "type":"structure",
+      "required":["claimName"],
+      "members":{
+        "claimName":{
+          "shape":"String",
+          "documentation":"<p>The name of the <code>persistentVolumeClaim</code> bounded to a <code>persistentVolume</code>. For more information, see <a href=\"https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims\"> Persistent Volume Claims</a> in the <i>Kubernetes documentation</i>.</p>"
+        },
+        "readOnly":{
+          "shape":"Boolean",
+          "documentation":"<p>An optional boolean value indicating if the mount is read only. Default is false. For more information, see <a href=\"https://kubernetes.io/docs/concepts/storage/volumes/#read-only-mounts\"> Read Only Mounts</a> in the <i>Kubernetes documentation</i>.</p>"
+        }
+      },
+      "documentation":"<p>A <code>persistentVolumeClaim</code> volume is used to mount a <a href=\"https://kubernetes.io/docs/concepts/storage/persistent-volumes/\">PersistentVolume</a> into a Pod. PersistentVolumeClaims are a way for users to \"claim\" durable storage without knowing the details of the particular cloud environment. See the information about <a href=\"https://kubernetes.io/docs/concepts/storage/persistent-volumes/\">PersistentVolumes</a> in the <i>Kubernetes documentation</i>.</p>"
     },
     "EksPodProperties":{
       "type":"structure",
@@ -2275,6 +2307,10 @@
         "secret":{
           "shape":"EksSecret",
           "documentation":"<p>Specifies the configuration of a Kubernetes <code>secret</code> volume. For more information, see <a href=\"https://kubernetes.io/docs/concepts/storage/volumes/#secret\">secret</a> in the <i>Kubernetes documentation</i>.</p>"
+        },
+        "persistentVolumeClaim":{
+          "shape":"EksPersistentVolumeClaim",
+          "documentation":"<p>Specifies the configuration of a Kubernetes <code>persistentVolumeClaim</code> bounded to a <code>persistentVolume</code>. For more information, see <a href=\"https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims\"> Persistent Volume Claims</a> in the <i>Kubernetes documentation</i>.</p>"
         }
       },
       "documentation":"<p>Specifies an Amazon EKS volume for a job definition.</p>"

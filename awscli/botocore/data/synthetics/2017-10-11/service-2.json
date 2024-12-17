@@ -513,7 +513,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:(aws[a-zA-Z-]*)?:synthetics:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:canary:[0-9a-z_\\-]{1,255}"
+      "pattern":"arn:(aws[a-zA-Z-]*)?:synthetics:[a-z]{2,4}(-[a-z]{2,4})?-[a-z]+-\\d{1}:\\d{12}:canary:[0-9a-z_\\-]{1,255}"
     },
     "CanaryCodeInput":{
       "type":"structure",
@@ -1093,7 +1093,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2,4}(-[a-z]{2,4})?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
     },
     "GetCanaryRequest":{
       "type":"structure",
@@ -1204,7 +1204,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"arn:(aws[a-zA-Z-]*)?:synthetics:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:group:[0-9a-z]+"
+      "pattern":"arn:(aws[a-zA-Z-]*)?:synthetics:[a-z]{2,4}(-[a-z]{2,4})?-[a-z]+-\\d{1}:\\d{12}:group:[0-9a-z]+"
     },
     "GroupIdentifier":{
       "type":"string",
@@ -1260,7 +1260,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:(aws[a-zA-Z-]*)?:kms:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:key/[\\w\\-\\/]+"
+      "pattern":"arn:(aws[a-zA-Z-]*)?:kms:[a-z]{2,4}(-[a-z]{2,4})?-[a-z]+-\\d{1}:\\d{12}:key/[\\w\\-\\/]+"
     },
     "ListAssociatedGroupsRequest":{
       "type":"structure",
@@ -1446,7 +1446,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:(aws[a-zA-Z-]*)?:synthetics:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:(canary|group):[0-9a-z_\\-]+"
+      "pattern":"arn:(aws[a-zA-Z-]*)?:synthetics:[a-z]{2,4}(-[a-z]{2,4})?-[a-z]+-\\d{1}:\\d{12}:(canary|group):[0-9a-z_\\-]+"
     },
     "ResourceList":{
       "type":"list",
@@ -1755,7 +1755,7 @@
         },
         "BaseCanaryRunId":{
           "shape":"String",
-          "documentation":"<p>Specifies which canary run to use the screenshots from as the baseline for future visual monitoring with this canary. Valid values are <code>nextrun</code> to use the screenshots from the next run after this update is made, <code>lastrun</code> to use the screenshots from the most recent run before this update was made, or the value of <code>Id</code> in the <a href=\"https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_CanaryRun.html\"> CanaryRun</a> from any past run of this canary.</p>"
+          "documentation":"<p>Specifies which canary run to use the screenshots from as the baseline for future visual monitoring with this canary. Valid values are <code>nextrun</code> to use the screenshots from the next run after this update is made, <code>lastrun</code> to use the screenshots from the most recent run before this update was made, or the value of <code>Id</code> in the <a href=\"https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_CanaryRun.html\"> CanaryRun</a> from a run of this a canary in the past 31 days. If you specify the <code>Id</code> of a canary run older than 31 days, the operation returns a 400 validation exception error..</p>"
         }
       },
       "documentation":"<p>An object that specifies what screenshots to use as a baseline for visual monitoring by this canary. It can optionally also specify parts of the screenshots to ignore during the visual monitoring comparison.</p> <p>Visual monitoring is supported only on canaries running the <b>syn-puppeteer-node-3.2</b> runtime or later. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Library_SyntheticsLogger_VisualTesting.html\"> Visual monitoring</a> and <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Blueprints_VisualTesting.html\"> Visual monitoring blueprint</a> </p>"
@@ -1784,6 +1784,10 @@
         "SecurityGroupIds":{
           "shape":"SecurityGroupIds",
           "documentation":"<p>The IDs of the security groups for this canary.</p>"
+        },
+        "Ipv6AllowedForDualStack":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Set this to <code>true</code> to allow outbound IPv6 traffic on VPC canaries that are connected to dual-stack subnets. The default is <code>false</code> </p>"
         }
       },
       "documentation":"<p>If this canary is to test an endpoint in a VPC, this structure contains information about the subnets and security groups of the VPC endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_VPC.html\"> Running a Canary in a VPC</a>.</p>"
@@ -1802,6 +1806,10 @@
         "SecurityGroupIds":{
           "shape":"SecurityGroupIds",
           "documentation":"<p>The IDs of the security groups for this canary.</p>"
+        },
+        "Ipv6AllowedForDualStack":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Indicates whether this canary allows outbound IPv6 traffic if it is connected to dual-stack subnets.</p>"
         }
       },
       "documentation":"<p>If this canary is to test an endpoint in a VPC, this structure contains information about the subnets and security groups of the VPC endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_VPC.html\"> Running a Canary in a VPC</a>.</p>"

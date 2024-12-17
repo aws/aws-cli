@@ -342,7 +342,7 @@
         {"shape":"ValidationException"},
         {"shape":"InvalidNextTokenException"}
       ],
-      "documentation":"<p>Lists the rules for the condition.</p>"
+      "documentation":"<p>Lists the rules for the condition. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a>. For more information about rules, see the <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html\">CodePipeline rule reference</a>.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -1394,7 +1394,7 @@
       "members":{
         "category":{
           "shape":"ActionCategory",
-          "documentation":"<p>A category defines what kind of action can be taken in the stage, and constrains the provider type for the action. Valid categories are limited to one of the following values. </p> <ul> <li> <p>Source</p> </li> <li> <p>Build</p> </li> <li> <p>Test</p> </li> <li> <p>Deploy</p> </li> <li> <p>Invoke</p> </li> <li> <p>Approval</p> </li> </ul>"
+          "documentation":"<p>A category defines what kind of action can be taken in the stage, and constrains the provider type for the action. Valid categories are limited to one of the following values. </p> <ul> <li> <p>Source</p> </li> <li> <p>Build</p> </li> <li> <p>Test</p> </li> <li> <p>Deploy</p> </li> <li> <p>Invoke</p> </li> <li> <p>Approval</p> </li> <li> <p>Compute</p> </li> </ul>"
         },
         "owner":{
           "shape":"ActionOwner",
@@ -1848,7 +1848,7 @@
           "documentation":"<p>The rules that make up the condition.</p>"
         }
       },
-      "documentation":"<p>The condition for the stage. A condition is made up of the rules and the result for the condition.</p>"
+      "documentation":"<p>The condition for the stage. A condition is made up of the rules and the result for the condition. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a>. For more information about rules, see the <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html\">CodePipeline rule reference</a>.</p>"
     },
     "ConditionExecution":{
       "type":"structure",
@@ -2375,7 +2375,7 @@
       "members":{
         "category":{
           "shape":"ActionCategory",
-          "documentation":"<p>Defines what kind of action can be taken in the stage. The following are the valid values:</p> <ul> <li> <p> <code>Source</code> </p> </li> <li> <p> <code>Build</code> </p> </li> <li> <p> <code>Test</code> </p> </li> <li> <p> <code>Deploy</code> </p> </li> <li> <p> <code>Approval</code> </p> </li> <li> <p> <code>Invoke</code> </p> </li> </ul>"
+          "documentation":"<p>Defines what kind of action can be taken in the stage. The following are the valid values:</p> <ul> <li> <p> <code>Source</code> </p> </li> <li> <p> <code>Build</code> </p> </li> <li> <p> <code>Test</code> </p> </li> <li> <p> <code>Deploy</code> </p> </li> <li> <p> <code>Approval</code> </p> </li> <li> <p> <code>Invoke</code> </p> </li> <li> <p> <code>Compute</code> </p> </li> </ul>"
         },
         "owner":{
           "shape":"ActionTypeOwner",
@@ -4426,7 +4426,7 @@
       "members":{
         "name":{
           "shape":"RuleName",
-          "documentation":"<p>The name of the rule that is created for the condition, such as CheckAllResults.</p>"
+          "documentation":"<p>The name of the rule that is created for the condition, such as <code>VariableCheck</code>.</p>"
         },
         "ruleTypeId":{
           "shape":"RuleTypeId",
@@ -4435,6 +4435,10 @@
         "configuration":{
           "shape":"RuleConfigurationMap",
           "documentation":"<p>The action configuration fields for the rule.</p>"
+        },
+        "commands":{
+          "shape":"CommandList",
+          "documentation":"<p>The shell commands to run with your commands rule in CodePipeline. All commands are supported except multi-line formats. While CodeBuild logs and permissions are used, you do not need to create any resources in CodeBuild.</p> <note> <p>Using compute time for this action will incur separate charges in CodeBuild.</p> </note>"
         },
         "inputArtifacts":{
           "shape":"InputArtifactList",
@@ -4453,7 +4457,7 @@
           "documentation":"<p>The action timeout for the rule.</p>"
         }
       },
-      "documentation":"<p>Represents information about the rule to be created for an associated condition. An example would be creating a new rule for an entry condition, such as a rule that checks for a test result before allowing the run to enter the deployment stage.</p>"
+      "documentation":"<p>Represents information about the rule to be created for an associated condition. An example would be creating a new rule for an entry condition, such as a rule that checks for a test result before allowing the run to enter the deployment stage. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a>. For more information about rules, see the <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html\">CodePipeline rule reference</a>.</p>"
     },
     "RuleDeclarationList":{
       "type":"list",

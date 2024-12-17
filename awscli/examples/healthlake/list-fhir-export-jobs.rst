@@ -3,7 +3,7 @@
 The following ``list-fhir-export-jobs`` example shows how to use the command to view a list of export jobs associated with an account. ::
 
     aws healthlake list-fhir-export-jobs \
-        --datastore-id (Datastore ID) \
+        --datastore-id (Data store ID) \
         --submitted-before (DATE like 2024-10-13T19:00:00Z)\
         --submitted-after (DATE like 2020-10-13T19:00:00Z )\
         --job-name "FHIR-EXPORT" \
@@ -29,10 +29,10 @@ Output::
                     "JobName": "FHIR-EXPORT",
                     "SubmitTime": "2024-11-20T11:31:46.672000-05:00",
                     "EndTime": "2024-11-20T11:34:01.636000-05:00",
-                    "DatastoreId": "(Datastore ID)"
+                    "DatastoreId": "(Data store ID)"
                 }
             }
         ]
     }
 
-For more information, see `Exporting files from a FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/export-datastore.html>`__ in the AWS HealthLake Developer Guide.
+For more information, see `Exporting files from a FHIR data store <https://docs.aws.amazon.com/healthlake/latest/devguide/export-datastore.html>`__ in the AWS HealthLake Developer Guide.

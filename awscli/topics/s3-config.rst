@@ -176,7 +176,7 @@ value can specified using the same semantics as ``multipart_threshold``,
 that is either as the number of bytes as an integer, or using a size
 suffix. If the specified chunk size does not fit within the established
 limits for S3 multipart uploads, the chunk size will be automatically 
-adjusted to a valid value
+adjusted to a valid value.
 
 
 max_bandwidth

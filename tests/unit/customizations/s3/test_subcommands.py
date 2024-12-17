@@ -301,7 +301,6 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
             mock_not_at_src_sync_strategy
         )
 
-
 class CommandParametersTest(unittest.TestCase):
     def setUp(self):
         self.environ = {}
@@ -512,6 +511,16 @@ class CommandParametersTest(unittest.TestCase):
         params = {}
         CommandParameters('cp', params, '')
         self.assertFalse(params.get('is_move'))
+
+    def test_adds_yield_parameters_for_sync_delete(self):
+        params = {"delete": True}
+        CommandParameters('sync', params, '')
+        self.assertTrue(params.get('yield_directories'))
+
+    def test_sets_yield_parameters_false_for_sync_no_delete(self):
+        params = {"delete": False}
+        CommandParameters('sync', params, '')
+        self.assertFalse(params.get('yield_directories'))
 
 
 class HelpDocTest(BaseAWSHelpOutputTest):

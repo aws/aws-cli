@@ -226,7 +226,7 @@ class AWSCLIEntryPoint:
         return rc
 
 
-class CLIDriver(object):
+class CLIDriver:
     def __init__(self, session=None, error_handler=None, debug=False):
         if session is None:
             self.session = botocore.session.get_session()
@@ -688,7 +688,7 @@ class ServiceCommand(CLICommand):
         )
 
 
-class ServiceOperation(object):
+class ServiceOperation:
     """A single operation of a service.
 
     This class represents a single operation for a service, for
@@ -955,7 +955,7 @@ class ServiceOperation(object):
         )
 
 
-class CLIOperationCaller(object):
+class CLIOperationCaller:
     """Call an AWS operation and format the response."""
 
     def __init__(self, session):

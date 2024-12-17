@@ -334,7 +334,7 @@ class BaseAWSHelpOutputTest(BaseCLIDriverTest):
             previous = index
 
 
-class CapturedRenderer(object):
+class CapturedRenderer:
     def __init__(self):
         self.rendered_contents = ''
 
@@ -342,7 +342,7 @@ class CapturedRenderer(object):
         self.rendered_contents = contents.decode('utf-8')
 
 
-class CapturedOutput(object):
+class CapturedOutput:
     def __init__(self, stdout, stderr):
         self.stdout = stdout
         self.stderr = stderr
@@ -570,7 +570,7 @@ class BaseCLIWireResponseTest(unittest.TestCase):
         return stdout, stderr, rc
 
 
-class FileCreator(object):
+class FileCreator:
     def __init__(self):
         self.rootdir = tempfile.mkdtemp()
 
@@ -643,7 +643,7 @@ class ProcessTerminatedError(Exception):
     pass
 
 
-class Result(object):
+class Result:
     def __init__(self, rc, stdout, stderr, memory_usage=None):
         self.rc = rc
         self.stdout = stdout
@@ -1038,7 +1038,7 @@ class StringIOWithFileNo(StringIO):
         return 0
 
 
-class EventCaptureHandler(object):
+class EventCaptureHandler:
     def __init__(self, handler=None):
         self._handler = handler
         self._called = False
@@ -1057,7 +1057,7 @@ class ConsistencyWaiterException(Exception):
     pass
 
 
-class ConsistencyWaiter(object):
+class ConsistencyWaiter:
     """
     A waiter class for some check to reach a consistent state.
 

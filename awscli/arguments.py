@@ -67,7 +67,7 @@ def create_argument_model_from_schema(schema):
     return arg_shape
 
 
-class BaseCLIArgument(object):
+class BaseCLIArgument:
     """Interface for CLI argument.
 
     This class represents the interface used for representing CLI

@@ -55,7 +55,7 @@ def get_renderer():
         return PosixHelpRenderer()
 
 
-class PagingHelpRenderer(object):
+class PagingHelpRenderer:
     """
     Interface for a help renderer.
 
@@ -191,7 +191,7 @@ class WindowsHelpRenderer(PagingHelpRenderer):
         return Popen(*args, **kwargs)
 
 
-class HelpCommand(object):
+class HelpCommand:
     """
     HelpCommand Interface
     ---------------------

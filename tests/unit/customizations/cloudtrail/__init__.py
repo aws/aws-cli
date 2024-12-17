@@ -10,3 +10,20 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+
+import os
+
+def get_private_key_path():
+    return os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        "test_resource",
+        "sample_private_key.pem",
+    )
+
+
+def get_public_key_path():
+    return os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        "test_resource",
+        "sample_public_key.der",
+    )

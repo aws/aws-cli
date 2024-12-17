@@ -1,11 +1,11 @@
 import binascii
 import json
 import os
+import hashlib
 from io import BytesIO
 import copy
 
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
+from awscrt.crypto import RSASignatureAlgorithm
 
 from awscli.testutils import mock, unittest
 from awscli.customizations.cloudtrail.verifyqueryresults import (
@@ -19,6 +19,7 @@ from awscli.customizations.cloudtrail.verifyqueryresults import (
     InformationCollectionError,
 )
 from tests import PublicPrivateKeyLoader
+from . import get_private_key_path, get_public_key_path
 
 s3_bucket = "s3-bucket-name"
 S3_PREFIX = "s3/prefix/"
@@ -37,14 +38,6 @@ SAMPLE_SIGNING_FILE = {
     "signatureAlgorithm": "SHA256withRSA",
     "hashSignature": "hashSignature",
 }
-
-
-def get_private_key_path():
-    return os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        "test_resource",
-        "sample_private_key.pem",
-    )
 
 
 class TestSignFileProvider(unittest.TestCase):
@@ -171,8 +164,9 @@ class TestSha256RSADigestValidator(unittest.TestCase):
         (
             public_key,
             private_key,
-        ) = PublicPrivateKeyLoader.load_private_key_and_generate_public_key(
-            get_private_key_path()
+        ) = PublicPrivateKeyLoader.load_private_key_and_public_key(
+            get_private_key_path(),
+            get_public_key_path()
         )
         string_to_sign = "{} {}".format(
             self._sign_file["files"][0]["fileHashValue"],
@@ -180,7 +174,8 @@ class TestSha256RSADigestValidator(unittest.TestCase):
         )
 
         signature = private_key.sign(
-            string_to_sign.encode(), PKCS1v15(), hashes.SHA256()
+            signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
+            digest=hashlib.sha256(string_to_sign.encode()).digest()
         )
         self._sign_file["hashSignature"] = binascii.hexlify(signature)
         validator = Sha256RsaSignatureValidator()
@@ -189,17 +184,19 @@ class TestSha256RSADigestValidator(unittest.TestCase):
     def test_validates_digests_fail_with_public_key_format(self):
         with self.assertRaises(ValidationError) as context:
             (
-                public_key,
+                _,
                 private_key,
-            ) = PublicPrivateKeyLoader.load_private_key_and_generate_public_key(
-                get_private_key_path()
+            ) = PublicPrivateKeyLoader.load_private_key_and_public_key(
+                get_private_key_path(),
+                get_public_key_path()
             )
             string_to_sign = "{} {}".format(
                 self._sign_file["files"][0]["fileHashValue"],
                 self._sign_file["files"][1]["fileHashValue"],
             )
             signature = private_key.sign(
-                string_to_sign.encode(), PKCS1v15(), hashes.SHA256()
+                signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
+                digest=hashlib.sha256(string_to_sign.encode()).digest()
             )
             self._sign_file["hashSignature"] = binascii.hexlify(signature)
             validator = Sha256RsaSignatureValidator()

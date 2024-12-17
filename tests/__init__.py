@@ -39,9 +39,7 @@ import botocore.serialize
 import botocore.validate
 from botocore.exceptions import ClientError, WaiterError
 
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.serialization import Encoding, \
-    PublicFormat, load_pem_private_key
+from awscrt.crypto import RSA
 
 import prompt_toolkit
 import prompt_toolkit.buffer
@@ -688,14 +686,15 @@ class S3Utils:
             waiter.wait(**params)
 
 class PublicPrivateKeyLoader:
-    def load_private_key_and_generate_public_key(private_key_path):
+    def load_private_key_and_public_key(private_key_path, public_key_path):
         with open(private_key_path, 'rb') as f:
             private_key_byte_input = f.read()
 
-        private_key = load_pem_private_key(private_key_byte_input, None,
-                                           default_backend())
-        public_key = private_key.public_key()
-        pub_bytes = public_key.public_bytes(Encoding.DER, PublicFormat.PKCS1)
-        public_key_b64 = base64.b64encode(pub_bytes)
+        private_key = RSA.new_private_key_from_pem_data(private_key_byte_input)
+
+        with open(public_key_path, 'rb') as f:
+            public_key_byte_input = f.read()
+
+        public_key_b64 = base64.b64encode(public_key_byte_input)
 
         return public_key_b64, private_key

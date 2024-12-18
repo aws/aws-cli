@@ -676,7 +676,8 @@ class Template(object):
             self.template_dict = modules.process_resources_section(
                     self.template_dict, 
                     self.template_dir, 
-                    self.module_parent_path)
+                    self.module_parent_path, 
+                    None)
         except Exception as e:
             msg=f"Failed to process modules in Resources: {e}"
             LOG.exception(msg)

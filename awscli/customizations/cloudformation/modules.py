@@ -15,6 +15,7 @@
 
 # pylint: disable=fixme,too-many-instance-attributes
 
+import copy
 import logging
 import os
 from collections import OrderedDict
@@ -48,6 +49,9 @@ MODULES = "Modules"
 TYPE = "Type"
 LOCAL_MODULE = "LocalModule"
 OUTPUTS = "Outputs"
+MAP = "Map"
+MAP_PLACEHOLDER = "$MapValue"
+INDEX_PLACEHOLDER = "$MapIndex"
 
 
 def process_module_section(template, base_path, parent_path):
@@ -76,26 +80,64 @@ def process_module_section(template, base_path, parent_path):
     return template
 
 
-def process_resources_section(template, base_path, parent_path):
+def make_module(template, name, config, base_path, parent_path):
+    "Create an instance of a module based on a template and the module config"
+    module_config = {}
+    module_config[NAME] = name
+    if SOURCE not in config:
+        msg = f"{name} missing {SOURCE}"
+        raise exceptions.InvalidModulePathError(msg=msg)
+    relative_path = config[SOURCE]
+    module_config[SOURCE] = os.path.join(base_path, relative_path)
+    module_config[SOURCE] = os.path.normpath(module_config[SOURCE])
+    if module_config[SOURCE] == parent_path:
+        msg = f"Module refers to itself: {parent_path}"
+        raise exceptions.InvalidModuleError(msg=msg)
+    if PROPERTIES in config:
+        module_config[PROPERTIES] = config[PROPERTIES]
+    if OVERRIDES in config:
+        module_config[OVERRIDES] = config[OVERRIDES]
+    return Module(template, module_config)
+
+
+# pylint: disable=too-many-locals,too-many-nested-blocks
+def process_resources_section(template, base_path, parent_path, parent_module):
     "Recursively process the Resources section of the template"
     for k, v in template[RESOURCES].copy().items():
         if TYPE in v and v[TYPE] == LOCAL_MODULE:
-            module_config = {}
-            module_config[NAME] = k
-            if SOURCE not in v:
-                msg = f"{k} missing {SOURCE}"
-                raise exceptions.InvalidModulePathError(msg=msg)
-            relative_path = v[SOURCE]
-            module_config[SOURCE] = os.path.join(base_path, relative_path)
-            module_config[SOURCE] = os.path.normpath(module_config[SOURCE])
-            if module_config[SOURCE] == parent_path:
-                msg = f"Module refers to itself: {parent_path}"
-                raise exceptions.InvalidModuleError(msg=msg)
-            if PROPERTIES in v:
-                module_config[PROPERTIES] = v[PROPERTIES]
-            if OVERRIDES in v:
-                module_config[OVERRIDES] = v[OVERRIDES]
-            module = Module(template, module_config)
+            # First, pre-process local modules that are looping over a list
+            if MAP in v:
+                # Expect Map to be a CSV or ref to a CSV
+                m = v[MAP]
+                if isdict(m) and REF in m:
+                    if parent_module is None:
+                        msg = "Map is only valid in a module"
+                        raise exceptions.InvalidModuleError(msg=msg)
+                        # TODO: We should be able to fake up a parent module
+                    m = parent_module.find_ref(m[REF])
+                    if m is None:
+                        msg = f"{k} has an invalid Map Ref"
+                        raise exceptions.InvalidModuleError(msg=msg)
+                tokens = m.split(",")  # TODO - use an actual csv parser?
+                for i, token in enumerate(tokens):
+                    # Make a new resource
+                    logical_id = f"{k}{i}"
+                    resource = copy.deepcopy(v)
+                    del resource[MAP]
+                    # Replace $Map and $Index placeholders
+                    for prop, val in resource[PROPERTIES].copy().items():
+                        if val == MAP_PLACEHOLDER:
+                            resource[PROPERTIES][prop] = token
+                        if val == INDEX_PLACEHOLDER:
+                            resource[PROPERTIES][prop] = f"{i}"
+                    template[RESOURCES][logical_id] = resource
+
+                del template[RESOURCES][k]
+
+    # Start over after pre-processing maps
+    for k, v in template[RESOURCES].copy().items():
+        if TYPE in v and v[TYPE] == LOCAL_MODULE:
+            module = make_module(template, k, v, base_path, parent_path)
             template = module.process()
             del template[RESOURCES][k]
     return template
@@ -281,13 +323,13 @@ class Module:
             self.outputs = module_dict[OUTPUTS]
 
         # Recurse on nested modules
-        base_path = os.path.dirname(self.source)
+        bp = os.path.dirname(self.source)
         section = ""
         try:
             section = MODULES
-            process_module_section(module_dict, base_path, self.source)
+            process_module_section(module_dict, bp, self.source)
             section = RESOURCES
-            process_resources_section(module_dict, base_path, self.source)
+            process_resources_section(module_dict, bp, self.source, self)
         except Exception as e:
             msg = f"Failed to process {section} section: {e}"
             LOG.exception(msg)
@@ -578,40 +620,6 @@ class Module:
         if found is not None:
             d[n] = found
 
-    def find_ref(self, v):
-        """
-        Find a Ref.
-
-        A Ref might be to a module Parameter with a matching parent
-        template Property, or a Parameter Default. It could also
-        be a reference to another resource in this module.
-
-        :return The referenced element or None
-        """
-        # print(f"find_ref {v}, props: {self.props}")
-        if v in self.props:
-            if v not in self.params:
-                # The parent tried to set a property that doesn't exist
-                # in the Parameters section of this module
-                msg = f"{v} not found in module Parameters: {self.source}"
-                raise exceptions.InvalidModuleError(msg=msg)
-            return self.props[v]
-
-        if v in self.params:
-            param = self.params[v]
-            if DEFAULT in param:
-                # Use the default value of the Parameter
-                return param[DEFAULT]
-            msg = f"{v} does not have a Default and is not a Property"
-            raise exceptions.InvalidModuleError(msg=msg)
-
-        for k in self.resources:
-            if v == k:
-                # Simply rename local references to include the module name
-                return {REF: self.name + v}
-
-        return None
-
     # pylint: disable=too-many-branches,unused-argument
     def resolve_sub(self, v, d, n):
         """
@@ -673,3 +681,37 @@ class Module:
             raise exceptions.InvalidModuleError(msg=msg)
         logical_id = self.name + v[0]
         d[n] = {GETATT: [logical_id, v[1]]}
+
+    def find_ref(self, v):
+        """
+        Find a Ref.
+
+        A Ref might be to a module Parameter with a matching parent
+        template Property, or a Parameter Default. It could also
+        be a reference to another resource in this module.
+
+        :return The referenced element or None
+        """
+        # print(f"find_ref {v}, props: {self.props}, params: {self.params}")
+        if v in self.props:
+            if v not in self.params:
+                # The parent tried to set a property that doesn't exist
+                # in the Parameters section of this module
+                msg = f"{v} not found in module Parameters: {self.source}"
+                raise exceptions.InvalidModuleError(msg=msg)
+            return self.props[v]
+
+        if v in self.params:
+            param = self.params[v]
+            if DEFAULT in param:
+                # Use the default value of the Parameter
+                return param[DEFAULT]
+            msg = f"{v} does not have a Default and is not a Property"
+            raise exceptions.InvalidModuleError(msg=msg)
+
+        for k in self.resources:
+            if v == k:
+                # Simply rename local references to include the module name
+                return {REF: self.name + v}
+
+        return None

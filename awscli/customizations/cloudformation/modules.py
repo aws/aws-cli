@@ -370,7 +370,7 @@ class Module:
                 sub += resolved
             elif word.t == WordType.GETATT:
                 resolved = "${" + word.w + "}"
-                tokens = word.w.split(".")
+                tokens = word.w.split(".", 1)
                 if len(tokens) < 2:
                     msg = f"GetAtt {word.w} has unexpected number of tokens"
                     raise exceptions.InvalidModuleError(msg=msg)
@@ -419,7 +419,7 @@ class Module:
                         sub += resolved
                     elif word.t == WordType.GETATT:
                         resolved = "${" + word.w + "}"
-                        tokens = word.w.split(".")
+                        tokens = word.w.split(".", 1)
                         if len(tokens) < 2:
                             msg = f"GetAtt {word.w} unexpected length"
                             raise exceptions.InvalidModuleError(msg=msg)
@@ -621,7 +621,7 @@ class Module:
             elif word.t == WordType.GETATT:
                 need_sub = True
                 resolved = "${" + word.w + "}"
-                tokens = word.w.split(".")
+                tokens = word.w.split(".", 1)
                 if len(tokens) < 2:
                     msg = f"GetAtt {word.w} has unexpected number of tokens"
                     raise exceptions.InvalidModuleError(msg=msg)

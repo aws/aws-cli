@@ -75,12 +75,9 @@ class TestPackageModules(unittest.TestCase):
         expect = {"b": "cc", "d": {"e": "ff", "g": "h", "i": [1, 2, 3, 4, 5]}}
         merged = modules.merge_props(original, overrides)
         self.assertEqual(merged, expect)
-        # TODO: More complex examples (especially merging Policies)
 
     def test_main(self):
         "Run tests on sample templates that include local modules"
-
-        # TODO: Port tests over from Rain
 
         # The tests are in the modules directory.
         # Each test has 3 files:

@@ -11,17 +11,17 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 """Module for processing CLI args."""
-import os
+
 import logging
+import os
 
-from botocore.compat import OrderedDict, json
-
-from awscli import SCALAR_TYPES, COMPLEX_TYPES
-from awscli import shorthand
+from awscli import COMPLEX_TYPES, SCALAR_TYPES, shorthand
 from awscli.utils import (
-    find_service_and_method_in_event_name, is_document_type,
-    is_document_type_container
+    find_service_and_method_in_event_name,
+    is_document_type,
+    is_document_type_container,
 )
+from botocore.compat import OrderedDict, json
 from botocore.utils import is_json_value_header
 
 LOG = logging.getLogger('awscli.argprocess')
@@ -40,9 +40,8 @@ class ParamError(Exception):
         :param message: The error message to display to the user.
 
         """
-        full_message = ("Error parsing parameter '%s': %s" %
-                        (cli_name, message))
-        super(ParamError, self).__init__(full_message)
+        full_message = f"Error parsing parameter '{cli_name}': {message}"
+        super().__init__(full_message)
         self.cli_name = cli_name
         self.message = message
 
@@ -54,17 +53,17 @@ class ParamSyntaxError(Exception):
 class ParamUnknownKeyError(Exception):
     def __init__(self, key, valid_keys):
         valid_keys = ', '.join(valid_keys)
-        full_message = (
-            "Unknown key '%s', valid choices "
-            "are: %s" % (key, valid_keys))
-        super(ParamUnknownKeyError, self).__init__(full_message)
+        full_message = f"Unknown key '{key}', valid choices " f"are: {valid_keys}"
+        super().__init__(full_message)
 
 
 class TooComplexError(Exception):
     pass
 
 
-def unpack_argument(session, service_name, operation_name, cli_argument, value):
+def unpack_argument(
+    session, service_name, operation_name, cli_argument, value
+):
     """
     Unpack an argument's value from the commandline. This is part one of a two
     step process in handling commandline arguments. Emits the load-cli-arg
@@ -76,11 +75,12 @@ def unpack_argument(session, service_name, operation_name, cli_argument, value):
     param_name = getattr(cli_argument, 'name', 'anonymous')
 
     value_override = session.emit_first_non_none_response(
-        'load-cli-arg.%s.%s.%s' % (service_name,
-                                   operation_name,
-                                   param_name),
-        param=cli_argument, value=value, service_name=service_name,
-        operation_name=operation_name)
+        f'load-cli-arg.{service_name}.{operation_name}.{param_name}',
+        param=cli_argument,
+        value=value,
+        service_name=service_name,
+        operation_name=operation_name,
+    )
 
     if value_override is not None:
         value = value_override
@@ -102,8 +102,10 @@ def _detect_shape_structure(param, stack):
         if param.type_name in SCALAR_TYPES:
             return 'scalar'
         elif param.type_name == 'structure':
-            sub_types = [_detect_shape_structure(p, stack)
-                        for p in param.members.values()]
+            sub_types = [
+                _detect_shape_structure(p, stack)
+                for p in param.members.values()
+            ]
             # We're distinguishing between structure(scalar)
             # and structure(scalars), because for the case of
             # a single scalar in a structure we can simplify
@@ -113,14 +115,14 @@ def _detect_shape_structure(param, stack):
             elif len(sub_types) > 1 and all(p == 'scalar' for p in sub_types):
                 return 'structure(scalars)'
             else:
-                return 'structure(%s)' % ', '.join(sorted(set(sub_types)))
+                return 'structure({})'.format(', '.join(sorted(set(sub_types))))
         elif param.type_name == 'list':
-            return 'list-%s' % _detect_shape_structure(param.member, stack)
+            return f'list-{_detect_shape_structure(param.member, stack)}'
         elif param.type_name == 'map':
             if param.value.type_name in SCALAR_TYPES:
                 return 'map-scalar'
             else:
-                return 'map-%s' % _detect_shape_structure(param.value, stack)
+                return f'map-{_detect_shape_structure(param.value, stack)}'
     finally:
         stack.pop()
 
@@ -141,29 +143,31 @@ def unpack_cli_arg(cli_argument, value):
     :return: The "unpacked" argument than can be sent to the `Operation`
         object in python.
     """
-    return _unpack_cli_arg(cli_argument.argument_model, value,
-                           cli_argument.cli_name)
+    return _unpack_cli_arg(
+        cli_argument.argument_model, value, cli_argument.cli_name
+    )
 
 
 def _special_type(model):
     # check if model is jsonvalue header and that value is serializable
-    if model.serialization.get('jsonvalue') and \
-       model.serialization.get('location') == 'header' and \
-       model.type_name == 'string':
+    if (
+        model.serialization.get('jsonvalue')
+        and model.serialization.get('location') == 'header'
+        and model.type_name == 'string'
+    ):
         return True
     return False
 
 
 def _unpack_cli_arg(argument_model, value, cli_name):
-    if is_json_value_header(argument_model) or \
-            is_document_type(argument_model):
+    if is_json_value_header(argument_model) or is_document_type(
+        argument_model
+    ):
         return _unpack_json_cli_arg(argument_model, value, cli_name)
     elif argument_model.type_name in SCALAR_TYPES:
-        return unpack_scalar_cli_arg(
-            argument_model, value, cli_name)
+        return unpack_scalar_cli_arg(argument_model, value, cli_name)
     elif argument_model.type_name in COMPLEX_TYPES:
-        return _unpack_complex_cli_arg(
-            argument_model, value, cli_name)
+        return _unpack_complex_cli_arg(argument_model, value, cli_name)
     else:
         return str(value)
 
@@ -173,8 +177,8 @@ def _unpack_json_cli_arg(argument_model, value, cli_name):
         return json.loads(value, object_pairs_hook=OrderedDict)
     except ValueError as e:
         raise ParamError(
-            cli_name, "Invalid JSON: %s\nJSON received: %s"
-            % (e, value))
+            cli_name, f"Invalid JSON: {e}\nJSON received: {value}"
+        )
 
 
 def _unpack_complex_cli_arg(argument_model, value, cli_name):
@@ -182,7 +186,7 @@ def _unpack_complex_cli_arg(argument_model, value, cli_name):
     if type_name == 'structure' or type_name == 'map':
         if value.lstrip()[0] == '{':
             return _unpack_json_cli_arg(argument_model, value, cli_name)
-        raise ParamError(cli_name, "Invalid JSON:\n%s" % value)
+        raise ParamError(cli_name, f"Invalid JSON:\n{value}")
     elif type_name == 'list':
         if isinstance(value, str):
             if value.lstrip()[0] == '[':
@@ -198,9 +202,10 @@ def _unpack_complex_cli_arg(argument_model, value, cli_name):
             # 2. It's possible this is a list of json objects:
             # --filters '{"Name": ..}' '{"Name": ...}'
             member_shape_model = argument_model.member
-            return [_unpack_cli_arg(member_shape_model, v, cli_name)
-                    for v in value]
-        except (ValueError, TypeError) as e:
+            return [
+                _unpack_cli_arg(member_shape_model, v, cli_name) for v in value
+            ]
+        except (ValueError, TypeError):
             # The list params don't have a name/cli_name attached to them
             # so they will have bad error messages.  We're going to
             # attach the parent parameter to this error message to provide
@@ -211,13 +216,21 @@ def _unpack_complex_cli_arg(argument_model, value, cli_name):
 def unpack_scalar_cli_arg(argument_model, value, cli_name=''):
     # Note the cli_name is used strictly for error reporting.  It's
     # not required to use unpack_scalar_cli_arg
-    if argument_model.type_name == 'integer' or argument_model.type_name == 'long':
+    if (
+        argument_model.type_name == 'integer'
+        or argument_model.type_name == 'long'
+    ):
         return int(value)
-    elif argument_model.type_name == 'float' or argument_model.type_name == 'double':
+    elif (
+        argument_model.type_name == 'float'
+        or argument_model.type_name == 'double'
+    ):
         # TODO: losing precision on double types
         return float(value)
-    elif argument_model.type_name == 'blob' and \
-            argument_model.serialization.get('streaming'):
+    elif (
+        argument_model.type_name == 'blob'
+        and argument_model.serialization.get('streaming')
+    ):
         file_path = os.path.expandvars(value)
         file_path = os.path.expanduser(file_path)
         if not os.path.isfile(file_path):
@@ -256,8 +269,7 @@ def _is_complex_shape(model):
     return True
 
 
-class ParamShorthand(object):
-
+class ParamShorthand:
     def _uses_old_list_case(self, command_name, operation_name, argument_name):
         """
         Determines whether a given operation for a service needs to use the
@@ -265,27 +277,24 @@ class ParamShorthand(object):
         a single member.
         """
         cases = {
-            'firehose': {
-                'put-record-batch': ['records']
-            },
+            'firehose': {'put-record-batch': ['records']},
             'workspaces': {
                 'reboot-workspaces': ['reboot-workspace-requests'],
                 'rebuild-workspaces': ['rebuild-workspace-requests'],
-                'terminate-workspaces': ['terminate-workspace-requests']
+                'terminate-workspaces': ['terminate-workspace-requests'],
             },
             'elb': {
                 'remove-tags': ['tags'],
                 'describe-instance-health': ['instances'],
                 'deregister-instances-from-load-balancer': ['instances'],
-                'register-instances-with-load-balancer': ['instances']
-            }
+                'register-instances-with-load-balancer': ['instances'],
+            },
         }
         cases = cases.get(command_name, {}).get(operation_name, [])
         return argument_name in cases
 
 
 class ParamShorthandParser(ParamShorthand):
-
     def __init__(self):
         self._parser = shorthand.ShorthandParser()
         self._visitor = shorthand.BackCompatVisitor()
@@ -321,18 +330,21 @@ class ParamShorthandParser(ParamShorthand):
         if not self._should_parse_as_shorthand(cli_argument, value):
             return
         else:
-            command_name, operation_name = \
+            command_name, operation_name = (
                 find_service_and_method_in_event_name(event_name)
+            )
             return self._parse_as_shorthand(
-                cli_argument, value, command_name, operation_name)
+                cli_argument, value, command_name, operation_name
+            )
 
-    def _parse_as_shorthand(self, cli_argument, value, command_name,
-                            operation_name):
+    def _parse_as_shorthand(
+        self, cli_argument, value, command_name, operation_name
+    ):
         try:
-            LOG.debug("Parsing param %s as shorthand",
-                        cli_argument.cli_name)
+            LOG.debug("Parsing param %s as shorthand", cli_argument.cli_name)
             handled_value = self._handle_special_cases(
-                cli_argument, value, command_name, operation_name)
+                cli_argument, value, command_name, operation_name
+            )
             if handled_value is not None:
                 return handled_value
             if isinstance(value, list):
@@ -357,15 +369,20 @@ class ParamShorthandParser(ParamShorthand):
             raise ParamError(cli_argument.cli_name, str(e))
         return parsed
 
-    def _handle_special_cases(self, cli_argument, value, command_name,
-                              operation_name):
+    def _handle_special_cases(
+        self, cli_argument, value, command_name, operation_name
+    ):
         # We need to handle a few special cases that the previous
         # parser handled in order to stay backwards compatible.
         model = cli_argument.argument_model
-        if model.type_name == 'list' and \
-           model.member.type_name == 'structure' and \
-           len(model.member.members) == 1 and \
-           self._uses_old_list_case(command_name, operation_name, cli_argument.name):
+        if (
+            model.type_name == 'list'
+            and model.member.type_name == 'structure'
+            and len(model.member.members) == 1
+            and self._uses_old_list_case(
+                command_name, operation_name, cli_argument.name
+            )
+        ):
             # First special case is handling a list of structures
             # of a single element such as:
             #
@@ -378,11 +395,13 @@ class ParamShorthandParser(ParamShorthand):
             key_name = list(model.member.members.keys())[0]
             new_values = [{key_name: v} for v in value]
             return new_values
-        elif model.type_name == 'structure' and \
-                len(model.members) == 1 and \
-                'Value' in model.members and \
-                model.members['Value'].type_name == 'string' and \
-                '=' not in value:
+        elif (
+            model.type_name == 'structure'
+            and len(model.members) == 1
+            and 'Value' in model.members
+            and model.members['Value'].type_name == 'string'
+            and '=' not in value
+        ):
             # Second special case is where a structure of a single
             # value whose member name is "Value" can be specified
             # as:
@@ -401,9 +420,13 @@ class ParamShorthandParser(ParamShorthand):
         else:
             check_val = value
         if isinstance(check_val, str) and check_val.strip().startswith(
-                ('[', '{')):
-            LOG.debug("Param %s looks like JSON, not considered for "
-                      "param shorthand.", cli_argument.py_name)
+            ('[', '{')
+        ):
+            LOG.debug(
+                "Param %s looks like JSON, not considered for "
+                "param shorthand.",
+                cli_argument.py_name,
+            )
             return False
         model = cli_argument.argument_model
         return _supports_shorthand_syntax(model)
@@ -421,8 +444,9 @@ class ParamShorthandDocGen(ParamShorthand):
             return _supports_shorthand_syntax(argument_model)
         return False
 
-    def generate_shorthand_example(self, cli_argument, command_name,
-                                   operation_name):
+    def generate_shorthand_example(
+        self, cli_argument, command_name, operation_name
+    ):
         """Generate documentation for a CLI argument.
 
         :type cli_argument: awscli.arguments.BaseCLIArgument
@@ -437,7 +461,8 @@ class ParamShorthandDocGen(ParamShorthand):
 
         """
         docstring = self._handle_special_cases(
-            cli_argument, command_name, operation_name)
+            cli_argument, command_name, operation_name
+        )
         if docstring is self._DONT_DOC:
             return None
         elif docstring:
@@ -455,24 +480,30 @@ class ParamShorthandDocGen(ParamShorthand):
         except TooComplexError:
             return ''
 
-    def _handle_special_cases(self, cli_argument, command_name, operation_name):
+    def _handle_special_cases(
+        self, cli_argument, command_name, operation_name
+    ):
         model = cli_argument.argument_model
-        if model.type_name == 'list' and \
-                model.member.type_name == 'structure' and \
-                len(model.member.members) == 1 and \
-                self._uses_old_list_case(
-                    command_name, operation_name, cli_argument.name):
+        if (
+            model.type_name == 'list'
+            and model.member.type_name == 'structure'
+            and len(model.member.members) == 1
+            and self._uses_old_list_case(
+                command_name, operation_name, cli_argument.name
+            )
+        ):
             member_name = list(model.member.members)[0]
             # Handle special case where the min/max is exactly one.
             metadata = model.metadata
             if metadata.get('min') == 1 and metadata.get('max') == 1:
-                return '%s %s1' % (cli_argument.cli_name, member_name)
-            return '%s %s1 %s2 %s3' % (cli_argument.cli_name, member_name,
-                                       member_name, member_name)
-        elif model.type_name == 'structure' and \
-                len(model.members) == 1 and \
-                'Value' in model.members and \
-                model.members['Value'].type_name == 'string':
+                return f'{cli_argument.cli_name} {member_name}1'
+            return f'{cli_argument.cli_name} {member_name}1 {member_name}2 {member_name}3'
+        elif (
+            model.type_name == 'structure'
+            and len(model.members) == 1
+            and 'Value' in model.members
+            and model.members['Value'].type_name == 'string'
+        ):
             return self._DONT_DOC
         return ''
 
@@ -496,20 +527,20 @@ class ParamShorthandDocGen(ParamShorthand):
         finally:
             stack.pop()
         if list_member.type_name in COMPLEX_TYPES or len(stack) > 1:
-            return '[%s,%s]' % (element_docs, element_docs)
+            return f'[{element_docs},{element_docs}]'
         else:
-            return '%s,%s' % (element_docs, element_docs)
+            return f'{element_docs},{element_docs}'
 
     def _map_docs(self, argument_model, stack):
         k = argument_model.key
         value_docs = self._shorthand_docs(argument_model.value, stack)
-        start = 'KeyName1=%s,KeyName2=%s' % (value_docs, value_docs)
+        start = f'KeyName1={value_docs},KeyName2={value_docs}'
         if k.enum and not stack:
             start += '\n\nWhere valid key names are:\n'
             for enum in k.enum:
-                start += '  %s\n' % enum
+                start += f'  {enum}\n'
         elif stack:
-            start = '{%s}' % start
+            start = f'{{{start}}}'
         return start
 
     def _structure_docs(self, argument_model, stack):
@@ -521,7 +552,7 @@ class ParamShorthandDocGen(ParamShorthand):
         inner_part = ','.join(parts)
         if not stack:
             return inner_part
-        return '{%s}' % inner_part
+        return f'{{{inner_part}}}'
 
     def _member_docs(self, name, shape, stack):
         if stack.count(shape.name) > 0:
@@ -531,4 +562,4 @@ class ParamShorthandDocGen(ParamShorthand):
             value_doc = self._shorthand_docs(shape, stack)
         finally:
             stack.pop()
-        return '%s=%s' % (name, value_doc)
+        return f'{name}={value_doc}'

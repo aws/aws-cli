@@ -85,7 +85,16 @@ class TestPackageModules(unittest.TestCase):
         # The tests are in the modules directory.
         # Each test has 3 files:
         # test-template.yaml, test-module.yaml, and test-expect.yaml
-        tests = ["basic", "type", "sub", "modinmod", "output", "policy", "vpc"]
+        tests = [
+            "basic",
+            "type",
+            "sub",
+            "modinmod",
+            "output",
+            "policy",
+            "vpc",
+            "map",
+        ]
         for test in tests:
             base = "unit/customizations/cloudformation/modules"
             t = modules.read_source(f"{base}/{test}-template.yaml")
@@ -93,30 +102,10 @@ class TestPackageModules(unittest.TestCase):
             e = modules.read_source(f"{base}/{test}-expect.yaml")
 
             # Modules section
-            if MODULES in td:
-                for module_name, module_config in td[MODULES].items():
-                    module_config[modules.NAME] = module_name
-                    relative_path = module_config[modules.SOURCE]
-                    module_config[modules.SOURCE] = f"{base}/{relative_path}"
-                    module = modules.Module(td, module_config)
-                    td = module.process()
-                del td[MODULES]
+            td = modules.process_module_section(td, base, t)
 
             # Resources with Type LocalModule
-            for k, v in td[RESOURCES].copy().items():
-                if TYPE in v and v[TYPE] == LOCAL_MODULE:
-                    module_config = {}
-                    module_config[modules.NAME] = k
-                    relative_path = v[modules.SOURCE]
-                    module_config[modules.SOURCE] = f"{base}/{relative_path}"
-                    props = modules.PROPERTIES
-                    if props in v:
-                        module_config[props] = v[props]
-                    if modules.OVERRIDES in v:
-                        module_config[modules.OVERRIDES] = v[modules.OVERRIDES]
-                    module = modules.Module(td, module_config)
-                    td = module.process()
-                    del td[RESOURCES][k]
+            td = modules.process_resources_section(td, base, t, None)
 
         processed = yamlhelper.yaml_dump(td)
         self.assertEqual(e, processed)

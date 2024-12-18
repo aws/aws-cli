@@ -100,9 +100,38 @@ def make_module(template, name, config, base_path, parent_path):
     return Module(template, module_config)
 
 
+def map_placeholders(i, token, val):
+    "Replace $MapValue and $MapIndex"
+    if SUB in val:
+        sub = val[SUB]
+        r = sub.replace(MAP_PLACEHOLDER, token)
+        r = r.replace(INDEX_PLACEHOLDER, f"{i}")
+        words = parse_sub(r)
+        need_sub = False
+        for word in words:
+            if word.t != WordType.STR:
+                need_sub = True
+                break
+        if need_sub:
+            return {SUB: r}
+        return r
+    r = val.replace(MAP_PLACEHOLDER, token)
+    r = r.replace(INDEX_PLACEHOLDER, f"{i}")
+    return r
+
+
 # pylint: disable=too-many-locals,too-many-nested-blocks
 def process_resources_section(template, base_path, parent_path, parent_module):
     "Recursively process the Resources section of the template"
+    if parent_module is None:
+        # Make a fake Module instance to handle find_ref for Maps
+        # The only valid way to do this at the template level
+        # is to specify a default for a Parameter, since we need to
+        # resolve the actual value client-side
+        parent_module = Module(template, {NAME: "", SOURCE: ""})
+        if PARAMETERS in template:
+            parent_module.params = template[PARAMETERS]
+
     for k, v in template[RESOURCES].copy().items():
         if TYPE in v and v[TYPE] == LOCAL_MODULE:
             # First, pre-process local modules that are looping over a list
@@ -113,7 +142,6 @@ def process_resources_section(template, base_path, parent_path, parent_module):
                     if parent_module is None:
                         msg = "Map is only valid in a module"
                         raise exceptions.InvalidModuleError(msg=msg)
-                        # TODO: We should be able to fake up a parent module
                     m = parent_module.find_ref(m[REF])
                     if m is None:
                         msg = f"{k} has an invalid Map Ref"
@@ -126,10 +154,9 @@ def process_resources_section(template, base_path, parent_path, parent_module):
                     del resource[MAP]
                     # Replace $Map and $Index placeholders
                     for prop, val in resource[PROPERTIES].copy().items():
-                        if val == MAP_PLACEHOLDER:
-                            resource[PROPERTIES][prop] = token
-                        if val == INDEX_PLACEHOLDER:
-                            resource[PROPERTIES][prop] = f"{i}"
+                        resource[PROPERTIES][prop] = map_placeholders(
+                            i, token, val
+                        )
                     template[RESOURCES][logical_id] = resource
 
                 del template[RESOURCES][k]
@@ -682,7 +709,7 @@ class Module:
         logical_id = self.name + v[0]
         d[n] = {GETATT: [logical_id, v[1]]}
 
-    def find_ref(self, v):
+    def find_ref(self, name):
         """
         Find a Ref.
 
@@ -690,28 +717,29 @@ class Module:
         template Property, or a Parameter Default. It could also
         be a reference to another resource in this module.
 
+        :param name The name to search for
         :return The referenced element or None
         """
-        # print(f"find_ref {v}, props: {self.props}, params: {self.params}")
-        if v in self.props:
-            if v not in self.params:
+        # print(f"find_ref {name}, props: {self.props}, params: {self.params}")
+        if name in self.props:
+            if name not in self.params:
                 # The parent tried to set a property that doesn't exist
                 # in the Parameters section of this module
-                msg = f"{v} not found in module Parameters: {self.source}"
+                msg = f"{name} not found in module Parameters: {self.source}"
                 raise exceptions.InvalidModuleError(msg=msg)
-            return self.props[v]
+            return self.props[name]
 
-        if v in self.params:
-            param = self.params[v]
+        if name in self.params:
+            param = self.params[name]
             if DEFAULT in param:
                 # Use the default value of the Parameter
                 return param[DEFAULT]
-            msg = f"{v} does not have a Default and is not a Property"
+            msg = f"{name} does not have a Default and is not a Property"
             raise exceptions.InvalidModuleError(msg=msg)
 
-        for k in self.resources:
-            if v == k:
+        for logical_id in self.resources:
+            if name == logical_id:
                 # Simply rename local references to include the module name
-                return {REF: self.name + v}
+                return {REF: self.name + logical_id}
 
         return None

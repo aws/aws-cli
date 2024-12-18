@@ -13,15 +13,15 @@
 import json
 import sys
 
-from botocore import xform_name
-from botocore.stub import Stubber
-from botocore.utils import ArgumentGenerator
 from ruamel.yaml import YAML
 
 from awscli.clidriver import CLIOperationCaller
 from awscli.customizations.arguments import OverrideRequiredArgsArgument
 from awscli.customizations.utils import get_shape_doc_overview
 from awscli.utils import json_encoder
+from botocore import xform_name
+from botocore.stub import Stubber
+from botocore.utils import ArgumentGenerator
 
 
 def register_generate_cli_skeleton(cli):

@@ -13,16 +13,15 @@
 
 import hashlib
 import logging
-import threading
 import os
 import sys
+import threading
 
 import botocore
 import botocore.exceptions
+from awscli.compat import collections_abc
 from s3transfer.manager import TransferManager
 from s3transfer.subscribers import BaseSubscriber
-
-from awscli.compat import collections_abc
 
 LOG = logging.getLogger(__name__)
 

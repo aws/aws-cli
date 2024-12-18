@@ -10,14 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import zipfile
 import copy
+import zipfile
 from contextlib import closing
 
-from awscli.arguments import CustomArgument, CLIArgument
-from awscli.customizations.exceptions import ParamValidationError
+from awscli.arguments import CLIArgument, CustomArgument
 from awscli.compat import BytesIO
-
+from awscli.customizations.exceptions import ParamValidationError
 
 ERROR_MSG = (
     "--zip-file must be a zip file with the fileb:// prefix.\n"

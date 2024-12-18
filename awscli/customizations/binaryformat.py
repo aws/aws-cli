@@ -13,9 +13,8 @@
 import base64
 import binascii
 
-from botocore.exceptions import ProfileNotFound
-
 from awscli.shorthand import ModelVisitor
+from botocore.exceptions import ProfileNotFound
 
 
 def add_binary_formatter(session, parsed_args, **kwargs):

@@ -25,10 +25,11 @@ fields from the response.
 
 import base64
 
-from awscli.customizations.arguments import StatefulArgument
-from awscli.customizations.arguments import resolve_given_outfile_path
-from awscli.customizations.arguments import is_parsed_result_successful
-
+from awscli.customizations.arguments import (
+    StatefulArgument,
+    is_parsed_result_successful,
+    resolve_given_outfile_path,
+)
 
 CHOICES = ('QRCodePNG', 'Base32StringSeed')
 OUTPUT_HELP = (

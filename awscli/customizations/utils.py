@@ -20,9 +20,8 @@ import re
 import sys
 import xml
 
-from botocore.exceptions import ClientError
 from awscli.customizations.exceptions import ParamValidationError
-
+from botocore.exceptions import ClientError
 
 _SENTENCE_DELIMETERS_REGEX = re.compile(r'[.:]+')
 _LINE_BREAK_CHARS = ['\n', '\u2028']

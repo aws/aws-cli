@@ -20,11 +20,9 @@ You can instead say `--ebs-optimized/--no-ebs-optimized`.
 import logging
 from functools import partial
 
-
-from awscli.argprocess import detect_shape_structure
 from awscli import arguments
+from awscli.argprocess import detect_shape_structure
 from awscli.customizations.exceptions import ParamValidationError
-
 
 LOG = logging.getLogger(__name__)
 # This sentinel object is used to distinguish when

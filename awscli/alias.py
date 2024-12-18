@@ -15,12 +15,10 @@ import os
 import shlex
 import subprocess
 
-from botocore.configloader import raw_config_parse
-
-from awscli.compat import compat_shell_quote
 from awscli.commands import CLICommand
+from awscli.compat import compat_shell_quote
 from awscli.utils import emit_top_level_args_parsed_event
-
+from botocore.configloader import raw_config_parse
 
 LOG = logging.getLogger(__name__)
 

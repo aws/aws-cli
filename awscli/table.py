@@ -6,18 +6,18 @@
 
 #     http://aws.amazon.com/apache2.0/
 
+import struct
+
 # or in the "license" file accompanying this file. This file is
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
-import struct
 import unicodedata
 
 import colorama
 
 from awscli.utils import is_a_tty
-
 
 # `autoreset` allows us to not have to sent reset sequences for every
 # string. `strip` lets us preserve color when redirecting.
@@ -44,8 +44,8 @@ def get_text_length(text):
 def determine_terminal_width(default_width=80):
     # If we can't detect the terminal width, the default_width is returned.
     try:
-        from termios import TIOCGWINSZ
         from fcntl import ioctl
+        from termios import TIOCGWINSZ
     except ImportError:
         return default_width
     try:

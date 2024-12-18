@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.22.20
+=======
+
+* api-change:``resiliencehub``: AWS Resilience Hub now automatically detects already configured CloudWatch alarms and FIS experiments as part of the assessment process and returns the discovered resources in the corresponding list API responses. It also allows you to include or exclude test recommendations for an AppComponent.
+* enhancement:``ec2``: Replace cryptographic functions from ``cryptography`` with ``awscrt`` for the ``get-password-data`` command.
+* api-change:``quicksight``: Add support for PerformanceConfiguration attribute to Dataset entity. Allow PerformanceConfiguration specification in CreateDataset and UpdateDataset APIs.
+* api-change:``transfer``: Added AS2 agreement configurations to control filename preservation and message signing enforcement. Added AS2 connector configuration to preserve content type from S3 objects.
+* api-change:``budgets``: Releasing minor partition endpoint updates
+* api-change:``connect``: This release adds support for the UpdateParticipantAuthentication API used for customer authentication within Amazon Connect chats.
+* enhancement:``cloudfront``: Replace cryptographic functions from ``cryptography`` with ``awscrt`` for the ``sign`` command.
+* api-change:``datasync``: AWS DataSync introduces the ability to update attributes for in-cloud locations.
+* api-change:``iot``: Release connectivity status query API which is a dedicated high throughput(TPS) API to query a specific device's most recent connectivity state and metadata.
+* api-change:``amplify``: Added WAF Configuration to Amplify Apps
+* enhancement:``cloudtrail``: Replace cryptographic functions from ``cryptography`` with ``awscrt`` for the ``validate-logs`` and ``verify-query-results`` commands.
+* api-change:``connectparticipant``: This release adds support for the GetAuthenticationUrl and CancelParticipantAuthentication APIs used for customer authentication within Amazon Connect chats. There are also minor updates to the GetAttachment API.
+* api-change:``mwaa``: Added support for Apache Airflow version 2.10.3 to MWAA.
+
+
 2.22.19
 =======
 

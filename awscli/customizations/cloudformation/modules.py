@@ -62,16 +62,8 @@ def process_module_section(template, base_path, parent_path):
             raise exceptions.InvalidModuleError(msg=msg)
 
         # Process each Module node separately
-        for module_name, module_config in template[MODULES].items():
-            module_config[NAME] = module_name
-            # Fix the source path
-            relative_path = module_config[SOURCE]
-            module_config[SOURCE] = os.path.join(base_path, relative_path)
-            module_config[SOURCE] = os.path.normpath(module_config[SOURCE])
-            if module_config[SOURCE] == parent_path:
-                msg = f"Module refers to itself: {parent_path}"
-                raise exceptions.InvalidModuleError(msg=msg)
-            module = Module(template, module_config)
+        for k, v in template[MODULES].items():
+            module = make_module(template, k, v, base_path, parent_path)
             template = module.process()
 
         # Remove the Modules section from the template
@@ -189,30 +181,10 @@ def merge_props(original, overrides):
     """
     This function merges dicts, replacing values in the original with
     overrides.  This function is recursive and can act on lists and scalars.
+    See the unit tests for example merges.
+    See tests/unit/customizations/cloudformation/modules/policy-*.yaml
 
     :return A new value with the overridden properties
-
-    Original:
-
-    A:
-      B: foo
-      C:
-        D: bar
-
-    Override:
-
-    A:
-      B: baz
-      C:
-        E: qux
-
-    Result:
-
-    A:
-      B: baz
-      C:
-        D: bar
-        E: qux
     """
     original_type = type(original)
     override_type = type(overrides)
@@ -245,40 +217,6 @@ class Module:
     """
     Process client-side modules.
 
-    See tests/unit/customizations/cloudformation/modules for examples of what
-    the Modules section of a template looks like.
-
-    Modules can be referenced in a new Modules section in the templates,
-    or they can be referenced as Resources with the Type LocalModule.
-    Modules have a Source attribute pointing to a local file,
-    a Properties attribute that corresponds to Parameters in the modules,
-    and an Overrides attribute that can override module output.
-
-    A module is itself basically a CloudFormation template, with a Parameters
-    section and Resources that are injected into the parent template. The
-    Properties defined in the Modules section correspond to the Parameters in
-    the module. These modules operate in a similar way to registry modules.
-
-    The name of the module in the Modules section is used as a prefix to
-    logical ids that are defined in the module. Or if the module is
-    referenced in the Type attribute of a Resource, the logical id of the
-    resource is used as the prefix.
-
-    In addition to the parent setting Properties, all attributes of the module
-    can be overridden with Overrides, which require the consumer to know how
-    the module is structured. This "escape hatch" is considered a first class
-    citizen in the design, to avoid excessive Parameter definitions to cover
-    every possible use case.
-
-    Module Parameters (set by Properties in the parent) are handled with
-    Refs, Subs, and GetAtts in the module. These are handled in a way that
-    fixes references to match module prefixes, fully resolving values
-    that are actually strings and leaving others to be resolved at deploy time.
-
-    Modules can contain other modules, with no limit to the levels of nesting.
-
-    Modules can define Outputs, which are key-value pairs that can be
-    referenced by the parent.
     """
 
     def __init__(self, template, module_config):

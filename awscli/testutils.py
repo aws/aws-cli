@@ -20,37 +20,33 @@ advantage of all the testing utilities we provide.
 
 """
 
-import os
-import sys
+import binascii
+import contextlib
 import copy
-import shutil
-import time
 import json
 import logging
-import tempfile
-import platform
-import contextlib
-import binascii
 import math
-from pprint import pformat
-from subprocess import Popen, PIPE
-from unittest import mock
+import os
+import platform
+import shutil
+import sys
+import tempfile
+import time
 import unittest
-
-from awscli.compat import BytesIO, StringIO
+from pprint import pformat
+from subprocess import PIPE, Popen
+from unittest import mock
 
 from ruamel.yaml import YAML
 
-from botocore.session import Session
-from botocore.exceptions import ClientError
-from botocore.exceptions import WaiterError
-import botocore.loaders
-from botocore.awsrequest import AWSResponse
-
 import awscli.clidriver
-from awscli.plugin import load_plugins
+import botocore.loaders
 from awscli.clidriver import CLIDriver
-
+from awscli.compat import BytesIO, StringIO
+from awscli.plugin import load_plugins
+from botocore.awsrequest import AWSResponse
+from botocore.exceptions import ClientError, WaiterError
+from botocore.session import Session
 
 _LOADER = botocore.loaders.Loader()
 INTEG_LOG = logging.getLogger('awscli.tests.integration')

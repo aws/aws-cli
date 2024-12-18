@@ -27,9 +27,8 @@ work you need to:
 
 """
 
-import os
 import logging
-
+import os
 
 LOG = logging.getLogger(__name__)
 

@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 
 from awscli.customizations.binaryhoist import (
-    BinaryBlobArgumentHoister,
     ArgumentParameters,
+    BinaryBlobArgumentHoister,
 )
 
 FILE_DOCSTRING = (

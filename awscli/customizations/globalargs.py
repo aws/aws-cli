@@ -12,13 +12,13 @@
 # language governing permissions and limitations under the License.
 import sys
 
-from botocore.client import Config
-from botocore.endpoint import DEFAULT_TIMEOUT
-from botocore.handlers import disable_signing
 import jmespath
 
 from awscli.compat import urlparse
 from awscli.customizations.exceptions import ParamValidationError
+from botocore.client import Config
+from botocore.endpoint import DEFAULT_TIMEOUT
+from botocore.handlers import disable_signing
 
 
 def register_parse_global_args(cli):

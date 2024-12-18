@@ -1296,6 +1296,20 @@
       "max":10,
       "min":1
     },
+    "Alarm":{
+      "type":"structure",
+      "members":{
+        "alarmArn":{
+          "shape":"Arn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the Amazon CloudWatch alarm.</p>"
+        },
+        "source":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the source of the Amazon CloudWatch alarm. That is, it indicates if the alarm was created using Resilience Hub recommendation (<code>AwsResilienceHub</code>), or if you had created the alarm in Amazon CloudWatch (<code>Customer</code>).</p>"
+        }
+      },
+      "documentation":"<p>Indicates the Amazon CloudWatch alarm detected while running an assessment.</p>"
+    },
     "AlarmRecommendation":{
       "type":"structure",
       "required":[
@@ -1871,7 +1885,7 @@
       "members":{
         "appComponents":{
           "shape":"AppComponentNameList",
-          "documentation":"<p>Indicates the Application Components (AppComponents) that were assessed as part of the assessnent and are associated with the identified risk and recommendation.</p> <note> <p>This property is available only in the US East (N. Virginia) Region.</p> </note>"
+          "documentation":"<p>Indicates the Application Components (AppComponents) that were assessed as part of the assessment and are associated with the identified risk and recommendation.</p> <note> <p>This property is available only in the US East (N. Virginia) Region.</p> </note>"
         },
         "recommendation":{
           "shape":"String255",
@@ -1994,6 +2008,10 @@
         "referenceId"
       ],
       "members":{
+        "appComponentId":{
+          "shape":"EntityName255",
+          "documentation":"<p>Indicates the identifier of an AppComponent.</p>"
+        },
         "entryId":{
           "shape":"String255",
           "documentation":"<p>An identifier for an entry in this batch that is used to communicate the result.</p> <note> <p>The <code>entryId</code>s of a batch request need to be unique within a request.</p> </note>"
@@ -3477,6 +3495,20 @@
         "ComplexityOfImplementation"
       ]
     },
+    "Experiment":{
+      "type":"structure",
+      "members":{
+        "experimentArn":{
+          "shape":"String255",
+          "documentation":"<p>Amazon Resource Name (ARN) of the FIS experiment.</p>"
+        },
+        "experimentTemplateId":{
+          "shape":"String255",
+          "documentation":"<p>Identifier of the FIS experiment template.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the FIS experiment detected while running an assessment.</p>"
+    },
     "FailedGroupingRecommendationEntries":{
       "type":"list",
       "member":{"shape":"FailedGroupingRecommendationEntry"}
@@ -4703,7 +4735,7 @@
         },
         "invokerRoleName":{
           "shape":"IamRoleName",
-          "documentation":"<p>Existing Amazon Web Services IAM role name in the primary Amazon Web Services account that will be assumed by Resilience Hub Service Principle to obtain a read-only access to your application resources while running an assessment.</p> <note> <ul> <li> <p>You must have <code>iam:passRole</code> permission for this role while creating or updating the application.</p> </li> <li> <p>Currently, <code>invokerRoleName</code> accepts only <code>[A-Za-z0-9_+=,.@-]</code> characters.</p> </li> </ul> </note>"
+          "documentation":"<p>Existing Amazon Web Services IAM role name in the primary Amazon Web Services account that will be assumed by Resilience Hub Service Principle to obtain a read-only access to your application resources while running an assessment. </p> <p>If your IAM role includes a path, you must include the path in the <code>invokerRoleName</code> parameter. For example, if your IAM role's ARN is <code>arn:aws:iam:123456789012:role/my-path/role-name</code>, you should pass <code>my-path/role-name</code>. </p> <note> <ul> <li> <p>You must have <code>iam:passRole</code> permission for this role while creating or updating the application.</p> </li> <li> <p>Currently, <code>invokerRoleName</code> accepts only <code>[A-Za-z0-9_+=,.@-]</code> characters.</p> </li> </ul> </note>"
         },
         "type":{
           "shape":"PermissionModelType",
@@ -4923,6 +4955,10 @@
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies if the recommendation has already been implemented.</p>"
         },
+        "discoveredAlarm":{
+          "shape":"Alarm",
+          "documentation":"<p>Indicates the previously implemented Amazon CloudWatch alarm discovered by Resilience Hub.</p>"
+        },
         "excludeReason":{
           "shape":"ExcludeRecommendationReason",
           "documentation":"<p>Indicates the reason for excluding an operational recommendation.</p>"
@@ -4930,6 +4966,10 @@
         "excluded":{
           "shape":"BooleanOptional",
           "documentation":"<p>Indicates if an operational recommendation item is excluded.</p>"
+        },
+        "latestDiscoveredExperiment":{
+          "shape":"Experiment",
+          "documentation":"<p>Indicates the experiment created in FIS that was discovered by Resilience Hub, which matches the recommendation.</p>"
         },
         "resourceId":{
           "shape":"String500",
@@ -5875,6 +5915,10 @@
       "type":"structure",
       "required":["referenceId"],
       "members":{
+        "appComponentId":{
+          "shape":"EntityName255",
+          "documentation":"<p>Indicates the identifier of the AppComponent.</p>"
+        },
         "appComponentName":{
           "shape":"EntityId",
           "documentation":"<p>Name of the Application Component.</p>"
@@ -6249,6 +6293,10 @@
         "referenceId"
       ],
       "members":{
+        "appComponentId":{
+          "shape":"EntityName255",
+          "documentation":"<p>Indicates the identifier of the AppComponent.</p>"
+        },
         "entryId":{
           "shape":"String255",
           "documentation":"<p>An identifier for an entry in this batch that is used to communicate the result.</p> <note> <p>The <code>entryId</code>s of a batch request need to be unique within a request.</p> </note>"

@@ -5,14 +5,32 @@
     "endpointPrefix":"participant.connect",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"Amazon Connect Participant",
     "serviceFullName":"Amazon Connect Participant Service",
     "serviceId":"ConnectParticipant",
     "signatureVersion":"v4",
     "signingName":"execute-api",
-    "uid":"connectparticipant-2018-09-07"
+    "uid":"connectparticipant-2018-09-07",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "CancelParticipantAuthentication":{
+      "name":"CancelParticipantAuthentication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/participant/cancel-authentication"
+      },
+      "input":{"shape":"CancelParticipantAuthenticationRequest"},
+      "output":{"shape":"CancelParticipantAuthenticationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Cancels the authentication session. The opted out branch of the Authenticate Customer flow block will be taken.</p> <note> <p>The current supported channel is chat. This API is not supported for Apple Messages for Business, WhatsApp, or SMS chats.</p> </note>"
+    },
     "CompleteAttachmentUpload":{
       "name":"CompleteAttachmentUpload",
       "http":{
@@ -29,7 +47,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Allows you to confirm that the attachment has been uploaded using the pre-signed URL provided in StartAttachmentUpload API. A conflict exception is thrown when an attachment with that identifier is already being uploaded.</p> <note> <p> <code>ConnectionToken</code> is used for invoking this API instead of <code>ParticipantToken</code>.</p> </note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p>"
+      "documentation":"<p>Allows you to confirm that the attachment has been uploaded using the pre-signed URL provided in StartAttachmentUpload API. A conflict exception is thrown when an attachment with that identifier is already being uploaded.</p> <p>For security recommendations, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Amazon Connect Chat security best practices</a>.</p> <note> <p> <code>ConnectionToken</code> is used for invoking this API instead of <code>ParticipantToken</code>.</p> </note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p>"
     },
     "CreateParticipantConnection":{
       "name":"CreateParticipantConnection",
@@ -45,7 +63,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Creates the participant's connection. </p> <note> <p> <code>ParticipantToken</code> is used for invoking this API instead of <code>ConnectionToken</code>.</p> </note> <p>The participant token is valid for the lifetime of the participant – until they are part of a contact.</p> <p>The response URL for <code>WEBSOCKET</code> Type has a connect expiry timeout of 100s. Clients must manually connect to the returned websocket URL and subscribe to the desired topic. </p> <p>For chat, you need to publish the following on the established websocket connection:</p> <p> <code>{\"topic\":\"aws/subscribe\",\"content\":{\"topics\":[\"aws/chat\"]}}</code> </p> <p>Upon websocket URL expiry, as specified in the response ConnectionExpiry parameter, clients need to call this API again to obtain a new websocket URL and perform the same steps as before.</p> <p> <b>Message streaming support</b>: This API can also be used together with the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_StartContactStreaming.html\">StartContactStreaming</a> API to create a participant connection for chat contacts that are not using a websocket. For more information about message streaming, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-message-streaming.html\">Enable real-time chat message streaming</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <p> <b>Feature specifications</b>: For information about feature specifications, such as the allowed number of open websocket connections per participant, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#feature-limits\">Feature specifications</a> in the <i>Amazon Connect Administrator Guide</i>. </p> <note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p> </note>"
+      "documentation":"<p>Creates the participant's connection. </p> <p>For security recommendations, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Amazon Connect Chat security best practices</a>.</p> <note> <p> <code>ParticipantToken</code> is used for invoking this API instead of <code>ConnectionToken</code>.</p> </note> <p>The participant token is valid for the lifetime of the participant – until they are part of a contact.</p> <p>The response URL for <code>WEBSOCKET</code> Type has a connect expiry timeout of 100s. Clients must manually connect to the returned websocket URL and subscribe to the desired topic. </p> <p>For chat, you need to publish the following on the established websocket connection:</p> <p> <code>{\"topic\":\"aws/subscribe\",\"content\":{\"topics\":[\"aws/chat\"]}}</code> </p> <p>Upon websocket URL expiry, as specified in the response ConnectionExpiry parameter, clients need to call this API again to obtain a new websocket URL and perform the same steps as before.</p> <p> <b>Message streaming support</b>: This API can also be used together with the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_StartContactStreaming.html\">StartContactStreaming</a> API to create a participant connection for chat contacts that are not using a websocket. For more information about message streaming, <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-message-streaming.html\">Enable real-time chat message streaming</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <p> <b>Feature specifications</b>: For information about feature specifications, such as the allowed number of open websocket connections per participant, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#feature-limits\">Feature specifications</a> in the <i>Amazon Connect Administrator Guide</i>. </p> <note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p> </note>"
     },
     "DescribeView":{
       "name":"DescribeView",
@@ -62,7 +80,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves the view for the specified view token.</p>"
+      "documentation":"<p>Retrieves the view for the specified view token.</p> <p>For security recommendations, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Amazon Connect Chat security best practices</a>.</p>"
     },
     "DisconnectParticipant":{
       "name":"DisconnectParticipant",
@@ -78,7 +96,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Disconnects a participant. </p> <note> <p> <code>ConnectionToken</code> is used for invoking this API instead of <code>ParticipantToken</code>.</p> </note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p>"
+      "documentation":"<p>Disconnects a participant. </p> <p>For security recommendations, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Amazon Connect Chat security best practices</a>.</p> <note> <p> <code>ConnectionToken</code> is used for invoking this API instead of <code>ParticipantToken</code>.</p> </note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p>"
     },
     "GetAttachment":{
       "name":"GetAttachment",
@@ -94,7 +112,23 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Provides a pre-signed URL for download of a completed attachment. This is an asynchronous API for use with active contacts.</p> <note> <p> <code>ConnectionToken</code> is used for invoking this API instead of <code>ParticipantToken</code>.</p> </note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p>"
+      "documentation":"<p>Provides a pre-signed URL for download of a completed attachment. This is an asynchronous API for use with active contacts.</p> <p>For security recommendations, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Amazon Connect Chat security best practices</a>.</p> <note> <p> <code>ConnectionToken</code> is used for invoking this API instead of <code>ParticipantToken</code>.</p> </note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p>"
+    },
+    "GetAuthenticationUrl":{
+      "name":"GetAuthenticationUrl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/participant/authentication-url"
+      },
+      "input":{"shape":"GetAuthenticationUrlRequest"},
+      "output":{"shape":"GetAuthenticationUrlResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves the AuthenticationUrl for the current authentication session for the AuthenticateCustomer flow block. </p> <p>For security recommendations, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Amazon Connect Chat security best practices</a>.</p> <note> <ul> <li> <p>This API can only be called within one minute of receiving the authenticationInitiated event.</p> </li> <li> <p>The current supported channel is chat. This API is not supported for Apple Messages for Business, WhatsApp, or SMS chats.</p> </li> </ul> </note>"
     },
     "GetTranscript":{
       "name":"GetTranscript",
@@ -110,7 +144,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves a transcript of the session, including details about any attachments. For information about accessing past chat contact transcripts for a persistent chat, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html\">Enable persistent chat</a>. </p> <p>If you have a process that consumes events in the transcript of an chat that has ended, note that chat transcripts contain the following event content types if the event has occurred during the chat session:</p> <ul> <li> <p> <code>application/vnd.amazonaws.connect.event.participant.left</code> </p> </li> <li> <p> <code>application/vnd.amazonaws.connect.event.participant.joined</code> </p> </li> <li> <p> <code>application/vnd.amazonaws.connect.event.chat.ended</code> </p> </li> <li> <p> <code>application/vnd.amazonaws.connect.event.transfer.succeeded</code> </p> </li> <li> <p> <code>application/vnd.amazonaws.connect.event.transfer.failed</code> </p> </li> </ul> <note> <p> <code>ConnectionToken</code> is used for invoking this API instead of <code>ParticipantToken</code>.</p> </note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p>"
+      "documentation":"<p>Retrieves a transcript of the session, including details about any attachments. For information about accessing past chat contact transcripts for a persistent chat, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html\">Enable persistent chat</a>. </p> <p>For security recommendations, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Amazon Connect Chat security best practices</a>.</p> <p>If you have a process that consumes events in the transcript of an chat that has ended, note that chat transcripts contain the following event content types if the event has occurred during the chat session:</p> <ul> <li> <p> <code>application/vnd.amazonaws.connect.event.participant.left</code> </p> </li> <li> <p> <code>application/vnd.amazonaws.connect.event.participant.joined</code> </p> </li> <li> <p> <code>application/vnd.amazonaws.connect.event.chat.ended</code> </p> </li> <li> <p> <code>application/vnd.amazonaws.connect.event.transfer.succeeded</code> </p> </li> <li> <p> <code>application/vnd.amazonaws.connect.event.transfer.failed</code> </p> </li> </ul> <note> <p> <code>ConnectionToken</code> is used for invoking this API instead of <code>ParticipantToken</code>.</p> </note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p>"
     },
     "SendEvent":{
       "name":"SendEvent",
@@ -127,7 +161,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<note> <p>The <code>application/vnd.amazonaws.connect.event.connection.acknowledged</code> ContentType will no longer be supported starting December 31, 2024. This event has been migrated to the <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> API using the <code>ConnectParticipant</code> field.</p> </note> <p>Sends an event. Message receipts are not supported when there are more than two active participants in the chat. Using the SendEvent API for message receipts when a supervisor is barged-in will result in a conflict exception.</p> <note> <p> <code>ConnectionToken</code> is used for invoking this API instead of <code>ParticipantToken</code>.</p> </note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p>"
+      "documentation":"<note> <p>The <code>application/vnd.amazonaws.connect.event.connection.acknowledged</code> ContentType will no longer be supported starting December 31, 2024. This event has been migrated to the <a href=\"https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html\">CreateParticipantConnection</a> API using the <code>ConnectParticipant</code> field.</p> </note> <p>Sends an event. Message receipts are not supported when there are more than two active participants in the chat. Using the SendEvent API for message receipts when a supervisor is barged-in will result in a conflict exception.</p> <p>For security recommendations, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Amazon Connect Chat security best practices</a>.</p> <note> <p> <code>ConnectionToken</code> is used for invoking this API instead of <code>ParticipantToken</code>.</p> </note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p>"
     },
     "SendMessage":{
       "name":"SendMessage",
@@ -143,7 +177,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Sends a message.</p> <note> <p> <code>ConnectionToken</code> is used for invoking this API instead of <code>ParticipantToken</code>.</p> </note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p>"
+      "documentation":"<p>Sends a message.</p> <p>For security recommendations, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Amazon Connect Chat security best practices</a>.</p> <note> <p> <code>ConnectionToken</code> is used for invoking this API instead of <code>ParticipantToken</code>.</p> </note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p>"
     },
     "StartAttachmentUpload":{
       "name":"StartAttachmentUpload",
@@ -160,7 +194,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Provides a pre-signed Amazon S3 URL in response for uploading the file directly to S3.</p> <note> <p> <code>ConnectionToken</code> is used for invoking this API instead of <code>ParticipantToken</code>.</p> </note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p>"
+      "documentation":"<p>Provides a pre-signed Amazon S3 URL in response for uploading the file directly to S3.</p> <p>For security recommendations, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-best-practices.html#bp-security-chat\">Amazon Connect Chat security best practices</a>.</p> <note> <p> <code>ConnectionToken</code> is used for invoking this API instead of <code>ParticipantToken</code>.</p> </note> <p>The Amazon Connect Participant Service APIs do not use <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4 authentication</a>.</p>"
     }
   },
   "shapes":{
@@ -229,7 +263,36 @@
       "type":"list",
       "member":{"shape":"AttachmentItem"}
     },
+    "AuthenticationUrl":{
+      "type":"string",
+      "max":2083,
+      "min":1
+    },
     "Bool":{"type":"boolean"},
+    "CancelParticipantAuthenticationRequest":{
+      "type":"structure",
+      "required":[
+        "SessionId",
+        "ConnectionToken"
+      ],
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The <code>sessionId</code> provided in the <code>authenticationInitiated</code> event.</p>"
+        },
+        "ConnectionToken":{
+          "shape":"ParticipantToken",
+          "documentation":"<p>The authentication token associated with the participant's connection.</p>",
+          "location":"header",
+          "locationName":"X-Amz-Bearer"
+        }
+      }
+    },
+    "CancelParticipantAuthenticationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "ChatContent":{
       "type":"string",
       "max":16384,
@@ -448,11 +511,16 @@
           "documentation":"<p>The authentication token associated with the participant's connection.</p>",
           "location":"header",
           "locationName":"X-Amz-Bearer"
+        },
+        "UrlExpiryInSeconds":{
+          "shape":"URLExpiryInSeconds",
+          "documentation":"<p>The expiration time of the URL in ISO timestamp. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>"
         }
       }
     },
     "GetAttachmentResponse":{
       "type":"structure",
+      "required":["AttachmentSizeInBytes"],
       "members":{
         "Url":{
           "shape":"PreSignedAttachmentUrl",
@@ -461,6 +529,44 @@
         "UrlExpiry":{
           "shape":"ISO8601Datetime",
           "documentation":"<p>The expiration time of the URL in ISO timestamp. It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>"
+        },
+        "AttachmentSizeInBytes":{
+          "shape":"AttachmentSizeInBytes",
+          "documentation":"<p>The size of the attachment in bytes.</p>",
+          "box":true
+        }
+      }
+    },
+    "GetAuthenticationUrlRequest":{
+      "type":"structure",
+      "required":[
+        "SessionId",
+        "RedirectUri",
+        "ConnectionToken"
+      ],
+      "members":{
+        "SessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The sessionId provided in the authenticationInitiated event.</p>"
+        },
+        "RedirectUri":{
+          "shape":"RedirectURI",
+          "documentation":"<p>The URL where the customer will be redirected after Amazon Cognito authorizes the user.</p>"
+        },
+        "ConnectionToken":{
+          "shape":"ParticipantToken",
+          "documentation":"<p>The authentication token associated with the participant's connection.</p>",
+          "location":"header",
+          "locationName":"X-Amz-Bearer"
+        }
+      }
+    },
+    "GetAuthenticationUrlResponse":{
+      "type":"structure",
+      "members":{
+        "AuthenticationUrl":{
+          "shape":"AuthenticationUrl",
+          "documentation":"<p>The URL where the customer will sign in to the identity provider. This URL contains the authorize endpoint for the Cognito UserPool used in the authentication.</p>"
         }
       }
     },
@@ -681,6 +787,11 @@
       "type":"list",
       "member":{"shape":"Receipt"}
     },
+    "RedirectURI":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "ResourceId":{"type":"string"},
     "ResourceNotFoundException":{
       "type":"structure",
@@ -812,6 +923,11 @@
       "error":{"httpStatusCode":402},
       "exception":true
     },
+    "SessionId":{
+      "type":"string",
+      "max":36,
+      "min":36
+    },
     "SortKey":{
       "type":"string",
       "enum":[
@@ -863,7 +979,7 @@
         },
         "UploadMetadata":{
           "shape":"UploadMetadata",
-          "documentation":"<p>Fields to be used while uploading the attachment.</p>"
+          "documentation":"<p>The headers to be provided while uploading the file to the URL.</p>"
         }
       }
     },
@@ -898,6 +1014,11 @@
     "Transcript":{
       "type":"list",
       "member":{"shape":"Item"}
+    },
+    "URLExpiryInSeconds":{
+      "type":"integer",
+      "max":300,
+      "min":5
     },
     "UploadMetadata":{
       "type":"structure",
@@ -1044,5 +1165,5 @@
       "documentation":"<p>The websocket for the participant's connection.</p>"
     }
   },
-  "documentation":"<p>Amazon Connect is an easy-to-use omnichannel cloud contact center service that enables companies of any size to deliver superior customer service at a lower cost. Amazon Connect communications capabilities make it easy for companies to deliver personalized interactions across communication channels, including chat. </p> <p>Use the Amazon Connect Participant Service to manage participants (for example, agents, customers, and managers listening in), and to send messages and events within a chat contact. The APIs in the service enable the following: sending chat messages, attachment sharing, managing a participant's connection state and message events, and retrieving chat transcripts.</p>"
+  "documentation":"<ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_Connect_Participant_Service.html\">Participant Service actions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_Connect_Participant_Service.html\">Participant Service data types</a> </p> </li> </ul> <p>Amazon Connect is an easy-to-use omnichannel cloud contact center service that enables companies of any size to deliver superior customer service at a lower cost. Amazon Connect communications capabilities make it easy for companies to deliver personalized interactions across communication channels, including chat. </p> <p>Use the Amazon Connect Participant Service to manage participants (for example, agents, customers, and managers listening in), and to send messages and events within a chat contact. The APIs in the service enable the following: sending chat messages, attachment sharing, managing a participant's connection state and message events, and retrieving chat transcripts.</p>"
 }

@@ -1244,6 +1244,10 @@
         "BasicAuthSecretId":{
           "shape":"As2ConnectorSecretId",
           "documentation":"<p>Provides Basic authentication support to the AS2 Connectors API. To use Basic authentication, you must provide the name or Amazon Resource Name (ARN) of a secret in Secrets Manager.</p> <p>The default value for this parameter is <code>null</code>, which indicates that Basic authentication is not enabled for the connector.</p> <p>If the connector should use Basic authentication, the secret needs to be in the following format:</p> <p> <code>{ \"Username\": \"user-name\", \"Password\": \"user-password\" }</code> </p> <p>Replace <code>user-name</code> and <code>user-password</code> with the credentials for the actual user that is being authenticated.</p> <p>Note the following:</p> <ul> <li> <p>You are storing these credentials in Secrets Manager, <i>not passing them directly</i> into this API.</p> </li> <li> <p>If you are using the API, SDKs, or CloudFormation to configure your connector, then you must create the secret before you can enable Basic authentication. However, if you are using the Amazon Web Services management console, you can have the system create the secret for you.</p> </li> </ul> <p>If you have previously enabled Basic authentication for a connector, you can disable it by using the <code>UpdateConnector</code> API call. For example, if you are using the CLI, you can run the following command to remove Basic authentication:</p> <p> <code>update-connector --connector-id my-connector-id --as2-config 'BasicAuthSecretId=\"\"'</code> </p>"
+        },
+        "PreserveContentType":{
+          "shape":"PreserveContentType",
+          "documentation":"<p>Allows you to use the Amazon S3 <code>Content-Type</code> that is associated with objects in S3 instead of having the content type mapped based on the file extension. This parameter is enabled by default when you create an AS2 connector from the console, but disabled by default when you create an AS2 connector by calling the API directly.</p>"
         }
       },
       "documentation":"<p>Contains the details for an AS2 connector object. The connector object is used for AS2 outbound processes, to connect the Transfer Family customer with the trading partner.</p>"
@@ -1513,6 +1517,14 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Key-value pairs that can be used to group and search for agreements.</p>"
+        },
+        "PreserveFilename":{
+          "shape":"PreserveFilenameType",
+          "documentation":"<p> Determines whether or not Transfer Family appends a unique string of characters to the end of the AS2 message payload filename when saving it. </p> <ul> <li> <p> <code>ENABLED</code>: the filename provided by your trading parter is preserved when the file is saved.</p> </li> <li> <p> <code>DISABLED</code> (default value): when Transfer Family saves the file, the filename is adjusted, as described in <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/send-as2-messages.html#file-names-as2\">File names and locations</a>.</p> </li> </ul>"
+        },
+        "EnforceMessageSigning":{
+          "shape":"EnforceMessageSigningType",
+          "documentation":"<p> Determines whether or not unsigned messages from your trading partners will be accepted. </p> <ul> <li> <p> <code>ENABLED</code>: Transfer Family rejects unsigned messages from your trading partner.</p> </li> <li> <p> <code>DISABLED</code> (default value): Transfer Family accepts unsigned messages from your trading partner.</p> </li> </ul>"
         }
       }
     },
@@ -2458,6 +2470,14 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Key-value pairs that can be used to group and search for agreements.</p>"
+        },
+        "PreserveFilename":{
+          "shape":"PreserveFilenameType",
+          "documentation":"<p> Determines whether or not Transfer Family appends a unique string of characters to the end of the AS2 message payload filename when saving it. </p> <ul> <li> <p> <code>ENABLED</code>: the filename provided by your trading parter is preserved when the file is saved.</p> </li> <li> <p> <code>DISABLED</code> (default value): when Transfer Family saves the file, the filename is adjusted, as described in <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/send-as2-messages.html#file-names-as2\">File names and locations</a>.</p> </li> </ul>"
+        },
+        "EnforceMessageSigning":{
+          "shape":"EnforceMessageSigningType",
+          "documentation":"<p> Determines whether or not unsigned messages from your trading partners will be accepted. </p> <ul> <li> <p> <code>ENABLED</code>: Transfer Family rejects unsigned messages from your trading partner.</p> </li> <li> <p> <code>DISABLED</code> (default value): Transfer Family accepts unsigned messages from your trading partner.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Describes the properties of an agreement.</p>"
@@ -2480,7 +2500,7 @@
         },
         "Status":{
           "shape":"CertificateStatusType",
-          "documentation":"<p>The certificate can be either <code>ACTIVE</code>, <code>PENDING_ROTATION</code>, or <code>INACTIVE</code>. <code>PENDING_ROTATION</code> means that this certificate will replace the current certificate when it expires.</p>"
+          "documentation":"<p>Currently, the only available status is <code>ACTIVE</code>: all other values are reserved for future use.</p>"
         },
         "Certificate":{
           "shape":"CertificateBodyType",
@@ -3085,6 +3105,13 @@
         "PUBLIC",
         "VPC",
         "VPC_ENDPOINT"
+      ]
+    },
+    "EnforceMessageSigningType":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
       ]
     },
     "ExecutionError":{
@@ -4486,6 +4513,20 @@
       "min":0,
       "pattern":"[\\x09-\\x0D\\x20-\\x7E]*"
     },
+    "PreserveContentType":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "PreserveFilenameType":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "PrivateKeyType":{
       "type":"string",
       "max":16384,
@@ -5357,6 +5398,14 @@
         "AccessRole":{
           "shape":"Role",
           "documentation":"<p>Connectors are used to send files using either the AS2 or SFTP protocol. For the access role, provide the Amazon Resource Name (ARN) of the Identity and Access Management role to use.</p> <p> <b>For AS2 connectors</b> </p> <p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p> <p>If you are using Basic authentication for your AS2 connector, the access role requires the <code>secretsmanager:GetSecretValue</code> permission for the secret. If the secret is encrypted using a customer-managed key instead of the Amazon Web Services managed key in Secrets Manager, then the role also needs the <code>kms:Decrypt</code> permission for that key.</p> <p> <b>For SFTP connectors</b> </p> <p>Make sure that the access role provides read and write access to the parent directory of the file location that's used in the <code>StartFileTransfer</code> request. Additionally, make sure that the role provides <code>secretsmanager:GetSecretValue</code> permission to Secrets Manager.</p>"
+        },
+        "PreserveFilename":{
+          "shape":"PreserveFilenameType",
+          "documentation":"<p> Determines whether or not Transfer Family appends a unique string of characters to the end of the AS2 message payload filename when saving it. </p> <ul> <li> <p> <code>ENABLED</code>: the filename provided by your trading parter is preserved when the file is saved.</p> </li> <li> <p> <code>DISABLED</code> (default value): when Transfer Family saves the file, the filename is adjusted, as described in <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/send-as2-messages.html#file-names-as2\">File names and locations</a>.</p> </li> </ul>"
+        },
+        "EnforceMessageSigning":{
+          "shape":"EnforceMessageSigningType",
+          "documentation":"<p> Determines whether or not unsigned messages from your trading partners will be accepted. </p> <ul> <li> <p> <code>ENABLED</code>: Transfer Family rejects unsigned messages from your trading partner.</p> </li> <li> <p> <code>DISABLED</code> (default value): Transfer Family accepts unsigned messages from your trading partner.</p> </li> </ul>"
         }
       }
     },

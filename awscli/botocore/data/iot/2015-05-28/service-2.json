@@ -2527,6 +2527,25 @@
       ],
       "documentation":"<p>Returns the count, average, sum, minimum, maximum, sum of squares, variance, and standard deviation for the specified aggregated field. If the aggregation field is of type <code>String</code>, only the count statistic is returned.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">GetStatistics</a> action.</p>"
     },
+    "GetThingConnectivityData":{
+      "name":"GetThingConnectivityData",
+      "http":{
+        "method":"POST",
+        "requestUri":"/things/{thingName}/connectivity-data"
+      },
+      "input":{"shape":"GetThingConnectivityDataRequest"},
+      "output":{"shape":"GetThingConnectivityDataResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"IndexNotReadyException"}
+      ],
+      "documentation":"<p>Retrieves the live connectivity status per device.</p>"
+    },
     "GetTopicRule":{
       "name":"GetTopicRule",
       "http":{
@@ -2799,7 +2818,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>List all command executions.</p> <important> <p>You must provide only the <code>startedTimeFilter</code> or the <code>completedTimeFilter</code> information. If you provide both time filters, the API will generate an error. You can use this information to find command executions that started within a specific timeframe.</p> </important>"
+      "documentation":"<p>List all command executions.</p> <important> <ul> <li> <p>You must provide only the <code>startedTimeFilter</code> or the <code>completedTimeFilter</code> information. If you provide both time filters, the API will generate an error. You can use this information to retrieve a list of command executions within a specific timeframe.</p> </li> <li> <p>You must provide only the <code>commandArn</code> or the <code>thingArn</code> information depending on whether you want to list executions for a specific command or an IoT thing. If you provide both fields, the API will generate an error.</p> </li> </ul> <p>For more information about considerations for using this API, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-remote-command-execution-start-monitor.html#iot-remote-command-execution-list-cli\">List command executions in your account (CLI)</a>.</p> </important>"
     },
     "ListCommands":{
       "name":"ListCommands",
@@ -7242,6 +7261,13 @@
       "max":128,
       "pattern":"[a-zA-Z0-9:.]+"
     },
+    "ConnectivityApiThingName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9:_-]+",
+      "sensitive":true
+    },
     "ConnectivityTimestamp":{"type":"long"},
     "ConsecutiveDatapointsToAlarm":{
       "type":"integer",
@@ -7504,7 +7530,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The IAM role that allows access to create the command.</p>"
+          "documentation":"<p>The IAM role that you must provide when using the <code>AWS-IoT-FleetWise</code> namespace. The role grants IoT Device Management the permission to access IoT FleetWise resources for generating the payload for the command. This field is not required when you use the <code>AWS-IoT</code> namespace.</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -11429,6 +11455,25 @@
       }
     },
     "DisconnectReason":{"type":"string"},
+    "DisconnectReasonValue":{
+      "type":"string",
+      "enum":[
+        "AUTH_ERROR",
+        "CLIENT_INITIATED_DISCONNECT",
+        "CLIENT_ERROR",
+        "CONNECTION_LOST",
+        "DUPLICATE_CLIENTID",
+        "FORBIDDEN_ACCESS",
+        "MQTT_KEEP_ALIVE_TIMEOUT",
+        "SERVER_ERROR",
+        "SERVER_INITIATED_DISCONNECT",
+        "THROTTLED",
+        "WEBSOCKET_TTL_EXPIRATION",
+        "CUSTOMAUTH_TTL_EXPIRATION",
+        "UNKNOWN",
+        "NONE"
+      ]
+    },
     "DisplayName":{
       "type":"string",
       "max":64,
@@ -12192,7 +12237,7 @@
         },
         "timeToLive":{
           "shape":"DateType",
-          "documentation":"<p>The time to live (TTL) parameter for the <code>GetCommandExecution</code> API.</p>"
+          "documentation":"<p>The time to live (TTL) parameter that indicates the duration for which executions will be retained in your account. The default value is six months.</p>"
         }
       }
     },
@@ -12241,7 +12286,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The IAM role that allows access to retrieve information about the command.</p>"
+          "documentation":"<p>The IAM role that you provided when creating the command with <code>AWS-IoT-FleetWise</code> as the namespace.</p>"
         },
         "createdAt":{
           "shape":"DateType",
@@ -12694,6 +12739,39 @@
         "statistics":{
           "shape":"Statistics",
           "documentation":"<p>The statistics returned by the Fleet Indexing service based on the query and aggregation field.</p>"
+        }
+      }
+    },
+    "GetThingConnectivityDataRequest":{
+      "type":"structure",
+      "required":["thingName"],
+      "members":{
+        "thingName":{
+          "shape":"ConnectivityApiThingName",
+          "documentation":"<p>The name of your IoT thing.</p>",
+          "location":"uri",
+          "locationName":"thingName"
+        }
+      }
+    },
+    "GetThingConnectivityDataResponse":{
+      "type":"structure",
+      "members":{
+        "thingName":{
+          "shape":"ConnectivityApiThingName",
+          "documentation":"<p>The name of your IoT thing.</p>"
+        },
+        "connected":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean that indicates the connectivity status.</p>"
+        },
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the event occurred.</p>"
+        },
+        "disconnectReason":{
+          "shape":"DisconnectReasonValue",
+          "documentation":"<p>The reason why the client is disconnecting.</p>"
         }
       }
     },

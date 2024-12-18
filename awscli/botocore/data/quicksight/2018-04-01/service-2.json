@@ -9255,6 +9255,10 @@
         "FolderArns":{
           "shape":"FolderArnList",
           "documentation":"<p>When you create the dataset, Amazon QuickSight adds the dataset to these folders.</p>"
+        },
+        "PerformanceConfiguration":{
+          "shape":"PerformanceConfiguration",
+          "documentation":"<p>The configuration for the performance optimization of the dataset that contains a <code>UniqueKey</code> configuration.</p>"
         }
       }
     },
@@ -11632,6 +11636,10 @@
         "DatasetParameters":{
           "shape":"DatasetParameterList",
           "documentation":"<p>The parameters that are declared in a dataset.</p>"
+        },
+        "PerformanceConfiguration":{
+          "shape":"PerformanceConfiguration",
+          "documentation":"<p>The performance optimization configuration of a dataset.</p>"
         }
       },
       "documentation":"<p>Dataset.</p>"
@@ -26127,6 +26135,16 @@
       "max":100,
       "min":0
     },
+    "PerformanceConfiguration":{
+      "type":"structure",
+      "members":{
+        "UniqueKeys":{
+          "shape":"UniqueKeyList",
+          "documentation":"<p>A <code>UniqueKey</code> configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the performance optimization of the dataset that contains a <code>UniqueKey</code> configuration.</p>"
+    },
     "PeriodOverPeriodComputation":{
       "type":"structure",
       "required":["ComputationId"],
@@ -34725,6 +34743,29 @@
       "type":"string",
       "pattern":"^[^\\u0000-\\u00FF]$"
     },
+    "UniqueKey":{
+      "type":"structure",
+      "required":["ColumnNames"],
+      "members":{
+        "ColumnNames":{
+          "shape":"UniqueKeyColumnNameList",
+          "documentation":"<p>The name of the column that is referenced in the <code>UniqueKey</code> configuration.</p>"
+        }
+      },
+      "documentation":"<p>A <code>UniqueKey</code> configuration that references a dataset column.</p>"
+    },
+    "UniqueKeyColumnNameList":{
+      "type":"list",
+      "member":{"shape":"ColumnName"},
+      "max":1,
+      "min":1
+    },
+    "UniqueKeyList":{
+      "type":"list",
+      "member":{"shape":"UniqueKey"},
+      "max":1,
+      "min":1
+    },
     "UniqueValuesComputation":{
       "type":"structure",
       "required":["ComputationId"],
@@ -35638,6 +35679,10 @@
         "DatasetParameters":{
           "shape":"DatasetParameterList",
           "documentation":"<p>The parameter declarations of the dataset.</p>"
+        },
+        "PerformanceConfiguration":{
+          "shape":"PerformanceConfiguration",
+          "documentation":"<p>The configuration for the performance optimization of the dataset that contains a <code>UniqueKey</code> configuration.</p>"
         }
       }
     },

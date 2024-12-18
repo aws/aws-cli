@@ -683,11 +683,11 @@
         },
         "createTime":{
           "shape":"CreateTime",
-          "documentation":"<p>Creates a date and time for the Amplify app. </p>"
+          "documentation":"<p>A timestamp of when Amplify created the application.</p>"
         },
         "updateTime":{
           "shape":"UpdateTime",
-          "documentation":"<p>Updates the date and time for the Amplify app. </p>"
+          "documentation":"<p>A timestamp of when Amplify updated the application.</p>"
         },
         "iamServiceRoleArn":{
           "shape":"ServiceRoleArn",
@@ -752,6 +752,14 @@
         "cacheConfig":{
           "shape":"CacheConfig",
           "documentation":"<p>The cache configuration for the Amplify app. If you don't specify the cache configuration <code>type</code>, Amplify uses the default <code>AMPLIFY_MANAGED</code> setting.</p>"
+        },
+        "webhookCreateTime":{
+          "shape":"webhookCreateTime",
+          "documentation":"<p>A timestamp of when Amplify created the webhook in your Git repository.</p>"
+        },
+        "wafConfiguration":{
+          "shape":"WafConfiguration",
+          "documentation":"<p>Describes the Firewall configuration for the Amplify app. Firewall support enables you to protect your hosted applications with a direct integration with WAF.</p>"
         }
       },
       "documentation":"<p>Represents the different branches of a repository for building, deploying, and hosting an Amplify app. </p>"
@@ -1012,11 +1020,11 @@
         },
         "createTime":{
           "shape":"CreateTime",
-          "documentation":"<p> The creation date and time for a branch that is part of an Amplify app. </p>"
+          "documentation":"<p>A timestamp of when Amplify created the branch.</p>"
         },
         "updateTime":{
           "shape":"UpdateTime",
-          "documentation":"<p> The last updated date and time for a branch that is part of an Amplify app. </p>"
+          "documentation":"<p>A timestamp for the last updated time for a branch.</p>"
         },
         "environmentVariables":{
           "shape":"EnvironmentVariables",
@@ -2266,6 +2274,7 @@
     "JobStatus":{
       "type":"string",
       "enum":[
+        "CREATED",
         "PENDING",
         "PROVISIONING",
         "RUNNING",
@@ -2310,7 +2319,7 @@
         },
         "commitTime":{
           "shape":"CommitTime",
-          "documentation":"<p> The commit date and time for the job. </p>"
+          "documentation":"<p>The commit date and time for the job. </p>"
         },
         "startTime":{
           "shape":"StartTime",
@@ -3540,6 +3549,40 @@
       "max":1000
     },
     "Verified":{"type":"boolean"},
+    "WafConfiguration":{
+      "type":"structure",
+      "members":{
+        "webAclArn":{
+          "shape":"WebAclArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the web ACL associated with an Amplify app.</p>"
+        },
+        "wafStatus":{
+          "shape":"WafStatus",
+          "documentation":"<p>The status of the process to associate or disassociate a web ACL to an Amplify app.</p>"
+        },
+        "statusReason":{
+          "shape":"StatusReason",
+          "documentation":"<p>The reason for the current status of the Firewall configuration.</p>"
+        }
+      },
+      "documentation":"<p>Describes the Firewall configuration for a hosted Amplify application. Firewall support enables you to protect your web applications with a direct integration with WAF. For more information about using WAF protections for an Amplify application, see <a href=\"https://docs.aws.amazon.com/amplify/latest/userguide/WAF-integration.html\">Firewall support for hosted sites</a> in the <i>Amplify User Guide</i>. </p>"
+    },
+    "WafStatus":{
+      "type":"string",
+      "enum":[
+        "ASSOCIATING",
+        "ASSOCIATION_FAILED",
+        "ASSOCIATION_SUCCESS",
+        "DISASSOCIATING",
+        "DISASSOCIATION_FAILED"
+      ]
+    },
+    "WebAclArn":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"^arn:aws:wafv2:.*"
+    },
     "Webhook":{
       "type":"structure",
       "required":[
@@ -3574,11 +3617,11 @@
         },
         "createTime":{
           "shape":"CreateTime",
-          "documentation":"<p>The create date and time for a webhook. </p>"
+          "documentation":"<p>A timestamp of when Amplify created the webhook in your Git repository.</p>"
         },
         "updateTime":{
           "shape":"UpdateTime",
-          "documentation":"<p>Updates the date and time for a webhook. </p>"
+          "documentation":"<p>A timestamp of when Amplify updated the webhook in your Git repository.</p>"
         }
       },
       "documentation":"<p>Describes a webhook that connects repository events to an Amplify app. </p>"
@@ -3599,7 +3642,8 @@
     "Webhooks":{
       "type":"list",
       "member":{"shape":"Webhook"}
-    }
+    },
+    "webhookCreateTime":{"type":"timestamp"}
   },
   "documentation":"<p>Amplify enables developers to develop and deploy cloud-powered mobile and web apps. Amplify Hosting provides a continuous delivery and hosting service for web applications. For more information, see the <a href=\"https://docs.aws.amazon.com/amplify/latest/userguide/welcome.html\">Amplify Hosting User Guide</a>. The Amplify Framework is a comprehensive set of SDKs, libraries, tools, and documentation for client app development. For more information, see the <a href=\"https://docs.amplify.aws/\">Amplify Framework.</a> </p>"
 }

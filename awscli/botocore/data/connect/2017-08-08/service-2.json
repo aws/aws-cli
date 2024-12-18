@@ -701,7 +701,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates registration for a device token and a chat contact to receive real-time push notifications. For more information about push notifications, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/set-up-push-notifications-for-mobile-chat.html\">Set up push notifications in Amazon Connect for mobile chat</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+      "documentation":"<p>Creates registration for a device token and a chat contact to receive real-time push notifications. For more information about push notifications, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-push-notifications-for-mobile-chat.html\">Set up push notifications in Amazon Connect for mobile chat</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
     "CreateQueue":{
       "name":"CreateQueue",
@@ -2420,7 +2420,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>For the specified version of Amazon Lex, returns a paginated list of all the Amazon Lex bots currently associated with the instance. Use this API to returns both Amazon Lex V1 and V2 bots.</p>"
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>For the specified version of Amazon Lex, returns a paginated list of all the Amazon Lex bots currently associated with the instance. Use this API to return both Amazon Lex V1 and V2 bots.</p>"
     },
     "ListContactEvaluations":{
       "name":"ListContactEvaluations",
@@ -4304,6 +4304,24 @@
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Updates an existing configuration for a resource type. This API is idempotent.</p>"
     },
+    "UpdateParticipantAuthentication":{
+      "name":"UpdateParticipantAuthentication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/contact/update-participant-authentication"
+      },
+      "input":{"shape":"UpdateParticipantAuthenticationRequest"},
+      "output":{"shape":"UpdateParticipantAuthenticationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Instructs Amazon Connect to resume the authentication process. The subsequent actions depend on the request body contents:</p> <ul> <li> <p> <b>If a code is provided</b>: Connect retrieves the identity information from Amazon Cognito and imports it into Connect Customer Profiles.</p> </li> <li> <p> <b>If an error is provided</b>: The error branch of the Authenticate Customer block is executed.</p> </li> </ul> <note> <p>The API returns a success response to acknowledge the request. However, the interaction and exchange of identity information occur asynchronously after the response is returned.</p> </note>"
+    },
     "UpdateParticipantRoleConfig":{
       "name":"UpdateParticipantRoleConfig",
       "http":{
@@ -6108,6 +6126,20 @@
       "documentation":"<p>Contains information for score and potential quality issues for Audio</p>"
     },
     "AudioQualityScore":{"type":"float"},
+    "AuthenticationError":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^[\\x20-\\x21\\x23-\\x5B\\x5D-\\x7E]*$",
+      "sensitive":true
+    },
+    "AuthenticationErrorDescription":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^[\\x20-\\x21\\x23-\\x5B\\x5D-\\x7E]*$",
+      "sensitive":true
+    },
     "AuthenticationProfile":{
       "type":"structure",
       "members":{
@@ -6210,6 +6242,12 @@
     "AuthenticationProfileSummaryList":{
       "type":"list",
       "member":{"shape":"AuthenticationProfileSummary"}
+    },
+    "AuthorizationCode":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "sensitive":true
     },
     "AutoAccept":{"type":"boolean"},
     "AvailableNumberSummary":{
@@ -6879,6 +6917,10 @@
         "WisdomInfo":{
           "shape":"WisdomInfo",
           "documentation":"<p>Information about Amazon Connect Wisdom.</p>"
+        },
+        "CustomerId":{
+          "shape":"CustomerId",
+          "documentation":"<p>The customer's identification number. For example, the <code>CustomerId</code> may be a customer number from your CRM. You can create a Lambda function to pull the unique customer ID of the caller from your CRM system. If you enable Amazon Connect Voice ID capability, this attribute is populated with the <code>CustomerSpeakerId</code> of the caller.</p>"
         },
         "CustomerEndpoint":{
           "shape":"EndpointInfo",
@@ -9286,6 +9328,17 @@
         "Capabilities":{"shape":"ParticipantCapabilities"}
       },
       "documentation":"<p>Information about the Customer on the contact.</p>"
+    },
+    "CustomerId":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "CustomerIdNonEmpty":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "sensitive":true
     },
     "CustomerProfileAttributesSerialized":{"type":"string"},
     "CustomerQualityMetrics":{
@@ -14465,7 +14518,8 @@
         "MULTI_PARTY_CONFERENCE",
         "HIGH_VOLUME_OUTBOUND",
         "ENHANCED_CONTACT_MONITORING",
-        "ENHANCED_CHAT_MONITORING"
+        "ENHANCED_CHAT_MONITORING",
+        "MULTI_PARTY_CHAT_CONFERENCE"
       ]
     },
     "InstanceAttributeValue":{
@@ -14683,7 +14737,8 @@
         "FILE_SCANNER",
         "SES_IDENTITY",
         "ANALYTICS_CONNECTOR",
-        "CALL_TRANSFER_CONNECTOR"
+        "CALL_TRANSFER_CONNECTOR",
+        "COGNITO_USER_POOL"
       ]
     },
     "InternalServiceException":{
@@ -22205,6 +22260,10 @@
         "SegmentAttributes":{
           "shape":"SegmentAttributes",
           "documentation":"<p>A set of system defined key-value pairs stored on individual contact segments using an attribute map. The attributes are standard Amazon Connect attributes. They can be accessed in flows.</p> <p>Attribute keys can include only alphanumeric, -, and _.</p> <p>This field can be used to show channel subtype, such as <code>connect:Guide</code>.</p> <note> <p>The types <code>application/vnd.amazonaws.connect.message.interactive</code> and <code>application/vnd.amazonaws.connect.message.interactive.response</code> must be present in the SupportedMessagingContentTypes field of this API in order to set <code>SegmentAttributes</code> as {<code> \"connect:Subtype\": {\"valueString\" : \"connect:Guide\" }}</code>.</p> </note>"
+        },
+        "CustomerId":{
+          "shape":"CustomerIdNonEmpty",
+          "documentation":"<p>The customer's identification number. For example, the <code>CustomerId</code> may be a customer number from your CRM.</p>"
         }
       }
     },
@@ -24584,6 +24643,40 @@
         "StorageConfig":{"shape":"InstanceStorageConfig"}
       }
     },
+    "UpdateParticipantAuthenticationRequest":{
+      "type":"structure",
+      "required":[
+        "State",
+        "InstanceId"
+      ],
+      "members":{
+        "State":{
+          "shape":"ParticipantToken",
+          "documentation":"<p>The <code>state</code> query parameter that was provided by Cognito in the <code>redirectUri</code>. This will also match the <code>state</code> parameter provided in the <code>AuthenticationUrl</code> from the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_GetAuthenticationUrl.html\">GetAuthenticationUrl</a> response.</p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>"
+        },
+        "Code":{
+          "shape":"AuthorizationCode",
+          "documentation":"<p>The <code>code</code> query parameter provided by Cognito in the <code>redirectUri</code>.</p>"
+        },
+        "Error":{
+          "shape":"AuthenticationError",
+          "documentation":"<p>The <code>error</code> query parameter provided by Cognito in the <code>redirectUri</code>.</p>"
+        },
+        "ErrorDescription":{
+          "shape":"AuthenticationErrorDescription",
+          "documentation":"<p>The <code>error_description</code> parameter provided by Cognito in the <code>redirectUri</code>.</p>"
+        }
+      }
+    },
+    "UpdateParticipantAuthenticationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateParticipantRoleConfigChannelInfo":{
       "type":"structure",
       "members":{
@@ -26572,7 +26665,7 @@
         },
         "IvrRecordingTrack":{
           "shape":"IvrRecordingTrack",
-          "documentation":"<p>Identifies which IVR track is being recorded.</p>"
+          "documentation":"<p>Identifies which IVR track is being recorded.</p> <p>One and only one of the track configurations should be presented in the request.</p>"
         }
       },
       "documentation":"<p>Contains information about the recording configuration settings.</p>"

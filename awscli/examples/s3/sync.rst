@@ -80,7 +80,7 @@ Output::
 
     upload: test2.txt to s3://mybucket/test2.txt
 
-**Example 6: Sync all local objects to the specified bucket except ``.jpg`` files**
+**Example 6: Sync all local objects to the specified bucket except specified directory files**
 
 The following ``sync`` command syncs files under a local directory to objects under a specified prefix and bucket by
 downloading S3 objects.  This example uses the ``--exclude`` parameter flag to exclude a specified directory

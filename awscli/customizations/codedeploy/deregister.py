@@ -79,11 +79,11 @@ class Deregister(BasicCommand):
             sys.stdout.flush()
             sys.stderr.write(
                 'ERROR\n'
-                '{0}\n'
+                f'{e}\n'
                 'Deregister the on-premises instance by following the '
                 'instructions in "Configure Existing On-Premises Instances by '
                 'Using AWS CodeDeploy" in the AWS CodeDeploy User '
-                'Guide.\n'.format(e)
+                'Guide.\n'
             )
             return 255
         return 0
@@ -98,7 +98,7 @@ class Deregister(BasicCommand):
         params.user_name = params.iam_user_arn[start:]
         params.tags = response['instanceInfo']['tags']
         sys.stdout.write(
-            'DONE\n' 'IamUserArn: {0}\n'.format(params.iam_user_arn)
+            'DONE\n' f'IamUserArn: {params.iam_user_arn}\n'
         )
         if params.tags:
             sys.stdout.write('Tags:')
@@ -157,7 +157,7 @@ class Deregister(BasicCommand):
 
     def _delete_iam_user(self, params):
         sys.stdout.write(
-            'Deleting the IAM user ({0})... '.format(params.user_name)
+            f'Deleting the IAM user ({params.user_name})... '
         )
         try:
             self.iam.delete_user(UserName=params.user_name)

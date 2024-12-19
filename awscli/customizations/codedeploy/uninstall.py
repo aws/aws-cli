@@ -43,11 +43,11 @@ class Uninstall(BasicCommand):
             sys.stdout.flush()
             sys.stderr.write(
                 'ERROR\n'
-                '{0}\n'
+                f'{e}\n'
                 'Uninstall the AWS CodeDeploy Agent on the on-premises '
                 'instance by following the instructions in "Configure '
                 'Existing On-Premises Instances by Using AWS CodeDeploy" in '
-                'the AWS CodeDeploy User Guide.\n'.format(e)
+                'the AWS CodeDeploy User Guide.\n'
             )
             return 255
         return 0

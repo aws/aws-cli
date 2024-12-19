@@ -131,9 +131,7 @@ class Push(BasicCommand):
                 '--no-ignore-hidden-files.'
             )
         if not parsed_args.description:
-            parsed_args.description = 'Uploaded by AWS CLI {0} UTC'.format(
-                datetime.utcnow().isoformat()
-            )
+            parsed_args.description = f'Uploaded by AWS CLI {datetime.utcnow().isoformat()} UTC'
 
     def _push(self, params):
         with self._compress(
@@ -152,24 +150,20 @@ class Push(BasicCommand):
         self._register_revision(params)
 
         if 'version' in params:
-            version_string = ',version={0}'.format(params.version)
+            version_string = f',version={params.version}'
         else:
             version_string = ''
         s3location_string = (
-            '--s3-location bucket={0},key={1},'
-            'bundleType=zip,eTag={2}{3}'.format(
-                params.bucket, params.key, params.eTag, version_string
-            )
+            f'--s3-location bucket={params.bucket},key={params.key},'
+            f'bundleType=zip,eTag={params.eTag}{version_string}'
         )
         sys.stdout.write(
             'To deploy with this revision, run:\n'
             'aws deploy create-deployment '
-            '--application-name {0} {1} '
+            f'--application-name {params.application_name} {s3location_string} '
             '--deployment-group-name <deployment-group-name> '
             '--deployment-config-name <deployment-config-name> '
-            '--description <description>\n'.format(
-                params.application_name, s3location_string
-            )
+            '--description <description>\n'
         )
 
     @contextlib.contextmanager
@@ -195,7 +189,7 @@ class Push(BasicCommand):
                         zf.write(filename, arcname, ZIP_COMPRESSION_MODE)
                 if not contains_appspec:
                     raise RuntimeError(
-                        '{0} was not found'.format(appspec_path)
+                        f'{appspec_path} was not found'
                     )
             finally:
                 zf.close()

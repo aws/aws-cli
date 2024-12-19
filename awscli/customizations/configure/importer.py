@@ -108,7 +108,7 @@ class CredentialParserError(Exception):
     pass
 
 
-class CSVCredentialParser(object):
+class CSVCredentialParser:
     _USERNAME_HEADER = 'User Name'
     _AKID_HEADER = 'Access Key ID'
     _SAK_HEADER = 'Secret Access key'
@@ -193,7 +193,7 @@ class CSVCredentialParser(object):
         return self._convert_rows_to_credentials(parsed_rows)
 
 
-class CredentialImporter(object):
+class CredentialImporter:
     def __init__(self, writer):
         self._config_writer = writer
 

@@ -150,7 +150,7 @@ class SubscribeCommand(BasicCommand):
         )
 
 
-class S3BucketHelper(object):
+class S3BucketHelper:
     def __init__(self, s3_client):
         self._s3_client = s3_client
 
@@ -176,7 +176,7 @@ class S3BucketHelper(object):
         self._s3_client.create_bucket(**params)
 
 
-class SNSTopicHelper(object):
+class SNSTopicHelper:
     def __init__(self, sns_client):
         self._sns_client = sns_client
 

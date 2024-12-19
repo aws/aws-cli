@@ -95,9 +95,7 @@ def parse_s3_url(
             return result
 
     raise ValueError(
-        "URL given to the parse method is not a valid S3 url " "{0}".format(
-            url
-        )
+        "URL given to the parse method is not a valid S3 url " f"{url}"
     )
 
 
@@ -140,9 +138,7 @@ def upload_local_artifacts(
         # refer to local artifacts
         # Nothing to do if property value is an S3 URL
         LOG.debug(
-            "Property {0} of {1} is already a S3 URL".format(
-                property_name, resource_id
-            )
+            f"Property {property_name} of {resource_id} is already a S3 URL"
         )
         return local_path
 
@@ -189,7 +185,7 @@ def zip_folder(folder_path):
 
 
 def make_zip(filename, source_root):
-    zipfile_name = "{0}.zip".format(filename)
+    zipfile_name = f"{filename}.zip"
     source_root = os.path.abspath(source_root)
     with open(zipfile_name, 'wb') as f:
         zip_file = zipfile.ZipFile(f, 'w', zipfile.ZIP_DEFLATED)
@@ -223,7 +219,7 @@ def copy_to_temp_dir(filepath):
     return tmp_dir
 
 
-class Resource(object):
+class Resource:
     """
     Base class representing a CloudFormation resource that can be exported
     """
@@ -249,9 +245,7 @@ class Resource(object):
 
         if isinstance(property_value, dict):
             LOG.debug(
-                "Property {0} of {1} resource is not a URL".format(
-                    self.PROPERTY_NAME, resource_id
-                )
+                f"Property {self.PROPERTY_NAME} of {resource_id} resource is not a URL"
             )
             return
 
@@ -619,7 +613,7 @@ def include_transform_export_handler(template_dict, uploader, parent_dir):
 GLOBAL_EXPORT_DICT = {"Fn::Transform": include_transform_export_handler}
 
 
-class Template(object):
+class Template:
     """
     Class to export a CloudFormation template
     """
@@ -639,7 +633,7 @@ class Template(object):
         if not (is_local_folder(parent_dir) and os.path.isabs(parent_dir)):
             raise ValueError(
                 "parent_dir parameter must be "
-                "an absolute path to a folder {0}".format(parent_dir)
+                f"an absolute path to a folder {parent_dir}"
             )
 
         abs_template_path = make_abs_path(parent_dir, template_path)

@@ -18,7 +18,7 @@ PREDEFINED_SECTION_NAMES = 'plugins'
 _WHITESPACE = ' \t'
 
 
-class ConfigValue(object):
+class ConfigValue:
     def __init__(self, value, config_type, config_variable):
         self.value = value
         self.config_type = config_type

@@ -98,23 +98,21 @@ class Register(BasicCommand):
             if params.tags:
                 self._add_tags(params)
             sys.stdout.write(
-                'Copy the on-premises configuration file named {0} to the '
+                f'Copy the on-premises configuration file named {DEFAULT_CONFIG_FILE} to the '
                 'on-premises instance, and run the following command on the '
                 'on-premises instance to install and configure the AWS '
                 'CodeDeploy Agent:\n'
-                'aws deploy install --config-file {0}\n'.format(
-                    DEFAULT_CONFIG_FILE
-                )
+                f'aws deploy install --config-file {DEFAULT_CONFIG_FILE}\n'
             )
         except Exception as e:
             sys.stdout.flush()
             sys.stderr.write(
                 'ERROR\n'
-                '{0}\n'
+                f'{e}\n'
                 'Register the on-premises instance by following the '
                 'instructions in "Configure Existing On-Premises Instances by '
                 'Using AWS CodeDeploy" in the AWS CodeDeploy User '
-                'Guide.\n'.format(e)
+                'Guide.\n'
             )
             return 255
         return 0
@@ -127,7 +125,7 @@ class Register(BasicCommand):
         )
         params.iam_user_arn = response['User']['Arn']
         sys.stdout.write(
-            'DONE\n' 'IamUserArn: {0}\n'.format(params.iam_user_arn)
+            'DONE\n' f'IamUserArn: {params.iam_user_arn}\n'
         )
 
     def _create_access_key(self, params):
@@ -136,9 +134,7 @@ class Register(BasicCommand):
         params.access_key_id = response['AccessKey']['AccessKeyId']
         params.secret_access_key = response['AccessKey']['SecretAccessKey']
         sys.stdout.write(
-            'DONE\n' 'AccessKeyId: {0}\n' 'SecretAccessKey: {1}\n'.format(
-                params.access_key_id, params.secret_access_key
-            )
+            'DONE\n' f'AccessKeyId: {params.access_key_id}\n' f'SecretAccessKey: {params.secret_access_key}\n'
         )
 
     def _create_user_policy(self, params):
@@ -160,28 +156,21 @@ class Register(BasicCommand):
             PolicyDocument=params.policy_document,
         )
         sys.stdout.write(
-            'DONE\n' 'PolicyName: {0}\n' 'PolicyDocument: {1}\n'.format(
-                params.policy_name, params.policy_document
-            )
+            'DONE\n' f'PolicyName: {params.policy_name}\n' f'PolicyDocument: {params.policy_document}\n'
         )
 
     def _create_config(self, params):
         sys.stdout.write(
-            'Creating the on-premises instance configuration file named {0}'
-            '...'.format(DEFAULT_CONFIG_FILE)
+            f'Creating the on-premises instance configuration file named {DEFAULT_CONFIG_FILE}'
+            '...'
         )
         with open(DEFAULT_CONFIG_FILE, 'w') as f:
             f.write(
                 '---\n'
-                'region: {0}\n'
-                'iam_user_arn: {1}\n'
-                'aws_access_key_id: {2}\n'
-                'aws_secret_access_key: {3}\n'.format(
-                    params.region,
-                    params.iam_user_arn,
-                    params.access_key_id,
-                    params.secret_access_key,
-                )
+                f'region: {params.region}\n'
+                f'iam_user_arn: {params.iam_user_arn}\n'
+                f'aws_access_key_id: {params.access_key_id}\n'
+                f'aws_secret_access_key: {params.secret_access_key}\n'
             )
         sys.stdout.write('DONE\n')
 

@@ -73,15 +73,16 @@ Subs, and GetAtts in the module. These are handled in a way that fixes
 references to match module prefixes, fully resolving values that are actually
 strings and leaving others to be resolved at deploy time.
 
-Modules can contain other modules, with no enforced limit to the levels of nesting.
+Modules can contain other modules, with no enforced limit to the levels of
+nesting.
 
 Modules can define Outputs, which are key-value pairs that can be referenced by
 the parent.
 
 When using modules, you can use a comma-delimited list to create a number of
 similar resources. This is simpler than using `Fn::ForEach` but has the
-limitation of requiring the list to be resolved at build time.
-See tests/unit/customizations/cloudformation/modules/vpc-module.yaml.
+limitation of requiring the list to be resolved at build time.  See
+tests/unit/customizations/cloudformation/modules/vpc-module.yaml.
 
 An example of a Map is defining subnets in a VPC.
 
@@ -97,7 +98,7 @@ Resources:
   VPC:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: !Ref CidrBlock 
+      CidrBlock: !Ref CidrBlock
       EnableDnsHostnames: true
       EnableDnsSupport: true
       InstanceTenancy: default
@@ -131,6 +132,9 @@ from awscli.customizations.cloudformation import yamlhelper
 
 from awscli.customizations.cloudformation.parse_sub import WordType
 from awscli.customizations.cloudformation.parse_sub import parse_sub
+from awscli.customizations.cloudformation.module_conditions import (
+    parse_conditions,
+)
 
 LOG = logging.getLogger(__name__)
 
@@ -158,6 +162,8 @@ OUTPUTS = "Outputs"
 MAP = "Map"
 MAP_PLACEHOLDER = "$MapValue"
 INDEX_PLACEHOLDER = "$MapIndex"
+CONDITIONS = "Conditions"
+CONDITION = "Condition"
 
 
 def process_module_section(template, base_path, parent_path):
@@ -364,6 +370,9 @@ class Module:
         # Outputs defined in the module
         self.outputs = {}
 
+        # Conditions defined in the module
+        self.conditions = {}
+
     def __str__(self):
         "Print out a string with module details for logs"
         return (
@@ -407,6 +416,14 @@ class Module:
             raise exceptions.InvalidModuleError(msg=msg)
 
         self.validate_overrides()
+
+        if CONDITIONS in module_dict:
+            cs = module_dict[CONDITIONS]
+
+            def find_ref(v):
+                return self.find_ref(v)
+
+            self.conditions = parse_conditions(cs, find_ref)
 
         for logical_id, resource in self.resources.items():
             self.process_resource(logical_id, resource)
@@ -544,6 +561,11 @@ class Module:
 
     def process_resource(self, logical_id, resource):
         "Process a single resource"
+
+        # First, check to see if a Conditions omits this resource
+        if CONDITION in resource and resource[CONDITION] in self.conditions:
+            if self.conditions[resource[CONDITION]] is False:
+                return
 
         # For each property (and property-like attribute),
         # replace the value if it appears in parent overrides.

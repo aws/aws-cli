@@ -91,6 +91,7 @@ class TestPackageModules(unittest.TestCase):
             "policy",
             "vpc",
             "map",
+            "conditional",
         ]
         for test in tests:
             base = "unit/customizations/cloudformation/modules"

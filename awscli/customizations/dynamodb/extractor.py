@@ -41,7 +41,7 @@ class AttributeExtractor(object):
             'expression': expression,
             'identifiers': self._identifiers,
             'values': self._literals,
-            'substitution_count': len(self._identifiers) + len(self._literals)
+            'substitution_count': len(self._identifiers) + len(self._literals),
         }
 
     def _substitution_index(self):
@@ -55,9 +55,7 @@ class AttributeExtractor(object):
     def _visit_comparator(self, node):
         left = self._visit(node['children'][0])
         right = self._visit(node['children'][1])
-        expression = '%s%s %s' % (
-            left, self.COMPARATORS[node['value']], right
-        )
+        expression = '%s%s %s' % (left, self.COMPARATORS[node['value']], right)
         return expression
 
     def _visit_identifier(self, node):

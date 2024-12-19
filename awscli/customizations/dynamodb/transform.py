@@ -13,7 +13,8 @@
 from collections.abc import Mapping, MutableSequence
 
 from awscli.customizations.dynamodb.types import (
-    TypeSerializer, TypeDeserializer
+    TypeSerializer,
+    TypeDeserializer,
 )
 
 
@@ -30,18 +31,20 @@ class ParameterTransformer(object):
         :param target_shape: The name of the shape to apply the
             transformation to
         """
-        self._transform_parameters(
-            model, params, transformation, target_shape)
+        self._transform_parameters(model, params, transformation, target_shape)
 
-    def _transform_parameters(self, model, params, transformation,
-                              target_shape):
+    def _transform_parameters(
+        self, model, params, transformation, target_shape
+    ):
         type_name = model.type_name
         if type_name in ['structure', 'map', 'list']:
             getattr(self, '_transform_%s' % type_name)(
-                model, params, transformation, target_shape)
+                model, params, transformation, target_shape
+            )
 
-    def _transform_structure(self, model, params, transformation,
-                             target_shape):
+    def _transform_structure(
+        self, model, params, transformation, target_shape
+    ):
         if not isinstance(params, Mapping):
             return
         for param in params:
@@ -52,8 +55,11 @@ class ParameterTransformer(object):
                     params[param] = transformation(params[param])
                 else:
                     self._transform_parameters(
-                        member_model, params[param], transformation,
-                        target_shape)
+                        member_model,
+                        params[param],
+                        transformation,
+                        target_shape,
+                    )
 
     def _transform_map(self, model, params, transformation, target_shape):
         if not isinstance(params, Mapping):
@@ -65,7 +71,8 @@ class ParameterTransformer(object):
                 params[key] = transformation(value)
             else:
                 self._transform_parameters(
-                    value_model, params[key], transformation, target_shape)
+                    value_model, params[key], transformation, target_shape
+                )
 
     def _transform_list(self, model, params, transformation, target_shape):
         if not isinstance(params, MutableSequence):
@@ -77,4 +84,5 @@ class ParameterTransformer(object):
                 params[i] = transformation(item)
             else:
                 self._transform_parameters(
-                    member_model, params[i], transformation, target_shape)
+                    member_model, params[i], transformation, target_shape
+                )

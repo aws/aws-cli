@@ -199,7 +199,7 @@ class ConfigureExportCredentialsCommand(BasicCommand):
     _MAX_RECURSION = 4
 
     def __init__(self, session, out_stream=None, error_stream=None, env=None):
-        super(ConfigureExportCredentialsCommand, self).__init__(session)
+        super().__init__(session)
         if out_stream is None:
             out_stream = sys.stdout
         if error_stream is None:

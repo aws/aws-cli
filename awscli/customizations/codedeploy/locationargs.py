@@ -107,14 +107,14 @@ def modify_revision_arguments(argument_table, session, **kwargs):
 
 class LocationArgument(CustomArgument):
     def __init__(self, session, *args, **kwargs):
-        super(LocationArgument, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._session = session
 
     def add_to_params(self, parameters, value):
         if value is None:
             return
         parsed = self._session.emit_first_non_none_response(
-            'process-cli-arg.codedeploy.%s' % self.name,
+            f'process-cli-arg.codedeploy.{self.name}',
             param=self.argument_model,
             cli_argument=self,
             value=value,
@@ -134,7 +134,8 @@ class LocationArgument(CustomArgument):
 class S3LocationArgument(LocationArgument):
     def build_revision_location(self, value_dict):
         required = ['bucket', 'key', 'bundleType']
-        valid = lambda k: value_dict.get(k, False)
+        def valid(k):
+            return value_dict.get(k, False)
         if not all(map(valid, required)):
             raise ParamValidationError(
                 '--s3-location must specify bucket, key and bundleType.'
@@ -157,7 +158,8 @@ class S3LocationArgument(LocationArgument):
 class GitHubLocationArgument(LocationArgument):
     def build_revision_location(self, value_dict):
         required = ['repository', 'commitId']
-        valid = lambda k: value_dict.get(k, False)
+        def valid(k):
+            return value_dict.get(k, False)
         if not all(map(valid, required)):
             raise ParamValidationError(
                 '--github-location must specify repository and commitId.'

@@ -38,7 +38,7 @@ class ConfigureGetCommand(BasicCommand):
     ]
 
     def __init__(self, session, stream=None, error_stream=None):
-        super(ConfigureGetCommand, self).__init__(session)
+        super().__init__(session)
         if stream is None:
             stream = sys.stdout
         if error_stream is None:
@@ -57,7 +57,7 @@ class ConfigureGetCommand(BasicCommand):
         else:
             value = self._get_dotted_config_value(varname)
 
-        LOG.debug('Config value retrieved: %s' % value)
+        LOG.debug(f'Config value retrieved: {value}')
 
         if isinstance(value, str):
             self._stream.write(value)
@@ -67,8 +67,8 @@ class ConfigureGetCommand(BasicCommand):
             # TODO: add support for this. We would need to print it off in
             # the same format as the config file.
             self._error_stream.write(
-                'varname (%s) must reference a value, not a section or '
-                'sub-section.' % varname
+                f'varname ({varname}) must reference a value, not a section or '
+                'sub-section.'
             )
             return 1
         else:

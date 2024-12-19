@@ -91,7 +91,7 @@ class ConfigFileWriter:
         with open(config_filename, 'a') as f:
             if needs_newline:
                 f.write('\n')
-            f.write('[%s]\n' % section_name)
+            f.write(f'[{section_name}]\n')
             contents = []
             self._insert_new_values(
                 line_number=0, contents=contents, new_values=new_values
@@ -146,7 +146,7 @@ class ConfigFileWriter:
                     # out now.
                     if not isinstance(new_values[key_name], dict):
                         option_value = new_values[key_name]
-                        new_line = '%s = %s\n' % (key_name, option_value)
+                        new_line = f'{key_name} = {option_value}\n'
                         contents[j] = new_line
                         del new_values[key_name]
                     else:
@@ -180,7 +180,7 @@ class ConfigFileWriter:
                 key_name = match.group(1).strip()
                 if key_name in values:
                     option_value = values[key_name]
-                    new_line = '%s%s = %s\n' % (
+                    new_line = '{}{} = {}\n'.format(
                         ' ' * current_indent,
                         key_name,
                         option_value,
@@ -206,21 +206,21 @@ class ConfigFileWriter:
         for key, value in list(new_values.items()):
             if isinstance(value, dict):
                 subindent = indent + '    '
-                new_contents.append('%s%s =\n' % (indent, key))
+                new_contents.append(f'{indent}{key} =\n')
                 for subkey, subval in list(value.items()):
                     new_contents.append(
-                        '%s%s = %s\n' % (subindent, subkey, subval)
+                        f'{subindent}{subkey} = {subval}\n'
                     )
             else:
-                new_contents.append('%s%s = %s\n' % (indent, key, value))
+                new_contents.append(f'{indent}{key} = {value}\n')
             del new_values[key]
         contents.insert(line_number + 1, ''.join(new_contents))
 
     def _matches_section(self, match, section_name):
         parts = section_name.split(' ')
-        unquoted_match = match.group(0) == '[%s]' % section_name
+        unquoted_match = match.group(0) == f'[{section_name}]'
         if len(parts) > 1:
-            quoted_match = match.group(0) == '[%s "%s"]' % (
+            quoted_match = match.group(0) == '[{} "{}"]'.format(
                 parts[0],
                 ' '.join(parts[1:]),
             )

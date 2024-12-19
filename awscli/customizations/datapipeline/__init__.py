@@ -61,8 +61,8 @@ class DocSectionNotFoundError(Exception):
 
 class ParameterDefinitionError(ParamValidationError):
     def __init__(self, msg):
-        full_msg = "Error in parameter: %s\n" % msg
-        super(ParameterDefinitionError, self).__init__(full_msg)
+        full_msg = f"Error in parameter: {msg}\n"
+        super().__init__(full_msg)
         self.msg = msg
 
 
@@ -103,8 +103,7 @@ def document_translation(help_command, **kwargs):
             # This should never happen, but in the rare case that it does
             # we should be raising something with a helpful error message.
             raise DocSectionNotFoundError(
-                'Could not find the "output" section for the command: %s'
-                % help_command
+                f'Could not find the "output" section for the command: {help_command}'
             )
     doc.write('======\nOutput\n======')
     doc.write(
@@ -341,7 +340,7 @@ class ParameterValuesInlineArgument(CustomArgument):
                     parameter_object[key] = value
             except IndexError:
                 raise ParameterDefinitionError(
-                    "Invalid inline parameter format: %s" % argument
+                    f"Invalid inline parameter format: {argument}"
                 )
         parsed = {'values': parameter_object}
         parameter_values = translator.definition_to_parameter_values(parsed)
@@ -445,8 +444,7 @@ class ListRunsCommand(BasicCommand):
         for status in statuses:
             if status not in self.VALID_STATUS:
                 raise ParamValidationError(
-                    "Invalid status: %s, must be one of: %s"
-                    % (status, ', '.join(self.VALID_STATUS))
+                    "Invalid status: {}, must be one of: {}".format(status, ', '.join(self.VALID_STATUS))
                 )
 
     def _list_runs(self, parsed_args, parsed_globals):

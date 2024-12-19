@@ -21,6 +21,8 @@ import logging
 import re
 from enum import Enum
 
+import jmespath
+
 from botocore import UNSIGNED, xform_name
 from botocore.auth import AUTH_TYPE_MAPS
 from botocore.endpoint_provider import EndpointProvider
@@ -530,6 +532,13 @@ class EndpointRulesetResolver:
         )
         if dynamic is not None:
             return dynamic
+        operation_context_params = (
+            self._resolve_param_as_operation_context_param(
+                param_name, operation_model, call_args
+            )
+        )
+        if operation_context_params is not None:
+            return operation_context_params
         return self._resolve_param_as_client_context_param(param_name)
 
     def _resolve_param_as_static_context_param(
@@ -551,6 +560,14 @@ class EndpointRulesetResolver:
         if param_name in client_ctx_params:
             client_ctx_varname = client_ctx_params[param_name]
             return self._client_context.get(client_ctx_varname)
+
+    def _resolve_param_as_operation_context_param(
+        self, param_name, operation_model, call_args
+    ):
+        operation_ctx_params = operation_model.operation_context_parameters
+        if param_name in operation_ctx_params:
+            path = operation_ctx_params[param_name]['path']
+            return jmespath.search(path, call_args)
 
     def _resolve_param_as_builtin(self, builtin_name, builtins):
         if builtin_name not in EndpointResolverBuiltins.__members__.values():

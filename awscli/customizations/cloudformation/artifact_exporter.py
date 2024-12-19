@@ -11,25 +11,24 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import contextlib
 import logging
 import os
-import tempfile
-import zipfile
-import contextlib
-import uuid
 import shutil
-from botocore.utils import set_value_from_jmespath
-
-from awscli.compat import urlparse
+import tempfile
+import uuid
+import zipfile
 from contextlib import contextmanager
-from awscli.compat import compat_open
+
+import jmespath
+
+from awscli.compat import compat_open, urlparse
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import (
     yaml_dump,
     yaml_parse,
 )
-import jmespath
-
+from botocore.utils import set_value_from_jmespath
 
 LOG = logging.getLogger(__name__)
 

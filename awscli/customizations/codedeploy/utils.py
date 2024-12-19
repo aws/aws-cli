@@ -13,19 +13,20 @@
 
 import platform
 import re
+from socket import timeout
 
 import awscli.compat
-from awscli.compat import urlopen, URLError
+from awscli.compat import URLError, urlopen
 from awscli.customizations.codedeploy.systems import (
+    RHEL,
     System,
     Ubuntu,
     Windows,
-    RHEL,
 )
-from awscli.customizations.exceptions import ParamValidationError
-from awscli.customizations.exceptions import ConfigurationError
-from socket import timeout
-
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
 
 MAX_INSTANCE_NAME_LENGTH = 100
 MAX_TAGS_PER_INSTANCE = 10

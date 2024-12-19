@@ -13,16 +13,16 @@
 
 import sys
 
-from awscli.customizations.commands import BasicCommand
 from awscli.customizations.codedeploy.systems import DEFAULT_CONFIG_FILE
 from awscli.customizations.codedeploy.utils import (
-    validate_region,
-    validate_instance_name,
-    validate_tags,
-    validate_iam_user_arn,
-    INSTANCE_NAME_ARG,
     IAM_USER_ARN_ARG,
+    INSTANCE_NAME_ARG,
+    validate_iam_user_arn,
+    validate_instance_name,
+    validate_region,
+    validate_tags,
 )
+from awscli.customizations.commands import BasicCommand
 
 
 class Register(BasicCommand):

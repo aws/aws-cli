@@ -1,24 +1,23 @@
 import errno
 import os
 import platform
-import sys
-import subprocess
 import re
-
+import subprocess
+import sys
 from configparser import RawConfigParser
+from datetime import datetime
 from io import StringIO
 from urllib.parse import urlsplit
 
-from datetime import datetime
-from dateutil.tz import tzutc
 from dateutil.relativedelta import relativedelta
-from botocore.utils import parse_timestamp
+from dateutil.tz import tzutc
 
-from awscli.compat import is_windows, urlparse, get_stderr_encoding, is_macos
+from awscli.compat import get_stderr_encoding, is_macos, is_windows, urlparse
 from awscli.customizations import utils as cli_utils
 from awscli.customizations.commands import BasicCommand
-from awscli.utils import original_ld_library_path
 from awscli.customizations.utils import uni_print
+from awscli.utils import original_ld_library_path
+from botocore.utils import parse_timestamp
 
 
 def get_relative_expiration_time(remaining):

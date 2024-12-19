@@ -12,27 +12,26 @@
 # language governing permissions and limitations under the License.
 import base64
 import binascii
-import json
 import hashlib
+import json
 import logging
 import re
 import sys
 import zlib
-from zlib import error as ZLibError
 from datetime import datetime, timedelta
-from dateutil import tz, parser
+from zlib import error as ZLibError
 
 from awscrt.crypto import RSA, RSASignatureAlgorithm
+from dateutil import parser, tz
 
 from awscli.customizations.cloudtrail.utils import (
-    get_trail_by_arn,
-    get_account_id_from_arn,
     PublicKeyProvider,
+    get_account_id_from_arn,
+    get_trail_by_arn,
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
 from botocore.exceptions import ClientError
-
 
 LOG = logging.getLogger(__name__)
 DATE_FORMAT = '%Y%m%dT%H%M%SZ'

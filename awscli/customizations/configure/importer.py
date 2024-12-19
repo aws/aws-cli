@@ -10,13 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import codecs
 import os
 import sys
-import codecs
 
-from awscli.customizations.utils import uni_print
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.customizations.utils import uni_print
 
 
 class ConfigureImportCommand(BasicCommand):

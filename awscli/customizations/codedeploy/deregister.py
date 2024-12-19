@@ -13,14 +13,13 @@
 
 import sys
 
-from botocore.exceptions import ClientError
-
-from awscli.customizations.commands import BasicCommand
 from awscli.customizations.codedeploy.utils import (
-    validate_region,
-    validate_instance_name,
     INSTANCE_NAME_ARG,
+    validate_instance_name,
+    validate_region,
 )
+from awscli.customizations.commands import BasicCommand
+from botocore.exceptions import ClientError
 
 
 class Deregister(BasicCommand):

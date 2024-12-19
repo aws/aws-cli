@@ -16,12 +16,12 @@ import os
 import shutil
 import sys
 
-from awscli.customizations.commands import BasicCommand
 from awscli.customizations.codedeploy.utils import (
+    validate_instance,
     validate_region,
     validate_s3_location,
-    validate_instance,
 )
+from awscli.customizations.commands import BasicCommand
 
 
 class Install(BasicCommand):

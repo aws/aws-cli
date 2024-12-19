@@ -12,13 +12,13 @@
 # language governing permissions and limitations under the License.
 
 from awscli.customizations import utils
+from awscli.customizations.codedeploy.deregister import Deregister
+from awscli.customizations.codedeploy.install import Install
 from awscli.customizations.codedeploy.locationargs import (
     modify_revision_arguments,
 )
 from awscli.customizations.codedeploy.push import Push
 from awscli.customizations.codedeploy.register import Register
-from awscli.customizations.codedeploy.deregister import Deregister
-from awscli.customizations.codedeploy.install import Install
 from awscli.customizations.codedeploy.uninstall import Uninstall
 
 

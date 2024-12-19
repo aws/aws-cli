@@ -11,9 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import errno
 import os
 import sys
-import errno
 
 from awscli.customizations.codedeploy.utils import (
     validate_instance,

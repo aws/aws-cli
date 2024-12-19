@@ -14,9 +14,8 @@ import json
 import sys
 
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.utils import s3_bucket_exists
 from awscli.customizations.s3.utils import find_bucket_key
-
+from awscli.customizations.utils import s3_bucket_exists
 
 S3_BUCKET = {
     'name': 's3-bucket',

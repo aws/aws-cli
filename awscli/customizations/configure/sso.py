@@ -13,41 +13,38 @@
 import collections
 import itertools
 import json
-import os
 import logging
+import os
 import re
 
 import colorama
-from botocore import UNSIGNED
-from botocore.config import Config
-from botocore.configprovider import ConstantProvider
-from botocore.exceptions import ProfileNotFound
-from botocore.utils import is_valid_endpoint_url
-
 from prompt_toolkit import prompt as ptk_prompt
 from prompt_toolkit.application import get_app
 from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.styles import Style
-from prompt_toolkit.validation import Validator
-from prompt_toolkit.validation import ValidationError
+from prompt_toolkit.validation import ValidationError, Validator
 
-from awscli.customizations.utils import uni_print
 from awscli.customizations.configure import (
-    profile_to_section,
     get_section_header,
+    profile_to_section,
 )
 from awscli.customizations.configure.writer import ConfigFileWriter
-from awscli.customizations.wizard.ui.selectmenu import select_menu
 from awscli.customizations.sso.utils import (
-    do_sso_login,
-    parse_sso_registration_scopes,
-    PrintOnlyHandler,
     LOGIN_ARGS,
     BaseSSOCommand,
+    PrintOnlyHandler,
+    do_sso_login,
+    parse_sso_registration_scopes,
 )
+from awscli.customizations.utils import uni_print
+from awscli.customizations.wizard.ui.selectmenu import select_menu
 from awscli.formatter import CLI_OUTPUT_FORMATS
-
+from botocore import UNSIGNED
+from botocore.config import Config
+from botocore.configprovider import ConstantProvider
+from botocore.exceptions import ProfileNotFound
+from botocore.utils import is_valid_endpoint_url
 
 logger = logging.getLogger(__name__)
 

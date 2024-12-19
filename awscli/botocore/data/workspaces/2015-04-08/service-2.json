@@ -1421,6 +1421,36 @@
     }
   },
   "shapes":{
+    "AGAModeForDirectoryEnum":{
+      "type":"string",
+      "enum":[
+        "ENABLED_AUTO",
+        "DISABLED"
+      ]
+    },
+    "AGAModeForWorkSpaceEnum":{
+      "type":"string",
+      "enum":[
+        "ENABLED_AUTO",
+        "DISABLED",
+        "INHERITED"
+      ]
+    },
+    "AGAPreferredProtocolForDirectory":{
+      "type":"string",
+      "enum":[
+        "TCP",
+        "NONE"
+      ]
+    },
+    "AGAPreferredProtocolForWorkSpace":{
+      "type":"string",
+      "enum":[
+        "TCP",
+        "NONE",
+        "INHERITED"
+      ]
+    },
     "ARN":{
       "type":"string",
       "pattern":"^arn:aws[a-z-]{0,7}:[A-Za-z0-9][A-za-z0-9_/.-]{0,62}:[A-za-z0-9_/.-]{0,63}:[A-za-z0-9_/.-]{0,63}:[A-Za-z0-9][A-Za-z0-9:_/+=,@.\\\\-]{0,1023}$"
@@ -4050,6 +4080,36 @@
         }
       }
     },
+    "GlobalAcceleratorForDirectory":{
+      "type":"structure",
+      "required":["Mode"],
+      "members":{
+        "Mode":{
+          "shape":"AGAModeForDirectoryEnum",
+          "documentation":"<p>Indicates if Global Accelerator for directory is enabled or disabled.</p>"
+        },
+        "PreferredProtocol":{
+          "shape":"AGAPreferredProtocolForDirectory",
+          "documentation":"<p>Indicates the preferred protocol for Global Accelerator.</p>"
+        }
+      },
+      "documentation":"<p>Describes the Global Accelerator for directory</p>"
+    },
+    "GlobalAcceleratorForWorkSpace":{
+      "type":"structure",
+      "required":["Mode"],
+      "members":{
+        "Mode":{
+          "shape":"AGAModeForWorkSpaceEnum",
+          "documentation":"<p>Indicates if Global Accelerator for WorkSpaces is enabled, disabled, or the same mode as the associated directory.</p>"
+        },
+        "PreferredProtocol":{
+          "shape":"AGAPreferredProtocolForWorkSpace",
+          "documentation":"<p>Indicates the preferred protocol for Global Accelerator.</p>"
+        }
+      },
+      "documentation":"<p>Describes the Global Accelerator for WorkSpaces.</p>"
+    },
     "IDCConfig":{
       "type":"structure",
       "members":{
@@ -5602,6 +5662,10 @@
         "StorageConnectors":{
           "shape":"StorageConnectors",
           "documentation":"<p>Indicates the storage connector used </p>"
+        },
+        "GlobalAccelerator":{
+          "shape":"GlobalAcceleratorForDirectory",
+          "documentation":"<p>Indicates the Global Accelerator properties.</p>"
         }
       },
       "documentation":"<p>Describes the streaming properties.</p>"
@@ -6731,6 +6795,10 @@
         "OperatingSystemName":{
           "shape":"OperatingSystemName",
           "documentation":"<p>The name of the operating system.</p>"
+        },
+        "GlobalAccelerator":{
+          "shape":"GlobalAcceleratorForWorkSpace",
+          "documentation":"<p>Indicates the Global Accelerator properties.</p>"
         }
       },
       "documentation":"<p>Describes a WorkSpace.</p>"

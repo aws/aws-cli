@@ -1842,7 +1842,7 @@
           "documentation": "Advanced audio normalization settings. Ignore these settings unless you need to comply with a loudness standard."
         },
         "AudioSourceName": {
-          "shape": "__string",
+          "shape": "__stringMax2048",
           "locationName": "audioSourceName",
           "documentation": "Specifies which audio data to use from each input. In the simplest case, specify an \"Audio Selector\":#inputs-audio_selector by name based on its order within each input. For example if you specify \"Audio Selector 3\", then the third audio selector will be used from each input. If an input does not have an \"Audio Selector 3\", then the audio selector marked as \"default\" in that input will be used. If there is no audio selector marked as \"default\", silence will be inserted for the duration of that input. Alternatively, an \"Audio Selector Group\":#inputs-audio_selector_group name may be specified, with similar default/silence behavior. If no audio_source_name is specified, then \"Audio Selector 1\" will be chosen automatically."
         },
@@ -2602,6 +2602,11 @@
           "shape": "__integerMin0Max10",
           "locationName": "outlineSize",
           "documentation": "Specify the Outline size of the caption text, in pixels. Leave Outline size blank and set Style passthrough to enabled to use the outline size data from your input captions, if present."
+        },
+        "RemoveRubyReserveAttributes": {
+          "shape": "RemoveRubyReserveAttributes",
+          "locationName": "removeRubyReserveAttributes",
+          "documentation": "Optionally remove any tts:rubyReserve attributes present in your input, that do   not have a tts:ruby attribute in the same element, from your output. Use if your vertical Japanese output captions have alignment issues. To remove ruby reserve attributes when present: Choose Enabled. To not remove any ruby reserve attributes: Keep the default value, Disabled."
         },
         "ShadowColor": {
           "shape": "BurninSubtitleShadowColor",
@@ -4645,7 +4650,7 @@
     },
     "DropFrameTimecode": {
       "type": "string",
-      "documentation": "Applies only to 29.97 fps outputs. When this feature is enabled, the service will use drop-frame timecode on outputs. If it is not possible to use drop-frame timecode, the system will fall back to non-drop-frame. This setting is enabled by default when Timecode insertion is enabled.",
+      "documentation": "Applies only to 29.97 fps outputs. When this feature is enabled, the service will use drop-frame timecode on outputs. If it is not possible to use drop-frame timecode, the system will fall back to non-drop-frame. This setting is enabled by default when Timecode insertion or Timecode track is enabled.",
       "enum": [
         "DISABLED",
         "ENABLED"
@@ -7635,7 +7640,7 @@
           "documentation": "Use this setting only when your video source has Dolby Vision studio mastering metadata that is carried in a separate XML file. Specify the Amazon S3 location for the metadata XML file. MediaConvert uses this file to provide global and frame-level metadata for Dolby Vision preprocessing. When you specify a file here and your input also has interleaved global and frame level metadata, MediaConvert ignores the interleaved metadata and uses only the the metadata from this external XML file. Note that your IAM service role must grant MediaConvert read permissions to this file. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/iam-role.html."
         },
         "FileInput": {
-          "shape": "__stringPatternS3Https",
+          "shape": "__stringMax2048PatternS3Https",
           "locationName": "fileInput",
           "documentation": "Specify the source file for your transcoding job. You can use multiple inputs in a single job. The service concatenates these inputs, in the order that you specify them in the job, to create the outputs. If your input format is IMF, specify your input by providing the path to your CPL. For example, \"s3://bucket/vf/cpl.xml\". If the CPL is in an incomplete IMP, make sure to use *Supplemental IMPs* to specify any supplemental IMPs that contain assets referenced by the CPL."
         },
@@ -8276,7 +8281,7 @@
         "FollowSource": {
           "shape": "__integerMin1Max150",
           "locationName": "followSource",
-          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
+          "documentation": "Specify the input that MediaConvert references for your default output settings. MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
         },
         "Inputs": {
           "shape": "__listOfInput",
@@ -8447,7 +8452,7 @@
         "FollowSource": {
           "shape": "__integerMin1Max150",
           "locationName": "followSource",
-          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
+          "documentation": "Specify the input that MediaConvert references for your default output settings. MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
         },
         "Inputs": {
           "shape": "__listOfInputTemplate",
@@ -10779,7 +10784,7 @@
           "documentation": "Container specific settings."
         },
         "Extension": {
-          "shape": "__string",
+          "shape": "__stringMax256",
           "locationName": "extension",
           "documentation": "Use Extension to specify the file extension for outputs in File output groups. If you do not specify a value, the service will use default extensions by container type as follows * MPEG-2 transport stream, m2ts * Quicktime, mov * MXF container, mxf * MPEG-4 container, mp4 * WebM container, webm * No Container, the service will use codec extensions (e.g. AAC, H265, H265, AC3)"
         },
@@ -10852,7 +10857,7 @@
           "documentation": "Use Custom Group Name to specify a name for the output group. This value is displayed on the console and can make your job settings JSON more human-readable. It does not affect your outputs. Use up to twelve characters that are either letters, numbers, spaces, or underscores."
         },
         "Name": {
-          "shape": "__string",
+          "shape": "__stringMax2048",
           "locationName": "name",
           "documentation": "Name of the output group"
         },
@@ -11449,6 +11454,14 @@
         }
       },
       "documentation": "Use Manual audio remixing to adjust audio levels for each audio channel in each output of your job. With audio remixing, you can output more or fewer audio channels than your input audio source provides."
+    },
+    "RemoveRubyReserveAttributes": {
+      "type": "string",
+      "documentation": "Optionally remove any tts:rubyReserve attributes present in your input, that do   not have a tts:ruby attribute in the same element, from your output. Use if your vertical Japanese output captions have alignment issues. To remove ruby reserve attributes when present: Choose Enabled. To not remove any ruby reserve attributes: Keep the default value, Disabled.",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
+      ]
     },
     "RenewalType": {
       "type": "string",
@@ -12051,6 +12064,14 @@
         "EMBEDDED",
         "ZEROBASED",
         "SPECIFIEDSTART"
+      ]
+    },
+    "TimecodeTrack": {
+      "type": "string",
+      "documentation": "To include a timecode track in your MP4 output: Choose Enabled. MediaConvert writes the timecode track in the Null Media Header box (NMHD), without any timecode text formatting information. You can also specify dropframe or non-dropframe timecode under the Drop Frame Timecode setting. To not include a timecode track: Keep the default value, Disabled.",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
       ]
     },
     "TimedMetadata": {
@@ -12670,7 +12691,7 @@
         "DropFrameTimecode": {
           "shape": "DropFrameTimecode",
           "locationName": "dropFrameTimecode",
-          "documentation": "Applies only to 29.97 fps outputs. When this feature is enabled, the service will use drop-frame timecode on outputs. If it is not possible to use drop-frame timecode, the system will fall back to non-drop-frame. This setting is enabled by default when Timecode insertion is enabled."
+          "documentation": "Applies only to 29.97 fps outputs. When this feature is enabled, the service will use drop-frame timecode on outputs. If it is not possible to use drop-frame timecode, the system will fall back to non-drop-frame. This setting is enabled by default when Timecode insertion or Timecode track is enabled."
         },
         "FixedAfd": {
           "shape": "__integerMin0Max15",
@@ -12706,6 +12727,11 @@
           "shape": "VideoTimecodeInsertion",
           "locationName": "timecodeInsertion",
           "documentation": "Applies only to H.264, H.265, MPEG2, and ProRes outputs. Only enable Timecode insertion when the input frame rate is identical to the output frame rate. To include timecodes in this output, set Timecode insertion to PIC_TIMING_SEI. To leave them out, set it to DISABLED. Default is DISABLED. When the service inserts timecodes in an output, by default, it uses any embedded timecodes from the input. If none are present, the service will set the timecode for the first output frame to zero. To change this default behavior, adjust the settings under Timecode configuration. In the console, these settings are located under Job > Job settings > Timecode configuration. Note - Timecode source under input settings does not affect the timecodes that are inserted in the output. Source under Job settings > Timecode configuration does."
+        },
+        "TimecodeTrack": {
+          "shape": "TimecodeTrack",
+          "locationName": "timecodeTrack",
+          "documentation": "To include a timecode track in your MP4 output: Choose Enabled. MediaConvert writes the timecode track in the Null Media Header box (NMHD), without any timecode text formatting information. You can also specify dropframe or non-dropframe timecode under the Drop Frame Timecode setting. To not include a timecode track: Keep the default value, Disabled."
         },
         "VideoPreprocessors": {
           "shape": "VideoPreprocessor",
@@ -14620,6 +14646,19 @@
     "__stringMax1000": {
       "type": "string",
       "max": 1000
+    },
+    "__stringMax2048": {
+      "type": "string",
+      "max": 2048
+    },
+    "__stringMax2048PatternS3Https": {
+      "type": "string",
+      "max": 2048,
+      "pattern": "^s3://([^\\/]+\\/+)+((([^\\/]*)))|^https?://[^\\/].*[^&]$"
+    },
+    "__stringMax256": {
+      "type": "string",
+      "max": 256
     },
     "__stringMin0": {
       "type": "string",

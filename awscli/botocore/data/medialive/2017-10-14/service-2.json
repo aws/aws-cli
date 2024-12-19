@@ -5162,6 +5162,56 @@
         }
       ],
       "documentation": "Update the state of a node."
+    },
+    "ListVersions": {
+      "name": "ListVersions",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/versions",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListVersionsRequest"
+      },
+      "output": {
+        "shape": "ListVersionsResponse",
+        "documentation": "List of encoder engine versions that are available in this AWS account."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "The service can't process your request because of a problem in the request. Verify that the syntax is correct."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permissions for this action with the credentials that you sent."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The service could not complete your request."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Too many requests have been sent in too short of a time. The service limits the rate at which it will accept requests."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The service could not complete your request because there is a conflict with the current state of the resource."
+        }
+      ],
+      "documentation": "Retrieves an array of all the encoder engine versions that are available in this AWS account."
     }
   },
   "shapes": {
@@ -7020,6 +7070,11 @@
           "shape": "DescribeAnywhereSettings",
           "locationName": "anywhereSettings",
           "documentation": "Anywhere settings for this channel."
+        },
+        "ChannelEngineVersion": {
+          "shape": "ChannelEngineVersionResponse",
+          "locationName": "channelEngineVersion",
+          "documentation": "Requested engine version for this channel."
         }
       },
       "documentation": "Placeholder documentation for Channel"
@@ -7161,6 +7216,16 @@
           "shape": "DescribeAnywhereSettings",
           "locationName": "anywhereSettings",
           "documentation": "AnywhereSettings settings for this channel."
+        },
+        "ChannelEngineVersion": {
+          "shape": "ChannelEngineVersionResponse",
+          "locationName": "channelEngineVersion",
+          "documentation": "The engine version that you requested for this channel."
+        },
+        "UsedChannelEngineVersions": {
+          "shape": "__listOfChannelEngineVersionResponse",
+          "locationName": "usedChannelEngineVersions",
+          "documentation": "The engine version that the running pipelines are using."
         }
       },
       "documentation": "Placeholder documentation for ChannelSummary"
@@ -7329,6 +7394,15 @@
           "shape": "AnywhereSettings",
           "locationName": "anywhereSettings",
           "documentation": "The Elemental Anywhere settings for this channel."
+        },
+        "ChannelEngineVersion": {
+          "shape": "ChannelEngineVersionRequest",
+          "locationName": "channelEngineVersion",
+          "documentation": "The desired engine version for this channel."
+        },
+        "DryRun": {
+          "shape": "__boolean",
+          "locationName": "dryRun"
         }
       },
       "documentation": "Placeholder documentation for CreateChannel"
@@ -7410,6 +7484,15 @@
           "shape": "AnywhereSettings",
           "locationName": "anywhereSettings",
           "documentation": "The Elemental Anywhere settings for this channel."
+        },
+        "ChannelEngineVersion": {
+          "shape": "ChannelEngineVersionRequest",
+          "locationName": "channelEngineVersion",
+          "documentation": "The desired engine version for this channel."
+        },
+        "DryRun": {
+          "shape": "__boolean",
+          "locationName": "dryRun"
         }
       },
       "documentation": "A request to create a channel"
@@ -8012,6 +8095,11 @@
           "shape": "DescribeAnywhereSettings",
           "locationName": "anywhereSettings",
           "documentation": "Anywhere settings for this channel."
+        },
+        "ChannelEngineVersion": {
+          "shape": "ChannelEngineVersionResponse",
+          "locationName": "channelEngineVersion",
+          "documentation": "Requested engine version for this channel."
         }
       },
       "documentation": "Placeholder documentation for DeleteChannelResponse"
@@ -8476,6 +8564,11 @@
           "shape": "DescribeAnywhereSettings",
           "locationName": "anywhereSettings",
           "documentation": "Anywhere settings for this channel."
+        },
+        "ChannelEngineVersion": {
+          "shape": "ChannelEngineVersionResponse",
+          "locationName": "channelEngineVersion",
+          "documentation": "Requested engine version for this channel."
         }
       },
       "documentation": "Placeholder documentation for DescribeChannelResponse"
@@ -16008,6 +16101,11 @@
           "shape": "__string",
           "locationName": "pipelineId",
           "documentation": "Pipeline ID"
+        },
+        "ChannelEngineVersion": {
+          "shape": "ChannelEngineVersionResponse",
+          "locationName": "channelEngineVersion",
+          "documentation": "Current engine version of the encoder for this pipeline."
         }
       },
       "documentation": "Runtime details of a pipeline when a channel is running."
@@ -17397,6 +17495,11 @@
           "shape": "DescribeAnywhereSettings",
           "locationName": "anywhereSettings",
           "documentation": "Anywhere settings for this channel."
+        },
+        "ChannelEngineVersion": {
+          "shape": "ChannelEngineVersionResponse",
+          "locationName": "channelEngineVersion",
+          "documentation": "Requested engine version for this channel."
         }
       },
       "documentation": "Placeholder documentation for StartChannelResponse"
@@ -17818,6 +17921,11 @@
           "shape": "DescribeAnywhereSettings",
           "locationName": "anywhereSettings",
           "documentation": "Anywhere settings for this channel."
+        },
+        "ChannelEngineVersion": {
+          "shape": "ChannelEngineVersionResponse",
+          "locationName": "channelEngineVersion",
+          "documentation": "Requested engine version for this channel."
         }
       },
       "documentation": "Placeholder documentation for StopChannelResponse"
@@ -18478,6 +18586,15 @@
           "shape": "__string",
           "locationName": "roleArn",
           "documentation": "An optional Amazon Resource Name (ARN) of the role to assume when running the Channel. If you do not specify this on an update call but the role was previously set that role will be removed."
+        },
+        "ChannelEngineVersion": {
+          "shape": "ChannelEngineVersionRequest",
+          "locationName": "channelEngineVersion",
+          "documentation": "Channel engine version for this channel"
+        },
+        "DryRun": {
+          "shape": "__boolean",
+          "locationName": "dryRun"
         }
       },
       "documentation": "Placeholder documentation for UpdateChannel"
@@ -18589,6 +18706,15 @@
           "shape": "__string",
           "locationName": "roleArn",
           "documentation": "An optional Amazon Resource Name (ARN) of the role to assume when running the Channel. If you do not specify this on an update call but the role was previously set that role will be removed."
+        },
+        "ChannelEngineVersion": {
+          "shape": "ChannelEngineVersionRequest",
+          "locationName": "channelEngineVersion",
+          "documentation": "Channel engine version for this channel"
+        },
+        "DryRun": {
+          "shape": "__boolean",
+          "locationName": "dryRun"
         }
       },
       "documentation": "A request to update a channel.",
@@ -20522,6 +20648,11 @@
           "shape": "DescribeAnywhereSettings",
           "locationName": "anywhereSettings",
           "documentation": "Anywhere settings for this channel."
+        },
+        "ChannelEngineVersion": {
+          "shape": "ChannelEngineVersionResponse",
+          "locationName": "channelEngineVersion",
+          "documentation": "Requested engine version for this channel."
         }
       },
       "documentation": "Placeholder documentation for RestartChannelPipelinesResponse"
@@ -28137,6 +28268,57 @@
       "type": "string",
       "max": 100,
       "documentation": "Placeholder documentation for __stringMax100"
+    },
+    "ChannelEngineVersionRequest": {
+      "type": "structure",
+      "members": {
+        "Version": {
+          "shape": "__string",
+          "locationName": "version",
+          "documentation": "The build identifier of the engine version to use for this channel. Specify 'DEFAULT' to reset to the default version."
+        }
+      },
+      "documentation": "Placeholder documentation for ChannelEngineVersionRequest"
+    },
+    "ChannelEngineVersionResponse": {
+      "type": "structure",
+      "members": {
+        "ExpirationDate": {
+          "shape": "__timestampIso8601",
+          "locationName": "expirationDate",
+          "documentation": "The UTC time when the version expires."
+        },
+        "Version": {
+          "shape": "__string",
+          "locationName": "version",
+          "documentation": "The build identifier for this version of the channel version."
+        }
+      },
+      "documentation": "Placeholder documentation for ChannelEngineVersionResponse"
+    },
+    "ListVersionsRequest": {
+      "type": "structure",
+      "members": {
+      },
+      "documentation": "Placeholder documentation for ListVersionsRequest"
+    },
+    "ListVersionsResponse": {
+      "type": "structure",
+      "members": {
+        "Versions": {
+          "shape": "__listOfChannelEngineVersionResponse",
+          "locationName": "versions",
+          "documentation": "List of engine versions that are available for this AWS account."
+        }
+      },
+      "documentation": "Placeholder documentation for ListVersionsResponse"
+    },
+    "__listOfChannelEngineVersionResponse": {
+      "type": "list",
+      "member": {
+        "shape": "ChannelEngineVersionResponse"
+      },
+      "documentation": "Placeholder documentation for __listOfChannelEngineVersionResponse"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

@@ -680,6 +680,35 @@
       "type":"list",
       "member":{"shape":"ComponentId"}
     },
+    "ComponentInfo":{
+      "type":"structure",
+      "required":[
+        "ComponentType",
+        "Sid",
+        "Ec2InstanceId"
+      ],
+      "members":{
+        "ComponentType":{
+          "shape":"ComponentType",
+          "documentation":"<p>This string is the type of the component.</p> <p>Accepted value is <code>WD</code>.</p>"
+        },
+        "Sid":{
+          "shape":"SID",
+          "documentation":"<p>This string is the SAP System ID of the component.</p> <p>Accepted values are alphanumeric.</p>"
+        },
+        "Ec2InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>This is the Amazon EC2 instance on which your SAP component is running.</p> <p>Accepted values are alphanumeric.</p>"
+        }
+      },
+      "documentation":"<p>This is information about the component of your SAP application, such as Web Dispatcher.</p>"
+    },
+    "ComponentInfoList":{
+      "type":"list",
+      "member":{"shape":"ComponentInfo"},
+      "max":5,
+      "min":0
+    },
     "ComponentStatus":{
       "type":"string",
       "enum":[
@@ -1612,6 +1641,10 @@
         "DatabaseArn":{
           "shape":"SsmSapArn",
           "documentation":"<p>The Amazon Resource Name of the SAP HANA database.</p>"
+        },
+        "ComponentsInfo":{
+          "shape":"ComponentInfoList",
+          "documentation":"<p>This is an optional parameter for component details to which the SAP ABAP application is attached, such as Web Dispatcher.</p> <p>This is an array of ApplicationComponent objects. You may input 0 to 5 items.</p>"
         }
       }
     },

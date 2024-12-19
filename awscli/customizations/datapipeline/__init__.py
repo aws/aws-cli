@@ -191,7 +191,7 @@ def convert_described_objects(api_describe_objects, sort_key_func=None):
     return converted
 
 
-class QueryArgBuilder(object):
+class QueryArgBuilder:
     """
     Convert CLI arguments to Query arguments used by QueryObject.
     """

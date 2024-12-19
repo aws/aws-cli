@@ -11,9 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from collections.abc import Mapping, Set
-from decimal import Decimal, Context, Clamped
-from decimal import Overflow, Inexact, Underflow, Rounded
-
+from decimal import (
+    Clamped,
+    Context,
+    Decimal,
+    Inexact,
+    Overflow,
+    Rounded,
+    Underflow,
+)
 
 STRING = 'S'
 NUMBER = 'N'

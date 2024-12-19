@@ -10,16 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from base64 import b64decode
 import binascii
-from decimal import Decimal
 import re
 import string
+from base64 import b64decode
+from decimal import Decimal
 
-
-from .exceptions import LexerError, EmptyExpressionError
+from .exceptions import EmptyExpressionError, LexerError
 from .types import Binary
-
 
 VALID_BASE64 = re.compile(r'[A-Za-z0-9+/=]+')
 

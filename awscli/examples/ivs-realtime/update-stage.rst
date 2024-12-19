@@ -20,6 +20,8 @@ Output::
             },
             "endpoints": {
                 "events": "wss://global.events.live-video.net",
+                "rtmp": "rtmp://9x0y8z7s6t5u.global-contribute-staging.live-video.net/app/",
+                "rtmps": "rtmps://9x0y8z7s6t5u.global-contribute-staging.live-video.net:443/app/",
                 "whip": "https://1a2b3c4d5e6f.global-bm.whip.live-video.net"
             },
             "name": "stage1a",

@@ -16,8 +16,11 @@ import sys
 from botocore.exceptions import ClientError
 
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.codedeploy.utils import \
-    validate_region, validate_instance_name, INSTANCE_NAME_ARG
+from awscli.customizations.codedeploy.utils import (
+    validate_region,
+    validate_instance_name,
+    INSTANCE_NAME_ARG,
+)
 
 
 class Deregister(BasicCommand):
@@ -38,8 +41,8 @@ class Deregister(BasicCommand):
             'help_text': (
                 'Optional. Do not delete the IAM user for the registered '
                 'on-premises instance.'
-            )
-        }
+            ),
+        },
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
@@ -52,11 +55,10 @@ class Deregister(BasicCommand):
             'codedeploy',
             region_name=params.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl
+            verify=parsed_globals.verify_ssl,
         )
         self.iam = self._session.create_client(
-            'iam',
-            region_name=params.region
+            'iam', region_name=params.region
         )
 
         try:
@@ -96,10 +98,7 @@ class Deregister(BasicCommand):
         params.user_name = params.iam_user_arn[start:]
         params.tags = response['instanceInfo']['tags']
         sys.stdout.write(
-            'DONE\n'
-            'IamUserArn: {0}\n'.format(
-                params.iam_user_arn
-            )
+            'DONE\n' 'IamUserArn: {0}\n'.format(params.iam_user_arn)
         )
         if params.tags:
             sys.stdout.write('Tags:')
@@ -112,8 +111,7 @@ class Deregister(BasicCommand):
     def _remove_tags(self, params):
         sys.stdout.write('Removing tags from the on-premises instance... ')
         self.codedeploy.remove_tags_from_on_premises_instances(
-            tags=params.tags,
-            instanceNames=[params.instance_name]
+            tags=params.tags, instanceNames=[params.instance_name]
         )
         sys.stdout.write('DONE\n')
 
@@ -129,11 +127,11 @@ class Deregister(BasicCommand):
         list_user_policies = self.iam.get_paginator('list_user_policies')
         try:
             for response in list_user_policies.paginate(
-                    UserName=params.user_name):
+                UserName=params.user_name
+            ):
                 for policy_name in response['PolicyNames']:
                     self.iam.delete_user_policy(
-                        UserName=params.user_name,
-                        PolicyName=policy_name
+                        UserName=params.user_name, PolicyName=policy_name
                     )
         except ClientError as e:
             if e.response.get('Error', {}).get('Code') != 'NoSuchEntity':
@@ -145,11 +143,12 @@ class Deregister(BasicCommand):
         list_access_keys = self.iam.get_paginator('list_access_keys')
         try:
             for response in list_access_keys.paginate(
-                    UserName=params.user_name):
+                UserName=params.user_name
+            ):
                 for access_key in response['AccessKeyMetadata']:
                     self.iam.delete_access_key(
                         UserName=params.user_name,
-                        AccessKeyId=access_key['AccessKeyId']
+                        AccessKeyId=access_key['AccessKeyId'],
                     )
         except ClientError as e:
             if e.response.get('Error', {}).get('Code') != 'NoSuchEntity':
@@ -157,9 +156,9 @@ class Deregister(BasicCommand):
         sys.stdout.write('DONE\n')
 
     def _delete_iam_user(self, params):
-        sys.stdout.write('Deleting the IAM user ({0})... '.format(
-            params.user_name
-        ))
+        sys.stdout.write(
+            'Deleting the IAM user ({0})... '.format(params.user_name)
+        )
         try:
             self.iam.delete_user(UserName=params.user_name)
         except ClientError as e:

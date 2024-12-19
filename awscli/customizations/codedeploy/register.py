@@ -15,9 +15,14 @@ import sys
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.codedeploy.systems import DEFAULT_CONFIG_FILE
-from awscli.customizations.codedeploy.utils import \
-    validate_region, validate_instance_name, validate_tags, \
-    validate_iam_user_arn, INSTANCE_NAME_ARG, IAM_USER_ARN_ARG
+from awscli.customizations.codedeploy.utils import (
+    validate_region,
+    validate_instance_name,
+    validate_tags,
+    validate_iam_user_arn,
+    INSTANCE_NAME_ARG,
+    IAM_USER_ARN_ARG,
+)
 
 
 class Register(BasicCommand):
@@ -38,15 +43,15 @@ class Register(BasicCommand):
                 "Key": {
                     "description": "The tag key.",
                     "type": "string",
-                    "required": True
+                    "required": True,
                 },
                 "Value": {
                     "description": "The tag value.",
                     "type": "string",
-                    "required": True
-                }
-            }
-        }
+                    "required": True,
+                },
+            },
+        },
     }
 
     ARG_TABLE = [
@@ -60,9 +65,9 @@ class Register(BasicCommand):
             'help_text': (
                 'Optional. The list of key/value pairs to tag the on-premises '
                 'instance.'
-            )
+            ),
         },
-        IAM_USER_ARN_ARG
+        IAM_USER_ARN_ARG,
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
@@ -77,11 +82,10 @@ class Register(BasicCommand):
             'codedeploy',
             region_name=params.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl
+            verify=parsed_globals.verify_ssl,
         )
         self.iam = self._session.create_client(
-            'iam',
-            region_name=params.region
+            'iam', region_name=params.region
         )
 
         try:
@@ -119,30 +123,21 @@ class Register(BasicCommand):
         sys.stdout.write('Creating the IAM user... ')
         params.user_name = params.instance_name
         response = self.iam.create_user(
-            Path='/AWS/CodeDeploy/',
-            UserName=params.user_name
+            Path='/AWS/CodeDeploy/', UserName=params.user_name
         )
         params.iam_user_arn = response['User']['Arn']
         sys.stdout.write(
-            'DONE\n'
-            'IamUserArn: {0}\n'.format(
-                params.iam_user_arn
-            )
+            'DONE\n' 'IamUserArn: {0}\n'.format(params.iam_user_arn)
         )
 
     def _create_access_key(self, params):
         sys.stdout.write('Creating the IAM user access key... ')
-        response = self.iam.create_access_key(
-            UserName=params.user_name
-        )
+        response = self.iam.create_access_key(UserName=params.user_name)
         params.access_key_id = response['AccessKey']['AccessKeyId']
         params.secret_access_key = response['AccessKey']['SecretAccessKey']
         sys.stdout.write(
-            'DONE\n'
-            'AccessKeyId: {0}\n'
-            'SecretAccessKey: {1}\n'.format(
-                params.access_key_id,
-                params.secret_access_key
+            'DONE\n' 'AccessKeyId: {0}\n' 'SecretAccessKey: {1}\n'.format(
+                params.access_key_id, params.secret_access_key
             )
         )
 
@@ -162,14 +157,11 @@ class Register(BasicCommand):
         self.iam.put_user_policy(
             UserName=params.user_name,
             PolicyName=params.policy_name,
-            PolicyDocument=params.policy_document
+            PolicyDocument=params.policy_document,
         )
         sys.stdout.write(
-            'DONE\n'
-            'PolicyName: {0}\n'
-            'PolicyDocument: {1}\n'.format(
-                params.policy_name,
-                params.policy_document
+            'DONE\n' 'PolicyName: {0}\n' 'PolicyDocument: {1}\n'.format(
+                params.policy_name, params.policy_document
             )
         )
 
@@ -188,7 +180,7 @@ class Register(BasicCommand):
                     params.region,
                     params.iam_user_arn,
                     params.access_key_id,
-                    params.secret_access_key
+                    params.secret_access_key,
                 )
             )
         sys.stdout.write('DONE\n')
@@ -196,15 +188,13 @@ class Register(BasicCommand):
     def _register_instance(self, params):
         sys.stdout.write('Registering the on-premises instance... ')
         self.codedeploy.register_on_premises_instance(
-            instanceName=params.instance_name,
-            iamUserArn=params.iam_user_arn
+            instanceName=params.instance_name, iamUserArn=params.iam_user_arn
         )
         sys.stdout.write('DONE\n')
 
     def _add_tags(self, params):
         sys.stdout.write('Adding tags to the on-premises instance... ')
         self.codedeploy.add_tags_to_on_premises_instances(
-            tags=params.tags,
-            instanceNames=[params.instance_name]
+            tags=params.tags, instanceNames=[params.instance_name]
         )
         sys.stdout.write('DONE\n')

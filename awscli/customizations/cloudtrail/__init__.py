@@ -28,4 +28,6 @@ def inject_commands(command_table, session, **kwargs):
     must not collide with existing low-level API call names.
     """
     command_table['validate-logs'] = CloudTrailValidateLogs(session)
-    command_table['verify-query-results'] = CloudTrailVerifyQueryResult(session)
+    command_table['verify-query-results'] = CloudTrailVerifyQueryResult(
+        session
+    )

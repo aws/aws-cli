@@ -13,16 +13,15 @@
 
 import hashlib
 import logging
-import threading
 import os
 import sys
+import threading
 
 import botocore
 import botocore.exceptions
+from awscli.compat import collections_abc
 from s3transfer.manager import TransferManager
 from s3transfer.subscribers import BaseSubscriber
-
-from awscli.compat import collections_abc
 
 LOG = logging.getLogger(__name__)
 
@@ -33,14 +32,15 @@ class NoSuchBucketError(Exception):
         Exception.__init__(self, msg)
         self.kwargs = kwargs
 
+    fmt = (
+        "S3 Bucket does not exist. "
+        "Execute the command to create a new bucket"
+        "\n"
+        "aws s3 mb s3://{bucket_name}"
+    )
 
-    fmt = ("S3 Bucket does not exist. "
-           "Execute the command to create a new bucket"
-           "\n"
-           "aws s3 mb s3://{bucket_name}")
 
-
-class S3Uploader(object):
+class S3Uploader:
     """
     Class to upload objects to S3 bucket that use versioning. If bucket
     does not already use versioning, this class will turn on versioning.
@@ -59,12 +59,15 @@ class S3Uploader(object):
             raise TypeError("Artifact metadata should be in dict type")
         self._artifact_metadata = val
 
-    def __init__(self, s3_client,
-                 bucket_name,
-                 prefix=None,
-                 kms_key_id=None,
-                 force_upload=False,
-                 transfer_manager=None):
+    def __init__(
+        self,
+        s3_client,
+        bucket_name,
+        prefix=None,
+        kms_key_id=None,
+        force_upload=False,
+        transfer_manager=None,
+    ):
         self.bucket_name = bucket_name
         self.prefix = prefix
         self.kms_key_id = kms_key_id or None
@@ -86,21 +89,20 @@ class S3Uploader(object):
         """
 
         if self.prefix and len(self.prefix) > 0:
-            remote_path = "{0}/{1}".format(self.prefix, remote_path)
+            remote_path = f"{self.prefix}/{remote_path}"
 
         # Check if a file with same data exists
         if not self.force_upload and self.file_exists(remote_path):
-            LOG.debug("File with same data already exists at {0}. "
-                      "Skipping upload".format(remote_path))
+            LOG.debug(
+                f"File with same data already exists at {remote_path}. "
+                "Skipping upload"
+            )
             return self.make_url(remote_path)
 
         try:
-
             # Default to regular server-side encryption unless customer has
             # specified their own KMS keys
-            additional_args = {
-                "ServerSideEncryption": "AES256"
-            }
+            additional_args = {"ServerSideEncryption": "AES256"}
 
             if self.kms_key_id:
                 additional_args["ServerSideEncryption"] = "aws:kms"
@@ -109,13 +111,16 @@ class S3Uploader(object):
             if self.artifact_metadata:
                 additional_args["Metadata"] = self.artifact_metadata
 
-            print_progress_callback = \
-                ProgressPercentage(file_name, remote_path)
-            future = self.transfer_manager.upload(file_name,
-                                                  self.bucket_name,
-                                                  remote_path,
-                                                  additional_args,
-                                                  [print_progress_callback])
+            print_progress_callback = ProgressPercentage(
+                file_name, remote_path
+            )
+            future = self.transfer_manager.upload(
+                file_name,
+                self.bucket_name,
+                remote_path,
+                additional_args,
+                [print_progress_callback],
+            )
             future.result()
 
             return self.make_url(remote_path)
@@ -157,8 +162,7 @@ class S3Uploader(object):
 
         try:
             # Find the object that matches this ETag
-            self.s3.head_object(
-                Bucket=self.bucket_name, Key=remote_path)
+            self.s3.head_object(Bucket=self.bucket_name, Key=remote_path)
             return True
         except botocore.exceptions.ClientError:
             # Either File does not exist or we are unable to get
@@ -166,11 +170,9 @@ class S3Uploader(object):
             return False
 
     def make_url(self, obj_path):
-        return "s3://{0}/{1}".format(
-            self.bucket_name, obj_path)
+        return f"s3://{self.bucket_name}/{obj_path}"
 
     def file_checksum(self, file_name):
-
         with open(file_name, "rb") as file_handle:
             md5 = hashlib.md5()
             # Read file in chunks of 4096 bytes
@@ -192,13 +194,13 @@ class S3Uploader(object):
 
     def to_path_style_s3_url(self, key, version=None):
         """
-            This link describes the format of Path Style URLs
-            http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html#access-bucket-intro
+        This link describes the format of Path Style URLs
+        http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html#access-bucket-intro
         """
         base = self.s3.meta.endpoint_url
-        result = "{0}/{1}/{2}".format(base, self.bucket_name, key)
+        result = f"{base}/{self.bucket_name}/{key}"
         if version:
-            result = "{0}?versionId={1}".format(result, version)
+            result = f"{result}?versionId={version}"
 
         return result
 
@@ -214,14 +216,12 @@ class ProgressPercentage(BaseSubscriber):
         self._lock = threading.Lock()
 
     def on_progress(self, future, bytes_transferred, **kwargs):
-
         # To simplify we'll assume this is hooked up
         # to a single filename.
         with self._lock:
             self._seen_so_far += bytes_transferred
             percentage = (self._seen_so_far / self._size) * 100
             sys.stderr.write(
-                    "\rUploading to %s  %s / %s  (%.2f%%)" %
-                    (self._remote_path, self._seen_so_far,
-                     self._size, percentage))
+                f"\rUploading to {self._remote_path}  {self._seen_so_far} / {self._size}  ({percentage:.2f}%)"
+            )
             sys.stderr.flush()

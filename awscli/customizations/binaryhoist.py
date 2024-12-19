@@ -11,10 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import copy
-
 from dataclasses import dataclass
 from typing import Optional
-from awscli.arguments import CustomArgument, CLIArgument
+
+from awscli.arguments import CLIArgument, CustomArgument
 from awscli.customizations.exceptions import ParamValidationError
 
 

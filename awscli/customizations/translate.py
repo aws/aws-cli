@@ -10,12 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import copy
 
-from awscli.arguments import CustomArgument, CLIArgument
 from awscli.customizations.binaryhoist import (
-    BinaryBlobArgumentHoister,
     ArgumentParameters,
+    BinaryBlobArgumentHoister,
 )
 
 FILE_DOCSTRING = (
@@ -41,22 +39,24 @@ DOCUMENT_ERRORSTRING = (
 
 
 def register_translate_import_terminology(cli):
-    cli.register(
-        "building-argument-table.translate.import-terminology",
-        BinaryBlobArgumentHoister(
-            new_argument=ArgumentParameters(
-                name="data-file",
-                help_text=FILE_DOCSTRING,
-                required=True,
+    (
+        cli.register(
+            "building-argument-table.translate.import-terminology",
+            BinaryBlobArgumentHoister(
+                new_argument=ArgumentParameters(
+                    name="data-file",
+                    help_text=FILE_DOCSTRING,
+                    required=True,
+                ),
+                original_argument=ArgumentParameters(
+                    name="terminology-data",
+                    member="File",
+                    required=False,
+                ),
+                error_if_original_used=FILE_ERRORSTRING,
             ),
-            original_argument=ArgumentParameters(
-                name="terminology-data",
-                member="File",
-                required=False,
-            ),
-            error_if_original_used=FILE_ERRORSTRING,
         ),
-    ),
+    )
 
     cli.register(
         "building-argument-table.translate.translate-document",

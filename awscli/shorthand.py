@@ -47,7 +47,7 @@ from awscli.utils import is_document_type
 _EOF = object()
 
 
-class _NamedRegex(object):
+class _NamedRegex:
     def __init__(self, name, regex_str):
         self.name = name
         self.regex = re.compile(regex_str, re.UNICODE)
@@ -119,7 +119,7 @@ class DocumentTypesNotSupportedError(Exception):
     pass
 
 
-class ShorthandParser(object):
+class ShorthandParser:
     """Parses shorthand syntax in the CLI.
 
     Note that this parser does not rely on any JSON models to control
@@ -135,20 +135,12 @@ class ShorthandParser(object):
     _ESCAPED_COMMA = '(\\\\,)'
     _FIRST_VALUE = _NamedRegex(
         'first',
-        u'({escaped_comma}|[{start_word}])'
-        u'({escaped_comma}|[{follow_chars}])*'.format(
-            escaped_comma=_ESCAPED_COMMA,
-            start_word=_START_WORD,
-            follow_chars=_FIRST_FOLLOW_CHARS,
-        ))
+        f'({_ESCAPED_COMMA}|[{_START_WORD}])'
+        f'({_ESCAPED_COMMA}|[{_FIRST_FOLLOW_CHARS}])*')
     _SECOND_VALUE = _NamedRegex(
         'second',
-        u'({escaped_comma}|[{start_word}])'
-        u'({escaped_comma}|[{follow_chars}])*'.format(
-            escaped_comma=_ESCAPED_COMMA,
-            start_word=_START_WORD,
-            follow_chars=_SECOND_FOLLOW_CHARS,
-        ))
+        f'({_ESCAPED_COMMA}|[{_START_WORD}])'
+        f'({_ESCAPED_COMMA}|[{_SECOND_FOLLOW_CHARS}])*')
 
     def __init__(self):
         self._tokens = []
@@ -413,7 +405,7 @@ class ShorthandParser(object):
             self._index += 1
 
 
-class ModelVisitor(object):
+class ModelVisitor:
     def visit(self, params, model):
         self._visit({}, model, '', params)
 

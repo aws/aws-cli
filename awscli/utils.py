@@ -380,18 +380,18 @@ def emit_top_level_args_parsed_event(session, args):
 def is_a_tty():
     try:
         return os.isatty(sys.stdout.fileno())
-    except Exception as e:
+    except Exception:
         return False
 
 
 def is_stdin_a_tty():
     try:
         return os.isatty(sys.stdin.fileno())
-    except Exception as e:
+    except Exception:
         return False
 
 
-class OutputStreamFactory(object):
+class OutputStreamFactory:
     def __init__(self, session, popen=None, environ=None,
                  default_less_flags='FRX'):
         self._session = session
@@ -417,7 +417,7 @@ class OutputStreamFactory(object):
         process = LazyPager(self._popen, **popen_kwargs)
         try:
             yield process.stdin
-        except IOError:
+        except OSError:
             # Ignore IOError since this can commonly be raised when a pager
             # is closed abruptly and causes a broken pipe.
             pass
@@ -490,7 +490,7 @@ def dump_yaml_to_str(yaml, data):
     return stream.getvalue()
 
 
-class ShapeWalker(object):
+class ShapeWalker:
     def walk(self, shape, visitor):
         """Walk through and visit shapes for introspection
 
@@ -535,7 +535,7 @@ class ShapeWalker(object):
         visitor.visit_shape(shape)
 
 
-class BaseShapeVisitor(object):
+class BaseShapeVisitor:
     """Visit shape encountered by ShapeWalker"""
     def visit_shape(self, shape):
         pass

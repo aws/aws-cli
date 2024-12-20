@@ -32,7 +32,7 @@ def register_rekognition_detect_labels(cli):
     for target, new_param in FILE_PARAMETER_UPDATES.items():
         operation, old_param = target.rsplit('.', 1)
         doc_string_addendum = IMAGE_DOCSTRING_ADDENDUM % new_param
-        cli.register('building-argument-table.rekognition.%s' % operation,
+        cli.register(f'building-argument-table.rekognition.{operation}',
                      NestedBlobArgumentHoister(
                          source_arg=old_param,
                          source_arg_blob_member='Bytes',

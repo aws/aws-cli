@@ -37,7 +37,7 @@ class FlattenedArgument(CustomArgument):
         self._property = prop
         self._hydrate = hydrate
         self._hydrate_value = hydrate_value
-        super(FlattenedArgument, self).__init__(name=name, help_text=help_text,
+        super().__init__(name=name, help_text=help_text,
                                                 required=required)
 
     @property
@@ -172,7 +172,7 @@ class FlattenArguments:
             argument_from_table = argument_table[name]
             overwritten = False
 
-            LOG.debug('Flattening {0} argument {1} into {2}'.format(
+            LOG.debug('Flattening {} argument {} into {}'.format(
                 command.name, name,
                 ', '.join([v['name'] for k, v in argument['flatten'].items()])
             ))

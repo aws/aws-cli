@@ -22,7 +22,7 @@ from .lexer import Lexer
 from .types import Binary
 
 
-class Parser(object):
+class Parser:
     COMPARATORS = ['eq', 'ne', 'lt', 'lte', 'gt', 'gte']
 
     def __init__(self, lexer=None):
@@ -290,7 +290,7 @@ class Parser(object):
                     token=self._current,
                     expression=self._expression,
                     message=(
-                        'Keys must be of type `str`, found `%s`' % type(key)
+                        f'Keys must be of type `str`, found `{type(key)}`'
                     )
                 )
             self._advance_if_match('literal')

@@ -35,7 +35,7 @@ def parse_last_evaluated_key_binary(parsed, **kwargs):
             val['B'] = base64.b64decode(val['B'])
 
 
-class DynamoDBPaginatorFix(object):
+class DynamoDBPaginatorFix:
     def __init__(self, event_emitter):
         self._event_emitter = event_emitter
 

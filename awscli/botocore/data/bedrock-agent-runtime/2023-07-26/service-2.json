@@ -91,6 +91,7 @@
       "input":{"shape":"InvokeAgentRequest"},
       "output":{"shape":"InvokeAgentResponse"},
       "errors":[
+        {"shape":"ModelNotReadyException"},
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"},
@@ -101,7 +102,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>InvokeAgent</code>.</p> </note> <p>Sends a prompt for the agent to process and respond to. Note the following fields for the request:</p> <ul> <li> <p>To continue the same conversation with an agent, use the same <code>sessionId</code> value in the request.</p> </li> <li> <p>To activate trace enablement, turn <code>enableTrace</code> to <code>true</code>. Trace enablement helps you follow the agent's reasoning process that led it to the information it processed, the actions it took, and the final result it yielded. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-events\">Trace enablement</a>.</p> </li> <li> <p>End a conversation by setting <code>endSession</code> to <code>true</code>.</p> </li> <li> <p>In the <code>sessionState</code> object, you can include attributes for the session or prompt or, if you configured an action group to return control, results from invocation of the action group.</p> </li> </ul> <p>The response is returned in the <code>bytes</code> field of the <code>chunk</code> object.</p> <ul> <li> <p>The <code>attribution</code> object contains citations for parts of the response.</p> </li> <li> <p>If you set <code>enableTrace</code> to <code>true</code> in the request, you can trace the agent's steps and reasoning process that led it to the response.</p> </li> <li> <p>If the action predicted was configured to return control, the response returns parameters for the action, elicited from the user, in the <code>returnControl</code> field.</p> </li> <li> <p>Errors are also surfaced in the response.</p> </li> </ul>"
+      "documentation":"<note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>InvokeAgent</code>.</p> </note> <p>Sends a prompt for the agent to process and respond to. Note the following fields for the request:</p> <ul> <li> <p>To continue the same conversation with an agent, use the same <code>sessionId</code> value in the request.</p> </li> <li> <p>To activate trace enablement, turn <code>enableTrace</code> to <code>true</code>. Trace enablement helps you follow the agent's reasoning process that led it to the information it processed, the actions it took, and the final result it yielded. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-events\">Trace enablement</a>.</p> </li> <li> <p>To stream agent responses, make sure that only orchestration prompt is enabled. Agent streaming is not supported for the following steps: </p> <ul> <li> <p> <code>Pre-processing</code> </p> </li> <li> <p> <code>Post-processing</code> </p> </li> <li> <p>Agent with 1 Knowledge base and <code>User Input</code> not enabled</p> </li> </ul> </li> <li> <p>End a conversation by setting <code>endSession</code> to <code>true</code>.</p> </li> <li> <p>In the <code>sessionState</code> object, you can include attributes for the session or prompt or, if you configured an action group to return control, results from invocation of the action group.</p> </li> </ul> <p>The response is returned in the <code>bytes</code> field of the <code>chunk</code> object.</p> <ul> <li> <p>The <code>attribution</code> object contains citations for parts of the response.</p> </li> <li> <p>If you set <code>enableTrace</code> to <code>true</code> in the request, you can trace the agent's steps and reasoning process that led it to the response.</p> </li> <li> <p>If the action predicted was configured to return control, the response returns parameters for the action, elicited from the user, in the <code>returnControl</code> field.</p> </li> <li> <p>Errors are also surfaced in the response.</p> </li> </ul>"
     },
     "InvokeFlow":{
       "name":"InvokeFlow",
@@ -417,7 +418,7 @@
         },
         "parentActionGroupSignature":{
           "shape":"ActionGroupSignature",
-          "documentation":"<p> To allow your agent to request the user for additional information when trying to complete a task, set this field to <code>AMAZON.UserInput</code>. You must leave the <code>description</code>, <code>apiSchema</code>, and <code>actionGroupExecutor</code> fields blank for this action group. </p> <p>To allow your agent to generate, run, and troubleshoot code when trying to complete a task, set this field to <code>AMAZON.CodeInterpreter</code>. You must leave the <code>description</code>, <code>apiSchema</code>, and <code>actionGroupExecutor</code> fields blank for this action group.</p> <p>During orchestration, if your agent determines that it needs to invoke an API in an action group, but doesn't have enough information to complete the API request, it will invoke this action group instead and return an <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Observation.html\">Observation</a> reprompting the user for more information.</p>"
+          "documentation":"<p> To allow your agent to request the user for additional information when trying to complete a task, set this field to <code>AMAZON.UserInput</code>. You must leave the <code>description</code>, <code>apiSchema</code>, and <code>actionGroupExecutor</code> fields blank for this action group. </p> <p>To allow your agent to generate, run, and troubleshoot code when trying to complete a task, set this field to <code>AMAZON.CodeInterpreter</code>. You must leave the <code>description</code>, <code>apiSchema</code>, and <code>actionGroupExecutor</code> fields blank for this action group.</p> <p>During orchestration, if your agent determines that it needs to invoke an API in an action group, but doesn't have enough information to complete the API request, it will invoke this action group instead and return an <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Observation.html\">Observation</a> reprompting the user for more information.</p>"
         }
       },
       "documentation":"<p> Contains details of the inline agent's action group. </p>"
@@ -701,6 +702,16 @@
       "max":2048,
       "min":1,
       "pattern":"^(arn:aws(-[^:]+)?:(bedrock|sagemaker):[a-z0-9-]{1,20}:([0-9]{12})?:([a-z-]+/)?)?([a-z0-9.-]{1,63}){0,2}(([:][a-z0-9-]{1,63}){0,2})?(/[a-z0-9]{1,12})?$"
+    },
+    "BedrockModelConfigurations":{
+      "type":"structure",
+      "members":{
+        "performanceConfig":{
+          "shape":"PerformanceConfiguration",
+          "documentation":"<p>The performance configuration for the model.</p>"
+        }
+      },
+      "documentation":"<p>Settings for a model called with <a>InvokeAgent</a>.</p>"
     },
     "BedrockRerankingConfiguration":{
       "type":"structure",
@@ -1012,6 +1023,12 @@
           "documentation":"<p>The unique identifier of the memory.</p>",
           "location":"querystring",
           "locationName":"memoryId"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique session identifier of the memory.</p>",
+          "location":"querystring",
+          "locationName":"sessionId"
         }
       }
     },
@@ -1099,6 +1116,10 @@
         "inferenceConfig":{
           "shape":"InferenceConfig",
           "documentation":"<p> Configuration settings for inference when using RetrieveAndGenerate to generate responses while using an external source.</p>"
+        },
+        "performanceConfig":{
+          "shape":"PerformanceConfiguration",
+          "documentation":"<p>The latency configuration for the model.</p>"
         },
         "promptTemplate":{
           "shape":"PromptTemplate",
@@ -1834,6 +1855,10 @@
           "shape":"InferenceConfig",
           "documentation":"<p> Configuration settings for inference when using RetrieveAndGenerate to generate responses while using a knowledge base as a source. </p>"
         },
+        "performanceConfig":{
+          "shape":"PerformanceConfiguration",
+          "documentation":"<p>The latency configuration for the model.</p>"
+        },
         "promptTemplate":{
           "shape":"PromptTemplate",
           "documentation":"<p>Contains the template for the prompt that's sent to the model for response generation. Generation prompts must include the <code>$search_results$</code> variable. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html\">Use placeholder variables</a> in the user guide.</p>"
@@ -2493,6 +2518,16 @@
       "event":true,
       "sensitive":true
     },
+    "InlineBedrockModelConfigurations":{
+      "type":"structure",
+      "members":{
+        "performanceConfig":{
+          "shape":"PerformanceConfiguration",
+          "documentation":"<p>The latency configuration for the model.</p>"
+        }
+      },
+      "documentation":"<p>Settings for a model called with <a>InvokeInlineAgent</a>.</p>"
+    },
     "InlineSessionState":{
       "type":"structure",
       "members":{
@@ -2683,6 +2718,10 @@
           "location":"uri",
           "locationName":"agentId"
         },
+        "bedrockModelConfigurations":{
+          "shape":"BedrockModelConfigurations",
+          "documentation":"<p>Model performance settings for the request.</p>"
+        },
         "enableTrace":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether to turn on the trace or not to track the agent's reasoning process. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-events\">Trace enablement</a>.</p>"
@@ -2717,7 +2756,7 @@
         },
         "streamingConfigurations":{
           "shape":"StreamingConfigurations",
-          "documentation":"<p> Specifies the configurations for streaming. </p>"
+          "documentation":"<p> Specifies the configurations for streaming. </p> <note> <p>To use agent streaming, you need permissions to perform the <code>bedrock:InvokeModelWithResponseStream</code> action.</p> </note>"
         }
       }
     },
@@ -2781,6 +2820,10 @@
         "inputs":{
           "shape":"FlowInputs",
           "documentation":"<p>A list of objects, each containing information about an input into the flow.</p>"
+        },
+        "modelPerformanceConfiguration":{
+          "shape":"ModelPerformanceConfiguration",
+          "documentation":"<p>Model performance settings for the request.</p>"
         }
       }
     },
@@ -2806,6 +2849,10 @@
         "actionGroups":{
           "shape":"AgentActionGroups",
           "documentation":"<p> A list of action groups with each action group defining the action the inline agent needs to carry out. </p>"
+        },
+        "bedrockModelConfigurations":{
+          "shape":"InlineBedrockModelConfigurations",
+          "documentation":"<p>Model settings for the request.</p>"
         },
         "customerEncryptionKeyArn":{
           "shape":"KmsKeyArn",
@@ -3313,6 +3360,28 @@
       "documentation":"<p>The input for the pre-processing step.</p> <ul> <li> <p>The <code>type</code> matches the agent step.</p> </li> <li> <p>The <code>text</code> contains the prompt.</p> </li> <li> <p>The <code>inferenceConfiguration</code>, <code>parserMode</code>, and <code>overrideLambda</code> values are set in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> object that was set when the agent was created or updated.</p> </li> </ul>",
       "sensitive":true
     },
+    "ModelNotReadyException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"NonBlankString"}
+      },
+      "documentation":"<p> The model specified in the request is not ready to serve inference requests. The AWS SDK will automatically retry the operation up to 5 times. For information about configuring automatic retries, see <a href=\"https://docs.aws.amazon.com/sdkref/latest/guide/feature-retry-behavior.html\">Retry behavior</a> in the <i>AWS SDKs and Tools</i> reference guide. </p>",
+      "error":{
+        "httpStatusCode":424,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ModelPerformanceConfiguration":{
+      "type":"structure",
+      "members":{
+        "performanceConfig":{
+          "shape":"PerformanceConfiguration",
+          "documentation":"<p>The latency configuration for the model.</p>"
+        }
+      },
+      "documentation":"<p>The performance configuration for a model called with <a>InvokeFlow</a>.</p>"
+    },
     "Name":{
       "type":"string",
       "pattern":"^([0-9a-zA-Z][_-]?){1,100}$",
@@ -3497,6 +3566,10 @@
         "inferenceConfig":{
           "shape":"InferenceConfig",
           "documentation":"<p> Configuration settings for inference when using RetrieveAndGenerate to generate responses while using a knowledge base as a source. </p>"
+        },
+        "performanceConfig":{
+          "shape":"PerformanceConfiguration",
+          "documentation":"<p>The latency configuration for the model.</p>"
         },
         "promptTemplate":{
           "shape":"PromptTemplate",
@@ -3686,6 +3759,23 @@
         "TEXT",
         "RETURN_CONTROL"
       ]
+    },
+    "PerformanceConfigLatency":{
+      "type":"string",
+      "enum":[
+        "standard",
+        "optimized"
+      ]
+    },
+    "PerformanceConfiguration":{
+      "type":"structure",
+      "members":{
+        "latency":{
+          "shape":"PerformanceConfigLatency",
+          "documentation":"<p>To use a latency-optimized version of the model, set to <code>optimized</code>.</p>"
+        }
+      },
+      "documentation":"<p>Performance settings for a model.</p>"
     },
     "PostProcessingModelInvocationOutput":{
       "type":"structure",
@@ -4290,6 +4380,10 @@
         "internalServerException":{
           "shape":"InternalServerException",
           "documentation":"<p>An internal server error occurred. Retry your request.</p>"
+        },
+        "modelNotReadyException":{
+          "shape":"ModelNotReadyException",
+          "documentation":"<p> The model specified in the request is not ready to serve Inference requests. The AWS SDK will automatically retry the operation up to 5 times. For information about configuring automatic retries, see <a href=\"https://docs.aws.amazon.com/sdkref/latest/guide/feature-retry-behavior.html\">Retry behavior</a> in the <i>AWS SDKs and Tools</i> reference guide. </p>"
         },
         "resourceNotFoundException":{
           "shape":"ResourceNotFoundException",
@@ -5153,7 +5247,7 @@
           "documentation":"<p> Specifies whether to enable streaming for the final response. This is set to <code>false</code> by default. </p>"
         }
       },
-      "documentation":"<p> Configurations for streaming. </p>"
+      "documentation":"<p> Configurations for streaming.</p>"
     },
     "StreamingConfigurationsApplyGuardrailIntervalInteger":{
       "type":"integer",

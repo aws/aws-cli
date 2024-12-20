@@ -6067,6 +6067,10 @@
           "shape":"NullableProficiencyLevel",
           "documentation":"<p>The proficiency level of the condition.</p>"
         },
+        "Range":{
+          "shape":"Range",
+          "documentation":"<p>An Object to define the minimum and maximum proficiency levels.</p>"
+        },
         "MatchCriteria":{
           "shape":"MatchCriteria",
           "documentation":"<p>An object to define <code>AgentsCriteria</code>.</p>"
@@ -12755,7 +12759,8 @@
         "OrExpression":{
           "shape":"Expressions",
           "documentation":"<p>List of routing expressions which will be OR-ed together.</p>"
-        }
+        },
+        "NotAttributeCondition":{"shape":"AttributeCondition"}
       },
       "documentation":"<p>A tagged union to specify expression for a routing step.</p>"
     },
@@ -19164,6 +19169,20 @@
       "max":50,
       "min":1
     },
+    "Range":{
+      "type":"structure",
+      "members":{
+        "MinProficiencyLevel":{
+          "shape":"NullableProficiencyLevel",
+          "documentation":"<p>The minimum proficiency level of the range.</p>"
+        },
+        "MaxProficiencyLevel":{
+          "shape":"NullableProficiencyLevel",
+          "documentation":"<p>The maximum proficiency level of the range.</p>"
+        }
+      },
+      "documentation":"<p>An Object to define the minimum and maximum proficiency levels.</p>"
+    },
     "ReadOnlyFieldInfo":{
       "type":"structure",
       "members":{
@@ -22203,7 +22222,7 @@
         },
         "UploadUrlMetadata":{
           "shape":"UploadUrlMetadata",
-          "documentation":"<p>Information to be used while uploading the attached file. </p>"
+          "documentation":"<p>The headers to be provided while uploading the file to the URL.</p>"
         }
       },
       "documentation":"Response from StartAttachedFileUpload API."

@@ -1145,6 +1145,24 @@
       },
       "documentation":"<p>An Amazon EKS add-on. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html\">Amazon EKS add-ons</a> in the <i>Amazon EKS User Guide</i>.</p>"
     },
+    "AddonCompatibilityDetail":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon EKS add-on.</p>"
+        },
+        "compatibleVersions":{
+          "shape":"StringList",
+          "documentation":"<p>The list of compatible Amazon EKS add-on versions for the next Kubernetes version.</p>"
+        }
+      },
+      "documentation":"<p>The summary information about the Amazon EKS add-on compatibility for the next Kubernetes version for an insight check in the <code>UPGRADE_READINESS</code> category.</p>"
+    },
+    "AddonCompatibilityDetails":{
+      "type":"list",
+      "member":{"shape":"AddonCompatibilityDetail"}
+    },
     "AddonHealth":{
       "type":"structure",
       "members":{
@@ -3459,6 +3477,10 @@
         "deprecationDetails":{
           "shape":"DeprecationDetails",
           "documentation":"<p>The summary information about deprecated resource usage for an insight check in the <code>UPGRADE_READINESS</code> category.</p>"
+        },
+        "addonCompatibilityDetails":{
+          "shape":"AddonCompatibilityDetails",
+          "documentation":"<p>A list of <code>AddonCompatibilityDetail</code> objects for Amazon EKS add-ons.</p>"
         }
       },
       "documentation":"<p>Summary information that relates to the category of the insight. Currently only returned with certain insights having category <code>UPGRADE_READINESS</code>.</p>"

@@ -199,7 +199,8 @@
         {"shape":"BillExpirationException"},
         {"shape":"DataUnavailableException"},
         {"shape":"InvalidNextTokenException"},
-        {"shape":"RequestChangedException"}
+        {"shape":"RequestChangedException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves cost and usage metrics for your account. You can specify which cost and usage-related metric that you want the request to return. For example, you can specify <code>BlendedCosts</code> or <code>UsageQuantity</code>. You can also filter and group your data by various dimensions, such as <code>SERVICE</code> or <code>AZ</code>, in a specific time range. For a complete list of valid dimensions, see the <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_GetDimensionValues.html\">GetDimensionValues</a> operation. Management account in an organization in Organizations have access to all member accounts.</p> <p>For information about filter limitations, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-limits.html\">Quotas and restrictions</a> in the <i>Billing and Cost Management User Guide</i>.</p>"
     },
@@ -216,7 +217,8 @@
         {"shape":"LimitExceededException"},
         {"shape":"BillExpirationException"},
         {"shape":"InvalidNextTokenException"},
-        {"shape":"RequestChangedException"}
+        {"shape":"RequestChangedException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves cost and usage metrics with resources for your account. You can specify which cost and usage-related metric, such as <code>BlendedCosts</code> or <code>UsageQuantity</code>, that you want the request to return. You can also filter and group your data by various dimensions, such as <code>SERVICE</code> or <code>AZ</code>, in a specific time range. For a complete list of valid dimensions, see the <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_GetDimensionValues.html\">GetDimensionValues</a> operation. Management account in an organization in Organizations have access to all member accounts.</p> <p>Hourly granularity is only available for EC2-Instances (Elastic Compute Cloud) resource-level data. All other resource-level data is available at daily granularity.</p> <note> <p>This is an opt-in only feature. You can enable this feature from the Cost Explorer Settings page. For information about how to access the Settings page, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/ce-access.html\">Controlling Access for Cost Explorer</a> in the <i>Billing and Cost Management User Guide</i>.</p> </note>"
     },
@@ -233,7 +235,8 @@
         {"shape":"BillExpirationException"},
         {"shape":"DataUnavailableException"},
         {"shape":"InvalidNextTokenException"},
-        {"shape":"RequestChangedException"}
+        {"shape":"RequestChangedException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves an array of Cost Category names and values incurred cost.</p> <note> <p>If some Cost Category names and values are not associated with any cost, they will not be returned by this API.</p> </note>"
     },
@@ -247,7 +250,8 @@
       "output":{"shape":"GetCostForecastResponse"},
       "errors":[
         {"shape":"LimitExceededException"},
-        {"shape":"DataUnavailableException"}
+        {"shape":"DataUnavailableException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves a forecast for how much Amazon Web Services predicts that you will spend over the forecast time period that you select, based on your past costs. </p>"
     },
@@ -264,7 +268,8 @@
         {"shape":"BillExpirationException"},
         {"shape":"DataUnavailableException"},
         {"shape":"InvalidNextTokenException"},
-        {"shape":"RequestChangedException"}
+        {"shape":"RequestChangedException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves all available filter values for a specified filter over a period of time. You can search the dimension values for an arbitrary string. </p>"
     },
@@ -412,7 +417,8 @@
         {"shape":"BillExpirationException"},
         {"shape":"DataUnavailableException"},
         {"shape":"InvalidNextTokenException"},
-        {"shape":"RequestChangedException"}
+        {"shape":"RequestChangedException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Queries for available tag keys and tag values for a specified period. You can search the tag values for an arbitrary string. </p>"
     },
@@ -427,7 +433,8 @@
       "errors":[
         {"shape":"LimitExceededException"},
         {"shape":"DataUnavailableException"},
-        {"shape":"UnresolvableUsageUnitException"}
+        {"shape":"UnresolvableUsageUnitException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves a forecast for how much Amazon Web Services predicts that you will use over the forecast time period that you select, based on your past usage. </p>"
     },
@@ -999,6 +1006,12 @@
       },
       "documentation":"<p>The requested report expired. Update the date interval and try again.</p>",
       "exception":true
+    },
+    "BillingViewArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[a-z-]*:(billing)::[0-9]{12}:billingview/[-a-zA-Z0-9/:_+=.-@]{1,43}$"
     },
     "CommitmentPurchaseAnalysisConfiguration":{
       "type":"structure",
@@ -2456,6 +2469,10 @@
           "shape":"GroupDefinitions",
           "documentation":"<p>You can group Amazon Web Services costs using up to two different groups, either dimensions, tag keys, cost categories, or any two group by types.</p> <p>Valid values for the <code>DIMENSION</code> type are <code>AZ</code>, <code>INSTANCE_TYPE</code>, <code>LEGAL_ENTITY_NAME</code>, <code>INVOICING_ENTITY</code>, <code>LINKED_ACCOUNT</code>, <code>OPERATION</code>, <code>PLATFORM</code>, <code>PURCHASE_TYPE</code>, <code>SERVICE</code>, <code>TENANCY</code>, <code>RECORD_TYPE</code>, and <code>USAGE_TYPE</code>.</p> <p>When you group by the <code>TAG</code> type and include a valid tag key, you get all tag values, including empty strings.</p>"
         },
+        "BillingViewArn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a specific billing view. The ARN is used to specify which particular billing view you want to interact with or retrieve information from when making API calls related to Amazon Web Services Billing and Cost Management features. The BillingViewArn can be retrieved by calling the ListBillingViews API.</p>"
+        },
         "NextPageToken":{
           "shape":"NextPageToken",
           "documentation":"<p>The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.</p>"
@@ -2511,6 +2528,10 @@
           "shape":"GroupDefinitions",
           "documentation":"<p>You can group Amazon Web Services costs using up to two different groups: <code>DIMENSION</code>, <code>TAG</code>, <code>COST_CATEGORY</code>.</p>"
         },
+        "BillingViewArn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a specific billing view. The ARN is used to specify which particular billing view you want to interact with or retrieve information from when making API calls related to Amazon Web Services Billing and Cost Management features. The BillingViewArn can be retrieved by calling the ListBillingViews API.</p>"
+        },
         "NextPageToken":{
           "shape":"NextPageToken",
           "documentation":"<p>The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.</p>"
@@ -2552,6 +2573,10 @@
         "SortBy":{
           "shape":"SortDefinitions",
           "documentation":"<p>The value that you sort the data by.</p> <p>The key represents the cost and usage metrics. The following values are supported:</p> <ul> <li> <p> <code>BlendedCost</code> </p> </li> <li> <p> <code>UnblendedCost</code> </p> </li> <li> <p> <code>AmortizedCost</code> </p> </li> <li> <p> <code>NetAmortizedCost</code> </p> </li> <li> <p> <code>NetUnblendedCost</code> </p> </li> <li> <p> <code>UsageQuantity</code> </p> </li> <li> <p> <code>NormalizedUsageAmount</code> </p> </li> </ul> <p>The supported key values for the <code>SortOrder</code> value are <code>ASCENDING</code> and <code>DESCENDING</code>.</p> <p>When you use the <code>SortBy</code> value, the <code>NextPageToken</code> and <code>SearchString</code> key values aren't supported.</p>"
+        },
+        "BillingViewArn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a specific billing view. The ARN is used to specify which particular billing view you want to interact with or retrieve information from when making API calls related to Amazon Web Services Billing and Cost Management features. The BillingViewArn can be retrieved by calling the ListBillingViews API.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -2616,6 +2641,10 @@
           "shape":"Expression",
           "documentation":"<p>The filters that you want to use to filter your forecast. The <code>GetCostForecast</code> API supports filtering by the following dimensions:</p> <ul> <li> <p> <code>AZ</code> </p> </li> <li> <p> <code>INSTANCE_TYPE</code> </p> </li> <li> <p> <code>LINKED_ACCOUNT</code> </p> </li> <li> <p> <code>LINKED_ACCOUNT_NAME</code> </p> </li> <li> <p> <code>OPERATION</code> </p> </li> <li> <p> <code>PURCHASE_TYPE</code> </p> </li> <li> <p> <code>REGION</code> </p> </li> <li> <p> <code>SERVICE</code> </p> </li> <li> <p> <code>USAGE_TYPE</code> </p> </li> <li> <p> <code>USAGE_TYPE_GROUP</code> </p> </li> <li> <p> <code>RECORD_TYPE</code> </p> </li> <li> <p> <code>OPERATING_SYSTEM</code> </p> </li> <li> <p> <code>TENANCY</code> </p> </li> <li> <p> <code>SCOPE</code> </p> </li> <li> <p> <code>PLATFORM</code> </p> </li> <li> <p> <code>SUBSCRIPTION_ID</code> </p> </li> <li> <p> <code>LEGAL_ENTITY_NAME</code> </p> </li> <li> <p> <code>DEPLOYMENT_OPTION</code> </p> </li> <li> <p> <code>DATABASE_ENGINE</code> </p> </li> <li> <p> <code>INSTANCE_TYPE_FAMILY</code> </p> </li> <li> <p> <code>BILLING_ENTITY</code> </p> </li> <li> <p> <code>RESERVATION_ID</code> </p> </li> <li> <p> <code>SAVINGS_PLAN_ARN</code> </p> </li> </ul>"
         },
+        "BillingViewArn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a specific billing view. The ARN is used to specify which particular billing view you want to interact with or retrieve information from when making API calls related to Amazon Web Services Billing and Cost Management features. The BillingViewArn can be retrieved by calling the ListBillingViews API.</p>"
+        },
         "PredictionIntervalLevel":{
           "shape":"PredictionIntervalLevel",
           "documentation":"<p>Cost Explorer always returns the mean forecast as a single point. You can request a prediction interval around the mean by specifying a confidence level. The higher the confidence level, the more confident Cost Explorer is about the actual value falling in the prediction interval. Higher confidence levels result in wider prediction intervals.</p>"
@@ -2662,6 +2691,10 @@
         "SortBy":{
           "shape":"SortDefinitions",
           "documentation":"<p>The value that you want to sort the data by.</p> <p>The key represents cost and usage metrics. The following values are supported:</p> <ul> <li> <p> <code>BlendedCost</code> </p> </li> <li> <p> <code>UnblendedCost</code> </p> </li> <li> <p> <code>AmortizedCost</code> </p> </li> <li> <p> <code>NetAmortizedCost</code> </p> </li> <li> <p> <code>NetUnblendedCost</code> </p> </li> <li> <p> <code>UsageQuantity</code> </p> </li> <li> <p> <code>NormalizedUsageAmount</code> </p> </li> </ul> <p>The supported values for the <code>SortOrder</code> key are <code>ASCENDING</code> or <code>DESCENDING</code>.</p> <p>When you specify a <code>SortBy</code> paramater, the context must be <code>COST_AND_USAGE</code>. Further, when using <code>SortBy</code>, <code>NextPageToken</code> and <code>SearchString</code> aren't supported.</p>"
+        },
+        "BillingViewArn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a specific billing view. The ARN is used to specify which particular billing view you want to interact with or retrieve information from when making API calls related to Amazon Web Services Billing and Cost Management features. The BillingViewArn can be retrieved by calling the ListBillingViews API.</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -3164,6 +3197,10 @@
           "shape":"SortDefinitions",
           "documentation":"<p>The value that you want to sort the data by.</p> <p>The key represents cost and usage metrics. The following values are supported:</p> <ul> <li> <p> <code>BlendedCost</code> </p> </li> <li> <p> <code>UnblendedCost</code> </p> </li> <li> <p> <code>AmortizedCost</code> </p> </li> <li> <p> <code>NetAmortizedCost</code> </p> </li> <li> <p> <code>NetUnblendedCost</code> </p> </li> <li> <p> <code>UsageQuantity</code> </p> </li> <li> <p> <code>NormalizedUsageAmount</code> </p> </li> </ul> <p>The supported values for <code>SortOrder</code> are <code>ASCENDING</code> and <code>DESCENDING</code>.</p> <p>When you use <code>SortBy</code>, <code>NextPageToken</code> and <code>SearchString</code> aren't supported.</p>"
         },
+        "BillingViewArn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a specific billing view. The ARN is used to specify which particular billing view you want to interact with or retrieve information from when making API calls related to Amazon Web Services Billing and Cost Management features. The BillingViewArn can be retrieved by calling the ListBillingViews API.</p>"
+        },
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>This field is only used when SortBy is provided in the request. The maximum number of objects that are returned for this request. If MaxResults isn't specified with SortBy, the request returns 1000 results as the default value for this parameter.</p> <p>For <code>GetTags</code>, MaxResults has an upper quota of 1000.</p>"
@@ -3223,6 +3260,10 @@
         "Filter":{
           "shape":"Expression",
           "documentation":"<p>The filters that you want to use to filter your forecast. The <code>GetUsageForecast</code> API supports filtering by the following dimensions:</p> <ul> <li> <p> <code>AZ</code> </p> </li> <li> <p> <code>INSTANCE_TYPE</code> </p> </li> <li> <p> <code>LINKED_ACCOUNT</code> </p> </li> <li> <p> <code>LINKED_ACCOUNT_NAME</code> </p> </li> <li> <p> <code>OPERATION</code> </p> </li> <li> <p> <code>PURCHASE_TYPE</code> </p> </li> <li> <p> <code>REGION</code> </p> </li> <li> <p> <code>SERVICE</code> </p> </li> <li> <p> <code>USAGE_TYPE</code> </p> </li> <li> <p> <code>USAGE_TYPE_GROUP</code> </p> </li> <li> <p> <code>RECORD_TYPE</code> </p> </li> <li> <p> <code>OPERATING_SYSTEM</code> </p> </li> <li> <p> <code>TENANCY</code> </p> </li> <li> <p> <code>SCOPE</code> </p> </li> <li> <p> <code>PLATFORM</code> </p> </li> <li> <p> <code>SUBSCRIPTION_ID</code> </p> </li> <li> <p> <code>LEGAL_ENTITY_NAME</code> </p> </li> <li> <p> <code>DEPLOYMENT_OPTION</code> </p> </li> <li> <p> <code>DATABASE_ENGINE</code> </p> </li> <li> <p> <code>INSTANCE_TYPE_FAMILY</code> </p> </li> <li> <p> <code>BILLING_ENTITY</code> </p> </li> <li> <p> <code>RESERVATION_ID</code> </p> </li> <li> <p> <code>SAVINGS_PLAN_ARN</code> </p> </li> </ul>"
+        },
+        "BillingViewArn":{
+          "shape":"BillingViewArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a specific billing view. The ARN is used to specify which particular billing view you want to interact with or retrieve information from when making API calls related to Amazon Web Services Billing and Cost Management features. The BillingViewArn can be retrieved by calling the ListBillingViews API.</p>"
         },
         "PredictionIntervalLevel":{
           "shape":"PredictionIntervalLevel",

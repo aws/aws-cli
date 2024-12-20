@@ -7213,6 +7213,11 @@
       },
       "documentation":"<p>Details about a malformed input expression in a node.</p>"
     },
+    "MaxRecentSessions":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -7232,6 +7237,10 @@
         "enabledMemoryTypes":{
           "shape":"EnabledMemoryTypes",
           "documentation":"<p>The type of memory that is stored. </p>"
+        },
+        "sessionSummaryConfiguration":{
+          "shape":"SessionSummaryConfiguration",
+          "documentation":"<p>Contains the configuration for SESSION_SUMMARY memory type enabled for the agent. </p>"
         },
         "storageDays":{
           "shape":"StorageDays",
@@ -8297,7 +8306,8 @@
         "PRE_PROCESSING",
         "ORCHESTRATION",
         "POST_PROCESSING",
-        "KNOWLEDGE_BASE_RESPONSE_GENERATION"
+        "KNOWLEDGE_BASE_RESPONSE_GENERATION",
+        "MEMORY_SUMMARIZATION"
       ]
     },
     "PromptVariant":{
@@ -9099,6 +9109,16 @@
       },
       "exception":true
     },
+    "SessionSummaryConfiguration":{
+      "type":"structure",
+      "members":{
+        "maxRecentSessions":{
+          "shape":"MaxRecentSessions",
+          "documentation":"<p>Maximum number of recent session summaries to include in the agent's prompt context.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for SESSION_SUMMARY memory type enabled for the agent.</p>"
+    },
     "SessionTTL":{
       "type":"integer",
       "box":true,
@@ -9107,7 +9127,10 @@
     },
     "SharePointAuthType":{
       "type":"string",
-      "enum":["OAUTH2_CLIENT_CREDENTIALS"]
+      "enum":[
+        "OAUTH2_CLIENT_CREDENTIALS",
+        "OAUTH2_SHAREPOINT_APP_ONLY_CLIENT_CREDENTIALS"
+      ]
     },
     "SharePointCrawlerConfiguration":{
       "type":"structure",
@@ -9346,7 +9369,7 @@
     "StorageDays":{
       "type":"integer",
       "box":true,
-      "max":30,
+      "max":365,
       "min":0
     },
     "StorageFlowNodeConfiguration":{
@@ -10506,6 +10529,12 @@
       },
       "documentation":"<p>The configuration of web URLs that you want to crawl. You should be authorized to crawl the URLs.</p>"
     },
+    "UserAgent":{
+      "type":"string",
+      "max":40,
+      "min":15,
+      "sensitive":true
+    },
     "ValidateFlowDefinitionRequest":{
       "type":"structure",
       "required":["definition"],
@@ -10625,6 +10654,10 @@
         "scope":{
           "shape":"WebScopeType",
           "documentation":"<p>The scope of what is crawled for your URLs.</p> <p>You can choose to crawl only web pages that belong to the same host or primary domain. For example, only web pages that contain the seed URL \"https://docs.aws.amazon.com/bedrock/latest/userguide/\" and no other domains. You can choose to include sub domains in addition to the host or primary domain. For example, web pages that contain \"aws.amazon.com\" can also include sub domain \"docs.aws.amazon.com\".</p>"
+        },
+        "userAgent":{
+          "shape":"UserAgent",
+          "documentation":"<p>A string used for identifying the crawler or a bot when it accesses a web server. By default, this is set to <code>bedrockbot_UUID</code> for your crawler. You can optionally append a custom string to <code>bedrockbot_UUID</code> to allowlist a specific user agent permitted to access your source URLs. </p>"
         }
       },
       "documentation":"<p>The configuration of web URLs that you want to crawl. You should be authorized to crawl the URLs.</p>"
@@ -10632,12 +10665,21 @@
     "WebCrawlerLimits":{
       "type":"structure",
       "members":{
+        "maxPages":{
+          "shape":"WebCrawlerLimitsMaxPagesInteger",
+          "documentation":"<p> The max number of web pages crawled from your source URLs, up to 25,000 pages. If the web pages exceed this limit, the data source sync will fail and no web pages will be ingested. </p>"
+        },
         "rateLimit":{
           "shape":"WebCrawlerLimitsRateLimitInteger",
           "documentation":"<p>The max rate at which pages are crawled, up to 300 per minute per host.</p>"
         }
       },
       "documentation":"<p>The rate limits for the URLs that you want to crawl. You should be authorized to crawl the URLs.</p>"
+    },
+    "WebCrawlerLimitsMaxPagesInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
     },
     "WebCrawlerLimitsRateLimitInteger":{
       "type":"integer",

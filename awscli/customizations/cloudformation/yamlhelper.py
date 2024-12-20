@@ -73,7 +73,7 @@ def _add_yaml_1_1_boolean_resolvers(resolver_cls):
         '|true|True|TRUE|false|False|FALSE'
         '|on|On|ON|off|Off|OFF)$'
     )
-    boolean_first_chars = list(u'yYnNtTfFoO')
+    boolean_first_chars = list('yYnNtTfFoO')
     resolver_cls.add_implicit_resolver(
         'tag:yaml.org,2002:bool', boolean_regex, boolean_first_chars)
 

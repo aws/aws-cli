@@ -40,7 +40,7 @@ def register_configure_cmd(cli):
                  ConfigureCommand.add_command)
 
 
-class InteractivePrompter(object):
+class InteractivePrompter:
 
     def get_value(self, current_value, config_name, prompt_text=''):
         if config_name in ('aws_access_key_id', 'aws_secret_access_key'):

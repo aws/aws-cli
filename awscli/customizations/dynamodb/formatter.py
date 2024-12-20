@@ -38,7 +38,7 @@ class DynamoYAMLDumper(YAMLDumper):
     def _represent_binary(self, underlying_dumper, data):
         encoded_data = b64encode(data.value).decode('ascii')
         return underlying_dumper.represent_scalar(
-            u'tag:yaml.org,2002:binary', encoded_data, style='"'
+            'tag:yaml.org,2002:binary', encoded_data, style='"'
         )
 
     def dump(self, response, stream):

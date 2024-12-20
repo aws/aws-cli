@@ -24,7 +24,7 @@ from .types import Binary
 VALID_BASE64 = re.compile(r'[A-Za-z0-9+/=]+')
 
 
-class Lexer(object):
+class Lexer:
     START_IDENTIFIER = set(string.ascii_letters + '_')
     VALID_IDENTIFIER = set(string.ascii_letters + string.digits + '_')
     WHITESPACE = set(' \t\n\r')

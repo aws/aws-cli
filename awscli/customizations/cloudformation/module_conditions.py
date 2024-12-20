@@ -28,6 +28,7 @@ IF = "Fn::If"
 NOT = "Fn::Not"
 OR = "Fn::Or"
 REF = "Ref"
+CONDITION = "Condition"
 
 
 def parse_conditions(d, find_ref):
@@ -35,29 +36,81 @@ def parse_conditions(d, find_ref):
     retval = {}
 
     for k, v in d.items():
-        retval[k] = istrue(v, find_ref)
+        retval[k] = istrue(v, find_ref, retval)
 
     return retval
 
 
-def istrue(v, find_ref):
+def resolve_if(v, find_ref, prior):
+    "Resolve Fn::If"
+    msg = f"If expression should be a list with 3 elements: {v}"
+    if not isinstance(v, list):
+        raise exceptions.InvalidModuleError(msg=msg)
+    if len(v) != 3:
+        raise exceptions.InvalidModuleError(msg=msg)
+    if istrue(v[0], find_ref, prior):
+        return v[1]
+    return v[2]
+
+
+# pylint: disable=too-many-branches,too-many-statements
+def istrue(v, find_ref, prior):
     "Recursive function to evaluate a Condition"
+    retval = False
     if EQUALS in v:
         eq = v[EQUALS]
         if len(eq) == 2:
             val0 = eq[0]
             val1 = eq[1]
-            if REF in eq[0]:
-                val0 = find_ref(eq[0][REF])
-            if REF in eq[1]:
-                val1 = find_ref(eq[1][REF])
-            return val0 == val1
-    elif NOT in v:
-        if not isinstance(v[NOT], list):
-            msg = "Not expression should be a list with 1 element: {v[NOT]}"
+            if IF in val0:
+                val0 = resolve_if(val0[IF], find_ref, prior)
+            if IF in val1:
+                val1 = resolve_if(val1[IF], find_ref, prior)
+            if REF in val0:
+                val0 = find_ref(val0[REF])
+            if REF in val1:
+                val1 = find_ref(val1[REF])
+            retval = val0 == val1
+        else:
+            msg = f"Equals expression should be a list with 2 elements: {eq}"
             raise exceptions.InvalidModuleError(msg=msg)
-        return not istrue(v[NOT][0], find_ref)
+    if NOT in v:
+        if not isinstance(v[NOT], list):
+            msg = f"Not expression should be a list with 1 element: {v[NOT]}"
+            raise exceptions.InvalidModuleError(msg=msg)
+        retval = not istrue(v[NOT][0], find_ref, prior)
+    if AND in v:
+        vand = v[AND]
+        msg = f"And expression should be a list with 2 elements: {vand}"
+        if not isinstance(vand, list):
+            raise exceptions.InvalidModuleError(msg=msg)
+        if len(vand) != 2:
+            raise exceptions.InvalidModuleError(msg=msg)
+        retval = istrue(vand[0], find_ref, prior) and istrue(
+            vand[1], find_ref, prior
+        )
+    if OR in v:
+        vor = v[OR]
+        msg = f"Or expression should be a list with 2 elements: {vor}"
+        if not isinstance(vor, list):
+            raise exceptions.InvalidModuleError(msg=msg)
+        if len(vor) != 2:
+            raise exceptions.InvalidModuleError(msg=msg)
+        retval = istrue(vor[0], find_ref, prior) or istrue(
+            vor[1], find_ref, prior
+        )
+    if IF in v:
+        # Shouldn't ever see an IF here
+        msg = f"Unexpected If: {v[IF]}"
+        raise exceptions.InvalidModuleError(msg=msg)
+    if CONDITION in v:
+        condition_name = v[CONDITION]
+        if condition_name in prior:
+            retval = prior[condition_name]
+        else:
+            msg = f"Condition {condition_name} was not evaluated yet"
+            raise exceptions.InvalidModuleError(msg=msg)
+            # TODO: Should we re-order the conditions?
+            # We are depending on the author putting them in order
 
-    # TODO - Implement the other intrisics
-
-    return False
+    return retval

@@ -563,9 +563,12 @@ class Module:
         "Process a single resource"
 
         # First, check to see if a Conditions omits this resource
-        if CONDITION in resource and resource[CONDITION] in self.conditions:
-            if self.conditions[resource[CONDITION]] is False:
-                return
+        if CONDITION in resource:
+            if resource[CONDITION] in self.conditions:
+                if self.conditions[resource[CONDITION]] is False:
+                    return
+                del resource[CONDITION]
+            # else leave it and assume it's in the parent?
 
         # For each property (and property-like attribute),
         # replace the value if it appears in parent overrides.

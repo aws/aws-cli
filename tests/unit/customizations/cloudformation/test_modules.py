@@ -92,6 +92,7 @@ class TestPackageModules(unittest.TestCase):
             "vpc",
             "map",
             "conditional",
+            "cond-intrinsics",
         ]
         for test in tests:
             base = "unit/customizations/cloudformation/modules"

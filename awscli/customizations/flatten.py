@@ -56,7 +56,7 @@ class FlattenedArgument(CustomArgument):
         cli_type = self._container.cli_type_name
         key = self._property
 
-        LOG.debug('Hydrating {0}[{1}]'.format(container, key))
+        LOG.debug(f'Hydrating {container}[{key}]')
 
         if value is not None:
             # Convert type if possible
@@ -85,7 +85,7 @@ class FlattenedArgument(CustomArgument):
                     parameters[container][key] = value
 
 
-class FlattenArguments(object):
+class FlattenArguments:
     """
     Flatten arguments for one or more commands for a particular service from
     a given configuration which maps service call parameters to flattened
@@ -163,8 +163,7 @@ class FlattenArguments(object):
         # Flatten each configured operation when they are built
         service = self.service_name
         for operation in self.configs:
-            cli.register('building-argument-table.{0}.{1}'.format(service,
-                                                                  operation),
+            cli.register(f'building-argument-table.{service}.{operation}',
                          self.flatten_args)
 
     def flatten_args(self, command, argument_table, **kwargs):
@@ -212,7 +211,7 @@ class FlattenArguments(object):
         """
         if SEP in name:
             # Find the actual nested argument to pull out
-            LOG.debug('Finding nested argument in {0}'.format(name))
+            LOG.debug(f'Finding nested argument in {name}')
             for piece in name.split(SEP)[:-1]:
                 for member_name, member in argument.members.items():
                     if member_name == piece:
@@ -220,7 +219,7 @@ class FlattenArguments(object):
                         break
                 else:
                     raise ParamValidationError(
-                        'Invalid piece {0}'.format(piece)
+                        f'Invalid piece {piece}'
                     )
 
         return argument

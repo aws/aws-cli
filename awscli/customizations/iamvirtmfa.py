@@ -45,7 +45,7 @@ class FileArgument(StatefulArgument):
         super(FileArgument, self).add_to_params(parameters, value)
 
 
-class IAMVMFAWrapper(object):
+class IAMVMFAWrapper:
 
     def __init__(self, event_handler):
         self._event_handler = event_handler

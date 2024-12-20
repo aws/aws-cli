@@ -82,7 +82,7 @@ class WaitCommand(BasicCommand):
                          event_handler_class=WaiterCommandDocHandler)
 
 
-class WaiterStateCommandBuilder(object):
+class WaiterStateCommandBuilder:
     def __init__(self, session, model, service_model):
         self._session = session
         self._model = model
@@ -131,13 +131,13 @@ class WaiterStateCommandBuilder(object):
         return waiter_state_command
 
 
-class WaiterStateDocBuilder(object):
+class WaiterStateDocBuilder:
     SUCCESS_DESCRIPTIONS = {
-        'error': u'%s is thrown ',
-        'path': u'%s ',
-        'pathAll': u'%s for all elements ',
-        'pathAny': u'%s for any element ',
-        'status': u'%s response is received '
+        'error': '%s is thrown ',
+        'path': '%s ',
+        'pathAll': '%s for all elements ',
+        'pathAny': '%s for any element ',
+        'status': '%s response is received '
     }
 
     def __init__(self, waiter_config):
@@ -149,7 +149,7 @@ class WaiterStateDocBuilder(object):
         # description is provided, use a heuristic to generate a description
         # for the waiter.
         if not description:
-            description = u'Wait until '
+            description = 'Wait until '
             # Look at all of the acceptors and find the success state
             # acceptor.
             for acceptor in self._waiter_config.acceptors:
@@ -172,7 +172,7 @@ class WaiterStateDocBuilder(object):
         # If success is based off of the state of a resource include the
         # description about what resource is looked at.
         if matcher in ['path', 'pathAny', 'pathAll']:
-            resource_description = u'JMESPath query %s returns ' % \
+            resource_description = 'JMESPath query %s returns ' % \
                 acceptor.argument
             # Prepend the resource description to the template description
             success_description = resource_description + success_description
@@ -182,7 +182,7 @@ class WaiterStateDocBuilder(object):
 
     def _build_operation_description(self, operation):
         operation_name = xform_name(operation).replace('_', '-')
-        return u'when polling with ``%s``.' % operation_name
+        return 'when polling with ``%s``.' % operation_name
 
     def _build_polling_description(self, delay, max_attempts):
         description = (
@@ -193,7 +193,7 @@ class WaiterStateDocBuilder(object):
         return description
 
 
-class WaiterCaller(object):
+class WaiterCaller:
     def __init__(self, session, waiter_name):
         self._session = session
         self._waiter_name = waiter_name

@@ -65,7 +65,7 @@ def register_removals(event_handler):
                         remove_commands=['invoke-assistant'])
 
 
-class CommandRemover(object):
+class CommandRemover:
     def __init__(self, events):
         self._events = events
 

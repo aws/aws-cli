@@ -46,7 +46,7 @@ def validate_is_zip_file(cli_argument, value, **kwargs):
         _should_contain_zip_content(value)
 
 
-class ZipFileArgumentHoister(object):
+class ZipFileArgumentHoister:
     """Hoists a ZipFile argument up to the top level.
 
     Injects a top-level ZipFileArgument into the argument table which maps
@@ -109,7 +109,7 @@ class ZipFileArgument(CustomArgument):
     """
     def __init__(self, *args, **kwargs):
         self._param_to_replace = kwargs.pop('serialized_name')
-        super(ZipFileArgument, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def add_to_params(self, parameters, value):
         if value is None:
@@ -132,8 +132,8 @@ class ReplacedZipFileArgument(CLIArgument):
     serialization name.
     """
     def __init__(self, *args, **kwargs):
-        super(ReplacedZipFileArgument, self).__init__(*args, **kwargs)
-        self._cli_name = '--%s' % kwargs['name']
+        super().__init__(*args, **kwargs)
+        self._cli_name = '--{}'.format(kwargs['name'])
         self._param_to_replace = kwargs['serialized_name']
 
     def add_to_params(self, parameters, value):
@@ -143,9 +143,9 @@ class ReplacedZipFileArgument(CLIArgument):
         if 'ZipFile' in unpacked:
             raise ParamValidationError(
                 "ZipFile cannot be provided "
-                "as part of the %s argument.  "
+                f"as part of the {self._cli_name} argument.  "
                 "Please use the '--zip-file' "
-                "option instead to specify a zip file." % self._cli_name
+                "option instead to specify a zip file."
             )
         if parameters.get(self._param_to_replace):
             parameters[self._param_to_replace].update(unpacked)

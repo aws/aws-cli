@@ -33,7 +33,7 @@ CHOICES = ('QRCodePNG', 'Base32StringSeed')
 OUTPUT_HELP = ('The output path and file name where the bootstrap '
                'information will be stored.')
 BOOTSTRAP_HELP = ('Method to use to seed the virtual MFA.  '
-                  'Valid values are: %s | %s' % CHOICES)
+                  'Valid values are: {} | {}'.format(*CHOICES))
 
 
 class FileArgument(StatefulArgument):
@@ -42,10 +42,10 @@ class FileArgument(StatefulArgument):
         # Validate the file here so we can raise an error prior
         # calling the service.
         value = resolve_given_outfile_path(value)
-        super(FileArgument, self).add_to_params(parameters, value)
+        super().add_to_params(parameters, value)
 
 
-class IAMVMFAWrapper(object):
+class IAMVMFAWrapper:
 
     def __init__(self, event_handler):
         self._event_handler = event_handler

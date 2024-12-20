@@ -458,8 +458,7 @@ class CLIArgument(BaseCLIArgument):
     def _unpack_argument(self, value):
         service_name = self._operation_model.service_model.service_name
         operation_name = xform_name(self._operation_model.name, '-')
-        override = self._emit_first_response('process-cli-arg.%s.%s' % (
-            service_name, operation_name), param=self.argument_model,
+        override = self._emit_first_response(f'process-cli-arg.{service_name}.{operation_name}', param=self.argument_model,
             cli_argument=self, value=value)
         if override is not None:
             # A plugin supplied an alternate conversion,
@@ -513,7 +512,7 @@ class BooleanArgument(CLIArgument):
                  is_required=False, action='store_true', dest=None,
                  group_name=None, default=None,
                  serialized_name=None):
-        super(BooleanArgument, self).__init__(name,
+        super().__init__(name,
                                               argument_model,
                                               operation_model,
                                               event_emitter,
@@ -547,7 +546,7 @@ class BooleanArgument(CLIArgument):
         # ourselves for the negative service.  We then insert both into the
         # arg table.
         argument_table[self.name] = self
-        negative_name = 'no-%s' % self.name
+        negative_name = f'no-{self.name}'
         negative_version = self.__class__(
             negative_name, self.argument_model,
             self._operation_model, self._event_emitter,

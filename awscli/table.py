@@ -344,8 +344,7 @@ class Section:
         self._max_widths = []
 
     def __repr__(self):
-        return ("Section(title=%s, headers=%s, indent_level=%s, num_rows=%s)" %
-                (self.title, self.headers, self.indent_level, len(self.rows)))
+        return (f"Section(title={self.title}, headers={self.headers}, indent_level={self.indent_level}, num_rows={len(self.rows)})")
 
     def calculate_column_widths(self, padding=0, max_width=None):
         # postcondition: sum(widths) == max_width
@@ -404,8 +403,8 @@ class Section:
         if self._num_cols is None:
             self._num_cols = len(row)
         if len(row) != self._num_cols:
-            raise ValueError("Row should have %s elements, instead "
-                             "it has %s" % (self._num_cols, len(row)))
+            raise ValueError(f"Row should have {self._num_cols} elements, instead "
+                             f"it has {len(row)}")
         row = self._format_row(row)
         self.rows.append(row)
         self._update_max_widths(row)

@@ -40,9 +40,8 @@ class ParamError(Exception):
         :param message: The error message to display to the user.
 
         """
-        full_message = ("Error parsing parameter '%s': %s" %
-                        (cli_name, message))
-        super(ParamError, self).__init__(full_message)
+        full_message = (f"Error parsing parameter '{cli_name}': {message}")
+        super().__init__(full_message)
         self.cli_name = cli_name
         self.message = message
 
@@ -55,9 +54,9 @@ class ParamUnknownKeyError(Exception):
     def __init__(self, key, valid_keys):
         valid_keys = ', '.join(valid_keys)
         full_message = (
-            "Unknown key '%s', valid choices "
-            "are: %s" % (key, valid_keys))
-        super(ParamUnknownKeyError, self).__init__(full_message)
+            f"Unknown key '{key}', valid choices "
+            f"are: {valid_keys}")
+        super().__init__(full_message)
 
 
 class TooComplexError(Exception):
@@ -76,9 +75,7 @@ def unpack_argument(session, service_name, operation_name, cli_argument, value):
     param_name = getattr(cli_argument, 'name', 'anonymous')
 
     value_override = session.emit_first_non_none_response(
-        'load-cli-arg.%s.%s.%s' % (service_name,
-                                   operation_name,
-                                   param_name),
+        f'load-cli-arg.{service_name}.{operation_name}.{param_name}',
         param=cli_argument, value=value, service_name=service_name,
         operation_name=operation_name)
 
@@ -113,14 +110,14 @@ def _detect_shape_structure(param, stack):
             elif len(sub_types) > 1 and all(p == 'scalar' for p in sub_types):
                 return 'structure(scalars)'
             else:
-                return 'structure(%s)' % ', '.join(sorted(set(sub_types)))
+                return 'structure({})'.format(', '.join(sorted(set(sub_types))))
         elif param.type_name == 'list':
-            return 'list-%s' % _detect_shape_structure(param.member, stack)
+            return f'list-{_detect_shape_structure(param.member, stack)}'
         elif param.type_name == 'map':
             if param.value.type_name in SCALAR_TYPES:
                 return 'map-scalar'
             else:
-                return 'map-%s' % _detect_shape_structure(param.value, stack)
+                return f'map-{_detect_shape_structure(param.value, stack)}'
     finally:
         stack.pop()
 
@@ -173,8 +170,7 @@ def _unpack_json_cli_arg(argument_model, value, cli_name):
         return json.loads(value, object_pairs_hook=OrderedDict)
     except ValueError as e:
         raise ParamError(
-            cli_name, "Invalid JSON: %s\nJSON received: %s"
-            % (e, value))
+            cli_name, f"Invalid JSON: {e}\nJSON received: {value}")
 
 
 def _unpack_complex_cli_arg(argument_model, value, cli_name):
@@ -182,7 +178,7 @@ def _unpack_complex_cli_arg(argument_model, value, cli_name):
     if type_name == 'structure' or type_name == 'map':
         if value.lstrip()[0] == '{':
             return _unpack_json_cli_arg(argument_model, value, cli_name)
-        raise ParamError(cli_name, "Invalid JSON:\n%s" % value)
+        raise ParamError(cli_name, f"Invalid JSON:\n{value}")
     elif type_name == 'list':
         if isinstance(value, str):
             if value.lstrip()[0] == '[':
@@ -466,9 +462,8 @@ class ParamShorthandDocGen(ParamShorthand):
             # Handle special case where the min/max is exactly one.
             metadata = model.metadata
             if metadata.get('min') == 1 and metadata.get('max') == 1:
-                return '%s %s1' % (cli_argument.cli_name, member_name)
-            return '%s %s1 %s2 %s3' % (cli_argument.cli_name, member_name,
-                                       member_name, member_name)
+                return f'{cli_argument.cli_name} {member_name}1'
+            return f'{cli_argument.cli_name} {member_name}1 {member_name}2 {member_name}3'
         elif model.type_name == 'structure' and \
                 len(model.members) == 1 and \
                 'Value' in model.members and \
@@ -496,20 +491,20 @@ class ParamShorthandDocGen(ParamShorthand):
         finally:
             stack.pop()
         if list_member.type_name in COMPLEX_TYPES or len(stack) > 1:
-            return '[%s,%s]' % (element_docs, element_docs)
+            return f'[{element_docs},{element_docs}]'
         else:
-            return '%s,%s' % (element_docs, element_docs)
+            return f'{element_docs},{element_docs}'
 
     def _map_docs(self, argument_model, stack):
         k = argument_model.key
         value_docs = self._shorthand_docs(argument_model.value, stack)
-        start = 'KeyName1=%s,KeyName2=%s' % (value_docs, value_docs)
+        start = f'KeyName1={value_docs},KeyName2={value_docs}'
         if k.enum and not stack:
             start += '\n\nWhere valid key names are:\n'
             for enum in k.enum:
-                start += '  %s\n' % enum
+                start += f'  {enum}\n'
         elif stack:
-            start = '{%s}' % start
+            start = f'{{{start}}}'
         return start
 
     def _structure_docs(self, argument_model, stack):
@@ -521,7 +516,7 @@ class ParamShorthandDocGen(ParamShorthand):
         inner_part = ','.join(parts)
         if not stack:
             return inner_part
-        return '{%s}' % inner_part
+        return f'{{{inner_part}}}'
 
     def _member_docs(self, name, shape, stack):
         if stack.count(shape.name) > 0:
@@ -531,4 +526,4 @@ class ParamShorthandDocGen(ParamShorthand):
             value_doc = self._shorthand_docs(shape, stack)
         finally:
             stack.pop()
-        return '%s=%s' % (name, value_doc)
+        return f'{name}={value_doc}'

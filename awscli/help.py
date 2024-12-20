@@ -39,8 +39,8 @@ LOG = logging.getLogger('awscli.help')
 
 class ExecutableNotFoundError(Exception):
     def __init__(self, executable_name):
-        super(ExecutableNotFoundError, self).__init__(
-            'Could not find executable named "%s"' % executable_name)
+        super().__init__(
+            f'Could not find executable named "{executable_name}"')
 
 
 def get_renderer():
@@ -135,8 +135,7 @@ class PosixHelpRenderer(PagingHelpRenderer):
     def _send_output_to_pager(self, output):
         cmdline = self.get_pager_cmdline()
         if not self._exists_on_path(cmdline[0]):
-            LOG.debug("Pager '%s' not found in PATH, printing raw help." %
-                      cmdline[0])
+            LOG.debug(f"Pager '{cmdline[0]}' not found in PATH, printing raw help.")
             self.output_stream.write(output.decode('utf-8') + "\n")
             self.output_stream.flush()
             return
@@ -355,7 +354,7 @@ class ServiceHelpCommand(HelpCommand):
 
     def __init__(self, session, obj, command_table, arg_table, name,
                  event_class):
-        super(ServiceHelpCommand, self).__init__(session, obj, command_table,
+        super().__init__(session, obj, command_table,
                                                  arg_table)
         self._name = name
         self._event_class = event_class
@@ -398,7 +397,7 @@ class TopicListerCommand(HelpCommand):
     EventHandlerClass = TopicListerDocumentEventHandler
 
     def __init__(self, session):
-        super(TopicListerCommand, self).__init__(session, None, {}, {})
+        super().__init__(session, None, {}, {})
 
     @property
     def event_class(self):
@@ -413,7 +412,7 @@ class TopicHelpCommand(HelpCommand):
     EventHandlerClass = TopicDocumentEventHandler
 
     def __init__(self, session, topic_name):
-        super(TopicHelpCommand, self).__init__(session, None, {}, {})
+        super().__init__(session, None, {}, {})
         self._topic_name = topic_name
 
     @property

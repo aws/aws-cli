@@ -110,4 +110,3 @@ class BodyArgument(CustomArgument):
     def add_to_params(self, parameters, value):
         if value:
             _build_message(parameters, self._json_key, value)
-

@@ -94,7 +94,7 @@ def parse_s3_url(url,
             return result
 
     raise ValueError("URL given to the parse method is not a valid S3 url "
-                     "{0}".format(url))
+                     f"{url}")
 
 
 def upload_local_artifacts(resource_id, resource_dict, property_name,
@@ -134,8 +134,8 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
         # This check is supporting the case where your resource does not
         # refer to local artifacts
         # Nothing to do if property value is an S3 URL
-        LOG.debug("Property {0} of {1} is already a S3 URL"
-                  .format(property_name, resource_id))
+        LOG.debug(f"Property {property_name} of {resource_id} is already a S3 URL"
+                  )
         return local_path
 
     local_path = make_abs_path(parent_dir, local_path)
@@ -181,7 +181,7 @@ def zip_folder(folder_path):
 
 
 def make_zip(filename, source_root):
-    zipfile_name = "{0}.zip".format(filename)
+    zipfile_name = f"{filename}.zip"
     source_root = os.path.abspath(source_root)
     with open(zipfile_name, 'wb') as f:
         zip_file = zipfile.ZipFile(f, 'w', zipfile.ZIP_DEFLATED)
@@ -216,7 +216,7 @@ def copy_to_temp_dir(filepath):
     return tmp_dir
 
 
-class Resource(object):
+class Resource:
     """
     Base class representing a CloudFormation resource that can be exported
     """
@@ -241,8 +241,8 @@ class Resource(object):
             return
 
         if isinstance(property_value, dict):
-            LOG.debug("Property {0} of {1} resource is not a URL"
-                      .format(self.PROPERTY_NAME, resource_id))
+            LOG.debug(f"Property {self.PROPERTY_NAME} of {resource_id} resource is not a URL"
+                      )
             return
 
         # If property is a file but not a zip file, place file in temp
@@ -289,7 +289,7 @@ class ResourceWithS3UrlDict(Resource):
     VERSION_PROPERTY = None
 
     def __init__(self, uploader):
-        super(ResourceWithS3UrlDict, self).__init__(uploader)
+        super().__init__(uploader)
 
     def do_export(self, resource_id, resource_dict, parent_dir):
         """
@@ -444,7 +444,7 @@ class CloudFormationStackResource(Resource):
     PROPERTY_NAME = "TemplateURL"
 
     def __init__(self, uploader):
-        super(CloudFormationStackResource, self).__init__(uploader)
+        super().__init__(uploader)
 
     def do_export(self, resource_id, resource_dict, parent_dir):
         """
@@ -576,7 +576,7 @@ GLOBAL_EXPORT_DICT = {
 }
 
 
-class Template(object):
+class Template:
     """
     Class to export a CloudFormation template
     """
@@ -590,8 +590,8 @@ class Template(object):
 
         if not (is_local_folder(parent_dir) and os.path.isabs(parent_dir)):
             raise ValueError("parent_dir parameter must be "
-                             "an absolute path to a folder {0}"
-                             .format(parent_dir))
+                             f"an absolute path to a folder {parent_dir}"
+                             )
 
         abs_template_path = make_abs_path(parent_dir, template_path)
         template_dir = os.path.dirname(abs_template_path)

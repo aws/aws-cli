@@ -64,7 +64,7 @@ _CONFIG_EXTRA_INFO = (
 
 class ValidatorWithDefault(Validator):
     def __init__(self, default=None):
-        super(ValidatorWithDefault, self).__init__()
+        super().__init__()
         self._default = default
 
     def _raise_validation_error(self, document, message):
@@ -105,7 +105,7 @@ class ScopesValidator(ValidatorWithDefault):
         return True
 
 
-class PTKPrompt(object):
+class PTKPrompt:
     _DEFAULT_PROMPT_FORMAT = '{prompt_text} [{current_value}]: '
 
     def __init__(self, prompter=None):
@@ -326,7 +326,7 @@ class SSOSessionConfigurationPrompter:
 
 class BaseSSOConfigurationCommand(BaseSSOCommand):
     def __init__(self, session, prompter=None, config_writer=None):
-        super(BaseSSOConfigurationCommand, self).__init__(session)
+        super().__init__(session)
         if prompter is None:
             prompter = PTKPrompt()
         self._prompter = prompter
@@ -370,7 +370,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
 
     def __init__(self, session, prompter=None, selector=None,
                  config_writer=None, sso_token_cache=None, sso_login=None):
-        super(ConfigureSSOCommand, self).__init__(
+        super().__init__(
             session, prompter=prompter, config_writer=config_writer)
         if selector is None:
             selector = select_menu
@@ -424,7 +424,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             sso_account_id = self._handle_single_account(accounts)
         else:
             sso_account_id = self._handle_multiple_accounts(accounts)
-        uni_print('Using the account ID {}\n'.format(sso_account_id))
+        uni_print(f'Using the account ID {sso_account_id}\n')
         self._new_profile_config_values['sso_account_id'] = sso_account_id
         return sso_account_id
 
@@ -458,7 +458,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             sso_role_name = self._handle_single_role(roles)
         else:
             sso_role_name = self._handle_multiple_roles(roles)
-        uni_print('Using the role name "{}"\n'.format(sso_role_name))
+        uni_print(f'Using the role name "{sso_role_name}"\n')
         self._new_profile_config_values['sso_role_name'] = sso_role_name
         return sso_role_name
 
@@ -634,7 +634,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             sso_account_id = self._prompt_for_account(sso, sso_token)
             sso_role_name = self._prompt_for_role(
                 sso, sso_token, sso_account_id)
-        except sso.exceptions.UnauthorizedException as e:
+        except sso.exceptions.UnauthorizedException:
             uni_print(
                 'Unable to list AWS accounts and/or roles. '
                 'Skipping configuring AWS credential provider for profile.\n'

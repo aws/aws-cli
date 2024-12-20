@@ -26,7 +26,7 @@ class ListProfilesCommand(BasicCommand):
     )
 
     def __init__(self, session, out_stream=None):
-        super(ListProfilesCommand, self).__init__(session)
+        super().__init__(session)
 
         if out_stream is None:
             out_stream = sys.stdout
@@ -34,5 +34,5 @@ class ListProfilesCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         for profile in self._session.available_profiles:
-            uni_print('%s\n' % profile, out_file=self._out_stream)
+            uni_print(f'{profile}\n', out_file=self._out_stream)
         return 0

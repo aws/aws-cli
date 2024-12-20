@@ -21,19 +21,29 @@ from prompt_toolkit.layout import Float, FloatContainer, HSplit, VSplit, Window
 from prompt_toolkit.layout.controls import BufferControl
 from prompt_toolkit.layout.dimension import Dimension
 from prompt_toolkit.layout.layout import ConditionalContainer, Layout
-from prompt_toolkit.layout.menus import (CompletionsMenu,
-                                         MultiColumnCompletionsMenu)
+from prompt_toolkit.layout.menus import (
+    CompletionsMenu,
+    MultiColumnCompletionsMenu,
+)
 from prompt_toolkit.layout.processors import BeforeInput
 from prompt_toolkit.widgets import SearchToolbar, VerticalLine
 
-from awscli.autoprompt.filters import (doc_section_visible,
-                                       doc_window_has_focus,
-                                       input_buffer_has_focus, is_history_mode,
-                                       is_multi_column, is_one_column,
-                                       output_section_visible)
+from awscli.autoprompt.filters import (
+    doc_section_visible,
+    doc_window_has_focus,
+    input_buffer_has_focus,
+    is_history_mode,
+    is_multi_column,
+    is_one_column,
+    output_section_visible,
+)
 from awscli.autoprompt.history import HistoryCompleter, HistoryDriver
-from awscli.autoprompt.widgets import (DebugPanelWidget, HelpPanelWidget,
-                                       TitleLine, ToolbarWidget)
+from awscli.autoprompt.widgets import (
+    DebugPanelWidget,
+    HelpPanelWidget,
+    TitleLine,
+    ToolbarWidget,
+)
 
 
 class PrompterKeyboardInterrupt(KeyboardInterrupt):
@@ -41,7 +51,6 @@ class PrompterKeyboardInterrupt(KeyboardInterrupt):
 
 
 class CLIPromptBuffer(Buffer):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._completer = self.completer
@@ -74,16 +83,20 @@ class PromptToolkitFactory:
     def history_driver(self):
         if self._history_driver is None:
             cache_dir = os.path.expanduser(
-                os.path.join('~', '.aws', 'cli', 'cache'))
+                os.path.join('~', '.aws', 'cli', 'cache')
+            )
             history_filename = os.path.join(cache_dir, 'prompt_history.json')
             self._history_driver = HistoryDriver(history_filename)
         return self._history_driver
 
     def create_input_buffer(self, on_text_changed_callback=None):
         return CLIPromptBuffer(
-            name='input_buffer', completer=self._completer,
-            history=self.history_driver, complete_while_typing=True,
-            on_text_changed=on_text_changed_callback)
+            name='input_buffer',
+            completer=self._completer,
+            history=self.history_driver,
+            complete_while_typing=True,
+            on_text_changed=on_text_changed_callback,
+        )
 
     def create_doc_buffer(self):
         return Buffer(name='doc_buffer', read_only=True)
@@ -96,12 +109,12 @@ class PromptToolkitFactory:
             Window(
                 BufferControl(
                     buffer=input_buffer,
-                    input_processors=[BeforeInput('> aws ')]
+                    input_processors=[BeforeInput('> aws ')],
                 ),
                 height=Dimension(
                     min=self.DIMENSIONS['input_buffer_height_min']
                 ),
-                wrap_lines=True
+                wrap_lines=True,
             ),
             [
                 Float(
@@ -109,7 +122,7 @@ class PromptToolkitFactory:
                     ycursor=True,
                     content=MultiColumnCompletionsMenu(
                         extra_filter=is_multi_column
-                    )
+                    ),
                 ),
                 Float(
                     xcursor=True,
@@ -117,41 +130,51 @@ class PromptToolkitFactory:
                     content=CompletionsMenu(
                         extra_filter=is_one_column,
                         max_height=self.DIMENSIONS['menu_height_max'],
-                        scroll_offset=self.DIMENSIONS['menu_scroll_offset']
-                    )
-                )
-            ]
+                        scroll_offset=self.DIMENSIONS['menu_scroll_offset'],
+                    ),
+                ),
+            ],
         )
 
     def create_bottom_panel(self, doc_window, output_window):
-        return VSplit([
-            ConditionalContainer(doc_window, doc_section_visible),
-            ConditionalContainer(VerticalLine(),
-                                 output_section_visible & doc_section_visible),
-            ConditionalContainer(output_window, output_section_visible),
-        ])
+        return VSplit(
+            [
+                ConditionalContainer(doc_window, doc_section_visible),
+                ConditionalContainer(
+                    VerticalLine(),
+                    output_section_visible & doc_section_visible,
+                ),
+                ConditionalContainer(output_window, output_section_visible),
+            ]
+        )
 
     def create_searchable_window(self, title, output_buffer):
         search_field = SearchToolbar()
-        return HSplit([
-            TitleLine(title),
-            Window(
-                content=BufferControl(
-                    buffer=output_buffer,
-                    search_buffer_control=search_field.control
+        return HSplit(
+            [
+                TitleLine(title),
+                Window(
+                    content=BufferControl(
+                        buffer=output_buffer,
+                        search_buffer_control=search_field.control,
+                    ),
+                    height=Dimension(
+                        max=self.DIMENSIONS['doc_window_height_max'],
+                        preferred=self.DIMENSIONS['doc_window_height_pref'],
+                    ),
+                    wrap_lines=True,
                 ),
-                height=Dimension(
-                    max=self.DIMENSIONS['doc_window_height_max'],
-                    preferred=self.DIMENSIONS['doc_window_height_pref']
-                ),
-                wrap_lines=True
-            ),
-            search_field
-        ])
+                search_field,
+            ]
+        )
 
-    def create_layout(self, on_input_buffer_text_changed=None,
-                      input_buffer_container=None, doc_window=None,
-                      output_window=None):
+    def create_layout(
+        self,
+        on_input_buffer_text_changed=None,
+        input_buffer_container=None,
+        doc_window=None,
+        output_window=None,
+    ):
         # This is the main layout, which consists of:
         # - The main input buffer with completion menus floating on top of it.
         # - A separating line between the input buffer and the doc window.
@@ -161,27 +184,34 @@ class PromptToolkitFactory:
         # - A help panel
         # - A debug panel in case debug mode enabled
         if input_buffer_container is None:
-            input_buffer = \
-                self.create_input_buffer(on_input_buffer_text_changed)
-            input_buffer_container = \
-                self.create_input_buffer_container(input_buffer)
+            input_buffer = self.create_input_buffer(
+                on_input_buffer_text_changed
+            )
+            input_buffer_container = self.create_input_buffer_container(
+                input_buffer
+            )
         if doc_window is None:
             doc_buffer = self.create_doc_buffer()
             doc_window = self.create_searchable_window('Doc panel', doc_buffer)
         if output_window is None:
             output_buffer = self.create_output_buffer()
             output_window = self.create_searchable_window(
-                'Output panel', output_buffer)
+                'Output panel', output_buffer
+            )
         bottom_panel = self.create_bottom_panel(doc_window, output_window)
         return Layout(
-            HSplit([
-                VSplit([
-                    HSplit([input_buffer_container, bottom_panel]),
-                    HelpPanelWidget(),
-                    DebugPanelWidget(),
-                ]),
-                ToolbarWidget()
-            ])
+            HSplit(
+                [
+                    VSplit(
+                        [
+                            HSplit([input_buffer_container, bottom_panel]),
+                            HelpPanelWidget(),
+                            DebugPanelWidget(),
+                        ]
+                    ),
+                    ToolbarWidget(),
+                ]
+            )
         )
 
     def create_key_bindings(self):
@@ -211,14 +241,16 @@ class PromptToolkitKeyBindings:
                 event.app.current_buffer.reset()
                 updated_document = Document(
                     text=current_document.text,
-                    cursor_position=current_document.cursor_position)
+                    cursor_position=current_document.cursor_position,
+                )
                 buffer.set_document(updated_document)
                 # If prompter suggested us something ended with slash and
                 # started with 'file://' or 'fileb://' it should be path ended
                 # with directory then we run completion again
                 cur_word = current_document.get_word_under_cursor(WORD=True)
-                if cur_word.endswith(os.sep) \
-                        and cur_word.startswith(('file://', 'fileb://')):
+                if cur_word.endswith(os.sep) and cur_word.startswith(
+                    ('file://', 'fileb://')
+                ):
                     buffer.start_completion()
 
         @self._kb.add(Keys.Escape, filter=is_history_mode)
@@ -232,8 +264,10 @@ class PromptToolkitKeyBindings:
             """Exit from history mode if something was selected or
             just add space to the end of the text and keep suggesting"""
             buffer = event.app.current_buffer
-            if (buffer.complete_state
-                    and buffer.complete_state.current_completion):
+            if (
+                buffer.complete_state
+                and buffer.complete_state.current_completion
+            ):
                 buffer.switch_history_mode()
             buffer.insert_text(' ')
 

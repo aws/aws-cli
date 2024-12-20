@@ -24,7 +24,7 @@ DEFAULT_VALUE_TYPE_MAP = {
     'Int': int,
     'Double': float,
     'IntArray': int,
-    'DoubleArray': float
+    'DoubleArray': float,
 }
 
 
@@ -72,13 +72,16 @@ FLATTEN_CONFIG = {
     "define-expression": {
         "expression": {
             "keep": False,
-            "flatten": OrderedDict([
-                # Order is crucial here!  We're
-                # flattening ExpressionValue to be "expression",
-                # but this is the name ("expression") of the our parent
-                # key, the top level nested param.
-                ("ExpressionName", {"name": "name"}),
-                ("ExpressionValue", {"name": "expression"}),]),
+            "flatten": OrderedDict(
+                [
+                    # Order is crucial here!  We're
+                    # flattening ExpressionValue to be "expression",
+                    # but this is the name ("expression") of the our parent
+                    # key, the top level nested param.
+                    ("ExpressionName", {"name": "name"}),
+                    ("ExpressionValue", {"name": "expression"}),
+                ]
+            ),
         }
     },
     "define-index-field": {
@@ -86,30 +89,57 @@ FLATTEN_CONFIG = {
             "keep": False,
             # We use an ordered dict because `type` needs to be parsed before
             # any of the <X>Options values.
-            "flatten": OrderedDict([
-                ("IndexFieldName", {"name": "name"}),
-                ("IndexFieldType", {"name": "type"}),
-                ("IntOptions.DefaultValue", {"name": "default-value",
-                                             "type": "string",
-                                             "hydrate": index_hydrate}),
-                ("IntOptions.FacetEnabled", {"name": "facet-enabled",
-                                             "hydrate": index_hydrate }),
-                ("IntOptions.SearchEnabled", {"name": "search-enabled",
-                                              "hydrate": index_hydrate}),
-                ("IntOptions.ReturnEnabled", {"name": "return-enabled",
-                                              "hydrate": index_hydrate}),
-                ("IntOptions.SortEnabled", {"name": "sort-enabled",
-                                            "hydrate": index_hydrate}),
-                ("IntOptions.SourceField", {"name": "source-field",
-                                            "type": "string",
-                                            "hydrate": index_hydrate }),
-                ("TextOptions.HighlightEnabled", {"name": "highlight-enabled",
-                                                  "hydrate": index_hydrate}),
-                ("TextOptions.AnalysisScheme", {"name": "analysis-scheme",
-                                                "hydrate": index_hydrate})
-            ])
+            "flatten": OrderedDict(
+                [
+                    ("IndexFieldName", {"name": "name"}),
+                    ("IndexFieldType", {"name": "type"}),
+                    (
+                        "IntOptions.DefaultValue",
+                        {
+                            "name": "default-value",
+                            "type": "string",
+                            "hydrate": index_hydrate,
+                        },
+                    ),
+                    (
+                        "IntOptions.FacetEnabled",
+                        {"name": "facet-enabled", "hydrate": index_hydrate},
+                    ),
+                    (
+                        "IntOptions.SearchEnabled",
+                        {"name": "search-enabled", "hydrate": index_hydrate},
+                    ),
+                    (
+                        "IntOptions.ReturnEnabled",
+                        {"name": "return-enabled", "hydrate": index_hydrate},
+                    ),
+                    (
+                        "IntOptions.SortEnabled",
+                        {"name": "sort-enabled", "hydrate": index_hydrate},
+                    ),
+                    (
+                        "IntOptions.SourceField",
+                        {
+                            "name": "source-field",
+                            "type": "string",
+                            "hydrate": index_hydrate,
+                        },
+                    ),
+                    (
+                        "TextOptions.HighlightEnabled",
+                        {
+                            "name": "highlight-enabled",
+                            "hydrate": index_hydrate,
+                        },
+                    ),
+                    (
+                        "TextOptions.AnalysisScheme",
+                        {"name": "analysis-scheme", "hydrate": index_hydrate},
+                    ),
+                ]
+            ),
         }
-    }
+    },
 }
 
 

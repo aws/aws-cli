@@ -19,6 +19,7 @@ class AutoCompleter(object):
     completions for specific cases (e.g model-based completions,
     server-side completions, etc).
     """
+
     def __init__(self, parser, completers):
         """
 
@@ -54,8 +55,16 @@ class CompletionResult(object):
     stores metadata about the completion.
 
     """
-    def __init__(self, name, starting_index=0, required=False,
-                 cli_type_name='', help_text='', display_text=None):
+
+    def __init__(
+        self,
+        name,
+        starting_index=0,
+        required=False,
+        cli_type_name='',
+        help_text='',
+        display_text=None,
+    ):
         self.name = name
         self.starting_index = starting_index
         self.required = required
@@ -65,17 +74,22 @@ class CompletionResult(object):
 
     def __eq__(self, other):
         return (
-            isinstance(other, self.__class__) and
-            self.name == other.name and
-            self.starting_index == other.starting_index and
-            self.display_text == other.display_text
+            isinstance(other, self.__class__)
+            and self.name == other.name
+            and self.starting_index == other.starting_index
+            and self.display_text == other.display_text
         )
 
     def __repr__(self):
-        return '%s(%s, %s, %s, %s, %s, %s)' % (self.__class__.__name__, self.name,
-                                           self.starting_index, self.required,
-                                           self.cli_type_name, self.help_text,
-                                           self.display_text)
+        return '%s(%s, %s, %s, %s, %s, %s)' % (
+            self.__class__.__name__,
+            self.name,
+            self.starting_index,
+            self.required,
+            self.cli_type_name,
+            self.help_text,
+            self.display_text,
+        )
 
 
 class BaseCompleter(object):

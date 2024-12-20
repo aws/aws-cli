@@ -14,10 +14,12 @@ import logging
 import sys
 
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.ec2instanceconnect.eicefetcher import \
-    InstanceConnectEndpointRequestFetcher
-from awscli.customizations.ec2instanceconnect.eicesigner import \
-    InstanceConnectEndpointRequestSigner
+from awscli.customizations.ec2instanceconnect.eicefetcher import (
+    InstanceConnectEndpointRequestFetcher,
+)
+from awscli.customizations.ec2instanceconnect.eicesigner import (
+    InstanceConnectEndpointRequestSigner,
+)
 from awscli.customizations.ec2instanceconnect.websocket import WebsocketManager
 from awscli.customizations.exceptions import ParamValidationError
 
@@ -27,7 +29,9 @@ logger = logging.getLogger(__name__)
 class OpenTunnelCommand(BasicCommand):
     NAME = "open-tunnel"
 
-    DESCRIPTION = "Opens a websocket tunnel to the specified EC2 Instance or private ip."
+    DESCRIPTION = (
+        "Opens a websocket tunnel to the specified EC2 Instance or private ip."
+    )
 
     ARG_TABLE = [
         {
@@ -126,8 +130,10 @@ class OpenTunnelCommand(BasicCommand):
             )
             instance_connect_endpoint_id = eice["InstanceConnectEndpointId"]
 
-            is_fips_enabled = self._session.get_config_variable('use_fips_endpoint')
-            instance_connect_endpoint_dns_name = eice_fetcher.get_eice_dns_name(eice, is_fips_enabled)
+            is_fips_enabled = self._session.get_config_variable("use_fips_endpoint")
+            instance_connect_endpoint_dns_name = eice_fetcher.get_eice_dns_name(
+                eice, is_fips_enabled
+            )
 
         logger.debug(f"Using endpoint dns: {instance_connect_endpoint_dns_name}")
         eice_request_signer = InstanceConnectEndpointRequestSigner(
@@ -140,7 +146,10 @@ class OpenTunnelCommand(BasicCommand):
         )
 
         with WebsocketManager(
-                parsed_args.local_port, parsed_args.max_websocket_connections, eice_request_signer, self._session.user_agent(),
+            parsed_args.local_port,
+            parsed_args.max_websocket_connections,
+            eice_request_signer,
+            self._session.user_agent(),
         ) as websocket_manager:
             websocket_manager.run()
         return 0
@@ -148,13 +157,23 @@ class OpenTunnelCommand(BasicCommand):
     def _validate_parsed_args(self, parsed_args):
         if not parsed_args.instance_id and not parsed_args.private_ip_address:
             raise ParamValidationError("Specify an instance id or private ip.")
-        if parsed_args.instance_connect_endpoint_dns_name and not parsed_args.instance_connect_endpoint_id:
-            raise ParamValidationError("Specify an instance connect endpoint id when providing a DNS name.")
-        if parsed_args.private_ip_address and not parsed_args.instance_connect_endpoint_id:
-            raise ParamValidationError("Specify an instance connect endpoint id when providing a private ip.")
+        if (
+            parsed_args.instance_connect_endpoint_dns_name
+            and not parsed_args.instance_connect_endpoint_id
+        ):
+            raise ParamValidationError(
+                "Specify an instance connect endpoint id when providing a DNS name."
+            )
+        if (
+            parsed_args.private_ip_address
+            and not parsed_args.instance_connect_endpoint_id
+        ):
+            raise ParamValidationError(
+                "Specify an instance connect endpoint id when providing a private ip."
+            )
         if parsed_args.max_tunnel_duration is not None and (
-                parsed_args.max_tunnel_duration < 1
-                or parsed_args.max_tunnel_duration > 3_600
+            parsed_args.max_tunnel_duration < 1
+            or parsed_args.max_tunnel_duration > 3_600
         ):
             raise ParamValidationError(
                 "Invalid max connection timeout specified. Value must be greater than 1 and "

@@ -22,47 +22,57 @@ This functionality (and much more) is also available using the
 ``--network-interfaces`` complex argument.  This just makes two of
 the most commonly used features available more easily.
 """
+
 from awscli.arguments import CustomArgument
 from awscli.customizations.exceptions import ParamValidationError
 
 # --secondary-private-ip-address
 SECONDARY_PRIVATE_IP_ADDRESSES_DOCS = (
-    '[EC2-VPC] A secondary private IP address for the network interface '
-    'or instance. You can specify this multiple times to assign multiple '
-    'secondary IP addresses.  If you want additional private IP addresses '
-    'but do not need a specific address, use the '
-    '--secondary-private-ip-address-count option.')
+    "[EC2-VPC] A secondary private IP address for the network interface "
+    "or instance. You can specify this multiple times to assign multiple "
+    "secondary IP addresses.  If you want additional private IP addresses "
+    "but do not need a specific address, use the "
+    "--secondary-private-ip-address-count option."
+)
 
 # --secondary-private-ip-address-count
 SECONDARY_PRIVATE_IP_ADDRESS_COUNT_DOCS = (
-    '[EC2-VPC] The number of secondary IP addresses to assign to '
-    'the network interface or instance.')
+    "[EC2-VPC] The number of secondary IP addresses to assign to "
+    "the network interface or instance."
+)
 
 # --associate-public-ip-address
 ASSOCIATE_PUBLIC_IP_ADDRESS_DOCS = (
-    '[EC2-VPC] If specified a public IP address will be assigned '
-    'to the new instance in a VPC.')
+    "[EC2-VPC] If specified a public IP address will be assigned "
+    "to the new instance in a VPC."
+)
 
 
 def _add_params(argument_table, **kwargs):
     arg = SecondaryPrivateIpAddressesArgument(
-        name='secondary-private-ip-addresses',
-        help_text=SECONDARY_PRIVATE_IP_ADDRESSES_DOCS)
-    argument_table['secondary-private-ip-addresses'] = arg
+        name="secondary-private-ip-addresses",
+        help_text=SECONDARY_PRIVATE_IP_ADDRESSES_DOCS,
+    )
+    argument_table["secondary-private-ip-addresses"] = arg
     arg = SecondaryPrivateIpAddressCountArgument(
-        name='secondary-private-ip-address-count',
-        help_text=SECONDARY_PRIVATE_IP_ADDRESS_COUNT_DOCS)
-    argument_table['secondary-private-ip-address-count'] = arg
+        name="secondary-private-ip-address-count",
+        help_text=SECONDARY_PRIVATE_IP_ADDRESS_COUNT_DOCS,
+    )
+    argument_table["secondary-private-ip-address-count"] = arg
     arg = AssociatePublicIpAddressArgument(
-        name='associate-public-ip-address',
+        name="associate-public-ip-address",
         help_text=ASSOCIATE_PUBLIC_IP_ADDRESS_DOCS,
-        action='store_true', group_name='associate_public_ip')
-    argument_table['associate-public-ip-address'] = arg
+        action="store_true",
+        group_name="associate_public_ip",
+    )
+    argument_table["associate-public-ip-address"] = arg
     arg = NoAssociatePublicIpAddressArgument(
-        name='no-associate-public-ip-address',
+        name="no-associate-public-ip-address",
         help_text=ASSOCIATE_PUBLIC_IP_ADDRESS_DOCS,
-        action='store_false', group_name='associate_public_ip')
-    argument_table['no-associate-public-ip-address'] = arg
+        action="store_false",
+        group_name="associate_public_ip",
+    )
+    argument_table["no-associate-public-ip-address"] = arg
 
 
 def _check_args(parsed_args, **kwargs):
@@ -70,14 +80,18 @@ def _check_args(parsed_args, **kwargs):
     # the --network-interfaces option with any of the scalar options we
     # raise an error.
     arg_dict = vars(parsed_args)
-    if arg_dict['network_interfaces']:
-        for key in ('secondary_private_ip_addresses',
-                    'secondary_private_ip_address_count',
-                    'associate_public_ip_address'):
+    if arg_dict["network_interfaces"]:
+        for key in (
+            "secondary_private_ip_addresses",
+            "secondary_private_ip_address_count",
+            "associate_public_ip_address",
+        ):
             if arg_dict[key]:
-                msg = ('Mixing the --network-interfaces option '
-                       'with the simple, scalar options is '
-                       'not supported.')
+                msg = (
+                    "Mixing the --network-interfaces option "
+                    "with the simple, scalar options is "
+                    "not supported."
+                )
                 raise ParamValidationError(msg)
 
 
@@ -94,39 +108,41 @@ def _fix_args(params, **kwargs):
     # However, in this scenario we can only support id because
     # we can't place a group name in the NetworkInterfaces structure.
     network_interface_params = [
-        'PrivateIpAddresses',
-        'SecondaryPrivateIpAddressCount',
-        'AssociatePublicIpAddress'
+        "PrivateIpAddresses",
+        "SecondaryPrivateIpAddressCount",
+        "AssociatePublicIpAddress",
     ]
-    if 'NetworkInterfaces' in params:
-        interface = params['NetworkInterfaces'][0]
+    if "NetworkInterfaces" in params:
+        interface = params["NetworkInterfaces"][0]
         if any(param in interface for param in network_interface_params):
-            if 'SubnetId' in params:
-                interface['SubnetId'] = params['SubnetId']
-                del params['SubnetId']
-            if 'SecurityGroupIds' in params:
-                interface['Groups'] = params['SecurityGroupIds']
-                del params['SecurityGroupIds']
-            if 'PrivateIpAddress' in params:
-                ip_addr = {'PrivateIpAddress': params['PrivateIpAddress'],
-                           'Primary': True}
-                interface['PrivateIpAddresses'] = [ip_addr]
-                del params['PrivateIpAddress']
-            if 'Ipv6AddressCount' in params:
-                interface['Ipv6AddressCount'] = params['Ipv6AddressCount']
-                del params['Ipv6AddressCount']
-            if 'Ipv6Addresses' in params:
-                interface['Ipv6Addresses'] = params['Ipv6Addresses']
-                del params['Ipv6Addresses']
-            if 'EnablePrimaryIpv6' in params:
-                interface['PrimaryIpv6'] = params['EnablePrimaryIpv6']
-                del params['EnablePrimaryIpv6']
+            if "SubnetId" in params:
+                interface["SubnetId"] = params["SubnetId"]
+                del params["SubnetId"]
+            if "SecurityGroupIds" in params:
+                interface["Groups"] = params["SecurityGroupIds"]
+                del params["SecurityGroupIds"]
+            if "PrivateIpAddress" in params:
+                ip_addr = {
+                    "PrivateIpAddress": params["PrivateIpAddress"],
+                    "Primary": True,
+                }
+                interface["PrivateIpAddresses"] = [ip_addr]
+                del params["PrivateIpAddress"]
+            if "Ipv6AddressCount" in params:
+                interface["Ipv6AddressCount"] = params["Ipv6AddressCount"]
+                del params["Ipv6AddressCount"]
+            if "Ipv6Addresses" in params:
+                interface["Ipv6Addresses"] = params["Ipv6Addresses"]
+                del params["Ipv6Addresses"]
+            if "EnablePrimaryIpv6" in params:
+                interface["PrimaryIpv6"] = params["EnablePrimaryIpv6"]
+                del params["EnablePrimaryIpv6"]
 
 
 EVENTS = [
-    ('building-argument-table.ec2.run-instances', _add_params),
-    ('operation-args-parsed.ec2.run-instances', _check_args),
-    ('before-parameter-build.ec2.RunInstances', _fix_args),
+    ("building-argument-table.ec2.run-instances", _add_params),
+    ("operation-args-parsed.ec2.run-instances", _check_args),
+    ("before-parameter-build.ec2.RunInstances", _fix_args),
 ]
 
 
@@ -138,52 +154,48 @@ def register_runinstances(event_handler):
 
 def _build_network_interfaces(params, key, value):
     # Build up the NetworkInterfaces data structure
-    if 'NetworkInterfaces' not in params:
-        params['NetworkInterfaces'] = [{'DeviceIndex': 0}]
+    if "NetworkInterfaces" not in params:
+        params["NetworkInterfaces"] = [{"DeviceIndex": 0}]
 
-    if key == 'PrivateIpAddresses':
-        if 'PrivateIpAddresses' not in params['NetworkInterfaces'][0]:
-            params['NetworkInterfaces'][0]['PrivateIpAddresses'] = value
+    if key == "PrivateIpAddresses":
+        if "PrivateIpAddresses" not in params["NetworkInterfaces"][0]:
+            params["NetworkInterfaces"][0]["PrivateIpAddresses"] = value
     else:
-        params['NetworkInterfaces'][0][key] = value
+        params["NetworkInterfaces"][0][key] = value
 
 
 class SecondaryPrivateIpAddressesArgument(CustomArgument):
-
     def add_to_parser(self, parser, cli_name=None):
-        parser.add_argument(self.cli_name, dest=self.py_name,
-                            default=self._default, nargs='*')
+        parser.add_argument(
+            self.cli_name, dest=self.py_name, default=self._default, nargs="*"
+        )
 
     def add_to_params(self, parameters, value):
         if value:
-            value = [{'PrivateIpAddress': v, 'Primary': False} for v in value]
-            _build_network_interfaces(
-                parameters, 'PrivateIpAddresses', value)
+            value = [{"PrivateIpAddress": v, "Primary": False} for v in value]
+            _build_network_interfaces(parameters, "PrivateIpAddresses", value)
 
 
 class SecondaryPrivateIpAddressCountArgument(CustomArgument):
-
     def add_to_parser(self, parser, cli_name=None):
-        parser.add_argument(self.cli_name, dest=self.py_name,
-                            default=self._default, type=int)
+        parser.add_argument(
+            self.cli_name, dest=self.py_name, default=self._default, type=int
+        )
 
     def add_to_params(self, parameters, value):
         if value:
             _build_network_interfaces(
-                parameters, 'SecondaryPrivateIpAddressCount', value)
+                parameters, "SecondaryPrivateIpAddressCount", value
+            )
 
 
 class AssociatePublicIpAddressArgument(CustomArgument):
-
     def add_to_params(self, parameters, value):
         if value is True:
-            _build_network_interfaces(
-                parameters, 'AssociatePublicIpAddress', value)
+            _build_network_interfaces(parameters, "AssociatePublicIpAddress", value)
 
 
 class NoAssociatePublicIpAddressArgument(CustomArgument):
-
     def add_to_params(self, parameters, value):
         if value is False:
-            _build_network_interfaces(
-                parameters, 'AssociatePublicIpAddress', value)
+            _build_network_interfaces(parameters, "AssociatePublicIpAddress", value)

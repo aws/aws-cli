@@ -17,18 +17,17 @@ def register_ec2_page_size_injector(event_emitter):
 
 
 class EC2PageSizeInjector(object):
-
     # Operations to auto-paginate and their specific whitelists.
     # Format:
     #    Key:   Operation
     #    Value: List of parameters to add to whitelist for that operation.
     TARGET_OPERATIONS = {
         "describe-volumes": [],
-        "describe-snapshots": ['OwnerIds', 'RestorableByUserIds']
+        "describe-snapshots": ["OwnerIds", "RestorableByUserIds"],
     }
 
     # Parameters which should be whitelisted for every operation.
-    UNIVERSAL_WHITELIST = ['NextToken', 'DryRun', 'PaginationConfig']
+    UNIVERSAL_WHITELIST = ["NextToken", "DryRun", "PaginationConfig"]
 
     DEFAULT_PAGE_SIZE = 1000
 
@@ -44,11 +43,11 @@ class EC2PageSizeInjector(object):
         if not parsed_globals.paginate:
             return
 
-        pagination_config = call_parameters.get('PaginationConfig', {})
-        if 'PageSize' in pagination_config:
+        pagination_config = call_parameters.get("PaginationConfig", {})
+        if "PageSize" in pagination_config:
             return
 
-        operation_name = event_name.split('.')[-1]
+        operation_name = event_name.split(".")[-1]
 
         whitelisted_params = self.TARGET_OPERATIONS.get(operation_name)
         if whitelisted_params is None:
@@ -60,5 +59,5 @@ class EC2PageSizeInjector(object):
             if param not in whitelisted_params:
                 return
 
-        pagination_config['PageSize'] = self.DEFAULT_PAGE_SIZE
-        call_parameters['PaginationConfig'] = pagination_config
+        pagination_config["PageSize"] = self.DEFAULT_PAGE_SIZE
+        call_parameters["PaginationConfig"] = pagination_config

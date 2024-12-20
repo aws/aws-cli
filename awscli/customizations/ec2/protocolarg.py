@@ -18,20 +18,18 @@ parameter of the operation accepts only integer protocol numbers.
 
 
 def _fix_args(params, **kwargs):
-    key_name = 'Protocol'
+    key_name = "Protocol"
     if key_name in params:
-        if params[key_name] == 'tcp':
-            params[key_name] = '6'
-        elif params[key_name] == 'udp':
-            params[key_name] = '17'
-        elif params[key_name] == 'icmp':
-            params[key_name] = '1'
-        elif params[key_name] == 'all':
-            params[key_name] = '-1'
+        if params[key_name] == "tcp":
+            params[key_name] = "6"
+        elif params[key_name] == "udp":
+            params[key_name] = "17"
+        elif params[key_name] == "icmp":
+            params[key_name] = "1"
+        elif params[key_name] == "all":
+            params[key_name] = "-1"
 
 
 def register_protocol_args(cli):
-    cli.register('before-parameter-build.ec2.CreateNetworkAclEntry',
-                 _fix_args)
-    cli.register('before-parameter-build.ec2.ReplaceNetworkAclEntry',
-                 _fix_args)
+    cli.register("before-parameter-build.ec2.CreateNetworkAclEntry", _fix_args)
+    cli.register("before-parameter-build.ec2.ReplaceNetworkAclEntry", _fix_args)

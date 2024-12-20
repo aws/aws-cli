@@ -2,7 +2,6 @@ import logging
 import copy
 import os
 
-from botocore import model
 from botocore.compat import OrderedDict
 from botocore.validate import validate_parameters
 

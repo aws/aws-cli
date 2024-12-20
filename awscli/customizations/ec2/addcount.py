@@ -13,6 +13,7 @@
 import logging
 
 from botocore import model
+from botocore.exceptions import ParamValidationError
 
 from awscli.arguments import BaseCLIArgument
 
@@ -90,6 +91,6 @@ class CountArgument(BaseCLIArgument):
                 minstr, maxstr = (value, value)
             parameters["MinCount"] = int(minstr)
             parameters["MaxCount"] = int(maxstr)
-        except:
+        except Exception:
             msg = "count parameter should be of " "form min[:max] (e.g. 1 or 1:10)"
             raise ParamValidationError(msg)

@@ -49,69 +49,69 @@ class AttributeExtractor:
         return num_substituted + self._index_offset
 
     def _visit(self, node):
-        method = getattr(self, '_visit_%s' % node['type'])
+        method = getattr(self, '_visit_{}'.format(node['type']))
         return method(node)
 
     def _visit_comparator(self, node):
         left = self._visit(node['children'][0])
         right = self._visit(node['children'][1])
-        expression = '%s%s %s' % (
+        expression = '{}{} {}'.format(
             left, self.COMPARATORS[node['value']], right
         )
         return expression
 
     def _visit_identifier(self, node):
-        identifier_replacement = '#n%s' % self._substitution_index()
+        identifier_replacement = f'#n{self._substitution_index()}'
         self._identifiers[identifier_replacement] = node['value']
-        return '%s ' % identifier_replacement
+        return f'{identifier_replacement} '
 
     def _visit_path_identifier(self, node):
         left = self._visit(node['children'][0]).strip()
         right = self._visit(node['children'][1])
-        return '%s.%s' % (left, right)
+        return f'{left}.{right}'
 
     def _visit_index_identifier(self, node):
         left = self._visit(node['children'][0]).strip()
-        return '%s[%s] ' % (left, node['value'])
+        return '{}[{}] '.format(left, node['value'])
 
     def _visit_literal(self, node):
-        literal_replacement = ':n%s' % self._substitution_index()
+        literal_replacement = f':n{self._substitution_index()}'
         self._literals[literal_replacement] = node['value']
-        return '%s ' % literal_replacement
+        return f'{literal_replacement} '
 
     def _visit_sequence(self, node):
         visited_children = []
         for child in node['children']:
             visited_children.append(self._visit(child).strip())
-        return '%s' % ', '.join(visited_children)
+        return '{}'.format(', '.join(visited_children))
 
     def _visit_or_expression(self, node):
         left = self._visit(node['children'][0])
         right = self._visit(node['children'][1])
-        return '%sOR %s' % (left, right)
+        return f'{left}OR {right}'
 
     def _visit_and_expression(self, node):
         left = self._visit(node['children'][0])
         right = self._visit(node['children'][1])
-        return '%sAND %s' % (left, right)
+        return f'{left}AND {right}'
 
     def _visit_not_expression(self, node):
-        return 'NOT %s' % self._visit(node['children'][0])
+        return 'NOT {}'.format(self._visit(node['children'][0]))
 
     def _visit_subexpression(self, node):
-        return '( %s) ' % self._visit(node['children'][0])
+        return '( {}) '.format(self._visit(node['children'][0]))
 
     def _visit_function(self, node):
-        return '%s(%s) ' % (node['value'], self._visit_sequence(node).strip())
+        return '{}({}) '.format(node['value'], self._visit_sequence(node).strip())
 
     def _visit_in_expression(self, node):
-        return '%sIN (%s) ' % (
+        return '{}IN ({}) '.format(
             self._visit(node['children'][0]),
             self._visit(node['children'][1]).strip(),
         )
 
     def _visit_between_expression(self, node):
-        return '%sBETWEEN %sAND %s' % (
+        return '{}BETWEEN {}AND {}'.format(
             self._visit(node['children'][0]),
             self._visit(node['children'][1]),
             self._visit(node['children'][2]),

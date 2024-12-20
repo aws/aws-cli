@@ -290,7 +290,7 @@ class Parser:
                     token=self._current,
                     expression=self._expression,
                     message=(
-                        'Keys must be of type `str`, found `%s`' % type(key)
+                        f'Keys must be of type `str`, found `{type(key)}`'
                     )
                 )
             self._advance_if_match('literal')

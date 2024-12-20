@@ -15,7 +15,6 @@ import re
 import shlex
 import os
 import os.path
-import platform
 import zipfile
 import signal
 import contextlib
@@ -77,10 +76,10 @@ class StdinMissingError(Exception):
         message = (
             'stdin is required for this operation, but is not available.'
         )
-        super(StdinMissingError, self).__init__(message)
+        super().__init__(message)
 
 
-class NonTranslatedStdout(object):
+class NonTranslatedStdout:
     """ This context manager sets the line-end translation mode for stdout.
 
     It is deliberately set to binary mode so that `\r` does not get added to
@@ -106,7 +105,7 @@ def ensure_text_type(s):
         return s
     if isinstance(s, bytes):
         return s.decode('utf-8')
-    raise ValueError("Expected str, unicode or bytes, received %s." % type(s))
+    raise ValueError(f"Expected str, unicode or bytes, received {type(s)}.")
 
 
 def get_binary_stdin():
@@ -280,7 +279,7 @@ def _windows_shell_quote(s):
     if ' ' in new_s or '\t' in new_s:
         # If there are any spaces or tabs then the string needs to be double
         # quoted.
-        return '"%s"' % new_s
+        return f'"{new_s}"'
     return new_s
 
 
@@ -418,11 +417,11 @@ except ImportError:
             return tuple(m.groups())
 
         # Unknown format... take the first two words
-        l = firstline.strip().split()
-        if l:
-            version = l[0]
-            if len(l) > 1:
-                id = l[1]
+        line = firstline.strip().split()
+        if line:
+            version = line[0]
+            if len(line) > 1:
+                id = line[1]
         return '', version, id
 
     _distributor_id_file_re = re.compile(r"(?:DISTRIB_ID\s*=)\s*(.*)", re.I)
@@ -456,7 +455,7 @@ except ImportError:
         # that the distribution doesn't get identified as Debian.
         # https://bugs.python.org/issue9514
         try:
-            with open("/etc/lsb-release", "r") as etclsbrel:
+            with open("/etc/lsb-release") as etclsbrel:
                 for line in etclsbrel:
                     m = _distributor_id_file_re.search(line)
                     if m:
@@ -469,7 +468,7 @@ except ImportError:
                         _u_id = m.group(1).strip()
                 if _u_distname and _u_version:
                     return (_u_distname, _u_version, _u_id)
-        except (EnvironmentError, UnboundLocalError):
+        except (OSError, UnboundLocalError):
                 pass
 
         try:
@@ -489,7 +488,7 @@ except ImportError:
             return _dist_try_harder(distname, version, id)
 
         # Read the first line
-        with open(os.path.join(_UNIXCONFDIR, file), 'r',
+        with open(os.path.join(_UNIXCONFDIR, file),
                   encoding='utf-8', errors='surrogateescape') as f:
             firstline = f.readline()
         _distname, _version, _id = _parse_release_file(firstline)

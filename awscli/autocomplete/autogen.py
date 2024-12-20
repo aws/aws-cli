@@ -6,9 +6,8 @@ It can also be used to regen completion data as new heuristics are added.
 
 """
 import logging
+from collections import defaultdict, namedtuple
 from difflib import SequenceMatcher
-from collections import namedtuple, defaultdict
-
 
 LOG = logging.getLogger(__name__)
 Resource = namedtuple('Resource', ['resource_name', 'ident_name',

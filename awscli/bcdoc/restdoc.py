@@ -13,6 +13,7 @@
 import logging
 
 from botocore.compat import OrderedDict
+
 from awscli.bcdoc.docstringparser import DocStringParser
 from awscli.bcdoc.style import ReSTStyle
 

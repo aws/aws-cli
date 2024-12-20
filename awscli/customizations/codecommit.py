@@ -11,18 +11,19 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import datetime
+import fileinput
+import logging
 import os
 import re
 import sys
-import logging
-import fileinput
-import datetime
 
 from botocore.auth import SigV4Auth
 from botocore.awsrequest import AWSRequest
 from botocore.compat import urlsplit
-from awscli.customizations.commands import BasicCommand
+
 from awscli.compat import NonTranslatedStdout
+from awscli.customizations.commands import BasicCommand
 
 logger = logging.getLogger('botocore.credentials')
 

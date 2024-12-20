@@ -10,16 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import logging
 import json
+import logging
 import os
 
-from prompt_toolkit.completion import Completion, Completer
+from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.history import FileHistory
 
 from awscli.autocomplete.completer import CompletionResult
 from awscli.autocomplete.filters import fuzzy_filter
-
 
 LOG = logging.getLogger(__name__)
 

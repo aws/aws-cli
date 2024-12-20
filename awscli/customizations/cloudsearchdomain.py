@@ -19,6 +19,7 @@ This module customizes the cloudsearchdomain command:
 """
 from awscli.customizations.exceptions import ParamValidationError
 
+
 def register_cloudsearchdomain(cli):
     cli.register_last('calling-command.cloudsearchdomain',
                       validate_endpoint_url)

@@ -13,10 +13,10 @@
 """Generates auto completion index."""
 import os
 
+from awscli import clidriver
+from awscli.autocomplete import db
 from awscli.autocomplete.local import indexer
 from awscli.autocomplete.serverside.indexer import APICallIndexer
-from awscli.autocomplete import db
-from awscli import clidriver
 
 
 def generate_index(filename):

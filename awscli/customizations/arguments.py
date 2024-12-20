@@ -13,10 +13,11 @@
 import os
 import re
 
+import jmespath
+
 from awscli.arguments import CustomArgument
 from awscli.compat import compat_open
 from awscli.customizations.exceptions import ParamValidationError
-import jmespath
 
 
 def resolve_given_outfile_path(path):

@@ -14,8 +14,8 @@ from botocore import xform_name
 from botocore.exceptions import DataNotFoundError
 
 from awscli.clidriver import ServiceOperation
-from awscli.customizations.commands import BasicCommand, BasicHelp, \
-    BasicDocHandler
+from awscli.customizations.commands import (BasicCommand, BasicDocHandler,
+                                            BasicHelp)
 
 
 def register_add_waiters(cli):

@@ -13,9 +13,9 @@
 
 import hashlib
 import logging
-import threading
 import os
 import sys
+import threading
 
 import botocore
 import botocore.exceptions

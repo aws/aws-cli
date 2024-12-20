@@ -12,11 +12,9 @@
 # language governing permissions and limitations under the License.
 import copy
 
-from awscli.arguments import CustomArgument, CLIArgument
-from awscli.customizations.binaryhoist import (
-    BinaryBlobArgumentHoister,
-    ArgumentParameters,
-)
+from awscli.arguments import CLIArgument, CustomArgument
+from awscli.customizations.binaryhoist import (ArgumentParameters,
+                                               BinaryBlobArgumentHoister)
 
 FILE_DOCSTRING = (
     "<p>The path to the file of the code you are uploading. "

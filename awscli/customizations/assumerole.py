@@ -1,8 +1,8 @@
-import os
 import logging
+import os
 
-from botocore.exceptions import ProfileNotFound
 from botocore.credentials import JSONFileCache
+from botocore.exceptions import ProfileNotFound
 
 LOG = logging.getLogger(__name__)
 CACHE_DIR = os.path.expanduser(os.path.join('~', '.aws', 'cli', 'cache'))

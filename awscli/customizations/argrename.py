@@ -15,7 +15,6 @@
 
 from awscli.customizations import utils
 
-
 ARGUMENT_RENAMES = {
     # Mapping of original arg to renamed arg.
     # The key is <service>.<operation>.argname

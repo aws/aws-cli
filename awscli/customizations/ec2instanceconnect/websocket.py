@@ -26,13 +26,10 @@ from urllib.parse import urlparse
 from awscrt import websocket
 from awscrt.http import HttpProxyAuthenticationType, HttpProxyOptions
 from awscrt.io import ClientTlsContext, TlsContextOptions
-from awscrt.websocket import (
-    OnConnectionSetupData,
-    OnIncomingFramePayloadData,
-    OnSendFrameCompleteData,
-    Opcode,
-    OnConnectionShutdownData, OnIncomingFrameCompleteData,
-)
+from awscrt.websocket import (OnConnectionSetupData, OnConnectionShutdownData,
+                              OnIncomingFrameCompleteData,
+                              OnIncomingFramePayloadData,
+                              OnSendFrameCompleteData, Opcode)
 
 from awscli.compat import is_windows
 

@@ -14,12 +14,12 @@ import logging
 import sys
 
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.ec2instanceconnect.eicesigner import (
-    InstanceConnectEndpointRequestSigner,
-)
+from awscli.customizations.ec2instanceconnect.eicefetcher import \
+    InstanceConnectEndpointRequestFetcher
+from awscli.customizations.ec2instanceconnect.eicesigner import \
+    InstanceConnectEndpointRequestSigner
 from awscli.customizations.ec2instanceconnect.websocket import WebsocketManager
 from awscli.customizations.exceptions import ParamValidationError
-from awscli.customizations.ec2instanceconnect.eicefetcher import InstanceConnectEndpointRequestFetcher
 
 logger = logging.getLogger(__name__)
 

@@ -12,7 +12,8 @@
 # language governing permissions and limitations under the License.
 import logging
 
-from awscli.customizations.exceptions import ParamValidationError, ConfigurationError
+from awscli.customizations.exceptions import (ConfigurationError,
+                                              ParamValidationError)
 
 logger = logging.getLogger(__name__)
 

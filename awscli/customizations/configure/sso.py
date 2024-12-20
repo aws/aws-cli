@@ -64,7 +64,7 @@ _CONFIG_EXTRA_INFO = (
 
 class ValidatorWithDefault(Validator):
     def __init__(self, default=None):
-        super(ValidatorWithDefault, self).__init__()
+        super().__init__()
         self._default = default
 
     def _raise_validation_error(self, document, message):
@@ -326,7 +326,7 @@ class SSOSessionConfigurationPrompter:
 
 class BaseSSOConfigurationCommand(BaseSSOCommand):
     def __init__(self, session, prompter=None, config_writer=None):
-        super(BaseSSOConfigurationCommand, self).__init__(session)
+        super().__init__(session)
         if prompter is None:
             prompter = PTKPrompt()
         self._prompter = prompter
@@ -370,7 +370,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
 
     def __init__(self, session, prompter=None, selector=None,
                  config_writer=None, sso_token_cache=None, sso_login=None):
-        super(ConfigureSSOCommand, self).__init__(
+        super().__init__(
             session, prompter=prompter, config_writer=config_writer)
         if selector is None:
             selector = select_menu

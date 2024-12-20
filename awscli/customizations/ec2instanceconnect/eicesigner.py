@@ -17,14 +17,14 @@ from botocore.signers import RequestSigner
 
 class InstanceConnectEndpointRequestSigner:
     def __init__(
-            self,
-            session,
-            instance_connect_endpoint_dns_name,
-            instance_connect_endpoint_id,
-            remote_port,
-            instance_private_ip,
-            max_tunnel_duration,
-            request_singer=None,
+        self,
+        session,
+        instance_connect_endpoint_dns_name,
+        instance_connect_endpoint_id,
+        remote_port,
+        instance_private_ip,
+        max_tunnel_duration,
+        request_singer=None,
     ):
         service_model = session.get_service_model("ec2-instance-connect")
 
@@ -40,9 +40,7 @@ class InstanceConnectEndpointRequestSigner:
         else:
             self._request_signer = request_singer
 
-        self.instance_connect_endpoint_dns_name = (
-            instance_connect_endpoint_dns_name
-        )
+        self.instance_connect_endpoint_dns_name = instance_connect_endpoint_dns_name
         self.instance_connect_endpoint_id = instance_connect_endpoint_id
         self.remote_port = remote_port
         self.instance_private_ip = instance_private_ip

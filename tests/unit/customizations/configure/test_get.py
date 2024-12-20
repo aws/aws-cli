@@ -84,6 +84,18 @@ class TestConfigureGetCommand(unittest.TestCase):
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), 's3v4')
 
+    def test_get_from_sso_session(self):
+        session = FakeSession({})
+        session.full_config = {
+            'profiles': {'testing': {'sso_session': 'test-session'}},
+            'sso_sessions': {'test-session': {'sso_region': 'us-east-2'}}}
+        stream, error_stream, config_get = self.create_command(session)
+        config_get = ConfigureGetCommand(session, stream)
+        config_get(args=['sso-session.test-session.sso_region'],
+                   parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertEqual(rendered.strip(), 'us-east-2')
+
     def test_get_nested_attribute_from_default(self):
         session = FakeSession({})
         session.full_config = {

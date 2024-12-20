@@ -35,7 +35,7 @@ GLOBAL_OPTIONS_SYNOPSIS_FILE = os.path.join(EXAMPLES_DIR,
                                             'global_synopsis.rst')
 
 
-class CLIDocumentEventHandler(object):
+class CLIDocumentEventHandler:
 
     def __init__(self, help_command):
         self.help_command = help_command
@@ -721,7 +721,7 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
         doc.style.new_paragraph()
 
     def _remove_tags_from_content(self, filename):
-        with open(filename, 'r') as f:
+        with open(filename) as f:
             lines = f.readlines()
 
         content_begin_index = 0

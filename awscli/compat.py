@@ -80,7 +80,7 @@ class StdinMissingError(Exception):
         super(StdinMissingError, self).__init__(message)
 
 
-class NonTranslatedStdout(object):
+class NonTranslatedStdout:
     """ This context manager sets the line-end translation mode for stdout.
 
     It is deliberately set to binary mode so that `\r` does not get added to
@@ -456,7 +456,7 @@ except ImportError:
         # that the distribution doesn't get identified as Debian.
         # https://bugs.python.org/issue9514
         try:
-            with open("/etc/lsb-release", "r") as etclsbrel:
+            with open("/etc/lsb-release") as etclsbrel:
                 for line in etclsbrel:
                     m = _distributor_id_file_re.search(line)
                     if m:
@@ -469,7 +469,7 @@ except ImportError:
                         _u_id = m.group(1).strip()
                 if _u_distname and _u_version:
                     return (_u_distname, _u_version, _u_id)
-        except (EnvironmentError, UnboundLocalError):
+        except (OSError, UnboundLocalError):
                 pass
 
         try:
@@ -489,7 +489,7 @@ except ImportError:
             return _dist_try_harder(distname, version, id)
 
         # Read the first line
-        with open(os.path.join(_UNIXCONFDIR, file), 'r',
+        with open(os.path.join(_UNIXCONFDIR, file),
                   encoding='utf-8', errors='surrogateescape') as f:
             firstline = f.readline()
         _distname, _version, _id = _parse_release_file(firstline)

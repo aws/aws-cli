@@ -84,7 +84,7 @@ METADATA_FILENAME = 'metadata.json'
 # the encodings.idna is imported and registered in the codecs registry,
 # which will stop the LookupErrors from happening.
 # See: https://bugs.python.org/issue29288
-u''.encode('idna')
+''.encode('idna')
 
 
 def main():
@@ -222,7 +222,7 @@ class AWSCLIEntryPoint:
         return rc
 
 
-class CLIDriver(object):
+class CLIDriver:
 
     def __init__(self, session=None, error_handler=None,
                  debug=False):
@@ -675,7 +675,7 @@ class ServiceCommand(CLICommand):
             operations_table=command_table, service_name=self._name)
 
 
-class ServiceOperation(object):
+class ServiceOperation:
 
     """A single operation of a service.
 
@@ -924,7 +924,7 @@ class ServiceOperation(object):
         add_command_lineage_to_user_agent_extra(self._session, self.lineage_names)
 
 
-class CLIOperationCaller(object):
+class CLIOperationCaller:
 
     """Call an AWS operation and format the response."""
 

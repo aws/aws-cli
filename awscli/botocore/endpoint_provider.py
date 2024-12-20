@@ -24,7 +24,6 @@ or you can look at the test files in /tests/unit/data/endpoints/valid-rules/
 import logging
 import re
 from enum import Enum
-from functools import lru_cache
 from string import Formatter
 from typing import NamedTuple
 
@@ -36,6 +35,7 @@ from botocore.utils import (
     InvalidArnException,
     is_valid_ipv4_endpoint_url,
     is_valid_ipv6_endpoint_url,
+    lru_cache_weakref,
     normalize_url_path,
     percent_encode,
 )
@@ -43,7 +43,7 @@ from botocore.utils import (
 logger = logging.getLogger(__name__)
 
 TEMPLATE_STRING_RE = re.compile(r"\{[a-zA-Z#]+\}")
-GET_ATTR_RE = re.compile(r"(\w+)\[(\d+)\]")
+GET_ATTR_RE = re.compile(r"(\w*)\[(\d+)\]")
 VALID_HOST_LABEL_RE = re.compile(
     r"^(?!-)[a-zA-Z\d-]{1,63}(?<!-)$",
 )
@@ -170,7 +170,7 @@ class RuleSetStandardLibary:
         names indicates the one to the right is nested. The index will always occur at
         the end of the path.
 
-        :type value: dict or list
+        :type value: dict or tuple
         :type path: str
         :rtype: Any
         """
@@ -179,7 +179,8 @@ class RuleSetStandardLibary:
             if match is not None:
                 name, index = match.groups()
                 index = int(index)
-                value = value.get(name)
+                if name:
+                    value = value.get(name)
                 if value is None or index >= len(value):
                     return None
                 return value[index]
@@ -577,6 +578,7 @@ class ParameterType(Enum):
 
     string = str
     boolean = bool
+    stringarray = tuple
 
 
 class ParameterDefinition:
@@ -600,7 +602,7 @@ class ParameterDefinition:
         except AttributeError:
             raise EndpointResolutionError(
                 msg=f"Unknown parameter type: {parameter_type}. "
-                "A parameter must be of type string or boolean."
+                "A parameter must be of type string, boolean, or stringarray."
             )
         self.documentation = documentation
         self.builtin = builtIn
@@ -703,7 +705,7 @@ class EndpointProvider:
     def __init__(self, ruleset_data, partition_data):
         self.ruleset = RuleSet(**ruleset_data, partitions=partition_data)
 
-    @lru_cache(maxsize=CACHE_SIZE)
+    @lru_cache_weakref(maxsize=CACHE_SIZE)
     def resolve_endpoint(self, **input_parameters):
         """Match input parameters to a rule.
 

@@ -589,6 +589,10 @@ class OperationModel(object):
         ]
 
     @CachedProperty
+    def operation_context_parameters(self):
+        return self._operation_model.get('operationContextParams', [])
+
+    @CachedProperty
     def request_compression(self):
         return self._operation_model.get('requestcompression')
 

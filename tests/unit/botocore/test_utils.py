@@ -24,6 +24,7 @@ from contextlib import contextmanager
 import datetime
 import copy
 import operator
+from sys import getrefcount
 
 import botocore
 from botocore import xform_name
@@ -70,6 +71,7 @@ from botocore.utils import switch_to_virtual_host_style
 from botocore.utils import instance_cache
 from botocore.utils import merge_dicts
 from botocore.utils import lowercase_dict
+from botocore.utils import lru_cache_weakref
 from botocore.utils import get_service_module_name
 from botocore.utils import get_encoding_from_headers
 from botocore.utils import percent_encode_sequence
@@ -3619,3 +3621,40 @@ def test_is_s3_accelerate_url(url, expected):
 def test_get_encoding_from_headers(headers, default, expected):
     charset = get_encoding_from_headers(HeadersDict(headers), default=default)
     assert charset == expected
+
+
+def test_lru_cache_weakref():
+    class ClassWithCachedMethod:
+        @lru_cache_weakref(maxsize=10)
+        def cached_fn(self, a, b):
+            return a + b
+
+    cls1 = ClassWithCachedMethod()
+    cls2 = ClassWithCachedMethod()
+
+    assert cls1.cached_fn.cache_info().currsize == 0
+    assert getrefcount(cls1) == 2
+    assert getrefcount(cls2) == 2
+    # "The count returned is generally one higher than you might expect, because
+    # it includes the (temporary) reference as an argument to getrefcount()."
+    # https://docs.python.org/3.8/library/sys.html#getrefcount
+
+    cls1.cached_fn(1, 1)
+    cls2.cached_fn(1, 1)
+
+    # The cache now has two entries, but the reference count remains the same as
+    # before.
+    assert cls1.cached_fn.cache_info().currsize == 2
+    assert getrefcount(cls1) == 2
+    assert getrefcount(cls2) == 2
+
+    # Deleting one of the objects does not interfere with the cache entries
+    # related to the other object.
+    del cls1
+    assert cls2.cached_fn.cache_info().currsize == 2
+    assert cls2.cached_fn.cache_info().hits == 0
+    assert cls2.cached_fn.cache_info().misses == 2
+    cls2.cached_fn(1, 1)
+    assert cls2.cached_fn.cache_info().currsize == 2
+    assert cls2.cached_fn.cache_info().hits == 1  # the call was a cache hit
+    assert cls2.cached_fn.cache_info().misses == 2

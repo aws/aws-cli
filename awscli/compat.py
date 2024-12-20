@@ -15,7 +15,6 @@ import re
 import shlex
 import os
 import os.path
-import platform
 import zipfile
 import signal
 import contextlib
@@ -418,11 +417,11 @@ except ImportError:
             return tuple(m.groups())
 
         # Unknown format... take the first two words
-        l = firstline.strip().split()
-        if l:
-            version = l[0]
-            if len(l) > 1:
-                id = l[1]
+        line = firstline.strip().split()
+        if line:
+            version = line[0]
+            if len(line) > 1:
+                id = line[1]
         return '', version, id
 
     _distributor_id_file_re = re.compile(r"(?:DISTRIB_ID\s*=)\s*(.*)", re.I)

@@ -286,10 +286,11 @@ class BaseAWSHelpOutputTest(BaseCLIDriverTest):
     def assert_contains_with_count(self, contains, count):
         r_count = self.renderer.rendered_contents.count(contains)
         if r_count != count:
-            self.fail("The expected contents:\n%s\n, with the "
-                      "count:\n%d\nwere not in the actual rendered "
-                      " contents:\n%s\nwith count:\n%d" % (
-                          contains, count, self.renderer.rendered_contents, r_count))
+            self.fail(
+                f"The expected contents:\n{contains}\n, with the "
+                f"count:\n{count:d}\nwere not in the actual rendered "
+                f" contents:\n{self.renderer.rendered_contents}\nwith count:\n{r_count:d}"
+            )
 
     def assert_not_contains(self, contents):
         if contents in self.renderer.rendered_contents:

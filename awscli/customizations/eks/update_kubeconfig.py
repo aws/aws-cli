@@ -148,11 +148,11 @@ class UpdateKubeconfigCommand(BasicCommand):
             writer.write_kubeconfig(config)
 
             if updating_existing:
-                uni_print("Updated context {0} in {1}\n".format(
+                uni_print("Updated context {} in {}\n".format(
                     new_context_dict["name"], config.path
                 ))
             else:
-                uni_print("Added new context {0} to {1}\n".format(
+                uni_print("Added new context {} to {}\n".format(
                     new_context_dict["name"], config.path
                 ))
 
@@ -265,7 +265,7 @@ class EKSClient:
             if "status" not in self._cluster_description:
                 raise EKSClusterError("Cluster not found")
             if self._cluster_description["status"] not in ["ACTIVE", "UPDATING"]:
-                raise EKSClusterError("Cluster status is {0}".format(
+                raise EKSClusterError("Cluster status is {}".format(
                     self._cluster_description["status"]
                 ))
 

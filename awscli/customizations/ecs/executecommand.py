@@ -36,7 +36,7 @@ TASK_NOT_FOUND = (
 class ECSExecuteCommand(ServiceOperation):
 
     def create_help_command(self):
-        help_command = super(ECSExecuteCommand, self).create_help_command()
+        help_command = super().create_help_command()
         # change the output shape because the command provides no output.
         self._operation_model.output_shape = None
         return help_command

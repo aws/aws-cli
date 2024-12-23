@@ -80,7 +80,7 @@ class Configuration:
 class StringConfiguration(Configuration):
 
     def __init__(self, name, arg_name, arg_value_key=None):
-        super(StringConfiguration, self).__init__(name, arg_name)
+        super().__init__(name, arg_name)
         self.arg_value_key = arg_value_key
 
     def is_applicable(self, command):
@@ -105,7 +105,7 @@ class StringConfiguration(Configuration):
 class BooleanConfiguration(Configuration):
 
     def __init__(self, name):
-        super(BooleanConfiguration, self).__init__(name, name)
+        super().__init__(name, name)
         self.no_version_arg_name = "no_" + name
 
     def is_applicable(self, command):

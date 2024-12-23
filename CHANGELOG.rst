@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.36.28
+=======
+
+* api-change:``ecr``: Documentation update for ECR GetAccountSetting and PutAccountSetting APIs.
+* api-change:``ecr-public``: Add support for Dualstack endpoints
+* api-change:``eks``: This release adds support for DescribeClusterVersions API that provides important information about Kubernetes versions along with end of support dates
+* api-change:``glue``: Add IncludeRoot parameters to GetCatalogs API to return root catalog.
+
+
 1.36.27
 =======
 

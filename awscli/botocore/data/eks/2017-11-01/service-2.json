@@ -405,6 +405,21 @@
       ],
       "documentation":"<p>Describes an Amazon EKS cluster.</p> <p>The API server endpoint and certificate authority data returned by this operation are required for <code>kubelet</code> and <code>kubectl</code> to communicate with your Kubernetes API server. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html\">Creating or updating a <code>kubeconfig</code> file for an Amazon EKS cluster</a>.</p> <note> <p>The API server endpoint and certificate authority data aren't available until the cluster reaches the <code>ACTIVE</code> state.</p> </note>"
     },
+    "DescribeClusterVersions":{
+      "name":"DescribeClusterVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/cluster-versions"
+      },
+      "input":{"shape":"DescribeClusterVersionsRequest"},
+      "output":{"shape":"DescribeClusterVersionsResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"}
+      ],
+      "documentation":"<p>Lists available Kubernetes versions for Amazon EKS clusters.</p>"
+    },
     "DescribeEksAnywhereSubscription":{
       "name":"DescribeEksAnywhereSubscription",
       "http":{
@@ -1154,10 +1169,10 @@
         },
         "compatibleVersions":{
           "shape":"StringList",
-          "documentation":"<p>The list of compatible Amazon EKS add-on versions for the next Kubernetes version.</p>"
+          "documentation":"<p>A list of compatible add-on versions.</p>"
         }
       },
-      "documentation":"<p>The summary information about the Amazon EKS add-on compatibility for the next Kubernetes version for an insight check in the <code>UPGRADE_READINESS</code> category.</p>"
+      "documentation":"<p>Contains compatibility information for an Amazon EKS add-on.</p>"
     },
     "AddonCompatibilityDetails":{
       "type":"list",
@@ -1788,6 +1803,60 @@
         "FAILED",
         "UPDATING",
         "PENDING"
+      ]
+    },
+    "ClusterVersionInformation":{
+      "type":"structure",
+      "members":{
+        "clusterVersion":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes version for the cluster.</p>"
+        },
+        "clusterType":{
+          "shape":"String",
+          "documentation":"<p>The type of cluster this version is for.</p>"
+        },
+        "defaultPlatformVersion":{
+          "shape":"String",
+          "documentation":"<p>Default platform version for this Kubernetes version.</p>"
+        },
+        "defaultVersion":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates if this is a default version.</p>"
+        },
+        "releaseDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The release date of this cluster version.</p>"
+        },
+        "endOfStandardSupportDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>Date when standard support ends for this version.</p>"
+        },
+        "endOfExtendedSupportDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>Date when extended support ends for this version.</p>"
+        },
+        "status":{
+          "shape":"ClusterVersionStatus",
+          "documentation":"<p>Current status of this cluster version.</p>"
+        },
+        "kubernetesPatchVersion":{
+          "shape":"String",
+          "documentation":"<p>The patch version of Kubernetes for this cluster version.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a specific EKS cluster version.</p>"
+    },
+    "ClusterVersionList":{
+      "type":"list",
+      "member":{"shape":"ClusterVersionInformation"}
+    },
+    "ClusterVersionStatus":{
+      "type":"string",
+      "enum":[
+        "unsupported",
+        "standard-support",
+        "extended-support"
       ]
     },
     "Compatibilities":{
@@ -2796,6 +2865,72 @@
         }
       }
     },
+    "DescribeClusterVersionMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "DescribeClusterVersionsRequest":{
+      "type":"structure",
+      "members":{
+        "clusterType":{
+          "shape":"String",
+          "documentation":"<p>The type of cluster to filter versions by.</p>",
+          "location":"querystring",
+          "locationName":"clusterType"
+        },
+        "maxResults":{
+          "shape":"DescribeClusterVersionMaxResults",
+          "documentation":"<p>Maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>Pagination token for the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "defaultOnly":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Filter to show only default versions.</p>",
+          "location":"querystring",
+          "locationName":"defaultOnly"
+        },
+        "includeAll":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Include all available versions in the response.</p>",
+          "location":"querystring",
+          "locationName":"includeAll"
+        },
+        "clusterVersions":{
+          "shape":"StringList",
+          "documentation":"<p>List of specific cluster versions to describe.</p>",
+          "location":"querystring",
+          "locationName":"clusterVersions"
+        },
+        "status":{
+          "shape":"ClusterVersionStatus",
+          "documentation":"<p>Filter versions by their current status.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        }
+      }
+    },
+    "DescribeClusterVersionsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>Pagination token for the next set of results.</p>"
+        },
+        "clusterVersions":{
+          "shape":"ClusterVersionList",
+          "documentation":"<p>List of cluster version information objects.</p>"
+        }
+      }
+    },
     "DescribeEksAnywhereSubscriptionRequest":{
       "type":"structure",
       "required":["id"],
@@ -3480,7 +3615,7 @@
         },
         "addonCompatibilityDetails":{
           "shape":"AddonCompatibilityDetails",
-          "documentation":"<p>A list of <code>AddonCompatibilityDetail</code> objects for Amazon EKS add-ons.</p>"
+          "documentation":"<p>A list of AddonCompatibilityDetail objects for Amazon EKS add-ons.</p>"
         }
       },
       "documentation":"<p>Summary information that relates to the category of the insight. Currently only returned with certain insights having category <code>UPGRADE_READINESS</code>.</p>"

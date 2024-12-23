@@ -148,8 +148,11 @@ class TestLSCommand(unittest.TestCase):
         parsed_args = FakeArgs(**self._get_fake_kwargs({
             'bucket_name_prefix': 'myprefix',
         }))
-        parsed_globals = FakeArgs(region=None, endpoint_url=None,
-                                 verify_ssl=None)
+        parsed_globals = FakeArgs(
+            region=None,
+            endpoint_url=None,
+            verify_ssl=None,
+        )
         ls_command._run_main(parsed_args, parsed_globals)
         call = self.session.create_client.return_value.list_objects
         paginate = self.session.create_client.return_value.get_paginator\
@@ -170,8 +173,11 @@ class TestLSCommand(unittest.TestCase):
         parsed_args = FakeArgs(**self._get_fake_kwargs({
             'bucket_region': 'us-west-1',
         }))
-        parsed_globals = FakeArgs(region=None, endpoint_url=None,
-                                 verify_ssl=None)
+        parsed_globals = FakeArgs(
+            region=None,
+            endpoint_url=None,
+            verify_ssl=None,
+        )
         ls_command._run_main(parsed_args, parsed_globals)
         call = self.session.create_client.return_value.list_objects
         paginate = self.session.create_client.return_value.get_paginator\

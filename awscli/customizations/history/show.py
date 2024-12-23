@@ -174,7 +174,7 @@ class DetailedFormatter(Formatter):
     }
 
     def __init__(self, output=None, include=None, exclude=None, colorize=True):
-        super(DetailedFormatter, self).__init__(output, include, exclude)
+        super().__init__(output, include, exclude)
         self._request_id_to_api_num = {}
         self._num_api_calls = 0
         self._colorize = colorize
@@ -219,7 +219,7 @@ class DetailedFormatter(Formatter):
         formatted_title = title
         api_num = self._get_api_num(event_record)
         if api_num is not None:
-            formatted_title = ('[%s] ' % api_num) + formatted_title
+            formatted_title = (f'[{api_num}] ') + formatted_title
         formatted_title = self._color_if_configured(formatted_title, 'title')
         formatted_title += '\n'
 

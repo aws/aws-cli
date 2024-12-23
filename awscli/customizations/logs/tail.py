@@ -54,7 +54,7 @@ class BaseLogEventsFormatter:
 
 class ShortLogEventsFormatter(BaseLogEventsFormatter):
     def display_log_event(self, log_event):
-        log_event = '%s %s' % (
+        log_event = '{} {}'.format(
             self._format_timestamp(log_event['timestamp']),
             log_event['message']
         )
@@ -67,7 +67,7 @@ class ShortLogEventsFormatter(BaseLogEventsFormatter):
 
 class DetailedLogEventsFormatter(BaseLogEventsFormatter):
     def display_log_event(self, log_event):
-        log_event = '%s %s %s' % (
+        log_event = '{} {} {}'.format(
             self._format_timestamp(log_event['timestamp']),
             self._color_if_configured(
                 log_event['logStreamName'], self._STREAM_NAME_COLOR),
@@ -84,7 +84,7 @@ class DetailedLogEventsFormatter(BaseLogEventsFormatter):
 
 class PrettyJSONLogEventsFormatter(BaseLogEventsFormatter):
     def display_log_event(self, log_event):
-        log_event = '%s %s %s' % (
+        log_event = '{} {} {}'.format(
             self._format_timestamp(log_event['timestamp']),
             self._color_if_configured(
                 log_event['logStreamName'], self._STREAM_NAME_COLOR),
@@ -95,7 +95,7 @@ class PrettyJSONLogEventsFormatter(BaseLogEventsFormatter):
     def _format_pretty_json(self, log_message):
         try:
             loaded_json = json.loads(log_message)
-            return '\n%s' % json.dumps(loaded_json, indent=4)
+            return f'\n{json.dumps(loaded_json, indent=4)}'
         except json.decoder.JSONDecodeError:
             pass
         return log_message
@@ -328,23 +328,21 @@ class NoFollowLogEventsGenerator(BaseLogEventsGenerator):
     def _filter_log_events(self, filter_logs_events_kwargs):
         paginator = self._client.get_paginator('filter_log_events')
         for page in paginator.paginate(**filter_logs_events_kwargs):
-            for log_event in page['events']:
-                yield log_event
+            yield from page['events']
 
 
 class FollowLogEventsGenerator(BaseLogEventsGenerator):
     _TIME_TO_SLEEP = 5
 
     def __init__(self, client, timestamp_utils, sleep=None):
-        super(FollowLogEventsGenerator, self).__init__(client, timestamp_utils)
+        super().__init__(client, timestamp_utils)
         self._sleep = sleep
         if sleep is None:
             self._sleep = time.sleep
 
     def _filter_log_events(self, filter_logs_events_kwargs):
         try:
-            for event in self._do_filter_log_events(filter_logs_events_kwargs):
-                yield event
+            yield from self._do_filter_log_events(filter_logs_events_kwargs)
         except KeyboardInterrupt:
             # The only way to exit from the --follow is to Ctrl-C. So
             # we should exit the iterator rather than having the

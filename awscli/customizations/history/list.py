@@ -95,11 +95,11 @@ class TextFormatter:
         json_value = json.loads(args)
         formatted = ' '.join(json_value[:2])
         if len(formatted) >= arg_width:
-            formatted = '%s...' % formatted[:arg_width-4]
+            formatted = f'{formatted[:arg_width-4]}...'
         return formatted
 
     def _format_record(self, record):
-        fmt_string = "{0:<%s}{1:<%s}{2:<%s}{3}\n" % (
+        fmt_string = "{{0:<{}}}{{1:<{}}}{{2:<{}}}{{3}}\n".format(
             self._col_widths['id_a'],
             self._col_widths['timestamp'],
             self._col_widths['args']

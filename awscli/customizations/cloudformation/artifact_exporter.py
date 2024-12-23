@@ -180,20 +180,49 @@ def zip_folder(folder_path):
 
 
 def make_zip(filename, source_root):
-    zipfile_name = "{0}.zip".format(filename)
+    """
+    Create a zip file containing the contents of source_root directory.
+    
+    Args:
+        filename (str): Base filename for the zip file (without .zip extension)
+        source_root (str): Root directory to zip
+        
+    Returns:
+        str: Path to the created zip file
+        
+    Security:
+        - Uses strict permissions on the zip file
+        - Validates symlinks to prevent path traversal
+        - Uses a buffer for memory efficiency
+    """
+    zipfile_name = f"{filename}.zip"
     source_root = os.path.abspath(source_root)
-    with open(zipfile_name, 'wb') as f:
-        zip_file = zipfile.ZipFile(f, 'w', zipfile.ZIP_DEFLATED)
-        with contextlib.closing(zip_file) as zf:
-            for root, dirs, files in os.walk(source_root, followlinks=True):
-                for filename in files:
-                    full_path = os.path.join(root, filename)
-                    relative_path = os.path.relpath(
-                        full_path, source_root)
-                    zf.write(full_path, relative_path)
-
+    
+    # Set strict permissions - you want it so only the owner can read/write
+    old_umask = os.umask(0o077)
+    try:
+        with open(zipfile_name, 'wb') as f:
+            with zipfile.ZipFile(f, 'w', zipfile.ZIP_DEFLATED) as zf:
+                for root, dirs, files in os.walk(source_root, followlinks=True):
+                    # Validate that symlinks don't point outside source_root
+                    if os.path.realpath(root).startswith(source_root):
+                        for filename in files:
+                            full_path = os.path.join(root, filename)
+                            # Validate each file path
+                            if os.path.realpath(full_path).startswith(source_root):
+                                relative_path = os.path.relpath(full_path, source_root)
+                                # Use buffer to handle large files
+                                with open(full_path, 'rb') as source:
+                                    with zf.open(relative_path, 'w') as target:
+                                        shutil.copyfileobj(source, target, 64 * 1024)
+                            else:
+                                LOG.warning(f"Skipping file {full_path} as it links outside source_root")
+                    else:
+                        LOG.warning(f"Skipping directory {root} as it links outside source_root")
+    finally:
+        os.umask(old_umask)
+    
     return zipfile_name
-
 
 @contextmanager
 def mktempfile():

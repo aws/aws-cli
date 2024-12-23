@@ -125,8 +125,7 @@ class KubeconfigValidator:
         :type config: Kubeconfig
         """
         for key, value in self._validation_content.items():
-            if (key in config.content and
-                    type(config.content[key]) == list):
+            if key in config.content and isinstance(config.content[key], list):
                 for element in config.content[key]:
                     if not isinstance(element, OrderedDict):
                         raise KubeconfigCorruptedError(

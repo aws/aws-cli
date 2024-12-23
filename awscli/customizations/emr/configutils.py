@@ -36,7 +36,7 @@ def get_current_profile_var_name(session):
 def _get_profile_str(session, separator):
     profile_name = session.get_config_variable('profile')
     return 'default' if profile_name is None \
-        else 'profile%c%s' % (separator, profile_name)
+        else f'profile{separator:c}{profile_name}'
 
 
 def is_any_role_configured(session):

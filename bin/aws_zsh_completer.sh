@@ -1,21 +1,18 @@
-# Source this file to activate auto completion for zsh using the bash
-# compatibility helper.  Make sure to run `compinit` before, which should be
-# given usually.
+# Source this file to activate auto-completion for Zsh using the bash compatibility helper.
+# Usage: source /path/to/zsh_complete.sh
+# Typically sourced in .zshrc. Ensure `compinit` is run before sourcing this script.
 #
-# % source /path/to/zsh_complete.sh
+# Note:
+# - The _bash_complete function exports COMP_LINE and COMP_POINT to maintain compatibility with older Zsh versions.
+# - Zsh versions after commit edab1d3dbe61da7efe5f1ac0e40444b2ec9b9570 do not require this workaround.
 #
-# Typically that would be called somewhere in your .zshrc.
-#
-# Note, the overwrite of _bash_complete() is to export COMP_LINE and COMP_POINT
-# That is only required for zsh <= edab1d3dbe61da7efe5f1ac0e40444b2ec9b9570
-#
-# https://github.com/zsh-users/zsh/commit/edab1d3dbe61da7efe5f1ac0e40444b2ec9b9570
-#
-# zsh releases prior to that version do not export the required env variables!
+# Prerequisites:
+# - Ensure bashcompinit is installed and functional.
 
 autoload -Uz bashcompinit
-bashcompinit -i
+bashcompinit -i || { echo "Error: bashcompinit failed to initialize."; return 1; }
 
+# Main function for bash-style completion in Zsh
 _bash_complete() {
   local ret=1
   local -a suf matches
@@ -24,18 +21,23 @@ _bash_complete() {
   local -x COMP_LINE="$words"
   local -A savejobstates savejobtexts
 
+  # Compatibility adjustments for Zsh environment
   (( COMP_POINT = 1 + ${#${(j. .)words[1,CURRENT]}} + $#QIPREFIX + $#IPREFIX + $#PREFIX ))
-  (( COMP_CWORD = CURRENT - 1))
+  (( COMP_CWORD = CURRENT - 1 ))
   COMP_WORDS=( $words )
   BASH_VERSINFO=( 2 05b 0 1 release )
 
+  # Save current job states
   savejobstates=( ${(kv)jobstates} )
   savejobtexts=( ${(kv)jobtexts} )
 
+  # Handle 'nospace' suffix
   [[ ${argv[${argv[(I)nospace]:-0}-1]} = -o ]] && suf=( -S '' )
 
+  # Generate matches using bash-style completion
   matches=( ${(f)"$(compgen $@ -- ${words[CURRENT]})"} )
 
+  # Add matches to completion system
   if [[ -n $matches ]]; then
     if [[ ${argv[${argv[(I)filenames]:-0}-1]} = -o ]]; then
       compset -P '*/' && matches=( ${matches##*/} )
@@ -46,6 +48,7 @@ _bash_complete() {
     fi
   fi
 
+  # Default fallback if no matches found
   if (( ret )); then
     if [[ ${argv[${argv[(I)default]:-0}-1]} = -o ]]; then
       _default "${suf[@]}" && ret=0
@@ -57,4 +60,8 @@ _bash_complete() {
   return ret
 }
 
+# Register AWS completer
 complete -C aws_completer aws
+
+# Optional: Uncomment for debugging
+echo "Auto-completion setup for Zsh complete."

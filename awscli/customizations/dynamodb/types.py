@@ -44,8 +44,7 @@ class Binary:
     """
     def __init__(self, value):
         if not isinstance(value, BINARY_TYPES):
-            raise TypeError('Value must be of the following types: %s.' %
-                            ', '.join([str(t) for t in BINARY_TYPES]))
+            raise TypeError('Value must be of the following types: {}.'.format(', '.join([str(t) for t in BINARY_TYPES])))
         self.value = value
 
     def __eq__(self, other):
@@ -57,7 +56,7 @@ class Binary:
         return not self.__eq__(other)
 
     def __repr__(self):
-        return 'Binary(%r)' % self.value
+        return f'Binary({self.value!r})'
 
     def __str__(self):
         return self.value
@@ -93,7 +92,7 @@ class TypeSerializer:
             dictionaries can be directly passed to botocore methods.
         """
         dynamodb_type = self._get_dynamodb_type(value)
-        serializer = getattr(self, '_serialize_%s' % dynamodb_type.lower())
+        serializer = getattr(self, f'_serialize_{dynamodb_type.lower()}')
         return {dynamodb_type: serializer(value)}
 
     def _get_dynamodb_type(self, value):
@@ -130,7 +129,7 @@ class TypeSerializer:
             dynamodb_type = LIST
 
         else:
-            msg = 'Unsupported type "%s" for value "%s"' % (type(value), value)
+            msg = f'Unsupported type "{type(value)}" for value "{value}"'
             raise TypeError(msg)
 
         return dynamodb_type
@@ -251,10 +250,10 @@ class TypeDeserializer:
         dynamodb_type = list(value.keys())[0]
         try:
             deserializer = getattr(
-                self, '_deserialize_%s' % dynamodb_type.lower())
+                self, f'_deserialize_{dynamodb_type.lower()}')
         except AttributeError:
             raise TypeError(
-                'Dynamodb type %s is not supported' % dynamodb_type)
+                f'Dynamodb type {dynamodb_type} is not supported')
         return deserializer(value[dynamodb_type])
 
     def _deserialize_null(self, value):

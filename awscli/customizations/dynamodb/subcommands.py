@@ -125,7 +125,7 @@ class PaginatedDDBCommand(DDBCommand):
     ]
 
     def _build_arg_table(self):
-        arg_table = super(PaginatedDDBCommand, self)._build_arg_table()
+        arg_table = super()._build_arg_table()
         for arg_data in self.PAGING_ARGS:
             paging_arg = CustomArgument(**arg_data)
             arg_table[arg_data['name']] = paging_arg
@@ -169,7 +169,7 @@ class SelectCommand(PaginatedDDBCommand):
     _SUPPORTED_OUTPUT_TYPES = ('yaml',)
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(SelectCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
         self._select(parsed_args, parsed_globals)
         return 0
 
@@ -200,7 +200,7 @@ class SelectCommand(PaginatedDDBCommand):
         self._dump_yaml(operation, response, parsed_globals)
 
     def _get_client_args(self, parsed_args):
-        client_args = super(SelectCommand, self)._get_client_args(parsed_args)
+        client_args = super()._get_client_args(parsed_args)
         client_args.update({
             'TableName': parsed_args.table_name,
             'ConsistentRead': parsed_args.consistent_read,
@@ -255,7 +255,7 @@ class PutCommand(DDBCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        super(PutCommand, self)._run_main(parsed_args, parsed_globals)
+        super()._run_main(parsed_args, parsed_globals)
         self._yaml = YAML(typ='safe')
         self._yaml.constructor.add_constructor(
             'tag:yaml.org,2002:binary', self._load_binary

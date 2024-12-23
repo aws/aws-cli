@@ -83,15 +83,13 @@ class CreateDefaultRole(BasicCommand):
          'choices': [RESOURCE_TYPE_SNAPSHOT, RESOURCE_TYPE_IMAGE],
          'help_text': (
                  "<p>The resource type for which the role needs to be created."
-                 " The available options are '%s' and '%s'."
-                 " This parameter defaults to '%s'.</p>"
-                 % (RESOURCE_TYPE_SNAPSHOT, RESOURCE_TYPE_IMAGE,
-                    RESOURCE_TYPE_SNAPSHOT))}
+                 f" The available options are '{RESOURCE_TYPE_SNAPSHOT}' and '{RESOURCE_TYPE_IMAGE}'."
+                 f" This parameter defaults to '{RESOURCE_TYPE_SNAPSHOT}'.</p>")}
 
     ]
 
     def __init__(self, session):
-        super(CreateDefaultRole, self).__init__(session)
+        super().__init__(session)
 
     def _run_main(self, parsed_args, parsed_globals):
         """Call to run the commands"""

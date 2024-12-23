@@ -71,7 +71,7 @@ class Lexer:
                 yield self._consume_comparator()
             else:
                 raise LexerError(
-                    message='Unrecognized character %s' % self._current,
+                    message=f'Unrecognized character {self._current}',
                     expression=self._expression,
                     position=self._position,
                 )
@@ -182,7 +182,7 @@ class Lexer:
             buff += self._current
             if self._next() not in self.DIGITS:
                 raise LexerError(
-                    message='Invalid fractional character %s' % self._current,
+                    message=f'Invalid fractional character {self._current}',
                     position=self._position,
                     expression=self._expression,
                 )
@@ -192,7 +192,7 @@ class Lexer:
             buff += self._current
             if self._next() not in self.INT_CHARS and self._current != '+':
                 raise LexerError(
-                    message='Invalid exponential character %s' % self._current,
+                    message=f'Invalid exponential character {self._current}',
                     position=self._position,
                     expression=self._expression,
                 )
@@ -210,7 +210,7 @@ class Lexer:
             buff += self._current
         if not is_positive and len(buff) < 2:
             raise LexerError(
-                message='Unknown token %s' % buff,
+                message=f'Unknown token {buff}',
                 position=self._position,
                 expression=self._expression,
             )
@@ -278,7 +278,7 @@ class Lexer:
             if self._current is None:
                 # We're at the EOF.
                 raise LexerError(
-                    message="Unclosed %s delimiter" % delimiter,
+                    message=f"Unclosed {delimiter} delimiter",
                     position=start,
                     expression=self._expression,
                 )

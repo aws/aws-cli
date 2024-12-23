@@ -18,8 +18,8 @@ from awscli.customizations.exceptions import ParamValidationError
 class PipelineDefinitionError(ParamValidationError):
     def __init__(self, msg, definition):
         full_msg = (
-            "Error in pipeline definition: %s\n" % msg)
-        super(PipelineDefinitionError, self).__init__(full_msg)
+            f"Error in pipeline definition: {msg}\n")
+        super().__init__(full_msg)
         self.msg = msg
         self.definition = definition
 
@@ -75,8 +75,7 @@ def definition_to_api_objects(definition):
         try:
             element_id = element.pop('id')
         except KeyError:
-            raise PipelineDefinitionError('Missing "id" key of element: %s' %
-                                          json.dumps(element), definition)
+            raise PipelineDefinitionError(f'Missing "id" key of element: {json.dumps(element)}', definition)
         api_object = {'id': element_id}
         # If a name is provided, then we use that for the name,
         # otherwise the id is used for the name.
@@ -100,8 +99,7 @@ def definition_to_api_parameters(definition):
         try:
             parameter_id = element.pop('id')
         except KeyError:
-            raise PipelineDefinitionError('Missing "id" key of parameter: %s' %
-                                          json.dumps(element), definition)
+            raise PipelineDefinitionError(f'Missing "id" key of parameter: {json.dumps(element)}', definition)
         parameter_object = {'id': parameter_id}
         # Now we need the attribute list.  Each element in the attribute list
         # is a dict with a 'key', 'stringValue'

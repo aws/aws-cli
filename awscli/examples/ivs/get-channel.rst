@@ -3,27 +3,34 @@
 The following ``get-channel`` example gets the channel configuration for a specified channel ARN (Amazon Resource Name). ::
 
     aws ivs get-channel \
-        --arn arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh
+        --arn 'arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh'
 
 Output::
 
     {
         "channel": {
             "arn": "arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh",
-            "name": "channel-1",
+            "authorized": false,
+            "containerFormat": "TS",
+            "ingestEndpoint": "a1b2c3d4e5f6.global-contribute.live-video.net",
+            "insecureIngest": false,
             "latencyMode": "LOW",
-            "type": "STANDARD",
+            "multitrackInputConfiguration": {
+                "enabled": false,
+                "maximumResolution": "FULL_HD",
+                "policy": "ALLOW"
+            },
+            "name": "channel-1",
             "playbackRestrictionPolicyArn": "",
+            "playbackUrl": "https://a1b2c3d4e5f6.us-west-2.playback.live-video.net/api/video/v1/us-west-2.123456789012.channel.abcdEFGH.m3u8",
             "preset": "",
-            "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABCD12cdEFgh",
+            "recordingConfigurationArn": "",
             "srt": {
                 "endpoint": "a1b2c3d4e5f6.srt.live-video.net",
                 "passphrase": "AB1C2defGHijkLMNo3PqQRstUvwxyzaBCDEfghh4ijklMN5opqrStuVWxyzAbCDEfghIJ"
             },
-            "ingestEndpoint": "a1b2c3d4e5f6.global-contribute.live-video.net",
-            "insecureIngest": false,
-            "playbackUrl": "https://a1b2c3d4e5f6.us-west-2.playback.live-video.net/api/video/v1/us-west-2.123456789012.channel.abcdEFGH.m3u8",
             "tags": {}
+            "type": "STANDARD",
         }
     }
 

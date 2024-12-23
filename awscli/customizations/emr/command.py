@@ -33,7 +33,7 @@ class Command(BasicCommand):
     ])
 
     def supports_arg(self, name):
-        return any((x['name'] == name for x in self.ARG_TABLE))
+        return any(x['name'] == name for x in self.ARG_TABLE)
 
     def _run_main(self, parsed_args, parsed_globals):
 

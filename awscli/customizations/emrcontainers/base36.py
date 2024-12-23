@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 
 
-class Base36(object):
+class Base36:
     def str_to_int(self, request):
         """Method to convert given string into decimal representation"""
         result = 0

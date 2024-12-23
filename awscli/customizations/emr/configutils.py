@@ -57,7 +57,7 @@ def update_roles(session):
         LOG.debug("Associated default roles with your current profile")
 
 
-class ConfigWriter(object):
+class ConfigWriter:
 
     def __init__(self, session):
         self.session = session

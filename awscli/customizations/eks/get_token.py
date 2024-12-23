@@ -215,7 +215,7 @@ class GetTokenCommand(BasicCommand):
             return fallback_api_version
 
 
-class TokenGenerator(object):
+class TokenGenerator:
     def __init__(self, sts_client):
         self._sts_client = sts_client
 
@@ -236,7 +236,7 @@ class TokenGenerator(object):
         )
 
 
-class STSClientFactory(object):
+class STSClientFactory:
     def __init__(self, session):
         self._session = session
 

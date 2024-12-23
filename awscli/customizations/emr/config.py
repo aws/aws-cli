@@ -58,7 +58,7 @@ def _create_supported_configurations():
             for config in SUPPORTED_CONFIG_LIST]
 
 
-class Configuration(object):
+class Configuration:
 
     def __init__(self, name, arg_name):
         self.name = name

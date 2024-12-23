@@ -133,7 +133,7 @@ def build_bootstrap_action(
 def build_s3_link(relative_path='', region='us-east-1'):
     if region is None:
         region = 'us-east-1'
-    return 's3://{0}.elasticmapreduce{1}'.format(region, relative_path)
+    return f's3://{region}.elasticmapreduce{relative_path}'
 
 
 def get_script_runner(region='us-east-1'):

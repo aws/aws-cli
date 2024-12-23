@@ -67,8 +67,7 @@ def build_ssm_request_paramaters(response, client):
     container_runtime_id = \
         get_container_runtime_id(client, container_name,
                                  task_id, cluster_name)
-    target = "ecs:{}_{}_{}".format(cluster_name, task_id,
-                                   container_runtime_id)
+    target = f"ecs:{cluster_name}_{task_id}_{container_runtime_id}"
     ssm_request_params = {"Target": target}
     return ssm_request_params
 

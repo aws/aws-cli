@@ -109,7 +109,7 @@ class AddressesArgument(CustomArgument):
         choices=None,
         cli_type_name=None,
     ):
-        super(AddressesArgument, self).__init__(
+        super().__init__(
             name=name, help_text=help_text, required=required, nargs='+'
         )
         self._json_key = json_key
@@ -121,7 +121,7 @@ class AddressesArgument(CustomArgument):
 
 class BodyArgument(CustomArgument):
     def __init__(self, name, json_key, help_text='', required=None):
-        super(BodyArgument, self).__init__(
+        super().__init__(
             name=name, help_text=help_text, required=required
         )
         self._json_key = json_key

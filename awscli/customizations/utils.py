@@ -114,9 +114,9 @@ def validate_mutually_exclusive(parsed_args, *groups):
             current_group = key_group
         elif not key_group == current_group:
             raise ParamValidationError(
-                'The key "%s" cannot be specified when one '
+                'The key "{}" cannot be specified when one '
                 'of the following keys are also specified: '
-                '%s' % (key, ', '.join(current_group))
+                '{}'.format(key, ', '.join(current_group))
             )
 
 
@@ -239,7 +239,7 @@ def _strip_xml_from_documentation(documentation):
         # to make sure the dom parser will look at all elements in the
         # docstring as some docstrings may not have xml nodes that do
         # not all belong to the same root node.
-        xml_doc = '<doc>%s</doc>' % documentation
+        xml_doc = f'<doc>{documentation}</doc>'
         xml_dom = xml.dom.minidom.parseString(xml_doc)
     except xml.parsers.expat.ExpatError:
         return documentation

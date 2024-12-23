@@ -59,8 +59,7 @@ def replace_event_stream_docs(help_command, **kwargs):
             # This should never happen, but in the rare case that it does
             # we should be raising something with a helpful error message.
             raise DocSectionNotFoundError(
-                'Could not find the "output" section for the command: %s'
-                % help_command
+                f'Could not find the "output" section for the command: {help_command}'
             )
     doc.write('======\nOutput\n======\n')
     doc.write(
@@ -98,7 +97,7 @@ class S3SelectStreamOutputArgument(CustomArgument):
     _DOCUMENT_AS_REQUIRED = True
 
     def __init__(self, stream_key, session, **kwargs):
-        super(S3SelectStreamOutputArgument, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         # This is the key in the response body where we can find the
         # streamed contents.
         self._stream_key = stream_key

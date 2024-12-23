@@ -26,7 +26,7 @@ def resolve_given_outfile_path(path):
         return
     outfile = os.path.expanduser(os.path.expandvars(path))
     if not os.access(os.path.dirname(os.path.abspath(outfile)), os.W_OK):
-        raise ParamValidationError('Unable to write to file: %s' % outfile)
+        raise ParamValidationError(f'Unable to write to file: {outfile}')
     return outfile
 
 
@@ -60,7 +60,7 @@ class OverrideRequiredArgsArgument(CustomArgument):
     def __init__(self, session):
         self._session = session
         self._register_argument_action()
-        super(OverrideRequiredArgsArgument, self).__init__(**self.ARG_DATA)
+        super().__init__(**self.ARG_DATA)
 
     def _register_argument_action(self):
         self._session.register(
@@ -81,11 +81,11 @@ class StatefulArgument(CustomArgument):
     """An argument that maintains a stateful value"""
 
     def __init__(self, *args, **kwargs):
-        super(StatefulArgument, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._value = None
 
     def add_to_params(self, parameters, value):
-        super(StatefulArgument, self).add_to_params(parameters, value)
+        super().add_to_params(parameters, value)
         self._value = value
 
     @property
@@ -106,10 +106,10 @@ class QueryOutFileArgument(StatefulArgument):
         # Generate default help_text if text was not provided.
         if 'help_text' not in kwargs:
             kwargs['help_text'] = (
-                'Saves the command output contents of %s '
-                'to the given filename' % self.query
+                f'Saves the command output contents of {self.query} '
+                'to the given filename'
             )
-        super(QueryOutFileArgument, self).__init__(name, *args, **kwargs)
+        super().__init__(name, *args, **kwargs)
 
     @property
     def query(self):
@@ -121,7 +121,7 @@ class QueryOutFileArgument(StatefulArgument):
 
     def add_to_params(self, parameters, value):
         value = resolve_given_outfile_path(value)
-        super(QueryOutFileArgument, self).add_to_params(parameters, value)
+        super().add_to_params(parameters, value)
         if self.value is not None:
             # Only register the event to save the argument if it is set
             self._session.register(self._after_call_event, self.save_query)
@@ -203,7 +203,7 @@ class NestedBlobArgumentHoister:
 
 class _NestedBlobArgumentParamOverwrite(CustomArgument):
     def __init__(self, new_arg, source_arg, source_arg_blob_member, **kwargs):
-        super(_NestedBlobArgumentParamOverwrite, self).__init__(
+        super().__init__(
             new_arg, **kwargs
         )
         self._param_to_overwrite = _reverse_xform_name(source_arg)

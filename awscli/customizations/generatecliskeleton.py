@@ -67,12 +67,12 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
     }
 
     def __init__(self, session, operation_model):
-        super(GenerateCliSkeletonArgument, self).__init__(session)
+        super().__init__(session)
         self._operation_model = operation_model
 
     def _register_argument_action(self):
         self._session.register('calling-command.*', self.generate_skeleton)
-        super(GenerateCliSkeletonArgument, self)._register_argument_action()
+        super()._register_argument_action()
 
     def override_required_args(self, argument_table, args, **kwargs):
         arg_name = '--' + self.name
@@ -87,7 +87,7 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
                     return
             except IndexError:
                 pass
-            super(GenerateCliSkeletonArgument, self).override_required_args(
+            super().override_required_args(
                 argument_table, args, **kwargs
             )
 
@@ -98,7 +98,7 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
             return
         arg_value = parsed_args.generate_cli_skeleton
         return getattr(
-            self, '_generate_%s_skeleton' % arg_value.replace('-', '_')
+            self, '_generate_{}_skeleton'.format(arg_value.replace('-', '_'))
         )(call_parameters=call_parameters, parsed_globals=parsed_globals)
 
     def _generate_yaml_input_skeleton(self, **kwargs):
@@ -166,7 +166,7 @@ class _Bytes:
 
 class YAMLArgumentGenerator(ArgumentGenerator):
     def __init__(self, use_member_names=False, yaml=None):
-        super(YAMLArgumentGenerator, self).__init__(
+        super().__init__(
             use_member_names=use_member_names
         )
         self._yaml = yaml
@@ -180,7 +180,7 @@ class YAMLArgumentGenerator(ArgumentGenerator):
         # serialization output more usable on python 3.
         if shape.type_name == 'blob':
             return _Bytes()
-        return super(YAMLArgumentGenerator, self)._generate_skeleton(
+        return super()._generate_skeleton(
             shape, stack, name
         )
 
@@ -214,12 +214,12 @@ class YAMLArgumentGenerator(ArgumentGenerator):
             skeleton.yaml_add_eol_comment('# ' + comment, member_name)
 
     def _get_enums_comment_content(self, enums):
-        return 'Valid values are: %s.' % ', '.join(enums)
+        return 'Valid values are: {}.'.format(', '.join(enums))
 
     def _generate_type_map(self, shape, stack):
         # YAML has support for ordered maps, so don't use ordereddicts
         # because that isn't necessary and it makes the output harder to
         # understand and read.
         return dict(
-            super(YAMLArgumentGenerator, self)._generate_type_map(shape, stack)
+            super()._generate_type_map(shape, stack)
         )

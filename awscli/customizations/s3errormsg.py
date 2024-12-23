@@ -44,7 +44,7 @@ def enhance_error_msg(parsed, **kwargs):
     elif _is_permanent_redirect_message(parsed):
         endpoint = parsed['Error']['Endpoint']
         message = parsed['Error']['Message']
-        new_message = message[:-1] + ': %s\n' % endpoint
+        new_message = message[:-1] + f': {endpoint}\n'
         new_message += REGION_ERROR_MSG
         parsed['Error']['Message'] = new_message
     elif _is_kms_sigv4_error_message(parsed):

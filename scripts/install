@@ -73,14 +73,13 @@ def cd(dirname):
 
 
 def run(cmd):
-    sys.stdout.write("Running cmd: %s\n" % cmd)
+    sys.stdout.write(f"Running cmd: {cmd}\n")
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
     if p.returncode != 0:
         output = (stdout + stderr).decode("utf-8")
-        raise BadRCError("Bad rc (%s) for cmd '%s': %s" % (
-            p.returncode, cmd, output))
+        raise BadRCError(f"Bad rc ({p.returncode}) for cmd '{cmd}': {output}")
     return stdout
 
 
@@ -107,7 +106,7 @@ def _create_virtualenv_internal(location, working_dir):
     # On py3 we use the built in venv to create our virtualenv.
     # There's a bug with sys.executable on external virtualenv
     # that causes installation failures.
-    run('%s -m venv %s' % (sys.executable, location))
+    run(f'{sys.executable} -m venv {location}')
 
 
 def _create_virtualenv_external(location, working_dir):
@@ -122,10 +121,8 @@ def _create_virtualenv_external(location, working_dir):
         # We know that virtualenv is the only dir in this directory
         # so we can listdir()[0] it.
         with cd(os.listdir('.')[0]):
-            run(('%s virtualenv.py --no-download '
-                 '--python %s %s') % (sys.executable,
-                                      sys.executable,
-                                      location))
+            run(f'{sys.executable} virtualenv.py --no-download '
+                 f'--python {sys.executable} {location}')
 
 
 def _get_package_tarball(package_dir, package_prefix):
@@ -160,8 +157,7 @@ def pip_install_packages(install_dir):
         _install_setup_deps(pip_script, '.')
 
     with cd(PACKAGES_DIR):
-        run('%s install %s --find-links file://%s %s' % (
-                pip_script, INSTALL_ARGS, PACKAGES_DIR, cli_tarball))
+        run(f'{pip_script} install {INSTALL_ARGS} --find-links file://{PACKAGES_DIR} {cli_tarball}')
 
 
 def _install_setup_deps(pip_script, setup_package_dir):
@@ -172,19 +168,17 @@ def _install_setup_deps(pip_script, setup_package_dir):
     # we need.  This comes from python-dateutils.
     setuptools_scm_tarball = _get_package_tarball(
         setup_package_dir, 'setuptools_scm')
-    run('%s install --no-binary :all: --no-cache-dir --no-index '
-        '--find-links file://%s %s' % (
-            pip_script, setup_package_dir, setuptools_scm_tarball))
+    run(f'{pip_script} install --no-binary :all: --no-cache-dir --no-index '
+        f'--find-links file://{setup_package_dir} {setuptools_scm_tarball}')
     wheel_tarball = _get_package_tarball(
         setup_package_dir, 'wheel')
-    run('%s install --no-binary :all: --no-cache-dir --no-index '
-        '--find-links file://%s %s' % (
-            pip_script, setup_package_dir, wheel_tarball))
+    run(f'{pip_script} install --no-binary :all: --no-cache-dir --no-index '
+        f'--find-links file://{setup_package_dir} {wheel_tarball}')
 
 
 def create_symlink(real_location, symlink_name):
     if os.path.isfile(symlink_name):
-        print("Symlink already exists: %s" % symlink_name)
+        print(f"Symlink already exists: {symlink_name}")
         print("Removing symlink.")
         os.remove(symlink_name)
     symlink_dir_name = os.path.dirname(symlink_name)
@@ -241,9 +235,9 @@ def main():
         real_location = os.path.join(opts.install_dir, bin_path(), 'aws')
         if opts.bin_location and create_symlink(real_location,
                                                 opts.bin_location):
-            print("You can now run: %s --version" % opts.bin_location)
+            print(f"You can now run: {opts.bin_location} --version")
         else:
-            print("You can now run: %s --version" % real_location)
+            print(f"You can now run: {real_location} --version")
     finally:
         shutil.rmtree(working_dir)
 

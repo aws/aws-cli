@@ -46,7 +46,7 @@ def convert_botocore_credentials(credentials):
     )
 
 
-class BaseCredentialFormatter(object):
+class BaseCredentialFormatter:
 
     FORMAT = None
     DOCUMENTATION = ""

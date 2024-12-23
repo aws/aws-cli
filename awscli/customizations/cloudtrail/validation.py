@@ -159,7 +159,7 @@ def create_digest_traverser(cloudtrail_client, organization_client,
         public_key_provider=PublicKeyProvider(cloudtrail_client))
 
 
-class S3ClientProvider(object):
+class S3ClientProvider:
     """Creates Amazon S3 clients and determines the region name of a client.
 
     This class will cache the location constraints of previously requested
@@ -215,7 +215,7 @@ class InvalidDigestFormat(DigestError):
         super(InvalidDigestFormat, self).__init__(message)
 
 
-class DigestProvider(object):
+class DigestProvider:
     """
     Retrieves digest keys and digests from Amazon S3.
 
@@ -348,7 +348,7 @@ class DigestProvider(object):
         return '^' + key + '$'
 
 
-class DigestTraverser(object):
+class DigestTraverser:
     """Retrieves and validates digests within a date range."""
     # These keys are required to be present before validating the contents
     # of a digest.
@@ -529,7 +529,7 @@ class DigestTraverser(object):
         return public_keys
 
 
-class Sha256RSADigestValidator(object):
+class Sha256RSADigestValidator:
     """
     Validates SHA256withRSA signed digests.
 
@@ -790,8 +790,8 @@ class CloudTrailValidateLogs(BasicCommand):
                 self._on_log_invalid(log)
             else:
                 self._valid_logs += 1
-                self._write_status(('Log file\ts3://%s/%s\tvalid'
-                                    % (log['s3Bucket'], log['s3Object'])))
+                self._write_status('Log file\ts3://%s/%s\tvalid'
+                                    % (log['s3Bucket'], log['s3Object']))
         except ClientError as e:
             if e.response['Error']['Code'] != 'NoSuchKey':
                 raise

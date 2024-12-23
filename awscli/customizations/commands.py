@@ -22,7 +22,7 @@ LOG = logging.getLogger(__name__)
 _open = open
 
 
-class _FromFile(object):
+class _FromFile:
     def __init__(self, *paths, **kwargs):
         """
         ``**kwargs`` can contain a ``root_module`` argument

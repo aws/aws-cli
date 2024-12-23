@@ -96,7 +96,7 @@ def register_removals(event_handler):
     )
 
 
-class CommandRemover(object):
+class CommandRemover:
     def __init__(self, events):
         self._events = events
 

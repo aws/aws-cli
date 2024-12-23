@@ -299,7 +299,7 @@ class SignCommand(BasicCommand):
         return 0
 
 
-class RSASigner(object):
+class RSASigner:
     def __init__(self, private_key):
         key_bytes = private_key.encode('utf8')
         self.priv_key = RSA.new_private_key_from_pem_data(key_bytes)

@@ -53,7 +53,7 @@ def validate_is_zip_file(cli_argument, value, **kwargs):
         _should_contain_zip_content(value)
 
 
-class ZipFileArgumentHoister(object):
+class ZipFileArgumentHoister:
     """Hoists a ZipFile argument up to the top level.
 
     Injects a top-level ZipFileArgument into the argument table which maps

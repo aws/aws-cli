@@ -36,7 +36,7 @@ DYNAMODB_CONTEXT = Context(
 BINARY_TYPES = (bytearray, bytes)
 
 
-class Binary(object):
+class Binary:
     """A class for representing Binary in dynamodb
     Especially for Python 2, use this class to explicitly specify
     binary data for item in DynamoDB. It is essentially a wrapper around
@@ -66,7 +66,7 @@ class Binary(object):
         return hash(self.value)
 
 
-class TypeSerializer(object):
+class TypeSerializer:
     """This class serializes Python data types to DynamoDB types."""
     def serialize(self, value):
         """The method to serialize the Python data types.
@@ -224,7 +224,7 @@ class TypeSerializer(object):
         return dict([(k, self.serialize(v)) for k, v in value.items()])
 
 
-class TypeDeserializer(object):
+class TypeDeserializer:
     """This class deserializes DynamoDB types to Python types."""
     def deserialize(self, value):
         """The method to deserialize the DynamoDB data types.

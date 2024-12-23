@@ -25,7 +25,7 @@ from awscli.utils import is_a_tty
 from awscli.customizations.commands import BasicCommand
 
 
-class BaseLogEventsFormatter(object):
+class BaseLogEventsFormatter:
 
     _TIMESTAMP_COLOR = colorama.Fore.GREEN
     _STREAM_NAME_COLOR = colorama.Fore.CYAN
@@ -246,7 +246,7 @@ class TailCommand(BasicCommand):
         return is_a_tty()
 
 
-class TimestampUtils(object):
+class TimestampUtils:
     _RELATIVE_TIMESTAMP_REGEX = re.compile(
         r"(?P<amount>\d+)(?P<unit>s|m|h|d|w)$"
     )
@@ -281,7 +281,7 @@ class TimestampUtils(object):
         return self._now() + timedelta(seconds=amount * multiplier * -1)
 
 
-class BaseLogEventsGenerator(object):
+class BaseLogEventsGenerator:
     def __init__(self, client, timestamp_utils):
         self._client = client
         self._timestamp_utils = timestamp_utils

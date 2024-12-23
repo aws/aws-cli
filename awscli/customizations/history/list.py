@@ -55,7 +55,7 @@ class ListCommand(HistorySubcommand):
         return 0
 
 
-class RecordAdapter(object):
+class RecordAdapter:
     """This class is just to read one ahead to make sure there are records
 
     If there are no records we can just exit early.
@@ -80,7 +80,7 @@ class RecordAdapter(object):
             self._advance()
 
 
-class TextFormatter(object):
+class TextFormatter:
     def __init__(self, col_widths, output_stream):
         self._col_widths = col_widths
         self._output_stream = output_stream

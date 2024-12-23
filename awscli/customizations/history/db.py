@@ -27,7 +27,7 @@ from awscli.compat import binary_type
 LOG = logging.getLogger(__name__)
 
 
-class DatabaseConnection(object):
+class DatabaseConnection:
     _CREATE_TABLE = """
         CREATE TABLE IF NOT EXISTS records (
           id TEXT,
@@ -132,7 +132,7 @@ class PayloadSerializer(json.JSONEncoder):
             return repr(obj)
 
 
-class DatabaseRecordWriter(object):
+class DatabaseRecordWriter:
     _WRITE_RECORD = """
         INSERT INTO records(
             id, request_id, source, event_type, timestamp, payload)
@@ -165,7 +165,7 @@ class DatabaseRecordWriter(object):
         return db_record
 
 
-class DatabaseRecordReader(object):
+class DatabaseRecordReader:
     _ORDERING = 'ORDER BY timestamp'
     _GET_LAST_ID_RECORDS = """
         SELECT * FROM records
@@ -218,7 +218,7 @@ class DatabaseRecordReader(object):
             yield row
 
 
-class RecordBuilder(object):
+class RecordBuilder:
     _REQUEST_LIFECYCLE_EVENTS = set(
         ['API_CALL', 'HTTP_REQUEST', 'HTTP_RESPONSE', 'PARSED_RESPONSE'])
     _START_OF_REQUEST_LIFECYCLE_EVENT = 'API_CALL'

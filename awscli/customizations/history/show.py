@@ -24,7 +24,7 @@ from awscli.customizations.history.filters import RegexFilter
 from awscli.customizations.exceptions import ParamValidationError
 
 
-class Formatter(object):
+class Formatter:
     def __init__(self, output=None, include=None, exclude=None):
         """Formats and outputs CLI history events
 
@@ -257,7 +257,7 @@ class DetailedFormatter(Formatter):
         return text
 
 
-class SectionValuePrettyFormatter(object):
+class SectionValuePrettyFormatter:
     def pformat(self, value, value_format, event_record):
         return getattr(self, '_pformat_' + value_format)(value, event_record)
 

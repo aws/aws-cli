@@ -140,7 +140,7 @@ def validate_directory(source_root):
 
 # TODO: Remove this class once available to CLI from s3transfer
 # docstring.
-class ProgressPercentage(object):
+class ProgressPercentage:
     def __init__(self, filename, label=None):
         self._filename = filename
         self._label = label

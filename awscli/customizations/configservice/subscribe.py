@@ -59,7 +59,7 @@ class SubscribeCommand(BasicCommand):
         self._s3_client = None
         self._sns_client = None
         self._config_client = None
-        super(SubscribeCommand, self).__init__(session)
+        super().__init__(session)
 
     def _run_main(self, parsed_args, parsed_globals):
         # Setup the necessary all of the necessary clients.
@@ -130,7 +130,7 @@ class SubscribeCommand(BasicCommand):
                                                           **client_args)
 
 
-class S3BucketHelper(object):
+class S3BucketHelper:
     def __init__(self, s3_client):
         self._s3_client = s3_client
 
@@ -139,9 +139,9 @@ class S3BucketHelper(object):
         bucket_exists = self._check_bucket_exists(bucket)
         if not bucket_exists:
             self._create_bucket(bucket)
-            sys.stdout.write('Using new S3 bucket: %s\n' % bucket)
+            sys.stdout.write(f'Using new S3 bucket: {bucket}\n')
         else:
-            sys.stdout.write('Using existing S3 bucket: %s\n' % bucket)
+            sys.stdout.write(f'Using existing S3 bucket: {bucket}\n')
         return bucket, key
 
     def _check_bucket_exists(self, bucket):
@@ -158,7 +158,7 @@ class S3BucketHelper(object):
         self._s3_client.create_bucket(**params)
 
 
-class SNSTopicHelper(object):
+class SNSTopicHelper:
     def __init__(self, sns_client):
         self._sns_client = sns_client
 
@@ -168,9 +168,9 @@ class SNSTopicHelper(object):
         if not self._check_is_arn(sns_topic):
             response = self._sns_client.create_topic(Name=sns_topic)
             sns_topic_arn = response['TopicArn']
-            sys.stdout.write('Using new SNS topic: %s\n' % sns_topic_arn)
+            sys.stdout.write(f'Using new SNS topic: {sns_topic_arn}\n')
         else:
-            sys.stdout.write('Using existing SNS topic: %s\n' % sns_topic_arn)
+            sys.stdout.write(f'Using existing SNS topic: {sns_topic_arn}\n')
         return sns_topic_arn
 
     def _check_is_arn(self, sns_topic):

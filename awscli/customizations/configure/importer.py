@@ -60,7 +60,7 @@ class ConfigureImportCommand(BasicCommand):
 
     def __init__(self, session, csv_parser=None, importer=None,
                  out_stream=None):
-        super(ConfigureImportCommand, self).__init__(session)
+        super().__init__(session)
         if csv_parser is None:
             csv_parser = CSVCredentialParser()
         self._csv_parser = csv_parser
@@ -86,7 +86,7 @@ class ConfigureImportCommand(BasicCommand):
                 credential, config_path,
                 profile_prefix=self._profile_prefix,
             )
-        import_msg = 'Successfully imported %s profile(s)\n' % len(credentials)
+        import_msg = f'Successfully imported {len(credentials)} profile(s)\n'
         uni_print(import_msg, out_file=self._out_stream)
 
     def _run_main(self, parsed_args, parsed_globals):
@@ -100,7 +100,7 @@ class CredentialParserError(Exception):
     pass
 
 
-class CSVCredentialParser(object):
+class CSVCredentialParser:
     _USERNAME_HEADER = 'User Name'
     _AKID_HEADER = 'Access Key ID'
     _SAK_HEADER = 'Secret Access key'
@@ -185,7 +185,7 @@ class CSVCredentialParser(object):
         return self._convert_rows_to_credentials(parsed_rows)
 
 
-class CredentialImporter(object):
+class CredentialImporter:
     def __init__(self, writer):
         self._config_writer = writer
 

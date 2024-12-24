@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
+
 from ruamel.yaml import YAML
 
 from awscli.customizations.ecs import exceptions

@@ -17,6 +17,7 @@ in the `service-2.json` files.
 
 """
 from collections import namedtuple
+
 from awscli.autocomplete import db
 
 # This module and the awscli.autocomplete.db module are imported

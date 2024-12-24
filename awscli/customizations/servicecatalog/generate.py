@@ -13,10 +13,12 @@
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.servicecatalog import helptext
-from awscli.customizations.servicecatalog.generateproduct \
-    import GenerateProductCommand
-from awscli.customizations.servicecatalog.generateprovisioningartifact \
-    import GenerateProvisioningArtifactCommand
+from awscli.customizations.servicecatalog.generateproduct import (
+    GenerateProductCommand,
+)
+from awscli.customizations.servicecatalog.generateprovisioningartifact import (
+    GenerateProvisioningArtifactCommand,
+)
 
 
 class GenerateCommand(BasicCommand):

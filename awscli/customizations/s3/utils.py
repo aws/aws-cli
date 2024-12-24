@@ -11,19 +11,18 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import argparse
-import logging
-from datetime import datetime
-import mimetypes
 import errno
+import logging
+import mimetypes
 import os
 import re
-from collections import namedtuple, deque
+from collections import deque, namedtuple
+from datetime import datetime
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal, tzutc
 
-from awscli.compat import bytes_print
-from awscli.compat import queue
+from awscli.compat import bytes_print, queue
 from awscli.customizations.exceptions import ParamValidationError
 
 LOGGER = logging.getLogger(__name__)

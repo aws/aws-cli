@@ -11,9 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.customizations.paginate import (
-    MAX_ITEMS_HELP, PAGE_SIZE_HELP, STARTING_TOKEN_HELP
+    MAX_ITEMS_HELP,
+    PAGE_SIZE_HELP,
+    STARTING_TOKEN_HELP,
 )
-
 
 TABLE_NAME = {
     'name': 'table_name',

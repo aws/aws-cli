@@ -10,12 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import logging
 import fnmatch
+import logging
 import os
 
 from awscli.customizations.s3.utils import split_s3_bucket_key
-
 
 LOG = logging.getLogger(__name__)
 

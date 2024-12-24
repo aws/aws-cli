@@ -13,18 +13,13 @@
 import argparse
 import os
 import shutil
+
 from awscli_venv import AwsCliVenv
-from constants import (
-    ArtifactType,
-    BUILD_DIR,
-    INSTALL_DIRNAME,
-)
 from exe import ExeBuilder
-from install import (
-    Installer,
-    Uninstaller,
-)
+from install import Installer, Uninstaller
 from validate_env import validate_env
+
+from constants import BUILD_DIR, INSTALL_DIRNAME, ArtifactType
 
 
 def create_exe(aws_venv, build_dir):

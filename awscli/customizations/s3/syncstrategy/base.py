@@ -14,7 +14,6 @@ import logging
 
 from awscli.customizations.exceptions import ParamValidationError
 
-
 LOG = logging.getLogger(__name__)
 
 VALID_SYNC_TYPES = ['file_at_src_and_dest', 'file_not_at_dest',

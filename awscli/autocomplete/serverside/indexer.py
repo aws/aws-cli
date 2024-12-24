@@ -12,11 +12,10 @@
 # language governing permissions and limitations under the License.
 import json
 
-from botocore.exceptions import UnknownServiceError
-from botocore import xform_name
-
 import awscli.clidriver
 from awscli.autocomplete.db import DatabaseConnection
+from botocore import xform_name
+from botocore.exceptions import UnknownServiceError
 
 
 def create_apicall_indexer(filename):

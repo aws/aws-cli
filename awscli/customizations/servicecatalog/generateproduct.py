@@ -14,8 +14,9 @@
 import sys
 
 from awscli.customizations.servicecatalog import helptext
-from awscli.customizations.servicecatalog.generatebase \
-    import GenerateBaseCommand
+from awscli.customizations.servicecatalog.generatebase import (
+    GenerateBaseCommand,
+)
 from botocore.compat import json
 
 

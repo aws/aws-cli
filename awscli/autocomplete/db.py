@@ -1,9 +1,8 @@
-import os
 import logging
+import os
 import sqlite3
 
 from awscli import __version__ as cli_version
-
 
 LOG = logging.getLogger(__name__)
 

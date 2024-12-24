@@ -14,7 +14,7 @@ import sys
 
 from awscli.customizations.commands import BasicCommand
 
-from . import ConfigValue, NOT_SET
+from . import NOT_SET, ConfigValue
 
 
 class ConfigureListCommand(BasicCommand):

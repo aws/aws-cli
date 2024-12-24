@@ -1,20 +1,16 @@
 #!/usr/bin/env python
 """Script to uninstall AWS CLI V2 Mac PKG"""
 import argparse
-import sys
 import os
 import re
+import sys
 from datetime import datetime
-from subprocess import check_output
-from subprocess import CalledProcessError
-from subprocess import PIPE
+from subprocess import PIPE, CalledProcessError, check_output
 
 SCRIPTS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(SCRIPTS_DIR)
 
-from utils import run
-from utils import BadRCError
-
+from utils import BadRCError, run
 
 _PKG_ID = 'com.amazon.aws.cli2'
 _PKGUTIL_PATTERN = re.compile(

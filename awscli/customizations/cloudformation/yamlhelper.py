@@ -14,10 +14,9 @@ import re
 
 import ruamel.yaml
 from ruamel.yaml.resolver import ScalarNode, SequenceNode
-from botocore.compat import json
-from botocore.compat import OrderedDict
 
 from awscli.utils import dump_yaml_to_str
+from botocore.compat import OrderedDict, json
 
 
 def intrinsics_multi_constructor(loader, tag_prefix, node):

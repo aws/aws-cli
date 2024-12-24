@@ -13,7 +13,6 @@
 """Add S3 specific event streaming output arg."""
 from awscli.arguments import CustomArgument
 
-
 STREAM_HELP_TEXT = 'Filename where the records will be saved'
 
 

@@ -11,17 +11,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 """Module for processing CLI args."""
-import os
 import logging
+import os
 
-from botocore.compat import OrderedDict, json
-
-from awscli import SCALAR_TYPES, COMPLEX_TYPES
-from awscli import shorthand
+from awscli import COMPLEX_TYPES, SCALAR_TYPES, shorthand
 from awscli.utils import (
-    find_service_and_method_in_event_name, is_document_type,
-    is_document_type_container
+    find_service_and_method_in_event_name,
+    is_document_type,
+    is_document_type_container,
 )
+from botocore.compat import OrderedDict, json
 from botocore.utils import is_json_value_header
 
 LOG = logging.getLogger('awscli.argprocess')

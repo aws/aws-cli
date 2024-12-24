@@ -10,11 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import json
 import datetime
+import json
 
-from awscli.utils import OutputStreamFactory
 from awscli.customizations.history.commands import HistorySubcommand
+from awscli.utils import OutputStreamFactory
 
 
 class ListCommand(HistorySubcommand):

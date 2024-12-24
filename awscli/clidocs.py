@@ -13,19 +13,21 @@
 import logging
 import os
 import re
-from botocore import xform_name
-from botocore.model import StringShape
-from botocore.utils import is_json_value_header
 
 from awscli import SCALAR_TYPES
 from awscli.argprocess import ParamShorthandDocGen
 from awscli.bcdoc.docevents import DOC_EVENTS
 from awscli.topictags import TopicTagDB
 from awscli.utils import (
-    find_service_and_method_in_event_name, is_document_type,
-    operation_uses_document_types, is_streaming_blob_type,
-    is_tagged_union_type
+    find_service_and_method_in_event_name,
+    is_document_type,
+    is_streaming_blob_type,
+    is_tagged_union_type,
+    operation_uses_document_types,
 )
+from botocore import xform_name
+from botocore.model import StringShape
+from botocore.utils import is_json_value_header
 
 LOG = logging.getLogger(__name__)
 EXAMPLES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),

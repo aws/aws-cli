@@ -13,9 +13,8 @@
 import json
 import os
 
-from botocore.model import ServiceModel
-
 from awscli.customizations.commands import BasicCommand
+from botocore.model import ServiceModel
 
 
 def _get_endpoint_prefix_to_name_mappings(session):

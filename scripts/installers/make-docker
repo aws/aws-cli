@@ -2,15 +2,21 @@
 """Script to build a Docker image of the AWS CLI"""
 import argparse
 import os
-import sys
 import shutil
+import sys
 from distutils.dir_util import copy_tree
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from utils import run, tmp_dir, cd, BadRCError, \
-                  extract_zip, update_metadata, save_to_zip
-
+from utils import (
+    BadRCError,
+    cd,
+    extract_zip,
+    run,
+    save_to_zip,
+    tmp_dir,
+    update_metadata,
+)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(
     os.path.abspath(__file__))))

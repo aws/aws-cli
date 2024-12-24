@@ -13,16 +13,14 @@
 import logging
 from datetime import datetime
 
-from botocore.compat import json
-from botocore.utils import set_value_from_jmespath
-from botocore.paginate import PageIterator
 from ruamel.yaml import YAML
 
-from awscli.table import MultiTable, Styler, ColorizedStyler
-from awscli import text
-from awscli import compat
+from awscli import compat, text
+from awscli.table import ColorizedStyler, MultiTable, Styler
 from awscli.utils import json_encoder
-
+from botocore.compat import json
+from botocore.paginate import PageIterator
+from botocore.utils import set_value_from_jmespath
 
 LOG = logging.getLogger(__name__)
 

@@ -10,24 +10,28 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import csv
-import signal
-import datetime
 import contextlib
+import csv
+import datetime
+import logging
 import os
 import re
+import signal
 import sys
-from subprocess import Popen, PIPE
-import logging
+from subprocess import PIPE, Popen
 
-from awscli.compat import get_stdout_text_writer
-from awscli.compat import get_popen_kwargs_for_pager_cmd
-from awscli.compat import StringIO
-from botocore.useragent import UserAgentComponent
-from botocore.utils import resolve_imds_endpoint_mode
-from botocore.utils import IMDSFetcher
-from botocore.utils import BadIMDSRequestError
+from awscli.compat import (
+    StringIO,
+    get_popen_kwargs_for_pager_cmd,
+    get_stdout_text_writer,
+)
 from botocore.configprovider import BaseProvider
+from botocore.useragent import UserAgentComponent
+from botocore.utils import (
+    BadIMDSRequestError,
+    IMDSFetcher,
+    resolve_imds_endpoint_mode,
+)
 
 logger = logging.getLogger(__name__)
 

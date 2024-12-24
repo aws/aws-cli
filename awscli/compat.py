@@ -6,31 +6,31 @@
 
 #     http://aws.amazon.com/apache2.0/
 
+import collections.abc as collections_abc
+import contextlib
+import io
+import locale
+import os
+import os.path
+import platform
+import queue
+import re
+import shlex
+import signal
+
 # or in the "license" file accompanying this file. This file is
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
-import re
-import shlex
-import os
-import os.path
-import platform
+import urllib.parse as urlparse
 import zipfile
-import signal
-import contextlib
-import collections.abc as collections_abc
-import locale
-import queue
-import io
-from urllib.request import urlopen
 from configparser import RawConfigParser
 from functools import partial
-import urllib.parse as urlparse
 from urllib.error import URLError
+from urllib.request import urlopen
 
-from botocore.compat import six
-from botocore.compat import OrderedDict
+from botocore.compat import OrderedDict, six
 
 # Backwards compatible definitions from six
 PY3 = sys.version_info[0] == 3

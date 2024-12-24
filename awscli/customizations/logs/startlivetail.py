@@ -10,30 +10,30 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from enum import Enum
-from functools import partial
-from threading import Thread
 import asyncio
-import colorama
 import contextlib
 import json
 import re
 import signal
 import sys
 import time
+from enum import Enum
+from functools import partial
+from threading import Thread
 
+import colorama
 from prompt_toolkit.application import Application, get_app
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.filters import Condition
 from prompt_toolkit.formatted_text import (
     ANSI,
-    to_formatted_text,
     fragment_list_to_text,
+    to_formatted_text,
 )
 from prompt_toolkit.key_binding import KeyBindings, KeyPressEvent
 from prompt_toolkit.layout import Layout, Window, WindowAlign
-from prompt_toolkit.layout.controls import BufferControl, FormattedTextControl
 from prompt_toolkit.layout.containers import HSplit, VSplit
+from prompt_toolkit.layout.controls import BufferControl, FormattedTextControl
 from prompt_toolkit.layout.dimension import Dimension
 from prompt_toolkit.layout.processors import Processor, Transformation
 
@@ -41,7 +41,6 @@ from awscli.compat import get_stdout_text_writer
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.utils import is_a_tty
-
 
 DESCRIPTION = (
     "Starts a Live Tail streaming session for one or more log groups. "

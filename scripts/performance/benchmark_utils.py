@@ -1,10 +1,11 @@
-import s3transfer
-import os
-import subprocess
-import uuid
-import shutil
 import argparse
+import os
+import shutil
+import subprocess
 import tempfile
+import uuid
+
+import s3transfer
 
 
 def summarize(script, result_dir, summary_dir):

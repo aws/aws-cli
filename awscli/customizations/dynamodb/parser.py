@@ -13,11 +13,13 @@
 from decimal import Decimal
 
 import awscli.customizations.dynamodb.ast as ast
-from .exceptions import (
-    EmptyExpressionError, UnexpectedTokenError, UnknownExpressionError,
-    InvalidLiteralValueError,
-)
 
+from .exceptions import (
+    EmptyExpressionError,
+    InvalidLiteralValueError,
+    UnexpectedTokenError,
+    UnknownExpressionError,
+)
 from .lexer import Lexer
 from .types import Binary
 

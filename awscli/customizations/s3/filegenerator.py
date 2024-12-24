@@ -11,17 +11,22 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import sys
 import stat
+import sys
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
-from botocore.exceptions import ClientError
 
-from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
-from awscli.customizations.s3.utils import BucketLister, create_warning, \
-    find_dest_path_comp_key, EPOCH_TIME
 from awscli.compat import queue
+from awscli.customizations.s3.utils import (
+    EPOCH_TIME,
+    BucketLister,
+    create_warning,
+    find_bucket_key,
+    find_dest_path_comp_key,
+    get_file_stat,
+)
+from botocore.exceptions import ClientError
 
 _open = open
 

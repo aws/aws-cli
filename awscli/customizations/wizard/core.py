@@ -11,19 +11,18 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 """Core planner and executor for wizards."""
-import re
 import json
 import os
+import re
 from functools import partial
 
-from botocore import xform_name
 import jmespath
 
-from awscli.utils import json_encoder
 from awscli.customizations.wizard.exceptions import (
-    InvalidDataTypeConversionException
+    InvalidDataTypeConversionException,
 )
-
+from awscli.utils import json_encoder
+from botocore import xform_name
 
 DONE_SECTION_NAME = '__DONE__'
 OUTPUT_SECTION_NAME = '__OUTPUT__'

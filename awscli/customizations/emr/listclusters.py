@@ -13,9 +13,7 @@
 
 
 from awscli.arguments import CustomArgument
-from awscli.customizations.emr import helptext
-from awscli.customizations.emr import exceptions
-from awscli.customizations.emr import constants
+from awscli.customizations.emr import constants, exceptions, helptext
 
 
 def modify_list_clusters_argument(argument_table, **kwargs):

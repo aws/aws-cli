@@ -10,16 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import sys
 import os
+import sys
 
-from botocore.client import Config
-from botocore.endpoint import DEFAULT_TIMEOUT
-from botocore.handlers import disable_signing
 import jmespath
 
 from awscli.compat import urlparse
 from awscli.customizations.exceptions import ParamValidationError
+from botocore.client import Config
+from botocore.endpoint import DEFAULT_TIMEOUT
+from botocore.handlers import disable_signing
 
 
 def register_parse_global_args(cli):

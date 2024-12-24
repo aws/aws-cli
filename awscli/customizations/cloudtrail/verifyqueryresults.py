@@ -1,17 +1,19 @@
 import base64
 import binascii
-import json
 import hashlib
+import json
 import sys
 from abc import ABC, abstractmethod
 from os import path
 
-from awscli.customizations.exceptions import ParamValidationError
-
 from awscrt.crypto import RSA, RSASignatureAlgorithm
 
+from awscli.customizations.cloudtrail.utils import (
+    PublicKeyProvider,
+    parse_date,
+)
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.cloudtrail.utils import parse_date, PublicKeyProvider
+from awscli.customizations.exceptions import ParamValidationError
 
 SIGN_FILE_NAME = "result_sign.json"
 

@@ -13,7 +13,8 @@
 from collections.abc import Mapping, MutableSequence
 
 from awscli.customizations.dynamodb.types import (
-    TypeSerializer, TypeDeserializer
+    TypeDeserializer,
+    TypeSerializer,
 )
 
 

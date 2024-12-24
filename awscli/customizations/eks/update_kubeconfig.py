@@ -13,21 +13,20 @@
 import logging
 import os
 
-from botocore.compat import OrderedDict
-
 from awscli.compat import is_windows
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.eks.exceptions import EKSClusterError
 from awscli.customizations.eks.kubeconfig import (
     Kubeconfig,
+    KubeconfigAppender,
     KubeconfigError,
     KubeconfigLoader,
-    KubeconfigWriter,
     KubeconfigValidator,
-    KubeconfigAppender
+    KubeconfigWriter,
 )
 from awscli.customizations.eks.ordered_yaml import ordered_yaml_dump
 from awscli.customizations.utils import uni_print
+from botocore.compat import OrderedDict
 
 LOG = logging.getLogger(__name__)
 

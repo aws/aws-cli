@@ -10,19 +10,19 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from collections import defaultdict
-from datetime import datetime, timedelta
 import json
 import re
 import time
+from collections import defaultdict
+from datetime import datetime, timedelta
 
-from botocore.utils import parse_timestamp, datetime2timestamp
-from dateutil import tz
 import colorama
+from dateutil import tz
 
 from awscli.compat import get_stdout_text_writer
-from awscli.utils import is_a_tty
 from awscli.customizations.commands import BasicCommand
+from awscli.utils import is_a_tty
+from botocore.utils import datetime2timestamp, parse_timestamp
 
 
 class BaseLogEventsFormatter(object):

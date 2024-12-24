@@ -12,9 +12,9 @@
 # language governing permissions and limitations under the License.
 import logging
 
-from botocore.compat import OrderedDict
 from awscli.bcdoc.docstringparser import DocStringParser
 from awscli.bcdoc.style import ReSTStyle
+from botocore.compat import OrderedDict
 
 LOG = logging.getLogger('bcdocs')
 

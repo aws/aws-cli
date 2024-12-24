@@ -10,19 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import uuid
-import time
-import json
 import datetime
-import threading
+import json
 import logging
-from awscli.compat import collections_abc
+import threading
+import time
+import uuid
 
+from awscli.compat import binary_type, collections_abc, sqlite3
 from botocore.history import BaseHistoryHandler
-
-from awscli.compat import sqlite3
-from awscli.compat import binary_type
-
 
 LOG = logging.getLogger(__name__)
 

@@ -11,23 +11,19 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from __future__ import division
+
 import logging
 import sys
 import threading
 import time
-from collections import namedtuple
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 
-from s3transfer.exceptions import CancelledError
-from s3transfer.exceptions import FatalError
-from s3transfer.subscribers import BaseSubscriber
-
-from awscli.compat import queue, ensure_text_type
-from awscli.customizations.s3.utils import human_readable_size
-from awscli.customizations.utils import uni_print
-from awscli.customizations.s3.utils import WarningResult
+from awscli.compat import ensure_text_type, queue
 from awscli.customizations.s3.subscribers import OnDoneFilteredSubscriber
-
+from awscli.customizations.s3.utils import WarningResult, human_readable_size
+from awscli.customizations.utils import uni_print
+from s3transfer.exceptions import CancelledError, FatalError
+from s3transfer.subscribers import BaseSubscriber
 
 LOGGER = logging.getLogger(__name__)
 

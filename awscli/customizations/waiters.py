@@ -10,12 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from awscli.clidriver import ServiceOperation
+from awscli.customizations.commands import (
+    BasicCommand,
+    BasicDocHandler,
+    BasicHelp,
+)
 from botocore import xform_name
 from botocore.exceptions import DataNotFoundError
-
-from awscli.clidriver import ServiceOperation
-from awscli.customizations.commands import BasicCommand, BasicHelp, \
-    BasicDocHandler
 
 
 def register_add_waiters(cli):

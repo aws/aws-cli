@@ -26,9 +26,8 @@ work you need to:
   For example, ``examples/ec2/ec2-create-key-pair.rst``.
 
 """
-import os
 import logging
-
+import os
 
 LOG = logging.getLogger(__name__)
 

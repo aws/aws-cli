@@ -16,11 +16,11 @@ import json
 import os
 import sys
 
+from awscli.compat import compat_open
+from awscli.customizations.commands import BasicCommand
+from awscli.customizations.ecs import exceptions, filehelpers
 from botocore import compat, config
 from botocore.exceptions import ClientError
-from awscli.compat import compat_open
-from awscli.customizations.ecs import exceptions, filehelpers
-from awscli.customizations.commands import BasicCommand
 
 TIMEOUT_BUFFER_MIN = 10
 DEFAULT_DELAY_SEC = 15

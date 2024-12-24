@@ -4,19 +4,18 @@
 As of now this benchmarks `cp` and `rm` with test cases for multiple 4kb files
 (default 10000 files) and a single large file (default 10gb, `cp` only).
 """
-import os
-import json
-from subprocess import check_call, Popen, PIPE
-from datetime import datetime
-import random
 import argparse
 import inspect
-import shutil
+import json
+import os
 import platform
+import random
+import shutil
+from datetime import datetime
+from subprocess import PIPE, Popen, check_call
 
 import awscli
 import s3transfer
-
 
 TEST_BUCKET = os.environ.get('PERF_TEST_BUCKET')
 REPO_ROOT = os.path.dirname(

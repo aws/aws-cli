@@ -14,16 +14,17 @@
 import json
 from datetime import datetime, timedelta
 
-from awscli.formatter import get_formatter
 from awscli.arguments import CustomArgument
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.datapipeline import translator
-from awscli.customizations.datapipeline.createdefaultroles \
-    import CreateDefaultRoles
-from awscli.customizations.datapipeline.listrunsformatter \
-    import ListRunsFormatter
+from awscli.customizations.datapipeline.createdefaultroles import (
+    CreateDefaultRoles,
+)
+from awscli.customizations.datapipeline.listrunsformatter import (
+    ListRunsFormatter,
+)
 from awscli.customizations.exceptions import ParamValidationError
-
+from awscli.formatter import get_formatter
 
 DEFINITION_HELP_TEXT = """\
 The JSON pipeline definition.  If the pipeline definition

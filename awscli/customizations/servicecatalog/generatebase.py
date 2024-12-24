@@ -12,10 +12,9 @@
 # language governing permissions and limitations under the License.
 
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.servicecatalog.utils \
-    import make_url, get_s3_path
 from awscli.customizations.s3uploader import S3Uploader
 from awscli.customizations.servicecatalog import exceptions
+from awscli.customizations.servicecatalog.utils import get_s3_path, make_url
 
 
 class GenerateBaseCommand(BasicCommand):

@@ -10,18 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import importlib.metadata
 import re
 import sys
 from pathlib import Path
-import importlib.metadata
 
-from constants import (
-    BOOTSTRAP_REQUIREMENTS,
-    PORTABLE_EXE_REQUIREMENTS,
+from constants import BOOTSTRAP_REQUIREMENTS, PORTABLE_EXE_REQUIREMENTS
+from utils import (
+    UnmetDependenciesException,
+    get_install_requires,
+    parse_requirements,
 )
-from utils import get_install_requires, parse_requirements
-from utils import UnmetDependenciesException
-
 
 ROOT = Path(__file__).parents[2]
 PYPROJECT = ROOT / "pyproject.toml"

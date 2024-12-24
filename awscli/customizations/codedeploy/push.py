@@ -11,20 +11,18 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import contextlib
 import os
 import sys
-import zipfile
 import tempfile
-import contextlib
+import zipfile
 from datetime import datetime
 
-from botocore.exceptions import ClientError
-
+from awscli.compat import ZIP_COMPRESSION_MODE, BytesIO
 from awscli.customizations.codedeploy.utils import validate_s3_location
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
-from awscli.compat import BytesIO, ZIP_COMPRESSION_MODE
-
+from botocore.exceptions import ClientError
 
 ONE_MB = 1 << 20
 MULTIPART_LIMIT = 6 * ONE_MB

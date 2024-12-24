@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from ruamel.yaml import YAML
+
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.wizard.factory import create_wizard_app
 

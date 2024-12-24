@@ -13,9 +13,15 @@
 import os
 from dataclasses import dataclass, field
 
-from constants import EXE_ASSETS_DIR, PYINSTALLER_DIR, DISTRIBUTION_SOURCE_EXE, PYINSTALLER_EXE_NAME
-from utils import Utils
 from awscli_venv import AwsCliVenv
+
+from constants import (
+    DISTRIBUTION_SOURCE_EXE,
+    EXE_ASSETS_DIR,
+    PYINSTALLER_DIR,
+    PYINSTALLER_EXE_NAME,
+)
+from utils import Utils
 
 
 @dataclass

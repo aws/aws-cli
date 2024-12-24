@@ -10,17 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import threading
 import contextlib
 import os
-import tempfile
 import sys
+import tempfile
+import threading
 import zipfile
-
-from s3transfer import S3Transfer
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.s3.utils import human_readable_size
+from s3transfer import S3Transfer
 
 
 class UploadBuildCommand(BasicCommand):

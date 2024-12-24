@@ -24,8 +24,7 @@ modify-option-group).
 
 """
 
-from awscli.clidriver import ServiceOperation
-from awscli.clidriver import CLIOperationCaller
+from awscli.clidriver import CLIOperationCaller, ServiceOperation
 from awscli.customizations import utils
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print

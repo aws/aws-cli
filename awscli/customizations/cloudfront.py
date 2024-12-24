@@ -11,18 +11,17 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import hashlib
+import random
 import sys
 import time
-import random
 
 from awscrt.crypto import RSA, RSASignatureAlgorithm
 
-from botocore.utils import parse_to_aware_datetime
-from botocore.signers import CloudFrontSigner
-
 from awscli.arguments import CustomArgument
-from awscli.customizations.utils import validate_mutually_exclusive_handler
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.utils import validate_mutually_exclusive_handler
+from botocore.signers import CloudFrontSigner
+from botocore.utils import parse_to_aware_datetime
 
 
 def register(event_handler):

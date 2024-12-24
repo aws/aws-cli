@@ -18,22 +18,24 @@ import socket
 import time
 import webbrowser
 from functools import partial
-from http.server import HTTPServer, BaseHTTPRequestHandler
-
-from botocore.compat import urlparse, parse_qs
-from botocore.credentials import JSONFileCache
-from botocore.exceptions import (
-    AuthCodeFetcherError,
-    PendingAuthorizationExpiredError,
-)
-from botocore.utils import SSOTokenFetcher, SSOTokenFetcherAuth
-from botocore.utils import original_ld_library_path
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from awscli import __version__ as awscli_version
 from awscli.customizations.assumerole import CACHE_DIR as AWS_CREDS_CACHE_DIR
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.utils import uni_print
+from botocore.compat import parse_qs, urlparse
+from botocore.credentials import JSONFileCache
+from botocore.exceptions import (
+    AuthCodeFetcherError,
+    PendingAuthorizationExpiredError,
+)
+from botocore.utils import (
+    SSOTokenFetcher,
+    SSOTokenFetcherAuth,
+    original_ld_library_path,
+)
 
 LOG = logging.getLogger(__name__)
 

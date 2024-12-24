@@ -39,8 +39,8 @@ exists, then a usage error will be printed.
 
 """
 import os
-from ruamel.yaml import YAML
 
+from ruamel.yaml import YAML
 
 WIZARD_SPEC_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'wizards',

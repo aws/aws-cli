@@ -23,15 +23,16 @@ this in-tree backend just proxies to flit logic. The only exception
 is that it builds the auto-complete index and injects it into the wheel
 built by flit prior to returning.
 """
-import re
-import contextlib
-import hashlib
+
 import base64
-import os
+import contextlib
 import glob
-import tarfile
+import hashlib
+import os
+import re
 import shutil
 import sys
+import tarfile
 import zipfile
 from pathlib import Path
 
@@ -149,6 +150,7 @@ def _should_copy(path):
     if os.path.isdir(path):
         return False
     return True
+
 
 def read_sdist_extras():
     with open(ROOT_DIR / "pyproject.toml", "r") as f:

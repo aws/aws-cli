@@ -12,10 +12,12 @@
 # language governing permissions and limitations under the License.
 
 
-from awscli.customizations.emr import argumentschema
-from awscli.customizations.emr import emrutils
-from awscli.customizations.emr import helptext
-from awscli.customizations.emr import instancegroupsutils
+from awscli.customizations.emr import (
+    argumentschema,
+    emrutils,
+    helptext,
+    instancegroupsutils,
+)
 from awscli.customizations.emr.command import Command
 
 
@@ -23,29 +25,46 @@ class AddInstanceGroups(Command):
     NAME = 'add-instance-groups'
     DESCRIPTION = 'Adds an instance group to a running cluster.'
     ARG_TABLE = [
-        {'name': 'cluster-id', 'required': True,
-         'help_text': helptext.CLUSTER_ID},
-        {'name': 'instance-groups', 'required': True,
-         'help_text': helptext.INSTANCE_GROUPS,
-         'schema': argumentschema.INSTANCE_GROUPS_SCHEMA}
+        {
+            'name': 'cluster-id',
+            'required': True,
+            'help_text': helptext.CLUSTER_ID,
+        },
+        {
+            'name': 'instance-groups',
+            'required': True,
+            'help_text': helptext.INSTANCE_GROUPS,
+            'schema': argumentschema.INSTANCE_GROUPS_SCHEMA,
+        },
     ]
 
     def _run_main_command(self, parsed_args, parsed_globals):
         parameters = {'JobFlowId': parsed_args.cluster_id}
-        parameters['InstanceGroups'] = \
+        parameters['InstanceGroups'] = (
             instancegroupsutils.build_instance_groups(
-            parsed_args.instance_groups)
+                parsed_args.instance_groups
+            )
+        )
 
         add_instance_groups_response = emrutils.call(
-            self._session, 'add_instance_groups', parameters,
-            self.region, parsed_globals.endpoint_url,
-            parsed_globals.verify_ssl)
+            self._session,
+            'add_instance_groups',
+            parameters,
+            self.region,
+            parsed_globals.endpoint_url,
+            parsed_globals.verify_ssl,
+        )
 
         constructed_result = self._construct_result(
-            add_instance_groups_response)
+            add_instance_groups_response
+        )
 
-        emrutils.display_response(self._session, 'add_instance_groups',
-                                  constructed_result, parsed_globals)
+        emrutils.display_response(
+            self._session,
+            'add_instance_groups',
+            constructed_result,
+            parsed_globals,
+        )
         return 0
 
     def _construct_result(self, add_instance_groups_result):
@@ -55,12 +74,15 @@ class AddInstanceGroups(Command):
         if add_instance_groups_result is not None:
             jobFlowId = add_instance_groups_result.get('JobFlowId')
             instanceGroupIds = add_instance_groups_result.get(
-                'InstanceGroupIds')
+                'InstanceGroupIds'
+            )
             clusterArn = add_instance_groups_result.get('ClusterArn')
 
         if jobFlowId is not None and instanceGroupIds is not None:
-            return {'ClusterId': jobFlowId,
-                    'InstanceGroupIds': instanceGroupIds,
-                    'ClusterArn': clusterArn}
+            return {
+                'ClusterId': jobFlowId,
+                'InstanceGroupIds': instanceGroupIds,
+                'ClusterArn': clusterArn,
+            }
         else:
             return {}

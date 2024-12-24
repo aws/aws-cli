@@ -18,8 +18,10 @@ class FileInfoBuilder(object):
     This class takes a ``FileBase`` object's attributes and generates
     a ``FileInfo`` object so that the operation can be performed.
     """
-    def __init__(self, client, source_client=None,
-                 parameters = None, is_stream=False):
+
+    def __init__(
+        self, client, source_client=None, parameters=None, is_stream=False
+    ):
         self._client = client
         self._source_client = client
         if source_client is not None:
@@ -57,8 +59,9 @@ class FileInfoBuilder(object):
         # issue by swapping clients only in the case of a sync delete since
         # swapping which client is used in the delete function would then break
         # moving under s3v4.
-        if (file_base.operation_name == 'delete' and
-                self._parameters.get('delete')):
+        if file_base.operation_name == 'delete' and self._parameters.get(
+            'delete'
+        ):
             file_info_attr['client'] = self._source_client
             file_info_attr['source_client'] = self._client
         else:

@@ -13,8 +13,8 @@
 
 
 class EKSError(Exception):
-    """ Base class for all EKSErrors."""
+    """Base class for all EKSErrors."""
 
 
 class EKSClusterError(EKSError):
-    """ Raised when a cluster is not in the correct state."""
+    """Raised when a cluster is not in the correct state."""

@@ -10,19 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import uuid
-import time
-import json
 import datetime
-import threading
+import json
 import logging
-from awscli.compat import collections_abc
+import threading
+import time
+import uuid
 
+from awscli.compat import binary_type, collections_abc, sqlite3
 from botocore.history import BaseHistoryHandler
-
-from awscli.compat import sqlite3
-from awscli.compat import binary_type
-
 
 LOG = logging.getLogger(__name__)
 
@@ -41,7 +37,8 @@ class DatabaseConnection(object):
 
     def __init__(self, db_filename):
         self._connection = sqlite3.connect(
-            db_filename, check_same_thread=False, isolation_level=None)
+            db_filename, check_same_thread=False, isolation_level=None
+        )
         self._ensure_database_setup()
 
     def close(self):
@@ -92,8 +89,9 @@ class PayloadSerializer(json.JSONEncoder):
         if isinstance(obj, str):
             obj = self._try_decode_bytes(obj)
         elif isinstance(obj, dict):
-            obj = dict((k, self._remove_non_unicode_stings(v)) for k, v
-                       in obj.items())
+            obj = dict(
+                (k, self._remove_non_unicode_stings(v)) for k, v in obj.items()
+            )
         elif isinstance(obj, (list, tuple)):
             obj = [self._remove_non_unicode_stings(o) for o in obj]
         return obj
@@ -152,26 +150,30 @@ class DatabaseRecordWriter(object):
 
     def _create_db_record(self, record):
         event_type = record['event_type']
-        json_serialized_payload = json.dumps(record['payload'],
-                                             cls=PayloadSerializer)
+        json_serialized_payload = json.dumps(
+            record['payload'], cls=PayloadSerializer
+        )
         db_record = (
             record['command_id'],
             record.get('request_id'),
             record['source'],
             event_type,
             record['timestamp'],
-            json_serialized_payload
+            json_serialized_payload,
         )
         return db_record
 
 
 class DatabaseRecordReader(object):
     _ORDERING = 'ORDER BY timestamp'
-    _GET_LAST_ID_RECORDS = """
+    _GET_LAST_ID_RECORDS = (
+        """
         SELECT * FROM records
         WHERE id =
         (SELECT id FROM records WHERE timestamp =
-        (SELECT max(timestamp) FROM records)) %s;""" % _ORDERING
+        (SELECT max(timestamp) FROM records)) %s;"""
+        % _ORDERING
+    )
     _GET_RECORDS_BY_ID = 'SELECT * from records where id = ? %s' % _ORDERING
     _GET_ALL_RECORDS = (
         'SELECT a.id AS id_a, '
@@ -220,7 +222,8 @@ class DatabaseRecordReader(object):
 
 class RecordBuilder(object):
     _REQUEST_LIFECYCLE_EVENTS = set(
-        ['API_CALL', 'HTTP_REQUEST', 'HTTP_RESPONSE', 'PARSED_RESPONSE'])
+        ['API_CALL', 'HTTP_REQUEST', 'HTTP_RESPONSE', 'PARSED_RESPONSE']
+    )
     _START_OF_REQUEST_LIFECYCLE_EVENT = 'API_CALL'
 
     def __init__(self):
@@ -254,7 +257,7 @@ class RecordBuilder(object):
             'event_type': event_type,
             'payload': payload,
             'source': source,
-            'timestamp': int(time.time() * 1000)
+            'timestamp': int(time.time() * 1000),
         }
         request_id = self._get_request_id(event_type)
         if request_id:

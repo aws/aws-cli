@@ -25,8 +25,10 @@ def add_get_status(command_table, session, **kwargs):
 
 class GetStatusCommand(BasicCommand):
     NAME = 'get-status'
-    DESCRIPTION = ('Reports the status of all of configuration '
-                   'recorders and delivery channels.')
+    DESCRIPTION = (
+        'Reports the status of all of configuration '
+        'recorders and delivery channels.'
+    )
 
     def __init__(self, session):
         self._config_client = None
@@ -42,10 +44,11 @@ class GetStatusCommand(BasicCommand):
         client_args = {
             'verify': parsed_globals.verify_ssl,
             'region_name': parsed_globals.region,
-            'endpoint_url': parsed_globals.endpoint_url
+            'endpoint_url': parsed_globals.endpoint_url,
         }
-        self._config_client = self._session.create_client('config',
-                                                          **client_args)
+        self._config_client = self._session.create_client(
+            'config', **client_args
+        )
 
     def _check_configuration_recorders(self):
         status = self._config_client.describe_configuration_recorder_status()

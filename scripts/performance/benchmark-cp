@@ -1,7 +1,12 @@
 #!/usr/bin/env python
-from benchmark_utils import summarize, clean
-from benchmark_utils import get_default_argparser, get_transfer_command
-from benchmark_utils import create_random_subfolder, benchmark_command
+from benchmark_utils import (
+    benchmark_command,
+    clean,
+    create_random_subfolder,
+    get_default_argparser,
+    get_transfer_command,
+    summarize,
+)
 
 
 def benchmark_cp(args):
@@ -16,21 +21,26 @@ def benchmark_cp(args):
             clean(destination, args.recursive)
 
     benchmark_command(
-        command, args.benchmark_script,  args.summarize_script,
-        args.result_dir, args.num_iterations, args.dry_run,
-        cleanup=cleanup
+        command,
+        args.benchmark_script,
+        args.summarize_script,
+        args.result_dir,
+        args.num_iterations,
+        args.dry_run,
+        cleanup=cleanup,
     )
 
 
 if __name__ == "__main__":
     parser = get_default_argparser()
     parser.add_argument(
-        '-s', '--source', required=True,
-        help='A local path or s3 path.'
+        '-s', '--source', required=True, help='A local path or s3 path.'
     )
     parser.add_argument(
-        '-d', '--destination', required=True,
+        '-d',
+        '--destination',
+        required=True,
         help='A local path or s3 path. A directory will be created in this '
-             'location to copy to in the case of a recursive transfer.'
+        'location to copy to in the case of a recursive transfer.',
     )
     benchmark_cp(parser.parse_args())

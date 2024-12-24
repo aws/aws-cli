@@ -16,8 +16,8 @@ import os
 
 def make_url(region, bucket_name, obj_path, version=None):
     """
-        This link describes the format of Path Style URLs
-        http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html#access-bucket-intro
+    This link describes the format of Path Style URLs
+    http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html#access-bucket-intro
     """
     base = "https://s3.amazonaws.com"
     if region and region != "us-east-1":

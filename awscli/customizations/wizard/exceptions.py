@@ -45,6 +45,6 @@ class UnexpectedWizardException(Exception):
         message = self.MSG_FORMAT.format(
             original_tb=''.join(format_tb(original_exception.__traceback__)),
             original_exception_cls=self.original_exception.__class__.__name__,
-            original_exception=self.original_exception
+            original_exception=self.original_exception,
         )
         super().__init__(message)

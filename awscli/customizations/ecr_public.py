@@ -10,11 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import sys
+from base64 import b64decode
+
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import create_client_from_parsed_globals
-
-from base64 import b64decode
-import sys
 
 
 def register_ecr_public_commands(cli):
@@ -27,16 +27,17 @@ def _inject_commands(command_table, session, **kwargs):
 
 class ECRPublicGetLoginPassword(BasicCommand):
     """Get a password to be used with container clients such as Docker"""
+
     NAME = 'get-login-password'
 
     DESCRIPTION = BasicCommand.FROM_FILE(
-            'ecr-public/get-login-password_description.rst')
+        'ecr-public/get-login-password_description.rst'
+    )
 
     def _run_main(self, parsed_args, parsed_globals):
         ecr_public_client = create_client_from_parsed_globals(
-                self._session,
-                'ecr-public',
-                parsed_globals)
+            self._session, 'ecr-public', parsed_globals
+        )
         result = ecr_public_client.get_authorization_token()
         auth = result['authorizationData']
         auth_token = b64decode(auth['authorizationToken']).decode()

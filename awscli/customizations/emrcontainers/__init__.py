@@ -11,8 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.customizations.emrcontainers.update_role_trust_policy \
-    import UpdateRoleTrustPolicyCommand
+from awscli.customizations.emrcontainers.update_role_trust_policy import (
+    UpdateRoleTrustPolicyCommand,
+)
 
 
 def initialize(cli):
@@ -28,4 +29,5 @@ def inject_commands(command_table, session, **kwargs):
     Used to inject new high level commands into the command list.
     """
     command_table['update-role-trust-policy'] = UpdateRoleTrustPolicyCommand(
-        session)
+        session
+    )

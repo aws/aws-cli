@@ -10,22 +10,22 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.exceptions import ProfileNotFound
-from botocore.exceptions import UnknownCredentialError
-from botocore.credentials import JSONFileCache
-
 from awscli.customizations.sso.login import LoginCommand
 from awscli.customizations.sso.logout import LogoutCommand
 from awscli.customizations.sso.utils import AWS_CREDS_CACHE_DIR
+from botocore.credentials import JSONFileCache
+from botocore.exceptions import ProfileNotFound, UnknownCredentialError
 
 
 def register_sso_commands(event_emitter):
     event_emitter.register(
-        'building-command-table.sso', add_sso_commands,
+        'building-command-table.sso',
+        add_sso_commands,
     )
     event_emitter.register(
-        'session-initialized', inject_json_file_cache,
-        unique_id='inject_sso_json_file_cache'
+        'session-initialized',
+        inject_json_file_cache,
+        unique_id='inject_sso_json_file_cache',
     )
 
 

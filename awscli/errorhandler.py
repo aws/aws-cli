@@ -13,24 +13,25 @@
 import logging
 import signal
 
-from botocore.exceptions import (
-    NoRegionError, NoCredentialsError, ClientError,
-    ParamValidationError as BotocoreParamValidationError,
-)
-
+from awscli.argparser import USAGE, ArgParseException
 from awscli.argprocess import ParamError, ParamSyntaxError
 from awscli.arguments import UnknownArgumentError
-from awscli.argparser import ArgParseException, USAGE
+from awscli.autoprompt.factory import PrompterKeyboardInterrupt
 from awscli.constants import (
-    PARAM_VALIDATION_ERROR_RC, CONFIGURATION_ERROR_RC, CLIENT_ERROR_RC,
-    GENERAL_ERROR_RC
+    CLIENT_ERROR_RC,
+    CONFIGURATION_ERROR_RC,
+    GENERAL_ERROR_RC,
+    PARAM_VALIDATION_ERROR_RC,
+)
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
 )
 from awscli.utils import PagerInitializationException
-from awscli.autoprompt.factory import PrompterKeyboardInterrupt
-from awscli.customizations.exceptions import (
-    ParamValidationError, ConfigurationError
+from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
+from botocore.exceptions import (
+    ParamValidationError as BotocoreParamValidationError,
 )
-
 
 LOG = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ def construct_entry_point_handlers_chain():
         ParamValidationErrorsHandler(),
         PrompterInterruptExceptionHandler(),
         InterruptExceptionHandler(),
-        GeneralExceptionHandler()
+        GeneralExceptionHandler(),
     ]
     return ChainedExceptionHandler(exception_handlers=handlers)
 
@@ -55,7 +56,7 @@ def construct_cli_error_handlers_chain():
         PagerErrorHandler(),
         InterruptExceptionHandler(),
         ClientErrorHandler(),
-        GeneralExceptionHandler()
+        GeneralExceptionHandler(),
     ]
     return ChainedExceptionHandler(exception_handlers=handlers)
 
@@ -84,8 +85,11 @@ class FilteredExceptionHandler(BaseExceptionHandler):
 
 class ParamValidationErrorsHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = (
-        ParamError, ParamSyntaxError, ArgParseException,
-        ParamValidationError, BotocoreParamValidationError
+        ParamError,
+        ParamSyntaxError,
+        ArgParseException,
+        ParamValidationError,
+        BotocoreParamValidationError,
     )
     RC = PARAM_VALIDATION_ERROR_RC
 
@@ -108,7 +112,9 @@ class ConfigurationErrorHandler(FilteredExceptionHandler):
 class NoRegionErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = NoRegionError
     RC = CONFIGURATION_ERROR_RC
-    MESSAGE = '%s You can also configure your region by running "aws configure".'
+    MESSAGE = (
+        '%s You can also configure your region by running "aws configure".'
+    )
 
 
 class NoCredentialsErrorHandler(FilteredExceptionHandler):

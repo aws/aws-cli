@@ -11,13 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from ruamel.yaml import YAML
+
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.wizard.factory import create_wizard_app
 
 
 def register_dev_commands(event_handlers):
-    event_handlers.register('building-command-table.cli-dev',
-                            WizardDev.add_command)
+    event_handlers.register(
+        'building-command-table.cli-dev', WizardDev.add_command
+    )
 
 
 def create_default_wizard_dev_runner(session):
@@ -57,8 +59,10 @@ class WizardDev(BasicCommand):
         'future versions.\n'
     )
     ARG_TABLE = [
-        {'name': 'run-wizard',
-         'help_text': 'Run a wizard given a wizard file.'}
+        {
+            'name': 'run-wizard',
+            'help_text': 'Run a wizard given a wizard file.',
+        }
     ]
 
     def __init__(self, session, dev_runner=None):

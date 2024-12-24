@@ -14,21 +14,23 @@ import logging
 
 from awscli.customizations.s3.syncstrategy.base import SizeAndLastModifiedSync
 
-
 LOG = logging.getLogger(__name__)
 
 
-EXACT_TIMESTAMPS = {'name': 'exact-timestamps', 'action': 'store_true',
-                    'help_text': (
-                        'When syncing from S3 to local, same-sized '
-                        'items will be ignored only when the timestamps '
-                        'match exactly. The default behavior is to ignore '
-                        'same-sized items unless the local version is newer '
-                        'than the S3 version.')}
+EXACT_TIMESTAMPS = {
+    'name': 'exact-timestamps',
+    'action': 'store_true',
+    'help_text': (
+        'When syncing from S3 to local, same-sized '
+        'items will be ignored only when the timestamps '
+        'match exactly. The default behavior is to ignore '
+        'same-sized items unless the local version is newer '
+        'than the S3 version.'
+    ),
+}
 
 
 class ExactTimestampsSync(SizeAndLastModifiedSync):
-
     ARGUMENT = EXACT_TIMESTAMPS
 
     def compare_time(self, src_file, dest_file):
@@ -39,5 +41,6 @@ class ExactTimestampsSync(SizeAndLastModifiedSync):
         if cmd == 'download':
             return self.total_seconds(delta) == 0
         else:
-            return super(ExactTimestampsSync, self).compare_time(src_file,
-                                                                 dest_file)
+            return super(ExactTimestampsSync, self).compare_time(
+                src_file, dest_file
+            )

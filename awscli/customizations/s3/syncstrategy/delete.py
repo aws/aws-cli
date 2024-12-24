@@ -14,24 +14,29 @@ import logging
 
 from awscli.customizations.s3.syncstrategy.base import BaseSync
 
-
 LOG = logging.getLogger(__name__)
 
 
-DELETE = {'name': 'delete', 'action': 'store_true',
-          'help_text': (
-              "Files that exist in the destination but not in the source are "
-              "deleted during sync. Note that files excluded by filters are "
-              "excluded from deletion.")}
+DELETE = {
+    'name': 'delete',
+    'action': 'store_true',
+    'help_text': (
+        "Files that exist in the destination but not in the source are "
+        "deleted during sync. Note that files excluded by filters are "
+        "excluded from deletion."
+    ),
+}
 
 
 class DeleteSync(BaseSync):
-
     ARGUMENT = DELETE
 
     def determine_should_sync(self, src_file, dest_file):
         dest_file.operation_name = 'delete'
-        LOG.debug("syncing: (None) -> %s (remove), file does not "
-                  "exist at source (%s) and delete mode enabled",
-                  dest_file.src, dest_file.dest)
+        LOG.debug(
+            "syncing: (None) -> %s (remove), file does not "
+            "exist at source (%s) and delete mode enabled",
+            dest_file.src,
+            dest_file.dest,
+        )
         return True

@@ -13,9 +13,7 @@
 from awscli.customizations.ec2instanceconnect.opentunnel import (
     OpenTunnelCommand,
 )
-from awscli.customizations.ec2instanceconnect.ssh import (
-    SshCommand,
-)
+from awscli.customizations.ec2instanceconnect.ssh import SshCommand
 
 
 def register_ec2_instance_connect_commands(event_handlers):

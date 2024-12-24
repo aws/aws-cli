@@ -7,16 +7,16 @@ the run information::
     $ ./perfcmp /results/2016-01-01-1111/ /results/2016-01-01-2222/
 
 """
-import os
-import json
+
 import argparse
+import json
+import os
 
 from colorama import Fore, Style
 from tabulate import tabulate
 
 
 class RunComparison(object):
-
     MEMORY_FIELDS = ['average_memory', 'max_memory']
     TIME_FIELDS = ['total_time']
     # Fields that aren't memory or time fields, they require
@@ -66,7 +66,7 @@ class RunComparison(object):
 
     def _format(self, field, value):
         if field.startswith('std_dev_'):
-            field = field[len('std_dev_'):]
+            field = field[len('std_dev_') :]
         if field in self.MEMORY_FIELDS:
             return self._human_readable_size(value)[0]
         elif field in self.TIME_FIELDS:
@@ -85,14 +85,15 @@ class RunComparison(object):
             return '%d Bytes' % bytes_int
 
         for i, suffix in enumerate(hummanize_suffixes):
-            unit = base ** (i+2)
+            unit = base ** (i + 2)
             if round((bytes_int / unit) * base) < base:
                 return ['%.2f' % (base * bytes_int / unit), suffix]
 
     def diff_percent(self, field):
         diff_percent = (
-            (self.new_summary[field] - self.old_summary[field]) /
-            float(self.old_summary[field])) * 100
+            (self.new_summary[field] - self.old_summary[field])
+            / float(self.old_summary[field])
+        ) * 100
         return diff_percent
 
 
@@ -105,29 +106,39 @@ def compare_runs(old_dir, new_dir):
         old_summary = get_summary(old_run_dir)
         new_summary = get_summary(new_run_dir)
         comp = RunComparison(old_summary, new_summary)
-        header = [Style.BRIGHT + dirname + Style.RESET_ALL,
-                  Style.BRIGHT + 'old' + Style.RESET_ALL,
-                  # Numeric suffix (MiB, GiB, sec).
-                  '',
-                  'std_dev',
-                  Style.BRIGHT + 'new' + Style.RESET_ALL,
-                  # Numeric suffix (MiB, GiB, sec).
-                  '',
-                  'std_dev',
-                  Style.BRIGHT + 'delta' + Style.RESET_ALL]
+        header = [
+            Style.BRIGHT + dirname + Style.RESET_ALL,
+            Style.BRIGHT + 'old' + Style.RESET_ALL,
+            # Numeric suffix (MiB, GiB, sec).
+            '',
+            'std_dev',
+            Style.BRIGHT + 'new' + Style.RESET_ALL,
+            # Numeric suffix (MiB, GiB, sec).
+            '',
+            'std_dev',
+            Style.BRIGHT + 'delta' + Style.RESET_ALL,
+        ]
         rows = []
         for field in comp.iter_field_names():
-            row = [field, comp.old(field), comp.old_suffix(field),
-                   comp.old_stddev(field), comp.new(field),
-                   comp.new_suffix(field), comp.new_stddev(field)]
+            row = [
+                field,
+                comp.old(field),
+                comp.old_suffix(field),
+                comp.old_stddev(field),
+                comp.new(field),
+                comp.new_suffix(field),
+                comp.new_stddev(field),
+            ]
             diff_percent = comp.diff_percent(field)
             diff_percent_str = '%.2f%%' % diff_percent
             if diff_percent < 0:
                 diff_percent_str = (
-                    Fore.GREEN + diff_percent_str + Style.RESET_ALL)
+                    Fore.GREEN + diff_percent_str + Style.RESET_ALL
+                )
             else:
                 diff_percent_str = (
-                    Fore.RED + diff_percent_str + Style.RESET_ALL)
+                    Fore.RED + diff_percent_str + Style.RESET_ALL
+                )
             row.append(diff_percent_str)
             rows.append(row)
         print(tabulate(rows, headers=header, tablefmt='plain'))

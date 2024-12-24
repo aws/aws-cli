@@ -243,13 +243,13 @@ class Summarizer:
                 metric_name='max_memory',
                 description='The maximum memory utilization of the CLI throughout execution of the command.',
                 unit='Megabytes',
-                measurements=[max_mem / 1000 for max_mem in self._totals['max_memory']]
+                measurements=[max_mem / 1e6 for max_mem in self._totals['max_memory']]
             ),
             self._detailed_json_benchmark(
                 metric_name='average_memory',
                 description='The average memory utilization of the CLI throughout execution of the command.',
                 unit='Megabytes',
-                measurements=[avg_mem / 1000 for avg_mem in self._totals['average_memory']]
+                measurements=[avg_mem / 1e6 for avg_mem in self._totals['average_memory']]
             ),
             self._detailed_json_benchmark(
                 metric_name='max_cpu_utilization',

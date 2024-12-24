@@ -21,7 +21,7 @@ from awscli.formatter import YAMLDumper
 
 class DynamoYAMLDumper(YAMLDumper):
     def __init__(self):
-        super(DynamoYAMLDumper, self).__init__()
+        super().__init__()
         self._yaml.representer.add_representer(
             decimal.Decimal, self._represent_decimal
         )
@@ -38,7 +38,7 @@ class DynamoYAMLDumper(YAMLDumper):
     def _represent_binary(self, underlying_dumper, data):
         encoded_data = b64encode(data.value).decode('ascii')
         return underlying_dumper.represent_scalar(
-            u'tag:yaml.org,2002:binary', encoded_data, style='"'
+            'tag:yaml.org,2002:binary', encoded_data, style='"'
         )
 
     def dump(self, response, stream):
@@ -46,4 +46,4 @@ class DynamoYAMLDumper(YAMLDumper):
             stream.write(str(response))
             stream.write('\n')
             return
-        super(DynamoYAMLDumper, self).dump(response, stream)
+        super().dump(response, stream)

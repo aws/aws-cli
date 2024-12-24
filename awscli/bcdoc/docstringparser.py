@@ -57,6 +57,7 @@ class HTMLTree(object):
     meaning that the current_node will be the most recently opened tag. When
     a tag is closed, the current_node moves up to the parent node.
     """
+
     def __init__(self, doc):
         self.doc = doc
         self.head = StemNode()
@@ -122,6 +123,7 @@ class TagNode(StemNode):
     """
     A generic Tag node. It will verify that handlers exist before writing.
     """
+
     def __init__(self, tag, attrs=None, parent=None):
         super(TagNode, self).__init__(parent)
         self.attrs = attrs
@@ -174,6 +176,7 @@ class DataNode(Node):
     """
     A Node that contains only string data.
     """
+
     def __init__(self, data, parent=None):
         super(DataNode, self).__init__(parent)
         if not isinstance(data, str):

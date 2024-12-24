@@ -84,7 +84,7 @@ METADATA_FILENAME = 'metadata.json'
 # the encodings.idna is imported and registered in the codecs registry,
 # which will stop the LookupErrors from happening.
 # See: https://bugs.python.org/issue29288
-u''.encode('idna')
+''.encode('idna')
 
 
 def main():
@@ -133,7 +133,7 @@ def _get_linux_distribution():
         linux_distribution = distro.id()
         version = distro.major_version()
         if version:
-            linux_distribution += '.%s' % version
+            linux_distribution += f'.{version}'
     except Exception:
         pass
     return linux_distribution
@@ -151,7 +151,7 @@ def _add_linux_distribution_to_user_agent(session):
     if linux_distribution := _get_distribution():
         add_metadata_component_to_user_agent_extra(
             session,
-            'distrib', 
+            'distrib',
             linux_distribution,
         )
 
@@ -222,7 +222,7 @@ class AWSCLIEntryPoint:
         return rc
 
 
-class CLIDriver(object):
+class CLIDriver:
 
     def __init__(self, session=None, error_handler=None,
                  debug=False):
@@ -453,7 +453,7 @@ class CLIDriver(object):
 
         if 'AWS_EXECUTION_ENV' in os.environ:
             version_string += f' exec-env/{os.environ.get("AWS_EXECUTION_ENV")}'
-        
+
         version_string += f' {_get_distribution_source()}/{platform.machine()}'
 
         if linux_distribution := _get_distribution():
@@ -646,7 +646,7 @@ class ServiceCommand(CLICommand):
                 operation_model=operation_model,
                 operation_caller=CLIOperationCaller(self.session),
             )
-        self.session.emit('building-command-table.%s' % self._name,
+        self.session.emit(f'building-command-table.{self._name}',
                           command_table=command_table,
                           session=self.session,
                           command_object=self)
@@ -675,7 +675,7 @@ class ServiceCommand(CLICommand):
             operations_table=command_table, service_name=self._name)
 
 
-class ServiceOperation(object):
+class ServiceOperation:
 
     """A single operation of a service.
 
@@ -750,7 +750,7 @@ class ServiceOperation(object):
         subcommand_table = OrderedDict()
         full_name = '_'.join([c.name for c in self.lineage])
         self._session.emit(
-            'building-command-table.%s' % full_name,
+            f'building-command-table.{full_name}',
             command_table=subcommand_table,
             session=self._session,
             command_object=self,
@@ -780,8 +780,7 @@ class ServiceOperation(object):
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a particular operation
         # of a service we can go ahead and load the parameters.
-        event = 'before-building-argument-table-parser.%s.%s' % \
-            (self._parent_name, self._name)
+        event = f'before-building-argument-table-parser.{self._parent_name}.{self._name}'
         self._emit(event, argument_table=self.arg_table, args=args,
                    session=self._session)
         subcommand_table = self.subcommand_table
@@ -801,15 +800,13 @@ class ServiceOperation(object):
             remaining.append(parsed_args.help)
         if remaining:
             raise UnknownArgumentError(
-                "Unknown options: %s" % ', '.join(remaining))
-        event = 'operation-args-parsed.%s.%s' % (self._parent_name,
-                                                 self._name)
+                "Unknown options: {}".format(', '.join(remaining)))
+        event = f'operation-args-parsed.{self._parent_name}.{self._name}'
         self._emit(event, parsed_args=parsed_args,
                    parsed_globals=parsed_globals)
         call_parameters = self._build_call_parameters(
             parsed_args, self.arg_table)
-        event = 'calling-command.%s.%s' % (self._parent_name,
-                                           self._name)
+        event = f'calling-command.{self._parent_name}.{self._name}'
         override = self._emit_first_non_none_response(
             event,
             call_parameters=call_parameters,
@@ -901,8 +898,7 @@ class ServiceOperation(object):
                 event_emitter=event_emitter)
             arg_object.add_to_arg_table(argument_table)
         LOG.debug(argument_table)
-        self._emit('building-argument-table.%s.%s' % (self._parent_name,
-                                                      self._name),
+        self._emit(f'building-argument-table.{self._parent_name}.{self._name}',
                    operation_model=self._operation_model,
                    session=self._session,
                    command=self,
@@ -924,7 +920,7 @@ class ServiceOperation(object):
         add_command_lineage_to_user_agent_extra(self._session, self.lineage_names)
 
 
-class CLIOperationCaller(object):
+class CLIOperationCaller:
 
     """Call an AWS operation and format the response."""
 

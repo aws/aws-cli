@@ -31,7 +31,7 @@ def is_response_paginated(response):
     return isinstance(response, PageIterator)
 
 
-class Formatter(object):
+class Formatter:
     def __init__(self, args):
         self._args = args
 
@@ -60,7 +60,7 @@ class Formatter(object):
     def _flush_stream(self, stream):
         try:
             stream.flush()
-        except IOError:
+        except OSError:
             pass
 
 
@@ -81,7 +81,7 @@ class FullyBufferedFormatter(Formatter):
             response_data)
         try:
             self._format_response(command_name, response_data, stream)
-        except IOError as e:
+        except OSError:
             # If the reading end of our stdout stream has closed the file
             # we can just exit.
             pass
@@ -104,7 +104,7 @@ class JSONFormatter(FullyBufferedFormatter):
             stream.write('\n')
 
 
-class YAMLDumper(object):
+class YAMLDumper:
     def __init__(self):
         self._yaml = YAML(typ='safe')
         # Encoding is set to None because we handle the encoding by
@@ -136,7 +136,7 @@ class YAMLDumper(object):
 
 class YAMLFormatter(FullyBufferedFormatter):
     def __init__(self, args, yaml_dumper=None):
-        super(YAMLFormatter, self).__init__(args)
+        super().__init__(args)
         self._yaml_dumper = yaml_dumper
         if yaml_dumper is None:
             self._yaml_dumper = YAMLDumper()
@@ -149,7 +149,7 @@ class YAMLFormatter(FullyBufferedFormatter):
 
 class StreamedYAMLFormatter(Formatter):
     def __init__(self, args, yaml_dumper=None):
-        super(StreamedYAMLFormatter, self).__init__(args)
+        super().__init__(args)
         self._yaml_dumper = yaml_dumper
         if yaml_dumper is None:
             self._yaml_dumper = YAMLDumper()
@@ -165,7 +165,7 @@ class StreamedYAMLFormatter(Formatter):
                 # response. We go with the latter so we can reuse our YAML
                 # dumper
                 self._yaml_dumper.dump([response], stream)
-            except IOError:
+            except OSError:
                 # If the reading end of our stdout stream has closed the file
                 # we can just exit.
                 return
@@ -197,7 +197,7 @@ class TableFormatter(FullyBufferedFormatter):
 
     """
     def __init__(self, args, table=None):
-        super(TableFormatter, self).__init__(args)
+        super().__init__(args)
         if args.color == 'auto':
             self.table = MultiTable(initial_section=False,
                                     column_separator='|')
@@ -210,13 +210,13 @@ class TableFormatter(FullyBufferedFormatter):
             self.table = MultiTable(initial_section=False,
                                     column_separator='|', styler=styler)
         else:
-            raise ValueError("Unknown color option: %s" % args.color)
+            raise ValueError(f"Unknown color option: {args.color}")
 
     def _format_response(self, command_name, response, stream):
         if self._build_table(command_name, response):
             try:
                 self.table.render(stream)
-            except IOError:
+            except OSError:
                 # If they're piping stdout to another process which exits before
                 # we're done writing all of our output, we'll get an error about a
                 # closed pipe which we can safely ignore.
@@ -368,6 +368,6 @@ CLI_OUTPUT_FORMATS = {
 
 def get_formatter(format_type, args):
     if format_type not in CLI_OUTPUT_FORMATS:
-        raise ValueError("Unknown output type: %s" % format_type)
+        raise ValueError(f"Unknown output type: {format_type}")
     format_type_cls = CLI_OUTPUT_FORMATS[format_type]
     return format_type_cls(args)

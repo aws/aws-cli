@@ -40,21 +40,24 @@ class LazyClientCreator(object):
     a client.  This class manages this process.
 
     """
-    def __init__(self,
-                 import_name='awscli.clidriver.create_clidriver'):
+
+    def __init__(self, import_name='awscli.clidriver.create_clidriver'):
         self._import_name = import_name
         self._session_cache = {}
 
-    def create_client(self, service_name, parsed_region=None,
-                      parsed_profile=None, **kwargs):
+    def create_client(
+        self, service_name, parsed_region=None, parsed_profile=None, **kwargs
+    ):
         if self._session_cache.get(parsed_profile) is None:
             session = self.create_session()
             session.set_config_variable('profile', parsed_profile)
             self._session_cache[parsed_profile] = session
         self._session_cache[parsed_profile].set_config_variable(
-            'region', parsed_region)
+            'region', parsed_region
+        )
         return self._session_cache[parsed_profile].create_client(
-                                                        service_name, **kwargs)
+            service_name, **kwargs
+        )
 
     def create_session(self):
         return lazy_call(self._import_name).session

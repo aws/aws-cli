@@ -28,4 +28,3 @@ class TableNameCompleter(servercomp.BaseCustomServerSideCompleter):
         return [
             table_name for table_name in response.get('TableNames', [])
         ]
-

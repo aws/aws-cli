@@ -116,7 +116,7 @@ class GetTokenCommand(BasicCommand):
         sts_client = client_factory.get_sts_client(
             region_name=parsed_globals.region, role_arn=parsed_args.role_arn
         )
-        
+
         validate_mutually_exclusive(parsed_args, ['cluster_name'], ['cluster_id'])
 
         if parsed_args.cluster_id:

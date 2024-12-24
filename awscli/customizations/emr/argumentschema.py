@@ -800,7 +800,7 @@ MANAGED_SCALING_POLICY_SCHEMA = {
     "properties": {
         "ComputeLimits": {
             "type": "object",
-            "description": 
+            "description":
                 "The EC2 unit limits for a managed scaling policy. "
                 "The managed scaling activity of a cluster is not allowed to go above "
                 "or below these limits. The limits apply to CORE and TASK groups "
@@ -808,7 +808,7 @@ MANAGED_SCALING_POLICY_SCHEMA = {
             "properties": {
                "MinimumCapacityUnits": {
                   "type": "integer",
-                  "description": 
+                  "description":
                       "The lower boundary of EC2 units. It is measured through "
                       "VCPU cores or instances for instance groups and measured "
                       "through units for instance fleets. Managed scaling "
@@ -817,7 +817,7 @@ MANAGED_SCALING_POLICY_SCHEMA = {
                },
                "MaximumCapacityUnits": {
                   "type": "integer",
-                  "description": 
+                  "description":
                       "The upper boundary of EC2 units. It is measured through "
                       "VCPU cores or instances for instance groups and measured "
                       "through units for instance fleets. Managed scaling "
@@ -826,7 +826,7 @@ MANAGED_SCALING_POLICY_SCHEMA = {
                },
                "MaximumOnDemandCapacityUnits": {
                   "type": "integer",
-                  "description": 
+                  "description":
                       "The upper boundary of on-demand EC2 units. It is measured through "
                       "VCPU cores or instances for instance groups and measured "
                       "through units for instance fleets. The on-demand units are not "
@@ -848,7 +848,7 @@ MANAGED_SCALING_POLICY_SCHEMA = {
                       "The core units are not allowed to scale beyond this boundary. "
                       "The parameter is used to split capacity allocation between core and task nodes."
                }
-            } 
+            }
         },
         "ScalingStrategy": {
             "type": "string",

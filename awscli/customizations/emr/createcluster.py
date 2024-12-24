@@ -259,7 +259,7 @@ class CreateCluster(Command):
                 '--termination-protected',
                 parsed_args.no_termination_protected,
                 '--no-termination-protected')
-        
+
         if (parsed_args.unhealthy_node_replacement or parsed_args.no_unhealthy_node_replacement):
             instances_config['UnhealthyNodeReplacement'] = \
             emrutils.apply_boolean_options(

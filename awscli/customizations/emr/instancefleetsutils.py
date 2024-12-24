@@ -65,7 +65,7 @@ def validate_and_build_instance_fleets(parsed_instance_fleets):
             if 'OnDemandResizeSpecification' in instanceFleetResizeSpecifications:
                 instance_fleet_config['ResizeSpecifications']['OnDemandResizeSpecification'] = \
                     instanceFleetResizeSpecifications['OnDemandResizeSpecification']
-        
+
         if 'Context' in keys:
             instance_fleet_config['Context'] = instance_fleet['Context']
 

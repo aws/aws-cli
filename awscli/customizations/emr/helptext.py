@@ -119,7 +119,7 @@ RELEASE_LABEL = (
 
 OS_RELEASE_LABEL = (
     '<p>Specifies a particular Amazon Linux release for all nodes in a cluster'
-    ' launch request. If a release is not specified, EMR uses the latest validated' 
+    ' launch request. If a release is not specified, EMR uses the latest validated'
     ' Amazon Linux release for cluster launch.</p>')
 
 CONFIGURATIONS = (
@@ -227,10 +227,10 @@ EC2_ATTRIBUTES = (
     ' For example, <code>us-west-1b</code>. <code>AvailabilityZone</code> is used for uniform instance groups,'
     ' while <code>AvailabilityZones</code> (plural) is used for instance fleets.</li>'
     '<li><code>AvailabilityZones</code> - Applies to clusters that use the instance fleet configuration.'
-    ' When multiple Availability Zones are specified, Amazon EMR evaluates them and launches instances' 
+    ' When multiple Availability Zones are specified, Amazon EMR evaluates them and launches instances'
     ' in the optimal Availability Zone. <code>AvailabilityZone</code> is used for uniform instance groups,'
     ' while <code>AvailabilityZones</code> (plural) is used for instance fleets.</li>'
-    '<li><code>SubnetId</code> - Applies to clusters that use the uniform instance group configuration.' 
+    '<li><code>SubnetId</code> - Applies to clusters that use the uniform instance group configuration.'
     ' Specify the VPC subnet in which to create the cluster. <code>SubnetId</code> is used for uniform instance groups,'
     ' while <code>SubnetIds</code> (plural) is used for instance fleets.</li>'
     '<li><code>SubnetIds</code> - Applies to clusters that use the instance fleet configuration.'
@@ -498,10 +498,10 @@ MANAGED_SCALING_POLICY = (
 )
 
 PLACEMENT_GROUP_CONFIGS = (
-    '<p>Placement group configuration for an Amazon EMR ' 
-    'cluster. The configuration specifies the EC2 placement group ' 
-    'strategy associated with each EMR Instance Role.</p> ' 
-    '<p>Currently, we support placement group only for <code>MASTER</code> ' 
+    '<p>Placement group configuration for an Amazon EMR '
+    'cluster. The configuration specifies the EC2 placement group '
+    'strategy associated with each EMR Instance Role.</p> '
+    '<p>Currently, we support placement group only for <code>MASTER</code> '
     'role with <code>SPREAD</code> strategy by default. You can opt-in by '
     'passing <code>--placement-group-configs InstanceRole=MASTER</code> '
     'during cluster creation.</p>'

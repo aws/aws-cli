@@ -29,7 +29,7 @@ class ModelIndexer(object):
 
     _CREATE_CMD_TABLE = """\
         CREATE TABLE IF NOT EXISTS command_table (
-          command TEXT, 
+          command TEXT,
           full_name TEXT,
           parent TEXT REFERENCES command_table,
           PRIMARY KEY (command, parent)
@@ -51,12 +51,12 @@ class ModelIndexer(object):
     """
 
     _CREATE_COMMAND_TABLE_INDEX = """\
-        CREATE INDEX parent_index 
+        CREATE INDEX parent_index
             ON command_table(parent);
     """
 
     _CREATE_PARAM_TABLE_INDEX = """\
-        CREATE INDEX parent_command_index 
+        CREATE INDEX parent_command_index
             ON param_table(parent, command);
     """
 

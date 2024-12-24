@@ -100,7 +100,7 @@ class ModifyClusterAttr(Command):
             emrutils.call_and_display_response(self._session,
                                                'SetKeepJobFlowAliveWhenNoSteps',
                                                parameters, parsed_globals)
-            
+
         if (args.unhealthy_node_replacement or args.no_unhealthy_node_replacement):
             protected = (args.unhealthy_node_replacement and
                          not args.no_unhealthy_node_replacement)

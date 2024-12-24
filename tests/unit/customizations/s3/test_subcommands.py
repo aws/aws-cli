@@ -92,7 +92,7 @@ class TestLSCommand(unittest.TestCase):
         ls_command = ListCommand(self.session)
         parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False,
                                page_size='5', human_readable=False,
-                               summarize=False, request_payer=None)
+                               summarize=False, request_payer=None, filters=None)
         parsed_globals = mock.Mock()
         ls_command._run_main(parsed_args, parsed_globals)
         call = self.session.create_client.return_value.list_objects_v2
@@ -115,7 +115,7 @@ class TestLSCommand(unittest.TestCase):
                                  verify_ssl=None)
         parsed_args = FakeArgs(dir_op=False, paths='s3://',
                                human_readable=False, summarize=False,
-                               request_payer=None, page_size=None)
+                               request_payer=None, page_size=None, filters=None)
         ls_command._run_main(parsed_args, parsed_global)
         call = self.session.create_client.return_value.list_buckets
         paginate = self.session.create_client.return_value.get_paginator\
@@ -144,7 +144,7 @@ class TestLSCommand(unittest.TestCase):
                                  verify_ssl=False)
         parsed_args = FakeArgs(paths='s3://', dir_op=False,
                                human_readable=False, summarize=False,
-                               request_payer=None, page_size=None)
+                               request_payer=None, page_size=None, filters=None)
         ls_command._run_main(parsed_args, parsed_global)
         # Verify get_client
         get_client = self.session.create_client
@@ -157,7 +157,7 @@ class TestLSCommand(unittest.TestCase):
         ls_command = ListCommand(self.session)
         parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False,
                                human_readable=False, summarize=False,
-                               request_payer='requester', page_size='5')
+                               request_payer='requester', page_size='5', filters=None)
         parsed_globals = mock.Mock()
         ls_command._run_main(parsed_args, parsed_globals)
         call = self.session.create_client.return_value.list_objects
@@ -176,6 +176,48 @@ class TestLSCommand(unittest.TestCase):
 
         paginate.assert_called_with(**ref_call_args)
 
+    def test_ls_with_filters(self):
+        ls_command = ListCommand(self.session)
+        parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False,
+                               page_size='5', human_readable=False,
+                               summarize=False, request_payer=None, filters=[['--include', '*', '--exclude', '*']])
+        parsed_globals = mock.Mock()
+        ls_command._run_main(parsed_args, parsed_globals)
+        call = self.session.create_client.return_value.list_objects_v2
+        paginate = self.session.create_client.return_value.get_paginator\
+            .return_value.paginate
+        # We should make no operation calls.
+        self.assertEqual(call.call_count, 0)
+        # And only a single pagination call to ListObjectsV2.
+        self.session.create_client.return_value.get_paginator.\
+            assert_called_with('list_objects_v2')
+        ref_call_args = {'Bucket': u'mybucket', 'Delimiter': '/',
+                         'Prefix': u'',
+                         'PaginationConfig': {'PageSize': u'5'}}
+
+        paginate.assert_called_with(**ref_call_args)
+
+    def test_ls_is_match_pattern(self):
+        ls_command = ListCommand(self.session)
+        # Match with Include
+        ls_command._is_match_pattern = MagicMock(return_value=True)
+        file_status = ls_command._is_match_pattern('include', '*.txt', '/foo/bar.txt', is_match=True)
+        self.assertEqual(file_status, True)
+
+        # Match with Exclude
+        ls_command._is_match_pattern = MagicMock(return_value=False)
+        file_status = ls_command._is_match_pattern('exclude', '*.txt', '/foo/bar.txt', is_match=True)
+        self.assertEqual(file_status, False)
+
+        # Not match with Include 
+        ls_command._is_match_pattern = MagicMock(return_value=False)
+        file_status = ls_command._is_match_pattern('include', '*.zip', '/foo/bar.txt', is_match=False)
+        self.assertEqual(file_status, False)
+
+        # Not match with Exclude
+        ls_command._is_match_pattern = MagicMock(return_value=True)
+        file_status = ls_command._is_match_pattern('exclude', '*.zip', '/foo/bar.txt', is_match=False)
+        self.assertEqual(file_status, True)
 
 class CommandArchitectureTest(BaseAWSCommandParamsTest):
     def setUp(self):

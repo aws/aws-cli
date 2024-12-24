@@ -36,6 +36,7 @@ from awscli.customizations.utils import uni_print
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
 from awscli.customizations.s3 import transferconfig
+import fnmatch
 
 
 LOGGER = logging.getLogger(__name__)
@@ -494,7 +495,7 @@ class ListCommand(S3Command):
     USAGE = "<S3Uri> or NONE"
     ARG_TABLE = [{'name': 'paths', 'nargs': '?', 'default': 's3://',
                   'positional_arg': True, 'synopsis': USAGE}, RECURSIVE,
-                 PAGE_SIZE, HUMAN_READABLE, SUMMARIZE, REQUEST_PAYER]
+                 PAGE_SIZE, HUMAN_READABLE, SUMMARIZE, REQUEST_PAYER, INCLUDE, EXCLUDE]
 
     def _run_main(self, parsed_args, parsed_globals):
         super(ListCommand, self)._run_main(parsed_args, parsed_globals)
@@ -503,6 +504,8 @@ class ListCommand(S3Command):
         self._size_accumulator = 0
         self._total_objects = 0
         self._human_readable = parsed_args.human_readable
+        self.filters = parsed_args.filters
+
         path = parsed_args.paths
         if path.startswith('s3://'):
             path = path[5:]
@@ -545,6 +548,27 @@ class ListCommand(S3Command):
         for response_data in iterator:
             self._display_page(response_data)
 
+    def _is_match_pattern(self, pattern_type, path_pattern, file_path):
+        file_status = None 
+        
+        is_match = fnmatch.fnmatch(file_path, path_pattern)
+        if is_match and pattern_type == 'include':
+            file_status = True
+            LOGGER.debug("%s matched include filter: %s",
+                        file_path, path_pattern)
+        elif is_match and pattern_type == 'exclude':
+            file_status = False
+            LOGGER.debug("%s matched exclude filter: %s",
+                        file_path, path_pattern)
+        else:
+            LOGGER.debug("%s did not match %s filter: %s",
+                        file_path, pattern_type, path_pattern)
+            if pattern_type == 'include':
+                file_status = False
+            else:
+                file_status = True
+        return file_status
+
     def _display_page(self, response_data, use_basename=True):
         common_prefixes = response_data.get('CommonPrefixes', [])
         contents = response_data.get('Contents', [])
@@ -556,20 +580,38 @@ class ListCommand(S3Command):
             prefix = prefix_components[-2]
             pre_string = "PRE".rjust(30, " ")
             print_str = pre_string + ' ' + prefix + '/\n'
-            uni_print(print_str)
+
         for content in contents:
             last_mod_str = self._make_last_mod_str(content['LastModified'])
-            self._size_accumulator += int(content['Size'])
-            self._total_objects += 1
-            size_str = self._make_size_str(content['Size'])
+
             if use_basename:
                 filename_components = content['Key'].split('/')
                 filename = filename_components[-1]
             else:
                 filename = content['Key']
-            print_str = last_mod_str + ' ' + size_str + ' ' + \
-                filename + '\n'
-            uni_print(print_str)
+            
+            file_status = None
+            
+            if self.filters is not None:
+                for filter in self.filters:
+                    pattern_type = filter[0].lstrip('-')
+                    path_pattern = filter[1]
+                    file_status = self._is_match_pattern(pattern_type, path_pattern, filename)
+
+                if file_status is True:
+                    self._size_accumulator += int(content['Size'])
+                    self._total_objects += 1
+                    size_str = self._make_size_str(content['Size'])
+                    print_str = last_mod_str + ' ' + size_str + ' ' + \
+                        filename + '\n'
+                    uni_print(print_str)
+            else:
+                self._size_accumulator += int(content['Size'])
+                self._total_objects += 1
+                size_str = self._make_size_str(content['Size'])
+                print_str = last_mod_str + ' ' + size_str + ' ' + \
+                        filename + '\n'
+                uni_print(print_str)
         self._at_first_page = False
 
     def _list_all_buckets(self, page_size=None):

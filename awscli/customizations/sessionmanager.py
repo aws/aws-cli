@@ -10,15 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import logging
-import json
 import errno
+import json
+import logging
 import os
 import re
-
 from subprocess import check_call, check_output
+
+from awscli.clidriver import CLIOperationCaller, ServiceOperation
 from awscli.compat import ignore_user_entered_signals
-from awscli.clidriver import ServiceOperation, CLIOperationCaller
 
 logger = logging.getLogger(__name__)
 
@@ -26,13 +26,14 @@ ERROR_MESSAGE = (
     'SessionManagerPlugin is not found. ',
     'Please refer to SessionManager Documentation here: ',
     'http://docs.aws.amazon.com/console/systems-manager/',
-    'session-manager-plugin-not-found'
+    'session-manager-plugin-not-found',
 )
 
 
 def register_ssm_session(event_handlers):
-    event_handlers.register('building-command-table.ssm',
-                            add_custom_start_session)
+    event_handlers.register(
+        'building-command-table.ssm', add_custom_start_session
+    )
 
 
 def add_custom_start_session(session, command_table, **kwargs):
@@ -40,8 +41,9 @@ def add_custom_start_session(session, command_table, **kwargs):
         name='start-session',
         parent_name='ssm',
         session=session,
-        operation_model=session.get_service_model(
-            'ssm').operation_model('StartSession'),
+        operation_model=session.get_service_model('ssm').operation_model(
+            'StartSession'
+        ),
         operation_caller=StartSessionCaller(session),
     )
 
@@ -84,8 +86,7 @@ class VersionRequirement:
 
 class StartSessionCommand(ServiceOperation):
     def create_help_command(self):
-        help_command = super(
-            StartSessionCommand, self).create_help_command()
+        help_command = super(StartSessionCommand, self).create_help_command()
         # Change the output shape because the command provides no output.
         self._operation_model.output_shape = None
         return help_command
@@ -95,12 +96,13 @@ class StartSessionCaller(CLIOperationCaller):
     LAST_PLUGIN_VERSION_WITHOUT_ENV_VAR = "1.2.497.0"
     DEFAULT_SSM_ENV_NAME = "AWS_SSM_START_SESSION_RESPONSE"
 
-    def invoke(self, service_name, operation_name, parameters,
-               parsed_globals):
+    def invoke(self, service_name, operation_name, parameters, parsed_globals):
         client = self._session.create_client(
-            service_name, region_name=parsed_globals.region,
+            service_name,
+            region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl)
+            verify=parsed_globals.verify_ssl,
+        )
         response = client.start_session(**parameters)
         session_id = response['SessionId']
         region_name = client.meta.region_name
@@ -108,8 +110,11 @@ class StartSessionCaller(CLIOperationCaller):
         # to fetch same profile credentials to make an api call in the plugin.
         # If --profile flag is configured, pass it to Session Manager plugin.
         # If not, set empty string.
-        profile_name = parsed_globals.profile \
-            if parsed_globals.profile is not None else ''
+        profile_name = (
+            parsed_globals.profile
+            if parsed_globals.profile is not None
+            else ''
+        )
         endpoint_url = client.meta.endpoint_url
         ssm_env_name = self.DEFAULT_SSM_ENV_NAME
 
@@ -147,19 +152,25 @@ class StartSessionCaller(CLIOperationCaller):
             # and handling in there
             with ignore_user_entered_signals():
                 # call executable with necessary input
-                check_call(["session-manager-plugin",
-                            start_session_response,
-                            region_name,
-                            "StartSession",
-                            profile_name,
-                            json.dumps(parameters),
-                            endpoint_url], env=env)
+                check_call(
+                    [
+                        "session-manager-plugin",
+                        start_session_response,
+                        region_name,
+                        "StartSession",
+                        profile_name,
+                        json.dumps(parameters),
+                        endpoint_url,
+                    ],
+                    env=env,
+                )
 
             return 0
         except OSError as ex:
             if ex.errno == errno.ENOENT:
-                logger.debug('SessionManagerPlugin is not present',
-                             exc_info=True)
+                logger.debug(
+                    'SessionManagerPlugin is not present', exc_info=True
+                )
                 # start-session api call returns response and starts the
                 # session on ssm-agent and response is forwarded to
                 # session-manager-plugin. If plugin is not present, terminate

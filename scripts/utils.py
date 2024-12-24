@@ -15,7 +15,7 @@ class BadRCError(Exception):
 
 def run(cmd, cwd=None, env=None, echo=True):
     if echo:
-        sys.stdout.write("Running cmd: %s\n" % cmd)
+        sys.stdout.write(f"Running cmd: {cmd}\n")
     kwargs = {
         'shell': True,
         'stdout': subprocess.PIPE,
@@ -31,8 +31,7 @@ def run(cmd, cwd=None, env=None, echo=True):
     stdout, stderr = p.communicate()
     output = stdout.decode('utf-8') + stderr.decode('utf-8')
     if p.returncode != 0:
-        raise BadRCError("Bad rc (%s) for cmd '%s': %s" % (
-            p.returncode, cmd, output))
+        raise BadRCError(f"Bad rc ({p.returncode}) for cmd '{cmd}': {output}")
     return output
 
 
@@ -83,7 +82,7 @@ def virtualenv_enabled():
 
 
 def update_metadata(dirname, **kwargs):
-    print('Update metadata values %s' % kwargs)
+    print(f'Update metadata values {kwargs}')
     metadata_file = os.path.join(dirname, 'awscli', 'data', 'metadata.json')
     with open(metadata_file) as f:
         metadata = json.load(f)

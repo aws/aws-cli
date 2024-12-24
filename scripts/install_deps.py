@@ -17,7 +17,7 @@ def get_package_tarball(package_dir, package_prefix):
     )
     if len(package_filenames) == 0:
         raise InstallationError(
-            "Unable to find local package starting with %s prefix." % package_prefix
+            f"Unable to find local package starting with {package_prefix} prefix."
         )
     # We only expect a single package from the downloader
     return package_filenames[0]
@@ -26,8 +26,7 @@ def get_package_tarball(package_dir, package_prefix):
 def install_local_package(package_dir, package, pip_script="pip"):
     with cd(package_dir):
         run(
-            "%s install %s --find-links file://%s %s"
-            % (pip_script, INSTALL_ARGS, package_dir, package)
+            f"{pip_script} install {INSTALL_ARGS} --find-links file://{package_dir} {package}"
         )
 
 
@@ -44,7 +43,7 @@ def pip_install_packages(package_dir):
     local_python = os.path.join(os.environ["VIRTUAL_ENV"], bin_path(), "python")
 
     # Windows can't replace a running pip.exe, so we need to work around
-    run("%s -m pip install pip==%s" % (local_python, PINNED_PIP_VERSION))
+    run(f"{local_python} -m pip install pip=={PINNED_PIP_VERSION}")
 
     # Install or update prerequisite build packages
     setup_requires_dir = os.path.join(package_dir, "setup")

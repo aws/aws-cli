@@ -16,7 +16,9 @@
 EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
 EMR_ROLE_NAME = "EMR_DefaultRole"
 EMR_AUTOSCALING_ROLE_NAME = "EMR_AutoScaling_DefaultRole"
-ROLE_ARN_PATTERN = "arn:{{region_suffix}}:iam::aws:policy/service-role/{{policy_name}}"
+ROLE_ARN_PATTERN = (
+    "arn:{{region_suffix}}:iam::aws:policy/service-role/{{policy_name}}"
+)
 EC2_ROLE_POLICY_NAME = "AmazonElasticMapReduceforEC2Role"
 EMR_ROLE_POLICY_NAME = "AmazonElasticMapReduceRole"
 EMR_AUTOSCALING_ROLE_POLICY_NAME = "AmazonElasticMapReduceforAutoScalingRole"
@@ -57,12 +59,14 @@ EMRFS_RETRY_COUNT_KEY = 'fs.s3.consistent.retryCount'
 EMRFS_RETRY_PERIOD_KEY = 'fs.s3.consistent.retryPeriodSeconds'
 EMRFS_CSE_KEY = 'fs.s3.cse.enabled'
 EMRFS_CSE_KMS_KEY_ID_KEY = 'fs.s3.cse.kms.keyId'
-EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY = \
+EMRFS_CSE_ENCRYPTION_MATERIALS_PROVIDER_KEY = (
     'fs.s3.cse.encryptionMaterialsProvider'
+)
 EMRFS_CSE_CUSTOM_PROVIDER_URI_KEY = 'fs.s3.cse.encryptionMaterialsProvider.uri'
 
-EMRFS_CSE_KMS_PROVIDER_FULL_CLASS_NAME = ('com.amazon.ws.emr.hadoop.fs.cse.'
-                                          'KMSEncryptionMaterialsProvider')
+EMRFS_CSE_KMS_PROVIDER_FULL_CLASS_NAME = (
+    'com.amazon.ws.emr.hadoop.fs.cse.' 'KMSEncryptionMaterialsProvider'
+)
 EMRFS_CSE_CUSTOM_S3_GET_BA_PATH = 'file:/usr/share/aws/emr/scripts/s3get'
 EMRFS_CUSTOM_DEST_PATH = '/usr/share/aws/emr/auxlib'
 
@@ -181,16 +185,31 @@ EMR = 'elasticmapreduce'
 APPLICATION_AUTOSCALING = 'application-autoscaling'
 LATEST = 'latest'
 
-APPLICATIONS = ["HIVE", "PIG", "HBASE", "GANGLIA", "IMPALA", "SPARK", "MAPR",
-                "MAPR_M3", "MAPR_M5", "MAPR_M7"]
+APPLICATIONS = [
+    "HIVE",
+    "PIG",
+    "HBASE",
+    "GANGLIA",
+    "IMPALA",
+    "SPARK",
+    "MAPR",
+    "MAPR_M3",
+    "MAPR_M5",
+    "MAPR_M7",
+]
 
 SSH_USER = 'hadoop'
 STARTING_STATES = ['STARTING', 'BOOTSTRAPPING']
 TERMINATED_STATES = ['TERMINATED', 'TERMINATING', 'TERMINATED_WITH_ERRORS']
 
 # list-clusters
-LIST_CLUSTERS_ACTIVE_STATES = ['STARTING', 'BOOTSTRAPPING', 'RUNNING',
-                               'WAITING', 'TERMINATING']
+LIST_CLUSTERS_ACTIVE_STATES = [
+    'STARTING',
+    'BOOTSTRAPPING',
+    'RUNNING',
+    'WAITING',
+    'TERMINATING',
+]
 LIST_CLUSTERS_TERMINATED_STATES = ['TERMINATED']
 LIST_CLUSTERS_FAILED_STATES = ['TERMINATED_WITH_ERRORS']
 

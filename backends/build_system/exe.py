@@ -58,11 +58,9 @@ class ExeBuilder:
             distribution_source=DISTRIBUTION_SOURCE_EXE,
         )
         for distinfo in self._utils.glob(
-                '**/*.dist-info',
-                root=self._final_dist_dir
+            '**/*.dist-info', root=self._final_dist_dir
         ):
             self._utils.rmtree(os.path.join(self._final_dist_dir, distinfo))
-
 
     def _ensure_no_existing_build_dir(self):
         if self._utils.isdir(self._dist_dir):

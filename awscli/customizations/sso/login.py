@@ -34,11 +34,11 @@ class LoginCommand(BaseSSOCommand):
         {
             'name': 'sso-session',
             'help_text': (
-               'An explicit SSO session to use to login. By default, this '
-               'command will login using the SSO session configured as part '
-               'of the requested profile and generally does not require this '
-               'argument to be set.'
-            )
+                'An explicit SSO session to use to login. By default, this '
+                'command will login using the SSO session configured as part '
+                'of the requested profile and generally does not require this '
+                'argument to be set.'
+            ),
         }
     ]
 

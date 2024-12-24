@@ -25,10 +25,11 @@ class GenerateCommand(BasicCommand):
     NAME = "generate"
     DESCRIPTION = helptext.GENERATE_COMMAND
     SUBCOMMANDS = [
-        {'name': 'product',
-         'command_class': GenerateProductCommand},
-        {'name': 'provisioning-artifact',
-         'command_class': GenerateProvisioningArtifactCommand}
+        {'name': 'product', 'command_class': GenerateProductCommand},
+        {
+            'name': 'provisioning-artifact',
+            'command_class': GenerateProvisioningArtifactCommand,
+        },
     ]
 
     def _run_main(self, parsed_args, parsed_globals):

@@ -17,8 +17,9 @@ from awscli.customizations.s3.syncstrategy.exacttimestamps import (
 from awscli.customizations.s3.syncstrategy.sizeonly import SizeOnlySync
 
 
-def register_sync_strategy(session, strategy_cls,
-                           sync_type='file_at_src_and_dest'):
+def register_sync_strategy(
+    session, strategy_cls, sync_type='file_at_src_and_dest'
+):
     """Registers a single sync strategy
 
     :param session: The session that the sync strategy is being registered to.

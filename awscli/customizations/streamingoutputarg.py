@@ -14,8 +14,9 @@ from awscli.arguments import BaseCLIArgument
 from botocore.model import Shape
 
 
-def add_streaming_output_arg(argument_table, operation_model,
-                             session, **kwargs):
+def add_streaming_output_arg(
+    argument_table, operation_model, session, **kwargs
+):
     # Implementation detail:  hooked up to 'building-argument-table'
     # event.
     if _has_streaming_output(operation_model):
@@ -23,7 +24,9 @@ def add_streaming_output_arg(argument_table, operation_model,
         argument_table['outfile'] = StreamingOutputArgument(
             response_key=streaming_argument_name,
             operation_model=operation_model,
-            session=session, name='outfile')
+            session=session,
+            name='outfile',
+        )
 
 
 def _has_streaming_output(model):
@@ -35,15 +38,16 @@ def _get_streaming_argument_name(model):
 
 
 class StreamingOutputArgument(BaseCLIArgument):
-
     BUFFER_SIZE = 32768
     HELP = 'Filename where the content will be saved'
 
-    def __init__(self, response_key, operation_model, name,
-                 session, buffer_size=None):
+    def __init__(
+        self, response_key, operation_model, name, session, buffer_size=None
+    ):
         self._name = name
-        self.argument_model = Shape('StreamingOutputArgument',
-                                    {'type': 'string'})
+        self.argument_model = Shape(
+            'StreamingOutputArgument', {'type': 'string'}
+        )
         if buffer_size is None:
             buffer_size = self.BUFFER_SIZE
         self._buffer_size = buffer_size
@@ -80,15 +84,15 @@ class StreamingOutputArgument(BaseCLIArgument):
         return self.HELP
 
     def add_to_parser(self, parser):
-        parser.add_argument(self._name, metavar=self.py_name,
-                            help=self.HELP)
+        parser.add_argument(self._name, metavar=self.py_name, help=self.HELP)
 
     def add_to_params(self, parameters, value):
         self._output_file = value
         service_id = self._operation_model.service_model.service_id.hyphenize()
         operation_name = self._operation_model.name
-        self._session.register('after-call.%s.%s' % (
-            service_id, operation_name), self.save_file)
+        self._session.register(
+            'after-call.%s.%s' % (service_id, operation_name), self.save_file
+        )
 
     def save_file(self, parsed, **kwargs):
         if self._response_key not in parsed:

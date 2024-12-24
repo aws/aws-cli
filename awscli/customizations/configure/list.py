@@ -57,10 +57,12 @@ class ConfigureListCommand(BasicCommand):
         self._stream = stream
 
     def _run_main(self, args, parsed_globals):
-        self._display_config_value(ConfigValue('Value', 'Type', 'Location'),
-                                   'Name')
-        self._display_config_value(ConfigValue('-----', '----', '--------'),
-                                   '----')
+        self._display_config_value(
+            ConfigValue('Value', 'Type', 'Location'), 'Name'
+        )
+        self._display_config_value(
+            ConfigValue('-----', '----', '--------'), '----'
+        )
 
         if parsed_globals and parsed_globals.profile is not None:
             profile = ConfigValue(self._session.profile, 'manual', '--profile')
@@ -77,9 +79,15 @@ class ConfigureListCommand(BasicCommand):
         return 0
 
     def _display_config_value(self, config_value, config_name):
-        self._stream.write('%10s %24s %16s    %s\n' % (
-            config_name, config_value.value, config_value.config_type,
-            config_value.config_variable))
+        self._stream.write(
+            '%10s %24s %16s    %s\n'
+            % (
+                config_name,
+                config_value.value,
+                config_value.config_type,
+                config_value.config_variable,
+            )
+        )
 
     def _lookup_credentials(self):
         # First try it with _lookup_config.  It's possible
@@ -105,10 +113,12 @@ class ConfigureListCommand(BasicCommand):
                 # visible from botocore.credentials.  I think
                 # the credentials.method is sufficient to show
                 # where the credentials are coming from.
-                access_key = ConfigValue(credentials.access_key,
-                                         credentials.method, '')
-                secret_key = ConfigValue(credentials.secret_key,
-                                         credentials.method, '')
+                access_key = ConfigValue(
+                    credentials.access_key, credentials.method, ''
+                )
+                secret_key = ConfigValue(
+                    credentials.secret_key, credentials.method, ''
+                )
                 access_key.mask_value()
                 secret_key.mask_value()
                 return access_key, secret_key
@@ -135,14 +145,17 @@ class ConfigureListCommand(BasicCommand):
         # First try to look up the variable in the env.
         value = self._session.get_config_variable(name, methods=('env',))
         if value is not None:
-            return ConfigValue(value, 'env',
-                               self._session.session_var_map[name][1])
+            return ConfigValue(
+                value, 'env', self._session.session_var_map[name][1]
+            )
         # Then try to look up the variable in the config file.
         value = self._session.get_config_variable(name, methods=('config',))
         if value is not None:
             return ConfigValue(
-                value, 'config-file',
-                self._session.get_config_variable('config_file'))
+                value,
+                'config-file',
+                self._session.get_config_variable('config_file'),
+            )
 
     def _lookup_config(self, name):
         val = self._lookup_in_env_and_config(name)

@@ -26,10 +26,7 @@ class System:
 
     def __init__(self, params):
         self.session = params.session
-        self.s3 = self.session.create_client(
-            's3',
-            region_name=params.region
-        )
+        self.s3 = self.session.create_client('s3', region_name=params.region)
 
     def validate_administrator(self):
         raise NotImplementedError('validate_administrator')
@@ -60,11 +57,13 @@ class Windows(System):
         process = subprocess.Popen(
             [
                 'powershell.exe',
-                '-Command', 'Stop-Service',
-                '-Name', 'codedeployagent'
+                '-Command',
+                'Stop-Service',
+                '-Name',
+                'codedeployagent',
             ],
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.PIPE,
         )
         (output, error) = process.communicate()
         not_found = (
@@ -83,24 +82,31 @@ class Windows(System):
             [
                 r'.\{0}'.format(self.INSTALLER),
                 '/quiet',
-                '/l', r'.\codedeploy-agent-install-log.txt'
+                '/l',
+                r'.\codedeploy-agent-install-log.txt',
             ],
-            shell=True
+            shell=True,
         )
-        subprocess.check_call([
-            'powershell.exe',
-            '-Command', 'Restart-Service',
-            '-Name', 'codedeployagent'
-        ])
+        subprocess.check_call(
+            [
+                'powershell.exe',
+                '-Command',
+                'Restart-Service',
+                '-Name',
+                'codedeployagent',
+            ]
+        )
 
         process = subprocess.Popen(
             [
                 'powershell.exe',
-                '-Command', 'Get-Service',
-                '-Name', 'codedeployagent'
+                '-Command',
+                'Get-Service',
+                '-Name',
+                'codedeployagent',
             ],
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.PIPE,
         )
         (output, error) = process.communicate()
         if "Running" not in output:
@@ -112,11 +118,13 @@ class Windows(System):
         process = subprocess.Popen(
             [
                 'powershell.exe',
-                '-Command', 'Stop-Service',
-                '-Name', 'codedeployagent'
+                '-Command',
+                'Stop-Service',
+                '-Name',
+                'codedeployagent',
             ],
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.PIPE,
         )
         (output, error) = process.communicate()
         not_found = (
@@ -133,11 +141,15 @@ class Windows(System):
         process = subprocess.Popen(
             [
                 'wmic',
-                'product', 'where', 'name="CodeDeploy Host Agent"',
-                'call', 'uninstall', '/nointeractive'
+                'product',
+                'where',
+                'name="CodeDeploy Host Agent"',
+                'call',
+                'uninstall',
+                '/nointeractive',
             ],
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.PIPE,
         )
         (output, error) = process.communicate()
         if process.returncode != 0:
@@ -169,9 +181,7 @@ class Linux(System):
         with open(self.INSTALLER, 'wb') as f:
             f.write(response['Body'].read())
 
-        subprocess.check_call(
-            ['chmod', '+x', './{0}'.format(self.INSTALLER)]
-        )
+        subprocess.check_call(['chmod', '+x', './{0}'.format(self.INSTALLER)])
 
         credentials = self.session.get_credentials()
         environment = os.environ.copy()
@@ -181,8 +191,7 @@ class Linux(System):
         if credentials.token is not None:
             environment['AWS_SESSION_TOKEN'] = credentials.token
         subprocess.check_call(
-            ['./{0}'.format(self.INSTALLER), 'auto'],
-            env=environment
+            ['./{0}'.format(self.INSTALLER), 'auto'], env=environment
         )
 
     def uninstall(self, params):
@@ -200,7 +209,7 @@ class Linux(System):
         process = subprocess.Popen(
             ['service', 'codedeploy-agent', 'stop'],
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.PIPE,
         )
         (output, error) = process.communicate()
         if process.returncode != 0 and params.not_found_msg not in error:
@@ -231,5 +240,7 @@ class RHEL(Linux):
         subprocess.check_call(['yum', '-y', 'erase', 'codedeploy-agent'])
 
     def _stop_agent(self, params):
-        params.not_found_msg = 'Redirecting to /bin/systemctl stop  codedeploy-agent.service'
+        params.not_found_msg = (
+            'Redirecting to /bin/systemctl stop  codedeploy-agent.service'
+        )
         return Linux._stop_agent(self, params)

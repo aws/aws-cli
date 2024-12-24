@@ -39,9 +39,7 @@ from botocore.utils import (
 
 LOG = logging.getLogger(__name__)
 
-SSO_TOKEN_DIR = os.path.expanduser(
-    os.path.join('~', '.aws', 'sso', 'cache')
-)
+SSO_TOKEN_DIR = os.path.expanduser(os.path.join('~', '.aws', 'sso', 'cache'))
 
 LOGIN_ARGS = [
     {
@@ -51,7 +49,7 @@ LOGIN_ARGS = [
         'help_text': (
             'Disables automatically opening the verification URL in the '
             'default browser.'
-        )
+        ),
     },
     {
         'name': 'use-device-code',
@@ -60,8 +58,8 @@ LOGIN_ARGS = [
         'help_text': (
             'Uses the Device Code authorization grant and login flow '
             'instead of the Authorization Code flow.'
-        )
-    }
+        ),
+    },
 ]
 
 
@@ -76,16 +74,16 @@ def _sso_json_dumps(obj):
 
 
 def do_sso_login(
-        session,
-        sso_region,
-        start_url,
-        parsed_globals,
-        token_cache=None,
-        on_pending_authorization=None,
-        force_refresh=False,
-        registration_scopes=None,
-        session_name=None,
-        use_device_code=False,
+    session,
+    sso_region,
+    start_url,
+    parsed_globals,
+    token_cache=None,
+    on_pending_authorization=None,
+    force_refresh=False,
+    registration_scopes=None,
+    session_name=None,
+    use_device_code=False,
 ):
     if token_cache is None:
         token_cache = JSONFileCache(SSO_TOKEN_DIR, dumps_func=_sso_json_dumps)
@@ -155,7 +153,6 @@ class PrintOnlyHandler(BaseAuthorizationhandler):
             f'Browser will not be automatically opened.\n'
             f'Please visit the following URL:\n'
             f'\n{verificationUri}\n'
-
         )
 
         user_code_msg = (
@@ -189,10 +186,7 @@ class OpenBrowserHandler(BaseAuthorizationhandler):
             f'\n{verificationUri}\n'
         )
 
-        user_code_msg = (
-            f'\nThen enter the code:\n'
-            f'\n{userCode}\n'
-        )
+        user_code_msg = f'\nThen enter the code:\n' f'\n{userCode}\n'
         uni_print(opening_msg, self._outfile)
         if userCode:
             uni_print(user_code_msg, self._outfile)
@@ -208,6 +202,7 @@ class AuthCodeFetcher:
     """Manages the local web server that will be used
     to retrieve the authorization code from the OAuth callback
     """
+
     # How many seconds handle_request should wait for an incoming request
     _REQUEST_TIMEOUT = 10
     # How long we wait overall for the callback
@@ -231,14 +226,18 @@ class AuthCodeFetcher:
         return 'http://127.0.0.1/oauth/callback'
 
     def redirect_uri_with_port(self):
-        return f'http://127.0.0.1:{self.http_server.server_port}/oauth/callback'
+        return (
+            f'http://127.0.0.1:{self.http_server.server_port}/oauth/callback'
+        )
 
     def get_auth_code_and_state(self):
         """Blocks until the expected redirect request with either the
         authorization code/state or and error is handled
         """
         start = time.time()
-        while not self._is_done and time.time() < start + self._OVERALL_TIMEOUT:
+        while (
+            not self._is_done and time.time() < start + self._OVERALL_TIMEOUT
+        ):
             self.http_server.handle_request()
         self.http_server.server_close()
 
@@ -258,6 +257,7 @@ class OAuthCallbackHandler(BaseHTTPRequestHandler):
     the auth code and state parameters, and displaying a page directing
     the user to return to the CLI.
     """
+
     def __init__(self, auth_code_fetcher, *args, **kwargs):
         self._auth_code_fetcher = auth_code_fetcher
         super().__init__(*args, **kwargs)

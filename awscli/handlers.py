@@ -16,6 +16,7 @@ This is a collection of built in CLI extensions that can be automatically
 registered with the event system.
 
 """
+
 from awscli.alias import register_alias_commands
 from awscli.argprocess import ParamShorthandParser
 from awscli.clidriver import no_pager_handler
@@ -141,23 +142,25 @@ def awscli_initialize(event_handlers):
     # The s3 error mesage needs to registered before the
     # generic error handler.
     register_s3_error_msg(event_handlers)
-#    # The following will get fired for every option we are
-#    # documenting.  It will attempt to add an example_fn on to
-#    # the parameter object if the parameter supports shorthand
-#    # syntax.  The documentation event handlers will then use
-#    # the examplefn to generate the sample shorthand syntax
-#    # in the docs.  Registering here should ensure that this
-#    # handler gets called first but it still feels a bit brittle.
-#    event_handlers.register('doc-option-example.*.*.*',
-#                            param_shorthand.add_example_fn)
-    event_handlers.register('doc-examples.*.*',
-                            add_examples)
+    #    # The following will get fired for every option we are
+    #    # documenting.  It will attempt to add an example_fn on to
+    #    # the parameter object if the parameter supports shorthand
+    #    # syntax.  The documentation event handlers will then use
+    #    # the examplefn to generate the sample shorthand syntax
+    #    # in the docs.  Registering here should ensure that this
+    #    # handler gets called first but it still feels a bit brittle.
+    #    event_handlers.register('doc-option-example.*.*.*',
+    #                            param_shorthand.add_example_fn)
+    event_handlers.register('doc-examples.*.*', add_examples)
     register_cli_input_args(event_handlers)
-    event_handlers.register('building-argument-table.*',
-                            add_streaming_output_arg)
+    event_handlers.register(
+        'building-argument-table.*', add_streaming_output_arg
+    )
     register_count_events(event_handlers)
-    event_handlers.register('building-argument-table.ec2.get-password-data',
-                            ec2_add_priv_launch_key)
+    event_handlers.register(
+        'building-argument-table.ec2.get-password-data',
+        ec2_add_priv_launch_key,
+    )
     register_parse_global_args(event_handlers)
     register_pagination(event_handlers)
     register_secgroup(event_handlers)
@@ -206,10 +209,12 @@ def awscli_initialize(event_handlers):
     register_custom_endpoint_note(event_handlers)
     event_handlers.register(
         'building-argument-table.iot.create-keys-and-certificate',
-        register_create_keys_and_cert_arguments)
+        register_create_keys_and_cert_arguments,
+    )
     event_handlers.register(
         'building-argument-table.iot.create-certificate-from-csr',
-        register_create_keys_from_csr_arguments)
+        register_create_keys_from_csr_arguments,
+    )
     register_cloudfront(event_handlers)
     register_gamelift_commands(event_handlers)
     register_ec2_page_size_injector(event_handlers)

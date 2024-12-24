@@ -41,7 +41,7 @@ def construct_entry_point_handlers_chain():
         ParamValidationErrorsHandler(),
         PrompterInterruptExceptionHandler(),
         InterruptExceptionHandler(),
-        GeneralExceptionHandler()
+        GeneralExceptionHandler(),
     ]
     return ChainedExceptionHandler(exception_handlers=handlers)
 
@@ -56,7 +56,7 @@ def construct_cli_error_handlers_chain():
         PagerErrorHandler(),
         InterruptExceptionHandler(),
         ClientErrorHandler(),
-        GeneralExceptionHandler()
+        GeneralExceptionHandler(),
     ]
     return ChainedExceptionHandler(exception_handlers=handlers)
 
@@ -85,8 +85,11 @@ class FilteredExceptionHandler(BaseExceptionHandler):
 
 class ParamValidationErrorsHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = (
-        ParamError, ParamSyntaxError, ArgParseException,
-        ParamValidationError, BotocoreParamValidationError
+        ParamError,
+        ParamSyntaxError,
+        ArgParseException,
+        ParamValidationError,
+        BotocoreParamValidationError,
     )
     RC = PARAM_VALIDATION_ERROR_RC
 
@@ -109,7 +112,9 @@ class ConfigurationErrorHandler(FilteredExceptionHandler):
 class NoRegionErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = NoRegionError
     RC = CONFIGURATION_ERROR_RC
-    MESSAGE = '%s You can also configure your region by running "aws configure".'
+    MESSAGE = (
+        '%s You can also configure your region by running "aws configure".'
+    )
 
 
 class NoCredentialsErrorHandler(FilteredExceptionHandler):

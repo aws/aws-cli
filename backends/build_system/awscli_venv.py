@@ -138,15 +138,19 @@ class AwsCliVenv:
         # On windows the getsitepackages can return the root venv dir.
         # So instead of just taking the first entry, we need to take the
         # first entry that contains the string "site-packages" in the path.
-        site_path = [path for path in json.loads(
-            subprocess.check_output(
-                [
-                    self.python_exe,
-                    "-c",
-                    "import site, json; print(json.dumps(site.getsitepackages()))",
-                ]
+        site_path = [
+            path
+            for path in json.loads(
+                subprocess.check_output(
+                    [
+                        self.python_exe,
+                        "-c",
+                        "import site, json; print(json.dumps(site.getsitepackages()))",
+                    ]
+                )
+                .decode()
+                .strip()
             )
-            .decode()
-            .strip()
-        ) if "site-packages" in path][0]
+            if "site-packages" in path
+        ][0]
         return site_path

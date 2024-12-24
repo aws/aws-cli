@@ -40,7 +40,7 @@ class Install(BasicCommand):
             'help_text': (
                 'Required. The path to the on-premises instance configuration '
                 'file.'
-            )
+            ),
         },
         {
             'name': 'override-config',
@@ -49,7 +49,7 @@ class Install(BasicCommand):
             'help_text': (
                 'Optional. Overrides the on-premises instance configuration '
                 'file.'
-            )
+            ),
         },
         {
             'name': 'agent-installer',
@@ -57,8 +57,8 @@ class Install(BasicCommand):
             'required': False,
             'help_text': (
                 'Optional. The AWS CodeDeploy Agent installer file.'
-            )
-        }
+            ),
+        },
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
@@ -87,8 +87,10 @@ class Install(BasicCommand):
         return 0
 
     def _validate_override_config(self, params):
-        if os.path.isfile(params.system.CONFIG_PATH) and \
-                not params.override_config:
+        if (
+            os.path.isfile(params.system.CONFIG_PATH)
+            and not params.override_config
+        ):
             raise RuntimeError(
                 'The on-premises instance configuration file already exists. '
                 'Specify --override-config to update the existing on-premises '

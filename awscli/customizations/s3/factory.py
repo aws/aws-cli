@@ -38,9 +38,7 @@ class ClientFactory:
         self._session = session
 
     def create_client(self, params, is_source_client=False):
-        create_client_kwargs = {
-            'verify': params['verify_ssl']
-        }
+        create_client_kwargs = {'verify': params['verify_ssl']}
         if params.get('sse') == 'aws:kms':
             create_client_kwargs['config'] = Config(signature_version='s3v4')
         region = params['region']
@@ -63,22 +61,24 @@ class TransferManagerFactory:
         self._session = session
         self._botocore_client_factory = ClientFactory(self._session)
 
-    def create_transfer_manager(self, params, runtime_config,
-                                botocore_client=None):
+    def create_transfer_manager(
+        self, params, runtime_config, botocore_client=None
+    ):
         client_type = self._compute_transfer_client_type(
-            params, runtime_config)
+            params, runtime_config
+        )
         if client_type == constants.CRT_TRANSFER_CLIENT:
             return self._create_crt_transfer_manager(params, runtime_config)
         else:
             return self._create_classic_transfer_manager(
-                params, runtime_config, botocore_client)
+                params, runtime_config, botocore_client
+            )
 
     def _compute_transfer_client_type(self, params, runtime_config):
         if params.get('paths_type') == 's3s3':
             return constants.CLASSIC_TRANSFER_CLIENT
         preferred_transfer_client = runtime_config.get(
-            'preferred_transfer_client',
-            constants.AUTO_RESOLVE_TRANSFER_CLIENT
+            'preferred_transfer_client', constants.AUTO_RESOLVE_TRANSFER_CLIENT
         )
         if preferred_transfer_client == constants.AUTO_RESOLVE_TRANSFER_CLIENT:
             return self._resolve_transfer_client_type_for_system()
@@ -94,7 +94,7 @@ class TransferManagerFactory:
             is_running = self._is_crt_client_running_in_other_aws_cli_process()
             LOGGER.debug(
                 'S3 CRT client running in different AWS CLI process: %s',
-                is_running
+                is_running,
             )
             if not is_running:
                 transfer_client_type = constants.CRT_TRANSFER_CLIENT
@@ -116,7 +116,7 @@ class TransferManagerFactory:
         self._acquire_crt_s3_process_lock()
         return CRTTransferManager(
             self._create_crt_client(params, runtime_config),
-            self._create_crt_request_serializer(params)
+            self._create_crt_request_serializer(params),
         )
 
     def _create_crt_client(self, params, runtime_config):
@@ -135,8 +135,9 @@ class TransferManagerFactory:
             create_crt_client_kwargs['part_size'] = multipart_chunksize
         if params.get('sign_request', True):
             crt_credentials_provider = self._get_crt_credentials_provider()
-            create_crt_client_kwargs[
-                'crt_credentials_provider'] = crt_credentials_provider
+            create_crt_client_kwargs['crt_credentials_provider'] = (
+                crt_credentials_provider
+            )
 
         return create_s3_crt_client(**create_crt_client_kwargs)
 
@@ -146,23 +147,27 @@ class TransferManagerFactory:
             {
                 'region_name': self._resolve_region(params),
                 'endpoint_url': params.get('endpoint_url'),
-            }
+            },
         )
 
-    def _create_classic_transfer_manager(self, params, runtime_config,
-                                         client=None):
+    def _create_classic_transfer_manager(
+        self, params, runtime_config, client=None
+    ):
         if client is None:
             client = self._botocore_client_factory.create_client(params)
         transfer_config = create_transfer_config_from_runtime_config(
-            runtime_config)
-        transfer_config.max_in_memory_upload_chunks = \
+            runtime_config
+        )
+        transfer_config.max_in_memory_upload_chunks = (
             self._MAX_IN_MEMORY_CHUNKS
-        transfer_config.max_in_memory_download_chunks = \
+        )
+        transfer_config.max_in_memory_download_chunks = (
             self._MAX_IN_MEMORY_CHUNKS
+        )
         LOGGER.debug(
             "Using a multipart threshold of %s and a part size of %s",
             transfer_config.multipart_threshold,
-            transfer_config.multipart_chunksize
+            transfer_config.multipart_chunksize,
         )
         return TransferManager(client, transfer_config)
 

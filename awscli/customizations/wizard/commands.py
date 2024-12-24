@@ -25,8 +25,9 @@ def register_wizard_commands(event_handlers):
 
 def _register_wizards_for_commands(commands, event_handlers):
     for command in commands:
-        event_handlers.register('building-command-table.%s' % command,
-                                _add_wizard_command)
+        event_handlers.register(
+            'building-command-table.%s' % command, _add_wizard_command
+        )
 
 
 def _add_wizard_command(session, command_object, command_table, **kwargs):
@@ -36,7 +37,7 @@ def _add_wizard_command(session, command_object, command_table, **kwargs):
         session=session,
         loader=WizardLoader(),
         parent_command=command_object.name,
-        runner={'0.1': v1_runner, '0.2': v2_runner}
+        runner={'0.1': v1_runner, '0.2': v2_runner},
     )
     command_table['wizard'] = cmd
 
@@ -47,8 +48,9 @@ class TopLevelWizardCommand(BasicCommand):
         'Interactive command for creating and configuring AWS resources.'
     )
 
-    def __init__(self, session, loader, parent_command, runner,
-                 wizard_name='_main'):
+    def __init__(
+        self, session, loader, parent_command, runner, wizard_name='_main'
+    ):
         super(TopLevelWizardCommand, self).__init__(session)
         self._session = session
         self._loader = loader
@@ -58,12 +60,17 @@ class TopLevelWizardCommand(BasicCommand):
 
     def _build_subcommand_table(self):
         subcommand_table = super(
-            TopLevelWizardCommand, self)._build_subcommand_table()
+            TopLevelWizardCommand, self
+        )._build_subcommand_table()
         wizards = self._get_available_wizards()
         for name in wizards:
-            cmd = SingleWizardCommand(self._session, self._loader,
-                                      self._parent_command, self._runner,
-                                wizard_name=name)
+            cmd = SingleWizardCommand(
+                self._session,
+                self._loader,
+                self._parent_command,
+                self._runner,
+                wizard_name=name,
+            )
             subcommand_table[name] = cmd
         self._add_lineage(subcommand_table)
         return subcommand_table
@@ -80,12 +87,14 @@ class TopLevelWizardCommand(BasicCommand):
             self._raise_usage_error()
 
     def _wizard_exists(self):
-        return self._loader.wizard_exists(self._parent_command,
-                                          self._wizard_name)
+        return self._loader.wizard_exists(
+            self._parent_command, self._wizard_name
+        )
 
     def _run_wizard(self):
         loaded = self._loader.load_wizard(
-            self._parent_command, self._wizard_name)
+            self._parent_command, self._wizard_name
+        )
         version = loaded.get('version')
         if version in self._runner:
             self._runner[version].run(loaded)
@@ -95,15 +104,19 @@ class TopLevelWizardCommand(BasicCommand):
             )
 
     def create_help_command(self):
-        return BasicHelp(self._session, self,
-                         command_table=self.subcommand_table,
-                         arg_table=self.arg_table)
+        return BasicHelp(
+            self._session,
+            self,
+            command_table=self.subcommand_table,
+            arg_table=self.arg_table,
+        )
 
 
 class SingleWizardCommand(TopLevelWizardCommand):
     def __init__(self, session, loader, parent_command, runner, wizard_name):
         super(SingleWizardCommand, self).__init__(
-            session, loader, parent_command, runner, wizard_name)
+            session, loader, parent_command, runner, wizard_name
+        )
         self._session = session
         self._loader = loader
         self._runner = runner
@@ -119,15 +132,19 @@ class SingleWizardCommand(TopLevelWizardCommand):
 
     def create_help_command(self):
         loaded = self._loader.load_wizard(
-            self._parent_command, self._wizard_name,
+            self._parent_command,
+            self._wizard_name,
         )
-        return WizardHelpCommand(self._session, self, self.subcommand_table,
-                                self.arg_table, loaded)
+        return WizardHelpCommand(
+            self._session, self, self.subcommand_table, self.arg_table, loaded
+        )
 
 
 class WizardHelpCommand(BasicHelp):
-    def __init__(self, session, command_object, command_table, arg_table,
-                 loaded_wizard):
-        super(WizardHelpCommand, self).__init__(session, command_object,
-                                                command_table, arg_table)
+    def __init__(
+        self, session, command_object, command_table, arg_table, loaded_wizard
+    ):
+        super(WizardHelpCommand, self).__init__(
+            session, command_object, command_table, arg_table
+        )
         self._description = loaded_wizard.get('description', '')

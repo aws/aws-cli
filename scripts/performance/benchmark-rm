@@ -11,14 +11,19 @@ from benchmark_utils import (
 
 def benchmark_rm(args):
     command = get_transfer_command(
-        'rm %s' % args.target, args.recursive, args.quiet)
+        'rm %s' % args.target, args.recursive, args.quiet
+    )
     backup_path = backup(args.target, args.recursive)
 
     benchmark_command(
-        command, args.benchmark_script,  args.summarize_script,
-        args.result_dir, args.num_iterations, args.dry_run,
+        command,
+        args.benchmark_script,
+        args.summarize_script,
+        args.result_dir,
+        args.num_iterations,
+        args.dry_run,
         upkeep=lambda: copy(backup_path, args.target, args.recursive),
-        cleanup=lambda: clean(backup_path, args.recursive)
+        cleanup=lambda: clean(backup_path, args.recursive),
     )
 
 

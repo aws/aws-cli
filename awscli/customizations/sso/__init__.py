@@ -19,11 +19,13 @@ from botocore.exceptions import ProfileNotFound, UnknownCredentialError
 
 def register_sso_commands(event_emitter):
     event_emitter.register(
-        'building-command-table.sso', add_sso_commands,
+        'building-command-table.sso',
+        add_sso_commands,
     )
     event_emitter.register(
-        'session-initialized', inject_json_file_cache,
-        unique_id='inject_sso_json_file_cache'
+        'session-initialized',
+        inject_json_file_cache,
+        unique_id='inject_sso_json_file_cache',
     )
 
 

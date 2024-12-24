@@ -29,4 +29,5 @@ def inject_commands(command_table, session, **kwargs):
     Used to inject new high level commands into the command list.
     """
     command_table['update-role-trust-policy'] = UpdateRoleTrustPolicyCommand(
-        session)
+        session
+    )

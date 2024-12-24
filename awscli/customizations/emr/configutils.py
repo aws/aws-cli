@@ -36,7 +36,7 @@ def get_current_profile_var_name(session):
 def _get_profile_str(session, separator):
     profile_name = session.get_config_variable('profile')
     return 'default' if profile_name is None \
-        else 'profile%c%s' % (separator, profile_name)
+        else f'profile{separator:c}{profile_name}'
 
 
 def is_any_role_configured(session):
@@ -57,7 +57,7 @@ def update_roles(session):
         LOG.debug("Associated default roles with your current profile")
 
 
-class ConfigWriter(object):
+class ConfigWriter:
 
     def __init__(self, session):
         self.session = session

@@ -162,7 +162,7 @@ class ECSDeploy(BasicCommand):
         try:
             with compat_open(full_path) as f:
                 return f.read()
-        except (OSError, IOError, UnicodeDecodeError) as e:
+        except (OSError, UnicodeDecodeError) as e:
             raise exceptions.FileLoadError(
                 file_path=file_path, error=e)
 
@@ -212,7 +212,7 @@ class ECSDeploy(BasicCommand):
         self._cd_validator = validator
 
 
-class CodeDeployer():
+class CodeDeployer:
 
     MSG_WAITING = ("Waiting for {deployment_id} to succeed "
                    "(will wait up to {wait} minutes)...\n")
@@ -320,7 +320,7 @@ class CodeDeployer():
         sys.stdout.flush()
 
 
-class CodeDeployValidator():
+class CodeDeployValidator:
     def __init__(self, cd_client, resources):
         self._client = cd_client
         self._resource_names = resources
@@ -402,7 +402,7 @@ class CodeDeployValidator():
                     dg_name=dgp, resource='cluster', resource_name=cluster)
 
 
-class ECSClient():
+class ECSClient:
 
     def __init__(self, session, parsed_args, parsed_globals, user_agent_extra):
         self._args = parsed_args

@@ -15,18 +15,20 @@ import logging
 from botocore import model
 
 from awscli.arguments import BaseCLIArgument
+from awscli.customizations.exceptions import ParamValidationError
 
 
 logger = logging.getLogger(__name__)
 
 
 DEFAULT = 1
-HELP = """
-<p>Number of instances to launch. If a single number is provided, it
-is assumed to be the minimum to launch (defaults to %d).  If a range is
-provided in the form <code>min:max</code> then the first number is
-interpreted as the minimum number of instances to launch and the second
-is interpreted as the maximum number of instances to launch.</p>""" % DEFAULT
+HELP = (
+    "\n<p>Number of instances to launch. If a single number is provided, it\n"
+    f"is assumed to be the minimum to launch (defaults to {DEFAULT:d}).  If a range is\n"
+    "provided in the form <code>min:max</code> then the first number is\n"
+    "interpreted as the minimum number of instances to launch and the second\n"
+    "is interpreted as the maximum number of instances to launch.</p>"
+)
 
 
 def register_count_events(event_handler):
@@ -90,7 +92,7 @@ class CountArgument(BaseCLIArgument):
                 minstr, maxstr = (value, value)
             parameters['MinCount'] = int(minstr)
             parameters['MaxCount'] = int(maxstr)
-        except:
+        except Exception:
             msg = ('count parameter should be of '
                    'form min[:max] (e.g. 1 or 1:10)')
             raise ParamValidationError(msg)

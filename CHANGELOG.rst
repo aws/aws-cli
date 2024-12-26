@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.22.24
+=======
+
+* api-change:``network-firewall``: Dual-stack endpoints are now supported.
+* api-change:``bcm-pricing-calculator``: Added ConflictException to DeleteBillEstimate.
+* api-change:``securityhub``: Documentation updates for AWS Security Hub
+* api-change:``ecr``: Add support for Dualstack Endpoints
+
+
 2.22.23
 =======
 

@@ -3669,11 +3669,11 @@
       "members":{
         "EnableLogTypes":{
           "shape":"LogTypeList",
-          "documentation":"<p>The list of log types to enable.</p>"
+          "documentation":"<p>The list of log types to enable.</p> <p>The following values are valid for each DB engine:</p> <ul> <li> <p>Aurora MySQL - <code>audit | error | general | slowquery</code> </p> </li> <li> <p>Aurora PostgreSQL - <code>postgresql</code> </p> </li> <li> <p>RDS for MySQL - <code>error | general | slowquery</code> </p> </li> <li> <p>RDS for PostgreSQL - <code>postgresql | upgrade</code> </p> </li> </ul>"
         },
         "DisableLogTypes":{
           "shape":"LogTypeList",
-          "documentation":"<p>The list of log types to disable.</p>"
+          "documentation":"<p>The list of log types to disable.</p> <p>The following values are valid for each DB engine:</p> <ul> <li> <p>Aurora MySQL - <code>audit | error | general | slowquery</code> </p> </li> <li> <p>Aurora PostgreSQL - <code>postgresql</code> </p> </li> <li> <p>RDS for MySQL - <code>error | general | slowquery</code> </p> </li> <li> <p>RDS for PostgreSQL - <code>postgresql | upgrade</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>The configuration setting for the log types to be enabled for export to CloudWatch Logs for a specific DB instance or DB cluster.</p> <p>The <code>EnableLogTypes</code> and <code>DisableLogTypes</code> arrays determine which logs will be exported (or not exported) to CloudWatch Logs. The values within these arrays depend on the DB engine being used.</p> <p>For more information about exporting CloudWatch Logs for Amazon RDS DB instances, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs </a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about exporting CloudWatch Logs for Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon Aurora User Guide</i>.</p>"
@@ -4298,31 +4298,31 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether minor engine upgrades are applied automatically to the DB cluster during the maintenance window. By default, minor engine upgrades are applied automatically.</p> <p>Valid for Cluster Type: Multi-AZ DB clusters only</p>"
+          "documentation":"<p>Specifies whether minor engine upgrades are applied automatically to the DB cluster during the maintenance window. By default, minor engine upgrades are applied automatically.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB cluster</p>"
         },
         "MonitoringInterval":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB cluster. To turn off collecting Enhanced Monitoring metrics, specify <code>0</code>.</p> <p>If <code>MonitoringRoleArn</code> is specified, also set <code>MonitoringInterval</code> to a value other than <code>0</code>.</p> <p>Valid for Cluster Type: Multi-AZ DB clusters only</p> <p>Valid Values: <code>0 | 1 | 5 | 10 | 15 | 30 | 60</code> </p> <p>Default: <code>0</code> </p>"
+          "documentation":"<p>The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB cluster. To turn off collecting Enhanced Monitoring metrics, specify <code>0</code>.</p> <p>If <code>MonitoringRoleArn</code> is specified, also set <code>MonitoringInterval</code> to a value other than <code>0</code>.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>Valid Values: <code>0 | 1 | 5 | 10 | 15 | 30 | 60</code> </p> <p>Default: <code>0</code> </p>"
         },
         "MonitoringRoleArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the IAM role that permits RDS to send Enhanced Monitoring metrics to Amazon CloudWatch Logs. An example is <code>arn:aws:iam:123456789012:role/emaccess</code>. For information on creating a monitoring role, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Monitoring.OS.html#USER_Monitoring.OS.Enabling\">Setting up and enabling Enhanced Monitoring</a> in the <i>Amazon RDS User Guide</i>.</p> <p>If <code>MonitoringInterval</code> is set to a value other than <code>0</code>, supply a <code>MonitoringRoleArn</code> value.</p> <p>Valid for Cluster Type: Multi-AZ DB clusters only</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the IAM role that permits RDS to send Enhanced Monitoring metrics to Amazon CloudWatch Logs. An example is <code>arn:aws:iam:123456789012:role/emaccess</code>. For information on creating a monitoring role, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Monitoring.OS.html#USER_Monitoring.OS.Enabling\">Setting up and enabling Enhanced Monitoring</a> in the <i>Amazon RDS User Guide</i>.</p> <p>If <code>MonitoringInterval</code> is set to a value other than <code>0</code>, supply a <code>MonitoringRoleArn</code> value.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "DatabaseInsightsMode":{
           "shape":"DatabaseInsightsMode",
-          "documentation":"<p>Specifies the mode of Database Insights to enable for the cluster.</p>"
+          "documentation":"<p>The mode of Database Insights to enable for the DB cluster.</p> <p>If you set this value to <code>advanced</code>, you must also set the <code>PerformanceInsightsEnabled</code> parameter to <code>true</code> and the <code>PerformanceInsightsRetentionPeriod</code> parameter to 465.</p> <p>Valid for Cluster Type: Aurora DB clusters only</p>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether to turn on Performance Insights for the DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html\"> Using Amazon Performance Insights</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Valid for Cluster Type: Multi-AZ DB clusters only</p>"
+          "documentation":"<p>Specifies whether to turn on Performance Insights for the DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html\"> Using Amazon Performance Insights</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "PerformanceInsightsKMSKeyId":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Services KMS key identifier for encryption of Performance Insights data.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <p>If you don't specify a value for <code>PerformanceInsightsKMSKeyId</code>, then Amazon RDS uses your default KMS key. There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p> <p>Valid for Cluster Type: Multi-AZ DB clusters only</p>"
+          "documentation":"<p>The Amazon Web Services KMS key identifier for encryption of Performance Insights data.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <p>If you don't specify a value for <code>PerformanceInsightsKMSKeyId</code>, then Amazon RDS uses your default KMS key. There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "PerformanceInsightsRetentionPeriod":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The number of days to retain Performance Insights data.</p> <p>Valid for Cluster Type: Multi-AZ DB clusters only</p> <p>Valid Values:</p> <ul> <li> <p> <code>7</code> </p> </li> <li> <p> <i>month</i> * 31, where <i>month</i> is a number of months from 1-23. Examples: <code>93</code> (3 months * 31), <code>341</code> (11 months * 31), <code>589</code> (19 months * 31)</p> </li> <li> <p> <code>731</code> </p> </li> </ul> <p>Default: <code>7</code> days</p> <p>If you specify a retention period that isn't valid, such as <code>94</code>, Amazon RDS issues an error.</p>"
+          "documentation":"<p>The number of days to retain Performance Insights data.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>Valid Values:</p> <ul> <li> <p> <code>7</code> </p> </li> <li> <p> <i>month</i> * 31, where <i>month</i> is a number of months from 1-23. Examples: <code>93</code> (3 months * 31), <code>341</code> (11 months * 31), <code>589</code> (19 months * 31)</p> </li> <li> <p> <code>731</code> </p> </li> </ul> <p>Default: <code>7</code> days</p> <p>If you specify a retention period that isn't valid, such as <code>94</code>, Amazon RDS issues an error.</p>"
         },
         "EnableLimitlessDatabase":{
           "shape":"BooleanOptional",
@@ -4617,7 +4617,7 @@
         },
         "DatabaseInsightsMode":{
           "shape":"DatabaseInsightsMode",
-          "documentation":"<p>Specifies the mode of Database Insights to enable for the instance.</p>"
+          "documentation":"<p>The mode of Database Insights to enable for the DB instance.</p> <p>This setting only applies to Amazon Aurora DB instances.</p> <note> <p>Currently, this value is inherited from the DB cluster and can't be changed.</p> </note>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
@@ -4785,7 +4785,7 @@
         },
         "DatabaseInsightsMode":{
           "shape":"DatabaseInsightsMode",
-          "documentation":"<p>Specifies the mode of Database Insights.</p>"
+          "documentation":"<p>The mode of Database Insights to enable for the read replica.</p> <note> <p>Currently, this setting is not supported.</p> </note>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
@@ -4865,7 +4865,7 @@
         },
         "AllocatedStorage":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The amount of storage (in gibibytes) to allocate initially for the read replica. Follow the allocation rules specified in <code>CreateDBInstance</code>.</p> <note> <p>Be sure to allocate enough storage for your read replica so that the create operation can succeed. You can also allocate additional storage for future growth.</p> </note>"
+          "documentation":"<p>The amount of storage (in gibibytes) to allocate initially for the read replica. Follow the allocation rules specified in <code>CreateDBInstance</code>.</p> <p>This setting isn't valid for RDS for SQL Server.</p> <note> <p>Be sure to allocate enough storage for your read replica so that the create operation can succeed. You can also allocate additional storage for future growth.</p> </note>"
         },
         "SourceDBClusterIdentifier":{
           "shape":"String",
@@ -5698,31 +5698,31 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether minor version patches are applied automatically.</p> <p>This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
+          "documentation":"<p>Indicates whether minor version patches are applied automatically.</p> <p>This setting is for Aurora DB clusters and Multi-AZ DB clusters.</p>"
         },
         "MonitoringInterval":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB cluster.</p> <p>This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
+          "documentation":"<p>The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB cluster.</p> <p>This setting is only for -Aurora DB clusters and Multi-AZ DB clusters.</p>"
         },
         "MonitoringRoleArn":{
           "shape":"String",
-          "documentation":"<p>The ARN for the IAM role that permits RDS to send Enhanced Monitoring metrics to Amazon CloudWatch Logs.</p> <p>This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
+          "documentation":"<p>The ARN for the IAM role that permits RDS to send Enhanced Monitoring metrics to Amazon CloudWatch Logs.</p> <p>This setting is only for Aurora DB clusters and Multi-AZ DB clusters.</p>"
         },
         "DatabaseInsightsMode":{
           "shape":"DatabaseInsightsMode",
-          "documentation":"<p>The mode of Database Insights that is enabled for the cluster.</p>"
+          "documentation":"<p>The mode of Database Insights that is enabled for the DB cluster.</p>"
         },
         "PerformanceInsightsEnabled":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Indicates whether Performance Insights is enabled for the DB cluster.</p> <p>This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
+          "documentation":"<p>Indicates whether Performance Insights is enabled for the DB cluster.</p> <p>This setting is only for Aurora DB clusters and Multi-AZ DB clusters.</p>"
         },
         "PerformanceInsightsKMSKeyId":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Services KMS key identifier for encryption of Performance Insights data.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <p>This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
+          "documentation":"<p>The Amazon Web Services KMS key identifier for encryption of Performance Insights data.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <p>This setting is only for Aurora DB clusters and Multi-AZ DB clusters.</p>"
         },
         "PerformanceInsightsRetentionPeriod":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The number of days to retain Performance Insights data.</p> <p>This setting is only for non-Aurora Multi-AZ DB clusters.</p> <p>Valid Values:</p> <ul> <li> <p> <code>7</code> </p> </li> <li> <p> <i>month</i> * 31, where <i>month</i> is a number of months from 1-23. Examples: <code>93</code> (3 months * 31), <code>341</code> (11 months * 31), <code>589</code> (19 months * 31)</p> </li> <li> <p> <code>731</code> </p> </li> </ul> <p>Default: <code>7</code> days</p>"
+          "documentation":"<p>The number of days to retain Performance Insights data.</p> <p>This setting is only for Aurora DB clusters and Multi-AZ DB clusters.</p> <p>Valid Values:</p> <ul> <li> <p> <code>7</code> </p> </li> <li> <p> <i>month</i> * 31, where <i>month</i> is a number of months from 1-23. Examples: <code>93</code> (3 months * 31), <code>341</code> (11 months * 31), <code>589</code> (19 months * 31)</p> </li> <li> <p> <code>731</code> </p> </li> </ul> <p>Default: <code>7</code> days</p>"
         },
         "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfigurationInfo"},
         "NetworkType":{
@@ -9277,11 +9277,11 @@
         },
         "Source":{
           "shape":"String",
-          "documentation":"<p>A specific source to return parameters for.</p> <p>Valid Values:</p> <ul> <li> <p> <code>customer</code> </p> </li> <li> <p> <code>engine</code> </p> </li> <li> <p> <code>service</code> </p> </li> </ul>"
+          "documentation":"<p>A specific source to return parameters for.</p> <p>Valid Values:</p> <ul> <li> <p> <code>engine-default</code> </p> </li> <li> <p> <code>system</code> </p> </li> <li> <p> <code>user</code> </p> </li> </ul>"
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>This parameter isn't currently supported.</p>"
+          "documentation":"<p>A filter that specifies one or more DB cluster parameters to describe.</p> <p>The only supported filter is <code>parameter-name</code>. The results list only includes information about the DB cluster parameters with these names.</p>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -9586,7 +9586,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>This parameter isn't currently supported.</p>"
+          "documentation":"<p>A filter that specifies one or more DB parameters to describe.</p> <p>The only supported filter is <code>parameter-name</code>. The results list only includes information about the DB parameters with these names.</p>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -9986,7 +9986,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>This parameter isn't currently supported.</p>"
+          "documentation":"<p>A filter that specifies one or more parameters to describe.</p> <p>The only supported filter is <code>parameter-name</code>. The results list only includes information about the parameters with these names.</p>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -12395,7 +12395,7 @@
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether minor engine upgrades are applied automatically to the DB cluster during the maintenance window. By default, minor engine upgrades are applied automatically.</p> <p>Valid for Cluster Type: Multi-AZ DB clusters only</p>"
+          "documentation":"<p>Specifies whether minor engine upgrades are applied automatically to the DB cluster during the maintenance window. By default, minor engine upgrades are applied automatically.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "MonitoringInterval":{
           "shape":"IntegerOptional",
@@ -12407,7 +12407,7 @@
         },
         "DatabaseInsightsMode":{
           "shape":"DatabaseInsightsMode",
-          "documentation":"<p>Specifies the mode of Database Insights to enable for the cluster.</p>"
+          "documentation":"<p>Specifies the mode of Database Insights to enable for the DB cluster.</p> <p>If you change the value from <code>standard</code> to <code>advanced</code>, you must set the <code>PerformanceInsightsEnabled</code> parameter to <code>true</code> and the <code>PerformanceInsightsRetentionPeriod</code> parameter to 465.</p> <p>If you change the value from <code>advanced</code> to <code>standard</code>, you must set the <code>PerformanceInsightsEnabled</code> parameter to <code>false</code>.</p> <p>Valid for Cluster Type: Aurora DB clusters only</p>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
@@ -12415,11 +12415,11 @@
         },
         "PerformanceInsightsKMSKeyId":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Services KMS key identifier for encryption of Performance Insights data.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <p>If you don't specify a value for <code>PerformanceInsightsKMSKeyId</code>, then Amazon RDS uses your default KMS key. There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p> <p>Valid for Cluster Type: Multi-AZ DB clusters only</p>"
+          "documentation":"<p>The Amazon Web Services KMS key identifier for encryption of Performance Insights data.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p> <p>If you don't specify a value for <code>PerformanceInsightsKMSKeyId</code>, then Amazon RDS uses your default KMS key. There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "PerformanceInsightsRetentionPeriod":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The number of days to retain Performance Insights data.</p> <p>Valid for Cluster Type: Multi-AZ DB clusters only</p> <p>Valid Values:</p> <ul> <li> <p> <code>7</code> </p> </li> <li> <p> <i>month</i> * 31, where <i>month</i> is a number of months from 1-23. Examples: <code>93</code> (3 months * 31), <code>341</code> (11 months * 31), <code>589</code> (19 months * 31)</p> </li> <li> <p> <code>731</code> </p> </li> </ul> <p>Default: <code>7</code> days</p> <p>If you specify a retention period that isn't valid, such as <code>94</code>, Amazon RDS issues an error.</p>"
+          "documentation":"<p>The number of days to retain Performance Insights data.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>Valid Values:</p> <ul> <li> <p> <code>7</code> </p> </li> <li> <p> <i>month</i> * 31, where <i>month</i> is a number of months from 1-23. Examples: <code>93</code> (3 months * 31), <code>341</code> (11 months * 31), <code>589</code> (19 months * 31)</p> </li> <li> <p> <code>731</code> </p> </li> </ul> <p>Default: <code>7</code> days</p> <p>If you specify a retention period that isn't valid, such as <code>94</code>, Amazon RDS issues an error.</p>"
         },
         "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"},
         "NetworkType":{
@@ -12679,7 +12679,7 @@
         },
         "DatabaseInsightsMode":{
           "shape":"DatabaseInsightsMode",
-          "documentation":"<p>Specifies the mode of Database Insights to enable for the instance.</p>"
+          "documentation":"<p>Specifies the mode of Database Insights to enable for the DB instance.</p> <p>This setting only applies to Amazon Aurora DB instances.</p> <note> <p>Currently, this value is inherited from the DB cluster and can't be changed.</p> </note>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
@@ -12695,7 +12695,7 @@
         },
         "CloudwatchLogsExportConfiguration":{
           "shape":"CloudwatchLogsExportConfiguration",
-          "documentation":"<p>The log types to be enabled for export to CloudWatch Logs for a specific DB instance.</p> <p>A change to the <code>CloudwatchLogsExportConfiguration</code> parameter is always applied to the DB instance immediately. Therefore, the <code>ApplyImmediately</code> parameter has no effect.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p>"
+          "documentation":"<p>The log types to be enabled for export to CloudWatch Logs for a specific DB instance.</p> <p>A change to the <code>CloudwatchLogsExportConfiguration</code> parameter is always applied to the DB instance immediately. Therefore, the <code>ApplyImmediately</code> parameter has no effect.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p> <p>The following values are valid for each DB engine:</p> <ul> <li> <p>Aurora MySQL - <code>audit | error | general | slowquery</code> </p> </li> <li> <p>Aurora PostgreSQL - <code>postgresql</code> </p> </li> <li> <p>RDS for MySQL - <code>error | general | slowquery</code> </p> </li> <li> <p>RDS for PostgreSQL - <code>postgresql | upgrade</code> </p> </li> </ul> <p>For more information about exporting CloudWatch Logs for Amazon RDS, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\"> Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about exporting CloudWatch Logs for Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon Aurora User Guide</i>.</p>"
         },
         "ProcessorFeatures":{
           "shape":"ProcessorFeatureList",
@@ -15474,7 +15474,7 @@
         },
         "AllocatedStorage":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The amount of storage (in gibibytes) to allocate initially for the DB instance. Follow the allocation rules specified in CreateDBInstance.</p> <note> <p>Be sure to allocate enough storage for your new DB instance so that the restore operation can succeed. You can also allocate additional storage for future growth.</p> </note>"
+          "documentation":"<p>The amount of storage (in gibibytes) to allocate initially for the DB instance. Follow the allocation rules specified in CreateDBInstance.</p> <p>This setting isn't valid for RDS for SQL Server.</p> <note> <p>Be sure to allocate enough storage for your new DB instance so that the restore operation can succeed. You can also allocate additional storage for future growth.</p> </note>"
         },
         "DedicatedLogVolume":{
           "shape":"BooleanOptional",
@@ -15519,7 +15519,7 @@
         },
         "AllocatedStorage":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The amount of storage (in gibibytes) to allocate initially for the DB instance. Follow the allocation rules specified in <code>CreateDBInstance</code>.</p> <note> <p>Be sure to allocate enough storage for your new DB instance so that the restore operation can succeed. You can also allocate additional storage for future growth.</p> </note>"
+          "documentation":"<p>The amount of storage (in gibibytes) to allocate initially for the DB instance. Follow the allocation rules specified in <code>CreateDBInstance</code>.</p> <p>This setting isn't valid for RDS for SQL Server.</p> <note> <p>Be sure to allocate enough storage for your new DB instance so that the restore operation can succeed. You can also allocate additional storage for future growth.</p> </note>"
         },
         "DBInstanceClass":{
           "shape":"String",
@@ -15655,7 +15655,7 @@
         },
         "DatabaseInsightsMode":{
           "shape":"DatabaseInsightsMode",
-          "documentation":"<p>Specifies the mode of Database Insights to enable for the instance.</p>"
+          "documentation":"<p>Specifies the mode of Database Insights to enable for the DB instance.</p> <p>This setting only applies to Amazon Aurora DB instances.</p> <note> <p>Currently, this value is inherited from the DB cluster and can't be changed.</p> </note>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
@@ -15896,7 +15896,7 @@
         },
         "AllocatedStorage":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The amount of storage (in gibibytes) to allocate initially for the DB instance. Follow the allocation rules specified in <code>CreateDBInstance</code>.</p> <note> <p>Be sure to allocate enough storage for your new DB instance so that the restore operation can succeed. You can also allocate additional storage for future growth.</p> </note>"
+          "documentation":"<p>The amount of storage (in gibibytes) to allocate initially for the DB instance. Follow the allocation rules specified in <code>CreateDBInstance</code>.</p> <p>This setting isn't valid for RDS for SQL Server.</p> <note> <p>Be sure to allocate enough storage for your new DB instance so that the restore operation can succeed. You can also allocate additional storage for future growth.</p> </note>"
         },
         "DedicatedLogVolume":{
           "shape":"BooleanOptional",

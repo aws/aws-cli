@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.36.30
+=======
+
+* api-change:``rds``: Updates Amazon RDS documentation to correct various descriptions.
+
+
 1.36.29
 =======
 

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.22.26
+=======
+
+* api-change:``ecr-public``: Restoring custom endpoint functionality for ECR Public
+* api-change:``ecr``: Restoring custom endpoint functionality for ECR
+
+
 2.22.25
 =======
 

@@ -1,10 +1,11 @@
 **To update a stage's configuration**
 
-The following ``update-stage`` example updates a stage for a specified stage ARN to update the stage name and configure individual participant recording. ::
+The following ``update-stage`` example updates a stage for a specified stage ARN to update the stage name and configure individual participant recording with thumbnail recording enabled. ::
 
     aws ivs-realtime update-stage \
         --arn arn:aws:ivs:us-west-2:123456789012:stage/abcdABCDefgh \
-        --auto-participant-recording-configuration '{"mediaTypes": ["AUDIO_VIDEO"],"storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/abcdABCDefgh"}' \
+        --auto-participant-recording-configuration '{"mediaTypes": ["AUDIO_VIDEO"],"storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/abcdABCDefgh", \
+            "thumbnailConfiguration": {"recordingMode": "INTERVAL","storage": ["SEQUENTIAL"],"targetIntervalSeconds": 60}}' \
         --name stage1a
 
 Output::
@@ -13,10 +14,17 @@ Output::
         "stage": {
             "arn": "arn:aws:ivs:us-west-2:123456789012:stage/abcdABCDefgh",
             "autoParticipantRecordingConfiguration": {
-                 "mediaTypes": [
-                       "AUDIO_VIDEO"
-                 ],
-                 "storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/abcdABCDefgh",
+                "mediaTypes": [
+                    "AUDIO_VIDEO"
+                ],
+                "storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/abcdABCDefgh",
+                "thumbnailConfiguration": { 
+                    "targetIntervalSeconds": 60,
+                    "storage": [
+                        "SEQUENTIAL"
+                    ],
+                    "recordingMode": "INTERVAL"
+                }
             },
             "endpoints": {
                 "events": "wss://global.events.live-video.net",

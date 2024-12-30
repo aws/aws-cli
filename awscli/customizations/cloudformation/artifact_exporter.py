@@ -25,11 +25,14 @@ from contextlib import contextmanager
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
     yaml_parse
+from awscli.customizations.cloudformation import modules
 import jmespath
 
 
 LOG = logging.getLogger(__name__)
 
+MODULES = "Modules"
+RESOURCES = "Resources"
 
 def is_path_value_valid(path):
     return isinstance(path, str)
@@ -591,8 +594,8 @@ class Template(object):
             raise ValueError("parent_dir parameter must be "
                              "an absolute path to a folder {0}"
                              .format(parent_dir))
-
         abs_template_path = make_abs_path(parent_dir, template_path)
+        self.module_parent_path = abs_template_path
         template_dir = os.path.dirname(abs_template_path)
 
         with open(abs_template_path, "r") as handle:
@@ -651,14 +654,39 @@ class Template(object):
         :return: The template with references to artifacts that have been
         exported to s3.
         """
+
+        # Process modules
+        try:
+            self.template_dict = modules.process_module_section(
+                    self.template_dict, 
+                    self.template_dir,
+                    self.module_parent_path)
+        except Exception as e:
+            msg=f"Failed to process Modules section: {e}"
+            LOG.exception(msg)
+            raise exceptions.InvalidModuleError(msg=msg)
+
         self.template_dict = self.export_metadata(self.template_dict)
 
-        if "Resources" not in self.template_dict:
+        if RESOURCES not in self.template_dict:
             return self.template_dict
+
+        # Process modules that are specified as Resources, not in Modules
+        try:
+            self.template_dict = modules.process_resources_section(
+                    self.template_dict, 
+                    self.template_dir, 
+                    self.module_parent_path, 
+                    None)
+        except Exception as e:
+            msg=f"Failed to process modules in Resources: {e}"
+            LOG.exception(msg)
+            raise exceptions.InvalidModuleError(msg=msg)
+
 
         self.template_dict = self.export_global_artifacts(self.template_dict)
 
-        self.export_resources(self.template_dict["Resources"])
+        self.export_resources(self.template_dict[RESOURCES])
 
         return self.template_dict
 

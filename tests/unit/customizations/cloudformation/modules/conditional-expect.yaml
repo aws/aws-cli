@@ -1,0 +1,46 @@
+Resources:
+  ATable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      TableName: table-a
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+  ALambdaPolicy:
+    Type: AWS::IAM::RolePolicy
+    Condition: IfLambdaRoleIsSet
+    Metadata:
+      Comment: This resource is created only if the LambdaRoleArn is set
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetItem
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:BatchWriteItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - ATable
+            - Arn
+      PolicyName: table-a-policy
+      RoleName: my-role
+  BTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      TableName: table-b
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH

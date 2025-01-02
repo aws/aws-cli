@@ -6306,6 +6306,11 @@
           "shape": "H264UnregisteredSeiTimecode",
           "locationName": "unregisteredSeiTimecode",
           "documentation": "Inserts timecode for each frame as 4 bytes of an unregistered SEI message."
+        },
+        "WriteMp4PackagingType": {
+          "shape": "H264WriteMp4PackagingType",
+          "locationName": "writeMp4PackagingType",
+          "documentation": "Specify how SPS and PPS NAL units are written in your output MP4 container, according to ISO/IEC 14496-15. If the location of these parameters doesn't matter in your workflow: Keep the default value, AVC1. MediaConvert writes SPS and PPS NAL units in the sample description ('stsd') box (but not into samples directly). To write SPS and PPS NAL units directly into samples (but not in the 'stsd' box): Choose AVC3. When you do, note that your output might not play properly with some downstream systems or players."
         }
       },
       "documentation": "Required when you set Codec to the value H_264."
@@ -6357,6 +6362,14 @@
       "enum": [
         "DISABLED",
         "ENABLED"
+      ]
+    },
+    "H264WriteMp4PackagingType": {
+      "type": "string",
+      "documentation": "Specify how SPS and PPS NAL units are written in your output MP4 container, according to ISO/IEC 14496-15. If the location of these parameters doesn't matter in your workflow: Keep the default value, AVC1. MediaConvert writes SPS and PPS NAL units in the sample description ('stsd') box (but not into samples directly). To write SPS and PPS NAL units directly into samples (but not in the 'stsd' box): Choose AVC3. When you do, note that your output might not play properly with some downstream systems or players.",
+      "enum": [
+        "AVC1",
+        "AVC3"
       ]
     },
     "H265AdaptiveQuantization": {
@@ -8281,7 +8294,7 @@
         "FollowSource": {
           "shape": "__integerMin1Max150",
           "locationName": "followSource",
-          "documentation": "Specify the input that MediaConvert references for your default output settings. MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
+          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
         },
         "Inputs": {
           "shape": "__listOfInput",
@@ -8452,7 +8465,7 @@
         "FollowSource": {
           "shape": "__integerMin1Max150",
           "locationName": "followSource",
-          "documentation": "Specify the input that MediaConvert references for your default output settings. MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
+          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
         },
         "Inputs": {
           "shape": "__listOfInputTemplate",
@@ -8511,7 +8524,7 @@
           "documentation": "Specify a unique identifier for Kantar to use for this piece of content."
         },
         "CredentialsSecretName": {
-          "shape": "__stringMin1Max2048PatternArnAwsAwsUsGovAwsCnSecretsmanagerUsGovApCaCnEuSaCentralNorthSouthEastWestDD12SecretAZAZ09",
+          "shape": "__stringMin1Max2048PatternArnAZSecretsmanagerWD12SecretAZAZ09",
           "locationName": "credentialsSecretName",
           "documentation": "Provide the name of the AWS Secrets Manager secret where your Kantar credentials are stored. Note that your MediaConvert service role must provide access to this secret. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/granting-permissions-for-mediaconvert-to-access-secrets-manager-secret.html. For instructions on creating a secret, see https://docs.aws.amazon.com/secretsmanager/latest/userguide/tutorials_basic.html, in the AWS Secrets Manager User Guide."
         },
@@ -14720,11 +14733,11 @@
       "min": 1,
       "max": 20
     },
-    "__stringMin1Max2048PatternArnAwsAwsUsGovAwsCnSecretsmanagerUsGovApCaCnEuSaCentralNorthSouthEastWestDD12SecretAZAZ09": {
+    "__stringMin1Max2048PatternArnAZSecretsmanagerWD12SecretAZAZ09": {
       "type": "string",
       "min": 1,
       "max": 2048,
-      "pattern": "^(arn:(aws|aws-us-gov|aws-cn):secretsmanager:(us(-gov)?|ap|ca|cn|eu|sa)-(central|(north|south)?(east|west)?)-\\d:\\d{12}:secret:)?[a-zA-Z0-9_\\/_+=.@-]*$"
+      "pattern": "^(arn:[a-z-]+:secretsmanager:[\\w-]+:\\d{12}:secret:)?[a-zA-Z0-9_\\/_+=.@-]*$"
     },
     "__stringMin1Max256": {
       "type": "string",

@@ -1536,14 +1536,17 @@
       "api.tunneling.iot" : {
         "defaults" : {
           "variants" : [ {
+            "dnsSuffix" : "amazonaws.com",
+            "hostname" : "api.tunneling.iot-fips.{region}.{dnsSuffix}",
+            "tags" : [ "fips" ]
+          }, {
+            "dnsSuffix" : "api.aws",
             "hostname" : "api.iot-tunneling-fips.{region}.{dnsSuffix}",
             "tags" : [ "dualstack", "fips" ]
           }, {
+            "dnsSuffix" : "api.aws",
             "hostname" : "api.iot-tunneling.{region}.{dnsSuffix}",
             "tags" : [ "dualstack" ]
-          }, {
-            "hostname" : "api.tunneling.iot-fips.{region}.{dnsSuffix}",
-            "tags" : [ "fips" ]
           } ]
         },
         "endpoints" : {
@@ -5734,9 +5737,21 @@
           "ap-northeast-2" : { },
           "ap-southeast-1" : { },
           "ap-southeast-2" : { },
-          "ca-central-1" : { },
+          "ca-central-1" : {
+            "variants" : [ {
+              "hostname" : "connect-fips.ca-central-1.amazonaws.com",
+              "tags" : [ "fips" ]
+            } ]
+          },
           "eu-central-1" : { },
           "eu-west-2" : { },
+          "fips-ca-central-1" : {
+            "credentialScope" : {
+              "region" : "ca-central-1"
+            },
+            "deprecated" : true,
+            "hostname" : "connect-fips.ca-central-1.amazonaws.com"
+          },
           "fips-us-east-1" : {
             "credentialScope" : {
               "region" : "us-east-1"
@@ -10558,6 +10573,7 @@
           "ap-south-1" : { },
           "ap-southeast-1" : { },
           "ap-southeast-2" : { },
+          "ap-southeast-5" : { },
           "ca-central-1" : { },
           "eu-central-1" : { },
           "eu-north-1" : { },
@@ -22333,31 +22349,132 @@
       },
       "ssm-sap" : {
         "endpoints" : {
-          "af-south-1" : { },
-          "ap-east-1" : { },
-          "ap-northeast-1" : { },
-          "ap-northeast-2" : { },
-          "ap-northeast-3" : { },
-          "ap-south-1" : { },
-          "ap-south-2" : { },
-          "ap-southeast-1" : { },
-          "ap-southeast-2" : { },
-          "ap-southeast-3" : { },
-          "ap-southeast-4" : { },
+          "af-south-1" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.af-south-1.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "ap-east-1" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.ap-east-1.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "ap-northeast-1" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.ap-northeast-1.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "ap-northeast-2" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.ap-northeast-2.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "ap-northeast-3" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.ap-northeast-3.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "ap-south-1" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.ap-south-1.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "ap-south-2" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.ap-south-2.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "ap-southeast-1" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.ap-southeast-1.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "ap-southeast-2" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.ap-southeast-2.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "ap-southeast-3" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.ap-southeast-3.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "ap-southeast-4" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.ap-southeast-4.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
           "ca-central-1" : {
             "variants" : [ {
               "hostname" : "ssm-sap-fips.ca-central-1.amazonaws.com",
               "tags" : [ "fips" ]
+            }, {
+              "hostname" : "ssm-sap-fips.ca-central-1.api.aws",
+              "tags" : [ "dualstack", "fips" ]
+            }, {
+              "hostname" : "ssm-sap.ca-central-1.api.aws",
+              "tags" : [ "dualstack" ]
             } ]
           },
-          "eu-central-1" : { },
-          "eu-central-2" : { },
-          "eu-north-1" : { },
-          "eu-south-1" : { },
-          "eu-south-2" : { },
-          "eu-west-1" : { },
-          "eu-west-2" : { },
-          "eu-west-3" : { },
+          "eu-central-1" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.eu-central-1.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "eu-central-2" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.eu-central-2.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "eu-north-1" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.eu-north-1.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "eu-south-1" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.eu-south-1.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "eu-south-2" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.eu-south-2.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "eu-west-1" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.eu-west-1.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "eu-west-2" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.eu-west-2.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "eu-west-3" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.eu-west-3.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
           "fips-ca-central-1" : {
             "credentialScope" : {
               "region" : "ca-central-1"
@@ -22393,32 +22510,76 @@
             "deprecated" : true,
             "hostname" : "ssm-sap-fips.us-west-2.amazonaws.com"
           },
-          "il-central-1" : { },
-          "me-central-1" : { },
-          "me-south-1" : { },
-          "sa-east-1" : { },
+          "il-central-1" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.il-central-1.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "me-central-1" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.me-central-1.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "me-south-1" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.me-south-1.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
+          "sa-east-1" : {
+            "variants" : [ {
+              "hostname" : "ssm-sap.sa-east-1.api.aws",
+              "tags" : [ "dualstack" ]
+            } ]
+          },
           "us-east-1" : {
             "variants" : [ {
               "hostname" : "ssm-sap-fips.us-east-1.amazonaws.com",
               "tags" : [ "fips" ]
+            }, {
+              "hostname" : "ssm-sap-fips.us-east-1.api.aws",
+              "tags" : [ "dualstack", "fips" ]
+            }, {
+              "hostname" : "ssm-sap.us-east-1.api.aws",
+              "tags" : [ "dualstack" ]
             } ]
           },
           "us-east-2" : {
             "variants" : [ {
               "hostname" : "ssm-sap-fips.us-east-2.amazonaws.com",
               "tags" : [ "fips" ]
+            }, {
+              "hostname" : "ssm-sap-fips.us-east-2.api.aws",
+              "tags" : [ "dualstack", "fips" ]
+            }, {
+              "hostname" : "ssm-sap.us-east-2.api.aws",
+              "tags" : [ "dualstack" ]
             } ]
           },
           "us-west-1" : {
             "variants" : [ {
               "hostname" : "ssm-sap-fips.us-west-1.amazonaws.com",
               "tags" : [ "fips" ]
+            }, {
+              "hostname" : "ssm-sap-fips.us-west-1.api.aws",
+              "tags" : [ "dualstack", "fips" ]
+            }, {
+              "hostname" : "ssm-sap.us-west-1.api.aws",
+              "tags" : [ "dualstack" ]
             } ]
           },
           "us-west-2" : {
             "variants" : [ {
               "hostname" : "ssm-sap-fips.us-west-2.amazonaws.com",
               "tags" : [ "fips" ]
+            }, {
+              "hostname" : "ssm-sap-fips.us-west-2.api.aws",
+              "tags" : [ "dualstack", "fips" ]
+            }, {
+              "hostname" : "ssm-sap.us-west-2.api.aws",
+              "tags" : [ "dualstack" ]
             } ]
           }
         }
@@ -25254,14 +25415,17 @@
       "api.tunneling.iot" : {
         "defaults" : {
           "variants" : [ {
+            "dnsSuffix" : "amazonaws.com.cn",
+            "hostname" : "api.tunneling.iot-fips.{region}.{dnsSuffix}",
+            "tags" : [ "fips" ]
+          }, {
+            "dnsSuffix" : "api.amazonwebservices.com.cn",
             "hostname" : "api.iot-tunneling-fips.{region}.{dnsSuffix}",
             "tags" : [ "dualstack", "fips" ]
           }, {
+            "dnsSuffix" : "api.amazonwebservices.com.cn",
             "hostname" : "api.iot-tunneling.{region}.{dnsSuffix}",
             "tags" : [ "dualstack" ]
-          }, {
-            "hostname" : "api.tunneling.iot-fips.{region}.{dnsSuffix}",
-            "tags" : [ "fips" ]
           } ]
         },
         "endpoints" : {
@@ -27106,14 +27270,17 @@
       "api.tunneling.iot" : {
         "defaults" : {
           "variants" : [ {
+            "dnsSuffix" : "amazonaws.com",
+            "hostname" : "api.tunneling.iot-fips.{region}.{dnsSuffix}",
+            "tags" : [ "fips" ]
+          }, {
+            "dnsSuffix" : "api.aws",
             "hostname" : "api.iot-tunneling-fips.{region}.{dnsSuffix}",
             "tags" : [ "dualstack", "fips" ]
           }, {
+            "dnsSuffix" : "api.aws",
             "hostname" : "api.iot-tunneling.{region}.{dnsSuffix}",
             "tags" : [ "dualstack" ]
-          }, {
-            "hostname" : "api.tunneling.iot-fips.{region}.{dnsSuffix}",
-            "tags" : [ "fips" ]
           } ]
         },
         "endpoints" : {
@@ -32322,7 +32489,19 @@
           "protocols" : [ "https" ]
         },
         "endpoints" : {
-          "us-iso-east-1" : { }
+          "fips-us-iso-east-1" : {
+            "credentialScope" : {
+              "region" : "us-iso-east-1"
+            },
+            "deprecated" : true,
+            "hostname" : "comprehend-fips.us-iso-east-1.c2s.ic.gov"
+          },
+          "us-iso-east-1" : {
+            "variants" : [ {
+              "hostname" : "comprehend-fips.us-iso-east-1.c2s.ic.gov",
+              "tags" : [ "fips" ]
+            } ]
+          }
         }
       },
       "config" : {

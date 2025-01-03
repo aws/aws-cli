@@ -492,6 +492,26 @@ CHECKSUM_ALGORITHM = {
         'help_text': 'Indicates the algorithm used to create the checksum for the object.'
 }
 
+BUCKET_NAME_PREFIX = {
+    'name': 'bucket-name-prefix',
+    'help_text': (
+        'Limits the response to bucket names that begin with the specified '
+        'bucket name prefix.'
+    )
+}
+
+BUCKET_REGION = {
+    'name': 'bucket-region',
+    'help_text': (
+        'Limits the response to buckets that are located in the specified '
+        'Amazon Web Services Region. The Amazon Web Services Region must be '
+        'expressed according to the Amazon Web Services Region code, such as '
+        'us-west-2 for the US West (Oregon) Region. For a list of the valid '
+        'values for all of the Amazon Web Services Regions, see '
+        'https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region'
+    )
+}
+
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, SSE_C, SSE_C_KEY, SSE_KMS_KEY_ID, SSE_C_COPY_SOURCE,
@@ -521,7 +541,8 @@ class ListCommand(S3Command):
     USAGE = "<S3Uri> or NONE"
     ARG_TABLE = [{'name': 'paths', 'nargs': '?', 'default': 's3://',
                   'positional_arg': True, 'synopsis': USAGE}, RECURSIVE,
-                 PAGE_SIZE, HUMAN_READABLE, SUMMARIZE, REQUEST_PAYER]
+                 PAGE_SIZE, HUMAN_READABLE, SUMMARIZE, REQUEST_PAYER,
+                 BUCKET_NAME_PREFIX, BUCKET_REGION]
 
     def _run_main(self, parsed_args, parsed_globals):
         super(ListCommand, self)._run_main(parsed_args, parsed_globals)
@@ -535,7 +556,11 @@ class ListCommand(S3Command):
             path = path[5:]
         bucket, key = find_bucket_key(path)
         if not bucket:
-            self._list_all_buckets(parsed_args.page_size)
+            self._list_all_buckets(
+                parsed_args.page_size,
+                parsed_args.bucket_name_prefix,
+                parsed_args.bucket_region,
+            )
         elif parsed_args.dir_op:
             # Then --recursive was specified.
             self._list_all_objects_recursive(
@@ -599,11 +624,20 @@ class ListCommand(S3Command):
             uni_print(print_str)
         self._at_first_page = False
 
-    def _list_all_buckets(self, page_size=None):
+    def _list_all_buckets(
+            self,
+            page_size=None,
+            prefix=None,
+            bucket_region=None,
+    ):
         paginator = self.client.get_paginator('list_buckets')
         paging_args = {
             'PaginationConfig': {'PageSize': page_size}
         }
+        if prefix:
+            paging_args['Prefix'] = prefix
+        if bucket_region:
+            paging_args['BucketRegion'] = bucket_region
 
         iterator = paginator.paginate(**paging_args)
 

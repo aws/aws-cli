@@ -9,4 +9,4 @@ The following ``update-ip-set`` example shows how to update the details of a tru
 
 This command produces no output.
 
-For more information, see `Working with Trusted IP Lists and Threat Lists <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_upload_lists.html>`__ in the GuardDuty User Guide.
+For more information, see `Working with Trusted IP Lists and Threat Lists <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_upload_lists.html>`__ in the *GuardDuty User Guide*.

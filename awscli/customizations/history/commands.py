@@ -25,7 +25,7 @@ from awscli.customizations.history.db import DatabaseRecordReader
 
 class HistorySubcommand(BasicCommand):
     def __init__(self, session, db_reader=None, output_stream_factory=None):
-        super(HistorySubcommand, self).__init__(session)
+        super().__init__(session)
         self._db_reader = db_reader
         self._output_stream_factory = output_stream_factory
         if output_stream_factory is None:

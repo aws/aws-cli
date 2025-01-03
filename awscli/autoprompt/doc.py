@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import io
+
 from docutils.core import publish_string
 
 from awscli.bcdoc import docevents, textwriter
@@ -23,6 +24,7 @@ class DocsGetter:
     service commands and service operations.
 
     """
+
     def __init__(self, driver):
         self._driver = driver
         self._cache = {}
@@ -37,7 +39,7 @@ class DocsGetter:
         text_content = self._convert_rst_to_basic_text(original_cli_help)
         index = text_content.find('DESCRIPTION')
         if index > 0:
-            text_content = text_content[index + len('DESCRIPTION'):]
+            text_content = text_content[index + len('DESCRIPTION') :]
         return text_content
 
     def _convert_rst_to_basic_text(self, contents):
@@ -57,8 +59,9 @@ class DocsGetter:
         # The report_level override is so that we don't print anything
         # to stdout/stderr on rendering issues.
         converted = publish_string(
-            contents, writer=BasicTextWriter(),
-            settings_overrides={'report_level': 5, 'halt_level': 5}
+            contents,
+            writer=BasicTextWriter(),
+            settings_overrides={'report_level': 5, 'halt_level': 5},
         )
         return converted.decode('utf-8').replace('\r', '')
 
@@ -92,7 +95,6 @@ class DocsGetter:
 
 
 class FileRenderer:
-
     def __init__(self):
         self._io = io.BytesIO()
 

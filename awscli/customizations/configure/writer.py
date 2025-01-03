@@ -16,7 +16,7 @@ import re
 from . import SectionNotFoundError
 
 
-class ConfigFileWriter(object):
+class ConfigFileWriter:
     SECTION_REGEX = re.compile(r'^\s*\[(?P<header>[^]]+)\]')
     OPTION_REGEX = re.compile(
         r'(?P<option>[^:=][^:=]*)'
@@ -56,7 +56,7 @@ class ConfigFileWriter(object):
             self._create_file(config_filename)
             self._write_new_section(section_name, new_values, config_filename)
             return
-        with open(config_filename, 'r') as f:
+        with open(config_filename) as f:
             contents = f.readlines()
         # We can only update a single section at a time so we first need
         # to find the section in question
@@ -92,7 +92,7 @@ class ConfigFileWriter(object):
         with open(config_filename, 'a') as f:
             if needs_newline:
                 f.write('\n')
-            f.write('[%s]\n' % section_name)
+            f.write(f'[{section_name}]\n')
             contents = []
             self._insert_new_values(line_number=0,
                                     contents=contents,
@@ -143,7 +143,7 @@ class ConfigFileWriter(object):
                     # out now.
                     if not isinstance(new_values[key_name], dict):
                         option_value = new_values[key_name]
-                        new_line = '%s = %s\n' % (key_name, option_value)
+                        new_line = f'{key_name} = {option_value}\n'
                         contents[j] = new_line
                         del new_values[key_name]
                     else:
@@ -171,7 +171,7 @@ class ConfigFileWriter(object):
                 key_name = match.group(1).strip()
                 if key_name in values:
                     option_value = values[key_name]
-                    new_line = '%s%s = %s\n' % (' ' * current_indent,
+                    new_line = '{}{} = {}\n'.format(' ' * current_indent,
                                                 key_name, option_value)
                     contents[i] = new_line
                     del values[key_name]
@@ -192,20 +192,19 @@ class ConfigFileWriter(object):
         for key, value in list(new_values.items()):
             if isinstance(value, dict):
                 subindent = indent + '    '
-                new_contents.append('%s%s =\n' % (indent, key))
+                new_contents.append(f'{indent}{key} =\n')
                 for subkey, subval in list(value.items()):
-                    new_contents.append('%s%s = %s\n' % (subindent, subkey,
-                                                         subval))
+                    new_contents.append(f'{subindent}{subkey} = {subval}\n')
             else:
-                new_contents.append('%s%s = %s\n' % (indent, key, value))
+                new_contents.append(f'{indent}{key} = {value}\n')
             del new_values[key]
         contents.insert(line_number + 1, ''.join(new_contents))
 
     def _matches_section(self, match, section_name):
         parts = section_name.split(' ')
-        unquoted_match = match.group(0) == '[%s]' % section_name
+        unquoted_match = match.group(0) == f'[{section_name}]'
         if len(parts) > 1:
-            quoted_match = match.group(0) == '[%s "%s"]' % (
+            quoted_match = match.group(0) == '[{} "{}"]'.format(
                 parts[0], ' '.join(parts[1:]))
             return unquoted_match or quoted_match
         return unquoted_match

@@ -11,12 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 """Generates auto completion index."""
+
 import os
 
+from awscli import clidriver
+from awscli.autocomplete import db
 from awscli.autocomplete.local import indexer
 from awscli.autocomplete.serverside.indexer import APICallIndexer
-from awscli.autocomplete import db
-from awscli import clidriver
 
 
 def generate_index(filename):
@@ -64,6 +65,7 @@ class IndexGenerator(object):
     indices.
 
     """
+
     def __init__(self, indexers):
         self._indexers = indexers
 

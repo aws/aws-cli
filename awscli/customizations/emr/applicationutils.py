@@ -27,7 +27,6 @@ def build_applications(region,
         app_name = app_config['Name'].lower()
 
         if app_name == constants.HIVE:
-            hive_version = constants.LATEST
             step_list.append(
                 _build_install_hive_step(region=region))
             args = app_config.get('Args')
@@ -40,7 +39,6 @@ def build_applications(region,
                             region=region,
                             hive_site_path=hive_site_path))
         elif app_name == constants.PIG:
-            pig_version = constants.LATEST
             step_list.append(
                 _build_pig_install_step(
                     region=region))
@@ -62,8 +60,8 @@ def build_applications(region,
                         constants.HBASE_PATH_HADOOP1_INSTALL_JAR))
             else:
                 raise ParamValidationError(
-                    'aws: error: AMI version %s is not '
-                    'compatible with HBase.' % ami_version
+                    f'aws: error: AMI version {ami_version} is not '
+                    'compatible with HBase.'
                 )
         elif app_name == constants.IMPALA:
             ba_list.append(

@@ -63,8 +63,8 @@ def _check_args(parsed_args, **kwargs):
         for key in ('protocol', 'port', 'cidr',
                     'source_group', 'group_owner'):
             if arg_dict[key]:
-                msg = ('The --%s option is not compatible '
-                       'with the --ip-permissions option ') % key
+                msg = (f'The --{key} option is not compatible '
+                       'with the --ip-permissions option ')
                 raise ParamValidationError(msg)
 
 

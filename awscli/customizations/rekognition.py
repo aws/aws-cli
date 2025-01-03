@@ -13,12 +13,15 @@
 
 from awscli.customizations.arguments import NestedBlobArgumentHoister
 
-IMAGE_FILE_DOCSTRING = ('<p>The content of the image to be uploaded. '
-                        'To specify the content of a local file use the '
-                        'fileb:// prefix. '
-                        'Example: fileb://image.png</p>')
-IMAGE_DOCSTRING_ADDENDUM = ('<p>To specify a local file use <code>--%s</code> '
-                            'instead.</p>')
+IMAGE_FILE_DOCSTRING = (
+    '<p>The content of the image to be uploaded. '
+    'To specify the content of a local file use the '
+    'fileb:// prefix. '
+    'Example: fileb://image.png</p>'
+)
+IMAGE_DOCSTRING_ADDENDUM = (
+    '<p>To specify a local file use <code>--%s</code> ' 'instead.</p>'
+)
 
 
 FILE_PARAMETER_UPDATES = {
@@ -32,10 +35,13 @@ def register_rekognition_detect_labels(cli):
     for target, new_param in FILE_PARAMETER_UPDATES.items():
         operation, old_param = target.rsplit('.', 1)
         doc_string_addendum = IMAGE_DOCSTRING_ADDENDUM % new_param
-        cli.register('building-argument-table.rekognition.%s' % operation,
-                     NestedBlobArgumentHoister(
-                         source_arg=old_param,
-                         source_arg_blob_member='Bytes',
-                         new_arg=new_param,
-                         new_arg_doc_string=IMAGE_FILE_DOCSTRING,
-                         doc_string_addendum=doc_string_addendum))
+        cli.register(
+            'building-argument-table.rekognition.%s' % operation,
+            NestedBlobArgumentHoister(
+                source_arg=old_param,
+                source_arg_blob_member='Bytes',
+                new_arg=new_param,
+                new_arg_doc_string=IMAGE_FILE_DOCSTRING,
+                doc_string_addendum=doc_string_addendum,
+            ),
+        )

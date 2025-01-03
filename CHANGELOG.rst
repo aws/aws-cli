@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.22.28
+=======
+
+* api-change:``s3``: This change is only for updating the model regexp of CopySource which is not for validation but only for documentation and user guide change.
+* api-change:``route53domains``: Doc only update for Route 53 Domains that fixes several customer-reported issues
+* api-change:``ecs``: Adding SDK reference examples for Amazon ECS operations.
+
+
 2.22.27
 =======
 

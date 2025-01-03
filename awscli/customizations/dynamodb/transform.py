@@ -17,7 +17,7 @@ from awscli.customizations.dynamodb.types import (
 )
 
 
-class ParameterTransformer(object):
+class ParameterTransformer:
     """Transforms the input to and output from botocore based on shape"""
 
     def transform(self, params, model, transformation, target_shape):
@@ -37,7 +37,7 @@ class ParameterTransformer(object):
                               target_shape):
         type_name = model.type_name
         if type_name in ['structure', 'map', 'list']:
-            getattr(self, '_transform_%s' % type_name)(
+            getattr(self, f'_transform_{type_name}')(
                 model, params, transformation, target_shape)
 
     def _transform_structure(self, model, params, transformation,

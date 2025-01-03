@@ -15,14 +15,15 @@ import json
 import logging
 
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.emrcontainers.constants \
-    import TRUST_POLICY_STATEMENT_FORMAT, \
-    TRUST_POLICY_STATEMENT_ALREADY_EXISTS, \
-    TRUST_POLICY_UPDATE_SUCCESSFUL
 from awscli.customizations.emrcontainers.base36 import Base36
+from awscli.customizations.emrcontainers.constants import (
+    TRUST_POLICY_STATEMENT_ALREADY_EXISTS,
+    TRUST_POLICY_STATEMENT_FORMAT,
+    TRUST_POLICY_UPDATE_SUCCESSFUL,
+)
 from awscli.customizations.emrcontainers.eks import EKS
 from awscli.customizations.emrcontainers.iam import IAM
-from awscli.customizations.utils import uni_print, get_policy_arn_suffix
+from awscli.customizations.utils import get_policy_arn_suffix, uni_print
 
 LOG = logging.getLogger(__name__)
 
@@ -71,48 +72,56 @@ class UpdateRoleTrustPolicyCommand(BasicCommand):
     NAME = 'update-role-trust-policy'
 
     DESCRIPTION = BasicCommand.FROM_FILE(
-        'emr-containers',
-        'update-role-trust-policy',
-        '_description.rst'
+        'emr-containers', 'update-role-trust-policy', '_description.rst'
     )
 
     ARG_TABLE = [
         {
             'name': 'cluster-name',
-            'help_text': ("Specify the name of the Amazon EKS cluster with "
-                          "which the IAM Role would be used."),
-            'required': True
+            'help_text': (
+                "Specify the name of the Amazon EKS cluster with "
+                "which the IAM Role would be used."
+            ),
+            'required': True,
         },
         {
             'name': 'namespace',
-            'help_text': ("Specify the namespace from the Amazon EKS cluster "
-                          "with which the IAM Role would be used."),
-            'required': True
+            'help_text': (
+                "Specify the namespace from the Amazon EKS cluster "
+                "with which the IAM Role would be used."
+            ),
+            'required': True,
         },
         {
             'name': 'role-name',
-            'help_text': ("Specify the IAM Role name that you want to use"
-                          "with Amazon EMR on EKS."),
-            'required': True
+            'help_text': (
+                "Specify the IAM Role name that you want to use"
+                "with Amazon EMR on EKS."
+            ),
+            'required': True,
         },
         {
             'name': 'iam-endpoint',
             'no_paramfile': True,
-            'help_text': ("The  IAM  endpoint  to call for updating the role "
-                          "trust policy. This is optional and should only be"
-                          "specified when a custom endpoint should be called"
-                          "for IAM operations."),
-            'required': False
+            'help_text': (
+                "The  IAM  endpoint  to call for updating the role "
+                "trust policy. This is optional and should only be"
+                "specified when a custom endpoint should be called"
+                "for IAM operations."
+            ),
+            'required': False,
         },
         {
             'name': 'dry-run',
             'action': 'store_true',
             'default': False,
-            'help_text': ("Print the merged trust policy document to"
-                          "stdout instead of updating the role trust"
-                          "policy directly."),
-            'required': False
-        }
+            'help_text': (
+                "Print the merged trust policy document to"
+                "stdout instead of updating the role trust"
+                "policy directly."
+            ),
+            'required': False,
+        },
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
@@ -136,42 +145,55 @@ class UpdateRoleTrustPolicyCommand(BasicCommand):
 
         base36 = Base36()
 
-        eks_client = EKS(self._session.create_client(
-            'eks',
-            region_name=self._region,
-            verify=parsed_globals.verify_ssl
-        ))
+        eks_client = EKS(
+            self._session.create_client(
+                'eks',
+                region_name=self._region,
+                verify=parsed_globals.verify_ssl,
+            )
+        )
 
         account_id = eks_client.get_account_id(self._cluster_name)
         oidc_provider = eks_client.get_oidc_issuer_id(self._cluster_name)
 
         base36_encoded_role_name = base36.encode(self._role_name)
         LOG.debug('Base36 encoded role name: %s', base36_encoded_role_name)
-        trust_policy_statement = json.loads(TRUST_POLICY_STATEMENT_FORMAT % {
-            "AWS_ACCOUNT_ID": account_id,
-            "OIDC_PROVIDER": oidc_provider,
-            "NAMESPACE": self._namespace,
-            "BASE36_ENCODED_ROLE_NAME": base36_encoded_role_name,
-            "AWS_PARTITION": get_policy_arn_suffix(self._region)
-        })
+        trust_policy_statement = json.loads(
+            TRUST_POLICY_STATEMENT_FORMAT
+            % {
+                "AWS_ACCOUNT_ID": account_id,
+                "OIDC_PROVIDER": oidc_provider,
+                "NAMESPACE": self._namespace,
+                "BASE36_ENCODED_ROLE_NAME": base36_encoded_role_name,
+                "AWS_PARTITION": get_policy_arn_suffix(self._region),
+            }
+        )
 
-        LOG.debug('Computed Trust Policy Statement:\n%s', json.dumps(
-            trust_policy_statement, indent=2))
-        iam_client = IAM(self._session.create_client(
-            'iam',
-            region_name=self._region,
-            endpoint_url=self._endpoint_url,
-            verify=parsed_globals.verify_ssl
-        ))
+        LOG.debug(
+            'Computed Trust Policy Statement:\n%s',
+            json.dumps(trust_policy_statement, indent=2),
+        )
+        iam_client = IAM(
+            self._session.create_client(
+                'iam',
+                region_name=self._region,
+                endpoint_url=self._endpoint_url,
+                verify=parsed_globals.verify_ssl,
+            )
+        )
 
         assume_role_document = iam_client.get_assume_role_policy(
-            self._role_name)
-        matches = check_if_statement_exists(trust_policy_statement,
-                                            assume_role_document)
+            self._role_name
+        )
+        matches = check_if_statement_exists(
+            trust_policy_statement, assume_role_document
+        )
 
         if not matches:
-            LOG.debug('Role %s does not have the required trust policy ',
-                      self._role_name)
+            LOG.debug(
+                'Role %s does not have the required trust policy ',
+                self._role_name,
+            )
 
             existing_statements = assume_role_document.get("Statement")
             if existing_statements is None:
@@ -183,8 +205,9 @@ class UpdateRoleTrustPolicyCommand(BasicCommand):
                 return json.dumps(assume_role_document, indent=2)
             else:
                 LOG.debug('Updating trust policy of role %s', self._role_name)
-                iam_client.update_assume_role_policy(self._role_name,
-                                                     assume_role_document)
+                iam_client.update_assume_role_policy(
+                    self._role_name, assume_role_document
+                )
                 return TRUST_POLICY_UPDATE_SUCCESSFUL % self._role_name
         else:
             return TRUST_POLICY_STATEMENT_ALREADY_EXISTS % self._role_name

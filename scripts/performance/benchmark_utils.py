@@ -1,10 +1,11 @@
-import s3transfer
-import os
-import subprocess
-import uuid
-import shutil
 import argparse
+import os
+import shutil
+import subprocess
 import tempfile
+import uuid
+
+import s3transfer
 
 
 def summarize(script, result_dir, summary_dir):
@@ -145,9 +146,16 @@ def get_transfer_command(command, recursive, quiet):
     return cli_command
 
 
-def benchmark_command(command, benchmark_script, summarize_script,
-                      output_dir, num_iterations, dry_run, upkeep=None,
-                      cleanup=None):
+def benchmark_command(
+    command,
+    benchmark_script,
+    summarize_script,
+    output_dir,
+    num_iterations,
+    dry_run,
+    upkeep=None,
+    cleanup=None,
+):
     """Benchmark several runs of a long-running command.
 
     :type command: str
@@ -192,7 +200,10 @@ def benchmark_command(command, benchmark_script, summarize_script,
             out_file = 'performance%s.csv' % i
             out_file = os.path.join(performance_dir, out_file)
             benchmark_args = [
-                benchmark_script, command, '--output-file', out_file
+                benchmark_script,
+                command,
+                '--output-file',
+                out_file,
             ]
             if not dry_run:
                 subprocess.check_call(benchmark_args)
@@ -210,42 +221,61 @@ def get_default_argparser():
     """Get an ArgumentParser with all the base benchmark arguments added in."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '--no-cleanup', action='store_true', default=False,
-        help='Do not remove the destination after the tests complete.'
+        '--no-cleanup',
+        action='store_true',
+        default=False,
+        help='Do not remove the destination after the tests complete.',
     )
     parser.add_argument(
-        '--recursive', action='store_true', default=False,
-        help='Indicates that this is a recursive transfer.'
+        '--recursive',
+        action='store_true',
+        default=False,
+        help='Indicates that this is a recursive transfer.',
     )
     benchmark_script = get_benchmark_script()
     parser.add_argument(
-        '--benchmark-script', default=benchmark_script,
+        '--benchmark-script',
+        default=benchmark_script,
         required=benchmark_script is None,
-        help=('The benchmark script to run the commands with. This should be '
-              'from s3transfer.')
+        help=(
+            'The benchmark script to run the commands with. This should be '
+            'from s3transfer.'
+        ),
     )
     summarize_script = get_summarize_script()
     parser.add_argument(
-        '--summarize-script', default=summarize_script,
+        '--summarize-script',
+        default=summarize_script,
         required=summarize_script is None,
-        help=('The summarize script to run the commands with. This should be '
-              'from s3transfer.')
+        help=(
+            'The summarize script to run the commands with. This should be '
+            'from s3transfer.'
+        ),
     )
     parser.add_argument(
-        '-o', '--result-dir', default='results',
+        '-o',
+        '--result-dir',
+        default='results',
         help='The directory to output performance results to. Existing '
-             'results will be deleted.'
+        'results will be deleted.',
     )
     parser.add_argument(
-        '--dry-run', default=False, action='store_true',
-        help='If set, commands will only be printed out, not executed.'
+        '--dry-run',
+        default=False,
+        action='store_true',
+        help='If set, commands will only be printed out, not executed.',
     )
     parser.add_argument(
-        '--quiet', default=False, action='store_true',
-        help='If set, output is suppressed.'
+        '--quiet',
+        default=False,
+        action='store_true',
+        help='If set, output is suppressed.',
     )
     parser.add_argument(
-        '-n', '--num-iterations', default=1, type=int,
-        help='The number of times to run the test.'
+        '-n',
+        '--num-iterations',
+        default=1,
+        type=int,
+        help='The number of times to run the test.',
     )
     return parser

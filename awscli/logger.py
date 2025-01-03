@@ -17,8 +17,7 @@ import awscrt.io
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 
-def set_stream_logger(logger_name, log_level, stream=None,
-                      format_string=None):
+def set_stream_logger(logger_name, log_level, stream=None, format_string=None):
     """
     Convenience method to configure a stream logger.
 

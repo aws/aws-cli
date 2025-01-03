@@ -21,30 +21,38 @@ class GetGameSessionLogCommand(BasicCommand):
     NAME = 'get-game-session-log'
     DESCRIPTION = 'Download a compressed log file for a game session.'
     ARG_TABLE = [
-        {'name': 'game-session-id', 'required': True,
-         'help_text': 'The game session ID'},
-        {'name': 'save-as', 'required': True,
-         'help_text': 'The filename to which the file should be saved (.zip)'}
+        {
+            'name': 'game-session-id',
+            'required': True,
+            'help_text': 'The game session ID',
+        },
+        {
+            'name': 'save-as',
+            'required': True,
+            'help_text': 'The filename to which the file should be saved (.zip)',
+        },
     ]
 
     def _run_main(self, args, parsed_globals):
         client = self._session.create_client(
-            'gamelift', region_name=parsed_globals.region,
+            'gamelift',
+            region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl
+            verify=parsed_globals.verify_ssl,
         )
 
         # Retrieve a signed url.
         response = client.get_game_session_log_url(
-            GameSessionId=args.game_session_id)
+            GameSessionId=args.game_session_id
+        )
         url = response['PreSignedUrl']
 
         # Retrieve the content from the presigned url and save it locally.
         contents = urlopen(url)
 
         sys.stdout.write(
-            'Downloading log archive for game session %s...\r' %
-            args.game_session_id
+            'Downloading log archive for game session %s...\r'
+            % args.game_session_id
         )
 
         with open(args.save_as, 'wb') as f:
@@ -53,6 +61,7 @@ class GetGameSessionLogCommand(BasicCommand):
 
         sys.stdout.write(
             'Successfully downloaded log archive for game '
-            'session %s to %s\n' % (args.game_session_id, args.save_as))
+            'session %s to %s\n' % (args.game_session_id, args.save_as)
+        )
 
         return 0

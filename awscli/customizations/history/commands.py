@@ -13,14 +13,16 @@
 import os
 
 from awscli.compat import is_windows
-from awscli.utils import is_a_tty
-from awscli.utils import OutputStreamFactory
-
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.history.db import DatabaseConnection
-from awscli.customizations.history.constants import HISTORY_FILENAME_ENV_VAR
-from awscli.customizations.history.constants import DEFAULT_HISTORY_FILENAME
-from awscli.customizations.history.db import DatabaseRecordReader
+from awscli.customizations.history.constants import (
+    DEFAULT_HISTORY_FILENAME,
+    HISTORY_FILENAME_ENV_VAR,
+)
+from awscli.customizations.history.db import (
+    DatabaseConnection,
+    DatabaseRecordReader,
+)
+from awscli.utils import OutputStreamFactory, is_a_tty
 
 
 class HistorySubcommand(BasicCommand):
@@ -29,8 +31,9 @@ class HistorySubcommand(BasicCommand):
         self._db_reader = db_reader
         self._output_stream_factory = output_stream_factory
         if output_stream_factory is None:
-            self._output_stream_factory = \
+            self._output_stream_factory = (
                 self._get_default_output_stream_factory()
+            )
 
     def _get_default_output_stream_factory(self):
         return OutputStreamFactory(self._session)
@@ -45,7 +48,8 @@ class HistorySubcommand(BasicCommand):
 
     def _get_history_db_filename(self):
         filename = os.environ.get(
-            HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME)
+            HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME
+        )
         if not os.path.exists(filename):
             raise RuntimeError(
                 'Could not locate history. Make sure cli_history is set to '

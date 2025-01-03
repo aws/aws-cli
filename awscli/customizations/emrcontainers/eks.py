@@ -24,8 +24,13 @@ class EKS(object):
                 name=cluster_name
             )
 
-        oidc_issuer = self.cluster_info[cluster_name].get("cluster", {}).get(
-            "identity", {}).get("oidc", {}).get("issuer", "")
+        oidc_issuer = (
+            self.cluster_info[cluster_name]
+            .get("cluster", {})
+            .get("identity", {})
+            .get("oidc", {})
+            .get("issuer", "")
+        )
 
         return oidc_issuer.split('https://')[1]
 
@@ -36,7 +41,8 @@ class EKS(object):
                 name=cluster_name
             )
 
-        cluster_arn = self.cluster_info[cluster_name].get("cluster", {}).get(
-            "arn", "")
+        cluster_arn = (
+            self.cluster_info[cluster_name].get("cluster", {}).get("arn", "")
+        )
 
         return cluster_arn.split(':')[4]

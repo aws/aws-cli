@@ -33,4 +33,3 @@ test file::
 
    $ shellcheck ../assets/install
    $ shellcheck install.bats
-

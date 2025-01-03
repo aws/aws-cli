@@ -14,12 +14,9 @@ import json
 import logging
 import os
 
-from botocore.exceptions import ClientError
-
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.sso.utils import SSO_TOKEN_DIR
-from awscli.customizations.sso.utils import AWS_CREDS_CACHE_DIR
-
+from awscli.customizations.sso.utils import AWS_CREDS_CACHE_DIR, SSO_TOKEN_DIR
+from botocore.exceptions import ClientError
 
 LOG = logging.getLogger(__name__)
 
@@ -35,7 +32,9 @@ class LogoutCommand(BasicCommand):
     ARG_TABLE = []
 
     def _run_main(self, parsed_args, parsed_globals):
-        SSOTokenSweeper(self._session, parsed_globals).delete_credentials(SSO_TOKEN_DIR)
+        SSOTokenSweeper(self._session, parsed_globals).delete_credentials(
+            SSO_TOKEN_DIR
+        )
         SSOCredentialSweeper().delete_credentials(AWS_CREDS_CACHE_DIR)
         return 0
 

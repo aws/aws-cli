@@ -12,12 +12,13 @@
 # language governing permissions and limitations under the License.
 
 from awscli.customizations import utils
-from awscli.customizations.codedeploy.locationargs import \
-    modify_revision_arguments
-from awscli.customizations.codedeploy.push import Push
-from awscli.customizations.codedeploy.register import Register
 from awscli.customizations.codedeploy.deregister import Deregister
 from awscli.customizations.codedeploy.install import Install
+from awscli.customizations.codedeploy.locationargs import (
+    modify_revision_arguments,
+)
+from awscli.customizations.codedeploy.push import Push
+from awscli.customizations.codedeploy.register import Register
 from awscli.customizations.codedeploy.uninstall import Uninstall
 
 
@@ -25,25 +26,19 @@ def initialize(cli):
     """
     The entry point for CodeDeploy high level commands.
     """
-    cli.register(
-        'building-command-table.main',
-        change_name
-    )
-    cli.register(
-        'building-command-table.deploy',
-        inject_commands
-    )
+    cli.register('building-command-table.main', change_name)
+    cli.register('building-command-table.deploy', inject_commands)
     cli.register(
         'building-argument-table.deploy.get-application-revision',
-        modify_revision_arguments
+        modify_revision_arguments,
     )
     cli.register(
         'building-argument-table.deploy.register-application-revision',
-        modify_revision_arguments
+        modify_revision_arguments,
     )
     cli.register(
         'building-argument-table.deploy.create-deployment',
-        modify_revision_arguments
+        modify_revision_arguments,
     )
 
 

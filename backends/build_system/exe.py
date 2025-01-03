@@ -13,9 +13,15 @@
 import os
 from dataclasses import dataclass, field
 
-from constants import EXE_ASSETS_DIR, PYINSTALLER_DIR, DISTRIBUTION_SOURCE_EXE, PYINSTALLER_EXE_NAME
-from utils import Utils
 from awscli_venv import AwsCliVenv
+
+from constants import (
+    DISTRIBUTION_SOURCE_EXE,
+    EXE_ASSETS_DIR,
+    PYINSTALLER_DIR,
+    PYINSTALLER_EXE_NAME,
+)
+from utils import Utils
 
 
 @dataclass
@@ -52,11 +58,9 @@ class ExeBuilder:
             distribution_source=DISTRIBUTION_SOURCE_EXE,
         )
         for distinfo in self._utils.glob(
-                '**/*.dist-info',
-                root=self._final_dist_dir
+            '**/*.dist-info', root=self._final_dist_dir
         ):
             self._utils.rmtree(os.path.join(self._final_dist_dir, distinfo))
-
 
     def _ensure_no_existing_build_dir(self):
         if self._utils.isdir(self._dist_dir):

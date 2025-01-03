@@ -11,13 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.customizations.servicecatalog.generate \
-    import GenerateCommand
+from awscli.customizations.servicecatalog.generate import GenerateCommand
 
 
 def register_servicecatalog_commands(event_emitter):
-    event_emitter.register('building-command-table.servicecatalog',
-                           inject_commands)
+    event_emitter.register(
+        'building-command-table.servicecatalog', inject_commands
+    )
 
 
 def inject_commands(command_table, session, **kwargs):

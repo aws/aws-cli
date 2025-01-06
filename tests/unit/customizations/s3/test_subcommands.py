@@ -79,11 +79,27 @@ class TestLSCommand(unittest.TestCase):
         self.session.create_client.return_value.get_paginator.return_value\
             .paginate.return_value = [{'Contents': [], 'CommonPrefixes': []}]
 
+    def _get_fake_kwargs(self, override=None):
+        fake_kwargs = {
+            'paths': 's3://',
+            'dir_op': False,
+            'human_readable': False,
+            'summarize': False,
+            'page_size': None,
+            'request_payer': None,
+            'bucket_name_prefix': None,
+            'bucket_region': None,
+        }
+        fake_kwargs.update(override or {})
+
+        return fake_kwargs
+
     def test_ls_command_for_bucket(self):
         ls_command = ListCommand(self.session)
-        parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False,
-                               page_size='5', human_readable=False,
-                               summarize=False, request_payer=None)
+        parsed_args = FakeArgs(**self._get_fake_kwargs({
+            'paths': 's3://mybucket/',
+            'page_size': '5',
+        }))
         parsed_globals = mock.Mock()
         ls_command._run_main(parsed_args, parsed_globals)
         call = self.session.create_client.return_value.list_objects_v2
@@ -104,9 +120,7 @@ class TestLSCommand(unittest.TestCase):
         ls_command = ListCommand(self.session)
         parsed_global = FakeArgs(region=None, endpoint_url=None,
                                  verify_ssl=None)
-        parsed_args = FakeArgs(dir_op=False, paths='s3://',
-                               human_readable=False, summarize=False,
-                               request_payer=None, page_size=None)
+        parsed_args = FakeArgs(**self._get_fake_kwargs())
         ls_command._run_main(parsed_args, parsed_global)
         call = self.session.create_client.return_value.list_buckets
         paginate = self.session.create_client.return_value.get_paginator\
@@ -129,14 +143,61 @@ class TestLSCommand(unittest.TestCase):
             mock.call('s3', region_name=None, verify=None, endpoint_url=None)
         )
 
+    def test_ls_with_bucket_name_prefix(self):
+        ls_command = ListCommand(self.session)
+        parsed_args = FakeArgs(**self._get_fake_kwargs({
+            'bucket_name_prefix': 'myprefix',
+        }))
+        parsed_globals = FakeArgs(
+            region=None,
+            endpoint_url=None,
+            verify_ssl=None,
+        )
+        ls_command._run_main(parsed_args, parsed_globals)
+        call = self.session.create_client.return_value.list_objects
+        paginate = self.session.create_client.return_value.get_paginator\
+            .return_value.paginate
+        # We should make no operation calls.
+        self.assertEqual(call.call_count, 0)
+        self.session.create_client.return_value.get_paginator.\
+            assert_called_with('list_buckets')
+        ref_call_args = {
+            'PaginationConfig': {'PageSize': None},
+            'Prefix': 'myprefix',
+        }
+
+        paginate.assert_called_with(**ref_call_args)
+
+    def test_ls_with_bucket_region(self):
+        ls_command = ListCommand(self.session)
+        parsed_args = FakeArgs(**self._get_fake_kwargs({
+            'bucket_region': 'us-west-1',
+        }))
+        parsed_globals = FakeArgs(
+            region=None,
+            endpoint_url=None,
+            verify_ssl=None,
+        )
+        ls_command._run_main(parsed_args, parsed_globals)
+        call = self.session.create_client.return_value.list_objects
+        paginate = self.session.create_client.return_value.get_paginator\
+            .return_value.paginate
+        # We should make no operation calls.
+        self.assertEqual(call.call_count, 0)
+        self.session.create_client.return_value.get_paginator.\
+            assert_called_with('list_buckets')
+        ref_call_args = {
+            'PaginationConfig': {'PageSize': None},
+            'BucketRegion': 'us-west-1',
+        }
+
+        paginate.assert_called_with(**ref_call_args)
+
     def test_ls_with_verify_argument(self):
-        options = {'default': 's3://', 'nargs': '?'}
         ls_command = ListCommand(self.session)
         parsed_global = FakeArgs(region='us-west-2', endpoint_url=None,
                                  verify_ssl=False)
-        parsed_args = FakeArgs(paths='s3://', dir_op=False,
-                               human_readable=False, summarize=False,
-                               request_payer=None, page_size=None)
+        parsed_args = FakeArgs(**self._get_fake_kwargs({}))
         ls_command._run_main(parsed_args, parsed_global)
         # Verify get_client
         get_client = self.session.create_client
@@ -150,9 +211,11 @@ class TestLSCommand(unittest.TestCase):
 
     def test_ls_with_requester_pays(self):
         ls_command = ListCommand(self.session)
-        parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False,
-                               human_readable=False, summarize=False,
-                               request_payer='requester', page_size='5')
+        parsed_args = FakeArgs(**self._get_fake_kwargs({
+            'paths': 's3://mybucket/',
+            'page_size': '5',
+            'request_payer': 'requester',
+        }))
         parsed_globals = mock.Mock()
         ls_command._run_main(parsed_args, parsed_globals)
         call = self.session.create_client.return_value.list_objects

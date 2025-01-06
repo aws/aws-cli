@@ -659,7 +659,7 @@
         },
         "schema":{
           "shape":"DataLakeDatasetSchema",
-          "documentation":"<p>The custom schema of the data lake dataset and is only required when the name space is <i>default</i>.</p>"
+          "documentation":"<p>The custom schema of the data lake dataset and is only required when the name space is <b>default</b>.</p>"
         },
         "description":{
           "shape":"DataLakeDatasetDescription",
@@ -697,6 +697,10 @@
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The ARN (Amazon Resource Name) of the Key Management Service (KMS) key you provide for encryption. This is required if you do not want to use the Amazon Web Services owned KMS key. If you don't provide anything here, AWS Supply Chain uses the Amazon Web Services owned KMS key.</p>"
+        },
+        "webAppDnsDomain":{
+          "shape":"InstanceWebAppDnsDomain",
+          "documentation":"<p>The DNS subdomain of the web app. This would be \"example\" in the URL \"example.scn.global.on.aws\". You can set this to a custom value, as long as the domain isn't already being used by someone else. The name may only include alphanumeric characters and hyphens.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -1255,13 +1259,13 @@
         },
         "namespace":{
           "shape":"DataLakeDatasetNamespace",
-          "documentation":"<p>The namespace of the dataset. The available values are:</p> <ul> <li> <p>asc: for <a href=\"https://docs.aws.amazon.com/aws-supply-chain/latest/userguide/data-model-asc.html\"> AWS Supply Chain supported datasets </a>.</p> </li> <li> <p>default: for datasets with custom user-defined schemas.</p> </li> </ul>",
+          "documentation":"<p>The name space of the dataset. The available values are:</p> <ul> <li> <p> <b>asc</b> - For information on the Amazon Web Services Supply Chain supported datasets see <a href=\"https://docs.aws.amazon.com/aws-supply-chain/latest/userguide/data-model-asc.html\">https://docs.aws.amazon.com/aws-supply-chain/latest/userguide/data-model-asc.html</a>.</p> </li> <li> <p> <b>default</b> - For datasets with custom user-defined schemas.</p> </li> </ul>",
           "location":"uri",
           "locationName":"namespace"
         },
         "name":{
           "shape":"DataLakeDatasetName",
-          "documentation":"<p>The name of the dataset. If the namespace is <i>asc</i>, the name must be one of the supported <a href=\"https://docs.aws.amazon.com/aws-supply-chain/latest/userguide/data-model-asc.html\">data entities </a>.</p>",
+          "documentation":"<p>The name of the dataset. For <b>asc</b> name space, the name must be one of the supported data entities under <a href=\"https://docs.aws.amazon.com/aws-supply-chain/latest/userguide/data-model-asc.html\">https://docs.aws.amazon.com/aws-supply-chain/latest/userguide/data-model-asc.html</a>.</p>",
           "location":"uri",
           "locationName":"name"
         }
@@ -1282,7 +1286,7 @@
         },
         "namespace":{
           "shape":"DataLakeDatasetNamespace",
-          "documentation":"<p>The namespace of deleted dataset.</p>"
+          "documentation":"<p>The name space of deleted dataset.</p>"
         },
         "name":{
           "shape":"DataLakeDatasetName",
@@ -1556,7 +1560,7 @@
     },
     "InstanceWebAppDnsDomain":{
       "type":"string",
-      "pattern":"[A-Za-z0-9]+(.[A-Za-z0-9]+)+"
+      "pattern":"(?![-])[a-zA-Z0-9-]{1,62}[a-zA-Z0-9]"
     },
     "InternalServerException":{
       "type":"structure",
@@ -1630,7 +1634,7 @@
         },
         "namespace":{
           "shape":"DataLakeDatasetNamespace",
-          "documentation":"<p>The namespace of the dataset. The available values are:</p> <ul> <li> <p>asc: for <a href=\"https://docs.aws.amazon.com/aws-supply-chain/latest/userguide/data-model-asc.html\"> AWS Supply Chain supported datasets </a>.</p> </li> <li> <p>default: for datasets with custom user-defined schemas.</p> </li> </ul>",
+          "documentation":"<p>The name space of the dataset. The available values are:</p> <ul> <li> <p> <b>asc</b> - For information on the Amazon Web Services Supply Chain supported datasets see <a href=\"https://docs.aws.amazon.com/aws-supply-chain/latest/userguide/data-model-asc.html\">https://docs.aws.amazon.com/aws-supply-chain/latest/userguide/data-model-asc.html</a>.</p> </li> <li> <p> <b>default</b> - For datasets with custom user-defined schemas.</p> </li> </ul>",
           "location":"uri",
           "locationName":"namespace"
         },
@@ -1772,7 +1776,7 @@
         },
         "data":{
           "shape":"DataIntegrationEventData",
-          "documentation":"<p>The data payload of the event. For more information on the data schema to use, see <a href=\"https://docs.aws.amazon.com/aws-supply-chain/latest/userguide/data-model-asc.html\">Data entities supported in AWS Supply Chain </a>.</p>"
+          "documentation":"<p>The data payload of the event. For more information on the data schema to use, see <a href=\"https://docs.aws.amazon.com/aws-supply-chain/latest/userguide/data-model-asc.html\">Data entities supported in AWS Supply Chain</a>.</p>"
         },
         "eventGroupId":{
           "shape":"DataIntegrationEventGroupId",

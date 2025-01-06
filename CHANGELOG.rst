@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.22.29
+=======
+
+* api-change:``supplychain``: Allow vanity DNS domain when creating a new ASC instance
+* api-change:``iotsecuretunneling``: Adds dualstack endpoint support for IoT Secure Tunneling
+
+
 2.22.28
 =======
 

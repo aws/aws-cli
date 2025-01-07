@@ -11,4 +11,4 @@ Output::
         "ImageBlockPublicAccessState": "unblocked"
     }
 
-For more information, see `Block public access to your AMIs <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sharingamis-intro.html#block-public-access-to-amis>`__ in the *Amazon EC2 User Guide*.
+For more information, see `Block public access to your AMIs <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-public-access-to-amis.html>`__ in the *Amazon EC2 User Guide*.

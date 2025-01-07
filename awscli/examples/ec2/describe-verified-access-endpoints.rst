@@ -1,6 +1,6 @@
 **To describe a Verified Access endpoint**
 
-The following ``delete-verified-access-endpoints`` example describes the specified Verified Access endpoint. ::
+The following ``describe-verified-access-endpoints`` example describes the specified Verified Access endpoint. ::
 
     aws ec2 describe-verified-access-endpoints \
         --verified-access-endpoint-ids vae-066fac616d4d546f2
@@ -42,4 +42,4 @@ Output::
         ]
     }
 
-For more information, see `Verified Access endpoints <https://docs.aws.amazon.com/verified-access/latest/ug/verfied-access-endpoints.html>`__ in the *AWS Verified Access User Guide*.
+For more information, see `Verified Access endpoints <https://docs.aws.amazon.com/verified-access/latest/ug/verified-access-endpoints.html>`__ in the *AWS Verified Access User Guide*.

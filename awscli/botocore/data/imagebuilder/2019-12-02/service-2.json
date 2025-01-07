@@ -756,6 +756,21 @@
       ],
       "documentation":"<p>Imports a component and transforms its data into a component document.</p>"
     },
+    "ImportDiskImage":{
+      "name":"ImportDiskImage",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/ImportDiskImage"
+      },
+      "input":{"shape":"ImportDiskImageRequest"},
+      "output":{"shape":"ImportDiskImageResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Import a Windows operating system image from a verified Microsoft ISO disk file. The following disk images are supported:</p> <ul> <li> <p>Windows 11 Enterprise</p> </li> </ul>"
+    },
     "ImportVmImage":{
       "name":"ImportVmImage",
       "http":{
@@ -1557,7 +1572,8 @@
       "enum":[
         "USER_INITIATED",
         "SCHEDULED",
-        "IMPORT"
+        "IMPORT",
+        "IMPORT_ISO"
       ]
     },
     "CallRateLimitExceededException":{
@@ -4067,7 +4083,7 @@
         },
         "buildType":{
           "shape":"BuildType",
-          "documentation":"<p>Indicates the type of build that created this image. The build can be initiated in the following ways:</p> <ul> <li> <p> <b>USER_INITIATED</b> – A manual pipeline build request.</p> </li> <li> <p> <b>SCHEDULED</b> – A pipeline build initiated by a cron expression in the Image Builder pipeline, or from EventBridge.</p> </li> <li> <p> <b>IMPORT</b> – A VM import created the image to use as the base image for the recipe.</p> </li> </ul>"
+          "documentation":"<p>Indicates the type of build that created this image. The build can be initiated in the following ways:</p> <ul> <li> <p> <b>USER_INITIATED</b> – A manual pipeline build request.</p> </li> <li> <p> <b>SCHEDULED</b> – A pipeline build initiated by a cron expression in the Image Builder pipeline, or from EventBridge.</p> </li> <li> <p> <b>IMPORT</b> – A VM import created the image to use as the base image for the recipe.</p> </li> <li> <p> <b>IMPORT_ISO</b> – An ISO disk import created the image.</p> </li> </ul>"
         },
         "imageSource":{
           "shape":"ImageSource",
@@ -4605,7 +4621,7 @@
         },
         "buildType":{
           "shape":"BuildType",
-          "documentation":"<p>Indicates the type of build that created this image. The build can be initiated in the following ways:</p> <ul> <li> <p> <b>USER_INITIATED</b> – A manual pipeline build request.</p> </li> <li> <p> <b>SCHEDULED</b> – A pipeline build initiated by a cron expression in the Image Builder pipeline, or from EventBridge.</p> </li> <li> <p> <b>IMPORT</b> – A VM import created the image to use as the base image for the recipe.</p> </li> </ul>"
+          "documentation":"<p>Indicates the type of build that created this image. The build can be initiated in the following ways:</p> <ul> <li> <p> <b>USER_INITIATED</b> – A manual pipeline build request.</p> </li> <li> <p> <b>SCHEDULED</b> – A pipeline build initiated by a cron expression in the Image Builder pipeline, or from EventBridge.</p> </li> <li> <p> <b>IMPORT</b> – A VM import created the image to use as the base image for the recipe.</p> </li> <li> <p> <b>IMPORT_ISO</b> – An ISO disk import created the image.</p> </li> </ul>"
         },
         "imageSource":{
           "shape":"ImageSource",
@@ -4635,7 +4651,7 @@
         },
         "timeoutMinutes":{
           "shape":"ImageTestsTimeoutMinutes",
-          "documentation":"<p>The maximum time in minutes that tests are permitted to run.</p> <note> <p>The timeout attribute is not currently active. This value is ignored.</p> </note>"
+          "documentation":"<p>The maximum time in minutes that tests are permitted to run.</p> <note> <p>The timeout property is not currently active. This value is ignored.</p> </note>"
         }
       },
       "documentation":"<p>Configure image tests for your pipeline build. Tests run after building the image, to verify that the AMI or container image is valid before distributing it.</p>"
@@ -4689,7 +4705,7 @@
         },
         "buildType":{
           "shape":"BuildType",
-          "documentation":"<p>Indicates the type of build that created this image. The build can be initiated in the following ways:</p> <ul> <li> <p> <b>USER_INITIATED</b> – A manual pipeline build request.</p> </li> <li> <p> <b>SCHEDULED</b> – A pipeline build initiated by a cron expression in the Image Builder pipeline, or from EventBridge.</p> </li> <li> <p> <b>IMPORT</b> – A VM import created the image to use as the base image for the recipe.</p> </li> </ul>"
+          "documentation":"<p>Indicates the type of build that created this image. The build can be initiated in the following ways:</p> <ul> <li> <p> <b>USER_INITIATED</b> – A manual pipeline build request.</p> </li> <li> <p> <b>SCHEDULED</b> – A pipeline build initiated by a cron expression in the Image Builder pipeline, or from EventBridge.</p> </li> <li> <p> <b>IMPORT</b> – A VM import created the image to use as the base image for the recipe.</p> </li> <li> <p> <b>IMPORT_ISO</b> – An ISO disk import created the image.</p> </li> </ul>"
         },
         "imageSource":{
           "shape":"ImageSource",
@@ -4786,6 +4802,74 @@
         "componentBuildVersionArn":{
           "shape":"ComponentBuildVersionArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the imported component.</p>"
+        }
+      }
+    },
+    "ImportDiskImageRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "semanticVersion",
+        "platform",
+        "osVersion",
+        "infrastructureConfigurationArn",
+        "uri",
+        "clientToken"
+      ],
+      "members":{
+        "name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the image resource that's created from the import.</p>"
+        },
+        "semanticVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>The semantic version to attach to the image that's created during the import process. This version follows the semantic version syntax.</p>"
+        },
+        "description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The description for your disk image import.</p>"
+        },
+        "platform":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The operating system platform for the imported image. Allowed values include the following: <code>Windows</code>.</p>"
+        },
+        "osVersion":{
+          "shape":"OsVersion",
+          "documentation":"<p>The operating system version for the imported image. Allowed values include the following: <code>Microsoft Windows 11</code>.</p>"
+        },
+        "executionRole":{
+          "shape":"RoleNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) for the IAM role you create that grants Image Builder access to perform workflow actions to import an image from a Microsoft ISO file.</p>"
+        },
+        "infrastructureConfigurationArn":{
+          "shape":"InfrastructureConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the infrastructure configuration resource that's used for launching the EC2 instance on which the ISO image is built.</p>"
+        },
+        "uri":{
+          "shape":"Uri",
+          "documentation":"<p>The <code>uri</code> of the ISO disk file that's stored in Amazon S3.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags that are attached to image resources created from the import.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "ImportDiskImageResponse":{
+      "type":"structure",
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
+        },
+        "imageBuildVersionArn":{
+          "shape":"ImageBuildVersionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the output AMI that was created from the ISO disk file.</p>"
         }
       }
     },
@@ -7073,7 +7157,7 @@
         },
         "pipelineExecutionStartCondition":{
           "shape":"PipelineExecutionStartCondition",
-          "documentation":"<p>The condition configures when the pipeline should trigger a new image build. When the <code>pipelineExecutionStartCondition</code> is set to <code>EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE</code>, and you use semantic version filters on the base image or components in your image recipe, EC2 Image Builder will build a new image only when there are new versions of the image or components in your recipe that match the semantic version filter. When it is set to <code>EXPRESSION_MATCH_ONLY</code>, it will build a new image every time the CRON expression matches the current time. For semantic version syntax, see <a href=\"https://docs.aws.amazon.com/imagebuilder/latest/APIReference/API_CreateComponent.html\">CreateComponent</a> in the <i> EC2 Image Builder API Reference</i>.</p>"
+          "documentation":"<p>The start condition configures when the pipeline should trigger a new image build, as follows. If no value is set Image Builder defaults to <code>EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE</code>.</p> <ul> <li> <p> <code>EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE</code> (default) – When you use semantic version filters on the base image or components in your image recipe, EC2 Image Builder builds a new image only when there are new versions of the base image or components in your recipe that match the filter.</p> <note> <p>For semantic version syntax, see <a href=\"https://docs.aws.amazon.com/imagebuilder/latest/APIReference/API_CreateComponent.html\">CreateComponent</a>.</p> </note> </li> <li> <p> <code>EXPRESSION_MATCH_ONLY</code> – This condition builds a new image every time the CRON expression matches the current time.</p> </li> </ul>"
         }
       },
       "documentation":"<p>A schedule configures when and how often a pipeline will automatically create a new image.</p>"

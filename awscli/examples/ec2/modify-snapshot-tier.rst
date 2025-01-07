@@ -1,6 +1,6 @@
-**Example 1: To archive a snapshot**
+**To archive a snapshot**
 
-The following ``modify-snapshot-tier`` example archives the specified snapshot. ::
+The following ``modify-snapshot-tier`` example archives the specified snapshot. The ``TieringStartTime`` response parameter indicates the date and time at which the archive process was started, in UTC time format (YYYY-MM-DDTHH:MM:SSZ). ::
 
     aws ec2 modify-snapshot-tier \
         --snapshot-id snap-01234567890abcedf \
@@ -13,6 +13,4 @@ Output::
         "TieringStartTime": "2021-09-15T16:44:37.574Z"
     }
 
-The ``TieringStartTime`` response parameter indicates the date and time at which the archive process was started, in UTC time format (YYYY-MM-DDTHH:MM:SSZ).
-
-For more information about snapshot archiving, see `Archive Amazon EBS snapshots <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-archive.html>`__ in the *Amazon EC2 User Guide*.
+For more information about snapshot archiving, see `Archive Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-archive.html>`__ in the *Amazon EBS User Guide*.

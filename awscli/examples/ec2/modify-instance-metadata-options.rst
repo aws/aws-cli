@@ -19,8 +19,8 @@ Output::
         }
     }
 
-For more information, see `Instance metadata and user data <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
- 
+For more information, see `Instance metadata <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To disable instance metadata**
 
 The following ``modify-instance-metadata-options`` example disables the use of all versions of instance metadata on the specified instance. ::
@@ -41,11 +41,11 @@ Output::
         }
     }
 
-For more information, see `Instance metadata and user data <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Instance metadata <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 3: To enable instance metadata IPv6 endpoint for your instance**
 
-The following ``modify-instance-metadata-options`` example shows you how to turn on the IPv6 endpoint for the instance metadata service. ::
+The following ``modify-instance-metadata-options`` example shows you how to turn on the IPv6 endpoint for the instance metadata service. By default, the IPv6 endpoint is disabled. This is true even if you have launched an instance into an IPv6-only subnet. The IPv6 endpoint for IMDS is only accessible on instances built on the Nitro System.  ::
 
     aws ec2 modify-instance-metadata-options \
         --instance-id i-1234567898abcdef0 \
@@ -65,4 +65,4 @@ Output::
         }
     }
 
-By default, the IPv6 endpoint is disabled. This is true even if you have launched an instance into an IPv6-only subnet. The IPv6 endpoint for IMDS is only accessible on instances built on the Nitro System. For more information, see `Instance metadata and user data <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Instance metadata <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html>`__ in the *Amazon EC2 User Guide*.

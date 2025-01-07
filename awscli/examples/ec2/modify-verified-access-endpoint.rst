@@ -4,7 +4,7 @@ The following ``modify-verified-access-endpoint`` example adds the specified des
 
     aws ec2 modify-verified-access-endpoint \
         --verified-access-endpoint-id vae-066fac616d4d546f2 \
-        --description "Testing Verified Access"
+        --description 'Testing Verified Access'
 
 Output::
 
@@ -35,4 +35,4 @@ Output::
         }
     }
 
-For more information, see `Verified Access endpoints <https://docs.aws.amazon.com/verified-access/latest/ug/verfied-access-endpoints.html>`__ in the *AWS Verified Access User Guide*.
+For more information, see `Verified Access endpoints <https://docs.aws.amazon.com/verified-access/latest/ug/verified-access-endpoints.html>`__ in the *AWS Verified Access User Guide*.

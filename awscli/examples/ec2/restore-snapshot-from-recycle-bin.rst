@@ -7,4 +7,4 @@ The following ``restore-snapshot-from-recycle-bin`` example restores a snapshot 
 
 This command produces no output.
 
-For more information about Recycle Bin for Amazon EBS, see `Recover snapshots from the Recycle Bin <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin-working-with-snaps.html>`__ in the *Amazon EC2 User Guide*.
+For more information about Recycle Bin, see `Recover deleted snapshots from the Recycle Bin <https://docs.aws.amazon.com/ebs/latest/userguide/recycle-bin-working-with-snaps.html>`__ in the *Amazon EBS User Guide*.

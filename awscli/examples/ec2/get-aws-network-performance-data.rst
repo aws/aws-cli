@@ -66,4 +66,4 @@ Output::
         ]
     }
 
-For more information, see `Monitor network performance <https://docs.aws.amazon.com/network-manager/latest/infrastructure-performance/getting-started-nmip-console.html>`__ in the *Infrastructure Performance User Guide*.
+For more information, see `Monitor network performance <https://docs.aws.amazon.com/network-manager/latest/infrastructure-performance/nmip-performance-cli.html>`__ in the *Infrastructure Performance User Guide*.

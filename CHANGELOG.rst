@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.36.35
+=======
+
+* api-change:``cloudhsmv2``: Adds support to ModifyCluster for modifying a Cluster's Hsm Type.
+* api-change:``dynamodb``: This release makes Amazon DynamoDB point-in-time-recovery (PITR) to be configurable. You can set PITR recovery period for each table individually to between 1 and 35 days.
+* api-change:``imagebuilder``: This release adds support for importing images from ISO disk files. Added new ImportDiskImage API operation.
+* enhancement:``s3 ls``: Expose low-level ``ListBuckets` parameters ``Prefix`` and ``BucketRegion`` to high-level ``s3 ls`` command as ``--bucket-name-prefix`` and ``--bucket-region``.
+
+
 1.36.34
 =======
 

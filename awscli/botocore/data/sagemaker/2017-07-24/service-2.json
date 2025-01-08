@@ -7947,6 +7947,10 @@
           "shape":"ClusterPrivatePrimaryIp",
           "documentation":"<p>The private primary IP address of the SageMaker HyperPod cluster node.</p>"
         },
+        "PrivatePrimaryIpv6":{
+          "shape":"ClusterPrivatePrimaryIpv6",
+          "documentation":"<p>The private primary IPv6 address of the SageMaker HyperPod cluster node.</p>"
+        },
         "PrivateDnsHostname":{
           "shape":"ClusterPrivateDnsHostname",
           "documentation":"<p>The private DNS hostname of the SageMaker HyperPod cluster node.</p>"
@@ -8048,6 +8052,7 @@
       "type":"string",
       "pattern":"^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$"
     },
+    "ClusterPrivatePrimaryIpv6":{"type":"string"},
     "ClusterSchedulerConfigArn":{
       "type":"string",
       "max":256,
@@ -29898,7 +29903,7 @@
         },
         "Image":{
           "shape":"ContainerImage",
-          "documentation":"<p>The Amazon EC2 Container Registry (Amazon ECR) path where inference code is stored.</p> <p>If you are using your own custom algorithm instead of an algorithm provided by SageMaker, the inference code must meet SageMaker requirements. SageMaker supports both <code>registry/repository[:tag]</code> and <code>registry/repository[@digest]</code> image path formats. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms.html\">Using Your Own Algorithms with Amazon SageMaker</a>.</p>"
+          "documentation":"<p>The Amazon EC2 Container Registry path where inference code is stored.</p> <p>If you are using your own custom algorithm instead of an algorithm provided by SageMaker, the inference code must meet SageMaker requirements. SageMaker supports both <code>registry/repository[:tag]</code> and <code>registry/repository[@digest]</code> image path formats. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms.html\">Using Your Own Algorithms with Amazon SageMaker</a>.</p>"
         },
         "ImageDigest":{
           "shape":"ImageDigest",
@@ -35839,7 +35844,7 @@
       "members":{
         "S3DataType":{
           "shape":"S3DataType",
-          "documentation":"<p>If you choose <code>S3Prefix</code>, <code>S3Uri</code> identifies a key name prefix. SageMaker uses all objects that match the specified key name prefix for model training. </p> <p>If you choose <code>ManifestFile</code>, <code>S3Uri</code> identifies an object that is a manifest file containing a list of object keys that you want SageMaker to use for model training. </p> <p>If you choose <code>AugmentedManifestFile</code>, S3Uri identifies an object that is an augmented manifest file in JSON lines format. This file contains the data you want to use for model training. <code>AugmentedManifestFile</code> can only be used if the Channel's input mode is <code>Pipe</code>.</p>"
+          "documentation":"<p>If you choose <code>S3Prefix</code>, <code>S3Uri</code> identifies a key name prefix. SageMaker uses all objects that match the specified key name prefix for model training. </p> <p>If you choose <code>ManifestFile</code>, <code>S3Uri</code> identifies an object that is a manifest file containing a list of object keys that you want SageMaker to use for model training. </p> <p>If you choose <code>AugmentedManifestFile</code>, <code>S3Uri</code> identifies an object that is an augmented manifest file in JSON lines format. This file contains the data you want to use for model training. <code>AugmentedManifestFile</code> can only be used if the Channel's input mode is <code>Pipe</code>.</p>"
         },
         "S3Uri":{
           "shape":"S3Uri",
@@ -35906,7 +35911,7 @@
         },
         "ManifestEtag":{
           "shape":"String",
-          "documentation":"<p>The ETag associated with Manifest S3URI.</p>"
+          "documentation":"<p>The ETag associated with Manifest S3 URI.</p>"
         }
       },
       "documentation":"<p>Specifies the S3 location of ML model data to deploy.</p>"

@@ -76,6 +76,7 @@ from awscli.customizations.paginate import register_pagination
 from awscli.customizations.putmetricdata import register_put_metric_data
 from awscli.customizations.rds import register_rds_modify_split
 from awscli.customizations.rds import register_add_generate_db_auth_token
+from awscli.customizations.dsql import register_dsql_customizations
 from awscli.customizations.rekognition import register_rekognition_detect_labels
 from awscli.customizations.removals import register_removals
 from awscli.customizations.route53 import register_create_hosted_zone_doc_fix
@@ -90,7 +91,7 @@ from awscli.customizations.toplevelbool import register_bool_params
 from awscli.customizations.waiters import register_add_waiters
 from awscli.customizations.opsworkscm import register_alias_opsworks_cm
 from awscli.customizations.servicecatalog import register_servicecatalog_commands
-from awscli.customizations.s3events import register_event_stream_arg
+from awscli.customizations.s3events import register_event_stream_arg, register_document_expires_string
 from awscli.customizations.sessionmanager import register_ssm_session
 from awscli.customizations.logs import register_logs_commands
 from awscli.customizations.devcommands import register_dev_commands
@@ -141,6 +142,7 @@ def awscli_initialize(event_handlers):
     register_rds_modify_split(event_handlers)
     register_rekognition_detect_labels(event_handlers)
     register_add_generate_db_auth_token(event_handlers)
+    register_dsql_customizations(event_handlers)
     register_put_metric_data(event_handlers)
     register_ses_send_email(event_handlers)
     IAMVMFAWrapper(event_handlers)
@@ -191,6 +193,7 @@ def awscli_initialize(event_handlers):
     register_history_mode(event_handlers)
     register_history_commands(event_handlers)
     register_event_stream_arg(event_handlers)
+    register_document_expires_string(event_handlers)
     dlm_initialize(event_handlers)
     register_ssm_session(event_handlers)
     register_logs_commands(event_handlers)

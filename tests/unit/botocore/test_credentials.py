@@ -13,7 +13,6 @@
 # language governing permissions and limitations under the License.
 from datetime import datetime, timedelta
 import subprocess
-import mock
 import os
 import tempfile
 import shutil
@@ -24,7 +23,7 @@ from dateutil.tz import tzlocal, tzutc
 
 from botocore import credentials
 from botocore.utils import ContainerMetadataFetcher
-from botocore.compat import json, six
+from botocore.compat import json
 from botocore.session import Session
 from botocore.stub import Stubber
 from botocore.utils import datetime2timestamp
@@ -41,7 +40,7 @@ from botocore.configprovider import ConfigChainFactory
 from botocore.configprovider import ConfigValueStore
 import botocore.exceptions
 import botocore.session
-from tests import unittest, BaseEnvVar, IntegerRefresher, skip_if_windows
+from tests import mock, unittest, BaseEnvVar, IntegerRefresher, skip_if_windows
 
 
 # Passed to session to keep it from finding default config file
@@ -3294,7 +3293,7 @@ class TestProfileProviderBuilder(unittest.TestCase):
             ConfigProvider,
         ]
         self.assertEqual(len(providers), len(expected_providers))
-        zipped_providers = six.moves.zip(providers, expected_providers)
+        zipped_providers = zip(providers, expected_providers)
         for provider, expected_type in zipped_providers:
             self.assertTrue(isinstance(provider, expected_type))
 

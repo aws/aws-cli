@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, temporary_file
+from awscli.testutils import mock, unittest, temporary_file
 import argparse
 import os
 
@@ -18,7 +18,6 @@ import ntpath
 import time
 import datetime
 
-import mock
 from dateutil.tz import tzlocal
 import pytest
 from s3transfer.compat import seekable
@@ -652,6 +651,56 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
              'CopySourceSSECustomerKey': 'my-sse-c-copy-source-key',
              'SSECustomerAlgorithm': 'AES256',
              'SSECustomerKey': 'my-sse-c-key'})
+
+
+class TestRequestParamsMapperChecksumAlgorithm:
+    @pytest.fixture
+    def cli_params(self):
+        return {'checksum_algorithm': 'CRC32'}
+
+    @pytest.fixture
+    def cli_params_no_algorithm(self):
+        return {}
+
+    def test_put_object(self, cli_params):
+        request_params = {}
+        RequestParamsMapper.map_put_object_params(request_params, cli_params)
+        assert request_params == {'ChecksumAlgorithm': 'CRC32'}
+
+    def test_put_object_no_checksum(self, cli_params_no_algorithm):
+        request_params = {}
+        RequestParamsMapper.map_put_object_params(request_params, cli_params_no_algorithm)
+        assert 'ChecksumAlgorithm' not in request_params
+
+    def test_copy_object(self, cli_params):
+        request_params = {}
+        RequestParamsMapper.map_copy_object_params(request_params, cli_params)
+        assert request_params == {'ChecksumAlgorithm': 'CRC32'}
+
+    def test_copy_object_no_checksum(self, cli_params_no_algorithm):
+        request_params = {}
+        RequestParamsMapper.map_put_object_params(request_params, cli_params_no_algorithm)
+        assert 'ChecksumAlgorithm' not in request_params
+
+
+class TestRequestParamsMapperChecksumMode:
+    @pytest.fixture
+    def cli_params(self):
+        return {'checksum_mode': 'ENABLED'}
+
+    @pytest.fixture
+    def cli_params_no_checksum(self):
+        return {}
+
+    def test_get_object(self, cli_params):
+        request_params = {}
+        RequestParamsMapper.map_get_object_params(request_params, cli_params)
+        assert request_params == {'ChecksumMode': 'ENABLED'}
+
+    def test_get_object_no_checksums(self, cli_params_no_checksum):
+        request_params = {}
+        RequestParamsMapper.map_get_object_params(request_params, cli_params_no_checksum)
+        assert 'ChecksumMode' not in request_params
 
 
 class TestRequestParamsMapperRequestPayer(unittest.TestCase):

@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.12"]
         os: [macOS-latest, windows-latest]
 
     steps:
@@ -54,12 +54,12 @@ jobs:
       - name: Regenerate windows files
         if: runner.os == 'Windows'
         run: |
-          python scripts/regenerate-lock-files --show-files
+          python scripts/regenerate-lock-files --show-files --include-sdist
           echo "CHANGES=$(git status --porcelain=v1)" >> $env:GITHUB_ENV
       - name: Regenerate lock files
         if: runner.os != 'Windows'
         run: |
-          python scripts/regenerate-lock-files --show-files
+          python scripts/regenerate-lock-files --show-files --include-sdist
           echo "CHANGES<<EOF" >> $GITHUB_ENV
           echo "CHANGES=$(git status --porcelain=v1)" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV

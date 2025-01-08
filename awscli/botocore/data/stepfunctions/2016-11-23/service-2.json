@@ -11,7 +11,8 @@
     "serviceId":"SFN",
     "signatureVersion":"v4",
     "targetPrefix":"AWSStepFunctions",
-    "uid":"states-2016-11-23"
+    "uid":"states-2016-11-23",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateActivity":{
@@ -24,8 +25,12 @@
       "output":{"shape":"CreateActivityOutput"},
       "errors":[
         {"shape":"ActivityLimitExceeded"},
+        {"shape":"ActivityAlreadyExists"},
         {"shape":"InvalidName"},
-        {"shape":"TooManyTags"}
+        {"shape":"TooManyTags"},
+        {"shape":"InvalidEncryptionConfiguration"},
+        {"shape":"KmsAccessDeniedException"},
+        {"shape":"KmsThrottlingException"}
       ],
       "documentation":"<p>Creates an activity. An activity is a task that you write in any programming language and host on any machine that has access to Step Functions. Activities must poll Step Functions using the <code>GetActivityTask</code> API action and respond using <code>SendTask*</code> API actions. This function lets Step Functions know the existence of your activity and returns an identifier for use in a state machine and when polling from the activity.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <note> <p> <code>CreateActivity</code> is an idempotent API. Subsequent requests won’t create a duplicate resource if it was already created. <code>CreateActivity</code>'s idempotency check is based on the activity <code>name</code>. If a following request has different <code>tags</code> values, Step Functions will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>tags</code> will not be updated, even if they are different.</p> </note>",
       "idempotent":true
@@ -50,9 +55,12 @@
         {"shape":"StateMachineTypeNotSupported"},
         {"shape":"TooManyTags"},
         {"shape":"ValidationException"},
-        {"shape":"ConflictException"}
+        {"shape":"ConflictException"},
+        {"shape":"InvalidEncryptionConfiguration"},
+        {"shape":"KmsAccessDeniedException"},
+        {"shape":"KmsThrottlingException"}
       ],
-      "documentation":"<p>Creates a state machine. A state machine consists of a collection of states that can do work (<code>Task</code> states), determine to which states to transition next (<code>Choice</code> states), stop an execution with an error (<code>Fail</code> states), and so on. State machines are specified using a JSON-based, structured language. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a> in the Step Functions User Guide.</p> <p>If you set the <code>publish</code> parameter of this API action to <code>true</code>, it publishes version <code>1</code> as the first revision of the state machine.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <note> <p> <code>CreateStateMachine</code> is an idempotent API. Subsequent requests won’t create a duplicate resource if it was already created. <code>CreateStateMachine</code>'s idempotency check is based on the state machine <code>name</code>, <code>definition</code>, <code>type</code>, <code>LoggingConfiguration</code>, and <code>TracingConfiguration</code>. The check is also based on the <code>publish</code> and <code>versionDescription</code> parameters. If a following request has a different <code>roleArn</code> or <code>tags</code>, Step Functions will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>roleArn</code> and <code>tags</code> will not be updated, even if they are different.</p> </note>",
+      "documentation":"<p>Creates a state machine. A state machine consists of a collection of states that can do work (<code>Task</code> states), determine to which states to transition next (<code>Choice</code> states), stop an execution with an error (<code>Fail</code> states), and so on. State machines are specified using a JSON-based, structured language. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a> in the Step Functions User Guide.</p> <p>If you set the <code>publish</code> parameter of this API action to <code>true</code>, it publishes version <code>1</code> as the first revision of the state machine.</p> <p> For additional control over security, you can encrypt your data using a <b>customer-managed key</b> for Step Functions state machines. You can configure a symmetric KMS key and data key reuse period when creating or updating a <b>State Machine</b>. The execution history and state machine definition will be encrypted with the key applied to the State Machine. </p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <note> <p> <code>CreateStateMachine</code> is an idempotent API. Subsequent requests won’t create a duplicate resource if it was already created. <code>CreateStateMachine</code>'s idempotency check is based on the state machine <code>name</code>, <code>definition</code>, <code>type</code>, <code>LoggingConfiguration</code>, <code>TracingConfiguration</code>, and <code>EncryptionConfiguration</code> The check is also based on the <code>publish</code> and <code>versionDescription</code> parameters. If a following request has a different <code>roleArn</code> or <code>tags</code>, Step Functions will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>roleArn</code> and <code>tags</code> will not be updated, even if they are different.</p> </note>",
       "idempotent":true
     },
     "CreateStateMachineAlias":{
@@ -156,7 +164,10 @@
       "output":{"shape":"DescribeExecutionOutput"},
       "errors":[
         {"shape":"ExecutionDoesNotExist"},
-        {"shape":"InvalidArn"}
+        {"shape":"InvalidArn"},
+        {"shape":"KmsAccessDeniedException"},
+        {"shape":"KmsInvalidStateException"},
+        {"shape":"KmsThrottlingException"}
       ],
       "documentation":"<p>Provides information about a state machine execution, such as the state machine associated with the execution, the execution input and output, and relevant execution metadata. If you've <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/redrive-executions.html\">redriven</a> an execution, you can use this API action to return information about the redrives of that execution. In addition, you can use this API action to return the Map Run Amazon Resource Name (ARN) if the execution was dispatched by a Map Run.</p> <p>If you specify a version or alias ARN when you call the <a>StartExecution</a> API action, <code>DescribeExecution</code> returns that ARN.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <p>Executions of an <code>EXPRESS</code> state machine aren't supported by <code>DescribeExecution</code> unless a Map Run dispatched them.</p>"
     },
@@ -184,7 +195,10 @@
       "output":{"shape":"DescribeStateMachineOutput"},
       "errors":[
         {"shape":"InvalidArn"},
-        {"shape":"StateMachineDoesNotExist"}
+        {"shape":"StateMachineDoesNotExist"},
+        {"shape":"KmsAccessDeniedException"},
+        {"shape":"KmsInvalidStateException"},
+        {"shape":"KmsThrottlingException"}
       ],
       "documentation":"<p>Provides information about a state machine's definition, its IAM role Amazon Resource Name (ARN), and configuration.</p> <p>A qualified state machine ARN can either refer to a <i>Distributed Map state</i> defined within a state machine, a version ARN, or an alias ARN.</p> <p>The following are some examples of qualified and unqualified state machine ARNs:</p> <ul> <li> <p>The following qualified state machine ARN refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:partition:states:region:account-id:stateMachine:myStateMachine/mapStateLabel</code> </p> <note> <p>If you provide a qualified state machine ARN that refers to a <i>Distributed Map state</i>, the request fails with <code>ValidationException</code>.</p> </note> </li> <li> <p>The following qualified state machine ARN refers to an alias named <code>PROD</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine:PROD&gt;</code> </p> <note> <p>If you provide a qualified state machine ARN that refers to a version ARN or an alias ARN, the request starts execution for that version or alias.</p> </note> </li> <li> <p>The following unqualified state machine ARN refers to a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine&gt;</code> </p> </li> </ul> <p>This API action returns the details for a state machine version if the <code>stateMachineArn</code> you specify is a state machine version ARN.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note>"
     },
@@ -213,7 +227,10 @@
       "output":{"shape":"DescribeStateMachineForExecutionOutput"},
       "errors":[
         {"shape":"ExecutionDoesNotExist"},
-        {"shape":"InvalidArn"}
+        {"shape":"InvalidArn"},
+        {"shape":"KmsAccessDeniedException"},
+        {"shape":"KmsInvalidStateException"},
+        {"shape":"KmsThrottlingException"}
       ],
       "documentation":"<p>Provides information about a state machine's definition, its execution role ARN, and configuration. If a Map Run dispatched the execution, this action returns the Map Run Amazon Resource Name (ARN) in the response. The state machine returned is the state machine associated with the Map Run.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not reflect very recent updates and changes.</p> </note> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p>"
     },
@@ -228,7 +245,10 @@
       "errors":[
         {"shape":"ActivityDoesNotExist"},
         {"shape":"ActivityWorkerLimitExceeded"},
-        {"shape":"InvalidArn"}
+        {"shape":"InvalidArn"},
+        {"shape":"KmsAccessDeniedException"},
+        {"shape":"KmsInvalidStateException"},
+        {"shape":"KmsThrottlingException"}
       ],
       "documentation":"<p>Used by workers to retrieve a task (with the specified activity ARN) which has been scheduled for execution by a running state machine. This initiates a long poll, where the service holds the HTTP connection open and responds as soon as a task becomes available (i.e. an execution of a task of this type is needed.) The maximum time the service holds on to the request before responding is 60 seconds. If no task is available within 60 seconds, the poll returns a <code>taskToken</code> with a null string.</p> <note> <p>This API action isn't logged in CloudTrail.</p> </note> <important> <p>Workers should set their client side socket timeout to at least 65 seconds (5 seconds higher than the maximum time the service may hold the poll request).</p> <p>Polling with <code>GetActivityTask</code> can cause latency in some implementations. See <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/bp-activity-pollers.html\">Avoid Latency When Polling for Activity Tasks</a> in the Step Functions Developer Guide.</p> </important>"
     },
@@ -243,7 +263,10 @@
       "errors":[
         {"shape":"ExecutionDoesNotExist"},
         {"shape":"InvalidArn"},
-        {"shape":"InvalidToken"}
+        {"shape":"InvalidToken"},
+        {"shape":"KmsAccessDeniedException"},
+        {"shape":"KmsInvalidStateException"},
+        {"shape":"KmsThrottlingException"}
       ],
       "documentation":"<p>Returns the history of the specified execution as a list of events. By default, the results are returned in ascending order of the <code>timeStamp</code> of the events. Use the <code>reverseOrder</code> parameter to get the latest events first.</p> <p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an <i>HTTP 400 InvalidToken</i> error.</p> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p>"
     },
@@ -400,9 +423,12 @@
       "errors":[
         {"shape":"TaskDoesNotExist"},
         {"shape":"InvalidToken"},
-        {"shape":"TaskTimedOut"}
+        {"shape":"TaskTimedOut"},
+        {"shape":"KmsAccessDeniedException"},
+        {"shape":"KmsInvalidStateException"},
+        {"shape":"KmsThrottlingException"}
       ],
-      "documentation":"<p>Used by activity workers, Task states using the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-resource.html#connect-wait-token\">callback</a> pattern, and optionally Task states using the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-resource.html#connect-sync\">job run</a> pattern to report that the task identified by the <code>taskToken</code> failed.</p>"
+      "documentation":"<p>Used by activity workers, Task states using the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-resource.html#connect-wait-token\">callback</a> pattern, and optionally Task states using the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-resource.html#connect-sync\">job run</a> pattern to report that the task identified by the <code>taskToken</code> failed.</p> <p>For an execution with encryption enabled, Step Functions will encrypt the error and cause fields using the KMS key for the execution role.</p> <p>A caller can mark a task as fail without using any KMS permissions in the execution role if the caller provides a null value for both <code>error</code> and <code>cause</code> fields because no data needs to be encrypted.</p>"
     },
     "SendTaskHeartbeat":{
       "name":"SendTaskHeartbeat",
@@ -431,7 +457,10 @@
         {"shape":"TaskDoesNotExist"},
         {"shape":"InvalidOutput"},
         {"shape":"InvalidToken"},
-        {"shape":"TaskTimedOut"}
+        {"shape":"TaskTimedOut"},
+        {"shape":"KmsAccessDeniedException"},
+        {"shape":"KmsInvalidStateException"},
+        {"shape":"KmsThrottlingException"}
       ],
       "documentation":"<p>Used by activity workers, Task states using the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-resource.html#connect-wait-token\">callback</a> pattern, and optionally Task states using the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-resource.html#connect-sync\">job run</a> pattern to report that the task identified by the <code>taskToken</code> completed successfully.</p>"
     },
@@ -451,7 +480,10 @@
         {"shape":"InvalidName"},
         {"shape":"StateMachineDoesNotExist"},
         {"shape":"StateMachineDeleting"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"KmsAccessDeniedException"},
+        {"shape":"KmsInvalidStateException"},
+        {"shape":"KmsThrottlingException"}
       ],
       "documentation":"<p>Starts a state machine execution.</p> <p>A qualified state machine ARN can either refer to a <i>Distributed Map state</i> defined within a state machine, a version ARN, or an alias ARN.</p> <p>The following are some examples of qualified and unqualified state machine ARNs:</p> <ul> <li> <p>The following qualified state machine ARN refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:partition:states:region:account-id:stateMachine:myStateMachine/mapStateLabel</code> </p> <note> <p>If you provide a qualified state machine ARN that refers to a <i>Distributed Map state</i>, the request fails with <code>ValidationException</code>.</p> </note> </li> <li> <p>The following qualified state machine ARN refers to an alias named <code>PROD</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine:PROD&gt;</code> </p> <note> <p>If you provide a qualified state machine ARN that refers to a version ARN or an alias ARN, the request starts execution for that version or alias.</p> </note> </li> <li> <p>The following unqualified state machine ARN refers to a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine&gt;</code> </p> </li> </ul> <p>If you start an execution with an unqualified state machine ARN, Step Functions uses the latest revision of the state machine for the execution.</p> <p>To start executions of a state machine <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html\">version</a>, call <code>StartExecution</code> and provide the version ARN or the ARN of an <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html\">alias</a> that points to the version.</p> <note> <p> <code>StartExecution</code> is idempotent for <code>STANDARD</code> workflows. For a <code>STANDARD</code> workflow, if you call <code>StartExecution</code> with the same name and input as a running execution, the call succeeds and return the same response as the original request. If the execution is closed or if the input is different, it returns a <code>400 ExecutionAlreadyExists</code> error. You can reuse names after 90 days. </p> <p> <code>StartExecution</code> isn't idempotent for <code>EXPRESS</code> workflows. </p> </note>",
       "idempotent":true
@@ -470,7 +502,10 @@
         {"shape":"InvalidName"},
         {"shape":"StateMachineDoesNotExist"},
         {"shape":"StateMachineDeleting"},
-        {"shape":"StateMachineTypeNotSupported"}
+        {"shape":"StateMachineTypeNotSupported"},
+        {"shape":"KmsAccessDeniedException"},
+        {"shape":"KmsInvalidStateException"},
+        {"shape":"KmsThrottlingException"}
       ],
       "documentation":"<p>Starts a Synchronous Express state machine execution. <code>StartSyncExecution</code> is not available for <code>STANDARD</code> workflows.</p> <note> <p> <code>StartSyncExecution</code> will return a <code>200 OK</code> response, even if your execution fails, because the status code in the API response doesn't reflect function errors. Error codes are reserved for errors that prevent your execution from running, such as permissions errors, limit errors, or issues with your state machine code and configuration. </p> </note> <note> <p>This API action isn't logged in CloudTrail.</p> </note>",
       "endpoint":{"hostPrefix":"sync-"}
@@ -486,9 +521,12 @@
       "errors":[
         {"shape":"ExecutionDoesNotExist"},
         {"shape":"InvalidArn"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"KmsAccessDeniedException"},
+        {"shape":"KmsInvalidStateException"},
+        {"shape":"KmsThrottlingException"}
       ],
-      "documentation":"<p>Stops an execution.</p> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p>"
+      "documentation":"<p>Stops an execution.</p> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p> <p>For an execution with encryption enabled, Step Functions will encrypt the error and cause fields using the KMS key for the execution role.</p> <p>A caller can stop an execution without using any KMS permissions in the execution role if the caller provides a null value for both <code>error</code> and <code>cause</code> fields because no data needs to be encrypted.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -569,9 +607,12 @@
         {"shape":"StateMachineDoesNotExist"},
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ConflictException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"InvalidEncryptionConfiguration"},
+        {"shape":"KmsAccessDeniedException"},
+        {"shape":"KmsThrottlingException"}
       ],
-      "documentation":"<p>Updates an existing state machine by modifying its <code>definition</code>, <code>roleArn</code>, or <code>loggingConfiguration</code>. Running executions will continue to use the previous <code>definition</code> and <code>roleArn</code>. You must include at least one of <code>definition</code> or <code>roleArn</code> or you will receive a <code>MissingRequiredParameter</code> error.</p> <p>A qualified state machine ARN refers to a <i>Distributed Map state</i> defined within a state machine. For example, the qualified state machine ARN <code>arn:partition:states:region:account-id:stateMachine:stateMachineName/mapStateLabel</code> refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in the state machine named <code>stateMachineName</code>.</p> <p>A qualified state machine ARN can either refer to a <i>Distributed Map state</i> defined within a state machine, a version ARN, or an alias ARN.</p> <p>The following are some examples of qualified and unqualified state machine ARNs:</p> <ul> <li> <p>The following qualified state machine ARN refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:partition:states:region:account-id:stateMachine:myStateMachine/mapStateLabel</code> </p> <note> <p>If you provide a qualified state machine ARN that refers to a <i>Distributed Map state</i>, the request fails with <code>ValidationException</code>.</p> </note> </li> <li> <p>The following qualified state machine ARN refers to an alias named <code>PROD</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine:PROD&gt;</code> </p> <note> <p>If you provide a qualified state machine ARN that refers to a version ARN or an alias ARN, the request starts execution for that version or alias.</p> </note> </li> <li> <p>The following unqualified state machine ARN refers to a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine&gt;</code> </p> </li> </ul> <p>After you update your state machine, you can set the <code>publish</code> parameter to <code>true</code> in the same action to publish a new <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html\">version</a>. This way, you can opt-in to strict versioning of your state machine.</p> <note> <p>Step Functions assigns monotonically increasing integers for state machine versions, starting at version number 1.</p> </note> <note> <p>All <code>StartExecution</code> calls within a few seconds use the updated <code>definition</code> and <code>roleArn</code>. Executions started immediately after you call <code>UpdateStateMachine</code> may use the previous state machine <code>definition</code> and <code>roleArn</code>. </p> </note>",
+      "documentation":"<p>Updates an existing state machine by modifying its <code>definition</code>, <code>roleArn</code>, <code>loggingConfiguration</code>, or <code>EncryptionConfiguration</code>. Running executions will continue to use the previous <code>definition</code> and <code>roleArn</code>. You must include at least one of <code>definition</code> or <code>roleArn</code> or you will receive a <code>MissingRequiredParameter</code> error.</p> <p>A qualified state machine ARN refers to a <i>Distributed Map state</i> defined within a state machine. For example, the qualified state machine ARN <code>arn:partition:states:region:account-id:stateMachine:stateMachineName/mapStateLabel</code> refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in the state machine named <code>stateMachineName</code>.</p> <p>A qualified state machine ARN can either refer to a <i>Distributed Map state</i> defined within a state machine, a version ARN, or an alias ARN.</p> <p>The following are some examples of qualified and unqualified state machine ARNs:</p> <ul> <li> <p>The following qualified state machine ARN refers to a <i>Distributed Map state</i> with a label <code>mapStateLabel</code> in a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:partition:states:region:account-id:stateMachine:myStateMachine/mapStateLabel</code> </p> <note> <p>If you provide a qualified state machine ARN that refers to a <i>Distributed Map state</i>, the request fails with <code>ValidationException</code>.</p> </note> </li> <li> <p>The following qualified state machine ARN refers to an alias named <code>PROD</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine:PROD&gt;</code> </p> <note> <p>If you provide a qualified state machine ARN that refers to a version ARN or an alias ARN, the request starts execution for that version or alias.</p> </note> </li> <li> <p>The following unqualified state machine ARN refers to a state machine named <code>myStateMachine</code>.</p> <p> <code>arn:&lt;partition&gt;:states:&lt;region&gt;:&lt;account-id&gt;:stateMachine:&lt;myStateMachine&gt;</code> </p> </li> </ul> <p>After you update your state machine, you can set the <code>publish</code> parameter to <code>true</code> in the same action to publish a new <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html\">version</a>. This way, you can opt-in to strict versioning of your state machine.</p> <note> <p>Step Functions assigns monotonically increasing integers for state machine versions, starting at version number 1.</p> </note> <note> <p>All <code>StartExecution</code> calls within a few seconds use the updated <code>definition</code> and <code>roleArn</code>. Executions started immediately after you call <code>UpdateStateMachine</code> may use the previous state machine <code>definition</code> and <code>roleArn</code>. </p> </note>",
       "idempotent":true
     },
     "UpdateStateMachineAlias":{
@@ -602,10 +643,18 @@
       "errors":[
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Validates the syntax of a state machine definition.</p> <p>You can validate that a state machine definition is correct without creating a state machine resource. Step Functions will implicitly perform the same syntax check when you invoke <code>CreateStateMachine</code> and <code>UpdateStateMachine</code>. State machine definitions are specified using a JSON-based, structured language. For more information on Amazon States Language see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a> (ASL). </p> <p>Suggested uses for <code>ValidateStateMachineDefinition</code>:</p> <ul> <li> <p>Integrate automated checks into your code review or Continuous Integration (CI) process to validate state machine definitions before starting deployments.</p> </li> <li> <p>Run the validation from a Git pre-commit hook to check your state machine definitions before committing them to your source repository.</p> </li> </ul> <note> <p>Errors found in the state machine definition will be returned in the response as a list of <b>diagnostic elements</b>, rather than raise an exception.</p> </note>"
+      "documentation":"<p>Validates the syntax of a state machine definition specified in <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a> (ASL), a JSON-based, structured language.</p> <p>You can validate that a state machine definition is correct without creating a state machine resource.</p> <p>Suggested uses for <code>ValidateStateMachineDefinition</code>:</p> <ul> <li> <p>Integrate automated checks into your code review or Continuous Integration (CI) process to check state machine definitions before starting deployments.</p> </li> <li> <p>Run validation from a Git pre-commit hook to verify the definition before committing to your source repository.</p> </li> </ul> <p>Validation will look for problems in your state machine definition and return a <b>result</b> and a list of <b>diagnostic elements</b>.</p> <p>The <b>result</b> value will be <code>OK</code> when your workflow definition can be successfully created or updated. Note the result can be <code>OK</code> even when diagnostic warnings are present in the response. The <b>result</b> value will be <code>FAIL</code> when the workflow definition contains errors that would prevent you from creating or updating your state machine. </p> <p>The list of <a href=\"https://docs.aws.amazon.com/step-functions/latest/apireference/API_ValidateStateMachineDefinitionDiagnostic.html\">ValidateStateMachineDefinitionDiagnostic</a> data elements can contain zero or more <b>WARNING</b> and/or <b>ERROR</b> elements.</p> <note> <p>The <b>ValidateStateMachineDefinition API</b> might add new diagnostics in the future, adjust diagnostic codes, or change the message wording. Your automated processes should only rely on the value of the <b>result</b> field value (OK, FAIL). Do <b>not</b> rely on the exact order, count, or wording of diagnostic messages.</p> </note>"
     }
   },
   "shapes":{
+    "ActivityAlreadyExists":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>Activity already exists. <code>EncryptionConfiguration</code> may not be updated.</p>",
+      "exception":true
+    },
     "ActivityDoesNotExist":{
       "type":"structure",
       "members":{
@@ -762,6 +811,21 @@
       "max":256,
       "min":1
     },
+    "AssignedVariables":{
+      "type":"map",
+      "key":{"shape":"VariableName"},
+      "value":{"shape":"VariableValue"}
+    },
+    "AssignedVariablesDetails":{
+      "type":"structure",
+      "members":{
+        "truncated":{
+          "shape":"truncated",
+          "documentation":"<p>Indicates whether assigned variables were truncated in the response. Always <code>false</code> for API calls. In CloudWatch logs, the value will be true if the data is truncated due to size limits.</p>"
+        }
+      },
+      "documentation":"<p>Provides details about assigned variables in an execution history event.</p>"
+    },
     "BilledDuration":{
       "type":"long",
       "min":0
@@ -841,6 +905,10 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p>The list of tags to add to a resource.</p> <p>An array of key-value pairs. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>Amazon Web Services Billing and Cost Management User Guide</i>, and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html\">Controlling Access Using IAM Tags</a>.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Settings to configure server-side encryption.</p>"
         }
       }
     },
@@ -942,6 +1010,10 @@
         "versionDescription":{
           "shape":"VersionDescription",
           "documentation":"<p>Sets description about the state machine version. You can only set the description if the <code>publish</code> parameter is set to <code>true</code>. Otherwise, if you set <code>versionDescription</code>, but <code>publish</code> to <code>false</code>, this API action throws <code>ValidationException</code>.</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Settings to configure server-side encryption.</p>"
         }
       }
     },
@@ -1061,6 +1133,10 @@
         "creationDate":{
           "shape":"Timestamp",
           "documentation":"<p>The date the activity is created.</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Settings for configured server-side encryption.</p>"
         }
       }
     },
@@ -1071,6 +1147,10 @@
         "executionArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the execution to describe.</p>"
+        },
+        "includedData":{
+          "shape":"IncludedData",
+          "documentation":"<p>If your state machine definition is encrypted with a KMS key, callers must have <code>kms:Decrypt</code> permission to decrypt the definition. Alternatively, you can call DescribeStateMachine API with <code>includedData = METADATA_ONLY</code> to get a successful response without the encrypted definition.</p>"
         }
       }
     },
@@ -1279,6 +1359,10 @@
         "executionArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the execution you want state machine information for.</p>"
+        },
+        "includedData":{
+          "shape":"IncludedData",
+          "documentation":"<p>If your state machine definition is encrypted with a KMS key, callers must have <code>kms:Decrypt</code> permission to decrypt the definition. Alternatively, you can call the API with <code>includedData = METADATA_ONLY</code> to get a successful response without the encrypted definition.</p>"
         }
       }
     },
@@ -1328,6 +1412,14 @@
         "revisionId":{
           "shape":"RevisionId",
           "documentation":"<p>The revision identifier for the state machine. The first revision ID when you create the state machine is null.</p> <p>Use the state machine <code>revisionId</code> parameter to compare the revision of a state machine with the configuration of the state machine used for executions without performing a diff of the properties, such as <code>definition</code> and <code>roleArn</code>.</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Settings to configure server-side encryption. </p>"
+        },
+        "variableReferences":{
+          "shape":"VariableReferences",
+          "documentation":"<p>A map of <b>state name</b> to a list of variables referenced by that state. States that do not use variable references will not be shown in the response.</p>"
         }
       }
     },
@@ -1338,6 +1430,10 @@
         "stateMachineArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the state machine for which you want the information.</p> <p>If you specify a state machine version ARN, this API returns details about that version. The version ARN is a combination of state machine ARN and the version number separated by a colon (:). For example, <code>stateMachineARN:1</code>.</p>"
+        },
+        "includedData":{
+          "shape":"IncludedData",
+          "documentation":"<p>If your state machine definition is encrypted with a KMS key, callers must have <code>kms:Decrypt</code> permission to decrypt the definition. Alternatively, you can call the API with <code>includedData = METADATA_ONLY</code> to get a successful response without the encrypted definition.</p> <note> <p> When calling a labelled ARN for an encrypted state machine, the <code>includedData = METADATA_ONLY</code> parameter will not apply because Step Functions needs to decrypt the entire state machine definition to get the Distributed Map state’s definition. In this case, the API caller needs to have <code>kms:Decrypt</code> permission. </p> </note>"
         }
       }
     },
@@ -1366,7 +1462,7 @@
         },
         "definition":{
           "shape":"Definition",
-          "documentation":"<p>The Amazon States Language definition of the state machine. See <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a>.</p>"
+          "documentation":"<p>The Amazon States Language definition of the state machine. See <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a>.</p> <p>If called with <code>includedData = METADATA_ONLY</code>, the returned definition will be <code>{}</code>.</p>"
         },
         "roleArn":{
           "shape":"Arn",
@@ -1396,11 +1492,75 @@
         "description":{
           "shape":"VersionDescription",
           "documentation":"<p>The description of the state machine version.</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Settings to configure server-side encryption. </p>"
+        },
+        "variableReferences":{
+          "shape":"VariableReferences",
+          "documentation":"<p>A map of <b>state name</b> to a list of variables referenced by that state. States that do not use variable references will not be shown in the response.</p>"
         }
       }
     },
     "Enabled":{"type":"boolean"},
+    "EncryptionConfiguration":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>An alias, alias ARN, key ID, or key ARN of a symmetric encryption KMS key to encrypt data. To specify a KMS key in a different Amazon Web Services account, you must use the key ARN or alias ARN.</p>"
+        },
+        "kmsDataKeyReusePeriodSeconds":{
+          "shape":"KmsDataKeyReusePeriodSeconds",
+          "documentation":"<p>Maximum duration that Step Functions will reuse data keys. When the period expires, Step Functions will call <code>GenerateDataKey</code>. Only applies to customer managed keys.</p>",
+          "box":true
+        },
+        "type":{
+          "shape":"EncryptionType",
+          "documentation":"<p>Encryption type</p>"
+        }
+      },
+      "documentation":"<p>Settings to configure server-side encryption. </p> <p> For additional control over security, you can encrypt your data using a <b>customer-managed key</b> for Step Functions state machines and activities. You can configure a symmetric KMS key and data key reuse period when creating or updating a <b>State Machine</b>, and when creating an <b>Activity</b>. The execution history and state machine definition will be encrypted with the key applied to the State Machine. Activity inputs will be encrypted with the key applied to the Activity. </p> <note> <p> Step Functions automatically enables encryption at rest using Amazon Web Services owned keys at no charge. However, KMS charges apply when using a customer managed key. For more information about pricing, see <a href=\"https://aws.amazon.com/kms/pricing/\">Key Management Service pricing</a>.</p> </note> <p>For more information on KMS, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/overview.html\">What is Key Management Service?</a> </p>"
+    },
+    "EncryptionType":{
+      "type":"string",
+      "enum":[
+        "AWS_OWNED_KEY",
+        "CUSTOMER_MANAGED_KMS_KEY"
+      ]
+    },
     "ErrorMessage":{"type":"string"},
+    "EvaluationFailedEventDetails":{
+      "type":"structure",
+      "required":["state"],
+      "members":{
+        "error":{
+          "shape":"SensitiveError",
+          "documentation":"<p>The error code of the failure.</p>"
+        },
+        "cause":{
+          "shape":"SensitiveCause",
+          "documentation":"<p>A more detailed explanation of the cause of the failure.</p>"
+        },
+        "location":{
+          "shape":"EvaluationFailureLocation",
+          "documentation":"<p>The location of the field in the state in which the evaluation error occurred.</p>"
+        },
+        "state":{
+          "shape":"StateName",
+          "documentation":"<p>The name of the state in which the evaluation error occurred.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about an evaluation failure that occurred while processing a state, for example, when a JSONata expression throws an error. This event will only be present in state machines that have <b> QueryLanguage</b> set to JSONata, or individual states set to JSONata.</p>"
+    },
+    "EvaluationFailureLocation":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "sensitive":true
+    },
     "EventId":{"type":"long"},
     "ExecutionAbortedEventDetails":{
       "type":"structure",
@@ -1811,6 +1971,10 @@
         "mapRunRedrivenEventDetails":{
           "shape":"MapRunRedrivenEventDetails",
           "documentation":"<p>Contains details about the redrive attempt of a Map Run.</p>"
+        },
+        "evaluationFailedEventDetails":{
+          "shape":"EvaluationFailedEventDetails",
+          "documentation":"<p>Contains details about an evaluation failure that occurred while processing a state.</p>"
         }
       },
       "documentation":"<p>Contains details about the events of an execution.</p>"
@@ -1820,7 +1984,7 @@
       "members":{
         "truncated":{
           "shape":"truncated",
-          "documentation":"<p>Indicates whether input or output was truncated in the response. Always <code>false</code> for API calls.</p>"
+          "documentation":"<p>Indicates whether input or output was truncated in the response. Always <code>false</code> for API calls. In CloudWatch logs, the value will be true if the data is truncated due to size limits.</p>"
         }
       },
       "documentation":"<p>Provides details about input or output in an execution history event.</p>"
@@ -1893,7 +2057,8 @@
         "MapRunStarted",
         "MapRunSucceeded",
         "ExecutionRedriven",
-        "MapRunRedriven"
+        "MapRunRedriven",
+        "EvaluationFailed"
       ]
     },
     "Identity":{
@@ -1905,6 +2070,13 @@
       "type":"boolean",
       "box":true
     },
+    "IncludedData":{
+      "type":"string",
+      "enum":[
+        "ALL_DATA",
+        "METADATA_ONLY"
+      ]
+    },
     "InspectionData":{
       "type":"structure",
       "members":{
@@ -1912,13 +2084,17 @@
           "shape":"SensitiveData",
           "documentation":"<p>The raw state input.</p>"
         },
+        "afterArguments":{
+          "shape":"SensitiveData",
+          "documentation":"<p>The input after Step Functions applies an Arguments filter. This event will only be present when QueryLanguage for the state machine or individual states is set to JSONata. For more info, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/data-transform.html\">Transforming data with Step Functions</a>.</p>"
+        },
         "afterInputPath":{
           "shape":"SensitiveData",
-          "documentation":"<p>The input after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-inputpath\">InputPath</a> filter.</p>"
+          "documentation":"<p>The input after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-inputpath\">InputPath</a> filter. Not populated when QueryLanguage is JSONata.</p>"
         },
         "afterParameters":{
           "shape":"SensitiveData",
-          "documentation":"<p>The effective input after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-parameters\">Parameters</a> filter.</p>"
+          "documentation":"<p>The effective input after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-parameters\">Parameters</a> filter. Not populated when QueryLanguage is JSONata.</p>"
         },
         "result":{
           "shape":"SensitiveData",
@@ -1926,11 +2102,11 @@
         },
         "afterResultSelector":{
           "shape":"SensitiveData",
-          "documentation":"<p>The effective result after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-resultselector\">ResultSelector</a> filter.</p>"
+          "documentation":"<p>The effective result after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-resultselector\">ResultSelector</a> filter. Not populated when QueryLanguage is JSONata.</p>"
         },
         "afterResultPath":{
           "shape":"SensitiveData",
-          "documentation":"<p>The effective result combined with the raw state input after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultpath.html\">ResultPath</a> filter.</p>"
+          "documentation":"<p>The effective result combined with the raw state input after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultpath.html\">ResultPath</a> filter. Not populated when QueryLanguage is JSONata.</p>"
         },
         "request":{
           "shape":"InspectionDataRequest",
@@ -1939,6 +2115,10 @@
         "response":{
           "shape":"InspectionDataResponse",
           "documentation":"<p>The raw HTTP response that is returned when you test an HTTP Task.</p>"
+        },
+        "variables":{
+          "shape":"SensitiveData",
+          "documentation":"<p>JSON string that contains the set of workflow variables after execution of the state. The set will include variables assigned in the state and variables set up as test state input.</p>"
         }
       },
       "documentation":"<p>Contains additional details about the state's execution, including its input and output data processing flow, and HTTP request and response information.</p>",
@@ -2020,6 +2200,14 @@
       "documentation":"<p>The provided Amazon States Language definition is not valid.</p>",
       "exception":true
     },
+    "InvalidEncryptionConfiguration":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>Received when <code>encryptionConfiguration</code> is specified but various conditions exist which make the configuration invalid. For example, if <code>type</code> is set to <code>CUSTOMER_MANAGED_KMS_KEY</code>, but <code>kmsKeyId</code> is null, or <code>kmsDataKeyReusePeriodSeconds</code> is not between 60 and 900, or the KMS key is not symmetric or inactive.</p>",
+      "exception":true
+    },
     "InvalidExecutionInput":{
       "type":"structure",
       "members":{
@@ -2033,7 +2221,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p/>",
+      "documentation":"<p>Configuration is not valid.</p>",
       "exception":true
     },
     "InvalidName":{
@@ -2066,6 +2254,55 @@
         "message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Your <code>tracingConfiguration</code> key does not match, or <code>enabled</code> has not been set to <code>true</code> or <code>false</code>.</p>",
+      "exception":true
+    },
+    "KmsAccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>Either your KMS key policy or API caller does not have the required permissions.</p>",
+      "exception":true
+    },
+    "KmsDataKeyReusePeriodSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":900,
+      "min":60
+    },
+    "KmsInvalidStateException":{
+      "type":"structure",
+      "members":{
+        "kmsKeyState":{
+          "shape":"KmsKeyState",
+          "documentation":"<p>Current status of the KMS; key. For example: <code>DISABLED</code>, <code>PENDING_DELETION</code>, <code>PENDING_IMPORT</code>, <code>UNAVAILABLE</code>, <code>CREATING</code>.</p>"
+        },
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The KMS key is not in valid state, for example: Disabled or Deleted.</p>",
+      "exception":true
+    },
+    "KmsKeyId":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "KmsKeyState":{
+      "type":"string",
+      "enum":[
+        "DISABLED",
+        "PENDING_DELETION",
+        "PENDING_IMPORT",
+        "UNAVAILABLE",
+        "CREATING"
+      ]
+    },
+    "KmsThrottlingException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>Received when KMS returns <code>ThrottlingException</code> for a KMS call that Step Functions makes on behalf of the caller.</p>",
       "exception":true
     },
     "LambdaFunctionFailedEventDetails":{
@@ -2923,6 +3160,10 @@
         "traceHeader":{
           "shape":"TraceHeader",
           "documentation":"<p>Passes the X-Ray trace header. The trace header can also be passed in the request payload.</p>"
+        },
+        "includedData":{
+          "shape":"IncludedData",
+          "documentation":"<p>If your state machine definition is encrypted with a KMS key, callers must have <code>kms:Decrypt</code> permission to decrypt the definition. Alternatively, you can call the API with <code>includedData = METADATA_ONLY</code> to get a successful response without the encrypted definition.</p>"
         }
       }
     },
@@ -3021,6 +3262,14 @@
         "outputDetails":{
           "shape":"HistoryEventExecutionDataDetails",
           "documentation":"<p>Contains details about the output of an execution history event.</p>"
+        },
+        "assignedVariables":{
+          "shape":"AssignedVariables",
+          "documentation":"<p>Map of variable name and value as a serialized JSON representation.</p>"
+        },
+        "assignedVariablesDetails":{
+          "shape":"AssignedVariablesDetails",
+          "documentation":"<p>Provides details about input or output in an execution history event.</p>"
         }
       },
       "documentation":"<p>Contains details about an exit from a state during an execution.</p>"
@@ -3130,7 +3379,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p/>",
+      "documentation":"<p>State machine type is not supported.</p>",
       "exception":true
     },
     "StateMachineVersionList":{
@@ -3494,7 +3743,7 @@
     },
     "TaskToken":{
       "type":"string",
-      "max":1024,
+      "max":2048,
       "min":1
     },
     "TestExecutionStatus":{
@@ -3508,10 +3757,7 @@
     },
     "TestStateInput":{
       "type":"structure",
-      "required":[
-        "definition",
-        "roleArn"
-      ],
+      "required":["definition"],
       "members":{
         "definition":{
           "shape":"Definition",
@@ -3532,6 +3778,10 @@
         "revealSecrets":{
           "shape":"RevealSecrets",
           "documentation":"<p>Specifies whether or not to include secret information in the test result. For HTTP Tasks, a secret includes the data that an EventBridge connection adds to modify the HTTP request headers, query parameters, and body. Step Functions doesn't omit any information included in the state definition or the HTTP response.</p> <p>If you set <code>revealSecrets</code> to <code>true</code>, you must make sure that the IAM user that calls the <code>TestState</code> API has permission for the <code>states:RevealSecrets</code> action. For an example of IAM policy that sets the <code>states:RevealSecrets</code> permission, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/test-state-isolation.html#test-state-permissions\">IAM permissions to test a state</a>. Without this permission, Step Functions throws an access denied error.</p> <p>By default, <code>revealSecrets</code> is set to <code>false</code>.</p>"
+        },
+        "variables":{
+          "shape":"SensitiveData",
+          "documentation":"<p>JSON object literal that sets variables used in the state under test. Object keys are the variable names and values are the variable values.</p>"
         }
       }
     },
@@ -3720,6 +3970,10 @@
         "versionDescription":{
           "shape":"VersionDescription",
           "documentation":"<p>An optional description of the state machine version to publish.</p> <p>You can only specify the <code>versionDescription</code> parameter if you've set <code>publish</code> to <code>true</code>.</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Settings to configure server-side encryption. </p>"
         }
       }
     },
@@ -3741,7 +3995,10 @@
         }
       }
     },
-    "ValidateStateMachineDefinitionCode":{"type":"string"},
+    "ValidateStateMachineDefinitionCode":{
+      "type":"string",
+      "sensitive":true
+    },
     "ValidateStateMachineDefinitionDiagnostic":{
       "type":"structure",
       "required":[
@@ -3752,7 +4009,7 @@
       "members":{
         "severity":{
           "shape":"ValidateStateMachineDefinitionSeverity",
-          "documentation":"<p>A value of <code>ERROR</code> means that you cannot create or update a state machine with this definition.</p>"
+          "documentation":"<p>A value of <code>ERROR</code> means that you cannot create or update a state machine with this definition.</p> <p> <code>WARNING</code> level diagnostics alert you to potential issues, but they will not prevent you from creating or updating your state machine.</p>"
         },
         "code":{
           "shape":"ValidateStateMachineDefinitionCode",
@@ -3767,7 +4024,7 @@
           "documentation":"<p>Location of the issue in the state machine, if available.</p> <p>For errors specific to a field, the location could be in the format: <code>/States/&lt;StateName&gt;/&lt;FieldName&gt;</code>, for example: <code>/States/FailState/ErrorPath</code>.</p>"
         }
       },
-      "documentation":"<p>Describes an error found during validation. Validation errors found in the definition return in the response as <b>diagnostic elements</b>, rather than raise an exception.</p>"
+      "documentation":"<p>Describes potential issues found during state machine validation. Rather than raise an exception, validation will return a list of <b>diagnostic elements</b> containing diagnostic information. </p> <note> <p>The <a href=\"https://docs.aws.amazon.com/step-functions/latest/apireference/API_ValidateStateMachineDefinition.html\">ValidateStateMachineDefinitionlAPI</a> might add new diagnostics in the future, adjust diagnostic codes, or change the message wording. Your automated processes should only rely on the value of the <b>result</b> field value (OK, FAIL). Do <b>not</b> rely on the exact order, count, or wording of diagnostic messages.</p> </note> <p> <b>List of warning codes</b> </p> <dl> <dt>NO_DOLLAR</dt> <dd> <p>No <code>.$</code> on a field that appears to be a JSONPath or Intrinsic Function.</p> </dd> <dt>NO_PATH</dt> <dd> <p>Field value looks like a path, but field name does not end with 'Path'.</p> </dd> <dt>PASS_RESULT_IS_STATIC</dt> <dd> <p>Attempt to use a path in the result of a pass state.</p> </dd> </dl> <p> <b>List of error codes</b> </p> <dl> <dt>INVALID_JSON_DESCRIPTION</dt> <dd> <p>JSON syntax problem found.</p> </dd> <dt>MISSING_DESCRIPTION</dt> <dd> <p>Received a null or empty workflow input.</p> </dd> <dt>SCHEMA_VALIDATION_FAILED</dt> <dd> <p>Schema validation reported errors.</p> </dd> <dt>INVALID_RESOURCE</dt> <dd> <p>The value of a Task-state resource field is invalid.</p> </dd> <dt>MISSING_END_STATE</dt> <dd> <p>The workflow does not have a terminal state.</p> </dd> <dt>DUPLICATE_STATE_NAME</dt> <dd> <p>The same state name appears more than once.</p> </dd> <dt>INVALID_STATE_NAME</dt> <dd> <p>The state name does not follow the naming convention.</p> </dd> <dt>STATE_MACHINE_NAME_EMPTY</dt> <dd> <p>The state machine name has not been specified.</p> </dd> <dt>STATE_MACHINE_NAME_INVALID</dt> <dd> <p>The state machine name does not follow the naming convention.</p> </dd> <dt>STATE_MACHINE_NAME_TOO_LONG</dt> <dd> <p>The state name exceeds the allowed length.</p> </dd> <dt>STATE_MACHINE_NAME_ALREADY_EXISTS</dt> <dd> <p>The state name already exists.</p> </dd> <dt>DUPLICATE_LABEL_NAME</dt> <dd> <p>A label name appears more than once.</p> </dd> <dt>INVALID_LABEL_NAME</dt> <dd> <p>You have provided an invalid label name.</p> </dd> <dt>MISSING_TRANSITION_TARGET</dt> <dd> <p>The value of \"Next\" field doesn't match a known state name.</p> </dd> <dt>TOO_DEEPLY_NESTED</dt> <dd> <p>The states are too deeply nested.</p> </dd> </dl>"
     },
     "ValidateStateMachineDefinitionDiagnosticList":{
       "type":"list",
@@ -3784,11 +4041,30 @@
         "type":{
           "shape":"StateMachineType",
           "documentation":"<p>The target type of state machine for this definition. The default is <code>STANDARD</code>.</p>"
+        },
+        "severity":{
+          "shape":"ValidateStateMachineDefinitionSeverity",
+          "documentation":"<p>Minimum level of diagnostics to return. <code>ERROR</code> returns only <code>ERROR</code> diagnostics, whereas <code>WARNING</code> returns both <code>WARNING</code> and <code>ERROR</code> diagnostics. The default is <code>ERROR</code>. </p>"
+        },
+        "maxResults":{
+          "shape":"ValidateStateMachineDefinitionMaxResult",
+          "documentation":"<p>The maximum number of diagnostics that are returned per call. The default and maximum value is 100. Setting the value to 0 will also use the default of 100.</p> <p>If the number of diagnostics returned in the response exceeds <code>maxResults</code>, the value of the <code>truncated</code> field in the response will be set to <code>true</code>.</p>"
         }
       }
     },
-    "ValidateStateMachineDefinitionLocation":{"type":"string"},
-    "ValidateStateMachineDefinitionMessage":{"type":"string"},
+    "ValidateStateMachineDefinitionLocation":{
+      "type":"string",
+      "sensitive":true
+    },
+    "ValidateStateMachineDefinitionMaxResult":{
+      "type":"integer",
+      "max":100,
+      "min":0
+    },
+    "ValidateStateMachineDefinitionMessage":{
+      "type":"string",
+      "sensitive":true
+    },
     "ValidateStateMachineDefinitionOutput":{
       "type":"structure",
       "required":[
@@ -3802,7 +4078,11 @@
         },
         "diagnostics":{
           "shape":"ValidateStateMachineDefinitionDiagnosticList",
-          "documentation":"<p>If the result is <code>OK</code>, this field will be empty. When there are errors, this field will contain an array of <b>Diagnostic</b> objects to help you troubleshoot.</p>"
+          "documentation":"<p>An array of diagnostic errors and warnings found during validation of the state machine definition. Since <b>warnings</b> do not prevent deploying your workflow definition, the <b>result</b> value could be <code>OK</code> even when warning diagnostics are present in the response.</p>"
+        },
+        "truncated":{
+          "shape":"ValidateStateMachineDefinitionTruncated",
+          "documentation":"<p>The result value will be <code>true</code> if the number of diagnostics found in the workflow definition exceeds <code>maxResults</code>. When all diagnostics results are returned, the value will be <code>false</code>.</p>"
         }
       }
     },
@@ -3815,7 +4095,14 @@
     },
     "ValidateStateMachineDefinitionSeverity":{
       "type":"string",
-      "enum":["ERROR"]
+      "enum":[
+        "ERROR",
+        "WARNING"
+      ]
+    },
+    "ValidateStateMachineDefinitionTruncated":{
+      "type":"boolean",
+      "box":true
     },
     "ValidationException":{
       "type":"structure",
@@ -3838,6 +4125,24 @@
         "INVALID_ROUTING_CONFIGURATION"
       ]
     },
+    "VariableName":{
+      "type":"string",
+      "sensitive":true
+    },
+    "VariableNameList":{
+      "type":"list",
+      "member":{"shape":"VariableName"}
+    },
+    "VariableReferences":{
+      "type":"map",
+      "key":{"shape":"StateName"},
+      "value":{"shape":"VariableNameList"},
+      "sensitive":true
+    },
+    "VariableValue":{
+      "type":"string",
+      "sensitive":true
+    },
     "VersionDescription":{
       "type":"string",
       "max":256,
@@ -3851,5 +4156,5 @@
     "includedDetails":{"type":"boolean"},
     "truncated":{"type":"boolean"}
   },
-  "documentation":"<fullname>Step Functions</fullname> <p>Step Functions is a service that lets you coordinate the components of distributed applications and microservices using visual workflows.</p> <p>You can use Step Functions to build applications from individual components, each of which performs a discrete function, or <i>task</i>, allowing you to scale and change applications quickly. Step Functions provides a console that helps visualize the components of your application as a series of steps. Step Functions automatically triggers and tracks each step, and retries steps when there are errors, so your application executes predictably and in the right order every time. Step Functions logs the state of each step, so you can quickly diagnose and debug any issues.</p> <p>Step Functions manages operations and underlying infrastructure to ensure your application is available at any scale. You can run tasks on Amazon Web Services, your own servers, or any system that has access to Amazon Web Services. You can access and use Step Functions using the console, the Amazon Web Services SDKs, or an HTTP API. For more information about Step Functions, see the <i> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html\">Step Functions Developer Guide</a> </i>.</p> <important> <p>If you use the Step Functions API actions using Amazon Web Services SDK integrations, make sure the API actions are in camel case and parameter names are in Pascal case. For example, you could use Step Functions API action <code>startSyncExecution</code> and specify its parameter as <code>StateMachineArn</code>.</p> </important>"
+  "documentation":"<fullname>Step Functions</fullname> <p>Step Functions coordinates the components of distributed applications and microservices using visual workflows.</p> <p>You can use Step Functions to build applications from individual components, each of which performs a discrete function, or <i>task</i>, allowing you to scale and change applications quickly. Step Functions provides a console that helps visualize the components of your application as a series of steps. Step Functions automatically triggers and tracks each step, and retries steps when there are errors, so your application executes predictably and in the right order every time. Step Functions logs the state of each step, so you can quickly diagnose and debug any issues.</p> <p>Step Functions manages operations and underlying infrastructure to ensure your application is available at any scale. You can run tasks on Amazon Web Services, your own servers, or any system that has access to Amazon Web Services. You can access and use Step Functions using the console, the Amazon Web Services SDKs, or an HTTP API. For more information about Step Functions, see the <i> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html\">Step Functions Developer Guide</a> </i>.</p> <important> <p>If you use the Step Functions API actions using Amazon Web Services SDK integrations, make sure the API actions are in camel case and parameter names are in Pascal case. For example, you could use Step Functions API action <code>startSyncExecution</code> and specify its parameter as <code>StateMachineArn</code>.</p> </important>"
 }

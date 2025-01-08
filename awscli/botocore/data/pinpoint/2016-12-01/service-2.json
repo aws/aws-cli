@@ -8,7 +8,10 @@
     "protocol": "rest-json",
     "jsonVersion": "1.1",
     "uid": "pinpoint-2016-12-01",
-    "signatureVersion": "v4"
+    "signatureVersion": "v4",
+    "auth": [
+      "aws.auth#sigv4"
+    ]
   },
   "documentation": "<p>Doc Engage API - Amazon Pinpoint API</p>",
   "operations": {
@@ -3896,7 +3899,9 @@
         "shape": "ListTagsForResourceResponse",
         "documentation": "<p>The request succeeded.</p>"
       },
-      "errors": [],
+      "errors": [
+
+      ],
       "documentation": "<p>Retrieves all the tags (keys and values) that are associated with an application, campaign, message template, or segment.</p>"
     },
     "ListTemplateVersions": {
@@ -4315,7 +4320,9 @@
       "input": {
         "shape": "TagResourceRequest"
       },
-      "errors": [],
+      "errors": [
+
+      ],
       "documentation": "<p>Adds one or more tags (keys and values) to an application, campaign, message template, or segment.</p>"
     },
     "UntagResource": {
@@ -4328,7 +4335,9 @@
       "input": {
         "shape": "UntagResourceRequest"
       },
-      "errors": [],
+      "errors": [
+
+      ],
       "documentation": "<p>Removes one or more tags (keys and values) from an application, campaign, message template, or segment.</p>"
     },
     "UpdateAdmChannel": {
@@ -6768,8 +6777,8 @@
           "documentation": "<p>The verified email address to send the email from. The default address is the FromAddress specified for the email channel for the application.</p>"
         },
         "Headers": {
-           "shape": "ListOfMessageHeader",
-           "documentation": "<p>The list of <a href=\"https://docs.aws.amazon.com/pinpoint/latest/apireference/apps-application-id-campaigns-campaign-id.html#apps-application-id-campaigns-campaign-id-model-messageheader\">MessageHeaders</a> for the email. You can have up to 15 MessageHeaders for each email.</p>"
+          "shape": "ListOfMessageHeader",
+          "documentation": "<p>The list of <a href=\"https://docs.aws.amazon.com/pinpoint/latest/apireference/apps-application-id-campaigns-campaign-id.html#apps-application-id-campaigns-campaign-id-model-messageheader\">MessageHeaders</a> for the email. You can have up to 15 MessageHeaders for each email.</p>"
         },
         "HtmlBody": {
           "shape": "__string",
@@ -8698,8 +8707,8 @@
           "documentation": "<p>The subject line, or title, to use in email messages that are based on the message template.</p>"
         },
         "Headers": {
-           "shape": "ListOfMessageHeader",
-           "documentation": "<p>The list of <a href=\"https://docs.aws.amazon.com/pinpoint/latest/apireference/templates-template-name-email.html#templates-template-name-email-model-messageheader\">MessageHeaders</a> for the email. You can have up to 15 Headers.</p>"
+          "shape": "ListOfMessageHeader",
+          "documentation": "<p>The list of <a href=\"https://docs.aws.amazon.com/pinpoint/latest/apireference/templates-template-name-email.html#templates-template-name-email-model-messageheader\">MessageHeaders</a> for the email. You can have up to 15 Headers.</p>"
         },
         "tags": {
           "shape": "MapOf__string",
@@ -8749,8 +8758,8 @@
           "documentation": "<p>The subject line, or title, that's used in email messages that are based on the message template.</p>"
         },
         "Headers": {
-           "shape": "ListOfMessageHeader",
-           "documentation": "<p>The list of <a href=\"https://docs.aws.amazon.com/pinpoint/latest/apireference/templates-template-name-email.html#templates-template-name-email-model-messageheader\">MessageHeaders</a> for the email. You can have up to 15 Headers.</p>"
+          "shape": "ListOfMessageHeader",
+          "documentation": "<p>The list of <a href=\"https://docs.aws.amazon.com/pinpoint/latest/apireference/templates-template-name-email.html#templates-template-name-email-model-messageheader\">MessageHeaders</a> for the email. You can have up to 15 Headers.</p>"
         },
         "tags": {
           "shape": "MapOf__string",
@@ -14389,31 +14398,31 @@
           "documentation": "<p>The body of the email message, in plain text format. We recommend using plain text format for email clients that don't render HTML content and clients that are connected to high-latency networks, such as mobile devices.</p>"
         },
         "Headers": {
-           "shape": "ListOfMessageHeader",
-           "documentation": "<p>The list of MessageHeaders for the email. You can have up to 15 Headers.</p>"
+          "shape": "ListOfMessageHeader",
+          "documentation": "<p>The list of MessageHeaders for the email. You can have up to 15 Headers.</p>"
         }
       },
       "documentation": "<p>Specifies the contents of an email message, composed of a subject, a text part, and an HTML part.</p>"
     },
     "ListOfMessageHeader": {
-       "type": "list",
-       "member": {
-         "shape": "MessageHeader"
-       }
+      "type": "list",
+      "member": {
+        "shape": "MessageHeader"
+      }
     },
     "MessageHeader": {
-       "type": "structure",
-       "members": {
-         "Name": {
-           "shape": "__string",
-           "documentation": "<p>The name of the message header. The header name can contain up to 126 characters.</p>"
-         },
-         "Value": {
-           "shape": "__string",
-           "documentation": "<p>The value of the message header. The header value can contain up to 870 characters, including the length of any rendered attributes. For example if you add the {CreationDate} attribute, it renders as YYYY-MM-DDTHH:MM:SS.SSSZ and is 24 characters in length.</p>"
-         }
-       },
-       "documentation": "<p>Contains the name and value pair of an email header to add to your email. You can have up to 15 MessageHeaders. A header can contain information such as the sender, receiver, route, or timestamp.</p>"
+      "type": "structure",
+      "members": {
+        "Name": {
+          "shape": "__string",
+          "documentation": "<p>The name of the message header. The header name can contain up to 126 characters.</p>"
+        },
+        "Value": {
+          "shape": "__string",
+          "documentation": "<p>The value of the message header. The header value can contain up to 870 characters, including the length of any rendered attributes. For example if you add the {CreationDate} attribute, it renders as YYYY-MM-DDTHH:MM:SS.SSSZ and is 24 characters in length.</p>"
+        }
+      },
+      "documentation": "<p>Contains the name and value pair of an email header to add to your email. You can have up to 15 MessageHeaders. A header can contain information such as the sender, receiver, route, or timestamp.</p>"
     },
     "SimpleEmailPart": {
       "type": "structure",

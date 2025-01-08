@@ -16,11 +16,11 @@ Output::
                 "SubmitTime": "2023-06-08T22:31:43.767000+00:00",
                 "EndTime": "2023-06-08T22:39:52.565000+00:00",
                 "InputDataConfig": {
-                    "S3Uri": "s3://DOC-EXAMPLE-SOURCE-BUCKET/AsyncBatchJobs/",
+                    "S3Uri": "s3://amzn-s3-demo-source-bucket/AsyncBatchJobs/",
                     "InputFormat": "ONE_DOC_PER_LINE"
                 },
                 "OutputDataConfig": {
-                    "S3Uri": "s3://DOC-EXAMPLE-DESTINATION-BUCKET/testfolder/111122223333-KP-123456abcdeb0e11022f22a11EXAMPLE/output/output.tar.gz"
+                    "S3Uri": "s3://amzn-s3-demo-destination-bucket/testfolder/111122223333-KP-123456abcdeb0e11022f22a11EXAMPLE/output/output.tar.gz"
                 },
                 "LanguageCode": "en",
                 "DataAccessRoleArn": "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role"
@@ -33,11 +33,11 @@ Output::
                 "SubmitTime": "2023-06-08T22:57:52.154000+00:00",
                 "EndTime": "2023-06-08T23:05:48.385000+00:00",
                 "InputDataConfig": {
-                    "S3Uri": "s3://DOC-EXAMPLE-BUCKET/AsyncBatchJobs/",
+                    "S3Uri": "s3://amzn-s3-demo-bucket/AsyncBatchJobs/",
                     "InputFormat": "ONE_DOC_PER_LINE"
                 },
                 "OutputDataConfig": {
-                    "S3Uri": "s3://DOC-EXAMPLE-DESTINATION-BUCKET/testfolder/111122223333-KP-123456abcdeb0e11022f22a33EXAMPLE/output/output.tar.gz"
+                    "S3Uri": "s3://amzn-s3-demo-destination-bucket/testfolder/111122223333-KP-123456abcdeb0e11022f22a33EXAMPLE/output/output.tar.gz"
                 },
                 "LanguageCode": "en",
                 "DataAccessRoleArn": "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role"
@@ -51,11 +51,11 @@ Output::
                 "SubmitTime": "2023-06-09T16:47:04.029000+00:00",
                 "EndTime": "2023-06-09T16:47:18.413000+00:00",
                 "InputDataConfig": {
-                    "S3Uri": "s3://DOC-EXAMPLE-BUCKET",
+                    "S3Uri": "s3://amzn-s3-demo-bucket",
                     "InputFormat": "ONE_DOC_PER_LINE"
                 },
                 "OutputDataConfig": {
-                    "S3Uri": "s3://DOC-EXAMPLE-DESTINATION-BUCKET/testfolder/111122223333-KP-123456abcdeb0e11022f22a44EXAMPLE/output/output.tar.gz"
+                    "S3Uri": "s3://amzn-s3-demo-destination-bucket/testfolder/111122223333-KP-123456abcdeb0e11022f22a44EXAMPLE/output/output.tar.gz"
                 },
                 "LanguageCode": "en",
                 "DataAccessRoleArn": "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-example-role"

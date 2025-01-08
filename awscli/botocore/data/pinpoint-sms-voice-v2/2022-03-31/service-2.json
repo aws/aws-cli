@@ -2,9 +2,11 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2022-03-31",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"sms-voice",
     "jsonVersion":"1.0",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"Amazon Pinpoint SMS Voice V2",
     "serviceId":"Pinpoint SMS Voice V2",
     "signatureVersion":"v4",
@@ -85,7 +87,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a new event destination in a configuration set.</p> <p>An event destination is a location where you send message events. The event options are Amazon CloudWatch, Amazon Kinesis Data Firehose, or Amazon SNS. For example, when a message is delivered successfully, you can send information about that event to an event destination, or send notifications to endpoints that are subscribed to an Amazon SNS topic.</p> <p>Each configuration set can contain between 0 and 5 event destinations. Each event destination can contain a reference to a single destination, such as a CloudWatch or Kinesis Data Firehose destination.</p>"
+      "documentation":"<p>Creates a new event destination in a configuration set.</p> <p>An event destination is a location where you send message events. The event options are Amazon CloudWatch, Amazon Data Firehose, or Amazon SNS. For example, when a message is delivered successfully, you can send information about that event to an event destination, or send notifications to endpoints that are subscribed to an Amazon SNS topic.</p> <p>Each configuration set can contain between 0 and 5 event destinations. Each event destination can contain a reference to a single destination, such as a CloudWatch or Firehose destination.</p>"
     },
     "CreateOptOutList":{
       "name":"CreateOptOutList",
@@ -103,7 +105,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a new opt-out list.</p> <p>If the opt-out list name already exists, an error is returned.</p> <p>An opt-out list is a list of phone numbers that are opted out, meaning you can't send SMS or voice messages to them. If end user replies with the keyword \"STOP,\" an entry for the phone number is added to the opt-out list. In addition to STOP, your recipients can use any supported opt-out keyword, such as CANCEL or OPTOUT. For a list of supported opt-out keywords, see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-manage.html#channels-sms-manage-optout\"> SMS opt out </a> in the <i>Amazon Pinpoint User Guide</i>.</p>"
+      "documentation":"<p>Creates a new opt-out list.</p> <p>If the opt-out list name already exists, an error is returned.</p> <p>An opt-out list is a list of phone numbers that are opted out, meaning you can't send SMS or voice messages to them. If end user replies with the keyword \"STOP,\" an entry for the phone number is added to the opt-out list. In addition to STOP, your recipients can use any supported opt-out keyword, such as CANCEL or OPTOUT. For a list of supported opt-out keywords, see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-manage.html#channels-sms-manage-optout\"> SMS opt out </a> in the <i>AWS End User Messaging SMS User Guide</i>.</p>"
     },
     "CreatePool":{
       "name":"CreatePool",
@@ -194,7 +196,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Create a new registration attachment to use for uploading a file or a URL to a file. The maximum file size is 1MiB and valid file extensions are PDF, JPEG and PNG. For example, many sender ID registrations require a signed “letter of authorization” (LOA) to be submitted.</p>"
+      "documentation":"<p>Create a new registration attachment to use for uploading a file or a URL to a file. The maximum file size is 500KB and valid file extensions are PDF, JPEG and PNG. For example, many sender ID registrations require a signed “letter of authorization” (LOA) to be submitted.</p> <p>Use either <code>AttachmentUrl</code> or <code>AttachmentBody</code> to upload your attachment. If both are specified then an exception is returned.</p>"
     },
     "CreateRegistrationVersion":{
       "name":"CreateRegistrationVersion",
@@ -334,7 +336,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes an existing keyword from an origination phone number or pool.</p> <p>A keyword is a word that you can search for on a particular phone number or pool. It is also a specific word or phrase that an end user can send to your number to elicit a response, such as an informational message or a special offer. When your number receives a message that begins with a keyword, Amazon Pinpoint responds with a customizable message.</p> <p>Keywords \"HELP\" and \"STOP\" can't be deleted or modified.</p>"
+      "documentation":"<p>Deletes an existing keyword from an origination phone number or pool.</p> <p>A keyword is a word that you can search for on a particular phone number or pool. It is also a specific word or phrase that an end user can send to your number to elicit a response, such as an informational message or a special offer. When your number receives a message that begins with a keyword, AWS End User Messaging SMS and Voice responds with a customizable message.</p> <p>Keywords \"HELP\" and \"STOP\" can't be deleted or modified.</p>"
     },
     "DeleteMediaMessageSpendLimitOverride":{
       "name":"DeleteMediaMessageSpendLimitOverride",
@@ -424,6 +426,23 @@
       ],
       "documentation":"<p>Permanently delete the protect configuration. The protect configuration must have deletion protection disabled and must not be associated as the account default protect configuration or associated with a configuration set.</p>"
     },
+    "DeleteProtectConfigurationRuleSetNumberOverride":{
+      "name":"DeleteProtectConfigurationRuleSetNumberOverride",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteProtectConfigurationRuleSetNumberOverrideRequest"},
+      "output":{"shape":"DeleteProtectConfigurationRuleSetNumberOverrideResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Permanently delete the protect configuration rule set number override.</p>"
+    },
     "DeleteRegistration":{
       "name":"DeleteRegistration",
       "http":{
@@ -478,6 +497,23 @@
       ],
       "documentation":"<p>Delete the value in a registration form field.</p>"
     },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "output":{"shape":"DeleteResourcePolicyResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes the resource-based policy document attached to the AWS End User Messaging SMS and Voice resource. A shared resource can be a Pool, Opt-out list, Sender Id, or Phone number.</p>"
+    },
     "DeleteTextMessageSpendLimitOverride":{
       "name":"DeleteTextMessageSpendLimitOverride",
       "http":{
@@ -492,7 +528,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes an account-level monthly spending limit override for sending text messages. Deleting a spend limit override will set the <code>EnforcedLimit</code> to equal the <code>MaxLimit</code>, which is controlled by Amazon Web Services. For more information on spend limits (quotas) see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/developerguide/quotas.html\">Amazon Pinpoint quotas </a> in the <i>Amazon Pinpoint Developer Guide</i>.</p>"
+      "documentation":"<p>Deletes an account-level monthly spending limit override for sending text messages. Deleting a spend limit override will set the <code>EnforcedLimit</code> to equal the <code>MaxLimit</code>, which is controlled by Amazon Web Services. For more information on spend limits (quotas) see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/quotas.html\">Quotas </a> in the <i>AWS End User Messaging SMS User Guide</i>.</p>"
     },
     "DeleteVerifiedDestinationNumber":{
       "name":"DeleteVerifiedDestinationNumber",
@@ -526,7 +562,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes an account level monthly spend limit override for sending voice messages. Deleting a spend limit override sets the <code>EnforcedLimit</code> equal to the <code>MaxLimit</code>, which is controlled by Amazon Web Services. For more information on spending limits (quotas) see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/developerguide/quotas.html\">Amazon Pinpoint quotas</a> in the <i>Amazon Pinpoint Developer Guide</i>.</p>"
+      "documentation":"<p>Deletes an account level monthly spend limit override for sending voice messages. Deleting a spend limit override sets the <code>EnforcedLimit</code> equal to the <code>MaxLimit</code>, which is controlled by Amazon Web Services. For more information on spending limits (quotas) see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/quotas.html\">Quotas </a> in the <i>AWS End User Messaging SMS User Guide</i>.</p>"
     },
     "DescribeAccountAttributes":{
       "name":"DescribeAccountAttributes",
@@ -542,7 +578,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes attributes of your Amazon Web Services account. The supported account attributes include account tier, which indicates whether your account is in the sandbox or production environment. When you're ready to move your account out of the sandbox, create an Amazon Web Services Support case for a service limit increase request.</p> <p>New Amazon Pinpoint accounts are placed into an SMS or voice sandbox. The sandbox protects both Amazon Web Services end recipients and SMS or voice recipients from fraud and abuse. </p>"
+      "documentation":"<p>Describes attributes of your Amazon Web Services account. The supported account attributes include account tier, which indicates whether your account is in the sandbox or production environment. When you're ready to move your account out of the sandbox, create an Amazon Web Services Support case for a service limit increase request.</p> <p>New accounts are placed into an SMS or voice sandbox. The sandbox protects both Amazon Web Services end recipients and SMS or voice recipients from fraud and abuse. </p>"
     },
     "DescribeAccountLimits":{
       "name":"DescribeAccountLimits",
@@ -558,7 +594,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes the current Amazon Pinpoint SMS Voice V2 resource quotas for your account. The description for a quota includes the quota name, current usage toward that quota, and the quota's maximum value.</p> <p>When you establish an Amazon Web Services account, the account has initial quotas on the maximum number of configuration sets, opt-out lists, phone numbers, and pools that you can create in a given Region. For more information see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/developerguide/quotas.html\"> Amazon Pinpoint quotas </a> in the <i>Amazon Pinpoint Developer Guide</i>.</p>"
+      "documentation":"<p>Describes the current AWS End User Messaging SMS and Voice SMS Voice V2 resource quotas for your account. The description for a quota includes the quota name, current usage toward that quota, and the quota's maximum value.</p> <p>When you establish an Amazon Web Services account, the account has initial quotas on the maximum number of configuration sets, opt-out lists, phone numbers, and pools that you can create in a given Region. For more information see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/quotas.html\">Quotas </a> in the <i>AWS End User Messaging SMS User Guide</i>.</p>"
     },
     "DescribeConfigurationSets":{
       "name":"DescribeConfigurationSets",
@@ -592,7 +628,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes the specified keywords or all keywords on your origination phone number or pool.</p> <p>A keyword is a word that you can search for on a particular phone number or pool. It is also a specific word or phrase that an end user can send to your number to elicit a response, such as an informational message or a special offer. When your number receives a message that begins with a keyword, Amazon Pinpoint responds with a customizable message.</p> <p>If you specify a keyword that isn't valid, an error is returned.</p>"
+      "documentation":"<p>Describes the specified keywords or all keywords on your origination phone number or pool.</p> <p>A keyword is a word that you can search for on a particular phone number or pool. It is also a specific word or phrase that an end user can send to your number to elicit a response, such as an informational message or a special offer. When your number receives a message that begins with a keyword, AWS End User Messaging SMS and Voice responds with a customizable message.</p> <p>If you specify a keyword that isn't valid, an error is returned.</p>"
     },
     "DescribeOptOutLists":{
       "name":"DescribeOptOutLists",
@@ -626,7 +662,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes the specified opted out destination numbers or all opted out destination numbers in an opt-out list.</p> <p>If you specify opted out numbers, the output includes information for only the specified opted out numbers. If you specify filters, the output includes information for only those opted out numbers that meet the filter criteria. If you don't specify opted out numbers or filters, the output includes information for all opted out destination numbers in your opt-out list.</p> <p>If you specify an opted out number that isn't valid, an error is returned.</p>"
+      "documentation":"<p>Describes the specified opted out destination numbers or all opted out destination numbers in an opt-out list.</p> <p>If you specify opted out numbers, the output includes information for only the specified opted out numbers. If you specify filters, the output includes information for only those opted out numbers that meet the filter criteria. If you don't specify opted out numbers or filters, the output includes information for all opted out destination numbers in your opt-out list.</p> <p>If you specify an opted out number that isn't valid, an exception is returned.</p>"
     },
     "DescribePhoneNumbers":{
       "name":"DescribePhoneNumbers",
@@ -826,7 +862,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes the current Amazon Pinpoint monthly spend limits for sending voice and text messages.</p> <p>When you establish an Amazon Web Services account, the account has initial monthly spend limit in a given Region. For more information on increasing your monthly spend limit, see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-awssupport-spend-threshold.html\"> Requesting increases to your monthly SMS spending quota for Amazon Pinpoint </a> in the <i>Amazon Pinpoint User Guide</i>.</p>"
+      "documentation":"<p>Describes the current monthly spend limits for sending voice and text messages.</p> <p>When you establish an Amazon Web Services account, the account has initial monthly spend limit in a given Region. For more information on increasing your monthly spend limit, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/awssupport-spend-threshold.html\"> Requesting increases to your monthly SMS, MMS, or Voice spending quota </a> in the <i>AWS End User Messaging SMS User Guide</i>.</p>"
     },
     "DescribeVerifiedDestinationNumbers":{
       "name":"DescribeVerifiedDestinationNumbers",
@@ -843,7 +879,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves the specified verified destiona numbers.</p>"
+      "documentation":"<p>Retrieves the specified verified destination numbers.</p>"
     },
     "DisassociateOriginationIdentity":{
       "name":"DisassociateOriginationIdentity",
@@ -916,6 +952,23 @@
       ],
       "documentation":"<p>Retrieve the CountryRuleSet for the specified NumberCapability from a protect configuration.</p>"
     },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetResourcePolicyRequest"},
+      "output":{"shape":"GetResourcePolicyResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the JSON text of the resource-based policy document attached to the AWS End User Messaging SMS and Voice resource. A shared resource can be a Pool, Opt-out list, Sender Id, or Phone number.</p>"
+    },
     "ListPoolOriginationIdentities":{
       "name":"ListPoolOriginationIdentities",
       "http":{
@@ -933,6 +986,23 @@
       ],
       "documentation":"<p>Lists all associated origination identities in your pool.</p> <p>If you specify filters, the output includes information for only those origination identities that meet the filter criteria.</p>"
     },
+    "ListProtectConfigurationRuleSetNumberOverrides":{
+      "name":"ListProtectConfigurationRuleSetNumberOverrides",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListProtectConfigurationRuleSetNumberOverridesRequest"},
+      "output":{"shape":"ListProtectConfigurationRuleSetNumberOverridesResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieve all of the protect configuration rule set number overrides that match the filters.</p>"
+    },
     "ListRegistrationAssociations":{
       "name":"ListRegistrationAssociations",
       "http":{
@@ -948,7 +1018,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retreive all of the origination identies that are associated with a registration.</p>"
+      "documentation":"<p>Retrieve all of the origination identities that are associated with a registration.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -984,7 +1054,24 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates or updates a keyword configuration on an origination phone number or pool.</p> <p> A keyword is a word that you can search for on a particular phone number or pool. It is also a specific word or phrase that an end user can send to your number to elicit a response, such as an informational message or a special offer. When your number receives a message that begins with a keyword, Amazon Pinpoint responds with a customizable message.</p> <p>If you specify a keyword that isn't valid, an error is returned.</p>"
+      "documentation":"<p>Creates or updates a keyword configuration on an origination phone number or pool.</p> <p> A keyword is a word that you can search for on a particular phone number or pool. It is also a specific word or phrase that an end user can send to your number to elicit a response, such as an informational message or a special offer. When your number receives a message that begins with a keyword, AWS End User Messaging SMS and Voice responds with a customizable message.</p> <p>If you specify a keyword that isn't valid, an error is returned.</p>"
+    },
+    "PutMessageFeedback":{
+      "name":"PutMessageFeedback",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutMessageFeedbackRequest"},
+      "output":{"shape":"PutMessageFeedbackResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Set the MessageFeedbackStatus as <code>RECEIVED</code> or <code>FAILED</code> for the passed in MessageId. </p> <p>If you use message feedback then you must update message feedback record. When you receive a signal that a user has received the message you must use <code>PutMessageFeedback</code> to set the message feedback record as <code>RECEIVED</code>; Otherwise, an hour after the message feedback record is set to <code>FAILED</code>.</p>"
     },
     "PutOptedOutNumber":{
       "name":"PutOptedOutNumber",
@@ -1003,6 +1090,24 @@
       ],
       "documentation":"<p>Creates an opted out destination phone number in the opt-out list.</p> <p>If the destination phone number isn't valid or if the specified opt-out list doesn't exist, an error is returned.</p>"
     },
+    "PutProtectConfigurationRuleSetNumberOverride":{
+      "name":"PutProtectConfigurationRuleSetNumberOverride",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutProtectConfigurationRuleSetNumberOverrideRequest"},
+      "output":{"shape":"PutProtectConfigurationRuleSetNumberOverrideResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create or update a RuleSetNumberOverride and associate it with a protect configuration.</p>"
+    },
     "PutRegistrationFieldValue":{
       "name":"PutRegistrationFieldValue",
       "http":{
@@ -1020,6 +1125,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates or updates a field value for a registration.</p>"
+    },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Attaches a resource-based policy to a AWS End User Messaging SMS and Voice resource(phone number, sender Id, phone poll, or opt-out list) that is used for sharing the resource. A shared resource can be a Pool, Opt-out list, Sender Id, or Phone number. For more information about resource-based policies, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/shared-resources.html\">Working with shared resources</a> in the <i>AWS End User Messaging SMS User Guide</i>. </p>"
     },
     "ReleasePhoneNumber":{
       "name":"ReleasePhoneNumber",
@@ -1074,7 +1196,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Request an origination phone number for use in your account. For more information on phone number request see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/settings-sms-request-number.html\"> Requesting a number </a> in the <i>Amazon Pinpoint User Guide</i>.</p>"
+      "documentation":"<p>Request an origination phone number for use in your account. For more information on phone number request see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-request.html\">Request a phone number</a> in the <i>AWS End User Messaging SMS User Guide</i>.</p>"
     },
     "RequestSenderId":{
       "name":"RequestSenderId",
@@ -1149,7 +1271,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a new text message and sends it to a recipient's phone number.</p> <p>SMS throughput limits are measured in Message Parts per Second (MPS). Your MPS limit depends on the destination country of your messages, as well as the type of phone number (origination number) that you use to send the message. For more information, see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-limitations-mps.html\">Message Parts per Second (MPS) limits</a> in the <i>Amazon Pinpoint User Guide</i>.</p>"
+      "documentation":"<p>Creates a new text message and sends it to a recipient's phone number. SendTextMessage only sends an SMS message to one recipient each time it is invoked.</p> <p>SMS throughput limits are measured in Message Parts per Second (MPS). Your MPS limit depends on the destination country of your messages, as well as the type of phone number (origination number) that you use to send the message. For more information about MPS, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/sms-limitations-mps.html\">Message Parts per Second (MPS) limits</a> in the <i>AWS End User Messaging SMS User Guide</i>.</p>"
     },
     "SendVoiceMessage":{
       "name":"SendVoiceMessage",
@@ -1168,7 +1290,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Allows you to send a request that sends a voice message through Amazon Pinpoint. This operation uses <a href=\"http://aws.amazon.com/polly/\">Amazon Polly</a> to convert a text script into a voice message.</p>"
+      "documentation":"<p>Allows you to send a request that sends a voice message. This operation uses <a href=\"http://aws.amazon.com/polly/\">Amazon Polly</a> to convert a text script into a voice message.</p>"
     },
     "SetAccountDefaultProtectConfiguration":{
       "name":"SetAccountDefaultProtectConfiguration",
@@ -1186,6 +1308,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Set a protect configuration as your account default. You can only have one account default protect configuration at a time. The current account default protect configuration is replaced with the provided protect configuration.</p>"
+    },
+    "SetDefaultMessageFeedbackEnabled":{
+      "name":"SetDefaultMessageFeedbackEnabled",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SetDefaultMessageFeedbackEnabledRequest"},
+      "output":{"shape":"SetDefaultMessageFeedbackEnabledResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Sets a configuration set's default for message feedback. </p>"
     },
     "SetDefaultMessageType":{
       "name":"SetDefaultMessageType",
@@ -1303,7 +1442,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Adds or overwrites only the specified tags for the specified Amazon Pinpoint SMS Voice, version 2 resource. When you specify an existing tag key, the value is overwritten with the new value. Each resource can have a maximum of 50 tags. Each tag consists of a key and an optional value. Tag keys must be unique per resource. For more information about tags, see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/developerguide/tagging-resources.html\"> Tagging Amazon Pinpoint resources</a> in the <i>Amazon Pinpoint Developer Guide</i>.</p>"
+      "documentation":"<p>Adds or overwrites only the specified tags for the specified resource. When you specify an existing tag key, the value is overwritten with the new value. Each resource can have a maximum of 50 tags. Each tag consists of a key and an optional value. Tag keys must be unique per resource. For more information about tags, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-tags.html\">Tags </a> in the <i>AWS End User Messaging SMS User Guide</i>.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -1320,7 +1459,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Removes the association of the specified tags from an Amazon Pinpoint SMS Voice V2 resource. For more information on tags see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/developerguide/tagging-resources.html\"> Tagging Amazon Pinpoint resources</a> in the <i>Amazon Pinpoint Developer Guide</i>. </p>"
+      "documentation":"<p>Removes the association of the specified tags from a resource. For more information on tags see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-tags.html\">Tags </a> in the <i>AWS End User Messaging SMS User Guide</i>.</p>"
     },
     "UpdateEventDestination":{
       "name":"UpdateEventDestination",
@@ -1338,7 +1477,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates an existing event destination in a configuration set. You can update the IAM role ARN for CloudWatch Logs and Kinesis Data Firehose. You can also enable or disable the event destination.</p> <p>You may want to update an event destination to change its matching event types or updating the destination resource ARN. You can't change an event destination's type between CloudWatch Logs, Kinesis Data Firehose, and Amazon SNS.</p>"
+      "documentation":"<p>Updates an existing event destination in a configuration set. You can update the IAM role ARN for CloudWatch Logs and Firehose. You can also enable or disable the event destination.</p> <p>You may want to update an event destination to change its matching event types or updating the destination resource ARN. You can't change an event destination's type between CloudWatch Logs, Firehose, and Amazon SNS.</p>"
     },
     "UpdatePhoneNumber":{
       "name":"UpdatePhoneNumber",
@@ -1551,11 +1690,11 @@
       "members":{
         "PoolId":{
           "shape":"PoolIdOrArn",
-          "documentation":"<p>The pool to update with the new Identity. This value can be either the PoolId or PoolArn, and you can find these values using <a>DescribePools</a>.</p>"
+          "documentation":"<p>The pool to update with the new Identity. This value can be either the PoolId or PoolArn, and you can find these values using <a>DescribePools</a>.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "OriginationIdentity":{
           "shape":"PhoneOrSenderIdOrArn",
-          "documentation":"<p>The origination identity to use, such as PhoneNumberId, PhoneNumberArn, SenderId, or SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn, while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p>"
+          "documentation":"<p>The origination identity to use, such as PhoneNumberId, PhoneNumberArn, SenderId, or SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn, while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "IsoCountryCode":{
           "shape":"IsoCountryCode",
@@ -1720,6 +1859,7 @@
         "matching-event-types",
         "default-message-type",
         "default-sender-id",
+        "default-message-feedback-enabled",
         "protect-configuration-id"
       ]
     },
@@ -1751,6 +1891,10 @@
         "DefaultSenderId":{
           "shape":"SenderId",
           "documentation":"<p>The default sender ID used by the ConfigurationSet.</p>"
+        },
+        "DefaultMessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>True if message feedback is enabled.</p>"
         },
         "CreatedTimestamp":{
           "shape":"Timestamp",
@@ -1842,7 +1986,8 @@
         "PROTECT_CONFIGURATION_IS_ACCOUNT_DEFAULT",
         "PROTECT_CONFIGURATION_ASSOCIATED_WITH_CONFIGURATION_SET",
         "PROTECT_CONFIGURATION_NOT_ASSOCIATED_WITH_CONFIGURATION_SET",
-        "DESTINATION_COUNTRY_BLOCKED_BY_PROTECT_CONFIGURATION"
+        "DESTINATION_COUNTRY_BLOCKED_BY_PROTECT_CONFIGURATION",
+        "DESTINATION_PHONE_NUMBER_BLOCKED_BY_PROTECT_NUMBER_OVERRIDE"
       ]
     },
     "ContextKey":{
@@ -1922,7 +2067,7 @@
         },
         "MatchingEventTypes":{
           "shape":"EventTypeList",
-          "documentation":"<p>An array of event types that determine which events to log. If \"ALL\" is used, then Amazon Pinpoint logs every event type.</p> <note> <p>The <code>TEXT_SENT</code> event type is not supported.</p> </note>"
+          "documentation":"<p>An array of event types that determine which events to log. If \"ALL\" is used, then AWS End User Messaging SMS and Voice logs every event type.</p> <note> <p>The <code>TEXT_SENT</code> event type is not supported.</p> </note>"
         },
         "CloudWatchLogsDestination":{
           "shape":"CloudWatchLogsDestination",
@@ -1930,7 +2075,7 @@
         },
         "KinesisFirehoseDestination":{
           "shape":"KinesisFirehoseDestination",
-          "documentation":"<p>An object that contains information about an event destination for logging to Amazon Kinesis Data Firehose.</p>"
+          "documentation":"<p>An object that contains information about an event destination for logging to Amazon Data Firehose.</p>"
         },
         "SnsDestination":{
           "shape":"SnsDestination",
@@ -2010,7 +2155,7 @@
       "members":{
         "OriginationIdentity":{
           "shape":"PhoneOrSenderIdOrArn",
-          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p>"
+          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p> <p>After the pool is created you can add more origination identities to the pool by using <a href=\"https://docs.aws.amazon.com/pinpoint/latest/apireference_smsvoicev2/API_AssociateOriginationIdentity.html\">AssociateOriginationIdentity</a>.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "IsoCountryCode":{
           "shape":"IsoCountryCode",
@@ -2018,7 +2163,7 @@
         },
         "MessageType":{
           "shape":"MessageType",
-          "documentation":"<p>The type of message. Valid values are TRANSACTIONAL for messages that are critical or time-sensitive and PROMOTIONAL for messages that aren't critical or time-sensitive.</p>"
+          "documentation":"<p>The type of message. Valid values are TRANSACTIONAL for messages that are critical or time-sensitive and PROMOTIONAL for messages that aren't critical or time-sensitive. After the pool is created the MessageType can't be changed.</p>"
         },
         "DeletionProtectionEnabled":{
           "shape":"Boolean",
@@ -2068,7 +2213,7 @@
         },
         "SelfManagedOptOutsEnabled":{
           "shape":"PrimitiveBoolean",
-          "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, Amazon Pinpoint automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
+          "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, AWS End User Messaging SMS and Voice automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
         },
         "OptOutListName":{
           "shape":"OptOutListName",
@@ -2076,7 +2221,7 @@
         },
         "SharedRoutesEnabled":{
           "shape":"PrimitiveBoolean",
-          "documentation":"<p>Indicates whether shared routes are enabled for the pool.</p>"
+          "documentation":"<p>Indicates whether shared routes are enabled for the pool. Set to false and only origination identities in this pool are used to send messages. </p>"
         },
         "DeletionProtectionEnabled":{
           "shape":"PrimitiveBoolean",
@@ -2213,11 +2358,11 @@
       "members":{
         "AttachmentBody":{
           "shape":"AttachmentBody",
-          "documentation":"<p>The registration file to upload. The maximum file size is 1MiB and valid file extensions are PDF, JPEG and PNG.</p>"
+          "documentation":"<p>The registration file to upload. The maximum file size is 500KB and valid file extensions are PDF, JPEG and PNG.</p>"
         },
         "AttachmentUrl":{
           "shape":"AttachmentUrl",
-          "documentation":"<p>A URL to the required registration file. For example, you can provide the S3 object URL.</p>"
+          "documentation":"<p>Registration files have to be stored in an Amazon S3 bucket. The URI to use when sending is in the format <code>s3://BucketName/FileName</code>.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -2305,7 +2450,7 @@
         },
         "RegistrationStatus":{
           "shape":"RegistrationStatus",
-          "documentation":"<p>The status of the registration.</p> <ul> <li> <p> <code>CREATED</code>: Your registration is created but not submitted.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted and is awaiting review.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>PROVISIONING</code>: Your registration has been approved and your origination identity is being created.</p> </li> <li> <p> <code>COMPLETE</code>: Your registration has been approved and and your origination identity has been created.</p> </li> <li> <p> <code>REQUIRES_UPDATES</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>CLOSED</code>: The phone number or sender ID has been deleted and you must also delete the registration for the number.</p> </li> <li> <p> <code>DELETED</code>: The registration has been deleted.</p> </li> </ul>"
+          "documentation":"<p>The status of the registration.</p> <ul> <li> <p> <code>CLOSED</code>: The phone number or sender ID has been deleted and you must also delete the registration for the number.</p> </li> <li> <p> <code>CREATED</code>: Your registration is created but not submitted.</p> </li> <li> <p> <code>COMPLETE</code>: Your registration has been approved and your origination identity has been created.</p> </li> <li> <p> <code>DELETED</code>: The registration has been deleted.</p> </li> <li> <p> <code>PROVISIONING</code>: Your registration has been approved and your origination identity is being created.</p> </li> <li> <p> <code>REQUIRES_AUTHENTICATION</code>: You need to complete email authentication.</p> </li> <li> <p> <code>REQUIRES_UPDATES</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted and is awaiting review.</p> </li> </ul>"
         },
         "CurrentVersionNumber":{
           "shape":"RegistrationVersionNumber",
@@ -2359,7 +2504,7 @@
         },
         "RegistrationVersionStatus":{
           "shape":"RegistrationVersionStatus",
-          "documentation":"<p>The status of the registration.</p> <ul> <li> <p> <code>DRAFT</code>: The initial status of a registration version after it’s created.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>APPROVED</code>: Your registration has been approved.</p> </li> <li> <p> <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p> </li> <li> <p> <code>DENIED</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>REVOKED</code>: Your previously approved registration has been revoked.</p> </li> <li> <p> <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p> </li> </ul>"
+          "documentation":"<p>The status of the registration.</p> <ul> <li> <p> <code>APPROVED</code>: Your registration has been approved.</p> </li> <li> <p> <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p> </li> <li> <p> <code>DENIED</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p> </li> <li> <p> <code>DRAFT</code>: The initial status of a registration version after it’s created.</p> </li> <li> <p> <code>REQUIRES_AUTHENTICATION</code>: You need to complete email authentication.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>REVOKED</code>: Your previously approved registration has been revoked.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted.</p> </li> </ul>"
         },
         "RegistrationVersionStatusHistory":{
           "shape":"RegistrationVersionStatusHistory",
@@ -2477,6 +2622,10 @@
           "shape":"SenderId",
           "documentation":"<p>The default Sender ID of the configuration set that was deleted.</p>"
         },
+        "DefaultMessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>True if the configuration set has message feedback enabled. By default this is set to false. </p>"
+        },
         "CreatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time that the deleted configuration set was created in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
@@ -2580,7 +2729,7 @@
       "members":{
         "OriginationIdentity":{
           "shape":"PhoneOrPoolIdOrArn",
-          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, PoolId or PoolArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn and <a>DescribePools</a> to find the values of PoolId and PoolArn.</p>"
+          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, PoolId or PoolArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn and <a>DescribePools</a> to find the values of PoolId and PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "Keyword":{
           "shape":"Keyword",
@@ -2633,7 +2782,7 @@
       "members":{
         "OptOutListName":{
           "shape":"OptOutListNameOrArn",
-          "documentation":"<p>The OptOutListName or OptOutListArn of the OptOutList to delete. You can use <a>DescribeOptOutLists</a> to find the values for OptOutListName and OptOutListArn.</p>"
+          "documentation":"<p>The OptOutListName or OptOutListArn of the OptOutList to delete. You can use <a>DescribeOptOutLists</a> to find the values for OptOutListName and OptOutListArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         }
       }
     },
@@ -2663,7 +2812,7 @@
       "members":{
         "OptOutListName":{
           "shape":"OptOutListNameOrArn",
-          "documentation":"<p>The OptOutListName or OptOutListArn to remove the phone number from.</p>"
+          "documentation":"<p>The OptOutListName or OptOutListArn to remove the phone number from.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "OptedOutNumber":{
           "shape":"PhoneNumber",
@@ -2702,7 +2851,7 @@
       "members":{
         "PoolId":{
           "shape":"PoolIdOrArn",
-          "documentation":"<p>The PoolId or PoolArn of the pool to delete. You can use <a>DescribePools</a> to find the values for PoolId and PoolArn .</p>"
+          "documentation":"<p>The PoolId or PoolArn of the pool to delete. You can use <a>DescribePools</a> to find the values for PoolId and PoolArn .</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         }
       }
     },
@@ -2739,7 +2888,7 @@
         },
         "SelfManagedOptOutsEnabled":{
           "shape":"PrimitiveBoolean",
-          "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, Amazon Pinpoint automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
+          "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, AWS End User Messaging SMS and Voice automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
         },
         "OptOutListName":{
           "shape":"OptOutListName",
@@ -2794,6 +2943,63 @@
         "DeletionProtectionEnabled":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>The status of deletion protection for the protect configuration. When set to true deletion protection is enabled. By default this is set to false. </p>"
+        }
+      }
+    },
+    "DeleteProtectConfigurationRuleSetNumberOverrideRequest":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationId",
+        "DestinationPhoneNumber"
+      ],
+      "members":{
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The destination phone number in E.164 format.</p>"
+        }
+      }
+    },
+    "DeleteProtectConfigurationRuleSetNumberOverrideResult":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationArn",
+        "ProtectConfigurationId",
+        "DestinationPhoneNumber",
+        "CreatedTimestamp",
+        "Action"
+      ],
+      "members":{
+        "ProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the protect configuration.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The destination phone number in E.164 format.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the rule was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "Action":{
+          "shape":"ProtectConfigurationRuleOverrideAction",
+          "documentation":"<p>The action associated with the rule.</p>"
+        },
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "ExpirationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource-based policy was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
         }
       }
     },
@@ -2929,7 +3135,7 @@
         },
         "RegistrationStatus":{
           "shape":"RegistrationStatus",
-          "documentation":"<p>The status of the registration.</p> <ul> <li> <p> <code>CREATED</code>: Your registration is created but not submitted.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted and is awaiting review.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>PROVISIONING</code>: Your registration has been approved and your origination identity is being created.</p> </li> <li> <p> <code>COMPLETE</code>: Your registration has been approved and and your origination identity has been created.</p> </li> <li> <p> <code>REQUIRES_UPDATES</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>CLOSED</code>: The phone number or sender ID has been deleted and you must also delete the registration for the number.</p> </li> <li> <p> <code>DELETED</code>: The registration has been deleted.</p> </li> </ul>"
+          "documentation":"<p>The status of the registration.</p> <ul> <li> <p> <code>CLOSED</code>: The phone number or sender ID has been deleted and you must also delete the registration for the number.</p> </li> <li> <p> <code>CREATED</code>: Your registration is created but not submitted.</p> </li> <li> <p> <code>COMPLETE</code>: Your registration has been approved and your origination identity has been created.</p> </li> <li> <p> <code>DELETED</code>: The registration has been deleted.</p> </li> <li> <p> <code>PROVISIONING</code>: Your registration has been approved and your origination identity is being created.</p> </li> <li> <p> <code>REQUIRES_AUTHENTICATION</code>: You need to complete email authentication.</p> </li> <li> <p> <code>REQUIRES_UPDATES</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted and is awaiting review.</p> </li> </ul>"
         },
         "CurrentVersionNumber":{
           "shape":"RegistrationVersionNumber",
@@ -2950,6 +3156,33 @@
         "CreatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the registration was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
+    },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource you're deleting the resource-based policy from.</p>"
+        }
+      }
+    },
+    "DeleteResourcePolicyResult":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource that the resource-based policy was deleted from.</p>"
+        },
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The JSON formatted resource-based policy that was deleted.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource-based policy was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
         }
       }
     },
@@ -3116,7 +3349,7 @@
       "members":{
         "OriginationIdentity":{
           "shape":"PhoneOrPoolIdOrArn",
-          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p>"
+          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "Keywords":{
           "shape":"KeywordList",
@@ -3162,7 +3395,7 @@
       "members":{
         "OptOutListNames":{
           "shape":"OptOutListNameList",
-          "documentation":"<p>The OptOutLists to show the details of. This is an array of strings that can be either the OptOutListName or OptOutListArn.</p>"
+          "documentation":"<p>The OptOutLists to show the details of. This is an array of strings that can be either the OptOutListName or OptOutListArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3171,6 +3404,10 @@
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to return per each request.</p>"
+        },
+        "Owner":{
+          "shape":"Owner",
+          "documentation":"<p>Use <code>SELF</code> to filter the list of Opt-Out List to ones your account owns or use <code>SHARED</code> to filter on Opt-Out List shared with your account. The <code>Owner</code> and <code>OptOutListNames</code> parameters can't be used at the same time.</p>"
         }
       }
     },
@@ -3193,11 +3430,11 @@
       "members":{
         "OptOutListName":{
           "shape":"OptOutListNameOrArn",
-          "documentation":"<p>The OptOutListName or OptOutListArn of the OptOutList. You can use <a>DescribeOptOutLists</a> to find the values for OptOutListName and OptOutListArn.</p>"
+          "documentation":"<p>The OptOutListName or OptOutListArn of the OptOutList. You can use <a>DescribeOptOutLists</a> to find the values for OptOutListName and OptOutListArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "OptedOutNumbers":{
           "shape":"OptedOutNumberList",
-          "documentation":"<p>An array of phone numbers to search for in the OptOutList.</p>"
+          "documentation":"<p>An array of phone numbers to search for in the OptOutList.</p> <p>If you specify an opted out number that isn't valid, an exception is returned.</p>"
         },
         "Filters":{
           "shape":"OptedOutFilterList",
@@ -3239,7 +3476,7 @@
       "members":{
         "PhoneNumberIds":{
           "shape":"PhoneNumberIdList",
-          "documentation":"<p>The unique identifier of phone numbers to find information about. This is an array of strings that can be either the PhoneNumberId or PhoneNumberArn.</p>"
+          "documentation":"<p>The unique identifier of phone numbers to find information about. This is an array of strings that can be either the PhoneNumberId or PhoneNumberArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "Filters":{
           "shape":"PhoneNumberFilterList",
@@ -3252,6 +3489,10 @@
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to return per each request.</p>"
+        },
+        "Owner":{
+          "shape":"Owner",
+          "documentation":"<p>Use <code>SELF</code> to filter the list of phone numbers to ones your account owns or use <code>SHARED</code> to filter on phone numbers shared with your account. The <code>Owner</code> and <code>PhoneNumberIds</code> parameters can't be used at the same time.</p>"
         }
       }
     },
@@ -3273,7 +3514,7 @@
       "members":{
         "PoolIds":{
           "shape":"PoolIdList",
-          "documentation":"<p>The unique identifier of pools to find. This is an array of strings that can be either the PoolId or PoolArn.</p>"
+          "documentation":"<p>The unique identifier of pools to find. This is an array of strings that can be either the PoolId or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "Filters":{
           "shape":"PoolFilterList",
@@ -3286,6 +3527,10 @@
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to return per each request.</p>"
+        },
+        "Owner":{
+          "shape":"Owner",
+          "documentation":"<p>Use <code>SELF</code> to filter the list of Pools to ones your account owns or use <code>SHARED</code> to filter on Pools shared with your account. The <code>Owner</code> and <code>PoolIds</code> parameters can't be used at the same time.</p>"
         }
       }
     },
@@ -3649,7 +3894,7 @@
       "members":{
         "SenderIds":{
           "shape":"SenderIdList",
-          "documentation":"<p>An array of SenderIdAndCountry objects to search for.</p>"
+          "documentation":"<p>An array of SenderIdAndCountry objects to search for.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "Filters":{
           "shape":"SenderIdFilterList",
@@ -3662,6 +3907,10 @@
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to return per each request.</p>"
+        },
+        "Owner":{
+          "shape":"Owner",
+          "documentation":"<p>Use <code>SELF</code> to filter the list of Sender Ids to ones your account owns or use <code>SHARED</code> to filter on Sender Ids shared with your account. The <code>Owner</code> and <code>SenderIds</code> parameters can't be used at the same time. </p>"
         }
       }
     },
@@ -3709,7 +3958,7 @@
       "members":{
         "VerifiedDestinationNumberIds":{
           "shape":"VerifiedDestinationNumberIdList",
-          "documentation":"<p>An array of VerifiedDestinationNumberid to retreive.</p>"
+          "documentation":"<p>An array of VerifiedDestinationNumberid to retrieve.</p>"
         },
         "DestinationPhoneNumbers":{
           "shape":"DestinationPhoneNumberList",
@@ -3779,11 +4028,11 @@
       "members":{
         "PoolId":{
           "shape":"PoolIdOrArn",
-          "documentation":"<p>The unique identifier for the pool to disassociate with the origination identity. This value can be either the PoolId or PoolArn.</p>"
+          "documentation":"<p>The unique identifier for the pool to disassociate with the origination identity. This value can be either the PoolId or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "OriginationIdentity":{
           "shape":"PhoneOrSenderIdOrArn",
-          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> find the values for PhoneNumberId and PhoneNumberArn, or use <a>DescribeSenderIds</a> to get the values for SenderId and SenderIdArn.</p>"
+          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> find the values for PhoneNumberId and PhoneNumberArn, or use <a>DescribeSenderIds</a> to get the values for SenderId and SenderIdArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "IsoCountryCode":{
           "shape":"IsoCountryCode",
@@ -3899,7 +4148,7 @@
         },
         "RegistrationVersionStatus":{
           "shape":"RegistrationVersionStatus",
-          "documentation":"<p>The status of the registration version.</p> <ul> <li> <p> <code>DRAFT</code>: The initial status of a registration version after it’s created.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>APPROVED</code>: Your registration has been approved.</p> </li> <li> <p> <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p> </li> <li> <p> <code>DENIED</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>REVOKED</code>: Your previously approved registration has been revoked.</p> </li> <li> <p> <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p> </li> </ul>"
+          "documentation":"<p>The status of the registration version.</p> <ul> <li> <p> <code>APPROVED</code>: Your registration has been approved.</p> </li> <li> <p> <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p> </li> <li> <p> <code>DENIED</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p> </li> <li> <p> <code>DRAFT</code>: The initial status of a registration version after it’s created.</p> </li> <li> <p> <code>REQUIRES_AUTHENTICATION</code>: You need to complete email authentication.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>REVOKED</code>: Your previously approved registration has been revoked.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted.</p> </li> </ul>"
         },
         "RegistrationVersionStatusHistory":{
           "shape":"RegistrationVersionStatusHistory",
@@ -3933,14 +4182,14 @@
         },
         "KinesisFirehoseDestination":{
           "shape":"KinesisFirehoseDestination",
-          "documentation":"<p>An object that contains information about an event destination for logging to Amazon Kinesis Data Firehose.</p>"
+          "documentation":"<p>An object that contains information about an event destination for logging to Amazon Data Firehose.</p>"
         },
         "SnsDestination":{
           "shape":"SnsDestination",
           "documentation":"<p>An object that contains information about an event destination that sends logging events to Amazon SNS.</p>"
         }
       },
-      "documentation":"<p>Contains information about an event destination.</p> <p>Event destinations are associated with configuration sets, which enable you to publish message sending events to CloudWatch, Kinesis Data Firehose, or Amazon SNS.</p>"
+      "documentation":"<p>Contains information about an event destination.</p> <p>Event destinations are associated with configuration sets, which enable you to publish message sending events to CloudWatch, Firehose, or Amazon SNS.</p>"
     },
     "EventDestinationList":{
       "type":"list",
@@ -3971,6 +4220,7 @@
         "TEXT_SPAM",
         "TEXT_UNKNOWN",
         "TEXT_TTL_EXPIRED",
+        "TEXT_PROTECT_BLOCKED",
         "VOICE_ALL",
         "VOICE_INITIATED",
         "VOICE_RINGING",
@@ -4037,7 +4287,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"[/\\.:A-Za-z0-9_-]+"
+      "pattern":"[/\\.:A-Za-z0-9+_-]+"
     },
     "FilterValueList":{
       "type":"list",
@@ -4085,7 +4335,34 @@
         },
         "CountryRuleSet":{
           "shape":"ProtectConfigurationCountryRuleSet",
-          "documentation":"<p>A map of ProtectConfigurationCountryRuleSetInformation objects that contain the details for the requested NumberCapability. The Key is the two-letter ISO country code. For a list of supported ISO country codes, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-sms-by-country.html\">Supported countries and regions (SMS channel)</a> in the Amazon Pinpoint SMS user guide.</p>"
+          "documentation":"<p>A map of ProtectConfigurationCountryRuleSetInformation objects that contain the details for the requested NumberCapability. The Key is the two-letter ISO country code. For a list of supported ISO country codes, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-sms-by-country.html\">Supported countries and regions (SMS channel)</a> in the AWS End User Messaging SMS User Guide.</p>"
+        }
+      }
+    },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource attached to the resource-based policy.</p>"
+        }
+      }
+    },
+    "GetResourcePolicyResult":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource attached to the resource-based policy.</p>"
+        },
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The JSON formatted string that contains the resource-based policy attached to the AWS End User Messaging SMS and Voice resource. </p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource-based policy was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
         }
       }
     },
@@ -4209,14 +4486,14 @@
       "members":{
         "IamRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The ARN of an Identity and Access Management role that is able to write event data to an Amazon Kinesis Data Firehose destination.</p>"
+          "documentation":"<p>The ARN of an Identity and Access Management role that is able to write event data to an Amazon Data Firehose destination.</p>"
         },
         "DeliveryStreamArn":{
           "shape":"DeliveryStreamArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the delivery stream.</p>"
         }
       },
-      "documentation":"<p>Contains the delivery stream Amazon Resource Name (ARN), and the ARN of the Identity and Access Management (IAM) role associated with a Kinesis Data Firehose event destination.</p> <p>Event destinations, such as Kinesis Data Firehose, are associated with configuration sets, which enable you to publish message sending events.</p>"
+      "documentation":"<p>Contains the delivery stream Amazon Resource Name (ARN), and the ARN of the Identity and Access Management (IAM) role associated with a Firehose event destination.</p> <p>Event destinations, such as Firehose, are associated with configuration sets, which enable you to publish message sending events.</p>"
     },
     "LanguageCode":{
       "type":"string",
@@ -4242,7 +4519,7 @@
       "members":{
         "PoolId":{
           "shape":"PoolIdOrArn",
-          "documentation":"<p>The unique identifier for the pool. This value can be either the PoolId or PoolArn.</p>"
+          "documentation":"<p>The unique identifier for the pool. This value can be either the PoolId or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "Filters":{
           "shape":"PoolOriginationIdentitiesFilterList",
@@ -4276,6 +4553,59 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token to be used for the next set of paginated results. If this field is empty then there are no more results.</p>"
+        }
+      }
+    },
+    "ListProtectConfigurationRuleSetNumberOverrideFilter":{
+      "type":"list",
+      "member":{"shape":"ProtectConfigurationRuleSetNumberOverrideFilterItem"},
+      "max":100,
+      "min":0
+    },
+    "ListProtectConfigurationRuleSetNumberOverridesRequest":{
+      "type":"structure",
+      "required":["ProtectConfigurationId"],
+      "members":{
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "Filters":{
+          "shape":"ListProtectConfigurationRuleSetNumberOverrideFilter",
+          "documentation":"<p>An array of ProtectConfigurationRuleSetNumberOverrideFilterItem objects to filter the results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "ListProtectConfigurationRuleSetNumberOverridesResult":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationArn",
+        "ProtectConfigurationId"
+      ],
+      "members":{
+        "ProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the protect configuration.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "RuleSetNumberOverrides":{
+          "shape":"ProtectConfigurationRuleSetNumberOverrideList",
+          "documentation":"<p>An array of RuleSetNumberOverrides objects.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
         }
       }
     },
@@ -4390,6 +4720,19 @@
       "max":2048,
       "min":1,
       "pattern":"s3://([a-z0-9\\.-]{3,63})/(.+)"
+    },
+    "MessageFeedbackStatus":{
+      "type":"string",
+      "enum":[
+        "RECEIVED",
+        "FAILED"
+      ]
+    },
+    "MessageId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/-]+"
     },
     "MessageType":{
       "type":"string",
@@ -4598,6 +4941,13 @@
       "type":"list",
       "member":{"shape":"OriginationIdentityMetadata"}
     },
+    "Owner":{
+      "type":"string",
+      "enum":[
+        "SELF",
+        "SHARED"
+      ]
+    },
     "PhoneNumber":{
       "type":"string",
       "max":20,
@@ -4723,7 +5073,7 @@
         },
         "SelfManagedOptOutsEnabled":{
           "shape":"PrimitiveBoolean",
-          "documentation":"<p>When set to false an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, Amazon Pinpoint automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out request. For more information see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/settings-sms-managing.html#settings-account-sms-self-managed-opt-out\">Self-managed opt-outs</a> </p>"
+          "documentation":"<p>When set to false an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, AWS End User Messaging SMS and Voice automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out request. For more information see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/settings-sms-managing.html#settings-account-sms-self-managed-opt-out\">Self-managed opt-outs</a> </p>"
         },
         "OptOutListName":{
           "shape":"OptOutListName",
@@ -4858,7 +5208,7 @@
         },
         "SelfManagedOptOutsEnabled":{
           "shape":"PrimitiveBoolean",
-          "documentation":"<p>When set to false, an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, Amazon Pinpoint automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests. For more information see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/settings-sms-managing.html#settings-account-sms-self-managed-opt-out\">Self-managed opt-outs</a> </p>"
+          "documentation":"<p>When set to false, an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, AWS End User Messaging SMS and Voice automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests. For more information see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/settings-sms-managing.html#settings-account-sms-self-managed-opt-out\">Self-managed opt-outs</a> </p>"
         },
         "OptOutListName":{
           "shape":"OptOutListName",
@@ -4866,7 +5216,7 @@
         },
         "SharedRoutesEnabled":{
           "shape":"PrimitiveBoolean",
-          "documentation":"<p>Allows you to enable shared routes on your pool.</p> <p>By default, this is set to <code>False</code>. If you set this value to <code>True</code>, your messages are sent using phone numbers or sender IDs (depending on the country) that are shared with other Amazon Pinpoint users. In some countries, such as the United States, senders aren't allowed to use shared routes and must use a dedicated phone number or short code.</p>"
+          "documentation":"<p>Allows you to enable shared routes on your pool.</p> <p>By default, this is set to <code>False</code>. If you set this value to <code>True</code>, your messages are sent using phone numbers or sender IDs (depending on the country) that are shared with other users. In some countries, such as the United States, senders aren't allowed to use shared routes and must use a dedicated phone number or short code.</p>"
         },
         "DeletionProtectionEnabled":{
           "shape":"PrimitiveBoolean",
@@ -5036,6 +5386,80 @@
       "max":100,
       "min":1
     },
+    "ProtectConfigurationRuleOverrideAction":{
+      "type":"string",
+      "enum":[
+        "ALLOW",
+        "BLOCK"
+      ]
+    },
+    "ProtectConfigurationRuleSetNumberOverride":{
+      "type":"structure",
+      "required":[
+        "DestinationPhoneNumber",
+        "CreatedTimestamp",
+        "Action"
+      ],
+      "members":{
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The destination phone number in E.164 format.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the rule was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "Action":{
+          "shape":"ProtectConfigurationRuleOverrideAction",
+          "documentation":"<p>The action for the rule to perform of either blocking or allowing messages to the destination phone number.</p>"
+        },
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "ExpirationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the rule will expire at. If <code>ExpirationTimestamp</code> is not set then the rule will not expire.</p>"
+        }
+      },
+      "documentation":"<p>Provides details on a RuleSetNumberOverride.</p>"
+    },
+    "ProtectConfigurationRuleSetNumberOverrideFilterItem":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ProtectConfigurationRuleSetNumberOverrideFilterName",
+          "documentation":"<p>The name of the attribute to filter on.</p>"
+        },
+        "Values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>An array values to filter for.</p>"
+        }
+      },
+      "documentation":"<p>The information for a protect configuration rule set number override that meets a specified criteria.</p>"
+    },
+    "ProtectConfigurationRuleSetNumberOverrideFilterName":{
+      "type":"string",
+      "enum":[
+        "iso-country-code",
+        "destination-phone-number-begins-with",
+        "action",
+        "expires-before",
+        "expires-after",
+        "created-before",
+        "created-after"
+      ]
+    },
+    "ProtectConfigurationRuleSetNumberOverrideList":{
+      "type":"list",
+      "member":{"shape":"ProtectConfigurationRuleSetNumberOverride"},
+      "max":100,
+      "min":1
+    },
     "ProtectStatus":{
       "type":"string",
       "enum":[
@@ -5053,7 +5477,7 @@
       "members":{
         "OriginationIdentity":{
           "shape":"PhoneOrPoolIdOrArn",
-          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> get the values for PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p>"
+          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> get the values for PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "Keyword":{
           "shape":"Keyword",
@@ -5094,6 +5518,40 @@
         }
       }
     },
+    "PutMessageFeedbackRequest":{
+      "type":"structure",
+      "required":[
+        "MessageId",
+        "MessageFeedbackStatus"
+      ],
+      "members":{
+        "MessageId":{
+          "shape":"MessageId",
+          "documentation":"<p>The unique identifier for the message.</p>"
+        },
+        "MessageFeedbackStatus":{
+          "shape":"MessageFeedbackStatus",
+          "documentation":"<p>Set the message feedback to be either <code>RECEIVED</code> or <code>FAILED</code>.</p>"
+        }
+      }
+    },
+    "PutMessageFeedbackResult":{
+      "type":"structure",
+      "required":[
+        "MessageId",
+        "MessageFeedbackStatus"
+      ],
+      "members":{
+        "MessageId":{
+          "shape":"MessageId",
+          "documentation":"<p>The unique identifier for the message.</p>"
+        },
+        "MessageFeedbackStatus":{
+          "shape":"MessageFeedbackStatus",
+          "documentation":"<p>The current status of the message.</p>"
+        }
+      }
+    },
     "PutOptedOutNumberRequest":{
       "type":"structure",
       "required":[
@@ -5103,7 +5561,7 @@
       "members":{
         "OptOutListName":{
           "shape":"OptOutListNameOrArn",
-          "documentation":"<p>The OptOutListName or OptOutListArn to add the phone number to.</p>"
+          "documentation":"<p>The OptOutListName or OptOutListArn to add the phone number to.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "OptedOutNumber":{
           "shape":"PhoneNumber",
@@ -5133,6 +5591,77 @@
         "EndUserOptedOut":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>This is true if it was the end user who requested their phone number be removed. </p>"
+        }
+      }
+    },
+    "PutProtectConfigurationRuleSetNumberOverrideRequest":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationId",
+        "DestinationPhoneNumber",
+        "Action"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don't specify a client token, a randomly generated token is used for the request to ensure idempotency.</p>",
+          "idempotencyToken":true
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The destination phone number in E.164 format.</p>"
+        },
+        "Action":{
+          "shape":"ProtectConfigurationRuleOverrideAction",
+          "documentation":"<p>The action for the rule to either block or allow messages to the destination phone number.</p>"
+        },
+        "ExpirationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the rule will expire at. If <code>ExpirationTimestamp</code> is not set then the rule does not expire.</p>"
+        }
+      }
+    },
+    "PutProtectConfigurationRuleSetNumberOverrideResult":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationArn",
+        "ProtectConfigurationId",
+        "DestinationPhoneNumber",
+        "CreatedTimestamp",
+        "Action"
+      ],
+      "members":{
+        "ProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the protect configuration.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The destination phone number in E.164 format.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the rule was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "Action":{
+          "shape":"ProtectConfigurationRuleOverrideAction",
+          "documentation":"<p>The action for the rule to take.</p>"
+        },
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "ExpirationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the rule will expire at.</p>"
         }
       }
     },
@@ -5201,6 +5730,40 @@
         "RegistrationAttachmentId":{
           "shape":"String",
           "documentation":"<p>The unique identifier for the registration attachment.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Policy"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource to attach the resource-based policy to.</p>"
+        },
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The JSON formatted resource-based policy to attach.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResult":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource attached to the resource-based policy.</p>"
+        },
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The JSON formatted Resource Policy.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource-based policy was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
         }
       }
     },
@@ -5582,7 +6145,7 @@
         },
         "RegistrationStatus":{
           "shape":"RegistrationStatus",
-          "documentation":"<p>The status of the registration.</p> <ul> <li> <p> <code>CREATED</code>: Your registration is created but not submitted.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted and is awaiting review.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>PROVISIONING</code>: Your registration has been approved and your origination identity is being created.</p> </li> <li> <p> <code>COMPLETE</code>: Your registration has been approved and and your origination identity has been created.</p> </li> <li> <p> <code>REQUIRES_UPDATES</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>CLOSED</code>: The phone number or sender ID has been deleted and you must also delete the registration for the number.</p> </li> <li> <p> <code>DELETED</code>: The registration has been deleted.</p> </li> </ul>"
+          "documentation":"<p>The status of the registration.</p> <ul> <li> <p> <code>CLOSED</code>: The phone number or sender ID has been deleted and you must also delete the registration for the number.</p> </li> <li> <p> <code>CREATED</code>: Your registration is created but not submitted.</p> </li> <li> <p> <code>COMPLETE</code>: Your registration has been approved and your origination identity has been created.</p> </li> <li> <p> <code>DELETED</code>: The registration has been deleted.</p> </li> <li> <p> <code>PROVISIONING</code>: Your registration has been approved and your origination identity is being created.</p> </li> <li> <p> <code>REQUIRES_AUTHENTICATION</code>: You need to complete email authentication.</p> </li> <li> <p> <code>REQUIRES_UPDATES</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted and is awaiting review.</p> </li> </ul>"
         },
         "CurrentVersionNumber":{
           "shape":"RegistrationVersionNumber",
@@ -5669,6 +6232,7 @@
         "CREATED",
         "SUBMITTED",
         "REVIEWING",
+        "REQUIRES_AUTHENTICATION",
         "PROVISIONING",
         "COMPLETE",
         "REQUIRES_UPDATES",
@@ -5814,7 +6378,7 @@
         },
         "RegistrationVersionStatus":{
           "shape":"RegistrationVersionStatus",
-          "documentation":"<p>The status of the registration.</p> <ul> <li> <p> <code>DRAFT</code>: The initial status of a registration version after it’s created.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>APPROVED</code>: Your registration has been approved.</p> </li> <li> <p> <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p> </li> <li> <p> <code>DENIED</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>REVOKED</code>: Your previously approved registration has been revoked.</p> </li> <li> <p> <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p> </li> </ul>"
+          "documentation":"<p>The status of the registration.</p> <ul> <li> <p> <code>APPROVED</code>: Your registration has been approved.</p> </li> <li> <p> <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p> </li> <li> <p> <code>DENIED</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p> </li> <li> <p> <code>DRAFT</code>: The initial status of a registration version after it’s created.</p> </li> <li> <p> <code>REQUIRES_AUTHENTICATION</code>: You need to complete email authentication.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>REVOKED</code>: Your previously approved registration has been revoked.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted.</p> </li> </ul>"
         },
         "RegistrationVersionStatusHistory":{
           "shape":"RegistrationVersionStatusHistory",
@@ -5849,6 +6413,7 @@
         "DRAFT",
         "SUBMITTED",
         "REVIEWING",
+        "REQUIRES_AUTHENTICATION",
         "APPROVED",
         "DISCARDED",
         "DENIED",
@@ -5871,6 +6436,10 @@
         "ReviewingTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the registration was in the reviewing state, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "RequiresAuthenticationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the registration was in the requires authentication state, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
         },
         "ApprovedTimestamp":{
           "shape":"Timestamp",
@@ -5901,7 +6470,7 @@
       "members":{
         "PhoneNumberId":{
           "shape":"PhoneNumberIdOrArn",
-          "documentation":"<p>The PhoneNumberId or PhoneNumberArn of the phone number to release. You can use <a>DescribePhoneNumbers</a> to get the values for PhoneNumberId and PhoneNumberArn.</p>"
+          "documentation":"<p>The PhoneNumberId or PhoneNumberArn of the phone number to release. You can use <a>DescribePhoneNumbers</a> to get the values for PhoneNumberId and PhoneNumberArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         }
       }
     },
@@ -5958,7 +6527,7 @@
         },
         "SelfManagedOptOutsEnabled":{
           "shape":"PrimitiveBoolean",
-          "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, Amazon Pinpoint automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
+          "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, AWS End User Messaging SMS and Voice automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
         },
         "OptOutListName":{
           "shape":"OptOutListName",
@@ -6059,11 +6628,11 @@
         },
         "OptOutListName":{
           "shape":"OptOutListNameOrArn",
-          "documentation":"<p>The name of the OptOutList to associate with the phone number. You can use the OptOutListName or OptOutListArn.</p>"
+          "documentation":"<p>The name of the OptOutList to associate with the phone number. You can use the OptOutListName or OptOutListArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "PoolId":{
           "shape":"PoolIdOrArn",
-          "documentation":"<p>The pool to associated with the phone number. You can use the PoolId or PoolArn. </p>"
+          "documentation":"<p>The pool to associated with the phone number. You can use the PoolId or PoolArn. </p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "RegistrationId":{
           "shape":"RegistrationIdOrArn",
@@ -6137,7 +6706,7 @@
         },
         "SelfManagedOptOutsEnabled":{
           "shape":"PrimitiveBoolean",
-          "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, Amazon Pinpoint automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
+          "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, AWS End User Messaging SMS and Voice automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
         },
         "OptOutListName":{
           "shape":"OptOutListName",
@@ -6276,6 +6845,11 @@
       "documentation":"<p>A requested resource couldn't be found.</p>",
       "exception":true
     },
+    "ResourcePolicy":{
+      "type":"string",
+      "max":10000,
+      "min":1
+    },
     "ResourceType":{
       "type":"string",
       "enum":[
@@ -6291,7 +6865,9 @@
         "registration",
         "registration-attachment",
         "verified-destination-number",
-        "protect-configuration"
+        "protect-configuration",
+        "policy",
+        "message"
       ]
     },
     "SectionPath":{
@@ -6384,7 +6960,7 @@
         },
         "OriginationIdentity":{
           "shape":"VerificationMessageOriginationIdentity",
-          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p>"
+          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "ConfigurationSetName":{
           "shape":"ConfigurationSetNameOrArn",
@@ -6423,7 +6999,7 @@
         },
         "OriginationIdentity":{
           "shape":"MediaMessageOriginationIdentity",
-          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p>"
+          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "MessageBody":{
           "shape":"TextMessageBody",
@@ -6443,7 +7019,7 @@
         },
         "TimeToLive":{
           "shape":"TimeToLive",
-          "documentation":"<p>How long the text message is valid for. By default this is 72 hours.</p>"
+          "documentation":"<p>How long the media message is valid for. By default this is 72 hours.</p>"
         },
         "Context":{
           "shape":"ContextMap",
@@ -6456,6 +7032,10 @@
         "ProtectConfigurationId":{
           "shape":"ProtectConfigurationIdOrArn",
           "documentation":"<p>The unique identifier of the protect configuration to use.</p>"
+        },
+        "MessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to enable message feedback for the message. When a user receives the message you need to update the message status using <a>PutMessageFeedback</a>.</p>"
         }
       }
     },
@@ -6478,7 +7058,7 @@
         },
         "OriginationIdentity":{
           "shape":"TextMessageOriginationIdentity",
-          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p>"
+          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "MessageBody":{
           "shape":"TextMessageBody",
@@ -6498,11 +7078,11 @@
         },
         "MaxPrice":{
           "shape":"MaxPrice",
-          "documentation":"<p>The maximum amount that you want to spend, in US dollars, per each text message part. A text message can contain multiple parts.</p>"
+          "documentation":"<p>The maximum amount that you want to spend, in US dollars, per each text message. If the calculated amount to send the text message is greater than <code>MaxPrice</code>, the message is not sent and an error is returned.</p>"
         },
         "TimeToLive":{
           "shape":"TimeToLive",
-          "documentation":"<p>How long the text message is valid for. By default this is 72 hours.</p>"
+          "documentation":"<p>How long the text message is valid for, in seconds. By default this is 72 hours. If the messages isn't handed off before the TTL expires we stop attempting to hand off the message and return <code>TTL_EXPIRED</code> event.</p>"
         },
         "Context":{
           "shape":"ContextMap",
@@ -6510,15 +7090,19 @@
         },
         "DestinationCountryParameters":{
           "shape":"DestinationCountryParameters",
-          "documentation":"<p>This field is used for any country-specific registration requirements. Currently, this setting is only used when you send messages to recipients in India using a sender ID. For more information see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-senderid-india.html\">Special requirements for sending SMS messages to recipients in India</a>. </p>"
+          "documentation":"<p>This field is used for any country-specific registration requirements. Currently, this setting is only used when you send messages to recipients in India using a sender ID. For more information see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-senderid-india.html\">Special requirements for sending SMS messages to recipients in India</a>. </p> <ul> <li> <p> <code>IN_ENTITY_ID</code> The entity ID or Principal Entity (PE) ID that you received after completing the sender ID registration process.</p> </li> <li> <p> <code>IN_TEMPLATE_ID</code> The template ID that you received after completing the sender ID registration process.</p> <important> <p>Make sure that the Template ID that you specify matches your message template exactly. If your message doesn't match the template that you provided during the registration process, the mobile carriers might reject your message.</p> </important> </li> </ul>"
         },
         "DryRun":{
           "shape":"PrimitiveBoolean",
-          "documentation":"<p>When set to true, the message is checked and validated, but isn't sent to the end recipient.</p>"
+          "documentation":"<p>When set to true, the message is checked and validated, but isn't sent to the end recipient. You are not charged for using <code>DryRun</code>.</p> <p>The Message Parts per Second (MPS) limit when using <code>DryRun</code> is five. If your origination identity has a lower MPS limit then the lower MPS limit is used. For more information about MPS limits, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/sms-limitations-mps.html\">Message Parts per Second (MPS) limits</a> in the <i>AWS End User Messaging SMS User Guide</i>..</p>"
         },
         "ProtectConfigurationId":{
           "shape":"ProtectConfigurationIdOrArn",
           "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "MessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to enable message feedback for the message. When a user receives the message you need to update the message status using <a>PutMessageFeedback</a>.</p>"
         }
       }
     },
@@ -6544,7 +7128,7 @@
         },
         "OriginationIdentity":{
           "shape":"VoiceMessageOriginationIdentity",
-          "documentation":"<p>The origination identity to use for the voice call. This can be the PhoneNumber, PhoneNumberId, PhoneNumberArn, PoolId, or PoolArn.</p>"
+          "documentation":"<p>The origination identity to use for the voice call. This can be the PhoneNumber, PhoneNumberId, PhoneNumberArn, PoolId, or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "MessageBody":{
           "shape":"VoiceMessageBody",
@@ -6581,6 +7165,10 @@
         "ProtectConfigurationId":{
           "shape":"ProtectConfigurationIdOrArn",
           "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "MessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to enable message feedback for the message. When a user receives the message you need to update the message status using <a>PutMessageFeedback</a>.</p>"
         }
       }
     },
@@ -6615,7 +7203,7 @@
           "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region. </p>"
         }
       },
-      "documentation":"<p> The alphanumeric sender ID in a specific country that you want to describe. For more information on sender IDs see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-awssupport-sender-id.html\">Requesting sender IDs for SMS messaging with Amazon Pinpoint </a> in the <i>Amazon Pinpoint User Guide</i>.</p>"
+      "documentation":"<p> The alphanumeric sender ID in a specific country that you want to describe. For more information on sender IDs see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/sender-id-request.html\">Requesting sender IDs </a> in the <i>AWS End User Messaging SMS User Guide</i>.</p>"
     },
     "SenderIdFilter":{
       "type":"structure",
@@ -6778,6 +7366,40 @@
         "DefaultProtectConfigurationId":{
           "shape":"ProtectConfigurationId",
           "documentation":"<p>The unique identifier of the account default protect configuration.</p>"
+        }
+      }
+    },
+    "SetDefaultMessageFeedbackEnabledRequest":{
+      "type":"structure",
+      "required":[
+        "ConfigurationSetName",
+        "MessageFeedbackEnabled"
+      ],
+      "members":{
+        "ConfigurationSetName":{
+          "shape":"ConfigurationSetNameOrArn",
+          "documentation":"<p>The name of the configuration set to use. This can be either the ConfigurationSetName or ConfigurationSetArn.</p>"
+        },
+        "MessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to enable message feedback.</p>"
+        }
+      }
+    },
+    "SetDefaultMessageFeedbackEnabledResult":{
+      "type":"structure",
+      "members":{
+        "ConfigurationSetArn":{
+          "shape":"String",
+          "documentation":"<p>The arn of the configuration set.</p>"
+        },
+        "ConfigurationSetName":{
+          "shape":"ConfigurationSetName",
+          "documentation":"<p>The name of the configuration.</p>"
+        },
+        "MessageFeedbackEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>True if message feedback is enabled.</p>"
         }
       }
     },
@@ -6949,7 +7571,7 @@
           "documentation":"<p>When set to <code>True</code>, the value that has been specified in the <code>EnforcedLimit</code> is used to determine the maximum amount in US dollars that can be spent to send messages each month, in US dollars.</p>"
         }
       },
-      "documentation":"<p>Describes the current Amazon Pinpoint monthly spend limits for sending voice and text messages. For more information on increasing your monthly spend limit, see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-awssupport-spend-threshold.html\"> Requesting increases to your monthly SMS spending quota for Amazon Pinpoint </a> in the <i>Amazon Pinpoint User Guide</i>. </p>"
+      "documentation":"<p>Describes the current monthly spend limits for sending voice and text messages. For more information on increasing your monthly spend limit, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/awssupport-spend-threshold.html\"> Requesting a spending quota increase </a> in the <i>AWS End User Messaging SMS User Guide</i>. </p>"
     },
     "SpendLimitList":{
       "type":"list",
@@ -7007,7 +7629,7 @@
         },
         "RegistrationVersionStatus":{
           "shape":"RegistrationVersionStatus",
-          "documentation":"<p>The status of the registration version.</p> <ul> <li> <p> <code>DRAFT</code>: The initial status of a registration version after it’s created.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>APPROVED</code>: Your registration has been approved.</p> </li> <li> <p> <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p> </li> <li> <p> <code>DENIED</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>REVOKED</code>: Your previously approved registration has been revoked.</p> </li> <li> <p> <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p> </li> </ul>"
+          "documentation":"<p>The status of the registration version.</p> <ul> <li> <p> <code>APPROVED</code>: Your registration has been approved.</p> </li> <li> <p> <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p> </li> <li> <p> <code>DENIED</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p> </li> <li> <p> <code>DRAFT</code>: The initial status of a registration version after it’s created.</p> </li> <li> <p> <code>REQUIRES_AUTHENTICATION</code>: You need to complete email authentication.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>REVOKED</code>: Your previously approved registration has been revoked.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted.</p> </li> </ul>"
         },
         "RegistrationVersionStatusHistory":{
           "shape":"RegistrationVersionStatusHistory",
@@ -7223,7 +7845,7 @@
         },
         "KinesisFirehoseDestination":{
           "shape":"KinesisFirehoseDestination",
-          "documentation":"<p>An object that contains information about an event destination for logging to Kinesis Data Firehose.</p>"
+          "documentation":"<p>An object that contains information about an event destination for logging to Firehose.</p>"
         },
         "SnsDestination":{
           "shape":"SnsDestination",
@@ -7254,7 +7876,7 @@
       "members":{
         "PhoneNumberId":{
           "shape":"PhoneNumberIdOrArn",
-          "documentation":"<p>The unique identifier of the phone number. Valid values for this field can be either the PhoneNumberId or PhoneNumberArn.</p>"
+          "documentation":"<p>The unique identifier of the phone number. Valid values for this field can be either the PhoneNumberId or PhoneNumberArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "TwoWayEnabled":{
           "shape":"Boolean",
@@ -7270,7 +7892,7 @@
         },
         "SelfManagedOptOutsEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, Amazon Pinpoint automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
+          "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, AWS End User Messaging SMS and Voice automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
         },
         "OptOutListName":{
           "shape":"OptOutListNameOrArn",
@@ -7361,7 +7983,7 @@
       "members":{
         "PoolId":{
           "shape":"PoolIdOrArn",
-          "documentation":"<p>The unique identifier of the pool to update. Valid values are either the PoolId or PoolArn.</p>"
+          "documentation":"<p>The unique identifier of the pool to update. Valid values are either the PoolId or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "TwoWayEnabled":{
           "shape":"Boolean",
@@ -7377,11 +7999,11 @@
         },
         "SelfManagedOptOutsEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, Amazon Pinpoint automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
+          "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, AWS End User Messaging SMS and Voice automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
         },
         "OptOutListName":{
           "shape":"OptOutListNameOrArn",
-          "documentation":"<p>The OptOutList to associate with the pool. Valid values are either OptOutListName or OptOutListArn.</p>"
+          "documentation":"<p>The OptOutList to associate with the pool. Valid values are either OptOutListName or OptOutListArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "SharedRoutesEnabled":{
           "shape":"Boolean",
@@ -7426,7 +8048,7 @@
         },
         "SelfManagedOptOutsEnabled":{
           "shape":"PrimitiveBoolean",
-          "documentation":"<p>When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, Amazon Pinpoint automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
+          "documentation":"<p>When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, AWS End User Messaging SMS and Voice automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
         },
         "OptOutListName":{
           "shape":"OptOutListName",
@@ -7464,7 +8086,7 @@
         },
         "CountryRuleSetUpdates":{
           "shape":"ProtectConfigurationCountryRuleSet",
-          "documentation":"<p>A map of ProtectConfigurationCountryRuleSetInformation objects that contain the details for the requested NumberCapability. The Key is the two-letter ISO country code. For a list of supported ISO country codes, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-sms-by-country.html\">Supported countries and regions (SMS channel)</a> in the Amazon Pinpoint SMS user guide.</p>"
+          "documentation":"<p>A map of ProtectConfigurationCountryRuleSetInformation objects that contain the details for the requested NumberCapability. The Key is the two-letter ISO country code. For a list of supported ISO country codes, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-sms-by-country.html\">Supported countries and regions (SMS channel)</a> in the AWS End User Messaging SMS User Guide.</p>"
         }
       }
     },
@@ -7687,6 +8309,7 @@
         "REGISTRATION_FIELD_CANNOT_BE_DELETED",
         "VERIFICATION_CODE_MISMATCH",
         "VOICE_CAPABILITY_NOT_AVAILABLE",
+        "UNSPECIFIED_PARAMETER_NOT_SUPPORTED",
         "OTHER"
       ]
     },
@@ -7926,5 +8549,5 @@
       "pattern":"[A-Za-z0-9_:/\\+-]+"
     }
   },
-  "documentation":"<p>Welcome to the <i>Amazon Pinpoint SMS and Voice, version 2 API Reference</i>. This guide provides information about Amazon Pinpoint SMS and Voice, version 2 API resources, including supported HTTP methods, parameters, and schemas.</p> <p>Amazon Pinpoint is an Amazon Web Services service that you can use to engage with your recipients across multiple messaging channels. The Amazon Pinpoint SMS and Voice, version 2 API provides programmatic access to options that are unique to the SMS and voice channels. Amazon Pinpoint SMS and Voice, version 2 resources such as phone numbers, sender IDs, and opt-out lists can be used by the Amazon Pinpoint API.</p> <p>If you're new to Amazon Pinpoint SMS, it's also helpful to review the <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/what-is-service.html\"> Amazon Pinpoint SMS User Guide</a>. The <i>Amazon Pinpoint Developer Guide</i> provides tutorials, code samples, and procedures that demonstrate how to use Amazon Pinpoint SMS features programmatically and how to integrate Amazon Pinpoint functionality into mobile apps and other types of applications. The guide also provides key information, such as Amazon Pinpoint integration with other Amazon Web Services services, and the quotas that apply to use of the service.</p> <p> <b>Regional availability</b> </p> <p>The <i>Amazon Pinpoint SMS and Voice, version 2 API Reference</i> is available in several Amazon Web Services Regions and it provides an endpoint for each of these Regions. For a list of all the Regions and endpoints where the API is currently available, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande.html#pinpoint_region\">Amazon Web Services Service Endpoints</a> and <a href=\"https://docs.aws.amazon.com/general/latest/gr/pinpoint.html\">Amazon Pinpoint endpoints and quotas</a> in the Amazon Web Services General Reference. To learn more about Amazon Web Services Regions, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande-manage.html\">Managing Amazon Web Services Regions</a> in the Amazon Web Services General Reference.</p> <p>In each Region, Amazon Web Services maintains multiple Availability Zones. These Availability Zones are physically isolated from each other, but are united by private, low-latency, high-throughput, and highly redundant network connections. These Availability Zones enable us to provide very high levels of availability and redundancy, while also minimizing latency. To learn more about the number of Availability Zones that are available in each Region, see <a href=\"https://aws.amazon.com/about-aws/global-infrastructure/\">Amazon Web Services Global Infrastructure.</a> </p>"
+  "documentation":"<p>Welcome to the <i>AWS End User Messaging SMS and Voice, version 2 API Reference</i>. This guide provides information about AWS End User Messaging SMS and Voice, version 2 API resources, including supported HTTP methods, parameters, and schemas.</p> <p>Amazon Pinpoint is an Amazon Web Services service that you can use to engage with your recipients across multiple messaging channels. The AWS End User Messaging SMS and Voice, version 2 API provides programmatic access to options that are unique to the SMS and voice channels. AWS End User Messaging SMS and Voice, version 2 resources such as phone numbers, sender IDs, and opt-out lists can be used by the Amazon Pinpoint API.</p> <p>If you're new to AWS End User Messaging SMS and Voice, it's also helpful to review the <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/what-is-service.html\"> AWS End User Messaging SMS User Guide</a>. The <i>AWS End User Messaging SMS User Guide </i> provides tutorials, code samples, and procedures that demonstrate how to use AWS End User Messaging SMS and Voice features programmatically and how to integrate functionality into mobile apps and other types of applications. The guide also provides key information, such as AWS End User Messaging SMS and Voice integration with other Amazon Web Services services, and the quotas that apply to use of the service.</p> <p> <b>Regional availability</b> </p> <p>The <i>AWS End User Messaging SMS and Voice version 2 API Reference</i> is available in several Amazon Web Services Regions and it provides an endpoint for each of these Regions. For a list of all the Regions and endpoints where the API is currently available, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande.html#pinpoint_region\">Amazon Web Services Service Endpoints</a> and <a href=\"https://docs.aws.amazon.com/general/latest/gr/pinpoint.html\">Amazon Pinpoint endpoints and quotas</a> in the Amazon Web Services General Reference. To learn more about Amazon Web Services Regions, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande-manage.html\">Managing Amazon Web Services Regions</a> in the Amazon Web Services General Reference.</p> <p>In each Region, Amazon Web Services maintains multiple Availability Zones. These Availability Zones are physically isolated from each other, but are united by private, low-latency, high-throughput, and highly redundant network connections. These Availability Zones enable us to provide very high levels of availability and redundancy, while also minimizing latency. To learn more about the number of Availability Zones that are available in each Region, see <a href=\"https://aws.amazon.com/about-aws/global-infrastructure/\">Amazon Web Services Global Infrastructure.</a> </p>"
 }

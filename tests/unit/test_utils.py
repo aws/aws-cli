@@ -348,8 +348,8 @@ class BaseIMDSRegionTest(unittest.TestCase):
             region = self._region
         self.add_imds_response(body=region.encode('utf-8'))
 
-    def add_imds_token_response(self):
-        self.add_imds_response(status_code=200, body=b'token')
+    def add_imds_token_response(self, status_code=200, body=b'token'):
+        self.add_imds_response(status_code=status_code, body=body)
 
     def add_imds_connection_error(self, exception):
         self._imds_responses.append(exception)
@@ -459,6 +459,19 @@ class TestInstanceMetadataRegionFetcher(BaseIMDSRegionTest):
         self.add_imds_response(status_code=400, body=b'')
         result = InstanceMetadataRegionFetcher(
             num_attempts=1).retrieve_region()
+        self.assertEqual(result, None)
+
+    def test_400_response_returns_none(self):
+        # Response from endpoint providing a 400 during
+        # token resolution implies the (likely third-party)
+        # endpoint may not support IMDS v2.
+        #
+        # We treat this as terminal because retries will
+        # unnecessarily delay failure for a incompatible endpoint.
+        self.add_imds_token_response(body=b"Bad Request", status_code=400)
+        result = InstanceMetadataRegionFetcher(
+            num_attempts=2
+        ).retrieve_region()
         self.assertEqual(result, None)
 
 

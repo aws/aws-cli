@@ -10,10 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
+
 from tests import unittest
 
 from botocore.exceptions import ClientError
-from botocore.vendored import six
 import botocore.session
 
 
@@ -45,7 +46,7 @@ class TestGlacier(unittest.TestCase):
             self.client.list_vaults(accountId='asdf')
 
     def test_can_upload_archive(self):
-        body = six.BytesIO(b"bytes content")
+        body = io.BytesIO(b"bytes content")
         response = self.client.upload_archive(vaultName=self.VAULT_NAME,
                                               archiveDescription='test upload',
                                               body=body)

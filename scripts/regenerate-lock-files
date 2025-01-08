@@ -13,11 +13,11 @@
 # language governing permissions and limitations under the License.
 """This script is to programatically regenerate the requirements/*-lock.txt
 files. In order to run it you need to have pip-tools installed into the
-curerntly active virtual environment."""
+currently active virtual environment."""
 import argparse
 import sys
 import os
-from typing import List, Optional, ClassVar
+from typing import List, ClassVar
 from pathlib import Path
 from dataclasses import dataclass
 
@@ -103,12 +103,18 @@ class LockFileBuilder:
             f.write(content)
 
 
-def show_files(build_directory: Path):
-    reqs_path = build_directory / 'requirements'
-    for root, dirs, files in os.walk(reqs_path):
-        for filename in files:
-            if 'lock' in filename:
-                show_file(os.path.join(root, filename))
+def show_files(build_directory: Path, include_sdist: bool, include_base: bool):
+    if include_sdist:
+        for root, dirs, files in os.walk(build_directory / 'requirements'):
+            for filename in files:
+                stemmed_filename = Path(filename).stem
+                if stemmed_filename.endswith('-lock'):
+                    show_file(Path(root, filename))
+    if include_base:
+        for filename in Path.iterdir(build_directory):
+            stemmed_filename = Path(filename).stem
+            if stemmed_filename.endswith('-lock'):
+                show_file(filename)
 
 
 def show_file(path: Path):
@@ -117,31 +123,76 @@ def show_file(path: Path):
         print(f.read())
 
 
-def main(build_directory: Path, should_show_files: bool):
+def main(
+        build_directory: Path,
+        should_show_files: bool,
+        include_sdist: bool,
+        include_base: bool
+):
     builder = LockFileBuilder(
         source_directory=ROOT,
         build_directory=build_directory,
     )
     builder.raise_if_no_pip_compile()
 
-    builder.build_lock_file(
-        sources=[Path("requirements/download-deps/bootstrap.txt")],
-        output=Path("requirements/download-deps/bootstrap"),
-        allow_unsafe=True,
-    )
-    builder.build_lock_file(
-        sources=[
-            Path("requirements/portable-exe-extras.txt"),
-            "pyproject.toml",
-        ],
-        output=Path("requirements", "download-deps", "portable-exe"),
-    )
-    builder.build_lock_file(
-        sources=["pyproject.toml"],
-        output=Path("requirements/download-deps/system-sandbox"),
-    )
+    if include_sdist:
+        builder.build_lock_file(
+            sources=[Path("requirements/download-deps/bootstrap.txt")],
+            output=Path("requirements/download-deps/bootstrap"),
+            allow_unsafe=True,
+        )
+        builder.build_lock_file(
+            sources=[
+                Path("requirements/portable-exe-extras.txt"),
+                "pyproject.toml",
+            ],
+            output=Path("requirements", "download-deps", "portable-exe"),
+        )
+        builder.build_lock_file(
+            sources=[Path("pyproject.toml")],
+            output=Path("requirements/download-deps/system-sandbox"),
+        )
+    if include_base:
+        builder.build_lock_file(
+            sources=[
+                Path("requirements-dev.txt"),
+                Path("requirements-build-win.txt"),
+            ],
+            output=Path("requirements-dev"),
+            allow_unsafe=True,
+        )
+        builder.build_lock_file(
+            sources=[
+                Path("requirements-test.txt"),
+            ],
+            output=Path("requirements-test"),
+            allow_unsafe=True,
+        )
+        builder.build_lock_file(
+            sources=[
+                Path("requirements-base.txt"),
+            ],
+            output=Path("requirements-base"),
+            allow_unsafe=True,
+        )
+        builder.build_lock_file(
+            sources=[
+                Path("requirements-build.txt"),
+                Path("requirements-build-win.txt"),
+            ],
+            output=Path("requirements-build"),
+            allow_unsafe=True,
+        )
+        builder.build_lock_file(
+            sources=[
+                Path("requirements-docs.txt"),
+                Path("pyproject.toml"),
+            ],
+            output=Path("requirements-docs"),
+            allow_unsafe=True,
+        )
     if should_show_files:
-        show_files(build_directory)
+        show_files(build_directory, include_sdist, include_base)
 
 
 if __name__ == "__main__":
@@ -155,5 +206,11 @@ if __name__ == "__main__":
     parser.add_argument('--show-files', action='store_true')
     parser.add_argument('--no-show-files', action='store_false', dest='show_files')
     parser.set_defaults(show_files=False)
+    parser.add_argument('--include-sdist', action='store_true')
+    parser.add_argument('--no-include-sdist', action='store_false', dest='include_sdist')
+    parser.set_defaults(include_sdist=True)
+    parser.add_argument('--include-base', action='store_true')
+    parser.add_argument('--no-include-base', action='store_false', dest='include_base')
+    parser.set_defaults(include_base=False)
     args = parser.parse_args()
-    main(args.output_directory, args.show_files)
+    main(args.output_directory, args.show_files, args.include_sdist, args.include_base)

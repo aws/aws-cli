@@ -11,7 +11,8 @@
     "serviceId":"SSM",
     "signatureVersion":"v4",
     "targetPrefix":"AmazonSSM",
-    "uid":"ssm-2014-11-06"
+    "uid":"ssm-2014-11-06",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AddTagsToResource":{
@@ -91,7 +92,7 @@
         {"shape":"InvalidParameters"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Generates an activation code and activation ID you can use to register your on-premises servers, edge devices, or virtual machine (VM) with Amazon Web Services Systems Manager. Registering these machines with Systems Manager makes it possible to manage them using Systems Manager capabilities. You use the activation code and ID when installing SSM Agent on machines in your hybrid environment. For more information about requirements for managing on-premises machines using Systems Manager, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-managedinstances.html\">Setting up Amazon Web Services Systems Manager for hybrid and multicloud environments</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p> <note> <p>Amazon Elastic Compute Cloud (Amazon EC2) instances, edge devices, and on-premises servers and VMs that are configured for Systems Manager are all called <i>managed nodes</i>.</p> </note>"
+      "documentation":"<p>Generates an activation code and activation ID you can use to register your on-premises servers, edge devices, or virtual machine (VM) with Amazon Web Services Systems Manager. Registering these machines with Systems Manager makes it possible to manage them using Systems Manager capabilities. You use the activation code and ID when installing SSM Agent on machines in your hybrid environment. For more information about requirements for managing on-premises machines using Systems Manager, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-hybrid-multicloud.html\">Using Amazon Web Services Systems Manager in hybrid and multicloud environments</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p> <note> <p>Amazon Elastic Compute Cloud (Amazon EC2) instances, edge devices, and on-premises servers and VMs that are configured for Systems Manager are all called <i>managed nodes</i>.</p> </note>"
     },
     "CreateAssociation":{
       "name":"CreateAssociation",
@@ -158,7 +159,7 @@
         {"shape":"DocumentLimitExceeded"},
         {"shape":"InvalidDocumentSchemaVersion"}
       ],
-      "documentation":"<p>Creates a Amazon Web Services Systems Manager (SSM document). An SSM document defines the actions that Systems Manager performs on your managed nodes. For more information about SSM documents, including information about supported schemas, features, and syntax, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-ssm-docs.html\">Amazon Web Services Systems Manager Documents</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+      "documentation":"<p>Creates a Amazon Web Services Systems Manager (SSM document). An SSM document defines the actions that Systems Manager performs on your managed nodes. For more information about SSM documents, including information about supported schemas, features, and syntax, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/documents.html\">Amazon Web Services Systems Manager Documents</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
     },
     "CreateMaintenanceWindow":{
       "name":"CreateMaintenanceWindow",
@@ -238,7 +239,7 @@
         {"shape":"ResourceDataSyncAlreadyExistsException"},
         {"shape":"ResourceDataSyncInvalidConfigurationException"}
       ],
-      "documentation":"<p>A resource data sync helps you view data from multiple sources in a single location. Amazon Web Services Systems Manager offers two types of resource data sync: <code>SyncToDestination</code> and <code>SyncFromSource</code>.</p> <p>You can configure Systems Manager Inventory to use the <code>SyncToDestination</code> type to synchronize Inventory data from multiple Amazon Web Services Regions to a single Amazon Simple Storage Service (Amazon S3) bucket. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-inventory-datasync.html\">Configuring resource data sync for Inventory</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <p>You can configure Systems Manager Explorer to use the <code>SyncFromSource</code> type to synchronize operational work items (OpsItems) and operational data (OpsData) from multiple Amazon Web Services Regions to a single Amazon S3 bucket. This type can synchronize OpsItems and OpsData from multiple Amazon Web Services accounts and Amazon Web Services Regions or <code>EntireOrganization</code> by using Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/Explorer-resource-data-sync.html\">Setting up Systems Manager Explorer to display data from multiple accounts and Regions</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <p>A resource data sync is an asynchronous operation that returns immediately. After a successful initial sync is completed, the system continuously syncs data. To check the status of a sync, use the <a>ListResourceDataSync</a>.</p> <note> <p>By default, data isn't encrypted in Amazon S3. We strongly recommend that you enable encryption in Amazon S3 to ensure secure data storage. We also recommend that you secure access to the Amazon S3 bucket by creating a restrictive bucket policy. </p> </note>"
+      "documentation":"<p>A resource data sync helps you view data from multiple sources in a single location. Amazon Web Services Systems Manager offers two types of resource data sync: <code>SyncToDestination</code> and <code>SyncFromSource</code>.</p> <p>You can configure Systems Manager Inventory to use the <code>SyncToDestination</code> type to synchronize Inventory data from multiple Amazon Web Services Regions to a single Amazon Simple Storage Service (Amazon S3) bucket. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-create-resource-data-sync.html\">Creating a resource data sync for Inventory</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <p>You can configure Systems Manager Explorer to use the <code>SyncFromSource</code> type to synchronize operational work items (OpsItems) and operational data (OpsData) from multiple Amazon Web Services Regions to a single Amazon S3 bucket. This type can synchronize OpsItems and OpsData from multiple Amazon Web Services accounts and Amazon Web Services Regions or <code>EntireOrganization</code> by using Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/Explorer-resource-data-sync.html\">Setting up Systems Manager Explorer to display data from multiple accounts and Regions</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <p>A resource data sync is an asynchronous operation that returns immediately. After a successful initial sync is completed, the system continuously syncs data. To check the status of a sync, use the <a>ListResourceDataSync</a>.</p> <note> <p>By default, data isn't encrypted in Amazon S3. We strongly recommend that you enable encryption in Amazon S3 to ensure secure data storage. We also recommend that you secure access to the Amazon S3 bucket by creating a restrictive bucket policy. </p> </note>"
     },
     "DeleteActivation":{
       "name":"DeleteActivation",
@@ -681,7 +682,7 @@
         {"shape":"InvalidInstanceInformationFilterValue"},
         {"shape":"InvalidFilterKey"}
       ],
-      "documentation":"<p>Provides information about one or more of your managed nodes, including the operating system platform, SSM Agent version, association status, and IP address. This operation does not return information for nodes that are either Stopped or Terminated.</p> <p>If you specify one or more node IDs, the operation returns information for those managed nodes. If you don't specify node IDs, it returns information for all your managed nodes. If you specify a node ID that isn't valid or a node that you don't own, you receive an error.</p> <note> <p>The <code>IamRole</code> field returned for this API operation is the Identity and Access Management (IAM) role assigned to on-premises managed nodes. This operation does not return the IAM role for EC2 instances.</p> </note>"
+      "documentation":"<p>Provides information about one or more of your managed nodes, including the operating system platform, SSM Agent version, association status, and IP address. This operation does not return information for nodes that are either Stopped or Terminated.</p> <p>If you specify one or more node IDs, the operation returns information for those managed nodes. If you don't specify node IDs, it returns information for all your managed nodes. If you specify a node ID that isn't valid or a node that you don't own, you receive an error.</p> <note> <p>The <code>IamRole</code> field returned for this API operation is the role assigned to an Amazon EC2 instance configured with a Systems Manager Quick Setup host management configuration or the role assigned to an on-premises managed node.</p> </note>"
     },
     "DescribeInstancePatchStates":{
       "name":"DescribeInstancePatchStates",
@@ -952,7 +953,7 @@
       "errors":[
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Lists the properties of available patches organized by product, product family, classification, severity, and other properties of available patches. You can use the reported properties in the filters you specify in requests for operations such as <a>CreatePatchBaseline</a>, <a>UpdatePatchBaseline</a>, <a>DescribeAvailablePatches</a>, and <a>DescribePatchBaselines</a>.</p> <p>The following section lists the properties that can be used in filters for each major operating system type:</p> <dl> <dt>AMAZON_LINUX</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>CLASSIFICATION</code> | <code>SEVERITY</code> </p> </dd> <dt>AMAZON_LINUX_2</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>CLASSIFICATION</code> | <code>SEVERITY</code> </p> </dd> <dt>CENTOS</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>CLASSIFICATION</code> | <code>SEVERITY</code> </p> </dd> <dt>DEBIAN</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>PRIORITY</code> </p> </dd> <dt>MACOS</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>CLASSIFICATION</code> </p> </dd> <dt>ORACLE_LINUX</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>CLASSIFICATION</code> | <code>SEVERITY</code> </p> </dd> <dt>REDHAT_ENTERPRISE_LINUX</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>CLASSIFICATION</code> | <code>SEVERITY</code> </p> </dd> <dt>SUSE</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>CLASSIFICATION</code> | <code>SEVERITY</code> </p> </dd> <dt>UBUNTU</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>PRIORITY</code> </p> </dd> <dt>WINDOWS</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>PRODUCT_FAMILY</code> | <code>CLASSIFICATION</code> | <code>MSRC_SEVERITY</code> </p> </dd> </dl>"
+      "documentation":"<p>Lists the properties of available patches organized by product, product family, classification, severity, and other properties of available patches. You can use the reported properties in the filters you specify in requests for operations such as <a>CreatePatchBaseline</a>, <a>UpdatePatchBaseline</a>, <a>DescribeAvailablePatches</a>, and <a>DescribePatchBaselines</a>.</p> <p>The following section lists the properties that can be used in filters for each major operating system type:</p> <dl> <dt>AMAZON_LINUX</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>CLASSIFICATION</code> | <code>SEVERITY</code> </p> </dd> <dt>AMAZON_LINUX_2</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>CLASSIFICATION</code> | <code>SEVERITY</code> </p> </dd> <dt>AMAZON_LINUX_2023</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>CLASSIFICATION</code> | <code>SEVERITY</code> </p> </dd> <dt>CENTOS</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>CLASSIFICATION</code> | <code>SEVERITY</code> </p> </dd> <dt>DEBIAN</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>PRIORITY</code> </p> </dd> <dt>MACOS</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>CLASSIFICATION</code> </p> </dd> <dt>ORACLE_LINUX</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>CLASSIFICATION</code> | <code>SEVERITY</code> </p> </dd> <dt>REDHAT_ENTERPRISE_LINUX</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>CLASSIFICATION</code> | <code>SEVERITY</code> </p> </dd> <dt>SUSE</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>CLASSIFICATION</code> | <code>SEVERITY</code> </p> </dd> <dt>UBUNTU</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>PRIORITY</code> </p> </dd> <dt>WINDOWS</dt> <dd> <p>Valid properties: <code>PRODUCT</code> | <code>PRODUCT_FAMILY</code> | <code>CLASSIFICATION</code> | <code>MSRC_SEVERITY</code> </p> </dd> </dl>"
     },
     "DescribeSessions":{
       "name":"DescribeSessions",
@@ -1031,7 +1032,7 @@
         {"shape":"InvalidPluginName"},
         {"shape":"InvocationDoesNotExist"}
       ],
-      "documentation":"<p>Returns detailed information about command execution for an invocation or plugin.</p> <p> <code>GetCommandInvocation</code> only gives the execution status of a plugin in a document. To get the command execution status on a specific managed node, use <a>ListCommandInvocations</a>. To get the command execution status across managed nodes, use <a>ListCommands</a>.</p>"
+      "documentation":"<p>Returns detailed information about command execution for an invocation or plugin. The Run Command API follows an eventual consistency model, due to the distributed nature of the system supporting the API. This means that the result of an API command you run that affects your resources might not be immediately visible to all subsequent commands you run. You should keep this in mind when you carry out an API command that immediately follows a previous API command.</p> <p> <code>GetCommandInvocation</code> only gives the execution status of a plugin in a document. To get the command execution status on a specific managed node, use <a>ListCommandInvocations</a>. To get the command execution status across managed nodes, use <a>ListCommands</a>.</p>"
     },
     "GetConnectionStatus":{
       "name":"GetConnectionStatus",
@@ -1088,6 +1089,20 @@
         {"shape":"InvalidDocumentVersion"}
       ],
       "documentation":"<p>Gets the contents of the specified Amazon Web Services Systems Manager document (SSM document).</p>"
+    },
+    "GetExecutionPreview":{
+      "name":"GetExecutionPreview",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetExecutionPreviewRequest"},
+      "output":{"shape":"GetExecutionPreviewResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Initiates the process of retrieving an existing preview that shows the effects that running a specified Automation runbook would have on the targeted resources.</p>"
     },
     "GetInventory":{
       "name":"GetInventory",
@@ -1537,6 +1552,41 @@
       ],
       "documentation":"<p>A list of inventory items returned by the request.</p>"
     },
+    "ListNodes":{
+      "name":"ListNodes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListNodesRequest"},
+      "output":{"shape":"ListNodesResult"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"InvalidFilter"},
+        {"shape":"InvalidNextToken"},
+        {"shape":"ResourceDataSyncNotFoundException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p>Takes in filters and returns a list of managed nodes matching the filter criteria.</p>"
+    },
+    "ListNodesSummary":{
+      "name":"ListNodesSummary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListNodesSummaryRequest"},
+      "output":{"shape":"ListNodesSummaryResult"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"InvalidAggregatorException"},
+        {"shape":"InvalidFilter"},
+        {"shape":"InvalidNextToken"},
+        {"shape":"ResourceDataSyncNotFoundException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p>Generates a summary of managed instance/node metadata based on the filters and aggregators you specify. Results are grouped by the input aggregator you specify.</p>"
+    },
     "ListOpsItemEvents":{
       "name":"ListOpsItemEvents",
       "http":{
@@ -1932,6 +1982,20 @@
         {"shape":"AutomationDefinitionNotApprovedException"}
       ],
       "documentation":"<p>Creates a change request for Change Manager. The Automation runbooks specified in the change request run only after all required approvals for the change request have been received.</p>"
+    },
+    "StartExecutionPreview":{
+      "name":"StartExecutionPreview",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartExecutionPreviewRequest"},
+      "output":{"shape":"StartExecutionPreviewResponse"},
+      "errors":[
+        {"shape":"InternalServerError"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Initiates the process of creating a preview showing the effects that running a specified Automation runbook would have on the targeted resources.</p>"
     },
     "StartSession":{
       "name":"StartSession",
@@ -2357,6 +2421,15 @@
     "AgentErrorCode":{
       "type":"string",
       "max":10
+    },
+    "AgentType":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "AgentVersion":{
+      "type":"string",
+      "pattern":"^[0-9]{1,6}(\\.[0-9]{1,6}){2,3}$"
     },
     "AggregatorSchemaOnly":{"type":"boolean"},
     "Alarm":{
@@ -3203,7 +3276,7 @@
         },
         "Values":{
           "shape":"AttachmentsSourceValues",
-          "documentation":"<p>The value of a key-value pair that identifies the location of an attachment to a document. The format for <b>Value</b> depends on the type of key you specify.</p> <ul> <li> <p>For the key <i>SourceUrl</i>, the value is an S3 bucket location. For example:</p> <p> <code>\"Values\": [ \"s3://doc-example-bucket/my-folder\" ]</code> </p> </li> <li> <p>For the key <i>S3FileUrl</i>, the value is a file in an S3 bucket. For example:</p> <p> <code>\"Values\": [ \"s3://doc-example-bucket/my-folder/my-file.py\" ]</code> </p> </li> <li> <p>For the key <i>AttachmentReference</i>, the value is constructed from the name of another SSM document in your account, a version number of that document, and a file attached to that document version that you want to reuse. For example:</p> <p> <code>\"Values\": [ \"MyOtherDocument/3/my-other-file.py\" ]</code> </p> <p>However, if the SSM document is shared with you from another account, the full SSM document ARN must be specified instead of the document name only. For example:</p> <p> <code>\"Values\": [ \"arn:aws:ssm:us-east-2:111122223333:document/OtherAccountDocument/3/their-file.py\" ]</code> </p> </li> </ul>"
+          "documentation":"<p>The value of a key-value pair that identifies the location of an attachment to a document. The format for <b>Value</b> depends on the type of key you specify.</p> <ul> <li> <p>For the key <i>SourceUrl</i>, the value is an S3 bucket location. For example:</p> <p> <code>\"Values\": [ \"s3://amzn-s3-demo-bucket/my-prefix\" ]</code> </p> </li> <li> <p>For the key <i>S3FileUrl</i>, the value is a file in an S3 bucket. For example:</p> <p> <code>\"Values\": [ \"s3://amzn-s3-demo-bucket/my-prefix/my-file.py\" ]</code> </p> </li> <li> <p>For the key <i>AttachmentReference</i>, the value is constructed from the name of another SSM document in your account, a version number of that document, and a file attached to that document version that you want to reuse. For example:</p> <p> <code>\"Values\": [ \"MyOtherDocument/3/my-other-file.py\" ]</code> </p> <p>However, if the SSM document is shared with you from another account, the full SSM document ARN must be specified instead of the document name only. For example:</p> <p> <code>\"Values\": [ \"arn:aws:ssm:us-east-2:111122223333:document/OtherAccountDocument/3/their-file.py\" ]</code> </p> </li> </ul>"
         },
         "Name":{
           "shape":"AttachmentIdentifier",
@@ -3387,6 +3460,10 @@
           "shape":"AlarmStateInformationList",
           "documentation":"<p>The CloudWatch alarm that was invoked by the automation.</p>"
         },
+        "TargetLocationsURL":{
+          "shape":"TargetLocationsURL",
+          "documentation":"<p>A publicly accessible URL for a file that contains the <code>TargetLocations</code> body. Currently, only files in presigned Amazon S3 buckets are supported</p>"
+        },
         "AutomationSubtype":{
           "shape":"AutomationSubtype",
           "documentation":"<p>The subtype of the Automation operation. Currently, the only supported value is <code>ChangeRequest</code>.</p>"
@@ -3474,6 +3551,36 @@
       "type":"string",
       "max":36,
       "min":36
+    },
+    "AutomationExecutionInputs":{
+      "type":"structure",
+      "members":{
+        "Parameters":{
+          "shape":"AutomationParameterMap",
+          "documentation":"<p>Information about parameters that can be specified for the preview operation. </p>"
+        },
+        "TargetParameterName":{
+          "shape":"AutomationParameterKey",
+          "documentation":"<p>The name of the parameter used as the target resource for the rate-controlled execution. Required if you specify targets.</p>"
+        },
+        "Targets":{
+          "shape":"Targets",
+          "documentation":"<p>Information about the resources that would be included in the actual runbook execution, if it were to be run. Both Targets and TargetMaps can't be specified together.</p>"
+        },
+        "TargetMaps":{
+          "shape":"TargetMaps",
+          "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>"
+        },
+        "TargetLocations":{
+          "shape":"TargetLocations",
+          "documentation":"<p>Information about the Amazon Web Services Regions and Amazon Web Services accounts targeted by the Automation execution preview operation.</p>"
+        },
+        "TargetLocationsURL":{
+          "shape":"TargetLocationsURL",
+          "documentation":"<p>A publicly accessible URL for a file that contains the <code>TargetLocations</code> body. Currently, only files in presigned Amazon S3 buckets are supported.</p>"
+        }
+      },
+      "documentation":"<p>Information about the optional inputs that can be specified for an automation execution preview.</p>"
     },
     "AutomationExecutionLimitExceededException":{
       "type":"structure",
@@ -3572,7 +3679,7 @@
         },
         "AutomationType":{
           "shape":"AutomationType",
-          "documentation":"<p>Use this filter with <a>DescribeAutomationExecutions</a>. Specify either Local or CrossAccount. CrossAccount is an Automation that runs in multiple Amazon Web Services Regions and Amazon Web Services accounts. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation-multiple-accounts-and-regions.html\">Running Automation workflows in multiple Amazon Web Services Regions and accounts</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p>"
+          "documentation":"<p>Use this filter with <a>DescribeAutomationExecutions</a>. Specify either Local or CrossAccount. CrossAccount is an Automation that runs in multiple Amazon Web Services Regions and Amazon Web Services accounts. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation-multiple-accounts-and-regions.html\">Running automations in multiple Amazon Web Services Regions and accounts</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p>"
         },
         "AlarmConfiguration":{
           "shape":"AlarmConfiguration",
@@ -3581,6 +3688,10 @@
         "TriggeredAlarms":{
           "shape":"AlarmStateInformationList",
           "documentation":"<p>The CloudWatch alarm that was invoked by the automation.</p>"
+        },
+        "TargetLocationsURL":{
+          "shape":"TargetLocationsURL",
+          "documentation":"<p>A publicly accessible URL for a file that contains the <code>TargetLocations</code> body. Currently, only files in presigned Amazon S3 buckets are supported</p>"
         },
         "AutomationSubtype":{
           "shape":"AutomationSubtype",
@@ -3620,6 +3731,28 @@
       },
       "documentation":"<p>There is no automation execution information for the requested automation execution ID.</p>",
       "exception":true
+    },
+    "AutomationExecutionPreview":{
+      "type":"structure",
+      "members":{
+        "StepPreviews":{
+          "shape":"StepPreviewMap",
+          "documentation":"<p>Information about the type of impact a runbook step would have on a resource.</p> <ul> <li> <p> <code>Mutating</code>: The runbook step would make changes to the targets through actions that create, modify, or delete resources.</p> </li> <li> <p> <code>Non_Mutating</code>: The runbook step would retrieve data about resources but not make changes to them. This category generally includes <code>Describe*</code>, <code>List*</code>, <code>Get*</code>, and similar read-only API actions.</p> </li> <li> <p> <code>Undetermined</code>: An undetermined step invokes executions performed by another orchestration service like Lambda, Step Functions, or Amazon Web Services Systems Manager Run Command. An undetermined step might also call a third-party API. Systems Manager Automation doesn't know the outcome of the orchestration processes or third-party API executions, so the results of the steps are undetermined.</p> </li> </ul>"
+        },
+        "Regions":{
+          "shape":"RegionList",
+          "documentation":"<p>Information about the Amazon Web Services Regions targeted by the execution preview.</p>"
+        },
+        "TargetPreviews":{
+          "shape":"TargetPreviewList",
+          "documentation":"<p>Information that provides a preview of what the impact of running the specified Automation runbook would be.</p>"
+        },
+        "TotalAccounts":{
+          "shape":"Integer",
+          "documentation":"<p>Information about the Amazon Web Services accounts that were included in the execution preview.</p>"
+        }
+      },
+      "documentation":"<p>Information about the results of the execution preview.</p>"
     },
     "AutomationExecutionStatus":{
       "type":"string",
@@ -3720,7 +3853,7 @@
         "ApprovalRules":{"shape":"PatchRuleGroup"},
         "ApprovedPatches":{
           "shape":"PatchIdList",
-          "documentation":"<p>A list of explicitly approved patches for the baseline.</p> <p>For information about accepted formats for lists of approved patches and rejected patches, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-approved-rejected-package-name-formats.html\">About package name formats for approved and rejected patch lists</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>A list of explicitly approved patches for the baseline.</p> <p>For information about accepted formats for lists of approved patches and rejected patches, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-approved-rejected-package-name-formats.html\">Package name formats for approved and rejected patch lists</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "ApprovedPatchesComplianceLevel":{
           "shape":"PatchComplianceLevel",
@@ -3728,7 +3861,7 @@
         },
         "RejectedPatches":{
           "shape":"PatchIdList",
-          "documentation":"<p>A list of explicitly rejected patches for the baseline.</p> <p>For information about accepted formats for lists of approved patches and rejected patches, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-approved-rejected-package-name-formats.html\">About package name formats for approved and rejected patch lists</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>A list of explicitly rejected patches for the baseline.</p> <p>For information about accepted formats for lists of approved patches and rejected patches, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-approved-rejected-package-name-formats.html\">Package name formats for approved and rejected patch lists</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "RejectedPatchesAction":{
           "shape":"PatchAction",
@@ -3973,7 +4106,7 @@
         },
         "value":{
           "shape":"CommandFilterValue",
-          "documentation":"<p>The filter value. Valid values for each filter key are as follows:</p> <ul> <li> <p> <b>InvokedAfter</b>: Specify a timestamp to limit your results. For example, specify <code>2021-07-07T00:00:00Z</code> to see a list of command executions occurring July 7, 2021, and later.</p> </li> <li> <p> <b>InvokedBefore</b>: Specify a timestamp to limit your results. For example, specify <code>2021-07-07T00:00:00Z</code> to see a list of command executions from before July 7, 2021.</p> </li> <li> <p> <b>Status</b>: Specify a valid command status to see a list of all command executions with that status. The status choices depend on the API you call.</p> <p>The status values you can specify for <code>ListCommands</code> are:</p> <ul> <li> <p> <code>Pending</code> </p> </li> <li> <p> <code>InProgress</code> </p> </li> <li> <p> <code>Success</code> </p> </li> <li> <p> <code>Cancelled</code> </p> </li> <li> <p> <code>Failed</code> </p> </li> <li> <p> <code>TimedOut</code> (this includes both Delivery and Execution time outs) </p> </li> <li> <p> <code>AccessDenied</code> </p> </li> <li> <p> <code>DeliveryTimedOut</code> </p> </li> <li> <p> <code>ExecutionTimedOut</code> </p> </li> <li> <p> <code>Incomplete</code> </p> </li> <li> <p> <code>NoInstancesInTag</code> </p> </li> <li> <p> <code>LimitExceeded</code> </p> </li> </ul> <p>The status values you can specify for <code>ListCommandInvocations</code> are:</p> <ul> <li> <p> <code>Pending</code> </p> </li> <li> <p> <code>InProgress</code> </p> </li> <li> <p> <code>Delayed</code> </p> </li> <li> <p> <code>Success</code> </p> </li> <li> <p> <code>Cancelled</code> </p> </li> <li> <p> <code>Failed</code> </p> </li> <li> <p> <code>TimedOut</code> (this includes both Delivery and Execution time outs) </p> </li> <li> <p> <code>AccessDenied</code> </p> </li> <li> <p> <code>DeliveryTimedOut</code> </p> </li> <li> <p> <code>ExecutionTimedOut</code> </p> </li> <li> <p> <code>Undeliverable</code> </p> </li> <li> <p> <code>InvalidPlatform</code> </p> </li> <li> <p> <code>Terminated</code> </p> </li> </ul> </li> <li> <p> <b>DocumentName</b>: Specify name of the Amazon Web Services Systems Manager document (SSM document) for which you want to see command execution results. For example, specify <code>AWS-RunPatchBaseline</code> to see command executions that used this SSM document to perform security patching operations on managed nodes. </p> </li> <li> <p> <b>ExecutionStage</b>: Specify one of the following values (<code>ListCommands</code> operations only):</p> <ul> <li> <p> <code>Executing</code>: Returns a list of command executions that are currently still running.</p> </li> <li> <p> <code>Complete</code>: Returns a list of command executions that have already completed. </p> </li> </ul> </li> </ul>"
+          "documentation":"<p>The filter value. Valid values for each filter key are as follows:</p> <ul> <li> <p> <b>InvokedAfter</b>: Specify a timestamp to limit your results. For example, specify <code>2024-07-07T00:00:00Z</code> to see a list of command executions occurring July 7, 2021, and later.</p> </li> <li> <p> <b>InvokedBefore</b>: Specify a timestamp to limit your results. For example, specify <code>2024-07-07T00:00:00Z</code> to see a list of command executions from before July 7, 2021.</p> </li> <li> <p> <b>Status</b>: Specify a valid command status to see a list of all command executions with that status. The status choices depend on the API you call.</p> <p>The status values you can specify for <code>ListCommands</code> are:</p> <ul> <li> <p> <code>Pending</code> </p> </li> <li> <p> <code>InProgress</code> </p> </li> <li> <p> <code>Success</code> </p> </li> <li> <p> <code>Cancelled</code> </p> </li> <li> <p> <code>Failed</code> </p> </li> <li> <p> <code>TimedOut</code> (this includes both Delivery and Execution time outs) </p> </li> <li> <p> <code>AccessDenied</code> </p> </li> <li> <p> <code>DeliveryTimedOut</code> </p> </li> <li> <p> <code>ExecutionTimedOut</code> </p> </li> <li> <p> <code>Incomplete</code> </p> </li> <li> <p> <code>NoInstancesInTag</code> </p> </li> <li> <p> <code>LimitExceeded</code> </p> </li> </ul> <p>The status values you can specify for <code>ListCommandInvocations</code> are:</p> <ul> <li> <p> <code>Pending</code> </p> </li> <li> <p> <code>InProgress</code> </p> </li> <li> <p> <code>Delayed</code> </p> </li> <li> <p> <code>Success</code> </p> </li> <li> <p> <code>Cancelled</code> </p> </li> <li> <p> <code>Failed</code> </p> </li> <li> <p> <code>TimedOut</code> (this includes both Delivery and Execution time outs) </p> </li> <li> <p> <code>AccessDenied</code> </p> </li> <li> <p> <code>DeliveryTimedOut</code> </p> </li> <li> <p> <code>ExecutionTimedOut</code> </p> </li> <li> <p> <code>Undeliverable</code> </p> </li> <li> <p> <code>InvalidPlatform</code> </p> </li> <li> <p> <code>Terminated</code> </p> </li> </ul> </li> <li> <p> <b>DocumentName</b>: Specify name of the Amazon Web Services Systems Manager document (SSM document) for which you want to see command execution results. For example, specify <code>AWS-RunPatchBaseline</code> to see command executions that used this SSM document to perform security patching operations on managed nodes. </p> </li> <li> <p> <b>ExecutionStage</b>: Specify one of the following values (<code>ListCommands</code> operations only):</p> <ul> <li> <p> <code>Executing</code>: Returns a list of command executions that are currently still running.</p> </li> <li> <p> <code>Complete</code>: Returns a list of command executions that have already completed. </p> </li> </ul> </li> </ul>"
         }
       },
       "documentation":"<p>Describes a command filter.</p> <note> <p>A managed node ID can't be specified when a command status is <code>Pending</code> because the command hasn't run on the node yet.</p> </note>"
@@ -4145,11 +4278,11 @@
         },
         "OutputS3BucketName":{
           "shape":"S3BucketName",
-          "documentation":"<p>The S3 bucket where the responses to the command executions should be stored. This was requested when issuing the command. For example, in the following response:</p> <p> <code>doc-example-bucket/ab19cb99-a030-46dd-9dfc-8eSAMPLEPre-Fix/i-02573cafcfEXAMPLE/awsrunShellScript</code> </p> <p> <code>doc-example-bucket</code> is the name of the S3 bucket;</p> <p> <code>ab19cb99-a030-46dd-9dfc-8eSAMPLEPre-Fix</code> is the name of the S3 prefix;</p> <p> <code>i-02573cafcfEXAMPLE</code> is the managed node ID;</p> <p> <code>awsrunShellScript</code> is the name of the plugin.</p>"
+          "documentation":"<p>The S3 bucket where the responses to the command executions should be stored. This was requested when issuing the command. For example, in the following response:</p> <p> <code>amzn-s3-demo-bucket/my-prefix/i-02573cafcfEXAMPLE/awsrunShellScript</code> </p> <p> <code>amzn-s3-demo-bucket</code> is the name of the S3 bucket;</p> <p> <code>my-prefix</code> is the name of the S3 prefix;</p> <p> <code>i-02573cafcfEXAMPLE</code> is the managed node ID;</p> <p> <code>awsrunShellScript</code> is the name of the plugin.</p>"
         },
         "OutputS3KeyPrefix":{
           "shape":"S3KeyPrefix",
-          "documentation":"<p>The S3 directory path inside the bucket where the responses to the command executions should be stored. This was requested when issuing the command. For example, in the following response:</p> <p> <code>doc-example-bucket/ab19cb99-a030-46dd-9dfc-8eSAMPLEPre-Fix/i-02573cafcfEXAMPLE/awsrunShellScript</code> </p> <p> <code>doc-example-bucket</code> is the name of the S3 bucket;</p> <p> <code>ab19cb99-a030-46dd-9dfc-8eSAMPLEPre-Fix</code> is the name of the S3 prefix;</p> <p> <code>i-02573cafcfEXAMPLE</code> is the managed node ID;</p> <p> <code>awsrunShellScript</code> is the name of the plugin.</p>"
+          "documentation":"<p>The S3 directory path inside the bucket where the responses to the command executions should be stored. This was requested when issuing the command. For example, in the following response:</p> <p> <code>amzn-s3-demo-bucket/my-prefix/i-02573cafcfEXAMPLE/awsrunShellScript</code> </p> <p> <code>amzn-s3-demo-bucket</code> is the name of the S3 bucket;</p> <p> <code>my-prefix</code> is the name of the S3 prefix;</p> <p> <code>i-02573cafcfEXAMPLE</code> is the managed node ID;</p> <p> <code>awsrunShellScript</code> is the name of the plugin.</p>"
         }
       },
       "documentation":"<p>Describes plugin details.</p>"
@@ -4484,7 +4617,7 @@
         },
         "IamRole":{
           "shape":"IamRole",
-          "documentation":"<p>The name of the Identity and Access Management (IAM) role that you want to assign to the managed node. This IAM role must provide AssumeRole permissions for the Amazon Web Services Systems Manager service principal <code>ssm.amazonaws.com</code>. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-service-role.html\">Create an IAM service role for a hybrid and multicloud environment</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <note> <p>You can't specify an IAM service-linked role for this parameter. You must create a unique role.</p> </note>"
+          "documentation":"<p>The name of the Identity and Access Management (IAM) role that you want to assign to the managed node. This IAM role must provide AssumeRole permissions for the Amazon Web Services Systems Manager service principal <code>ssm.amazonaws.com</code>. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/hybrid-multicloud-service-role.html\">Create the IAM service role required for Systems Manager in a hybrid and multicloud environments</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <note> <p>You can't specify an IAM service-linked role for this parameter. You must create a unique role.</p> </note>"
         },
         "RegistrationLimit":{
           "shape":"RegistrationLimit",
@@ -4493,7 +4626,7 @@
         },
         "ExpirationDate":{
           "shape":"ExpirationDate",
-          "documentation":"<p>The date by which this activation request should expire, in timestamp format, such as \"2021-07-07T00:00:00\". You can specify a date up to 30 days in advance. If you don't provide an expiration date, the activation code expires in 24 hours.</p>"
+          "documentation":"<p>The date by which this activation request should expire, in timestamp format, such as \"2024-07-07T00:00:00\". You can specify a date up to 30 days in advance. If you don't provide an expiration date, the activation code expires in 24 hours.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -4655,7 +4788,7 @@
         },
         "Targets":{
           "shape":"Targets",
-          "documentation":"<p>The targets for the association. You can target managed nodes by using tags, Amazon Web Services resource groups, all managed nodes in an Amazon Web Services account, or individual managed node IDs. You can target all managed nodes in an Amazon Web Services account by specifying the <code>InstanceIds</code> key with a value of <code>*</code>. For more information about choosing targets for an association, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-state-manager-targets-and-rate-controls.html\">About targets and rate controls in State Manager associations</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>The targets for the association. You can target managed nodes by using tags, Amazon Web Services resource groups, all managed nodes in an Amazon Web Services account, or individual managed node IDs. You can target all managed nodes in an Amazon Web Services account by specifying the <code>InstanceIds</code> key with a value of <code>*</code>. For more information about choosing targets for an association, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-state-manager-targets-and-rate-controls.html\">Understanding targets and rate controls in State Manager associations</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "ScheduleExpression":{
           "shape":"ScheduleExpression",
@@ -4990,7 +5123,7 @@
         },
         "GlobalFilters":{
           "shape":"PatchFilterGroup",
-          "documentation":"<p>A set of global filters used to include patches in the baseline.</p>"
+          "documentation":"<p>A set of global filters used to include patches in the baseline.</p> <important> <p>The <code>GlobalFilters</code> parameter can be configured only by using the CLI or an Amazon Web Services SDK. It can't be configured from the Patch Manager console, and its value isn't displayed in the console.</p> </important>"
         },
         "ApprovalRules":{
           "shape":"PatchRuleGroup",
@@ -4998,7 +5131,7 @@
         },
         "ApprovedPatches":{
           "shape":"PatchIdList",
-          "documentation":"<p>A list of explicitly approved patches for the baseline.</p> <p>For information about accepted formats for lists of approved patches and rejected patches, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-approved-rejected-package-name-formats.html\">About package name formats for approved and rejected patch lists</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>A list of explicitly approved patches for the baseline.</p> <p>For information about accepted formats for lists of approved patches and rejected patches, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-approved-rejected-package-name-formats.html\">Package name formats for approved and rejected patch lists</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "ApprovedPatchesComplianceLevel":{
           "shape":"PatchComplianceLevel",
@@ -5011,11 +5144,11 @@
         },
         "RejectedPatches":{
           "shape":"PatchIdList",
-          "documentation":"<p>A list of explicitly rejected patches for the baseline.</p> <p>For information about accepted formats for lists of approved patches and rejected patches, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-approved-rejected-package-name-formats.html\">About package name formats for approved and rejected patch lists</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>A list of explicitly rejected patches for the baseline.</p> <p>For information about accepted formats for lists of approved patches and rejected patches, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-approved-rejected-package-name-formats.html\">Package name formats for approved and rejected patch lists</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "RejectedPatchesAction":{
           "shape":"PatchAction",
-          "documentation":"<p>The action for Patch Manager to take on patches included in the <code>RejectedPackages</code> list.</p> <ul> <li> <p> <b> <code>ALLOW_AS_DEPENDENCY</code> </b>: A package in the <code>Rejected</code> patches list is installed only if it is a dependency of another package. It is considered compliant with the patch baseline, and its status is reported as <code>InstalledOther</code>. This is the default action if no option is specified.</p> </li> <li> <p> <b>BLOCK</b>: Packages in the <b>Rejected patches</b> list, and packages that include them as dependencies, aren't installed by Patch Manager under any circumstances. If a package was installed before it was added to the <b>Rejected patches</b> list, or is installed outside of Patch Manager afterward, it's considered noncompliant with the patch baseline and its status is reported as <i>InstalledRejected</i>.</p> </li> </ul>"
+          "documentation":"<p>The action for Patch Manager to take on patches included in the <code>RejectedPackages</code> list.</p> <dl> <dt>ALLOW_AS_DEPENDENCY</dt> <dd> <p> <b>Linux and macOS</b>: A package in the rejected patches list is installed only if it is a dependency of another package. It is considered compliant with the patch baseline, and its status is reported as <code>INSTALLED_OTHER</code>. This is the default action if no option is specified.</p> <p> <b>Windows Server</b>: Windows Server doesn't support the concept of package dependencies. If a package in the rejected patches list and already installed on the node, its status is reported as <code>INSTALLED_OTHER</code>. Any package not already installed on the node is skipped. This is the default action if no option is specified.</p> </dd> <dt>BLOCK</dt> <dd> <p> <b>All OSs</b>: Packages in the rejected patches list, and packages that include them as dependencies, aren't installed by Patch Manager under any circumstances. If a package was installed before it was added to the rejected patches list, or is installed outside of Patch Manager afterward, it's considered noncompliant with the patch baseline and its status is reported as <code>INSTALLED_REJECTED</code>.</p> </dd> </dl>"
         },
         "Description":{
           "shape":"BaselineDescription",
@@ -5189,7 +5322,7 @@
         },
         "DeletionSummary":{
           "shape":"InventoryDeletionSummary",
-          "documentation":"<p>A summary of the delete operation. For more information about this summary, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-inventory-custom.html#sysman-inventory-delete-summary\">Understanding the delete inventory summary</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>A summary of the delete operation. For more information about this summary, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-custom.html#delete-custom-inventory-summary\">Deleting custom inventory</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         }
       }
     },
@@ -6004,7 +6137,7 @@
         },
         "Filters":{
           "shape":"PatchOrchestratorFilterList",
-          "documentation":"<p>Each element in the array is a structure containing a key-value pair.</p> <p>Supported keys for <code>DescribeInstancePatches</code>include the following:</p> <ul> <li> <p> <b> <code>Classification</code> </b> </p> <p>Sample values: <code>Security</code> | <code>SecurityUpdates</code> </p> </li> <li> <p> <b> <code>KBId</code> </b> </p> <p>Sample values: <code>KB4480056</code> | <code>java-1.7.0-openjdk.x86_64</code> </p> </li> <li> <p> <b> <code>Severity</code> </b> </p> <p>Sample values: <code>Important</code> | <code>Medium</code> | <code>Low</code> </p> </li> <li> <p> <b> <code>State</code> </b> </p> <p>Sample values: <code>Installed</code> | <code>InstalledOther</code> | <code>InstalledPendingReboot</code> </p> <p>For lists of all <code>State</code> values, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-compliance-states.html\">Understanding patch compliance state values</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </li> </ul>"
+          "documentation":"<p>Each element in the array is a structure containing a key-value pair.</p> <p>Supported keys for <code>DescribeInstancePatches</code>include the following:</p> <ul> <li> <p> <b> <code>Classification</code> </b> </p> <p>Sample values: <code>Security</code> | <code>SecurityUpdates</code> </p> </li> <li> <p> <b> <code>KBId</code> </b> </p> <p>Sample values: <code>KB4480056</code> | <code>java-1.7.0-openjdk.x86_64</code> </p> </li> <li> <p> <b> <code>Severity</code> </b> </p> <p>Sample values: <code>Important</code> | <code>Medium</code> | <code>Low</code> </p> </li> <li> <p> <b> <code>State</code> </b> </p> <p>Sample values: <code>Installed</code> | <code>InstalledOther</code> | <code>InstalledPendingReboot</code> </p> <p>For lists of all <code>State</code> values, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-compliance-states.html\">Patch compliance state values</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </li> </ul>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -6191,7 +6324,7 @@
         },
         "Filters":{
           "shape":"MaintenanceWindowFilterList",
-          "documentation":"<p>Each entry in the array is a structure containing:</p> <ul> <li> <p>Key. A string between 1 and 128 characters. Supported keys include <code>ExecutedBefore</code> and <code>ExecutedAfter</code>.</p> </li> <li> <p>Values. An array of strings, each between 1 and 256 characters. Supported values are date/time strings in a valid ISO 8601 date/time format, such as <code>2021-11-04T05:00:00Z</code>.</p> </li> </ul>"
+          "documentation":"<p>Each entry in the array is a structure containing:</p> <ul> <li> <p>Key. A string between 1 and 128 characters. Supported keys include <code>ExecutedBefore</code> and <code>ExecutedAfter</code>.</p> </li> <li> <p>Values. An array of strings, each between 1 and 256 characters. Supported values are date/time strings in a valid ISO 8601 date/time format, such as <code>2024-11-04T05:00:00Z</code>.</p> </li> </ul>"
         },
         "MaxResults":{
           "shape":"MaintenanceWindowMaxResults",
@@ -7392,11 +7525,60 @@
       "member":{"shape":"EffectivePatch"}
     },
     "ErrorCount":{"type":"integer"},
+    "ExcludeAccount":{
+      "type":"string",
+      "max":68,
+      "min":6,
+      "pattern":"^(ou-[a-z0-9]{4,32}-[a-z0-9]{8,32})|(\\d{12})$"
+    },
+    "ExcludeAccounts":{
+      "type":"list",
+      "member":{"shape":"ExcludeAccount"},
+      "max":5000,
+      "min":1
+    },
+    "ExecutionInputs":{
+      "type":"structure",
+      "members":{
+        "Automation":{
+          "shape":"AutomationExecutionInputs",
+          "documentation":"<p>Information about the optional inputs that can be specified for an automation execution preview.</p>"
+        }
+      },
+      "documentation":"<p>Information about the inputs for an execution preview.</p>",
+      "union":true
+    },
     "ExecutionMode":{
       "type":"string",
       "enum":[
         "Auto",
         "Interactive"
+      ]
+    },
+    "ExecutionPreview":{
+      "type":"structure",
+      "members":{
+        "Automation":{
+          "shape":"AutomationExecutionPreview",
+          "documentation":"<p>Information about the changes that would be made if an Automation workflow were run.</p>"
+        }
+      },
+      "documentation":"<p>Information about the changes that would be made if an execution were run.</p>",
+      "union":true
+    },
+    "ExecutionPreviewId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+    },
+    "ExecutionPreviewStatus":{
+      "type":"string",
+      "enum":[
+        "Pending",
+        "InProgress",
+        "Success",
+        "Failed"
       ]
     },
     "ExecutionRoleName":{
@@ -7777,6 +7959,38 @@
           "shape":"ReviewStatus",
           "documentation":"<p>The current review status of a new custom Systems Manager document (SSM document) created by a member of your organization, or of the latest version of an existing SSM document.</p> <p>Only one version of an SSM document can be in the APPROVED state at a time. When a new version is approved, the status of the previous version changes to REJECTED.</p> <p>Only one version of an SSM document can be in review, or PENDING, at a time.</p>"
         }
+      }
+    },
+    "GetExecutionPreviewRequest":{
+      "type":"structure",
+      "required":["ExecutionPreviewId"],
+      "members":{
+        "ExecutionPreviewId":{
+          "shape":"ExecutionPreviewId",
+          "documentation":"<p>The ID of the existing execution preview.</p>"
+        }
+      }
+    },
+    "GetExecutionPreviewResponse":{
+      "type":"structure",
+      "members":{
+        "ExecutionPreviewId":{
+          "shape":"ExecutionPreviewId",
+          "documentation":"<p>The generated ID for the existing execution preview.</p>"
+        },
+        "EndedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>A UTC timestamp indicating when the execution preview operation ended.</p>"
+        },
+        "Status":{
+          "shape":"ExecutionPreviewStatus",
+          "documentation":"<p>The current status of the execution preview operation.</p>"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p>Supplemental information about the current status of the execution preview.</p>"
+        },
+        "ExecutionPreview":{"shape":"ExecutionPreview"}
       }
     },
     "GetInventoryRequest":{
@@ -8173,7 +8387,7 @@
         },
         "ServiceRoleArn":{
           "shape":"ServiceRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) service role to use to publish Amazon Simple Notification Service (Amazon SNS) notifications for maintenance window Run Command tasks.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role for Amazon Web Services Systems Manager to assume when running a maintenance window task. If you do not specify a service role ARN, Systems Manager uses a service-linked role in your account. If no appropriate service-linked role for Systems Manager exists in your account, it is created when you run <code>RegisterTaskWithMaintenanceWindow</code>.</p> <p>However, for an improved security posture, we strongly recommend creating a custom policy and custom service role for running your maintenance window tasks. The policy can be crafted to provide only the permissions needed for your particular maintenance window tasks. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-maintenance-permissions.html\">Setting up Maintenance Windows</a> in the in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "TaskType":{
           "shape":"MaintenanceWindowTaskType",
@@ -8372,7 +8586,7 @@
       "members":{
         "Name":{
           "shape":"PSParameterName",
-          "documentation":"<p>The name or Amazon Resource Name (ARN) of the parameter that you want to query. For parameters shared with you from another account, you must use the full ARN.</p> <p>To query by parameter label, use <code>\"Name\": \"name:label\"</code>. To query by parameter version, use <code>\"Name\": \"name:version\"</code>.</p> <p>For more information about shared parameters, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sharing.html\">Working with shared parameters</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the parameter that you want to query. For parameters shared with you from another account, you must use the full ARN.</p> <p>To query by parameter label, use <code>\"Name\": \"name:label\"</code>. To query by parameter version, use <code>\"Name\": \"name:version\"</code>.</p> <p>For more information about shared parameters, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-shared-parameters.html\">Working with shared parameters</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "WithDecryption":{
           "shape":"Boolean",
@@ -8635,7 +8849,7 @@
       "members":{
         "SettingId":{
           "shape":"ServiceSettingId",
-          "documentation":"<p>The ID of the service setting to get. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/managed-instance/default-ec2-instance-management-role</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul>"
+          "documentation":"<p>The ID of the service setting to get. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/appmanager/appmanager-enabled</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p>/ssm/automation/enable-adaptive-concurrency</p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/managed-instance/default-ec2-instance-management-role</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>The request body of the GetServiceSetting API operation.</p>"
@@ -8675,7 +8889,8 @@
     "IPAddress":{
       "type":"string",
       "max":46,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "ISO8601String":{"type":"string"},
     "IamRole":{
@@ -8695,6 +8910,14 @@
       },
       "documentation":"<p>Error returned when an idempotent operation is retried and the parameters don't match the original call to the API with the same idempotency token. </p>",
       "exception":true
+    },
+    "ImpactType":{
+      "type":"string",
+      "enum":[
+        "Mutating",
+        "NonMutating",
+        "Undetermined"
+      ]
     },
     "IncompatiblePolicyException":{
       "type":"structure",
@@ -8849,6 +9072,52 @@
       "max":50,
       "min":0
     },
+    "InstanceInfo":{
+      "type":"structure",
+      "members":{
+        "AgentType":{
+          "shape":"AgentType",
+          "documentation":"<p>The type of agent installed on the node.</p>"
+        },
+        "AgentVersion":{
+          "shape":"AgentVersion",
+          "documentation":"<p>The version number of the agent installed on the node.</p>"
+        },
+        "ComputerName":{
+          "shape":"ComputerName",
+          "documentation":"<p>The fully qualified host name of the managed node.</p>"
+        },
+        "InstanceStatus":{
+          "shape":"InstanceStatus",
+          "documentation":"<p>The current status of the managed node.</p>"
+        },
+        "IpAddress":{
+          "shape":"IpAddress",
+          "documentation":"<p>The IP address of the managed node.</p>"
+        },
+        "ManagedStatus":{
+          "shape":"ManagedStatus",
+          "documentation":"<p>Indicates whether the node is managed by Systems Manager.</p>"
+        },
+        "PlatformType":{
+          "shape":"PlatformType",
+          "documentation":"<p>The operating system platform type of the managed node.</p>"
+        },
+        "PlatformName":{
+          "shape":"PlatformName",
+          "documentation":"<p>The name of the operating system platform running on your managed node.</p>"
+        },
+        "PlatformVersion":{
+          "shape":"PlatformVersion",
+          "documentation":"<p>The version of the OS platform running on your managed node. </p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of instance, either an EC2 instance or another supported machine type in a hybrid fleet.</p>"
+        }
+      },
+      "documentation":"<p>Details about a specific managed node.</p>"
+    },
     "InstanceInformation":{
       "type":"structure",
       "members":{
@@ -8876,7 +9145,7 @@
         },
         "PlatformType":{
           "shape":"PlatformType",
-          "documentation":"<p>The operating system platform type. </p>"
+          "documentation":"<p>The operating system platform type.</p>"
         },
         "PlatformName":{
           "shape":"String",
@@ -8892,7 +9161,7 @@
         },
         "IamRole":{
           "shape":"IamRole",
-          "documentation":"<p>The Identity and Access Management (IAM) role assigned to the on-premises Systems Manager managed node. This call doesn't return the IAM role for Amazon Elastic Compute Cloud (Amazon EC2) instances. To retrieve the IAM role for an EC2 instance, use the Amazon EC2 <code>DescribeInstances</code> operation. For information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstances.html\">DescribeInstances</a> in the <i>Amazon EC2 API Reference</i> or <a href=\"https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-instances.html\">describe-instances</a> in the <i>Amazon Web Services CLI Command Reference</i>.</p>"
+          "documentation":"<p>The role assigned to an Amazon EC2 instance configured with a Systems Manager Quick Setup host management configuration or the role assigned to an on-premises managed node.</p> <p> This call doesn't return the IAM role for <i>unmanaged</i> Amazon EC2 instances (instances not configured for Systems Manager). To retrieve the role for an unmanaged instance, use the Amazon EC2 <code>DescribeInstances</code> operation. For information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstances.html\">DescribeInstances</a> in the <i>Amazon EC2 API Reference</i> or <a href=\"https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-instances.html\">describe-instances</a> in the <i>Amazon Web Services CLI Command Reference</i>.</p>"
         },
         "RegistrationDate":{
           "shape":"DateTime",
@@ -8905,7 +9174,7 @@
         },
         "Name":{
           "shape":"String",
-          "documentation":"<p>The name assigned to an on-premises server, edge device, or virtual machine (VM) when it is activated as a Systems Manager managed node. The name is specified as the <code>DefaultInstanceName</code> property using the <a>CreateActivation</a> command. It is applied to the managed node by specifying the Activation Code and Activation ID when you install SSM Agent on the node, as explained in <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-install-managed-linux.html\">Install SSM Agent for a hybrid and multicloud environment (Linux)</a> and <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-install-managed-win.html\">Install SSM Agent for a hybrid and multicloud environment (Windows)</a>. To retrieve the <code>Name</code> tag of an EC2 instance, use the Amazon EC2 <code>DescribeInstances</code> operation. For information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstances.html\">DescribeInstances</a> in the <i>Amazon EC2 API Reference</i> or <a href=\"https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-instances.html\">describe-instances</a> in the <i>Amazon Web Services CLI Command Reference</i>.</p>"
+          "documentation":"<p>The name assigned to an on-premises server, edge device, or virtual machine (VM) when it is activated as a Systems Manager managed node. The name is specified as the <code>DefaultInstanceName</code> property using the <a>CreateActivation</a> command. It is applied to the managed node by specifying the Activation Code and Activation ID when you install SSM Agent on the node, as explained in <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/hybrid-multicloud-ssm-agent-install-linux.html\">How to install SSM Agent on hybrid Linux nodes</a> and <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/hybrid-multicloud-ssm-agent-install-windows.html\">How to install SSM Agent on hybrid Windows Server nodes</a>. To retrieve the <code>Name</code> tag of an EC2 instance, use the Amazon EC2 <code>DescribeInstances</code> operation. For information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstances.html\">DescribeInstances</a> in the <i>Amazon EC2 API Reference</i> or <a href=\"https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-instances.html\">describe-instances</a> in the <i>Amazon Web Services CLI Command Reference</i>.</p>"
         },
         "IPAddress":{
           "shape":"IPAddress",
@@ -9052,7 +9321,7 @@
         },
         "InstallOverrideList":{
           "shape":"InstallOverrideList",
-          "documentation":"<p>An https URL or an Amazon Simple Storage Service (Amazon S3) path-style URL to a list of patches to be installed. This patch installation list, which you maintain in an S3 bucket in YAML format and specify in the SSM document <code>AWS-RunPatchBaseline</code>, overrides the patches specified by the default patch baseline.</p> <p>For more information about the <code>InstallOverrideList</code> parameter, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-about-aws-runpatchbaseline.html\">About the <code>AWS-RunPatchBaseline SSM document</code> </a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>An https URL or an Amazon Simple Storage Service (Amazon S3) path-style URL to a list of patches to be installed. This patch installation list, which you maintain in an S3 bucket in YAML format and specify in the SSM document <code>AWS-RunPatchBaseline</code>, overrides the patches specified by the default patch baseline.</p> <p>For more information about the <code>InstallOverrideList</code> parameter, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-about-aws-runpatchbaseline.html\">SSM Command document for patching: <code>AWS-RunPatchBaseline</code> </a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "OwnerInformation":{
           "shape":"OwnerInformation",
@@ -9224,7 +9493,7 @@
         },
         "Architecture":{
           "shape":"Architecture",
-          "documentation":"<p>The CPU architecture of the node. For example, x86_64.</p>"
+          "documentation":"<p>The CPU architecture of the node. For example, <code>x86_64</code>.</p>"
         },
         "IPAddress":{
           "shape":"IPAddress",
@@ -9248,7 +9517,7 @@
         },
         "PlatformType":{
           "shape":"PlatformType",
-          "documentation":"<p>The operating system platform type of the managed node. For example, Windows.</p>"
+          "documentation":"<p>The operating system platform type of the managed node. For example, Windows Server or Amazon Linux 2.</p>"
         },
         "PlatformName":{
           "shape":"PlatformName",
@@ -9404,6 +9673,11 @@
       "type":"string",
       "max":120
     },
+    "InstanceStatus":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "InstanceTagName":{
       "type":"string",
       "max":255
@@ -9436,7 +9710,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The activation ID isn't valid. Verify the you entered the correct ActivationId or ActivationCode and try again.</p>",
+      "documentation":"<p>The activation ID isn't valid. Verify that you entered the correct ActivationId or ActivationCode and try again.</p>",
       "exception":true
     },
     "InvalidAggregatorException":{
@@ -9444,7 +9718,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The specified aggregator isn't valid for inventory groups. Verify that the aggregator uses a valid inventory type such as <code>AWS:Application</code> or <code>AWS:InstanceInformation</code>.</p>",
+      "documentation":"<p>The specified aggregator isn't valid for the group type. Verify that the aggregator you provided is supported.</p>",
       "exception":true
     },
     "InvalidAllowedPatternException":{
@@ -9580,7 +9854,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The filter name isn't valid. Verify the you entered the correct name and try again.</p>",
+      "documentation":"<p>The filter name isn't valid. Verify that you entered the correct name and try again.</p>",
       "exception":true
     },
     "InvalidFilterKey":{
@@ -9900,7 +10174,7 @@
         },
         "DeletionSummary":{
           "shape":"InventoryDeletionSummary",
-          "documentation":"<p>Information about the delete operation. For more information about this summary, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-inventory-custom.html#sysman-inventory-delete\">Understanding the delete inventory summary</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>Information about the delete operation. For more information about this summary, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-custom.html#delete-custom-inventory\">Understanding the delete inventory summary</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "LastStatusUpdateTime":{
           "shape":"InventoryDeletionLastStatusUpdateTime",
@@ -9970,7 +10244,7 @@
         },
         "Type":{
           "shape":"InventoryQueryOperatorType",
-          "documentation":"<p>The type of filter.</p> <note> <p>The <code>Exists</code> filter must be used with aggregators. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-inventory-aggregate.html\">Aggregating inventory data</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </note>"
+          "documentation":"<p>The type of filter.</p> <note> <p>The <code>Exists</code> filter must be used with aggregators. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-aggregate.html\">Aggregating inventory data</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </note>"
         }
       },
       "documentation":"<p>One or more filters. Use a filter to return a more specific list of results.</p>"
@@ -10246,6 +10520,12 @@
     "InvocationTraceOutput":{
       "type":"string",
       "max":2500
+    },
+    "IpAddress":{
+      "type":"string",
+      "max":46,
+      "min":1,
+      "sensitive":true
     },
     "IsSubTypeSchema":{"type":"boolean"},
     "ItemContentMismatchException":{
@@ -10709,6 +10989,81 @@
         "Entries":{
           "shape":"InventoryItemEntryList",
           "documentation":"<p>A list of inventory items on the managed nodes.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.</p>"
+        }
+      }
+    },
+    "ListNodesRequest":{
+      "type":"structure",
+      "members":{
+        "SyncName":{
+          "shape":"ResourceDataSyncName",
+          "documentation":"<p>The name of the resource data sync to retrieve information about. Required for cross-account/cross-Region configurations. Optional for single account/single-Region configurations.</p>"
+        },
+        "Filters":{
+          "shape":"NodeFilterList",
+          "documentation":"<p>One or more filters. Use a filter to return a more specific list of managed nodes.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.</p>",
+          "box":true
+        }
+      }
+    },
+    "ListNodesResult":{
+      "type":"structure",
+      "members":{
+        "Nodes":{
+          "shape":"NodeList",
+          "documentation":"<p>A list of managed nodes that match the specified filter criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.</p>"
+        }
+      }
+    },
+    "ListNodesSummaryRequest":{
+      "type":"structure",
+      "required":["Aggregators"],
+      "members":{
+        "SyncName":{
+          "shape":"ResourceDataSyncName",
+          "documentation":"<p>The name of the resource data sync to retrieve information about. Required for cross-account/cross-Region configuration. Optional for single account/single-Region configurations.</p>"
+        },
+        "Filters":{
+          "shape":"NodeFilterList",
+          "documentation":"<p>One or more filters. Use a filter to generate a summary that matches your specified filter criteria.</p>"
+        },
+        "Aggregators":{
+          "shape":"NodeAggregatorList",
+          "documentation":"<p>Specify one or more aggregators to return a count of managed nodes that match that expression. For example, a count of managed nodes by operating system.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.) The call also returns a token that you can specify in a subsequent call to get the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.</p>",
+          "box":true
+        }
+      }
+    },
+    "ListNodesSummaryResult":{
+      "type":"structure",
+      "members":{
+        "Summary":{
+          "shape":"NodeSummaryList",
+          "documentation":"<p>A collection of objects reporting information about your managed nodes, such as the count of nodes by operating system.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -11353,7 +11708,7 @@
         },
         "ServiceRoleArn":{
           "shape":"ServiceRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) service role to use to publish Amazon Simple Notification Service (Amazon SNS) notifications for maintenance window Run Command tasks.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role for Amazon Web Services Systems Manager to assume when running a maintenance window task. If you do not specify a service role ARN, Systems Manager uses a service-linked role in your account. If no appropriate service-linked role for Systems Manager exists in your account, it is created when you run <code>RegisterTaskWithMaintenanceWindow</code>.</p> <p>However, for an improved security posture, we strongly recommend creating a custom policy and custom service role for running your maintenance window tasks. The policy can be crafted to provide only the permissions needed for your particular maintenance window tasks. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-maintenance-permissions.html\">Setting up Maintenance Windows</a> in the in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "TimeoutSeconds":{
           "shape":"TimeoutSeconds",
@@ -11478,7 +11833,7 @@
         },
         "ServiceRoleArn":{
           "shape":"ServiceRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) service role to use to publish Amazon Simple Notification Service (Amazon SNS) notifications for maintenance window Run Command tasks.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role for Amazon Web Services Systems Manager to assume when running a maintenance window task. If you do not specify a service role ARN, Systems Manager uses a service-linked role in your account. If no appropriate service-linked role for Systems Manager exists in your account, it is created when you run <code>RegisterTaskWithMaintenanceWindow</code>.</p> <p>However, for an improved security posture, we strongly recommend creating a custom policy and custom service role for running your maintenance window tasks. The policy can be crafted to provide only the permissions needed for your particular maintenance window tasks. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-maintenance-permissions.html\">Setting up Maintenance Windows</a> in the in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "MaxConcurrency":{
           "shape":"MaxConcurrency",
@@ -11626,6 +11981,14 @@
       "min":20,
       "pattern":"(^mi-[0-9a-f]{17}$)|(^eks_c:[0-9A-Za-z][A-Za-z0-9\\-_]{0,99}_\\w{17}$)"
     },
+    "ManagedStatus":{
+      "type":"string",
+      "enum":[
+        "All",
+        "Managed",
+        "Unmanaged"
+      ]
+    },
     "MaxConcurrency":{
       "type":"string",
       "max":7,
@@ -11731,6 +12094,225 @@
       }
     },
     "NextToken":{"type":"string"},
+    "Node":{
+      "type":"structure",
+      "members":{
+        "CaptureTime":{
+          "shape":"NodeCaptureTime",
+          "documentation":"<p>The UTC timestamp for when the managed node data was last captured.</p>"
+        },
+        "Id":{
+          "shape":"NodeId",
+          "documentation":"<p>The ID of the managed node.</p>"
+        },
+        "Owner":{
+          "shape":"NodeOwnerInfo",
+          "documentation":"<p>Information about the ownership of the managed node.</p>"
+        },
+        "Region":{
+          "shape":"NodeRegion",
+          "documentation":"<p>The Amazon Web Services Region that a managed node was created in or assigned to.</p>"
+        },
+        "NodeType":{
+          "shape":"NodeType",
+          "documentation":"<p>Information about the type of node.</p>"
+        }
+      },
+      "documentation":"<p>Details about an individual managed node.</p>"
+    },
+    "NodeAccountId":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
+    "NodeAggregator":{
+      "type":"structure",
+      "required":[
+        "AggregatorType",
+        "TypeName",
+        "AttributeName"
+      ],
+      "members":{
+        "AggregatorType":{
+          "shape":"NodeAggregatorType",
+          "documentation":"<p>The aggregator type for limiting a node summary. Currently, only <code>Count</code> is supported.</p>"
+        },
+        "TypeName":{
+          "shape":"NodeTypeName",
+          "documentation":"<p>The data type name to use for viewing counts of nodes. Currently, only <code>Instance</code> is supported.</p>"
+        },
+        "AttributeName":{
+          "shape":"NodeAttributeName",
+          "documentation":"<p>The name of a node attribute on which to limit the count of nodes.</p>"
+        },
+        "Aggregators":{
+          "shape":"NodeAggregatorList",
+          "documentation":"<p>Information about aggregators used to refine a node summary.</p>"
+        }
+      },
+      "documentation":"<p>One or more aggregators for viewing counts of nodes using different dimensions.</p>"
+    },
+    "NodeAggregatorList":{
+      "type":"list",
+      "member":{"shape":"NodeAggregator"},
+      "max":2,
+      "min":1
+    },
+    "NodeAggregatorType":{
+      "type":"string",
+      "enum":["Count"]
+    },
+    "NodeAttributeName":{
+      "type":"string",
+      "enum":[
+        "AgentVersion",
+        "PlatformName",
+        "PlatformType",
+        "PlatformVersion",
+        "Region",
+        "ResourceType"
+      ]
+    },
+    "NodeCaptureTime":{"type":"timestamp"},
+    "NodeFilter":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Values"
+      ],
+      "members":{
+        "Key":{
+          "shape":"NodeFilterKey",
+          "documentation":"<p>The name of the filter.</p>"
+        },
+        "Values":{
+          "shape":"NodeFilterValueList",
+          "documentation":"<p>A filter value supported by the specified key. For example, for the key <code>PlatformType</code>, supported values include <code>Linux</code> and <code>Windows</code>.</p>"
+        },
+        "Type":{
+          "shape":"NodeFilterOperatorType",
+          "documentation":"<p>The type of filter operator.</p>"
+        }
+      },
+      "documentation":"<p>The filters for the operation.</p>"
+    },
+    "NodeFilterKey":{
+      "type":"string",
+      "enum":[
+        "AgentType",
+        "AgentVersion",
+        "ComputerName",
+        "InstanceId",
+        "InstanceStatus",
+        "IpAddress",
+        "ManagedStatus",
+        "PlatformName",
+        "PlatformType",
+        "PlatformVersion",
+        "ResourceType",
+        "OrganizationalUnitId",
+        "OrganizationalUnitPath",
+        "Region",
+        "AccountId"
+      ]
+    },
+    "NodeFilterList":{
+      "type":"list",
+      "member":{"shape":"NodeFilter"},
+      "max":5,
+      "min":1
+    },
+    "NodeFilterOperatorType":{
+      "type":"string",
+      "enum":[
+        "Equal",
+        "NotEqual",
+        "BeginWith"
+      ]
+    },
+    "NodeFilterValue":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+    },
+    "NodeFilterValueList":{
+      "type":"list",
+      "member":{"shape":"NodeFilterValue"},
+      "max":5,
+      "min":1
+    },
+    "NodeId":{
+      "type":"string",
+      "pattern":"(^i-(\\w{8}|\\w{17})$)|(^mi-\\w{17}$)"
+    },
+    "NodeList":{
+      "type":"list",
+      "member":{"shape":"Node"},
+      "max":50,
+      "min":0
+    },
+    "NodeOrganizationalUnitId":{
+      "type":"string",
+      "max":68,
+      "min":1,
+      "pattern":"^ou-[0-9a-z]{4,32}-[a-z0-9]{8,32}$"
+    },
+    "NodeOrganizationalUnitPath":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "NodeOwnerInfo":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"NodeAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the managed node.</p>"
+        },
+        "OrganizationalUnitId":{
+          "shape":"NodeOrganizationalUnitId",
+          "documentation":"<p>The ID of the organization unit (OU) that the account is part of.</p>"
+        },
+        "OrganizationalUnitPath":{
+          "shape":"NodeOrganizationalUnitPath",
+          "documentation":"<p>The path for the organizational unit (OU) that owns the managed node. The path for the OU is built using the IDs of the organization, root, and all OUs in the path down to and including the OU. For example:</p> <p> <code>o-a1b2c3d4e5/r-f6g7h8i9j0example/ou-ghi0-awsccccc/ou-jkl0-awsddddd/</code> </p>"
+        }
+      },
+      "documentation":"<p>Information about ownership of a managed node.</p>"
+    },
+    "NodeRegion":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "NodeSummary":{
+      "type":"map",
+      "key":{"shape":"AttributeName"},
+      "value":{"shape":"AttributeValue"},
+      "max":3,
+      "min":0
+    },
+    "NodeSummaryList":{
+      "type":"list",
+      "member":{"shape":"NodeSummary"},
+      "max":50,
+      "min":0
+    },
+    "NodeType":{
+      "type":"structure",
+      "members":{
+        "Instance":{
+          "shape":"InstanceInfo",
+          "documentation":"<p>Information about a specific managed node.</p>"
+        }
+      },
+      "documentation":"<p>Information about a managed node's type.</p>",
+      "union":true
+    },
+    "NodeTypeName":{
+      "type":"string",
+      "enum":["Instance"]
+    },
     "NonCompliantSummary":{
       "type":"structure",
       "members":{
@@ -12033,7 +12615,7 @@
         },
         "Status":{
           "shape":"OpsItemStatus",
-          "documentation":"<p>The OpsItem status. Status can be <code>Open</code>, <code>In Progress</code>, or <code>Resolved</code>. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter-working-with-OpsItems-editing-details.html\">Editing OpsItem details</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>The OpsItem status. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter-working-with-OpsItems-editing-details.html\">Editing OpsItem details</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "OpsItemId":{
           "shape":"OpsItemId",
@@ -12585,7 +13167,7 @@
         },
         "Status":{
           "shape":"OpsItemStatus",
-          "documentation":"<p>The OpsItem status. Status can be <code>Open</code>, <code>In Progress</code>, or <code>Resolved</code>.</p>"
+          "documentation":"<p>The OpsItem status.</p>"
         },
         "OpsItemId":{
           "shape":"OpsItemId",
@@ -13013,7 +13595,7 @@
         },
         "ARN":{
           "shape":"String",
-          "documentation":"<p>The (ARN) of the last user to update the parameter.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the parameter.</p>"
         },
         "Type":{
           "shape":"ParameterType",
@@ -13385,7 +13967,7 @@
         },
         "DefaultBaseline":{
           "shape":"DefaultBaseline",
-          "documentation":"<p>Whether this is the default baseline. Amazon Web Services Systems Manager supports creating multiple default patch baselines. For example, you can create a default patch baseline for each operating system.</p>"
+          "documentation":"<p>Indicates whether this is the default baseline. Amazon Web Services Systems Manager supports creating multiple default patch baselines. For example, you can create a default patch baseline for each operating system.</p>"
         }
       },
       "documentation":"<p>Defines the basic information about a patch baseline.</p>"
@@ -13440,7 +14022,7 @@
         },
         "State":{
           "shape":"PatchComplianceDataState",
-          "documentation":"<p>The state of the patch on the managed node, such as INSTALLED or FAILED.</p> <p>For descriptions of each patch state, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-compliance-about.html#sysman-compliance-monitor-patch\">About patch compliance</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>The state of the patch on the managed node, such as INSTALLED or FAILED.</p> <p>For descriptions of each patch state, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/compliance-about.html#compliance-monitor-patch\">About patch compliance</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "InstalledTime":{
           "shape":"DateTime",
@@ -13703,12 +14285,12 @@
         },
         "ApproveAfterDays":{
           "shape":"ApproveAfterDays",
-          "documentation":"<p>The number of days after the release date of each patch matched by the rule that the patch is marked as approved in the patch baseline. For example, a value of <code>7</code> means that patches are approved seven days after they are released. Not supported on Debian Server or Ubuntu Server.</p>",
+          "documentation":"<p>The number of days after the release date of each patch matched by the rule that the patch is marked as approved in the patch baseline. For example, a value of <code>7</code> means that patches are approved seven days after they are released.</p> <p>This parameter is marked as <code>Required: No</code>, but your request must include a value for either <code>ApproveAfterDays</code> or <code>ApproveUntilDate</code>.</p> <p>Not supported for Debian Server or Ubuntu Server.</p> <important> <p>Use caution when setting this value for Windows Server patch baselines. Because patch updates that are replaced by later updates are removed, setting too broad a value for this parameter can result in crucial patches not being installed. For more information, see the <b>Windows Server</b> tab in the topic <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-selecting-patches.html\">How security patches are selected</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important>",
           "box":true
         },
         "ApproveUntilDate":{
           "shape":"PatchStringDateTime",
-          "documentation":"<p>The cutoff date for auto approval of released patches. Any patches released on or before this date are installed automatically. Not supported on Debian Server or Ubuntu Server.</p> <p>Enter dates in the format <code>YYYY-MM-DD</code>. For example, <code>2021-12-31</code>.</p>",
+          "documentation":"<p>The cutoff date for auto approval of released patches. Any patches released on or before this date are installed automatically.</p> <p>Enter dates in the format <code>YYYY-MM-DD</code>. For example, <code>2024-12-31</code>.</p> <p>This parameter is marked as <code>Required: No</code>, but your request must include a value for either <code>ApproveUntilDate</code> or <code>ApproveAfterDays</code>.</p> <p>Not supported for Debian Server or Ubuntu Server.</p> <important> <p>Use caution when setting this value for Windows Server patch baselines. Because patch updates that are replaced by later updates are removed, setting too broad a value for this parameter can result in crucial patches not being installed. For more information, see the <b>Windows Server</b> tab in the topic <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-selecting-patches.html\">How security patches are selected</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important>",
           "box":true
         },
         "EnableNonSecurity":{
@@ -14077,6 +14659,12 @@
       ]
     },
     "Region":{"type":"string"},
+    "RegionList":{
+      "type":"list",
+      "member":{"shape":"Region"},
+      "max":50,
+      "min":1
+    },
     "Regions":{
       "type":"list",
       "member":{"shape":"Region"},
@@ -14203,7 +14791,7 @@
         },
         "ServiceRoleArn":{
           "shape":"ServiceRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role for Amazon Web Services Systems Manager to assume when running a maintenance window task. If you do not specify a service role ARN, Systems Manager uses a service-linked role in your account. If no appropriate service-linked role for Systems Manager exists in your account, it is created when you run <code>RegisterTaskWithMaintenanceWindow</code>.</p> <p>However, for an improved security posture, we strongly recommend creating a custom policy and custom service role for running your maintenance window tasks. The policy can be crafted to provide only the permissions needed for your particular maintenance window tasks. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-maintenance-permissions.html\">Setting up maintenance windows</a> in the in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role for Amazon Web Services Systems Manager to assume when running a maintenance window task. If you do not specify a service role ARN, Systems Manager uses a service-linked role in your account. If no appropriate service-linked role for Systems Manager exists in your account, it is created when you run <code>RegisterTaskWithMaintenanceWindow</code>.</p> <p>However, for an improved security posture, we strongly recommend creating a custom policy and custom service role for running your maintenance window tasks. The policy can be crafted to provide only the permissions needed for your particular maintenance window tasks. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-maintenance-permissions.html\">Setting up Maintenance Windows</a> in the in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "TaskType":{
           "shape":"MaintenanceWindowTaskType",
@@ -14367,7 +14955,7 @@
       "members":{
         "SettingId":{
           "shape":"ServiceSettingId",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the service setting to reset. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/managed-instance/default-ec2-instance-management-role</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service setting to reset. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/appmanager/appmanager-enabled</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p>/ssm/automation/enable-adaptive-concurrency</p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/managed-instance/default-ec2-instance-management-role</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>The request body of the ResetServiceSetting API operation.</p>"
@@ -15275,7 +15863,7 @@
         },
         "value":{
           "shape":"SessionFilterValue",
-          "documentation":"<p>The filter value. Valid values for each filter key are as follows:</p> <ul> <li> <p>InvokedAfter: Specify a timestamp to limit your results. For example, specify 2018-08-29T00:00:00Z to see sessions that started August 29, 2018, and later.</p> </li> <li> <p>InvokedBefore: Specify a timestamp to limit your results. For example, specify 2018-08-29T00:00:00Z to see sessions that started before August 29, 2018.</p> </li> <li> <p>Target: Specify a managed node to which session connections have been made.</p> </li> <li> <p>Owner: Specify an Amazon Web Services user to see a list of sessions started by that user.</p> </li> <li> <p>Status: Specify a valid session status to see a list of all sessions with that status. Status values you can specify include:</p> <ul> <li> <p>Connected</p> </li> <li> <p>Connecting</p> </li> <li> <p>Disconnected</p> </li> <li> <p>Terminated</p> </li> <li> <p>Terminating</p> </li> <li> <p>Failed</p> </li> </ul> </li> <li> <p>SessionId: Specify a session ID to return details about the session.</p> </li> </ul>"
+          "documentation":"<p>The filter value. Valid values for each filter key are as follows:</p> <ul> <li> <p>InvokedAfter: Specify a timestamp to limit your results. For example, specify 2024-08-29T00:00:00Z to see sessions that started August 29, 2024, and later.</p> </li> <li> <p>InvokedBefore: Specify a timestamp to limit your results. For example, specify 2024-08-29T00:00:00Z to see sessions that started before August 29, 2024.</p> </li> <li> <p>Target: Specify a managed node to which session connections have been made.</p> </li> <li> <p>Owner: Specify an Amazon Web Services user to see a list of sessions started by that user.</p> </li> <li> <p>Status: Specify a valid session status to see a list of all sessions with that status. Status values you can specify include:</p> <ul> <li> <p>Connected</p> </li> <li> <p>Connecting</p> </li> <li> <p>Disconnected</p> </li> <li> <p>Terminated</p> </li> <li> <p>Terminating</p> </li> <li> <p>Failed</p> </li> </ul> </li> <li> <p>SessionId: Specify a session ID to return details about the session.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Describes a filter for Session Manager information.</p>"
@@ -15514,7 +16102,7 @@
         },
         "Targets":{
           "shape":"Targets",
-          "documentation":"<p>A key-value mapping to target resources. Required if you specify TargetParameterName.</p>"
+          "documentation":"<p>A key-value mapping to target resources. Required if you specify TargetParameterName.</p> <p>If both this parameter and the <code>TargetLocation:Targets</code> parameter are supplied, <code>TargetLocation:Targets</code> takes precedence.</p>"
         },
         "TargetMaps":{
           "shape":"TargetMaps",
@@ -15522,15 +16110,15 @@
         },
         "MaxConcurrency":{
           "shape":"MaxConcurrency",
-          "documentation":"<p>The maximum number of targets allowed to run this task in parallel. You can specify a number, such as 10, or a percentage, such as 10%. The default value is <code>10</code>.</p>"
+          "documentation":"<p>The maximum number of targets allowed to run this task in parallel. You can specify a number, such as 10, or a percentage, such as 10%. The default value is <code>10</code>.</p> <p>If both this parameter and the <code>TargetLocation:TargetsMaxConcurrency</code> are supplied, <code>TargetLocation:TargetsMaxConcurrency</code> takes precedence.</p>"
         },
         "MaxErrors":{
           "shape":"MaxErrors",
-          "documentation":"<p>The number of errors that are allowed before the system stops running the automation on additional targets. You can specify either an absolute number of errors, for example 10, or a percentage of the target set, for example 10%. If you specify 3, for example, the system stops running the automation when the fourth error is received. If you specify 0, then the system stops running the automation on additional targets after the first error result is returned. If you run an automation on 50 resources and set max-errors to 10%, then the system stops running the automation on additional targets when the sixth error is received.</p> <p>Executions that are already running an automation when max-errors is reached are allowed to complete, but some of these executions may fail as well. If you need to ensure that there won't be more than max-errors failed executions, set max-concurrency to 1 so the executions proceed one at a time.</p>"
+          "documentation":"<p>The number of errors that are allowed before the system stops running the automation on additional targets. You can specify either an absolute number of errors, for example 10, or a percentage of the target set, for example 10%. If you specify 3, for example, the system stops running the automation when the fourth error is received. If you specify 0, then the system stops running the automation on additional targets after the first error result is returned. If you run an automation on 50 resources and set max-errors to 10%, then the system stops running the automation on additional targets when the sixth error is received.</p> <p>Executions that are already running an automation when max-errors is reached are allowed to complete, but some of these executions may fail as well. If you need to ensure that there won't be more than max-errors failed executions, set max-concurrency to 1 so the executions proceed one at a time.</p> <p>If this parameter and the <code>TargetLocation:TargetsMaxErrors</code> parameter are both supplied, <code>TargetLocation:TargetsMaxErrors</code> takes precedence.</p>"
         },
         "TargetLocations":{
           "shape":"TargetLocations",
-          "documentation":"<p>A location is a combination of Amazon Web Services Regions and/or Amazon Web Services accounts where you want to run the automation. Use this operation to start an automation in multiple Amazon Web Services Regions and multiple Amazon Web Services accounts. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation-multiple-accounts-and-regions.html\">Running Automation workflows in multiple Amazon Web Services Regions and Amazon Web Services accounts</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p>",
+          "documentation":"<p>A location is a combination of Amazon Web Services Regions and/or Amazon Web Services accounts where you want to run the automation. Use this operation to start an automation in multiple Amazon Web Services Regions and multiple Amazon Web Services accounts. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-automation-multiple-accounts-and-regions.html\">Running automations in multiple Amazon Web Services Regions and accounts</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p>",
           "box":true
         },
         "Tags":{
@@ -15540,6 +16128,10 @@
         "AlarmConfiguration":{
           "shape":"AlarmConfiguration",
           "documentation":"<p>The CloudWatch alarm you want to apply to your automation.</p>"
+        },
+        "TargetLocationsURL":{
+          "shape":"TargetLocationsURL",
+          "documentation":"<p>Specify a publicly accessible URL for a file that contains the <code>TargetLocations</code> body. Currently, only files in presigned Amazon S3 buckets are supported. </p>"
         }
       }
     },
@@ -15612,6 +16204,33 @@
         "AutomationExecutionId":{
           "shape":"AutomationExecutionId",
           "documentation":"<p>The unique ID of a runbook workflow operation. (A runbook workflow is a type of Automation operation.) </p>"
+        }
+      }
+    },
+    "StartExecutionPreviewRequest":{
+      "type":"structure",
+      "required":["DocumentName"],
+      "members":{
+        "DocumentName":{
+          "shape":"DocumentName",
+          "documentation":"<p>The name of the Automation runbook to run. The result of the execution preview indicates what the impact would be of running this runbook.</p>"
+        },
+        "DocumentVersion":{
+          "shape":"DocumentVersion",
+          "documentation":"<p>The version of the Automation runbook to run. The default value is <code>$DEFAULT</code>.</p>"
+        },
+        "ExecutionInputs":{
+          "shape":"ExecutionInputs",
+          "documentation":"<p>Information about the inputs that can be specified for the preview operation. </p>"
+        }
+      }
+    },
+    "StartExecutionPreviewResponse":{
+      "type":"structure",
+      "members":{
+        "ExecutionPreviewId":{
+          "shape":"ExecutionPreviewId",
+          "documentation":"<p>The ID of the execution preview generated by the system.</p>"
         }
       }
     },
@@ -15838,6 +16457,11 @@
       "type":"list",
       "member":{"shape":"StepExecution"}
     },
+    "StepPreviewMap":{
+      "type":"map",
+      "key":{"shape":"ImpactType"},
+      "value":{"shape":"Integer"}
+    },
     "StopAutomationExecutionRequest":{
       "type":"structure",
       "required":["AutomationExecutionId"],
@@ -15975,6 +16599,26 @@
         "TargetLocationAlarmConfiguration":{
           "shape":"AlarmConfiguration",
           "box":true
+        },
+        "IncludeChildOrganizationUnits":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to include child organizational units (OUs) that are children of the targeted OUs. The default is <code>false</code>.</p>"
+        },
+        "ExcludeAccounts":{
+          "shape":"ExcludeAccounts",
+          "documentation":"<p>Amazon Web Services accounts or organizational units to exclude as expanded targets.</p>"
+        },
+        "Targets":{
+          "shape":"Targets",
+          "documentation":"<p>A list of key-value mappings to target resources. If you specify values for this data type, you must also specify a value for <code>TargetParameterName</code>.</p> <p>This <code>Targets</code> parameter takes precedence over the <code>StartAutomationExecution:Targets</code> parameter if both are supplied.</p>"
+        },
+        "TargetsMaxConcurrency":{
+          "shape":"MaxConcurrency",
+          "documentation":"<p>The maximum number of targets allowed to run this task in parallel. This <code>TargetsMaxConcurrency</code> takes precedence over the <code>StartAutomationExecution:MaxConcurrency</code> parameter if both are supplied.</p>"
+        },
+        "TargetsMaxErrors":{
+          "shape":"MaxErrors",
+          "documentation":"<p>The maximum number of errors that are allowed before the system stops running the automation on additional targets. This <code>TargetsMaxErrors</code> parameter takes precedence over the <code>StartAutomationExecution:MaxErrors</code> parameter if both are supplied.</p>"
         }
       },
       "documentation":"<p>The combination of Amazon Web Services Regions and Amazon Web Services accounts targeted by the current Automation execution.</p>"
@@ -15984,6 +16628,10 @@
       "member":{"shape":"TargetLocation"},
       "max":100,
       "min":1
+    },
+    "TargetLocationsURL":{
+      "type":"string",
+      "pattern":"^https:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,253}\\.s3(\\.[a-z\\d-]{9,16})?\\.amazonaws\\.com\\/.{1,2000}"
     },
     "TargetMap":{
       "type":"map",
@@ -16019,12 +16667,32 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The specified target managed node for the session isn't fully configured for use with Session Manager. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-getting-started.html\">Getting started with Session Manager</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. This error is also returned if you attempt to start a session on a managed node that is located in a different account or Region</p>",
+      "documentation":"<p>The specified target managed node for the session isn't fully configured for use with Session Manager. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-getting-started.html\">Setting up Session Manager</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. This error is also returned if you attempt to start a session on a managed node that is located in a different account or Region</p>",
       "exception":true
     },
     "TargetParameterList":{
       "type":"list",
       "member":{"shape":"ParameterValue"}
+    },
+    "TargetPreview":{
+      "type":"structure",
+      "members":{
+        "Count":{
+          "shape":"Integer",
+          "documentation":"<p>The number of resources of a certain type included in an execution preview.</p>"
+        },
+        "TargetType":{
+          "shape":"String",
+          "documentation":"<p>A type of resource that was included in the execution preview.</p>"
+        }
+      },
+      "documentation":"<p>Information about the resources that would be included in the actual runbook execution, if it were to be run.</p>"
+    },
+    "TargetPreviewList":{
+      "type":"list",
+      "member":{"shape":"TargetPreview"},
+      "max":50,
+      "min":0
     },
     "TargetType":{
       "type":"string",
@@ -16176,6 +16844,14 @@
         "Message":{"shape":"String"}
       },
       "documentation":"<p>The operating systems you specified isn't supported, or the operation isn't supported for the operating system.</p>",
+      "exception":true
+    },
+    "UnsupportedOperationException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>This operation is not supported for the current account. You must first enable the Systems Manager integrated experience in your account.</p>",
       "exception":true
     },
     "UnsupportedParameterType":{
@@ -16636,7 +17312,7 @@
         },
         "ServiceRoleArn":{
           "shape":"ServiceRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role for Amazon Web Services Systems Manager to assume when running a maintenance window task. If you do not specify a service role ARN, Systems Manager uses a service-linked role in your account. If no appropriate service-linked role for Systems Manager exists in your account, it is created when you run <code>RegisterTaskWithMaintenanceWindow</code>.</p> <p>However, for an improved security posture, we strongly recommend creating a custom policy and custom service role for running your maintenance window tasks. The policy can be crafted to provide only the permissions needed for your particular maintenance window tasks. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-maintenance-permissions.html\">Setting up maintenance windows</a> in the in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role for Amazon Web Services Systems Manager to assume when running a maintenance window task. If you do not specify a service role ARN, Systems Manager uses a service-linked role in your account. If no appropriate service-linked role for Systems Manager exists in your account, it is created when you run <code>RegisterTaskWithMaintenanceWindow</code>.</p> <p>However, for an improved security posture, we strongly recommend creating a custom policy and custom service role for running your maintenance window tasks. The policy can be crafted to provide only the permissions needed for your particular maintenance window tasks. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-maintenance-permissions.html\">Setting up Maintenance Windows</a> in the in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "TaskParameters":{
           "shape":"MaintenanceWindowTaskParameters",
@@ -16708,7 +17384,7 @@
         },
         "ServiceRoleArn":{
           "shape":"ServiceRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Identity and Access Management (IAM) service role to use to publish Amazon Simple Notification Service (Amazon SNS) notifications for maintenance window Run Command tasks.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role for Amazon Web Services Systems Manager to assume when running a maintenance window task. If you do not specify a service role ARN, Systems Manager uses a service-linked role in your account. If no appropriate service-linked role for Systems Manager exists in your account, it is created when you run <code>RegisterTaskWithMaintenanceWindow</code>.</p> <p>However, for an improved security posture, we strongly recommend creating a custom policy and custom service role for running your maintenance window tasks. The policy can be crafted to provide only the permissions needed for your particular maintenance window tasks. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-maintenance-permissions.html\">Setting up Maintenance Windows</a> in the in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "TaskParameters":{
           "shape":"MaintenanceWindowTaskParameters",
@@ -16766,7 +17442,7 @@
         },
         "IamRole":{
           "shape":"IamRole",
-          "documentation":"<p>The name of the Identity and Access Management (IAM) role that you want to assign to the managed node. This IAM role must provide AssumeRole permissions for the Amazon Web Services Systems Manager service principal <code>ssm.amazonaws.com</code>. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-service-role.html\">Create an IAM service role for a hybrid and multicloud environment</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <note> <p>You can't specify an IAM service-linked role for this parameter. You must create a unique role.</p> </note>"
+          "documentation":"<p>The name of the Identity and Access Management (IAM) role that you want to assign to the managed node. This IAM role must provide AssumeRole permissions for the Amazon Web Services Systems Manager service principal <code>ssm.amazonaws.com</code>. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/hybrid-multicloud-service-role.html\">Create the IAM service role required for Systems Manager in hybrid and multicloud environments</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <note> <p>You can't specify an IAM service-linked role for this parameter. You must create a unique role.</p> </note>"
         }
       }
     },
@@ -16805,7 +17481,7 @@
         },
         "Status":{
           "shape":"OpsItemStatus",
-          "documentation":"<p>The OpsItem status. Status can be <code>Open</code>, <code>In Progress</code>, or <code>Resolved</code>. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter-working-with-OpsItems-editing-details.html\">Editing OpsItem details</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>The OpsItem status. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/OpsCenter-working-with-OpsItems-editing-details.html\">Editing OpsItem details</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "OpsItemId":{
           "shape":"OpsItemId",
@@ -16891,7 +17567,7 @@
         },
         "GlobalFilters":{
           "shape":"PatchFilterGroup",
-          "documentation":"<p>A set of global filters used to include patches in the baseline.</p>"
+          "documentation":"<p>A set of global filters used to include patches in the baseline.</p> <important> <p>The <code>GlobalFilters</code> parameter can be configured only by using the CLI or an Amazon Web Services SDK. It can't be configured from the Patch Manager console, and its value isn't displayed in the console.</p> </important>"
         },
         "ApprovalRules":{
           "shape":"PatchRuleGroup",
@@ -16899,7 +17575,7 @@
         },
         "ApprovedPatches":{
           "shape":"PatchIdList",
-          "documentation":"<p>A list of explicitly approved patches for the baseline.</p> <p>For information about accepted formats for lists of approved patches and rejected patches, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-approved-rejected-package-name-formats.html\">About package name formats for approved and rejected patch lists</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>A list of explicitly approved patches for the baseline.</p> <p>For information about accepted formats for lists of approved patches and rejected patches, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-approved-rejected-package-name-formats.html\">Package name formats for approved and rejected patch lists</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "ApprovedPatchesComplianceLevel":{
           "shape":"PatchComplianceLevel",
@@ -16912,11 +17588,11 @@
         },
         "RejectedPatches":{
           "shape":"PatchIdList",
-          "documentation":"<p>A list of explicitly rejected patches for the baseline.</p> <p>For information about accepted formats for lists of approved patches and rejected patches, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-approved-rejected-package-name-formats.html\">About package name formats for approved and rejected patch lists</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>A list of explicitly rejected patches for the baseline.</p> <p>For information about accepted formats for lists of approved patches and rejected patches, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-approved-rejected-package-name-formats.html\">Package name formats for approved and rejected patch lists</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "RejectedPatchesAction":{
           "shape":"PatchAction",
-          "documentation":"<p>The action for Patch Manager to take on patches included in the <code>RejectedPackages</code> list.</p> <ul> <li> <p> <b> <code>ALLOW_AS_DEPENDENCY</code> </b>: A package in the <code>Rejected</code> patches list is installed only if it is a dependency of another package. It is considered compliant with the patch baseline, and its status is reported as <code>InstalledOther</code>. This is the default action if no option is specified.</p> </li> <li> <p> <b>BLOCK</b>: Packages in the <b>Rejected patches</b> list, and packages that include them as dependencies, aren't installed by Patch Manager under any circumstances. If a package was installed before it was added to the <b>Rejected patches</b> list, or is installed outside of Patch Manager afterward, it's considered noncompliant with the patch baseline and its status is reported as <i>InstalledRejected</i>.</p> </li> </ul>"
+          "documentation":"<p>The action for Patch Manager to take on patches included in the <code>RejectedPackages</code> list.</p> <dl> <dt>ALLOW_AS_DEPENDENCY</dt> <dd> <p> <b>Linux and macOS</b>: A package in the rejected patches list is installed only if it is a dependency of another package. It is considered compliant with the patch baseline, and its status is reported as <code>INSTALLED_OTHER</code>. This is the default action if no option is specified.</p> <p> <b>Windows Server</b>: Windows Server doesn't support the concept of package dependencies. If a package in the rejected patches list and already installed on the node, its status is reported as <code>INSTALLED_OTHER</code>. Any package not already installed on the node is skipped. This is the default action if no option is specified.</p> </dd> <dt>BLOCK</dt> <dd> <p> <b>All OSs</b>: Packages in the rejected patches list, and packages that include them as dependencies, aren't installed by Patch Manager under any circumstances. If a package was installed before it was added to the rejected patches list, or is installed outside of Patch Manager afterward, it's considered noncompliant with the patch baseline and its status is reported as <code>INSTALLED_REJECTED</code>.</p> </dd> </dl>"
         },
         "Description":{
           "shape":"BaselineDescription",
@@ -17031,11 +17707,11 @@
       "members":{
         "SettingId":{
           "shape":"ServiceSettingId",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the service setting to update. For example, <code>arn:aws:ssm:us-east-1:111122223333:servicesetting/ssm/parameter-store/high-throughput-enabled</code>. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/managed-instance/default-ec2-instance-management-role</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul> <note> <p>Permissions to update the <code>/ssm/managed-instance/default-ec2-instance-management-role</code> setting should only be provided to administrators. Implement least privilege access when allowing individuals to configure or modify the Default Host Management Configuration.</p> </note>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service setting to update. For example, <code>arn:aws:ssm:us-east-1:111122223333:servicesetting/ssm/parameter-store/high-throughput-enabled</code>. The setting ID can be one of the following.</p> <ul> <li> <p> <code>/ssm/appmanager/appmanager-enabled</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-destination</code> </p> </li> <li> <p> <code>/ssm/automation/customer-script-log-group-name</code> </p> </li> <li> <p>/ssm/automation/enable-adaptive-concurrency</p> </li> <li> <p> <code>/ssm/documents/console/public-sharing-permission</code> </p> </li> <li> <p> <code>/ssm/managed-instance/activation-tier</code> </p> </li> <li> <p> <code>/ssm/managed-instance/default-ec2-instance-management-role</code> </p> </li> <li> <p> <code>/ssm/opsinsights/opscenter</code> </p> </li> <li> <p> <code>/ssm/parameter-store/default-parameter-tier</code> </p> </li> <li> <p> <code>/ssm/parameter-store/high-throughput-enabled</code> </p> </li> </ul> <note> <p>Permissions to update the <code>/ssm/managed-instance/default-ec2-instance-management-role</code> setting should only be provided to administrators. Implement least privilege access when allowing individuals to configure or modify the Default Host Management Configuration.</p> </note>"
         },
         "SettingValue":{
           "shape":"ServiceSettingValue",
-          "documentation":"<p>The new value to specify for the service setting. The following list specifies the available values for each setting.</p> <ul> <li> <p>For <code>/ssm/managed-instance/default-ec2-instance-management-role</code>, enter the name of an IAM role. </p> </li> <li> <p>For <code>/ssm/automation/customer-script-log-destination</code>, enter <code>CloudWatch</code>.</p> </li> <li> <p>For <code>/ssm/automation/customer-script-log-group-name</code>, enter the name of an Amazon CloudWatch Logs log group.</p> </li> <li> <p>For <code>/ssm/documents/console/public-sharing-permission</code>, enter <code>Enable</code> or <code>Disable</code>.</p> </li> <li> <p>For <code>/ssm/managed-instance/activation-tier</code>, enter <code>standard</code> or <code>advanced</code>.</p> </li> <li> <p> For <code>/ssm/opsinsights/opscenter</code>, enter <code>Enabled</code> or <code>Disabled</code>. </p> </li> <li> <p>For <code>/ssm/parameter-store/default-parameter-tier</code>, enter <code>Standard</code>, <code>Advanced</code>, or <code>Intelligent-Tiering</code> </p> </li> <li> <p>For <code>/ssm/parameter-store/high-throughput-enabled</code>, enter <code>true</code> or <code>false</code>.</p> </li> </ul>"
+          "documentation":"<p>The new value to specify for the service setting. The following list specifies the available values for each setting.</p> <ul> <li> <p>For <code>/ssm/appmanager/appmanager-enabled</code>, enter <code>True</code> or <code>False</code>.</p> </li> <li> <p>For <code>/ssm/automation/customer-script-log-destination</code>, enter <code>CloudWatch</code>.</p> </li> <li> <p>For <code>/ssm/automation/customer-script-log-group-name</code>, enter the name of an Amazon CloudWatch Logs log group.</p> </li> <li> <p>For <code>/ssm/documents/console/public-sharing-permission</code>, enter <code>Enable</code> or <code>Disable</code>.</p> </li> <li> <p>For <code>/ssm/managed-instance/activation-tier</code>, enter <code>standard</code> or <code>advanced</code>.</p> </li> <li> <p>For <code>/ssm/managed-instance/default-ec2-instance-management-role</code>, enter the name of an IAM role. </p> </li> <li> <p> For <code>/ssm/opsinsights/opscenter</code>, enter <code>Enabled</code> or <code>Disabled</code>. </p> </li> <li> <p>For <code>/ssm/parameter-store/default-parameter-tier</code>, enter <code>Standard</code>, <code>Advanced</code>, or <code>Intelligent-Tiering</code> </p> </li> <li> <p>For <code>/ssm/parameter-store/high-throughput-enabled</code>, enter <code>true</code> or <code>false</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The request body of the UpdateServiceSetting API operation.</p>"
@@ -17055,6 +17731,18 @@
     "ValidNextStepList":{
       "type":"list",
       "member":{"shape":"ValidNextStep"}
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"},
+        "ReasonCode":{
+          "shape":"String",
+          "documentation":"<p>The reason code for the invalid request.</p>"
+        }
+      },
+      "documentation":"<p>The request isn't valid. Verify that you entered valid contents for the command and try again.</p>",
+      "exception":true
     },
     "Version":{
       "type":"string",

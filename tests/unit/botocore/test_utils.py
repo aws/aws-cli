@@ -15,19 +15,20 @@ import io
 import pytest
 
 from tests import create_session
+from tests import mock
 from tests import unittest
 from tests import RawResponse
 from tests import FreezeTime
 from dateutil.tz import tzutc, tzoffset
+from contextlib import contextmanager
 import datetime
 import copy
-import mock
 import operator
+from sys import getrefcount
 
 import botocore
 from botocore import xform_name
 from botocore.compat import OrderedDict, json
-from botocore.compat import six
 from botocore.awsrequest import AWSRequest, HeadersDict
 from botocore.awsrequest import AWSResponse
 from botocore.exceptions import InvalidExpressionError, ConfigNotFound
@@ -70,6 +71,7 @@ from botocore.utils import switch_to_virtual_host_style
 from botocore.utils import instance_cache
 from botocore.utils import merge_dicts
 from botocore.utils import lowercase_dict
+from botocore.utils import lru_cache_weakref
 from botocore.utils import get_service_module_name
 from botocore.utils import get_encoding_from_headers
 from botocore.utils import percent_encode_sequence
@@ -283,6 +285,45 @@ class TestTransformName(unittest.TestCase):
                          'create-stored-iscsi-volume')
         self.assertEqual(xform_name('sourceServerIDs', '-'),
                          'source-server-ids')
+        self.assertEqual(
+            xform_name('AssociateWhatsAppBusinessAccount', '-'),
+            'associate-whatsapp-business-account',
+        )
+        self.assertEqual(
+            xform_name('DeleteWhatsAppMessageMedia', '-'),
+            'delete-whatsapp-media-message',
+        )
+        self.assertEqual(
+            xform_name('DisassociateWhatsAppBusinessAccount', '-'),
+            'disassociate-whatsapp-business-account',
+        )
+        self.assertEqual(
+            xform_name('GetLinkedWhatsAppBusinessAccount', '-'),
+            'get-linked-whatsapp-business-account',
+        )
+        self.assertEqual(
+            xform_name('GetLinkedWhatsAppBusinessAccountPhoneNumber', '-'),
+            'get-linked-whatsapp-business-account-phone-number',
+        )
+        self.assertEqual(
+            xform_name('GetWhatsAppMessageMedia', '-'),
+            'get-whatsapp-message-media',
+        )
+        self.assertEqual(
+            xform_name('ListLinkedWhatsAppBusinessAccounts', '-'),
+            'list-linked-whatsapp-business-accounts',
+        )
+        self.assertEqual(
+            xform_name('PostWhatsAppMessageMedia', '-'),
+            'post-whatsapp-message-media',
+        )
+        self.assertEqual(
+            xform_name('PutWhatsAppBusinessAccountEventDestinations', '-'),
+            'put-whatsapp-business-account-event-destinations',
+        )
+        self.assertEqual(
+            xform_name('SendWhatsAppMessage', '-'), 'send-whatsapp-message'
+        )
 
     def test_special_case_ends_with_s(self):
         self.assertEqual(xform_name('GatewayARNs', '-'), 'gateway-arns')
@@ -413,6 +454,18 @@ class TestParseTimestamps(unittest.TestCase):
             parse_timestamp(0),
             datetime.datetime(1970, 1, 1, 0, 0, 0, tzinfo=tzutc()))
 
+    def test_parse_epoch_negative_time(self):
+        self.assertEqual(
+            parse_timestamp(-2208988800),
+            datetime.datetime(1900, 1, 1, 0, 0, 0, tzinfo=tzutc()),
+        )
+
+    def test_parse_epoch_beyond_2038(self):
+        self.assertEqual(
+            parse_timestamp(2524608000),
+            datetime.datetime(2050, 1, 1, 0, 0, 0, tzinfo=tzutc()),
+        )
+
     def test_parse_epoch_as_string(self):
         self.assertEqual(
             parse_timestamp('1222172800'),
@@ -448,6 +501,42 @@ class TestParseTimestamps(unittest.TestCase):
         with mock.patch('botocore.utils.get_tzinfo_options', mock_get_tzinfo_options):
             with self.assertRaises(RuntimeError):
                 parse_timestamp(0)
+
+    @contextmanager
+    def mocked_fromtimestamp_that_raises(self, exception_type):
+        class MockDatetime(datetime.datetime):
+            @classmethod
+            def fromtimestamp(cls, *args, **kwargs):
+                raise exception_type()
+
+        mock_fromtimestamp = mock.Mock()
+        mock_fromtimestamp.side_effect = OverflowError()
+
+        with mock.patch('datetime.datetime', MockDatetime):
+            yield
+
+    def test_parse_timestamp_succeeds_with_fromtimestamp_overflowerror(self):
+        # ``datetime.fromtimestamp()`` fails with OverflowError on some systems
+        # for timestamps beyond 2038. See
+        # https://docs.python.org/3/library/datetime.html#datetime.datetime.fromtimestamp
+        # This test mocks fromtimestamp() to always raise an OverflowError and
+        # checks that the fallback method returns the same time and timezone
+        # as fromtimestamp.
+        wout_fallback = parse_timestamp(0)
+        with self.mocked_fromtimestamp_that_raises(OverflowError):
+            with_fallback = parse_timestamp(0)
+            self.assertEqual(with_fallback, wout_fallback)
+            self.assertEqual(with_fallback.tzinfo, wout_fallback.tzinfo)
+
+    def test_parse_timestamp_succeeds_with_fromtimestamp_oserror(self):
+        # Same as test_parse_timestamp_succeeds_with_fromtimestamp_overflowerror
+        # but for systems where datetime.fromtimestamp() fails with OSerror for
+        # negative timestamps that represent times before 1970.
+        wout_fallback = parse_timestamp(0)
+        with self.mocked_fromtimestamp_that_raises(OSError):
+            with_fallback = parse_timestamp(0)
+            self.assertEqual(with_fallback, wout_fallback)
+            self.assertEqual(with_fallback.tzinfo, wout_fallback.tzinfo)
 
 
 class TestDatetime2Timestamp(unittest.TestCase):
@@ -711,17 +800,17 @@ class TestArgumentGenerator(unittest.TestCase):
 class TestChecksums(unittest.TestCase):
     def test_empty_hash(self):
         self.assertEqual(
-            calculate_sha256(six.BytesIO(b''), as_hex=True),
+            calculate_sha256(io.BytesIO(b''), as_hex=True),
             'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')
 
     def test_as_hex(self):
         self.assertEqual(
-            calculate_sha256(six.BytesIO(b'hello world'), as_hex=True),
+            calculate_sha256(io.BytesIO(b'hello world'), as_hex=True),
             'b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9')
 
     def test_as_binary(self):
         self.assertEqual(
-            calculate_sha256(six.BytesIO(b'hello world'), as_hex=False),
+            calculate_sha256(io.BytesIO(b'hello world'), as_hex=False),
             (b"\xb9M'\xb9\x93M>\x08\xa5.R\xd7\xda}\xab\xfa\xc4\x84\xef"
              b"\xe3zS\x80\xee\x90\x88\xf7\xac\xe2\xef\xcd\xe9"))
 
@@ -733,30 +822,30 @@ class TestTreeHash(unittest.TestCase):
 
     def test_empty_tree_hash(self):
         self.assertEqual(
-            calculate_tree_hash(six.BytesIO(b'')),
+            calculate_tree_hash(io.BytesIO(b'')),
             'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')
 
     def test_tree_hash_less_than_one_mb(self):
-        one_k = six.BytesIO(b'a' * 1024)
+        one_k = io.BytesIO(b'a' * 1024)
         self.assertEqual(
             calculate_tree_hash(one_k),
             '2edc986847e209b4016e141a6dc8716d3207350f416969382d431539bf292e4a')
 
     def test_tree_hash_exactly_one_mb(self):
         one_meg_bytestring = b'a' * (1 * 1024 * 1024)
-        one_meg = six.BytesIO(one_meg_bytestring)
+        one_meg = io.BytesIO(one_meg_bytestring)
         self.assertEqual(
             calculate_tree_hash(one_meg),
             '9bc1b2a288b26af7257a36277ae3816a7d4f16e89c1e7e77d0a5c48bad62b360')
 
     def test_tree_hash_multiple_of_one_mb(self):
-        four_mb = six.BytesIO(b'a' * (4 * 1024 * 1024))
+        four_mb = io.BytesIO(b'a' * (4 * 1024 * 1024))
         self.assertEqual(
             calculate_tree_hash(four_mb),
             '9491cb2ed1d4e7cd53215f4017c23ec4ad21d7050a1e6bb636c4f67e8cddb844')
 
     def test_tree_hash_offset_of_one_mb_multiple(self):
-        offset_four_mb = six.BytesIO(b'a' * (4 * 1024 * 1024) + b'a' * 20)
+        offset_four_mb = io.BytesIO(b'a' * (4 * 1024 * 1024) + b'a' * 20)
         self.assertEqual(
             calculate_tree_hash(offset_four_mb),
             '12f3cbd6101b981cde074039f6f728071da8879d6f632de8afc7cdf00661b08f')
@@ -1000,17 +1089,24 @@ class TestSwitchToVirtualHostStyle(unittest.TestCase):
                          'https://bucket.s3.amazonaws.com/key.txt')
 
 
-class TestSwitchToChunkedEncodingForNonSeekableObjects(unittest.TestCase):
-    def test_switch_to_chunked_encodeing_for_stream_like_object(self):
-        request = AWSRequest(
-            method='POST', headers={},
-            data=io.BufferedIOBase(b"some initial binary data"),
-            url='https://foo.amazonaws.com/bucket/key.txt'
-        )
-        prepared_request = request.prepare()
-        self.assertEqual(
-            prepared_request.headers, {'Transfer-Encoding': 'chunked'}
-        )
+def test_chunked_encoding_used_for_stream_like_object():
+    class BufferedStream(io.BufferedIOBase):
+        """Class to ensure seek/tell don't work, but read is implemented."""
+
+        def __init__(self, value):
+            self.value = io.BytesIO(value)
+
+        def read(self, size=-1):
+            return self.value.read(size)
+
+    request = AWSRequest(
+        method='POST',
+        headers={},
+        data=BufferedStream(b"some initial binary data"),
+        url='https://foo.amazonaws.com/bucket/key.txt',
+    )
+    prepared_request = request.prepare()
+    assert prepared_request.headers == {'Transfer-Encoding': 'chunked'}
 
 
 class TestInstanceCache(unittest.TestCase):
@@ -1692,6 +1788,66 @@ class TestS3RegionRedirector(unittest.TestCase):
         response = None
         redirect_response = self.redirector.redirect_from_error(
             request_dict, response, self.operation)
+        self.assertIsNone(redirect_response)
+
+    def test_redirects_on_illegal_location_constraint_from_opt_in_region(self):
+        request_dict = {
+            'url': 'https://il-central-1.amazonaws.com/foo',
+            'context': {
+                's3_redirect': {
+                    'bucket': 'foo',
+                    'redirected': False,
+                    'params': {'Bucket': 'foo'},
+                },
+                'signing': {},
+            },
+        }
+        response = (
+            None,
+            {
+                'Error': {'Code': 'IllegalLocationConstraintException'},
+                'ResponseMetadata': {
+                    'HTTPHeaders': {'x-amz-bucket-region': 'eu-central-1'}
+                },
+            },
+        )
+
+        self.operation.name = 'GetObject'
+        redirect_response = self.redirector.redirect_from_error(
+            request_dict, response, self.operation
+        )
+        self.assertEqual(redirect_response, 0)
+
+    def test_no_redirect_on_illegal_location_constraint_from_bad_location_constraint(
+            self,
+    ):
+        request_dict = {
+            'url': 'https://us-west-2.amazonaws.com/foo',
+            'context': {
+                's3_redirect': {
+                    'bucket': 'foo',
+                    'redirected': False,
+                    'params': {
+                        'Bucket': 'foo',
+                        'CreateBucketConfiguration': {
+                            'LocationConstraint': 'eu-west-2',
+                        },
+                    },
+                },
+                'signing': {},
+            },
+        }
+        response = (
+            None,
+            {
+                'Error': {'Code': 'IllegalLocationConstraintException'},
+            },
+        )
+
+        self.operation.name = 'CreateBucket'
+        redirect_response = self.redirector.redirect_from_error(
+            request_dict, response, self.operation
+        )
         self.assertIsNone(redirect_response)
 
     def test_get_region_from_response(self):
@@ -2978,6 +3134,7 @@ class TestSSOTokenFetcher(unittest.TestCase):
         self.sso_token_fetcher = SSOTokenFetcher(
             self.sso_region,
             client_creator=self.mock_session.create_client,
+            parsed_globals=mock.Mock(),
             cache=self.cache,
             time_fetcher=self.mock_time_fetcher,
             sleep=self.mock_sleep,
@@ -3242,6 +3399,7 @@ class TestSSOTokenFetcher(unittest.TestCase):
         self.sso_token_fetcher = SSOTokenFetcher(
             self.sso_region,
             client_creator=self.mock_session.create_client,
+            parsed_globals=mock.Mock(),
             cache=self.cache,
             time_fetcher=self.mock_time_fetcher,
             sleep=self.mock_sleep,
@@ -3463,3 +3621,40 @@ def test_is_s3_accelerate_url(url, expected):
 def test_get_encoding_from_headers(headers, default, expected):
     charset = get_encoding_from_headers(HeadersDict(headers), default=default)
     assert charset == expected
+
+
+def test_lru_cache_weakref():
+    class ClassWithCachedMethod:
+        @lru_cache_weakref(maxsize=10)
+        def cached_fn(self, a, b):
+            return a + b
+
+    cls1 = ClassWithCachedMethod()
+    cls2 = ClassWithCachedMethod()
+
+    assert cls1.cached_fn.cache_info().currsize == 0
+    assert getrefcount(cls1) == 2
+    assert getrefcount(cls2) == 2
+    # "The count returned is generally one higher than you might expect, because
+    # it includes the (temporary) reference as an argument to getrefcount()."
+    # https://docs.python.org/3.8/library/sys.html#getrefcount
+
+    cls1.cached_fn(1, 1)
+    cls2.cached_fn(1, 1)
+
+    # The cache now has two entries, but the reference count remains the same as
+    # before.
+    assert cls1.cached_fn.cache_info().currsize == 2
+    assert getrefcount(cls1) == 2
+    assert getrefcount(cls2) == 2
+
+    # Deleting one of the objects does not interfere with the cache entries
+    # related to the other object.
+    del cls1
+    assert cls2.cached_fn.cache_info().currsize == 2
+    assert cls2.cached_fn.cache_info().hits == 0
+    assert cls2.cached_fn.cache_info().misses == 2
+    cls2.cached_fn(1, 1)
+    assert cls2.cached_fn.cache_info().currsize == 2
+    assert cls2.cached_fn.cache_info().hits == 1  # the call was a cache hit
+    assert cls2.cached_fn.cache_info().misses == 2

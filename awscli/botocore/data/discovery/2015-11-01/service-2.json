@@ -10,7 +10,8 @@
     "serviceId":"Application Discovery Service",
     "signatureVersion":"v4",
     "targetPrefix":"AWSPoseidonService_V2015_11_01",
-    "uid":"discovery-2015-11-01"
+    "uid":"discovery-2015-11-01",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AssociateConfigurationItemsToApplication":{
@@ -374,7 +375,8 @@
         {"shape":"ServerInternalErrorException"},
         {"shape":"HomeRegionNotSetException"},
         {"shape":"OperationNotPermittedException"},
-        {"shape":"InvalidParameterValueException"}
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidParameterException"}
       ],
       "documentation":"<p> Takes a list of configurationId as input and starts an asynchronous deletion task to remove the configurationItems. Returns a unique deletion task identifier. </p>"
     },
@@ -637,6 +639,12 @@
       "type":"string",
       "max":127,
       "pattern":"[\\s\\S]*\\S[\\s\\S]*"
+    },
+    "ApplicationWave":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^($|[^\\s\\x00]( *[^\\s\\x00])*$)"
     },
     "AssociateConfigurationItemsToApplicationRequest":{
       "type":"structure",
@@ -970,11 +978,15 @@
       "members":{
         "name":{
           "shape":"ApplicationName",
-          "documentation":"<p>Name of the application to be created.</p>"
+          "documentation":"<p>The name of the application to be created.</p>"
         },
         "description":{
           "shape":"ApplicationDescription",
-          "documentation":"<p>Description of the application to be created.</p>"
+          "documentation":"<p>The description of the application to be created.</p>"
+        },
+        "wave":{
+          "shape":"ApplicationWave",
+          "documentation":"<p>The name of the migration wave of the application to be created.</p>"
         }
       }
     },
@@ -983,7 +995,7 @@
       "members":{
         "configurationId":{
           "shape":"String",
-          "documentation":"<p>Configuration ID of an application to be created.</p>"
+          "documentation":"<p>The configuration ID of an application to be created.</p>"
         }
       }
     },
@@ -1738,6 +1750,15 @@
       "type":"list",
       "member":{"shape":"FailedConfiguration"}
     },
+    "FileClassification":{
+      "type":"string",
+      "enum":[
+        "MODELIZEIT_EXPORT",
+        "RVTOOLS_EXPORT",
+        "VMWARE_NSX_EXPORT",
+        "IMPORT_TEMPLATE"
+      ]
+    },
     "Filter":{
       "type":"structure",
       "required":[
@@ -1838,6 +1859,7 @@
         "IMPORT_FAILED",
         "IMPORT_FAILED_SERVER_LIMIT_EXCEEDED",
         "IMPORT_FAILED_RECORD_LIMIT_EXCEEDED",
+        "IMPORT_FAILED_UNSUPPORTED_FILE_TYPE",
         "DELETE_IN_PROGRESS",
         "DELETE_COMPLETE",
         "DELETE_FAILED",
@@ -1879,6 +1901,10 @@
         "importDeletedTime":{
           "shape":"TimeStamp",
           "documentation":"<p>The time that the import task request was deleted, presented in the Unix time stamp format.</p>"
+        },
+        "fileClassification":{
+          "shape":"FileClassification",
+          "documentation":"<p>The type of file detected by the import task.</p>"
         },
         "serverImportSuccess":{
           "shape":"Integer",
@@ -1922,7 +1948,8 @@
       "enum":[
         "IMPORT_TASK_ID",
         "STATUS",
-        "NAME"
+        "NAME",
+        "FILE_CLASSIFICATION"
       ]
     },
     "ImportTaskFilterValue":{
@@ -2484,6 +2511,10 @@
         "description":{
           "shape":"ApplicationDescription",
           "documentation":"<p>New description of the application to be updated.</p>"
+        },
+        "wave":{
+          "shape":"ApplicationWave",
+          "documentation":"<p>The new migration wave of the application that you want to update.</p>"
         }
       }
     },

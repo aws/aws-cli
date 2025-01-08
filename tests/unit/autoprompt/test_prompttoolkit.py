@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
-import mock
 
 from prompt_toolkit.completion import Completion, CompleteEvent
 from prompt_toolkit.document import Document
@@ -21,7 +20,7 @@ from awscli.autoprompt.logger import PromptToolkitHandler
 from awscli.autoprompt.prompttoolkit import (
     PromptToolkitCompleter, loggers_handler_switcher
 )
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 
 
 class TestPromptToolkitCompleter(unittest.TestCase):

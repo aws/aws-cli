@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 from urllib.parse import urlencode
 
-import mock
 import pytest
 
 from botocore.session import Session
@@ -20,6 +19,7 @@ from botocore.signers import RequestSigner
 from awscli.customizations.ec2instanceconnect.eicesigner import (
     InstanceConnectEndpointRequestSigner,
 )
+from awscli.testutils import mock
 
 
 @pytest.fixture

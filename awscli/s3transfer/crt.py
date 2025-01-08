@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+import re
 import threading
 from io import BytesIO
 
@@ -34,13 +35,14 @@ from awscrt.s3 import (
     S3Client,
     S3RequestTlsMode,
     S3RequestType,
+    S3ResponseError,
     get_recommended_throughput_target_gbps,
 )
 from botocore import UNSIGNED
 from botocore.compat import urlsplit
 from botocore.config import Config
 from botocore.exceptions import NoCredentialsError
-from botocore.utils import is_s3express_bucket
+from botocore.utils import ArnParser, InvalidArnException, is_s3express_bucket
 
 from s3transfer.constants import MB
 from s3transfer.exceptions import TransferNotDoneError
@@ -203,6 +205,9 @@ class CRTTransferManager:
         self._s3_args_creator = S3ClientArgsCreator(
             crt_request_serializer, self._osutil
         )
+        self._crt_exception_translator = (
+            crt_request_serializer.translate_crt_exception
+        )
         self._future_coordinators = []
         self._semaphore = threading.Semaphore(128)  # not configurable
         # A counter to create unique id's for each transfer submitted.
@@ -306,7 +311,10 @@ class CRTTransferManager:
 
     def _submit_transfer(self, request_type, call_args):
         on_done_after_calls = [self._release_semaphore]
-        coordinator = CRTTransferCoordinator(transfer_id=self._id_counter)
+        coordinator = CRTTransferCoordinator(
+            transfer_id=self._id_counter,
+            exception_translator=self._crt_exception_translator,
+        )
         components = {
             'meta': CRTTransferMeta(self._id_counter, call_args),
             'coordinator': coordinator,
@@ -416,6 +424,9 @@ class BaseCRTRequestSerializer:
         :returns: An unsigned HTTP request to be used for the CRT S3 client
         """
         raise NotImplementedError('serialize_http_request()')
+
+    def translate_crt_exception(self, exception):
+        raise NotImplementedError('translate_crt_exception()')
 
 
 class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
@@ -540,6 +551,40 @@ class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
         crt_request = self._convert_to_crt_http_request(botocore_http_request)
         return crt_request
 
+    def translate_crt_exception(self, exception):
+        if isinstance(exception, S3ResponseError):
+            return self._translate_crt_s3_response_error(exception)
+        else:
+            return None
+
+    def _translate_crt_s3_response_error(self, s3_response_error):
+        status_code = s3_response_error.status_code
+        if status_code < 301:
+            # Botocore's exception parsing only
+            # runs on status codes >= 301
+            return None
+
+        headers = {k: v for k, v in s3_response_error.headers}
+        operation_name = s3_response_error.operation_name
+        if operation_name is not None:
+            service_model = self._client.meta.service_model
+            shape = service_model.operation_model(operation_name).output_shape
+        else:
+            shape = None
+
+        response_dict = {
+            'headers': botocore.awsrequest.HeadersDict(headers),
+            'status_code': status_code,
+            'body': s3_response_error.body,
+        }
+        parsed_response = self._client._response_parser.parse(
+            response_dict, shape=shape
+        )
+
+        error_code = parsed_response.get("Error", {}).get("Code")
+        error_class = self._client.exceptions.from_code(error_code)
+        return error_class(parsed_response, operation_name=operation_name)
+
 
 class FakeRawResponse(BytesIO):
     def stream(self, amt=1024, decode_content=None):
@@ -572,8 +617,11 @@ class BotocoreCRTCredentialsWrapper:
 class CRTTransferCoordinator:
     """A helper class for managing CRTTransferFuture"""
 
-    def __init__(self, transfer_id=None, s3_request=None):
+    def __init__(
+            self, transfer_id=None, s3_request=None, exception_translator=None
+    ):
         self.transfer_id = transfer_id
+        self._exception_translator = exception_translator
         self._s3_request = s3_request
         self._lock = threading.Lock()
         self._exception = None
@@ -606,11 +654,28 @@ class CRTTransferCoordinator:
             self._crt_future.result(timeout)
         except KeyboardInterrupt:
             self.cancel()
+            self._crt_future.result(timeout)
             raise
+        except Exception as e:
+            self.handle_exception(e)
         finally:
             if self._s3_request:
                 self._s3_request = None
-            self._crt_future.result(timeout)
+
+    def handle_exception(self, exc):
+        translated_exc = None
+        if self._exception_translator:
+            try:
+                translated_exc = self._exception_translator(exc)
+            except Exception as e:
+                # Bail out if we hit an issue translating
+                # and raise the original error.
+                logger.debug("Unable to translate exception.", exc_info=e)
+                pass
+        if translated_exc is not None:
+            raise translated_exc from exc
+        else:
+            raise exc
 
     def done(self):
         if self._crt_future is None:
@@ -768,7 +833,27 @@ class S3ClientArgsCreator:
             ),
             'on_progress': self.get_crt_callback(future, 'progress'),
         }
-        if is_s3express_bucket(call_args.bucket):
+
+        # For DEFAULT requests, CRT requires the official S3 operation name.
+        # So transform string like "delete_object" -> "DeleteObject".
+        if make_request_args['type'] == S3RequestType.DEFAULT:
+            make_request_args['operation_name'] = ''.join(
+                x.title() for x in request_type.split('_')
+            )
+
+        arn_handler = _S3ArnParamHandler()
+        if (
+            (accesspoint_arn_details := arn_handler.handle_arn(call_args.bucket))
+            and accesspoint_arn_details['region'] == ""
+        ):
+            # Configure our region to `*` to propogate in `x-amz-region-set`
+            # for multi-region support in MRAP accesspoints.
+            make_request_args['signing_config'] = AwsSigningConfig(
+                algorithm=AwsSigningAlgorithm.V4_ASYMMETRIC,
+                region="*",
+            )
+            call_args.bucket = accesspoint_arn_details['resource_name']
+        elif is_s3express_bucket(call_args.bucket):
             make_request_args['signing_config'] = AwsSigningConfig(
                 algorithm=AwsSigningAlgorithm.V4_S3EXPRESS
             )
@@ -811,3 +896,40 @@ class OnBodyFileObjWriter:
 
     def __call__(self, chunk, **kwargs):
         self._fileobj.write(chunk)
+
+
+class _S3ArnParamHandler:
+    """Partial port of S3ArnParamHandler from botocore.
+
+    This is used to make a determination on MRAP accesspoints for signing
+    purposes. This should be safe to remove once we properly integrate auth
+    resolution from Botocore into the CRT transfer integration.
+    """
+    _RESOURCE_REGEX = re.compile(
+        r'^(?P<resource_type>accesspoint|outpost)[/:](?P<resource_name>.+)$'
+    )
+
+    def __init__(self):
+        self._arn_parser = ArnParser()
+
+    def handle_arn(self, bucket):
+        arn_details = self._get_arn_details_from_bucket(bucket)
+        if arn_details is None:
+            return
+        if arn_details['resource_type'] == 'accesspoint':
+            return arn_details
+
+    def _get_arn_details_from_bucket(self, bucket):
+        try:
+            arn_details = self._arn_parser.parse_arn(bucket)
+            self._add_resource_type_and_name(arn_details)
+            return arn_details
+        except InvalidArnException:
+                pass
+        return None
+    
+    def _add_resource_type_and_name(self, arn_details):
+        match = self._RESOURCE_REGEX.match(arn_details['resource'])
+        if match:
+            arn_details['resource_type'] = match.group('resource_type')
+            arn_details['resource_name'] = match.group('resource_name')

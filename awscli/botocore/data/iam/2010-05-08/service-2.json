@@ -5,12 +5,14 @@
     "endpointPrefix":"iam",
     "globalEndpoint":"iam.amazonaws.com",
     "protocol":"query",
+    "protocols":["query"],
     "serviceAbbreviation":"IAM",
     "serviceFullName":"AWS Identity and Access Management",
     "serviceId":"IAM",
     "signatureVersion":"v4",
     "uid":"iam-2010-05-08",
-    "xmlNamespace":"https://iam.amazonaws.com/doc/2010-05-08/"
+    "xmlNamespace":"https://iam.amazonaws.com/doc/2010-05-08/",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AddClientIDToOpenIDConnectProvider":{
@@ -235,7 +237,7 @@
         {"shape":"ServiceFailureException"},
         {"shape":"OpenIdIdpCommunicationErrorException"}
       ],
-      "documentation":"<p>Creates an IAM entity to describe an identity provider (IdP) that supports <a href=\"http://openid.net/connect/\">OpenID Connect (OIDC)</a>.</p> <p>The OIDC provider that you create with this operation can be used as a principal in a role's trust policy. Such a policy establishes a trust relationship between Amazon Web Services and the OIDC provider.</p> <p>If you are using an OIDC identity provider from Google, Facebook, or Amazon Cognito, you don't need to create a separate IAM identity provider. These OIDC identity providers are already built-in to Amazon Web Services and are available for your use. Instead, you can move directly to creating new roles using your identity provider. To learn more, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html\">Creating a role for web identity or OpenID connect federation</a> in the <i>IAM User Guide</i>.</p> <p>When you create the IAM OIDC provider, you specify the following:</p> <ul> <li> <p>The URL of the OIDC identity provider (IdP) to trust</p> </li> <li> <p>A list of client IDs (also known as audiences) that identify the application or applications allowed to authenticate using the OIDC provider</p> </li> <li> <p>A list of tags that are attached to the specified IAM OIDC provider</p> </li> <li> <p>A list of thumbprints of one or more server certificates that the IdP uses</p> </li> </ul> <p>You get all of this information from the OIDC IdP you want to use to access Amazon Web Services.</p> <note> <p>Amazon Web Services secures communication with some OIDC identity providers (IdPs) through our library of trusted root certificate authorities (CAs) instead of using a certificate thumbprint to verify your IdP server certificate. In these cases, your legacy thumbprint remains in your configuration, but is no longer used for validation. These OIDC IdPs include Auth0, GitHub, GitLab, Google, and those that use an Amazon S3 bucket to host a JSON Web Key Set (JWKS) endpoint.</p> </note> <note> <p>The trust for the OIDC provider is derived from the IAM provider that this operation creates. Therefore, it is best to limit access to the <a>CreateOpenIDConnectProvider</a> operation to highly privileged users.</p> </note>"
+      "documentation":"<p>Creates an IAM entity to describe an identity provider (IdP) that supports <a href=\"http://openid.net/connect/\">OpenID Connect (OIDC)</a>.</p> <p>The OIDC provider that you create with this operation can be used as a principal in a role's trust policy. Such a policy establishes a trust relationship between Amazon Web Services and the OIDC provider.</p> <p>If you are using an OIDC identity provider from Google, Facebook, or Amazon Cognito, you don't need to create a separate IAM identity provider. These OIDC identity providers are already built-in to Amazon Web Services and are available for your use. Instead, you can move directly to creating new roles using your identity provider. To learn more, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html\">Creating a role for web identity or OpenID connect federation</a> in the <i>IAM User Guide</i>.</p> <p>When you create the IAM OIDC provider, you specify the following:</p> <ul> <li> <p>The URL of the OIDC identity provider (IdP) to trust</p> </li> <li> <p>A list of client IDs (also known as audiences) that identify the application or applications allowed to authenticate using the OIDC provider</p> </li> <li> <p>A list of tags that are attached to the specified IAM OIDC provider</p> </li> <li> <p>A list of thumbprints of one or more server certificates that the IdP uses</p> </li> </ul> <p>You get all of this information from the OIDC IdP you want to use to access Amazon Web Services.</p> <note> <p>Amazon Web Services secures communication with OIDC identity providers (IdPs) using our library of trusted root certificate authorities (CAs) to verify the JSON Web Key Set (JWKS) endpoint's TLS certificate. If your OIDC IdP relies on a certificate that is not signed by one of these trusted CAs, only then we secure communication using the thumbprints set in the IdP's configuration.</p> </note> <note> <p>The trust for the OIDC provider is derived from the IAM provider that this operation creates. Therefore, it is best to limit access to the <a>CreateOpenIDConnectProvider</a> operation to highly privileged users.</p> </note>"
     },
     "CreatePolicy":{
       "name":"CreatePolicy",
@@ -798,6 +800,44 @@
       ],
       "documentation":"<p>Removes the specified managed policy from the specified user.</p> <p>A user can also have inline policies embedded with it. To delete an inline policy, use <a>DeleteUserPolicy</a>. For information about policies, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html\">Managed policies and inline policies</a> in the <i>IAM User Guide</i>.</p>"
     },
+    "DisableOrganizationsRootCredentialsManagement":{
+      "name":"DisableOrganizationsRootCredentialsManagement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisableOrganizationsRootCredentialsManagementRequest"},
+      "output":{
+        "shape":"DisableOrganizationsRootCredentialsManagementResponse",
+        "resultWrapper":"DisableOrganizationsRootCredentialsManagementResult"
+      },
+      "errors":[
+        {"shape":"ServiceAccessNotEnabledException"},
+        {"shape":"AccountNotManagementOrDelegatedAdministratorException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationNotInAllFeaturesModeException"}
+      ],
+      "documentation":"<p>Disables the management of privileged root user credentials across member accounts in your organization. When you disable this feature, the management account and the delegated admininstrator for IAM can no longer manage root user credentials for member accounts in your organization.</p>"
+    },
+    "DisableOrganizationsRootSessions":{
+      "name":"DisableOrganizationsRootSessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisableOrganizationsRootSessionsRequest"},
+      "output":{
+        "shape":"DisableOrganizationsRootSessionsResponse",
+        "resultWrapper":"DisableOrganizationsRootSessionsResult"
+      },
+      "errors":[
+        {"shape":"ServiceAccessNotEnabledException"},
+        {"shape":"AccountNotManagementOrDelegatedAdministratorException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationNotInAllFeaturesModeException"}
+      ],
+      "documentation":"<p>Disables root user sessions for privileged tasks across member accounts in your organization. When you disable this feature, the management account and the delegated admininstrator for IAM can no longer perform privileged tasks on member accounts in your organization.</p>"
+    },
     "EnableMFADevice":{
       "name":"EnableMFADevice",
       "http":{
@@ -815,6 +855,46 @@
         {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Enables the specified MFA device and associates it with the specified IAM user. When enabled, the MFA device is required for every subsequent login by the IAM user associated with the device.</p>"
+    },
+    "EnableOrganizationsRootCredentialsManagement":{
+      "name":"EnableOrganizationsRootCredentialsManagement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EnableOrganizationsRootCredentialsManagementRequest"},
+      "output":{
+        "shape":"EnableOrganizationsRootCredentialsManagementResponse",
+        "resultWrapper":"EnableOrganizationsRootCredentialsManagementResult"
+      },
+      "errors":[
+        {"shape":"ServiceAccessNotEnabledException"},
+        {"shape":"AccountNotManagementOrDelegatedAdministratorException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationNotInAllFeaturesModeException"},
+        {"shape":"CallerIsNotManagementAccountException"}
+      ],
+      "documentation":"<p>Enables the management of privileged root user credentials across member accounts in your organization. When you enable root credentials management for <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html#id_root-user-access-management\">centralized root access</a>, the management account and the delegated admininstrator for IAM can manage root user credentials for member accounts in your organization.</p> <p>Before you enable centralized root access, you must have an account configured with the following settings:</p> <ul> <li> <p>You must manage your Amazon Web Services accounts in <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html\">Organizations</a>.</p> </li> <li> <p>Enable trusted access for Identity and Access Management in Organizations. For details, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/services-that-can-integrate-ra.html\">IAM and Organizations</a> in the <i>Organizations User Guide</i>.</p> </li> </ul>"
+    },
+    "EnableOrganizationsRootSessions":{
+      "name":"EnableOrganizationsRootSessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EnableOrganizationsRootSessionsRequest"},
+      "output":{
+        "shape":"EnableOrganizationsRootSessionsResponse",
+        "resultWrapper":"EnableOrganizationsRootSessionsResult"
+      },
+      "errors":[
+        {"shape":"ServiceAccessNotEnabledException"},
+        {"shape":"AccountNotManagementOrDelegatedAdministratorException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationNotInAllFeaturesModeException"},
+        {"shape":"CallerIsNotManagementAccountException"}
+      ],
+      "documentation":"<p>Allows the management account or delegated administrator to perform privileged tasks on member accounts in your organization. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html#id_root-user-access-management\">Centrally manage root access for member accounts</a> in the <i>Identity and Access Management User Guide</i>.</p> <p>Before you enable this feature, you must have an account configured with the following settings:</p> <ul> <li> <p>You must manage your Amazon Web Services accounts in <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html\">Organizations</a>.</p> </li> <li> <p>Enable trusted access for Identity and Access Management in Organizations. For details, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/services-that-can-integrate-ra.html\">IAM and Organizations</a> in the <i>Organizations User Guide</i>.</p> </li> </ul>"
     },
     "GenerateCredentialReport":{
       "name":"GenerateCredentialReport",
@@ -1576,6 +1656,25 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Lists information about the IAM OpenID Connect (OIDC) provider resource objects defined in the Amazon Web Services account.</p> <note> <p>IAM resource-listing operations return a subset of the available attributes for the resource. For example, this operation does not return tags, even though they are an attribute of the returned object. To view all of the information for an OIDC provider, see <a>GetOpenIDConnectProvider</a>.</p> </note>"
+    },
+    "ListOrganizationsFeatures":{
+      "name":"ListOrganizationsFeatures",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListOrganizationsFeaturesRequest"},
+      "output":{
+        "shape":"ListOrganizationsFeaturesResponse",
+        "resultWrapper":"ListOrganizationsFeaturesResult"
+      },
+      "errors":[
+        {"shape":"ServiceAccessNotEnabledException"},
+        {"shape":"AccountNotManagementOrDelegatedAdministratorException"},
+        {"shape":"OrganizationNotFoundException"},
+        {"shape":"OrganizationNotInAllFeaturesModeException"}
+      ],
+      "documentation":"<p>Lists the centralized root access features enabled for your organization. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html#id_root-user-access-management\">Centrally manage root access for member accounts</a>.</p>"
     },
     "ListPolicies":{
       "name":"ListPolicies",
@@ -2424,7 +2523,7 @@
         {"shape":"NoSuchEntityException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Replaces the existing list of server certificate thumbprints associated with an OpenID Connect (OIDC) provider resource object with a new list of thumbprints.</p> <p>The list that you pass with this operation completely replaces the existing list of thumbprints. (The lists are not merged.)</p> <p>Typically, you need to update a thumbprint only when the identity provider certificate changes, which occurs rarely. However, if the provider's certificate <i>does</i> change, any attempt to assume an IAM role that specifies the OIDC provider as a principal fails until the certificate thumbprint is updated.</p> <note> <p>Amazon Web Services secures communication with some OIDC identity providers (IdPs) through our library of trusted root certificate authorities (CAs) instead of using a certificate thumbprint to verify your IdP server certificate. In these cases, your legacy thumbprint remains in your configuration, but is no longer used for validation. These OIDC IdPs include Auth0, GitHub, GitLab, Google, and those that use an Amazon S3 bucket to host a JSON Web Key Set (JWKS) endpoint.</p> </note> <note> <p>Trust for the OIDC provider is derived from the provider certificate and is validated by the thumbprint. Therefore, it is best to limit access to the <code>UpdateOpenIDConnectProviderThumbprint</code> operation to highly privileged users.</p> </note>"
+      "documentation":"<p>Replaces the existing list of server certificate thumbprints associated with an OpenID Connect (OIDC) provider resource object with a new list of thumbprints.</p> <p>The list that you pass with this operation completely replaces the existing list of thumbprints. (The lists are not merged.)</p> <p>Typically, you need to update a thumbprint only when the identity provider certificate changes, which occurs rarely. However, if the provider's certificate <i>does</i> change, any attempt to assume an IAM role that specifies the OIDC provider as a principal fails until the certificate thumbprint is updated.</p> <note> <p>Amazon Web Services secures communication with OIDC identity providers (IdPs) using our library of trusted root certificate authorities (CAs) to verify the JSON Web Key Set (JWKS) endpoint's TLS certificate. If your OIDC IdP relies on a certificate that is not signed by one of these trusted CAs, only then we secure communication using the thumbprints set in the IdP's configuration.</p> </note> <note> <p>Trust for the OIDC provider is derived from the provider certificate and is validated by the thumbprint. Therefore, it is best to limit access to the <code>UpdateOpenIDConnectProviderThumbprint</code> operation to highly privileged users.</p> </note>"
     },
     "UpdateRole":{
       "name":"UpdateRole",
@@ -2698,7 +2797,6 @@
     "AccessKeyLastUsed":{
       "type":"structure",
       "required":[
-        "LastUsedDate",
         "ServiceName",
         "Region"
       ],
@@ -2739,6 +2837,13 @@
         }
       },
       "documentation":"<p>Contains information about an Amazon Web Services access key, without its secret key.</p> <p>This data type is used as a response element in the <a>ListAccessKeys</a> operation.</p>"
+    },
+    "AccountNotManagementOrDelegatedAdministratorException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The request was rejected because the account making the request is not the management account or delegated administrator account for <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html#id_root-user-access-management\">centralized root access</a>.</p>",
+      "exception":true
     },
     "ActionNameListType":{
       "type":"list",
@@ -2883,6 +2988,13 @@
     "BootstrapDatum":{
       "type":"blob",
       "sensitive":true
+    },
+    "CallerIsNotManagementAccountException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The request was rejected because the account making the request is not the management account for the organization.</p>",
+      "exception":true
     },
     "CertificationKeyType":{
       "type":"string",
@@ -3072,18 +3184,14 @@
     },
     "CreateLoginProfileRequest":{
       "type":"structure",
-      "required":[
-        "UserName",
-        "Password"
-      ],
       "members":{
         "UserName":{
           "shape":"userNameType",
-          "documentation":"<p>The name of the IAM user to create a password for. The user must already exist.</p> <p>This parameter allows (through its <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>"
+          "documentation":"<p>The name of the IAM user to create a password for. The user must already exist.</p> <p>This parameter is optional. If no user name is included, it defaults to the principal making the request. When you make this request with root user credentials, you must use an <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoot.html\">AssumeRoot</a> session to omit the user name.</p> <p>This parameter allows (through its <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>"
         },
         "Password":{
           "shape":"passwordType",
-          "documentation":"<p>The new password for the user.</p> <p>The <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a> that is used to validate this parameter is a string of characters. That string can include almost any printable ASCII character from the space (<code>\\u0020</code>) through the end of the ASCII character range (<code>\\u00FF</code>). You can also include the tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>) characters. Any of these characters are valid in a password. However, many tools, such as the Amazon Web Services Management Console, might restrict the ability to type certain characters because they have special meaning within that tool.</p>"
+          "documentation":"<p>The new password for the user.</p> <p>This parameter must be omitted when you make the request with an <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoot.html\">AssumeRoot</a> session. It is required in all other cases.</p> <p>The <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a> that is used to validate this parameter is a string of characters. That string can include almost any printable ASCII character from the space (<code>\\u0020</code>) through the end of the ASCII character range (<code>\\u00FF</code>). You can also include the tab (<code>\\u0009</code>), line feed (<code>\\u000A</code>), and carriage return (<code>\\u000D</code>) characters. Any of these characters are valid in a password. However, many tools, such as the Amazon Web Services Management Console, might restrict the ability to type certain characters because they have special meaning within that tool.</p>"
         },
         "PasswordResetRequired":{
           "shape":"booleanType",
@@ -3446,14 +3554,11 @@
     },
     "DeactivateMFADeviceRequest":{
       "type":"structure",
-      "required":[
-        "UserName",
-        "SerialNumber"
-      ],
+      "required":["SerialNumber"],
       "members":{
         "UserName":{
           "shape":"existingUserNameType",
-          "documentation":"<p>The name of the user whose MFA device you want to deactivate.</p> <p>This parameter allows (through its <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>"
+          "documentation":"<p>The name of the user whose MFA device you want to deactivate.</p> <p>This parameter is optional. If no user name is included, it defaults to the principal making the request. When you make this request with root user credentials, you must use an <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoot.html\">AssumeRoot</a> session to omit the user name.</p> <p>This parameter allows (through its <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>"
         },
         "SerialNumber":{
           "shape":"serialNumberType",
@@ -3537,11 +3642,10 @@
     },
     "DeleteLoginProfileRequest":{
       "type":"structure",
-      "required":["UserName"],
       "members":{
         "UserName":{
           "shape":"userNameType",
-          "documentation":"<p>The name of the user whose password you want to delete.</p> <p>This parameter allows (through its <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>"
+          "documentation":"<p>The name of the user whose password you want to delete.</p> <p>This parameter is optional. If no user name is included, it defaults to the principal making the request. When you make this request with root user credentials, you must use an <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoot.html\">AssumeRoot</a> session to omit the user name.</p> <p>This parameter allows (through its <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>"
         }
       }
     },
@@ -3830,6 +3934,42 @@
         }
       }
     },
+    "DisableOrganizationsRootCredentialsManagementRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DisableOrganizationsRootCredentialsManagementResponse":{
+      "type":"structure",
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationIdType",
+          "documentation":"<p>The unique identifier (ID) of an organization.</p>"
+        },
+        "EnabledFeatures":{
+          "shape":"FeaturesListType",
+          "documentation":"<p>The features enabled for centralized root access for member accounts in your organization.</p>"
+        }
+      }
+    },
+    "DisableOrganizationsRootSessionsRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DisableOrganizationsRootSessionsResponse":{
+      "type":"structure",
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationIdType",
+          "documentation":"<p>The unique identifier (ID) of an organization.</p>"
+        },
+        "EnabledFeatures":{
+          "shape":"FeaturesListType",
+          "documentation":"<p>The features you have enabled for centralized root access of member accounts in your organization.</p>"
+        }
+      }
+    },
     "DuplicateCertificateException":{
       "type":"structure",
       "members":{
@@ -3880,6 +4020,42 @@
         "AuthenticationCode2":{
           "shape":"authenticationCodeType",
           "documentation":"<p>A subsequent authentication code emitted by the device.</p> <p>The format for this parameter is a string of six digits.</p> <important> <p>Submit your request immediately after generating the authentication codes. If you generate the codes and then wait too long to submit the request, the MFA device successfully associates with the user but the MFA device becomes out of sync. This happens because time-based one-time passwords (TOTP) expire after a short period of time. If this happens, you can <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_sync.html\">resync the device</a>.</p> </important>"
+        }
+      }
+    },
+    "EnableOrganizationsRootCredentialsManagementRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "EnableOrganizationsRootCredentialsManagementResponse":{
+      "type":"structure",
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationIdType",
+          "documentation":"<p>The unique identifier (ID) of an organization.</p>"
+        },
+        "EnabledFeatures":{
+          "shape":"FeaturesListType",
+          "documentation":"<p>The features you have enabled for centralized root access.</p>"
+        }
+      }
+    },
+    "EnableOrganizationsRootSessionsRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "EnableOrganizationsRootSessionsResponse":{
+      "type":"structure",
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationIdType",
+          "documentation":"<p>The unique identifier (ID) of an organization.</p>"
+        },
+        "EnabledFeatures":{
+          "shape":"FeaturesListType",
+          "documentation":"<p>The features you have enabled for centralized root access.</p>"
         }
       }
     },
@@ -4040,6 +4216,17 @@
     "EvaluationResultsListType":{
       "type":"list",
       "member":{"shape":"EvaluationResult"}
+    },
+    "FeatureType":{
+      "type":"string",
+      "enum":[
+        "RootCredentialsManagement",
+        "RootSessions"
+      ]
+    },
+    "FeaturesListType":{
+      "type":"list",
+      "member":{"shape":"FeatureType"}
     },
     "GenerateCredentialReportResponse":{
       "type":"structure",
@@ -4352,11 +4539,10 @@
     },
     "GetLoginProfileRequest":{
       "type":"structure",
-      "required":["UserName"],
       "members":{
         "UserName":{
           "shape":"userNameType",
-          "documentation":"<p>The name of the user whose login profile you want to retrieve.</p> <p>This parameter allows (through its <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>"
+          "documentation":"<p>The name of the user whose login profile you want to retrieve.</p> <p>This parameter is optional. If no user name is included, it defaults to the principal making the request. When you make this request with root user credentials, you must use an <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoot.html\">AssumeRoot</a> session to omit the user name.</p> <p>This parameter allows (through its <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: _+=,.@-</p>"
         }
       }
     },
@@ -5693,6 +5879,24 @@
       },
       "documentation":"<p>Contains the response to a successful <a>ListOpenIDConnectProviders</a> request. </p>"
     },
+    "ListOrganizationsFeaturesRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "ListOrganizationsFeaturesResponse":{
+      "type":"structure",
+      "members":{
+        "OrganizationId":{
+          "shape":"OrganizationIdType",
+          "documentation":"<p>The unique identifier (ID) of an organization.</p>"
+        },
+        "EnabledFeatures":{
+          "shape":"FeaturesListType",
+          "documentation":"<p>Specifies the features that are currently available in your organization.</p>"
+        }
+      }
+    },
     "ListPoliciesGrantingServiceAccessEntry":{
       "type":"structure",
       "members":{
@@ -6503,6 +6707,25 @@
         "httpStatusCode":400,
         "senderFault":true
       },
+      "exception":true
+    },
+    "OrganizationIdType":{
+      "type":"string",
+      "max":34,
+      "pattern":"^o-[a-z0-9]{10,32}$"
+    },
+    "OrganizationNotFoundException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The request was rejected because no organization is associated with your account.</p>",
+      "exception":true
+    },
+    "OrganizationNotInAllFeaturesModeException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The request was rejected because your organization does not have All features enabled. For more information, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html#feature-set\">Available feature sets</a> in the <i>Organizations User Guide</i>.</p>",
       "exception":true
     },
     "OrganizationsDecisionDetail":{
@@ -7416,6 +7639,13 @@
         }
       },
       "documentation":"<p>Contains information about a server certificate without its certificate body, certificate chain, and private key.</p> <p> This data type is used as a response element in the <a>UploadServerCertificate</a> and <a>ListServerCertificates</a> operations. </p>"
+    },
+    "ServiceAccessNotEnabledException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The request was rejected because trusted access is not enabled for IAM in Organizations. For details, see IAM and Organizations in the <i>Organizations User Guide</i>.</p>",
+      "exception":true
     },
     "ServiceFailureException":{
       "type":"structure",
@@ -9123,6 +9353,7 @@
         "MFADevicesInUse",
         "AccountMFAEnabled",
         "AccountAccessKeysPresent",
+        "AccountPasswordPresent",
         "AccountSigningCertificatesPresent",
         "AttachedPoliciesPerGroupQuota",
         "AttachedPoliciesPerRoleQuota",

@@ -20,13 +20,13 @@ import sys
 from subprocess import Popen, PIPE
 import logging
 
-from awscli.compat import six
 from awscli.compat import get_stdout_text_writer
 from awscli.compat import get_popen_kwargs_for_pager_cmd
 from awscli.compat import StringIO
 from botocore.useragent import UserAgentComponent
 from botocore.utils import resolve_imds_endpoint_mode
 from botocore.utils import IMDSFetcher
+from botocore.utils import BadIMDSRequestError
 from botocore.configprovider import BaseProvider
 
 logger = logging.getLogger(__name__)
@@ -172,9 +172,17 @@ class InstanceMetadataRegionFetcher(IMDSFetcher):
             region = self._get_region()
             return region
         except self._RETRIES_EXCEEDED_ERROR_CLS:
-            logger.debug("Max number of attempts exceeded (%s) when "
-                         "attempting to retrieve data from metadata service.",
-                         self._num_attempts)
+            logger.debug(
+                "Max number of attempts exceeded (%s) when "
+                "attempting to retrieve data from metadata service.",
+                self._num_attempts
+            )
+        except BadIMDSRequestError as e:
+            logger.debug(
+                "Failed to retrieve a region from IMDS. "
+                "Region detection may not be supported from this endpoint: "
+                "%s", e.request.url
+            )
         return None
 
     def _get_region(self):
@@ -195,7 +203,7 @@ def split_on_commas(value):
         return value.split(',')
     elif not any(char in value for char in ['"', "'", '[', ']']):
         # Simple escaping, let the csv module handle it.
-        return list(csv.reader(six.StringIO(value), escapechar='\\'))[0]
+        return list(csv.reader(StringIO(value), escapechar='\\'))[0]
     else:
         # If there's quotes for the values, we have to handle this
         # ourselves.
@@ -209,7 +217,7 @@ def strip_html_tags(text):
 
 def _split_with_quotes(value):
     try:
-        parts = list(csv.reader(six.StringIO(value), escapechar='\\'))[0]
+        parts = list(csv.reader(StringIO(value), escapechar='\\'))[0]
     except csv.Error:
         raise ValueError("Bad csv value: %s" % value)
     iter_parts = iter(parts)
@@ -259,7 +267,7 @@ def _eat_items(value, iter_parts, part, end_char, replace_char=''):
     chunks = [current.replace(replace_char, '')]
     while True:
         try:
-            current = six.advance_iterator(iter_parts)
+            current = next(iter_parts)
         except StopIteration:
             raise ValueError(value)
         chunks.append(current.replace(replace_char, ''))
@@ -438,7 +446,7 @@ class OutputStreamFactory(object):
 
 def write_exception(ex, outfile):
     outfile.write("\n")
-    outfile.write(six.text_type(ex))
+    outfile.write(str(ex))
     outfile.write("\n")
 
 

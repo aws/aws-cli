@@ -4,11 +4,13 @@
     "apiVersion":"2015-05-28",
     "endpointPrefix":"iot",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS IoT",
     "serviceId":"IoT",
     "signatureVersion":"v4",
     "signingName":"iot",
-    "uid":"iot-2015-05-28"
+    "uid":"iot-2015-05-28",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AcceptCertificateTransfer":{
@@ -60,6 +62,26 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Adds a thing to a thing group.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">AddThingToThingGroup</a> action.</p>"
+    },
+    "AssociateSbomWithPackageVersion":{
+      "name":"AssociateSbomWithPackageVersion",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/packages/{packageName}/versions/{versionName}/sbom",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateSbomWithPackageVersionRequest"},
+      "output":{"shape":"AssociateSbomWithPackageVersionResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Associates the selected software bill of materials (SBOM) with a specific software package version.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">AssociateSbomWithPackageVersion</a> action.</p>",
+      "idempotent":true
     },
     "AssociateTargetsWithJob":{
       "name":"AssociateTargetsWithJob",
@@ -336,7 +358,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Creates a billing group.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateBillingGroup</a> action.</p>"
+      "documentation":"<p>Creates a billing group. If this call is made multiple times using the same billing group name and configuration, the call will succeed. If this call is made with the same billing group name but different configuration a <code>ResourceAlreadyExistsException</code> is thrown.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateBillingGroup</a> action.</p>"
     },
     "CreateCertificateFromCsr":{
       "name":"CreateCertificateFromCsr",
@@ -373,6 +395,23 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Creates an Amazon Web Services IoT Core certificate provider. You can use Amazon Web Services IoT Core certificate provider to customize how to sign a certificate signing request (CSR) in IoT fleet provisioning. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/provisioning-cert-provider.html\">Customizing certificate signing using Amazon Web Services IoT Core certificate provider</a> from <i>Amazon Web Services IoT Core Developer Guide</i>.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateCertificateProvider</a> action.</p> <important> <p>After you create a certificate provider, the behavior of <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/fleet-provision-api.html#create-cert-csr\"> <code>CreateCertificateFromCsr</code> API for fleet provisioning</a> will change and all API calls to <code>CreateCertificateFromCsr</code> will invoke the certificate provider to create the certificates. It can take up to a few minutes for this behavior to change after a certificate provider is created.</p> </important>"
+    },
+    "CreateCommand":{
+      "name":"CreateCommand",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/commands/{commandId}"
+      },
+      "input":{"shape":"CreateCommandRequest"},
+      "output":{"shape":"CreateCommandResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a command. A command contains reusable configurations that can be applied before they are sent to the devices.</p>"
     },
     "CreateCustomMetric":{
       "name":"CreateCustomMetric",
@@ -709,7 +748,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Creates a role alias.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateRoleAlias</a> action.</p>"
+      "documentation":"<p>Creates a role alias.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateRoleAlias</a> action.</p> <important> <p>The value of <a href=\"https://docs.aws.amazon.com/iot/latest/apireference/API_CreateRoleAlias.html#iot-CreateRoleAlias-request-credentialDurationSeconds\"> <code>credentialDurationSeconds</code> </a> must be less than or equal to the maximum session duration of the IAM role that the role alias references. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/roles-managingrole-editing-api.html#roles-modify_max-session-duration-api\"> Modifying a role maximum session duration (Amazon Web Services API)</a> from the Amazon Web Services Identity and Access Management User Guide.</p> </important>"
     },
     "CreateScheduledAudit":{
       "name":"CreateScheduledAudit",
@@ -815,7 +854,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"ResourceAlreadyExistsException"}
       ],
-      "documentation":"<p>Creates a new thing type.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateThingType</a> action.</p>"
+      "documentation":"<p>Creates a new thing type. If this call is made multiple times using the same thing type name and configuration, the call will succeed. If this call is made with the same thing type name but different configuration a <code>ResourceAlreadyExistsException</code> is thrown. </p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateThingType</a> action.</p>"
     },
     "CreateTopicRule":{
       "name":"CreateTopicRule",
@@ -973,6 +1012,38 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Deletes a certificate provider.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DeleteCertificateProvider</a> action. </p> <p>If you delete the certificate provider resource, the behavior of <code>CreateCertificateFromCsr</code> will resume, and IoT will create certificates signed by IoT from a certificate signing request (CSR).</p>"
+    },
+    "DeleteCommand":{
+      "name":"DeleteCommand",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/commands/{commandId}"
+      },
+      "input":{"shape":"DeleteCommandRequest"},
+      "output":{"shape":"DeleteCommandResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Delete a command resource.</p>"
+    },
+    "DeleteCommandExecution":{
+      "name":"DeleteCommandExecution",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/command-executions/{executionId}"
+      },
+      "input":{"shape":"DeleteCommandExecutionRequest"},
+      "output":{"shape":"DeleteCommandExecutionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Delete a command execution.</p> <note> <p>Only command executions that enter a terminal state can be deleted from your account.</p> </note>"
     },
     "DeleteCustomMetric":{
       "name":"DeleteCustomMetric",
@@ -2102,6 +2173,25 @@
       ],
       "documentation":"<p>Disables the rule.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DisableTopicRule</a> action.</p>"
     },
+    "DisassociateSbomFromPackageVersion":{
+      "name":"DisassociateSbomFromPackageVersion",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/packages/{packageName}/versions/{versionName}/sbom",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateSbomFromPackageVersionRequest"},
+      "output":{"shape":"DisassociateSbomFromPackageVersionResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Disassociates the selected software bill of materials (SBOM) from a specific software package version.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DisassociateSbomWithPackageVersion</a> action.</p>",
+      "idempotent":true
+    },
     "EnableTopicRule":{
       "name":"EnableTopicRule",
       "http":{
@@ -2175,6 +2265,38 @@
         {"shape":"IndexNotReadyException"}
       ],
       "documentation":"<p>Returns the approximate count of unique values that match the query.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">GetCardinality</a> action.</p>"
+    },
+    "GetCommand":{
+      "name":"GetCommand",
+      "http":{
+        "method":"GET",
+        "requestUri":"/commands/{commandId}"
+      },
+      "input":{"shape":"GetCommandRequest"},
+      "output":{"shape":"GetCommandResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets information about the specified command.</p>"
+    },
+    "GetCommandExecution":{
+      "name":"GetCommandExecution",
+      "http":{
+        "method":"GET",
+        "requestUri":"/command-executions/{executionId}"
+      },
+      "input":{"shape":"GetCommandExecutionRequest"},
+      "output":{"shape":"GetCommandExecutionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets information about the specific command execution on a single device.</p>"
     },
     "GetEffectivePolicies":{
       "name":"GetEffectivePolicies",
@@ -2404,6 +2526,25 @@
         {"shape":"IndexNotReadyException"}
       ],
       "documentation":"<p>Returns the count, average, sum, minimum, maximum, sum of squares, variance, and standard deviation for the specified aggregated field. If the aggregation field is of type <code>String</code>, only the count statistic is returned.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">GetStatistics</a> action.</p>"
+    },
+    "GetThingConnectivityData":{
+      "name":"GetThingConnectivityData",
+      "http":{
+        "method":"POST",
+        "requestUri":"/things/{thingName}/connectivity-data"
+      },
+      "input":{"shape":"GetThingConnectivityDataRequest"},
+      "output":{"shape":"GetThingConnectivityDataResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"IndexNotReadyException"}
+      ],
+      "documentation":"<p>Retrieves the live connectivity status per device.</p>"
     },
     "GetTopicRule":{
       "name":"GetTopicRule",
@@ -2662,6 +2803,37 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>List the device certificates signed by the specified CA certificate.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListCertificatesByCA</a> action.</p>"
+    },
+    "ListCommandExecutions":{
+      "name":"ListCommandExecutions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/command-executions"
+      },
+      "input":{"shape":"ListCommandExecutionsRequest"},
+      "output":{"shape":"ListCommandExecutionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List all command executions.</p> <important> <ul> <li> <p>You must provide only the <code>startedTimeFilter</code> or the <code>completedTimeFilter</code> information. If you provide both time filters, the API will generate an error. You can use this information to retrieve a list of command executions within a specific timeframe.</p> </li> <li> <p>You must provide only the <code>commandArn</code> or the <code>thingArn</code> information depending on whether you want to list executions for a specific command or an IoT thing. If you provide both fields, the API will generate an error.</p> </li> </ul> <p>For more information about considerations for using this API, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-remote-command-execution-start-monitor.html#iot-remote-command-execution-list-cli\">List command executions in your account (CLI)</a>.</p> </important>"
+    },
+    "ListCommands":{
+      "name":"ListCommands",
+      "http":{
+        "method":"GET",
+        "requestUri":"/commands"
+      },
+      "input":{"shape":"ListCommandsRequest"},
+      "output":{"shape":"ListCommandsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List all commands in your account.</p>"
     },
     "ListCustomMetrics":{
       "name":"ListCustomMetrics",
@@ -3041,6 +3213,24 @@
       ],
       "documentation":"<p>Lists the things associated with the specified principal. A principal can be X.509 certificates, IAM users, groups, and roles, Amazon Cognito identities or federated identities. </p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListPrincipalThings</a> action.</p>"
     },
+    "ListPrincipalThingsV2":{
+      "name":"ListPrincipalThingsV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/principals/things-v2"
+      },
+      "input":{"shape":"ListPrincipalThingsV2Request"},
+      "output":{"shape":"ListPrincipalThingsV2Response"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the things associated with the specified principal. A principal can be an X.509 certificate or an Amazon Cognito ID.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListPrincipalThings</a> action.</p>"
+    },
     "ListProvisioningTemplateVersions":{
       "name":"ListProvisioningTemplateVersions",
       "http":{
@@ -3106,6 +3296,23 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Lists the role aliases registered in your account.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListRoleAliases</a> action.</p>"
+    },
+    "ListSbomValidationResults":{
+      "name":"ListSbomValidationResults",
+      "http":{
+        "method":"GET",
+        "requestUri":"/packages/{packageName}/versions/{versionName}/sbom-validation-results",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSbomValidationResultsRequest"},
+      "output":{"shape":"ListSbomValidationResultsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>The validation results for all software bill of materials (SBOM) attached to a specific software package version.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListSbomValidationResults</a> action.</p>"
     },
     "ListScheduledAudits":{
       "name":"ListScheduledAudits",
@@ -3271,6 +3478,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists the principals associated with the specified thing. A principal can be X.509 certificates, IAM users, groups, and roles, Amazon Cognito identities or federated identities.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListThingPrincipals</a> action.</p>"
+    },
+    "ListThingPrincipalsV2":{
+      "name":"ListThingPrincipalsV2",
+      "http":{
+        "method":"GET",
+        "requestUri":"/things/{thingName}/principals-v2"
+      },
+      "input":{"shape":"ListThingPrincipalsV2Request"},
+      "output":{"shape":"ListThingPrincipalsV2Response"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the principals associated with the specified thing. A principal can be an X.509 certificate or an Amazon Cognito ID.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListThingPrincipals</a> action.</p>"
     },
     "ListThingRegistrationTaskReports":{
       "name":"ListThingRegistrationTaskReports",
@@ -3990,6 +4215,23 @@
       ],
       "documentation":"<p>Updates a certificate provider.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">UpdateCertificateProvider</a> action. </p>"
     },
+    "UpdateCommand":{
+      "name":"UpdateCommand",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/commands/{commandId}"
+      },
+      "input":{"shape":"UpdateCommandRequest"},
+      "output":{"shape":"UpdateCommandResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update information about a command or mark a command for deprecation.</p>"
+    },
     "UpdateCustomMetric":{
       "name":"UpdateCustomMetric",
       "http":{
@@ -4232,7 +4474,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Updates a role alias.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">UpdateRoleAlias</a> action.</p>"
+      "documentation":"<p>Updates a role alias.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">UpdateRoleAlias</a> action.</p> <important> <p>The value of <a href=\"https://docs.aws.amazon.com/iot/latest/apireference/API_UpdateRoleAlias.html#iot-UpdateRoleAlias-request-credentialDurationSeconds\"> <code>credentialDurationSeconds</code> </a> must be less than or equal to the maximum session duration of the IAM role that the role alias references. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/roles-managingrole-editing-api.html#roles-modify_max-session-duration-api\"> Modifying a role maximum session duration (Amazon Web Services API)</a> from the Amazon Web Services Identity and Access Management User Guide.</p> </important>"
     },
     "UpdateScheduledAudit":{
       "name":"UpdateScheduledAudit",
@@ -4277,6 +4519,7 @@
       "output":{"shape":"UpdateStreamResponse"},
       "errors":[
         {"shape":"InvalidRequestException"},
+        {"shape":"LimitExceededException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"UnauthorizedException"},
@@ -4336,6 +4579,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Updates the groups to which the thing belongs.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">UpdateThingGroupsForThing</a> action.</p>"
+    },
+    "UpdateThingType":{
+      "name":"UpdateThingType",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/thing-types/{thingTypeName}"
+      },
+      "input":{"shape":"UpdateThingTypeRequest"},
+      "output":{"shape":"UpdateThingTypeResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates a thing type.</p>"
     },
     "UpdateTopicRuleDestination":{
       "name":"UpdateTopicRuleDestination",
@@ -4774,6 +5035,15 @@
       },
       "documentation":"<p>Contains information that allowed the authorization.</p>"
     },
+    "ApplicationProtocol":{
+      "type":"string",
+      "enum":[
+        "SECURE_MQTT",
+        "MQTT_WSS",
+        "HTTPS",
+        "DEFAULT"
+      ]
+    },
     "ApproximateSecondsBeforeTimedOut":{"type":"long"},
     "AscendingOrder":{"type":"boolean"},
     "AssetId":{"type":"string"},
@@ -4857,6 +5127,54 @@
         }
       },
       "documentation":"<p>Contains an asset property value (of a single type).</p>"
+    },
+    "AssociateSbomWithPackageVersionRequest":{
+      "type":"structure",
+      "required":[
+        "packageName",
+        "versionName",
+        "sbom"
+      ],
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the new software package.</p>",
+          "location":"uri",
+          "locationName":"packageName"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the new package version.</p>",
+          "location":"uri",
+          "locationName":"versionName"
+        },
+        "sbom":{"shape":"Sbom"},
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "AssociateSbomWithPackageVersionResponse":{
+      "type":"structure",
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the new software package.</p>"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the new package version.</p>"
+        },
+        "sbom":{"shape":"Sbom"},
+        "sbomValidationStatus":{
+          "shape":"SbomValidationStatus",
+          "documentation":"<p>The status of the initial validation for the software bill of materials against the Software Package Data Exchange (SPDX) and CycloneDX industry standard formats.</p>"
+        }
+      }
     },
     "AssociateTargetsWithJobRequest":{
       "type":"structure",
@@ -4989,6 +5307,12 @@
           "documentation":"<p>The principal, which can be a certificate ARN (as returned from the CreateCertificate operation) or an Amazon Cognito ID.</p>",
           "location":"header",
           "locationName":"x-amzn-principal"
+        },
+        "thingPrincipalType":{
+          "shape":"ThingPrincipalType",
+          "documentation":"<p>The type of the relation you want to specify when you attach a principal to a thing.</p> <ul> <li> <p> <code>EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing, exclusively. The thing will be the only thing that’s attached to the principal.</p> </li> </ul> <ul> <li> <p> <code>NON_EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing. Multiple things can be attached to the principal.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"thingPrincipalType"
         }
       },
       "documentation":"<p>The input for the AttachThingPrincipal operation.</p>"
@@ -5022,7 +5346,7 @@
     "AttributeValue":{
       "type":"string",
       "max":800,
-      "pattern":"[a-zA-Z0-9_.,@/:#-]*"
+      "pattern":"[a-zA-Z0-9_.,@/:#=\\[\\]-]*"
     },
     "Attributes":{
       "type":"map",
@@ -5459,6 +5783,16 @@
       "type":"list",
       "member":{"shape":"AuthResult"}
     },
+    "AuthenticationType":{
+      "type":"string",
+      "enum":[
+        "CUSTOM_AUTH_X509",
+        "CUSTOM_AUTH",
+        "AWS_X509",
+        "AWS_SIGV4",
+        "DEFAULT"
+      ]
+    },
     "AuthorizerArn":{
       "type":"string",
       "max":2048
@@ -5726,6 +6060,7 @@
     },
     "AwsJobTimeoutInProgressTimeoutInMinutes":{"type":"long"},
     "BatchMode":{"type":"boolean"},
+    "BeforeSubstitutionFlag":{"type":"boolean"},
     "Behavior":{
       "type":"structure",
       "required":["name"],
@@ -5887,8 +6222,18 @@
       },
       "documentation":"<p>The properties of a billing group.</p>"
     },
+    "BinaryCommandExecutionResult":{
+      "type":"blob",
+      "min":1
+    },
+    "BinaryParameterValue":{
+      "type":"blob",
+      "min":1
+    },
     "Boolean":{"type":"boolean"},
+    "BooleanCommandExecutionResult":{"type":"boolean"},
     "BooleanKey":{"type":"boolean"},
+    "BooleanParameterValue":{"type":"boolean"},
     "BooleanWrapperObject":{"type":"boolean"},
     "Bucket":{
       "type":"structure",
@@ -6416,6 +6761,21 @@
       "members":{
       }
     },
+    "ClientCertificateCallbackArn":{
+      "type":"string",
+      "max":2048,
+      "pattern":"[\\s\\S]*"
+    },
+    "ClientCertificateConfig":{
+      "type":"structure",
+      "members":{
+        "clientCertificateCallbackArn":{
+          "shape":"ClientCertificateCallbackArn",
+          "documentation":"<p>The ARN of the Lambda function that IoT invokes after mutual TLS authentication during the connection.</p>"
+        }
+      },
+      "documentation":"<p>An object that speciﬁes the client certificate conﬁguration for a domain.</p>"
+    },
     "ClientId":{"type":"string"},
     "ClientProperties":{
       "type":"map",
@@ -6565,6 +6925,251 @@
       "documentation":"<p>Describes the signature for a file.</p>"
     },
     "CognitoIdentityPoolId":{"type":"string"},
+    "CommandArn":{"type":"string"},
+    "CommandDescription":{
+      "type":"string",
+      "max":2028,
+      "pattern":"[^\\p{C}]*"
+    },
+    "CommandExecutionId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "CommandExecutionParameterMap":{
+      "type":"map",
+      "key":{"shape":"CommandParameterName"},
+      "value":{"shape":"CommandParameterValue"},
+      "min":1
+    },
+    "CommandExecutionResult":{
+      "type":"structure",
+      "members":{
+        "S":{
+          "shape":"StringCommandExecutionResult",
+          "documentation":"<p>An attribute of type String. For example:</p> <p> <code>\"S\": \"Hello\"</code> </p>"
+        },
+        "B":{
+          "shape":"BooleanCommandExecutionResult",
+          "documentation":"<p>An attribute of type Boolean. For example:</p> <p> <code>\"BOOL\": true</code> </p>"
+        },
+        "BIN":{
+          "shape":"BinaryCommandExecutionResult",
+          "documentation":"<p>An attribute of type Binary.</p>"
+        }
+      },
+      "documentation":"<p>The result value of the command execution. The device can use the result field to share additional details about the execution such as a return value of a remote function call.</p> <note> <p>This field is not applicable if you use the <code>AWS-IoT-FleetWise</code> namespace.</p> </note>"
+    },
+    "CommandExecutionResultMap":{
+      "type":"map",
+      "key":{"shape":"CommandExecutionResultName"},
+      "value":{"shape":"CommandExecutionResult"},
+      "min":1
+    },
+    "CommandExecutionResultName":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "CommandExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "IN_PROGRESS",
+        "SUCCEEDED",
+        "FAILED",
+        "REJECTED",
+        "TIMED_OUT"
+      ]
+    },
+    "CommandExecutionSummary":{
+      "type":"structure",
+      "members":{
+        "commandArn":{
+          "shape":"CommandArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the command execution.</p>"
+        },
+        "executionId":{
+          "shape":"CommandExecutionId",
+          "documentation":"<p>The unique identifier of the command execution.</p>"
+        },
+        "targetArn":{
+          "shape":"TargetArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the target device for which the command is being executed.</p>"
+        },
+        "status":{
+          "shape":"CommandExecutionStatus",
+          "documentation":"<p>The status of the command executions.</p>"
+        },
+        "createdAt":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time at which the command execution was created for the target device.</p>"
+        },
+        "startedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time at which the command started executing on the target device.</p>"
+        },
+        "completedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time at which the command completed executing on the target device.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a particular command execution.</p>"
+    },
+    "CommandExecutionSummaryList":{
+      "type":"list",
+      "member":{"shape":"CommandExecutionSummary"}
+    },
+    "CommandExecutionTimeoutInSeconds":{
+      "type":"long",
+      "min":1
+    },
+    "CommandId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "CommandMaxResults":{
+      "type":"integer",
+      "max":100,
+      "min":1
+    },
+    "CommandNamespace":{
+      "type":"string",
+      "enum":[
+        "AWS-IoT",
+        "AWS-IoT-FleetWise"
+      ]
+    },
+    "CommandParameter":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"CommandParameterName",
+          "documentation":"<p>The name of a specific parameter used in a command and command execution.</p>"
+        },
+        "value":{
+          "shape":"CommandParameterValue",
+          "documentation":"<p>The value used to describe the command. When you assign a value to a parameter, it will override any default value that you had already specified.</p>"
+        },
+        "defaultValue":{
+          "shape":"CommandParameterValue",
+          "documentation":"<p>The default value used to describe the command. This is the value assumed by the parameter if no other value is assigned to it.</p>"
+        },
+        "description":{
+          "shape":"CommandParameterDescription",
+          "documentation":"<p>The description of the command parameter.</p>"
+        }
+      },
+      "documentation":"<p>A map of key-value pairs that describe the command.</p>"
+    },
+    "CommandParameterDescription":{
+      "type":"string",
+      "max":2028,
+      "pattern":"[^\\p{C}]*"
+    },
+    "CommandParameterList":{
+      "type":"list",
+      "member":{"shape":"CommandParameter"},
+      "min":1
+    },
+    "CommandParameterName":{
+      "type":"string",
+      "max":192,
+      "min":1,
+      "pattern":"^[.$a-zA-Z0-9_-]+$"
+    },
+    "CommandParameterValue":{
+      "type":"structure",
+      "members":{
+        "S":{
+          "shape":"StringParameterValue",
+          "documentation":"<p>An attribute of type String. For example:</p> <p> <code>\"S\": \"Hello\"</code> </p>"
+        },
+        "B":{
+          "shape":"BooleanParameterValue",
+          "documentation":"<p>An attribute of type Boolean. For example:</p> <p> <code>\"BOOL\": true</code> </p>"
+        },
+        "I":{
+          "shape":"IntegerParameterValue",
+          "documentation":"<p>An attribute of type Integer (Thirty-Two Bits).</p>"
+        },
+        "L":{
+          "shape":"LongParameterValue",
+          "documentation":"<p>An attribute of type Long.</p>"
+        },
+        "D":{
+          "shape":"DoubleParameterValue",
+          "documentation":"<p>An attribute of type Double (Sixty-Four Bits).</p>"
+        },
+        "BIN":{
+          "shape":"BinaryParameterValue",
+          "documentation":"<p>An attribute of type Binary. For example:</p> <p> <code>\"B\": \"dGhpcyB0ZXh0IGlzIGJhc2U2NC1lbmNvZGVk\"</code> </p>"
+        },
+        "UL":{
+          "shape":"UnsignedLongParameterValue",
+          "documentation":"<p>An attribute of type unsigned long.</p>"
+        }
+      },
+      "documentation":"<p>The range of possible values that's used to describe a specific command parameter.</p> <note> <p>The <code>commandParameterValue</code> can only have one of the below fields listed.</p> </note>"
+    },
+    "CommandPayload":{
+      "type":"structure",
+      "members":{
+        "content":{
+          "shape":"CommandPayloadBlob",
+          "documentation":"<p>The static payload file for the command.</p>"
+        },
+        "contentType":{
+          "shape":"MimeType",
+          "documentation":"<p>The content type that specifies the format type of the payload file. This field must use a type/subtype format, such as <code>application/json</code>. For information about various content types, see <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types/Common_types\">Common MIME types</a>.</p>"
+        }
+      },
+      "documentation":"<p>The command payload object that contains the instructions for the device to process.</p>"
+    },
+    "CommandPayloadBlob":{"type":"blob"},
+    "CommandSummary":{
+      "type":"structure",
+      "members":{
+        "commandArn":{
+          "shape":"CommandArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the command.</p>"
+        },
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>The unique identifier of the command.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the command.</p>"
+        },
+        "deprecated":{
+          "shape":"DeprecationFlag",
+          "documentation":"<p>Indicates whether the command has been deprecated.</p>"
+        },
+        "createdAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command was last updated.</p>"
+        },
+        "pendingDeletion":{
+          "shape":"BooleanWrapperObject",
+          "documentation":"<p>Indicates whether the command is pending deletion.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a particular command resource.</p>"
+    },
+    "CommandSummaryList":{
+      "type":"list",
+      "member":{"shape":"CommandSummary"}
+    },
     "Comment":{
       "type":"string",
       "max":2028,
@@ -6635,7 +7240,7 @@
           "documentation":"<p>A resource with the same name already exists.</p>"
         }
       },
-      "documentation":"<p>A resource with the same name already exists.</p>",
+      "documentation":"<p>The request conflicts with the current state of the resource.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
@@ -6650,6 +7255,18 @@
       "documentation":"<p>A conflicting resource update exception. This exception is thrown when two pending updates cause a conflict.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
+    },
+    "ConnectionAttributeName":{
+      "type":"string",
+      "max":128,
+      "pattern":"[a-zA-Z0-9:.]+"
+    },
+    "ConnectivityApiThingName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9:_-]+",
+      "sensitive":true
     },
     "ConnectivityTimestamp":{"type":"long"},
     "ConsecutiveDatapointsToAlarm":{
@@ -6881,6 +7498,59 @@
         }
       }
     },
+    "CreateCommandRequest":{
+      "type":"structure",
+      "required":["commandId"],
+      "members":{
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>A unique identifier for the command. We recommend using UUID. Alpha-numeric characters, hyphens, and underscores are valid for use here.</p>",
+          "location":"uri",
+          "locationName":"commandId"
+        },
+        "namespace":{
+          "shape":"CommandNamespace",
+          "documentation":"<p>The namespace of the command. The MQTT reserved topics and validations will be used for command executions according to the namespace setting.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The user-friendly name in the console for the command. This name doesn't have to be unique. You can update the user-friendly name after you define it.</p>"
+        },
+        "description":{
+          "shape":"CommandDescription",
+          "documentation":"<p>A short text decription of the command.</p>"
+        },
+        "payload":{
+          "shape":"CommandPayload",
+          "documentation":"<p>The payload object for the command. You must specify this information when using the <code>AWS-IoT</code> namespace.</p> <p>You can upload a static payload file from your local storage that contains the instructions for the device to process. The payload file can use any format. To make sure that the device correctly interprets the payload, we recommend you to specify the payload content type.</p>"
+        },
+        "mandatoryParameters":{
+          "shape":"CommandParameterList",
+          "documentation":"<p>A list of parameters that are required by the <code>StartCommandExecution</code> API. These parameters need to be specified only when using the <code>AWS-IoT-FleetWise</code> namespace. You can either specify them here or when running the command using the <code>StartCommandExecution</code> API.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The IAM role that you must provide when using the <code>AWS-IoT-FleetWise</code> namespace. The role grants IoT Device Management the permission to access IoT FleetWise resources for generating the payload for the command. This field is not required when you use the <code>AWS-IoT</code> namespace.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>Name-value pairs that are used as metadata to manage a command.</p>"
+        }
+      }
+    },
+    "CreateCommandResponse":{
+      "type":"structure",
+      "members":{
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>The unique identifier for the command.</p>"
+        },
+        "commandArn":{
+          "shape":"CommandArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the command. For example, <code>arn:aws:iot:&lt;region&gt;:&lt;accountid&gt;:command/&lt;commandId&gt;</code> </p>"
+        }
+      }
+    },
     "CreateCustomMetricRequest":{
       "type":"structure",
       "required":[
@@ -7015,6 +7685,18 @@
         "serverCertificateConfig":{
           "shape":"ServerCertificateConfig",
           "documentation":"<p>The server certificate configuration.</p>"
+        },
+        "authenticationType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>An enumerated string that speciﬁes the authentication type.</p> <ul> <li> <p> <code>CUSTOM_AUTH_X509</code> - Use custom authentication and authorization with additional details from the X.509 client certificate.</p> </li> </ul> <ul> <li> <p> <code>CUSTOM_AUTH</code> - Use custom authentication and authorization. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/custom-authentication.html\">Custom authentication and authorization</a>.</p> </li> </ul> <ul> <li> <p> <code>AWS_X509</code> - Use X.509 client certificates without custom authentication and authorization. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/x509-client-certs.html\">X.509 client certificates</a>.</p> </li> </ul> <ul> <li> <p> <code>AWS_SIGV4</code> - Use Amazon Web Services Signature Version 4. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/custom-authentication.html\">IAM users, groups, and roles</a>.</p> </li> </ul> <ul> <li> <p> <code>DEFAULT</code> - Use a combination of port and Application Layer Protocol Negotiation (ALPN) to specify authentication type. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/protocols.html\">Device communication protocols</a>.</p> </li> </ul>"
+        },
+        "applicationProtocol":{
+          "shape":"ApplicationProtocol",
+          "documentation":"<p>An enumerated string that speciﬁes the application-layer protocol.</p> <ul> <li> <p> <code>SECURE_MQTT</code> - MQTT over TLS.</p> </li> </ul> <ul> <li> <p> <code>MQTT_WSS</code> - MQTT over WebSocket.</p> </li> </ul> <ul> <li> <p> <code>HTTPS</code> - HTTP over TLS.</p> </li> </ul> <ul> <li> <p> <code>DEFAULT</code> - Use a combination of port and Application Layer Protocol Negotiation (ALPN) to specify application_layer protocol. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/protocols.html\">Device communication protocols</a>.</p> </li> </ul>"
+        },
+        "clientCertificateConfig":{
+          "shape":"ClientCertificateConfig",
+          "documentation":"<p>An object that speciﬁes the client certificate conﬁguration for a domain.</p>"
         }
       }
     },
@@ -7171,7 +7853,7 @@
       "members":{
         "jobId":{
           "shape":"JobId",
-          "documentation":"<p>A job identifier which must be unique for your Amazon Web Services account. We recommend using a UUID. Alpha-numeric characters, \"-\" and \"_\" are valid for use here.</p>",
+          "documentation":"<p>A job identifier which must be unique for your account. We recommend using a UUID. Alpha-numeric characters, \"-\" and \"_\" are valid for use here.</p>",
           "location":"uri",
           "locationName":"jobId"
         },
@@ -7557,6 +8239,14 @@
         "attributes":{
           "shape":"ResourceAttributes",
           "documentation":"<p>Metadata that can be used to define a package version’s configuration. For example, the S3 file location, configuration options that are being sent to the device or fleet.</p> <p>The combined size of all the attributes on a package version is limited to 3KB.</p>"
+        },
+        "artifact":{
+          "shape":"PackageVersionArtifact",
+          "documentation":"<p>The various build components created during the build process such as libraries and configuration files that make up a software package version.</p>"
+        },
+        "recipe":{
+          "shape":"PackageVersionRecipe",
+          "documentation":"<p>The inline job document associated with a software package version used for a quick job deployment.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -8403,6 +9093,54 @@
       },
       "documentation":"<p>The input for the DeleteCertificate operation.</p>"
     },
+    "DeleteCommandExecutionRequest":{
+      "type":"structure",
+      "required":[
+        "executionId",
+        "targetArn"
+      ],
+      "members":{
+        "executionId":{
+          "shape":"CommandExecutionId",
+          "documentation":"<p>The unique identifier of the command execution that you want to delete from your account.</p>",
+          "location":"uri",
+          "locationName":"executionId"
+        },
+        "targetArn":{
+          "shape":"TargetArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the target device for which you want to delete command executions.</p>",
+          "location":"querystring",
+          "locationName":"targetArn"
+        }
+      }
+    },
+    "DeleteCommandExecutionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteCommandRequest":{
+      "type":"structure",
+      "required":["commandId"],
+      "members":{
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>The unique identifier of the command to be deleted.</p>",
+          "location":"uri",
+          "locationName":"commandId"
+        }
+      }
+    },
+    "DeleteCommandResponse":{
+      "type":"structure",
+      "members":{
+        "statusCode":{
+          "shape":"StatusCode",
+          "documentation":"<p>The status code for the command deletion request. The status code is in the 200 range for a successful request.</p> <ul> <li> <p>If the command hasn't been deprecated, or has been deprecated for a duration that is shorter than the maximum time out duration of 12 hours, when calling the <code>DeleteCommand</code> request, the deletion will be scheduled and a 202 status code will be returned. While the command is being deleted, it will be in a <code>pendingDeletion</code> state. Once the time out duration has been reached, the command will be permanently removed from your account.</p> </li> <li> <p>If the command has been deprecated for a duration that is longer than the maximum time out duration of 12 hours, when calling the <code>DeleteCommand</code> request, the command will be deleted immediately and a 204 status code will be returned.</p> </li> </ul>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DeleteConflictException":{
       "type":"structure",
       "members":{
@@ -9010,6 +9748,7 @@
       "documentation":"<p>The output for the DeprecateThingType operation.</p>"
     },
     "DeprecationDate":{"type":"timestamp"},
+    "DeprecationFlag":{"type":"boolean"},
     "DescribeAccountAuditConfigurationRequest":{
       "type":"structure",
       "members":{
@@ -9494,6 +10233,18 @@
         "serverCertificateConfig":{
           "shape":"ServerCertificateConfig",
           "documentation":"<p>The server certificate configuration.</p>"
+        },
+        "authenticationType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>An enumerated string that speciﬁes the authentication type.</p> <ul> <li> <p> <code>CUSTOM_AUTH_X509</code> - Use custom authentication and authorization with additional details from the X.509 client certificate.</p> </li> </ul> <ul> <li> <p> <code>CUSTOM_AUTH</code> - Use custom authentication and authorization. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/custom-authentication.html\">Custom authentication and authorization</a>.</p> </li> </ul> <ul> <li> <p> <code>AWS_X509</code> - Use X.509 client certificates without custom authentication and authorization. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/x509-client-certs.html\">X.509 client certificates</a>.</p> </li> </ul> <ul> <li> <p> <code>AWS_SIGV4</code> - Use Amazon Web Services Signature Version 4. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/custom-authentication.html\">IAM users, groups, and roles</a>.</p> </li> </ul> <ul> <li> <p> <code>DEFAULT</code> - Use a combination of port and Application Layer Protocol Negotiation (ALPN) to specify authentication type. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/protocols.html\">Device communication protocols</a>.</p> </li> </ul>"
+        },
+        "applicationProtocol":{
+          "shape":"ApplicationProtocol",
+          "documentation":"<p>An enumerated string that speciﬁes the application-layer protocol.</p> <ul> <li> <p> <code>SECURE_MQTT</code> - MQTT over TLS.</p> </li> </ul> <ul> <li> <p> <code>MQTT_WSS</code> - MQTT over WebSocket.</p> </li> </ul> <ul> <li> <p> <code>HTTPS</code> - HTTP over TLS.</p> </li> </ul> <ul> <li> <p> <code>DEFAULT</code> - Use a combination of port and Application Layer Protocol Negotiation (ALPN) to specify application_layer protocol. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/protocols.html\">Device communication protocols</a>.</p> </li> </ul>"
+        },
+        "clientCertificateConfig":{
+          "shape":"ClientCertificateConfig",
+          "documentation":"<p>An object that speciﬁes the client certificate conﬁguration for a domain.</p>"
         }
       }
     },
@@ -9684,6 +10435,12 @@
           "documentation":"<p>The unique identifier you assigned to this job when it was created.</p>",
           "location":"uri",
           "locationName":"jobId"
+        },
+        "beforeSubstitution":{
+          "shape":"BeforeSubstitutionFlag",
+          "documentation":"<p>Provides a view of the job document before and after the substitution parameters have been resolved with their exact values.</p>",
+          "location":"querystring",
+          "locationName":"beforeSubstitution"
         }
       }
     },
@@ -10309,7 +11066,7 @@
         },
         "thingTypeProperties":{
           "shape":"ThingTypeProperties",
-          "documentation":"<p>The ThingTypeProperties contains information about the thing type including description, and a list of searchable thing attribute names.</p>"
+          "documentation":"<p>The ThingTypeProperties contains information about the thing type including description, a list of searchable thing attribute names, and MQTT5 configuration.</p>"
         },
         "thingTypeMetadata":{
           "shape":"ThingTypeMetadata",
@@ -10664,7 +11421,64 @@
       },
       "documentation":"<p>The input for the DisableTopicRuleRequest operation.</p>"
     },
+    "DisassociateSbomFromPackageVersionRequest":{
+      "type":"structure",
+      "required":[
+        "packageName",
+        "versionName"
+      ],
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the new software package.</p>",
+          "location":"uri",
+          "locationName":"packageName"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the new package version.</p>",
+          "location":"uri",
+          "locationName":"versionName"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "DisassociateSbomFromPackageVersionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DisconnectReason":{"type":"string"},
+    "DisconnectReasonValue":{
+      "type":"string",
+      "enum":[
+        "AUTH_ERROR",
+        "CLIENT_INITIATED_DISCONNECT",
+        "CLIENT_ERROR",
+        "CONNECTION_LOST",
+        "DUPLICATE_CLIENTID",
+        "FORBIDDEN_ACCESS",
+        "MQTT_KEEP_ALIVE_TIMEOUT",
+        "SERVER_ERROR",
+        "SERVER_INITIATED_DISCONNECT",
+        "THROTTLED",
+        "WEBSOCKET_TTL_EXPIRATION",
+        "CUSTOMAUTH_TTL_EXPIRATION",
+        "UNKNOWN",
+        "NONE"
+      ]
+    },
+    "DisplayName":{
+      "type":"string",
+      "max":64,
+      "pattern":"[^\\p{C}]*"
+    },
     "DocumentParameter":{
       "type":"structure",
       "members":{
@@ -10745,6 +11559,7 @@
         "CUSTOMER_MANAGED"
       ]
     },
+    "DoubleParameterValue":{"type":"double"},
     "DurationInMinutes":{
       "type":"integer",
       "max":1430,
@@ -11342,6 +12157,155 @@
         }
       }
     },
+    "GetCommandExecutionRequest":{
+      "type":"structure",
+      "required":[
+        "executionId",
+        "targetArn"
+      ],
+      "members":{
+        "executionId":{
+          "shape":"CommandExecutionId",
+          "documentation":"<p>The unique identifier for the command execution. This information is returned as a response of the <code>StartCommandExecution</code> API request.</p>",
+          "location":"uri",
+          "locationName":"executionId"
+        },
+        "targetArn":{
+          "shape":"TargetArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the device on which the command execution is being performed.</p>",
+          "location":"querystring",
+          "locationName":"targetArn"
+        },
+        "includeResult":{
+          "shape":"BooleanWrapperObject",
+          "documentation":"<p>Can be used to specify whether to include the result of the command execution in the <code>GetCommandExecution</code> API response. Your device can use this field to provide additional information about the command execution. You only need to specify this field when using the <code>AWS-IoT</code> namespace.</p>",
+          "location":"querystring",
+          "locationName":"includeResult"
+        }
+      }
+    },
+    "GetCommandExecutionResponse":{
+      "type":"structure",
+      "members":{
+        "executionId":{
+          "shape":"CommandExecutionId",
+          "documentation":"<p>The unique identifier of the command execution.</p>"
+        },
+        "commandArn":{
+          "shape":"CommandArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the command. For example, <code/>arn:aws:iot:&lt;region&gt;:&lt;accountid&gt;:command/&lt;commandId&gt;</p>"
+        },
+        "targetArn":{
+          "shape":"TargetArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the device on which the command execution is being performed.</p>"
+        },
+        "status":{
+          "shape":"CommandExecutionStatus",
+          "documentation":"<p>The status of the command execution. After your devices receive the command and start performing the operations specified in the command, it can use the <code>UpdateCommandExecution</code> MQTT API to update the status information.</p>"
+        },
+        "statusReason":{
+          "shape":"StatusReason",
+          "documentation":"<p>Your devices can use this parameter to provide additional context about the status of a command execution using a reason code and description.</p>"
+        },
+        "result":{
+          "shape":"CommandExecutionResultMap",
+          "documentation":"<p>The result value for the current state of the command execution. The status provides information about the progress of the command execution. The device can use the result field to share additional details about the execution such as a return value of a remote function call.</p> <note> <p>If you use the <code>AWS-IoT-FleetWise</code> namespace, then this field is not applicable in the API response.</p> </note>"
+        },
+        "parameters":{
+          "shape":"CommandExecutionParameterMap",
+          "documentation":"<p>The list of parameters that the <code>StartCommandExecution</code> API used when performing the command on the device.</p>"
+        },
+        "executionTimeoutSeconds":{
+          "shape":"CommandExecutionTimeoutInSeconds",
+          "documentation":"<p>Specifies the amount of time in seconds that the device can take to finish a command execution. A timer starts when the command execution is created. If the command execution status is not set to another terminal state before the timer expires, it will automatically update to <code>TIMED_OUT</code>.</p>"
+        },
+        "createdAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command execution was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command execution was last updated.</p>"
+        },
+        "startedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command execution was started.</p>"
+        },
+        "completedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command execution was completed.</p>"
+        },
+        "timeToLive":{
+          "shape":"DateType",
+          "documentation":"<p>The time to live (TTL) parameter that indicates the duration for which executions will be retained in your account. The default value is six months.</p>"
+        }
+      }
+    },
+    "GetCommandRequest":{
+      "type":"structure",
+      "required":["commandId"],
+      "members":{
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>The unique identifier of the command for which you want to retrieve information.</p>",
+          "location":"uri",
+          "locationName":"commandId"
+        }
+      }
+    },
+    "GetCommandResponse":{
+      "type":"structure",
+      "members":{
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>The unique identifier of the command.</p>"
+        },
+        "commandArn":{
+          "shape":"CommandArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the command. For example, <code>arn:aws:iot:&lt;region&gt;:&lt;accountid&gt;:command/&lt;commandId&gt;</code> </p>"
+        },
+        "namespace":{
+          "shape":"CommandNamespace",
+          "documentation":"<p>The namespace of the command.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The user-friendly name in the console for the command.</p>"
+        },
+        "description":{
+          "shape":"CommandDescription",
+          "documentation":"<p>A short text description of the command.</p>"
+        },
+        "mandatoryParameters":{
+          "shape":"CommandParameterList",
+          "documentation":"<p>A list of parameters for the command created.</p>"
+        },
+        "payload":{
+          "shape":"CommandPayload",
+          "documentation":"<p>The payload object that you provided for the command.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The IAM role that you provided when creating the command with <code>AWS-IoT-FleetWise</code> as the namespace.</p>"
+        },
+        "createdAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The timestamp, when the command was last updated.</p>"
+        },
+        "deprecated":{
+          "shape":"DeprecationFlag",
+          "documentation":"<p>Indicates whether the command has been deprecated.</p>"
+        },
+        "pendingDeletion":{
+          "shape":"BooleanWrapperObject",
+          "documentation":"<p>Indicates whether the command is being deleted.</p>"
+        }
+      }
+    },
     "GetEffectivePoliciesRequest":{
       "type":"structure",
       "members":{
@@ -11397,6 +12361,12 @@
           "documentation":"<p>The unique identifier you assigned to this job when it was created.</p>",
           "location":"uri",
           "locationName":"jobId"
+        },
+        "beforeSubstitution":{
+          "shape":"BeforeSubstitutionFlag",
+          "documentation":"<p>Provides a view of the job document before and after the substitution parameters have been resolved with their exact values.</p>",
+          "location":"querystring",
+          "locationName":"beforeSubstitution"
         }
       }
     },
@@ -11549,6 +12519,10 @@
           "shape":"ResourceAttributes",
           "documentation":"<p>Metadata that were added to the package version that can be used to define a package version’s configuration.</p>"
         },
+        "artifact":{
+          "shape":"PackageVersionArtifact",
+          "documentation":"<p>The various components that make up a software package version.</p>"
+        },
         "status":{
           "shape":"PackageVersionStatus",
           "documentation":"<p>The status associated to the package version. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/preparing-to-use-software-package-catalog.html#package-version-lifecycle\">Package version lifecycle</a>.</p>"
@@ -11564,6 +12538,18 @@
         "lastModifiedDate":{
           "shape":"LastModifiedDate",
           "documentation":"<p>The date when the package version was last updated.</p>"
+        },
+        "sbom":{
+          "shape":"Sbom",
+          "documentation":"<p>The software bill of materials for a software package version.</p>"
+        },
+        "sbomValidationStatus":{
+          "shape":"SbomValidationStatus",
+          "documentation":"<p>The status of the validation for a new software bill of materials added to a software package version.</p>"
+        },
+        "recipe":{
+          "shape":"PackageVersionRecipe",
+          "documentation":"<p>The inline job document associated with a software package version used for a quick job deployment.</p>"
         }
       }
     },
@@ -11753,6 +12739,39 @@
         "statistics":{
           "shape":"Statistics",
           "documentation":"<p>The statistics returned by the Fleet Indexing service based on the query and aggregation field.</p>"
+        }
+      }
+    },
+    "GetThingConnectivityDataRequest":{
+      "type":"structure",
+      "required":["thingName"],
+      "members":{
+        "thingName":{
+          "shape":"ConnectivityApiThingName",
+          "documentation":"<p>The name of your IoT thing.</p>",
+          "location":"uri",
+          "locationName":"thingName"
+        }
+      }
+    },
+    "GetThingConnectivityDataResponse":{
+      "type":"structure",
+      "members":{
+        "thingName":{
+          "shape":"ConnectivityApiThingName",
+          "documentation":"<p>The name of your IoT thing.</p>"
+        },
+        "connected":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean that indicates the connectivity status.</p>"
+        },
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the event occurred.</p>"
+        },
+        "disconnectReason":{
+          "shape":"DisconnectReasonValue",
+          "documentation":"<p>The reason why the client is disconnecting.</p>"
         }
       }
     },
@@ -12043,6 +13062,7 @@
       "max":128,
       "min":1
     },
+    "IntegerParameterValue":{"type":"integer"},
     "InternalException":{
       "type":"structure",
       "members":{
@@ -13430,6 +14450,112 @@
       },
       "documentation":"<p>The output of the ListCertificates operation.</p>"
     },
+    "ListCommandExecutionsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"CommandMaxResults",
+          "documentation":"<p>The maximum number of results to return in this operation.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <code>null</code> to receive the first set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "namespace":{
+          "shape":"CommandNamespace",
+          "documentation":"<p>The namespace of the command.</p>"
+        },
+        "status":{
+          "shape":"CommandExecutionStatus",
+          "documentation":"<p>List all command executions for the device that have a particular status. For example, you can filter the list to display only command executions that have failed or timed out.</p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Specify whether to list the command executions that were created in the ascending or descending order. By default, the API returns all commands in the descending order based on the start time or completion time of the executions, that are determined by the <code>startTimeFilter</code> and <code>completeTimeFilter</code> parameters.</p>"
+        },
+        "startedTimeFilter":{
+          "shape":"TimeFilter",
+          "documentation":"<p>List all command executions that started any time before or after the date and time that you specify. The date and time uses the format <code>yyyy-MM-dd'T'HH:mm</code>.</p>"
+        },
+        "completedTimeFilter":{
+          "shape":"TimeFilter",
+          "documentation":"<p>List all command executions that completed any time before or after the date and time that you specify. The date and time uses the format <code>yyyy-MM-dd'T'HH:mm</code>.</p>"
+        },
+        "targetArn":{
+          "shape":"TargetArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the target device. You can use this information to list all command executions for a particular device.</p>"
+        },
+        "commandArn":{
+          "shape":"CommandArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the command. You can use this information to list all command executions for a particular command.</p>"
+        }
+      }
+    },
+    "ListCommandExecutionsResponse":{
+      "type":"structure",
+      "members":{
+        "commandExecutions":{
+          "shape":"CommandExecutionSummaryList",
+          "documentation":"<p>The list of command executions.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to get the next set of results, or <code>null</code> if there are no additional results.</p>"
+        }
+      }
+    },
+    "ListCommandsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"CommandMaxResults",
+          "documentation":"<p>The maximum number of results to return in this operation. By default, the API returns up to a maximum of 25 results. You can override this default value to return up to a maximum of 100 results for this operation.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <code>null</code> to receive the first set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "namespace":{
+          "shape":"CommandNamespace",
+          "documentation":"<p>The namespace of the command. By default, the API returns all commands that have been created for both <code>AWS-IoT</code> and <code>AWS-IoT-FleetWise</code> namespaces. You can override this default value if you want to return all commands that have been created only for a specific namespace.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
+        },
+        "commandParameterName":{
+          "shape":"CommandParameterName",
+          "documentation":"<p>A filter that can be used to display the list of commands that have a specific command parameter name.</p>",
+          "location":"querystring",
+          "locationName":"commandParameterName"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Specify whether to list the commands that you have created in the ascending or descending order. By default, the API returns all commands in the descending order based on the time that they were created.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        }
+      }
+    },
+    "ListCommandsResponse":{
+      "type":"structure",
+      "members":{
+        "commands":{
+          "shape":"CommandSummaryList",
+          "documentation":"<p>The list of commands.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to get the next set of results, or <code>null</code> if there are no additional results.</p>"
+        }
+      }
+    },
     "ListCustomMetricsRequest":{
       "type":"structure",
       "members":{
@@ -14361,6 +15487,49 @@
       },
       "documentation":"<p>The output from the ListPrincipalThings operation.</p>"
     },
+    "ListPrincipalThingsV2Request":{
+      "type":"structure",
+      "required":["principal"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"RegistryMaxResults",
+          "documentation":"<p>The maximum number of results to return in this operation.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "principal":{
+          "shape":"Principal",
+          "documentation":"<p>The principal. A principal can be an X.509 certificate or an Amazon Cognito ID.</p>",
+          "location":"header",
+          "locationName":"x-amzn-principal"
+        },
+        "thingPrincipalType":{
+          "shape":"ThingPrincipalType",
+          "documentation":"<p>The type of the relation you want to filter in the response. If no value is provided in this field, the response will list all things, including both the <code>EXCLUSIVE_THING</code> and <code>NON_EXCLUSIVE_THING</code> attachment types.</p> <ul> <li> <p> <code>EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing, exclusively. The thing will be the only thing that’s attached to the principal.</p> </li> </ul> <ul> <li> <p> <code>NON_EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing. Multiple things can be attached to the principal.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"thingPrincipalType"
+        }
+      }
+    },
+    "ListPrincipalThingsV2Response":{
+      "type":"structure",
+      "members":{
+        "principalThingObjects":{
+          "shape":"PrincipalThingObjects",
+          "documentation":"<p>A list of <code>thingPrincipalObject</code> that represents the principal and the type of relation it has with the thing.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to get the next set of results, or <b>null</b> if there are no additional results.</p>"
+        }
+      }
+    },
     "ListProvisioningTemplateVersionsRequest":{
       "type":"structure",
       "required":["templateName"],
@@ -14498,6 +15667,58 @@
         "nextMarker":{
           "shape":"Marker",
           "documentation":"<p>A marker used to get the next set of results.</p>"
+        }
+      }
+    },
+    "ListSbomValidationResultsRequest":{
+      "type":"structure",
+      "required":[
+        "packageName",
+        "versionName"
+      ],
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the new software package.</p>",
+          "location":"uri",
+          "locationName":"packageName"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the new package version.</p>",
+          "location":"uri",
+          "locationName":"versionName"
+        },
+        "validationResult":{
+          "shape":"SbomValidationResult",
+          "documentation":"<p>The end result of the </p>",
+          "location":"querystring",
+          "locationName":"validationResult"
+        },
+        "maxResults":{
+          "shape":"PackageCatalogMaxResults",
+          "documentation":"<p>The maximum number of results to return at one time.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results, or null if there are no additional results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListSbomValidationResultsResponse":{
+      "type":"structure",
+      "members":{
+        "validationResultSummaries":{
+          "shape":"SbomValidationResultSummaryList",
+          "documentation":"<p>A summary of the validation results for each software bill of materials attached to a software package version.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results, or null if there are no additional results.</p>"
         }
       }
     },
@@ -14882,6 +16103,49 @@
         }
       },
       "documentation":"<p>The output from the ListThingPrincipals operation.</p>"
+    },
+    "ListThingPrincipalsV2Request":{
+      "type":"structure",
+      "required":["thingName"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>To retrieve the next set of results, the <code>nextToken</code> value from a previous response; otherwise <b>null</b> to receive the first set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"RegistryMaxResults",
+          "documentation":"<p>The maximum number of results to return in this operation.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "thingName":{
+          "shape":"ThingName",
+          "documentation":"<p>The name of the thing.</p>",
+          "location":"uri",
+          "locationName":"thingName"
+        },
+        "thingPrincipalType":{
+          "shape":"ThingPrincipalType",
+          "documentation":"<p>The type of the relation you want to filter in the response. If no value is provided in this field, the response will list all principals, including both the <code>EXCLUSIVE_THING</code> and <code>NON_EXCLUSIVE_THING</code> attachment types.</p> <ul> <li> <p> <code>EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing, exclusively. The thing will be the only thing that’s attached to the principal.</p> </li> </ul> <ul> <li> <p> <code>NON_EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing. Multiple things can be attached to the principal.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"thingPrincipalType"
+        }
+      }
+    },
+    "ListThingPrincipalsV2Response":{
+      "type":"structure",
+      "members":{
+        "thingPrincipalObjects":{
+          "shape":"ThingPrincipalObjects",
+          "documentation":"<p>A list of <code>thingPrincipalObject</code> that represents the principal and the type of relation it has with the thing.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to get the next set of results, or <b>null</b> if there are no additional results.</p>"
+        }
+      }
     },
     "ListThingRegistrationTaskReportsRequest":{
       "type":"structure",
@@ -15451,6 +16715,7 @@
       },
       "documentation":"<p>Describes the logging options payload.</p>"
     },
+    "LongParameterValue":{"type":"long"},
     "MachineLearningDetectionConfig":{
       "type":"structure",
       "required":["confidenceLevel"],
@@ -15691,6 +16956,10 @@
       },
       "documentation":"<p>Set configurations for metrics export.</p>"
     },
+    "MimeType":{
+      "type":"string",
+      "min":1
+    },
     "Minimum":{"type":"double"},
     "MinimumNumberOfExecutedThings":{
       "type":"integer",
@@ -15816,6 +17085,16 @@
         "ACTIVE",
         "EXPIRED"
       ]
+    },
+    "Mqtt5Configuration":{
+      "type":"structure",
+      "members":{
+        "propagatingAttributes":{
+          "shape":"PropagatingAttributeList",
+          "documentation":"<p>An object that represents the propagating thing attributes and the connection attributes.</p>"
+        }
+      },
+      "documentation":"<p>The configuration to add user-defined properties to enrich MQTT 5 messages.</p>"
     },
     "MqttClientId":{
       "type":"string",
@@ -15949,6 +17228,10 @@
     "NumberOfThings":{
       "type":"integer",
       "min":1
+    },
+    "OCSPLambdaArn":{
+      "type":"string",
+      "max":140
     },
     "OTAUpdateArn":{"type":"string"},
     "OTAUpdateDescription":{
@@ -16224,7 +17507,19 @@
       "min":1,
       "pattern":"^arn:[!-~]+$"
     },
+    "PackageVersionArtifact":{
+      "type":"structure",
+      "members":{
+        "s3Location":{"shape":"S3Location"}
+      },
+      "documentation":"<p>A specific package version artifact associated with a software package version.</p>"
+    },
     "PackageVersionErrorReason":{"type":"string"},
+    "PackageVersionRecipe":{
+      "type":"string",
+      "max":3072,
+      "sensitive":true
+    },
     "PackageVersionStatus":{
       "type":"string",
       "enum":[
@@ -16464,6 +17759,25 @@
       "min":1,
       "pattern":"[a-zA-Z0-9]+"
     },
+    "PrincipalThingObject":{
+      "type":"structure",
+      "required":["thingName"],
+      "members":{
+        "thingName":{
+          "shape":"ThingName",
+          "documentation":"<p>The name of the thing.</p>"
+        },
+        "thingPrincipalType":{
+          "shape":"ThingPrincipalType",
+          "documentation":"<p>The type of the relation you want to specify when you attach a principal to a thing. The value defaults to <code>NON_EXCLUSIVE_THING</code>.</p> <ul> <li> <p> <code>EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing, exclusively. The thing will be the only thing that’s attached to the principal.</p> </li> </ul> <ul> <li> <p> <code>NON_EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing. Multiple things can be attached to the principal.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An object that represents the thing and the type of relation it has with the principal.</p>"
+    },
+    "PrincipalThingObjects":{
+      "type":"list",
+      "member":{"shape":"PrincipalThingObject"}
+    },
     "Principals":{
       "type":"list",
       "member":{"shape":"PrincipalArn"}
@@ -16477,6 +17791,28 @@
     "ProcessingTargetNameList":{
       "type":"list",
       "member":{"shape":"ProcessingTargetName"}
+    },
+    "PropagatingAttribute":{
+      "type":"structure",
+      "members":{
+        "userPropertyKey":{
+          "shape":"UserPropertyKeyName",
+          "documentation":"<p>The key of the user property key-value pair.</p>"
+        },
+        "thingAttribute":{
+          "shape":"AttributeName",
+          "documentation":"<p>The user-defined thing attribute that is propagating for MQTT 5 message enrichment.</p>"
+        },
+        "connectionAttribute":{
+          "shape":"ConnectionAttributeName",
+          "documentation":"<p>The attribute associated with the connection between a device and Amazon Web Services IoT Core.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents the connection attribute, thing attribute, and the user property key.</p>"
+    },
+    "PropagatingAttributeList":{
+      "type":"list",
+      "member":{"shape":"PropagatingAttribute"}
     },
     "Protocol":{
       "type":"string",
@@ -17425,6 +18761,62 @@
       "type":"string",
       "min":40
     },
+    "Sbom":{
+      "type":"structure",
+      "members":{
+        "s3Location":{"shape":"S3Location"}
+      },
+      "documentation":"<p>A specific software bill of matrerials associated with a software package version.</p>"
+    },
+    "SbomValidationErrorCode":{
+      "type":"string",
+      "enum":[
+        "INCOMPATIBLE_FORMAT",
+        "FILE_SIZE_LIMIT_EXCEEDED"
+      ]
+    },
+    "SbomValidationErrorMessage":{"type":"string"},
+    "SbomValidationResult":{
+      "type":"string",
+      "enum":[
+        "FAILED",
+        "SUCCEEDED"
+      ]
+    },
+    "SbomValidationResultSummary":{
+      "type":"structure",
+      "members":{
+        "fileName":{
+          "shape":"FileName",
+          "documentation":"<p>The name of the SBOM file.</p>"
+        },
+        "validationResult":{
+          "shape":"SbomValidationResult",
+          "documentation":"<p>The end result of the SBOM validation.</p>"
+        },
+        "errorCode":{
+          "shape":"SbomValidationErrorCode",
+          "documentation":"<p>The <code>errorCode</code> representing the validation failure error if the SBOM validation failed.</p>"
+        },
+        "errorMessage":{
+          "shape":"SbomValidationErrorMessage",
+          "documentation":"<p>The <code>errorMessage</code> representing the validation failure error if the SBOM validation failed.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the validation results for a specific software bill of materials (SBOM) attached to a software package version.</p>"
+    },
+    "SbomValidationResultSummaryList":{
+      "type":"list",
+      "member":{"shape":"SbomValidationResultSummary"}
+    },
+    "SbomValidationStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "FAILED",
+        "SUCCEEDED"
+      ]
+    },
     "ScheduledAuditArn":{"type":"string"},
     "ScheduledAuditMetadata":{
       "type":"structure",
@@ -17639,7 +19031,15 @@
       "members":{
         "enableOCSPCheck":{
           "shape":"EnableOCSPCheck",
-          "documentation":"<p>A Boolean value that indicates whether Online Certificate Status Protocol (OCSP) server certificate check is enabled or not.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-custom-domain-ocsp-config.html\">Configuring OCSP server-certificate stapling in domain configuration</a> from Amazon Web Services IoT Core Developer Guide.</p>"
+          "documentation":"<p>A Boolean value that indicates whether Online Certificate Status Protocol (OCSP) server certificate check is enabled or not.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-custom-endpoints-cert-config.html\"> Server certificate configuration for OCSP stapling</a> from Amazon Web Services IoT Core Developer Guide.</p>"
+        },
+        "ocspLambdaArn":{
+          "shape":"OCSPLambdaArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for a Lambda function that acts as a Request for Comments (RFC) 6960-compliant Online Certificate Status Protocol (OCSP) responder, supporting basic OCSP responses. The Lambda function accepts a base64-encoding of the OCSP request in the Distinguished Encoding Rules (DER) format. The Lambda function's response is also a base64-encoded OCSP response in the DER format. The response size must not exceed 4 kilobytes (KiB). The Lambda function must be in the same Amazon Web Services account and region as the domain configuration. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-custom-endpoints-cert-config.html#iot-custom-endpoints-cert-config-ocsp-private-endpoint.html\">Configuring server certificate OCSP for private endpoints in Amazon Web Services IoT Core</a> from the Amazon Web Services IoT Core developer guide.</p>"
+        },
+        "ocspAuthorizedResponderArn":{
+          "shape":"AcmCertificateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for an X.509 certificate stored in Amazon Web Services Certificate Manager (ACM). If provided, Amazon Web Services IoT Core will use this certificate to validate the signature of the received OCSP response. The OCSP responder must sign responses using either this authorized responder certificate or the issuing certificate, depending on whether the ARN is provided or not. The certificate must be in the same Amazon Web Services account and region as the domain configuration.</p>"
         }
       },
       "documentation":"<p>The server certificate configuration.</p>"
@@ -17686,7 +19086,7 @@
       "members":{
         "message":{"shape":"errorMessage"}
       },
-      "documentation":"<p>A limit has been exceeded.</p>",
+      "documentation":"<p>Service quota has been exceeded.</p>",
       "error":{"httpStatusCode":402},
       "exception":true
     },
@@ -17888,6 +19288,13 @@
     "SnsTopicArn":{
       "type":"string",
       "max":350
+    },
+    "SortOrder":{
+      "type":"string",
+      "enum":[
+        "ASCENDING",
+        "DESCENDING"
+      ]
     },
     "SqlParseException":{
       "type":"structure",
@@ -18154,6 +19561,32 @@
         "Cancelling"
       ]
     },
+    "StatusCode":{"type":"integer"},
+    "StatusReason":{
+      "type":"structure",
+      "required":["reasonCode"],
+      "members":{
+        "reasonCode":{
+          "shape":"StatusReasonCode",
+          "documentation":"<p>A code that provides additional context for the command execution status.</p>"
+        },
+        "reasonDescription":{
+          "shape":"StatusReasonDescription",
+          "documentation":"<p>A literal string for devices to optionally provide additional information about the reason code for a command execution status.</p>"
+        }
+      },
+      "documentation":"<p>Provide additional context about the status of a command execution using a reason code and description.</p>"
+    },
+    "StatusReasonCode":{
+      "type":"string",
+      "max":64,
+      "pattern":"[A-Z0-9_-]+"
+    },
+    "StatusReasonDescription":{
+      "type":"string",
+      "max":1024,
+      "pattern":"[^\\p{C}]*"
+    },
     "StdDeviation":{"type":"double"},
     "StepFunctionsAction":{
       "type":"structure",
@@ -18311,6 +19744,10 @@
       "member":{"shape":"StreamSummary"}
     },
     "String":{"type":"string"},
+    "StringCommandExecutionResult":{
+      "type":"string",
+      "min":1
+    },
     "StringDateTime":{
       "type":"string",
       "max":64,
@@ -18324,6 +19761,10 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"String"}
+    },
+    "StringParameterValue":{
+      "type":"string",
+      "min":1
     },
     "SubnetId":{"type":"string"},
     "SubnetIdList":{
@@ -18721,7 +20162,7 @@
         },
         "thingGroupNames":{
           "shape":"ThingGroupNameList",
-          "documentation":"<p>Thing group names.</p>"
+          "documentation":"<p>Thing group and billing group names.</p>"
         },
         "attributes":{
           "shape":"Attributes",
@@ -18924,6 +20365,32 @@
       "type":"list",
       "member":{"shape":"ThingName"}
     },
+    "ThingPrincipalObject":{
+      "type":"structure",
+      "required":["principal"],
+      "members":{
+        "principal":{
+          "shape":"Principal",
+          "documentation":"<p>The principal of the thing principal object.</p>"
+        },
+        "thingPrincipalType":{
+          "shape":"ThingPrincipalType",
+          "documentation":"<p>The type of the relation you want to specify when you attach a principal to a thing. The value defaults to <code>NON_EXCLUSIVE_THING</code>.</p> <ul> <li> <p> <code>EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing, exclusively. The thing will be the only thing that’s attached to the principal.</p> </li> </ul> <ul> <li> <p> <code>NON_EXCLUSIVE_THING</code> - Attaches the specified principal to the specified thing. Multiple things can be attached to the principal.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An object that represents the principal and the type of relation it has with the thing.</p>"
+    },
+    "ThingPrincipalObjects":{
+      "type":"list",
+      "member":{"shape":"ThingPrincipalObject"}
+    },
+    "ThingPrincipalType":{
+      "type":"string",
+      "enum":[
+        "EXCLUSIVE_THING",
+        "NON_EXCLUSIVE_THING"
+      ]
+    },
     "ThingTypeArn":{"type":"string"},
     "ThingTypeDefinition":{
       "type":"structure",
@@ -18991,6 +20458,10 @@
         "searchableAttributes":{
           "shape":"SearchableAttributes",
           "documentation":"<p>A list of searchable thing attribute names.</p>"
+        },
+        "mqtt5Configuration":{
+          "shape":"Mqtt5Configuration",
+          "documentation":"<p>The configuration to add user-defined properties to enrich MQTT 5 messages.</p>"
         }
       },
       "documentation":"<p>The ThingTypeProperties contains information about the thing type including: a thing type description, and a list of searchable thing attribute names.</p>"
@@ -19006,6 +20477,20 @@
       "documentation":"<p>The rate exceeds the limit.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "TimeFilter":{
+      "type":"structure",
+      "members":{
+        "after":{
+          "shape":"StringDateTime",
+          "documentation":"<p>Filter to display command executions that started or completed only after a particular date and time.</p>"
+        },
+        "before":{
+          "shape":"StringDateTime",
+          "documentation":"<p>Filter to display command executions that started or completed only before a particular date and time.</p>"
+        }
+      },
+      "documentation":"<p>A filter that can be used to list command executions for a device that started or completed before or after a particular date and time.</p>"
     },
     "TimedOutThings":{"type":"integer"},
     "TimeoutConfig":{
@@ -19462,6 +20947,12 @@
       "type":"long",
       "min":0
     },
+    "UnsignedLongParameterValue":{
+      "type":"string",
+      "max":20,
+      "min":1,
+      "pattern":"^[0-9]*$"
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -19710,6 +21201,55 @@
       },
       "documentation":"<p>The input for the UpdateCertificate operation.</p>"
     },
+    "UpdateCommandRequest":{
+      "type":"structure",
+      "required":["commandId"],
+      "members":{
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>The unique identifier of the command to be updated.</p>",
+          "location":"uri",
+          "locationName":"commandId"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The new user-friendly name to use in the console for the command.</p>"
+        },
+        "description":{
+          "shape":"CommandDescription",
+          "documentation":"<p>A short text description of the command.</p>"
+        },
+        "deprecated":{
+          "shape":"DeprecationFlag",
+          "documentation":"<p>A boolean that you can use to specify whether to deprecate a command.</p>"
+        }
+      }
+    },
+    "UpdateCommandResponse":{
+      "type":"structure",
+      "members":{
+        "commandId":{
+          "shape":"CommandId",
+          "documentation":"<p>The unique identifier of the command.</p>"
+        },
+        "displayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The updated user-friendly display name in the console for the command.</p>"
+        },
+        "description":{
+          "shape":"CommandDescription",
+          "documentation":"<p>The updated text description of the command.</p>"
+        },
+        "deprecated":{
+          "shape":"DeprecationFlag",
+          "documentation":"<p>The boolean that indicates whether the command was deprecated.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time (epoch timestamp in seconds) when the command was last updated.</p>"
+        }
+      }
+    },
     "UpdateCustomMetricRequest":{
       "type":"structure",
       "required":[
@@ -19846,6 +21386,18 @@
         "serverCertificateConfig":{
           "shape":"ServerCertificateConfig",
           "documentation":"<p>The server certificate configuration.</p>"
+        },
+        "authenticationType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>An enumerated string that speciﬁes the authentication type.</p> <ul> <li> <p> <code>CUSTOM_AUTH_X509</code> - Use custom authentication and authorization with additional details from the X.509 client certificate.</p> </li> </ul> <ul> <li> <p> <code>CUSTOM_AUTH</code> - Use custom authentication and authorization. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/custom-authentication.html\">Custom authentication and authorization</a>.</p> </li> </ul> <ul> <li> <p> <code>AWS_X509</code> - Use X.509 client certificates without custom authentication and authorization. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/x509-client-certs.html\">X.509 client certificates</a>.</p> </li> </ul> <ul> <li> <p> <code>AWS_SIGV4</code> - Use Amazon Web Services Signature Version 4. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/custom-authentication.html\">IAM users, groups, and roles</a>.</p> </li> </ul> <ul> <li> <p> <code>DEFAULT </code> - Use a combination of port and Application Layer Protocol Negotiation (ALPN) to specify authentication type. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/protocols.html\">Device communication protocols</a>.</p> </li> </ul>"
+        },
+        "applicationProtocol":{
+          "shape":"ApplicationProtocol",
+          "documentation":"<p>An enumerated string that speciﬁes the application-layer protocol.</p> <ul> <li> <p> <code>SECURE_MQTT</code> - MQTT over TLS.</p> </li> </ul> <ul> <li> <p> <code>MQTT_WSS</code> - MQTT over WebSocket.</p> </li> </ul> <ul> <li> <p> <code>HTTPS</code> - HTTP over TLS.</p> </li> </ul> <ul> <li> <p> <code>DEFAULT</code> - Use a combination of port and Application Layer Protocol Negotiation (ALPN) to specify application_layer protocol. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/protocols.html\">Device communication protocols</a>.</p> </li> </ul>"
+        },
+        "clientCertificateConfig":{
+          "shape":"ClientCertificateConfig",
+          "documentation":"<p>An object that speciﬁes the client certificate conﬁguration for a domain.</p>"
         }
       }
     },
@@ -20148,9 +21700,17 @@
           "shape":"ResourceAttributes",
           "documentation":"<p>Metadata that can be used to define a package version’s configuration. For example, the Amazon S3 file location, configuration options that are being sent to the device or fleet. </p> <p> <b>Note:</b> Attributes can be updated only when the package version is in a draft state.</p> <p>The combined size of all the attributes on a package version is limited to 3KB.</p>"
         },
+        "artifact":{
+          "shape":"PackageVersionArtifact",
+          "documentation":"<p>The various components that make up a software package version.</p>"
+        },
         "action":{
           "shape":"PackageVersionAction",
           "documentation":"<p>The status that the package version should be assigned. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/preparing-to-use-software-package-catalog.html#package-version-lifecycle\">Package version lifecycle</a>.</p>"
+        },
+        "recipe":{
+          "shape":"PackageVersionRecipe",
+          "documentation":"<p>The inline job document associated with a software package version used for a quick job deployment.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -20526,6 +22086,24 @@
       },
       "documentation":"<p>The output from the UpdateThing operation.</p>"
     },
+    "UpdateThingTypeRequest":{
+      "type":"structure",
+      "required":["thingTypeName"],
+      "members":{
+        "thingTypeName":{
+          "shape":"ThingTypeName",
+          "documentation":"<p>The name of a thing type.</p>",
+          "location":"uri",
+          "locationName":"thingTypeName"
+        },
+        "thingTypeProperties":{"shape":"ThingTypeProperties"}
+      }
+    },
+    "UpdateThingTypeResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateTopicRuleDestinationRequest":{
       "type":"structure",
       "required":[
@@ -20581,6 +22159,11 @@
       "type":"string",
       "max":1024,
       "min":0
+    },
+    "UserPropertyKeyName":{
+      "type":"string",
+      "max":128,
+      "pattern":"[a-zA-Z0-9:$.]+"
     },
     "UserPropertyValue":{
       "type":"string",

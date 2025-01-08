@@ -4,11 +4,13 @@
     "apiVersion":"2012-12-01",
     "endpointPrefix":"redshift",
     "protocol":"query",
+    "protocols":["query"],
     "serviceFullName":"Amazon Redshift",
     "serviceId":"Redshift",
     "signatureVersion":"v4",
     "uid":"redshift-2012-12-01",
-    "xmlNamespace":"http://redshift.amazonaws.com/doc/2012-12-01/"
+    "xmlNamespace":"http://redshift.amazonaws.com/doc/2012-12-01/",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AcceptReservedNodeExchange":{
@@ -276,7 +278,7 @@
         {"shape":"UnsupportedOperationFault"},
         {"shape":"RedshiftIdcApplicationNotExistsFault"}
       ],
-      "documentation":"<p>Creates a new cluster with the specified parameters.</p> <p>To create a cluster in Virtual Private Cloud (VPC), you must provide a cluster subnet group name. The cluster subnet group identifies the subnets of your VPC that Amazon Redshift uses when creating the cluster. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
+      "documentation":"<p>Creates a new cluster with the specified parameters.</p> <p>To create a cluster in Virtual Private Cloud (VPC), you must provide a cluster subnet group name. The cluster subnet group identifies the subnets of your VPC that Amazon Redshift uses when creating the cluster. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. If a subnet group for a provisioned cluster is in an account with VPC BPA turned on, the following capabilities are blocked:</p> <ul> <li> <p>Creating a public cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA turned on to the subnet group when there's at least one public cluster within the group</p> </li> </ul> <p>For more information about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "CreateClusterParameterGroup":{
       "name":"CreateClusterParameterGroup",
@@ -467,6 +469,30 @@
         {"shape":"InvalidTagFault"}
       ],
       "documentation":"<p>Creates an HSM configuration that contains the information required by an Amazon Redshift cluster to store and use database encryption keys in a Hardware Security Module (HSM). After creating the HSM configuration, you can specify it as a parameter when creating a cluster. The cluster will then store its encryption keys in the HSM.</p> <p>In addition to creating an HSM configuration, you must also create an HSM client certificate. For more information, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-HSM.html\">Hardware Security Modules</a> in the Amazon Redshift Cluster Management Guide.</p>"
+    },
+    "CreateIntegration":{
+      "name":"CreateIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateIntegrationMessage"},
+      "output":{
+        "shape":"Integration",
+        "resultWrapper":"CreateIntegrationResult"
+      },
+      "errors":[
+        {"shape":"IntegrationAlreadyExistsFault"},
+        {"shape":"IntegrationConflictOperationFault"},
+        {"shape":"IntegrationQuotaExceededFault"},
+        {"shape":"IntegrationSourceNotFoundFault"},
+        {"shape":"IntegrationTargetNotFoundFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"InvalidClusterStateFault"},
+        {"shape":"TagLimitExceededFault"},
+        {"shape":"InvalidTagFault"}
+      ],
+      "documentation":"<p>Creates a zero-ETL integration or S3 event integration with Amazon Redshift.</p>"
     },
     "CreateRedshiftIdcApplication":{
       "name":"CreateRedshiftIdcApplication",
@@ -774,6 +800,25 @@
       ],
       "documentation":"<p>Deletes the specified Amazon Redshift HSM configuration.</p>"
     },
+    "DeleteIntegration":{
+      "name":"DeleteIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIntegrationMessage"},
+      "output":{
+        "shape":"Integration",
+        "resultWrapper":"DeleteIntegrationResult"
+      },
+      "errors":[
+        {"shape":"IntegrationNotFoundFault"},
+        {"shape":"IntegrationConflictStateFault"},
+        {"shape":"IntegrationConflictOperationFault"},
+        {"shape":"UnsupportedOperationFault"}
+      ],
+      "documentation":"<p>Deletes a zero-ETL integration or S3 event integration with Amazon Redshift.</p>"
+    },
     "DeletePartner":{
       "name":"DeletePartner",
       "http":{
@@ -885,6 +930,24 @@
         {"shape":"UnsupportedOperationFault"}
       ],
       "documentation":"<p>Deletes a usage limit from a cluster.</p>"
+    },
+    "DeregisterNamespace":{
+      "name":"DeregisterNamespace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeregisterNamespaceInputMessage"},
+      "output":{
+        "shape":"DeregisterNamespaceOutputMessage",
+        "resultWrapper":"DeregisterNamespaceResult"
+      },
+      "errors":[
+        {"shape":"ClusterNotFoundFault"},
+        {"shape":"InvalidNamespaceFault"},
+        {"shape":"InvalidClusterStateFault"}
+      ],
+      "documentation":"<p>Deregisters a cluster or serverless namespace from the Amazon Web Services Glue Data Catalog.</p>"
     },
     "DescribeAccountAttributes":{
       "name":"DescribeAccountAttributes",
@@ -1273,6 +1336,23 @@
         {"shape":"UnsupportedOperationFault"}
       ],
       "documentation":"<p>Returns a list of inbound integrations.</p>"
+    },
+    "DescribeIntegrations":{
+      "name":"DescribeIntegrations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeIntegrationsMessage"},
+      "output":{
+        "shape":"IntegrationsMessage",
+        "resultWrapper":"DescribeIntegrationsResult"
+      },
+      "errors":[
+        {"shape":"IntegrationNotFoundFault"},
+        {"shape":"UnsupportedOperationFault"}
+      ],
+      "documentation":"<p>Describes one or more zero-ETL or S3 event integrations with Amazon Redshift.</p>"
     },
     "DescribeLoggingStatus":{
       "name":"DescribeLoggingStatus",
@@ -1848,7 +1928,7 @@
         {"shape":"CustomCnameAssociationFault"},
         {"shape":"Ipv6CidrBlockNotFoundFault"}
       ],
-      "documentation":"<p>Modifies the settings for a cluster.</p> <p>You can also change node type and the number of nodes to scale up or down the cluster. When resizing a cluster, you must specify both the number of nodes and the node type even if one of the parameters does not change.</p> <p>You can add another security or parameter group, or change the admin user password. Resetting a cluster password or modifying the security groups associated with a cluster do not need a reboot. However, modifying a parameter group requires a reboot for parameters to take effect. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
+      "documentation":"<p>Modifies the settings for a cluster.</p> <p>You can also change node type and the number of nodes to scale up or down the cluster. When resizing a cluster, you must specify both the number of nodes and the node type even if one of the parameters does not change.</p> <p>You can add another security or parameter group, or change the admin user password. Resetting a cluster password or modifying the security groups associated with a cluster do not need a reboot. However, modifying a parameter group requires a reboot for parameters to take effect. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. If a subnet group for a provisioned cluster is in an account with VPC BPA turned on, the following capabilities are blocked:</p> <ul> <li> <p>Creating a public cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA turned on to the subnet group when there's at least one public cluster within the group</p> </li> </ul> <p>For more information about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "ModifyClusterDbRevision":{
       "name":"ModifyClusterDbRevision",
@@ -1971,7 +2051,7 @@
         {"shape":"UnauthorizedOperation"},
         {"shape":"DependentServiceRequestThrottlingFault"}
       ],
-      "documentation":"<p>Modifies a cluster subnet group to include the specified list of VPC subnets. The operation replaces the existing list of subnets with the new list of subnets.</p>"
+      "documentation":"<p>Modifies a cluster subnet group to include the specified list of VPC subnets. The operation replaces the existing list of subnets with the new list of subnets.</p> <p>VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. If a subnet group for a provisioned cluster is in an account with VPC BPA turned on, the following capabilities are blocked:</p> <ul> <li> <p>Creating a public cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA turned on to the subnet group when there's at least one public cluster within the group</p> </li> </ul> <p>For more information about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "ModifyCustomDomainAssociation":{
       "name":"ModifyCustomDomainAssociation",
@@ -2036,6 +2116,26 @@
         {"shape":"InvalidSubscriptionStateFault"}
       ],
       "documentation":"<p>Modifies an existing Amazon Redshift event notification subscription.</p>"
+    },
+    "ModifyIntegration":{
+      "name":"ModifyIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyIntegrationMessage"},
+      "output":{
+        "shape":"Integration",
+        "resultWrapper":"ModifyIntegrationResult"
+      },
+      "errors":[
+        {"shape":"IntegrationNotFoundFault"},
+        {"shape":"IntegrationConflictStateFault"},
+        {"shape":"IntegrationConflictOperationFault"},
+        {"shape":"IntegrationAlreadyExistsFault"},
+        {"shape":"UnsupportedOperationFault"}
+      ],
+      "documentation":"<p>Modifies a zero-ETL integration or S3 event integration with Amazon Redshift.</p>"
     },
     "ModifyRedshiftIdcApplication":{
       "name":"ModifyRedshiftIdcApplication",
@@ -2207,6 +2307,24 @@
       ],
       "documentation":"<p>Reboots a cluster. This action is taken as soon as possible. It results in a momentary outage to the cluster, during which the cluster status is set to <code>rebooting</code>. A cluster event is created when the reboot is completed. Any pending cluster modifications (see <a>ModifyCluster</a>) are applied at this reboot. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>"
     },
+    "RegisterNamespace":{
+      "name":"RegisterNamespace",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RegisterNamespaceInputMessage"},
+      "output":{
+        "shape":"RegisterNamespaceOutputMessage",
+        "resultWrapper":"RegisterNamespaceResult"
+      },
+      "errors":[
+        {"shape":"ClusterNotFoundFault"},
+        {"shape":"InvalidNamespaceFault"},
+        {"shape":"InvalidClusterStateFault"}
+      ],
+      "documentation":"<p>Registers a cluster or serverless namespace to the Amazon Web Services Glue Data Catalog.</p>"
+    },
     "RejectDataShare":{
       "name":"RejectDataShare",
       "http":{
@@ -2268,7 +2386,7 @@
         {"shape":"DependentServiceUnavailableFault"},
         {"shape":"ReservedNodeAlreadyExistsFault"}
       ],
-      "documentation":"<p>Changes the size of the cluster. You can change the cluster's type, or change the number or type of nodes. The default behavior is to use the elastic resize method. With an elastic resize, your cluster is available for read and write operations more quickly than with the classic resize method. </p> <p>Elastic resize operations have the following restrictions:</p> <ul> <li> <p>You can only resize clusters of the following types:</p> <ul> <li> <p>dc1.large (if your cluster is in a VPC)</p> </li> <li> <p>dc1.8xlarge (if your cluster is in a VPC)</p> </li> <li> <p>dc2.large</p> </li> <li> <p>dc2.8xlarge</p> </li> <li> <p>ds2.xlarge</p> </li> <li> <p>ds2.8xlarge</p> </li> <li> <p>ra3.xlplus</p> </li> <li> <p>ra3.4xlarge</p> </li> <li> <p>ra3.16xlarge</p> </li> </ul> </li> <li> <p>The type of nodes that you add must match the node type for the cluster.</p> </li> </ul>"
+      "documentation":"<p>Changes the size of the cluster. You can change the cluster's type, or change the number or type of nodes. The default behavior is to use the elastic resize method. With an elastic resize, your cluster is available for read and write operations more quickly than with the classic resize method. </p> <p>Elastic resize operations have the following restrictions:</p> <ul> <li> <p>You can only resize clusters of the following types:</p> <ul> <li> <p>dc2.large</p> </li> <li> <p>dc2.8xlarge</p> </li> <li> <p>ra3.large</p> </li> <li> <p>ra3.xlplus</p> </li> <li> <p>ra3.4xlarge</p> </li> <li> <p>ra3.16xlarge</p> </li> </ul> </li> <li> <p>The type of nodes that you add must match the node type for the cluster.</p> </li> </ul>"
     },
     "RestoreFromClusterSnapshot":{
       "name":"RestoreFromClusterSnapshot",
@@ -2316,7 +2434,7 @@
         {"shape":"UnsupportedOperationFault"},
         {"shape":"Ipv6CidrBlockNotFoundFault"}
       ],
-      "documentation":"<p>Creates a new cluster from a snapshot. By default, Amazon Redshift creates the resulting cluster with the same configuration as the original cluster from which the snapshot was created, except that the new cluster is created with the default cluster security and parameter groups. After Amazon Redshift creates the cluster, you can use the <a>ModifyCluster</a> API to associate a different security group and different parameter group with the restored cluster. If you are using a DS node type, you can also choose to change to another DS node type of the same size during restore.</p> <p>If you restore a cluster into a VPC, you must provide a cluster subnet group where you want the cluster restored.</p> <p> For more information about working with snapshots, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshots.html\">Amazon Redshift Snapshots</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
+      "documentation":"<p>Creates a new cluster from a snapshot. By default, Amazon Redshift creates the resulting cluster with the same configuration as the original cluster from which the snapshot was created, except that the new cluster is created with the default cluster security and parameter groups. After Amazon Redshift creates the cluster, you can use the <a>ModifyCluster</a> API to associate a different security group and different parameter group with the restored cluster. If you are using a DS node type, you can also choose to change to another DS node type of the same size during restore.</p> <p>If you restore a cluster into a VPC, you must provide a cluster subnet group where you want the cluster restored.</p> <p>VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. If a subnet group for a provisioned cluster is in an account with VPC BPA turned on, the following capabilities are blocked:</p> <ul> <li> <p>Creating a public cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA turned on to the subnet group when there's at least one public cluster within the group</p> </li> </ul> <p>For more information about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p> <p> For more information about working with snapshots, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshots.html\">Amazon Redshift Snapshots</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
     },
     "RestoreTableFromClusterSnapshot":{
       "name":"RestoreTableFromClusterSnapshot",
@@ -3987,6 +4105,12 @@
       },
       "exception":true
     },
+    "ConsumerIdentifierList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":1,
+      "min":1
+    },
     "CopyClusterSnapshotMessage":{
       "type":"structure",
       "required":[
@@ -4083,7 +4207,7 @@
         },
         "NodeType":{
           "shape":"String",
-          "documentation":"<p>The node type to be provisioned for the cluster. For information about node types, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#how-many-nodes\"> Working with Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p> <p>Valid Values: <code>ds2.xlarge</code> | <code>ds2.8xlarge</code> | <code>dc1.large</code> | <code>dc1.8xlarge</code> | <code>dc2.large</code> | <code>dc2.8xlarge</code> | <code>ra3.xlplus</code> | <code>ra3.4xlarge</code> | <code>ra3.16xlarge</code> </p>"
+          "documentation":"<p>The node type to be provisioned for the cluster. For information about node types, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#how-many-nodes\"> Working with Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p> <p>Valid Values: <code>dc2.large</code> | <code>dc2.8xlarge</code> | <code>ra3.large</code> | <code>ra3.xlplus</code> | <code>ra3.4xlarge</code> | <code>ra3.16xlarge</code> </p>"
         },
         "MasterUsername":{
           "shape":"String",
@@ -4127,7 +4251,7 @@
         },
         "Port":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The port number on which the cluster accepts incoming connections.</p> <p>The cluster is accessible only via the JDBC and ODBC connection strings. Part of the connection string requires the port on which the cluster will listen for incoming connections.</p> <p>Default: <code>5439</code> </p> <p>Valid Values: </p> <ul> <li> <p>For clusters with ra3 nodes - Select a port within the ranges <code>5431-5455</code> or <code>8191-8215</code>. (If you have an existing cluster with ra3 nodes, it isn't required that you change the port to these ranges.)</p> </li> <li> <p>For clusters with ds2 or dc2 nodes - Select a port within the range <code>1150-65535</code>.</p> </li> </ul>"
+          "documentation":"<p>The port number on which the cluster accepts incoming connections.</p> <p>The cluster is accessible only via the JDBC and ODBC connection strings. Part of the connection string requires the port on which the cluster will listen for incoming connections.</p> <p>Default: <code>5439</code> </p> <p>Valid Values: </p> <ul> <li> <p>For clusters with ra3 nodes - Select a port within the ranges <code>5431-5455</code> or <code>8191-8215</code>. (If you have an existing cluster with ra3 nodes, it isn't required that you change the port to these ranges.)</p> </li> <li> <p>For clusters with dc2 nodes - Select a port within the range <code>1150-65535</code>.</p> </li> </ul>"
         },
         "ClusterVersion":{
           "shape":"String",
@@ -4549,6 +4673,44 @@
         "HsmConfiguration":{"shape":"HsmConfiguration"}
       }
     },
+    "CreateIntegrationMessage":{
+      "type":"structure",
+      "required":[
+        "SourceArn",
+        "TargetArn",
+        "IntegrationName"
+      ],
+      "members":{
+        "SourceArn":{
+          "shape":"SourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the database to use as the source for replication.</p>"
+        },
+        "TargetArn":{
+          "shape":"TargetArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Redshift data warehouse to use as the target for replication.</p>"
+        },
+        "IntegrationName":{
+          "shape":"IntegrationName",
+          "documentation":"<p>The name of the integration.</p>"
+        },
+        "KMSKeyId":{
+          "shape":"String",
+          "documentation":"<p>An Key Management Service (KMS) key identifier for the key to use to encrypt the integration. If you don't specify an encryption key, the default Amazon Web Services owned key is used.</p>"
+        },
+        "TagList":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags.</p>"
+        },
+        "AdditionalEncryptionContext":{
+          "shape":"EncryptionContextMap",
+          "documentation":"<p>An optional set of non-secret key–value pairs that contains additional contextual information about the data. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context\">Encryption context</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.</p> <p>You can only include this parameter if you specify the <code>KMSKeyId</code> parameter.</p>"
+        },
+        "Description":{
+          "shape":"IntegrationDescription",
+          "documentation":"<p>A description of the integration.</p>"
+        }
+      }
+    },
     "CreateRedshiftIdcApplicationMessage":{
       "type":"structure",
       "required":[
@@ -4832,6 +4994,10 @@
         "ManagedBy":{
           "shape":"String",
           "documentation":"<p>The identifier of a datashare to show its managing entity.</p>"
+        },
+        "DataShareType":{
+          "shape":"DataShareType",
+          "documentation":"<p> The type of the datashare created by RegisterNamespace.</p>"
         }
       }
     },
@@ -4904,6 +5070,10 @@
         "DEAUTHORIZED",
         "REJECTED"
       ]
+    },
+    "DataShareType":{
+      "type":"string",
+      "enum":["INTERNAL"]
     },
     "DataTransferProgress":{
       "type":"structure",
@@ -5172,6 +5342,16 @@
       },
       "documentation":"<p/>"
     },
+    "DeleteIntegrationMessage":{
+      "type":"structure",
+      "required":["IntegrationArn"],
+      "members":{
+        "IntegrationArn":{
+          "shape":"IntegrationArn",
+          "documentation":"<p>The unique identifier of the integration to delete.</p>"
+        }
+      }
+    },
     "DeleteRedshiftIdcApplicationMessage":{
       "type":"structure",
       "required":["RedshiftIdcApplicationArn"],
@@ -5286,6 +5466,32 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "DeregisterNamespaceInputMessage":{
+      "type":"structure",
+      "required":[
+        "NamespaceIdentifier",
+        "ConsumerIdentifiers"
+      ],
+      "members":{
+        "NamespaceIdentifier":{
+          "shape":"NamespaceIdentifierUnion",
+          "documentation":"<p>The unique identifier of the cluster or serverless namespace that you want to deregister.</p>"
+        },
+        "ConsumerIdentifiers":{
+          "shape":"ConsumerIdentifierList",
+          "documentation":"<p>An array containing the ID of the consumer account that you want to deregister the cluster or serverless namespace from.</p>"
+        }
+      }
+    },
+    "DeregisterNamespaceOutputMessage":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"NamespaceRegistrationStatus",
+          "documentation":"<p>The registration status of the cluster or serverless namespace.</p>"
+        }
+      }
     },
     "DescribeAccountAttributesMessage":{
       "type":"structure",
@@ -5879,11 +6085,11 @@
       "type":"structure",
       "members":{
         "IntegrationArn":{
-          "shape":"String",
+          "shape":"InboundIntegrationArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the inbound integration.</p>"
         },
         "TargetArn":{
-          "shape":"String",
+          "shape":"TargetArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the target of an inbound integration.</p>"
         },
         "MaxRecords":{
@@ -5893,6 +6099,68 @@
         "Marker":{
           "shape":"String",
           "documentation":"<p>An optional parameter that specifies the starting point to return a set of response records. When the results of a <a>DescribeInboundIntegrations</a> request exceed the value specified in <code>MaxRecords</code>, Amazon Web Services returns a value in the <code>Marker</code> field of the response. You can retrieve the next set of response records by providing the returned marker value in the <code>Marker</code> parameter and retrying the request. </p>"
+        }
+      }
+    },
+    "DescribeIntegrationsFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"DescribeIntegrationsFilterName",
+          "documentation":"<p>Specifies the type of integration filter.</p>"
+        },
+        "Values":{
+          "shape":"DescribeIntegrationsFilterValueList",
+          "documentation":"<p>Specifies the values to filter on.</p>"
+        }
+      },
+      "documentation":"<p>A set of elements to filter the returned integrations.</p>"
+    },
+    "DescribeIntegrationsFilterList":{
+      "type":"list",
+      "member":{
+        "shape":"DescribeIntegrationsFilter",
+        "locationName":"DescribeIntegrationsFilter"
+      }
+    },
+    "DescribeIntegrationsFilterName":{
+      "type":"string",
+      "enum":[
+        "integration-arn",
+        "source-arn",
+        "source-types",
+        "status"
+      ]
+    },
+    "DescribeIntegrationsFilterValueList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"Value"
+      }
+    },
+    "DescribeIntegrationsMessage":{
+      "type":"structure",
+      "members":{
+        "IntegrationArn":{
+          "shape":"IntegrationArn",
+          "documentation":"<p>The unique identifier of the integration.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous <code>DescribeIntegrations</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
+        },
+        "Filters":{
+          "shape":"DescribeIntegrationsFilterList",
+          "documentation":"<p>A filter that specifies one or more resources to return.</p>"
         }
       }
     },
@@ -6249,7 +6517,7 @@
         },
         "ResourceType":{
           "shape":"String",
-          "documentation":"<p>The type of resource with which you want to view tags. Valid resource types are: </p> <ul> <li> <p>Cluster</p> </li> <li> <p>CIDR/IP</p> </li> <li> <p>EC2 security group</p> </li> <li> <p>Snapshot</p> </li> <li> <p>Cluster security group</p> </li> <li> <p>Subnet group</p> </li> <li> <p>HSM connection</p> </li> <li> <p>HSM certificate</p> </li> <li> <p>Parameter group</p> </li> <li> <p>Snapshot copy grant</p> </li> </ul> <p>For more information about Amazon Redshift resource types and constructing ARNs, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-overview.html#redshift-iam-access-control-specify-actions\">Specifying Policy Elements: Actions, Effects, Resources, and Principals</a> in the Amazon Redshift Cluster Management Guide. </p>"
+          "documentation":"<p>The type of resource with which you want to view tags. Valid resource types are: </p> <ul> <li> <p>Cluster</p> </li> <li> <p>CIDR/IP</p> </li> <li> <p>EC2 security group</p> </li> <li> <p>Snapshot</p> </li> <li> <p>Cluster security group</p> </li> <li> <p>Subnet group</p> </li> <li> <p>HSM connection</p> </li> <li> <p>HSM certificate</p> </li> <li> <p>Parameter group</p> </li> <li> <p>Snapshot copy grant</p> </li> <li> <p>Integration (zero-ETL integration or S3 event integration)</p> <note> <p>To describe the tags associated with an <code>integration</code>, don't specify <code>ResourceType</code>, instead specify the <code>ResourceName</code> of the integration.</p> </note> </li> </ul> <p>For more information about Amazon Redshift resource types and constructing ARNs, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-overview.html#redshift-iam-access-control-specify-actions\">Specifying Policy Elements: Actions, Effects, Resources, and Principals</a> in the Amazon Redshift Cluster Management Guide. </p>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -6302,6 +6570,12 @@
           "documentation":"<p>A tag value or values for which you want to return all matching usage limit objects that are associated with the specified tag value or values. For example, suppose that you have parameter groups that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the usage limit objects that have either or both of these tag values associated with them.</p>"
         }
       }
+    },
+    "Description":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"^.*$"
     },
     "DisableLoggingMessage":{
       "type":"structure",
@@ -6418,8 +6692,8 @@
           "documentation":"<p>The name of an existing S3 bucket where the log files are to be stored.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the same region as the cluster</p> </li> <li> <p>The cluster must have read bucket and put object permissions</p> </li> </ul>"
         },
         "S3KeyPrefix":{
-          "shape":"String",
-          "documentation":"<p>The prefix applied to the log file names.</p> <p>Constraints:</p> <ul> <li> <p>Cannot exceed 512 characters</p> </li> <li> <p>Cannot contain spaces( ), double quotes (\"), single quotes ('), a backslash (\\), or control characters. The hexadecimal codes for invalid characters are: </p> <ul> <li> <p>x00 to x20</p> </li> <li> <p>x22</p> </li> <li> <p>x27</p> </li> <li> <p>x5c</p> </li> <li> <p>x7f or larger</p> </li> </ul> </li> </ul>"
+          "shape":"S3KeyPrefixValue",
+          "documentation":"<p>The prefix applied to the log file names.</p> <p>Valid characters are any letter from any language, any whitespace character, any numeric character, and the following characters: underscore (<code>_</code>), period (<code>.</code>), colon (<code>:</code>), slash (<code>/</code>), equal (<code>=</code>), plus (<code>+</code>), backslash (<code>\\</code>), hyphen (<code>-</code>), at symbol (<code>@</code>).</p>"
         },
         "LogDestinationType":{
           "shape":"LogDestinationType",
@@ -6467,6 +6741,11 @@
       "members":{
         "Cluster":{"shape":"Cluster"}
       }
+    },
+    "EncryptionContextMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
     },
     "Endpoint":{
       "type":"structure",
@@ -7317,7 +7596,7 @@
       "type":"structure",
       "members":{
         "IntegrationArn":{
-          "shape":"String",
+          "shape":"InboundIntegrationArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of an inbound integration.</p>"
         },
         "SourceArn":{
@@ -7325,7 +7604,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the source of an inbound integration.</p>"
         },
         "TargetArn":{
-          "shape":"String",
+          "shape":"TargetArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the target of an inbound integration.</p>"
         },
         "Status":{
@@ -7342,6 +7621,12 @@
         }
       },
       "documentation":"<p>The content of an inbound integration.</p>"
+    },
+    "InboundIntegrationArn":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^arn:aws[a-z\\-]*:.+:[a-z0-9\\-]*:[0-9]*:integration:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
     },
     "InboundIntegrationList":{
       "type":"list",
@@ -7401,6 +7686,103 @@
     },
     "Integer":{"type":"integer"},
     "IntegerOptional":{"type":"integer"},
+    "Integration":{
+      "type":"structure",
+      "members":{
+        "IntegrationArn":{
+          "shape":"IntegrationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the integration.</p>"
+        },
+        "IntegrationName":{
+          "shape":"IntegrationName",
+          "documentation":"<p>The name of the integration.</p>"
+        },
+        "SourceArn":{
+          "shape":"SourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the database used as the source for replication.</p>"
+        },
+        "TargetArn":{
+          "shape":"TargetArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Redshift data warehouse to use as the target for replication.</p>"
+        },
+        "Status":{
+          "shape":"ZeroETLIntegrationStatus",
+          "documentation":"<p>The current status of the integration.</p>"
+        },
+        "Errors":{
+          "shape":"IntegrationErrorList",
+          "documentation":"<p>Any errors associated with the integration.</p>"
+        },
+        "CreateTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time (UTC) when the integration was created.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the integration.</p>"
+        },
+        "KMSKeyId":{
+          "shape":"String",
+          "documentation":"<p>The Key Management Service (KMS) key identifier for the key used to encrypt the integration.</p>"
+        },
+        "AdditionalEncryptionContext":{
+          "shape":"EncryptionContextMap",
+          "documentation":"<p>The encryption context for the integration. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context\">Encryption context</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The list of tags associated with the integration.</p>"
+        }
+      }
+    },
+    "IntegrationAlreadyExistsFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The integration you are trying to create already exists.</p>",
+      "error":{
+        "code":"IntegrationAlreadyExistsFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "IntegrationArn":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^arn:aws[a-z\\-]*:redshift:[a-z0-9\\-]*:[0-9]*:integration:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "IntegrationConflictOperationFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>A conflicting conditional operation is currently in progress against this resource. This typically occurs when there are multiple requests being made to the same resource at the same time, and these requests conflict with each other.</p>",
+      "error":{
+        "code":"IntegrationConflictOperationFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "IntegrationConflictStateFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The integration is in an invalid state and can't perform the requested operation.</p>",
+      "error":{
+        "code":"IntegrationConflictStateFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "IntegrationDescription":{
+      "type":"string",
+      "max":1000,
+      "min":0,
+      "pattern":"^.*$"
+    },
     "IntegrationError":{
       "type":"structure",
       "required":["ErrorCode"],
@@ -7423,6 +7805,19 @@
         "locationName":"IntegrationError"
       }
     },
+    "IntegrationList":{
+      "type":"list",
+      "member":{
+        "shape":"Integration",
+        "locationName":"Integration"
+      }
+    },
+    "IntegrationName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"^[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*$"
+    },
     "IntegrationNotFoundFault":{
       "type":"structure",
       "members":{
@@ -7434,6 +7829,55 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "IntegrationQuotaExceededFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>You can't create any more zero-ETL or S3 event integrations because the quota has been reached.</p>",
+      "error":{
+        "code":"IntegrationQuotaExceededFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "IntegrationSourceNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified integration source can't be found.</p>",
+      "error":{
+        "code":"IntegrationSourceNotFoundFault",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "IntegrationTargetNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified integration target can't be found.</p>",
+      "error":{
+        "code":"IntegrationTargetNotFoundFault",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "IntegrationsMessage":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request.</p>"
+        },
+        "Integrations":{
+          "shape":"IntegrationList",
+          "documentation":"<p>List of integrations that are described.</p>"
+        }
+      }
     },
     "InvalidAuthenticationProfileRequestFault":{
       "type":"structure",
@@ -7914,7 +8358,7 @@
           "documentation":"<p>The name of the S3 bucket where the log files are stored.</p>"
         },
         "S3KeyPrefix":{
-          "shape":"String",
+          "shape":"S3KeyPrefixValue",
           "documentation":"<p>The prefix applied to the log file names.</p>"
         },
         "LastSuccessfulDeliveryTime":{
@@ -8122,7 +8566,7 @@
         },
         "NodeType":{
           "shape":"String",
-          "documentation":"<p>The new node type of the cluster. If you specify a new node type, you must also specify the number of nodes parameter.</p> <p> For more information about resizing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/rs-resize-tutorial.html\">Resizing Clusters in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>Valid Values: <code>ds2.xlarge</code> | <code>ds2.8xlarge</code> | <code>dc1.large</code> | <code>dc1.8xlarge</code> | <code>dc2.large</code> | <code>dc2.8xlarge</code> | <code>ra3.xlplus</code> | <code>ra3.4xlarge</code> | <code>ra3.16xlarge</code> </p>"
+          "documentation":"<p>The new node type of the cluster. If you specify a new node type, you must also specify the number of nodes parameter.</p> <p> For more information about resizing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/rs-resize-tutorial.html\">Resizing Clusters in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>Valid Values: <code>dc2.large</code> | <code>dc2.8xlarge</code> | <code>ra3.large</code> | <code>ra3.xlplus</code> | <code>ra3.4xlarge</code> | <code>ra3.16xlarge</code> </p>"
         },
         "NumberOfNodes":{
           "shape":"IntegerOptional",
@@ -8210,7 +8654,7 @@
         },
         "Port":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The option to change the port of an Amazon Redshift cluster.</p> <p>Valid Values: </p> <ul> <li> <p>For clusters with ra3 nodes - Select a port within the ranges <code>5431-5455</code> or <code>8191-8215</code>. (If you have an existing cluster with ra3 nodes, it isn't required that you change the port to these ranges.)</p> </li> <li> <p>For clusters with ds2 or dc2 nodes - Select a port within the range <code>1150-65535</code>.</p> </li> </ul>"
+          "documentation":"<p>The option to change the port of an Amazon Redshift cluster.</p> <p>Valid Values: </p> <ul> <li> <p>For clusters with ra3 nodes - Select a port within the ranges <code>5431-5455</code> or <code>8191-8215</code>. (If you have an existing cluster with ra3 nodes, it isn't required that you change the port to these ranges.)</p> </li> <li> <p>For clusters with dc2 nodes - Select a port within the range <code>1150-65535</code>.</p> </li> </ul>"
         },
         "ManageMasterPassword":{
           "shape":"BooleanOptional",
@@ -8423,6 +8867,24 @@
         "EventSubscription":{"shape":"EventSubscription"}
       }
     },
+    "ModifyIntegrationMessage":{
+      "type":"structure",
+      "required":["IntegrationArn"],
+      "members":{
+        "IntegrationArn":{
+          "shape":"IntegrationArn",
+          "documentation":"<p>The unique identifier of the integration to modify.</p>"
+        },
+        "Description":{
+          "shape":"IntegrationDescription",
+          "documentation":"<p>A new description for the integration.</p>"
+        },
+        "IntegrationName":{
+          "shape":"IntegrationName",
+          "documentation":"<p>A new name for the integration.</p>"
+        }
+      }
+    },
     "ModifyRedshiftIdcApplicationMessage":{
       "type":"structure",
       "required":["RedshiftIdcApplicationArn"],
@@ -8560,6 +9022,28 @@
         }
       }
     },
+    "NamespaceIdentifierUnion":{
+      "type":"structure",
+      "members":{
+        "ServerlessIdentifier":{
+          "shape":"ServerlessIdentifier",
+          "documentation":"<p>The identifier for a serverless namespace.</p>"
+        },
+        "ProvisionedIdentifier":{
+          "shape":"ProvisionedIdentifier",
+          "documentation":"<p>The identifier for a provisioned cluster.</p>"
+        }
+      },
+      "documentation":"<p>Object to store union of values for a provisioned cluster or serverless namespace’s identifier.</p>",
+      "union":true
+    },
+    "NamespaceRegistrationStatus":{
+      "type":"string",
+      "enum":[
+        "Registering",
+        "Deregistering"
+      ]
+    },
     "NetworkInterface":{
       "type":"structure",
       "members":{
@@ -8598,7 +9082,7 @@
       "members":{
         "NodeType":{
           "shape":"String",
-          "documentation":"<p>The node type, such as, \"ds2.8xlarge\".</p>"
+          "documentation":"<p>The node type, such as, \"ra3.4xlarge\".</p>"
         },
         "NumberOfNodes":{
           "shape":"Integer",
@@ -9008,6 +9492,17 @@
       },
       "documentation":"<p>Describes cluster attributes that are in a pending state. A change to one or more the attributes was requested and is in progress or will be applied.</p>"
     },
+    "ProvisionedIdentifier":{
+      "type":"structure",
+      "required":["ClusterIdentifier"],
+      "members":{
+        "ClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the provisioned cluster.</p>"
+        }
+      },
+      "documentation":"<p>The identifier for a provisioned cluster.</p>"
+    },
     "PurchaseReservedNodeOfferingMessage":{
       "type":"structure",
       "required":["ReservedNodeOfferingId"],
@@ -9054,6 +9549,17 @@
           "documentation":"<p>The content of the updated resource policy.</p>"
         }
       }
+    },
+    "ReadWriteAccess":{
+      "type":"structure",
+      "required":["Authorization"],
+      "members":{
+        "Authorization":{
+          "shape":"ServiceAuthorization",
+          "documentation":"<p>Determines whether the read/write scope is enabled or disabled.</p>"
+        }
+      },
+      "documentation":"<p>The S3 Access Grants scope.</p>"
     },
     "RebootClusterMessage":{
       "type":"structure",
@@ -9305,6 +9811,32 @@
         "locationName":"ReferenceLink"
       }
     },
+    "RegisterNamespaceInputMessage":{
+      "type":"structure",
+      "required":[
+        "NamespaceIdentifier",
+        "ConsumerIdentifiers"
+      ],
+      "members":{
+        "NamespaceIdentifier":{
+          "shape":"NamespaceIdentifierUnion",
+          "documentation":"<p>The unique identifier of the cluster or serverless namespace that you want to register. </p>"
+        },
+        "ConsumerIdentifiers":{
+          "shape":"ConsumerIdentifierList",
+          "documentation":"<p>An array containing the ID of the consumer account that you want to register the namespace to.</p>"
+        }
+      }
+    },
+    "RegisterNamespaceOutputMessage":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"NamespaceRegistrationStatus",
+          "documentation":"<p>The registration status of the cluster or serverless namespace.</p>"
+        }
+      }
+    },
     "RejectDataShareMessage":{
       "type":"structure",
       "required":["DataShareArn"],
@@ -9458,7 +9990,7 @@
         },
         "SourceReservedNodeType":{
           "shape":"String",
-          "documentation":"<p>The source reserved-node type, for example ds2.xlarge.</p>"
+          "documentation":"<p>The source reserved-node type, for example ra3.4xlarge.</p>"
         },
         "SourceReservedNodeCount":{
           "shape":"Integer",
@@ -9837,7 +10369,7 @@
         },
         "Port":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The port number on which the cluster accepts connections.</p> <p>Default: The same port as the original cluster.</p> <p>Valid values: For clusters with ds2 or dc2 nodes, must be within the range <code>1150</code>-<code>65535</code>. For clusters with ra3 nodes, must be within the ranges <code>5431</code>-<code>5455</code> or <code>8191</code>-<code>8215</code>.</p>"
+          "documentation":"<p>The port number on which the cluster accepts connections.</p> <p>Default: The same port as the original cluster.</p> <p>Valid values: For clusters with DC2 nodes, must be within the range <code>1150</code>-<code>65535</code>. For clusters with ra3 nodes, must be within the ranges <code>5431</code>-<code>5455</code> or <code>8191</code>-<code>8215</code>.</p>"
         },
         "AvailabilityZone":{
           "shape":"String",
@@ -9901,7 +10433,7 @@
         },
         "NodeType":{
           "shape":"String",
-          "documentation":"<p>The node type that the restored cluster will be provisioned with.</p> <p>Default: The node type of the cluster from which the snapshot was taken. You can modify this if you are using any DS node type. In that case, you can choose to restore into another DS node type of the same size. For example, you can restore ds1.8xlarge into ds2.8xlarge, or ds1.xlarge into ds2.xlarge. If you have a DC instance type, you must restore into that same instance type and size. In other words, you can only restore a dc1.large instance type into another dc1.large instance type or dc2.large instance type. You can't restore dc1.8xlarge to dc2.8xlarge. First restore to a dc1.8xlarge cluster, then resize to a dc2.8large cluster. For more information about node types, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#rs-about-clusters-and-nodes\"> About Clusters and Nodes</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>"
+          "documentation":"<p>The node type that the restored cluster will be provisioned with.</p> <p>If you have a DC instance type, you must restore into that same instance type and size. In other words, you can only restore a dc2.large node type into another dc2 type. For more information about node types, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#rs-about-clusters-and-nodes\"> About Clusters and Nodes</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>"
         },
         "EnhancedVpcRouting":{
           "shape":"BooleanOptional",
@@ -9985,23 +10517,23 @@
         },
         "CurrentRestoreRateInMegaBytesPerSecond":{
           "shape":"Double",
-          "documentation":"<p>The number of megabytes per second being transferred from the backup storage. Returns the average rate for a completed backup. This field is only updated when you restore to DC2 and DS2 node types. </p>"
+          "documentation":"<p>The number of megabytes per second being transferred from the backup storage. Returns the average rate for a completed backup. This field is only updated when you restore to DC2 node types. </p>"
         },
         "SnapshotSizeInMegaBytes":{
           "shape":"Long",
-          "documentation":"<p>The size of the set of snapshot data used to restore the cluster. This field is only updated when you restore to DC2 and DS2 node types. </p>"
+          "documentation":"<p>The size of the set of snapshot data used to restore the cluster. This field is only updated when you restore to DC2 node types. </p>"
         },
         "ProgressInMegaBytes":{
           "shape":"Long",
-          "documentation":"<p>The number of megabytes that have been transferred from snapshot storage. This field is only updated when you restore to DC2 and DS2 node types. </p>"
+          "documentation":"<p>The number of megabytes that have been transferred from snapshot storage. This field is only updated when you restore to DC2 node types. </p>"
         },
         "ElapsedTimeInSeconds":{
           "shape":"Long",
-          "documentation":"<p>The amount of time an in-progress restore has been running, or the amount of time it took a completed restore to finish. This field is only updated when you restore to DC2 and DS2 node types. </p>"
+          "documentation":"<p>The amount of time an in-progress restore has been running, or the amount of time it took a completed restore to finish. This field is only updated when you restore to DC2 node types. </p>"
         },
         "EstimatedTimeToCompletionInSeconds":{
           "shape":"Long",
-          "documentation":"<p>The estimate of the time remaining before the restore will complete. Returns 0 for a completed restore. This field is only updated when you restore to DC2 and DS2 node types. </p>"
+          "documentation":"<p>The estimate of the time remaining before the restore will complete. Returns 0 for a completed restore. This field is only updated when you restore to DC2 node types. </p>"
         }
       },
       "documentation":"<p>Describes the status of a cluster restore action. Returns null if the cluster was not created by restoring a snapshot.</p>"
@@ -10199,6 +10731,26 @@
         "Cluster":{"shape":"Cluster"}
       }
     },
+    "S3AccessGrantsScopeUnion":{
+      "type":"structure",
+      "members":{
+        "ReadWriteAccess":{
+          "shape":"ReadWriteAccess",
+          "documentation":"<p>The S3 Access Grants scope.</p>"
+        }
+      },
+      "documentation":"<p>A list of scopes set up for S3 Access Grants integration.</p>",
+      "union":true
+    },
+    "S3AccessGrantsServiceIntegrations":{
+      "type":"list",
+      "member":{"shape":"S3AccessGrantsScopeUnion"}
+    },
+    "S3KeyPrefixValue":{
+      "type":"string",
+      "max":256,
+      "pattern":"[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*"
+    },
     "SNSInvalidTopicFault":{
       "type":"structure",
       "members":{
@@ -10271,7 +10823,7 @@
         },
         "TargetAction":{
           "shape":"ScheduledActionType",
-          "documentation":"<p>A JSON format string of the Amazon Redshift API operation with input parameters. </p> <p>\"<code>{\\\"ResizeCluster\\\":{\\\"NodeType\\\":\\\"ds2.8xlarge\\\",\\\"ClusterIdentifier\\\":\\\"my-test-cluster\\\",\\\"NumberOfNodes\\\":3}}</code>\". </p>"
+          "documentation":"<p>A JSON format string of the Amazon Redshift API operation with input parameters. </p> <p>\"<code>{\\\"ResizeCluster\\\":{\\\"NodeType\\\":\\\"ra3.4xlarge\\\",\\\"ClusterIdentifier\\\":\\\"my-test-cluster\\\",\\\"NumberOfNodes\\\":3}}</code>\". </p>"
         },
         "Schedule":{
           "shape":"String",
@@ -10469,6 +11021,24 @@
       "type":"string",
       "sensitive":true
     },
+    "ServerlessIdentifier":{
+      "type":"structure",
+      "required":[
+        "NamespaceIdentifier",
+        "WorkgroupIdentifier"
+      ],
+      "members":{
+        "NamespaceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the serverless namespace.</p>"
+        },
+        "WorkgroupIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the workgroup associated with the serverless namespace.</p>"
+        }
+      },
+      "documentation":"<p>The identifier for a serverless namespace.</p>"
+    },
     "ServiceAuthorization":{
       "type":"string",
       "enum":[
@@ -10486,6 +11056,10 @@
         "LakeFormation":{
           "shape":"LakeFormationServiceIntegrations",
           "documentation":"<p>A list of scopes set up for Lake Formation integration.</p>"
+        },
+        "S3AccessGrants":{
+          "shape":"S3AccessGrantsServiceIntegrations",
+          "documentation":"<p>A list of scopes set up for S3 Access Grants integration.</p>"
         }
       },
       "documentation":"<p>A list of service integrations.</p>",
@@ -10934,6 +11508,12 @@
         "DESC"
       ]
     },
+    "SourceArn":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^arn:aws[a-z\\-]*:(s3|dynamodb):.*:.*:[a-zA-Z0-9._\\-\\/]+$"
+    },
     "SourceIdsList":{
       "type":"list",
       "member":{
@@ -11310,6 +11890,12 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "TargetArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[a-z\\-]*:redshift(-serverless)?:[a-z0-9\\-]+:[0-9]{12}:(namespace\\/|namespace:)[a-z0-9\\-]+$"
     },
     "TrackList":{
       "type":"list",

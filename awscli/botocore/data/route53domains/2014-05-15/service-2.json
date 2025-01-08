@@ -5,11 +5,13 @@
     "endpointPrefix":"route53domains",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"Amazon Route 53 Domains",
     "serviceId":"Route 53 Domains",
     "signatureVersion":"v4",
     "targetPrefix":"Route53Domains_v20140515",
-    "uid":"route53domains-2014-05-15"
+    "uid":"route53domains-2014-05-15",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AcceptDomainTransferFromAnotherAwsAccount":{
@@ -609,7 +611,7 @@
         },
         "InvoiceId":{
           "shape":"InvoiceId",
-          "documentation":"<p>The ID of the invoice that is associated with the billing record.</p>"
+          "documentation":"<p>Deprecated property. This field is retained in report structure for backwards compatibility, but will appear blank.</p>"
         },
         "BillDate":{
           "shape":"Timestamp",
@@ -1780,7 +1782,7 @@
     },
     "LangCode":{
       "type":"string",
-      "max":3
+      "pattern":"|[A-Za-z]{2,3}"
     },
     "ListDomainsAttributeName":{
       "type":"string",
@@ -2047,13 +2049,14 @@
         "INTERNAL_TRANSFER_OUT_DOMAIN",
         "INTERNAL_TRANSFER_IN_DOMAIN",
         "RELEASE_TO_GANDI",
-        "TRANSFER_ON_RENEW"
+        "TRANSFER_ON_RENEW",
+        "RESTORE_DOMAIN"
       ]
     },
     "OperationTypeList":{
       "type":"list",
       "member":{"shape":"OperationType"},
-      "max":20
+      "max":21
     },
     "Operator":{
       "type":"string",
@@ -2075,7 +2078,10 @@
       "type":"string",
       "sensitive":true
     },
-    "Price":{"type":"double"},
+    "Price":{
+      "type":"double",
+      "min":0.0
+    },
     "PriceWithCurrency":{
       "type":"structure",
       "required":[

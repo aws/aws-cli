@@ -2,9 +2,11 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2021-09-30",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"cloudcontrolapi",
     "jsonVersion":"1.0",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"CloudControlApi",
     "serviceFullName":"AWS Cloud Control API",
     "serviceId":"CloudControl",
@@ -340,7 +342,7 @@
     },
     "ErrorMessage":{
       "type":"string",
-      "max":1024,
+      "max":2048,
       "min":1,
       "pattern":".+"
     },
@@ -403,6 +405,10 @@
         "ProgressEvent":{
           "shape":"ProgressEvent",
           "documentation":"<p>Represents the current status of the resource operation request.</p>"
+        },
+        "HooksProgressEvent":{
+          "shape":"HooksProgressEvent",
+          "documentation":"<p>Lists Hook invocations for the specified target in the request. This is a list since the same target can invoke multiple Hooks.</p>"
         }
       }
     },
@@ -412,6 +418,7 @@
         "NotUpdatable",
         "InvalidRequest",
         "AccessDenied",
+        "UnauthorizedTaggingOperation",
         "InvalidCredentials",
         "AlreadyExists",
         "NotFound",
@@ -446,9 +453,75 @@
     },
     "HandlerNextToken":{
       "type":"string",
-      "max":2048,
+      "max":4096,
       "min":1,
       "pattern":".+"
+    },
+    "HookFailureMode":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[-A-Za-z_]+"
+    },
+    "HookInvocationPoint":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[-A-Za-z_]+"
+    },
+    "HookProgressEvent":{
+      "type":"structure",
+      "members":{
+        "HookTypeName":{
+          "shape":"TypeName",
+          "documentation":"<p>The type name of the Hook being invoked.</p>"
+        },
+        "HookTypeVersionId":{
+          "shape":"TypeVersionId",
+          "documentation":"<p>The type version of the Hook being invoked.</p>"
+        },
+        "HookTypeArn":{
+          "shape":"HookTypeArn",
+          "documentation":"<p>The ARN of the Hook being invoked.</p>"
+        },
+        "InvocationPoint":{
+          "shape":"HookInvocationPoint",
+          "documentation":"<p>States whether the Hook is invoked before or after resource provisioning.</p>"
+        },
+        "HookStatus":{
+          "shape":"HookStatus",
+          "documentation":"<p>The status of the Hook invocation. The following are potential statuses:</p> <ul> <li> <p> <code>HOOK_PENDING</code>: The Hook was added to the invocation plan, but not yet invoked.</p> </li> <li> <p> <code>HOOK_IN_PROGRESS</code>: The Hook was invoked, but hasn't completed.</p> </li> <li> <p> <code>HOOK_COMPLETE_SUCCEEDED</code>: The Hook invocation is complete with a successful result.</p> </li> <li> <p> <code>HOOK_COMPLETE_FAILED</code>: The Hook invocation is complete with a failed result.</p> </li> <li> <p> <code>HOOK_FAILED</code>: The Hook invocation didn't complete successfully.</p> </li> </ul>"
+        },
+        "HookEventTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the Hook invocation request initiated.</p>"
+        },
+        "HookStatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>The message explaining the current Hook status.</p>"
+        },
+        "FailureMode":{
+          "shape":"HookFailureMode",
+          "documentation":"<p>The failure mode of the invocation. The following are the potential statuses:</p> <ul> <li> <p> <code>FAIL</code>: This will fail the Hook invocation and the request associated with it.</p> </li> <li> <p> <code>WARN</code>: This will fail the Hook invocation, but not the request associated with it.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Represents the current status of applicable Hooks for a resource operation request. It contains list of Hook invocation information for the resource specified in the request since the same target can invoke multiple Hooks. For more information, see <a href=\"https://docs.aws.amazon.com/cloudcontrolapi/latest/userguide/resource-operations-manage-requests.html\">Managing resource operation requests with Amazon Web Services Cloud Control API </a>.</p>"
+    },
+    "HookStatus":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[-A-Za-z_]+"
+    },
+    "HookTypeArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws.*:.+:.*:.*:.+"
+    },
+    "HooksProgressEvent":{
+      "type":"list",
+      "member":{"shape":"HookProgressEvent"}
     },
     "Identifier":{
       "type":"string",
@@ -615,7 +688,8 @@
     },
     "PatchDocument":{
       "type":"string",
-      "max":65536,
+      "documentation":"<p>Allow up to 256K length of Resource properties</p>",
+      "max":262144,
       "min":1,
       "pattern":"[\\s\\S]*",
       "sensitive":true
@@ -642,6 +716,10 @@
         "RequestToken":{
           "shape":"RequestToken",
           "documentation":"<p>The unique token representing this resource operation request.</p> <p>Use the <code>RequestToken</code> with <a href=\"https://docs.aws.amazon.com/cloudcontrolapi/latest/APIReference/API_GetResourceRequestStatus.html\">GetResourceRequestStatus</a> to return the current status of a resource operation request.</p>"
+        },
+        "HooksRequestToken":{
+          "shape":"RequestToken",
+          "documentation":"<p>The unique token representing the Hooks operation for the request.</p>"
         },
         "Operation":{
           "shape":"Operation",
@@ -676,7 +754,8 @@
     },
     "Properties":{
       "type":"string",
-      "max":65536,
+      "documentation":"<p>Allow up to 256K length of Resource properties</p>",
+      "max":262144,
       "min":1,
       "pattern":"[\\s\\S]*",
       "sensitive":true
@@ -772,7 +851,7 @@
     },
     "StatusMessage":{
       "type":"string",
-      "max":1024,
+      "max":2048,
       "min":0,
       "pattern":"[\\s\\S]*"
     },

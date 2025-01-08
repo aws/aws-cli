@@ -23,7 +23,6 @@ from botocore.compat import (
     HTTPHeaders,
     HTTPResponse,
     MutableMapping,
-    six,
     urlencode,
     urlsplit,
     urlunsplit,
@@ -99,10 +98,10 @@ class AWSConnection(object):
     def _convert_to_bytes(self, mixed_buffer):
         # Take a list of mixed str/bytes and convert it
         # all into a single bytestring.
-        # Any six.text_types will be encoded as utf-8.
+        # Any str will be encoded as utf-8.
         bytes_buffer = []
         for chunk in mixed_buffer:
-            if isinstance(chunk, six.text_type):
+            if isinstance(chunk, str):
                 bytes_buffer.append(chunk.encode('utf-8'))
             else:
                 bytes_buffer.append(chunk)
@@ -381,9 +380,9 @@ class AWSRequestPreparer(object):
 
     def _to_utf8(self, item):
         key, value = item
-        if isinstance(key, six.text_type):
+        if isinstance(key, str):
             key = key.encode('utf-8')
-        if isinstance(value, six.text_type):
+        if isinstance(value, str):
             value = value.encode('utf-8')
         return key, value
 
@@ -455,7 +454,7 @@ class AWSRequest(object):
     @property
     def body(self):
         body = self.prepare().body
-        if isinstance(body, six.text_type):
+        if isinstance(body, str):
             body = body.encode('utf-8')
         return body
 
@@ -499,7 +498,7 @@ class AWSPreparedRequest(object):
         # the entire body contents again if we need to).
         # Same case if the body is a string/bytes/bytearray type.
 
-        non_seekable_types = (six.binary_type, six.text_type, bytearray)
+        non_seekable_types = (bytes, str, bytearray)
         if self.body is None or isinstance(self.body, non_seekable_types):
             return
         try:

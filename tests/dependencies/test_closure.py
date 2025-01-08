@@ -15,18 +15,35 @@ import functools
 import importlib.metadata
 import json
 import os
+import re
 import site
+from pathlib import Path
 from typing import Dict, Iterator, List, Tuple
 
 import pytest
 from packaging.requirements import Requirement
 
 _NESTED_STR_DICT = Dict[str, "_NESTED_STR_DICT"]
+_ROOT_PATH = Path(__file__).parents[2]
+_LOCKFILE_PATTERN = re.compile(r'^(?P<package>.+)==(?P<version>[^\s\\]+)')
 
 
 @pytest.fixture()
 def awscli_package():
     return Package(name="awscli")
+
+
+def parse_lockfile(lockfile: Path):
+    requirements = {}
+    with open(lockfile, "r") as f:
+        for line in f.readlines():
+            match = _LOCKFILE_PATTERN.match(line)
+            if not match:
+                continue
+            package = match.group("package")
+            version = match.group("version")
+            requirements[package] = version
+    return requirements
 
 
 class Package:
@@ -152,6 +169,7 @@ class TestDependencyClosure:
             "six",
             "urllib3",
             "wcwidth",
+            "zipp",
         }
         actual_dependencies = set()
         for _, package in awscli_package.runtime_dependencies.walk():
@@ -181,3 +199,14 @@ class TestDependencyClosure:
             f"Unexpected unbounded dependency found in runtime closure: "
             f"{self._pformat_closure(awscli_package.runtime_dependencies)}"
         )
+
+    # Test lockfiles generated with pyproject.toml as a source.
+    @pytest.mark.parametrize("filename", ["requirements-docs-lock.txt"])
+    def test_lockfile_pins_within_runtime_dependencies_bounds(
+        self, filename, awscli_package
+    ):
+        lockfile = parse_lockfile(Path(_ROOT_PATH, filename))
+        for req, _ in awscli_package.runtime_dependencies.walk():
+            if req.name not in lockfile:
+                continue
+            assert req.specifier.contains(lockfile[req.name])

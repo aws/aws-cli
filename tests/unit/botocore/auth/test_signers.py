@@ -12,17 +12,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from tests import unittest
+from tests import mock, unittest
 import datetime
+import io
 import time
 import base64
 import json
 
-import mock
-
 import botocore.auth
 import botocore.credentials
-from botocore.compat import HTTPHeaders, urlsplit, parse_qs, six
+from botocore.compat import HTTPHeaders, urlsplit, parse_qs
 from botocore.awsrequest import AWSRequest
 
 
@@ -167,7 +166,7 @@ class TestS3SigV4Auth(BaseTestWithFixedDate):
             access_key='foo', secret_key='bar', token='baz')
         self.auth = self.AuthClass(
             self.credentials, 'ec2', 'eu-central-1')
-        self.request = AWSRequest(data=six.BytesIO(b"foo bar baz"))
+        self.request = AWSRequest(data=io.BytesIO(b"foo bar baz"))
         self.request.method = 'PUT'
         self.request.url = 'https://s3.eu-central-1.amazonaws.com/'
 
@@ -384,7 +383,7 @@ class TestSigV4(unittest.TestCase):
 
     def test_payload_is_binary_file(self):
         request = AWSRequest()
-        request.data = six.BytesIO(u'\u2713'.encode('utf-8'))
+        request.data = io.BytesIO(u'\u2713'.encode('utf-8'))
         request.url = 'https://amazonaws.com'
         auth = self.create_signer()
         payload = auth.payload(request)
@@ -413,7 +412,7 @@ class TestSigV4(unittest.TestCase):
 
     def test_content_sha256_set_if_payload_signing_disabled(self):
         request = AWSRequest()
-        request.data = six.BytesIO(u'\u2713'.encode('utf-8'))
+        request.data = io.BytesIO(u'\u2713'.encode('utf-8'))
         request.url = 'https://amazonaws.com'
         request.context['payload_signing_enabled'] = False
         request.method = 'PUT'

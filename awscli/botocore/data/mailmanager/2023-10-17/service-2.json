@@ -11,7 +11,8 @@
     "signatureVersion":"v4",
     "signingName":"ses",
     "targetPrefix":"MailManagerSvc",
-    "uid":"mailmanager-2023-10-17"
+    "uid":"mailmanager-2023-10-17",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateAddonInstance":{
@@ -717,7 +718,7 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>&gt;Update attributes of an already provisioned rule set.</p>",
+      "documentation":"<p>Update attributes of an already provisioned rule set.</p>",
       "idempotent":true
     },
     "UpdateTrafficPolicy":{
@@ -1026,7 +1027,9 @@
         "TO",
         "FROM",
         "CC",
-        "SUBJECT"
+        "SUBJECT",
+        "ENVELOPE_TO",
+        "ENVELOPE_FROM"
       ]
     },
     "ArchiveStringExpression":{
@@ -1487,6 +1490,33 @@
       },
       "documentation":"<p>This action to delivers an email to a mailbox.</p>"
     },
+    "DeliverToQBusinessAction":{
+      "type":"structure",
+      "required":[
+        "ApplicationId",
+        "IndexId",
+        "RoleArn"
+      ],
+      "members":{
+        "ActionFailurePolicy":{
+          "shape":"ActionFailurePolicy",
+          "documentation":"<p>A policy that states what to do in the case of failure. The action will fail if there are configuration errors. For example, the specified application has been deleted or the role lacks necessary permissions to call the qbusiness:BatchPutDocument API.</p>"
+        },
+        "ApplicationId":{
+          "shape":"QBusinessApplicationId",
+          "documentation":"<p>The unique identifier of the Amazon Q Business application instance where the email content will be delivered.</p>"
+        },
+        "IndexId":{
+          "shape":"QBusinessIndexId",
+          "documentation":"<p>The identifier of the knowledge base index within the Amazon Q Business application where the email content will be stored and indexed.</p>"
+        },
+        "RoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Role to use while delivering to Amazon Q Business. This role must have access to the qbusiness:BatchPutDocument API for the given application and index.</p>"
+        }
+      },
+      "documentation":"<p>The action to deliver incoming emails to an Amazon Q Business application for indexing.</p>"
+    },
     "Double":{
       "type":"double",
       "box":true
@@ -1507,6 +1537,24 @@
     "EmailReceivedHeadersList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "Envelope":{
+      "type":"structure",
+      "members":{
+        "From":{
+          "shape":"String",
+          "documentation":"<p>The RCPT FROM given by the host from which the email was received.</p>"
+        },
+        "Helo":{
+          "shape":"String",
+          "documentation":"<p>The HELO used by the host from which the email was received.</p>"
+        },
+        "To":{
+          "shape":"StringList",
+          "documentation":"<p>All SMTP TO entries given by the host from which the email was received.</p>"
+        }
+      },
+      "documentation":"<p>The SMTP envelope information of the email.</p>"
     },
     "ErrorMessage":{"type":"string"},
     "ExportDestinationConfiguration":{
@@ -1718,9 +1766,17 @@
     "GetArchiveMessageResponse":{
       "type":"structure",
       "members":{
+        "Envelope":{
+          "shape":"Envelope",
+          "documentation":"<p>The SMTP envelope information of the email.</p>"
+        },
         "MessageDownloadLink":{
           "shape":"S3PresignedURL",
           "documentation":"<p>A pre-signed URL to temporarily download the full message content.</p>"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The metadata about the email.</p>"
         }
       },
       "documentation":"<p>The response containing details about the requested archived email message.</p>"
@@ -2725,6 +2781,48 @@
       },
       "documentation":"<p>The textual body content of an email message.</p>"
     },
+    "Metadata":{
+      "type":"structure",
+      "members":{
+        "IngressPointId":{
+          "shape":"IngressPointId",
+          "documentation":"<p>The ID of the ingress endpoint through which the email was received.</p>"
+        },
+        "RuleSetId":{
+          "shape":"RuleSetId",
+          "documentation":"<p>The ID of the rule set that processed the email.</p>"
+        },
+        "SenderHostname":{
+          "shape":"String",
+          "documentation":"<p>The name of the host from which the email was received.</p>"
+        },
+        "SenderIpAddress":{
+          "shape":"SenderIpAddress",
+          "documentation":"<p>The IP address of the host from which the email was received.</p>"
+        },
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the email was received.</p>"
+        },
+        "TlsCipherSuite":{
+          "shape":"String",
+          "documentation":"<p>The TLS cipher suite used to communicate with the host from which the email was received.</p>"
+        },
+        "TlsProtocol":{
+          "shape":"String",
+          "documentation":"<p>The TLS protocol used to communicate with the host from which the email was received.</p>"
+        },
+        "TrafficPolicyId":{
+          "shape":"TrafficPolicyId",
+          "documentation":"<p>The ID of the traffic policy that was in effect when the email was received.</p>"
+        }
+      },
+      "documentation":"<p>The metadata about the email.</p>"
+    },
+    "MimeHeaderAttribute":{
+      "type":"string",
+      "pattern":"^X-[a-zA-Z0-9-]{1,256}$"
+    },
     "NameOrArn":{
       "type":"string",
       "max":2048,
@@ -2797,6 +2895,18 @@
     "PolicyStatementList":{
       "type":"list",
       "member":{"shape":"PolicyStatement"}
+    },
+    "QBusinessApplicationId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^[a-z0-9-]+$"
+    },
+    "QBusinessIndexId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^[a-z0-9-]+$"
     },
     "Recipients":{
       "type":"list",
@@ -2945,6 +3055,10 @@
           "shape":"String",
           "documentation":"<p>The date the email was sent.</p>"
         },
+        "Envelope":{
+          "shape":"Envelope",
+          "documentation":"<p>The SMTP envelope information of the email.</p>"
+        },
         "From":{
           "shape":"String",
           "documentation":"<p>The email address of the sender.</p>"
@@ -2957,6 +3071,10 @@
           "shape":"String",
           "documentation":"<p>The email message ID this is a reply to.</p>"
         },
+        "IngressPointId":{
+          "shape":"IngressPointId",
+          "documentation":"<p>The ID of the ingress endpoint through which the email was received.</p>"
+        },
         "MessageId":{
           "shape":"String",
           "documentation":"<p>The unique message ID of the email.</p>"
@@ -2968,6 +3086,14 @@
         "ReceivedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp of when the email was received.</p>"
+        },
+        "SenderHostname":{
+          "shape":"String",
+          "documentation":"<p>The name of the host from which the email was received.</p>"
+        },
+        "SenderIpAddress":{
+          "shape":"SenderIpAddress",
+          "documentation":"<p>The IP address of the host from which the email was received.</p>"
         },
         "Subject":{
           "shape":"String",
@@ -3033,6 +3159,10 @@
         "DeliverToMailbox":{
           "shape":"DeliverToMailboxAction",
           "documentation":"<p>This action delivers an email to a WorkMail mailbox.</p>"
+        },
+        "DeliverToQBusiness":{
+          "shape":"DeliverToQBusinessAction",
+          "documentation":"<p>This action delivers an email to an Amazon Q Business application for ingestion into its knowledge base.</p>"
         },
         "Drop":{
           "shape":"DropAction",
@@ -3388,6 +3518,10 @@
         "Attribute":{
           "shape":"RuleStringEmailAttribute",
           "documentation":"<p>The email attribute to evaluate in a string condition expression.</p>"
+        },
+        "MimeHeaderAttribute":{
+          "shape":"MimeHeaderAttribute",
+          "documentation":"<p>The email MIME X-Header attribute to evaluate in a string condition expression.</p>"
         }
       },
       "documentation":"<p>The string to evaluate in a string condition expression.</p>",
@@ -3608,6 +3742,10 @@
       },
       "documentation":"<p>Sends the email to the internet using the ses:SendRawEmail API.</p>"
     },
+    "SenderIpAddress":{
+      "type":"string",
+      "sensitive":true
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -3647,6 +3785,10 @@
         "FromTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The start of the timestamp range to include emails from.</p>"
+        },
+        "IncludeMetadata":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to include message metadata as JSON files in the export.</p>"
         },
         "MaxResults":{
           "shape":"ExportMaxResults",
@@ -3750,9 +3892,14 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "StringValue":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "StringValueList":{
       "type":"list",
-      "member":{"shape":"String"},
+      "member":{"shape":"StringValue"},
       "max":10,
       "min":1
     },
@@ -4052,5 +4199,5 @@
       "exception":true
     }
   },
-  "documentation":"<p><fullname>AWS SES Mail Manager API</fullname> <p> <a href=\"http://aws.amazon.com/ses\">AWS SES Mail Manager API</a> contains operations and data types that comprise the Mail Manager feature of Amazon Simple Email Service.</p> <p>Mail Manager is a set of Amazon SES email gateway features designed to help you strengthen your organization's email infrastructure, simplify email workflow management, and streamline email compliance control. To learn more, see the <a href=\"https://docs.aws.amazon.com/ses/latest/dg/eb.html\">Mail Manager chapter</a> in the Amazon SES Developer Guide.</p></p>"
+  "documentation":"<p><fullname>Amazon SES Mail Manager API</fullname> <p>The Amazon SES Mail Manager API contains operations and data types that comprise the Mail Manager feature of <a href=\"http://aws.amazon.com/ses\">Amazon Simple Email Service (SES)</a>.</p> <p>Mail Manager is a set of Amazon SES email gateway features designed to help you strengthen your organization's email infrastructure, simplify email workflow management, and streamline email compliance control. To learn more, see the <a href=\"https://docs.aws.amazon.com/ses/latest/dg/eb.html\">Mail Manager chapter</a> in the <i>Amazon SES Developer Guide</i>.</p></p>"
 }

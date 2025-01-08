@@ -10,17 +10,22 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
+import pytest
+
+from awscli.customizations.paginate import PageArgument
+from awscli.testutils import mock, unittest
 
 from botocore.exceptions import DataNotFoundError
 from botocore.model import OperationModel
 from awscli.help import OperationHelpCommand, OperationDocumentEventHandler
 
-import mock
-from mock import Mock, patch
-
 from awscli.customizations import paginate
 from awscli.customizations.exceptions import ParamValidationError
+
+
+@pytest.fixture
+def max_items_page_arg():
+    return PageArgument('max-items', 'documentation', int, 'MaxItems')
 
 
 class TestPaginateBase(unittest.TestCase):
@@ -104,11 +109,11 @@ class TestArgumentTableModifications(TestPaginateBase):
 
 class TestHelpDocumentationModifications(TestPaginateBase):
     def test_injects_pagination_help_text(self):
-        with patch('awscli.customizations.paginate.get_paginator_config',
+        with mock.patch('awscli.customizations.paginate.get_paginator_config',
                    return_value={'result_key': 'abc'}):
             help_command = OperationHelpCommand(
-                Mock(), Mock(), Mock(), 'foo', OperationDocumentEventHandler)
-            help_command.obj = Mock(OperationModel)
+                mock.Mock(), mock.Mock(), mock.Mock(), 'foo', OperationDocumentEventHandler)
+            help_command.obj = mock.Mock(OperationModel)
             help_command.obj.name = 'foo'
             paginate.add_paging_description(help_command)
             self.assertIn('``foo`` is a paginated operation. Multiple API',
@@ -117,22 +122,22 @@ class TestHelpDocumentationModifications(TestPaginateBase):
                           help_command.doc.getvalue().decode())
 
     def test_shows_result_keys_when_array(self):
-        with patch('awscli.customizations.paginate.get_paginator_config',
+        with mock.patch('awscli.customizations.paginate.get_paginator_config',
                    return_value={'result_key': ['abc', '123']}):
             help_command = OperationHelpCommand(
-                Mock(), Mock(), Mock(), 'foo', OperationDocumentEventHandler)
-            help_command.obj = Mock(OperationModel)
+                mock.Mock(), mock.Mock(), mock.Mock(), 'foo', OperationDocumentEventHandler)
+            help_command.obj = mock.Mock(OperationModel)
             help_command.obj.name = 'foo'
             paginate.add_paging_description(help_command)
             self.assertIn('following query expressions: ``abc``, ``123``',
                           help_command.doc.getvalue().decode())
 
     def test_does_not_show_result_key_if_not_present(self):
-        with patch('awscli.customizations.paginate.get_paginator_config',
+        with mock.patch('awscli.customizations.paginate.get_paginator_config',
                    return_value={'limit_key': 'aaa'}):
             help_command = OperationHelpCommand(
-                Mock(), Mock(), Mock(), 'foo', OperationDocumentEventHandler)
-            help_command.obj = Mock(OperationModel)
+                mock.Mock(), mock.Mock(), mock.Mock(), 'foo', OperationDocumentEventHandler)
+            help_command.obj = mock.Mock(OperationModel)
             help_command.obj.name = 'foo'
             paginate.add_paging_description(help_command)
             self.assertIn('``foo`` is a paginated operation. Multiple API',
@@ -141,11 +146,11 @@ class TestHelpDocumentationModifications(TestPaginateBase):
                              help_command.doc.getvalue().decode())
 
     def test_does_not_inject_when_no_pagination(self):
-        with patch('awscli.customizations.paginate.get_paginator_config',
+        with mock.patch('awscli.customizations.paginate.get_paginator_config',
                    return_value=None):
             help_command = OperationHelpCommand(
-                Mock(), Mock(), Mock(), 'foo', OperationDocumentEventHandler)
-            help_command.obj = Mock(OperationModel)
+                mock.Mock(), mock.Mock(), mock.Mock(), 'foo', OperationDocumentEventHandler)
+            help_command.obj = mock.Mock(OperationModel)
             help_command.obj.name = 'foo'
             paginate.add_paging_description(help_command)
             self.assertNotIn('``foo`` is a paginated operation',
@@ -353,3 +358,19 @@ class TestEnsurePagingParamsNotSet(TestPaginateBase):
         del self.parsed_args.page_size
         self.assertIsNone(paginate.ensure_paging_params_not_set(
             self.parsed_args, {}))
+
+class TestNonPositiveMaxItems:
+    def test_positive_integer_does_not_raise_warning(self, max_items_page_arg, capsys):
+        max_items_page_arg.add_to_params({}, 1)
+        captured = capsys.readouterr()
+        assert captured.err == ""
+
+    def test_zero_raises_warning(self, max_items_page_arg, capsys):
+        max_items_page_arg.add_to_params({}, 0)
+        captured = capsys.readouterr()
+        assert "Non-positive values for --max-items" in captured.err
+
+    def test_negative_integer_raises_warning(self, max_items_page_arg, capsys):
+        max_items_page_arg.add_to_params({}, -1)
+        captured = capsys.readouterr()
+        assert "Non-positive values for --max-items" in captured.err

@@ -1,7 +1,7 @@
-import mock
 import botocore.session
 
-from mock import patch, Mock, MagicMock
+from awscli.testutils import mock
+
 from botocore.stub import Stubber
 from awscli.customizations.cloudformation.deployer import Deployer, ChangeSetResult
 from awscli.customizations.cloudformation import exceptions
@@ -109,7 +109,7 @@ class TestDeployer(BaseYAMLTest):
         tags = [{"Key":"key1", "Value": "val1"}]
 
         # Case 1: Stack DOES NOT exist
-        self.deployer.has_stack = Mock()
+        self.deployer.has_stack = mock.Mock()
         self.deployer.has_stack.return_value = False
 
         expected_params = {
@@ -178,7 +178,7 @@ class TestDeployer(BaseYAMLTest):
         role_arn = "arn:aws:iam::1234567890:role"
         notification_arns = ["arn:aws:sns:region:1234567890:notify"]
 
-        s3_uploader = Mock()
+        s3_uploader = mock.Mock()
         def to_path_style_s3_url(some_string, Version=None):
             return "https://s3.amazonaws.com/bucket/file"
         s3_uploader.to_path_style_s3_url = to_path_style_s3_url
@@ -187,7 +187,7 @@ class TestDeployer(BaseYAMLTest):
         s3_uploader.upload_with_dedup = upload_with_dedup
 
         # Case 1: Stack DOES NOT exist
-        self.deployer.has_stack = Mock()
+        self.deployer.has_stack = mock.Mock()
         self.deployer.has_stack.return_value = False
 
         expected_params = {
@@ -248,7 +248,7 @@ class TestDeployer(BaseYAMLTest):
         s3_uploader = None
         tags = [{"Key":"key1", "Value": "val1"}]
 
-        self.deployer.has_stack = Mock()
+        self.deployer.has_stack = mock.Mock()
         self.deployer.has_stack.return_value = False
 
         self.stub_client.add_client_error(
@@ -311,10 +311,10 @@ class TestDeployer(BaseYAMLTest):
         s3_uploader = None
         tags = [{"Key":"key1", "Value": "val1"}]
 
-        self.deployer.create_changeset = Mock()
+        self.deployer.create_changeset = mock.Mock()
         self.deployer.create_changeset.return_value = ChangeSetResult(changeset_id, changeset_type)
 
-        self.deployer.wait_for_changeset = Mock()
+        self.deployer.wait_for_changeset = mock.Mock()
 
         result = self.deployer.create_and_wait_for_changeset(
                 stack_name, template, parameters, capabilities, role_arn,
@@ -335,10 +335,10 @@ class TestDeployer(BaseYAMLTest):
         s3_uploader = None
         tags = [{"Key":"key1", "Value": "val1"}]
 
-        self.deployer.create_changeset = Mock()
+        self.deployer.create_changeset = mock.Mock()
         self.deployer.create_changeset.return_value = ChangeSetResult(changeset_id, changeset_type)
 
-        self.deployer.wait_for_changeset = Mock()
+        self.deployer.wait_for_changeset = mock.Mock()
         self.deployer.wait_for_changeset.side_effect = RuntimeError
 
         with self.assertRaises(RuntimeError):
@@ -350,9 +350,9 @@ class TestDeployer(BaseYAMLTest):
         stack_name = "stack_name"
         changeset_id = "changeset-id"
 
-        mock_client = Mock()
+        mock_client = mock.Mock()
         mock_deployer = Deployer(mock_client)
-        mock_waiter = Mock()
+        mock_waiter = mock.Mock()
         mock_client.get_waiter.return_value = mock_waiter
 
         response = {
@@ -380,9 +380,9 @@ class TestDeployer(BaseYAMLTest):
         stack_name = "stack_name"
         changeset_id = "changeset-id"
 
-        mock_client = Mock()
+        mock_client = mock.Mock()
         mock_deployer = Deployer(mock_client)
-        mock_waiter = Mock()
+        mock_waiter = mock.Mock()
         mock_client.get_waiter.return_value = mock_waiter
 
         response = {
@@ -410,9 +410,9 @@ class TestDeployer(BaseYAMLTest):
         stack_name = "stack_name"
         changeset_id = "changeset-id"
 
-        mock_client = Mock()
+        mock_client = mock.Mock()
         mock_deployer = Deployer(mock_client)
-        mock_waiter = Mock()
+        mock_waiter = mock.Mock()
         mock_client.get_waiter.return_value = mock_waiter
 
         response = {
@@ -440,9 +440,9 @@ class TestDeployer(BaseYAMLTest):
         stack_name = "stack_name"
         changeset_type = "CREATE"
 
-        mock_client = Mock()
+        mock_client = mock.Mock()
         mock_deployer = Deployer(mock_client)
-        mock_waiter = Mock()
+        mock_waiter = mock.Mock()
         mock_client.get_waiter.return_value = mock_waiter
 
         waiter_error = botocore.exceptions.WaiterError(name="name",

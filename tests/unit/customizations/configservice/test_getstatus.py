@@ -10,10 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
-from awscli.compat import six
-
-from awscli.testutils import unittest
+from awscli.compat import StringIO
+from awscli.testutils import mock, unittest
 from awscli.customizations.configservice.getstatus import GetStatusCommand
 
 
@@ -79,7 +77,7 @@ class TestGetStatusCommand(unittest.TestCase):
             'Delivery Channels:\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
@@ -99,7 +97,7 @@ class TestGetStatusCommand(unittest.TestCase):
             'Delivery Channels:\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
@@ -114,7 +112,7 @@ class TestGetStatusCommand(unittest.TestCase):
             'Delivery Channels:\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
@@ -145,7 +143,7 @@ class TestGetStatusCommand(unittest.TestCase):
             'recorder: OFF\n\n'
             'Delivery Channels:\n\n'
         )
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
@@ -171,7 +169,7 @@ class TestGetStatusCommand(unittest.TestCase):
             'last stream delivery status: SUCCESS\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
@@ -199,7 +197,7 @@ class TestGetStatusCommand(unittest.TestCase):
             'last snapshot delivery status: SUCCESS\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
@@ -228,7 +226,7 @@ class TestGetStatusCommand(unittest.TestCase):
             'message: This is the error\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
@@ -260,7 +258,7 @@ class TestGetStatusCommand(unittest.TestCase):
             'last snapshot delivery status: SUCCESS\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
@@ -299,7 +297,7 @@ class TestGetStatusCommand(unittest.TestCase):
             'last snapshot delivery status: SUCCESS\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())
 
@@ -362,6 +360,6 @@ class TestGetStatusCommand(unittest.TestCase):
             'last snapshot delivery status: SUCCESS\n\n'
         )
 
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             self.cmd._run_main(self.parsed_args, self.parsed_globals)
             self.assertEqual(expected_output, mock_stdout.getvalue())

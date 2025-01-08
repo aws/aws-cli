@@ -1,10 +1,10 @@
 **To create a workgroup**
 
-The following ``create-work-group`` example creates a workgroup called ``Data_Analyst_Group`` that has the query results output location ``s3://awsdoc-example-bucket``. The command creates a workgroup that overrides client configuration settings, which includes the query results output location. The command also  enables CloudWatch metrics and adds three key-value tag pairs to the workgroup to distinguish it from other workgroups. Note that the ``--configuration`` argument has no spaces before the commas that separate its options. ::
+The following ``create-work-group`` example creates a workgroup called ``Data_Analyst_Group`` that has the query results output location ``s3://amzn-s3-demo-bucket``. The command creates a workgroup that overrides client configuration settings, which includes the query results output location. The command also  enables CloudWatch metrics and adds three key-value tag pairs to the workgroup to distinguish it from other workgroups. Note that the ``--configuration`` argument has no spaces before the commas that separate its options. ::
 
     aws athena create-work-group \
         --name Data_Analyst_Group \
-        --configuration ResultConfiguration={OutputLocation="s3://awsdoc-example-bucket"},EnforceWorkGroupConfiguration="true",PublishCloudWatchMetricsEnabled="true" \
+        --configuration ResultConfiguration={OutputLocation="s3://amzn-s3-demo-bucket"},EnforceWorkGroupConfiguration="true",PublishCloudWatchMetricsEnabled="true" \
         --description "Workgroup for data analysts" \
         --tags Key=Division,Value=West Key=Location,Value=Seattle Key=Team,Value="Big Data"
 

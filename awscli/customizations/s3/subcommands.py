@@ -19,7 +19,6 @@ from botocore.utils import is_s3express_bucket, ensure_boolean
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
-from awscli.compat import six
 from awscli.compat import queue
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.s3.comparator import Comparator
@@ -482,6 +481,37 @@ VALIDATE_SAME_S3_PATHS = {
     )
 }
 
+CHECKSUM_MODE = {
+        'name': 'checksum-mode', 'choices': ['ENABLED'],
+        'help_text': 'To retrieve the checksum, this mode must be enabled. If the object has a '
+                     'checksum, it will be verified.'
+}
+
+CHECKSUM_ALGORITHM = {
+        'name': 'checksum-algorithm', 'choices': ['CRC32', 'SHA256', 'SHA1', 'CRC32C'],
+        'help_text': 'Indicates the algorithm used to create the checksum for the object.'
+}
+
+BUCKET_NAME_PREFIX = {
+    'name': 'bucket-name-prefix',
+    'help_text': (
+        'Limits the response to bucket names that begin with the specified '
+        'bucket name prefix.'
+    )
+}
+
+BUCKET_REGION = {
+    'name': 'bucket-region',
+    'help_text': (
+        'Limits the response to buckets that are located in the specified '
+        'Amazon Web Services Region. The Amazon Web Services Region must be '
+        'expressed according to the Amazon Web Services Region code, such as '
+        'us-west-2 for the US West (Oregon) Region. For a list of the valid '
+        'values for all of the Amazon Web Services Regions, see '
+        'https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region'
+    )
+}
+
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, SSE_C, SSE_C_KEY, SSE_KMS_KEY_ID, SSE_C_COPY_SOURCE,
@@ -490,7 +520,7 @@ TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  CONTENT_DISPOSITION, CONTENT_ENCODING, CONTENT_LANGUAGE,
                  EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS, NO_PROGRESS,
                  PAGE_SIZE, IGNORE_GLACIER_WARNINGS, FORCE_GLACIER_TRANSFER,
-                 REQUEST_PAYER]
+                 REQUEST_PAYER, CHECKSUM_MODE, CHECKSUM_ALGORITHM]
 
 
 class S3Command(BasicCommand):
@@ -511,7 +541,8 @@ class ListCommand(S3Command):
     USAGE = "<S3Uri> or NONE"
     ARG_TABLE = [{'name': 'paths', 'nargs': '?', 'default': 's3://',
                   'positional_arg': True, 'synopsis': USAGE}, RECURSIVE,
-                 PAGE_SIZE, HUMAN_READABLE, SUMMARIZE, REQUEST_PAYER]
+                 PAGE_SIZE, HUMAN_READABLE, SUMMARIZE, REQUEST_PAYER,
+                 BUCKET_NAME_PREFIX, BUCKET_REGION]
 
     def _run_main(self, parsed_args, parsed_globals):
         super(ListCommand, self)._run_main(parsed_args, parsed_globals)
@@ -525,7 +556,11 @@ class ListCommand(S3Command):
             path = path[5:]
         bucket, key = find_bucket_key(path)
         if not bucket:
-            self._list_all_buckets()
+            self._list_all_buckets(
+                parsed_args.page_size,
+                parsed_args.bucket_name_prefix,
+                parsed_args.bucket_region,
+            )
         elif parsed_args.dir_op:
             # Then --recursive was specified.
             self._list_all_objects_recursive(
@@ -589,13 +624,30 @@ class ListCommand(S3Command):
             uni_print(print_str)
         self._at_first_page = False
 
-    def _list_all_buckets(self):
-        response_data = self.client.list_buckets()
-        buckets = response_data['Buckets']
-        for bucket in buckets:
-            last_mod_str = self._make_last_mod_str(bucket['CreationDate'])
-            print_str = last_mod_str + ' ' + bucket['Name'] + '\n'
-            uni_print(print_str)
+    def _list_all_buckets(
+            self,
+            page_size=None,
+            prefix=None,
+            bucket_region=None,
+    ):
+        paginator = self.client.get_paginator('list_buckets')
+        paging_args = {
+            'PaginationConfig': {'PageSize': page_size}
+        }
+        if prefix:
+            paging_args['Prefix'] = prefix
+        if bucket_region:
+            paging_args['BucketRegion'] = bucket_region
+
+        iterator = paginator.paginate(**paging_args)
+
+        for response_data in iterator:
+            buckets = response_data.get('Buckets', [])
+
+            for bucket in buckets:
+                last_mod_str = self._make_last_mod_str(bucket['CreationDate'])
+                print_str = last_mod_str + ' ' + bucket['Name'] + '\n'
+                uni_print(print_str)
 
     def _list_all_objects_recursive(self, bucket, key, page_size=None,
                                     request_payer=None):
@@ -752,7 +804,7 @@ class S3TransferCommand(S3Command):
             parsed_args.paths = [parsed_args.paths]
         for i in range(len(parsed_args.paths)):
             path = parsed_args.paths[i]
-            if isinstance(path, six.binary_type):
+            if isinstance(path, bytes):
                 dec_path = path.decode(sys.getfilesystemencoding())
                 enc_path = dec_path.encode('utf-8')
                 new_path = enc_path.decode('utf-8')
@@ -849,6 +901,11 @@ class MbCommand(S3Command):
                 "%s\nError: Invalid argument type" % self.USAGE
             )
         bucket, _ = split_s3_bucket_key(parsed_args.path)
+
+        if is_s3express_bucket(bucket):
+            raise ParamValidationError(
+                "Cannot use mb command with a directory bucket."
+            )
 
         bucket_config = {'LocationConstraint': self.client.meta.region_name}
         params = {'Bucket': bucket}
@@ -1264,6 +1321,17 @@ class CommandParameters(object):
             if self._should_emit_validate_s3_paths_warning():
                 self._emit_validate_s3_paths_warning()
 
+        if params.get('checksum_algorithm'):
+            self._raise_if_paths_type_incorrect_for_param(
+                CHECKSUM_ALGORITHM['name'],
+                params['paths_type'],
+                ['locals3', 's3s3'])
+        if params.get('checksum_mode'):
+            self._raise_if_paths_type_incorrect_for_param(
+                CHECKSUM_MODE['name'],
+                params['paths_type'],
+                ['s3local'])
+
         # If the user provided local path does not exist, hard fail because
         # we know that we will not be able to upload the file.
         if 'locals3' == params['paths_type'] and not params['is_stream']:
@@ -1345,6 +1413,19 @@ class CommandParameters(object):
             raise ParamValidationError(
                 "Cannot mv a file onto itself: "
                 f"{self.parameters['src']} - {self.parameters['dest']}"
+            )
+
+    def _raise_if_paths_type_incorrect_for_param(self, param, paths_type, allowed_paths):
+        if paths_type not in allowed_paths:
+            expected_usage_map = {
+                'locals3': '<LocalPath> <S3Uri>',
+                's3s3': '<S3Uri> <S3Uri>',
+                's3local': '<S3Uri> <LocalPath>',
+                's3': '<S3Uri>'
+            }
+            raise ParamValidationError(
+                f"Expected {param} parameter to be used with one of following path formats: "
+                f"{', '.join([expected_usage_map[path] for path in allowed_paths])}. Instead, received {expected_usage_map[paths_type]}."
             )
 
     def _normalize_s3_trailing_slash(self, paths):

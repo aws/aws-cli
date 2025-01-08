@@ -69,6 +69,8 @@ class TestCRTTransferManager(unittest.TestCase):
         self.region = 'us-west-2'
         self.bucket = "test_bucket"
         self.s3express_bucket = 's3expressbucket--usw2-az5--x-s3'
+        self.mrap_accesspoint = 'arn:aws:s3::123456789012:accesspoint/mfzwi23gnjvgw.mrap'
+        self.mrap_bucket = 'mfzwi23gnjvgw.mrap'
         self.key = "test_key"
         self.expected_content = b'my content'
         self.expected_download_content = b'new content'
@@ -82,6 +84,8 @@ class TestCRTTransferManager(unittest.TestCase):
             f'{self.s3express_bucket}.s3express-usw2-az5.us-west-2.amazonaws.com'
         )
         self.expected_s3express_path = f'/{self.key}'
+        self.expected_mrap_host = f'{self.mrap_bucket}.accesspoint.s3-global.amazonaws.com'
+        self.expected_mrap_path = f"/{self.key}"
         self.s3_request = mock.Mock(awscrt.s3.S3Request)
         self.s3_crt_client = mock.Mock(awscrt.s3.S3Client)
         self.s3_crt_client.make_request.side_effect = (
@@ -139,7 +143,7 @@ class TestCRTTransferManager(unittest.TestCase):
             for expected_missing_header in expected_missing_headers:
                 self.assertNotIn(expected_missing_header.lower(), header_names)
 
-    def _assert_exected_s3express_request(
+    def _assert_expected_s3express_request(
         self,
         make_request_kwargs,
         expected_http_method='GET'
@@ -154,6 +158,26 @@ class TestCRTTransferManager(unittest.TestCase):
         self.assertEqual(
             make_request_kwargs['signing_config'].algorithm,
             awscrt.auth.AwsSigningAlgorithm.V4_S3EXPRESS
+        )
+
+    def _assert_expected_mrap_request(
+        self,
+        make_request_kwargs,
+        expected_http_method='GET'
+    ):
+        self._assert_expected_crt_http_request(
+            make_request_kwargs["request"],
+            expected_host=self.expected_mrap_host,
+            expected_path=self.expected_mrap_path,
+            expected_http_method=expected_http_method,
+        )
+        self.assertIn('signing_config', make_request_kwargs)
+        self.assertEqual(
+            make_request_kwargs['signing_config'].algorithm,
+            awscrt.auth.AwsSigningAlgorithm.V4_ASYMMETRIC
+        )
+        self.assertEqual(
+            make_request_kwargs['signing_config'].region, "*"
         )
 
     def _assert_subscribers_called(self, expected_future=None):
@@ -383,7 +407,18 @@ class TestCRTTransferManager(unittest.TestCase):
             [self.record_subscriber]
         )
         future.result()
-        self._assert_exected_s3express_request(
+        self._assert_expected_s3express_request(
+            self.s3_crt_client.make_request.call_args[1],
+            expected_http_method='PUT'
+        )
+
+    def test_upload_with_mrap(self):
+        future = self.transfer_manager.upload(
+            self.filename, self.mrap_accesspoint, self.key, {},
+            [self.record_subscriber]
+        )
+        future.result()
+        self._assert_expected_mrap_request(
             self.s3_crt_client.make_request.call_args[1],
             expected_http_method='PUT'
         )
@@ -496,7 +531,18 @@ class TestCRTTransferManager(unittest.TestCase):
             [self.record_subscriber]
         )
         future.result()
-        self._assert_exected_s3express_request(
+        self._assert_expected_s3express_request(
+            self.s3_crt_client.make_request.call_args[1],
+            expected_http_method='GET'
+        )
+
+    def test_download_with_mrap(self):
+        future = self.transfer_manager.download(
+            self.mrap_accesspoint, self.key, self.filename, {},
+            [self.record_subscriber]
+        )
+        future.result()
+        self._assert_expected_mrap_request(
             self.s3_crt_client.make_request.call_args[1],
             expected_http_method='GET'
         )
@@ -513,6 +559,7 @@ class TestCRTTransferManager(unittest.TestCase):
             {
                 'request': mock.ANY,
                 'type': awscrt.s3.S3RequestType.DEFAULT,
+                'operation_name': "DeleteObject",
                 'on_progress': mock.ANY,
                 'on_done': mock.ANY,
             },
@@ -529,7 +576,7 @@ class TestCRTTransferManager(unittest.TestCase):
             self.s3express_bucket, self.key, {}, [self.record_subscriber]
         )
         future.result()
-        self._assert_exected_s3express_request(
+        self._assert_expected_s3express_request(
             self.s3_crt_client.make_request.call_args[1],
             expected_http_method='DELETE'
         )

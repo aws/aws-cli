@@ -22,13 +22,17 @@ import logging
 import os
 import random
 import re
+import secrets
 import socket
+import string
 import time
+import uuid
 import warnings
 import weakref
 from datetime import datetime as _DatetimeClass
 from ipaddress import ip_address
 from pathlib import Path
+from urllib.request import getproxies, proxy_bypass
 
 import botocore
 import botocore.awsrequest
@@ -40,7 +44,6 @@ from botocore.compat import (
     get_tzinfo_options,
     json,
     quote,
-    six,
     total_seconds,
     urlparse,
     urlsplit,
@@ -48,6 +51,7 @@ from botocore.compat import (
     zip_longest,
 )
 from botocore.exceptions import (
+    AuthorizationCodeLoadError,
     ClientError,
     ConfigNotFound,
     ConnectionClosedError,
@@ -72,7 +76,6 @@ from botocore.exceptions import (
     UnsupportedS3ControlArnError,
     UnsupportedS3ControlConfigurationError,
 )
-from botocore.vendored.six.moves.urllib.request import getproxies, proxy_bypass
 from dateutil.tz import tzutc
 from urllib3.exceptions import LocationParseError
 
@@ -717,12 +720,28 @@ def percent_encode(input_str, safe=SAFE_CHARS):
     first.
     """
     # If its not a binary or text string, make it a text string.
-    if not isinstance(input_str, (six.binary_type, six.text_type)):
-        input_str = six.text_type(input_str)
+    if not isinstance(input_str, (bytes, str)):
+        input_str = str(input_str)
     # If it's not bytes, make it bytes by UTF-8 encoding it.
-    if not isinstance(input_str, six.binary_type):
+    if not isinstance(input_str, bytes):
         input_str = input_str.encode('utf-8')
     return quote(input_str, safe=safe)
+
+
+def _epoch_seconds_to_datetime(value, tzinfo):
+    """Parse numerical epoch timestamps (seconds since 1970) into a
+    ``datetime.datetime`` in UTC using ``datetime.timedelta``. This is intended
+    as fallback when ``fromtimestamp`` raises ``OverflowError`` or ``OSError``.
+
+    :type value: float or int
+    :param value: The Unix timestamps as number.
+
+    :type tzinfo: callable
+    :param tzinfo: A ``datetime.tzinfo`` class or compatible callable.
+    """
+    epoch_zero = datetime.datetime(1970, 1, 1, 0, 0, 0, tzinfo=tzutc())
+    epoch_zero_localized = epoch_zero.astimezone(tzinfo())
+    return epoch_zero_localized + datetime.timedelta(seconds=value)
 
 
 def _parse_timestamp_with_tzinfo(value, tzinfo):
@@ -756,14 +775,40 @@ def parse_timestamp(value):
     This will return a ``datetime.datetime`` object.
 
     """
-    for tzinfo in get_tzinfo_options():
+    tzinfo_options = get_tzinfo_options()
+    for tzinfo in tzinfo_options:
         try:
             return _parse_timestamp_with_tzinfo(value, tzinfo)
-        except OSError as e:
-            logger.debug('Unable to parse timestamp with "%s" timezone info.',
-                         tzinfo.__name__, exc_info=e)
-    raise RuntimeError('Unable to calculate correct timezone offset for '
-                       '"%s"' % value)
+        except (OSError, OverflowError) as e:
+            logger.debug(
+                'Unable to parse timestamp with "%s" timezone info.',
+                tzinfo.__name__,
+                exc_info=e,
+            )
+    # For numeric values attempt fallback to using fromtimestamp-free method.
+    # From Python's ``datetime.datetime.fromtimestamp`` documentation: "This
+    # may raise ``OverflowError``, if the timestamp is out of the range of
+    # values supported by the platform C localtime() function, and ``OSError``
+    # on localtime() failure. It's common for this to be restricted to years
+    # from 1970 through 2038."
+    try:
+        numeric_value = float(value)
+    except (TypeError, ValueError):
+        pass
+    else:
+        try:
+            for tzinfo in tzinfo_options:
+                return _epoch_seconds_to_datetime(numeric_value, tzinfo=tzinfo)
+        except (OSError, OverflowError) as e:
+            logger.debug(
+                'Unable to parse timestamp using fallback method with "%s" '
+                'timezone info.',
+                tzinfo.__name__,
+                exc_info=e,
+            )
+    raise RuntimeError(
+        'Unable to calculate correct timezone offset for "%s"' % value
+    )
 
 
 def parse_to_aware_datetime(value):
@@ -1218,6 +1263,35 @@ def instance_cache(func):
     return _cache_guard
 
 
+def lru_cache_weakref(*cache_args, **cache_kwargs):
+    """
+    Version of functools.lru_cache that stores a weak reference to ``self``.
+    Serves the same purpose as :py:func:`instance_cache` but uses Python's
+    functools implementation which offers ``max_size`` and ``typed`` properties.
+    lru_cache is a global cache even when used on a method. The cache's
+    reference to ``self`` will prevent garbage collection of the object. This
+    wrapper around functools.lru_cache replaces the reference to ``self`` with
+    a weak reference to not interfere with garbage collection.
+    """
+
+    def wrapper(func):
+        @functools.lru_cache(*cache_args, **cache_kwargs)
+        def func_with_weakref(weakref_to_self, *args, **kwargs):
+            return func(weakref_to_self(), *args, **kwargs)
+
+        @functools.wraps(func)
+        def inner(self, *args, **kwargs):
+            for kwarg_key, kwarg_value in kwargs.items():
+                if isinstance(kwarg_value, list):
+                    kwargs[kwarg_key] = tuple(kwarg_value)
+            return func_with_weakref(weakref.ref(self), *args, **kwargs)
+
+        inner.cache_info = func_with_weakref.cache_info
+        return inner
+
+    return wrapper
+
+
 def switch_host_s3_accelerate(request, operation_name, **kwargs):
     """Switches the current s3 endpoint with an S3 Accelerate endpoint"""
 
@@ -1499,6 +1573,10 @@ class S3RegionRedirectorv2:
             0
         ].status_code in (301, 302, 307)
         is_permanent_redirect = error_code == 'PermanentRedirect'
+        is_opt_in_region_redirect = (
+            error_code == 'IllegalLocationConstraintException'
+            and operation.name != 'CreateBucket'
+        )
         if not any(
             [
                 is_special_head_object,
@@ -1506,6 +1584,7 @@ class S3RegionRedirectorv2:
                 is_permanent_redirect,
                 is_special_head_bucket,
                 is_redirect_status,
+                is_opt_in_region_redirect,
             ]
         ):
             return
@@ -3016,36 +3095,40 @@ class FileWebIdentityTokenLoader(object):
             return token_file.read()
 
 
-class SSOTokenFetcher(object):
-    # The device flow RFC defines the slow down delay to be an additional
-    # 5 seconds:
-    # https://tools.ietf.org/html/draft-ietf-oauth-device-flow-15#section-3.5
-    _SLOW_DOWN_DELAY = 5
-    # The default interval of 5 is also defined in the RFC (see above link)
-    _DEFAULT_INTERVAL = 5
+class BaseSSOTokenFetcher(object):
+    """Base class for SSO token fetchers, for functionality
+    shared between the device and authorization code grant flows.
+    """
     _EXPIRY_WINDOW = 15 * 60
     _CLIENT_REGISTRATION_TYPE = 'public'
-    _GRANT_TYPE = 'urn:ietf:params:oauth:grant-type:device_code'
+    _USER_AGENT_EXTRA = None
 
     def __init__(
-            self, sso_region, client_creator, cache=None,
-            on_pending_authorization=None, time_fetcher=None, sleep=None,
+            self, sso_region, client_creator,
+            parsed_globals, cache=None,
+            on_pending_authorization=None, time_fetcher=None
     ):
         self._sso_region = sso_region
         self._client_creator = client_creator
+        self._parsed_globals = parsed_globals
         self._on_pending_authorization = on_pending_authorization
 
         if time_fetcher is None:
             time_fetcher = self._utc_now
         self._time_fetcher = time_fetcher
 
-        if sleep is None:
-            sleep = time.sleep
-        self._sleep = sleep
-
         if cache is None:
             cache = {}
         self._cache = cache
+
+    def fetch_token(
+        self,
+        start_url,
+        force_refresh,
+        registration_scopes,
+        session_name,
+    ):
+        raise NotImplementedError('Must implement fetch_token()')
 
     def _utc_now(self):
         return datetime.datetime.now(tzutc())
@@ -3060,21 +3143,95 @@ class SSOTokenFetcher(object):
         seconds = total_seconds(end_time - self._time_fetcher())
         return seconds < self._EXPIRY_WINDOW
 
+    def _is_registration_for_auth_code(self, registration):
+        if (
+            'grantTypes' in registration
+            and 'authorization_code' in registration['grantTypes']
+        ):
+            return True
+
+        # Else assume that it's device flow,
+        # since the CLI didn't cache grantTypes previously
+        return False
+
     @CachedProperty
     def _client(self):
         config = botocore.config.Config(
             region_name=self._sso_region,
             signature_version=botocore.UNSIGNED,
+            user_agent_extra=self._USER_AGENT_EXTRA,
         )
-        return self._client_creator('sso-oidc', config=config)
+        return self._client_creator(
+            'sso-oidc',
+            config=config,
+            verify=self._parsed_globals.verify_ssl,
+        )
 
-    def _register_client(self, session_name, scopes):
+    def _generate_client_name(self, session_name):
         if session_name is None:
             # Use a timestamp for the session name for legacy configuration
             timestamp = datetime2timestamp(self._time_fetcher())
             session_name = int(timestamp)
+        return f'botocore-client-{str(session_name)}'
+
+    def _registration_cache_key(self, start_url, session_name, scopes):
+        # Registration is unique based on the following properties to ensure
+        # modifications to the registration do not affect the permissions of
+        # tokens derived for other start URLs.
+        args = {
+            'tool': 'botocore',
+            'startUrl': start_url,
+            'region': self._sso_region,
+            'scopes': scopes,
+            'session_name': session_name,
+        }
+        cache_args = json.dumps(args, sort_keys=True).encode('utf-8')
+        return hashlib.sha1(cache_args).hexdigest()
+
+    def _token_cache_key(self, start_url, session_name):
+        input_str = start_url
+        if session_name is not None:
+            input_str = session_name
+        return hashlib.sha1(input_str.encode('utf-8')).hexdigest()
+
+
+class SSOTokenFetcher(BaseSSOTokenFetcher):
+    """Performs the device grant OAuth2.0 flow"""
+    # The device flow RFC defines the slow-down delay to be an additional
+    # 5 seconds:
+    # https://tools.ietf.org/html/draft-ietf-oauth-device-flow-15#section-3.5
+    _SLOW_DOWN_DELAY = 5
+    # The default interval of 5 is also defined in the RFC (see above link)
+    _DEFAULT_INTERVAL = 5
+    _EXPIRY_WINDOW = 15 * 60
+    _GRANT_TYPE = 'urn:ietf:params:oauth:grant-type:device_code'
+
+    def __init__(
+        self,
+        sso_region,
+        client_creator,
+        parsed_globals,
+        cache=None,
+        on_pending_authorization=None,
+        time_fetcher=None,
+        sleep=None,
+    ):
+        super().__init__(
+            sso_region,
+            client_creator,
+            parsed_globals,
+            cache,
+            on_pending_authorization,
+            time_fetcher,
+        )
+
+        if sleep is None:
+            sleep = time.sleep
+        self._sleep = sleep
+
+    def _register_client(self, session_name, scopes):
         register_kwargs = {
-            'clientName': f'botocore-client-{session_name}',
+            'clientName': self._generate_client_name(session_name),
             'clientType': self._CLIENT_REGISTRATION_TYPE,
         }
         if scopes:
@@ -3091,20 +3248,6 @@ class SSOTokenFetcher(object):
             registration['scopes'] = scopes
         return registration
 
-    def _registration_cache_key(self, start_url, session_name, scopes):
-        # Registration is unique based on the following properties to ensure
-        # modifications to the registration do not affect the permissions of
-        # tokens derived for other start URLs.
-        args = {
-            'tool': 'botocore',
-            'startUrl': start_url,
-            'region': self._sso_region,
-            'scopes': scopes,
-            'session_name': session_name,
-        }
-        cache_args = json.dumps(args, sort_keys=True).encode('utf-8')
-        return hashlib.sha1(cache_args).hexdigest()
-
     def _registration(
         self,
         start_url,
@@ -3119,7 +3262,10 @@ class SSOTokenFetcher(object):
         )
         if not force_refresh and cache_key in self._cache:
             registration = self._cache[cache_key]
-            if not self._is_expired(registration):
+            if (
+                not self._is_expired(registration)
+                and not self._is_registration_for_auth_code(registration)
+            ):
                 return registration
 
         registration = self._register_client(
@@ -3131,7 +3277,7 @@ class SSOTokenFetcher(object):
 
     def _authorize_client(self, start_url, registration):
         # NOTE: The authorization response is not cached. These responses are
-        # short lived (currently only 10 minutes) and can only be exchanged for
+        # short-lived (currently only 10 minutes) and can only be exchanged for
         # a token once. Having multiple clients share this is problematic.
         response = self._client.start_device_authorization(
             clientId=registration['clientId'],
@@ -3220,12 +3366,6 @@ class SSOTokenFetcher(object):
             raise PendingAuthorizationExpiredError()
         return interval, None
 
-    def _token_cache_key(self, start_url, session_name):
-        input_str = start_url
-        if session_name is not None:
-            input_str = session_name
-        return hashlib.sha1(input_str.encode('utf-8')).hexdigest()
-
     def _token(
         self,
         start_url,
@@ -3262,6 +3402,248 @@ class SSOTokenFetcher(object):
             registration_scopes,
             session_name,
         )
+
+
+class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
+    """Performs the authorization code grant with PKCE OAuth2.0 flow"""
+    _AUTH_GRANT_TYPES = ('authorization_code', 'refresh_token')
+    _AUTH_GRANT_DEFAULT_SCOPE = 'sso:account:access'
+    _USER_AGENT_EXTRA = 'md/sso#auth'
+
+    def __init__(
+        self,
+        sso_region,
+        client_creator,
+        parsed_globals,
+        auth_code_fetcher,
+        cache=None,
+        on_pending_authorization=None,
+        time_fetcher=None,
+    ):
+        super().__init__(
+            sso_region,
+            client_creator,
+            parsed_globals,
+            cache,
+            on_pending_authorization,
+            time_fetcher,
+        )
+
+        self._auth_code_fetcher = auth_code_fetcher
+
+        # Generate the PKCE pair
+        self.code_verifier = ''.join(
+            secrets.choice(
+                string.ascii_letters + string.digits + '-._~'
+            )
+            for _ in range(64)
+        )
+        self.code_challenge = base64.urlsafe_b64encode(
+            hashlib.sha256(self.code_verifier.encode()).digest()
+        ).decode()
+
+    def _register_client(self, session_name, scopes, redirect_uri, issuer_url):
+        register_kwargs = {
+            'clientName': self._generate_client_name(session_name),
+            'clientType': self._CLIENT_REGISTRATION_TYPE,
+            'grantTypes': self._AUTH_GRANT_TYPES,
+            'redirectUris': [redirect_uri],
+            'issuerUrl': issuer_url,
+            'scopes': scopes or [self._AUTH_GRANT_DEFAULT_SCOPE],
+        }
+
+        response = self._client.register_client(**register_kwargs)
+
+        expires_at = response['clientSecretExpiresAt']
+        expires_at = datetime.datetime.fromtimestamp(expires_at, tzutc())
+        registration = {
+            'clientId': response['clientId'],
+            'clientSecret': response['clientSecret'],
+            'expiresAt': expires_at,
+            'scopes': register_kwargs['scopes'],
+            'grantTypes': register_kwargs['grantTypes']
+        }
+
+        return registration
+
+    def _registration(
+        self,
+        start_url,
+        session_name,
+        scopes,
+        force_refresh=False,
+    ):
+        cache_key = self._registration_cache_key(
+            start_url,
+            session_name,
+            scopes,
+        )
+        if not force_refresh and cache_key in self._cache:
+            registration = self._cache[cache_key]
+            if (
+                not self._is_expired(registration)
+                and self._is_registration_for_auth_code(registration)
+            ):
+                return registration
+
+        registration = self._register_client(
+            session_name,
+            scopes,
+            self._auth_code_fetcher.redirect_uri_without_port(),
+            start_url
+        )
+        self._cache[cache_key] = registration
+        return registration
+
+    def _extract_resolved_endpoint(self, params, **kwargs):
+        """Event handler for before-call that will extract the resolved endpoint
+        for a given request without actually running it
+        """
+        # This will contain any path and query params specific to
+        # the operation/input, so extract just the scheme and hostname
+        if params['url']:
+            parsed = urlparse(params['url'])
+            self._base_endpoint = f'{parsed.scheme}://{parsed.netloc}'
+
+        # Return a tuple containing the "response" to short-circuit the request
+        return botocore.awsrequest.AWSResponse(None, 200, {}, None), {}
+
+    def _get_base_authorization_uri(self):
+        """Simulates an SSO-OIDC request so that we can extract the "base"
+        endpoint for the current client to use for the un-modeled Authorize
+        operation
+        """
+        self._client.meta.events.register(
+            'before-call', self._extract_resolved_endpoint
+        )
+        self._client.register_client(
+            clientName='temp',
+            clientType='public'
+        )
+        self._client.meta.events.unregister(
+            'before-call', self._extract_resolved_endpoint
+        )
+
+        return self._base_endpoint
+
+    def _get_authorization_uri(
+        self,
+        client_id,
+        registration_scopes,
+        expected_state
+    ):
+
+        query_params = {
+            'response_type': 'code',
+            'client_id': client_id,
+            'redirect_uri': self._auth_code_fetcher.redirect_uri_with_port(),
+            'state': expected_state,
+            'code_challenge_method': 'S256'
+            # Don't want to encode code_challenge again, so we append below
+        }
+
+        # For the query param, scopes must be space separated before encoding
+        if registration_scopes:
+            query_params['scopes'] = " ".join(registration_scopes)
+        else:
+            query_params['scopes'] = self._AUTH_GRANT_DEFAULT_SCOPE
+
+        return (
+            f'{self._get_base_authorization_uri()}/authorize?'
+            f'{percent_encode_sequence(query_params)}'
+            f'&code_challenge={self.code_challenge[:-1]}'  # trim final '='
+        )
+
+    def _get_new_token(self, start_url, session_name, registration_scopes):
+        registration = self._registration(
+            start_url,
+            session_name,
+            registration_scopes,
+        )
+
+        expected_state = uuid.uuid4()
+
+        authorization_uri = self._get_authorization_uri(
+            registration['clientId'],
+            registration_scopes,
+            expected_state
+        )
+
+        # Even though there's just one URI, this matches the inputs
+        # for the device code flow so that we can reuse the browser handlers
+        authorization_args = {
+            'verificationUri': authorization_uri,
+            'verificationUriComplete': authorization_uri,
+            'userCode': None
+        }
+
+        # Open/display the link, then block until the redirect uri is hit and
+        # the auth code is retrieved
+        self._on_pending_authorization(**authorization_args)
+        auth_code, state = self._auth_code_fetcher.get_auth_code_and_state()
+
+        if auth_code is None:
+            raise AuthorizationCodeLoadError(
+                error_msg='Failed to retrieve an authorization code.'
+            )
+
+        # The state we get back from the redirect is just a string, so
+        # cast our original UUID before comparing
+        if state != str(expected_state):
+            raise AuthorizationCodeLoadError(
+                error_msg='State parameter does not match expected value.'
+            )
+
+        return self._create_token_(start_url, registration, auth_code)
+
+    def _create_token_(self, start_url, registration, auth_code):
+        try:
+            response = self._client.create_token(
+                grantType='authorization_code',
+                clientId=registration['clientId'],
+                clientSecret=registration['clientSecret'],
+                redirectUri=self._auth_code_fetcher.redirect_uri_with_port(),
+                codeVerifier=self.code_verifier,
+                code=auth_code
+            )
+            expires_in = datetime.timedelta(seconds=response['expiresIn'])
+            token = {
+                'startUrl': start_url,
+                'region': self._sso_region,
+                'accessToken': response['accessToken'],
+                'expiresAt': self._time_fetcher() + expires_in,
+                # Cache the registration alongside the token
+                'clientId': registration['clientId'],
+                'clientSecret': registration['clientSecret'],
+                'registrationExpiresAt': registration['expiresAt'],
+            }
+            if 'refreshToken' in response:
+                token['refreshToken'] = response['refreshToken']
+            return token
+        except self._client.exceptions.ExpiredTokenException:
+            raise PendingAuthorizationExpiredError()
+
+    def fetch_token(
+        self,
+        start_url,
+        force_refresh=False,
+        registration_scopes=None,
+        session_name=None,
+    ):
+        cache_key = self._token_cache_key(start_url, session_name)
+        # Only obey the token cache if we are not forcing a refresh.
+        if not force_refresh and cache_key in self._cache:
+            token = self._cache[cache_key]
+            if not self._is_expired(token):
+                return token
+
+        token = self._get_new_token(
+            start_url,
+            session_name,
+            registration_scopes
+        )
+        self._cache[cache_key] = token
+        return token
 
 
 class SSOTokenLoader(object):
@@ -3549,6 +3931,7 @@ CLIENT_NAME_TO_HYPHENIZED_SERVICE_ID_OVERRIDES = {
     'discovery': 'application-discovery-service',
     'dms': 'database-migration-service',
     'ds': 'directory-service',
+    'ds-data': 'directory-service-data',
     'dynamodbstreams': 'dynamodb-streams',
     'elasticbeanstalk': 'elastic-beanstalk',
     'elastictranscoder': 'elastic-transcoder',
@@ -3559,8 +3942,6 @@ CLIENT_NAME_TO_HYPHENIZED_SERVICE_ID_OVERRIDES = {
     'globalaccelerator': 'global-accelerator',
     'iot-data': 'iot-data-plane',
     'iot-jobs-data': 'iot-jobs-data-plane',
-    'iot1click-devices': 'iot-1click-devices-service',
-    'iot1click-projects': 'iot-1click-projects',
     'iotevents-data': 'iot-events-data',
     'iotevents': 'iot-events',
     'iotwireless': 'iot-wireless',

@@ -24,6 +24,7 @@ For any operation that can be paginated, we will:
 
 """
 import logging
+import sys
 from functools import partial
 
 from botocore import xform_name
@@ -32,7 +33,7 @@ from botocore import model
 
 from awscli.arguments import BaseCLIArgument
 from awscli.customizations.exceptions import ParamValidationError
-
+from awscli.customizations.utils import uni_print
 
 logger = logging.getLogger(__name__)
 
@@ -313,6 +314,11 @@ class PageArgument(BaseCLIArgument):
         self._parse_type = parse_type
         self._required = False
 
+    def _emit_non_positive_max_items_warning(self):
+        uni_print(
+            "warning: Non-positive values for --max-items may result in undefined behavior.\n",
+            sys.stderr)
+
     @property
     def cli_name(self):
         return '--' + self._name
@@ -339,6 +345,8 @@ class PageArgument(BaseCLIArgument):
 
     def add_to_params(self, parameters, value):
         if value is not None:
+            if self._serialized_name == 'MaxItems' and int(value) <= 0:
+                self._emit_non_positive_max_items_warning()
             pagination_config = parameters.get('PaginationConfig', {})
             pagination_config[self._serialized_name] = value
             parameters['PaginationConfig'] = pagination_config

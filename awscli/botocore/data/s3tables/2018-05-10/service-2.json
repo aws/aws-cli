@@ -1,0 +1,1978 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2018-05-10",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"s3tables",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"Amazon S3 Tables",
+    "serviceId":"S3Tables",
+    "signatureVersion":"v4",
+    "signingName":"s3tables",
+    "uid":"s3tables-2018-05-10"
+  },
+  "operations":{
+    "CreateNamespace":{
+      "name":"CreateNamespace",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/namespaces/{tableBucketARN}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateNamespaceRequest"},
+      "output":{"shape":"CreateNamespaceResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates a namespace. A namespace is a logical grouping of tables within your table bucket, which you can use to organize tables. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-namespace.html\">Table namespaces</a>. </p>"
+    },
+    "CreateTable":{
+      "name":"CreateTable",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateTableRequest"},
+      "output":{"shape":"CreateTableResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates a new table associated with the given namespace in a table bucket.</p>"
+    },
+    "CreateTableBucket":{
+      "name":"CreateTableBucket",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/buckets",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateTableBucketRequest"},
+      "output":{"shape":"CreateTableBucketResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates a table bucket.</p>"
+    },
+    "DeleteNamespace":{
+      "name":"DeleteNamespace",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/namespaces/{tableBucketARN}/{namespace}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteNamespaceRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes a namespace.</p>",
+      "idempotent":true
+    },
+    "DeleteTable":{
+      "name":"DeleteTable",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTableRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes a table.</p>",
+      "idempotent":true
+    },
+    "DeleteTableBucket":{
+      "name":"DeleteTableBucket",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/buckets/{tableBucketARN}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTableBucketRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes a table bucket.</p>",
+      "idempotent":true
+    },
+    "DeleteTableBucketPolicy":{
+      "name":"DeleteTableBucketPolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/buckets/{tableBucketARN}/policy",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTableBucketPolicyRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes a table bucket policy.</p>",
+      "idempotent":true
+    },
+    "DeleteTablePolicy":{
+      "name":"DeleteTablePolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/policy",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTablePolicyRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes a table policy.</p>",
+      "idempotent":true
+    },
+    "GetNamespace":{
+      "name":"GetNamespace",
+      "http":{
+        "method":"GET",
+        "requestUri":"/namespaces/{tableBucketARN}/{namespace}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetNamespaceRequest"},
+      "output":{"shape":"GetNamespaceResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets details about a namespace.</p>"
+    },
+    "GetTable":{
+      "name":"GetTable",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableRequest"},
+      "output":{"shape":"GetTableResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets details about a table.</p>"
+    },
+    "GetTableBucket":{
+      "name":"GetTableBucket",
+      "http":{
+        "method":"GET",
+        "requestUri":"/buckets/{tableBucketARN}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableBucketRequest"},
+      "output":{"shape":"GetTableBucketResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets details on a table bucket.</p>"
+    },
+    "GetTableBucketMaintenanceConfiguration":{
+      "name":"GetTableBucketMaintenanceConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/buckets/{tableBucketARN}/maintenance",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableBucketMaintenanceConfigurationRequest"},
+      "output":{"shape":"GetTableBucketMaintenanceConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets details about a maintenance configuration for a given table bucket.</p>"
+    },
+    "GetTableBucketPolicy":{
+      "name":"GetTableBucketPolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/buckets/{tableBucketARN}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableBucketPolicyRequest"},
+      "output":{"shape":"GetTableBucketPolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets details about a table bucket policy.</p>"
+    },
+    "GetTableMaintenanceConfiguration":{
+      "name":"GetTableMaintenanceConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/maintenance",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableMaintenanceConfigurationRequest"},
+      "output":{"shape":"GetTableMaintenanceConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets details about the maintenance configuration of a table.</p>"
+    },
+    "GetTableMaintenanceJobStatus":{
+      "name":"GetTableMaintenanceJobStatus",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/maintenance-job-status",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableMaintenanceJobStatusRequest"},
+      "output":{"shape":"GetTableMaintenanceJobStatusResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets the status of a maintenance job for a table.</p>"
+    },
+    "GetTableMetadataLocation":{
+      "name":"GetTableMetadataLocation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/metadata-location",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableMetadataLocationRequest"},
+      "output":{"shape":"GetTableMetadataLocationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets the location of the table metadata.</p>"
+    },
+    "GetTablePolicy":{
+      "name":"GetTablePolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTablePolicyRequest"},
+      "output":{"shape":"GetTablePolicyResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets details about a table policy.</p>"
+    },
+    "ListNamespaces":{
+      "name":"ListNamespaces",
+      "http":{
+        "method":"GET",
+        "requestUri":"/namespaces/{tableBucketARN}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNamespacesRequest"},
+      "output":{"shape":"ListNamespacesResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Lists the namespaces within a table bucket.</p>"
+    },
+    "ListTableBuckets":{
+      "name":"ListTableBuckets",
+      "http":{
+        "method":"GET",
+        "requestUri":"/buckets",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTableBucketsRequest"},
+      "output":{"shape":"ListTableBucketsResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Lists table buckets for your account.</p>"
+    },
+    "ListTables":{
+      "name":"ListTables",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tables/{tableBucketARN}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTablesRequest"},
+      "output":{"shape":"ListTablesResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>List tables in the given table bucket.</p>"
+    },
+    "PutTableBucketMaintenanceConfiguration":{
+      "name":"PutTableBucketMaintenanceConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/buckets/{tableBucketARN}/maintenance/{type}",
+        "responseCode":204
+      },
+      "input":{"shape":"PutTableBucketMaintenanceConfigurationRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates a new maintenance configuration or replaces an existing maintenance configuration for a table bucket.</p>"
+    },
+    "PutTableBucketPolicy":{
+      "name":"PutTableBucketPolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/buckets/{tableBucketARN}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"PutTableBucketPolicyRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates a new maintenance configuration or replaces an existing table bucket policy for a table bucket. </p>",
+      "idempotent":true
+    },
+    "PutTableMaintenanceConfiguration":{
+      "name":"PutTableMaintenanceConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/maintenance/{type}",
+        "responseCode":204
+      },
+      "input":{"shape":"PutTableMaintenanceConfigurationRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates a new maintenance configuration or replaces an existing maintenance configuration for a table.</p>"
+    },
+    "PutTablePolicy":{
+      "name":"PutTablePolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/policy",
+        "responseCode":200
+      },
+      "input":{"shape":"PutTablePolicyRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates a new maintenance configuration or replaces an existing table policy for a table. </p>",
+      "idempotent":true
+    },
+    "RenameTable":{
+      "name":"RenameTable",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/rename",
+        "responseCode":204
+      },
+      "input":{"shape":"RenameTableRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Renames a table or a namespace.</p>"
+    },
+    "UpdateTableMetadataLocation":{
+      "name":"UpdateTableMetadataLocation",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/tables/{tableBucketARN}/{namespace}/{name}/metadata-location",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateTableMetadataLocationRequest"},
+      "output":{"shape":"UpdateTableMetadataLocationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Updates the metadata location for a table.</p>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The action cannot be performed because you do not have the required permission.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "AccountId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9].*"
+    },
+    "BadRequestException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request is invalid or malformed.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request failed because there is a conflict with a previous write. You can retry the request.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateNamespaceRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket to create the namespace in.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"CreateNamespaceRequestNamespaceList",
+          "documentation":"<p>A name for the namespace.</p>"
+        }
+      }
+    },
+    "CreateNamespaceRequestNamespaceList":{
+      "type":"list",
+      "member":{"shape":"NamespaceName"},
+      "max":1,
+      "min":1
+    },
+    "CreateNamespaceResponse":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket the namespace was created in.</p>"
+        },
+        "namespace":{
+          "shape":"NamespaceList",
+          "documentation":"<p>The name of the namespace.</p>"
+        }
+      }
+    },
+    "CreateTableBucketRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"TableBucketName",
+          "documentation":"<p>The name for the table bucket.</p>"
+        }
+      }
+    },
+    "CreateTableBucketResponse":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>"
+        }
+      }
+    },
+    "CreateTableRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name",
+        "format"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket to create the table in.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace to associated with the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name for the table.</p>"
+        },
+        "format":{
+          "shape":"OpenTableFormat",
+          "documentation":"<p>The format for the table.</p>"
+        }
+      }
+    },
+    "CreateTableResponse":{
+      "type":"structure",
+      "required":[
+        "tableARN",
+        "versionToken"
+      ],
+      "members":{
+        "tableARN":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>"
+        },
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>The version token of the table.</p>"
+        }
+      }
+    },
+    "DeleteNamespaceRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket associated with the namespace.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The name of the namespace.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        }
+      }
+    },
+    "DeleteTableBucketPolicyRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "DeleteTableBucketRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "DeleteTablePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the table bucket that contains the table.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace associated with the table. </p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The table name.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "DeleteTableRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket that contains the table.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace associated with the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>The version token of the table.</p>",
+          "location":"querystring",
+          "locationName":"versionToken"
+        }
+      }
+    },
+    "ErrorMessage":{"type":"string"},
+    "ForbiddenException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The caller isn't authorized to make the request.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "GetNamespaceRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The name of the namespace.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        }
+      }
+    },
+    "GetNamespaceResponse":{
+      "type":"structure",
+      "required":[
+        "namespace",
+        "createdAt",
+        "createdBy",
+        "ownerAccountId"
+      ],
+      "members":{
+        "namespace":{
+          "shape":"NamespaceList",
+          "documentation":"<p>The name of the namespace.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the namespace was created at.</p>"
+        },
+        "createdBy":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that created the namespace.</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that owns the namespcace.</p>"
+        }
+      }
+    },
+    "GetTableBucketMaintenanceConfigurationRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket associated with the maintenance configuration.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "GetTableBucketMaintenanceConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "configuration"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket associated with the maintenance configuration.</p>"
+        },
+        "configuration":{
+          "shape":"TableBucketMaintenanceConfiguration",
+          "documentation":"<p>Details about the maintenance configuration for the table bucket.</p>"
+        }
+      }
+    },
+    "GetTableBucketPolicyRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "GetTableBucketPolicyResponse":{
+      "type":"structure",
+      "required":["resourcePolicy"],
+      "members":{
+        "resourcePolicy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The name of the resource policy.</p>"
+        }
+      }
+    },
+    "GetTableBucketRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "GetTableBucketResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "name",
+        "ownerAccountId",
+        "createdAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>"
+        },
+        "name":{
+          "shape":"TableBucketName",
+          "documentation":"<p>The name of the table bucket</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that owns the table bucket.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the table bucket was created.</p>"
+        }
+      }
+    },
+    "GetTableMaintenanceConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace associated with the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetTableMaintenanceConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "tableARN",
+        "configuration"
+      ],
+      "members":{
+        "tableARN":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>"
+        },
+        "configuration":{
+          "shape":"TableMaintenanceConfiguration",
+          "documentation":"<p>Details about the maintenance configuration for the table bucket.</p>"
+        }
+      }
+    },
+    "GetTableMaintenanceJobStatusRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The name of the namespace the table is associated with. <pre><code>&lt;/p&gt; </code></pre>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the maintenance job.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetTableMaintenanceJobStatusResponse":{
+      "type":"structure",
+      "required":[
+        "tableARN",
+        "status"
+      ],
+      "members":{
+        "tableARN":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>"
+        },
+        "status":{
+          "shape":"TableMaintenanceJobStatus",
+          "documentation":"<p>The status of the maintenance job.</p>"
+        }
+      }
+    },
+    "GetTableMetadataLocationRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace of the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetTableMetadataLocationResponse":{
+      "type":"structure",
+      "required":[
+        "versionToken",
+        "warehouseLocation"
+      ],
+      "members":{
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>The version token.</p>"
+        },
+        "metadataLocation":{
+          "shape":"MetadataLocation",
+          "documentation":"<p>The metadata location.</p>"
+        },
+        "warehouseLocation":{
+          "shape":"WarehouseLocation",
+          "documentation":"<p>The warehouse location.</p>"
+        }
+      }
+    },
+    "GetTablePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the table bucket that contains the table.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace associated with the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetTablePolicyResponse":{
+      "type":"structure",
+      "required":["resourcePolicy"],
+      "members":{
+        "resourcePolicy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The name of the resource policy.</p>"
+        }
+      }
+    },
+    "GetTableRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket associated with the table.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The name of the namespace the table is associated with.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        }
+      }
+    },
+    "GetTableResponse":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type",
+        "tableARN",
+        "namespace",
+        "versionToken",
+        "warehouseLocation",
+        "createdAt",
+        "createdBy",
+        "modifiedAt",
+        "modifiedBy",
+        "ownerAccountId",
+        "format"
+      ],
+      "members":{
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>"
+        },
+        "type":{
+          "shape":"TableType",
+          "documentation":"<p>The type of the table.</p>"
+        },
+        "tableARN":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>"
+        },
+        "namespace":{
+          "shape":"NamespaceList",
+          "documentation":"<p>The namespace associated with the table.</p>"
+        },
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>The version token of the table.</p>"
+        },
+        "metadataLocation":{
+          "shape":"MetadataLocation",
+          "documentation":"<p>The metadata location of the table.</p>"
+        },
+        "warehouseLocation":{
+          "shape":"WarehouseLocation",
+          "documentation":"<p>The warehouse location of the table.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the table bucket was created at.</p>"
+        },
+        "createdBy":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that created the table.</p>"
+        },
+        "managedByService":{
+          "shape":"String",
+          "documentation":"<p>The service that manages the table.</p>"
+        },
+        "modifiedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the table was last modified on.</p>"
+        },
+        "modifiedBy":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that last modified the table.</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that owns the table.</p>"
+        },
+        "format":{
+          "shape":"OpenTableFormat",
+          "documentation":"<p>The format of the table.</p>"
+        }
+      }
+    },
+    "IcebergCompactionSettings":{
+      "type":"structure",
+      "members":{
+        "targetFileSizeMB":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The target file size for the table in MB.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the compaction settings for an Iceberg table. </p>"
+    },
+    "IcebergSnapshotManagementSettings":{
+      "type":"structure",
+      "members":{
+        "minSnapshotsToKeep":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The minimum number of snapshots to keep.</p>"
+        },
+        "maxSnapshotAgeHours":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The maximum age of a snapshot before it can be expired.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the snapshot management settings for an Iceberg table. The oldest snapshot expires when its age exceeds the <code>maxSnapshotAgeHours</code> and the total number of snapshots exceeds the value for the minimum number of snapshots to keep <code>minSnapshotsToKeep</code>. </p>"
+    },
+    "IcebergUnreferencedFileRemovalSettings":{
+      "type":"structure",
+      "members":{
+        "unreferencedDays":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The number of days an object has to be unreferenced before it is marked as non-current. <pre><code> &lt;/p&gt; </code></pre>"
+        },
+        "nonCurrentDays":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The number of days an object has to be non-current before it is deleted. <pre><code>&lt;/p&gt; </code></pre>"
+        }
+      },
+      "documentation":"<p>Contains details about the unreferenced file removal settings for an Iceberg table bucket. </p>"
+    },
+    "InternalServerErrorException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request failed due to an internal server error.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "JobStatus":{
+      "type":"string",
+      "enum":[
+        "Not_Yet_Run",
+        "Successful",
+        "Failed",
+        "Disabled"
+      ]
+    },
+    "ListNamespacesLimit":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListNamespacesRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "prefix":{
+          "shape":"ListNamespacesRequestPrefixString",
+          "documentation":"<p>The prefix of the namespaces.</p>",
+          "location":"querystring",
+          "locationName":"prefix"
+        },
+        "continuationToken":{
+          "shape":"NextToken",
+          "documentation":"<p> <code>ContinuationToken</code> indicates to Amazon S3 that the list is being continued on this bucket with a token. <code>ContinuationToken</code> is obfuscated and is not a real key. You can use this <code>ContinuationToken</code> for pagination of the list results.</p>",
+          "location":"querystring",
+          "locationName":"continuationToken"
+        },
+        "maxNamespaces":{
+          "shape":"ListNamespacesLimit",
+          "documentation":"<p>The maximum number of namespaces to return in the list.</p>",
+          "location":"querystring",
+          "locationName":"maxNamespaces"
+        }
+      }
+    },
+    "ListNamespacesRequestPrefixString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "ListNamespacesResponse":{
+      "type":"structure",
+      "required":["namespaces"],
+      "members":{
+        "namespaces":{
+          "shape":"NamespaceSummaryList",
+          "documentation":"<p>A list of namespaces.</p>"
+        },
+        "continuationToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>ContinuationToken</code> for pagination of the list results.</p>"
+        }
+      }
+    },
+    "ListTableBucketsLimit":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListTableBucketsRequest":{
+      "type":"structure",
+      "members":{
+        "prefix":{
+          "shape":"ListTableBucketsRequestPrefixString",
+          "documentation":"<p>The prefix of the table buckets.</p>",
+          "location":"querystring",
+          "locationName":"prefix"
+        },
+        "continuationToken":{
+          "shape":"NextToken",
+          "documentation":"<p> <code>ContinuationToken</code> indicates to Amazon S3 that the list is being continued on this bucket with a token. <code>ContinuationToken</code> is obfuscated and is not a real key. You can use this <code>ContinuationToken</code> for pagination of the list results.</p>",
+          "location":"querystring",
+          "locationName":"continuationToken"
+        },
+        "maxBuckets":{
+          "shape":"ListTableBucketsLimit",
+          "documentation":"<p>The maximum number of table buckets to return in the list.</p>",
+          "location":"querystring",
+          "locationName":"maxBuckets"
+        }
+      }
+    },
+    "ListTableBucketsRequestPrefixString":{
+      "type":"string",
+      "max":63,
+      "min":1
+    },
+    "ListTableBucketsResponse":{
+      "type":"structure",
+      "required":["tableBuckets"],
+      "members":{
+        "tableBuckets":{
+          "shape":"TableBucketSummaryList",
+          "documentation":"<p>A list of table buckets.</p>"
+        },
+        "continuationToken":{
+          "shape":"NextToken",
+          "documentation":"<p>You can use this <code>ContinuationToken</code> for pagination of the list results.</p>"
+        }
+      }
+    },
+    "ListTablesLimit":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListTablesRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon resource Number (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace of the tables.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
+        },
+        "prefix":{
+          "shape":"ListTablesRequestPrefixString",
+          "documentation":"<p>The prefix of the tables.</p>",
+          "location":"querystring",
+          "locationName":"prefix"
+        },
+        "continuationToken":{
+          "shape":"NextToken",
+          "documentation":"<p> <code>ContinuationToken</code> indicates to Amazon S3 that the list is being continued on this bucket with a token. <code>ContinuationToken</code> is obfuscated and is not a real key. You can use this <code>ContinuationToken</code> for pagination of the list results.</p>",
+          "location":"querystring",
+          "locationName":"continuationToken"
+        },
+        "maxTables":{
+          "shape":"ListTablesLimit",
+          "documentation":"<p>The maximum number of tables to return.</p>",
+          "location":"querystring",
+          "locationName":"maxTables"
+        }
+      }
+    },
+    "ListTablesRequestPrefixString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "ListTablesResponse":{
+      "type":"structure",
+      "required":["tables"],
+      "members":{
+        "tables":{
+          "shape":"TableSummaryList",
+          "documentation":"<p>A list of tables.</p>"
+        },
+        "continuationToken":{
+          "shape":"NextToken",
+          "documentation":"<p>You can use this <code>ContinuationToken</code> for pagination of the list results.</p>"
+        }
+      }
+    },
+    "MaintenanceStatus":{
+      "type":"string",
+      "enum":[
+        "enabled",
+        "disabled"
+      ]
+    },
+    "MetadataLocation":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "NamespaceList":{
+      "type":"list",
+      "member":{"shape":"NamespaceName"}
+    },
+    "NamespaceName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[0-9a-z_]*"
+    },
+    "NamespaceSummary":{
+      "type":"structure",
+      "required":[
+        "namespace",
+        "createdAt",
+        "createdBy",
+        "ownerAccountId"
+      ],
+      "members":{
+        "namespace":{
+          "shape":"NamespaceList",
+          "documentation":"<p>The name of the namespace.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the namespace was created at.</p>"
+        },
+        "createdBy":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that created the namespace.</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that owns the namespace.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a namespace.</p>"
+    },
+    "NamespaceSummaryList":{
+      "type":"list",
+      "member":{"shape":"NamespaceSummary"}
+    },
+    "NextToken":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "NotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The request was rejected because the specified resource could not be found.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "OpenTableFormat":{
+      "type":"string",
+      "enum":["ICEBERG"]
+    },
+    "PositiveInteger":{
+      "type":"integer",
+      "box":true,
+      "max":2147483647,
+      "min":1
+    },
+    "PutTableBucketMaintenanceConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "type",
+        "value"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket associated with the maintenance configuration.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "type":{
+          "shape":"TableBucketMaintenanceType",
+          "documentation":"<p>The type of the maintenance configuration.</p>",
+          "location":"uri",
+          "locationName":"type"
+        },
+        "value":{
+          "shape":"TableBucketMaintenanceConfigurationValue",
+          "documentation":"<p>Defines the values of the maintenance configuration for the table bucket.</p>"
+        }
+      }
+    },
+    "PutTableBucketPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "resourcePolicy"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "resourcePolicy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The name of the resource policy.</p>"
+        }
+      }
+    },
+    "PutTableMaintenanceConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name",
+        "type",
+        "value"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table associated with the maintenance configuration.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace of the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the maintenance configuration.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "type":{
+          "shape":"TableMaintenanceType",
+          "documentation":"<p>The type of the maintenance configuration.</p>",
+          "location":"uri",
+          "locationName":"type"
+        },
+        "value":{
+          "shape":"TableMaintenanceConfigurationValue",
+          "documentation":"<p>Defines the values of the maintenance configuration for the table.</p>"
+        }
+      }
+    },
+    "PutTablePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name",
+        "resourcePolicy"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the table bucket that contains the table.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace associated with the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "resourcePolicy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The name of the resource policy.</p>"
+        }
+      }
+    },
+    "RenameTableRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket. </p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace associated with the table. </p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The current name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "newNamespaceName":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The new name for the namespace.</p>"
+        },
+        "newName":{
+          "shape":"TableName",
+          "documentation":"<p>The new name for the table.</p>"
+        },
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>The version token of the table.</p>"
+        }
+      }
+    },
+    "ResourcePolicy":{
+      "type":"string",
+      "max":20480,
+      "min":1
+    },
+    "String":{"type":"string"},
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "TableARN":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:bucket/[a-z0-9_-]{3,63}/table/[a-zA-Z0-9-_]{1,255})"
+    },
+    "TableBucketARN":{
+      "type":"string",
+      "pattern":"(arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:bucket/[a-z0-9_-]{3,63})"
+    },
+    "TableBucketMaintenanceConfiguration":{
+      "type":"map",
+      "key":{"shape":"TableBucketMaintenanceType"},
+      "value":{"shape":"TableBucketMaintenanceConfigurationValue"}
+    },
+    "TableBucketMaintenanceConfigurationValue":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"MaintenanceStatus",
+          "documentation":"<p>The status of the maintenance configuration.</p>"
+        },
+        "settings":{
+          "shape":"TableBucketMaintenanceSettings",
+          "documentation":"<p>Contains details about the settings of the maintenance configuration.</p>"
+        }
+      },
+      "documentation":"<p>Details about the values that define the maintenance configuration for a table bucket.</p>"
+    },
+    "TableBucketMaintenanceSettings":{
+      "type":"structure",
+      "members":{
+        "icebergUnreferencedFileRemoval":{
+          "shape":"IcebergUnreferencedFileRemovalSettings",
+          "documentation":"<p>The unreferenced file removal settings for the table bucket.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the maintenance settings for the table bucket.</p>",
+      "union":true
+    },
+    "TableBucketMaintenanceType":{
+      "type":"string",
+      "enum":["icebergUnreferencedFileRemoval"]
+    },
+    "TableBucketName":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":"[0-9a-z-]*"
+    },
+    "TableBucketSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "name",
+        "ownerAccountId",
+        "createdAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the table bucket.</p>"
+        },
+        "name":{
+          "shape":"TableBucketName",
+          "documentation":"<p>The name of the table bucket.</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the account that owns the table bucket.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the table bucket was created at.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a table bucket.</p>"
+    },
+    "TableBucketSummaryList":{
+      "type":"list",
+      "member":{"shape":"TableBucketSummary"}
+    },
+    "TableMaintenanceConfiguration":{
+      "type":"map",
+      "key":{"shape":"TableMaintenanceType"},
+      "value":{"shape":"TableMaintenanceConfigurationValue"}
+    },
+    "TableMaintenanceConfigurationValue":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"MaintenanceStatus",
+          "documentation":"<p>The status of the maintenance configuration.</p>"
+        },
+        "settings":{
+          "shape":"TableMaintenanceSettings",
+          "documentation":"<p>Contains details about the settings for the maintenance configuration.</p>"
+        }
+      },
+      "documentation":"<p>Contains the values that define a maintenance configuration for a table.</p>"
+    },
+    "TableMaintenanceJobStatus":{
+      "type":"map",
+      "key":{"shape":"TableMaintenanceJobType"},
+      "value":{"shape":"TableMaintenanceJobStatusValue"}
+    },
+    "TableMaintenanceJobStatusValue":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>The status of the job.</p>"
+        },
+        "lastRunTimestamp":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time that the maintenance job was last run.</p>"
+        },
+        "failureMessage":{
+          "shape":"String",
+          "documentation":"<p>The failure message of a failed job.</p>"
+        }
+      },
+      "documentation":"<p>Details about the status of a maintenance job.</p>"
+    },
+    "TableMaintenanceJobType":{
+      "type":"string",
+      "enum":[
+        "icebergCompaction",
+        "icebergSnapshotManagement",
+        "icebergUnreferencedFileRemoval"
+      ]
+    },
+    "TableMaintenanceSettings":{
+      "type":"structure",
+      "members":{
+        "icebergCompaction":{
+          "shape":"IcebergCompactionSettings",
+          "documentation":"<p>Contains details about the Iceberg compaction settings for the table.</p>"
+        },
+        "icebergSnapshotManagement":{
+          "shape":"IcebergSnapshotManagementSettings",
+          "documentation":"<p>Contains details about the Iceberg snapshot management settings for the table.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about maintenance settings for the table.</p>",
+      "union":true
+    },
+    "TableMaintenanceType":{
+      "type":"string",
+      "enum":[
+        "icebergCompaction",
+        "icebergSnapshotManagement"
+      ]
+    },
+    "TableName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[0-9a-z_]*"
+    },
+    "TableSummary":{
+      "type":"structure",
+      "required":[
+        "namespace",
+        "name",
+        "type",
+        "tableARN",
+        "createdAt",
+        "modifiedAt"
+      ],
+      "members":{
+        "namespace":{
+          "shape":"NamespaceList",
+          "documentation":"<p>The name of the namespace.</p>"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>"
+        },
+        "type":{
+          "shape":"TableType",
+          "documentation":"<p>The type of the table.</p>"
+        },
+        "tableARN":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the table.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the table was created at.</p>"
+        },
+        "modifiedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the table was last modified at.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a table.</p>"
+    },
+    "TableSummaryList":{
+      "type":"list",
+      "member":{"shape":"TableSummary"}
+    },
+    "TableType":{
+      "type":"string",
+      "enum":[
+        "customer",
+        "aws"
+      ]
+    },
+    "TooManyRequestsException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The limit on the number of requests per second was exceeded.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "UpdateTableMetadataLocationRequest":{
+      "type":"structure",
+      "required":[
+        "tableBucketARN",
+        "namespace",
+        "name",
+        "versionToken",
+        "metadataLocation"
+      ],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket. </p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        },
+        "namespace":{
+          "shape":"NamespaceName",
+          "documentation":"<p>The namespace of the table.</p>",
+          "location":"uri",
+          "locationName":"namespace"
+        },
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>The version token of the table. </p>"
+        },
+        "metadataLocation":{
+          "shape":"MetadataLocation",
+          "documentation":"<p>The new metadata location for the table. </p>"
+        }
+      }
+    },
+    "UpdateTableMetadataLocationResponse":{
+      "type":"structure",
+      "required":[
+        "name",
+        "tableARN",
+        "namespace",
+        "versionToken",
+        "metadataLocation"
+      ],
+      "members":{
+        "name":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>"
+        },
+        "tableARN":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Number (ARN) of the table.</p>"
+        },
+        "namespace":{
+          "shape":"NamespaceList",
+          "documentation":"<p>The namespace the table is associated with.</p>"
+        },
+        "versionToken":{
+          "shape":"VersionToken",
+          "documentation":"<p>The version token of the table.</p>"
+        },
+        "metadataLocation":{
+          "shape":"MetadataLocation",
+          "documentation":"<p>The metadata location of the table.</p>"
+        }
+      }
+    },
+    "VersionToken":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "WarehouseLocation":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    }
+  },
+  "documentation":"<p>An Amazon S3 table represents a structured dataset consisting of tabular data in <a href=\"https://parquet.apache.org/docs/\">Apache Parquet</a> format and related metadata. This data is stored inside an S3 table as a subresource. All tables in a table bucket are stored in the <a href=\"https://iceberg.apache.org/docs/latest/\">Apache Iceberg</a> table format. Through integration with the <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/glue/latest/dg/catalog-and-crawler.html\">AWS Glue Data Catalog</a> you can interact with your tables using AWS analytics services, such as <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/athena/\">Amazon Athena</a> and <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/redshift/\">Amazon Redshift</a>. Amazon S3 manages maintenance of your tables through automatic file compaction and snapshot management. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-buckets.html\">Amazon S3 table buckets</a>.</p>"
+}

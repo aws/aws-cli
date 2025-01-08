@@ -134,6 +134,7 @@ def endpoint_rule():
 
 def ruleset_testcases():
     filenames = [
+        "array-index",
         "aws-region",
         "default-values",
         "eventbridge",
@@ -457,3 +458,33 @@ def test_auth_schemes_conversion_first_authtype_unknown(
     at, sc = empty_resolver.auth_schemes_to_signing_ctx(auth_schemes)
     assert at == 'bar'
     assert sc == {'region': 'ap-south-2', 'signing_name': 's3'}
+
+
+@pytest.mark.parametrize(
+    "value, path, expected_value",
+    [
+        ({"foo": ['bar']}, 'baz[0]', None),  # Missing index
+        ({"foo": ['bar']}, 'foo[1]', None),  # Out of range index
+        ({"foo": ['bar']}, 'foo[0]', "bar"),  # Named index
+        (("foo",), '[0]', "foo"),  # Bare index
+        ({"foo": {}}, 'foo.bar[0]', None),  # Missing index from split path
+        (
+            {"foo": {'bar': []}},
+            'foo.bar[0]',
+            None,
+        ),  # Out of range from split path
+        (
+            {"foo": {"bar": "baz"}},
+            'foo.bar',
+            "baz",
+        ),  # Split path with named index
+        (
+            {"foo": {"bar": ["baz"]}},
+            'foo.bar[0]',
+            "baz",
+        ),  # Split path with numeric index
+    ],
+)
+def test_get_attr(rule_lib, value, path, expected_value):
+    result = rule_lib.get_attr(value, path)
+    assert result == expected_value

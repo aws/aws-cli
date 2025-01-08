@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import sys
 import glob
 from subprocess import check_call
 import shutil
@@ -13,9 +14,15 @@ os.chdir(REPO_ROOT)
 def run(command):
     return check_call(command, shell=True)
 
+if sys.version_info[:2] >= (3, 12):
+    # Python 3.12+ no longer includes setuptools by default.
 
-run("pip install --no-build-isolation -r requirements-base.txt")
-run("pip install --no-build-isolation -r requirements.txt")
+    # Setuptools 71+ now prefers already installed versions
+    # of packaging _and_ broke the API for packaging<22.0.
+    # We'll pin to match what's in requirements-dev.txt.
+    run("pip install setuptools==71.1.0 packaging==24.1")
+
+run("python -m pip install --no-build-isolation -r requirements-dev-lock.txt")
 run(
     "python -m pip install --no-build-isolation -r requirements/download-deps/bootstrap-lock.txt"
 )

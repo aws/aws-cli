@@ -131,7 +131,7 @@ class YAMLDumper(object):
     def _is_json_scalar(self, value):
         if value is None:
             return True
-        return isinstance(value, (int, float, bool, compat.six.string_types))
+        return isinstance(value, (int, float, bool, str))
 
 
 class YAMLFormatter(FullyBufferedFormatter):

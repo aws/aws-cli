@@ -11,24 +11,22 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
 import os
 
 from awscrt.s3 import S3RequestType, S3RequestTlsMode
 
 from awscli.customizations.s3.utils import relative_path
 from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import capture_input
-from awscli.compat import six, OrderedDict
+from awscli.testutils import capture_input, mock
+from awscli.compat import BytesIO, OrderedDict
 from tests.functional.s3 import (
     BaseS3TransferCommandTest, BaseS3CLIRunnerTest, BaseCRTTransferClientTest
 )
 
-
 MB = 1024 ** 2
 
 
-class BufferedBytesIO(six.BytesIO):
+class BufferedBytesIO(BytesIO):
     @property
     def buffer(self):
         return self
@@ -211,7 +209,7 @@ class TestCPCommand(BaseCPCommandTest):
     def test_operations_used_in_download_file(self):
         self.parsed_responses = [
             {"ContentLength": "100", "LastModified": "00:00:00Z"},
-            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+            {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
         ]
         cmdline = '%s s3://bucket/key.txt %s' % (self.prefix,
                                                  self.files.rootdir)
@@ -377,7 +375,7 @@ class TestCPCommand(BaseCPCommandTest):
         cmdline = '%s s3://bucket/key.txt %s' % (self.prefix, full_path)
         self.parsed_responses = [
             {"ContentLength": "100", "LastModified": "00:00:00Z"},
-            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')}
+            {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')}
         ]
         with mock.patch('os.utime') as mock_utime:
             mock_utime.side_effect = OSError(1, '')
@@ -395,7 +393,7 @@ class TestCPCommand(BaseCPCommandTest):
                 ],
                 'CommonPrefixes': []
             },
-            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+            {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
         ]
         cmdline = '%s s3://bucket/foo %s --recursive --force-glacier-transfer'\
                   % (self.prefix, self.files.rootdir)
@@ -583,7 +581,7 @@ class TestCPCommand(BaseCPCommandTest):
                 "ContentLength": 4,
                 "ETag": '"d3b07384d113edec49eaa6238ad5ff00"',
                 "LastModified": "Tue, 12 Jul 2016 21:26:07 GMT",
-                "Body": six.BytesIO(b'foo\n')
+                "Body": BytesIO(b'foo\n')
             },
             {}
         ]
@@ -762,6 +760,86 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertIn('upload failed', stderr)
         self.assertIn('warning: File has an invalid timestamp.', stderr)
 
+    def test_upload_with_checksum_algorithm_crc32(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm CRC32'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['ChecksumAlgorithm'], 'CRC32')
+
+    def test_upload_with_checksum_algorithm_crc32c(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm CRC32C'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['ChecksumAlgorithm'], 'CRC32C')
+
+    def test_multipart_upload_with_checksum_algorithm_crc32(self):
+        full_path = self.files.create_file('foo.txt', 'a' * 10 * (1024 ** 2))
+        self.parsed_responses = [
+            {'UploadId': 'foo'},
+            {'ETag': 'foo-e1', 'ChecksumCRC32': 'foo-1'},
+            {'ETag': 'foo-e2', 'ChecksumCRC32': 'foo-2'},
+            {}
+        ]
+        cmdline = ('%s %s s3://bucket/key2.txt'
+                   ' --checksum-algorithm CRC32' % (self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 4, self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'CreateMultipartUpload')
+        self.assertEqual(self.operations_called[0][1]['ChecksumAlgorithm'], 'CRC32')
+        self.assertEqual(self.operations_called[1][0].name, 'UploadPart')
+        self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'CRC32')
+        self.assertEqual(self.operations_called[3][0].name, 'CompleteMultipartUpload')
+        self.assertIn({'ETag': 'foo-e1', 'ChecksumCRC32': 'foo-1', 'PartNumber': mock.ANY},
+                      self.operations_called[3][1]['MultipartUpload']['Parts'])
+        self.assertIn({'ETag': 'foo-e2', 'ChecksumCRC32': 'foo-2', 'PartNumber': mock.ANY},
+                      self.operations_called[3][1]['MultipartUpload']['Parts'])
+
+    def test_copy_with_checksum_algorithm_crc32(self):
+        self.parsed_responses = [
+            self.head_object_response(),
+            # Mocked CopyObject response with a CRC32 checksum specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumCRC32': 'Tq0H4g=='
+            }
+        ]
+        cmdline = f'{self.prefix} s3://bucket1/key.txt s3://bucket2/key.txt --checksum-algorithm CRC32'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'CRC32')
+
+    def test_download_with_checksum_mode_crc32(self):
+        self.parsed_responses = [
+            self.head_object_response(),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumCRC32': 'Tq0H4g==',
+                'Body': BytesIO(b'foo')
+            }
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumMode'], 'ENABLED')
+
+    def test_download_with_checksum_mode_crc32c(self):
+        self.parsed_responses = [
+            self.head_object_response(),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumCRC32C': 'checksum',
+                'Body': BytesIO(b'foo')
+            }
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumMode'], 'ENABLED')
+
 
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):
     def test_streaming_upload(self):
@@ -859,7 +937,7 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
                 "ContentLength": 4,
                 "ETag": '"d3b07384d113edec49eaa6238ad5ff00"',
                 "LastModified": "Tue, 12 Jul 2016 21:26:07 GMT",
-                "Body": six.BytesIO(b'foo\n')
+                "Body": BytesIO(b'foo\n')
             }
         ]
 

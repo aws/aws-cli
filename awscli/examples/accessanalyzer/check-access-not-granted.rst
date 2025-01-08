@@ -19,8 +19,8 @@ Contents of ``myfile.json``::
                     "s3:ListBucket"
                 ],
                 "Resource": [
-                    "arn:aws:s3:::DOC-EXAMPLE-BUCKET",
-                    "arn:aws:s3:::DOC-EXAMPLE-BUCKET/*"
+                    "arn:aws:s3:::amzn-s3-demo-bucket",
+                    "arn:aws:s3:::amzn-s3-demo-bucket/*"
                 ]
             }
         ]
@@ -30,7 +30,7 @@ Output::
 
     {
         "result": "PASS",
-        "message": "The policy document does not grant access to perform the listed actions."
+        "message": "The policy document does not grant access to perform one or more of the listed actions."
     }
 
 For more information, see `Previewing access with IAM Access Analyzer APIs <https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-preview-access-apis.html>`__ in the *AWS IAM User Guide*.

@@ -2,6 +2,7 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2018-11-05",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"transfer",
     "jsonVersion":"1.1",
     "protocol":"json",
@@ -121,6 +122,23 @@
       ],
       "documentation":"<p>Creates a user and associates them with an existing file transfer protocol-enabled server. You can only create and associate users with servers that have the <code>IdentityProviderType</code> set to <code>SERVICE_MANAGED</code>. Using parameters for <code>CreateUser</code>, you can specify the user name, set the home directory, store the user's public key, and assign the user's Identity and Access Management (IAM) role. You can also optionally add a session policy, and assign metadata with tags that can be used to group and search for users.</p>",
       "idempotent":true
+    },
+    "CreateWebApp":{
+      "name":"CreateWebApp",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateWebAppRequest"},
+      "output":{"shape":"CreateWebAppResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a web app based on specified parameters, and returns the ID for the new web app.</p>"
     },
     "CreateWorkflow":{
       "name":"CreateWorkflow",
@@ -282,6 +300,41 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Deletes the user belonging to a file transfer protocol-enabled server you specify.</p> <p>No response returns from this operation.</p> <note> <p>When you delete a user from a server, the user's information is lost.</p> </note>",
+      "idempotent":true
+    },
+    "DeleteWebApp":{
+      "name":"DeleteWebApp",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteWebAppRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes the specified web app.</p>",
+      "idempotent":true
+    },
+    "DeleteWebAppCustomization":{
+      "name":"DeleteWebAppCustomization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteWebAppCustomizationRequest"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes the <code>WebAppCustomization</code> object that corresponds to the web app ID specified.</p>",
       "idempotent":true
     },
     "DeleteWorkflow":{
@@ -461,6 +514,40 @@
       ],
       "documentation":"<p>Describes the user assigned to the specific file transfer protocol-enabled server, as identified by its <code>ServerId</code> property.</p> <p>The response from this call returns the properties of the user associated with the <code>ServerId</code> value that was specified.</p>"
     },
+    "DescribeWebApp":{
+      "name":"DescribeWebApp",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeWebAppRequest"},
+      "output":{"shape":"DescribeWebAppResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the web app that's identified by <code>WebAppId</code>.</p>"
+    },
+    "DescribeWebAppCustomization":{
+      "name":"DescribeWebAppCustomization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeWebAppCustomizationRequest"},
+      "output":{"shape":"DescribeWebAppCustomizationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the web app customization object that's identified by <code>WebAppId</code>.</p>"
+    },
     "DescribeWorkflow":{
       "name":"DescribeWorkflow",
       "http":{
@@ -614,6 +701,22 @@
       ],
       "documentation":"<p>Lists all in-progress executions for the specified workflow.</p> <note> <p>If the specified workflow ID cannot be found, <code>ListExecutions</code> returns a <code>ResourceNotFound</code> exception.</p> </note>"
     },
+    "ListFileTransferResults":{
+      "name":"ListFileTransferResults",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListFileTransferResultsRequest"},
+      "output":{"shape":"ListFileTransferResultsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p> Returns real-time updates and detailed information on the status of each individual file being transferred in a specific file transfer operation. You specify the file transfer by providing its <code>ConnectorId</code> and its <code>TransferId</code>.</p> <note> <p>File transfer results are available up to 7 days after an operation has been requested.</p> </note>"
+    },
     "ListHostKeys":{
       "name":"ListHostKeys",
       "http":{
@@ -712,6 +815,22 @@
         {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Lists the users for a file transfer protocol-enabled server that you specify by passing the <code>ServerId</code> parameter.</p>"
+    },
+    "ListWebApps":{
+      "name":"ListWebApps",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListWebAppsRequest"},
+      "output":{"shape":"ListWebAppsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"InvalidNextTokenException"}
+      ],
+      "documentation":"<p>Lists all web apps associated with your Amazon Web Services account for your current region.</p>"
     },
     "ListWorkflows":{
       "name":"ListWorkflows",
@@ -1016,6 +1135,42 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Assigns new properties to a user. Parameters you pass modify any or all of the following: the home directory, role, and policy for the <code>UserName</code> and <code>ServerId</code> you specify.</p> <p>The response returns the <code>ServerId</code> and the <code>UserName</code> for the updated user.</p> <p>In the console, you can select <i>Restricted</i> when you create or update a user. This ensures that the user can't access anything outside of their home directory. The programmatic way to configure this behavior is to update the user. Set their <code>HomeDirectoryType</code> to <code>LOGICAL</code>, and specify <code>HomeDirectoryMappings</code> with <code>Entry</code> as root (<code>/</code>) and <code>Target</code> as their home directory.</p> <p>For example, if the user's home directory is <code>/test/admin-user</code>, the following command updates the user so that their configuration in the console shows the <i>Restricted</i> flag as selected.</p> <p> <code> aws transfer update-user --server-id &lt;server-id&gt; --user-name admin-user --home-directory-type LOGICAL --home-directory-mappings \"[{\\\"Entry\\\":\\\"/\\\", \\\"Target\\\":\\\"/test/admin-user\\\"}]\"</code> </p>"
+    },
+    "UpdateWebApp":{
+      "name":"UpdateWebApp",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateWebAppRequest"},
+      "output":{"shape":"UpdateWebAppResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Assigns new properties to a web app. You can modify the access point, identity provider details, and the web app units.</p>"
+    },
+    "UpdateWebAppCustomization":{
+      "name":"UpdateWebAppCustomization",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateWebAppCustomizationRequest"},
+      "output":{"shape":"UpdateWebAppCustomizationResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Assigns new customization properties to a web app. You can modify the icon file, logo file, and title.</p>"
     }
   },
   "shapes":{
@@ -1089,6 +1244,10 @@
         "BasicAuthSecretId":{
           "shape":"As2ConnectorSecretId",
           "documentation":"<p>Provides Basic authentication support to the AS2 Connectors API. To use Basic authentication, you must provide the name or Amazon Resource Name (ARN) of a secret in Secrets Manager.</p> <p>The default value for this parameter is <code>null</code>, which indicates that Basic authentication is not enabled for the connector.</p> <p>If the connector should use Basic authentication, the secret needs to be in the following format:</p> <p> <code>{ \"Username\": \"user-name\", \"Password\": \"user-password\" }</code> </p> <p>Replace <code>user-name</code> and <code>user-password</code> with the credentials for the actual user that is being authenticated.</p> <p>Note the following:</p> <ul> <li> <p>You are storing these credentials in Secrets Manager, <i>not passing them directly</i> into this API.</p> </li> <li> <p>If you are using the API, SDKs, or CloudFormation to configure your connector, then you must create the secret before you can enable Basic authentication. However, if you are using the Amazon Web Services management console, you can have the system create the secret for you.</p> </li> </ul> <p>If you have previously enabled Basic authentication for a connector, you can disable it by using the <code>UpdateConnector</code> API call. For example, if you are using the CLI, you can run the following command to remove Basic authentication:</p> <p> <code>update-connector --connector-id my-connector-id --as2-config 'BasicAuthSecretId=\"\"'</code> </p>"
+        },
+        "PreserveContentType":{
+          "shape":"PreserveContentType",
+          "documentation":"<p>Allows you to use the Amazon S3 <code>Content-Type</code> that is associated with objects in S3 instead of having the content type mapped based on the file extension. This parameter is enabled by default when you create an AS2 connector from the console, but disabled by default when you create an AS2 connector by calling the API directly.</p>"
         }
       },
       "documentation":"<p>Contains the details for an AS2 connector object. The connector object is used for AS2 outbound processes, to connect the Transfer Family customer with the trading partner.</p>"
@@ -1194,6 +1353,38 @@
       },
       "documentation":"<p>This exception is thrown when the <code>UpdateServer</code> is called for a file transfer protocol-enabled server that has VPC as the endpoint type and the server's <code>VpcEndpointID</code> is not in the available state.</p>",
       "exception":true
+    },
+    "ConnectorFileTransferResult":{
+      "type":"structure",
+      "required":[
+        "FilePath",
+        "StatusCode"
+      ],
+      "members":{
+        "FilePath":{
+          "shape":"FilePath",
+          "documentation":"<p>The filename and path to where the file was sent to or retrieved from.</p>"
+        },
+        "StatusCode":{
+          "shape":"TransferTableStatus",
+          "documentation":"<p>The current status for the transfer.</p>"
+        },
+        "FailureCode":{
+          "shape":"FailureCode",
+          "documentation":"<p>For transfers that fail, this parameter contains a code indicating the reason. For example, <code>RETRIEVE_FILE_NOT_FOUND</code> </p>"
+        },
+        "FailureMessage":{
+          "shape":"Message",
+          "documentation":"<p>For transfers that fail, this parameter describes the reason for the failure.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the details for files transferred using an SFTP connector, during a single transfer.</p>"
+    },
+    "ConnectorFileTransferResults":{
+      "type":"list",
+      "member":{"shape":"ConnectorFileTransferResult"},
+      "max":1000,
+      "min":0
     },
     "ConnectorId":{
       "type":"string",
@@ -1313,7 +1504,7 @@
         },
         "BaseDirectory":{
           "shape":"HomeDirectory",
-          "documentation":"<p>The landing directory (folder) for files transferred by using the AS2 protocol.</p> <p>A <code>BaseDirectory</code> example is <code>/DOC-EXAMPLE-BUCKET/home/mydirectory</code>.</p>"
+          "documentation":"<p>The landing directory (folder) for files transferred by using the AS2 protocol.</p> <p>A <code>BaseDirectory</code> example is <code>/<i>amzn-s3-demo-bucket</i>/home/mydirectory</code>.</p>"
         },
         "AccessRole":{
           "shape":"Role",
@@ -1326,6 +1517,14 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Key-value pairs that can be used to group and search for agreements.</p>"
+        },
+        "PreserveFilename":{
+          "shape":"PreserveFilenameType",
+          "documentation":"<p> Determines whether or not Transfer Family appends a unique string of characters to the end of the AS2 message payload filename when saving it. </p> <ul> <li> <p> <code>ENABLED</code>: the filename provided by your trading parter is preserved when the file is saved.</p> </li> <li> <p> <code>DISABLED</code> (default value): when Transfer Family saves the file, the filename is adjusted, as described in <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/send-as2-messages.html#file-names-as2\">File names and locations</a>.</p> </li> </ul>"
+        },
+        "EnforceMessageSigning":{
+          "shape":"EnforceMessageSigningType",
+          "documentation":"<p> Determines whether or not unsigned messages from your trading partners will be accepted. </p> <ul> <li> <p> <code>ENABLED</code>: Transfer Family rejects unsigned messages from your trading partner.</p> </li> <li> <p> <code>DISABLED</code> (default value): Transfer Family accepts unsigned messages from your trading partner.</p> </li> </ul>"
         }
       }
     },
@@ -1446,7 +1645,7 @@
         },
         "IdentityProviderDetails":{
           "shape":"IdentityProviderDetails",
-          "documentation":"<p>Required when <code>IdentityProviderType</code> is set to <code>AWS_DIRECTORY_SERVICE</code>, <code>Amazon Web Services_LAMBDA</code> or <code>API_GATEWAY</code>. Accepts an array containing all of the information required to use a directory in <code>AWS_DIRECTORY_SERVICE</code> or invoke a customer-supplied authentication API, including the API Gateway URL. Not required when <code>IdentityProviderType</code> is set to <code>SERVICE_MANAGED</code>.</p>"
+          "documentation":"<p>Required when <code>IdentityProviderType</code> is set to <code>AWS_DIRECTORY_SERVICE</code>, <code>Amazon Web Services_LAMBDA</code> or <code>API_GATEWAY</code>. Accepts an array containing all of the information required to use a directory in <code>AWS_DIRECTORY_SERVICE</code> or invoke a customer-supplied authentication API, including the API Gateway URL. Cannot be specified when <code>IdentityProviderType</code> is set to <code>SERVICE_MANAGED</code>.</p>"
         },
         "IdentityProviderType":{
           "shape":"IdentityProviderType",
@@ -1568,6 +1767,38 @@
         "UserName":{
           "shape":"UserName",
           "documentation":"<p>A unique string that identifies a Transfer Family user.</p>"
+        }
+      }
+    },
+    "CreateWebAppRequest":{
+      "type":"structure",
+      "required":["IdentityProviderDetails"],
+      "members":{
+        "IdentityProviderDetails":{
+          "shape":"WebAppIdentityProviderDetails",
+          "documentation":"<p>You can provide a structure that contains the details for the identity provider to use with your web app.</p>"
+        },
+        "AccessEndpoint":{
+          "shape":"WebAppAccessEndpoint",
+          "documentation":"<p>The <code>AccessEndpoint</code> is the URL that you provide to your users for them to interact with the Transfer Family web app. You can specify a custom URL or use the default value.</p>"
+        },
+        "WebAppUnits":{
+          "shape":"WebAppUnits",
+          "documentation":"<p>A union that contains the value for number of concurrent connections or the user sessions on your web app.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Key-value pairs that can be used to group and search for web apps.</p>"
+        }
+      }
+    },
+    "CreateWebAppResponse":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Returns a unique identifier for the web app.</p>"
         }
       }
     },
@@ -1816,6 +2047,26 @@
         "UserName":{
           "shape":"UserName",
           "documentation":"<p>A unique string that identifies a user that is being deleted from a server.</p>"
+        }
+      }
+    },
+    "DeleteWebAppCustomizationRequest":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Provide the unique identifier for the web app that contains the customizations that you are deleting.</p>"
+        }
+      }
+    },
+    "DeleteWebAppRequest":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Provide the unique identifier for the web app that you are deleting.</p>"
         }
       }
     },
@@ -2085,6 +2336,46 @@
         }
       }
     },
+    "DescribeWebAppCustomizationRequest":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Provide the unique identifier for the web app.</p>"
+        }
+      }
+    },
+    "DescribeWebAppCustomizationResponse":{
+      "type":"structure",
+      "required":["WebAppCustomization"],
+      "members":{
+        "WebAppCustomization":{
+          "shape":"DescribedWebAppCustomization",
+          "documentation":"<p>Returns a structure that contains the details of the web app customizations.</p>"
+        }
+      }
+    },
+    "DescribeWebAppRequest":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Provide the unique identifier for the web app.</p>"
+        }
+      }
+    },
+    "DescribeWebAppResponse":{
+      "type":"structure",
+      "required":["WebApp"],
+      "members":{
+        "WebApp":{
+          "shape":"DescribedWebApp",
+          "documentation":"<p>Returns a structure that contains the details of the web app.</p>"
+        }
+      }
+    },
     "DescribeWorkflowRequest":{
       "type":"structure",
       "required":["WorkflowId"],
@@ -2179,6 +2470,14 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Key-value pairs that can be used to group and search for agreements.</p>"
+        },
+        "PreserveFilename":{
+          "shape":"PreserveFilenameType",
+          "documentation":"<p> Determines whether or not Transfer Family appends a unique string of characters to the end of the AS2 message payload filename when saving it. </p> <ul> <li> <p> <code>ENABLED</code>: the filename provided by your trading parter is preserved when the file is saved.</p> </li> <li> <p> <code>DISABLED</code> (default value): when Transfer Family saves the file, the filename is adjusted, as described in <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/send-as2-messages.html#file-names-as2\">File names and locations</a>.</p> </li> </ul>"
+        },
+        "EnforceMessageSigning":{
+          "shape":"EnforceMessageSigningType",
+          "documentation":"<p> Determines whether or not unsigned messages from your trading partners will be accepted. </p> <ul> <li> <p> <code>ENABLED</code>: Transfer Family rejects unsigned messages from your trading partner.</p> </li> <li> <p> <code>DISABLED</code> (default value): Transfer Family accepts unsigned messages from your trading partner.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Describes the properties of an agreement.</p>"
@@ -2201,7 +2500,7 @@
         },
         "Status":{
           "shape":"CertificateStatusType",
-          "documentation":"<p>The certificate can be either <code>ACTIVE</code>, <code>PENDING_ROTATION</code>, or <code>INACTIVE</code>. <code>PENDING_ROTATION</code> means that this certificate will replace the current certificate when it expires.</p>"
+          "documentation":"<p>Currently, the only available status is <code>ACTIVE</code>: all other values are reserved for future use.</p>"
         },
         "Certificate":{
           "shape":"CertificateBodyType",
@@ -2362,6 +2661,24 @@
         }
       },
       "documentation":"<p>The details for a server host key.</p>"
+    },
+    "DescribedIdentityCenterConfig":{
+      "type":"structure",
+      "members":{
+        "ApplicationArn":{
+          "shape":"IdentityCenterApplicationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the IAM Identity Center application: this value is set automatically when you create your web app.</p>"
+        },
+        "InstanceArn":{
+          "shape":"IdentityCenterInstanceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the IAM Identity Center used for the web app.</p>"
+        },
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The IAM role in IAM Identity Center used for the web app.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the details of the IAM Identity Center used for your web app. Returned during a call to <code>DescribeWebApp</code>.</p>"
     },
     "DescribedProfile":{
       "type":"structure",
@@ -2579,6 +2896,85 @@
       },
       "documentation":"<p>Describes the properties of a user that was specified.</p>"
     },
+    "DescribedWebApp":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "WebAppId"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web app.</p>"
+        },
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>The unique identifier for the web app.</p>"
+        },
+        "DescribedIdentityProviderDetails":{
+          "shape":"DescribedWebAppIdentityProviderDetails",
+          "documentation":"<p>A structure that contains the details for the identity provider used by the web app.</p>"
+        },
+        "AccessEndpoint":{
+          "shape":"WebAppAccessEndpoint",
+          "documentation":"<p>The <code>AccessEndpoint</code> is the URL that you provide to your users for them to interact with the Transfer Family web app. You can specify a custom URL or use the default value.</p>"
+        },
+        "WebAppEndpoint":{
+          "shape":"WebAppEndpoint",
+          "documentation":"<p>The <code>WebAppEndpoint</code> is the unique URL for your Transfer Family web app. This is the value that you use when you configure <b>Origins</b> on CloudFront.</p>"
+        },
+        "WebAppUnits":{
+          "shape":"WebAppUnits",
+          "documentation":"<p>A union that contains the value for number of concurrent connections or the user sessions on your web app.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Key-value pairs that can be used to group and search for web apps. Tags are metadata attached to web apps for any purpose.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes the parameters for the web app, as identified by the <code>WebAppId</code>.</p>"
+    },
+    "DescribedWebAppCustomization":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "WebAppId"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>Returns the Amazon Resource Name (ARN) for the web app.</p>"
+        },
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Returns the unique identifier for your web app.</p>"
+        },
+        "Title":{
+          "shape":"WebAppTitle",
+          "documentation":"<p>Returns the page title that you defined for your web app.</p>"
+        },
+        "LogoFile":{
+          "shape":"WebAppLogoFile",
+          "documentation":"<p>Returns a logo file data string (in base64 encoding).</p>"
+        },
+        "FaviconFile":{
+          "shape":"WebAppFaviconFile",
+          "documentation":"<p>Returns a icon file data string (in base64 encoding).</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the customization fields for the web app. You can provide a title, logo, and icon to customize the appearance of your web app.</p>"
+    },
+    "DescribedWebAppIdentityProviderDetails":{
+      "type":"structure",
+      "members":{
+        "IdentityCenterConfig":{
+          "shape":"DescribedIdentityCenterConfig",
+          "documentation":"<p>Returns a structure for your identity provider details. This structure contains the instance ARN and role being used for the web app.</p>"
+        }
+      },
+      "documentation":"<p>Returns a structure that contains the identity provider details for your web app.</p>",
+      "union":true
+    },
     "DescribedWorkflow":{
       "type":"structure",
       "required":["Arn"],
@@ -2701,7 +3097,7 @@
           "documentation":"<p>A list of security groups IDs that are available to attach to your server's endpoint.</p> <note> <p>This property can only be set when <code>EndpointType</code> is set to <code>VPC</code>.</p> <p>You can edit the <code>SecurityGroupIds</code> property in the <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/API_UpdateServer.html\">UpdateServer</a> API only if you are changing the <code>EndpointType</code> from <code>PUBLIC</code> or <code>VPC_ENDPOINT</code> to <code>VPC</code>. To change security groups associated with your server's VPC endpoint after creation, use the Amazon EC2 <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyVpcEndpoint.html\">ModifyVpcEndpoint</a> API.</p> </note>"
         }
       },
-      "documentation":"<p>The virtual private cloud (VPC) endpoint settings that are configured for your file transfer protocol-enabled server. With a VPC endpoint, you can restrict access to your server and resources only within your VPC. To control incoming internet traffic, invoke the <code>UpdateServer</code> API and attach an Elastic IP address to your server's endpoint.</p> <note> <p> After May 19, 2021, you won't be able to create a server using <code>EndpointType=VPC_ENDPOINT</code> in your Amazon Web Servicesaccount if your account hasn't already done so before May 19, 2021. If you have already created servers with <code>EndpointType=VPC_ENDPOINT</code> in your Amazon Web Servicesaccount on or before May 19, 2021, you will not be affected. After this date, use <code>EndpointType</code>=<code>VPC</code>.</p> <p>For more information, see https://docs.aws.amazon.com/transfer/latest/userguide/create-server-in-vpc.html#deprecate-vpc-endpoint.</p> </note>"
+      "documentation":"<p>The virtual private cloud (VPC) endpoint settings that are configured for your file transfer protocol-enabled server. With a VPC endpoint, you can restrict access to your server and resources only within your VPC. To control incoming internet traffic, invoke the <code>UpdateServer</code> API and attach an Elastic IP address to your server's endpoint.</p> <note> <p> After May 19, 2021, you won't be able to create a server using <code>EndpointType=VPC_ENDPOINT</code> in your Amazon Web Services account if your account hasn't already done so before May 19, 2021. If you have already created servers with <code>EndpointType=VPC_ENDPOINT</code> in your Amazon Web Services account on or before May 19, 2021, you will not be affected. After this date, use <code>EndpointType</code>=<code>VPC</code>.</p> <p>For more information, see https://docs.aws.amazon.com/transfer/latest/userguide/create-server-in-vpc.html#deprecate-vpc-endpoint.</p> <p>It is recommended that you use <code>VPC</code> as the <code>EndpointType</code>. With this endpoint type, you have the option to directly associate up to three Elastic IPv4 addresses (BYO IP included) with your server's endpoint and use VPC security groups to restrict traffic by the client's public IP address. This is not possible with <code>EndpointType</code> set to <code>VPC_ENDPOINT</code>.</p> </note>"
     },
     "EndpointType":{
       "type":"string",
@@ -2709,6 +3105,13 @@
         "PUBLIC",
         "VPC",
         "VPC_ENDPOINT"
+      ]
+    },
+    "EnforceMessageSigningType":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
       ]
     },
     "ExecutionError":{
@@ -2802,6 +3205,7 @@
       "min":1,
       "pattern":"S-1-[\\d-]+"
     },
+    "FailureCode":{"type":"string"},
     "FileLocation":{
       "type":"structure",
       "members":{
@@ -2899,6 +3303,32 @@
       "pattern":"hostkey-[0-9a-f]{17}"
     },
     "HostKeyType":{"type":"string"},
+    "IdentityCenterApplicationArn":{
+      "type":"string",
+      "max":1224,
+      "min":10,
+      "pattern":"arn:[\\w-]+:sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}"
+    },
+    "IdentityCenterConfig":{
+      "type":"structure",
+      "members":{
+        "InstanceArn":{
+          "shape":"IdentityCenterInstanceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the IAM Identity Center used for the web app.</p>"
+        },
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The IAM role in IAM Identity Center used for the web app.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes the values to use for the IAM Identity Center settings when you create or update a web app.</p>"
+    },
+    "IdentityCenterInstanceArn":{
+      "type":"string",
+      "max":1224,
+      "min":10,
+      "pattern":"arn:[\\w-]+:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}"
+    },
     "IdentityProviderDetails":{
       "type":"structure",
       "members":{
@@ -3121,7 +3551,7 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Specifies the maximum number of access SIDs to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3160,7 +3590,7 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of agreements to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3191,7 +3621,7 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of certificates to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3218,7 +3648,7 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of connectors to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3246,7 +3676,7 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Specifies the maximum number of executions to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3279,13 +3709,52 @@
         }
       }
     },
+    "ListFileTransferResultsRequest":{
+      "type":"structure",
+      "required":[
+        "ConnectorId",
+        "TransferId"
+      ],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>A unique identifier for a connector. This value should match the value supplied to the corresponding <code>StartFileTransfer</code> call.</p>"
+        },
+        "TransferId":{
+          "shape":"TransferId",
+          "documentation":"<p>A unique identifier for a file transfer. This value should match the value supplied to the corresponding <code>StartFileTransfer</code> call.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are more file details than returned in this call, use this value for a subsequent call to <code>ListFileTransferResults</code> to retrieve them.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of files to return in a single page. Note that currently you can specify a maximum of 10 file paths in a single <a href=\"https://docs.aws.amazon.com/transfer/latest/APIReference/API_StartFileTransfer.html\">StartFileTransfer</a> operation. Thus, the maximum number of file transfer results that can be returned in a single page is 10. </p>"
+        }
+      }
+    },
+    "ListFileTransferResultsResponse":{
+      "type":"structure",
+      "required":["FileTransferResults"],
+      "members":{
+        "FileTransferResults":{
+          "shape":"ConnectorFileTransferResults",
+          "documentation":"<p>Returns the details for the files transferred in the transfer identified by the <code>TransferId</code> and <code>ConnectorId</code> specified.</p> <ul> <li> <p> <code>FilePath</code>: the filename and path to where the file was sent to or retrieved from.</p> </li> <li> <p> <code>StatusCode</code>: current status for the transfer. The status returned is one of the following values:<code>QUEUED</code>, <code>IN_PROGRESS</code>, <code>COMPLETED</code>, or <code>FAILED</code> </p> </li> <li> <p> <code>FailureCode</code>: for transfers that fail, this parameter contains a code indicating the reason. For example, <code>RETRIEVE_FILE_NOT_FOUND</code> </p> </li> <li> <p> <code>FailureMessage</code>: for transfers that fail, this parameter describes the reason for the failure.</p> </li> </ul>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Returns a token that you can use to call <code>ListFileTransferResults</code> again and receive additional results, if there are any (against the same <code>TransferId</code>.</p>"
+        }
+      }
+    },
     "ListHostKeysRequest":{
       "type":"structure",
       "required":["ServerId"],
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of host keys to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3323,7 +3792,7 @@
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of profiles to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3477,12 +3946,39 @@
         }
       }
     },
+    "ListWebAppsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to return.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Returns the <code>NextToken</code> parameter in the output. You can then pass the <code>NextToken</code> parameter in a subsequent command to continue listing additional web apps.</p>"
+        }
+      }
+    },
+    "ListWebAppsResponse":{
+      "type":"structure",
+      "required":["WebApps"],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Provide this value for the <code>NextToken</code> parameter in a subsequent command to continue listing additional web apps.</p>"
+        },
+        "WebApps":{
+          "shape":"ListedWebApps",
+          "documentation":"<p>Returns, for each listed web app, a structure that contains details for the web app.</p>"
+        }
+      }
+    },
     "ListWorkflowsRequest":{
       "type":"structure",
       "members":{
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Specifies the maximum number of workflows to return.</p>"
+          "documentation":"<p>The maximum number of items to return.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3797,6 +4293,36 @@
       "type":"list",
       "member":{"shape":"ListedUser"}
     },
+    "ListedWebApp":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "WebAppId"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the web app.</p>"
+        },
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>The unique identifier for the web app.</p>"
+        },
+        "AccessEndpoint":{
+          "shape":"WebAppAccessEndpoint",
+          "documentation":"<p>The <code>AccessEndpoint</code> is the URL that you provide to your users for them to interact with the Transfer Family web app. You can specify a custom URL or use the default value.</p>"
+        },
+        "WebAppEndpoint":{
+          "shape":"WebAppEndpoint",
+          "documentation":"<p>The <code>WebAppEndpoint</code> is the unique URL for your Transfer Family web app. This is the value that you use when you configure <b>Origins</b> on CloudFront.</p>"
+        }
+      },
+      "documentation":"<p> a structure that contains details for the web app.</p>"
+    },
+    "ListedWebApps":{
+      "type":"list",
+      "member":{"shape":"ListedWebApp"}
+    },
     "ListedWorkflow":{
       "type":"structure",
       "members":{
@@ -3986,6 +4512,20 @@
       "max":4096,
       "min":0,
       "pattern":"[\\x09-\\x0D\\x20-\\x7E]*"
+    },
+    "PreserveContentType":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "PreserveFilenameType":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "PrivateKeyType":{
       "type":"string",
@@ -4485,7 +5025,7 @@
         },
         "SendFilePaths":{
           "shape":"FilePaths",
-          "documentation":"<p>One or more source paths for the Amazon S3 storage. Each string represents a source file path for one outbound file transfer. For example, <code> <i>DOC-EXAMPLE-BUCKET</i>/<i>myfile.txt</i> </code>.</p> <note> <p>Replace <code> <i>DOC-EXAMPLE-BUCKET</i> </code> with one of your actual buckets.</p> </note>"
+          "documentation":"<p>One or more source paths for the Amazon S3 storage. Each string represents a source file path for one outbound file transfer. For example, <code> <i>amzn-s3-demo-bucket</i>/<i>myfile.txt</i> </code>.</p> <note> <p>Replace <code> <i>amzn-s3-demo-bucket</i> </code> with one of your actual buckets.</p> </note>"
         },
         "RetrieveFilePaths":{
           "shape":"FilePaths",
@@ -4739,6 +5279,15 @@
       "min":1,
       "pattern":"[0-9a-zA-Z./-]+"
     },
+    "TransferTableStatus":{
+      "type":"string",
+      "enum":[
+        "QUEUED",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -4844,11 +5393,19 @@
         },
         "BaseDirectory":{
           "shape":"HomeDirectory",
-          "documentation":"<p>To change the landing directory (folder) for files that are transferred, provide the bucket folder that you want to use; for example, <code>/<i>DOC-EXAMPLE-BUCKET</i>/<i>home</i>/<i>mydirectory</i> </code>.</p>"
+          "documentation":"<p>To change the landing directory (folder) for files that are transferred, provide the bucket folder that you want to use; for example, <code>/<i>amzn-s3-demo-bucket</i>/<i>home</i>/<i>mydirectory</i> </code>.</p>"
         },
         "AccessRole":{
           "shape":"Role",
           "documentation":"<p>Connectors are used to send files using either the AS2 or SFTP protocol. For the access role, provide the Amazon Resource Name (ARN) of the Identity and Access Management role to use.</p> <p> <b>For AS2 connectors</b> </p> <p>With AS2, you can send files by calling <code>StartFileTransfer</code> and specifying the file paths in the request parameter, <code>SendFilePaths</code>. We use the file’s parent directory (for example, for <code>--send-file-paths /bucket/dir/file.txt</code>, parent directory is <code>/bucket/dir/</code>) to temporarily store a processed AS2 message file, store the MDN when we receive them from the partner, and write a final JSON file containing relevant metadata of the transmission. So, the <code>AccessRole</code> needs to provide read and write access to the parent directory of the file location used in the <code>StartFileTransfer</code> request. Additionally, you need to provide read and write access to the parent directory of the files that you intend to send with <code>StartFileTransfer</code>.</p> <p>If you are using Basic authentication for your AS2 connector, the access role requires the <code>secretsmanager:GetSecretValue</code> permission for the secret. If the secret is encrypted using a customer-managed key instead of the Amazon Web Services managed key in Secrets Manager, then the role also needs the <code>kms:Decrypt</code> permission for that key.</p> <p> <b>For SFTP connectors</b> </p> <p>Make sure that the access role provides read and write access to the parent directory of the file location that's used in the <code>StartFileTransfer</code> request. Additionally, make sure that the role provides <code>secretsmanager:GetSecretValue</code> permission to Secrets Manager.</p>"
+        },
+        "PreserveFilename":{
+          "shape":"PreserveFilenameType",
+          "documentation":"<p> Determines whether or not Transfer Family appends a unique string of characters to the end of the AS2 message payload filename when saving it. </p> <ul> <li> <p> <code>ENABLED</code>: the filename provided by your trading parter is preserved when the file is saved.</p> </li> <li> <p> <code>DISABLED</code> (default value): when Transfer Family saves the file, the filename is adjusted, as described in <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/send-as2-messages.html#file-names-as2\">File names and locations</a>.</p> </li> </ul>"
+        },
+        "EnforceMessageSigning":{
+          "shape":"EnforceMessageSigningType",
+          "documentation":"<p> Determines whether or not unsigned messages from your trading partners will be accepted. </p> <ul> <li> <p> <code>ENABLED</code>: Transfer Family rejects unsigned messages from your trading partner.</p> </li> <li> <p> <code>DISABLED</code> (default value): Transfer Family accepts unsigned messages from your trading partner.</p> </li> </ul>"
         }
       }
     },
@@ -5019,7 +5576,7 @@
         },
         "EndpointType":{
           "shape":"EndpointType",
-          "documentation":"<p>The type of endpoint that you want your server to use. You can choose to make your server's endpoint publicly accessible (PUBLIC) or host it inside your VPC. With an endpoint that is hosted in a VPC, you can restrict access to your server and resources only within your VPC or choose to make it internet facing by attaching Elastic IP addresses directly to it.</p> <note> <p> After May 19, 2021, you won't be able to create a server using <code>EndpointType=VPC_ENDPOINT</code> in your Amazon Web Servicesaccount if your account hasn't already done so before May 19, 2021. If you have already created servers with <code>EndpointType=VPC_ENDPOINT</code> in your Amazon Web Servicesaccount on or before May 19, 2021, you will not be affected. After this date, use <code>EndpointType</code>=<code>VPC</code>.</p> <p>For more information, see https://docs.aws.amazon.com/transfer/latest/userguide/create-server-in-vpc.html#deprecate-vpc-endpoint.</p> <p>It is recommended that you use <code>VPC</code> as the <code>EndpointType</code>. With this endpoint type, you have the option to directly associate up to three Elastic IPv4 addresses (BYO IP included) with your server's endpoint and use VPC security groups to restrict traffic by the client's public IP address. This is not possible with <code>EndpointType</code> set to <code>VPC_ENDPOINT</code>.</p> </note>"
+          "documentation":"<p>The type of endpoint that you want your server to use. You can choose to make your server's endpoint publicly accessible (PUBLIC) or host it inside your VPC. With an endpoint that is hosted in a VPC, you can restrict access to your server and resources only within your VPC or choose to make it internet facing by attaching Elastic IP addresses directly to it.</p> <note> <p> After May 19, 2021, you won't be able to create a server using <code>EndpointType=VPC_ENDPOINT</code> in your Amazon Web Services account if your account hasn't already done so before May 19, 2021. If you have already created servers with <code>EndpointType=VPC_ENDPOINT</code> in your Amazon Web Services account on or before May 19, 2021, you will not be affected. After this date, use <code>EndpointType</code>=<code>VPC</code>.</p> <p>For more information, see https://docs.aws.amazon.com/transfer/latest/userguide/create-server-in-vpc.html#deprecate-vpc-endpoint.</p> <p>It is recommended that you use <code>VPC</code> as the <code>EndpointType</code>. With this endpoint type, you have the option to directly associate up to three Elastic IPv4 addresses (BYO IP included) with your server's endpoint and use VPC security groups to restrict traffic by the client's public IP address. This is not possible with <code>EndpointType</code> set to <code>VPC_ENDPOINT</code>.</p> </note>"
         },
         "HostKey":{
           "shape":"HostKey",
@@ -5136,6 +5693,91 @@
       },
       "documentation":"<p> <code>UpdateUserResponse</code> returns the user name and identifier for the request to update a user's properties.</p>"
     },
+    "UpdateWebAppCustomizationRequest":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Provide the identifier of the web app that you are updating.</p>"
+        },
+        "Title":{
+          "shape":"WebAppTitle",
+          "documentation":"<p>Provide an updated title.</p>"
+        },
+        "LogoFile":{
+          "shape":"WebAppLogoFile",
+          "documentation":"<p>Specify logo file data string (in base64 encoding).</p>"
+        },
+        "FaviconFile":{
+          "shape":"WebAppFaviconFile",
+          "documentation":"<p>Specify icon file data string (in base64 encoding).</p>"
+        }
+      }
+    },
+    "UpdateWebAppCustomizationResponse":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Returns the unique identifier for the web app being updated.</p>"
+        }
+      }
+    },
+    "UpdateWebAppIdentityCenterConfig":{
+      "type":"structure",
+      "members":{
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The IAM role used to access IAM Identity Center.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes the values to use for the IAM Identity Center settings when you update a web app.</p>"
+    },
+    "UpdateWebAppIdentityProviderDetails":{
+      "type":"structure",
+      "members":{
+        "IdentityCenterConfig":{
+          "shape":"UpdateWebAppIdentityCenterConfig",
+          "documentation":"<p>A structure that describes the values to use for the IAM Identity Center settings when you update a web app.</p>"
+        }
+      },
+      "documentation":"<p>A union that contains the <code>UpdateWebAppIdentityCenterConfig</code> object.</p>",
+      "union":true
+    },
+    "UpdateWebAppRequest":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Provide the identifier of the web app that you are updating.</p>"
+        },
+        "IdentityProviderDetails":{
+          "shape":"UpdateWebAppIdentityProviderDetails",
+          "documentation":"<p>Provide updated identity provider values in a <code>WebAppIdentityProviderDetails</code> object.</p>"
+        },
+        "AccessEndpoint":{
+          "shape":"WebAppAccessEndpoint",
+          "documentation":"<p>The <code>AccessEndpoint</code> is the URL that you provide to your users for them to interact with the Transfer Family web app. You can specify a custom URL or use the default value.</p>"
+        },
+        "WebAppUnits":{
+          "shape":"WebAppUnits",
+          "documentation":"<p>A union that contains the value for number of concurrent connections or the user sessions on your web app.</p>"
+        }
+      }
+    },
+    "UpdateWebAppResponse":{
+      "type":"structure",
+      "required":["WebAppId"],
+      "members":{
+        "WebAppId":{
+          "shape":"WebAppId",
+          "documentation":"<p>Returns the unique identifier for the web app being updated.</p>"
+        }
+      }
+    },
     "Url":{
       "type":"string",
       "max":255,
@@ -5186,6 +5828,66 @@
       "pattern":"vpce-[0-9a-f]{17}"
     },
     "VpcId":{"type":"string"},
+    "WebAppAccessEndpoint":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "WebAppEndpoint":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "WebAppFaviconFile":{
+      "type":"blob",
+      "max":20960,
+      "min":1,
+      "sensitive":true
+    },
+    "WebAppId":{
+      "type":"string",
+      "max":24,
+      "min":24,
+      "pattern":"webapp-[0-9a-f]{17}"
+    },
+    "WebAppIdentityProviderDetails":{
+      "type":"structure",
+      "members":{
+        "IdentityCenterConfig":{
+          "shape":"IdentityCenterConfig",
+          "documentation":"<p>A structure that describes the values to use for the IAM Identity Center settings when you create a web app.</p>"
+        }
+      },
+      "documentation":"<p>A union that contains the <code>IdentityCenterConfig</code> object.</p>",
+      "union":true
+    },
+    "WebAppLogoFile":{
+      "type":"blob",
+      "max":51200,
+      "min":1,
+      "sensitive":true
+    },
+    "WebAppTitle":{
+      "type":"string",
+      "max":100,
+      "min":0
+    },
+    "WebAppUnitCount":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "WebAppUnits":{
+      "type":"structure",
+      "members":{
+        "Provisioned":{
+          "shape":"WebAppUnitCount",
+          "documentation":"<p>An integer that represents the number of units for your desired number of concurrent connections, or the number of user sessions on your web app at the same time.</p> <p>Each increment allows an additional 250 concurrent sessions: a value of <code>1</code> sets the number of concurrent sessions to 250; <code>2</code> sets a value of 500, and so on. </p>"
+        }
+      },
+      "documentation":"<p>Contains an integer value that represents the value for number of concurrent connections or the user sessions on your web app.</p>",
+      "union":true
+    },
     "WorkflowDescription":{
       "type":"string",
       "max":256,
@@ -5215,11 +5917,11 @@
       "members":{
         "OnUpload":{
           "shape":"OnUploadWorkflowDetails",
-          "documentation":"<p>A trigger that starts a workflow: the workflow begins to execute after a file is uploaded.</p> <p>To remove an associated workflow from a server, you can provide an empty <code>OnUpload</code> object, as in the following example.</p> <p> <code>aws transfer update-server --server-id s-01234567890abcdef --workflow-details '{\"OnUpload\":[]}'</code> </p>"
+          "documentation":"<p>A trigger that starts a workflow: the workflow begins to execute after a file is uploaded.</p> <p>To remove an associated workflow from a server, you can provide an empty <code>OnUpload</code> object, as in the following example.</p> <p> <code>aws transfer update-server --server-id s-01234567890abcdef --workflow-details '{\"OnUpload\":[]}'</code> </p> <note> <p> <code>OnUpload</code> can contain a maximum of one <code>WorkflowDetail</code> object.</p> </note>"
         },
         "OnPartialUpload":{
           "shape":"OnPartialUploadWorkflowDetails",
-          "documentation":"<p>A trigger that starts a workflow if a file is only partially uploaded. You can attach a workflow to a server that executes whenever there is a partial upload.</p> <p>A <i>partial upload</i> occurs when a file is open when the session disconnects.</p>"
+          "documentation":"<p>A trigger that starts a workflow if a file is only partially uploaded. You can attach a workflow to a server that executes whenever there is a partial upload.</p> <p>A <i>partial upload</i> occurs when a file is open when the session disconnects.</p> <note> <p> <code>OnPartialUpload</code> can contain a maximum of one <code>WorkflowDetail</code> object.</p> </note>"
         }
       },
       "documentation":"<p>Container for the <code>WorkflowDetail</code> data type. It is used by actions that trigger a workflow to begin execution.</p>"
@@ -5283,5 +5985,5 @@
       "min":0
     }
   },
-  "documentation":"<p>Transfer Family is a fully managed service that enables the transfer of files over the File Transfer Protocol (FTP), File Transfer Protocol over SSL (FTPS), or Secure Shell (SSH) File Transfer Protocol (SFTP) directly into and out of Amazon Simple Storage Service (Amazon S3) or Amazon EFS. Additionally, you can use Applicability Statement 2 (AS2) to transfer files into and out of Amazon S3. Amazon Web Services helps you seamlessly migrate your file transfer workflows to Transfer Family by integrating with existing authentication systems, and providing DNS routing with Amazon Route 53 so nothing changes for your customers and partners, or their applications. With your data in Amazon S3, you can use it with Amazon Web Services for processing, analytics, machine learning, and archiving. Getting started with Transfer Family is easy since there is no infrastructure to buy and set up.</p>"
+  "documentation":"<p>Transfer Family is a fully managed service that enables the transfer of files over the File Transfer Protocol (FTP), File Transfer Protocol over SSL (FTPS), or Secure Shell (SSH) File Transfer Protocol (SFTP) directly into and out of Amazon Simple Storage Service (Amazon S3) or Amazon EFS. Additionally, you can use Applicability Statement 2 (AS2) to transfer files into and out of Amazon S3. Amazon Web Services helps you seamlessly migrate your file transfer workflows to Transfer Family by integrating with existing authentication systems, and providing DNS routing with Amazon Route 53 so nothing changes for your customers and partners, or their applications. With your data in Amazon S3, you can use it with Amazon Web Services services for processing, analytics, machine learning, and archiving. Getting started with Transfer Family is easy since there is no infrastructure to buy and set up.</p>"
 }

@@ -25,8 +25,11 @@ from botocore.hooks import first_non_none_response
 from botocore.httpchecksum import handle_checksum_body
 from botocore.httpsession import URLLib3Session
 from botocore.response import StreamingBody
-from botocore.utils import get_environ_proxies, is_valid_endpoint_url
-from botocore.vendored import six
+from botocore.utils import (
+    get_environ_proxies,
+    is_valid_endpoint_url,
+    is_valid_ipv6_endpoint_url,
+)
 
 logger = logging.getLogger(__name__)
 history_recorder = get_global_history_recorder()
@@ -119,7 +122,7 @@ class Endpoint(object):
     def _encode_headers(self, headers):
         # In place encoding of headers to utf-8 if they are unicode.
         for key, value in headers.items():
-            if isinstance(value, six.text_type):
+            if isinstance(value, str):
                 headers[key] = value.encode('utf-8')
 
     def prepare_request(self, request):
@@ -215,9 +218,17 @@ class Endpoint(object):
         history_recorder.record('HTTP_RESPONSE', http_response_record_dict)
 
         protocol = operation_model.metadata['protocol']
+        customized_response_dict = {}
+        self._event_emitter.emit(
+            f"before-parse.{service_id}.{operation_model.name}",
+            operation_model=operation_model,
+            response_dict=response_dict,
+            customized_response_dict=customized_response_dict,
+        )
         parser = self._response_parser_factory.create_parser(protocol)
         parsed_response = parser.parse(
             response_dict, operation_model.output_shape)
+        parsed_response.update(customized_response_dict)
         # Do a second parsing pass to pick up on any modeled error fields
         # NOTE: Ideally, we would push this down into the parser classes but
         # they currently have no reference to the operation or service model
@@ -284,9 +295,12 @@ class EndpointCreator(object):
                         socket_options=None,
                         client_cert=None,
                         proxies_config=None):
-        if not is_valid_endpoint_url(endpoint_url):
-
+        if (
+            not is_valid_endpoint_url(endpoint_url)
+            and not is_valid_ipv6_endpoint_url(endpoint_url)
+        ):
             raise ValueError("Invalid endpoint: %s" % endpoint_url)
+
         if proxies is None:
             proxies = self._get_proxies(endpoint_url)
         endpoint_prefix = service_model.endpoint_prefix

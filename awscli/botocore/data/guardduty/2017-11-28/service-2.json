@@ -5,11 +5,13 @@
     "endpointPrefix":"guardduty",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon GuardDuty",
     "serviceId":"GuardDuty",
     "signatureVersion":"v4",
     "signingName":"guardduty",
-    "uid":"guardduty-2017-11-28"
+    "uid":"guardduty-2017-11-28",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AcceptAdministratorInvitation":{
@@ -104,6 +106,23 @@
       ],
       "documentation":"<p>Creates a new IPSet, which is called a trusted IP list in the console user interface. An IPSet is a list of IP addresses that are trusted for secure communication with Amazon Web Services infrastructure and applications. GuardDuty doesn't generate findings for IP addresses that are included in IPSets. Only users from the administrator account can use this operation.</p>"
     },
+    "CreateMalwareProtectionPlan":{
+      "name":"CreateMalwareProtectionPlan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/malware-protection-plan",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateMalwareProtectionPlanRequest"},
+      "output":{"shape":"CreateMalwareProtectionPlanResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Creates a new Malware Protection plan for the protected resource.</p> <p>When you create a Malware Protection plan, the Amazon Web Services service terms for GuardDuty Malware Protection apply. For more information, see <a href=\"http://aws.amazon.com/service-terms/#87._Amazon_GuardDuty\">Amazon Web Services service terms for GuardDuty Malware Protection</a>.</p>"
+    },
     "CreateMembers":{
       "name":"CreateMembers",
       "http":{
@@ -132,7 +151,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Creates a publishing destination to export findings to. The resource to export findings to must exist before you use this operation.</p>"
+      "documentation":"<p>Creates a publishing destination where you can export your GuardDuty findings. Before you start exporting the findings, the destination resource must exist.</p>"
     },
     "CreateSampleFindings":{
       "name":"CreateSampleFindings",
@@ -238,6 +257,22 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Deletes invitations sent to the current member account by Amazon Web Services accounts specified by their account IDs.</p>"
+    },
+    "DeleteMalwareProtectionPlan":{
+      "name":"DeleteMalwareProtectionPlan",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/malware-protection-plan/{malwareProtectionPlanId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteMalwareProtectionPlanRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes the Malware Protection plan ID associated with the Malware Protection plan resource. Use this API only when you no longer want to protect the resource associated with this Malware Protection plan ID.</p>"
     },
     "DeleteMembers":{
       "name":"DeleteMembers",
@@ -449,7 +484,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Retrieves an Amazon GuardDuty detector specified by the detectorId.</p> <p>There might be regional differences because some data sources might not be available in all the Amazon Web Services Regions where GuardDuty is presently supported. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html\">Regions and endpoints</a>.</p>"
+      "documentation":"<p>Retrieves a GuardDuty detector specified by the detectorId.</p> <p>There might be regional differences because some data sources might not be available in all the Amazon Web Services Regions where GuardDuty is presently supported. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html\">Regions and endpoints</a>.</p>"
     },
     "GetFilter":{
       "name":"GetFilter",
@@ -494,7 +529,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Lists Amazon GuardDuty findings statistics for the specified detector ID.</p> <p>There might be regional differences because some flags might not be available in all the Regions where GuardDuty is currently supported. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html\">Regions and endpoints</a>.</p>"
+      "documentation":"<p>Lists GuardDuty findings statistics for the specified detector ID.</p> <p>You must provide either <code>findingStatisticTypes</code> or <code>groupBy</code> parameter, and not both. You can use the <code>maxResults</code> and <code>orderBy</code> parameters only when using <code>groupBy</code>.</p> <p>There might be regional differences because some flags might not be available in all the Regions where GuardDuty is currently supported. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html\">Regions and endpoints</a>.</p>"
     },
     "GetIPSet":{
       "name":"GetIPSet",
@@ -525,6 +560,23 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Returns the count of all GuardDuty membership invitations that were sent to the current member account except the currently accepted invitation.</p>"
+    },
+    "GetMalwareProtectionPlan":{
+      "name":"GetMalwareProtectionPlan",
+      "http":{
+        "method":"GET",
+        "requestUri":"/malware-protection-plan/{malwareProtectionPlanId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMalwareProtectionPlanRequest"},
+      "output":{"shape":"GetMalwareProtectionPlanResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the Malware Protection plan details associated with a Malware Protection plan ID.</p>"
     },
     "GetMalwareScanSettings":{
       "name":"GetMalwareScanSettings",
@@ -751,6 +803,22 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Lists all GuardDuty membership invitations that were sent to the current Amazon Web Services account.</p>"
+    },
+    "ListMalwareProtectionPlans":{
+      "name":"ListMalwareProtectionPlans",
+      "http":{
+        "method":"GET",
+        "requestUri":"/malware-protection-plan",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMalwareProtectionPlansRequest"},
+      "output":{"shape":"ListMalwareProtectionPlansResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Lists the Malware Protection plan IDs associated with the protected resources in your Amazon Web Services account.</p>"
     },
     "ListMembers":{
       "name":"ListMembers",
@@ -981,6 +1049,22 @@
       ],
       "documentation":"<p>Updates the IPSet specified by the IPSet ID.</p>"
     },
+    "UpdateMalwareProtectionPlan":{
+      "name":"UpdateMalwareProtectionPlan",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/malware-protection-plan/{malwareProtectionPlanId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateMalwareProtectionPlanRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Updates an existing Malware Protection plan resource.</p>"
+    },
     "UpdateMalwareScanSettings":{
       "name":"UpdateMalwareScanSettings",
       "http":{
@@ -1099,7 +1183,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector of the GuardDuty member account.</p>",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty member account.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -1158,6 +1242,27 @@
       "error":{"httpStatusCode":403},
       "exception":true
     },
+    "AccessKey":{
+      "type":"structure",
+      "members":{
+        "PrincipalId":{
+          "shape":"String",
+          "documentation":"<p>Principal ID of the user.</p>",
+          "locationName":"principalId"
+        },
+        "UserName":{
+          "shape":"String",
+          "documentation":"<p>Name of the user.</p>",
+          "locationName":"userName"
+        },
+        "UserType":{
+          "shape":"String",
+          "documentation":"<p>Type of the user.</p>",
+          "locationName":"userType"
+        }
+      },
+      "documentation":"<p>Contains information about the access keys.</p>"
+    },
     "AccessKeyDetails":{
       "type":"structure",
       "members":{
@@ -1183,6 +1288,23 @@
         }
       },
       "documentation":"<p>Contains information about the access keys.</p>"
+    },
+    "Account":{
+      "type":"structure",
+      "required":["Uid"],
+      "members":{
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>ID of the member's Amazon Web Services account</p>",
+          "locationName":"uid"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>Name of the member's Amazon Web Services account.</p>",
+          "locationName":"account"
+        }
+      },
+      "documentation":"<p>Contains information about the account.</p>"
     },
     "AccountDetail":{
       "type":"structure",
@@ -1259,6 +1381,27 @@
       },
       "documentation":"<p>Contains information about the account level permissions on the S3 bucket.</p>"
     },
+    "AccountStatistics":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account.</p>",
+          "locationName":"accountId"
+        },
+        "LastGeneratedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the finding for this account was last generated.</p>",
+          "locationName":"lastGeneratedAt"
+        },
+        "TotalFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of findings associated with an account.</p>",
+          "locationName":"totalFindings"
+        }
+      },
+      "documentation":"<p>Represents a list of map of accounts with the number of findings associated with each account.</p>"
+    },
     "Action":{
       "type":"structure",
       "members":{
@@ -1314,6 +1457,38 @@
         }
       },
       "documentation":"<p>Contains information about actions.</p>"
+    },
+    "Actor":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>ID of the threat actor.</p>",
+          "locationName":"id"
+        },
+        "User":{
+          "shape":"User",
+          "documentation":"<p>Contains information about the user credentials used by the threat actor.</p>",
+          "locationName":"user"
+        },
+        "Session":{
+          "shape":"Session",
+          "documentation":"<p>Contains information about the user session where the activity initiated.</p>",
+          "locationName":"session"
+        }
+      },
+      "documentation":"<p>Information about the actors involved in an attack sequence.</p>"
+    },
+    "ActorIds":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":400
+    },
+    "Actors":{
+      "type":"list",
+      "member":{"shape":"Actor"},
+      "max":400
     },
     "AddonDetails":{
       "type":"structure",
@@ -1480,7 +1655,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector that specifies the GuardDuty service whose findings you want to archive.</p>",
+          "documentation":"<p>The ID of the detector that specifies the GuardDuty service whose findings you want to archive.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -1503,6 +1678,26 @@
         "ALL",
         "NONE"
       ]
+    },
+    "AutonomousSystem":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Number"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>Name associated with the Autonomous System (AS).</p>",
+          "locationName":"name"
+        },
+        "Number":{
+          "shape":"Integer",
+          "documentation":"<p>The unique number that identifies the Autonomous System (AS).</p>",
+          "locationName":"number"
+        }
+      },
+      "documentation":"<p>Contains information about the Autonomous System (AS) associated with the network endpoints involved in an attack sequence.</p>"
     },
     "AwsApiCallAction":{
       "type":"structure",
@@ -2199,7 +2394,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector belonging to the GuardDuty account that you want to create a filter for.</p>",
+          "documentation":"<p>The detector ID associated with the GuardDuty account for which you want to create a filter.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2225,7 +2420,7 @@
         },
         "FindingCriteria":{
           "shape":"FindingCriteria",
-          "documentation":"<p>Represents the criteria to be used in the filter for querying findings.</p> <p>You can only use the following attributes to query findings:</p> <ul> <li> <p>accountId</p> </li> <li> <p>id</p> </li> <li> <p>region</p> </li> <li> <p>severity</p> <p>To filter on the basis of severity, the API and CLI use the following input list for the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_FindingCriteria.html\">FindingCriteria</a> condition:</p> <ul> <li> <p> <b>Low</b>: <code>[\"1\", \"2\", \"3\"]</code> </p> </li> <li> <p> <b>Medium</b>: <code>[\"4\", \"5\", \"6\"]</code> </p> </li> <li> <p> <b>High</b>: <code>[\"7\", \"8\", \"9\"]</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html#guardduty_findings-severity\">Severity levels for GuardDuty findings</a>.</p> </li> <li> <p>type</p> </li> <li> <p>updatedAt</p> <p>Type: ISO 8601 string format: YYYY-MM-DDTHH:MM:SS.SSSZ or YYYY-MM-DDTHH:MM:SSZ depending on whether the value contains milliseconds.</p> </li> <li> <p>resource.accessKeyDetails.accessKeyId</p> </li> <li> <p>resource.accessKeyDetails.principalId</p> </li> <li> <p>resource.accessKeyDetails.userName</p> </li> <li> <p>resource.accessKeyDetails.userType</p> </li> <li> <p>resource.instanceDetails.iamInstanceProfile.id</p> </li> <li> <p>resource.instanceDetails.imageId</p> </li> <li> <p>resource.instanceDetails.instanceId</p> </li> <li> <p>resource.instanceDetails.tags.key</p> </li> <li> <p>resource.instanceDetails.tags.value</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.ipv6Addresses</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.privateIpAddresses.privateIpAddress</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicDnsName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicIp</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.subnetId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.vpcId</p> </li> <li> <p>resource.instanceDetails.outpostArn</p> </li> <li> <p>resource.resourceType</p> </li> <li> <p>resource.s3BucketDetails.publicAccess.effectivePermissions</p> </li> <li> <p>resource.s3BucketDetails.name</p> </li> <li> <p>resource.s3BucketDetails.tags.key</p> </li> <li> <p>resource.s3BucketDetails.tags.value</p> </li> <li> <p>resource.s3BucketDetails.type</p> </li> <li> <p>service.action.actionType</p> </li> <li> <p>service.action.awsApiCallAction.api</p> </li> <li> <p>service.action.awsApiCallAction.callerType</p> </li> <li> <p>service.action.awsApiCallAction.errorCode</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV6</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.dnsRequestAction.domain</p> </li> <li> <p>service.action.dnsRequestAction.domainWithSuffix</p> </li> <li> <p>service.action.networkConnectionAction.blocked</p> </li> <li> <p>service.action.networkConnectionAction.connectionDirection</p> </li> <li> <p>service.action.networkConnectionAction.localPortDetails.port</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV6</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.networkConnectionAction.remotePortDetails.port</p> </li> <li> <p>service.action.awsApiCallAction.remoteAccountDetails.affiliated</p> </li> <li> <p>service.action.kubernetesApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.kubernetesApiCallAction.remoteIpDetails.ipAddressV6</p> </li> <li> <p>service.action.kubernetesApiCallAction.namespace</p> </li> <li> <p>service.action.kubernetesApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.kubernetesApiCallAction.requestUri</p> </li> <li> <p>service.action.kubernetesApiCallAction.statusCode</p> </li> <li> <p>service.action.networkConnectionAction.localIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.localIpDetails.ipAddressV6</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.awsApiCallAction.remoteAccountDetails.accountId</p> </li> <li> <p>service.additionalInfo.threatListName</p> </li> <li> <p>service.resourceRole</p> </li> <li> <p>resource.eksClusterDetails.name</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.name</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.namespace</p> </li> <li> <p>resource.kubernetesDetails.kubernetesUserDetails.username</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.containers.image</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.containers.imagePrefix</p> </li> <li> <p>service.ebsVolumeScanDetails.scanId</p> </li> <li> <p>service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames.name</p> </li> <li> <p>service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames.severity</p> </li> <li> <p>service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames.filePaths.hash</p> </li> <li> <p>resource.ecsClusterDetails.name</p> </li> <li> <p>resource.ecsClusterDetails.taskDetails.containers.image</p> </li> <li> <p>resource.ecsClusterDetails.taskDetails.definitionArn</p> </li> <li> <p>resource.containerDetails.image</p> </li> <li> <p>resource.rdsDbInstanceDetails.dbInstanceIdentifier</p> </li> <li> <p>resource.rdsDbInstanceDetails.dbClusterIdentifier</p> </li> <li> <p>resource.rdsDbInstanceDetails.engine</p> </li> <li> <p>resource.rdsDbUserDetails.user</p> </li> <li> <p>resource.rdsDbInstanceDetails.tags.key</p> </li> <li> <p>resource.rdsDbInstanceDetails.tags.value</p> </li> <li> <p>service.runtimeDetails.process.executableSha256</p> </li> <li> <p>service.runtimeDetails.process.name</p> </li> <li> <p>service.runtimeDetails.process.name</p> </li> <li> <p>resource.lambdaDetails.functionName</p> </li> <li> <p>resource.lambdaDetails.functionArn</p> </li> <li> <p>resource.lambdaDetails.tags.key</p> </li> <li> <p>resource.lambdaDetails.tags.value</p> </li> </ul>",
+          "documentation":"<p>Represents the criteria to be used in the filter for querying findings.</p> <p>You can only use the following attributes to query findings:</p> <ul> <li> <p>accountId</p> </li> <li> <p>id</p> </li> <li> <p>region</p> </li> <li> <p>severity</p> <p>To filter on the basis of severity, the API and CLI use the following input list for the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_FindingCriteria.html\">FindingCriteria</a> condition:</p> <ul> <li> <p> <b>Low</b>: <code>[\"1\", \"2\", \"3\"]</code> </p> </li> <li> <p> <b>Medium</b>: <code>[\"4\", \"5\", \"6\"]</code> </p> </li> <li> <p> <b>High</b>: <code>[\"7\", \"8\"]</code> </p> </li> <li> <p> <b>Critical</b>: <code>[\"9\", \"10\"]</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings-severity.html\">Findings severity levels</a> in the <i>Amazon GuardDuty User Guide</i>.</p> </li> <li> <p>type</p> </li> <li> <p>updatedAt</p> <p>Type: ISO 8601 string format: YYYY-MM-DDTHH:MM:SS.SSSZ or YYYY-MM-DDTHH:MM:SSZ depending on whether the value contains milliseconds.</p> </li> <li> <p>resource.accessKeyDetails.accessKeyId</p> </li> <li> <p>resource.accessKeyDetails.principalId</p> </li> <li> <p>resource.accessKeyDetails.userName</p> </li> <li> <p>resource.accessKeyDetails.userType</p> </li> <li> <p>resource.instanceDetails.iamInstanceProfile.id</p> </li> <li> <p>resource.instanceDetails.imageId</p> </li> <li> <p>resource.instanceDetails.instanceId</p> </li> <li> <p>resource.instanceDetails.tags.key</p> </li> <li> <p>resource.instanceDetails.tags.value</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.ipv6Addresses</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.privateIpAddresses.privateIpAddress</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicDnsName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicIp</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.subnetId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.vpcId</p> </li> <li> <p>resource.instanceDetails.outpostArn</p> </li> <li> <p>resource.resourceType</p> </li> <li> <p>resource.s3BucketDetails.publicAccess.effectivePermissions</p> </li> <li> <p>resource.s3BucketDetails.name</p> </li> <li> <p>resource.s3BucketDetails.tags.key</p> </li> <li> <p>resource.s3BucketDetails.tags.value</p> </li> <li> <p>resource.s3BucketDetails.type</p> </li> <li> <p>service.action.actionType</p> </li> <li> <p>service.action.awsApiCallAction.api</p> </li> <li> <p>service.action.awsApiCallAction.callerType</p> </li> <li> <p>service.action.awsApiCallAction.errorCode</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV6</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.dnsRequestAction.domain</p> </li> <li> <p>service.action.dnsRequestAction.domainWithSuffix</p> </li> <li> <p>service.action.networkConnectionAction.blocked</p> </li> <li> <p>service.action.networkConnectionAction.connectionDirection</p> </li> <li> <p>service.action.networkConnectionAction.localPortDetails.port</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV6</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.networkConnectionAction.remotePortDetails.port</p> </li> <li> <p>service.action.awsApiCallAction.remoteAccountDetails.affiliated</p> </li> <li> <p>service.action.kubernetesApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.kubernetesApiCallAction.remoteIpDetails.ipAddressV6</p> </li> <li> <p>service.action.kubernetesApiCallAction.namespace</p> </li> <li> <p>service.action.kubernetesApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.kubernetesApiCallAction.requestUri</p> </li> <li> <p>service.action.kubernetesApiCallAction.statusCode</p> </li> <li> <p>service.action.networkConnectionAction.localIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.localIpDetails.ipAddressV6</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.awsApiCallAction.remoteAccountDetails.accountId</p> </li> <li> <p>service.additionalInfo.threatListName</p> </li> <li> <p>service.resourceRole</p> </li> <li> <p>resource.eksClusterDetails.name</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.name</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.namespace</p> </li> <li> <p>resource.kubernetesDetails.kubernetesUserDetails.username</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.containers.image</p> </li> <li> <p>resource.kubernetesDetails.kubernetesWorkloadDetails.containers.imagePrefix</p> </li> <li> <p>service.ebsVolumeScanDetails.scanId</p> </li> <li> <p>service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames.name</p> </li> <li> <p>service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames.severity</p> </li> <li> <p>service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames.filePaths.hash</p> </li> <li> <p>resource.ecsClusterDetails.name</p> </li> <li> <p>resource.ecsClusterDetails.taskDetails.containers.image</p> </li> <li> <p>resource.ecsClusterDetails.taskDetails.definitionArn</p> </li> <li> <p>resource.containerDetails.image</p> </li> <li> <p>resource.rdsDbInstanceDetails.dbInstanceIdentifier</p> </li> <li> <p>resource.rdsDbInstanceDetails.dbClusterIdentifier</p> </li> <li> <p>resource.rdsDbInstanceDetails.engine</p> </li> <li> <p>resource.rdsDbUserDetails.user</p> </li> <li> <p>resource.rdsDbInstanceDetails.tags.key</p> </li> <li> <p>resource.rdsDbInstanceDetails.tags.value</p> </li> <li> <p>service.runtimeDetails.process.executableSha256</p> </li> <li> <p>service.runtimeDetails.process.name</p> </li> <li> <p>service.runtimeDetails.process.name</p> </li> <li> <p>resource.lambdaDetails.functionName</p> </li> <li> <p>resource.lambdaDetails.functionArn</p> </li> <li> <p>resource.lambdaDetails.tags.key</p> </li> <li> <p>resource.lambdaDetails.tags.value</p> </li> </ul>",
           "locationName":"findingCriteria"
         },
         "ClientToken":{
@@ -2264,7 +2459,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector of the GuardDuty account that you want to create an IPSet for.</p>",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty account for which you want to create an IPSet.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2312,6 +2507,51 @@
         }
       }
     },
+    "CreateMalwareProtectionPlanRequest":{
+      "type":"structure",
+      "required":[
+        "Role",
+        "ProtectedResource"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The idempotency token for the create request.</p>",
+          "idempotencyToken":true,
+          "locationName":"clientToken"
+        },
+        "Role":{
+          "shape":"String",
+          "documentation":"<p>Amazon Resource Name (ARN) of the IAM role that has the permissions to scan and add tags to the associated protected resource.</p>",
+          "locationName":"role"
+        },
+        "ProtectedResource":{
+          "shape":"CreateProtectedResource",
+          "documentation":"<p>Information about the protected resource that is associated with the created Malware Protection plan. Presently, <code>S3Bucket</code> is the only supported protected resource.</p>",
+          "locationName":"protectedResource"
+        },
+        "Actions":{
+          "shape":"MalwareProtectionPlanActions",
+          "documentation":"<p>Information about whether the tags will be added to the S3 object after scanning.</p>",
+          "locationName":"actions"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags added to the Malware Protection plan resource. </p>",
+          "locationName":"tags"
+        }
+      }
+    },
+    "CreateMalwareProtectionPlanResponse":{
+      "type":"structure",
+      "members":{
+        "MalwareProtectionPlanId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier associated with the Malware Protection plan resource.</p>",
+          "locationName":"malwareProtectionPlanId"
+        }
+      }
+    },
     "CreateMembersRequest":{
       "type":"structure",
       "required":[
@@ -2321,7 +2561,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector of the GuardDuty account that you want to associate member accounts with.</p>",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty account for which you want to associate member accounts.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2343,6 +2583,17 @@
         }
       }
     },
+    "CreateProtectedResource":{
+      "type":"structure",
+      "members":{
+        "S3Bucket":{
+          "shape":"CreateS3BucketResource",
+          "documentation":"<p>Information about the protected S3 bucket resource.</p>",
+          "locationName":"s3Bucket"
+        }
+      },
+      "documentation":"<p>Information about the protected resource that is associated with the created Malware Protection plan. Presently, <code>S3Bucket</code> is the only supported protected resource.</p>"
+    },
     "CreatePublishingDestinationRequest":{
       "type":"structure",
       "required":[
@@ -2353,7 +2604,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the GuardDuty detector associated with the publishing destination.</p>",
+          "documentation":"<p>The ID of the GuardDuty detector associated with the publishing destination.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2386,13 +2637,29 @@
         }
       }
     },
+    "CreateS3BucketResource":{
+      "type":"structure",
+      "members":{
+        "BucketName":{
+          "shape":"String",
+          "documentation":"<p>Name of the S3 bucket.</p>",
+          "locationName":"bucketName"
+        },
+        "ObjectPrefixes":{
+          "shape":"MalwareProtectionPlanObjectPrefixesList",
+          "documentation":"<p>Information about the specified object prefixes. The S3 object will be scanned only if it belongs to any of the specified object prefixes.</p>",
+          "locationName":"objectPrefixes"
+        }
+      },
+      "documentation":"<p>Information about the protected S3 bucket resource.</p>"
+    },
     "CreateSampleFindingsRequest":{
       "type":"structure",
       "required":["DetectorId"],
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector to create sample findings for.</p>",
+          "documentation":"<p>The ID of the detector for which you need to create sample findings.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2420,7 +2687,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector of the GuardDuty account that you want to create a threatIntelSet for.</p>",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty account for which you want to create a <code>ThreatIntelSet</code>.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2631,6 +2898,32 @@
       },
       "documentation":"<p>Contains information about which data sources are enabled for the GuardDuty member account.</p>"
     },
+    "DateStatistics":{
+      "type":"structure",
+      "members":{
+        "Date":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the total findings count is observed.</p> <p>For example, <code>Date</code> would look like <code>\"2024-09-05T17:00:00-07:00\"</code> whereas <code>LastGeneratedAt</code> would look like 2024-09-05T17:12:29-07:00\".</p>",
+          "locationName":"date"
+        },
+        "LastGeneratedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the last finding in the findings count, was generated.</p>",
+          "locationName":"lastGeneratedAt"
+        },
+        "Severity":{
+          "shape":"Double",
+          "documentation":"<p>The severity of the findings generated on each date.</p>",
+          "locationName":"severity"
+        },
+        "TotalFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of findings that were generated per severity level on each date.</p>",
+          "locationName":"totalFindings"
+        }
+      },
+      "documentation":"<p>Represents list a map of dates with a count of total findings generated on each date.</p>"
+    },
     "DeclineInvitationsRequest":{
       "type":"structure",
       "required":["AccountIds"],
@@ -2675,7 +2968,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that you want to delete.</p>",
+          "documentation":"<p>The unique ID of the detector that you want to delete.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         }
@@ -2695,7 +2988,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the filter is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with the filter.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2721,7 +3014,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector associated with the IPSet.</p>",
+          "documentation":"<p>The unique ID of the detector associated with the IPSet.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2760,6 +3053,18 @@
         }
       }
     },
+    "DeleteMalwareProtectionPlanRequest":{
+      "type":"structure",
+      "required":["MalwareProtectionPlanId"],
+      "members":{
+        "MalwareProtectionPlanId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier associated with Malware Protection plan resource.</p>",
+          "location":"uri",
+          "locationName":"malwareProtectionPlanId"
+        }
+      }
+    },
     "DeleteMembersRequest":{
       "type":"structure",
       "required":[
@@ -2769,7 +3074,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector of the GuardDuty account whose members you want to delete.</p>",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty account whose members you want to delete.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2800,7 +3105,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector associated with the publishing destination to delete.</p>",
+          "documentation":"<p>The unique ID of the detector associated with the publishing destination to delete.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2826,7 +3131,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the threatIntelSet is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with the threatIntelSet.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2849,7 +3154,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the request is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that the request is associated with.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2881,7 +3186,7 @@
       "members":{
         "Scans":{
           "shape":"Scans",
-          "documentation":"<p>Contains information about malware scans.</p>",
+          "documentation":"<p>Contains information about malware scans associated with GuardDuty Malware Protection for EC2.</p>",
           "locationName":"scans"
         },
         "NextToken":{
@@ -2897,7 +3202,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector to retrieve information about the delegated administrator from.</p>",
+          "documentation":"<p>The detector ID of the delegated administrator for which you need to retrieve the information.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2964,7 +3269,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector associated with the publishing destination to retrieve.</p>",
+          "documentation":"<p>The unique ID of the detector associated with the publishing destination to retrieve.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -3072,6 +3377,11 @@
           "shape":"Anomaly",
           "documentation":"<p>The details about the anomalous activity that caused GuardDuty to generate the finding.</p>",
           "locationName":"anomaly"
+        },
+        "Sequence":{
+          "shape":"Sequence",
+          "documentation":"<p>The details about the attack sequence.</p>",
+          "locationName":"sequence"
         }
       },
       "documentation":"<p>Contains information about the detected behavior.</p>"
@@ -3426,6 +3736,93 @@
       },
       "documentation":"<p>Describes the configuration of scanning EBS volumes as a data source.</p>"
     },
+    "Ec2Instance":{
+      "type":"structure",
+      "members":{
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The availability zone of the Amazon EC2 instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-availability-zones\">Availability zones</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "locationName":"availabilityZone"
+        },
+        "ImageDescription":{
+          "shape":"String",
+          "documentation":"<p>The image description of the Amazon EC2 instance.</p>",
+          "locationName":"imageDescription"
+        },
+        "InstanceState":{
+          "shape":"String",
+          "documentation":"<p>The state of the Amazon EC2 instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Amazon EC2 instance state changes</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "locationName":"instanceState"
+        },
+        "IamInstanceProfile":{"shape":"IamInstanceProfile"},
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>Type of the Amazon EC2 instance.</p>",
+          "locationName":"instanceType"
+        },
+        "OutpostArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Outpost. This shows applicable Amazon Web Services Outposts instances.</p>",
+          "locationName":"outpostArn"
+        },
+        "Platform":{
+          "shape":"String",
+          "documentation":"<p>The platform of the Amazon EC2 instance.</p>",
+          "locationName":"platform"
+        },
+        "ProductCodes":{
+          "shape":"ProductCodes",
+          "documentation":"<p>The product code of the Amazon EC2 instance.</p>",
+          "locationName":"productCodes"
+        },
+        "Ec2NetworkInterfaceUids":{
+          "shape":"Ec2NetworkInterfaceUids",
+          "documentation":"<p>The ID of the network interface.</p>",
+          "locationName":"ec2NetworkInterfaceUids"
+        }
+      },
+      "documentation":"<p>Details about the potentially impacted Amazon EC2 instance resource.</p>"
+    },
+    "Ec2NetworkInterface":{
+      "type":"structure",
+      "members":{
+        "Ipv6Addresses":{
+          "shape":"Ipv6Addresses",
+          "documentation":"<p>A list of IPv6 addresses for the Amazon EC2 instance.</p>",
+          "locationName":"ipv6Addresses"
+        },
+        "PrivateIpAddresses":{
+          "shape":"PrivateIpAddresses",
+          "documentation":"<p>Other private IP address information of the Amazon EC2 instance.</p>",
+          "locationName":"privateIpAddresses"
+        },
+        "PublicIp":{
+          "shape":"String",
+          "documentation":"<p>The public IP address of the Amazon EC2 instance.</p>",
+          "locationName":"publicIp"
+        },
+        "SecurityGroups":{
+          "shape":"SecurityGroups",
+          "documentation":"<p>The security groups associated with the Amazon EC2 instance.</p>",
+          "locationName":"securityGroups"
+        },
+        "SubNetId":{
+          "shape":"String",
+          "documentation":"<p>The subnet ID of the Amazon EC2 instance.</p>",
+          "locationName":"subNetId"
+        },
+        "VpcId":{
+          "shape":"String",
+          "documentation":"<p>The VPC ID of the Amazon EC2 instance.</p>",
+          "locationName":"vpcId"
+        }
+      },
+      "documentation":"<p>Contains information about the elastic network interface of the Amazon EC2 instance.</p>"
+    },
+    "Ec2NetworkInterfaceUids":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "EcsClusterDetails":{
       "type":"structure",
       "members":{
@@ -3524,6 +3921,11 @@
           "shape":"String",
           "documentation":"<p>The name of the task group that's associated with the task.</p>",
           "locationName":"group"
+        },
+        "LaunchType":{
+          "shape":"String",
+          "documentation":"<p>A capacity on which the task is running. For example, <code>Fargate</code> and <code>EC2</code>.</p>",
+          "locationName":"launchType"
         }
       },
       "documentation":"<p>Contains information about the task in an ECS cluster.</p>"
@@ -3585,6 +3987,11 @@
       "type":"structure",
       "members":{
       }
+    },
+    "EndpointIds":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":400
     },
     "Eq":{
       "type":"list",
@@ -3818,6 +4225,11 @@
           "shape":"String",
           "documentation":"<p>The time and date when the finding was last updated.</p>",
           "locationName":"updatedAt"
+        },
+        "AssociatedAttackSequenceArn":{
+          "shape":"String",
+          "documentation":"<p>Amazon Resource Name (ARN) associated with the attack sequence finding.</p>",
+          "locationName":"associatedAttackSequenceArn"
         }
       },
       "documentation":"<p>Contains information about the finding that is generated when abnormal or suspicious activity is detected.</p>"
@@ -3852,6 +4264,16 @@
         "SIX_HOURS"
       ]
     },
+    "FindingResourceType":{
+      "type":"string",
+      "enum":[
+        "EC2_INSTANCE",
+        "EC2_NETWORK_INTERFACE",
+        "S3_BUCKET",
+        "S3_OBJECT",
+        "ACCESS_KEY"
+      ]
+    },
     "FindingStatisticType":{
       "type":"string",
       "enum":["COUNT_BY_SEVERITY"]
@@ -3867,8 +4289,35 @@
       "members":{
         "CountBySeverity":{
           "shape":"CountBySeverity",
-          "documentation":"<p>Represents a map of severity to count statistics for a set of findings.</p>",
+          "documentation":"<p>Represents a list of map of severity to count statistics for a set of findings.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This parameter is deprecated. Please set GroupBy to 'SEVERITY' to return GroupedBySeverity instead.",
           "locationName":"countBySeverity"
+        },
+        "GroupedByAccount":{
+          "shape":"GroupedByAccount",
+          "documentation":"<p>Represents a list of map of accounts with a findings count associated with each account.</p>",
+          "locationName":"groupedByAccount"
+        },
+        "GroupedByDate":{
+          "shape":"GroupedByDate",
+          "documentation":"<p>Represents a list of map of dates with a count of total findings generated on each date per severity level.</p>",
+          "locationName":"groupedByDate"
+        },
+        "GroupedByFindingType":{
+          "shape":"GroupedByFindingType",
+          "documentation":"<p>Represents a list of map of finding types with a count of total findings generated for each type. </p> <p>Based on the <code>orderBy</code> parameter, this request returns either the most occurring finding types or the least occurring finding types. If the <code>orderBy</code> parameter is <code>ASC</code>, this will represent the least occurring finding types in your account; otherwise, this will represent the most occurring finding types. The default value of <code>orderBy</code> is <code>DESC</code>.</p>",
+          "locationName":"groupedByFindingType"
+        },
+        "GroupedByResource":{
+          "shape":"GroupedByResource",
+          "documentation":"<p>Represents a list of map of top resources with a count of total findings.</p>",
+          "locationName":"groupedByResource"
+        },
+        "GroupedBySeverity":{
+          "shape":"GroupedBySeverity",
+          "documentation":"<p>Represents a list of map of total findings for each severity level.</p>",
+          "locationName":"groupedBySeverity"
         }
       },
       "documentation":"<p>Contains information about finding statistics.</p>"
@@ -3877,6 +4326,27 @@
       "type":"string",
       "max":50,
       "min":1
+    },
+    "FindingTypeStatistics":{
+      "type":"structure",
+      "members":{
+        "FindingType":{
+          "shape":"String",
+          "documentation":"<p>Name of the finding type.</p>",
+          "locationName":"findingType"
+        },
+        "LastGeneratedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which this finding type was last generated in your environment.</p>",
+          "locationName":"lastGeneratedAt"
+        },
+        "TotalFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of findings associated with generated for each distinct finding type.</p>",
+          "locationName":"totalFindings"
+        }
+      },
+      "documentation":"<p>Information about each finding type associated with the <code>groupedByFindingType</code> statistics.</p>"
     },
     "FindingTypes":{
       "type":"list",
@@ -3990,13 +4460,13 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the GuardDuty detector associated to the coverage statistics.</p>",
+          "documentation":"<p>The unique ID of the GuardDuty detector.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
         "FilterCriteria":{
           "shape":"CoverageFilterCriteria",
-          "documentation":"<p>Represents the criteria used to filter the coverage statistics</p>",
+          "documentation":"<p>Represents the criteria used to filter the coverage statistics.</p>",
           "locationName":"filterCriteria"
         },
         "StatisticsType":{
@@ -4022,7 +4492,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that you want to get.</p>",
+          "documentation":"<p>The unique ID of the detector that you want to get.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         }
@@ -4088,7 +4558,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the filter is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with this filter.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -4149,7 +4619,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector that specifies the GuardDuty service whose findings you want to retrieve.</p>",
+          "documentation":"<p>The ID of the detector that specifies the GuardDuty service whose findings you want to retrieve.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -4178,26 +4648,40 @@
     },
     "GetFindingsStatisticsRequest":{
       "type":"structure",
-      "required":[
-        "DetectorId",
-        "FindingStatisticTypes"
-      ],
+      "required":["DetectorId"],
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector that specifies the GuardDuty service whose findings' statistics you want to retrieve.</p>",
+          "documentation":"<p>The ID of the detector whose findings statistics you want to retrieve.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
         "FindingStatisticTypes":{
           "shape":"FindingStatisticTypes",
           "documentation":"<p>The types of finding statistics to retrieve.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This parameter is deprecated, please use GroupBy instead",
           "locationName":"findingStatisticTypes"
         },
         "FindingCriteria":{
           "shape":"FindingCriteria",
           "documentation":"<p>Represents the criteria that is used for querying findings.</p>",
           "locationName":"findingCriteria"
+        },
+        "GroupBy":{
+          "shape":"GroupByType",
+          "documentation":"<p>Displays the findings statistics grouped by one of the listed valid values.</p>",
+          "locationName":"groupBy"
+        },
+        "OrderBy":{
+          "shape":"OrderBy",
+          "documentation":"<p>Displays the sorted findings in the requested order. The default value of <code>orderBy</code> is <code>DESC</code>.</p> <p>You can use this parameter only with the <code>groupBy</code> parameter.</p>",
+          "locationName":"orderBy"
+        },
+        "MaxResults":{
+          "shape":"MaxResults100",
+          "documentation":"<p>The maximum number of results to be returned in the response. The default value is 25.</p> <p>You can use this parameter only with the <code>groupBy</code> parameter.</p>",
+          "locationName":"maxResults"
         }
       }
     },
@@ -4209,6 +4693,11 @@
           "shape":"FindingStatistics",
           "documentation":"<p>The finding statistics object.</p>",
           "locationName":"findingStatistics"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination parameter to be used on the next list operation to retrieve more items.</p> <p>This parameter is currently not supported.</p>",
+          "locationName":"nextToken"
         }
       }
     },
@@ -4221,7 +4710,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the IPSet is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with the IPSet.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -4284,13 +4773,70 @@
         }
       }
     },
+    "GetMalwareProtectionPlanRequest":{
+      "type":"structure",
+      "required":["MalwareProtectionPlanId"],
+      "members":{
+        "MalwareProtectionPlanId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier associated with Malware Protection plan resource.</p>",
+          "location":"uri",
+          "locationName":"malwareProtectionPlanId"
+        }
+      }
+    },
+    "GetMalwareProtectionPlanResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>Amazon Resource Name (ARN) of the protected resource.</p>",
+          "locationName":"arn"
+        },
+        "Role":{
+          "shape":"String",
+          "documentation":"<p>Amazon Resource Name (ARN) of the IAM role that includes the permissions to scan and add tags to the associated protected resource.</p>",
+          "locationName":"role"
+        },
+        "ProtectedResource":{
+          "shape":"CreateProtectedResource",
+          "documentation":"<p>Information about the protected resource that is associated with the created Malware Protection plan. Presently, <code>S3Bucket</code> is the only supported protected resource.</p>",
+          "locationName":"protectedResource"
+        },
+        "Actions":{
+          "shape":"MalwareProtectionPlanActions",
+          "documentation":"<p>Information about whether the tags will be added to the S3 object after scanning.</p>",
+          "locationName":"actions"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the Malware Protection plan resource was created.</p>",
+          "locationName":"createdAt"
+        },
+        "Status":{
+          "shape":"MalwareProtectionPlanStatus",
+          "documentation":"<p>Malware Protection plan status.</p>",
+          "locationName":"status"
+        },
+        "StatusReasons":{
+          "shape":"MalwareProtectionPlanStatusReasonsList",
+          "documentation":"<p>Information about the issue code and message associated to the status of your Malware Protection plan.</p>",
+          "locationName":"statusReasons"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags added to the Malware Protection plan resource.</p>",
+          "locationName":"tags"
+        }
+      }
+    },
     "GetMalwareScanSettingsRequest":{
       "type":"structure",
       "required":["DetectorId"],
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the scan setting is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with this scan.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         }
@@ -4317,7 +4863,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector of the GuardDuty member account.</p>",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty member account.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         }
@@ -4347,13 +4893,13 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The detector ID for the administrator account.</p>",
+          "documentation":"<p>The detector ID for the administrator account.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
         "AccountIds":{
           "shape":"AccountIds",
-          "documentation":"<p>The account ID of the member account.</p>",
+          "documentation":"<p>A list of member account IDs.</p>",
           "locationName":"accountIds"
         }
       }
@@ -4386,7 +4932,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector of the GuardDuty account whose members you want to retrieve.</p>",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty account whose members you want to retrieve.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -4432,7 +4978,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector of the GuardDuty member account.</p>",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty member account.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -4467,7 +5013,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the threatIntelSet is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with the threatIntelSet.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -4525,7 +5071,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector that specifies the GuardDuty service whose usage statistics you want to retrieve.</p>",
+          "documentation":"<p>The ID of the detector that specifies the GuardDuty service whose usage statistics you want to retrieve.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -4570,6 +5116,36 @@
           "locationName":"nextToken"
         }
       }
+    },
+    "GroupByType":{
+      "type":"string",
+      "enum":[
+        "ACCOUNT",
+        "DATE",
+        "FINDING_TYPE",
+        "RESOURCE",
+        "SEVERITY"
+      ]
+    },
+    "GroupedByAccount":{
+      "type":"list",
+      "member":{"shape":"AccountStatistics"}
+    },
+    "GroupedByDate":{
+      "type":"list",
+      "member":{"shape":"DateStatistics"}
+    },
+    "GroupedByFindingType":{
+      "type":"list",
+      "member":{"shape":"FindingTypeStatistics"}
+    },
+    "GroupedByResource":{
+      "type":"list",
+      "member":{"shape":"ResourceStatistics"}
+    },
+    "GroupedBySeverity":{
+      "type":"list",
+      "member":{"shape":"SeverityStatistics"}
     },
     "Groups":{
       "type":"list",
@@ -4642,6 +5218,64 @@
         }
       },
       "documentation":"<p>Contains information about the impersonated user.</p>"
+    },
+    "Indicator":{
+      "type":"structure",
+      "required":["Key"],
+      "members":{
+        "Key":{
+          "shape":"IndicatorType",
+          "documentation":"<p>Specific indicator keys observed in the attack sequence.</p>",
+          "locationName":"key"
+        },
+        "Values":{
+          "shape":"IndicatorValues",
+          "documentation":"<p>Values associated with each indicator key. For example, if the indicator key is <code>SUSPICIOUS_NETWORK</code>, then the value will be the name of the network. If the indicator key is <code>ATTACK_TACTIC</code>, then the value will be one of the MITRE tactics. </p> <p>For more information about the values associated with the key, see GuardDuty Extended Threat Detection in the <i>GuardDuty User Guide.</i> </p>",
+          "locationName":"values"
+        },
+        "Title":{
+          "shape":"IndicatorTitle",
+          "documentation":"<p>Title describing the indicator.</p>",
+          "locationName":"title"
+        }
+      },
+      "documentation":"<p>Contains information about the indicators that include a set of signals observed in an attack sequence.</p>"
+    },
+    "IndicatorTitle":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "IndicatorType":{
+      "type":"string",
+      "enum":[
+        "SUSPICIOUS_USER_AGENT",
+        "SUSPICIOUS_NETWORK",
+        "MALICIOUS_IP",
+        "TOR_IP",
+        "ATTACK_TACTIC",
+        "HIGH_RISK_API",
+        "ATTACK_TECHNIQUE",
+        "UNUSUAL_API_FOR_ACCOUNT",
+        "UNUSUAL_ASN_FOR_ACCOUNT",
+        "UNUSUAL_ASN_FOR_USER"
+      ]
+    },
+    "IndicatorValueString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "IndicatorValues":{
+      "type":"list",
+      "member":{"shape":"IndicatorValueString"},
+      "max":400,
+      "min":1
+    },
+    "Indicators":{
+      "type":"list",
+      "member":{"shape":"Indicator"},
+      "max":400
     },
     "InstanceArn":{
       "type":"string",
@@ -4783,7 +5417,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector of the GuardDuty account that you want to invite members with.</p>",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty account with which you want to invite members.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -4858,6 +5492,26 @@
       "max":50,
       "min":0
     },
+    "ItemPath":{
+      "type":"structure",
+      "members":{
+        "NestedItemPath":{
+          "shape":"String",
+          "documentation":"<p>The nested item path where the infected file was found.</p>",
+          "locationName":"nestedItemPath"
+        },
+        "Hash":{
+          "shape":"String",
+          "documentation":"<p>The hash value of the infected resource.</p>",
+          "locationName":"hash"
+        }
+      },
+      "documentation":"<p>Information about the nested item path and hash of the protected resource.</p>"
+    },
+    "ItemPaths":{
+      "type":"list",
+      "member":{"shape":"ItemPath"}
+    },
     "KubernetesApiCallAction":{
       "type":"structure",
       "members":{
@@ -4874,7 +5528,7 @@
         "SourceIps":{
           "shape":"SourceIps",
           "documentation":"<p>The IP of the Kubernetes API caller and the IPs of any proxies or load balancers between the caller and the API endpoint.</p>",
-          "locationName":"sourceIps"
+          "locationName":"sourceIPs"
         },
         "UserAgent":{
           "shape":"String",
@@ -5270,7 +5924,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector whose coverage details you want to retrieve.</p>",
+          "documentation":"<p>The unique ID of the detector whose coverage details you want to retrieve.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -5351,7 +6005,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the filter is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with the filter.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -5391,13 +6045,13 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector that specifies the GuardDuty service whose findings you want to list.</p>",
+          "documentation":"<p>The ID of the detector that specifies the GuardDuty service whose findings you want to list.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
         "FindingCriteria":{
           "shape":"FindingCriteria",
-          "documentation":"<p>Represents the criteria used for querying findings. Valid values include:</p> <ul> <li> <p>JSON field name</p> </li> <li> <p>accountId</p> </li> <li> <p>region</p> </li> <li> <p>confidence</p> </li> <li> <p>id</p> </li> <li> <p>resource.accessKeyDetails.accessKeyId</p> </li> <li> <p>resource.accessKeyDetails.principalId</p> </li> <li> <p>resource.accessKeyDetails.userName</p> </li> <li> <p>resource.accessKeyDetails.userType</p> </li> <li> <p>resource.instanceDetails.iamInstanceProfile.id</p> </li> <li> <p>resource.instanceDetails.imageId</p> </li> <li> <p>resource.instanceDetails.instanceId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.ipv6Addresses</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.privateIpAddresses.privateIpAddress</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicDnsName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicIp</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.subnetId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.vpcId</p> </li> <li> <p>resource.instanceDetails.tags.key</p> </li> <li> <p>resource.instanceDetails.tags.value</p> </li> <li> <p>resource.resourceType</p> </li> <li> <p>service.action.actionType</p> </li> <li> <p>service.action.awsApiCallAction.api</p> </li> <li> <p>service.action.awsApiCallAction.callerType</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.dnsRequestAction.domain</p> </li> <li> <p>service.action.dnsRequestAction.domainWithSuffix</p> </li> <li> <p>service.action.networkConnectionAction.blocked</p> </li> <li> <p>service.action.networkConnectionAction.connectionDirection</p> </li> <li> <p>service.action.networkConnectionAction.localPortDetails.port</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.networkConnectionAction.remotePortDetails.port</p> </li> <li> <p>service.additionalInfo.threatListName</p> </li> <li> <p>service.archived</p> <p>When this attribute is set to 'true', only archived findings are listed. When it's set to 'false', only unarchived findings are listed. When this attribute is not set, all existing findings are listed.</p> </li> <li> <p>service.resourceRole</p> </li> <li> <p>severity</p> </li> <li> <p>type</p> </li> <li> <p>updatedAt</p> <p>Type: Timestamp in Unix Epoch millisecond format: 1486685375000</p> </li> </ul>",
+          "documentation":"<p>Represents the criteria used for querying findings. Valid values include:</p> <ul> <li> <p>JSON field name</p> </li> <li> <p>accountId</p> </li> <li> <p>region</p> </li> <li> <p>confidence</p> </li> <li> <p>id</p> </li> <li> <p>resource.accessKeyDetails.accessKeyId</p> </li> <li> <p>resource.accessKeyDetails.principalId</p> </li> <li> <p>resource.accessKeyDetails.userName</p> </li> <li> <p>resource.accessKeyDetails.userType</p> </li> <li> <p>resource.instanceDetails.iamInstanceProfile.id</p> </li> <li> <p>resource.instanceDetails.imageId</p> </li> <li> <p>resource.instanceDetails.instanceId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.ipv6Addresses</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.privateIpAddresses.privateIpAddress</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicDnsName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicIp</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.subnetId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.vpcId</p> </li> <li> <p>resource.instanceDetails.tags.key</p> </li> <li> <p>resource.instanceDetails.tags.value</p> </li> <li> <p>resource.resourceType</p> </li> <li> <p>service.action.actionType</p> </li> <li> <p>service.action.awsApiCallAction.api</p> </li> <li> <p>service.action.awsApiCallAction.callerType</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.dnsRequestAction.domain</p> </li> <li> <p>service.action.dnsRequestAction.domainWithSuffix</p> </li> <li> <p>service.action.networkConnectionAction.blocked</p> </li> <li> <p>service.action.networkConnectionAction.connectionDirection</p> </li> <li> <p>service.action.networkConnectionAction.localPortDetails.port</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.networkConnectionAction.remotePortDetails.port</p> </li> <li> <p>service.additionalInfo.threatListName</p> </li> <li> <p>service.archived</p> <p>When this attribute is set to 'true', only archived findings are listed. When it's set to 'false', only unarchived findings are listed. When this attribute is not set, all existing findings are listed.</p> </li> <li> <p>service.ebsVolumeScanDetails.scanId</p> </li> <li> <p>service.resourceRole</p> </li> <li> <p>severity</p> </li> <li> <p>type</p> </li> <li> <p>updatedAt</p> <p>Type: Timestamp in Unix Epoch millisecond format: 1486685375000</p> </li> </ul>",
           "locationName":"findingCriteria"
         },
         "SortCriteria":{
@@ -5439,7 +6093,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the IPSet is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with IPSet.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -5505,13 +6159,39 @@
         }
       }
     },
+    "ListMalwareProtectionPlansRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the list action. For subsequent calls to the action, fill nextToken in the request with the value of <code>NextToken</code> from the previous response to continue listing data.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListMalwareProtectionPlansResponse":{
+      "type":"structure",
+      "members":{
+        "MalwareProtectionPlans":{
+          "shape":"MalwareProtectionPlansSummary",
+          "documentation":"<p>A list of unique identifiers associated with each Malware Protection plan.</p>",
+          "locationName":"malwareProtectionPlans"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the list action. For subsequent calls to the action, fill nextToken in the request with the value of <code>NextToken</code> from the previous response to continue listing data.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "ListMembersRequest":{
       "type":"structure",
       "required":["DetectorId"],
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector the member is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with the member.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -5588,7 +6268,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector to retrieve publishing destinations for.</p>",
+          "documentation":"<p>The detector ID for which you want to retrieve the publishing destination.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -5650,7 +6330,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the threatIntelSet is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with the threatIntelSet.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -5791,6 +6471,97 @@
       },
       "documentation":"<p>Provides details about Malware Protection when it is enabled as a data source.</p>"
     },
+    "MalwareProtectionPlanActions":{
+      "type":"structure",
+      "members":{
+        "Tagging":{
+          "shape":"MalwareProtectionPlanTaggingAction",
+          "documentation":"<p>Indicates whether the scanned S3 object will have tags about the scan result.</p>",
+          "locationName":"tagging"
+        }
+      },
+      "documentation":"<p>Information about whether the tags will be added to the S3 object after scanning.</p>"
+    },
+    "MalwareProtectionPlanObjectPrefixesList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":5,
+      "min":0
+    },
+    "MalwareProtectionPlanStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "WARNING",
+        "ERROR"
+      ]
+    },
+    "MalwareProtectionPlanStatusReason":{
+      "type":"structure",
+      "members":{
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>Issue code.</p>",
+          "locationName":"code"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>Issue message that specifies the reason. For information about potential troubleshooting steps, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/troubleshoot-s3-malware-protection-status-errors.html\">Troubleshooting Malware Protection for S3 status issues</a> in the <i>GuardDuty User Guide</i>.</p>",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>Information about the issue code and message associated to the status of your Malware Protection plan.</p>"
+    },
+    "MalwareProtectionPlanStatusReasonsList":{
+      "type":"list",
+      "member":{"shape":"MalwareProtectionPlanStatusReason"},
+      "max":50,
+      "min":0
+    },
+    "MalwareProtectionPlanSummary":{
+      "type":"structure",
+      "members":{
+        "MalwareProtectionPlanId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier associated with Malware Protection plan.</p>",
+          "locationName":"malwareProtectionPlanId"
+        }
+      },
+      "documentation":"<p>Information about the Malware Protection plan resource.</p>"
+    },
+    "MalwareProtectionPlanTaggingAction":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"MalwareProtectionPlanTaggingActionStatus",
+          "documentation":"<p>Indicates whether or not the tags will added.</p>",
+          "locationName":"status"
+        }
+      },
+      "documentation":"<p>Information about adding tags to the scanned S3 object after the scan result.</p>"
+    },
+    "MalwareProtectionPlanTaggingActionStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "MalwareProtectionPlansSummary":{
+      "type":"list",
+      "member":{"shape":"MalwareProtectionPlanSummary"}
+    },
+    "MalwareScanDetails":{
+      "type":"structure",
+      "members":{
+        "Threats":{
+          "shape":"Threats",
+          "documentation":"<p>Information about the detected threats associated with the generated GuardDuty finding.</p>",
+          "locationName":"threats"
+        }
+      },
+      "documentation":"<p>Information about the malware scan that generated a GuardDuty finding.</p>"
+    },
     "ManagementType":{
       "type":"string",
       "enum":[
@@ -5832,6 +6603,11 @@
     "MaxResults":{
       "type":"integer",
       "max":50,
+      "min":1
+    },
+    "MaxResults100":{
+      "type":"integer",
+      "max":100,
       "min":1
     },
     "Member":{
@@ -6027,6 +6803,13 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "MfaStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "Name":{
       "type":"string",
       "max":300,
@@ -6035,6 +6818,18 @@
     "Neq":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "NetworkConnection":{
+      "type":"structure",
+      "required":["Direction"],
+      "members":{
+        "Direction":{
+          "shape":"NetworkDirection",
+          "documentation":"<p>The direction in which the network traffic is flowing.</p>",
+          "locationName":"direction"
+        }
+      },
+      "documentation":"<p>Contains information about the network connection.</p>"
     },
     "NetworkConnectionAction":{
       "type":"structure",
@@ -6064,6 +6859,11 @@
           "documentation":"<p>The local IP information of the connection.</p>",
           "locationName":"localIpDetails"
         },
+        "LocalNetworkInterface":{
+          "shape":"String",
+          "documentation":"<p>The EC2 instance's local elastic network interface utilized for the connection.</p>",
+          "locationName":"localNetworkInterface"
+        },
         "RemoteIpDetails":{
           "shape":"RemoteIpDetails",
           "documentation":"<p>The remote IP information of the connection.</p>",
@@ -6076,6 +6876,92 @@
         }
       },
       "documentation":"<p>Contains information about the NETWORK_CONNECTION action described in the finding.</p>"
+    },
+    "NetworkDirection":{
+      "type":"string",
+      "enum":[
+        "INBOUND",
+        "OUTBOUND"
+      ]
+    },
+    "NetworkEndpoint":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The ID of the network endpoint.</p>",
+          "locationName":"id"
+        },
+        "Ip":{
+          "shape":"String",
+          "documentation":"<p>The IP address associated with the network endpoint.</p>",
+          "locationName":"ip"
+        },
+        "Domain":{
+          "shape":"String",
+          "documentation":"<p>The domain information for the network endpoint.</p>",
+          "locationName":"domain"
+        },
+        "Port":{
+          "shape":"Integer",
+          "documentation":"<p>The port number associated with the network endpoint.</p>",
+          "locationName":"port"
+        },
+        "Location":{
+          "shape":"NetworkGeoLocation",
+          "documentation":"<p>Information about the location of the network endpoint.</p>",
+          "locationName":"location"
+        },
+        "AutonomousSystem":{
+          "shape":"AutonomousSystem",
+          "documentation":"<p>The Autonomous System (AS) of the network endpoint.</p>",
+          "locationName":"autonomousSystem"
+        },
+        "Connection":{
+          "shape":"NetworkConnection",
+          "documentation":"<p>Information about the network connection.</p>",
+          "locationName":"connection"
+        }
+      },
+      "documentation":"<p>Contains information about network endpoints that were observed in the attack sequence.</p>"
+    },
+    "NetworkEndpoints":{
+      "type":"list",
+      "member":{"shape":"NetworkEndpoint"},
+      "max":400
+    },
+    "NetworkGeoLocation":{
+      "type":"structure",
+      "required":[
+        "City",
+        "Country",
+        "Latitude",
+        "Longitude"
+      ],
+      "members":{
+        "City":{
+          "shape":"String",
+          "documentation":"<p>The name of the city.</p>",
+          "locationName":"city"
+        },
+        "Country":{
+          "shape":"String",
+          "documentation":"<p>The name of the country.</p>",
+          "locationName":"country"
+        },
+        "Latitude":{
+          "shape":"Double",
+          "documentation":"<p>The latitude information of the endpoint location.</p>",
+          "locationName":"lat"
+        },
+        "Longitude":{
+          "shape":"Double",
+          "documentation":"<p>The longitude information of the endpoint location.</p>",
+          "locationName":"lon"
+        }
+      },
+      "documentation":"<p>Contains information about network endpoint location.</p>"
     },
     "NetworkInterface":{
       "type":"structure",
@@ -6227,7 +7113,7 @@
       "members":{
         "Name":{
           "shape":"OrgFeatureAdditionalConfiguration",
-          "documentation":"<p>The name of the additional configuration that will be configured for the organization.</p>",
+          "documentation":"<p>The name of the additional configuration that will be configured for the organization. These values are applicable to only Runtime Monitoring protection plan.</p>",
           "locationName":"name"
         },
         "AutoEnable":{
@@ -6236,14 +7122,14 @@
           "locationName":"autoEnable"
         }
       },
-      "documentation":"<p>A list of additional configurations which will be configured for the organization. </p>"
+      "documentation":"<p>A list of additional configurations which will be configured for the organization. </p> <p>Additional configuration applies to only GuardDuty Runtime Monitoring protection plan.</p>"
     },
     "OrganizationAdditionalConfigurationResult":{
       "type":"structure",
       "members":{
         "Name":{
           "shape":"OrgFeatureAdditionalConfiguration",
-          "documentation":"<p>The name of the additional configuration that is configured for the member accounts within the organization.</p>",
+          "documentation":"<p>The name of the additional configuration that is configured for the member accounts within the organization. These values are applicable to only Runtime Monitoring protection plan.</p>",
           "locationName":"name"
         },
         "AutoEnable":{
@@ -6797,6 +7683,53 @@
       },
       "documentation":"<p>Describes the public access policies that apply to the S3 bucket.</p>"
     },
+    "PublicAccessConfiguration":{
+      "type":"structure",
+      "members":{
+        "PublicAclAccess":{
+          "shape":"PublicAccessStatus",
+          "documentation":"<p>Indicates whether or not there is a setting that allows public access to the Amazon S3 buckets through access control lists (ACLs).</p>",
+          "locationName":"publicAclAccess"
+        },
+        "PublicPolicyAccess":{
+          "shape":"PublicAccessStatus",
+          "documentation":"<p>Indicates whether or not there is a setting that allows public access to the Amazon S3 bucket policy.</p>",
+          "locationName":"publicPolicyAccess"
+        },
+        "PublicAclIgnoreBehavior":{
+          "shape":"PublicAclIgnoreBehavior",
+          "documentation":"<p>Indicates whether or not there is a setting that ignores all public access control lists (ACLs) on the Amazon S3 bucket and the objects that it contains.</p>",
+          "locationName":"publicAclIgnoreBehavior"
+        },
+        "PublicBucketRestrictBehavior":{
+          "shape":"PublicBucketRestrictBehavior",
+          "documentation":"<p>Indicates whether or not there is a setting that restricts access to the bucket with specified policies.</p>",
+          "locationName":"publicBucketRestrictBehavior"
+        }
+      },
+      "documentation":"<p>Describes public access policies that apply to the Amazon S3 bucket.</p> <p>For information about each of the following settings, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html\">Blocking public access to your Amazon S3 storage</a> in the <i>Amazon S3 User Guide</i>.</p>"
+    },
+    "PublicAccessStatus":{
+      "type":"string",
+      "enum":[
+        "BLOCKED",
+        "ALLOWED"
+      ]
+    },
+    "PublicAclIgnoreBehavior":{
+      "type":"string",
+      "enum":[
+        "IGNORED",
+        "NOT_IGNORED"
+      ]
+    },
+    "PublicBucketRestrictBehavior":{
+      "type":"string",
+      "enum":[
+        "RESTRICTED",
+        "NOT_RESTRICTED"
+      ]
+    },
     "PublishingStatus":{
       "type":"string",
       "enum":[
@@ -6838,7 +7771,7 @@
         },
         "Tags":{
           "shape":"Tags",
-          "documentation":"<p>Instance tag key-value pairs associated with the database instance ID.</p>",
+          "documentation":"<p>Information about the tag key-value pairs.</p>",
           "locationName":"tags"
         }
       },
@@ -6874,6 +7807,47 @@
         }
       },
       "documentation":"<p>Contains information about the user and authentication details for a database instance involved in the finding.</p>"
+    },
+    "RdsLimitlessDbDetails":{
+      "type":"structure",
+      "members":{
+        "DbShardGroupIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The name associated with the Limitless DB shard group.</p>",
+          "locationName":"dbShardGroupIdentifier"
+        },
+        "DbShardGroupResourceId":{
+          "shape":"String",
+          "documentation":"<p>The resource identifier of the DB shard group within the Limitless Database.</p>",
+          "locationName":"dbShardGroupResourceId"
+        },
+        "DbShardGroupArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the DB shard group.</p>",
+          "locationName":"dbShardGroupArn"
+        },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The database engine of the database instance involved in the finding.</p>",
+          "locationName":"engine"
+        },
+        "EngineVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the database engine.</p>",
+          "locationName":"engineVersion"
+        },
+        "DbClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The name of the database cluster that is a part of the Limitless Database.</p>",
+          "locationName":"dbClusterIdentifier"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Information about the tag key-value pair.</p>",
+          "locationName":"tags"
+        }
+      },
+      "documentation":"<p>Contains information about the resource type <code>RDSLimitlessDB</code> that is involved in a GuardDuty finding.</p>"
     },
     "RdsLoginAttemptAction":{
       "type":"structure",
@@ -7009,6 +7983,11 @@
           "documentation":"<p>Contains information about the database instance to which an anomalous login attempt was made.</p>",
           "locationName":"rdsDbInstanceDetails"
         },
+        "RdsLimitlessDbDetails":{
+          "shape":"RdsLimitlessDbDetails",
+          "documentation":"<p>Contains information about the RDS Limitless database that was involved in a GuardDuty finding.</p>",
+          "locationName":"rdsLimitlessDbDetails"
+        },
         "RdsDbUserDetails":{
           "shape":"RdsDbUserDetails",
           "documentation":"<p>Contains information about the user details through which anomalous login attempt was made.</p>",
@@ -7026,12 +8005,43 @@
       "type":"string",
       "pattern":"^arn:[A-Za-z-]+:[A-Za-z0-9]+:[A-Za-z0-9-]+:\\d+:(([A-Za-z0-9-]+)[:\\/])?[A-Za-z0-9-]*$"
     },
+    "ResourceData":{
+      "type":"structure",
+      "members":{
+        "S3Bucket":{
+          "shape":"S3Bucket",
+          "documentation":"<p>Contains information about the Amazon S3 bucket.</p>",
+          "locationName":"s3Bucket"
+        },
+        "Ec2Instance":{
+          "shape":"Ec2Instance",
+          "documentation":"<p>Contains information about the Amazon EC2 instance.</p>",
+          "locationName":"ec2Instance"
+        },
+        "AccessKey":{
+          "shape":"AccessKey",
+          "documentation":"<p>Contains information about the IAM access key details of a user that involved in the GuardDuty finding.</p>",
+          "locationName":"accessKey"
+        },
+        "Ec2NetworkInterface":{
+          "shape":"Ec2NetworkInterface",
+          "documentation":"<p>Contains information about the elastic network interface of the Amazon EC2 instance.</p>",
+          "locationName":"ec2NetworkInterface"
+        },
+        "S3Object":{
+          "shape":"S3Object",
+          "documentation":"<p>Contains information about the Amazon S3 object.</p>",
+          "locationName":"s3Object"
+        }
+      },
+      "documentation":"<p>Contains information about the Amazon Web Services resource that is associated with the activity that prompted GuardDuty to generate a finding.</p>"
+    },
     "ResourceDetails":{
       "type":"structure",
       "members":{
         "InstanceArn":{
           "shape":"InstanceArn",
-          "documentation":"<p>InstanceArn that was scanned in the scan entry.</p>",
+          "documentation":"<p>Instance ARN that was scanned in the scan entry.</p>",
           "locationName":"instanceArn"
         }
       },
@@ -7041,6 +8051,55 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>",
+          "locationName":"message"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The error type.</p>",
+          "locationName":"__type"
+        }
+      },
+      "documentation":"<p>The requested resource can't be found.</p>",
+      "error":{"httpStatusCode":404},
+      "exception":true
+    },
+    "ResourceStatistics":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account.</p>",
+          "locationName":"accountId"
+        },
+        "LastGeneratedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the statistics for this resource was last generated.</p>",
+          "locationName":"lastGeneratedAt"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>ID associated with each resource. The following list provides the mapping of the resource type and resource ID.</p> <p class=\"title\"> <b>Mapping of resource and resource ID</b> </p> <ul> <li> <p>AccessKey - <code>resource.accessKeyDetails.accessKeyId</code> </p> </li> <li> <p>Container - <code>resource.containerDetails.id</code> </p> </li> <li> <p>ECSCluster - <code>resource.ecsClusterDetails.name</code> </p> </li> <li> <p>EKSCluster - <code>resource.eksClusterDetails.name</code> </p> </li> <li> <p>Instance - <code>resource.instanceDetails.instanceId</code> </p> </li> <li> <p>KubernetesCluster - <code>resource.kubernetesDetails.kubernetesWorkloadDetails.name</code> </p> </li> <li> <p>Lambda - <code>resource.lambdaDetails.functionName</code> </p> </li> <li> <p>RDSDBInstance - <code>resource.rdsDbInstanceDetails.dbInstanceIdentifier</code> </p> </li> <li> <p>S3Bucket - <code>resource.s3BucketDetails.name</code> </p> </li> <li> <p>S3Object - <code>resource.s3BucketDetails.name</code> </p> </li> </ul>",
+          "locationName":"resourceId"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of resource.</p>",
+          "locationName":"resourceType"
+        },
+        "TotalFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of findings associated with this resource.</p>",
+          "locationName":"totalFindings"
+        }
+      },
+      "documentation":"<p>Information about each resource type associated with the <code>groupedByResource</code> statistics.</p>"
+    },
     "ResourceType":{
       "type":"string",
       "enum":[
@@ -7048,6 +8107,71 @@
         "ECS",
         "EC2"
       ]
+    },
+    "ResourceUids":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":400
+    },
+    "ResourceV2":{
+      "type":"structure",
+      "required":[
+        "Uid",
+        "ResourceType"
+      ],
+      "members":{
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the resource.</p>",
+          "locationName":"uid"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the resource.</p>",
+          "locationName":"name"
+        },
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID to which the resource belongs.</p>",
+          "locationName":"accountId"
+        },
+        "ResourceType":{
+          "shape":"FindingResourceType",
+          "documentation":"<p>The type of the Amazon Web Services resource.</p>",
+          "locationName":"resourceType"
+        },
+        "Region":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the resource belongs.</p>",
+          "locationName":"region"
+        },
+        "Service":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services service of the resource.</p>",
+          "locationName":"service"
+        },
+        "CloudPartition":{
+          "shape":"String",
+          "documentation":"<p>The cloud partition within the Amazon Web Services Region to which the resource belongs.</p>",
+          "locationName":"cloudPartition"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>Contains information about the tags associated with the resource.</p>",
+          "locationName":"tags"
+        },
+        "Data":{
+          "shape":"ResourceData",
+          "documentation":"<p>Contains information about the Amazon Web Services resource associated with the activity that prompted GuardDuty to generate a finding.</p>",
+          "locationName":"data"
+        }
+      },
+      "documentation":"<p>Contains information about the Amazon Web Services resource that is associated with the GuardDuty finding.</p>"
+    },
+    "Resources":{
+      "type":"list",
+      "member":{"shape":"ResourceV2"},
+      "max":400
     },
     "RuntimeContext":{
       "type":"structure",
@@ -7196,6 +8320,62 @@
       },
       "documentation":"<p>Information about the process and any required context values for a specific finding.</p>"
     },
+    "S3Bucket":{
+      "type":"structure",
+      "members":{
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The owner ID of the associated S3Amazon S3bucket.</p>",
+          "locationName":"ownerId"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the Amazon S3 bucket was created.</p>",
+          "locationName":"createdAt"
+        },
+        "EncryptionType":{
+          "shape":"String",
+          "documentation":"<p>The type of encryption used for the Amazon S3 buckets and its objects. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html\">Protecting data with server-side encryption</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "locationName":"encryptionType"
+        },
+        "EncryptionKeyArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the encryption key that is used to encrypt the Amazon S3 bucket and its objects.</p>",
+          "locationName":"encryptionKeyArn"
+        },
+        "EffectivePermission":{
+          "shape":"String",
+          "documentation":"<p>Describes the effective permissions on this S3 bucket, after factoring all the attached policies.</p>",
+          "locationName":"effectivePermission"
+        },
+        "PublicReadAccess":{
+          "shape":"PublicAccessStatus",
+          "documentation":"<p>Indicates whether or not the public read access is allowed for an Amazon S3 bucket.</p>",
+          "locationName":"publicReadAccess"
+        },
+        "PublicWriteAccess":{
+          "shape":"PublicAccessStatus",
+          "documentation":"<p>Indicates whether or not the public write access is allowed for an Amazon S3 bucket.</p>",
+          "locationName":"publicWriteAccess"
+        },
+        "AccountPublicAccess":{
+          "shape":"PublicAccessConfiguration",
+          "documentation":"<p>Contains information about the public access policies that apply to the Amazon S3 bucket at the account level.</p>",
+          "locationName":"accountPublicAccess"
+        },
+        "BucketPublicAccess":{
+          "shape":"PublicAccessConfiguration",
+          "documentation":"<p>Contains information about public access policies that apply to the Amazon S3 bucket.</p>",
+          "locationName":"bucketPublicAccess"
+        },
+        "S3ObjectUids":{
+          "shape":"S3ObjectUids",
+          "documentation":"<p>Represents a list of Amazon S3 object identifiers.</p>",
+          "locationName":"s3ObjectUids"
+        }
+      },
+      "documentation":"<p>Contains information about the Amazon S3 bucket policies and encryption.</p>"
+    },
     "S3BucketDetail":{
       "type":"structure",
       "members":{
@@ -7238,6 +8418,11 @@
           "shape":"PublicAccess",
           "documentation":"<p>Describes the public access policies that apply to the S3 bucket.</p>",
           "locationName":"publicAccess"
+        },
+        "S3ObjectDetails":{
+          "shape":"S3ObjectDetails",
+          "documentation":"<p>Information about the S3 object that was scanned.</p>",
+          "locationName":"s3ObjectDetails"
         }
       },
       "documentation":"<p>Contains information on the S3 bucket.</p>"
@@ -7270,17 +8455,77 @@
       },
       "documentation":"<p>Describes whether S3 data event logs will be enabled as a data source.</p>"
     },
+    "S3Object":{
+      "type":"structure",
+      "members":{
+        "ETag":{
+          "shape":"String",
+          "documentation":"<p>The entity tag is a hash of the Amazon S3 object. The ETag reflects changes only to the contents of an object, and not its metadata.</p>",
+          "locationName":"eTag"
+        },
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>The key of the Amazon S3 object.</p>",
+          "locationName":"key"
+        },
+        "VersionId":{
+          "shape":"String",
+          "documentation":"<p>The version Id of the Amazon S3 object.</p>",
+          "locationName":"versionId"
+        }
+      },
+      "documentation":"<p>Contains information about the Amazon S3 object.</p>"
+    },
+    "S3ObjectDetail":{
+      "type":"structure",
+      "members":{
+        "ObjectArn":{
+          "shape":"String",
+          "documentation":"<p>Amazon Resource Name (ARN) of the S3 object.</p>",
+          "locationName":"objectArn"
+        },
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>Key of the S3 object.</p>",
+          "locationName":"key"
+        },
+        "ETag":{
+          "shape":"String",
+          "documentation":"<p>The entity tag is a hash of the S3 object. The ETag reflects changes only to the contents of an object, and not its metadata.</p>",
+          "locationName":"eTag"
+        },
+        "Hash":{
+          "shape":"String",
+          "documentation":"<p>Hash of the threat detected in this finding.</p>",
+          "locationName":"hash"
+        },
+        "VersionId":{
+          "shape":"String",
+          "documentation":"<p>Version ID of the object.</p>",
+          "locationName":"versionId"
+        }
+      },
+      "documentation":"<p>Information about the S3 object that was scanned</p>"
+    },
+    "S3ObjectDetails":{
+      "type":"list",
+      "member":{"shape":"S3ObjectDetail"}
+    },
+    "S3ObjectUids":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "Scan":{
       "type":"structure",
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the request is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with the request.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "locationName":"detectorId"
         },
         "AdminDetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique detector ID of the administrator account that the request is associated with. Note that this value will be the same as the one used for <code>DetectorId</code> if the account is an administrator.</p>",
+          "documentation":"<p>The unique detector ID of the administrator account that the request is associated with. If the account is an administrator, the <code>AdminDetectorId</code> will be the same as the one used for <code>DetectorId</code>.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "locationName":"adminDetectorId"
         },
         "ScanId":{
@@ -7295,7 +8540,7 @@
         },
         "FailureReason":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Represents the reason for FAILED scan status.</p>",
+          "documentation":"<p>Represents the reason for <code>FAILED</code> scan status.</p>",
           "locationName":"failureReason"
         },
         "ScanStartTime":{
@@ -7349,7 +8594,7 @@
           "locationName":"scanType"
         }
       },
-      "documentation":"<p>Contains information about a malware scan.</p>"
+      "documentation":"<p>Contains information about malware scans associated with GuardDuty Malware Protection for EC2.</p>"
     },
     "ScanCondition":{
       "type":"structure",
@@ -7449,7 +8694,7 @@
         },
         "VolumeArn":{
           "shape":"String",
-          "documentation":"<p>EBS volume Arn details of the infected file.</p>",
+          "documentation":"<p>EBS volume ARN details of the infected file.</p>",
           "locationName":"volumeArn"
         },
         "Hash":{
@@ -7610,6 +8855,56 @@
       "type":"string",
       "sensitive":true
     },
+    "Sequence":{
+      "type":"structure",
+      "required":[
+        "Uid",
+        "Description",
+        "Signals"
+      ],
+      "members":{
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>Unique identifier of the attack sequence.</p>",
+          "locationName":"uid"
+        },
+        "Description":{
+          "shape":"SequenceDescription",
+          "documentation":"<p>Description of the attack sequence.</p>",
+          "locationName":"description"
+        },
+        "Actors":{
+          "shape":"Actors",
+          "documentation":"<p>Contains information about the actors involved in the attack sequence.</p>",
+          "locationName":"actors"
+        },
+        "Resources":{
+          "shape":"Resources",
+          "documentation":"<p>Contains information about the resources involved in the attack sequence.</p>",
+          "locationName":"resources"
+        },
+        "Endpoints":{
+          "shape":"NetworkEndpoints",
+          "documentation":"<p>Contains information about the network endpoints that were used in the attack sequence.</p>",
+          "locationName":"endpoints"
+        },
+        "Signals":{
+          "shape":"Signals",
+          "documentation":"<p>Contains information about the signals involved in the attack sequence.</p>",
+          "locationName":"signals"
+        },
+        "SequenceIndicators":{
+          "shape":"Indicators",
+          "documentation":"<p>Contains information about the indicators observed in the attack sequence.</p>",
+          "locationName":"sequenceIndicators"
+        }
+      },
+      "documentation":"<p>Contains information about the GuardDuty attack sequence finding.</p>"
+    },
+    "SequenceDescription":{
+      "type":"string",
+      "max":4096
+    },
     "Service":{
       "type":"structure",
       "members":{
@@ -7687,6 +8982,11 @@
           "shape":"Detection",
           "documentation":"<p>Contains information about the detected unusual behavior.</p>",
           "locationName":"detection"
+        },
+        "MalwareScanDetails":{
+          "shape":"MalwareScanDetails",
+          "documentation":"<p>Returns details from the malware scan that generated a GuardDuty finding.</p>",
+          "locationName":"malwareScanDetails"
         }
       },
       "documentation":"<p>Contains additional information about the generated finding.</p>"
@@ -7707,9 +9007,160 @@
       },
       "documentation":"<p>Additional information about the generated finding.</p>"
     },
+    "Session":{
+      "type":"structure",
+      "members":{
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the session.</p>",
+          "locationName":"uid"
+        },
+        "MfaStatus":{
+          "shape":"MfaStatus",
+          "documentation":"<p>Indicates whether or not multi-factor authencation (MFA) was used during authentication.</p> <p>In Amazon Web Services CloudTrail, you can find this value as <code>userIdentity.sessionContext.attributes.mfaAuthenticated</code>.</p>",
+          "locationName":"mfaStatus"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the session was created.</p> <p>In Amazon Web Services CloudTrail, you can find this value as <code>userIdentity.sessionContext.attributes.creationDate</code>.</p>",
+          "locationName":"createdTime"
+        },
+        "Issuer":{
+          "shape":"String",
+          "documentation":"<p>Identifier of the session issuer.</p> <p>In Amazon Web Services CloudTrail, you can find this value as <code>userIdentity.sessionContext.sessionIssuer.arn</code>.</p>",
+          "locationName":"issuer"
+        }
+      },
+      "documentation":"<p>Contains information about the authenticated session.</p>"
+    },
     "SessionNameList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "SeverityStatistics":{
+      "type":"structure",
+      "members":{
+        "LastGeneratedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which a finding type for a specific severity was last generated.</p>",
+          "locationName":"lastGeneratedAt"
+        },
+        "Severity":{
+          "shape":"Double",
+          "documentation":"<p>The severity level associated with each finding type.</p>",
+          "locationName":"severity"
+        },
+        "TotalFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of findings associated with this severity.</p>",
+          "locationName":"totalFindings"
+        }
+      },
+      "documentation":"<p>Information about severity level for each finding type.</p>"
+    },
+    "Signal":{
+      "type":"structure",
+      "required":[
+        "Uid",
+        "Type",
+        "Name",
+        "CreatedAt",
+        "UpdatedAt",
+        "FirstSeenAt",
+        "LastSeenAt",
+        "Count"
+      ],
+      "members":{
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the signal.</p>",
+          "locationName":"uid"
+        },
+        "Type":{
+          "shape":"SignalType",
+          "documentation":"<p>The type of the signal used to identify an attack sequence.</p> <p>Signals can be GuardDuty findings or activities observed in data sources that GuardDuty monitors. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_data-sources.html\">Foundational data sources</a> in the <i>GuardDuty User Guide</i>.</p> <p>A signal type can be one of the valid values listed in this API. Here are the related descriptions:</p> <ul> <li> <p> <code>FINDING</code> - Individually generated GuardDuty finding.</p> </li> <li> <p> <code>CLOUD_TRAIL</code> - Activity observed from CloudTrail logs</p> </li> <li> <p> <code>S3_DATA_EVENTS</code> - Activity observed from CloudTrail data events for S3. Activities associated with this type will show up only when you have enabled GuardDuty S3 Protection feature in your account. For more information about S3 Protection and steps to enable it, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/s3-protection.html\">S3 Protection</a> in the <i>GuardDuty User Guide</i>.</p> </li> </ul>",
+          "locationName":"type"
+        },
+        "Description":{
+          "shape":"SignalDescription",
+          "documentation":"<p>The description of the signal.</p>",
+          "locationName":"description"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the signal. For example, when signal type is <code>FINDING</code>, the signal name is the name of the finding.</p>",
+          "locationName":"name"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the first finding or activity related to this signal was observed.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this signal was last observed.</p>",
+          "locationName":"updatedAt"
+        },
+        "FirstSeenAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the first finding or activity related to this signal was observed.</p>",
+          "locationName":"firstSeenAt"
+        },
+        "LastSeenAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the last finding or activity related to this signal was observed.</p>",
+          "locationName":"lastSeenAt"
+        },
+        "Severity":{
+          "shape":"Double",
+          "documentation":"<p>The severity associated with the signal. For more information about severity, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings-severity.html\">Findings severity levels</a> in the <i>GuardDuty User Guide</i>.</p>",
+          "locationName":"severity"
+        },
+        "Count":{
+          "shape":"Integer",
+          "documentation":"<p>The number of times this signal was observed.</p>",
+          "locationName":"count"
+        },
+        "ResourceUids":{
+          "shape":"ResourceUids",
+          "documentation":"<p>Information about the unique identifiers of the resources involved in the signal.</p>",
+          "locationName":"resourceUids"
+        },
+        "ActorIds":{
+          "shape":"ActorIds",
+          "documentation":"<p>Information about the IDs of the threat actors involved in the signal.</p>",
+          "locationName":"actorIds"
+        },
+        "EndpointIds":{
+          "shape":"EndpointIds",
+          "documentation":"<p>Information about the endpoint IDs associated with this signal.</p>",
+          "locationName":"endpointIds"
+        },
+        "SignalIndicators":{
+          "shape":"Indicators",
+          "documentation":"<p>Contains information about the indicators associated with the signals.</p>",
+          "locationName":"signalIndicators"
+        }
+      },
+      "documentation":"<p>Contains information about the signals involved in the attack sequence.</p>"
+    },
+    "SignalDescription":{
+      "type":"string",
+      "max":2000
+    },
+    "SignalType":{
+      "type":"string",
+      "enum":[
+        "FINDING",
+        "CLOUD_TRAIL",
+        "S3_DATA_EVENTS"
+      ]
+    },
+    "Signals":{
+      "type":"list",
+      "member":{"shape":"Signal"},
+      "max":100,
+      "min":2
     },
     "SortCriteria":{
       "type":"structure",
@@ -7765,7 +9216,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector of the GuardDuty administrator account associated with the member accounts to monitor.</p>",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty administrator account associated with the member accounts to monitor.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -7796,7 +9247,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector associated with the GuardDuty administrator account that is monitoring member accounts.</p>",
+          "documentation":"<p>The unique ID of the detector associated with the GuardDuty administrator account that is monitoring member accounts.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -7828,16 +9279,16 @@
       "members":{
         "Key":{
           "shape":"String",
-          "documentation":"<p>The EC2 instance tag key.</p>",
+          "documentation":"<p>Describes the key associated with the tag.</p>",
           "locationName":"key"
         },
         "Value":{
           "shape":"String",
-          "documentation":"<p>The EC2 instance tag value.</p>",
+          "documentation":"<p>Describes the value associated with the tag key.</p>",
           "locationName":"value"
         }
       },
-      "documentation":"<p>Contains information about a tag associated with the EC2 instance.</p>"
+      "documentation":"<p>Contains information about a tag key-value pair.</p>"
     },
     "TagKey":{
       "type":"string",
@@ -7890,6 +9341,27 @@
     "Tags":{
       "type":"list",
       "member":{"shape":"Tag"}
+    },
+    "Threat":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>Name of the detected threat that caused GuardDuty to generate this finding.</p>",
+          "locationName":"name"
+        },
+        "Source":{
+          "shape":"String",
+          "documentation":"<p>Source of the threat that generated this finding.</p>",
+          "locationName":"source"
+        },
+        "ItemPaths":{
+          "shape":"ItemPaths",
+          "documentation":"<p>Information about the nested item path and hash of the protected resource.</p>",
+          "locationName":"itemPaths"
+        }
+      },
+      "documentation":"<p>Information about the detected threats associated with the generated finding.</p>"
     },
     "ThreatDetectedByName":{
       "type":"structure",
@@ -7979,6 +9451,10 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "Threats":{
+      "type":"list",
+      "member":{"shape":"Threat"}
+    },
     "ThreatsDetectedItemCount":{
       "type":"structure",
       "members":{
@@ -8032,7 +9508,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector associated with the findings to unarchive.</p>",
+          "documentation":"<p>The ID of the detector associated with the findings to unarchive.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -8116,7 +9592,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector to update.</p>",
+          "documentation":"<p>The unique ID of the detector to update.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -8158,7 +9634,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that specifies the GuardDuty service where you want to update a filter.</p>",
+          "documentation":"<p>The unique ID of the detector that specifies the GuardDuty service where you want to update a filter.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -8211,7 +9687,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector associated with the findings to update feedback for.</p>",
+          "documentation":"<p>The ID of the detector that is associated with the findings for which you want to update the feedback.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -8246,7 +9722,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The detectorID that specifies the GuardDuty service whose IPSet you want to update.</p>",
+          "documentation":"<p>The detectorID that specifies the GuardDuty service whose IPSet you want to update.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -8278,13 +9754,40 @@
       "members":{
       }
     },
+    "UpdateMalwareProtectionPlanRequest":{
+      "type":"structure",
+      "required":["MalwareProtectionPlanId"],
+      "members":{
+        "MalwareProtectionPlanId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier associated with the Malware Protection plan.</p>",
+          "location":"uri",
+          "locationName":"malwareProtectionPlanId"
+        },
+        "Role":{
+          "shape":"String",
+          "documentation":"<p>Amazon Resource Name (ARN) of the IAM role with permissions to scan and add tags to the associated protected resource.</p>",
+          "locationName":"role"
+        },
+        "Actions":{
+          "shape":"MalwareProtectionPlanActions",
+          "documentation":"<p>Information about whether the tags will be added to the S3 object after scanning.</p>",
+          "locationName":"actions"
+        },
+        "ProtectedResource":{
+          "shape":"UpdateProtectedResource",
+          "documentation":"<p>Information about the protected resource that is associated with the created Malware Protection plan. Presently, <code>S3Bucket</code> is the only supported protected resource.</p>",
+          "locationName":"protectedResource"
+        }
+      }
+    },
     "UpdateMalwareScanSettingsRequest":{
       "type":"structure",
       "required":["DetectorId"],
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that specifies the GuardDuty service where you want to update scan settings.</p>",
+          "documentation":"<p>The unique ID of the detector that specifies the GuardDuty service where you want to update scan settings.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -8314,7 +9817,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The detector ID of the administrator account.</p>",
+          "documentation":"<p>The detector ID of the administrator account.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -8354,13 +9857,13 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector that configures the delegated administrator.</p>",
+          "documentation":"<p>The ID of the detector that configures the delegated administrator.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
         "AutoEnable":{
           "shape":"Boolean",
-          "documentation":"<p>Represents whether or not to automatically enable member accounts in the organization.</p> <p>Even though this is still supported, we recommend using <code>AutoEnableOrganizationMembers</code> to achieve the similar results. You must provide a value for either <code>autoEnableOrganizationMembers</code> or <code>autoEnable</code>.</p>",
+          "documentation":"<p>Represents whether to automatically enable member accounts in the organization. This applies to only new member accounts, not the existing member accounts. When a new account joins the organization, the chosen features will be enabled for them by default.</p> <p>Even though this is still supported, we recommend using <code>AutoEnableOrganizationMembers</code> to achieve the similar results. You must provide a value for either <code>autoEnableOrganizationMembers</code> or <code>autoEnable</code>.</p>",
           "deprecated":true,
           "deprecatedMessage":"This field is deprecated, use AutoEnableOrganizationMembers instead",
           "locationName":"autoEnable"
@@ -8389,6 +9892,17 @@
       "members":{
       }
     },
+    "UpdateProtectedResource":{
+      "type":"structure",
+      "members":{
+        "S3Bucket":{
+          "shape":"UpdateS3BucketResource",
+          "documentation":"<p>Information about the protected S3 bucket resource.</p>",
+          "locationName":"s3Bucket"
+        }
+      },
+      "documentation":"<p>Information about the protected resource that is associated with the created Malware Protection plan. Presently, <code>S3Bucket</code> is the only supported protected resource.</p>"
+    },
     "UpdatePublishingDestinationRequest":{
       "type":"structure",
       "required":[
@@ -8398,7 +9912,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector associated with the publishing destinations to update.</p>",
+          "documentation":"<p>The ID of the detector associated with the publishing destinations to update.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -8420,6 +9934,17 @@
       "members":{
       }
     },
+    "UpdateS3BucketResource":{
+      "type":"structure",
+      "members":{
+        "ObjectPrefixes":{
+          "shape":"MalwareProtectionPlanObjectPrefixesList",
+          "documentation":"<p>Information about the specified object prefixes. The S3 object will be scanned only if it belongs to any of the specified object prefixes.</p>",
+          "locationName":"objectPrefixes"
+        }
+      },
+      "documentation":"<p>Information about the protected S3 bucket resource.</p>"
+    },
     "UpdateThreatIntelSetRequest":{
       "type":"structure",
       "required":[
@@ -8429,7 +9954,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The detectorID that specifies the GuardDuty service whose ThreatIntelSet you want to update.</p>",
+          "documentation":"<p>The detectorID that specifies the GuardDuty service whose ThreatIntelSet you want to update.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -8676,6 +10201,42 @@
       "type":"list",
       "member":{"shape":"UsageTopAccountsResult"}
     },
+    "User":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Uid",
+        "Type"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the user.</p>",
+          "locationName":"name"
+        },
+        "Uid":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the user.</p>",
+          "locationName":"uid"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The type of the user.</p>",
+          "locationName":"type"
+        },
+        "CredentialUid":{
+          "shape":"String",
+          "documentation":"<p>The credentials of the user ID.</p>",
+          "locationName":"credentialUid"
+        },
+        "Account":{
+          "shape":"Account",
+          "documentation":"<p>Contains information about the Amazon Web Services account.</p>",
+          "locationName":"account"
+        }
+      },
+      "documentation":"<p>Contains information about the user involved in the attack sequence.</p>"
+    },
     "Volume":{
       "type":"structure",
       "members":{
@@ -8697,7 +10258,7 @@
       "members":{
         "VolumeArn":{
           "shape":"String",
-          "documentation":"<p>EBS volume Arn information.</p>",
+          "documentation":"<p>EBS volume ARN information.</p>",
           "locationName":"volumeArn"
         },
         "VolumeType":{
@@ -8722,12 +10283,12 @@
         },
         "SnapshotArn":{
           "shape":"String",
-          "documentation":"<p>Snapshot Arn of the EBS volume.</p>",
+          "documentation":"<p>Snapshot ARN of the EBS volume.</p>",
           "locationName":"snapshotArn"
         },
         "KmsKeyArn":{
           "shape":"String",
-          "documentation":"<p>KMS key Arn used to encrypt the EBS volume.</p>",
+          "documentation":"<p>KMS key ARN used to encrypt the EBS volume.</p>",
           "locationName":"kmsKeyArn"
         }
       },

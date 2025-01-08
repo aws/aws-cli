@@ -26,10 +26,10 @@ if os.environ.get('TESTS_REMOVE_REPO_ROOT_FROM_PATH'):
 
 import awscli
 from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
-from awscli.compat import collections_abc, six
+from awscli.compat import collections_abc
 from awscli.testutils import (
     unittest, mock, capture_output, if_windows, skip_if_windows, create_bucket,
-    FileCreator, ConsistencyWaiter
+    FileCreator, ConsistencyWaiter, create_dir_bucket
 )
 
 import botocore.awsrequest
@@ -39,9 +39,7 @@ import botocore.serialize
 import botocore.validate
 from botocore.exceptions import ClientError, WaiterError
 
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.serialization import Encoding, \
-    PublicFormat, load_pem_private_key
+from awscrt.crypto import RSA
 
 import prompt_toolkit
 import prompt_toolkit.buffer
@@ -387,7 +385,7 @@ class AppRunContext:
 
 
 class PromptToolkitAppRunner:
-    _EVENT_WAIT_TIMEOUT = 2
+    _EVENT_WAIT_TIMEOUT = 5
 
     def __init__(self, app, pre_run=None):
         self.app = app
@@ -511,7 +509,7 @@ class S3Utils:
 
     def assert_key_contents_equal(self, bucket, key, expected_contents):
         self.wait_until_key_exists(bucket, key)
-        if isinstance(expected_contents, six.BytesIO):
+        if isinstance(expected_contents, BytesIO):
             expected_contents = expected_contents.getvalue().decode('utf-8')
         actual_contents = self.get_key_contents(bucket, key)
         # The contents can be huge so we try to give helpful error messages
@@ -526,6 +524,17 @@ class S3Utils:
         if not region:
             region = self._region
         bucket_name = create_bucket(self._session, name, region)
+        self._bucket_to_region[bucket_name] = region
+        # Wait for the bucket to exist before letting it be used.
+        self.wait_bucket_exists(bucket_name)
+        return bucket_name
+
+    def create_dir_bucket(self, name=None, location=None):
+        if location:
+            region, _ = location
+        else:
+            region = self._region
+        bucket_name = create_dir_bucket(self._session, name, location)
         self._bucket_to_region[bucket_name] = region
         # Wait for the bucket to exist before letting it be used.
         self.wait_bucket_exists(bucket_name)
@@ -578,7 +587,7 @@ class S3Utils:
 
     def remove_all_objects(self, bucket_name):
         client = self._create_client_for_bucket(bucket_name)
-        paginator = client.get_paginator('list_objects')
+        paginator = client.get_paginator('list_objects_v2')
         pages = paginator.paginate(Bucket=bucket_name)
         key_names = []
         for page in pages:
@@ -677,14 +686,15 @@ class S3Utils:
             waiter.wait(**params)
 
 class PublicPrivateKeyLoader:
-    def load_private_key_and_generate_public_key(private_key_path):
+    def load_private_key_and_public_key(private_key_path, public_key_path):
         with open(private_key_path, 'rb') as f:
             private_key_byte_input = f.read()
 
-        private_key = load_pem_private_key(private_key_byte_input, None,
-                                           default_backend())
-        public_key = private_key.public_key()
-        pub_bytes = public_key.public_bytes(Encoding.DER, PublicFormat.PKCS1)
-        public_key_b64 = base64.b64encode(pub_bytes)
+        private_key = RSA.new_private_key_from_pem_data(private_key_byte_input)
+
+        with open(public_key_path, 'rb') as f:
+            public_key_byte_input = f.read()
+
+        public_key_b64 = base64.b64encode(public_key_byte_input)
 
         return public_key_b64, private_key

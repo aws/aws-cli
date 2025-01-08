@@ -2,6 +2,7 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2015-10-07",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"pipes",
     "protocol":"rest-json",
     "protocols":["rest-json"],
@@ -195,19 +196,19 @@
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":"arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)"
+      "pattern":"arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2,4}((-gov)|(-de)|(-iso([a-z]?)))?-[a-z]+(-\\d{1})?)?:(\\d{12})?:(.+)"
     },
     "ArnOrJsonPath":{
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":"arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)"
+      "pattern":"arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2,4}((-gov)|(-de)|(-iso([a-z]?)))?-[a-z]+(-\\d{1})?)?:(\\d{12})?:(.+)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)"
     },
     "ArnOrUrl":{
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":"smk://(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9]):[0-9]{1,5}|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)"
+      "pattern":"smk://(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9]):[0-9]{1,5}|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2,4}((-gov)|(-de)|(-iso([a-z]?)))?-[a-z]+(-\\d{1})?)?:(\\d{12})?:(.+)"
     },
     "AssignPublicIp":{
       "type":"string",
@@ -415,7 +416,7 @@
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":"(^arn:aws([a-z]|\\-)*:logs:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}):(\\d{12}):log-group:[\\.\\-_/#A-Za-z0-9]{1,512}(:\\*)?)"
+      "pattern":"(^arn:aws([a-z]|\\-)*:logs:([a-z]{2,4}((-gov)|(-de)|(-iso([a-z]?)))?-[a-z]+(-\\d{1})?):(\\d{12}):log-group:[\\.\\-_/#A-Za-z0-9]{1,512}(:\\*)?)"
     },
     "CloudwatchLogsLogDestination":{
       "type":"structure",
@@ -521,6 +522,10 @@
         "LogConfiguration":{
           "shape":"PipeLogConfigurationParameters",
           "documentation":"<p>The logging configuration settings for the pipe.</p>"
+        },
+        "KmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The identifier of the KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt pipe data. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.</p> <p>If you do not specify a customer managed key identifier, EventBridge uses an Amazon Web Services owned key to encrypt pipe data.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/getting-started.html\">Managing keys</a> in the <i>Key Management Service Developer Guide</i>. </p>"
         }
       }
     },
@@ -700,6 +705,10 @@
         "LogConfiguration":{
           "shape":"PipeLogConfiguration",
           "documentation":"<p>The logging configuration settings for the pipe.</p>"
+        },
+        "KmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The identifier of the KMS customer managed key for EventBridge to use to encrypt pipe data, if one has been specified.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-encryption.html\">Data encryption in EventBridge</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
         }
       }
     },
@@ -1016,7 +1025,7 @@
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":"(^arn:aws([a-z]|\\-)*:firehose:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}):(\\d{12}):deliverystream/[a-zA-Z0-9_.-]{1,64})"
+      "pattern":"(^arn:aws([a-z]|\\-)*:firehose:([a-z]{2,4}((-gov)|(-de)|(-iso([a-z]?)))?-[a-z]+(-\\d{1})?):(\\d{12}):deliverystream/[a-zA-Z0-9_.-]{1,64})"
     },
     "FirehoseLogDestination":{
       "type":"structure",
@@ -1124,6 +1133,12 @@
         "LATEST",
         "AT_TIMESTAMP"
       ]
+    },
+    "KmsKeyIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"[a-zA-Z0-9_\\-/:]*"
     },
     "LaunchType":{
       "type":"string",
@@ -1440,7 +1455,7 @@
       "type":"string",
       "max":1600,
       "min":0,
-      "pattern":"$|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)"
+      "pattern":"$|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2,4}((-gov)|(-de)|(-iso([a-z]?)))?-[a-z]+(-\\d{1})?)?:(\\d{12})?:(.+)"
     },
     "PathParameter":{
       "type":"string",
@@ -1645,7 +1660,7 @@
         },
         "OnPartialBatchItemFailure":{
           "shape":"OnPartialBatchItemFailureStreams",
-          "documentation":"<p>(Streams only) Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
+          "documentation":"<p>Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
         },
         "MaximumBatchingWindowInSeconds":{
           "shape":"MaximumBatchingWindowInSeconds",
@@ -1653,19 +1668,19 @@
         },
         "MaximumRecordAgeInSeconds":{
           "shape":"MaximumRecordAgeInSeconds",
-          "documentation":"<p>(Streams only) Discard records older than the specified age. The default value is -1, which sets the maximum age to infinite. When the value is set to infinite, EventBridge never discards old records. </p>"
+          "documentation":"<p>Discard records older than the specified age. The default value is -1, which sets the maximum age to infinite. When the value is set to infinite, EventBridge never discards old records. </p>"
         },
         "MaximumRetryAttempts":{
           "shape":"MaximumRetryAttemptsESM",
-          "documentation":"<p>(Streams only) Discard records after the specified number of retries. The default value is -1, which sets the maximum number of retries to infinite. When MaximumRetryAttempts is infinite, EventBridge retries failed records until the record expires in the event source.</p>"
+          "documentation":"<p>Discard records after the specified number of retries. The default value is -1, which sets the maximum number of retries to infinite. When MaximumRetryAttempts is infinite, EventBridge retries failed records until the record expires in the event source.</p>"
         },
         "ParallelizationFactor":{
           "shape":"LimitMax10",
-          "documentation":"<p>(Streams only) The number of batches to process concurrently from each shard. The default value is 1.</p>"
+          "documentation":"<p>The number of batches to process concurrently from each shard. The default value is 1.</p>"
         },
         "StartingPosition":{
           "shape":"DynamoDBStreamStartPosition",
-          "documentation":"<p>(Streams only) The position in a stream from which to start reading.</p>"
+          "documentation":"<p>The position in a stream from which to start reading.</p>"
         }
       },
       "documentation":"<p>The parameters for using a DynamoDB stream as a source.</p>"
@@ -1684,7 +1699,7 @@
         },
         "OnPartialBatchItemFailure":{
           "shape":"OnPartialBatchItemFailureStreams",
-          "documentation":"<p>(Streams only) Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
+          "documentation":"<p>Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
         },
         "MaximumBatchingWindowInSeconds":{
           "shape":"MaximumBatchingWindowInSeconds",
@@ -1692,19 +1707,19 @@
         },
         "MaximumRecordAgeInSeconds":{
           "shape":"MaximumRecordAgeInSeconds",
-          "documentation":"<p>(Streams only) Discard records older than the specified age. The default value is -1, which sets the maximum age to infinite. When the value is set to infinite, EventBridge never discards old records. </p>"
+          "documentation":"<p>Discard records older than the specified age. The default value is -1, which sets the maximum age to infinite. When the value is set to infinite, EventBridge never discards old records. </p>"
         },
         "MaximumRetryAttempts":{
           "shape":"MaximumRetryAttemptsESM",
-          "documentation":"<p>(Streams only) Discard records after the specified number of retries. The default value is -1, which sets the maximum number of retries to infinite. When MaximumRetryAttempts is infinite, EventBridge retries failed records until the record expires in the event source.</p>"
+          "documentation":"<p>Discard records after the specified number of retries. The default value is -1, which sets the maximum number of retries to infinite. When MaximumRetryAttempts is infinite, EventBridge retries failed records until the record expires in the event source.</p>"
         },
         "ParallelizationFactor":{
           "shape":"LimitMax10",
-          "documentation":"<p>(Streams only) The number of batches to process concurrently from each shard. The default value is 1.</p>"
+          "documentation":"<p>The number of batches to process concurrently from each shard. The default value is 1.</p>"
         },
         "StartingPosition":{
           "shape":"KinesisStreamStartPosition",
-          "documentation":"<p>(Streams only) The position in a stream from which to start reading.</p>"
+          "documentation":"<p>The position in a stream from which to start reading.</p>"
         },
         "StartingPositionTimestamp":{
           "shape":"Timestamp",
@@ -1723,7 +1738,7 @@
         },
         "StartingPosition":{
           "shape":"MSKStartPosition",
-          "documentation":"<p>(Streams only) The position in a stream from which to start reading.</p>"
+          "documentation":"<p>The position in a stream from which to start reading.</p>"
         },
         "BatchSize":{
           "shape":"LimitMax10000",
@@ -1822,7 +1837,7 @@
         },
         "StartingPosition":{
           "shape":"SelfManagedKafkaStartPosition",
-          "documentation":"<p>(Streams only) The position in a stream from which to start reading.</p>"
+          "documentation":"<p>The position in a stream from which to start reading.</p>"
         },
         "AdditionalBootstrapServers":{
           "shape":"KafkaBootstrapServers",
@@ -2234,7 +2249,7 @@
         },
         "TimestampFormat":{
           "shape":"TimestampFormat",
-          "documentation":"<p>How to format the timestamps. For example, <code>YYYY-MM-DDThh:mm:ss.sssTZD</code>.</p> <p>Required if <code>TimeFieldType</code> is specified as <code>TIMESTAMP_FORMAT</code>.</p>"
+          "documentation":"<p>How to format the timestamps. For example, <code>yyyy-MM-dd'T'HH:mm:ss'Z'</code>.</p> <p>Required if <code>TimeFieldType</code> is specified as <code>TIMESTAMP_FORMAT</code>.</p>"
         },
         "VersionValue":{
           "shape":"VersionValue",
@@ -2393,7 +2408,7 @@
         },
         "OutputFormat":{
           "shape":"S3OutputFormat",
-          "documentation":"<p>The format EventBridge uses for the log records.</p> <ul> <li> <p> <code>json</code>: JSON </p> </li> <li> <p> <code>plain</code>: Plain text</p> </li> <li> <p> <code>w3c</code>: <a href=\"https://www.w3.org/TR/WD-logfile\">W3C extended logging file format</a> </p> </li> </ul>"
+          "documentation":"<p>The format EventBridge uses for the log records.</p> <p>EventBridge currently only supports <code>json</code> formatting.</p>"
         }
       },
       "documentation":"<p>The Amazon S3 logging configuration settings for the pipe.</p>"
@@ -2415,7 +2430,7 @@
         },
         "OutputFormat":{
           "shape":"S3OutputFormat",
-          "documentation":"<p>How EventBridge should format the log records.</p> <ul> <li> <p> <code>json</code>: JSON </p> </li> <li> <p> <code>plain</code>: Plain text</p> </li> <li> <p> <code>w3c</code>: <a href=\"https://www.w3.org/TR/WD-logfile\">W3C extended logging file format</a> </p> </li> </ul>"
+          "documentation":"<p>How EventBridge should format the log records.</p> <p>EventBridge currently only supports <code>json</code> formatting.</p>"
         },
         "Prefix":{
           "shape":"S3LogDestinationParametersPrefixString",
@@ -2488,14 +2503,14 @@
       "documentation":"<p>// Optional SecretManager ARN which stores the database credentials</p>",
       "max":1600,
       "min":1,
-      "pattern":"(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)"
+      "pattern":"(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2,4}((-gov)|(-de)|(-iso([a-z]?)))?-[a-z]+(-\\d{1})?):(\\d{12}):secret:.+)"
     },
     "SecretManagerArnOrJsonPath":{
       "type":"string",
       "documentation":"<p>// For targets, can either specify an ARN or a jsonpath pointing to the ARN.</p>",
       "max":1600,
       "min":1,
-      "pattern":"(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)"
+      "pattern":"(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2,4}((-gov)|(-de)|(-iso([a-z]?)))?-[a-z]+(-\\d{1})?):(\\d{12}):secret:.+)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)"
     },
     "SecurityGroup":{
       "type":"string",
@@ -2516,7 +2531,7 @@
       "member":{"shape":"SecurityGroupId"},
       "documentation":"<p>List of SecurityGroupId.</p>",
       "max":5,
-      "min":0
+      "min":1
     },
     "SecurityGroups":{
       "type":"list",
@@ -2556,7 +2571,7 @@
         },
         "SecurityGroup":{
           "shape":"SecurityGroupIds",
-          "documentation":"<p>Specifies the security groups associated with the stream. These security groups must all be in the same VPC. You can specify as many as five security groups. If you do not specify a security group, the default security group for the VPC is used.</p>"
+          "documentation":"<p>Specifies the security groups associated with the stream. These security groups must all be in the same VPC. You can specify as many as five security groups.</p>"
         }
       },
       "documentation":"<p>This structure specifies the VPC subnets and security groups for the stream, and whether a public IP address is to be used.</p>"
@@ -2759,7 +2774,7 @@
       "member":{"shape":"SubnetId"},
       "documentation":"<p>List of SubnetId.</p>",
       "max":16,
-      "min":0
+      "min":1
     },
     "Subnets":{
       "type":"list",
@@ -2963,6 +2978,10 @@
         "LogConfiguration":{
           "shape":"PipeLogConfigurationParameters",
           "documentation":"<p>The logging configuration settings for the pipe.</p>"
+        },
+        "KmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The identifier of the KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt pipe data. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.</p> <p>To update a pipe that is using the default Amazon Web Services owned key to use a customer managed key instead, or update a pipe that is using a customer managed key to use a different customer managed key, specify a customer managed key identifier.</p> <p>To update a pipe that is using a customer managed key to use the default Amazon Web Services owned key, specify an empty string.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/getting-started.html\">Managing keys</a> in the <i>Key Management Service Developer Guide</i>. </p>"
         }
       }
     },
@@ -3027,7 +3046,7 @@
         },
         "OnPartialBatchItemFailure":{
           "shape":"OnPartialBatchItemFailureStreams",
-          "documentation":"<p>(Streams only) Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
+          "documentation":"<p>Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
         },
         "MaximumBatchingWindowInSeconds":{
           "shape":"MaximumBatchingWindowInSeconds",
@@ -3035,15 +3054,15 @@
         },
         "MaximumRecordAgeInSeconds":{
           "shape":"MaximumRecordAgeInSeconds",
-          "documentation":"<p>(Streams only) Discard records older than the specified age. The default value is -1, which sets the maximum age to infinite. When the value is set to infinite, EventBridge never discards old records. </p>"
+          "documentation":"<p>Discard records older than the specified age. The default value is -1, which sets the maximum age to infinite. When the value is set to infinite, EventBridge never discards old records. </p>"
         },
         "MaximumRetryAttempts":{
           "shape":"MaximumRetryAttemptsESM",
-          "documentation":"<p>(Streams only) Discard records after the specified number of retries. The default value is -1, which sets the maximum number of retries to infinite. When MaximumRetryAttempts is infinite, EventBridge retries failed records until the record expires in the event source.</p>"
+          "documentation":"<p>Discard records after the specified number of retries. The default value is -1, which sets the maximum number of retries to infinite. When MaximumRetryAttempts is infinite, EventBridge retries failed records until the record expires in the event source.</p>"
         },
         "ParallelizationFactor":{
           "shape":"LimitMax10",
-          "documentation":"<p>(Streams only) The number of batches to process concurrently from each shard. The default value is 1.</p>"
+          "documentation":"<p>The number of batches to process concurrently from each shard. The default value is 1.</p>"
         }
       },
       "documentation":"<p>The parameters for using a DynamoDB stream as a source.</p>"
@@ -3061,7 +3080,7 @@
         },
         "OnPartialBatchItemFailure":{
           "shape":"OnPartialBatchItemFailureStreams",
-          "documentation":"<p>(Streams only) Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
+          "documentation":"<p>Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
         },
         "MaximumBatchingWindowInSeconds":{
           "shape":"MaximumBatchingWindowInSeconds",
@@ -3069,15 +3088,15 @@
         },
         "MaximumRecordAgeInSeconds":{
           "shape":"MaximumRecordAgeInSeconds",
-          "documentation":"<p>(Streams only) Discard records older than the specified age. The default value is -1, which sets the maximum age to infinite. When the value is set to infinite, EventBridge never discards old records. </p>"
+          "documentation":"<p>Discard records older than the specified age. The default value is -1, which sets the maximum age to infinite. When the value is set to infinite, EventBridge never discards old records. </p>"
         },
         "MaximumRetryAttempts":{
           "shape":"MaximumRetryAttemptsESM",
-          "documentation":"<p>(Streams only) Discard records after the specified number of retries. The default value is -1, which sets the maximum number of retries to infinite. When MaximumRetryAttempts is infinite, EventBridge retries failed records until the record expires in the event source.</p>"
+          "documentation":"<p>Discard records after the specified number of retries. The default value is -1, which sets the maximum number of retries to infinite. When MaximumRetryAttempts is infinite, EventBridge retries failed records until the record expires in the event source.</p>"
         },
         "ParallelizationFactor":{
           "shape":"LimitMax10",
-          "documentation":"<p>(Streams only) The number of batches to process concurrently from each shard. The default value is 1.</p>"
+          "documentation":"<p>The number of batches to process concurrently from each shard. The default value is 1.</p>"
         }
       },
       "documentation":"<p>The parameters for using a Kinesis stream as a source.</p>"

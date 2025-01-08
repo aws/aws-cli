@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 import json
 
-import mock
 import os
 import shutil
 import tempfile
@@ -26,7 +25,7 @@ from prompt_toolkit.formatted_text import FormattedText
 from awscli.autoprompt.history import (
     HistoryCompleter, HistoryDriver
 )
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 
 
 class TestHistoryCompleter(unittest.TestCase):

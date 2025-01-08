@@ -11,16 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from tests import unittest
+from tests import mock, unittest
 from botocore import model
 from botocore.paginate import Paginator
 from botocore.paginate import PaginatorModel
 from botocore.paginate import TokenDecoder
 from botocore.paginate import TokenEncoder
 from botocore.exceptions import PaginationError
-from botocore.compat import six
-
-import mock
 
 
 def encode_token(token):
@@ -146,7 +143,7 @@ class TestPagination(unittest.TestCase):
         result = self.paginator.paginate(PaginationConfig={'MaxItems': 1})
         result = result.build_full_result()
         token = result.get('NextToken')
-        self.assertIsInstance(token, six.string_types)
+        self.assertIsInstance(token, str)
 
     def test_any_passed_in_args_are_unmodified(self):
         responses = [{'NextToken': 'token1'},

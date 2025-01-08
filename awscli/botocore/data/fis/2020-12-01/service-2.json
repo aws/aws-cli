@@ -5,12 +5,14 @@
     "endpointPrefix":"fis",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"FIS",
     "serviceFullName":"AWS Fault Injection Simulator",
     "serviceId":"fis",
     "signatureVersion":"v4",
     "signingName":"fis",
-    "uid":"fis-2020-12-01"
+    "uid":"fis-2020-12-01",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateExperimentTemplate":{
@@ -136,6 +138,20 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Gets information about the specified experiment template.</p>"
+    },
+    "GetSafetyLever":{
+      "name":"GetSafetyLever",
+      "http":{
+        "method":"GET",
+        "requestUri":"/safetyLevers/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSafetyLeverRequest"},
+      "output":{"shape":"GetSafetyLeverResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p> Gets information about the specified safety lever. </p>"
     },
     "GetTargetAccountConfiguration":{
       "name":"GetTargetAccountConfiguration",
@@ -348,6 +364,22 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Updates the specified experiment template.</p>"
+    },
+    "UpdateSafetyLeverState":{
+      "name":"UpdateSafetyLeverState",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/safetyLevers/{id}/state",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSafetyLeverStateRequest"},
+      "output":{"shape":"UpdateSafetyLeverStateResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p> Updates the specified safety lever state. </p>"
     },
     "UpdateTargetAccountConfiguration":{
       "name":"UpdateTargetAccountConfiguration",
@@ -587,6 +619,28 @@
       },
       "documentation":"<p>Specifies the configuration for experiment logging.</p>"
     },
+    "CreateExperimentTemplateReportConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "outputs":{
+          "shape":"ExperimentTemplateReportConfigurationOutputsInput",
+          "documentation":"<p>The output destinations of the experiment report. </p>"
+        },
+        "dataSources":{
+          "shape":"ExperimentTemplateReportConfigurationDataSourcesInput",
+          "documentation":"<p>The data sources for the experiment report.</p>"
+        },
+        "preExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration before the experiment start time for the data sources to include in the report. </p>"
+        },
+        "postExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration after the experiment end time for the data sources to include in the report. </p>"
+        }
+      },
+      "documentation":"<p>Specifies the configuration for experiment reports.</p>"
+    },
     "CreateExperimentTemplateRequest":{
       "type":"structure",
       "required":[
@@ -633,6 +687,10 @@
         "experimentOptions":{
           "shape":"CreateExperimentTemplateExperimentOptionsInput",
           "documentation":"<p>The experiment options for the experiment template.</p>"
+        },
+        "experimentReportConfiguration":{
+          "shape":"CreateExperimentTemplateReportConfigurationInput",
+          "documentation":"<p>The experiment report configuration for the experiment template.</p>"
         }
       }
     },
@@ -873,6 +931,14 @@
         "targetAccountConfigurationsCount":{
           "shape":"TargetAccountConfigurationsCount",
           "documentation":"<p>The count of target account configurations for the experiment.</p>"
+        },
+        "experimentReportConfiguration":{
+          "shape":"ExperimentReportConfiguration",
+          "documentation":"<p>The experiment report configuration for the experiment.</p>"
+        },
+        "experimentReport":{
+          "shape":"ExperimentReport",
+          "documentation":"<p>The experiment report for the experiment.</p>"
         }
       },
       "documentation":"<p>Describes an experiment.</p>"
@@ -1010,6 +1076,31 @@
       "documentation":"<p>Describes the configuration for experiment logging to Amazon CloudWatch Logs.</p>"
     },
     "ExperimentEndTime":{"type":"timestamp"},
+    "ExperimentError":{
+      "type":"structure",
+      "members":{
+        "accountId":{
+          "shape":"ExperimentErrorAccountId",
+          "documentation":"<p>The Amazon Web Services Account ID where the experiment failure occurred.</p>"
+        },
+        "code":{
+          "shape":"ExperimentErrorCode",
+          "documentation":"<p>The error code for the failed experiment.</p>"
+        },
+        "location":{
+          "shape":"ExperimentErrorLocation",
+          "documentation":"<p>Context for the section of the experiment template that failed.</p>"
+        }
+      },
+      "documentation":"<p>Describes the error when an experiment has <code>failed</code>.</p>"
+    },
+    "ExperimentErrorAccountId":{"type":"string"},
+    "ExperimentErrorCode":{
+      "type":"string",
+      "max":128,
+      "pattern":"[\\S]+"
+    },
+    "ExperimentErrorLocation":{"type":"string"},
     "ExperimentId":{
       "type":"string",
       "max":64,
@@ -1051,6 +1142,164 @@
       },
       "documentation":"<p>Describes the options for an experiment.</p>"
     },
+    "ExperimentReport":{
+      "type":"structure",
+      "members":{
+        "state":{
+          "shape":"ExperimentReportState",
+          "documentation":"<p>The state of the experiment report.</p>"
+        },
+        "s3Reports":{
+          "shape":"ExperimentReportS3ReportList",
+          "documentation":"<p>The S3 destination of the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Describes the experiment report.</p>"
+    },
+    "ExperimentReportConfiguration":{
+      "type":"structure",
+      "members":{
+        "outputs":{
+          "shape":"ExperimentReportConfigurationOutputs",
+          "documentation":"<p>The output destinations of the experiment report.</p>"
+        },
+        "dataSources":{
+          "shape":"ExperimentReportConfigurationDataSources",
+          "documentation":"<p>The data sources for the experiment report.</p>"
+        },
+        "preExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration before the experiment start time for the data sources to include in the report.</p>"
+        },
+        "postExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration after the experiment end time for the data sources to include in the report.</p>"
+        }
+      },
+      "documentation":"<p>Describes the report configuration for the experiment. For more information, see <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/experiment-report-configuration\">Experiment report configurations for AWS FIS</a>.</p>"
+    },
+    "ExperimentReportConfigurationCloudWatchDashboard":{
+      "type":"structure",
+      "members":{
+        "dashboardIdentifier":{
+          "shape":"ReportConfigurationCloudWatchDashboardIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudWatch dashboard to include in the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the CloudWatch dashboard to include in the experiment report. The dashboard widgets will be captured as snapshot graphs within the report.</p>"
+    },
+    "ExperimentReportConfigurationCloudWatchDashboardList":{
+      "type":"list",
+      "member":{"shape":"ExperimentReportConfigurationCloudWatchDashboard"}
+    },
+    "ExperimentReportConfigurationDataSources":{
+      "type":"structure",
+      "members":{
+        "cloudWatchDashboards":{
+          "shape":"ExperimentReportConfigurationCloudWatchDashboardList",
+          "documentation":"<p>The CloudWatch dashboards to include as data sources in the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Describes the data sources for the experiment report.</p>"
+    },
+    "ExperimentReportConfigurationOutputs":{
+      "type":"structure",
+      "members":{
+        "s3Configuration":{
+          "shape":"ExperimentReportConfigurationOutputsS3Configuration",
+          "documentation":"<p>The S3 destination for the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Describes the output destinations of the experiment report.</p>"
+    },
+    "ExperimentReportConfigurationOutputsS3Configuration":{
+      "type":"structure",
+      "members":{
+        "bucketName":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of the S3 bucket where the experiment report will be stored.</p>"
+        },
+        "prefix":{
+          "shape":"S3ObjectKey",
+          "documentation":"<p>The prefix of the S3 bucket where the experiment report will be stored.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the S3 destination for the experiment report.</p>"
+    },
+    "ExperimentReportError":{
+      "type":"structure",
+      "members":{
+        "code":{
+          "shape":"ExperimentReportErrorCode",
+          "documentation":"<p>The error code for the failed experiment report generation.</p>"
+        }
+      },
+      "documentation":"<p>Describes the error when experiment report generation has failed.</p>"
+    },
+    "ExperimentReportErrorCode":{
+      "type":"string",
+      "max":128,
+      "pattern":"[\\s\\S]+"
+    },
+    "ExperimentReportReason":{
+      "type":"string",
+      "max":512,
+      "pattern":"[\\s\\S]+"
+    },
+    "ExperimentReportS3Report":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"ExperimentReportS3ReportArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the generated report.</p>"
+        },
+        "reportType":{
+          "shape":"ExperimentReportS3ReportType",
+          "documentation":"<p>The report type for the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Describes the S3 destination for the report.</p>"
+    },
+    "ExperimentReportS3ReportArn":{
+      "type":"string",
+      "pattern":"[\\s\\S]+"
+    },
+    "ExperimentReportS3ReportList":{
+      "type":"list",
+      "member":{"shape":"ExperimentReportS3Report"}
+    },
+    "ExperimentReportS3ReportType":{
+      "type":"string",
+      "pattern":"[\\s\\S]+"
+    },
+    "ExperimentReportState":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"ExperimentReportStatus",
+          "documentation":"<p>The state of the experiment report generation.</p>"
+        },
+        "reason":{
+          "shape":"ExperimentReportReason",
+          "documentation":"<p>The reason for the state of the experiment report generation.</p>"
+        },
+        "error":{
+          "shape":"ExperimentReportError",
+          "documentation":"<p>The error information of the experiment when the experiment report generation has failed.</p>"
+        }
+      },
+      "documentation":"<p>Describes the state of the experiment report generation.</p>"
+    },
+    "ExperimentReportStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "running",
+        "completed",
+        "cancelled",
+        "failed"
+      ]
+    },
     "ExperimentS3LogConfiguration":{
       "type":"structure",
       "members":{
@@ -1076,6 +1325,10 @@
         "reason":{
           "shape":"ExperimentStatusReason",
           "documentation":"<p>The reason for the state.</p>"
+        },
+        "error":{
+          "shape":"ExperimentError",
+          "documentation":"<p>The error information of the experiment when the action has <code>failed</code>.</p>"
         }
       },
       "documentation":"<p>Describes the state of an experiment.</p>"
@@ -1089,7 +1342,8 @@
         "completed",
         "stopping",
         "stopped",
-        "failed"
+        "failed",
+        "cancelled"
       ]
     },
     "ExperimentStatusReason":{
@@ -1339,6 +1593,10 @@
         "targetAccountConfigurationsCount":{
           "shape":"TargetAccountConfigurationsCount",
           "documentation":"<p>The count of target account configurations for the experiment template.</p>"
+        },
+        "experimentReportConfiguration":{
+          "shape":"ExperimentTemplateReportConfiguration",
+          "documentation":"<p>Describes the report configuration for the experiment template.</p>"
         }
       },
       "documentation":"<p>Describes an experiment template.</p>"
@@ -1480,6 +1738,82 @@
         }
       },
       "documentation":"<p>Describes the configuration for experiment logging.</p>"
+    },
+    "ExperimentTemplateReportConfiguration":{
+      "type":"structure",
+      "members":{
+        "outputs":{
+          "shape":"ExperimentTemplateReportConfigurationOutputs",
+          "documentation":"<p>Describes the output destinations of the experiment report.</p>"
+        },
+        "dataSources":{
+          "shape":"ExperimentTemplateReportConfigurationDataSources",
+          "documentation":"<p>The data sources for the experiment report.</p>"
+        },
+        "preExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration before the experiment start time for the data sources to include in the report.</p>"
+        },
+        "postExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration after the experiment end time for the data sources to include in the report.</p>"
+        }
+      },
+      "documentation":"<p>Describes the experiment report configuration. For more information, see <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/experiment-report-configuration\">Experiment report configurations for AWS FIS</a>.</p>"
+    },
+    "ExperimentTemplateReportConfigurationCloudWatchDashboard":{
+      "type":"structure",
+      "members":{
+        "dashboardIdentifier":{
+          "shape":"ReportConfigurationCloudWatchDashboardIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudWatch dashboard to include in the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>The CloudWatch dashboards to include as data sources in the experiment report.</p>"
+    },
+    "ExperimentTemplateReportConfigurationCloudWatchDashboardList":{
+      "type":"list",
+      "member":{"shape":"ExperimentTemplateReportConfigurationCloudWatchDashboard"}
+    },
+    "ExperimentTemplateReportConfigurationDataSources":{
+      "type":"structure",
+      "members":{
+        "cloudWatchDashboards":{
+          "shape":"ExperimentTemplateReportConfigurationCloudWatchDashboardList",
+          "documentation":"<p>The CloudWatch dashboards to include as data sources in the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Describes the data sources for the experiment report.</p>"
+    },
+    "ExperimentTemplateReportConfigurationDataSourcesInput":{
+      "type":"structure",
+      "members":{
+        "cloudWatchDashboards":{
+          "shape":"ReportConfigurationCloudWatchDashboardInputList",
+          "documentation":"<p>The CloudWatch dashboards to include as data sources in the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the data sources for the experiment report.</p>"
+    },
+    "ExperimentTemplateReportConfigurationOutputs":{
+      "type":"structure",
+      "members":{
+        "s3Configuration":{
+          "shape":"ReportConfigurationS3Output",
+          "documentation":"<p>The S3 destination for the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>The output destinations of the experiment report.</p>"
+    },
+    "ExperimentTemplateReportConfigurationOutputsInput":{
+      "type":"structure",
+      "members":{
+        "s3Configuration":{
+          "shape":"ReportConfigurationS3OutputInput",
+          "documentation":"<p>The S3 destination for the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the outputs for the experiment templates.</p>"
     },
     "ExperimentTemplateS3LogConfiguration":{
       "type":"structure",
@@ -1767,6 +2101,27 @@
         "experimentTemplate":{
           "shape":"ExperimentTemplate",
           "documentation":"<p>Information about the experiment template.</p>"
+        }
+      }
+    },
+    "GetSafetyLeverRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"SafetyLeverId",
+          "documentation":"<p> The ID of the safety lever. </p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "GetSafetyLeverResponse":{
+      "type":"structure",
+      "members":{
+        "safetyLever":{
+          "shape":"SafetyLever",
+          "documentation":"<p> Information about the safety lever. </p>"
         }
       }
     },
@@ -2123,6 +2478,58 @@
       "min":1,
       "pattern":"[\\S]+"
     },
+    "ReportConfigurationCloudWatchDashboardIdentifier":{
+      "type":"string",
+      "max":512,
+      "pattern":"[\\S]+"
+    },
+    "ReportConfigurationCloudWatchDashboardInput":{
+      "type":"structure",
+      "members":{
+        "dashboardIdentifier":{
+          "shape":"ReportConfigurationCloudWatchDashboardIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudWatch dashboard to include in the experiment report.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the CloudWatch dashboard for the experiment report.</p>"
+    },
+    "ReportConfigurationCloudWatchDashboardInputList":{
+      "type":"list",
+      "member":{"shape":"ReportConfigurationCloudWatchDashboardInput"}
+    },
+    "ReportConfigurationDuration":{
+      "type":"string",
+      "max":32,
+      "pattern":"[\\S]+"
+    },
+    "ReportConfigurationS3Output":{
+      "type":"structure",
+      "members":{
+        "bucketName":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of the S3 bucket where the experiment report will be stored.</p>"
+        },
+        "prefix":{
+          "shape":"S3ObjectKey",
+          "documentation":"<p>The prefix of the S3 bucket where the experiment report will be stored.</p>"
+        }
+      },
+      "documentation":"<p>Describes the S3 destination for the experiment report.</p>"
+    },
+    "ReportConfigurationS3OutputInput":{
+      "type":"structure",
+      "members":{
+        "bucketName":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of the S3 bucket where the experiment report will be stored.</p>"
+        },
+        "prefix":{
+          "shape":"S3ObjectKey",
+          "documentation":"<p>The prefix of the S3 bucket where the experiment report will be stored.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the S3 destination for the experiment report.</p>"
+    },
     "ResolvedTarget":{
       "type":"structure",
       "members":{
@@ -2183,6 +2590,59 @@
       "min":1,
       "pattern":"[\\s\\S]+"
     },
+    "SafetyLever":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"SafetyLeverId",
+          "documentation":"<p> The ID of the safety lever. </p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the safety lever. </p>"
+        },
+        "state":{
+          "shape":"SafetyLeverState",
+          "documentation":"<p> The state of the safety lever. </p>"
+        }
+      },
+      "documentation":"<p> Describes a safety lever. </p>"
+    },
+    "SafetyLeverId":{
+      "type":"string",
+      "max":64,
+      "pattern":"[\\S]+"
+    },
+    "SafetyLeverState":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"SafetyLeverStatus",
+          "documentation":"<p> The state of the safety lever. </p>"
+        },
+        "reason":{
+          "shape":"SafetyLeverStatusReason",
+          "documentation":"<p> The reason for the state of the safety lever. </p>"
+        }
+      },
+      "documentation":"<p> Describes the state of the safety lever. </p>"
+    },
+    "SafetyLeverStatus":{
+      "type":"string",
+      "enum":[
+        "disengaged",
+        "engaged",
+        "engaging"
+      ]
+    },
+    "SafetyLeverStatusInput":{
+      "type":"string",
+      "enum":[
+        "disengaged",
+        "engaged"
+      ]
+    },
+    "SafetyLeverStatusReason":{"type":"string"},
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -2547,6 +3007,28 @@
       },
       "documentation":"<p>Specifies the configuration for experiment logging.</p>"
     },
+    "UpdateExperimentTemplateReportConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "outputs":{
+          "shape":"ExperimentTemplateReportConfigurationOutputsInput",
+          "documentation":"<p>Describes the output destinations of the experiment report. </p>"
+        },
+        "dataSources":{
+          "shape":"ExperimentTemplateReportConfigurationDataSourcesInput",
+          "documentation":"<p>The data sources for the experiment report.</p>"
+        },
+        "preExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration before the experiment start time for the data sources to include in the report. </p>"
+        },
+        "postExperimentDuration":{
+          "shape":"ReportConfigurationDuration",
+          "documentation":"<p>The duration after the experiment end time for the data sources to include in the report. </p>"
+        }
+      },
+      "documentation":"<p> Specifies the input for the experiment report configuration.</p>"
+    },
     "UpdateExperimentTemplateRequest":{
       "type":"structure",
       "required":["id"],
@@ -2584,6 +3066,10 @@
         "experimentOptions":{
           "shape":"UpdateExperimentTemplateExperimentOptionsInput",
           "documentation":"<p>The experiment options for the experiment template.</p>"
+        },
+        "experimentReportConfiguration":{
+          "shape":"UpdateExperimentTemplateReportConfigurationInput",
+          "documentation":"<p>The experiment report configuration for the experiment template.</p>"
         }
       }
     },
@@ -2654,6 +3140,52 @@
       "key":{"shape":"ExperimentTemplateTargetName"},
       "value":{"shape":"UpdateExperimentTemplateTargetInput"}
     },
+    "UpdateSafetyLeverStateInput":{
+      "type":"structure",
+      "required":[
+        "status",
+        "reason"
+      ],
+      "members":{
+        "status":{
+          "shape":"SafetyLeverStatusInput",
+          "documentation":"<p> The updated state of the safety lever. </p>"
+        },
+        "reason":{
+          "shape":"SafetyLeverStatusReason",
+          "documentation":"<p> The reason for updating the state of the safety lever. </p>"
+        }
+      },
+      "documentation":"<p> Specifies a state for a safety lever. </p>"
+    },
+    "UpdateSafetyLeverStateRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "state"
+      ],
+      "members":{
+        "id":{
+          "shape":"SafetyLeverId",
+          "documentation":"<p> The ID of the safety lever. </p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "state":{
+          "shape":"UpdateSafetyLeverStateInput",
+          "documentation":"<p> The state of the safety lever. </p>"
+        }
+      }
+    },
+    "UpdateSafetyLeverStateResponse":{
+      "type":"structure",
+      "members":{
+        "safetyLever":{
+          "shape":"SafetyLever",
+          "documentation":"<p> Information about the safety lever. </p>"
+        }
+      }
+    },
     "UpdateTargetAccountConfigurationRequest":{
       "type":"structure",
       "required":[
@@ -2702,5 +3234,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>Fault Injection Service is a managed service that enables you to perform fault injection experiments on your Amazon Web Services workloads. For more information, see the <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/\">Fault Injection Service User Guide</a>.</p>"
+  "documentation":"<p>Amazon Web Services Fault Injection Service is a managed service that enables you to perform fault injection experiments on your Amazon Web Services workloads. For more information, see the <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/\">Fault Injection Service User Guide</a>.</p>"
 }

@@ -22,14 +22,13 @@
 import os
 import contextlib
 import copy
-import mock
 
 from botocore.exceptions import DataNotFoundError, UnknownServiceError
 from botocore.loaders import JSONFileLoader
 from botocore.loaders import Loader, create_loader
 from botocore.loaders import ExtrasProcessor
 
-from tests import BaseEnvVar
+from tests import mock, BaseEnvVar
 
 
 class TestJSONFileLoader(BaseEnvVar):

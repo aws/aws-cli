@@ -4,11 +4,13 @@
     "apiVersion":"2021-07-15",
     "endpointPrefix":"media-pipelines-chime",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon Chime SDK Media Pipelines",
     "serviceId":"Chime SDK Media Pipelines",
     "signatureVersion":"v4",
     "signingName":"chime",
-    "uid":"chime-sdk-media-pipelines-2021-07-15"
+    "uid":"chime-sdk-media-pipelines-2021-07-15",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateMediaCapturePipeline":{
@@ -132,7 +134,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Creates an Kinesis video stream pool for the media pipeline.</p>"
+      "documentation":"<p>Creates an Amazon Kinesis Video Stream pool for use with media stream pipelines.</p> <note> <p>If a meeting uses an opt-in Region as its <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_CreateMeeting.html#chimesdk-meeting-chime_CreateMeeting-request-MediaRegion\">MediaRegion</a>, the KVS stream must be in that same Region. For example, if a meeting uses the <code>af-south-1</code> Region, the KVS stream must also be in <code>af-south-1</code>. However, if the meeting uses a Region that AWS turns on by default, the KVS stream can be in any available Region, including an opt-in Region. For example, if the meeting uses <code>ca-central-1</code>, the KVS stream can be in <code>eu-west-2</code>, <code>us-east-1</code>, <code>af-south-1</code>, or any other Region that the Amazon Chime SDK supports.</p> <p>To learn which AWS Region a meeting uses, call the <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_GetMeeting.html\">GetMeeting</a> API and use the <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_CreateMeeting.html#chimesdk-meeting-chime_CreateMeeting-request-MediaRegion\">MediaRegion</a> parameter from the response.</p> <p>For more information about opt-in Regions, refer to <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/dg/sdk-available-regions.html\">Available Regions</a> in the <i>Amazon Chime SDK Developer Guide</i>, and <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-regions.html#rande-manage-enable.html\">Specify which AWS Regions your account can use</a>, in the <i>AWS Account Management Reference Guide</i>.</p> </note>"
     },
     "CreateMediaStreamPipeline":{
       "name":"CreateMediaStreamPipeline",
@@ -232,7 +234,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Deletes an Kinesis video stream pool.</p>"
+      "documentation":"<p>Deletes an Amazon Kinesis Video Stream pool.</p>"
     },
     "GetMediaCapturePipeline":{
       "name":"GetMediaCapturePipeline",
@@ -636,7 +638,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Updates an Kinesis video stream pool in a media pipeline.</p>"
+      "documentation":"<p>Updates an Amazon Kinesis Video Stream pool in a media pipeline.</p>"
     }
   },
   "shapes":{
@@ -779,6 +781,10 @@
           "shape":"Boolean",
           "documentation":"<p>Turns language identification on or off.</p>"
         },
+        "IdentifyMultipleLanguages":{
+          "shape":"Boolean",
+          "documentation":"<p>Turns language identification on or off for multiple languages.</p> <note> <p>Calls to this API must include a <code>LanguageCode</code>, <code>IdentifyLanguage</code>, or <code>IdentifyMultipleLanguages</code> parameter. If you include more than one of those parameters, your transcription job fails.</p> </note>"
+        },
         "LanguageOptions":{
           "shape":"LanguageOptions",
           "documentation":"<p>The language options for the transcription, such as automatic language detection.</p>"
@@ -796,7 +802,7 @@
           "documentation":"<p>The names of the custom vocabulary filter or filters using during transcription.</p>"
         }
       },
-      "documentation":"<p>A structure that contains the configuration settings for an Amazon Transcribe processor.</p>"
+      "documentation":"<p>A structure that contains the configuration settings for an Amazon Transcribe processor.</p> <note> <p>Calls to this API must include a <code>LanguageCode</code>, <code>IdentifyLanguage</code>, or <code>IdentifyMultipleLanguages</code> parameter. If you include more than one of those parameters, your transcription job fails.</p> </note>"
     },
     "Arn":{
       "type":"string",
@@ -1282,6 +1288,14 @@
           "shape":"ChimeSdkMeetingConfiguration",
           "documentation":"<p>The configuration for a specified media pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.</p>"
         },
+        "SseAwsKeyManagementParams":{
+          "shape":"SseAwsKeyManagementParams",
+          "documentation":"<p>An object that contains server side encryption parameters to be used by media capture pipeline. The parameters can also be used by media concatenation pipeline taking media capture pipeline as a media source.</p>"
+        },
+        "SinkIamRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the sink role to be used with <code>AwsKmsKeyId</code> in <code>SseAwsKeyManagementParams</code>. Can only interact with <code>S3Bucket</code> sink type. The role must belong to the caller’s account and be able to act on behalf of the caller during the API call. All minimum policy permissions requirements for the caller to perform sink-related actions are the same for <code>SinkIamRoleArn</code>.</p> <p>Additionally, the role must have permission to <code>kms:GenerateDataKey</code> using KMS key supplied as <code>AwsKmsKeyId</code> in <code>SseAwsKeyManagementParams</code>. If media concatenation will be required later, the role must also have permission to <code>kms:Decrypt</code> for the same KMS key.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tag key-value pairs.</p>"
@@ -1465,11 +1479,11 @@
       "members":{
         "StreamConfiguration":{
           "shape":"KinesisVideoStreamConfiguration",
-          "documentation":"<p>The configuration settings for the video stream.</p>"
+          "documentation":"<p>The configuration settings for the stream.</p>"
         },
         "PoolName":{
           "shape":"KinesisVideoStreamPoolName",
-          "documentation":"<p>The name of the video stream pool.</p>"
+          "documentation":"<p>The name of the pool.</p>"
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
@@ -1478,7 +1492,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>The tags assigned to the video stream pool.</p>"
+          "documentation":"<p>The tags assigned to the stream pool.</p>"
         }
       }
     },
@@ -1487,7 +1501,7 @@
       "members":{
         "KinesisVideoStreamPoolConfiguration":{
           "shape":"KinesisVideoStreamPoolConfiguration",
-          "documentation":"<p>The configuration for the Kinesis video stream pool.</p>"
+          "documentation":"<p>The configuration for applying the streams to the pool.</p> <note> <p/> </note>"
         }
       }
     },
@@ -1575,7 +1589,7 @@
       "members":{
         "Identifier":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID of the pool being deleted.</p>",
+          "documentation":"<p>The unique identifier of the requested resource. Valid values include the name and ARN of the media pipeline Kinesis Video Stream pool.</p>",
           "location":"uri",
           "locationName":"identifier"
         }
@@ -1709,7 +1723,7 @@
       "members":{
         "Identifier":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID of the video stream pool.</p>",
+          "documentation":"<p>The unique identifier of the requested resource. Valid values include the name and ARN of the media pipeline Kinesis Video Stream pool.</p>",
           "location":"uri",
           "locationName":"identifier"
         }
@@ -1964,7 +1978,7 @@
           "documentation":"<p>The amount of time that data is retained.</p>"
         }
       },
-      "documentation":"<p>The configuration of an Kinesis video stream.</p>"
+      "documentation":"<p>The configuration of an Kinesis video stream.</p> <note> <p>If a meeting uses an opt-in Region as its <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_CreateMeeting.html#chimesdk-meeting-chime_CreateMeeting-request-MediaRegion\">MediaRegion</a>, the KVS stream must be in that same Region. For example, if a meeting uses the <code>af-south-1</code> Region, the KVS stream must also be in <code>af-south-1</code>. However, if the meeting uses a Region that AWS turns on by default, the KVS stream can be in any available Region, including an opt-in Region. For example, if the meeting uses <code>ca-central-1</code>, the KVS stream can be in <code>eu-west-2</code>, <code>us-east-1</code>, <code>af-south-1</code>, or any other Region that the Amazon Chime SDK supports.</p> <p>To learn which AWS Region a meeting uses, call the <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_GetMeeting.html\">GetMeeting</a> API and use the <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_CreateMeeting.html#chimesdk-meeting-chime_CreateMeeting-request-MediaRegion\">MediaRegion</a> parameter from the response.</p> <p>For more information about opt-in Regions, refer to <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/dg/sdk-available-regions.html\">Available Regions</a> in the <i>Amazon Chime SDK Developer Guide</i>, and <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-regions.html#rande-manage-enable.html\">Specify which AWS Regions your account can use</a>, in the <i>AWS Account Management Reference Guide</i>.</p> </note>"
     },
     "KinesisVideoStreamConfigurationUpdate":{
       "type":"structure",
@@ -2410,6 +2424,14 @@
         "ChimeSdkMeetingConfiguration":{
           "shape":"ChimeSdkMeetingConfiguration",
           "documentation":"<p>The configuration for a specified media pipeline. <code>SourceType</code> must be <code>ChimeSdkMeeting</code>.</p>"
+        },
+        "SseAwsKeyManagementParams":{
+          "shape":"SseAwsKeyManagementParams",
+          "documentation":"<p>An object that contains server side encryption parameters to be used by media capture pipeline. The parameters can also be used by media concatenation pipeline taking media capture pipeline as a media source.</p>"
+        },
+        "SinkIamRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the sink role to be used with <code>AwsKmsKeyId</code> in <code>SseAwsKeyManagementParams</code>.</p>"
         }
       },
       "documentation":"<p>A media pipeline object consisting of an ID, source type, source ARN, a sink type, a sink ARN, and a configuration object.</p>"
@@ -2872,7 +2894,7 @@
       "members":{
         "SinkArn":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the media stream sink.</p>"
+          "documentation":"<p>The ARN of the Kinesis Video Stream pool returned by the <a>CreateMediaPipelineKinesisVideoStreamPool</a> API.</p>"
         },
         "SinkType":{
           "shape":"MediaStreamPipelineSinkType",
@@ -2908,7 +2930,7 @@
         },
         "SourceArn":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the media stream source. </p>"
+          "documentation":"<p>The ARN of the meeting.</p>"
         }
       },
       "documentation":"<p>Structure that contains the settings for media stream sources.</p>"
@@ -3104,7 +3126,7 @@
       "type":"list",
       "member":{"shape":"RecordingStreamConfiguration"},
       "max":2,
-      "min":2
+      "min":1
     },
     "ReservedStreamCapacity":{
       "type":"integer",
@@ -3319,6 +3341,21 @@
         }
       },
       "documentation":"<p>The configuration settings for the SQS sink.</p>"
+    },
+    "SseAwsKeyManagementParams":{
+      "type":"structure",
+      "required":["AwsKmsKeyId"],
+      "members":{
+        "AwsKmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The KMS key you want to use to encrypt your media pipeline output. Decryption is required for concatenation pipeline. If using a key located in the current Amazon Web Services account, you can specify your KMS key in one of four ways:</p> <ul> <li> <p>Use the KMS key ID itself. For example, <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use an alias for the KMS key ID. For example, <code>alias/ExampleAlias</code>.</p> </li> <li> <p>Use the Amazon Resource Name (ARN) for the KMS key ID. For example, <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use the ARN for the KMS key alias. For example, <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p> </li> </ul> <p>If using a key located in a different Amazon Web Services account than the current Amazon Web Services account, you can specify your KMS key in one of two ways:</p> <ul> <li> <p>Use the ARN for the KMS key ID. For example, <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Use the ARN for the KMS key alias. For example, <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p> </li> </ul> <p>If you don't specify an encryption key, your output is encrypted with the default Amazon S3 key (SSE-S3).</p> <p>Note that the role specified in the <code>SinkIamRoleArn</code> request parameter must have permission to use the specified KMS key.</p>"
+        },
+        "AwsKmsEncryptionContext":{
+          "shape":"String",
+          "documentation":"<p>Base64-encoded string of a UTF-8 encoded JSON, which contains the encryption context as non-secret key-value pair known as encryption context pairs, that provides an added layer of security for your data. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/encrypt_context.html\">KMS encryption context</a> and <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html\">Asymmetric keys in KMS</a> in the <i>Key Management Service Developer Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>Contains server side encryption parameters to be used by media capture pipeline. The parameters can also be used by media concatenation pipeline taking media capture pipeline as a media source.</p>"
     },
     "StartSpeakerSearchTaskRequest":{
       "type":"structure",
@@ -3704,7 +3741,7 @@
       "members":{
         "Identifier":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID of the video stream pool.</p>",
+          "documentation":"<p>The unique identifier of the requested resource. Valid values include the name and ARN of the media pipeline Kinesis Video Stream pool.</p>",
           "location":"uri",
           "locationName":"identifier"
         },

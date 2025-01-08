@@ -11,12 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest
-import mock
 
 from awscli.clidriver import CLIDriver
 from awscli.customizations.commands import BasicHelp, BasicCommand
 from awscli.customizations.commands import BasicDocHandler
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import mock, BaseAWSCommandParamsTest
 from botocore.hooks import HierarchicalEmitter
 from tests.unit.test_clidriver import FakeSession, FakeCommand
 
@@ -217,8 +216,7 @@ class TestUserAgentCommandSection(BaseAWSCommandParamsTest):
 
     def test_customization_in_user_agent_s3_ls(self):
         cmd = 's3 ls'
-        # it should fail but the user_agent should be correct
-        self.run_cmd(cmd, expected_rc=255)
+        self.run_cmd(cmd)
         self._assert_customization_in_user_agent(' md/command#s3.ls')
 
     def test_customization_in_user_agent_logs_tail(self):

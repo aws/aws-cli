@@ -13,7 +13,6 @@
 
 import glob
 import os
-import mock
 import tempfile
 import shutil
 from botocore.compat import OrderedDict

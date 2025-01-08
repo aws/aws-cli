@@ -10,12 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
 import socket
-from tests import unittest
 
-from mock import Mock, patch, sentinel
+import pytest
 
-from botocore.compat import six
+from tests import mock, unittest
 from botocore.awsrequest import AWSRequest
 from botocore.endpoint import Endpoint, DEFAULT_TIMEOUT
 from botocore.endpoint import EndpointCreator
@@ -41,34 +41,34 @@ def request_dict(**kwargs):
     return base
 
 
-class RecordStreamResets(six.StringIO):
+class RecordStreamResets(io.StringIO):
     def __init__(self, value):
-        six.StringIO.__init__(self, value)
+        io.StringIO.__init__(self, value)
         self.total_resets = 0
 
     def seek(self, where, whence=0):
         self.total_resets += 1
-        six.StringIO.seek(self, where, whence)
+        io.StringIO.seek(self, where, whence)
 
 
 class TestEndpointBase(unittest.TestCase):
 
     def setUp(self):
-        self.op = Mock()
+        self.op = mock.Mock()
         self.op.has_streaming_output = False
         self.op.has_event_stream_output = False
         self.op.metadata = {'protocol': 'json'}
-        self.event_emitter = Mock()
+        self.event_emitter = mock.Mock()
         self.event_emitter.emit.return_value = []
-        self.factory_patch = patch(
+        self.factory_patch = mock.patch(
             'botocore.parsers.ResponseParserFactory')
         self.factory = self.factory_patch.start()
         self.endpoint = Endpoint(
             'https://ec2.us-west-2.amazonaws.com/',
             endpoint_prefix='ec2',
             event_emitter=self.event_emitter)
-        self.http_session = Mock()
-        self.http_session.send.return_value = Mock(
+        self.http_session = mock.Mock()
+        self.http_session.send.return_value = mock.Mock(
             status_code=200, headers={}, content=b'{"Foo": "bar"}',
         )
         self.endpoint.http_session = self.http_session
@@ -76,13 +76,16 @@ class TestEndpointBase(unittest.TestCase):
     def tearDown(self):
         self.factory_patch.stop()
 
-    def get_emitter_responses(self, num_retries=0, sleep_time=0):
+    def get_emitter_responses(self, num_retries=0, sleep_time=0, num_events=4):
         emitter_responses = []
+        # We emit the following events:
+        # 1. request-created
+        # 2. before-send
+        # 3. before-parse (may not be emitted if certain errors are thrown)
+        # 4. response-received
         response_request_emitter_responses = [
-            [(None, None)],  # emit() response for request-created
-            [(None, None)],  # emit() response for before-send
-            [(None, None)],  # emit() response for response-received
-        ]
+            [(None, None)]  # emit() response for each emitted event
+        ] * num_events
         for _ in range(num_retries):
             emitter_responses.extend(response_request_emitter_responses)
             # emit() response for retry for sleep time
@@ -120,24 +123,24 @@ class TestEndpointFeatures(TestEndpointBase):
     def test_make_request_with_context(self):
         r = request_dict()
         r['context'] = {'signing': {'region': 'us-west-2'}}
-        with patch('botocore.endpoint.Endpoint.prepare_request') as prepare:
+        with mock.patch('botocore.endpoint.Endpoint.prepare_request') as prepare:
             self.endpoint.make_request(self.op, r)
         request = prepare.call_args[0][0]
         self.assertEqual(request.context['signing']['region'], 'us-west-2')
 
     def test_parses_modeled_exception_fields(self):
         # Setup the service model to have exceptions to generate the mapping
-        self.service_model = Mock(spec=ServiceModel)
+        self.service_model = mock.Mock(spec=ServiceModel)
         self.op.service_model = self.service_model
-        self.exception_shape = Mock(spec=StructureShape)
+        self.exception_shape = mock.Mock(spec=StructureShape)
         shape_for_error_code = self.service_model.shape_for_error_code
         shape_for_error_code.return_value = self.exception_shape
 
         r = request_dict()
-        self.http_session.send.return_value = Mock(
+        self.http_session.send.return_value = mock.Mock(
             status_code=400, headers={}, content=b'',
         )
-        parser = Mock()
+        parser = mock.Mock()
         parser.parse.side_effect = [
             {
                 'Error': {
@@ -169,7 +172,7 @@ class TestRetryInterface(TestEndpointBase):
     def setUp(self):
         super(TestRetryInterface, self).setUp()
         self.retried_on_exception = None
-        self._operation = Mock(spec=OperationModel)
+        self._operation = mock.Mock(spec=OperationModel)
         self._operation.name = 'DescribeInstances'
         self._operation.metadata = {'protocol': 'query'}
         self._operation.service_model.service_id = ServiceId('EC2')
@@ -195,6 +198,7 @@ class TestRetryInterface(TestEndpointBase):
             expected_events=[
                 'request-created.ec2.DescribeInstances',
                 'before-send.ec2.DescribeInstances',
+                'before-parse.ec2.DescribeInstances',
                 'response-received.ec2.DescribeInstances',
                 'needs-retry.ec2.DescribeInstances',
             ] * 2
@@ -202,7 +206,7 @@ class TestRetryInterface(TestEndpointBase):
 
     def test_retry_on_socket_errors(self):
         self.event_emitter.emit.side_effect = self.get_emitter_responses(
-            num_retries=1)
+            num_retries=1, num_events=3)
         self.http_session.send.side_effect = HTTPClientError(error='wrapped')
         with self.assertRaises(HTTPClientError):
             self.endpoint.make_request(self._operation, request_dict())
@@ -219,7 +223,7 @@ class TestRetryInterface(TestEndpointBase):
     def test_retry_attempts_added_to_response_metadata(self):
         self.event_emitter.emit.side_effect = self.get_emitter_responses(
             num_retries=1)
-        parser = Mock()
+        parser = mock.Mock()
         parser.parse.return_value = {'ResponseMetadata': {}}
         self.factory.return_value.create_parser.return_value = parser
         response = self.endpoint.make_request(self._operation, request_dict())
@@ -228,7 +232,7 @@ class TestRetryInterface(TestEndpointBase):
     def test_retry_attempts_is_zero_when_not_retried(self):
         self.event_emitter.emit.side_effect = self.get_emitter_responses(
             num_retries=0)
-        parser = Mock()
+        parser = mock.Mock()
         parser.parse.return_value = {'ResponseMetadata': {}}
         self.factory.return_value.create_parser.return_value = parser
         response = self.endpoint.make_request(self._operation, request_dict())
@@ -250,7 +254,7 @@ class TestS3ResetStreamOnRetry(TestEndpointBase):
             return 0
 
     def test_reset_stream_on_retry(self):
-        op = Mock()
+        op = mock.Mock()
         body = RecordStreamResets('foobar')
         op.name = 'PutObject'
         op.has_streaming_output = True
@@ -278,14 +282,14 @@ class TestEventStreamBody(TestEndpointBase):
 
 class TestEndpointCreator(unittest.TestCase):
     def setUp(self):
-        self.service_model = Mock(
+        self.service_model = mock.Mock(
             endpoint_prefix='ec2', signature_version='v2',
             signing_name='ec2')
         self.environ = {}
-        self.environ_patch = patch('os.environ', self.environ)
+        self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
-        self.creator = EndpointCreator(Mock())
-        self.mock_session = Mock(spec=URLLib3Session)
+        self.creator = EndpointCreator(mock.Mock())
+        self.mock_session = mock.Mock(spec=URLLib3Session)
 
     def tearDown(self):
         self.environ_patch.stop()
@@ -295,6 +299,25 @@ class TestEndpointCreator(unittest.TestCase):
             self.service_model, region_name='us-east-1',
             endpoint_url='https://endpoint.url')
         self.assertEqual(endpoint.host, 'https://endpoint.url')
+
+    def test_creates_endpoint_with_ipv4_url(self):
+        endpoint = self.creator.create_endpoint(
+            self.service_model, region_name='us-east-1',
+            endpoint_url='https://192.168.0.0')
+        self.assertEqual(endpoint.host, 'https://192.168.0.0')
+
+    def test_creates_endpoint_with_ipv6_url(self):
+        endpoint = self.creator.create_endpoint(
+            self.service_model, region_name='us-east-1',
+            endpoint_url='https://[100:0:2::61]:7480')
+        self.assertEqual(endpoint.host, 'https://[100:0:2::61]:7480')
+
+    def test_raises_error_with_invalid_url(self):
+        with pytest.raises(ValueError):
+            self.creator.create_endpoint(
+                self.service_model, region_name='us-east-1',
+                endpoint_url='https://*.aws.amazon.com/'
+            )
 
     def test_create_endpoint_with_default_timeout(self):
         endpoint = self.creator.create_endpoint(

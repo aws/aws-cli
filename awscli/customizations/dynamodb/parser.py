@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 from decimal import Decimal
 
-from awscli.compat import six
 import awscli.customizations.dynamodb.ast as ast
 from .exceptions import (
     EmptyExpressionError, UnexpectedTokenError, UnknownExpressionError,
@@ -239,7 +238,7 @@ class Parser(object):
         return ast.literal(value)
 
     def _parse_literal_set(self):
-        valid_types = (six.string_types, Binary, Decimal)
+        valid_types = (str, Binary, Decimal)
         first_type = type(self._current['value'])
 
         elements = set()
@@ -286,7 +285,7 @@ class Parser(object):
         elements = {}
         while True:
             key = self._current['value']
-            if not isinstance(key, six.string_types):
+            if not isinstance(key, str):
                 raise InvalidLiteralValueError(
                     token=self._current,
                     expression=self._expression,

@@ -12,11 +12,10 @@
 # language governing permissions and limitations under the License.
 
 import os
-import mock
 
 from . import FakeSession
-from awscli.testutils import unittest
-from awscli.compat import six
+from awscli.testutils import mock, unittest
+from awscli.compat import StringIO
 from awscli.customizations.configure.importer import (
     CredentialImporter,
     ConfigureImportCommand,
@@ -38,7 +37,7 @@ class TestConfigureImportCommand(unittest.TestCase):
         self.session.profile = None
         self.mock_writer = mock.Mock(spec=ConfigFileWriter)
         self.importer = CredentialImporter(self.mock_writer)
-        self.stdout = six.StringIO()
+        self.stdout = StringIO()
         self.import_command = ConfigureImportCommand(
             self.session,
             importer=self.importer,

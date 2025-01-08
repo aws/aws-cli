@@ -20,7 +20,6 @@
 # distribution when running the tests.
 import os
 import sys
-import mock
 import time
 import random
 import shutil
@@ -35,11 +34,11 @@ from subprocess import Popen, PIPE
 
 from dateutil.tz import tzlocal
 import unittest
+from unittest import mock
 
 import botocore.loaders
 import botocore.session
 from botocore.awsrequest import AWSResponse
-from botocore.compat import six
 from botocore.compat import urlparse
 from botocore.compat import parse_qs
 from botocore import utils
@@ -350,7 +349,7 @@ class IntegerRefresher(credentials.RefreshableCredentials):
 
 
 def _urlparse(url):
-    if isinstance(url, six.binary_type):
+    if isinstance(url, bytes):
         # Not really necessary, but it helps to reduce noise on Python 2.x
         url = url.decode('utf8')
     return urlparse(url)

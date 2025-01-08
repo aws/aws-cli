@@ -14,6 +14,7 @@ import base64
 import re
 
 import pytest
+from dateutil.tz import tzutc
 
 from tests import (
     create_session, mock, temporary_file, unittest,
@@ -28,7 +29,6 @@ from botocore.exceptions import (
     UnsupportedS3ConfigurationError,
     UnsupportedS3AccesspointConfigurationError,
 )
-from botocore.parsers import ResponseParserError
 from botocore.loaders import Loader
 from botocore import UNSIGNED
 
@@ -357,12 +357,12 @@ class TestS3Copy(BaseS3OperationTest):
         http_stubber.start()
         return client, http_stubber
 
-    def test_s3_copy_object_with_empty_response(self):
+    def test_s3_copy_object_with_incomplete_response(self):
         self.client, self.http_stubber = self.create_stubbed_s3_client(
             region_name='us-east-1'
         )
 
-        empty_body = b''
+        incomplete_body = b'<?xml version="1.0" encoding="UTF-8"?>\n\n\n'
         complete_body = (
             b'<?xml version="1.0" encoding="UTF-8"?>\n\n'
             b'<CopyObjectResult '
@@ -371,7 +371,7 @@ class TestS3Copy(BaseS3OperationTest):
             b'<ETag>&quot;s0mEcH3cK5uM&quot;</ETag></CopyObjectResult>'
         )
 
-        self.http_stubber.add_response(status=200, body=empty_body)
+        self.http_stubber.add_response(status=200, body=incomplete_body)
         self.http_stubber.add_response(status=200, body=complete_body)
         response = self.client.copy_object(
             Bucket='bucket',
@@ -384,19 +384,86 @@ class TestS3Copy(BaseS3OperationTest):
         self.assertEqual(response['ResponseMetadata']['HTTPStatusCode'], 200)
         self.assertTrue('CopyObjectResult' in response)
 
-    def test_s3_copy_object_with_incomplete_response(self):
+
+class TestS3200ErrorResponse(BaseS3OperationTest):
+    def create_s3_client(self, **kwargs):
+        client_kwargs = {"region_name": self.region}
+        client_kwargs.update(kwargs)
+        return self.session.create_client("s3", **client_kwargs)
+
+    def create_stubbed_s3_client(self, **kwargs):
+        client = self.create_s3_client(**kwargs)
+        http_stubber = ClientHTTPStubber(client)
+        http_stubber.start()
+        return client, http_stubber
+
+    def test_s3_200_with_error_response(self):
         self.client, self.http_stubber = self.create_stubbed_s3_client(
             region_name='us-east-1'
         )
-
-        incomplete_body = b'<?xml version="1.0" encoding="UTF-8"?>\n\n\n'
-        self.http_stubber.add_response(status=200, body=incomplete_body)
-        with self.assertRaises(ResponseParserError):
+        error_body = (
+            b"<Error>"
+            b"<Code>SlowDown</Code>"
+            b"<Message>Please reduce your request rate.</Message>"
+            b"</Error>"
+        )
+        # Populate 3 attempts for SlowDown to validate
+        # we reached two max retries and raised an exception.
+        for i in range(3):
+            self.http_stubber.add_response(status=200, body=error_body)
+        with self.assertRaises(botocore.exceptions.ClientError) as context:
             self.client.copy_object(
                 Bucket='bucket',
                 CopySource='other-bucket/test.txt',
                 Key='test.txt',
             )
+        self.assertEqual(len(self.http_stubber.requests), 3)
+        self.assertEqual(
+            context.exception.response["ResponseMetadata"]["HTTPStatusCode"],
+            500,
+        )
+        self.assertEqual(
+            context.exception.response["Error"]["Code"], "SlowDown"
+        )
+
+    def test_s3_200_with_no_error_response(self):
+        self.client, self.http_stubber = self.create_stubbed_s3_client(
+            region_name="us-east-1"
+        )
+        self.http_stubber.add_response(status=200, body=b"<NotAnError/>")
+
+        response = self.client.copy_object(
+            Bucket="bucket",
+            CopySource="other-bucket/test.txt",
+            Key="test.txt",
+        )
+
+        # Validate that the status code remains 200.
+        self.assertEqual(len(self.http_stubber.requests), 1)
+        self.assertEqual(response["ResponseMetadata"]["HTTPStatusCode"], 200)
+
+    def test_s3_200_with_error_response_on_streaming_operation(self):
+        self.client, self.http_stubber = self.create_stubbed_s3_client(
+            region_name="us-east-1"
+        )
+        self.http_stubber.add_response(status=200, body=b"<Error/>")
+        response = self.client.get_object(Bucket="bucket", Key="test.txt")
+
+        # Validate that the status code remains 200 because we don't
+        # process 200-with-error responses on streaming operations.
+        self.assertEqual(len(self.http_stubber.requests), 1)
+        self.assertEqual(response["ResponseMetadata"]["HTTPStatusCode"], 200)
+
+    def test_s3_200_response_with_no_body(self):
+        self.client, self.http_stubber = self.create_stubbed_s3_client(
+            region_name="us-east-1"
+        )
+        self.http_stubber.add_response(status=200)
+        response = self.client.head_object(Bucket="bucket", Key="test.txt")
+
+        # Validate that the status code remains 200 on operations without a body.
+        self.assertEqual(len(self.http_stubber.requests), 1)
+        self.assertEqual(response["ResponseMetadata"]["HTTPStatusCode"], 200)
 
 
 class TestAccesspointArn(BaseS3ClientConfigurationTest):
@@ -1221,6 +1288,41 @@ class TestS3PutObject(BaseS3OperationTest):
             # invalid and eventually return the 200 response.
             self.assertEqual(response['ResponseMetadata']['HTTPStatusCode'], 200)
             self.assertEqual(len(http_stubber.requests), 2)
+
+
+class TestS3ExpiresHeaderResponse(BaseS3OperationTest):
+    def test_valid_expires_value_in_response(self):
+        expires_value = "Thu, 01 Jan 1970 00:00:00 GMT"
+        mock_headers = {'expires': expires_value}
+        s3 = self.session.create_client("s3")
+        with ClientHTTPStubber(s3) as http_stubber:
+            http_stubber.add_response(headers=mock_headers)
+            response = s3.get_object(Bucket='mybucket', Key='mykey')
+            self.assertEqual(
+                response.get('Expires'),
+                datetime.datetime(1970, 1, 1, tzinfo=tzutc()),
+            )
+            self.assertEqual(response.get('ExpiresString'), expires_value)
+
+    def test_invalid_expires_value_in_response(self):
+        expires_value = "Invalid Date"
+        mock_headers = {'expires': expires_value}
+        warning_msg = 'Failed to parse the "Expires" member as a timestamp'
+        s3 = self.session.create_client("s3")
+        with self.assertLogs('botocore.handlers', level='WARNING') as log:
+            with ClientHTTPStubber(s3) as http_stubber:
+                http_stubber.add_response(headers=mock_headers)
+                response = s3.get_object(Bucket='mybucket', Key='mykey')
+                self.assertNotIn(
+                    'expires',
+                    response.get('ResponseMetadata').get('HTTPHeaders'),
+                )
+                self.assertNotIn('Expires', response)
+                self.assertEqual(response.get('ExpiresString'), expires_value)
+                self.assertTrue(
+                    any(warning_msg in entry for entry in log.output),
+                    f'Expected warning message not found in logs. Logs: {log.output}',
+                )
 
 
 class TestWriteGetObjectResponse(BaseS3ClientConfigurationTest):
@@ -2925,3 +3027,44 @@ class TestS3XMLPayloadEscape(BaseS3OperationTest):
         self.assertNotIn(b'my\r\n\rprefix', request.body)
         self.assertIn(b'my&#xD;&#xA;&#xD;prefix', request.body)
         self.assert_correct_content_md5(request)
+
+
+@pytest.mark.parametrize(
+    "bucket, key, expected_path, expected_hostname",
+    [
+        (
+            "mybucket",
+            "../key.txt",
+            "/../key.txt",
+            "mybucket.s3.us-west-2.amazonaws.com",
+        ),
+        (
+            "mybucket",
+            "foo/../key.txt",
+            "/foo/../key.txt",
+            "mybucket.s3.us-west-2.amazonaws.com",
+        ),
+        (
+            "mybucket",
+            "foo/../../key.txt",
+            "/foo/../../key.txt",
+            "mybucket.s3.us-west-2.amazonaws.com",
+        ),
+    ],
+)
+def test_dot_segments_preserved_in_url_path(
+    patched_session, bucket, key, expected_path, expected_hostname
+):
+    s3 = patched_session.create_client(
+        's3',
+        'us-west-2',
+        config=Config(
+            s3={"addressing_style": "virtual"},
+        ),
+    )
+    with ClientHTTPStubber(s3) as http_stubber:
+        http_stubber.add_response()
+        s3.get_object(Bucket=bucket, Key=key)
+        url_parts = urlsplit(http_stubber.requests[0].url)
+        assert url_parts.path == expected_path
+        assert url_parts.hostname == expected_hostname

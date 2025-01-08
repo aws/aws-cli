@@ -5,12 +5,14 @@
     "endpointPrefix":"servicediscovery",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"ServiceDiscovery",
     "serviceFullName":"AWS Cloud Map",
     "serviceId":"ServiceDiscovery",
     "signatureVersion":"v4",
     "targetPrefix":"Route53AutoNaming_v20170314",
-    "uid":"servicediscovery-2017-03-14"
+    "uid":"servicediscovery-2017-03-14",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateHttpNamespace":{
@@ -110,7 +112,21 @@
         {"shape":"ServiceNotFound"},
         {"shape":"ResourceInUse"}
       ],
-      "documentation":"<p>Deletes a specified service. If the service still contains one or more registered instances, the request fails.</p>"
+      "documentation":"<p>Deletes a specified service and all associated service attributes. If the service still contains one or more registered instances, the request fails.</p>"
+    },
+    "DeleteServiceAttributes":{
+      "name":"DeleteServiceAttributes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteServiceAttributesRequest"},
+      "output":{"shape":"DeleteServiceAttributesResponse"},
+      "errors":[
+        {"shape":"InvalidInput"},
+        {"shape":"ServiceNotFound"}
+      ],
+      "documentation":"<p>Deletes specific attributes associated with a service.</p>"
     },
     "DeregisterInstance":{
       "name":"DeregisterInstance",
@@ -234,6 +250,20 @@
         {"shape":"ServiceNotFound"}
       ],
       "documentation":"<p>Gets the settings for a specified service.</p>"
+    },
+    "GetServiceAttributes":{
+      "name":"GetServiceAttributes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetServiceAttributesRequest"},
+      "output":{"shape":"GetServiceAttributesResponse"},
+      "errors":[
+        {"shape":"InvalidInput"},
+        {"shape":"ServiceNotFound"}
+      ],
+      "documentation":"<p>Returns the attributes associated with a specified service.</p>"
     },
     "ListInstances":{
       "name":"ListInstances",
@@ -425,6 +455,21 @@
         {"shape":"ServiceNotFound"}
       ],
       "documentation":"<p>Submits a request to perform the following operations:</p> <ul> <li> <p>Update the TTL setting for existing <code>DnsRecords</code> configurations</p> </li> <li> <p>Add, update, or delete <code>HealthCheckConfig</code> for a specified service</p> <note> <p>You can't add, update, or delete a <code>HealthCheckCustomConfig</code> configuration.</p> </note> </li> </ul> <p>For public and private DNS namespaces, note the following:</p> <ul> <li> <p>If you omit any existing <code>DnsRecords</code> or <code>HealthCheckConfig</code> configurations from an <code>UpdateService</code> request, the configurations are deleted from the service.</p> </li> <li> <p>If you omit an existing <code>HealthCheckCustomConfig</code> configuration from an <code>UpdateService</code> request, the configuration isn't deleted from the service.</p> </li> </ul> <p>When you update settings for a service, Cloud Map also updates the corresponding settings in all the records and health checks that were created by using the specified service.</p>"
+    },
+    "UpdateServiceAttributes":{
+      "name":"UpdateServiceAttributes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateServiceAttributesRequest"},
+      "output":{"shape":"UpdateServiceAttributesResponse"},
+      "errors":[
+        {"shape":"InvalidInput"},
+        {"shape":"ServiceNotFound"},
+        {"shape":"ServiceAttributesLimitExceededException"}
+      ],
+      "documentation":"<p>Submits a request to update a specified service to add service-level attributes.</p>"
     }
   },
   "shapes":{
@@ -650,6 +695,28 @@
         }
       }
     },
+    "DeleteServiceAttributesRequest":{
+      "type":"structure",
+      "required":[
+        "ServiceId",
+        "Attributes"
+      ],
+      "members":{
+        "ServiceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the service from which the attributes will be deleted.</p>"
+        },
+        "Attributes":{
+          "shape":"ServiceAttributeKeyList",
+          "documentation":"<p>A list of keys corresponding to each attribute that you want to delete.</p>"
+        }
+      }
+    },
+    "DeleteServiceAttributesResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteServiceRequest":{
       "type":"structure",
       "required":["Id"],
@@ -784,10 +851,10 @@
         },
         "DnsRecords":{
           "shape":"DnsRecordList",
-          "documentation":"<p>An array that contains one <code>DnsRecord</code> object for each Route 53 DNS record that you want Cloud Map to create when you register an instance.</p>"
+          "documentation":"<p>An array that contains one <code>DnsRecord</code> object for each Route 53 DNS record that you want Cloud Map to create when you register an instance.</p> <important> <p>The record type of a service specified in a <code>DnsRecord</code> object can't be updated. To change a record type, you need to delete the service and recreate it with a new <code>DnsConfig</code>.</p> </important>"
         }
       },
-      "documentation":"<p>A complex type that contains information about the Amazon Route 53 DNS records that you want Cloud Map to create when you register an instance.</p> <important> <p>The record types of a service can only be changed by deleting the service and recreating it with a new <code>Dnsconfig</code>.</p> </important>"
+      "documentation":"<p>A complex type that contains information about the Amazon Route 53 DNS records that you want Cloud Map to create when you register an instance.</p>"
     },
     "DnsConfigChange":{
       "type":"structure",
@@ -968,6 +1035,25 @@
         "Operation":{
           "shape":"Operation",
           "documentation":"<p>A complex type that contains information about the operation.</p>"
+        }
+      }
+    },
+    "GetServiceAttributesRequest":{
+      "type":"structure",
+      "required":["ServiceId"],
+      "members":{
+        "ServiceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the service that you want to get attributes for.</p>"
+        }
+      }
+    },
+    "GetServiceAttributesResponse":{
+      "type":"structure",
+      "members":{
+        "ServiceAttributes":{
+          "shape":"ServiceAttributes",
+          "documentation":"<p>A complex type that contains the service ARN and a list of attribute key-value pairs associated with the service.</p>"
         }
       }
     },
@@ -1405,7 +1491,8 @@
     },
     "NamespaceName":{
       "type":"string",
-      "max":1024
+      "max":1024,
+      "pattern":"^[!-~]{1,1024}$"
     },
     "NamespaceNameHttp":{
       "type":"string",
@@ -1946,6 +2033,49 @@
       "documentation":"<p>The service can't be created because a service with the same name already exists.</p>",
       "exception":true
     },
+    "ServiceAttributeKey":{
+      "type":"string",
+      "max":255
+    },
+    "ServiceAttributeKeyList":{
+      "type":"list",
+      "member":{"shape":"ServiceAttributeKey"},
+      "max":30,
+      "min":1
+    },
+    "ServiceAttributeValue":{
+      "type":"string",
+      "max":1024
+    },
+    "ServiceAttributes":{
+      "type":"structure",
+      "members":{
+        "ServiceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the service that the attributes are associated with.</p>"
+        },
+        "Attributes":{
+          "shape":"ServiceAttributesMap",
+          "documentation":"<p>A string map that contains the following information for the service that you specify in <code>ServiceArn</code>:</p> <ul> <li> <p>The attributes that apply to the service. </p> </li> <li> <p>For each attribute, the applicable value.</p> </li> </ul> <p>You can specify a total of 30 attributes.</p>"
+        }
+      },
+      "documentation":"<p>A complex type that contains information about attributes associated with a specific service.</p>"
+    },
+    "ServiceAttributesLimitExceededException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The attribute can't be added to the service because you've exceeded the quota for the number of attributes you can add to a service.</p>",
+      "exception":true
+    },
+    "ServiceAttributesMap":{
+      "type":"map",
+      "key":{"shape":"ServiceAttributeKey"},
+      "value":{"shape":"ServiceAttributeValue"},
+      "max":30,
+      "min":1
+    },
     "ServiceChange":{
       "type":"structure",
       "members":{
@@ -2280,6 +2410,28 @@
         }
       }
     },
+    "UpdateServiceAttributesRequest":{
+      "type":"structure",
+      "required":[
+        "ServiceId",
+        "Attributes"
+      ],
+      "members":{
+        "ServiceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the service that you want to update.</p>"
+        },
+        "Attributes":{
+          "shape":"ServiceAttributesMap",
+          "documentation":"<p>A string map that contains attribute key-value pairs.</p>"
+        }
+      }
+    },
+    "UpdateServiceAttributesResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateServiceRequest":{
       "type":"structure",
       "required":[
@@ -2293,7 +2445,7 @@
         },
         "Service":{
           "shape":"ServiceChange",
-          "documentation":"<p>A complex type that contains the new settings for the service.</p>"
+          "documentation":"<p>A complex type that contains the new settings for the service. You can specify a maximum of 30 attributes (key-value pairs).</p>"
         }
       }
     },

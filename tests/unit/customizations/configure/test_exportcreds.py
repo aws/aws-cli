@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
-import mock
 import io
 from datetime import datetime, timedelta
 
@@ -22,7 +21,7 @@ from botocore.credentials import Credentials as StaticCredentials
 from botocore.credentials import ReadOnlyCredentials
 from botocore.session import Session
 
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.configure.exportcreds import (
     Credentials,

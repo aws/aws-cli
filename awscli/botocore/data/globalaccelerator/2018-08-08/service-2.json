@@ -94,7 +94,9 @@
       "errors":[
         {"shape":"InternalServiceErrorException"},
         {"shape":"InvalidArgumentException"},
-        {"shape":"LimitExceededException"}
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TransactionInProgressException"}
       ],
       "documentation":"<p>Create an accelerator. An accelerator includes one or more listeners that process inbound connections and direct traffic to one or more endpoint groups, each of which includes endpoints, such as Network Load Balancers. </p> <important> <p>Global Accelerator is a global service that supports endpoints in multiple Amazon Web Services Regions but you must specify the US West (Oregon) Region to create, update, or otherwise work with accelerators. That is, for example, specify <code>--region us-west-2</code> on Amazon Web Services CLI commands.</p> </important>"
     },
@@ -127,7 +129,8 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"InvalidArgumentException"},
         {"shape":"LimitExceededException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"TransactionInProgressException"}
       ],
       "documentation":"<p>Create a custom routing accelerator. A custom routing accelerator directs traffic to one of possibly thousands of Amazon EC2 instance destinations running in a single or multiple virtual private clouds (VPC) subnet endpoints.</p> <p>Be aware that, by default, all destination EC2 instances in a VPC subnet endpoint cannot receive traffic. To enable all destinations to receive traffic, or to specify individual port mappings that can receive traffic, see the <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/api/API_AllowCustomRoutingTraffic.html\"> AllowCustomRoutingTraffic</a> operation.</p> <important> <p>Global Accelerator is a global service that supports endpoints in multiple Amazon Web Services Regions but you must specify the US West (Oregon) Region to create, update, or otherwise work with accelerators. That is, for example, specify <code>--region us-west-2</code> on Amazon Web Services CLI commands.</p> </important>"
     },
@@ -216,7 +219,8 @@
         {"shape":"AcceleratorNotDisabledException"},
         {"shape":"AssociatedListenerFoundException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"InvalidArgumentException"}
+        {"shape":"InvalidArgumentException"},
+        {"shape":"TransactionInProgressException"}
       ],
       "documentation":"<p>Delete an accelerator. Before you can delete an accelerator, you must disable it and remove all dependent resources (listeners and endpoint groups). To disable the accelerator, update the accelerator to set <code>Enabled</code> to false.</p> <important> <p>When you create an accelerator, by default, Global Accelerator provides you with a set of two static IP addresses. Alternatively, you can bring your own IP address ranges to Global Accelerator and assign IP addresses from those ranges. </p> <p>The IP addresses are assigned to your accelerator for as long as it exists, even if you disable the accelerator and it no longer accepts or routes traffic. However, when you <i>delete</i> an accelerator, you lose the static IP addresses that are assigned to the accelerator, so you can no longer route traffic by using them. As a best practice, ensure that you have permissions in place to avoid inadvertently deleting accelerators. You can use IAM policies with Global Accelerator to limit the users who have permissions to delete an accelerator. For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/auth-and-access-control.html\">Identity and access management</a> in the <i>Global Accelerator Developer Guide</i>.</p> </important>"
     },
@@ -248,7 +252,8 @@
         {"shape":"AcceleratorNotDisabledException"},
         {"shape":"AssociatedListenerFoundException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"InvalidArgumentException"}
+        {"shape":"InvalidArgumentException"},
+        {"shape":"TransactionInProgressException"}
       ],
       "documentation":"<p>Delete a custom routing accelerator. Before you can delete an accelerator, you must disable it and remove all dependent resources (listeners and endpoint groups). To disable the accelerator, update the accelerator to set <code>Enabled</code> to false.</p> <important> <p>When you create a custom routing accelerator, by default, Global Accelerator provides you with a set of two static IP addresses. </p> <p>The IP addresses are assigned to your accelerator for as long as it exists, even if you disable the accelerator and it no longer accepts or routes traffic. However, when you <i>delete</i> an accelerator, you lose the static IP addresses that are assigned to the accelerator, so you can no longer route traffic by using them. As a best practice, ensure that you have permissions in place to avoid inadvertently deleting accelerators. You can use IAM policies with Global Accelerator to limit the users who have permissions to delete an accelerator. For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/auth-and-access-control.html\">Identity and access management</a> in the <i>Global Accelerator Developer Guide</i>.</p> </important>"
     },
@@ -677,6 +682,9 @@
       "output":{"shape":"ListTagsForResourceResponse"},
       "errors":[
         {"shape":"AcceleratorNotFoundException"},
+        {"shape":"AttachmentNotFoundException"},
+        {"shape":"EndpointGroupNotFoundException"},
+        {"shape":"ListenerNotFoundException"},
         {"shape":"InternalServiceErrorException"},
         {"shape":"InvalidArgumentException"}
       ],
@@ -774,7 +782,9 @@
         {"shape":"AcceleratorNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"InvalidArgumentException"}
+        {"shape":"InvalidArgumentException"},
+        {"shape":"TransactionInProgressException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Update an accelerator to make changes, such as the following: </p> <ul> <li> <p>Change the name of the accelerator.</p> </li> <li> <p>Disable the accelerator so that it no longer accepts or routes traffic, or so that you can delete it.</p> </li> <li> <p>Enable the accelerator, if it is disabled.</p> </li> <li> <p>Change the IP address type to dual-stack if it is IPv4, or change the IP address type to IPv4 if it's dual-stack.</p> </li> </ul> <p>Be aware that static IP addresses remain assigned to your accelerator for as long as it exists, even if you disable the accelerator and it no longer accepts or routes traffic. However, when you delete the accelerator, you lose the static IP addresses that are assigned to it, so you can no longer route traffic by using them.</p> <important> <p>Global Accelerator is a global service that supports endpoints in multiple Amazon Web Services Regions but you must specify the US West (Oregon) Region to create, update, or otherwise work with accelerators. That is, for example, specify <code>--region us-west-2</code> on Amazon Web Services CLI commands.</p> </important>"
     },
@@ -790,7 +800,8 @@
         {"shape":"AcceleratorNotFoundException"},
         {"shape":"InternalServiceErrorException"},
         {"shape":"InvalidArgumentException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"TransactionInProgressException"}
       ],
       "documentation":"<p>Update the attributes for an accelerator. </p>"
     },
@@ -823,7 +834,9 @@
       "errors":[
         {"shape":"AcceleratorNotFoundException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"InvalidArgumentException"}
+        {"shape":"InvalidArgumentException"},
+        {"shape":"TransactionInProgressException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Update a custom routing accelerator. </p>"
     },
@@ -839,7 +852,8 @@
         {"shape":"AcceleratorNotFoundException"},
         {"shape":"InternalServiceErrorException"},
         {"shape":"InvalidArgumentException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"TransactionInProgressException"}
       ],
       "documentation":"<p>Update the attributes for a custom routing accelerator. </p>"
     },

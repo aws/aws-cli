@@ -6,12 +6,9 @@ import sys
 from abc import ABC, abstractmethod
 from os import path
 
-import cryptography
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
-from cryptography.hazmat.primitives.serialization import load_der_public_key
 from awscli.customizations.exceptions import ParamValidationError
+
+from awscrt.crypto import RSA, RSASignatureAlgorithm
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.cloudtrail.utils import parse_date, PublicKeyProvider
@@ -64,17 +61,17 @@ class Sha256RsaSignatureValidator:
         :param sign_file: Dict of sign file data returned when JSON
             decoding a manifest.
         """
-        try:
-            public_key = self._load_public_key(public_key_base64)
-            signature_bytes = binascii.unhexlify(sign_file["hashSignature"])
-            hashing = hashes.SHA256()
-            public_key.verify(
-                signature_bytes,
-                self._create_string_to_sign(sign_file),
-                PKCS1v15(),
-                hashing,
-            )
-        except cryptography.exceptions.InvalidSignature:
+        public_key = self._load_public_key(public_key_base64)
+        signature_bytes = binascii.unhexlify(sign_file["hashSignature"])
+        result = public_key.verify(
+            signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
+            digest=hashlib.sha256(self._create_string_to_sign(sign_file)).digest(),
+            signature=signature_bytes
+        )
+        if not result:
+            # The previous implementation caught a cryptography.exceptions.InvalidSignature
+            # exception here and re-raised the DigestSignatureError to avoid the stack trace
+            # leaking any information about the key.
             raise ValidationError("Invalid signature in sign file")
 
     def _create_string_to_sign(self, sign_file):
@@ -88,7 +85,7 @@ class Sha256RsaSignatureValidator:
     def _load_public_key(self, public_key_base64):
         try:
             decoded_key = base64.b64decode(public_key_base64)
-            return load_der_public_key(decoded_key, default_backend())
+            return RSA.new_public_key_from_der_data(decoded_key)
         except ValueError:
             raise ValidationError(
                 f"Sign file invalid, unable to load PKCS #1 key: {public_key_base64}"

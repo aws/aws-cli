@@ -10,13 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
 import os
-from tests import unittest, BaseEnvVar
-
-import mock
+from tests import mock, unittest, BaseEnvVar
 
 import botocore
-from botocore.compat import six
 from botocore.exceptions import ClientError, WaiterConfigError, WaiterError
 from botocore.waiter import Waiter, WaiterModel, SingleWaiterConfig
 from botocore.waiter import create_waiter_with_client
@@ -182,6 +180,38 @@ class TestWaiterModel(unittest.TestCase):
             success_acceptor({'Error': {'Code': 'DoesNotExistError'}}))
         self.assertFalse(
             success_acceptor({'Error': {'Code': 'DoesNotExistErorr'}}))
+
+    def test_single_waiter_supports_no_error(self):
+        single_waiter = {
+            'acceptors': [
+                {
+                    'state': 'success',
+                    'matcher': 'error',
+                    'expected': False,
+                }
+            ],
+        }
+        single_waiter.update(self.boiler_plate_config)
+        config = SingleWaiterConfig(single_waiter)
+        success_acceptor = config.acceptors[0].matcher_func
+        self.assertTrue(success_acceptor({}))
+        self.assertFalse(success_acceptor({'Error': {'Code': 'ExampleError'}}))
+
+    def test_single_waiter_supports_any_error(self):
+        single_waiter = {
+            'acceptors': [
+                {
+                    'state': 'success',
+                    'matcher': 'error',
+                    'expected': True,
+                }
+            ],
+        }
+        single_waiter.update(self.boiler_plate_config)
+        config = SingleWaiterConfig(single_waiter)
+        success_acceptor = config.acceptors[0].matcher_func
+        self.assertTrue(success_acceptor({'Error': {'Code': 'ExampleError1'}}))
+        self.assertTrue(success_acceptor({'Error': {'Code': 'ExampleError2'}}))
 
     def test_unknown_matcher(self):
         unknown_type = 'arbitrary_type'
@@ -641,14 +671,14 @@ class TestCreateWaiter(unittest.TestCase):
         waiter_name = 'WaiterName'
         waiter = create_waiter_with_client(
             waiter_name, self.waiter_model, self.client)
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', io.StringIO()) as mock_stdout:
             help(waiter.wait)
         content = mock_stdout.getvalue()
         lines = [
             ('    Polls :py:meth:`MyService.Client.foo` every 1 '
              'seconds until a successful state is reached. An error '
              'is returned after 1 failed checks.'),
-            '    **Request Syntax** ',
+            '    **Request Syntax**',
             '    ::',
             '      waiter.wait(',
             "          bar='string'",

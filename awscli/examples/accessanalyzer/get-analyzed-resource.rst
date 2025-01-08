@@ -4,7 +4,7 @@ The following ``get-analyzed-resource`` example retrieves information about a re
 
     aws accessanalyzer get-analyzed-resource \
         --analyzer-arn arn:aws:access-analyzer:us-west-2:111122223333:analyzer/ConsoleAnalyzer-account \
-        --resource-arn arn:aws:s3:::DOC-EXAMPLE-BUCKET
+        --resource-arn arn:aws:s3:::amzn-s3-demo-bucket
 
 Output::
 
@@ -12,7 +12,7 @@ Output::
         "resource": {
             "analyzedAt": "2024-02-15T18:01:53.002000+00:00",
             "isPublic": false,
-            "resourceArn": "arn:aws:s3:::DOC-EXAMPLE-BUCKET",
+            "resourceArn": "arn:aws:s3:::amzn-s3-demo-bucket",
             "resourceOwnerAccount": "111122223333",
             "resourceType": "AWS::S3::Bucket"
         }

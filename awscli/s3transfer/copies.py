@@ -226,6 +226,8 @@ class CopySubmissionTask(SubmissionTask):
                 num_parts,
                 transfer_future.meta.size,
             )
+            # Get the checksum algorithm of the multipart request.
+            checksum_algorithm = call_args.extra_args.get("ChecksumAlgorithm")
             part_futures.append(
                 self._transfer_coordinator.submit(
                     request_executor,
@@ -240,6 +242,7 @@ class CopySubmissionTask(SubmissionTask):
                             'extra_args': extra_part_args,
                             'callbacks': progress_callbacks,
                             'size': size,
+                            'checksum_algorithm': checksum_algorithm,
                         },
                         pending_main_kwargs={
                             'upload_id': create_multipart_future
@@ -337,6 +340,7 @@ class CopyPartTask(Task):
         extra_args,
         callbacks,
         size,
+        checksum_algorithm=None,
     ):
         """
         :param client: The client to use when calling PutObject
@@ -351,6 +355,8 @@ class CopyPartTask(Task):
         :param callbacks: List of callbacks to call after copy part
         :param size: The size of the transfer. This value is passed into
             the callbacks
+        :param checksum_algorithm: The algorithm that was used to create the multipart
+            upload
 
         :rtype: dict
         :returns: A dictionary representing a part::
@@ -358,7 +364,8 @@ class CopyPartTask(Task):
             {'Etag': etag_value, 'PartNumber': part_number}
 
             This value can be appended to a list to be used to complete
-            the multipart upload.
+            the multipart upload. If a checksum is in the response,
+            it will also be included.
         """
         response = client.upload_part_copy(
             CopySource=copy_source,
@@ -366,9 +373,16 @@ class CopyPartTask(Task):
             Key=key,
             UploadId=upload_id,
             PartNumber=part_number,
-            **extra_args
+            **extra_args,
         )
         for callback in callbacks:
             callback(bytes_transferred=size)
         etag = response['CopyPartResult']['ETag']
-        return {'ETag': etag, 'PartNumber': part_number}
+        part_metadata = {'ETag': etag, 'PartNumber': part_number}
+        if checksum_algorithm:
+            checksum_member = f'Checksum{checksum_algorithm.upper()}'
+            if checksum_member in response['CopyPartResult']:
+                part_metadata[checksum_member] = response['CopyPartResult'][
+                    checksum_member
+                ]
+        return part_metadata

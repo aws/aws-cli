@@ -1,8 +1,5 @@
-from tests import unittest
+from tests import mock, unittest
 
-import mock
-
-from botocore.compat import six
 from botocore.awsrequest import AWSResponse
 from botocore.retries import standard, special
 

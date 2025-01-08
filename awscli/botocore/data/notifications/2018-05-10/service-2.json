@@ -1,0 +1,2227 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2018-05-10",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"notifications",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"AWS User Notifications",
+    "serviceId":"Notifications",
+    "signatureVersion":"v4",
+    "signingName":"notifications",
+    "uid":"notifications-2018-05-10"
+  },
+  "operations":{
+    "AssociateChannel":{
+      "name":"AssociateChannel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/channels/associate/{arn}",
+        "responseCode":201
+      },
+      "input":{"shape":"AssociateChannelRequest"},
+      "output":{"shape":"AssociateChannelResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Associates a delivery <a href=\"https://docs.aws.amazon.com/notifications/latest/userguide/managing-delivery-channels.html\">Channel</a> with a particular NotificationConfiguration. Supported Channels include AWS Chatbot, the AWS Console Mobile Application, and emails (notifications-contacts).</p>",
+      "idempotent":true
+    },
+    "CreateEventRule":{
+      "name":"CreateEventRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/event-rules",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateEventRuleRequest"},
+      "output":{"shape":"CreateEventRuleResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates an <a href=\"https://docs.aws.amazon.com/notifications/latest/userguide/glossary.html\">EventRule</a> that is associated with a specified Notification Configuration.</p>",
+      "idempotent":true
+    },
+    "CreateNotificationConfiguration":{
+      "name":"CreateNotificationConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/notification-configurations",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateNotificationConfigurationRequest"},
+      "output":{"shape":"CreateNotificationConfigurationResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a new NotificationConfiguration.</p>",
+      "idempotent":true
+    },
+    "DeleteEventRule":{
+      "name":"DeleteEventRule",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/event-rules/{arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteEventRuleRequest"},
+      "output":{"shape":"DeleteEventRuleResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes an EventRule.</p>",
+      "idempotent":true
+    },
+    "DeleteNotificationConfiguration":{
+      "name":"DeleteNotificationConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/notification-configurations/{arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteNotificationConfigurationRequest"},
+      "output":{"shape":"DeleteNotificationConfigurationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a NotificationConfiguration.</p>",
+      "idempotent":true
+    },
+    "DeregisterNotificationHub":{
+      "name":"DeregisterNotificationHub",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/notification-hubs/{notificationHubRegion}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeregisterNotificationHubRequest"},
+      "output":{"shape":"DeregisterNotificationHubResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deregisters a NotificationHub in the specified Region.</p> <note> <p>You can't deregister the last NotificationHub in the account. NotificationEvents stored in the deregistered NotificationHub are no longer be visible. Recreating a new NotificationHub in the same Region restores access to those NotificationEvents.</p> </note>",
+      "idempotent":true
+    },
+    "DisassociateChannel":{
+      "name":"DisassociateChannel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/channels/disassociate/{arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateChannelRequest"},
+      "output":{"shape":"DisassociateChannelResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Disassociates a Channel from a specified NotificationConfiguration. Supported Channels include AWS Chatbot, the AWS Console Mobile Application, and emails (notifications-contacts).</p>",
+      "idempotent":true
+    },
+    "GetEventRule":{
+      "name":"GetEventRule",
+      "http":{
+        "method":"GET",
+        "requestUri":"/event-rules/{arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetEventRuleRequest"},
+      "output":{"shape":"GetEventRuleResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a specified EventRule.</p>"
+    },
+    "GetNotificationConfiguration":{
+      "name":"GetNotificationConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/notification-configurations/{arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetNotificationConfigurationRequest"},
+      "output":{"shape":"GetNotificationConfigurationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a specified NotificationConfiguration.</p>"
+    },
+    "GetNotificationEvent":{
+      "name":"GetNotificationEvent",
+      "http":{
+        "method":"GET",
+        "requestUri":"/notification-events/{arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetNotificationEventRequest"},
+      "output":{"shape":"GetNotificationEventResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a specified NotificationEvent.</p> <important> <p>User Notifications stores notifications in the individual Regions you register as notification hubs and the Region of the source event rule. GetNotificationEvent only returns notifications stored in the same Region in which the action is called. User Notifications doesn't backfill notifications to new Regions selected as notification hubs. For this reason, we recommend that you make calls in your oldest registered notification hub. For more information, see <a href=\"https://docs.aws.amazon.com/notifications/latest/userguide/notification-hubs.html\">Notification hubs</a> in the <i>AWS User Notifications User Guide</i>.</p> </important>"
+    },
+    "ListChannels":{
+      "name":"ListChannels",
+      "http":{
+        "method":"GET",
+        "requestUri":"/channels",
+        "responseCode":200
+      },
+      "input":{"shape":"ListChannelsRequest"},
+      "output":{"shape":"ListChannelsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of Channels for a NotificationConfiguration.</p>"
+    },
+    "ListEventRules":{
+      "name":"ListEventRules",
+      "http":{
+        "method":"GET",
+        "requestUri":"/event-rules",
+        "responseCode":200
+      },
+      "input":{"shape":"ListEventRulesRequest"},
+      "output":{"shape":"ListEventRulesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of EventRules according to specified filters, in reverse chronological order (newest first).</p>"
+    },
+    "ListNotificationConfigurations":{
+      "name":"ListNotificationConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/notification-configurations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNotificationConfigurationsRequest"},
+      "output":{"shape":"ListNotificationConfigurationsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of abbreviated NotificationConfigurations according to specified filters, in reverse chronological order (newest first).</p>"
+    },
+    "ListNotificationEvents":{
+      "name":"ListNotificationEvents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/notification-events",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNotificationEventsRequest"},
+      "output":{"shape":"ListNotificationEventsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of NotificationEvents according to specified filters, in reverse chronological order (newest first).</p> <important> <p>User Notifications stores notifications in the individual Regions you register as notification hubs and the Region of the source event rule. ListNotificationEvents only returns notifications stored in the same Region in which the action is called. User Notifications doesn't backfill notifications to new Regions selected as notification hubs. For this reason, we recommend that you make calls in your oldest registered notification hub. For more information, see <a href=\"https://docs.aws.amazon.com/notifications/latest/userguide/notification-hubs.html\">Notification hubs</a> in the <i>AWS User Notifications User Guide</i>.</p> </important>"
+    },
+    "ListNotificationHubs":{
+      "name":"ListNotificationHubs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/notification-hubs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNotificationHubsRequest"},
+      "output":{"shape":"ListNotificationHubsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of NotificationHubs.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of tags for a specified Amazon Resource Name (ARN).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging.html\">Tagging your AWS resources</a> in the <i>Tagging AWS Resources User Guide</i>.</p> <note> <p>This is only supported for NotificationConfigurations.</p> </note>"
+    },
+    "RegisterNotificationHub":{
+      "name":"RegisterNotificationHub",
+      "http":{
+        "method":"POST",
+        "requestUri":"/notification-hubs",
+        "responseCode":201
+      },
+      "input":{"shape":"RegisterNotificationHubRequest"},
+      "output":{"shape":"RegisterNotificationHubResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Registers a NotificationHub in the specified Region.</p> <p>There is a maximum of one NotificationHub per Region. You can have a maximum of 3 NotificationHubs at a time.</p>",
+      "idempotent":true
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Tags the resource with a tag key and value.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging.html\">Tagging your AWS resources</a> in the <i>Tagging AWS Resources User Guide</i>.</p> <note> <p>This is only supported for NotificationConfigurations.</p> </note>",
+      "idempotent":true
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Untags a resource with a specified Amazon Resource Name (ARN).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging.html\">Tagging your AWS resources</a> in the <i>Tagging AWS Resources User Guide</i>.</p>",
+      "idempotent":true
+    },
+    "UpdateEventRule":{
+      "name":"UpdateEventRule",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/event-rules/{arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateEventRuleRequest"},
+      "output":{"shape":"UpdateEventRuleResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates an existing EventRule.</p>",
+      "idempotent":true
+    },
+    "UpdateNotificationConfiguration":{
+      "name":"UpdateNotificationConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/notification-configurations/{arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateNotificationConfigurationRequest"},
+      "output":{"shape":"UpdateNotificationConfigurationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates a NotificationConfiguration.</p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>User does not have sufficient access to perform this action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "AccountId":{
+      "type":"string",
+      "pattern":"\\d{12}"
+    },
+    "AggregationDuration":{
+      "type":"string",
+      "enum":[
+        "LONG",
+        "SHORT",
+        "NONE"
+      ]
+    },
+    "AggregationEventType":{
+      "type":"string",
+      "enum":[
+        "AGGREGATE",
+        "CHILD",
+        "NONE"
+      ]
+    },
+    "Arn":{
+      "type":"string",
+      "pattern":"arn:[^:]*:[^:]*:[^:]*:.*"
+    },
+    "AssociateChannelRequest":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "notificationConfigurationArn"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Channel to associate with the NotificationConfiguration.</p> <p>Supported ARNs include AWS Chatbot, the Console Mobile Application, and notifications-contacts.</p>",
+          "location":"uri",
+          "locationName":"arn"
+        },
+        "notificationConfigurationArn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The ARN of the NotificationConfiguration to associate with the Channel.</p>"
+        }
+      }
+    },
+    "AssociateChannelResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "ChannelArn":{
+      "type":"string",
+      "pattern":"arn:aws:(chatbot|consoleapp|notifications-contacts):[a-zA-Z0-9-]*:[0-9]{12}:[a-zA-Z0-9-_.@]+/[a-zA-Z0-9/_.@:-]+"
+    },
+    "Channels":{
+      "type":"list",
+      "member":{"shape":"ChannelArn"}
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId"
+      ],
+      "members":{
+        "message":{"shape":"ErrorMessage"},
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The resource ID that prompted the conflict error.</p>"
+        }
+      },
+      "documentation":"<p>Updating or deleting a resource can cause an inconsistent state.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateEventRuleRequest":{
+      "type":"structure",
+      "required":[
+        "notificationConfigurationArn",
+        "source",
+        "eventType",
+        "regions"
+      ],
+      "members":{
+        "notificationConfigurationArn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the NotificationConfiguration associated with this EventRule.</p>"
+        },
+        "source":{
+          "shape":"Source",
+          "documentation":"<p>The matched event source.</p> <p>Must match one of the valid EventBridge sources. Only AWS service sourced events are supported. For example, <code>aws.ec2</code> and <code>aws.cloudwatch</code>. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html#eb-service-event-delivery-level\">Event delivery from AWS services</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+        },
+        "eventType":{
+          "shape":"EventType",
+          "documentation":"<p>The event type to match.</p> <p>Must match one of the valid Amazon EventBridge event types. For example, EC2 Instance State-change Notification and AWS CloudWatch Alarm State Change. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html#eb-service-event-delivery-level\">Event delivery from AWS services</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+        },
+        "eventPattern":{
+          "shape":"EventRuleEventPattern",
+          "documentation":"<p>An additional event pattern used to further filter the events this EventRule receives.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns.html\">Amazon EventBridge event patterns</a> in the <i>Amazon EventBridge User Guide.</i> </p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>A list of AWS Regions that send events to this EventRule.</p>"
+        }
+      }
+    },
+    "CreateEventRuleResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "notificationConfigurationArn",
+        "statusSummaryByRegion"
+      ],
+      "members":{
+        "arn":{
+          "shape":"EventRuleArn",
+          "documentation":"<p>The ARN of the resource.</p>"
+        },
+        "notificationConfigurationArn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The ARN of a NotificationConfiguration.</p>"
+        },
+        "statusSummaryByRegion":{
+          "shape":"StatusSummaryByRegion",
+          "documentation":"<p>A list of an EventRule's status by Region. Regions are mapped to EventRuleStatusSummary.</p>"
+        }
+      }
+    },
+    "CreateNotificationConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "description"
+      ],
+      "members":{
+        "name":{
+          "shape":"NotificationConfigurationName",
+          "documentation":"<p>The name of the NotificationConfiguration. Supports RFC 3986's unreserved characters.</p>"
+        },
+        "description":{
+          "shape":"NotificationConfigurationDescription",
+          "documentation":"<p>The description of the NotificationConfiguration.</p>"
+        },
+        "aggregationDuration":{
+          "shape":"AggregationDuration",
+          "documentation":"<p>The aggregation preference of the NotificationConfiguration.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>LONG</code> </p> <ul> <li> <p>Aggregate notifications for long periods of time (12 hours).</p> </li> </ul> </li> <li> <p> <code>SHORT</code> </p> <ul> <li> <p>Aggregate notifications for short periods of time (5 minutes).</p> </li> </ul> </li> <li> <p> <code>NONE</code> </p> <ul> <li> <p>Don't aggregate notifications.</p> <p>No delay in delivery.</p> </li> </ul> </li> </ul> </li> </ul>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A map of tags assigned to a resource. A tag is a string-to-string map of key-value pairs.</p>"
+        }
+      }
+    },
+    "CreateNotificationConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "status"
+      ],
+      "members":{
+        "arn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the the resource.</p>"
+        },
+        "status":{
+          "shape":"NotificationConfigurationStatus",
+          "documentation":"<p>The status of this NotificationConfiguration.</p> <p>The status should always be <code>INACTIVE</code> when part of the CreateNotificationConfiguration response.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>ACTIVE</code> </p> <ul> <li> <p>All EventRules are <code>ACTIVE</code> and any call can be run.</p> </li> </ul> </li> <li> <p> <code>PARTIALLY_ACTIVE</code> </p> <ul> <li> <p>Some EventRules are <code>ACTIVE</code> and some are <code>INACTIVE</code>.</p> </li> <li> <p>Any call can be run.</p> </li> </ul> </li> <li> <p> <code>INACTIVE</code> </p> <ul> <li> <p>All EventRules are <code>INACTIVE</code> and any call can be run.</p> </li> </ul> </li> <li> <p> <code>DELETING</code> </p> <ul> <li> <p>This NotificationConfiguration is being deleted.</p> </li> <li> <p>Only <code>GET</code> and <code>LIST</code> calls can be run.</p> </li> </ul> </li> </ul> </li> </ul>"
+        }
+      }
+    },
+    "CreationTime":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "DeleteEventRuleRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"EventRuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the EventRule to delete.</p>",
+          "location":"uri",
+          "locationName":"arn"
+        }
+      }
+    },
+    "DeleteEventRuleResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteNotificationConfigurationRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the NotificationConfiguration to delete.</p>",
+          "location":"uri",
+          "locationName":"arn"
+        }
+      }
+    },
+    "DeleteNotificationConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeregisterNotificationHubRequest":{
+      "type":"structure",
+      "required":["notificationHubRegion"],
+      "members":{
+        "notificationHubRegion":{
+          "shape":"Region",
+          "documentation":"<p>The NotificationHub Region.</p>",
+          "location":"uri",
+          "locationName":"notificationHubRegion"
+        }
+      }
+    },
+    "DeregisterNotificationHubResponse":{
+      "type":"structure",
+      "required":[
+        "notificationHubRegion",
+        "statusSummary"
+      ],
+      "members":{
+        "notificationHubRegion":{
+          "shape":"Region",
+          "documentation":"<p>The NotificationHub Region.</p>"
+        },
+        "statusSummary":{
+          "shape":"NotificationHubStatusSummary",
+          "documentation":"<p>NotificationHub status information.</p>"
+        }
+      }
+    },
+    "Dimension":{
+      "type":"structure",
+      "required":[
+        "name",
+        "value"
+      ],
+      "members":{
+        "name":{
+          "shape":"TextPartReference",
+          "documentation":"<p>The name of the dimension</p>"
+        },
+        "value":{
+          "shape":"TextPartReference",
+          "documentation":"<p>The value of the dimension.</p>"
+        }
+      },
+      "documentation":"<p>The key-value pair of properties for an event.</p>"
+    },
+    "Dimensions":{
+      "type":"list",
+      "member":{"shape":"Dimension"},
+      "max":10,
+      "min":0
+    },
+    "DisassociateChannelRequest":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "notificationConfigurationArn"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Channel to disassociate.</p>",
+          "location":"uri",
+          "locationName":"arn"
+        },
+        "notificationConfigurationArn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The ARN of the NotificationConfiguration to disassociate.</p>"
+        }
+      }
+    },
+    "DisassociateChannelResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "ErrorMessage":{"type":"string"},
+    "EventRuleArn":{
+      "type":"string",
+      "pattern":"arn:aws:notifications::[0-9]{12}:configuration/[a-z0-9]{27}/rule/[a-z0-9]{27}"
+    },
+    "EventRuleEventPattern":{
+      "type":"string",
+      "max":4096,
+      "min":0
+    },
+    "EventRuleStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE",
+        "CREATING",
+        "UPDATING",
+        "DELETING"
+      ]
+    },
+    "EventRuleStatusReason":{"type":"string"},
+    "EventRuleStatusSummary":{
+      "type":"structure",
+      "required":[
+        "status",
+        "reason"
+      ],
+      "members":{
+        "status":{
+          "shape":"EventRuleStatus",
+          "documentation":"<p>The status of the EventRule.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>ACTIVE</code> </p> <ul> <li> <p>The EventRule can process events.</p> </li> </ul> </li> <li> <p> <code>INACTIVE</code> </p> <ul> <li> <p>The EventRule may be unable to process events.</p> </li> </ul> </li> <li> <p> <code>CREATING</code> </p> <ul> <li> <p>The EventRule is being created.</p> <p>Only <code>GET</code> and <code>LIST</code> calls can be run.</p> </li> </ul> </li> <li> <p> <code>UPDATING</code> </p> <ul> <li> <p>The EventRule is being updated.</p> <p>Only <code>GET</code> and <code>LIST</code> calls can be run.</p> </li> </ul> </li> <li> <p> <code>DELETING</code> </p> <ul> <li> <p>The EventRule is being deleted.</p> <p>Only <code>GET</code> and <code>LIST</code> calls can be run.</p> </li> </ul> </li> </ul> </li> </ul>"
+        },
+        "reason":{
+          "shape":"EventRuleStatusReason",
+          "documentation":"<p>A human-readable reason for EventRuleStatus.</p>"
+        }
+      },
+      "documentation":"<p>Describes EventRule status information.</p>"
+    },
+    "EventRuleStructure":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "notificationConfigurationArn",
+        "creationTime",
+        "source",
+        "eventType",
+        "eventPattern",
+        "regions",
+        "managedRules",
+        "statusSummaryByRegion"
+      ],
+      "members":{
+        "arn":{
+          "shape":"EventRuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
+        },
+        "notificationConfigurationArn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The ARN for the NotificationConfiguration associated with this EventRule.</p>"
+        },
+        "creationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The creation time of the resource.</p>"
+        },
+        "source":{
+          "shape":"Source",
+          "documentation":"<p>The matched event source.</p> <p>Must match one of the valid EventBridge sources. Only AWS service sourced events are supported. For example, <code>aws.ec2</code> and <code>aws.cloudwatch</code>. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html#eb-service-event-delivery-level\">Event delivery from AWS services</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+        },
+        "eventType":{
+          "shape":"EventType",
+          "documentation":"<p>The event type to match.</p> <p>Must match one of the valid Amazon EventBridge event types. For example, EC2 Instance State-change Notification and AWS CloudWatch Alarm State Change. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html#eb-service-event-delivery-level\">Event delivery from AWS services</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+        },
+        "eventPattern":{
+          "shape":"EventRuleEventPattern",
+          "documentation":"<p>An additional event pattern used to further filter the events this EventRule receives.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns.html\">Amazon EventBridge event patterns</a> in the <i>Amazon EventBridge User Guide.</i> </p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>A list of AWS Regions that send events to this EventRule.</p>"
+        },
+        "managedRules":{
+          "shape":"ManagedRuleArns",
+          "documentation":"<p>A list of Amazon EventBridge Managed Rule ARNs associated with this EventRule.</p> <note> <p>These are created by AWS User Notifications within your account so your EventRules can function.</p> </note>"
+        },
+        "statusSummaryByRegion":{
+          "shape":"StatusSummaryByRegion",
+          "documentation":"<p>A list of an EventRule's status by Region. Regions are mapped to EventRuleStatusSummary.</p>"
+        }
+      },
+      "documentation":"<p>Contains a complete list of fields related to an EventRule.</p>"
+    },
+    "EventRules":{
+      "type":"list",
+      "member":{"shape":"EventRuleStructure"}
+    },
+    "EventStatus":{
+      "type":"string",
+      "enum":[
+        "HEALTHY",
+        "UNHEALTHY"
+      ]
+    },
+    "EventType":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"([a-zA-Z0-9 \\-\\(\\)])+"
+    },
+    "GetEventRuleRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"EventRuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the EventRule to return.</p>",
+          "location":"uri",
+          "locationName":"arn"
+        }
+      }
+    },
+    "GetEventRuleResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "notificationConfigurationArn",
+        "creationTime",
+        "source",
+        "eventType",
+        "eventPattern",
+        "regions",
+        "managedRules",
+        "statusSummaryByRegion"
+      ],
+      "members":{
+        "arn":{
+          "shape":"EventRuleArn",
+          "documentation":"<p>The ARN of the resource.</p>"
+        },
+        "notificationConfigurationArn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The ARN of a NotificationConfiguration.</p>"
+        },
+        "creationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The date when the EventRule was created.</p>"
+        },
+        "source":{
+          "shape":"Source",
+          "documentation":"<p>The matched event source.</p> <p>Must match one of the valid EventBridge sources. Only AWS service sourced events are supported. For example, <code>aws.ec2</code> and <code>aws.cloudwatch</code>. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html#eb-service-event-delivery-level\">Event delivery from AWS services</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+        },
+        "eventType":{
+          "shape":"EventType",
+          "documentation":"<p>The event type to match.</p> <p>Must match one of the valid Amazon EventBridge event types. For example, EC2 Instance State-change Notification and AWS CloudWatch Alarm State Change. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html#eb-service-event-delivery-level\">Event delivery from AWS services</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+        },
+        "eventPattern":{
+          "shape":"EventRuleEventPattern",
+          "documentation":"<p>An additional event pattern used to further filter the events this EventRule receives.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns.html\">Amazon EventBridge event patterns</a> in the <i>Amazon EventBridge User Guide.</i> </p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>A list of AWS Regions that send events to this EventRule.</p>"
+        },
+        "managedRules":{
+          "shape":"ManagedRuleArns",
+          "documentation":"<p>A list of managed rules from EventBridge that are are associated with this EventRule.</p> <note> <p>These are created by AWS User Notifications within your account so this EventRule functions.</p> </note>"
+        },
+        "statusSummaryByRegion":{
+          "shape":"StatusSummaryByRegion",
+          "documentation":"<p>A list of an EventRule's status by Region. Regions are mapped to EventRuleStatusSummary.</p>"
+        }
+      }
+    },
+    "GetNotificationConfigurationRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the NotificationConfiguration to return.</p>",
+          "location":"uri",
+          "locationName":"arn"
+        }
+      }
+    },
+    "GetNotificationConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "name",
+        "description",
+        "status",
+        "creationTime"
+      ],
+      "members":{
+        "arn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The ARN of the resource.</p>"
+        },
+        "name":{
+          "shape":"NotificationConfigurationName",
+          "documentation":"<p>The name of the NotificationConfiguration.</p>"
+        },
+        "description":{
+          "shape":"NotificationConfigurationDescription",
+          "documentation":"<p>The description of the NotificationConfiguration.</p>"
+        },
+        "status":{
+          "shape":"NotificationConfigurationStatus",
+          "documentation":"<p>The status of this NotificationConfiguration.</p> <p>The status should always be <code>INACTIVE</code> when part of the CreateNotificationConfiguration response.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>ACTIVE</code> </p> <ul> <li> <p>All EventRules are <code>ACTIVE</code> and any call can be run.</p> </li> </ul> </li> <li> <p> <code>PARTIALLY_ACTIVE</code> </p> <ul> <li> <p>Some EventRules are <code>ACTIVE</code> and some are <code>INACTIVE</code>.</p> </li> <li> <p>Any call can be run.</p> </li> </ul> </li> <li> <p> <code>INACTIVE</code> </p> <ul> <li> <p>All EventRules are <code>INACTIVE</code> and any call can be run.</p> </li> </ul> </li> <li> <p> <code>DELETING</code> </p> <ul> <li> <p>This NotificationConfiguration is being deleted. Only <code>GET</code> and <code>LIST</code> calls can be run.</p> </li> <li> <p>Only <code>GET</code> and <code>LIST</code> calls can be run.</p> </li> </ul> </li> </ul> </li> </ul>"
+        },
+        "creationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The creation time of the NotificationConfiguration.</p>"
+        },
+        "aggregationDuration":{
+          "shape":"AggregationDuration",
+          "documentation":"<p>The aggregation preference of the NotificationConfiguration.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>LONG</code> </p> <ul> <li> <p>Aggregate notifications for long periods of time (12 hours).</p> </li> </ul> </li> <li> <p> <code>SHORT</code> </p> <ul> <li> <p>Aggregate notifications for short periods of time (5 minutes).</p> </li> </ul> </li> <li> <p> <code>NONE</code> </p> <ul> <li> <p>Don't aggregate notifications.</p> <p>No delay in delivery.</p> </li> </ul> </li> </ul> </li> </ul>"
+        }
+      }
+    },
+    "GetNotificationEventRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"NotificationEventArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the NotificationEvent to return.</p>",
+          "location":"uri",
+          "locationName":"arn"
+        },
+        "locale":{
+          "shape":"LocaleCode",
+          "documentation":"<p>The locale code of the language used for the retrieved NotificationEvent. The default locale is English <code>en_US</code>.</p>",
+          "location":"querystring",
+          "locationName":"locale"
+        }
+      }
+    },
+    "GetNotificationEventResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "notificationConfigurationArn",
+        "creationTime",
+        "content"
+      ],
+      "members":{
+        "arn":{
+          "shape":"NotificationEventArn",
+          "documentation":"<p>The ARN of the resource.</p>"
+        },
+        "notificationConfigurationArn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The ARN of the NotificationConfiguration.</p>"
+        },
+        "creationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The creation time of the NotificationEvent.</p>"
+        },
+        "content":{
+          "shape":"NotificationEvent",
+          "documentation":"<p>The content of the NotificationEvent.</p>"
+        }
+      }
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>Unexpected error during processing of request.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "LastActivationTime":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "ListChannelsRequest":{
+      "type":"structure",
+      "required":["notificationConfigurationArn"],
+      "members":{
+        "notificationConfigurationArn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the NotificationConfiguration.</p>",
+          "location":"querystring",
+          "locationName":"notificationConfigurationArn"
+        },
+        "maxResults":{
+          "shape":"ListChannelsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to be returned in this call. The default value is 20.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The start token for paginated calls. Retrieved from the response of a previous ListNotificationEvents call. NextToken uses Base64 encoding.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListChannelsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListChannelsResponse":{
+      "type":"structure",
+      "required":["channels"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token. If a non-null pagination token is returned in a result, pass its value in another request to retrieve more entries.</p>"
+        },
+        "channels":{
+          "shape":"Channels",
+          "documentation":"<p>A list of Channels.</p>"
+        }
+      }
+    },
+    "ListEventRulesRequest":{
+      "type":"structure",
+      "required":["notificationConfigurationArn"],
+      "members":{
+        "notificationConfigurationArn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the NotificationConfiguration.</p>",
+          "location":"querystring",
+          "locationName":"notificationConfigurationArn"
+        },
+        "maxResults":{
+          "shape":"ListEventRulesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to be returned in this call. The default value is 20.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The start token for paginated calls. Retrieved from the response of a previous ListEventRules call. Next token uses Base64 encoding.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListEventRulesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListEventRulesResponse":{
+      "type":"structure",
+      "required":["eventRules"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token. If a non-null pagination token is returned in a result, pass its value in another request to retrieve more entries.</p>"
+        },
+        "eventRules":{
+          "shape":"EventRules",
+          "documentation":"<p>A list of EventRules.</p>"
+        }
+      }
+    },
+    "ListNotificationConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "eventRuleSource":{
+          "shape":"Source",
+          "documentation":"<p>The matched event source.</p> <p>Must match one of the valid EventBridge sources. Only AWS service sourced events are supported. For example, <code>aws.ec2</code> and <code>aws.cloudwatch</code>. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html#eb-service-event-delivery-level\">Event delivery from AWS services</a> in the <i>Amazon EventBridge User Guide</i>.</p>",
+          "location":"querystring",
+          "locationName":"eventRuleSource"
+        },
+        "channelArn":{
+          "shape":"ChannelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Channel to match.</p>",
+          "location":"querystring",
+          "locationName":"channelArn"
+        },
+        "status":{
+          "shape":"NotificationConfigurationStatus",
+          "documentation":"<p>The NotificationConfiguration status to match.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>ACTIVE</code> </p> <ul> <li> <p>All EventRules are <code>ACTIVE</code> and any call can be run.</p> </li> </ul> </li> <li> <p> <code>PARTIALLY_ACTIVE</code> </p> <ul> <li> <p>Some EventRules are <code>ACTIVE</code> and some are <code>INACTIVE</code>. Any call can be run.</p> </li> <li> <p>Any call can be run.</p> </li> </ul> </li> <li> <p> <code>INACTIVE</code> </p> <ul> <li> <p>All EventRules are <code>INACTIVE</code> and any call can be run.</p> </li> </ul> </li> <li> <p> <code>DELETING</code> </p> <ul> <li> <p>This NotificationConfiguration is being deleted.</p> </li> <li> <p>Only <code>GET</code> and <code>LIST</code> calls can be run.</p> </li> </ul> </li> </ul> </li> </ul>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "maxResults":{
+          "shape":"ListNotificationConfigurationsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to be returned in this call. Defaults to 20.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The start token for paginated calls. Retrieved from the response of a previous ListEventRules call. Next token uses Base64 encoding.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListNotificationConfigurationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListNotificationConfigurationsResponse":{
+      "type":"structure",
+      "required":["notificationConfigurations"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token. If a non-null pagination token is returned in a result, pass its value in another request to retrieve more entries.</p>"
+        },
+        "notificationConfigurations":{
+          "shape":"NotificationConfigurations",
+          "documentation":"<p>The NotificationConfigurations in the account.</p>"
+        }
+      }
+    },
+    "ListNotificationEventsRequest":{
+      "type":"structure",
+      "members":{
+        "startTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The earliest time of events to return from this call.</p>",
+          "location":"querystring",
+          "locationName":"startTime"
+        },
+        "endTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>Latest time of events to return from this call.</p>",
+          "location":"querystring",
+          "locationName":"endTime"
+        },
+        "locale":{
+          "shape":"LocaleCode",
+          "documentation":"<p>The locale code of the language used for the retrieved NotificationEvent. The default locale is English <code>(en_US)</code>.</p>",
+          "location":"querystring",
+          "locationName":"locale"
+        },
+        "source":{
+          "shape":"Source",
+          "documentation":"<p>The matched event source.</p> <p>Must match one of the valid EventBridge sources. Only AWS service sourced events are supported. For example, <code>aws.ec2</code> and <code>aws.cloudwatch</code>. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html#eb-service-event-delivery-level\">Event delivery from AWS services</a> in the <i>Amazon EventBridge User Guide</i>.</p>",
+          "location":"querystring",
+          "locationName":"source"
+        },
+        "includeChildEvents":{
+          "shape":"Boolean",
+          "documentation":"<p>Include aggregated child events in the result.</p>",
+          "location":"querystring",
+          "locationName":"includeChildEvents"
+        },
+        "aggregateNotificationEventArn":{
+          "shape":"NotificationEventArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the aggregatedNotificationEventArn to match.</p>",
+          "location":"querystring",
+          "locationName":"aggregateNotificationEventArn"
+        },
+        "maxResults":{
+          "shape":"ListNotificationEventsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to be returned in this call. Defaults to 20.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The start token for paginated calls. Retrieved from the response of a previous ListEventRules call. Next token uses Base64 encoding.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListNotificationEventsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListNotificationEventsResponse":{
+      "type":"structure",
+      "required":["notificationEvents"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token. If a non-null pagination token is returned in a result, pass its value in another request to retrieve more entries.</p>"
+        },
+        "notificationEvents":{
+          "shape":"NotificationEvents",
+          "documentation":"<p>The list of notification events.</p>"
+        }
+      }
+    },
+    "ListNotificationHubsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListNotificationHubsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of records to list in a single response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token. Set to null to start listing notification hubs from the start.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListNotificationHubsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":3,
+      "min":3
+    },
+    "ListNotificationHubsResponse":{
+      "type":"structure",
+      "required":["notificationHubs"],
+      "members":{
+        "notificationHubs":{
+          "shape":"NotificationHubs",
+          "documentation":"<p>The NotificationHubs in the account.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token. If a non-null pagination token is returned in a result, pass its value in another request to retrieve more entries.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) to use to list tags.</p>",
+          "location":"uri",
+          "locationName":"arn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A list of tags for the specified ARN.</p>"
+        }
+      }
+    },
+    "LocaleCode":{
+      "type":"string",
+      "enum":[
+        "de_DE",
+        "en_CA",
+        "en_US",
+        "en_UK",
+        "es_ES",
+        "fr_CA",
+        "fr_FR",
+        "id_ID",
+        "it_IT",
+        "ja_JP",
+        "ko_KR",
+        "pt_BR",
+        "tr_TR",
+        "zh_CN",
+        "zh_TW"
+      ]
+    },
+    "ManagedRuleArn":{
+      "type":"string",
+      "pattern":"arn:aws:events:[a-z-\\d]{2,25}:\\d{12}:rule\\/[a-zA-Z-\\d]{1,1024}"
+    },
+    "ManagedRuleArns":{
+      "type":"list",
+      "member":{"shape":"ManagedRuleArn"}
+    },
+    "Media":{
+      "type":"list",
+      "member":{"shape":"MediaElement"}
+    },
+    "MediaElement":{
+      "type":"structure",
+      "required":[
+        "mediaId",
+        "type",
+        "url",
+        "caption"
+      ],
+      "members":{
+        "mediaId":{
+          "shape":"MediaId",
+          "documentation":"<p>The unique ID for the media.</p>"
+        },
+        "type":{
+          "shape":"MediaElementType",
+          "documentation":"<p>The type of media.</p>"
+        },
+        "url":{
+          "shape":"Url",
+          "documentation":"<p>The url of the media.</p>"
+        },
+        "caption":{
+          "shape":"TextPartReference",
+          "documentation":"<p>The caption of the media.</p>"
+        }
+      },
+      "documentation":"<p>Describes a media element.</p>"
+    },
+    "MediaElementType":{
+      "type":"string",
+      "enum":["IMAGE"]
+    },
+    "MediaId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "MessageComponents":{
+      "type":"structure",
+      "members":{
+        "headline":{
+          "shape":"TextPartReference",
+          "documentation":"<p>A sentence long summary. For example, titles or an email subject line.</p>"
+        },
+        "paragraphSummary":{
+          "shape":"TextPartReference",
+          "documentation":"<p>A paragraph long or multiple sentence summary. For example, AWS Chatbot notifications.</p>"
+        },
+        "completeDescription":{
+          "shape":"TextPartReference",
+          "documentation":"<p>A complete summary with all possible relevant information.</p>"
+        },
+        "dimensions":{
+          "shape":"Dimensions",
+          "documentation":"<p>A list of properties in key-value pairs. Pairs are shown in order of importance from most important to least important. Channels may limit the number of dimensions shown to the notification viewer.</p> <note> <p>Included dimensions, keys, and values are subject to change.</p> </note>"
+        }
+      },
+      "documentation":"<p>Describes the components of a notification message.</p>"
+    },
+    "MessageComponentsSummary":{
+      "type":"structure",
+      "required":["headline"],
+      "members":{
+        "headline":{
+          "shape":"MessageComponentsSummaryHeadlineString",
+          "documentation":"<p>A sentence long summary. For example, titles or an email subject line.</p>"
+        }
+      },
+      "documentation":"<p>Contains the headline message component.</p>"
+    },
+    "MessageComponentsSummaryHeadlineString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "NextToken":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"[\\w+-/=]+"
+    },
+    "NotificationConfigurationArn":{
+      "type":"string",
+      "pattern":"arn:aws:notifications::[0-9]{12}:configuration/[a-z0-9]{27}"
+    },
+    "NotificationConfigurationDescription":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[^\\u0001-\\u001F\\u007F-\\u009F]*"
+    },
+    "NotificationConfigurationName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_\\-]+"
+    },
+    "NotificationConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "PARTIALLY_ACTIVE",
+        "INACTIVE",
+        "DELETING"
+      ]
+    },
+    "NotificationConfigurationStructure":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "name",
+        "description",
+        "status",
+        "creationTime"
+      ],
+      "members":{
+        "arn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
+        },
+        "name":{
+          "shape":"NotificationConfigurationName",
+          "documentation":"<p>The name of the NotificationConfiguration. Supports RFC 3986's unreserved characters.</p>"
+        },
+        "description":{
+          "shape":"NotificationConfigurationDescription",
+          "documentation":"<p>The description of the NotificationConfiguration.</p>"
+        },
+        "status":{
+          "shape":"NotificationConfigurationStatus",
+          "documentation":"<p>The status of this NotificationConfiguration.</p> <p>The status should always be INACTIVE when part of the CreateNotificationConfiguration response.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>ACTIVE</code> </p> <ul> <li> <p>All EventRules are <code>ACTIVE</code> and any call can be run.</p> </li> </ul> </li> <li> <p> <code>PARTIALLY_ACTIVE</code> </p> <ul> <li> <p>Some EventRules are <code>ACTIVE</code> and some are <code>INACTIVE</code>.</p> </li> <li> <p>Any call can be run.</p> </li> </ul> </li> <li> <p> <code>INACTIVE</code> </p> <ul> <li> <p>All EventRules are <code>INACTIVE</code> and any call can be run.</p> </li> </ul> </li> <li> <p> <code>DELETING</code> </p> <ul> <li> <p>This NotificationConfiguration is being deleted. Only <code>GET</code> and <code>LIST</code> calls can be run.</p> </li> <li> <p>Only <code>GET</code> and <code>LIST</code> calls can be run.</p> </li> </ul> </li> </ul> </li> </ul>"
+        },
+        "creationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The creation time of the resource.</p>"
+        },
+        "aggregationDuration":{
+          "shape":"AggregationDuration",
+          "documentation":"<p>The aggregation preference of the NotificationConfiguration.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>LONG</code> </p> <ul> <li> <p>Aggregate notifications for long periods of time (12 hours).</p> </li> </ul> </li> <li> <p> <code>SHORT</code> </p> <ul> <li> <p>Aggregate notifications for short periods of time (5 minutes).</p> </li> </ul> </li> <li> <p> <code>NONE</code> </p> <ul> <li> <p>Don't aggregate notifications.</p> <p>No delay in delivery.</p> </li> </ul> </li> </ul> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Contains the complete list of fields for a NotificationConfiguration.</p>"
+    },
+    "NotificationConfigurations":{
+      "type":"list",
+      "member":{"shape":"NotificationConfigurationStructure"}
+    },
+    "NotificationEvent":{
+      "type":"structure",
+      "required":[
+        "schemaVersion",
+        "id",
+        "sourceEventMetadata",
+        "messageComponents",
+        "notificationType",
+        "textParts",
+        "media"
+      ],
+      "members":{
+        "schemaVersion":{
+          "shape":"SchemaVersion",
+          "documentation":"<p>The schema version of the Notification Event.</p>"
+        },
+        "id":{
+          "shape":"NotificationEventId",
+          "documentation":"<p>The unique identifier for a NotificationEvent.</p>"
+        },
+        "sourceEventMetadata":{
+          "shape":"SourceEventMetadata",
+          "documentation":"<p>The source event metadata.</p>"
+        },
+        "messageComponents":{"shape":"MessageComponents"},
+        "sourceEventDetailUrl":{
+          "shape":"Url",
+          "documentation":"<p>The source event URL.</p>"
+        },
+        "sourceEventDetailUrlDisplayText":{
+          "shape":"String",
+          "documentation":"<p>The detailed URL for the source event.</p>"
+        },
+        "notificationType":{
+          "shape":"NotificationType",
+          "documentation":"<p>The type of event causing the notification.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>ALERT</code> </p> <ul> <li> <p>A notification about an event where something was triggered, initiated, reopened, deployed, or a threshold was breached.</p> </li> </ul> </li> <li> <p> <code>WARNING</code> </p> <ul> <li> <p>A notification about an event where an issue is about to arise. For example, something is approaching a threshold.</p> </li> </ul> </li> <li> <p> <code>ANNOUNCEMENT</code> </p> <ul> <li> <p>A notification about an important event. For example, a step in a workflow or escalation path or that a workflow was updated.</p> </li> </ul> </li> <li> <p> <code>INFORMATIONAL</code> </p> <ul> <li> <p>A notification about informational messages. For example, recommendations, service announcements, or reminders.</p> </li> </ul> </li> </ul> </li> </ul>"
+        },
+        "eventStatus":{
+          "shape":"EventStatus",
+          "documentation":"<p>The assesed nature of the event.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>HEALTHY</code> </p> <ul> <li> <p>All EventRules are <code>ACTIVE</code> and any call can be run.</p> </li> </ul> </li> <li> <p> <code>UNHEALTHY</code> </p> <ul> <li> <p>Some EventRules are <code>ACTIVE</code> and some are <code>INACTIVE</code>. Any call can be run.</p> </li> </ul> </li> </ul> </li> </ul>"
+        },
+        "aggregationEventType":{
+          "shape":"AggregationEventType",
+          "documentation":"<p>The NotificationConfiguration's aggregation type.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>AGGREGATE</code> </p> <ul> <li> <p>The notification event is an aggregate notification. Aggregate notifications summarize grouped events over a specified time period.</p> </li> </ul> </li> <li> <p> <code>CHILD</code> </p> <ul> <li> <p>Some EventRules are <code>ACTIVE</code> and some are <code>INACTIVE</code>. Any call can be run.</p> </li> </ul> </li> <li> <p> <code>NONE</code> </p> <ul> <li> <p>The notification isn't aggregated.</p> </li> </ul> </li> </ul> </li> </ul>"
+        },
+        "aggregateNotificationEventArn":{
+          "shape":"NotificationEventArn",
+          "documentation":"<p>If the value of aggregationEventType is not <code>NONE</code>, this is the Amazon Resource Event (ARN) of the parent aggregate notification.</p> <p>This is omitted if notification isn't aggregated.</p>"
+        },
+        "startTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The notification event start time.</p>"
+        },
+        "endTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The end time of the event.</p>"
+        },
+        "textParts":{
+          "shape":"TextParts",
+          "documentation":"<p>A list of text values.</p>"
+        },
+        "media":{
+          "shape":"Media",
+          "documentation":"<p>A list of media elements.</p>"
+        }
+      },
+      "documentation":"<p>A NotificationEvent is a notification-focused representation of an event. They contain semantic information used by Channels to create end-user notifications.</p>"
+    },
+    "NotificationEventArn":{
+      "type":"string",
+      "pattern":"arn:[-.a-z0-9]{1,63}:notifications:[-.a-z0-9]{1,63}:[0-9]{12}:configuration/[a-z0-9]{27}/event/[a-z0-9]{27}"
+    },
+    "NotificationEventId":{
+      "type":"string",
+      "pattern":"[a-z0-9]{27}"
+    },
+    "NotificationEventOverview":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "notificationConfigurationArn",
+        "relatedAccount",
+        "creationTime",
+        "notificationEvent"
+      ],
+      "members":{
+        "arn":{
+          "shape":"NotificationEventArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
+        },
+        "notificationConfigurationArn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The ARN of the NotificationConfiguration.</p>"
+        },
+        "relatedAccount":{
+          "shape":"AccountId",
+          "documentation":"<p>The account name containing the NotificationHub.</p>"
+        },
+        "creationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The creation time of the NotificationEvent.</p>"
+        },
+        "notificationEvent":{
+          "shape":"NotificationEventSummary",
+          "documentation":"<p>Refers to a NotificationEventSummary object.</p> <p>Similar in structure to <code>content</code> in the GetNotificationEvent response.</p>"
+        },
+        "aggregationEventType":{
+          "shape":"AggregationEventType",
+          "documentation":"<p>The NotificationConfiguration's aggregation type.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>AGGREGATE</code> </p> <ul> <li> <p>The notification event is an aggregate notification. Aggregate notifications summarize grouped events over a specified time period.</p> </li> </ul> </li> <li> <p> <code>CHILD</code> </p> <ul> <li> <p>Some EventRules are <code>ACTIVE</code> and some are <code>INACTIVE</code>. Any call can be run.</p> </li> </ul> </li> <li> <p> <code>NONE</code> </p> <ul> <li> <p>The notification isn't aggregated.</p> </li> </ul> </li> </ul> </li> </ul>"
+        },
+        "aggregateNotificationEventArn":{
+          "shape":"NotificationEventArn",
+          "documentation":"<p>The ARN of the aggregatedNotificationEventArn to match.</p>"
+        }
+      },
+      "documentation":"<p>Describes a short summary of a NotificationEvent. This is only used when listing notification events.</p>"
+    },
+    "NotificationEventSummary":{
+      "type":"structure",
+      "required":[
+        "schemaVersion",
+        "sourceEventMetadata",
+        "messageComponents",
+        "eventStatus",
+        "notificationType"
+      ],
+      "members":{
+        "schemaVersion":{
+          "shape":"SchemaVersion",
+          "documentation":"<p>The schema version of the Notification Event.</p>"
+        },
+        "sourceEventMetadata":{
+          "shape":"SourceEventMetadataSummary",
+          "documentation":"<p>The source event metadata.</p>"
+        },
+        "messageComponents":{
+          "shape":"MessageComponentsSummary",
+          "documentation":"<p>The message components of a notification event.</p>"
+        },
+        "eventStatus":{
+          "shape":"EventStatus",
+          "documentation":"<p>The notification event status.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>HEALTHY</code> </p> <ul> <li> <p>All EventRules are <code>ACTIVE</code> and any call can be run.</p> </li> </ul> </li> <li> <p> <code>UNHEALTHY</code> </p> <ul> <li> <p>Some EventRules are <code>ACTIVE</code> and some are <code>INACTIVE</code>. Any call can be run.</p> </li> </ul> </li> </ul> </li> </ul>"
+        },
+        "notificationType":{
+          "shape":"NotificationType",
+          "documentation":"<p>The type of event causing the notification.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>ALERT</code> </p> <ul> <li> <p>A notification about an event where something was triggered, initiated, reopened, deployed, or a threshold was breached.</p> </li> </ul> </li> <li> <p> <code>WARNING</code> </p> <ul> <li> <p>A notification about an event where an issue is about to arise. For example, something is approaching a threshold.</p> </li> </ul> </li> <li> <p> <code>ANNOUNCEMENT</code> </p> <ul> <li> <p>A notification about an important event. For example, a step in a workflow or escalation path or that a workflow was updated.</p> </li> </ul> </li> <li> <p> <code>INFORMATIONAL</code> </p> <ul> <li> <p>A notification about informational messages. For example, recommendations, service announcements, or reminders.</p> </li> </ul> </li> </ul> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Describes a short summary and metadata for a notification event.</p>"
+    },
+    "NotificationEvents":{
+      "type":"list",
+      "member":{"shape":"NotificationEventOverview"}
+    },
+    "NotificationHubOverview":{
+      "type":"structure",
+      "required":[
+        "notificationHubRegion",
+        "statusSummary",
+        "creationTime"
+      ],
+      "members":{
+        "notificationHubRegion":{
+          "shape":"Region",
+          "documentation":"<p>The Region of the resource.</p>"
+        },
+        "statusSummary":{
+          "shape":"NotificationHubStatusSummary",
+          "documentation":"<p>The status summary of the resource.</p>"
+        },
+        "creationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The date and time the resource was created.</p>"
+        },
+        "lastActivationTime":{
+          "shape":"LastActivationTime",
+          "documentation":"<p>The most recent time this NotificationHub had an ACTIVE status.</p>"
+        }
+      },
+      "documentation":"<p>Describes an overview of a NotificationHub.</p> <p>A NotificationHub is an account-level setting used to select the Regions where you want to store, process and replicate your notifications.</p>"
+    },
+    "NotificationHubStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "REGISTERING",
+        "DEREGISTERING",
+        "INACTIVE"
+      ]
+    },
+    "NotificationHubStatusReason":{"type":"string"},
+    "NotificationHubStatusSummary":{
+      "type":"structure",
+      "required":[
+        "status",
+        "reason"
+      ],
+      "members":{
+        "status":{
+          "shape":"NotificationHubStatus",
+          "documentation":"<p>Status information about the NotificationHub.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>ACTIVE</code> </p> <ul> <li> <p>Incoming NotificationEvents are replicated to this NotificationHub.</p> </li> </ul> </li> <li> <p> <code>REGISTERING</code> </p> <ul> <li> <p>The NotificationHub is initializing. A NotificationHub with this status can't be deregistered.</p> </li> </ul> </li> <li> <p> <code>DEREGISTERING</code> </p> <ul> <li> <p>The NotificationHub is being deleted. You can't register additional NotificationHubs in the same Region as a NotificationHub with this status.</p> </li> </ul> </li> </ul> </li> </ul>"
+        },
+        "reason":{
+          "shape":"NotificationHubStatusReason",
+          "documentation":"<p>An Explanation for the current status.</p>"
+        }
+      },
+      "documentation":"<p>NotificationHub status information.</p>"
+    },
+    "NotificationHubs":{
+      "type":"list",
+      "member":{"shape":"NotificationHubOverview"}
+    },
+    "NotificationType":{
+      "type":"string",
+      "enum":[
+        "ALERT",
+        "WARNING",
+        "ANNOUNCEMENT",
+        "INFORMATIONAL"
+      ]
+    },
+    "QuotaCode":{"type":"string"},
+    "Region":{
+      "type":"string",
+      "max":25,
+      "min":2,
+      "pattern":"([a-z]{1,2})-([a-z]{1,15}-)+([0-9])"
+    },
+    "Regions":{
+      "type":"list",
+      "member":{"shape":"Region"},
+      "min":1
+    },
+    "RegisterNotificationHubRequest":{
+      "type":"structure",
+      "required":["notificationHubRegion"],
+      "members":{
+        "notificationHubRegion":{
+          "shape":"Region",
+          "documentation":"<p>The Region of the NotificationHub.</p>"
+        }
+      }
+    },
+    "RegisterNotificationHubResponse":{
+      "type":"structure",
+      "required":[
+        "notificationHubRegion",
+        "statusSummary",
+        "creationTime"
+      ],
+      "members":{
+        "notificationHubRegion":{
+          "shape":"Region",
+          "documentation":"<p>The Region of the NotificationHub.</p>"
+        },
+        "statusSummary":{
+          "shape":"NotificationHubStatusSummary",
+          "documentation":"<p>NotificationHub status information.</p>"
+        },
+        "creationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The date the resource was created.</p>"
+        },
+        "lastActivationTime":{
+          "shape":"LastActivationTime",
+          "documentation":"<p>The date the resource was last activated.</p>"
+        }
+      }
+    },
+    "Resource":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the resource.</p> <p>At least one id or ARN is required.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource. At least one id or ARN is required.</p>"
+        },
+        "detailUrl":{
+          "shape":"Url",
+          "documentation":"<p>The URL to the resource's detail page. If a detail page URL is unavailable, it is the URL to an informational page that describes the resource's type.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A map of tags assigned to a resource. A tag is a string-to-string map of key-value pairs.</p>"
+        }
+      },
+      "documentation":"<p>A resource affected by or closely linked to an event.</p>"
+    },
+    "ResourceId":{"type":"string"},
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId"
+      ],
+      "members":{
+        "message":{"shape":"ErrorMessage"},
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the resource that wasn't found.</p>"
+        }
+      },
+      "documentation":"<p>Request references a resource which does not exist. </p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ResourceType":{"type":"string"},
+    "Resources":{
+      "type":"list",
+      "member":{"shape":"Resource"}
+    },
+    "SchemaVersion":{
+      "type":"string",
+      "enum":["v1.0"]
+    },
+    "ServiceCode":{"type":"string"},
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceType"
+      ],
+      "members":{
+        "message":{"shape":"ErrorMessage"},
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of the resource that exceeds the service quota.</p>"
+        },
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the resource that exceeds the service quota.</p>"
+        },
+        "serviceCode":{
+          "shape":"ServiceCode",
+          "documentation":"<p>The code for the service quota exceeded in <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/intro.html\">Service Quotas</a>.</p>"
+        },
+        "quotaCode":{
+          "shape":"QuotaCode",
+          "documentation":"<p>The code for the service quota in <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/intro.html\">Service Quotas</a>.</p>"
+        }
+      },
+      "documentation":"<p>Request would cause a service quota to be exceeded.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Source":{
+      "type":"string",
+      "max":36,
+      "min":1,
+      "pattern":"aws.([a-z0-9\\-])+"
+    },
+    "SourceEventMetadata":{
+      "type":"structure",
+      "required":[
+        "eventTypeVersion",
+        "sourceEventId",
+        "relatedAccount",
+        "source",
+        "eventOccurrenceTime",
+        "eventType",
+        "relatedResources"
+      ],
+      "members":{
+        "eventTypeVersion":{
+          "shape":"SourceEventMetadataEventTypeVersionString",
+          "documentation":"<p>The version of the type of event.</p>"
+        },
+        "sourceEventId":{
+          "shape":"String",
+          "documentation":"<p>The source event id.</p>"
+        },
+        "eventOriginRegion":{
+          "shape":"SourceEventMetadataEventOriginRegionString",
+          "documentation":"<p>The Region the event originated from.</p>"
+        },
+        "relatedAccount":{
+          "shape":"SourceEventMetadataRelatedAccountString",
+          "documentation":"<p>The Primary AWS account of Source Event</p>"
+        },
+        "source":{
+          "shape":"Source",
+          "documentation":"<p>The AWS servvice the event originates from. For example <code>aws.cloudwatch</code>.</p>"
+        },
+        "eventOccurrenceTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the source event occurred. This is based on the Source Event.</p>"
+        },
+        "eventType":{
+          "shape":"SourceEventMetadataEventTypeString",
+          "documentation":"<p>The type of event. For example, an AWS CloudWatch state change.</p>"
+        },
+        "relatedResources":{
+          "shape":"Resources",
+          "documentation":"<p>A list of resources related to this NotificationEvent.</p>"
+        }
+      },
+      "documentation":"<p>Describes the metadata for a source event.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-events-structure.html\">Event structure reference</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+    },
+    "SourceEventMetadataEventOriginRegionString":{
+      "type":"string",
+      "max":32,
+      "min":0,
+      "pattern":"([a-z]{1,2})-([a-z]{1,15}-)+([0-9])"
+    },
+    "SourceEventMetadataEventTypeString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "SourceEventMetadataEventTypeVersionString":{
+      "type":"string",
+      "max":3,
+      "min":1,
+      "pattern":"[0-9.]+"
+    },
+    "SourceEventMetadataRelatedAccountString":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
+    "SourceEventMetadataSummary":{
+      "type":"structure",
+      "required":[
+        "source",
+        "eventType"
+      ],
+      "members":{
+        "eventOriginRegion":{
+          "shape":"SourceEventMetadataSummaryEventOriginRegionString",
+          "documentation":"<p>The Region where the notification originated.</p> <p>Unavailable for aggregated notifications.</p>"
+        },
+        "source":{
+          "shape":"String",
+          "documentation":"<p>The matched event source.</p> <p>Must match one of the valid EventBridge sources. Only AWS service sourced events are supported. For example, <code>aws.ec2</code> and <code>aws.cloudwatch</code>. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html#eb-service-event-delivery-level\">Event delivery from AWS services</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+        },
+        "eventType":{
+          "shape":"SourceEventMetadataSummaryEventTypeString",
+          "documentation":"<p>The event type to match.</p> <p>Must match one of the valid Amazon EventBridge event types. For example, EC2 Instance State-change Notification and AWS CloudWatch Alarm State Change. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html#eb-service-event-delivery-level\">Event delivery from AWS services</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about the event that caused the NotificationEvent. For other specific values, see sourceEventMetadata.</p>"
+    },
+    "SourceEventMetadataSummaryEventOriginRegionString":{
+      "type":"string",
+      "max":32,
+      "min":0
+    },
+    "SourceEventMetadataSummaryEventTypeString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "StatusSummaryByRegion":{
+      "type":"map",
+      "key":{"shape":"Region"},
+      "value":{"shape":"EventRuleStatusSummary"}
+    },
+    "String":{"type":"string"},
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "TagKey":{
+      "type":"string",
+      "pattern":"(?!aws:).{1,128}"
+    },
+    "TagKeys":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":200,
+      "min":0
+    },
+    "TagMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":200,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "tags"
+      ],
+      "members":{
+        "arn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) to use to tag a resource.</p>",
+          "location":"uri",
+          "locationName":"arn"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A map of tags assigned to a resource. A tag is a string-to-string map of key-value pairs.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "Tags":{
+      "type":"list",
+      "member":{"shape":"TagsMemberString"},
+      "max":50,
+      "min":0
+    },
+    "TagsMemberString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "TextByLocale":{
+      "type":"map",
+      "key":{"shape":"LocaleCode"},
+      "value":{"shape":"String"}
+    },
+    "TextPartId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_]+"
+    },
+    "TextPartReference":{"type":"string"},
+    "TextPartType":{
+      "type":"string",
+      "enum":[
+        "LOCALIZED_TEXT",
+        "PLAIN_TEXT",
+        "URL"
+      ]
+    },
+    "TextPartValue":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"TextPartType",
+          "documentation":"<p>The type of text part. Determines the usage of all other fields and whether or not they're required.</p>"
+        },
+        "displayText":{
+          "shape":"TextPartValueDisplayTextString",
+          "documentation":"<p>A short single line description of the link. Must be hyperlinked with the URL itself. </p> <p>Used for text parts with the type <code>URL</code>.</p>"
+        },
+        "textByLocale":{
+          "shape":"TextByLocale",
+          "documentation":"<p>A map of locales to the text in that locale.</p>"
+        },
+        "url":{
+          "shape":"Url",
+          "documentation":"<p>The URL itself.</p>"
+        }
+      },
+      "documentation":"<p>Describes text information objects containing fields that determine how text part objects are composed.</p>"
+    },
+    "TextPartValueDisplayTextString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "TextParts":{
+      "type":"map",
+      "key":{"shape":"TextPartId"},
+      "value":{"shape":"TextPartValue"}
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"},
+        "serviceCode":{
+          "shape":"ServiceCode",
+          "documentation":"<p>Identifies the service being throttled.</p>"
+        },
+        "quotaCode":{
+          "shape":"QuotaCode",
+          "documentation":"<p>Identifies the quota that is being throttled.</p>"
+        },
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The number of seconds a client should wait before retrying the request.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        }
+      },
+      "documentation":"<p>Request was denied due to request throttling. </p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "tagKeys"
+      ],
+      "members":{
+        "arn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) to use to untag a resource.</p>",
+          "location":"uri",
+          "locationName":"arn"
+        },
+        "tagKeys":{
+          "shape":"TagKeys",
+          "documentation":"<p>The tag keys to use to untag a resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateEventRuleRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"EventRuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) to use to update the EventRule.</p>",
+          "location":"uri",
+          "locationName":"arn"
+        },
+        "eventPattern":{
+          "shape":"EventRuleEventPattern",
+          "documentation":"<p>An additional event pattern used to further filter the events this EventRule receives.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns.html\">Amazon EventBridge event patterns</a> in the <i>Amazon EventBridge User Guide.</i> </p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>A list of AWS Regions that sends events to this EventRule.</p>"
+        }
+      }
+    },
+    "UpdateEventRuleResponse":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "notificationConfigurationArn",
+        "statusSummaryByRegion"
+      ],
+      "members":{
+        "arn":{
+          "shape":"EventRuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) to use to update the EventRule.</p>"
+        },
+        "notificationConfigurationArn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The ARN of the NotificationConfiguration.</p>"
+        },
+        "statusSummaryByRegion":{
+          "shape":"StatusSummaryByRegion",
+          "documentation":"<p>The status of the action by Region.</p>"
+        }
+      }
+    },
+    "UpdateNotificationConfigurationRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) used to update the NotificationConfiguration.</p>",
+          "location":"uri",
+          "locationName":"arn"
+        },
+        "name":{
+          "shape":"NotificationConfigurationName",
+          "documentation":"<p>The name of the NotificationConfiguration.</p>"
+        },
+        "description":{
+          "shape":"NotificationConfigurationDescription",
+          "documentation":"<p>The description of the NotificationConfiguration.</p>"
+        },
+        "aggregationDuration":{
+          "shape":"AggregationDuration",
+          "documentation":"<p>The status of this NotificationConfiguration.</p> <p>The status should always be <code>INACTIVE</code> when part of the CreateNotificationConfiguration response.</p> <ul> <li> <p>Values:</p> <ul> <li> <p> <code>ACTIVE</code> </p> <ul> <li> <p>All EventRules are <code>ACTIVE</code> and any call can be run.</p> </li> </ul> </li> <li> <p> <code>PARTIALLY_ACTIVE</code> </p> <ul> <li> <p>Some EventRules are <code>ACTIVE</code> and some are <code>INACTIVE</code>. Any call can be run.</p> </li> <li> <p>Any call can be run.</p> </li> </ul> </li> <li> <p> <code>INACTIVE</code> </p> <ul> <li> <p>All EventRules are <code>INACTIVE</code> and any call can be run.</p> </li> </ul> </li> <li> <p> <code>DELETING</code> </p> <ul> <li> <p>This NotificationConfiguration is being deleted.</p> </li> <li> <p>Only <code>GET</code> and <code>LIST</code> calls can be run.</p> </li> </ul> </li> </ul> </li> </ul>"
+        }
+      }
+    },
+    "UpdateNotificationConfigurationResponse":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"NotificationConfigurationArn",
+          "documentation":"<p>The ARN used to update the NotificationConfiguration.</p>"
+        }
+      }
+    },
+    "Url":{
+      "type":"string",
+      "max":2000,
+      "min":0,
+      "pattern":"(https?)://.*"
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"ErrorMessage"},
+        "reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>The reason why your input is considered invalid.</p>"
+        },
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>The list of input fields that are invalid.</p>"
+        }
+      },
+      "documentation":"<p>This exception is thrown when the notification event fails validation.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "name",
+        "message"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The field name where the invalid entry was detected.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message with the reason for the validation exception error.</p>"
+        }
+      },
+      "documentation":"<p>Stores information about a field passed inside a request that resulted in an exception.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    },
+    "ValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "fieldValidationFailed",
+        "other"
+      ]
+    }
+  },
+  "documentation":"<p>The <i>AWS User Notifications API Reference</i> provides descriptions, API request parameters, and the JSON response for each of the User Notification API actions.</p> <p>User Notification control APIs are currently available in US East (Virginia) - <code>us-east-1</code>.</p> <p> <a href=\"https://docs.aws.amazon.com/notifications/latest/APIReference/API_GetNotificationEvent.html\">GetNotificationEvent</a> and <a href=\"https://docs.aws.amazon.com/notifications/latest/APIReference/API_ListNotificationEvents.html\">ListNotificationEvents</a> APIs are currently available in <a href=\"https://docs.aws.amazon.com/notifications/latest/userguide/supported-regions.html\">commercial partition Regions</a> and only return notifications stored in the same Region in which they're called.</p> <p>The User Notifications console can only be used in US East (Virginia). Your data however, is stored in each Region chosen as a <a href=\"https://docs.aws.amazon.com/notifications/latest/userguide/notification-hubs.html&gt;\">notification hub</a> in addition to US East (Virginia).</p>"
+}

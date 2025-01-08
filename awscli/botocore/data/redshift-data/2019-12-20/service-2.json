@@ -5,12 +5,14 @@
     "endpointPrefix":"redshift-data",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"Redshift Data API Service",
     "serviceId":"Redshift Data",
     "signatureVersion":"v4",
     "signingName":"redshift-data",
     "targetPrefix":"RedshiftData",
-    "uid":"redshift-data-2019-12-20"
+    "uid":"redshift-data-2019-12-20",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "BatchExecuteStatement":{
@@ -23,8 +25,10 @@
       "output":{"shape":"BatchExecuteStatementOutput"},
       "errors":[
         {"shape":"ValidationException"},
+        {"shape":"ActiveSessionsExceededException"},
         {"shape":"ActiveStatementsExceededException"},
-        {"shape":"BatchExecuteStatementException"}
+        {"shape":"BatchExecuteStatementException"},
+        {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Runs one or more SQL statements, which can be data manipulation language (DML) or data definition language (DDL). Depending on the authorization method, use one of the following combinations of request parameters: </p> <ul> <li> <p>Secrets Manager - when connecting to a cluster, provide the <code>secret-arn</code> of a secret stored in Secrets Manager which has <code>username</code> and <code>password</code>. The specified secret contains credentials to connect to the <code>database</code> you specify. When you are connecting to a cluster, you also supply the database name, If you provide a cluster identifier (<code>dbClusterIdentifier</code>), it must match the cluster identifier stored in the secret. When you are connecting to a serverless workgroup, you also supply the database name.</p> </li> <li> <p>Temporary credentials - when connecting to your data warehouse, choose one of the following options:</p> <ul> <li> <p>When connecting to a serverless workgroup, specify the workgroup name and database name. The database user name is derived from the IAM identity. For example, <code>arn:iam::123456789012:user:foo</code> has the database user name <code>IAM:foo</code>. Also, permission to call the <code>redshift-serverless:GetCredentials</code> operation is required.</p> </li> <li> <p>When connecting to a cluster as an IAM identity, specify the cluster identifier and the database name. The database user name is derived from the IAM identity. For example, <code>arn:iam::123456789012:user:foo</code> has the database user name <code>IAM:foo</code>. Also, permission to call the <code>redshift:GetClusterCredentialsWithIAM</code> operation is required.</p> </li> <li> <p>When connecting to a cluster as a database user, specify the cluster identifier, the database name, and the database user name. Also, permission to call the <code>redshift:GetClusterCredentials</code> operation is required.</p> </li> </ul> </li> </ul> <p>For more information about the Amazon Redshift Data API and CLI usage examples, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/data-api.html\">Using the Amazon Redshift Data API</a> in the <i>Amazon Redshift Management Guide</i>. </p>"
     },
@@ -69,6 +73,7 @@
       "output":{"shape":"DescribeTableResponse"},
       "errors":[
         {"shape":"ValidationException"},
+        {"shape":"QueryTimeoutException"},
         {"shape":"InternalServerException"},
         {"shape":"DatabaseConnectionException"}
       ],
@@ -84,8 +89,10 @@
       "output":{"shape":"ExecuteStatementOutput"},
       "errors":[
         {"shape":"ValidationException"},
+        {"shape":"ActiveSessionsExceededException"},
         {"shape":"ExecuteStatementException"},
-        {"shape":"ActiveStatementsExceededException"}
+        {"shape":"ActiveStatementsExceededException"},
+        {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Runs an SQL statement, which can be data manipulation language (DML) or data definition language (DDL). This statement must be a single SQL statement. Depending on the authorization method, use one of the following combinations of request parameters: </p> <ul> <li> <p>Secrets Manager - when connecting to a cluster, provide the <code>secret-arn</code> of a secret stored in Secrets Manager which has <code>username</code> and <code>password</code>. The specified secret contains credentials to connect to the <code>database</code> you specify. When you are connecting to a cluster, you also supply the database name, If you provide a cluster identifier (<code>dbClusterIdentifier</code>), it must match the cluster identifier stored in the secret. When you are connecting to a serverless workgroup, you also supply the database name.</p> </li> <li> <p>Temporary credentials - when connecting to your data warehouse, choose one of the following options:</p> <ul> <li> <p>When connecting to a serverless workgroup, specify the workgroup name and database name. The database user name is derived from the IAM identity. For example, <code>arn:iam::123456789012:user:foo</code> has the database user name <code>IAM:foo</code>. Also, permission to call the <code>redshift-serverless:GetCredentials</code> operation is required.</p> </li> <li> <p>When connecting to a cluster as an IAM identity, specify the cluster identifier and the database name. The database user name is derived from the IAM identity. For example, <code>arn:iam::123456789012:user:foo</code> has the database user name <code>IAM:foo</code>. Also, permission to call the <code>redshift:GetClusterCredentialsWithIAM</code> operation is required.</p> </li> <li> <p>When connecting to a cluster as a database user, specify the cluster identifier, the database name, and the database user name. Also, permission to call the <code>redshift:GetClusterCredentials</code> operation is required.</p> </li> </ul> </li> </ul> <p>For more information about the Amazon Redshift Data API and CLI usage examples, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/data-api.html\">Using the Amazon Redshift Data API</a> in the <i>Amazon Redshift Management Guide</i>. </p>"
     },
@@ -102,7 +109,22 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Fetches the temporarily cached result of an SQL statement. A token is returned to page through the statement results. </p> <p>For more information about the Amazon Redshift Data API and CLI usage examples, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/data-api.html\">Using the Amazon Redshift Data API</a> in the <i>Amazon Redshift Management Guide</i>. </p>"
+      "documentation":"<p>Fetches the temporarily cached result of an SQL statement in JSON format. The <code>ExecuteStatement</code> or <code>BatchExecuteStatement</code> operation that ran the SQL statement must have specified <code>ResultFormat</code> as <code>JSON</code> , or let the format default to JSON. A token is returned to page through the statement results.</p> <p>For more information about the Amazon Redshift Data API and CLI usage examples, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/data-api.html\">Using the Amazon Redshift Data API</a> in the <i>Amazon Redshift Management Guide</i>. </p>"
+    },
+    "GetStatementResultV2":{
+      "name":"GetStatementResultV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetStatementResultV2Request"},
+      "output":{"shape":"GetStatementResultV2Response"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Fetches the temporarily cached result of an SQL statement in CSV format. The <code>ExecuteStatement</code> or <code>BatchExecuteStatement</code> operation that ran the SQL statement must have specified <code>ResultFormat</code> as <code>CSV</code>. A token is returned to page through the statement results.</p> <p>For more information about the Amazon Redshift Data API and CLI usage examples, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/data-api.html\">Using the Amazon Redshift Data API</a> in the <i>Amazon Redshift Management Guide</i>. </p>"
     },
     "ListDatabases":{
       "name":"ListDatabases",
@@ -114,6 +136,7 @@
       "output":{"shape":"ListDatabasesResponse"},
       "errors":[
         {"shape":"ValidationException"},
+        {"shape":"QueryTimeoutException"},
         {"shape":"InternalServerException"},
         {"shape":"DatabaseConnectionException"}
       ],
@@ -129,6 +152,7 @@
       "output":{"shape":"ListSchemasResponse"},
       "errors":[
         {"shape":"ValidationException"},
+        {"shape":"QueryTimeoutException"},
         {"shape":"InternalServerException"},
         {"shape":"DatabaseConnectionException"}
       ],
@@ -158,6 +182,7 @@
       "output":{"shape":"ListTablesResponse"},
       "errors":[
         {"shape":"ValidationException"},
+        {"shape":"QueryTimeoutException"},
         {"shape":"InternalServerException"},
         {"shape":"DatabaseConnectionException"}
       ],
@@ -165,6 +190,14 @@
     }
   },
   "shapes":{
+    "ActiveSessionsExceededException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The Amazon Redshift Data API operation failed because the maximum number of active sessions exceeded.</p>",
+      "exception":true
+    },
     "ActiveStatementsExceededException":{
       "type":"structure",
       "members":{
@@ -192,10 +225,7 @@
     },
     "BatchExecuteStatementInput":{
       "type":"structure",
-      "required":[
-        "Database",
-        "Sqls"
-      ],
+      "required":["Sqls"],
       "members":{
         "ClientToken":{
           "shape":"ClientToken",
@@ -203,7 +233,7 @@
           "idempotencyToken":true
         },
         "ClusterIdentifier":{
-          "shape":"Location",
+          "shape":"ClusterIdentifierString",
           "documentation":"<p>The cluster identifier. This parameter is required when connecting to a cluster and authenticating using either Secrets Manager or temporary credentials. </p>"
         },
         "Database":{
@@ -214,9 +244,21 @@
           "shape":"String",
           "documentation":"<p>The database user name. This parameter is required when connecting to a cluster as a database user and authenticating using temporary credentials. </p>"
         },
+        "ResultFormat":{
+          "shape":"ResultFormatString",
+          "documentation":"<p>The data format of the result of the SQL statement. If no format is specified, the default is JSON.</p>"
+        },
         "SecretArn":{
           "shape":"SecretArn",
           "documentation":"<p>The name or ARN of the secret that enables access to the database. This parameter is required when authenticating using Secrets Manager. </p>"
+        },
+        "SessionId":{
+          "shape":"UUID",
+          "documentation":"<p>The session identifier of the query.</p>"
+        },
+        "SessionKeepAliveSeconds":{
+          "shape":"SessionAliveSeconds",
+          "documentation":"<p>The number of seconds to keep the session alive after the query finishes. The maximum time a session can keep alive is 24 hours. After 24 hours, the session is forced closed and the query is terminated.</p>"
         },
         "Sqls":{
           "shape":"SqlList",
@@ -240,7 +282,7 @@
       "type":"structure",
       "members":{
         "ClusterIdentifier":{
-          "shape":"Location",
+          "shape":"ClusterIdentifierString",
           "documentation":"<p>The cluster identifier. This element is not returned when connecting to a serverless workgroup. </p>"
         },
         "CreatedAt":{
@@ -251,17 +293,25 @@
           "shape":"String",
           "documentation":"<p>The name of the database.</p>"
         },
+        "DbGroups":{
+          "shape":"DbGroupList",
+          "documentation":"<p>A list of colon (:) separated names of database groups.</p>"
+        },
         "DbUser":{
           "shape":"String",
           "documentation":"<p>The database user name.</p>"
         },
         "Id":{
-          "shape":"StatementId",
+          "shape":"UUID",
           "documentation":"<p>The identifier of the SQL statement whose results are to be fetched. This value is a universally unique identifier (UUID) generated by Amazon Redshift Data API. This identifier is returned by <code>BatchExecuteStatment</code>. </p>"
         },
         "SecretArn":{
           "shape":"SecretArn",
           "documentation":"<p>The name or ARN of the secret that enables access to the database. </p>"
+        },
+        "SessionId":{
+          "shape":"UUID",
+          "documentation":"<p>The session identifier of the query.</p>"
         },
         "WorkgroupName":{
           "shape":"WorkgroupNameString",
@@ -291,7 +341,7 @@
       "required":["Id"],
       "members":{
         "Id":{
-          "shape":"StatementId",
+          "shape":"UUID",
           "documentation":"<p>The identifier of the SQL statement to cancel. This value is a universally unique identifier (UUID) generated by Amazon Redshift Data API. This identifier is returned by <code>BatchExecuteStatment</code>, <code>ExecuteStatment</code>, and <code>ListStatements</code>. </p>"
         }
       }
@@ -308,6 +358,11 @@
     "ClientToken":{
       "type":"string",
       "max":64,
+      "min":1
+    },
+    "ClusterIdentifierString":{
+      "type":"string",
+      "max":63,
       "min":1
     },
     "ColumnList":{
@@ -390,12 +445,16 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "DbGroupList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "DescribeStatementRequest":{
       "type":"structure",
       "required":["Id"],
       "members":{
         "Id":{
-          "shape":"StatementId",
+          "shape":"UUID",
           "documentation":"<p>The identifier of the SQL statement to describe. This value is a universally unique identifier (UUID) generated by Amazon Redshift Data API. A suffix indicates the number of the SQL statement. For example, <code>d9b6c0c9-0747-4bf4-b142-e8883122f766:2</code> has a suffix of <code>:2</code> that indicates the second SQL statement of a batch query. This identifier is returned by <code>BatchExecuteStatment</code>, <code>ExecuteStatement</code>, and <code>ListStatements</code>. </p>"
         }
       }
@@ -433,7 +492,7 @@
           "documentation":"<p>A value that indicates whether the statement has a result set. The result set can be empty. The value is true for an empty result set. The value is true if any substatement returns a result set.</p>"
         },
         "Id":{
-          "shape":"StatementId",
+          "shape":"UUID",
           "documentation":"<p>The identifier of the SQL statement described. This value is a universally unique identifier (UUID) generated by Amazon Redshift Data API. </p>"
         },
         "QueryParameters":{
@@ -452,6 +511,10 @@
           "shape":"Long",
           "documentation":"<p>The identifier of the query generated by Amazon Redshift. These identifiers are also available in the <code>query</code> column of the <code>STL_QUERY</code> system view. </p>"
         },
+        "ResultFormat":{
+          "shape":"ResultFormatString",
+          "documentation":"<p>The data format of the result of the SQL statement.</p>"
+        },
         "ResultRows":{
           "shape":"Long",
           "documentation":"<p>Either the number of rows returned from the SQL statement or the number of rows affected. If result size is greater than zero, the result rows can be the number of rows affected by SQL statements such as INSERT, UPDATE, DELETE, COPY, and others. A <code>-1</code> indicates the value is null.</p>"
@@ -463,6 +526,10 @@
         "SecretArn":{
           "shape":"SecretArn",
           "documentation":"<p>The name or Amazon Resource Name (ARN) of the secret that enables access to the database. </p>"
+        },
+        "SessionId":{
+          "shape":"String",
+          "documentation":"<p>The session identifier of the query.</p>"
         },
         "Status":{
           "shape":"StatusString",
@@ -487,7 +554,7 @@
       "required":["Database"],
       "members":{
         "ClusterIdentifier":{
-          "shape":"Location",
+          "shape":"ClusterIdentifierString",
           "documentation":"<p>The cluster identifier. This parameter is required when connecting to a cluster and authenticating using either Secrets Manager or temporary credentials. </p>"
         },
         "ConnectedDatabase":{
@@ -567,10 +634,7 @@
     },
     "ExecuteStatementInput":{
       "type":"structure",
-      "required":[
-        "Database",
-        "Sql"
-      ],
+      "required":["Sql"],
       "members":{
         "ClientToken":{
           "shape":"ClientToken",
@@ -578,7 +642,7 @@
           "idempotencyToken":true
         },
         "ClusterIdentifier":{
-          "shape":"Location",
+          "shape":"ClusterIdentifierString",
           "documentation":"<p>The cluster identifier. This parameter is required when connecting to a cluster and authenticating using either Secrets Manager or temporary credentials. </p>"
         },
         "Database":{
@@ -593,9 +657,21 @@
           "shape":"SqlParametersList",
           "documentation":"<p>The parameters for the SQL statement.</p>"
         },
+        "ResultFormat":{
+          "shape":"ResultFormatString",
+          "documentation":"<p>The data format of the result of the SQL statement. If no format is specified, the default is JSON.</p>"
+        },
         "SecretArn":{
           "shape":"SecretArn",
           "documentation":"<p>The name or ARN of the secret that enables access to the database. This parameter is required when authenticating using Secrets Manager. </p>"
+        },
+        "SessionId":{
+          "shape":"UUID",
+          "documentation":"<p>The session identifier of the query.</p>"
+        },
+        "SessionKeepAliveSeconds":{
+          "shape":"SessionAliveSeconds",
+          "documentation":"<p>The number of seconds to keep the session alive after the query finishes. The maximum time a session can keep alive is 24 hours. After 24 hours, the session is forced closed and the query is terminated.</p>"
         },
         "Sql":{
           "shape":"StatementString",
@@ -619,7 +695,7 @@
       "type":"structure",
       "members":{
         "ClusterIdentifier":{
-          "shape":"Location",
+          "shape":"ClusterIdentifierString",
           "documentation":"<p>The cluster identifier. This element is not returned when connecting to a serverless workgroup. </p>"
         },
         "CreatedAt":{
@@ -630,17 +706,25 @@
           "shape":"String",
           "documentation":"<p>The name of the database.</p>"
         },
+        "DbGroups":{
+          "shape":"DbGroupList",
+          "documentation":"<p>A list of colon (:) separated names of database groups.</p>"
+        },
         "DbUser":{
           "shape":"String",
           "documentation":"<p>The database user name.</p>"
         },
         "Id":{
-          "shape":"StatementId",
+          "shape":"UUID",
           "documentation":"<p>The identifier of the SQL statement whose results are to be fetched. This value is a universally unique identifier (UUID) generated by Amazon Redshift Data API. </p>"
         },
         "SecretArn":{
           "shape":"SecretArn",
           "documentation":"<p>The name or ARN of the secret that enables access to the database. </p>"
+        },
+        "SessionId":{
+          "shape":"UUID",
+          "documentation":"<p>The session identifier of the query.</p>"
         },
         "WorkgroupName":{
           "shape":"WorkgroupNameString",
@@ -683,12 +767,16 @@
       "type":"list",
       "member":{"shape":"Field"}
     },
+    "FormattedSqlRecords":{
+      "type":"list",
+      "member":{"shape":"QueryRecords"}
+    },
     "GetStatementResultRequest":{
       "type":"structure",
       "required":["Id"],
       "members":{
         "Id":{
-          "shape":"StatementId",
+          "shape":"UUID",
           "documentation":"<p>The identifier of the SQL statement whose results are to be fetched. This value is a universally unique identifier (UUID) generated by Amazon Redshift Data API. A suffix indicates then number of the SQL statement. For example, <code>d9b6c0c9-0747-4bf4-b142-e8883122f766:2</code> has a suffix of <code>:2</code> that indicates the second SQL statement of a batch query. This identifier is returned by <code>BatchExecuteStatment</code>, <code>ExecuteStatment</code>, and <code>ListStatements</code>. </p>"
         },
         "NextToken":{
@@ -711,11 +799,51 @@
         },
         "Records":{
           "shape":"SqlRecords",
-          "documentation":"<p>The results of the SQL statement.</p>"
+          "documentation":"<p>The results of the SQL statement in JSON format.</p>"
         },
         "TotalNumRows":{
           "shape":"Long",
           "documentation":"<p>The total number of rows in the result set returned from a query. You can use this number to estimate the number of calls to the <code>GetStatementResult</code> operation needed to page through the results. </p>"
+        }
+      }
+    },
+    "GetStatementResultV2Request":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"UUID",
+          "documentation":"<p>The identifier of the SQL statement whose results are to be fetched. This value is a universally unique identifier (UUID) generated by Amazon Redshift Data API. A suffix indicates then number of the SQL statement. For example, <code>d9b6c0c9-0747-4bf4-b142-e8883122f766:2</code> has a suffix of <code>:2</code> that indicates the second SQL statement of a batch query. This identifier is returned by <code>BatchExecuteStatment</code>, <code>ExecuteStatment</code>, and <code>ListStatements</code>. </p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned NextToken value in the next NextToken parameter and retrying the command. If the NextToken field is empty, all response records have been retrieved for the request.</p>"
+        }
+      }
+    },
+    "GetStatementResultV2Response":{
+      "type":"structure",
+      "required":["Records"],
+      "members":{
+        "ColumnMetadata":{
+          "shape":"ColumnMetadataList",
+          "documentation":"<p>The properties (metadata) of a column.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned NextToken value in the next NextToken parameter and retrying the command. If the NextToken field is empty, all response records have been retrieved for the request. </p>"
+        },
+        "Records":{
+          "shape":"FormattedSqlRecords",
+          "documentation":"<p>The results of the SQL statement in CSV format.</p>"
+        },
+        "ResultFormat":{
+          "shape":"ResultFormatString",
+          "documentation":"<p>The data format of the result of the SQL statement.</p>"
+        },
+        "TotalNumRows":{
+          "shape":"Long",
+          "documentation":"<p>The total number of rows in the result set returned from a query. You can use this number to estimate the number of calls to the <code>GetStatementResultV2</code> operation needed to page through the results. </p>"
         }
       }
     },
@@ -738,7 +866,7 @@
       "required":["Database"],
       "members":{
         "ClusterIdentifier":{
-          "shape":"Location",
+          "shape":"ClusterIdentifierString",
           "documentation":"<p>The cluster identifier. This parameter is required when connecting to a cluster and authenticating using either Secrets Manager or temporary credentials. </p>"
         },
         "Database":{
@@ -785,7 +913,7 @@
       "required":["Database"],
       "members":{
         "ClusterIdentifier":{
-          "shape":"Location",
+          "shape":"ClusterIdentifierString",
           "documentation":"<p>The cluster identifier. This parameter is required when connecting to a cluster and authenticating using either Secrets Manager or temporary credentials. </p>"
         },
         "ConnectedDatabase":{
@@ -884,7 +1012,7 @@
       "required":["Database"],
       "members":{
         "ClusterIdentifier":{
-          "shape":"Location",
+          "shape":"ClusterIdentifierString",
           "documentation":"<p>The cluster identifier. This parameter is required when connecting to a cluster and authenticating using either Secrets Manager or temporary credentials. </p>"
         },
         "ConnectedDatabase":{
@@ -938,7 +1066,6 @@
         }
       }
     },
-    "Location":{"type":"string"},
     "Long":{"type":"long"},
     "PageSize":{
       "type":"integer",
@@ -952,6 +1079,25 @@
     "ParameterValue":{
       "type":"string",
       "min":1
+    },
+    "QueryRecords":{
+      "type":"structure",
+      "members":{
+        "CSVRecords":{
+          "shape":"String",
+          "documentation":"<p>The results of the SQL statement in CSV format.</p>"
+        }
+      },
+      "documentation":"<p>The results of the SQL statement.</p>",
+      "union":true
+    },
+    "QueryTimeoutException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The Amazon Redshift Data API operation failed due to timeout.</p>",
+      "exception":true
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -972,11 +1118,24 @@
       "documentation":"<p>The Amazon Redshift Data API operation failed due to a missing resource. </p>",
       "exception":true
     },
+    "ResultFormatString":{
+      "type":"string",
+      "enum":[
+        "JSON",
+        "CSV"
+      ]
+    },
     "SchemaList":{
       "type":"list",
       "member":{"shape":"String"}
     },
     "SecretArn":{"type":"string"},
+    "SessionAliveSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":86400,
+      "min":0
+    },
     "SqlList":{
       "type":"list",
       "member":{"shape":"StatementString"},
@@ -1019,7 +1178,7 @@
           "documentation":"<p>The date and time (UTC) the statement was created. </p>"
         },
         "Id":{
-          "shape":"StatementId",
+          "shape":"UUID",
           "documentation":"<p>The SQL statement identifier. This value is a universally unique identifier (UUID) generated by Amazon Redshift Data API. </p>"
         },
         "IsBatchStatement":{
@@ -1038,9 +1197,17 @@
           "shape":"StatementStringList",
           "documentation":"<p>One or more SQL statements. Each query string in the array corresponds to one of the queries in a batch query request.</p>"
         },
+        "ResultFormat":{
+          "shape":"ResultFormatString",
+          "documentation":"<p>The data format of the result of the SQL statement.</p>"
+        },
         "SecretArn":{
           "shape":"SecretArn",
           "documentation":"<p>The name or Amazon Resource Name (ARN) of the secret that enables access to the database. </p>"
+        },
+        "SessionId":{
+          "shape":"UUID",
+          "documentation":"<p>The session identifier of the query.</p>"
         },
         "StatementName":{
           "shape":"StatementNameString",
@@ -1056,10 +1223,6 @@
         }
       },
       "documentation":"<p>The SQL statement to run.</p>"
-    },
-    "StatementId":{
-      "type":"string",
-      "pattern":"^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}(:\\d+)?$"
     },
     "StatementList":{
       "type":"list",
@@ -1120,7 +1283,7 @@
           "documentation":"<p>A value that indicates whether the statement has a result set. The result set can be empty. The value is true for an empty result set.</p>"
         },
         "Id":{
-          "shape":"StatementId",
+          "shape":"UUID",
           "documentation":"<p>The identifier of the SQL statement. This value is a universally unique identifier (UUID) generated by Amazon Redshift Data API. A suffix indicates the number of the SQL statement. For example, <code>d9b6c0c9-0747-4bf4-b142-e8883122f766:2</code> has a suffix of <code>:2</code> that indicates the second SQL statement of a batch query.</p>"
         },
         "QueryString":{
@@ -1177,6 +1340,10 @@
       "documentation":"<p>The properties of a table. </p>"
     },
     "Timestamp":{"type":"timestamp"},
+    "UUID":{
+      "type":"string",
+      "pattern":"^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}(:\\d+)?$"
+    },
     "ValidationException":{
       "type":"structure",
       "members":{

@@ -22,16 +22,16 @@ import tempfile
 import shutil
 import threading
 import logging
-import mock
 from tarfile import TarFile
 from contextlib import closing
+from io import BytesIO
 
 import pytest
 import urllib3
 
 from botocore.endpoint import Endpoint
 from botocore.exceptions import ConnectionClosedError
-from botocore.compat import six, zip_longest, OrderedDict
+from botocore.compat import zip_longest, OrderedDict
 import botocore.session
 import botocore.auth
 import botocore.credentials
@@ -834,7 +834,7 @@ class TestS3SigV4Client(BaseS3ClientTest):
         self.assertEqual(response['LocationConstraint'], 'us-west-2')
 
     def test_request_retried_for_sigv4(self):
-        body = six.BytesIO(b"Hello world!")
+        body = BytesIO(b"Hello world!")
         exception = ConnectionClosedError(endpoint_url='')
         self.http_stubber.responses.append(exception)
         self.http_stubber.responses.append(None)
@@ -956,13 +956,13 @@ class TestSSEKeyParamValidation(BaseS3ClientTest):
         # objects.
         self.client.put_object(
             Bucket=self.bucket_name, Key='foo.txt',
-            Body=six.BytesIO(b'mycontents'), SSECustomerAlgorithm='AES256',
+            Body=BytesIO(b'mycontents'), SSECustomerAlgorithm='AES256',
             SSECustomerKey=key_bytes)
         self.addCleanup(self.client.delete_object,
                         Bucket=self.bucket_name, Key='foo.txt')
         self.client.put_object(
             Bucket=self.bucket_name, Key='foo2.txt',
-            Body=six.BytesIO(b'mycontents2'), SSECustomerAlgorithm='AES256',
+            Body=BytesIO(b'mycontents2'), SSECustomerAlgorithm='AES256',
             SSECustomerKey=key_str)
         self.addCleanup(self.client.delete_object,
                         Bucket=self.bucket_name, Key='foo2.txt')
@@ -987,7 +987,7 @@ class TestSSEKeyParamValidation(BaseS3ClientTest):
         # Upload the object using one encrypt key
         self.client.put_object(
             Bucket=self.bucket_name, Key='foo.txt',
-            Body=six.BytesIO(b'mycontents'), SSECustomerAlgorithm='AES256',
+            Body=BytesIO(b'mycontents'), SSECustomerAlgorithm='AES256',
             SSECustomerKey=encrypt_key)
         self.addCleanup(self.client.delete_object,
                         Bucket=self.bucket_name, Key='foo.txt')
@@ -1018,7 +1018,7 @@ class TestSSEKeyParamValidation(BaseS3ClientTest):
 class TestS3UTF8Headers(BaseS3ClientTest):
     def test_can_set_utf_8_headers(self):
         bucket_name = _SHARED_BUCKET
-        body = six.BytesIO(b"Hello world!")
+        body = BytesIO(b"Hello world!")
         response = self.client.put_object(
             Bucket=bucket_name, Key="foo.txt", Body=body,
             ContentDisposition="attachment; filename=5小時接力起跑.jpg;")

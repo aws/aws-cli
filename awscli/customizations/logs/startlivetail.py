@@ -51,7 +51,7 @@ DESCRIPTION = (
     "By default, this command start a native tailing session "
     "where recent log events appear from the bottom, "
     "the log events are output as-is in Plain text.  You can run this command with --mode interactive, "
-    "which starting an interactive tailing session. Interactive tailing provides the ability to "
+    "which starts an interactive tailing session. Interactive tailing provides the ability to "
     "highlight up to 5 terms in your logs. "
     "The severity codes are highlighted by default. The logs are output in JSON format if possible, "
     "but can be toggled to Plain text if desired. Interactive experience is disabled if --color is set to off, "
@@ -62,8 +62,11 @@ DESCRIPTION = (
     "If you are using CloudWatch cross-account observability, "
     "you can use this operation in a monitoring account and start tailing on Log Group(s) "
     "present in the linked source accounts. "
-    'For more information, see '
-    '<a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html">CloudWatch cross-account observability</a>.'
+    "For more information, see "
+    "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html.\n\n"
+    "Live Tail sessions incur charges by session usage time, per minute. "
+    "For pricing details, please refer to "
+    "https://aws.amazon.com/cloudwatch/pricing/."
 )
 
 LIST_SCHEMA = {"type": "array", "items": {"type": "string"}}
@@ -144,12 +147,12 @@ MODE = {
         "one at a time, and press enter. Press c to clear the highlighted term(s). "
         "Press t to toggle formatting between JSON/Plain text. "
         "Press Esc to exit the Live Tail session. The interactive experience is disabled if you specify —color as off, "
-        "or if coloring is not allowed by your output."
+        "or if coloring is not allowed by your output. "
         "Press up / down keys to scroll up or down between log events, "
         "use Ctrl + u / Ctrl + d to scroll faster. Press q to scroll to latest log events."
         "</li>"
         "<li> print-only - "
-        "Starts a LiveTail session in print-only mode"
+        "Starts a LiveTail session in print-only mode. "
         "In print-only mode logs are tailed and are printed as-is. This mode can be used "
         "in conjunction with other shell commands. "
         "</li>"

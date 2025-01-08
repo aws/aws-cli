@@ -11,6 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+DEFAULT_INSTANCE_FLEET_NAME = "if-XYZ123"
+DEFAULT_CLUSTER_NAME = "j-ABC123456"
+
 INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY = (
     'InstanceFleetType=MASTER,TargetOnDemandCapacity=1,InstanceTypeConfigs=[{InstanceType=d2.xlarge}],'
     'LaunchSpecifications={OnDemandSpecification={AllocationStrategy=lowest-price,'
@@ -68,6 +71,68 @@ INSTANCE_FLEETS_WITH_SPOT_ALLOCATION_STRATEGY = (
     'WeightedCapacity=1},{InstanceType=m3.2xlarge,BidPrice=0.2,WeightedCapacity=2},{InstanceType=m3.4xlarge,BidPrice=0.4,'
     'WeightedCapacity=4}],LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=20,'
     'TimeoutAction=TERMINATE_CLUSTER,AllocationStrategy=diversified}}')
+
+INSTANCE_FLEETS_WITH_PRIORITIZED_ALLOCATION_STRATEGY_SPOT_AND_OD = (
+    'InstanceFleetType=MASTER,TargetSpotCapacity=1,InstanceTypeConfigs=[{InstanceType=d2.xlarge,'
+    'BidPrice=0.1,Priority=0.0}],LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=30,'
+    'TimeoutAction=TERMINATE_CLUSTER,AllocationStrategy=capacity-optimized-prioritized},'
+    'OnDemandSpecification={AllocationStrategy=prioritized}} '
+    'InstanceFleetType=CORE,TargetSpotCapacity=100,InstanceTypeConfigs=[{InstanceType=d2.xlarge,'
+    'BidPrice=0.5,WeightedCapacity=1,Priority=0.0},{InstanceType=m3.2xlarge,BidPrice=0.2,'
+    'WeightedCapacity=2,Priority=1.0},{InstanceType=m3.4xlarge,BidPrice=0.4,WeightedCapacity=4,'
+    'Priority=99.0}],LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=32,'
+    'TimeoutAction=TERMINATE_CLUSTER,AllocationStrategy=capacity-optimized-prioritized},'
+    'OnDemandSpecification={AllocationStrategy=prioritized}} '
+    'InstanceFleetType=TASK,TargetSpotCapacity=100,InstanceTypeConfigs=[{InstanceType=d2.xlarge,'
+    'BidPrice=0.5,WeightedCapacity=1,Priority=10.0},{InstanceType=m3.2xlarge,BidPrice=0.2,'
+    'WeightedCapacity=2,Priority=0.0},{InstanceType=m3.4xlarge,BidPrice=0.4,WeightedCapacity=4,'
+    'Priority=100.0}],LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=77,'
+    'TimeoutAction=TERMINATE_CLUSTER,AllocationStrategy='
+    'capacity-optimized-prioritized},OnDemandSpecification={AllocationStrategy=prioritized}}')
+
+TASK_INSTANCE_FLEET_WITH_RESIZE_ALLOCATION_STRATEGY_SPOT_AND_OD = (
+    'InstanceFleetType=TASK,TargetSpotCapacity=100,Context=testContext,InstanceTypeConfigs=[{InstanceType=d2.xlarge,'
+    'BidPrice=0.5,WeightedCapacity=1},{InstanceType=m3.2xlarge,BidPrice=0.2,WeightedCapacity=2},'
+    '{InstanceType=m3.4xlarge,BidPrice=0.4,WeightedCapacity=4}],LaunchSpecifications={'
+    'SpotSpecification={TimeoutDurationMinutes=77,TimeoutAction=TERMINATE_CLUSTER,'
+    'AllocationStrategy=capacity-optimized-prioritized},OnDemandSpecification={'
+    'AllocationStrategy=lowest-price}},ResizeSpecifications={SpotResizeSpecification={'
+    'AllocationStrategy=capacity-optimized},OnDemandResizeSpecification={'
+    'AllocationStrategy=lowest-price,CapacityReservationOptions={'
+    'UsageStrategy=use-capacity-reservations-first,CapacityReservationPreference=open}}}')
+
+INSTANCE_FLEETS_WITH_RESIZE_ALLOCATION_STRATEGY_SPOT_AND_OD = (
+    'InstanceFleetType=MASTER,TargetSpotCapacity=1,InstanceTypeConfigs=[{InstanceType=d2.xlarge,'
+    'BidPrice=0.1}],LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=30,'
+    'TimeoutAction=TERMINATE_CLUSTER,AllocationStrategy=capacity-optimized-prioritized},'
+    'OnDemandSpecification={AllocationStrategy=lowest-price}} '
+    'InstanceFleetType=CORE,TargetSpotCapacity=100,InstanceTypeConfigs=[{InstanceType=d2.xlarge,'
+    'BidPrice=0.5,WeightedCapacity=1},{InstanceType=m3.2xlarge,BidPrice=0.2,WeightedCapacity=2},'
+    '{InstanceType=m3.4xlarge,BidPrice=0.4,WeightedCapacity=4}],LaunchSpecifications={'
+    'SpotSpecification={TimeoutDurationMinutes=32,TimeoutAction=TERMINATE_CLUSTER,'
+    'AllocationStrategy=capacity-optimized-prioritized},OnDemandSpecification={'
+    'AllocationStrategy=lowest-price}},ResizeSpecifications={SpotResizeSpecification='
+    '{AllocationStrategy=capacity-optimized},OnDemandResizeSpecification={'
+    'AllocationStrategy=lowest-price,CapacityReservationOptions={'
+    'UsageStrategy=use-capacity-reservations-first,CapacityReservationPreference=open}}} '
+    f'{TASK_INSTANCE_FLEET_WITH_RESIZE_ALLOCATION_STRATEGY_SPOT_AND_OD}')
+
+MODIFY_INSTANCE_FLEET_WITH_INSTANCE_TYPE_CONFIGS = (
+    f'InstanceFleetId={DEFAULT_INSTANCE_FLEET_NAME},'
+    f'InstanceTypeConfigs=[{{InstanceType=d2.xlarge}}],Context=testContext')
+
+MODIFY_INSTANCE_FLEET_WITH_SPOT_AND_OD_RESIZE_SPECIFICATIONS = (
+    f'InstanceFleetId={DEFAULT_INSTANCE_FLEET_NAME},ResizeSpecifications={{SpotResizeSpecification='
+    f'{{AllocationStrategy=capacity-optimized}},OnDemandResizeSpecification={{'
+    f'AllocationStrategy=lowest-price,CapacityReservationOptions={{'
+    f'UsageStrategy=use-capacity-reservations-first,CapacityReservationPreference=open}}}}}}')
+
+MODIFY_INSTANCE_FLEET_WITH_INSTANCE_TYPE_CONFIGS_AND_SPOT_AND_OD_RESIZE_SPECIFICATIONS = (
+    f'InstanceFleetId={DEFAULT_INSTANCE_FLEET_NAME},ResizeSpecifications={{SpotResizeSpecification='
+    f'{{AllocationStrategy=capacity-optimized}},OnDemandResizeSpecification={{'
+    f'AllocationStrategy=lowest-price,CapacityReservationOptions={{'
+    f'UsageStrategy=use-capacity-reservations-first,CapacityReservationPreference=open}}}}}}'
+    f',InstanceTypeConfigs=[{{InstanceType=d2.xlarge}}]')
 
 RES_INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY = \
     [{"InstanceTypeConfigs": [{"InstanceType": "d2.xlarge"}],
@@ -242,3 +307,309 @@ RES_INSTANCE_FLEETS_WITH_SPOT_ALLOCATION_STRATEGY = \
       "InstanceFleetType": "TASK",
       "Name": "TASK"
     }]
+
+RES_INSTANCE_FLEETS_WITH_PRIORITIZED_ALLOCATION_STRATEGY_SPOT_AND_OD = \
+  [
+    {
+      "InstanceTypeConfigs": [
+        {
+          "InstanceType": "d2.xlarge",
+          "BidPrice": "0.1",
+          "Priority": 0
+        }
+      ],
+      "LaunchSpecifications": {
+        "SpotSpecification": {
+          "TimeoutDurationMinutes": 30,
+          "TimeoutAction": "TERMINATE_CLUSTER",
+          "AllocationStrategy": "capacity-optimized-prioritized"
+        },
+        "OnDemandSpecification": {
+          "AllocationStrategy": "prioritized"
+        }
+      },
+      "TargetSpotCapacity": 1,
+      "InstanceFleetType": "MASTER",
+      "Name": "MASTER"
+    },
+    {
+      "InstanceTypeConfigs": [
+        {
+          "InstanceType": "d2.xlarge",
+          "BidPrice": "0.5",
+          "WeightedCapacity": 1,
+          "Priority": 0
+        },
+        {
+          "InstanceType": "m3.2xlarge",
+          "BidPrice": "0.2",
+          "WeightedCapacity": 2,
+          "Priority": 1
+        },
+        {
+          "InstanceType": "m3.4xlarge",
+          "BidPrice": "0.4",
+          "WeightedCapacity": 4,
+          "Priority": 99
+        }
+      ],
+      "LaunchSpecifications": {
+        "SpotSpecification": {
+          "TimeoutDurationMinutes": 32,
+          "TimeoutAction": "TERMINATE_CLUSTER",
+          "AllocationStrategy": "capacity-optimized-prioritized"
+        },
+        "OnDemandSpecification": {
+          "AllocationStrategy": "prioritized"
+        }
+      },
+      "TargetSpotCapacity": 100,
+      "InstanceFleetType": "CORE",
+      "Name": "CORE"
+    },
+    {
+      "InstanceTypeConfigs": [
+        {
+          "InstanceType": "d2.xlarge",
+          "BidPrice": "0.5",
+          "WeightedCapacity": 1,
+          "Priority": 10
+        },
+        {
+          "InstanceType": "m3.2xlarge",
+          "BidPrice": "0.2",
+          "WeightedCapacity": 2,
+          "Priority": 0
+        },
+        {
+          "InstanceType": "m3.4xlarge",
+          "BidPrice": "0.4",
+          "WeightedCapacity": 4,
+          "Priority": 100
+        }
+      ],
+      "LaunchSpecifications": {
+        "SpotSpecification": {
+          "TimeoutDurationMinutes": 77,
+          "TimeoutAction": "TERMINATE_CLUSTER",
+          "AllocationStrategy": "capacity-optimized-prioritized"
+        },
+        "OnDemandSpecification": {
+          "AllocationStrategy": "prioritized"
+        }
+      },
+      "TargetSpotCapacity": 100,
+      "InstanceFleetType": "TASK",
+      "Name": "TASK"
+    }]
+
+RES_INSTANCE_FLEETS_WITH_RESIZE_ALLOCATION_STRATEGY_SPOT_AND_OD = \
+  [
+    {
+      "InstanceTypeConfigs": [
+        {
+          "InstanceType": "d2.xlarge",
+          "BidPrice": "0.1"
+        }
+      ],
+      "LaunchSpecifications": {
+        "SpotSpecification": {
+          "TimeoutDurationMinutes": 30,
+          "TimeoutAction": "TERMINATE_CLUSTER",
+          "AllocationStrategy": "capacity-optimized-prioritized"
+        },
+        "OnDemandSpecification": {
+          "AllocationStrategy": "lowest-price"
+        }
+      },
+      "TargetSpotCapacity": 1,
+      "InstanceFleetType": "MASTER",
+      "Name": "MASTER"
+    },
+    {
+      "InstanceTypeConfigs": [
+        {
+          "InstanceType": "d2.xlarge",
+          "BidPrice": "0.5",
+          "WeightedCapacity": 1
+        },
+        {
+          "InstanceType": "m3.2xlarge",
+          "BidPrice": "0.2",
+          "WeightedCapacity": 2
+        },
+        {
+          "InstanceType": "m3.4xlarge",
+          "BidPrice": "0.4",
+          "WeightedCapacity": 4
+        }
+      ],
+      "LaunchSpecifications": {
+        "SpotSpecification": {
+          "TimeoutDurationMinutes": 32,
+          "TimeoutAction": "TERMINATE_CLUSTER",
+          "AllocationStrategy": "capacity-optimized-prioritized"
+        },
+        "OnDemandSpecification": {
+          "AllocationStrategy": "lowest-price"
+        }
+      },
+      "ResizeSpecifications": {
+        "OnDemandResizeSpecification": {
+          "AllocationStrategy": "lowest-price",
+          "CapacityReservationOptions": {
+            "CapacityReservationPreference": "open",
+            "UsageStrategy": "use-capacity-reservations-first"
+          }
+        },
+        "SpotResizeSpecification": {
+          "AllocationStrategy": "capacity-optimized"
+        }
+      },
+      "TargetSpotCapacity": 100,
+      "InstanceFleetType": "CORE",
+      "Name": "CORE"
+    },
+    {
+      "InstanceTypeConfigs": [
+        {
+          "InstanceType": "d2.xlarge",
+          "BidPrice": "0.5",
+          "WeightedCapacity": 1
+        },
+        {
+          "InstanceType": "m3.2xlarge",
+          "BidPrice": "0.2",
+          "WeightedCapacity": 2
+        },
+        {
+          "InstanceType": "m3.4xlarge",
+          "BidPrice": "0.4",
+          "WeightedCapacity": 4
+        }
+      ],
+      "LaunchSpecifications": {
+        "SpotSpecification": {
+          "TimeoutDurationMinutes": 77,
+          "TimeoutAction": "TERMINATE_CLUSTER",
+          "AllocationStrategy": "capacity-optimized-prioritized"
+        },
+        "OnDemandSpecification": {
+          "AllocationStrategy": "lowest-price"
+        }
+      },
+      "ResizeSpecifications": {
+        "OnDemandResizeSpecification": {
+          "AllocationStrategy": "lowest-price",
+          "CapacityReservationOptions": {
+            "CapacityReservationPreference": "open",
+            "UsageStrategy": "use-capacity-reservations-first"
+          }
+        },
+        "SpotResizeSpecification": {
+          "AllocationStrategy": "capacity-optimized"
+        }
+      },
+      "TargetSpotCapacity": 100,
+      "InstanceFleetType": "TASK",
+      "Context": "testContext",
+      "Name": "TASK"
+    }
+  ]
+
+RES_TASK_INSTANCE_FLEET_WITH_RESIZE_ALLOCATION_STRATEGY_SPOT_AND_OD = \
+  {
+    "InstanceTypeConfigs": [
+      {
+        "InstanceType": "d2.xlarge",
+        "BidPrice": "0.5",
+        "WeightedCapacity": 1
+      },
+      {
+        "InstanceType": "m3.2xlarge",
+        "BidPrice": "0.2",
+        "WeightedCapacity": 2
+      },
+      {
+        "InstanceType": "m3.4xlarge",
+        "BidPrice": "0.4",
+        "WeightedCapacity": 4
+      }
+    ],
+    "LaunchSpecifications": {
+      "SpotSpecification": {
+        "TimeoutDurationMinutes": 77,
+        "TimeoutAction": "TERMINATE_CLUSTER",
+        "AllocationStrategy": "capacity-optimized-prioritized"
+      },
+      "OnDemandSpecification": {
+        "AllocationStrategy": "lowest-price"
+      }
+    },
+    "ResizeSpecifications": {
+      "OnDemandResizeSpecification": {
+        "AllocationStrategy": "lowest-price",
+        "CapacityReservationOptions": {
+          "CapacityReservationPreference": "open",
+          "UsageStrategy": "use-capacity-reservations-first"
+        }
+      },
+      "SpotResizeSpecification": {
+        "AllocationStrategy": "capacity-optimized"
+      }
+    },
+    "TargetSpotCapacity": 100,
+    "InstanceFleetType": "TASK",
+    "Context": "testContext"
+  }
+
+RES_MODIFY_INSTANCE_FLEET_WITH_INSTANCE_TYPE_CONFIGS = \
+    {
+      "ClusterId": DEFAULT_CLUSTER_NAME,
+      "InstanceFleet": {
+        "InstanceFleetId": DEFAULT_INSTANCE_FLEET_NAME,
+        "InstanceTypeConfigs": [
+          {"InstanceType": "d2.xlarge"}
+        ],
+        "Context": "testContext"
+      }
+    }
+
+RES_MODIFY_INSTANCE_FLEET_WITH_SPOT_AND_OD_RESIZE_SPECIFICATIONS = \
+    {
+      "ClusterId": DEFAULT_CLUSTER_NAME,
+      "InstanceFleet": {
+        "InstanceFleetId": DEFAULT_INSTANCE_FLEET_NAME,
+          "ResizeSpecifications": {
+            "OnDemandResizeSpecification": {
+              "AllocationStrategy": "lowest-price",
+              "CapacityReservationOptions": {
+                "CapacityReservationPreference": "open",
+                "UsageStrategy": "use-capacity-reservations-first"
+              }
+            },
+          "SpotResizeSpecification": {"AllocationStrategy": "capacity-optimized"}
+        }
+      }
+  }
+
+RES_MODIFY_INSTANCE_FLEET_WITH_INSTANCE_TYPE_CONFIGS_AND_SPOT_AND_OD_RESIZE_SPECIFICATIONS = \
+    {
+      "ClusterId": DEFAULT_CLUSTER_NAME,
+      "InstanceFleet": {
+        "InstanceFleetId": DEFAULT_INSTANCE_FLEET_NAME,
+          "ResizeSpecifications": {
+            "OnDemandResizeSpecification": {
+              "AllocationStrategy": "lowest-price",
+              "CapacityReservationOptions": {
+                "CapacityReservationPreference": "open",
+                "UsageStrategy": "use-capacity-reservations-first"
+              }
+            },
+          "SpotResizeSpecification": {"AllocationStrategy": "capacity-optimized"}
+        },
+        "InstanceTypeConfigs": [
+            {"InstanceType": "d2.xlarge"}
+        ]
+      }
+    }

@@ -11,13 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from tests import unittest, BaseSessionTest
+from tests import mock, unittest, BaseSessionTest
 
 import base64
-import mock
 import copy
-import os
+import io
 import json
+import logging
+import os
 
 import pytest
 
@@ -28,7 +29,7 @@ from botocore.exceptions import ParamValidationError, MD5UnavailableError
 from botocore.exceptions import AliasConflictParameterError
 from botocore.exceptions import MissingServiceIdError
 from botocore.awsrequest import AWSRequest
-from botocore.compat import quote, six
+from botocore.compat import quote
 from botocore.config import Config
 from botocore.docs.bcdoc.restdoc import DocumentStructure
 from botocore.docs.params import RequestParamsDocumenter
@@ -428,33 +429,6 @@ class TestHandlers(BaseSessionTest):
                       params['PreSignedUrl'])
         self.assertIn('X-Amz-Signature', params['PreSignedUrl'])
 
-    def test_500_status_code_set_for_200_response(self):
-        http_response = mock.Mock()
-        http_response.status_code = 200
-        http_response.content = """
-            <Error>
-              <Code>AccessDenied</Code>
-              <Message>Access Denied</Message>
-              <RequestId>id</RequestId>
-              <HostId>hostid</HostId>
-            </Error>
-        """
-        handlers.check_for_200_error((http_response, {}))
-        self.assertEqual(http_response.status_code, 500)
-
-    def test_200_response_with_no_error_left_untouched(self):
-        http_response = mock.Mock()
-        http_response.status_code = 200
-        http_response.content = "<NotAnError></NotAnError>"
-        handlers.check_for_200_error((http_response, {}))
-        # We don't touch the status code since there are no errors present.
-        self.assertEqual(http_response.status_code, 200)
-
-    def test_500_response_can_be_none(self):
-        # A 500 response can raise an exception, which means the response
-        # object is None.  We need to handle this case.
-        handlers.check_for_200_error(None)
-
     def test_route53_resource_id(self):
         event = 'before-parameter-build.route-53.GetHostedZone'
         params = {'Id': '/hostedzone/ABC123',
@@ -538,7 +512,7 @@ class TestHandlers(BaseSessionTest):
 
     def test_run_instances_userdata(self):
         user_data = 'This is a test'
-        b64_user_data = base64.b64encode(six.b(user_data)).decode('utf-8')
+        b64_user_data = base64.b64encode(user_data.encode('latin-1')).decode('utf-8')
         params = dict(ImageId='img-12345678',
                       MinCount=1, MaxCount=5, UserData=user_data)
         handlers.base64_encode_user_data(params=params)
@@ -665,7 +639,7 @@ class TestHandlers(BaseSessionTest):
     def test_glacier_checksums_added(self):
         request_dict = {
             'headers': {},
-            'body': six.BytesIO(b'hello world'),
+            'body': io.BytesIO(b'hello world'),
         }
         handlers.add_glacier_checksums(request_dict)
         self.assertIn('x-amz-content-sha256', request_dict['headers'])
@@ -684,7 +658,7 @@ class TestHandlers(BaseSessionTest):
             'headers': {
                 'x-amz-sha256-tree-hash': 'pre-exists',
             },
-            'body': six.BytesIO(b'hello world'),
+            'body': io.BytesIO(b'hello world'),
         }
         handlers.add_glacier_checksums(request_dict)
         self.assertEqual(request_dict['headers']['x-amz-sha256-tree-hash'],
@@ -695,7 +669,7 @@ class TestHandlers(BaseSessionTest):
             'headers': {
                 'x-amz-content-sha256': 'pre-exists',
             },
-            'body': six.BytesIO(b'hello world'),
+            'body': io.BytesIO(b'hello world'),
         }
         handlers.add_glacier_checksums(request_dict)
         self.assertEqual(request_dict['headers']['x-amz-content-sha256'],
@@ -979,13 +953,11 @@ class TestHandlers(BaseSessionTest):
         signing_name = 'myservice'
         context = {
             'auth_type': 'v4a',
-            'signing': {'foo': 'bar', 'region': 'abc'},
+            'signing': {'foo': 'bar'},
         }
         handlers.set_operation_specific_signer(
             context=context, signing_name=signing_name
         )
-        # region has been updated
-        self.assertEqual(context['signing']['region'], '*')
         # signing_name has been added
         self.assertEqual(context['signing']['signing_name'], signing_name)
         # foo remained untouched
@@ -1014,6 +986,61 @@ class TestHandlers(BaseSessionTest):
         self.assertEqual(response, 's3v4')
         self.assertEqual(context.get('payload_signing_enabled'), False)
 
+    def test_set_operation_specific_signer_defaults_to_asterisk(self):
+        signing_name = 'myservice'
+        context = {
+            'auth_type': 'v4a',
+        }
+        handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertEqual(context['signing']['region'], '*')
+
+    def test_set_operation_specific_signer_prefers_client_config(self):
+        signing_name = 'myservice'
+        context = {
+            'auth_type': 'v4a',
+            'client_config': Config(
+                sigv4a_signing_region_set="region_1,region_2"
+            ),
+            'signing': {
+                'region': 'abc',
+            },
+        }
+        handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertEqual(context['signing']['region'], 'region_1,region_2')
+
+    def test_payload_signing_disabled_sets_proper_key(self):
+        signing_name = 'myservice'
+        context = {
+            'auth_type': 'v4',
+            'signing': {
+                'foo': 'bar',
+                'region': 'abc',
+            },
+            'unsigned_payload': True,
+        }
+        handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertEqual(context.get('payload_signing_enabled'), False)
+
+    def test_no_payload_signing_disabled_does_not_set_key(self):
+        signing_name = 'myservice'
+        context = {
+            'auth_type': 'v4',
+            'signing': {
+                'foo': 'bar',
+                'region': 'abc',
+            },
+        }
+        handlers.set_operation_specific_signer(
+            context=context, signing_name=signing_name
+        )
+        self.assertNotIn('payload_signing_enabled', context)
+
 
 @pytest.mark.parametrize(
     'auth_type, expected_response', [('v4', 's3v4'), ('v4a', 's3v4a')]
@@ -1036,7 +1063,7 @@ class TestConvertStringBodyToFileLikeObject(BaseSessionTest):
         handlers.convert_body_to_file_like_object(params)
         self.assertTrue(hasattr(params['Body'], 'read'))
         contents = params['Body'].read()
-        self.assertIsInstance(contents, six.binary_type)
+        self.assertIsInstance(contents, bytes)
         self.assertEqual(contents, body_bytes)
 
     def test_string(self):
@@ -1048,7 +1075,7 @@ class TestConvertStringBodyToFileLikeObject(BaseSessionTest):
         self.assert_converts_to_file_like_object_with_bytes(body, body_bytes)
 
     def test_file(self):
-        body = six.StringIO()
+        body = io.StringIO()
         params = {'Body': body}
         handlers.convert_body_to_file_like_object(params)
         self.assertEqual(params['Body'], body)
@@ -1084,14 +1111,14 @@ class TestRetryHandlerOrder(BaseSessionTest):
             response=(mock.Mock(), mock.Mock()), endpoint=mock.Mock(),
             operation=operation, attempts=1, caught_exception=None)
         # This is implementation specific, but we're trying to verify that
-        # the check_for_200_error is before any of the retry logic in
+        # the _update_status_code is before any of the retry logic in
         # botocore.retries.*.
         # Technically, as long as the relative order is preserved, we don't
         # care about the absolute order.
         names = self.get_handler_names(responses)
-        self.assertIn('check_for_200_error', names)
+        self.assertIn('_update_status_code', names)
         self.assertIn('needs_retry', names)
-        s3_200_handler = names.index('check_for_200_error')
+        s3_200_handler = names.index('_update_status_code')
         general_retry_handler = names.index('needs_retry')
         self.assertTrue(s3_200_handler < general_retry_handler,
                         "S3 200 error handler was supposed to be before "
@@ -1259,7 +1286,7 @@ class TestAddMD5(BaseMD5Test):
 
     def test_add_md5_with_file_like_body(self):
         request_dict = {
-            'body': six.BytesIO(b'foobar'),
+            'body': io.BytesIO(b'foobar'),
             'headers': {}
         }
         self.md5_digest.return_value = b'8X\xf6"0\xac<\x91_0\x0cfC\x12\xc6?'
@@ -1302,7 +1329,7 @@ class TestAddMD5(BaseMD5Test):
 
     def test_skip_md5_when_flexible_checksum_context(self):
         request_dict = {
-            'body': six.BytesIO(b'foobar'),
+            'body': io.BytesIO(b'foobar'),
             'headers': {},
             'context': {
                 'checksum': {
@@ -1319,7 +1346,7 @@ class TestAddMD5(BaseMD5Test):
 
     def test_skip_md5_when_flexible_checksum_explicit_header(self):
         request_dict = {
-            'body': six.BytesIO(b'foobar'),
+            'body': io.BytesIO(b'foobar'),
             'headers': {'x-amz-checksum-crc32': 'foo'},
         }
         conditionally_calculate_md5(request_dict)
@@ -1509,3 +1536,183 @@ def test_remove_arn_from_signing_path(auth_path_in, auth_path_expected):
         request=request, some='other', kwarg='values'
     )
     assert request.auth_path == auth_path_expected
+
+
+@pytest.fixture()
+def operation_model_mock():
+    operation_model = mock.Mock()
+    operation_model.output_shape = mock.Mock()
+    operation_model.output_shape.members = {'Expires': mock.Mock()}
+    operation_model.output_shape.members['Expires'].name = 'Expires'
+    operation_model.output_shape.members['Expires'].serialization = {
+        'name': 'Expires'
+    }
+    return operation_model
+
+
+@pytest.mark.parametrize(
+    "expires, expect_expires_header",
+    [
+        # Valid expires values
+        ("Thu, 01 Jan 2015 00:00:00 GMT", True),
+        ("10/21/2018", True),
+        ("01 dec 2100", True),
+        ("2023-11-02 08:43:04 -0400", True),
+        ("Sun, 22 Oct 23 00:45:02 UTC", True),
+        # Invalid expires values
+        ("Invalid Date", False),
+        ("access plus 1 month", False),
+        ("Expires: Thu, 9 Sep 2013 14:19:41 GMT", False),
+        ("{ts '2023-10-10 09:27:14'}", False),
+        (-33702800404003370280040400, False),
+    ],
+)
+def test_handle_expires_header(
+    expires, expect_expires_header, operation_model_mock
+):
+    response_dict = {
+        'headers': {
+            'Expires': expires,
+        }
+    }
+    customized_response_dict = {}
+    handlers.handle_expires_header(
+        operation_model_mock, response_dict, customized_response_dict
+    )
+    assert customized_response_dict.get('ExpiresString') == expires
+    assert ('Expires' in response_dict['headers']) == expect_expires_header
+
+
+def test_handle_expires_header_logs_warning(operation_model_mock, caplog):
+    response_dict = {
+        'headers': {
+            'Expires': 'Invalid Date',
+        }
+    }
+    with caplog.at_level(logging.WARNING):
+        handlers.handle_expires_header(operation_model_mock, response_dict, {})
+    assert len(caplog.records) == 1
+    assert 'Failed to parse the "Expires" member as a timestamp' in caplog.text
+
+
+def test_handle_expires_header_does_not_log_warning(
+    operation_model_mock, caplog
+):
+    response_dict = {
+        'headers': {
+            'Expires': 'Thu, 01 Jan 2015 00:00:00 GMT',
+        }
+    }
+    with caplog.at_level(logging.WARNING):
+        handlers.handle_expires_header(operation_model_mock, response_dict, {})
+    assert len(caplog.records) == 0
+
+
+@pytest.fixture()
+def document_expires_mocks():
+    return {
+        'section': mock.Mock(),
+        'parent': mock.Mock(),
+        'param_line': mock.Mock(),
+        'param_section': mock.Mock(),
+        'doc_section': mock.Mock(),
+        'new_param_line': mock.Mock(),
+        'new_param_section': mock.Mock(),
+        'response_example_event': 'docs.response-example.s3.TestOperation.complete-section',
+        'response_params_event': 'docs.response-params.s3.TestOperation.complete-section',
+    }
+
+
+def test_document_response_example_with_expires(document_expires_mocks):
+    mocks = document_expires_mocks
+    mocks['section'].has_section.return_value = True
+    mocks['section'].get_section.return_value = mocks['parent']
+    mocks['parent'].has_section.return_value = True
+    mocks['parent'].get_section.return_value = mocks['param_line']
+    mocks['param_line'].has_section.return_value = True
+    mocks['param_line'].get_section.return_value = mocks['new_param_line']
+    handlers.document_expires_shape(
+        mocks['section'], mocks['response_example_event']
+    )
+    mocks['param_line'].add_new_section.assert_called_once_with(
+        'ExpiresString'
+    )
+    mocks['new_param_line'].write.assert_called_once_with(
+        "'ExpiresString': 'string',"
+    )
+    mocks['new_param_line'].style.new_line.assert_called_once()
+
+
+def test_document_response_example_without_expires(document_expires_mocks):
+    mocks = document_expires_mocks
+    mocks['section'].has_section.return_value = True
+    mocks['section'].get_section.return_value = mocks['parent']
+    mocks['parent'].has_section.return_value = False
+    handlers.document_expires_shape(
+        mocks['section'], mocks['response_example_event']
+    )
+    mocks['parent'].add_new_section.assert_not_called()
+    mocks['parent'].get_section.assert_not_called()
+    mocks['new_param_line'].write.assert_not_called()
+
+
+def test_document_response_params_with_expires(document_expires_mocks):
+    mocks = document_expires_mocks
+    mocks['section'].has_section.return_value = True
+    mocks['section'].get_section.return_value = mocks['param_section']
+    mocks['param_section'].get_section.side_effect = [
+        mocks['doc_section'],
+    ]
+    mocks['param_section'].add_new_section.side_effect = [
+        mocks['new_param_section'],
+    ]
+    mocks['doc_section'].style = mock.Mock()
+    mocks['new_param_section'].style = mock.Mock()
+    handlers.document_expires_shape(
+        mocks['section'], mocks['response_params_event']
+    )
+    mocks['param_section'].get_section.assert_any_call('param-documentation')
+    mocks['doc_section'].style.start_note.assert_called_once()
+    mocks['doc_section'].write.assert_called_once_with(
+        'This member has been deprecated. Please use ``ExpiresString`` instead.'
+    )
+    mocks['doc_section'].style.end_note.assert_called_once()
+    mocks['param_section'].add_new_section.assert_called_once_with(
+        'ExpiresString'
+    )
+    mocks['new_param_section'].style.new_paragraph.assert_any_call()
+    mocks['new_param_section'].write.assert_any_call(
+        '- **ExpiresString** *(string) --*'
+    )
+    mocks['new_param_section'].style.indent.assert_called_once()
+    mocks['new_param_section'].write.assert_any_call(
+        'The raw, unparsed value of the ``Expires`` field.'
+    )
+
+
+def test_document_response_params_without_expires(document_expires_mocks):
+    mocks = document_expires_mocks
+    mocks['section'].has_section.return_value = False
+    handlers.document_expires_shape(
+        mocks['section'], mocks['response_params_event']
+    )
+    mocks['section'].get_section.assert_not_called()
+    mocks['param_section'].add_new_section.assert_not_called()
+    mocks['doc_section'].write.assert_not_called()
+
+
+def test_add_query_compatibility_header():
+    service_model = ServiceModel({'metadata': {'awsQueryCompatible': {}}})
+    operation_model = OperationModel(mock.Mock(), service_model)
+    request_dict = {'headers': {}}
+    handlers.add_query_compatibility_header(operation_model, request_dict)
+    assert 'x-amzn-query-mode' in request_dict['headers']
+    assert request_dict['headers']['x-amzn-query-mode'] == 'true'
+
+
+def test_does_not_add_query_compatibility_header():
+    service_model = ServiceModel({'metadata': {}})
+    operation_model = OperationModel(mock.Mock(), service_model)
+    request_dict = {'headers': {}}
+    handlers.add_query_compatibility_header(operation_model, request_dict)
+    assert 'x-amzn-query-mode' not in request_dict['headers']

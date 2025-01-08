@@ -33,22 +33,13 @@ import binascii
 import math
 from pprint import pformat
 from subprocess import Popen, PIPE
+from unittest import mock
 import unittest
 
-from awscli.compat import StringIO
+from awscli.compat import BytesIO, StringIO
 
 from ruamel.yaml import YAML
 
-try:
-    import mock
-except ImportError as e:
-    # In the off chance something imports this module
-    # that's not suppose to, we should not stop the CLI
-    # by raising an ImportError.  Now if anything actually
-    # *uses* this module that isn't suppose to, that's a
-    # different story.
-    mock = None
-from awscli.compat import six
 from botocore.session import Session
 from botocore.exceptions import ClientError
 from botocore.exceptions import WaiterError
@@ -190,6 +181,45 @@ def create_bucket(session, name=None, region=None):
     return bucket_name
 
 
+def create_dir_bucket(session, name=None, location=None):
+    """
+    Creates a S3 directory bucket
+    :returns: the name of the bucket created
+    """
+    if not location:
+        location = ('us-west-2', 'usw2-az1')
+    region, az = location
+    client = session.create_client('s3', region_name=region)
+    if name:
+        bucket_name = name
+    else:
+        bucket_name = f"{random_bucket_name()}--{az}--x-s3"
+    params = {
+        'Bucket': bucket_name,
+        'CreateBucketConfiguration': {
+            'Location': {
+                'Type': 'AvailabilityZone',
+                'Name': az
+            },
+            'Bucket': {
+                'Type': 'Directory',
+                'DataRedundancy': 'SingleAvailabilityZone'
+            }
+        }
+    }
+    try:
+        client.create_bucket(**params)
+    except ClientError as e:
+        if e.response['Error'].get('Code') == 'BucketAlreadyOwnedByYou':
+            # This can happen in the retried request, when the first one
+            # succeeded on S3 but somehow the response never comes back.
+            # We still got a bucket ready for test anyway.
+            pass
+        else:
+            raise
+    return bucket_name
+
+
 def random_chars(num_chars):
     """Returns random hex characters.
 
@@ -199,7 +229,7 @@ def random_chars(num_chars):
     return binascii.hexlify(os.urandom(int(num_chars / 2))).decode('ascii')
 
 
-def random_bucket_name(prefix='awscli-s3integ-', num_random=15):
+def random_bucket_name(prefix='awscli-s3integ', num_random=15):
     """Generate a random S3 bucket name.
 
     :param prefix: A prefix to use in the bucket name.  Useful
@@ -210,7 +240,7 @@ def random_bucket_name(prefix='awscli-s3integ-', num_random=15):
     :returns: The name of a randomly generated bucket name as a string.
 
     """
-    return prefix + random_chars(num_random)
+    return f"{prefix}-{random_chars(num_random)}-{int(time.time())}"
 
 
 class BaseCLIDriverTest(unittest.TestCase):
@@ -303,14 +333,14 @@ class CapturedOutput(object):
 
 @contextlib.contextmanager
 def capture_output():
-    stderr = six.StringIO()
-    stdout = six.StringIO()
+    stderr = StringIO()
+    stdout = StringIO()
     with mock.patch('sys.stderr', stderr):
         with mock.patch('sys.stdout', stdout):
             yield CapturedOutput(stdout, stderr)
 
 
-class BufferedBytesIO(six.BytesIO):
+class BufferedBytesIO(BytesIO):
     def buffer(self):
         return self
 
@@ -649,8 +679,6 @@ def aws(command, collect_memory=False, env_vars=None,
         aws_command = 'python %s' % get_aws_cmd()
     full_command = '%s %s' % (aws_command, command)
     stdout_encoding = get_stdout_encoding()
-    if isinstance(full_command, six.text_type) and not six.PY3:
-        full_command = full_command.encode(stdout_encoding)
     INTEG_LOG.debug("Running command: %s", full_command)
     env = os.environ.copy()
     if 'AWS_DEFAULT_REGION' not in env:
@@ -768,7 +796,7 @@ class BaseS3CLICommand(unittest.TestCase):
 
     def assert_key_contents_equal(self, bucket, key, expected_contents):
         self.wait_until_key_exists(bucket, key)
-        if isinstance(expected_contents, six.BytesIO):
+        if isinstance(expected_contents, BytesIO):
             expected_contents = expected_contents.getvalue().decode('utf-8')
         actual_contents = self.get_key_contents(bucket, key)
         # The contents can be huge so we try to give helpful error messages

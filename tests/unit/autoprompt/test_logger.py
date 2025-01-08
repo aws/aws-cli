@@ -12,13 +12,12 @@
 # language governing permissions and limitations under the License.
 import contextlib
 import logging
-import mock
 import io
 
 from prompt_toolkit.buffer import Buffer
 from awscli.autoprompt.logger import PromptToolkitHandler
 
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 
 
 class TestPromptToolkitHandler(unittest.TestCase):

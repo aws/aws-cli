@@ -29,12 +29,20 @@ from botocore.compat import (
     json,
     parse_qs,
     quote,
-    six,
     urlsplit,
     urlunsplit,
 )
-from botocore.exceptions import NoAuthTokenError, NoCredentialsError
-from botocore.utils import normalize_url_path, percent_encode_sequence
+from botocore.exceptions import (
+    NoAuthTokenError,
+    NoCredentialsError,
+    UnknownSignatureVersionError,
+    UnsupportedSignatureVersionError,
+)
+from botocore.utils import (
+    is_valid_ipv6_endpoint_url,
+    normalize_url_path,
+    percent_encode_sequence,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +71,11 @@ def _host_from_url(url):
     # 3) excludes userinfo
     url_parts = urlsplit(url)
     host = url_parts.hostname  # urlsplit's hostname is always lowercase
+    if is_valid_ipv6_endpoint_url(url):
+        # Enclose IPv6 Literal addresses in
+        # brackets as per RFC 3986 3.2.2.
+        host = f'[{host}]'
+
     default_ports = {
         'http': 80,
         'https': 443
@@ -79,9 +92,9 @@ def _get_body_as_dict(request):
     # string or bytes. In those cases we attempt to load the data as a
     # dict.
     data = request.data
-    if isinstance(data, six.binary_type):
+    if isinstance(data, bytes):
         data = json.loads(data.decode('utf-8'))
-    elif isinstance(data, six.string_types):
+    elif isinstance(data, str):
         data = json.loads(data)
     return data
 
@@ -130,7 +143,7 @@ class SigV2Auth(BaseSigner):
             # issues during retries.
             if key == 'Signature':
                 continue
-            value = six.text_type(params[key])
+            value = str(params[key])
             pairs.append(quote(key.encode('utf-8'), safe='') + '=' +
                          quote(value.encode('utf-8'), safe='-_~'))
         qs = '&'.join(pairs)
@@ -843,6 +856,19 @@ class BearerAuth(TokenSigner):
 # a separate utility module to avoid any potential circular import.
 import botocore.crt.auth
 
+def resolve_auth_type(auth_trait):
+    for auth_type in auth_trait:
+        if auth_type == 'smithy.api#noAuth':
+            return AUTH_TYPE_TO_SIGNATURE_VERSION[auth_type]
+        elif auth_type in AUTH_TYPE_TO_SIGNATURE_VERSION:
+            signature_version = AUTH_TYPE_TO_SIGNATURE_VERSION[auth_type]
+            if signature_version in AUTH_TYPE_MAPS:
+                return signature_version
+        else:
+            raise UnknownSignatureVersionError(signature_version=auth_type)
+    raise UnsupportedSignatureVersionError(signature_version=auth_trait)
+
+
 # Defined at the bottom instead of the top of the module because the Auth
 # classes weren't defined yet.
 AUTH_TYPE_MAPS = {
@@ -861,4 +887,11 @@ AUTH_TYPE_MAPS = {
     'v4-s3express-query': S3ExpressQueryAuth,
     'v4-s3express-presign-post': S3ExpressPostAuth,
     'bearer': BearerAuth,
+}
+
+AUTH_TYPE_TO_SIGNATURE_VERSION = {
+    'aws.auth#sigv4': 'v4',
+    'aws.auth#sigv4a': 'v4a',
+    'smithy.api#httpBearerAuth': 'bearer',
+    'smithy.api#noAuth': 'none',
 }

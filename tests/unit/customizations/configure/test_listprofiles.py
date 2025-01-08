@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from . import FakeSession
-from awscli.compat import six
+from awscli.compat import StringIO
 from awscli.testutils import unittest
 from awscli.customizations.configure.listprofiles import ListProfilesCommand
 
@@ -19,7 +19,7 @@ from awscli.customizations.configure.listprofiles import ListProfilesCommand
 class TestListProfilesCommand(unittest.TestCase):
     def _create_command(self, profiles=None):
         session = FakeSession({}, available_profiles=profiles)
-        stdout = six.StringIO()
+        stdout = StringIO()
         command = ListProfilesCommand(session, out_stream=stdout)
         return stdout, command
 

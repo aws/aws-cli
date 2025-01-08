@@ -2,6 +2,7 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2023-07-19",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"medical-imaging",
     "protocol":"rest-json",
     "protocols":["rest-json"],
@@ -390,6 +391,10 @@
       "min":12,
       "pattern":"\\d+"
     },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
     "ClientToken":{
       "type":"string",
       "max":64,
@@ -408,6 +413,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "CopiableAttributes":{
+      "type":"string",
+      "max":260000,
+      "min":1,
+      "sensitive":true
     },
     "CopyDestinationImageSet":{
       "type":"structure",
@@ -503,6 +514,12 @@
         "copyImageSetInformation":{
           "shape":"CopyImageSetInformation",
           "documentation":"<p>Copy image set information.</p>"
+        },
+        "force":{
+          "shape":"Boolean",
+          "documentation":"<p>Setting this flag will force the <code>CopyImageSet</code> operation, even if Patient, Study, or Series level metadata are mismatched across the <code>sourceImageSet</code> and <code>destinationImageSet</code>.</p>",
+          "location":"querystring",
+          "locationName":"force"
         }
       },
       "payload":"copyImageSetInformation"
@@ -536,6 +553,10 @@
         "latestVersionId":{
           "shape":"ImageSetExternalVersionId",
           "documentation":"<p>The latest version identifier for the source image set.</p>"
+        },
+        "DICOMCopies":{
+          "shape":"MetadataCopies",
+          "documentation":"<p>Contains <code>MetadataCopies</code> structure and wraps information related to specific copy use cases. For example, when copying subsets.</p>"
         }
       },
       "documentation":"<p>Copy source image set information.</p>"
@@ -620,7 +641,7 @@
     },
     "DICOMAccessionNumber":{
       "type":"string",
-      "max":16,
+      "max":256,
       "min":0,
       "sensitive":true
     },
@@ -740,7 +761,7 @@
     },
     "DICOMNumberOfStudyRelatedSeries":{
       "type":"integer",
-      "max":10000,
+      "max":1000000,
       "min":0
     },
     "DICOMPatientBirthDate":{
@@ -751,7 +772,7 @@
     },
     "DICOMPatientId":{
       "type":"string",
-      "max":64,
+      "max":256,
       "min":0,
       "sensitive":true
     },
@@ -775,9 +796,9 @@
     },
     "DICOMSeriesInstanceUID":{
       "type":"string",
-      "max":64,
+      "max":256,
       "min":0,
-      "pattern":"(?:[1-9][0-9]*|0)(\\.(?:[1-9][0-9]*|0))*",
+      "pattern":"(?:[0-9][0-9]*|0)(\\.(?:[1-9][0-9]*|0))*",
       "sensitive":true
     },
     "DICOMSeriesModality":{
@@ -828,9 +849,9 @@
     },
     "DICOMStudyInstanceUID":{
       "type":"string",
-      "max":64,
+      "max":256,
       "min":0,
-      "pattern":"(?:[1-9][0-9]*|0)(\\.(?:[1-9][0-9]*|0))*",
+      "pattern":"(?:[0-9][0-9]*|0)(\\.(?:[1-9][0-9]*|0))*",
       "sensitive":true
     },
     "DICOMStudyTime":{
@@ -1321,6 +1342,10 @@
         "imageSetArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) assigned to the image set.</p>"
+        },
+        "overrides":{
+          "shape":"Overrides",
+          "documentation":"<p>This object contains the details of any overrides used while creating a specific image set version. If an image set was copied or updated using the <code>force</code> flag, this object will contain the <code>forced</code> flag.</p>"
         }
       }
     },
@@ -1390,6 +1415,10 @@
         "message":{
           "shape":"Message",
           "documentation":"<p>The error message thrown if an image set action fails.</p>"
+        },
+        "overrides":{
+          "shape":"Overrides",
+          "documentation":"<p>Contains details on overrides used when creating the returned version of an image set. For example, if <code>forced</code> exists, the <code>forced</code> flag was used when creating the image set.</p>"
         }
       },
       "documentation":"<p>The image set properties.</p>"
@@ -1668,12 +1697,27 @@
       "min":1,
       "pattern":"[\\w -:]+"
     },
+    "MetadataCopies":{
+      "type":"structure",
+      "required":["copiableAttributes"],
+      "members":{
+        "copiableAttributes":{
+          "shape":"CopiableAttributes",
+          "documentation":"<p>The JSON string used to specify a subset of SOP Instances to copy from source to destination image set.</p>"
+        }
+      },
+      "documentation":"<p>Contains copiable <code>Attributes</code> structure and wraps information related to specific copy use cases. For example, when copying subsets.</p>"
+    },
     "MetadataUpdates":{
       "type":"structure",
       "members":{
         "DICOMUpdates":{
           "shape":"DICOMUpdates",
           "documentation":"<p>The object containing <code>removableAttributes</code> and <code>updatableAttributes</code>.</p>"
+        },
+        "revertToVersionId":{
+          "shape":"ImageSetExternalVersionId",
+          "documentation":"<p>Specifies the previous image set version ID to revert the current image set back to.</p> <note> <p>You must provide either <code>revertToVersionId</code> or <code>DICOMUpdates</code> in your request. A <code>ValidationException</code> error is thrown if both parameters are provided at the same time.</p> </note>"
         }
       },
       "documentation":"<p>Contains DICOMUpdates.</p>",
@@ -1691,6 +1735,16 @@
         "EQUAL",
         "BETWEEN"
       ]
+    },
+    "Overrides":{
+      "type":"structure",
+      "members":{
+        "forced":{
+          "shape":"Boolean",
+          "documentation":"<p>Setting this flag will force the <code>CopyImageSet</code> and <code>UpdateImageSetMetadata</code> operations, even if Patient, Study, or Series level metadata are mismatched.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the overrides used in image set modification calls to <code>CopyImageSet</code> and <code>UpdateImageSetMetadata</code>.</p>"
     },
     "PayloadBlob":{
       "type":"blob",
@@ -2086,6 +2140,12 @@
           "documentation":"<p>The latest image set version identifier.</p>",
           "location":"querystring",
           "locationName":"latestVersion"
+        },
+        "force":{
+          "shape":"Boolean",
+          "documentation":"<p>Setting this flag will force the <code>UpdateImageSetMetadata</code> operation for the following attributes:</p> <ul> <li> <p> <code>Tag.StudyInstanceUID</code>, <code>Tag.SeriesInstanceUID</code>, <code>Tag.SOPInstanceUID</code>, and <code>Tag.StudyID</code> </p> </li> <li> <p>Adding, removing, or updating private tags for an individual SOP Instance</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"force"
         },
         "updateImageSetMetadataUpdates":{
           "shape":"MetadataUpdates",

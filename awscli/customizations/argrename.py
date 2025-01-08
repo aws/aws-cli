@@ -91,7 +91,6 @@ ARGUMENT_RENAMES = {
     'license-manager.get-grant.version': 'grant-version',
     'license-manager.delete-grant.version': 'grant-version',
     'license-manager.get-license.version': 'license-version',
-    'mobile.create-project.region': 'project-region',
     'rekognition.create-stream-processor.output': 'stream-processor-output',
     'eks.create-cluster.version': 'kubernetes-version',
     'eks.update-cluster-version.version': 'kubernetes-version',

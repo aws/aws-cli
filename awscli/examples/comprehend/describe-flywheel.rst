@@ -23,7 +23,7 @@ Output::
                     ]
                 }
             },
-            "DataLakeS3Uri": "s3://DOC-EXAMPLE-BUCKET/example-flywheel/schemaVersion=1/20230616T200543Z/",
+            "DataLakeS3Uri": "s3://amzn-s3-demo-bucket/example-flywheel/schemaVersion=1/20230616T200543Z/",
             "DataSecurityConfig": {},
             "Status": "ACTIVE",
             "ModelType": "DOCUMENT_CLASSIFIER",

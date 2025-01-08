@@ -5,12 +5,14 @@
     "endpointPrefix":"imagebuilder",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"imagebuilder",
     "serviceFullName":"EC2 Image Builder",
     "serviceId":"imagebuilder",
     "signatureVersion":"v4",
     "signingName":"imagebuilder",
-    "uid":"imagebuilder-2019-12-02"
+    "uid":"imagebuilder-2019-12-02",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CancelImageCreation":{
@@ -660,6 +662,24 @@
       ],
       "documentation":"<p>Get details for the specified image lifecycle policy.</p>"
     },
+    "GetMarketplaceResource":{
+      "name":"GetMarketplaceResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetMarketplaceResource"
+      },
+      "input":{"shape":"GetMarketplaceResourceRequest"},
+      "output":{"shape":"GetMarketplaceResourceResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"CallRateLimitExceededException"}
+      ],
+      "documentation":"<p>Verify the subscription and perform resource dependency checks on the requested Amazon Web Services Marketplace resource. For Amazon Web Services Marketplace components, the response contains fields to download the components and their artifacts.</p>"
+    },
     "GetWorkflow":{
       "name":"GetWorkflow",
       "http":{
@@ -736,6 +756,21 @@
       ],
       "documentation":"<p>Imports a component and transforms its data into a component document.</p>"
     },
+    "ImportDiskImage":{
+      "name":"ImportDiskImage",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/ImportDiskImage"
+      },
+      "input":{"shape":"ImportDiskImageRequest"},
+      "output":{"shape":"ImportDiskImageResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Import a Windows operating system image from a verified Microsoft ISO disk file. The following disk images are supported:</p> <ul> <li> <p>Windows 11 Enterprise</p> </li> </ul>"
+    },
     "ImportVmImage":{
       "name":"ImportVmImage",
       "http":{
@@ -768,7 +803,7 @@
         {"shape":"ForbiddenException"},
         {"shape":"CallRateLimitExceededException"}
       ],
-      "documentation":"<p>Returns the list of component build versions for the specified semantic version.</p> <note> <p>The semantic version has four nodes: &lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;/&lt;build&gt;. You can assign values for the first three, and can filter on all of them.</p> <p> <b>Filtering:</b> With semantic versioning, you have the flexibility to use wildcards (x) to specify the most recent versions or nodes when selecting the base image or components for your recipe. When you use a wildcard in any node, all nodes to the right of the first wildcard must also be wildcards.</p> </note>"
+      "documentation":"<p>Returns the list of component build versions for the specified component version Amazon Resource Name (ARN).</p>"
     },
     "ListComponents":{
       "name":"ListComponents",
@@ -1537,7 +1572,8 @@
       "enum":[
         "USER_INITIATED",
         "SCHEDULED",
-        "IMPORT"
+        "IMPORT",
+        "IMPORT_ISO"
       ]
     },
     "CallRateLimitExceededException":{
@@ -1662,7 +1698,7 @@
         },
         "state":{
           "shape":"ComponentState",
-          "documentation":"<p>Describes the current status of the component. This is used for components that are no longer active.</p>"
+          "documentation":"<p>Describes the current status of the component.</p>"
         },
         "parameters":{
           "shape":"ComponentParameterDetailList",
@@ -1699,13 +1735,17 @@
         "obfuscate":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether component source is hidden from view in the console, and from component detail results for API, CLI, or SDK operations.</p>"
+        },
+        "productCodes":{
+          "shape":"ProductCodeList",
+          "documentation":"<p>Contains product codes that are used for billing purposes for Amazon Web Services Marketplace components.</p>"
         }
       },
       "documentation":"<p>A detailed view of a component.</p>"
     },
     "ComponentBuildVersionArn":{
       "type":"string",
-      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws):component/[a-z0-9-_]+/[0-9]+\\.[0-9]+\\.[0-9]+/[0-9]+$"
+      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws(?:-[a-z-]+)?):component/[a-z0-9-_]+/[0-9]+\\.[0-9]+\\.[0-9]+/[0-9]+$"
     },
     "ComponentConfiguration":{
       "type":"structure",
@@ -1828,7 +1868,11 @@
     },
     "ComponentStatus":{
       "type":"string",
-      "enum":["DEPRECATED"]
+      "enum":[
+        "DEPRECATED",
+        "DISABLED",
+        "ACTIVE"
+      ]
     },
     "ComponentSummary":{
       "type":"structure",
@@ -1941,17 +1985,25 @@
         "dateCreated":{
           "shape":"DateTime",
           "documentation":"<p>The date that the component was created.</p>"
+        },
+        "status":{
+          "shape":"ComponentStatus",
+          "documentation":"<p>Describes the current status of the component version.</p>"
+        },
+        "productCodes":{
+          "shape":"ProductCodeList",
+          "documentation":"<p>Contains product codes that are used for billing purposes for Amazon Web Services Marketplace components.</p>"
         }
       },
       "documentation":"<p>The defining characteristics of a specific version of an Amazon Web Services TOE component.</p>"
     },
     "ComponentVersionArn":{
       "type":"string",
-      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws):component/[a-z0-9-_]+/[0-9]+\\.[0-9]+\\.[0-9]+$"
+      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws(?:-[a-z-]+)?):component/[a-z0-9-_]+/[0-9]+\\.[0-9]+\\.[0-9]+$"
     },
     "ComponentVersionArnOrBuildVersionArn":{
       "type":"string",
-      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws):component/[a-z0-9-_]+/(?:(?:([0-9]+|x)\\.([0-9]+|x)\\.([0-9]+|x))|(?:[0-9]+\\.[0-9]+\\.[0-9]+/[0-9]+))$"
+      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws(?:-[a-z-]+)?):component/[a-z0-9-_]+/(?:(?:([0-9]+|x)\\.([0-9]+|x)\\.([0-9]+|x))|(?:[0-9]+\\.[0-9]+\\.[0-9]+/[0-9]+))$"
     },
     "ComponentVersionList":{
       "type":"list",
@@ -2265,7 +2317,7 @@
         },
         "kmsKeyId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Identifies which KMS key is used to encrypt the container image.</p>"
+          "documentation":"<p>Identifies which KMS key is used to encrypt the Dockerfile template.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -2618,7 +2670,7 @@
         },
         "resourceTags":{
           "shape":"ResourceTagMap",
-          "documentation":"<p>The tags attached to the resource created by Image Builder.</p>"
+          "documentation":"<p>The metadata tags to assign to the Amazon EC2 instance that Image Builder launches during the build process. Tags are formatted as key value pairs.</p>"
         },
         "instanceMetadataOptions":{
           "shape":"InstanceMetadataOptions",
@@ -2626,7 +2678,11 @@
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>The tags of the infrastructure configuration.</p>"
+          "documentation":"<p>The metadata tags to assign to the infrastructure configuration resource that Image Builder creates as output. Tags are formatted as key value pairs.</p>"
+        },
+        "placement":{
+          "shape":"Placement",
+          "documentation":"<p>The instance placement settings that define where the instances that are launched from your image will run.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -3281,7 +3337,7 @@
         },
         "containerTags":{
           "shape":"StringList",
-          "documentation":"<p>Tags for Image Builder to apply to the output container image that &amp;INS; scans. Tags can help you identify and manage your scanned images.</p>"
+          "documentation":"<p>Tags for Image Builder to apply to the output container image that Amazon Inspector scans. Tags can help you identify and manage your scanned images.</p>"
         }
       },
       "documentation":"<p>Settings that Image Builder uses to configure the ECR repository and the output container images that Amazon Inspector scans.</p>"
@@ -3379,7 +3435,7 @@
     },
     "FilterValue":{
       "type":"string",
-      "pattern":"^[0-9a-zA-Z./_ :-]{1,1024}$"
+      "pattern":"^[0-9a-zA-Z./_ :,{}\"-]{1,1024}$"
     },
     "FilterValues":{
       "type":"list",
@@ -3715,6 +3771,44 @@
         }
       }
     },
+    "GetMarketplaceResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceType",
+        "resourceArn"
+      ],
+      "members":{
+        "resourceType":{
+          "shape":"MarketplaceResourceType",
+          "documentation":"<p>Specifies which type of Amazon Web Services Marketplace resource Image Builder retrieves.</p>"
+        },
+        "resourceArn":{
+          "shape":"ImageBuilderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an Amazon Web Services Marketplace resource.</p>"
+        },
+        "resourceLocation":{
+          "shape":"MarketplaceResourceLocation",
+          "documentation":"<p>The bucket path that you can specify to download the resource from Amazon S3.</p>"
+        }
+      }
+    },
+    "GetMarketplaceResourceResponse":{
+      "type":"structure",
+      "members":{
+        "resourceArn":{
+          "shape":"ImageBuilderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Amazon Web Services Marketplace resource that was requested.</p>"
+        },
+        "url":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The obfuscated S3 URL to download the component artifact from.</p>"
+        },
+        "data":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Returns obfuscated data that contains the YAML content of the component.</p>"
+        }
+      }
+    },
     "GetWorkflowExecutionRequest":{
       "type":"structure",
       "required":["workflowExecutionId"],
@@ -3989,7 +4083,7 @@
         },
         "buildType":{
           "shape":"BuildType",
-          "documentation":"<p>Indicates the type of build that created this image. The build can be initiated in the following ways:</p> <ul> <li> <p> <b>USER_INITIATED</b> – A manual pipeline build request.</p> </li> <li> <p> <b>SCHEDULED</b> – A pipeline build initiated by a cron expression in the Image Builder pipeline, or from EventBridge.</p> </li> <li> <p> <b>IMPORT</b> – A VM import created the image to use as the base image for the recipe.</p> </li> </ul>"
+          "documentation":"<p>Indicates the type of build that created this image. The build can be initiated in the following ways:</p> <ul> <li> <p> <b>USER_INITIATED</b> – A manual pipeline build request.</p> </li> <li> <p> <b>SCHEDULED</b> – A pipeline build initiated by a cron expression in the Image Builder pipeline, or from EventBridge.</p> </li> <li> <p> <b>IMPORT</b> – A VM import created the image to use as the base image for the recipe.</p> </li> <li> <p> <b>IMPORT_ISO</b> – An ISO disk import created the image.</p> </li> </ul>"
         },
         "imageSource":{
           "shape":"ImageSource",
@@ -4043,25 +4137,25 @@
     },
     "ImageBuildVersionArn":{
       "type":"string",
-      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws):image/[a-z0-9-_]+/[0-9]+\\.[0-9]+\\.[0-9]+/[0-9]+$"
+      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws(?:-[a-z-]+)?):image/[a-z0-9-_]+/[0-9]+\\.[0-9]+\\.[0-9]+/[0-9]+$"
     },
     "ImageBuilderArn":{
       "type":"string",
-      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws):(?:image-recipe|container-recipe|infrastructure-configuration|distribution-configuration|component|image|image-pipeline|lifecycle-policy|workflow\\/(?:build|test|distribution))/[a-z0-9-_]+(?:/(?:(?:x|[0-9]+)\\.(?:x|[0-9]+)\\.(?:x|[0-9]+))(?:/[0-9]+)?)?$"
+      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws(?:-[a-z-]+)?):(?:image-recipe|container-recipe|infrastructure-configuration|distribution-configuration|component|image|image-pipeline|lifecycle-policy|workflow\\/(?:build|test|distribution))/[a-z0-9-_]+(?:/(?:(?:x|[0-9]+)\\.(?:x|[0-9]+)\\.(?:x|[0-9]+))(?:/[0-9]+)?)?$"
     },
     "ImagePackage":{
       "type":"structure",
       "members":{
         "packageName":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The name of the package as reported to the operating system package manager.</p>"
+          "documentation":"<p>The name of the package that's reported to the operating system package manager.</p>"
         },
         "packageVersion":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The version of the package as reported to the operating system package manager.</p>"
+          "documentation":"<p>The version of the package that's reported to the operating system package manager.</p>"
         }
       },
-      "documentation":"<p>Represents a package installed on an Image Builder image.</p>"
+      "documentation":"<p>A software package that's installed on top of the base image to create a customized image.</p>"
     },
     "ImagePackageList":{
       "type":"list",
@@ -4527,7 +4621,7 @@
         },
         "buildType":{
           "shape":"BuildType",
-          "documentation":"<p>Indicates the type of build that created this image. The build can be initiated in the following ways:</p> <ul> <li> <p> <b>USER_INITIATED</b> – A manual pipeline build request.</p> </li> <li> <p> <b>SCHEDULED</b> – A pipeline build initiated by a cron expression in the Image Builder pipeline, or from EventBridge.</p> </li> <li> <p> <b>IMPORT</b> – A VM import created the image to use as the base image for the recipe.</p> </li> </ul>"
+          "documentation":"<p>Indicates the type of build that created this image. The build can be initiated in the following ways:</p> <ul> <li> <p> <b>USER_INITIATED</b> – A manual pipeline build request.</p> </li> <li> <p> <b>SCHEDULED</b> – A pipeline build initiated by a cron expression in the Image Builder pipeline, or from EventBridge.</p> </li> <li> <p> <b>IMPORT</b> – A VM import created the image to use as the base image for the recipe.</p> </li> <li> <p> <b>IMPORT_ISO</b> – An ISO disk import created the image.</p> </li> </ul>"
         },
         "imageSource":{
           "shape":"ImageSource",
@@ -4557,7 +4651,7 @@
         },
         "timeoutMinutes":{
           "shape":"ImageTestsTimeoutMinutes",
-          "documentation":"<p>The maximum time in minutes that tests are permitted to run.</p> <note> <p>The timeoutMinutes attribute is not currently active. This value is ignored.</p> </note>"
+          "documentation":"<p>The maximum time in minutes that tests are permitted to run.</p> <note> <p>The timeout property is not currently active. This value is ignored.</p> </note>"
         }
       },
       "documentation":"<p>Configure image tests for your pipeline build. Tests run after building the image, to verify that the AMI or container image is valid before distributing it.</p>"
@@ -4611,7 +4705,7 @@
         },
         "buildType":{
           "shape":"BuildType",
-          "documentation":"<p>Indicates the type of build that created this image. The build can be initiated in the following ways:</p> <ul> <li> <p> <b>USER_INITIATED</b> – A manual pipeline build request.</p> </li> <li> <p> <b>SCHEDULED</b> – A pipeline build initiated by a cron expression in the Image Builder pipeline, or from EventBridge.</p> </li> <li> <p> <b>IMPORT</b> – A VM import created the image to use as the base image for the recipe.</p> </li> </ul>"
+          "documentation":"<p>Indicates the type of build that created this image. The build can be initiated in the following ways:</p> <ul> <li> <p> <b>USER_INITIATED</b> – A manual pipeline build request.</p> </li> <li> <p> <b>SCHEDULED</b> – A pipeline build initiated by a cron expression in the Image Builder pipeline, or from EventBridge.</p> </li> <li> <p> <b>IMPORT</b> – A VM import created the image to use as the base image for the recipe.</p> </li> <li> <p> <b>IMPORT_ISO</b> – An ISO disk import created the image.</p> </li> </ul>"
         },
         "imageSource":{
           "shape":"ImageSource",
@@ -4622,11 +4716,11 @@
     },
     "ImageVersionArn":{
       "type":"string",
-      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws):image/[a-z0-9-_]+/[0-9]+\\.[0-9]+\\.[0-9]+$"
+      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws(?:-[a-z-]+)?):image/[a-z0-9-_]+/[0-9]+\\.[0-9]+\\.[0-9]+$"
     },
     "ImageVersionArnOrBuildVersionArn":{
       "type":"string",
-      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws):image/[a-z0-9-_]+/(?:(?:([0-9]+|x)\\.([0-9]+|x)\\.([0-9]+|x))|(?:[0-9]+\\.[0-9]+\\.[0-9]+/[0-9]+))$"
+      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws(?:-[a-z-]+)?):image/[a-z0-9-_]+/(?:(?:([0-9]+|x)\\.([0-9]+|x)\\.([0-9]+|x))|(?:[0-9]+\\.[0-9]+\\.[0-9]+/[0-9]+))$"
     },
     "ImageVersionList":{
       "type":"list",
@@ -4708,6 +4802,74 @@
         "componentBuildVersionArn":{
           "shape":"ComponentBuildVersionArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the imported component.</p>"
+        }
+      }
+    },
+    "ImportDiskImageRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "semanticVersion",
+        "platform",
+        "osVersion",
+        "infrastructureConfigurationArn",
+        "uri",
+        "clientToken"
+      ],
+      "members":{
+        "name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the image resource that's created from the import.</p>"
+        },
+        "semanticVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>The semantic version to attach to the image that's created during the import process. This version follows the semantic version syntax.</p>"
+        },
+        "description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The description for your disk image import.</p>"
+        },
+        "platform":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The operating system platform for the imported image. Allowed values include the following: <code>Windows</code>.</p>"
+        },
+        "osVersion":{
+          "shape":"OsVersion",
+          "documentation":"<p>The operating system version for the imported image. Allowed values include the following: <code>Microsoft Windows 11</code>.</p>"
+        },
+        "executionRole":{
+          "shape":"RoleNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) for the IAM role you create that grants Image Builder access to perform workflow actions to import an image from a Microsoft ISO file.</p>"
+        },
+        "infrastructureConfigurationArn":{
+          "shape":"InfrastructureConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the infrastructure configuration resource that's used for launching the EC2 instance on which the ISO image is built.</p>"
+        },
+        "uri":{
+          "shape":"Uri",
+          "documentation":"<p>The <code>uri</code> of the ISO disk file that's stored in Amazon S3.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags that are attached to image resources created from the import.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "ImportDiskImageResponse":{
+      "type":"structure",
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
+        },
+        "imageBuildVersionArn":{
+          "shape":"ImageBuildVersionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the output AMI that was created from the ISO disk file.</p>"
         }
       }
     },
@@ -4839,6 +5001,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags of the infrastructure configuration.</p>"
+        },
+        "placement":{
+          "shape":"Placement",
+          "documentation":"<p>The instance placement settings that define where the instances that are launched from your image will run.</p>"
         }
       },
       "documentation":"<p>Details of the infrastructure configuration.</p>"
@@ -4885,6 +5051,10 @@
         "instanceProfileName":{
           "shape":"InstanceProfileNameType",
           "documentation":"<p>The instance profile of the infrastructure configuration.</p>"
+        },
+        "placement":{
+          "shape":"Placement",
+          "documentation":"<p>The instance placement settings that define where the instances that are launched from your image will run.</p>"
         }
       },
       "documentation":"<p>The infrastructure used when building Amazon EC2 AMIs.</p>"
@@ -6452,6 +6622,18 @@
       },
       "documentation":"<p>Logging configuration defines where Image Builder uploads your logs.</p>"
     },
+    "MarketplaceResourceLocation":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^s3://[^/]+/.+[^/]$"
+    },
+    "MarketplaceResourceType":{
+      "type":"string",
+      "enum":[
+        "COMPONENT_DATA",
+        "COMPONENT_ARTIFACT"
+      ]
+    },
     "MaxParallelLaunches":{
       "type":"integer",
       "min":1
@@ -6528,7 +6710,8 @@
         "Self",
         "Shared",
         "Amazon",
-        "ThirdParty"
+        "ThirdParty",
+        "AWSMarketplace"
       ]
     },
     "PackageArchitecture":{"type":"string"},
@@ -6605,12 +6788,65 @@
         "ENABLED"
       ]
     },
+    "Placement":{
+      "type":"structure",
+      "members":{
+        "availabilityZone":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Availability Zone where your build and test instances will launch.</p>"
+        },
+        "tenancy":{
+          "shape":"TenancyType",
+          "documentation":"<p>The tenancy of the instance. An instance with a tenancy of <code>dedicated</code> runs on single-tenant hardware. An instance with a tenancy of <code>host</code> runs on a Dedicated Host.</p> <p>If tenancy is set to <code>host</code>, then you can optionally specify one target for placement – either host ID or host resource group ARN. If automatic placement is enabled for your host, and you don't specify any placement target, Amazon EC2 will try to find an available host for your build and test instances.</p>"
+        },
+        "hostId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID of the Dedicated Host on which build and test instances run. This only applies if <code>tenancy</code> is <code>host</code>. If you specify the host ID, you must not specify the resource group ARN. If you specify both, Image Builder returns an error.</p>"
+        },
+        "hostResourceGroupArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the host resource group in which to launch build and test instances. This only applies if <code>tenancy</code> is <code>host</code>. If you specify the resource group ARN, you must not specify the host ID. If you specify both, Image Builder returns an error.</p>"
+        }
+      },
+      "documentation":"<p>By default, EC2 instances run on shared tenancy hardware. This means that multiple Amazon Web Services accounts might share the same physical hardware. When you use dedicated hardware, the physical server that hosts your instances is dedicated to your Amazon Web Services account. Instance placement settings contain the details for the physical hardware where instances that Image Builder launches during image creation will run.</p>"
+    },
     "Platform":{
       "type":"string",
       "enum":[
         "Windows",
-        "Linux"
+        "Linux",
+        "macOS"
       ]
+    },
+    "ProductCodeId":{
+      "type":"string",
+      "pattern":"^[A-Za-z0-9]{1,25}$"
+    },
+    "ProductCodeList":{
+      "type":"list",
+      "member":{"shape":"ProductCodeListItem"}
+    },
+    "ProductCodeListItem":{
+      "type":"structure",
+      "required":[
+        "productCodeId",
+        "productCodeType"
+      ],
+      "members":{
+        "productCodeId":{
+          "shape":"ProductCodeId",
+          "documentation":"<p>For Amazon Web Services Marketplace components, this contains the product code ID that can be stamped onto an EC2 AMI to ensure that components are billed correctly. If this property is empty, it might mean that the component is not published.</p>"
+        },
+        "productCodeType":{
+          "shape":"ProductCodeType",
+          "documentation":"<p>The owner of the product code that's billed. If this property is empty, it might mean that the component is not published.</p>"
+        }
+      },
+      "documentation":"<p>Information about a single product code.</p>"
+    },
+    "ProductCodeType":{
+      "type":"string",
+      "enum":["marketplace"]
     },
     "PutComponentPolicyRequest":{
       "type":"structure",
@@ -6921,7 +7157,7 @@
         },
         "pipelineExecutionStartCondition":{
           "shape":"PipelineExecutionStartCondition",
-          "documentation":"<p>The condition configures when the pipeline should trigger a new image build. When the <code>pipelineExecutionStartCondition</code> is set to <code>EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE</code>, and you use semantic version filters on the base image or components in your image recipe, EC2 Image Builder will build a new image only when there are new versions of the image or components in your recipe that match the semantic version filter. When it is set to <code>EXPRESSION_MATCH_ONLY</code>, it will build a new image every time the CRON expression matches the current time. For semantic version syntax, see <a href=\"https://docs.aws.amazon.com/imagebuilder/latest/APIReference/API_CreateComponent.html\">CreateComponent</a> in the <i> EC2 Image Builder API Reference</i>.</p>"
+          "documentation":"<p>The start condition configures when the pipeline should trigger a new image build, as follows. If no value is set Image Builder defaults to <code>EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE</code>.</p> <ul> <li> <p> <code>EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE</code> (default) – When you use semantic version filters on the base image or components in your image recipe, EC2 Image Builder builds a new image only when there are new versions of the base image or components in your recipe that match the filter.</p> <note> <p>For semantic version syntax, see <a href=\"https://docs.aws.amazon.com/imagebuilder/latest/APIReference/API_CreateComponent.html\">CreateComponent</a>.</p> </note> </li> <li> <p> <code>EXPRESSION_MATCH_ONLY</code> – This condition builds a new image every time the CRON expression matches the current time.</p> </li> </ul>"
         }
       },
       "documentation":"<p>A schedule configures when and how often a pipeline will automatically create a new image.</p>"
@@ -7195,7 +7431,7 @@
         },
         "repositoryName":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The name of the container repository where the output container image is stored. This name is prefixed by the repository location.</p>"
+          "documentation":"<p>The name of the container repository where the output container image is stored. This name is prefixed by the repository location. For example, <code>&lt;repository location url&gt;/repository_name</code>.</p>"
         }
       },
       "documentation":"<p>The container repository where the output container image is stored.</p>"
@@ -7204,6 +7440,14 @@
       "type":"integer",
       "max":10000,
       "min":1
+    },
+    "TenancyType":{
+      "type":"string",
+      "enum":[
+        "default",
+        "dedicated",
+        "host"
+      ]
     },
     "Timezone":{
       "type":"string",
@@ -7413,11 +7657,6 @@
           "shape":"SnsTopicArn",
           "documentation":"<p>The Amazon Resource Name (ARN) for the SNS topic to which we send image build event notifications.</p> <note> <p>EC2 Image Builder is unable to send notifications to SNS topics that are encrypted using keys from other accounts. The key that is used to encrypt the SNS topic must reside in the account that the Image Builder service runs under.</p> </note>"
         },
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
-          "idempotencyToken":true
-        },
         "resourceTags":{
           "shape":"ResourceTagMap",
           "documentation":"<p>The tags attached to the resource created by Image Builder.</p>"
@@ -7425,6 +7664,15 @@
         "instanceMetadataOptions":{
           "shape":"InstanceMetadataOptions",
           "documentation":"<p>The instance metadata options that you can set for the HTTP requests that pipeline builds use to launch EC2 build and test instances. For more information about instance metadata options, see one of the following links:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-options.html\">Configure the instance metadata options</a> in the <i> <i>Amazon EC2 User Guide</i> </i> for Linux instances.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/configuring-instance-metadata-options.html\">Configure the instance metadata options</a> in the <i> <i>Amazon EC2 Windows Guide</i> </i> for Windows instances.</p> </li> </ul>"
+        },
+        "placement":{
+          "shape":"Placement",
+          "documentation":"<p>The instance placement settings that define where the instances that are launched from your image will run.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -7641,7 +7889,7 @@
     "WorkflowBuildVersionArn":{
       "type":"string",
       "max":1024,
-      "pattern":"^arn:aws(?:-[a-z]+)*:imagebuilder:[a-z]{2,}(?:-[a-z]+)+-[0-9]+:(?:[0-9]{12}|aws):workflow/(build|test|distribution)/[a-z0-9-_]+/[0-9]+\\.[0-9]+\\.[0-9]+/[0-9]+$"
+      "pattern":"^arn:aws(?:-[a-z]+)*:imagebuilder:[a-z]{2,}(?:-[a-z]+)+-[0-9]+:(?:[0-9]{12}|aws(?:-[a-z-]+)?):workflow/(build|test|distribution)/[a-z0-9-_]+/[0-9]+\\.[0-9]+\\.[0-9]+/[0-9]+$"
     },
     "WorkflowConfiguration":{
       "type":"structure",
@@ -7753,7 +8001,7 @@
     },
     "WorkflowNameArn":{
       "type":"string",
-      "pattern":"^arn:aws(?:-[a-z]+)*:imagebuilder:[a-z]{2,}(?:-[a-z]+)+-[0-9]+:(?:[0-9]{12}|aws):workflow/(build|test|distribution)/[a-z0-9-_]+/x\\.x\\.x$"
+      "pattern":"^arn:aws(?:-[a-z]+)*:imagebuilder:[a-z]{2,}(?:-[a-z]+)+-[0-9]+:(?:[0-9]{12}|aws(?:-[a-z-]+)?):workflow/(build|test|distribution)/[a-z0-9-_]+/x\\.x\\.x$"
     },
     "WorkflowParameter":{
       "type":"structure",
@@ -8096,11 +8344,11 @@
     },
     "WorkflowVersionArn":{
       "type":"string",
-      "pattern":"^arn:aws(?:-[a-z]+)*:imagebuilder:[a-z]{2,}(?:-[a-z]+)+-[0-9]+:(?:[0-9]{12}|aws):workflow/(build|test|distribution)/[a-z0-9-_]+/[0-9]+\\.[0-9]+\\.[0-9]+$"
+      "pattern":"^arn:aws(?:-[a-z]+)*:imagebuilder:[a-z]{2,}(?:-[a-z]+)+-[0-9]+:(?:[0-9]{12}|aws(?:-[a-z-]+)?):workflow/(build|test|distribution)/[a-z0-9-_]+/[0-9]+\\.[0-9]+\\.[0-9]+$"
     },
     "WorkflowVersionArnOrBuildVersionArn":{
       "type":"string",
-      "pattern":"^arn:aws(?:-[a-z]+)*:imagebuilder:[a-z]{2,}(?:-[a-z]+)+-[0-9]+:(?:[0-9]{12}|aws):workflow/(build|test|distribution)/[a-z0-9-_]+/(?:(?:([0-9]+|x)\\.([0-9]+|x)\\.([0-9]+|x))|(?:[0-9]+\\.[0-9]+\\.[0-9]+/[0-9]+))$"
+      "pattern":"^arn:aws(?:-[a-z]+)*:imagebuilder:[a-z]{2,}(?:-[a-z]+)+-[0-9]+:(?:[0-9]{12}|aws(?:-[a-z-]+)?):workflow/(build|test|distribution)/[a-z0-9-_]+/(?:(?:([0-9]+|x)\\.([0-9]+|x)\\.([0-9]+|x))|(?:[0-9]+\\.[0-9]+\\.[0-9]+/[0-9]+))$"
     },
     "WorkflowVersionList":{
       "type":"list",
@@ -8108,7 +8356,7 @@
     },
     "WorkflowWildcardVersionArn":{
       "type":"string",
-      "pattern":"^arn:aws(?:-[a-z]+)*:imagebuilder:[a-z]{2,}(?:-[a-z]+)+-[0-9]+:(?:[0-9]{12}|aws):workflow/(build|test|distribution)/[a-z0-9-_]+/(?:[0-9]+|x)\\.(?:[0-9]+|x)\\.(?:[0-9]+|x)$"
+      "pattern":"^arn:aws(?:-[a-z]+)*:imagebuilder:[a-z]{2,}(?:-[a-z]+)+-[0-9]+:(?:[0-9]{12}|aws(?:-[a-z-]+)?):workflow/(build|test|distribution)/[a-z0-9-_]+/(?:[0-9]+|x)\\.(?:[0-9]+|x)\\.(?:[0-9]+|x)$"
     }
   },
   "documentation":"<p>EC2 Image Builder is a fully managed Amazon Web Services service that makes it easier to automate the creation, management, and deployment of customized, secure, and up-to-date \"golden\" server images that are pre-installed and pre-configured with software and settings to meet specific IT standards.</p>"

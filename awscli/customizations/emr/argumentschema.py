@@ -57,6 +57,41 @@ OUTER_CONFIGURATIONS_SCHEMA = {
     "description": "Instance group application configurations."
 }
 
+ONDEMAND_CAPACITY_RESERVATION_OPTIONS_SCHEMA = {
+    "type": "object",
+    "properties" : {
+        "UsageStrategy": {
+            "type": "string",
+            "description": "The strategy of whether to use available capacity reservations to fulfill On-Demand capacity.",
+            "enum": ["use-capacity-reservations-first"]
+        },
+        "CapacityReservationPreference": {
+            "type": "string",
+            "description": "The preference of the capacity reservation of the instance.",
+            "enum": [
+                "open",
+                "none"
+            ]
+        },
+        "CapacityReservationResourceGroupArn": {
+            "type": "string",
+            "description": "The ARN of the capacity reservation resource group in which to run the instance."
+        }
+    }
+}
+
+SPOT_ALLOCATION_STRATEGY_SCHEMA = {
+    "type": "string",
+    "description": "The strategy to use to launch Spot instance fleets.",
+    "enum": ["capacity-optimized", "price-capacity-optimized", "lowest-price", "diversified", "capacity-optimized-prioritized"]
+}
+
+ONDEMAND_ALLOCATION_STRATEGY_SCHEMA = {
+    "type": "string",
+    "description": "The strategy to use to launch On-Demand instance fleets.",
+    "enum": ["lowest-price", "prioritized"]
+}
+
 INSTANCE_GROUPS_SCHEMA = {
     "type": "array",
     "items": {
@@ -343,6 +378,11 @@ INSTANCE_FLEETS_SCHEMA = {
                             "type": "string",
                             "description": "The AMI ID of a custom AMI to use when Amazon EMR provisions EC2 instances."
                         },
+                        "Priority": {
+                            "type": "double",
+                            "description": "The priority at which Amazon EMR launches the EC2 instances with this instance type. "
+                                "Priority starts at 0, which is the highest priority. Amazon EMR considers the highest priority first."
+                        },
                         "EbsConfiguration": {
                             "type": "object",
                             "description": "EBS configuration that is associated with the instance group.",
@@ -406,33 +446,8 @@ INSTANCE_FLEETS_SCHEMA = {
                     "OnDemandSpecification": {
                         "type": "object",
                         "properties": {
-                            "AllocationStrategy": {
-                                "type": "string",
-                                "description": "The strategy to use in launching On-Demand instance fleets.",
-                                "enum": ["lowest-price"]
-                            },
-                            "CapacityReservationOptions": {
-                                "type": "object",
-                                "properties" : {
-                                    "UsageStrategy": {
-                                        "type": "string",
-                                        "description": "The strategy of whether to use unused Capacity Reservations for fulfilling On-Demand capacity.",
-                                        "enum": ["use-capacity-reservations-first"]
-                                    },
-                                    "CapacityReservationPreference": {
-                                        "type": "string",
-                                        "description": "The preference of the instance's Capacity Reservation.",
-                                        "enum": [
-                                            "open",
-                                            "none"
-                                        ]
-                                    },
-                                    "CapacityReservationResourceGroupArn": {
-                                        "type": "string",
-                                        "description": "The ARN of the Capacity Reservation resource group in which to run the instance."
-                                    }
-                                }
-                            }
+                            "AllocationStrategy": ONDEMAND_ALLOCATION_STRATEGY_SCHEMA,
+                            "CapacityReservationOptions": ONDEMAND_CAPACITY_RESERVATION_OPTIONS_SCHEMA
                         }
                     },
                     "SpotSpecification": {
@@ -454,11 +469,7 @@ INSTANCE_FLEETS_SCHEMA = {
                                 "type": "integer",
                                 "description": "Block duration in minutes."
                             },
-                            "AllocationStrategy": {
-                                "type": "string",
-                                "description": "The strategy to use in launching Spot instance fleets.",
-                                "enum": ["capacity-optimized", "price-capacity-optimized", "lowest-price", "diversified"]
-                            }
+                            "AllocationStrategy": SPOT_ALLOCATION_STRATEGY_SCHEMA
                         }
                     }
                 }
@@ -472,7 +483,8 @@ INSTANCE_FLEETS_SCHEMA = {
                             "TimeoutDurationMinutes": {
                                 "type" : "integer",
                                 "description": "The time, in minutes, after which the resize will be stopped if requested resources are unavailable."
-                            }
+                            },
+                            "AllocationStrategy": SPOT_ALLOCATION_STRATEGY_SCHEMA
                         }
                     },
                     "OnDemandResizeSpecification": {
@@ -481,10 +493,16 @@ INSTANCE_FLEETS_SCHEMA = {
                             "TimeoutDurationMinutes": {
                                 "type" : "integer",
                                 "description": "The time, in minutes, after which the resize will be stopped if requested resources are unavailable."
-                            }
+                            },
+                            "AllocationStrategy": ONDEMAND_ALLOCATION_STRATEGY_SCHEMA,
+                            "CapacityReservationOptions": ONDEMAND_CAPACITY_RESERVATION_OPTIONS_SCHEMA
                         }
                     }
                 }
+            },
+            "Context": {
+                "type": "string",
+                "description": "Reserved."
             }
         }
     }
@@ -831,6 +849,22 @@ MANAGED_SCALING_POLICY_SCHEMA = {
                       "The parameter is used to split capacity allocation between core and task nodes."
                }
             } 
+        },
+        "ScalingStrategy": {
+            "type": "string",
+            "enum": ["DEFAULT", "ADVANCED"],
+            "description":
+                      "Determines whether a custom scaling utilization performance index can be set. "
+                      "Possible values include ADVANCED or DEFAULT."
+        },
+        "UtilizationPerformanceIndex": {
+            "type": "integer",
+            "description":
+                      "An integer value that represents an advanced scaling strategy. "
+                      "Setting a higher value optimizes for performance. "
+                      "Setting a lower value optimizes for resource conservation. "
+                      "Setting the value to 50 balances performance and resource conservation. "
+                      "Possible values are 1, 25, 50, 75, and 100."
         }
     }
 }

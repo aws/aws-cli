@@ -14,6 +14,7 @@
 from collections import defaultdict
 from typing import NamedTuple, Union
 
+from botocore.auth import resolve_auth_type
 from botocore.compat import OrderedDict
 from botocore.exceptions import (
     MissingServiceIdError,
@@ -445,6 +446,10 @@ class ServiceModel(object):
     def signature_version(self, value):
         self._signature_version = value
 
+    @CachedProperty
+    def is_query_compatible(self):
+        return 'awsQueryCompatible' in self.metadata
+
     def __repr__(self):
         return '%s(%s)' % (self.__class__.__name__, self.service_name)
 
@@ -584,12 +589,30 @@ class OperationModel(object):
         ]
 
     @CachedProperty
+    def operation_context_parameters(self):
+        return self._operation_model.get('operationContextParams', [])
+
+    @CachedProperty
     def request_compression(self):
         return self._operation_model.get('requestcompression')
 
     @CachedProperty
+    def auth(self):
+        return self._operation_model.get('auth')
+
+    @CachedProperty
     def auth_type(self):
         return self._operation_model.get('authtype')
+
+    @CachedProperty
+    def resolved_auth_type(self):
+        if self.auth:
+            return resolve_auth_type(self.auth)
+        return self.auth_type
+
+    @CachedProperty
+    def unsigned_payload(self):
+        return self._operation_model.get('unsignedPayload')
 
     @CachedProperty
     def error_shapes(self):

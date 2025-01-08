@@ -15,6 +15,7 @@ The aws-cli package works on Python versions:
 * 3.9.x
 * 3.10.x
 * 3.11.x
+* 3.12.x
 
 .. attention::
    We recommend that all customers regularly monitor the
@@ -33,9 +34,9 @@ The aws-cli package works on Python versions:
 -------
 Notices
 -------
-On 2024-06-20, support for macOS versions 10.14 and prior will be dropped.
-To avoid disruption, customers using macOS 10.14 or prior
-should upgrade to macOS 10.15 or later. For more information, please see
+On 2024-11-13, support for macOS version 10.15 was dropped.
+To use up-to-date versions of AWS CLI v2, customers using macOS 10.15 or prior
+should upgrade to macOS 11 or later. For more information, please see
 this `blog post <https://aws.amazon.com/blogs/developer/macos-support-policy-updates-for-the-aws-cli-v2/>`__.
 
 
@@ -370,11 +371,11 @@ The latest changes to the CLI are in the ``v2`` branch on github.  This is
 to make sure you ``git checkout v2``.
 
 If you just want to install a snapshot of the latest development version of
-the CLI, you can use the ``requirements.txt`` file included in this repo.
+the CLI, you can use the ``requirements-dev.txt`` file included in this repo.
 This file points to the development version of our dependencies::
 
     $ cd <path_to_awscli> && git checkout v2
-    $ pip install -r requirements.txt
+    $ pip install -r requirements-dev.txt
     $ pip install -e .
 
 Verify that the AWS CLI is correctly installed. Note that the word ``source`` should appear in the output::

@@ -10,7 +10,8 @@
     "serviceFullName":"AWS Batch",
     "serviceId":"Batch",
     "signatureVersion":"v4",
-    "uid":"batch-2016-08-10"
+    "uid":"batch-2016-08-10",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CancelJob":{
@@ -25,7 +26,7 @@
         {"shape":"ClientException"},
         {"shape":"ServerException"}
       ],
-      "documentation":"<p>Cancels a job in an Batch job queue. Jobs that are in the <code>SUBMITTED</code> or <code>PENDING</code> are canceled. A job in<code>RUNNABLE</code> remains in <code>RUNNABLE</code> until it reaches the head of the job queue. Then the job status is updated to <code>FAILED</code>.</p> <note> <p>A <code>PENDING</code> job is canceled after all dependency jobs are completed. Therefore, it may take longer than expected to cancel a job in <code>PENDING</code> status.</p> <p>When you try to cancel an array parent job in <code>PENDING</code>, Batch attempts to cancel all child jobs. The array parent job is canceled when all child jobs are completed.</p> </note> <p>Jobs that progressed to the <code>STARTING</code> or <code>RUNNING</code> state aren't canceled. However, the API operation still succeeds, even if no job is canceled. These jobs must be terminated with the <a>TerminateJob</a> operation.</p>"
+      "documentation":"<p>Cancels a job in an Batch job queue. Jobs that are in a <code>SUBMITTED</code>, <code>PENDING</code>, or <code>RUNNABLE</code> state are cancelled and the job status is updated to <code>FAILED</code>.</p> <note> <p>A <code>PENDING</code> job is canceled after all dependency jobs are completed. Therefore, it may take longer than expected to cancel a job in <code>PENDING</code> status.</p> <p>When you try to cancel an array parent job in <code>PENDING</code>, Batch attempts to cancel all child jobs. The array parent job is canceled when all child jobs are completed.</p> </note> <p>Jobs that progressed to the <code>STARTING</code> or <code>RUNNING</code> state aren't canceled. However, the API operation still succeeds, even if no job is canceled. These jobs must be terminated with the <a>TerminateJob</a> operation.</p>"
     },
     "CreateComputeEnvironment":{
       "name":"CreateComputeEnvironment",
@@ -595,7 +596,7 @@
         },
         "reason":{
           "shape":"String",
-          "documentation":"<p>A message to attach to the job that explains the reason for canceling it. This message is returned by future <a>DescribeJobs</a> operations on the job. This message is also recorded in the Batch activity logs.</p>"
+          "documentation":"<p>A message to attach to the job that explains the reason for canceling it. This message is returned by future <a>DescribeJobs</a> operations on the job. It is also recorded in the Batch activity logs.</p> <p>This parameter has as limit of 1024 characters.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>CancelJob</code>.</p>"
@@ -680,6 +681,10 @@
         "uuid":{
           "shape":"String",
           "documentation":"<p>Unique identifier for the compute environment.</p>"
+        },
+        "context":{
+          "shape":"String",
+          "documentation":"<p>Reserved.</p>"
         }
       },
       "documentation":"<p>An object that represents an Batch compute environment.</p>"
@@ -1175,6 +1180,10 @@
         "eksConfiguration":{
           "shape":"EksConfiguration",
           "documentation":"<p>The details for the Amazon EKS cluster that supports the compute environment.</p>"
+        },
+        "context":{
+          "shape":"String",
+          "documentation":"<p>Reserved.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>CreateComputeEnvironment</code>.</p>"
@@ -1210,7 +1219,7 @@
         },
         "schedulingPolicyArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the fair share scheduling policy. If this parameter is specified, the job queue uses a fair share scheduling policy. If this parameter isn't specified, the job queue uses a first in, first out (FIFO) scheduling policy. After a job queue is created, you can replace but can't remove the fair share scheduling policy. The format is <code>aws:<i>Partition</i>:batch:<i>Region</i>:<i>Account</i>:scheduling-policy/<i>Name</i> </code>. An example is <code>aws:aws:batch:us-west-2:123456789012:scheduling-policy/MySchedulingPolicy</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the fair share scheduling policy. Job queues that don't have a scheduling policy are scheduled in a first-in, first-out (FIFO) model. After a job queue has a scheduling policy, it can be replaced but can't be removed.</p> <p>The format is <code>aws:<i>Partition</i>:batch:<i>Region</i>:<i>Account</i>:scheduling-policy/<i>Name</i> </code>.</p> <p>An example is <code>aws:aws:batch:us-west-2:123456789012:scheduling-policy/MySchedulingPolicy</code>.</p> <p>A job queue without a scheduling policy is scheduled as a FIFO job queue and can't have a scheduling policy added. Jobs queues with a scheduling policy can have a maximum of 500 active fair share identifiers. When the limit has been reached, submissions of any jobs that add a new fair share identifier fail.</p>"
         },
         "priority":{
           "shape":"Integer",
@@ -1226,7 +1235,7 @@
         },
         "jobStateTimeLimitActions":{
           "shape":"JobStateTimeLimitActions",
-          "documentation":"<p>The set of actions that Batch performs on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after <code>maxTimeSeconds</code> has passed.</p>"
+          "documentation":"<p>The set of actions that Batch performs on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after <code>maxTimeSeconds</code> has passed. (<b>Note</b>: The minimum value for maxTimeSeconds is 600 (10 minutes) and its maximum value is 86,400 (24 hours).)</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>CreateJobQueue</code>.</p>"
@@ -1607,7 +1616,7 @@
       "members":{
         "taskProperties":{
           "shape":"ListEcsTaskProperties",
-          "documentation":"<p>An object that contains the properties for the Amazon ECS task definition of a job.</p> <note> <p>This object is currently limited to one element.</p> </note>"
+          "documentation":"<p>An object that contains the properties for the Amazon ECS task definition of a job.</p> <note> <p>This object is currently limited to one task element. However, the task element can run up to 10 containers.</p> </note>"
         }
       },
       "documentation":"<p>An object that contains the properties for the Amazon ECS resources of a job.</p>"
@@ -1733,12 +1742,21 @@
       },
       "documentation":"<p>The properties for a task definition that describes the container and volume definitions of an Amazon ECS task. You can specify which Docker images to use, the required resources, and other configurations related to launching the task definition through an Amazon ECS service or task.</p>"
     },
+    "EksAnnotationsMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
     "EksAttemptContainerDetail":{
       "type":"structure",
       "members":{
         "name":{
           "shape":"String",
           "documentation":"<p>The name of a container.</p>"
+        },
+        "containerID":{
+          "shape":"String",
+          "documentation":"<p>The ID for the container.</p>"
         },
         "exitCode":{
           "shape":"Integer",
@@ -1766,9 +1784,17 @@
           "shape":"EksAttemptContainerDetails",
           "documentation":"<p>The details for the init containers.</p>"
         },
+        "eksClusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon EKS cluster.</p>"
+        },
         "podName":{
           "shape":"String",
           "documentation":"<p>The name of the pod for this job attempt.</p>"
+        },
+        "podNamespace":{
+          "shape":"String",
+          "documentation":"<p>The namespace of the Amazon EKS cluster that the pod exists in.</p>"
         },
         "nodeName":{
           "shape":"String",
@@ -2016,6 +2042,10 @@
           "shape":"String",
           "documentation":"<p>The path on the container where the volume is mounted.</p>"
         },
+        "subPath":{
+          "shape":"String",
+          "documentation":"<p>A sub-path inside the referenced volume instead of its root.</p>"
+        },
         "readOnly":{
           "shape":"Boolean",
           "documentation":"<p>If this value is <code>true</code>, the container has read-only access to the volume. Otherwise, the container can write to the volume. The default value is <code>false</code>.</p>"
@@ -2071,9 +2101,32 @@
         "labels":{
           "shape":"EksLabelsMap",
           "documentation":"<p>Key-value pairs used to identify, sort, and organize cube resources. Can contain up to 63 uppercase letters, lowercase letters, numbers, hyphens (-), and underscores (_). Labels can be added or modified at any time. Each resource can have multiple labels, but each key must be unique for a given object.</p>"
+        },
+        "annotations":{
+          "shape":"EksAnnotationsMap",
+          "documentation":"<p>Key-value pairs used to attach arbitrary, non-identifying metadata to Kubernetes objects. Valid annotation keys have two segments: an optional prefix and a name, separated by a slash (/). </p> <ul> <li> <p>The prefix is optional and must be 253 characters or less. If specified, the prefix must be a DNS subdomain− a series of DNS labels separated by dots (.), and it must end with a slash (/).</p> </li> <li> <p>The name segment is required and must be 63 characters or less. It can include alphanumeric characters ([a-z0-9A-Z]), dashes (-), underscores (_), and dots (.), but must begin and end with an alphanumeric character.</p> </li> </ul> <note> <p>Annotation values must be 255 characters or less.</p> </note> <p>Annotations can be added or modified at any time. Each resource can have multiple annotations. </p>"
+        },
+        "namespace":{
+          "shape":"String",
+          "documentation":"<p>The namespace of the Amazon EKS cluster. In Kubernetes, namespaces provide a mechanism for isolating groups of resources within a single cluster. Names of resources need to be unique within a namespace, but not across namespaces. Batch places Batch Job pods in this namespace. If this field is provided, the value can't be empty or null. It must meet the following requirements:</p> <ul> <li> <p>1-63 characters long</p> </li> <li> <p>Can't be set to default</p> </li> <li> <p>Can't start with <code>kube</code> </p> </li> <li> <p>Must match the following regular expression: <code>^[a-z0-9]([-a-z0-9]*[a-z0-9])?$</code> </p> </li> </ul> <p> For more information, see <a href=\"https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/\">Namespaces</a> in the <i>Kubernetes documentation</i>. This namespace can be different from the <code>kubernetesNamespace</code> set in the compute environment's <code>EksConfiguration</code>, but must have identical role-based access control (RBAC) roles as the compute environment's <code>kubernetesNamespace</code>. For multi-node parallel jobs, the same value must be provided across all the node ranges.</p>"
         }
       },
-      "documentation":"<p>Describes and uniquely identifies Kubernetes resources. For example, the compute environment that a pod runs in or the <code>jobID</code> for a job running in the pod. For more information, see <a href=\"https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/\">Understanding Kubernetes Objects</a> in the <i>Kubernetes documentation</i>.</p>"
+      "documentation":"<p>Describes and uniquely identifies Kubernetes resources. For example, the compute environment that a pod runs in or the <code>jobID</code> for a job running in the pod. For more information, see <a href=\"https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/\"> Understanding Kubernetes Objects</a> in the <i>Kubernetes documentation</i>.</p>"
+    },
+    "EksPersistentVolumeClaim":{
+      "type":"structure",
+      "required":["claimName"],
+      "members":{
+        "claimName":{
+          "shape":"String",
+          "documentation":"<p>The name of the <code>persistentVolumeClaim</code> bounded to a <code>persistentVolume</code>. For more information, see <a href=\"https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims\"> Persistent Volume Claims</a> in the <i>Kubernetes documentation</i>.</p>"
+        },
+        "readOnly":{
+          "shape":"Boolean",
+          "documentation":"<p>An optional boolean value indicating if the mount is read only. Default is false. For more information, see <a href=\"https://kubernetes.io/docs/concepts/storage/volumes/#read-only-mounts\"> Read Only Mounts</a> in the <i>Kubernetes documentation</i>.</p>"
+        }
+      },
+      "documentation":"<p>A <code>persistentVolumeClaim</code> volume is used to mount a <a href=\"https://kubernetes.io/docs/concepts/storage/persistent-volumes/\">PersistentVolume</a> into a Pod. PersistentVolumeClaims are a way for users to \"claim\" durable storage without knowing the details of the particular cloud environment. See the information about <a href=\"https://kubernetes.io/docs/concepts/storage/persistent-volumes/\">PersistentVolumes</a> in the <i>Kubernetes documentation</i>.</p>"
     },
     "EksPodProperties":{
       "type":"structure",
@@ -2096,11 +2149,11 @@
         },
         "containers":{
           "shape":"EksContainers",
-          "documentation":"<p>The properties of the container that's used on the Amazon EKS pod.</p>"
+          "documentation":"<p>The properties of the container that's used on the Amazon EKS pod.</p> <note> <p>This object is limited to 10 elements.</p> </note>"
         },
         "initContainers":{
           "shape":"EksContainers",
-          "documentation":"<p>These containers run before application containers, always runs to completion, and must complete successfully before the next container starts. These containers are registered with the Amazon EKS Connector agent and persists the registration information in the Kubernetes backend data store. For more information, see <a href=\"https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\">Init Containers</a> in the <i>Kubernetes documentation</i>.</p> <note> <p>This object is limited to 10 elements</p> </note>"
+          "documentation":"<p>These containers run before application containers, always runs to completion, and must complete successfully before the next container starts. These containers are registered with the Amazon EKS Connector agent and persists the registration information in the Kubernetes backend data store. For more information, see <a href=\"https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\">Init Containers</a> in the <i>Kubernetes documentation</i>.</p> <note> <p>This object is limited to 10 elements.</p> </note>"
         },
         "volumes":{
           "shape":"EksVolumes",
@@ -2176,7 +2229,7 @@
         },
         "initContainers":{
           "shape":"EksContainerOverrideList",
-          "documentation":"<p>The overrides for the conatainers defined in the Amazon EKS pod. These containers run before application containers, always runs to completion, and must complete successfully before the next container starts. These containers are registered with the Amazon EKS Connector agent and persists the registration information in the Kubernetes backend data store. For more information, see <a href=\"https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\">Init Containers</a> in the <i>Kubernetes documentation</i>.</p> <note> <p>This object is limited to 10 elements</p> </note>"
+          "documentation":"<p>The overrides for the <code>initContainers</code> defined in the Amazon EKS pod. These containers run before application containers, always runs to completion, and must complete successfully before the next container starts. These containers are registered with the Amazon EKS Connector agent and persists the registration information in the Kubernetes backend data store. For more information, see <a href=\"https://kubernetes.io/docs/concepts/workloads/pods/init-containers/\">Init Containers</a> in the <i>Kubernetes documentation</i>.</p>"
         },
         "metadata":{
           "shape":"EksMetadata",
@@ -2254,6 +2307,10 @@
         "secret":{
           "shape":"EksSecret",
           "documentation":"<p>Specifies the configuration of a Kubernetes <code>secret</code> volume. For more information, see <a href=\"https://kubernetes.io/docs/concepts/storage/volumes/#secret\">secret</a> in the <i>Kubernetes documentation</i>.</p>"
+        },
+        "persistentVolumeClaim":{
+          "shape":"EksPersistentVolumeClaim",
+          "documentation":"<p>Specifies the configuration of a Kubernetes <code>persistentVolumeClaim</code> bounded to a <code>persistentVolume</code>. For more information, see <a href=\"https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims\"> Persistent Volume Claims</a> in the <i>Kubernetes documentation</i>.</p>"
         }
       },
       "documentation":"<p>Specifies an Amazon EKS volume for a job definition.</p>"
@@ -2913,10 +2970,40 @@
         },
         "version":{
           "shape":"String",
-          "documentation":"<p>The version number of the launch template, <code>$Latest</code>, or <code>$Default</code>.</p> <p>If the value is <code>$Latest</code>, the latest version of the launch template is used. If the value is <code>$Default</code>, the default version of the launch template is used.</p> <important> <p>If the AMI ID that's used in a compute environment is from the launch template, the AMI isn't changed when the compute environment is updated. It's only changed if the <code>updateToLatestImageVersion</code> parameter for the compute environment is set to <code>true</code>. During an infrastructure update, if either <code>$Latest</code> or <code>$Default</code> is specified, Batch re-evaluates the launch template version, and it might use a different version of the launch template. This is the case even if the launch template isn't specified in the update. When updating a compute environment, changing the launch template requires an infrastructure update of the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p> </important> <p>Default: <code>$Default</code>.</p>"
+          "documentation":"<p>The version number of the launch template, <code>$Default</code>, or <code>$Latest</code>.</p> <p>If the value is <code>$Default</code>, the default version of the launch template is used. If the value is <code>$Latest</code>, the latest version of the launch template is used. </p> <important> <p>If the AMI ID that's used in a compute environment is from the launch template, the AMI isn't changed when the compute environment is updated. It's only changed if the <code>updateToLatestImageVersion</code> parameter for the compute environment is set to <code>true</code>. During an infrastructure update, if either <code>$Default</code> or <code>$Latest</code> is specified, Batch re-evaluates the launch template version, and it might use a different version of the launch template. This is the case even if the launch template isn't specified in the update. When updating a compute environment, changing the launch template requires an infrastructure update of the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p> </important> <p>Default: <code>$Default</code> </p> <p>Latest: <code>$Latest</code> </p>"
+        },
+        "overrides":{
+          "shape":"LaunchTemplateSpecificationOverrideList",
+          "documentation":"<p>A launch template to use in place of the default launch template. You must specify either the launch template ID or launch template name in the request, but not both.</p> <p>You can specify up to ten (10) launch template overrides that are associated to unique instance types or families for each compute environment.</p> <note> <p>To unset all override templates for a compute environment, you can pass an empty array to the <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_UpdateComputeEnvironment.html\">UpdateComputeEnvironment.overrides</a> parameter, or not include the <code>overrides</code> parameter when submitting the <code>UpdateComputeEnvironment</code> API operation.</p> </note>"
         }
       },
       "documentation":"<p>An object that represents a launch template that's associated with a compute resource. You must specify either the launch template ID or launch template name in the request, but not both.</p> <p>If security groups are specified using both the <code>securityGroupIds</code> parameter of <code>CreateComputeEnvironment</code> and the launch template, the values in the <code>securityGroupIds</code> parameter of <code>CreateComputeEnvironment</code> will be used.</p> <note> <p>This object isn't applicable to jobs that are running on Fargate resources.</p> </note>"
+    },
+    "LaunchTemplateSpecificationOverride":{
+      "type":"structure",
+      "members":{
+        "launchTemplateId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the launch template.</p> <p> <b>Note:</b> If you specify the <code>launchTemplateId</code> you can't specify the <code>launchTemplateName</code> as well.</p>"
+        },
+        "launchTemplateName":{
+          "shape":"String",
+          "documentation":"<p>The name of the launch template.</p> <p> <b>Note:</b> If you specify the <code>launchTemplateName</code> you can't specify the <code>launchTemplateId</code> as well.</p>"
+        },
+        "version":{
+          "shape":"String",
+          "documentation":"<p>The version number of the launch template, <code>$Default</code>, or <code>$Latest</code>.</p> <p>If the value is <code>$Default</code>, the default version of the launch template is used. If the value is <code>$Latest</code>, the latest version of the launch template is used. </p> <important> <p>If the AMI ID that's used in a compute environment is from the launch template, the AMI isn't changed when the compute environment is updated. It's only changed if the <code>updateToLatestImageVersion</code> parameter for the compute environment is set to <code>true</code>. During an infrastructure update, if either <code>$Default</code> or <code>$Latest</code> is specified, Batch re-evaluates the launch template version, and it might use a different version of the launch template. This is the case even if the launch template isn't specified in the update. When updating a compute environment, changing the launch template requires an infrastructure update of the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p> </important> <p>Default: <code>$Default</code> </p> <p>Latest: <code>$Latest</code> </p>"
+        },
+        "targetInstanceTypes":{
+          "shape":"StringList",
+          "documentation":"<p>The instance type or family that this this override launch template should be applied to.</p> <p>This parameter is required when defining a launch template override.</p> <p>Information included in this parameter must meet the following requirements:</p> <ul> <li> <p>Must be a valid Amazon EC2 instance type or family.</p> </li> <li> <p> <code>optimal</code> isn't allowed.</p> </li> <li> <p> <code>targetInstanceTypes</code> can target only instance types and families that are included within the <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_ComputeResource.html#Batch-Type-ComputeResource-instanceTypes\"> <code>ComputeResource.instanceTypes</code> </a> set. <code>targetInstanceTypes</code> doesn't need to include all of the instances from the <code>instanceType</code> set, but at least a subset. For example, if <code>ComputeResource.instanceTypes</code> includes <code>[m5, g5]</code>, <code>targetInstanceTypes</code> can include <code>[m5.2xlarge]</code> and <code>[m5.large]</code> but not <code>[c5.large]</code>.</p> </li> <li> <p> <code>targetInstanceTypes</code> included within the same launch template override or across launch template overrides can't overlap for the same compute environment. For example, you can't define one launch template override to target an instance family and another define an instance type within this same family.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An object that represents a launch template to use in place of the default launch template. You must specify either the launch template ID or launch template name in the request, but not both.</p> <p>If security groups are specified using both the <code>securityGroupIds</code> parameter of <code>CreateComputeEnvironment</code> and the launch template, the values in the <code>securityGroupIds</code> parameter of <code>CreateComputeEnvironment</code> will be used.</p> <p>You can define up to ten (10) overrides for each compute environment.</p> <note> <p>This object isn't applicable to jobs that are running on Fargate resources.</p> </note> <note> <p>To unset all override templates for a compute environment, you can pass an empty array to the <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_UpdateComputeEnvironment.html\">UpdateComputeEnvironment.overrides</a> parameter, or not include the <code>overrides</code> parameter when submitting the <code>UpdateComputeEnvironment</code> API operation.</p> </note>"
+    },
+    "LaunchTemplateSpecificationOverrideList":{
+      "type":"list",
+      "member":{"shape":"LaunchTemplateSpecificationOverride"}
     },
     "LinuxParameters":{
       "type":"structure",
@@ -3260,6 +3347,10 @@
         "instanceTypes":{
           "shape":"StringList",
           "documentation":"<p>An object that contains the instance types that you want to replace for the existing resources of a job.</p>"
+        },
+        "eksPropertiesOverride":{
+          "shape":"EksPropertiesOverride",
+          "documentation":"<p>An object that contains the properties that you want to replace for the existing Amazon EKS resources of a job.</p>"
         }
       },
       "documentation":"<p>The object that represents any node overrides to a job definition that's used in a <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_SubmitJob.html\">SubmitJob</a> API operation.</p>"
@@ -3290,6 +3381,10 @@
         },
         "ecsProperties":{
           "shape":"EcsProperties",
+          "documentation":"<p>This is an object that represents the properties of the node range for a multi-node parallel job.</p>"
+        },
+        "eksProperties":{
+          "shape":"EksProperties",
           "documentation":"<p>This is an object that represents the properties of the node range for a multi-node parallel job.</p>"
         }
       },
@@ -3952,7 +4047,7 @@
         },
         "reason":{
           "shape":"String",
-          "documentation":"<p>A message to attach to the job that explains the reason for canceling it. This message is returned by future <a>DescribeJobs</a> operations on the job. This message is also recorded in the Batch activity logs.</p>"
+          "documentation":"<p>A message to attach to the job that explains the reason for canceling it. This message is returned by future <a>DescribeJobs</a> operations on the job. It is also recorded in the Batch activity logs.</p> <p>This parameter has as limit of 1024 characters.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>TerminateJob</code>.</p>"
@@ -4069,6 +4164,10 @@
         "updatePolicy":{
           "shape":"UpdatePolicy",
           "documentation":"<p>Specifies the updated infrastructure update policy for the compute environment. For more information about infrastructure updates, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p>"
+        },
+        "context":{
+          "shape":"String",
+          "documentation":"<p>Reserved.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>UpdateComputeEnvironment</code>.</p>"
@@ -4112,7 +4211,7 @@
         },
         "jobStateTimeLimitActions":{
           "shape":"JobStateTimeLimitActions",
-          "documentation":"<p>The set of actions that Batch perform on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after <code>maxTimeSeconds</code> has passed.</p>"
+          "documentation":"<p>The set of actions that Batch perform on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after <code>maxTimeSeconds</code> has passed. (<b>Note</b>: The minimum value for maxTimeSeconds is 600 (10 minutes) and its maximum value is 86,400 (24 hours).)</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>UpdateJobQueue</code>.</p>"

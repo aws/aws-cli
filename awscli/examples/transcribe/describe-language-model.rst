@@ -17,8 +17,8 @@ Output::
             "ModelStatus": "IN_PROGRESS",
             "UpgradeAvailability": false,
             "InputDataConfig": {
-                "S3Uri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-Prefix/",
-                "TuningDataS3Uri": "s3://DOC-EXAMPLE-BUCKET/Amazon-S3-Prefix/",
+                "S3Uri": "s3://amzn-s3-demo-bucket/Amazon-S3-Prefix/",
+                "TuningDataS3Uri": "s3://amzn-s3-demo-bucket/Amazon-S3-Prefix/",
                 "DataAccessRoleArn": "arn:aws:iam::AWS-account-number:role/IAM-role-with-permissions-to-create-a-custom-language-model"
             }
         }

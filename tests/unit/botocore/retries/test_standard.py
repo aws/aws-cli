@@ -1,6 +1,5 @@
-from tests import unittest
+from tests import mock, unittest
 
-import mock
 import pytest
 
 from botocore.retries import standard

@@ -280,7 +280,16 @@ class AcceptorConfig(object):
             # response.  So response is still a dictionary, and in the case
             # of an error response will contain the "Error" and
             # "ResponseMetadata" key.
-            return response.get("Error", {}).get("Code", "") == expected
+            # When expected is True, accept any error code.
+            # When expected is False, check if any errors were encountered.
+            # Otherwise, check for a specific AWS error code.
+            if expected is True:
+                return "Error" in response and "Code" in response["Error"]
+            elif expected is False:
+                return "Error" not in response
+            else:
+                return response.get("Error", {}).get("Code", "") == expected
+            
         return acceptor_matches
 
 

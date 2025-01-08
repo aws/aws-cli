@@ -11,16 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import datetime
-import mock
-
 import pytest
 
 from botocore.exceptions import MD5UnavailableError
 from botocore.compat import (
-    total_seconds, unquote_str, six, ensure_bytes, get_md5,
+    total_seconds, unquote_str, ensure_bytes, get_md5,
     compat_shell_split, get_tzinfo_options
 )
-from tests import BaseEnvVar, unittest
+from tests import BaseEnvVar, mock, unittest
 
 
 class TotalSecondsTest(BaseEnvVar):
@@ -58,25 +56,25 @@ class TestEnsureBytes(unittest.TestCase):
     def test_string(self):
         value = 'foo'
         response = ensure_bytes(value)
-        self.assertIsInstance(response, six.binary_type)
+        self.assertIsInstance(response, bytes)
         self.assertEqual(response, b'foo')
 
     def test_binary(self):
         value = b'bar'
         response = ensure_bytes(value)
-        self.assertIsInstance(response, six.binary_type)
+        self.assertIsInstance(response, bytes)
         self.assertEqual(response, b'bar')
 
     def test_unicode(self):
         value = u'baz'
         response = ensure_bytes(value)
-        self.assertIsInstance(response, six.binary_type)
+        self.assertIsInstance(response, bytes)
         self.assertEqual(response, b'baz')
 
     def test_non_ascii(self):
         value = u'\u2713'
         response = ensure_bytes(value)
-        self.assertIsInstance(response, six.binary_type)
+        self.assertIsInstance(response, bytes)
         self.assertEqual(response, b'\xe2\x9c\x93')
 
     def test_non_string_or_bytes_raises_error(self):

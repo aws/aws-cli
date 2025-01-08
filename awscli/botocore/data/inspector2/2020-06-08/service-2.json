@@ -11,7 +11,8 @@
     "serviceId":"Inspector2",
     "signatureVersion":"v4",
     "signingName":"inspector2",
-    "uid":"inspector2-2020-06-08"
+    "uid":"inspector2-2020-06-08",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AssociateMember":{
@@ -24,12 +25,13 @@
       "input":{"shape":"AssociateMemberRequest"},
       "output":{"shape":"AssociateMemberResponse"},
       "errors":[
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Associates an Amazon Web Services account with an Amazon Inspector delegated administrator. An HTTP 200 response indicates the association was successfully started, but doesn’t indicate whether it was completed. You can check if the association completed by using <a href=\"https://docs.aws.amazon.com/inspector/v2/APIReference/API_ListMembers.html\">ListMembers</a> for multiple accounts or <a href=\"https://docs.aws.amazon.com/inspector/v2/APIReference/API_GetMember.html\">GetMembers</a> for a single account.</p>"
+      "documentation":"<p> Associates an Amazon Web Services account with an Amazon Inspector delegated administrator. An HTTP 200 response indicates the association was started but doesn’t indicate whether it completed. You can check if the association completed using <a href=\"https://docs.aws.amazon.com/inspector/v2/APIReference/API_ListMembers.html\">ListMembers</a> for multiple accounts or <a href=\"https://docs.aws.amazon.com/inspector/v2/APIReference/API_GetMember.html\">GetMembers</a> for a single account. An HTTP 402 response indicates the association failed because the organization size exceeded its limit. For information on limits, see <a href=\"https://docs.aws.amazon.com/inspector/latest/user/quotas.html\">Amazon Inspector quotas</a>. </p>"
     },
     "BatchGetAccountStatus":{
       "name":"BatchGetAccountStatus",
@@ -646,7 +648,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists coverage details for you environment.</p>"
+      "documentation":"<p>Lists coverage details for your environment.</p>"
     },
     "ListCoverageStatistics":{
       "name":"ListCoverageStatistics",
@@ -890,7 +892,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Stops a CIS session. This API is used by the Amazon Inspector SSM plugin to communicate with the Amazon Inspector service. The Amazon Inspector SSM plugin calls this API to start a CIS scan session for the scan ID supplied by the service. </p>",
+      "documentation":"<p> Stops a CIS session. This API is used by the Amazon Inspector SSM plugin to communicate with the Amazon Inspector service. The Amazon Inspector SSM plugin calls this API to stop a CIS scan session for the scan ID supplied by the service. </p>",
       "idempotent":true
     },
     "TagResource":{
@@ -1118,6 +1120,14 @@
         "accountId":{
           "shape":"AccountId",
           "documentation":"<p>The Amazon Web Services account ID.</p>"
+        },
+        "exploitAvailableCount":{
+          "shape":"Long",
+          "documentation":"<p> The number of findings that have an exploit available. </p>"
+        },
+        "fixAvailableCount":{
+          "shape":"Long",
+          "documentation":"<p> Details about the number of fixes. </p>"
         },
         "severityCounts":{
           "shape":"SeverityCounts",
@@ -3040,7 +3050,7 @@
         },
         "scanMode":{
           "shape":"CoverageStringFilterList",
-          "documentation":"<p>The filter to search for Amazon EC2 instance coverage by scan mode. Valid values are <code>EC2_SSM_AGENT_BASED</code> and <code>EC2_HYBRID</code>.</p>"
+          "documentation":"<p>The filter to search for Amazon EC2 instance coverage by scan mode. Valid values are <code>EC2_SSM_AGENT_BASED</code> and <code>EC2_AGENTLESS</code>.</p>"
         },
         "scanStatusCode":{
           "shape":"CoverageStringFilterList",
@@ -3329,7 +3339,10 @@
           "shape":"ResourceFilterCriteria",
           "documentation":"<p>The resource filter criteria for the software bill of materials (SBOM) report.</p>"
         },
-        "s3Destination":{"shape":"Destination"}
+        "s3Destination":{
+          "shape":"Destination",
+          "documentation":"<p>Contains details of the Amazon S3 bucket and KMS key used to export findings.</p>"
+        }
       }
     },
     "CreateSbomExportResponse":{
@@ -4125,7 +4138,9 @@
         "EVENTBRIDGE_THROTTLED",
         "RESOURCE_SCAN_NOT_DISABLED",
         "DISASSOCIATE_ALL_MEMBERS",
-        "ACCOUNT_IS_ISOLATED"
+        "ACCOUNT_IS_ISOLATED",
+        "EC2_SSM_RESOURCE_DATA_SYNC_LIMIT_EXCEEDED",
+        "EC2_SSM_ASSOCIATION_VERSION_LIMIT_EXCEEDED"
       ]
     },
     "ErrorMessage":{"type":"string"},
@@ -4660,7 +4675,10 @@
     "FindingDetail":{
       "type":"structure",
       "members":{
-        "cisaData":{"shape":"CisaData"},
+        "cisaData":{
+          "shape":"CisaData",
+          "documentation":"<p>The Cybersecurity and Infrastructure Security Agency (CISA) details for a specific vulnerability.</p>"
+        },
         "cwes":{
           "shape":"Cwes",
           "documentation":"<p>The Common Weakness Enumerations (CWEs) associated with the vulnerability.</p>"
@@ -4673,7 +4691,10 @@
           "shape":"EvidenceList",
           "documentation":"<p>Information on the evidence of the vulnerability.</p>"
         },
-        "exploitObserved":{"shape":"ExploitObserved"},
+        "exploitObserved":{
+          "shape":"ExploitObserved",
+          "documentation":"<p>Contains information on when this exploit was observed.</p>"
+        },
         "findingArn":{
           "shape":"FindingArn",
           "documentation":"<p>The finding ARN that the vulnerability details are associated with.</p>"
@@ -4793,6 +4814,14 @@
         "accountId":{
           "shape":"AccountId",
           "documentation":"<p>The ID of the Amazon Web Services account associated with the findings.</p>"
+        },
+        "exploitAvailableCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of findings that have an exploit available.</p>"
+        },
+        "fixAvailableCount":{
+          "shape":"Long",
+          "documentation":"<p> Details about the number of fixes. </p>"
         },
         "severityCounts":{
           "shape":"SeverityCounts",
@@ -5197,7 +5226,10 @@
           "shape":"ReportId",
           "documentation":"<p>The report ID of the software bill of materials (SBOM) report.</p>"
         },
-        "s3Destination":{"shape":"Destination"},
+        "s3Destination":{
+          "shape":"Destination",
+          "documentation":"<p>Contains details of the Amazon S3 bucket and KMS key used to export findings</p>"
+        },
         "status":{
           "shape":"ExternalReportStatus",
           "documentation":"<p>The status of the software bill of materials (SBOM) report.</p>"
@@ -5403,7 +5435,10 @@
           "shape":"String",
           "documentation":"<p>The runtimes included in the aggregation results.</p>"
         },
-        "severityCounts":{"shape":"SeverityCounts"}
+        "severityCounts":{
+          "shape":"SeverityCounts",
+          "documentation":"<p>An object that contains the counts of aggregated finding per severity.</p>"
+        }
       },
       "documentation":"<p>A response that contains the results of an Amazon Web Services Lambda function finding aggregation.</p>"
     },
@@ -5488,7 +5523,10 @@
           "shape":"NonEmptyString",
           "documentation":"<p>The Resource ID of the Amazon Web Services Lambda function layer.</p>"
         },
-        "severityCounts":{"shape":"SeverityCounts"}
+        "severityCounts":{
+          "shape":"SeverityCounts",
+          "documentation":"<p>An object that contains the counts of aggregated finding per severity.</p>"
+        }
       },
       "documentation":"<p>A response that contains the results of an Amazon Web Services Lambda function layer finding aggregation.</p>"
     },
@@ -6464,6 +6502,10 @@
           "shape":"NumberFilter",
           "documentation":"<p>An object that contains details on the package epoch to filter on.</p>"
         },
+        "filePath":{
+          "shape":"StringFilter",
+          "documentation":"<p>An object that contains details on the package file path to filter on.</p>"
+        },
         "name":{
           "shape":"StringFilter",
           "documentation":"<p>An object that contains details on the name of the package to filter on.</p>"
@@ -6472,7 +6514,10 @@
           "shape":"StringFilter",
           "documentation":"<p>An object that contains details on the package release to filter on.</p>"
         },
-        "sourceLambdaLayerArn":{"shape":"StringFilter"},
+        "sourceLambdaLayerArn":{
+          "shape":"StringFilter",
+          "documentation":"<p>An object that describes the details of a string filter.</p>"
+        },
         "sourceLayerHash":{
           "shape":"StringFilter",
           "documentation":"<p>An object that contains details on the source layer hash to filter on.</p>"
@@ -6509,7 +6554,8 @@
         "PYTHONPKG",
         "NODEPKG",
         "POM",
-        "GEMSPEC"
+        "GEMSPEC",
+        "DOTNET_CORE"
       ]
     },
     "PackageName":{
@@ -7054,8 +7100,14 @@
           "shape":"State",
           "documentation":"<p>An object detailing the state of Amazon Inspector scanning for Amazon ECR resources.</p>"
         },
-        "lambda":{"shape":"State"},
-        "lambdaCode":{"shape":"State"}
+        "lambda":{
+          "shape":"State",
+          "documentation":"<p>An object that described the state of Amazon Inspector scans for an account.</p>"
+        },
+        "lambdaCode":{
+          "shape":"State",
+          "documentation":"<p>An object that described the state of Amazon Inspector scans for an account.</p>"
+        }
       },
       "documentation":"<p>Details the state of Amazon Inspector for each resource type Amazon Inspector scans.</p>"
     },
@@ -7162,7 +7214,13 @@
         "NODEJS_18_X",
         "GO_1_X",
         "JAVA_17",
-        "PYTHON_3_10"
+        "PYTHON_3_10",
+        "PYTHON_3_11",
+        "DOTNETCORE_3_1",
+        "DOTNET_6",
+        "DOTNET_7",
+        "RUBY_2_7",
+        "RUBY_3_2"
       ]
     },
     "SbomReportFormat":{
@@ -7230,7 +7288,9 @@
         "DEEP_INSPECTION_PACKAGE_COLLECTION_LIMIT_EXCEEDED",
         "DEEP_INSPECTION_DAILY_SSM_INVENTORY_LIMIT_EXCEEDED",
         "DEEP_INSPECTION_COLLECTION_TIME_LIMIT_EXCEEDED",
-        "DEEP_INSPECTION_NO_INVENTORY"
+        "DEEP_INSPECTION_NO_INVENTORY",
+        "AGENTLESS_INSTANCE_STORAGE_LIMIT_EXCEEDED",
+        "AGENTLESS_INSTANCE_COLLECTION_TIME_LIMIT_EXCEEDED"
       ]
     },
     "ScanType":{
@@ -7849,7 +7909,7 @@
     },
     "TagValueList":{
       "type":"list",
-      "member":{"shape":"String"},
+      "member":{"shape":"TargetResourceTagsValue"},
       "max":5,
       "min":1
     },
@@ -7870,9 +7930,20 @@
     },
     "TargetResourceTags":{
       "type":"map",
-      "key":{"shape":"NonEmptyString"},
+      "key":{"shape":"TargetResourceTagsKey"},
       "value":{"shape":"TagValueList"},
       "max":5,
+      "min":1
+    },
+    "TargetResourceTagsKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[\\p{L}\\p{Z}\\p{N}_.:/=\\-@]*$"
+    },
+    "TargetResourceTagsValue":{
+      "type":"string",
+      "max":256,
       "min":1
     },
     "TargetStatusFilterList":{

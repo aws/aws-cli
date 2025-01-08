@@ -9,7 +9,8 @@
     "serviceFullName":"AWS IoT Greengrass V2",
     "serviceId":"GreengrassV2",
     "signatureVersion":"v4",
-    "uid":"greengrassv2-2020-11-30"
+    "uid":"greengrassv2-2020-11-30",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AssociateServiceRoleToAccount":{
@@ -369,7 +370,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves a paginated list of Greengrass core devices.</p> <note> <p>IoT Greengrass relies on individual devices to send status updates to the Amazon Web Services Cloud. If the IoT Greengrass Core software isn't running on the device, or if device isn't connected to the Amazon Web Services Cloud, then the reported status of that device might not reflect its current status. The status timestamp indicates when the device status was last updated.</p> <p>Core devices send status updates at the following times:</p> <ul> <li> <p>When the IoT Greengrass Core software starts</p> </li> <li> <p>When the core device receives a deployment from the Amazon Web Services Cloud</p> </li> <li> <p>When the status of any component on the core device becomes <code>BROKEN</code> </p> </li> <li> <p>At a <a href=\"https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html#greengrass-nucleus-component-configuration-fss\">regular interval that you can configure</a>, which defaults to 24 hours</p> </li> <li> <p>For IoT Greengrass Core v2.7.0, the core device sends status updates upon local deployment and cloud deployment</p> </li> </ul> </note>"
+      "documentation":"<p>Retrieves a paginated list of Greengrass core devices.</p> <note> <p>IoT Greengrass relies on individual devices to send status updates to the Amazon Web Services Cloud. If the IoT Greengrass Core software isn't running on the device, or if device isn't connected to the Amazon Web Services Cloud, then the reported status of that device might not reflect its current status. The status timestamp indicates when the device status was last updated.</p> <p>Core devices send status updates at the following times:</p> <ul> <li> <p>When the IoT Greengrass Core software starts</p> </li> <li> <p>When the core device receives a deployment from the Amazon Web Services Cloud</p> </li> <li> <p>For Greengrass nucleus 2.12.2 and earlier, the core device sends status updates when the status of any component on the core device becomes <code>ERRORED</code> or <code>BROKEN</code>.</p> </li> <li> <p>For Greengrass nucleus 2.12.3 and later, the core device sends status updates when the status of any component on the core device becomes <code>ERRORED</code>, <code>BROKEN</code>, <code>RUNNING</code>, or <code>FINISHED</code>.</p> </li> <li> <p>At a <a href=\"https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html#greengrass-nucleus-component-configuration-fss\">regular interval that you can configure</a>, which defaults to 24 hours</p> </li> <li> <p>For IoT Greengrass Core v2.7.0, the core device sends status updates upon local deployment and cloud deployment</p> </li> </ul> </note>"
     },
     "ListDeployments":{
       "name":"ListDeployments",
@@ -1011,6 +1012,18 @@
         "lastStatusUpdateTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time at which the core device's status last updated, expressed in ISO 8601 format.</p>"
+        },
+        "platform":{
+          "shape":"CoreDevicePlatformString",
+          "documentation":"<p>The operating system platform that the core device runs.</p>"
+        },
+        "architecture":{
+          "shape":"CoreDeviceArchitectureString",
+          "documentation":"<p>The computer architecture of the core device.</p>"
+        },
+        "runtime":{
+          "shape":"CoreDeviceRuntimeString",
+          "documentation":"<p>The runtime for the core device. The runtime can be:</p> <ul> <li> <p> <code>aws_nucleus_classic</code> </p> </li> <li> <p> <code>aws_nucleus_lite</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p>Contains information about a Greengrass core device, which is an IoT thing that runs the IoT Greengrass Core software.</p>"
@@ -1021,6 +1034,11 @@
       "min":1
     },
     "CoreDevicePlatformString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "CoreDeviceRuntimeString":{
       "type":"string",
       "max":255,
       "min":1
@@ -1703,6 +1721,10 @@
         "architecture":{
           "shape":"CoreDeviceArchitectureString",
           "documentation":"<p>The computer architecture of the core device.</p>"
+        },
+        "runtime":{
+          "shape":"CoreDeviceRuntimeString",
+          "documentation":"<p>The runtime for the core device. The runtime can be:</p> <ul> <li> <p> <code>aws_nucleus_classic</code> </p> </li> <li> <p> <code>aws_nucleus_lite</code> </p> </li> </ul>"
         },
         "status":{
           "shape":"CoreDeviceStatus",
@@ -2466,6 +2488,12 @@
           "box":true,
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "runtime":{
+          "shape":"CoreDeviceRuntimeString",
+          "documentation":"<p>The runtime to be used by the core device. The runtime can be:</p> <ul> <li> <p> <code>aws_nucleus_classic</code> </p> </li> <li> <p> <code>aws_nucleus_lite</code> </p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"runtime"
         }
       }
     },

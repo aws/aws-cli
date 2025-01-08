@@ -14,10 +14,7 @@ from botocore.session import get_session
 from botocore.handlers import disable_signing
 import os
 
-from awscli.testutils import unittest
-from awscli.compat import six
-import mock
-
+from awscli.testutils import mock, unittest
 from awscli.customizations import globalargs
 from awscli.customizations.exceptions import ParamValidationError
 
@@ -60,7 +57,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         parsed_args = FakeParsedArgs(query='foo.bar')
         globalargs.resolve_types(parsed_args)
         # Assert that it looks like a jmespath parsed expression.
-        self.assertFalse(isinstance(parsed_args.query, six.string_types))
+        self.assertFalse(isinstance(parsed_args.query, str))
         self.assertTrue(hasattr(parsed_args.query, 'search'))
 
     def test_parse_query_error_message(self):

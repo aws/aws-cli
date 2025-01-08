@@ -20,10 +20,12 @@ from awscli.testutils import BaseAWSCommandParamsTest
 import logging
 import io
 
-import mock
+from awscli.testutils import mock
+
 import awscrt.io
-from awscli.compat import six
 from botocore import xform_name
+import sys
+
 from botocore.awsrequest import AWSResponse
 from botocore.exceptions import NoCredentialsError
 from botocore.compat import OrderedDict
@@ -41,6 +43,7 @@ from awscli.paramfile import URIArgumentHandler
 from awscli.customizations.commands import BasicCommand
 from awscli import formatter
 from awscli.argparser import HELP_BLURB
+from awscli.compat import StringIO
 from botocore.hooks import HierarchicalEmitter
 from botocore.configprovider import create_botocore_default_config_mapping
 from botocore.configprovider import ConfigChainFactory
@@ -336,14 +339,8 @@ class TestCliDriver(unittest.TestCase):
         self.assertEqual(rc, 130)
 
     def test_error_unicode(self):
-        # We need a different type for Py3 and Py2 because on Py3 six.StringIO
-        # doesn't let us set the encoding and returns a string.
-        if six.PY3:
-            stderr_b = io.BytesIO()
-            stderr = io.TextIOWrapper(stderr_b, encoding="UTF-8")
-        else:
-            stderr = stderr_b = six.StringIO()
-            stderr.encoding = "UTF-8"
+        stderr_b = io.BytesIO()
+        stderr = io.TextIOWrapper(stderr_b, encoding="UTF-8")
         fake_client = mock.Mock()
         fake_client.list_objects.side_effect = Exception(u"☃")
         fake_client.can_paginate.return_value = False
@@ -404,8 +401,8 @@ class TestCliDriverHooks(unittest.TestCase):
         self.session.set_config_variable('cli_auto_prompt', 'off')
         self.emitter = mock.Mock()
         self.emitter.emit.return_value = []
-        self.stdout = six.StringIO()
-        self.stderr = six.StringIO()
+        self.stdout = StringIO()
+        self.stderr = StringIO()
         self.stdout_patch = mock.patch('sys.stdout', self.stdout)
         #self.stdout_patch.start()
         self.stderr_patch = mock.patch('sys.stderr', self.stderr)
@@ -501,7 +498,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
     # but with the http part mocked out.
     def setUp(self):
         super(TestAWSCommand, self).setUp()
-        self.stderr = six.StringIO()
+        self.stderr = StringIO()
         self.stderr_patch = mock.patch('sys.stderr', self.stderr)
         self.stderr_patch.start()
 

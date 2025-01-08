@@ -17,8 +17,6 @@ import hmac
 import base64
 import datetime
 
-from awscli.compat import six
-
 from awscli.arguments import CustomArgument
 from awscli.customizations.exceptions import ParamValidationError
 
@@ -135,7 +133,7 @@ def _generate_signature(params):
     if policy and sak:
         policy = base64.b64encode(policy).decode('utf-8')
         new_hmac = hmac.new(sak.encode('utf-8'), digestmod=sha1)
-        new_hmac.update(six.b(policy))
+        new_hmac.update(policy.encode('latin-1'))
         ps = base64.encodebytes(new_hmac.digest()).strip().decode('utf-8')
         params['UploadPolicySignature'] = ps
         del params['_SAK']

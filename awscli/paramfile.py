@@ -14,11 +14,8 @@ import logging
 import os
 import copy
 
-from awscli.compat import six
-
 from awscli.compat import compat_open
-from awscli.argprocess import ParamError
-
+from awscli import argprocess
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +41,7 @@ class URIArgumentHandler(object):
         try:
             return get_paramfile(value, self._prefixes)
         except ResourceLoadingError as e:
-            raise ParamError(param.cli_name, six.text_type(e))
+            raise argprocess.ParamError(param.cli_name, str(e))
 
 
 def get_paramfile(path, cases):
@@ -71,7 +68,7 @@ def get_paramfile(path, cases):
 
     """
     data = None
-    if isinstance(path, six.string_types):
+    if isinstance(path, str):
         for prefix, function_spec in cases.items():
             if path.startswith(prefix):
                 function, kwargs = function_spec

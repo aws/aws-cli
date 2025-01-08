@@ -1,6 +1,6 @@
 **To discontinue fast launching for an image**
 
-The following ``disable-fast-launch`` example discontinues fast launching on the specified AMI, and cleans up existing pre-provisioned snapshots. ::
+The following ``disable-fast-launch`` example discontinues Fast Launch for the specified AMI, and cleans up existing pre-provisioned snapshots. ::
 
     aws ec2 disable-fast-launch \
         --image-id ami-01234567890abcedf
@@ -23,4 +23,4 @@ Output::
         "StateTransitionTime": "2022-01-27T22:47:29.265000+00:00"
     }
 
-For more information about configuring a Windows AMI for faster launching, see `Configure your AMI for faster launching <https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/windows-ami-version-history.html#win-ami-config-fast-launch>`__ in the *Amazon EC2 User Guide*.
+For more information, see `Configure EC2 Fast Launch settings for your Windows AMI <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/win-fast-launch-configure.html>`__ in the *Amazon EC2 User Guide*.

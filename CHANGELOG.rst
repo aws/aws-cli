@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.36.36
+=======
+
+* api-change:``rds``: Updates Amazon RDS documentation to clarify the RestoreDBClusterToPointInTime description.
+* api-change:``route53``: Amazon Route 53 now supports the Asia Pacific (Thailand) Region (ap-southeast-7) for latency records, geoproximity records, and private DNS for Amazon VPCs in that region
+* api-change:``sagemaker``: Adds support for IPv6 for SageMaker HyperPod cluster nodes.
+
+
 1.36.35
 =======
 

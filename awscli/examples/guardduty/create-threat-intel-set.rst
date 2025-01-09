@@ -1,12 +1,12 @@
-**To create a new threat intel set in the current region.**
+**To create and activate a new threat intel set**
 
-This example shows how to upload a threat intel set to GuardDuty and activate it immediately. ::
+The following ``create-threat-intel-set`` example creates and activates a threat intel set in the current Region. ::
 
     aws guardduty create-threat-intel-set \
         --detector-id b6b992d6d2f48e64bc59180bfexample \
-        --name myThreatSet \
+        --name myThreatSet-example \
         --format TXT \
-        --location s3://EXAMPLEBUCKET/threatlist.csv \
+        --location s3://amzn-s3-demo-bucket/threatlist.csv \
         --activate 
 
 Output::
@@ -15,4 +15,4 @@ Output::
         "ThreatIntelSetId": "20b9a4691aeb33506b808878cexample"
     }
 
-For more information, see `Trusted IP and threat lists <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_upload_lists.html>`__ in the *GuardDuty User Guide*.
+For more information, see `Working with Trusted IP Lists and Threat Lists <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_upload_lists.html>`__ in the *GuardDuty User Guide*.

@@ -611,6 +611,20 @@
       "member":{"shape":"AccountId"}
     },
     "AllocatedStorage":{"type":"integer"},
+    "AllocationStrategy":{
+      "type":"string",
+      "enum":[
+        "Prioritized",
+        "LowestPrice"
+      ]
+    },
+    "AsgType":{
+      "type":"string",
+      "enum":[
+        "SingleInstanceType",
+        "MixedInstanceTypes"
+      ]
+    },
     "AutoScalingConfiguration":{
       "type":"string",
       "enum":[
@@ -628,22 +642,38 @@
       "members":{
         "desiredCapacity":{
           "shape":"DesiredCapacity",
-          "documentation":"<p>The desired capacity, or number of instances, for the Auto Scaling group.</p>"
+          "documentation":"<p>The desired capacity, or number of instances, for the EC2 Auto Scaling group.</p>"
         },
         "minSize":{
           "shape":"MinSize",
-          "documentation":"<p>The minimum size, or minimum number of instances, for the Auto Scaling group.</p>"
+          "documentation":"<p>The minimum size, or minimum number of instances, for the EC2 Auto Scaling group.</p>"
         },
         "maxSize":{
           "shape":"MaxSize",
-          "documentation":"<p>The maximum size, or maximum number of instances, for the Auto Scaling group.</p>"
+          "documentation":"<p>The maximum size, or maximum number of instances, for the EC2 Auto Scaling group.</p>"
         },
         "instanceType":{
-          "shape":"InstanceType",
-          "documentation":"<p>The instance type for the Auto Scaling group.</p>"
+          "shape":"NullableInstanceType",
+          "documentation":"<p>The instance type for the EC2 Auto Scaling group.</p>"
+        },
+        "allocationStrategy":{
+          "shape":"AllocationStrategy",
+          "documentation":"<p> Describes the allocation strategy that the EC2 Auto Scaling group uses. This field is only available for EC2 Auto Scaling groups with mixed instance types. </p>"
+        },
+        "estimatedInstanceHourReductionPercentage":{
+          "shape":"NullableEstimatedInstanceHourReductionPercentage",
+          "documentation":"<p> Describes the projected percentage reduction in instance hours after adopting the recommended configuration. This field is only available for EC2 Auto Scaling groups with scaling policies. </p>"
+        },
+        "type":{
+          "shape":"AsgType",
+          "documentation":"<p> Describes whether the EC2 Auto Scaling group has a single instance type or a mixed instance type configuration. </p>"
+        },
+        "mixedInstanceTypes":{
+          "shape":"MixedInstanceTypes",
+          "documentation":"<p> List the instance types within an EC2 Auto Scaling group that has mixed instance types. </p>"
         }
       },
-      "documentation":"<p>Describes the configuration of an Auto Scaling group.</p>"
+      "documentation":"<p>Describes the configuration of an EC2 Auto Scaling group.</p>"
     },
     "AutoScalingGroupEstimatedMonthlySavings":{
       "type":"structure",
@@ -1905,6 +1935,9 @@
         "CurrentConfigurationDesiredCapacity",
         "CurrentConfigurationMinSize",
         "CurrentConfigurationMaxSize",
+        "CurrentConfigurationAllocationStrategy",
+        "CurrentConfigurationMixedInstanceTypes",
+        "CurrentConfigurationType",
         "CurrentOnDemandPrice",
         "CurrentStandardOneYearNoUpfrontReservedPrice",
         "CurrentStandardThreeYearNoUpfrontReservedPrice",
@@ -1916,6 +1949,10 @@
         "RecommendationOptionsConfigurationDesiredCapacity",
         "RecommendationOptionsConfigurationMinSize",
         "RecommendationOptionsConfigurationMaxSize",
+        "RecommendationOptionsConfigurationEstimatedInstanceHourReductionPercentage",
+        "RecommendationOptionsConfigurationAllocationStrategy",
+        "RecommendationOptionsConfigurationMixedInstanceTypes",
+        "RecommendationOptionsConfigurationType",
         "RecommendationOptionsProjectedUtilizationMetricsCpuMaximum",
         "RecommendationOptionsProjectedUtilizationMetricsMemoryMaximum",
         "RecommendationOptionsPerformanceRisk",
@@ -4223,9 +4260,16 @@
       "exception":true,
       "synthetic":true
     },
+    "MixedInstanceType":{"type":"string"},
+    "MixedInstanceTypes":{
+      "type":"list",
+      "member":{"shape":"MixedInstanceType"}
+    },
     "NextToken":{"type":"string"},
     "NullableCpu":{"type":"integer"},
+    "NullableEstimatedInstanceHourReductionPercentage":{"type":"double"},
     "NullableIOPS":{"type":"integer"},
+    "NullableInstanceType":{"type":"string"},
     "NullableMaxAllocatedStorage":{"type":"integer"},
     "NullableMemory":{"type":"integer"},
     "NullableMemoryReservation":{"type":"integer"},

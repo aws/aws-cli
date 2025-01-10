@@ -682,6 +682,20 @@ class TestCanParseCLICommand(unittest.TestCase):
         )
         self.assert_parsed_s3api_result_correct(result)
 
+    def test_option_with_command_expecting_positional(self):
+        result = self.cli_parser.parse(
+            'aws logs tail --region '
+        )
+
+        self.assert_parsed_results_equal(
+            result,
+            current_command='tail',
+            current_param='region',
+            global_params={'region': ''},
+            lineage=['aws', 'logs'],
+            unparsed_items=[],
+        )
+
 
 class TestParseState(unittest.TestCase):
     def test_can_set_initial_state(self):

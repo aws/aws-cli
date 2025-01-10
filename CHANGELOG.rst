@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.22.33
+=======
+
+* api-change:``sts``: Fixed typos in the descriptions.
+* api-change:``redshift``: Additions to the PubliclyAccessible and Encrypted parameters clarifying what the defaults are.
+* api-change:``securitylake``: Doc only update for ServiceName that fixes several customer-reported issues
+
+
 2.22.32
 =======
 

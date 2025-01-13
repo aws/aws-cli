@@ -2163,6 +2163,10 @@
         "inferenceParams":{
           "shape":"EvaluationModelInferenceParams",
           "documentation":"<p>Each Amazon Bedrock support different inference parameters that change how the model behaves during inference.</p>"
+        },
+        "performanceConfig":{
+          "shape":"PerformanceConfiguration",
+          "documentation":"<p>Specifies performance settings for the model or inference profile.</p>"
         }
       },
       "documentation":"<p>Contains the ARN of the Amazon Bedrock model or <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">inference profile</a> specified in your evaluation job. Each Amazon Bedrock model supports different <code>inferenceParams</code>. To learn more about supported inference parameters for Amazon Bedrock models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p> <p>The <code>inferenceParams</code> are specified using JSON. To successfully insert JSON as string make sure that all quotations are properly escaped. For example, <code>\"temperature\":\"0.25\"</code> key value pair would need to be formatted as <code>\\\"temperature\\\":\\\"0.25\\\"</code> to successfully accepted in the request.</p>"
@@ -6357,6 +6361,23 @@
       "max":2048,
       "min":1,
       "pattern":"\\S*"
+    },
+    "PerformanceConfigLatency":{
+      "type":"string",
+      "enum":[
+        "standard",
+        "optimized"
+      ]
+    },
+    "PerformanceConfiguration":{
+      "type":"structure",
+      "members":{
+        "latency":{
+          "shape":"PerformanceConfigLatency",
+          "documentation":"<p>Specifies whether to use the latency-optimized or standard version of a model or inference profile.</p>"
+        }
+      },
+      "documentation":"<p>Contains performance settings for a model.</p>"
     },
     "PositiveInteger":{
       "type":"integer",

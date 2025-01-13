@@ -11,7 +11,8 @@
     "signatureVersion":"v4",
     "signingName":"transcribe",
     "targetPrefix":"Transcribe",
-    "uid":"transcribe-2017-10-26"
+    "uid":"transcribe-2017-10-26",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateCallAnalyticsCategory":{
@@ -805,6 +806,10 @@
         "ChannelDefinitions":{
           "shape":"ChannelDefinitions",
           "documentation":"<p>Indicates which speaker is on which channel.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags, each in the form of a key:value pair, assigned to the specified call analytics job.</p>"
         }
       },
       "documentation":"<p>Provides detailed information about a Call Analytics job.</p> <p>To view the job's status, refer to <code>CallAnalyticsJobStatus</code>. If the status is <code>COMPLETED</code>, the job is finished. You can find your completed transcript at the URI specified in <code>TranscriptFileUri</code>. If the status is <code>FAILED</code>, <code>FailureReason</code> provides details on why your transcription job failed.</p> <p>If you enabled personally identifiable information (PII) redaction, the redacted transcript appears at the location specified in <code>RedactedTranscriptFileUri</code>.</p> <p>If you chose to redact the audio in your media file, you can find your redacted media file at the location specified in the <code>RedactedMediaFileUri</code> field of your response.</p>"
@@ -965,6 +970,10 @@
           "shape":"DateTime",
           "documentation":"<p>The date and time the specified Call Analytics category was last updated.</p> <p>Timestamps are in the format <code>YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC</code>. For example, <code>2022-05-05T12:45:32.691000-07:00</code> represents 12:45 PM UTC-7 on May 5, 2022.</p>"
         },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags, each in the form of a key:value pair, assigned to the specified call analytics category.</p>"
+        },
         "InputType":{
           "shape":"InputType",
           "documentation":"<p>The input type associated with the specified category. <code>POST_CALL</code> refers to a category that is applied to batch transcriptions; <code>REAL_TIME</code> refers to a category that is applied to streaming transcriptions.</p>"
@@ -1045,6 +1054,10 @@
         "Rules":{
           "shape":"RuleList",
           "documentation":"<p>Rules define a Call Analytics category. When creating a new category, you must create between 1 and 20 rules for that category. For each rule, you specify a filter you want applied to the attributes of a call. For example, you can choose a sentiment filter that detects if a customer's sentiment was positive during the last 30 seconds of the call.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Adds one or more custom tags, each in the form of a key:value pair, to a new call analytics category at the time you start this new job.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html\">Tagging resources</a>.</p>"
         },
         "InputType":{
           "shape":"InputType",
@@ -2962,6 +2975,10 @@
         "Settings":{
           "shape":"CallAnalyticsJobSettings",
           "documentation":"<p>Specify additional optional settings in your request, including content redaction; allows you to apply custom language models, vocabulary filters, and custom vocabularies to your Call Analytics job.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Adds one or more custom tags, each in the form of a key:value pair, to a new call analytics job at the time you start this new job.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html\">Tagging resources</a>.</p>"
         },
         "ChannelDefinitions":{
           "shape":"ChannelDefinitions",

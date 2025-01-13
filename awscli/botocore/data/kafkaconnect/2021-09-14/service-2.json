@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2021-09-14",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"kafkaconnect",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"Kafka Connect",
     "serviceFullName":"Managed Streaming for Kafka Connect",
     "serviceId":"KafkaConnect",
@@ -159,6 +160,26 @@
       ],
       "documentation":"<p>Returns summary information about the connector.</p>"
     },
+    "DescribeConnectorOperation":{
+      "name":"DescribeConnectorOperation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/connectorOperations/{connectorOperationArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeConnectorOperationRequest"},
+      "output":{"shape":"DescribeConnectorOperationResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Returns information about the specified connector's operations.</p>"
+    },
     "DescribeCustomPlugin":{
       "name":"DescribeCustomPlugin",
       "http":{
@@ -198,6 +219,26 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Returns information about a worker configuration.</p>"
+    },
+    "ListConnectorOperations":{
+      "name":"ListConnectorOperations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/connectors/{connectorArn}/operations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListConnectorOperationsRequest"},
+      "output":{"shape":"ListConnectorOperationsResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Lists information about a connector's operation(s).</p>"
     },
     "ListConnectors":{
       "name":"ListConnectors",
@@ -386,7 +427,7 @@
       ],
       "members":{
         "maxWorkerCount":{
-          "shape":"__integerMin1Max10",
+          "shape":"__integer",
           "documentation":"<p>The maximum number of workers allocated to the connector.</p>"
         },
         "mcuCount":{
@@ -394,7 +435,7 @@
           "documentation":"<p>The number of microcontroller units (MCUs) allocated to each connector worker. The valid values are 1,2,4,8.</p>"
         },
         "minWorkerCount":{
-          "shape":"__integerMin1Max10",
+          "shape":"__integer",
           "documentation":"<p>The minimum number of workers allocated to the connector.</p>"
         },
         "scaleInPolicy":{
@@ -445,7 +486,7 @@
       ],
       "members":{
         "maxWorkerCount":{
-          "shape":"__integerMin1Max10",
+          "shape":"__integer",
           "documentation":"<p>The target maximum number of workers allocated to the connector.</p>"
         },
         "mcuCount":{
@@ -453,7 +494,7 @@
           "documentation":"<p>The target number of microcontroller units (MCUs) allocated to each connector worker. The valid values are 1,2,4,8.</p>"
         },
         "minWorkerCount":{
-          "shape":"__integerMin1Max10",
+          "shape":"__integer",
           "documentation":"<p>The target minimum number of workers allocated to the connector.</p>"
         },
         "scaleInPolicy":{
@@ -562,6 +603,99 @@
       },
       "exception":true
     },
+    "ConnectorConfiguration":{
+      "type":"map",
+      "key":{"shape":"__string"},
+      "value":{"shape":"__string"},
+      "sensitive":true
+    },
+    "ConnectorConfigurationUpdate":{
+      "type":"map",
+      "key":{"shape":"__string"},
+      "value":{"shape":"__string"},
+      "sensitive":true
+    },
+    "ConnectorOperationState":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "UPDATE_IN_PROGRESS",
+        "UPDATE_COMPLETE",
+        "UPDATE_FAILED",
+        "ROLLBACK_IN_PROGRESS",
+        "ROLLBACK_FAILED",
+        "ROLLBACK_COMPLETE"
+      ]
+    },
+    "ConnectorOperationStep":{
+      "type":"structure",
+      "members":{
+        "stepType":{
+          "shape":"ConnectorOperationStepType",
+          "documentation":"<p>The step type of the operation.</p>"
+        },
+        "stepState":{
+          "shape":"ConnectorOperationStepState",
+          "documentation":"<p>The step state of the operation.</p>"
+        }
+      },
+      "documentation":"<p>Details of a step that is involved in a connector's operation.</p>"
+    },
+    "ConnectorOperationStepState":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED",
+        "CANCELLED"
+      ]
+    },
+    "ConnectorOperationStepType":{
+      "type":"string",
+      "enum":[
+        "INITIALIZE_UPDATE",
+        "FINALIZE_UPDATE",
+        "UPDATE_WORKER_SETTING",
+        "UPDATE_CONNECTOR_CONFIGURATION",
+        "VALIDATE_UPDATE"
+      ]
+    },
+    "ConnectorOperationSummary":{
+      "type":"structure",
+      "members":{
+        "connectorOperationArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector operation.</p>"
+        },
+        "connectorOperationType":{
+          "shape":"ConnectorOperationType",
+          "documentation":"<p>The type of connector operation performed.</p>"
+        },
+        "connectorOperationState":{
+          "shape":"ConnectorOperationState",
+          "documentation":"<p>The state of the connector operation.</p>"
+        },
+        "creationTime":{
+          "shape":"__timestampIso8601",
+          "documentation":"<p>The time when operation was created.</p>"
+        },
+        "endTime":{
+          "shape":"__timestampIso8601",
+          "documentation":"<p>The time when operation ended.</p>"
+        }
+      },
+      "documentation":"<p>Summary of a connector operation.</p>"
+    },
+    "ConnectorOperationType":{
+      "type":"string",
+      "enum":[
+        "UPDATE_WORKER_SETTING",
+        "UPDATE_CONNECTOR_CONFIGURATION",
+        "ISOLATE_CONNECTOR",
+        "RESTORE_CONNECTOR"
+      ]
+    },
     "ConnectorState":{
       "type":"string",
       "enum":[
@@ -657,7 +791,7 @@
           "documentation":"<p>Information about the capacity allocated to the connector. Exactly one of the two properties must be specified.</p>"
         },
         "connectorConfiguration":{
-          "shape":"__sensitive__mapOf__string",
+          "shape":"ConnectorConfiguration",
           "documentation":"<p>A map of keys to values that represent the configuration for the connector.</p>"
         },
         "connectorDescription":{
@@ -696,13 +830,13 @@
           "shape":"__string",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used by the connector to access the Amazon Web Services resources that it needs. The types of resources depends on the logic of the connector. For example, a connector that has Amazon S3 as a destination must have permissions that allow it to write to the S3 destination bucket.</p>"
         },
-        "tags":{
-          "shape":"Tags",
-          "documentation":"<p>The tags you want to attach to the connector.</p>"
-        },
         "workerConfiguration":{
           "shape":"WorkerConfiguration",
           "documentation":"<p>Specifies which worker configuration to use with the connector.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags you want to attach to the connector.</p>"
         }
       }
     },
@@ -1050,6 +1184,68 @@
         }
       }
     },
+    "DescribeConnectorOperationRequest":{
+      "type":"structure",
+      "required":["connectorOperationArn"],
+      "members":{
+        "connectorOperationArn":{
+          "shape":"__string",
+          "documentation":"<p>ARN of the connector operation to be described.</p>",
+          "location":"uri",
+          "locationName":"connectorOperationArn"
+        }
+      }
+    },
+    "DescribeConnectorOperationResponse":{
+      "type":"structure",
+      "members":{
+        "connectorArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
+        },
+        "connectorOperationArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector operation.</p>"
+        },
+        "connectorOperationState":{
+          "shape":"ConnectorOperationState",
+          "documentation":"<p>The state of the connector operation.</p>"
+        },
+        "connectorOperationType":{
+          "shape":"ConnectorOperationType",
+          "documentation":"<p>The type of connector operation performed.</p>"
+        },
+        "operationSteps":{
+          "shape":"__listOfConnectorOperationStep",
+          "documentation":"<p>The array of operation steps taken.</p>"
+        },
+        "originWorkerSetting":{
+          "shape":"WorkerSetting",
+          "documentation":"<p>The origin worker setting.</p>"
+        },
+        "originConnectorConfiguration":{
+          "shape":"ConnectorConfiguration",
+          "documentation":"<p>The origin connector configuration.</p>"
+        },
+        "targetWorkerSetting":{
+          "shape":"WorkerSetting",
+          "documentation":"<p>The target worker setting.</p>"
+        },
+        "targetConnectorConfiguration":{
+          "shape":"ConnectorConfiguration",
+          "documentation":"<p>The target connector configuration.</p>"
+        },
+        "errorInfo":{"shape":"StateDescription"},
+        "creationTime":{
+          "shape":"__timestampIso8601",
+          "documentation":"<p>The time when the operation was created.</p>"
+        },
+        "endTime":{
+          "shape":"__timestampIso8601",
+          "documentation":"<p>The time when the operation ended.</p>"
+        }
+      }
+    },
     "DescribeConnectorRequest":{
       "type":"structure",
       "required":["connectorArn"],
@@ -1074,7 +1270,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the connector.</p>"
         },
         "connectorConfiguration":{
-          "shape":"__sensitive__mapOf__string",
+          "shape":"ConnectorConfiguration",
           "documentation":"<p>A map of keys to values that represent the configuration for the connector.</p>"
         },
         "connectorDescription":{
@@ -1125,13 +1321,13 @@
           "shape":"__string",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used by the connector to access Amazon Web Services resources.</p>"
         },
-        "stateDescription":{
-          "shape":"StateDescription",
-          "documentation":"<p>Details about the state of a connector.</p>"
-        },
         "workerConfiguration":{
           "shape":"WorkerConfigurationDescription",
           "documentation":"<p>Specifies which worker configuration was used for the connector.</p>"
+        },
+        "stateDescription":{
+          "shape":"StateDescription",
+          "documentation":"<p>Details about the state of a connector.</p>"
         }
       }
     },
@@ -1349,6 +1545,43 @@
         "TLS"
       ]
     },
+    "ListConnectorOperationsRequest":{
+      "type":"structure",
+      "required":["connectorArn"],
+      "members":{
+        "connectorArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector for which to list operations.</p>",
+          "location":"uri",
+          "locationName":"connectorArn"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Maximum number of connector operations to fetch in one get request.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"__string",
+          "documentation":"<p>If the response is truncated, it includes a NextToken. Send this NextToken in a subsequent request to continue listing from where it left off.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListConnectorOperationsResponse":{
+      "type":"structure",
+      "members":{
+        "connectorOperations":{
+          "shape":"__listOfConnectorOperationSummary",
+          "documentation":"<p>An array of connector operation descriptions.</p>"
+        },
+        "nextToken":{
+          "shape":"__string",
+          "documentation":"<p>If the response is truncated, it includes a NextToken. Send this NextToken in a subsequent request to continue listing from where it left off.</p>"
+        }
+      }
+    },
     "ListConnectorsRequest":{
       "type":"structure",
       "members":{
@@ -1394,17 +1627,17 @@
           "location":"querystring",
           "locationName":"maxResults"
         },
-        "namePrefix":{
-          "shape":"__string",
-          "documentation":"<p>Lists custom plugin names that start with the specified text string.</p>",
-          "location":"querystring",
-          "locationName":"namePrefix"
-        },
         "nextToken":{
           "shape":"__string",
           "documentation":"<p>If the response of a ListCustomPlugins operation is truncated, it will include a NextToken. Send this NextToken in a subsequent request to continue listing from where the previous operation left off.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "namePrefix":{
+          "shape":"__string",
+          "documentation":"<p>Lists custom plugin names that start with the specified text string.</p>",
+          "location":"querystring",
+          "locationName":"namePrefix"
         }
       }
     },
@@ -1451,17 +1684,17 @@
           "location":"querystring",
           "locationName":"maxResults"
         },
-        "namePrefix":{
-          "shape":"__string",
-          "documentation":"<p>Lists worker configuration names that start with the specified text string.</p>",
-          "location":"querystring",
-          "locationName":"namePrefix"
-        },
         "nextToken":{
           "shape":"__string",
           "documentation":"<p>If the response of a ListWorkerConfigurations operation is truncated, it will include a NextToken. Send this NextToken in a subsequent request to continue listing from where the previous operation left off.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "namePrefix":{
+          "shape":"__string",
+          "documentation":"<p>Lists worker configuration names that start with the specified text string.</p>",
+          "location":"querystring",
+          "locationName":"namePrefix"
         }
       }
     },
@@ -1501,6 +1734,7 @@
     },
     "MaxResults":{
       "type":"integer",
+      "box":true,
       "max":100,
       "min":1
     },
@@ -1549,7 +1783,7 @@
           "documentation":"<p>The number of microcontroller units (MCUs) allocated to each connector worker. The valid values are 1,2,4,8.</p>"
         },
         "workerCount":{
-          "shape":"__integerMin1Max10",
+          "shape":"__integer",
           "documentation":"<p>The number of workers that are allocated to the connector.</p>"
         }
       },
@@ -1581,7 +1815,7 @@
           "documentation":"<p>The number of microcontroller units (MCUs) allocated to each connector worker. The valid values are 1,2,4,8.</p>"
         },
         "workerCount":{
-          "shape":"__integerMin1Max10",
+          "shape":"__integer",
           "documentation":"<p>The number of workers that are allocated to the connector.</p>"
         }
       },
@@ -1852,7 +2086,6 @@
     "UpdateConnectorRequest":{
       "type":"structure",
       "required":[
-        "capacity",
         "connectorArn",
         "currentVersion"
       ],
@@ -1860,6 +2093,10 @@
         "capacity":{
           "shape":"CapacityUpdate",
           "documentation":"<p>The target capacity.</p>"
+        },
+        "connectorConfiguration":{
+          "shape":"ConnectorConfigurationUpdate",
+          "documentation":"<p>A map of keys to values that represent the configuration for the connector.</p>"
         },
         "connectorArn":{
           "shape":"__string",
@@ -1885,6 +2122,10 @@
         "connectorState":{
           "shape":"ConnectorState",
           "documentation":"<p>The state of the connector.</p>"
+        },
+        "connectorOperationArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connector operation.</p>"
         }
       }
     },
@@ -2062,13 +2303,15 @@
       },
       "documentation":"<p>Workers can send worker logs to different destination types. This configuration specifies the details of these destinations.</p>"
     },
+    "WorkerSetting":{
+      "type":"structure",
+      "members":{
+        "capacity":{"shape":"CapacityDescription"}
+      },
+      "documentation":"<p>Details about worker setting of a connector</p>"
+    },
     "__boolean":{"type":"boolean"},
     "__integer":{"type":"integer"},
-    "__integerMin1Max10":{
-      "type":"integer",
-      "max":10,
-      "min":1
-    },
     "__integerMin1Max100":{
       "type":"integer",
       "max":100,
@@ -2078,6 +2321,14 @@
       "type":"integer",
       "max":8,
       "min":1
+    },
+    "__listOfConnectorOperationStep":{
+      "type":"list",
+      "member":{"shape":"ConnectorOperationStep"}
+    },
+    "__listOfConnectorOperationSummary":{
+      "type":"list",
+      "member":{"shape":"ConnectorOperationSummary"}
     },
     "__listOfConnectorSummary":{
       "type":"list",
@@ -2111,12 +2362,6 @@
     },
     "__sensitiveString":{
       "type":"string",
-      "sensitive":true
-    },
-    "__sensitive__mapOf__string":{
-      "type":"map",
-      "key":{"shape":"__string"},
-      "value":{"shape":"__string"},
       "sensitive":true
     },
     "__string":{"type":"string"},

@@ -29,7 +29,7 @@ def get_trail_by_arn(cloudtrail_client, trail_arn):
     for trail in trails:
         if trail.get("TrailARN", None) == trail_arn:
             return trail
-    raise ValueError("A trail could not be found for %s" % trail_arn)
+    raise ValueError(f"A trail could not be found for {trail_arn}")
 
 
 def format_date(date):
@@ -46,7 +46,7 @@ def parse_date(date_string):
     try:
         return parser.parse(date_string)
     except ValueError:
-        raise ValueError("Unable to parse date value: %s" % date_string)
+        raise ValueError(f"Unable to parse date value: {date_string}")
 
 
 class PublicKeyProvider:
@@ -95,6 +95,5 @@ class PublicKeyProvider:
                 return key["Value"]
 
         raise RuntimeError(
-            "No public keys found for key with fingerprint: %s"
-            % public_key_fingerprint
+            f"No public keys found for key with fingerprint: {public_key_fingerprint}"
         )

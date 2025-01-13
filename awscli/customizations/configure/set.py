@@ -51,7 +51,7 @@ class ConfigureSetCommand(BasicCommand):
     ]
 
     def __init__(self, session, config_writer=None):
-        super(ConfigureSetCommand, self).__init__(session)
+        super().__init__(session)
         if config_writer is None:
             config_writer = ConfigFileWriter()
         self._config_writer = config_writer

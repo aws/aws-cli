@@ -51,7 +51,7 @@ class ConfigureListCommand(BasicCommand):
     )
 
     def __init__(self, session, stream=None):
-        super(ConfigureListCommand, self).__init__(session)
+        super().__init__(session)
         if stream is None:
             stream = sys.stdout
         self._stream = stream

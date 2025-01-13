@@ -17,7 +17,6 @@ from prompt_toolkit.application import get_app
 
 
 class PromptToolkitHandler(logging.StreamHandler):
-
     def emit(self, record):
         try:
             app = get_app()

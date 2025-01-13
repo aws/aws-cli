@@ -54,12 +54,19 @@ def loggers_handler_switcher():
 
 
 class PromptToolkitPrompter:
-    """Handles the actual prompting in the autoprompt workflow.
+    """Handles the actual prompting in the autoprompt workflow."""
 
-    """
-    def __init__(self, completion_source, driver, completer=None,
-                 factory=None, app=None, cli_parser=None, output=None,
-                 app_input=None):
+    def __init__(
+        self,
+        completion_source,
+        driver,
+        completer=None,
+        factory=None,
+        app=None,
+        cli_parser=None,
+        output=None,
+        app_input=None,
+    ):
         self._completion_source = completion_source
         self._output = output
         self._input = app_input
@@ -73,7 +80,8 @@ class PromptToolkitPrompter:
         self._parser = cli_parser
         if self._parser is None:
             self._parser = parser.CLIParser(
-                model.ModelIndex(), return_first_command_match=True)
+                model.ModelIndex(), return_first_command_match=True
+            )
         self._factory = factory
         self.input_buffer = None
         self.doc_buffer = None
@@ -93,33 +101,44 @@ class PromptToolkitPrompter:
 
     def _create_buffers(self):
         self.input_buffer = self._factory.create_input_buffer(
-            self.update_bottom_buffers_text)
+            self.update_bottom_buffers_text
+        )
         self.doc_buffer = self._factory.create_doc_buffer()
         self.output_buffer = self._factory.create_output_buffer()
 
     def _create_containers(self):
         input_buffer_container = self._factory.create_input_buffer_container(
-            self.input_buffer)
+            self.input_buffer
+        )
         doc_window = self._factory.create_searchable_window(
-            'Doc panel', self.doc_buffer)
+            'Doc panel', self.doc_buffer
+        )
         output_window = self._factory.create_searchable_window(
-            'Output panel', self.output_buffer)
+            'Output panel', self.output_buffer
+        )
         return input_buffer_container, doc_window, output_window
 
     def create_application(self):
         self._create_buffers()
-        input_buffer_container, \
-                doc_window, output_window = self._create_containers()
+        input_buffer_container, doc_window, output_window = (
+            self._create_containers()
+        )
         layout = self._factory.create_layout(
             on_input_buffer_text_changed=self.update_bottom_buffers_text,
             input_buffer_container=input_buffer_container,
-            doc_window=doc_window, output_window=output_window
+            doc_window=doc_window,
+            output_window=output_window,
         )
         kb_manager = self._factory.create_key_bindings()
         kb = kb_manager.keybindings
-        app = Application(layout=layout, key_bindings=kb, full_screen=False,
-                          output=self._output, erase_when_done=True,
-                          input=self._input)
+        app = Application(
+            layout=layout,
+            key_bindings=kb,
+            full_screen=False,
+            output=self._output,
+            erase_when_done=True,
+            input=self._input,
+        )
         self._set_app_defaults(app)
         return app
 
@@ -132,8 +151,7 @@ class PromptToolkitPrompter:
         return app
 
     def update_bottom_buffers_text(self, *args):
-        parsed = self._parser.parse(
-            'aws ' + self.input_buffer.document.text)
+        parsed = self._parser.parse('aws ' + self.input_buffer.document.text)
         self._update_doc_window_contents(parsed)
         self._update_output_window_contents(parsed)
 
@@ -182,8 +200,8 @@ class PromptToolkitPrompter:
 
     def _set_input_buffer_text(self, cmd_line_text):
         """If entered command line does not have trailing space and can not
-           be autocompleted we assume that it is a completed part of command
-           and add trailing space to it"""
+        be autocompleted we assume that it is a completed part of command
+        and add trailing space to it"""
         if cmd_line_text[-1] == ' ':
             return
         if self._can_autocomplete(cmd_line_text):
@@ -240,11 +258,13 @@ class PromptToolkitCompleter(Completer):
     `prompt_toolkit.Completion` objects.
 
     """
+
     def __init__(self, completion_source):
         self._completion_source = completion_source
 
-    def _convert_to_prompt_completions(self, low_level_completions,
-                                       text_before_cursor):
+    def _convert_to_prompt_completions(
+        self, low_level_completions, text_before_cursor
+    ):
         # Converts the low-level completions from the model autocompleter
         # and converts them to Completion() objects that are used by
         # prompt_toolkit.
@@ -255,21 +275,30 @@ class PromptToolkitCompleter(Completer):
             display_text = self._get_display_text(completion)
             display_meta = self._get_display_meta(completion)
             location = self._get_starting_location_of_last_word(
-                text_before_cursor, word_before_cursor)
-            yield Completion(completion.name, location, display=display_text,
-                             display_meta=display_meta)
+                text_before_cursor, word_before_cursor
+            )
+            yield Completion(
+                completion.name,
+                location,
+                display=display_text,
+                display_meta=display_meta,
+            )
 
     def get_completions(self, document, complete_event):
         try:
             text_before_cursor = document.text_before_cursor
             text_to_autocomplete = 'aws ' + text_before_cursor
             completions = self._completion_source.autocomplete(
-                text_to_autocomplete, len(text_to_autocomplete))
+                text_to_autocomplete, len(text_to_autocomplete)
+            )
             yield from self._convert_to_prompt_completions(
-                completions, text_before_cursor)
+                completions, text_before_cursor
+            )
         except Exception as e:
-            LOG.debug('Exception caught in PromptToolkitCompleter: %s' % e,
-                      exc_info=True)
+            LOG.debug(
+                'Exception caught in PromptToolkitCompleter: %s' % e,
+                exc_info=True,
+            )
 
     def _strip_whitespace(self, text):
         word_before_cursor = ''
@@ -283,17 +312,11 @@ class PromptToolkitCompleter(Completer):
         return required_args + optional_args
 
     def _get_required_args(self, completions):
-        results = [
-            arg for arg in completions
-            if arg.required
-        ]
+        results = [arg for arg in completions if arg.required]
         return results
 
     def _get_optional_args(self, completions):
-        results = [
-            arg for arg in completions
-            if not arg.required
-        ]
+        results = [arg for arg in completions if not arg.required]
         return results
 
     def _get_display_text(self, completion):
@@ -321,9 +344,10 @@ class PromptToolkitCompleter(Completer):
 
     def _filter_out_autoprompt_overrides(self, completions):
         filtered_completions = [
-            completion for completion in completions
-            if completion.name not in ['--cli-auto-prompt',
-                                       '--no-cli-auto-prompt']
+            completion
+            for completion in completions
+            if completion.name
+            not in ['--cli-auto-prompt', '--no-cli-auto-prompt']
         ]
         return filtered_completions
 
@@ -336,8 +360,9 @@ class PromptToolkitCompleter(Completer):
                 unique_completions.append(completion)
         return unique_completions
 
-    def _get_starting_location_of_last_word(self, text_before_cursor,
-                                            word_before_cursor):
+    def _get_starting_location_of_last_word(
+        self, text_before_cursor, word_before_cursor
+    ):
         if text_before_cursor and text_before_cursor[-1] == ' ':
             location = 0
         else:

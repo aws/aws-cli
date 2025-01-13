@@ -14,9 +14,7 @@ from dateutil.tz import tzutc
 from dateutil.relativedelta import relativedelta
 from botocore.utils import parse_timestamp
 
-from awscli.compat import (
-    is_windows, urlparse, get_stderr_encoding, is_macos
-)
+from awscli.compat import is_windows, urlparse, get_stderr_encoding, is_macos
 from awscli.customizations import utils as cli_utils
 from awscli.customizations.commands import BasicCommand
 from awscli.utils import original_ld_library_path
@@ -45,7 +43,7 @@ class CommandFailedError(Exception):
     def __init__(self, called_process_error, auth_token):
         msg = str(called_process_error).replace(auth_token, '******')
         if called_process_error.stderr is not None:
-            msg +=(
+            msg += (
                 f' Stderr from command:\n'
                 f'{called_process_error.stderr.decode(get_stderr_encoding())}'
             )
@@ -55,8 +53,16 @@ class CommandFailedError(Exception):
 class BaseLogin:
     _TOOL_NOT_FOUND_MESSAGE = '%s was not found. Please verify installation.'
 
-    def __init__(self, auth_token, expiration, repository_endpoint,
-                 domain, repository, subprocess_utils, namespace=None):
+    def __init__(
+        self,
+        auth_token,
+        expiration,
+        repository_endpoint,
+        domain,
+        repository,
+        subprocess_utils,
+        namespace=None,
+    ):
         self.auth_token = auth_token
         self.expiration = expiration
         self.repository_endpoint = repository_endpoint
@@ -79,15 +85,22 @@ class BaseLogin:
         # for some corner case
         # e.g. 11 hours 59 minutes 31 seconds should output --> 12 hours.
         remaining = relativedelta(
-            self.expiration, datetime.now(tzutc())) + relativedelta(seconds=30)
+            self.expiration, datetime.now(tzutc())
+        ) + relativedelta(seconds=30)
         expiration_message = get_relative_expiration_time(remaining)
 
-        sys.stdout.write('Successfully configured {} to use '
-                         'AWS CodeArtifact repository {} '
-                         .format(tool, self.repository_endpoint))
+        sys.stdout.write(
+            'Successfully configured {} to use '
+            'AWS CodeArtifact repository {} '.format(
+                tool, self.repository_endpoint
+            )
+        )
         sys.stdout.write(os.linesep)
-        sys.stdout.write('Login expires in {} at {}'.format(
-            expiration_message, self.expiration))
+        sys.stdout.write(
+            'Login expires in {} at {}'.format(
+                expiration_message, self.expiration
+            )
+        )
         sys.stdout.write(os.linesep)
 
     def _run_commands(self, tool, commands, dry_run=False):
@@ -113,9 +126,7 @@ class BaseLogin:
                 raise CommandFailedError(ex, self.auth_token)
         except OSError as ex:
             if ex.errno == errno.ENOENT:
-                raise ValueError(
-                    self._TOOL_NOT_FOUND_MESSAGE % tool
-                )
+                raise ValueError(self._TOOL_NOT_FOUND_MESSAGE % tool)
             raise ex
 
     @classmethod
@@ -124,18 +135,15 @@ class BaseLogin:
 
 
 class SwiftLogin(BaseLogin):
+    DEFAULT_NETRC_FMT = 'machine {hostname} login token password {auth_token}'
 
-    DEFAULT_NETRC_FMT = \
-        u'machine {hostname} login token password {auth_token}'
-
-    NETRC_REGEX_FMT = \
-        r'(?P<entry_start>\bmachine\s+{escaped_hostname}\s+login\s+\S+\s+password\s+)' \
+    NETRC_REGEX_FMT = (
+        r'(?P<entry_start>\bmachine\s+{escaped_hostname}\s+login\s+\S+\s+password\s+)'
         r'(?P<token>\S+)'
+    )
 
     def login(self, dry_run=False):
-        scope = self.get_scope(
-            self.namespace
-        )
+        scope = self.get_scope(self.namespace)
         commands = self.get_commands(
             self.repository_endpoint, self.auth_token, scope=scope
         )
@@ -143,13 +151,14 @@ class SwiftLogin(BaseLogin):
         if not is_macos:
             hostname = urlparse.urlparse(self.repository_endpoint).hostname
             new_entry = self.DEFAULT_NETRC_FMT.format(
-                hostname=hostname,
-                auth_token=self.auth_token
+                hostname=hostname, auth_token=self.auth_token
             )
             if dry_run:
                 self._display_new_netrc_entry(new_entry, self.get_netrc_path())
             else:
-                self._update_netrc_entry(hostname, new_entry, self.get_netrc_path())
+                self._update_netrc_entry(
+                    hostname, new_entry, self.get_netrc_path()
+                )
 
         self._run_commands('swift', commands, dry_run)
 
@@ -171,7 +180,7 @@ class SwiftLogin(BaseLogin):
     def _update_netrc_entry(self, hostname, new_entry, netrc_path):
         pattern = re.compile(
             self.NETRC_REGEX_FMT.format(escaped_hostname=re.escape(hostname)),
-            re.M
+            re.M,
         )
         if not os.path.isfile(netrc_path):
             self._create_netrc_file(netrc_path, new_entry)
@@ -180,13 +189,13 @@ class SwiftLogin(BaseLogin):
                 contents = f.read()
             escaped_auth_token = self.auth_token.replace('\\', r'\\')
             new_contents = re.sub(
-                pattern,
-                rf"\g<entry_start>{escaped_auth_token}",
-                contents
+                pattern, rf"\g<entry_start>{escaped_auth_token}", contents
             )
 
             if new_contents == contents:
-                new_contents = self._append_netrc_entry(new_contents, new_entry)
+                new_contents = self._append_netrc_entry(
+                    new_contents, new_entry
+                )
 
             with open(netrc_path, 'w') as f:
                 f.write(new_contents)
@@ -195,8 +204,9 @@ class SwiftLogin(BaseLogin):
         dirname = os.path.split(netrc_path)[0]
         if not os.path.isdir(dirname):
             os.makedirs(dirname)
-        with os.fdopen(os.open(netrc_path,
-                               os.O_WRONLY | os.O_CREAT, 0o600), 'w') as f:
+        with os.fdopen(
+            os.open(netrc_path, os.O_WRONLY | os.O_CREAT, 0o600), 'w'
+        ) as f:
             f.write(new_entry + '\n')
 
     def _append_netrc_entry(self, contents, new_entry):
@@ -234,9 +244,7 @@ class SwiftLogin(BaseLogin):
         scope = kwargs.get('scope')
 
         # Set up the codeartifact repository as the swift registry.
-        set_registry_command = [
-            'swift', 'package-registry', 'set', endpoint
-        ]
+        set_registry_command = ['swift', 'package-registry', 'set', endpoint]
         if scope is not None:
             set_registry_command.extend(['--scope', scope])
         commands.append(set_registry_command)
@@ -245,7 +253,10 @@ class SwiftLogin(BaseLogin):
         # We will write token to .netrc for Linux and Windows
         # MacOS will store the token from command line option to Keychain
         login_registry_command = [
-            'swift', 'package-registry', 'login', f'{endpoint}login'
+            'swift',
+            'package-registry',
+            'login',
+            f'{endpoint}login',
         ]
         if is_macos:
             login_registry_command.extend(['--token', auth_token])
@@ -293,7 +304,9 @@ class NuGetBaseLogin(BaseLogin):
             )
             source_configured_message = self._SOURCE_UPDATED_MESSAGE
         else:
-            command = self._get_configure_command('add', nuget_index_url, source_name)
+            command = self._get_configure_command(
+                'add', nuget_index_url, source_name
+            )
             source_configured_message = self._SOURCE_ADDED_MESSAGE
 
         if dry_run:
@@ -305,9 +318,7 @@ class NuGetBaseLogin(BaseLogin):
         try:
             with original_ld_library_path():
                 self.subprocess_utils.run(
-                    command,
-                    capture_output=True,
-                    check=True
+                    command, capture_output=True, check=True
                 )
         except subprocess.CalledProcessError as e:
             uni_print('Failed to update the NuGet.Config\n')
@@ -339,8 +350,7 @@ class NuGetBaseLogin(BaseLogin):
         """
         with original_ld_library_path():
             response = self.subprocess_utils.check_output(
-                self._get_list_command(),
-                stderr=self.subprocess_utils.PIPE
+                self._get_list_command(), stderr=self.subprocess_utils.PIPE
             )
 
         lines = response.decode(os.device_encoding(1) or "utf-8").splitlines()
@@ -350,8 +360,9 @@ class NuGetBaseLogin(BaseLogin):
         for i in range(len(lines)):
             result = self._SOURCE_REGEX.match(lines[i].strip())
             if result:
-                source_to_url_dict[result["source_name"].strip()] = \
-                    lines[i + 1].strip()
+                source_to_url_dict[result["source_name"].strip()] = lines[
+                    i + 1
+                ].strip()
 
         return source_to_url_dict
 
@@ -387,7 +398,6 @@ class NuGetBaseLogin(BaseLogin):
 
 
 class NuGetLogin(NuGetBaseLogin):
-
     def _get_tool_name(self):
         return 'nuget'
 
@@ -396,16 +406,21 @@ class NuGetLogin(NuGetBaseLogin):
 
     def _get_configure_command(self, operation, nuget_index_url, source_name):
         return [
-            'nuget', 'sources', operation,
-            '-name', source_name,
-            '-source', nuget_index_url,
-            '-username', 'aws',
-            '-password', self.auth_token
+            'nuget',
+            'sources',
+            operation,
+            '-name',
+            source_name,
+            '-source',
+            nuget_index_url,
+            '-username',
+            'aws',
+            '-password',
+            self.auth_token,
         ]
 
 
 class DotNetLogin(NuGetBaseLogin):
-
     def _get_tool_name(self):
         return 'dotnet'
 
@@ -422,10 +437,7 @@ class DotNetLogin(NuGetBaseLogin):
             command.append(source_name)
             command += ['--source', nuget_index_url]
 
-        command += [
-            '--username', 'aws',
-            '--password', self.auth_token
-        ]
+        command += ['--username', 'aws', '--password', self.auth_token]
 
         # Encryption is not supported on non-Windows platforms.
         if not is_windows:
@@ -435,15 +447,12 @@ class DotNetLogin(NuGetBaseLogin):
 
 
 class NpmLogin(BaseLogin):
-
     # On Windows we need to be explicit about the .cmd file to execute
     # (unless we execute through the shell, i.e. with shell=True).
     NPM_CMD = 'npm.cmd' if platform.system().lower() == 'windows' else 'npm'
 
     def login(self, dry_run=False):
-        scope = self.get_scope(
-            self.namespace
-        )
+        scope = self.get_scope(self.namespace)
         commands = self.get_commands(
             self.repository_endpoint, self.auth_token, scope=scope
         )
@@ -484,9 +493,7 @@ class NpmLogin(BaseLogin):
         registry = '{}:registry'.format(scope) if scope else 'registry'
 
         # set up the codeartifact repository as the npm registry.
-        commands.append(
-            [cls.NPM_CMD, 'config', 'set', registry, endpoint]
-        )
+        commands.append([cls.NPM_CMD, 'config', 'set', registry, endpoint])
 
         repo_uri = urlsplit(endpoint)
 
@@ -510,13 +517,10 @@ class NpmLogin(BaseLogin):
 
 
 class PipLogin(BaseLogin):
-
     PIP_INDEX_URL_FMT = '{scheme}://aws:{auth_token}@{netloc}{path}simple/'
 
     def login(self, dry_run=False):
-        commands = self.get_commands(
-            self.repository_endpoint, self.auth_token
-        )
+        commands = self.get_commands(self.repository_endpoint, self.auth_token)
         self._run_commands('pip', commands, dry_run)
 
     @classmethod
@@ -526,14 +530,13 @@ class PipLogin(BaseLogin):
             scheme=repo_uri.scheme,
             auth_token=auth_token,
             netloc=repo_uri.netloc,
-            path=repo_uri.path
+            path=repo_uri.path,
         )
 
         return [['pip', 'config', 'set', 'global.index-url', pip_index_url]]
 
 
 class TwineLogin(BaseLogin):
-
     DEFAULT_PYPI_RC_FMT = '''\
 [distutils]
 index-servers=
@@ -553,14 +556,19 @@ password: {auth_token}'''
         domain,
         repository,
         subprocess_utils,
-        pypi_rc_path=None
+        pypi_rc_path=None,
     ):
         if pypi_rc_path is None:
             pypi_rc_path = self.get_pypi_rc_path()
         self.pypi_rc_path = pypi_rc_path
         super().__init__(
-            auth_token, expiration, repository_endpoint,
-            domain, repository, subprocess_utils)
+            auth_token,
+            expiration,
+            repository_endpoint,
+            domain,
+            repository,
+            subprocess_utils,
+        )
 
     @classmethod
     def get_commands(cls, endpoint, auth_token, **kwargs):
@@ -577,8 +585,7 @@ password: {auth_token}'''
         pypi_rc_path = kwargs['pypi_rc_path']
 
         default_pypi_rc = cls.DEFAULT_PYPI_RC_FMT.format(
-            repository_endpoint=endpoint,
-            auth_token=auth_token
+            repository_endpoint=endpoint, auth_token=auth_token
         )
 
         pypi_rc = RawConfigParser()
@@ -624,7 +631,7 @@ password: {auth_token}'''
         pypi_rc_str = self.get_commands(
             self.repository_endpoint,
             self.auth_token,
-            pypi_rc_path=self.pypi_rc_path
+            pypi_rc_path=self.pypi_rc_path,
         )
 
         if dry_run:
@@ -681,7 +688,7 @@ class CodeArtifactLogin(BasicCommand):
             'package_format': 'pypi',
             'login_cls': TwineLogin,
             'namespace_support': False,
-        }
+        },
     }
 
     NAME = 'login'
@@ -707,7 +714,7 @@ class CodeArtifactLogin(BasicCommand):
         {
             'name': 'domain-owner',
             'help_text': 'The AWS account ID that owns your CodeArtifact '
-                         'domain',
+            'domain',
             'required': False,
         },
         {
@@ -719,7 +726,7 @@ class CodeArtifactLogin(BasicCommand):
             'name': 'duration-seconds',
             'cli_type_name': 'integer',
             'help_text': 'The time, in seconds, that the login information '
-                         'is valid',
+            'is valid',
             'required': False,
         },
         {
@@ -730,17 +737,17 @@ class CodeArtifactLogin(BasicCommand):
         {
             'name': 'endpoint-type',
             'help_text': 'The type of endpoint you want the tool to interact with',
-            'required': False
+            'required': False,
         },
         {
             'name': 'dry-run',
             'action': 'store_true',
             'help_text': 'Only print the commands that would be executed '
-                         'to connect your tool with your repository without '
-                         'making any changes to your configuration. Note that '
-                         'this prints the unredacted auth token as part of the output',
+            'to connect your tool with your repository without '
+            'making any changes to your configuration. Note that '
+            'this prints the unredacted auth token as part of the output',
             'required': False,
-            'default': False
+            'default': False,
         },
     ]
 
@@ -760,30 +767,30 @@ class CodeArtifactLogin(BasicCommand):
         kwargs = {
             'domain': parsed_args.domain,
             'repository': parsed_args.repository,
-            'format': package_format
+            'format': package_format,
         }
         if parsed_args.endpoint_type:
             kwargs['endpointType'] = parsed_args.endpoint_type
         if parsed_args.domain_owner:
             kwargs['domainOwner'] = parsed_args.domain_owner
 
-        get_repository_endpoint_response = \
+        get_repository_endpoint_response = (
             codeartifact_client.get_repository_endpoint(**kwargs)
+        )
 
         return get_repository_endpoint_response['repositoryEndpoint']
 
     def _get_authorization_token(self, codeartifact_client, parsed_args):
-        kwargs = {
-            'domain': parsed_args.domain
-        }
+        kwargs = {'domain': parsed_args.domain}
         if parsed_args.domain_owner:
             kwargs['domainOwner'] = parsed_args.domain_owner
 
         if parsed_args.duration_seconds:
             kwargs['durationSeconds'] = parsed_args.duration_seconds
 
-        get_authorization_token_response = \
+        get_authorization_token_response = (
             codeartifact_client.get_authorization_token(**kwargs)
+        )
 
         return get_authorization_token_response
 
@@ -811,8 +818,13 @@ class CodeArtifactLogin(BasicCommand):
         auth_token = auth_token_res['authorizationToken']
         expiration = parse_timestamp(auth_token_res['expiration'])
         login = self.TOOL_MAP[tool]['login_cls'](
-            auth_token, expiration, repository_endpoint,
-            domain, repository, subprocess, namespace
+            auth_token,
+            expiration,
+            repository_endpoint,
+            domain,
+            repository,
+            subprocess,
+            namespace,
         )
 
         login.login(parsed_args.dry_run)

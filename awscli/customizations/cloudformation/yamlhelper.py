@@ -73,9 +73,10 @@ def _add_yaml_1_1_boolean_resolvers(resolver_cls):
         '|true|True|TRUE|false|False|FALSE'
         '|on|On|ON|off|Off|OFF)$'
     )
-    boolean_first_chars = list(u'yYnNtTfFoO')
+    boolean_first_chars = list('yYnNtTfFoO')
     resolver_cls.add_implicit_resolver(
-        'tag:yaml.org,2002:bool', boolean_regex, boolean_first_chars)
+        'tag:yaml.org,2002:bool', boolean_regex, boolean_first_chars
+    )
 
 
 def yaml_dump(dict_to_dump):
@@ -111,9 +112,11 @@ def yaml_parse(yamlstr):
         yaml = ruamel.yaml.YAML(typ="safe", pure=True)
         yaml.Constructor.add_constructor(
             ruamel.yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-            _dict_constructor)
+            _dict_constructor,
+        )
         yaml.Constructor.add_multi_constructor(
-            "!", intrinsics_multi_constructor)
+            "!", intrinsics_multi_constructor
+        )
         _add_yaml_1_1_boolean_resolvers(yaml.Resolver)
 
         return yaml.load(yamlstr)

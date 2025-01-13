@@ -94,5 +94,6 @@ class PublicKeyProvider:
                 return key["Value"]
 
         raise RuntimeError(
-            "No public keys found for key with fingerprint: %s" % public_key_fingerprint
+            "No public keys found for key with fingerprint: %s"
+            % public_key_fingerprint
         )

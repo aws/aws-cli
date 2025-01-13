@@ -466,7 +466,7 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         if self._original_profile_name:
             profile_name = self._original_profile_name
         else:
-            text = 'CLI profile name'
+            text = 'Profile name'
             default_profile = None
             if sso_account_id and sso_role_name:
                 default_profile = f'{sso_role_name}-{sso_account_id}'
@@ -478,9 +478,11 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
     def _prompt_for_cli_default_region(self):
         # TODO: figure out a way to get a list of reasonable client regions
         return self._prompt_for_profile_config(
-            'region', 'CLI default client Region')
+            'region', 'Default client Region')
 
     def _prompt_for_cli_output_format(self):
+        if 'output' not in self._profile_config:
+            self._profile_config['output'] = 'json'
         return self._prompt_for_profile_config(
             'output', 'CLI default output format',
             completions=list(CLI_OUTPUT_FORMATS.keys()),
@@ -651,15 +653,21 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
 
     def _print_conclusion(self, configured_for_aws_credentials, profile_name):
         if configured_for_aws_credentials:
-            msg = (
-                '\nTo use this profile, specify the profile name using '
-                '--profile, as shown:\n\n'
-                'aws s3 ls --profile {}\n'
-            )
+            if profile_name.lower() == 'default':
+                msg = (
+                    'The AWS CLI is now configured to use the default profile.\n'
+                    'Run the following command to verify your configuration:\n\n'
+                    'aws sts get-caller-identity\n'
+                )
+            else:
+                msg = (
+                    'To use this profile, specify the profile name using '
+                    '--profile, as shown:\n\n'
+                    'aws sts get-caller-identity --profile {}\n'
+                )
         else:
             msg = 'Successfully configured SSO for profile: {}\n'
         uni_print(msg.format(profile_name))
-
 
 class ConfigureSSOSessionCommand(BaseSSOConfigurationCommand):
     NAME = 'sso-session'

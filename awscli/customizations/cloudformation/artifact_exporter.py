@@ -142,6 +142,9 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
 
     local_path = make_abs_path(parent_dir, local_path)
 
+    if uploader is None:
+        raise exceptions.PackageBucketRequiredError()
+
     # Or, pointing to a folder. Zip the folder and upload
     if is_local_folder(local_path):
         return zip_and_upload(local_path, uploader)
@@ -157,6 +160,8 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
 
 
 def zip_and_upload(local_path, uploader):
+    if uploader is None:
+        raise exceptions.PackageBucketRequiredError()
     with zip_folder(local_path) as zipfile:
             return uploader.upload_with_dedup(zipfile)
 
@@ -475,6 +480,9 @@ class CloudFormationStackResource(Resource):
 
         exported_template_str = yaml_dump(exported_template_dict)
 
+        if uploader is None:
+            raise exceptions.PackageBucketRequiredError()
+
         with mktempfile() as temporary_file:
             temporary_file.write(exported_template_str)
             temporary_file.flush()
@@ -561,6 +569,9 @@ def include_transform_export_handler(template_dict, uploader, parent_dir):
         return template_dict
 
     # We are confident at this point that `include_location` is a string containing the local path
+    if uploader is None:
+        raise exceptions.PackageBucketRequiredError()
+
     abs_include_location = os.path.join(parent_dir, include_location)
     if is_local_file(abs_include_location):
         template_dict["Parameters"]["Location"] = uploader.upload_with_dedup(abs_include_location)

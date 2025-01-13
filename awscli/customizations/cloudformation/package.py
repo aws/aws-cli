@@ -57,7 +57,6 @@ class PackageCommand(BasicCommand):
 
         {
             'name': 's3-bucket',
-            'required': True,
             'help_text': (
                 'The name of the S3 bucket where this command uploads'
                 ' the artifacts that are referenced in your template.'
@@ -124,11 +123,7 @@ class PackageCommand(BasicCommand):
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        s3_client = self._session.create_client(
-            "s3",
-            config=Config(signature_version='s3v4'),
-            region_name=parsed_globals.region,
-            verify=parsed_globals.verify_ssl)
+
 
         template_path = parsed_args.template_file
         if not os.path.isfile(template_path):
@@ -137,13 +132,25 @@ class PackageCommand(BasicCommand):
 
         bucket = parsed_args.s3_bucket
 
-        self.s3_uploader = S3Uploader(s3_client,
-                                      bucket,
-                                      parsed_args.s3_prefix,
-                                      parsed_args.kms_key_id,
-                                      parsed_args.force_upload)
-        # attach the given metadata to the artifacts to be uploaded
-        self.s3_uploader.artifact_metadata = parsed_args.metadata
+        # Only create the s3 uploaded if we need it, 
+        # since this command now also supports local modules.
+        # Local modules should be able to run without credentials.
+        if bucket:
+            s3_client = self._session.create_client(
+                "s3",
+                config=Config(signature_version='s3v4'),
+                region_name=parsed_globals.region,
+                verify=parsed_globals.verify_ssl)
+
+            self.s3_uploader = S3Uploader(s3_client,
+                                          bucket,
+                                          parsed_args.s3_prefix,
+                                          parsed_args.kms_key_id,
+                                          parsed_args.force_upload)
+            # attach the given metadata to the artifacts to be uploaded
+            self.s3_uploader.artifact_metadata = parsed_args.metadata
+        else:
+            self.s3_uploader = None
 
         output_file = parsed_args.output_template_file
         use_json = parsed_args.use_json

@@ -980,10 +980,10 @@ class CloudTrailValidateLogs(BasicCommand):
     def _write_ratio(self, valid, invalid, name):
         total = valid + invalid
         if total > 0:
-            sys.stdout.write('\n%d/%d %s files valid' % (valid, total, name))
+            sys.stdout.write(f'\n{valid:d}/{total:d} {name} files valid')
             if invalid > 0:
                 sys.stdout.write(
-                    ', %d/%d %s files INVALID' % (invalid, total, name)
+                    f', {invalid:d}/{total:d} {name} files INVALID'
                 )
 
     def _on_missing_digest(self, bucket, last_key, **kwargs):

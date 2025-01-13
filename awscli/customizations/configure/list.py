@@ -80,13 +80,7 @@ class ConfigureListCommand(BasicCommand):
 
     def _display_config_value(self, config_value, config_name):
         self._stream.write(
-            '%10s %24s %16s    %s\n'
-            % (
-                config_name,
-                config_value.value,
-                config_value.config_type,
-                config_value.config_variable,
-            )
+            f'{config_name:10s} {config_value.value:24s} {config_value.config_type:16s}    {config_value.config_variable}\n'
         )
 
     def _lookup_credentials(self):

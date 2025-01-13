@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.22.34
+=======
+
+* api-change:``ec2``: Add support for DisconnectOnSessionTimeout flag in CreateClientVpnEndpoint and ModifyClientVpnEndpoint requests and DescribeClientVpnEndpoints responses
+* api-change:``bedrock``: With this release, Bedrock Evaluation will now support latency-optimized inference for foundation models.
+* api-change:``kafkaconnect``: Support updating connector configuration via UpdateConnector API. Release Operations API to monitor the status of the connector operation.
+* api-change:``artifact``: Support resolving regional API calls to partition's leader region endpoint.
+* api-change:``transcribe``: This update provides tagging support for Transcribe's Call Analytics Jobs and Call Analytics Categories.
+
+
 2.22.33
 =======
 

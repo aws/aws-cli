@@ -76,9 +76,7 @@ def get_model_location(session, service_definition, service_name=None):
     # not the one set by AWS_DATA_PATH)
     data_path = session.get_component('data_loader').CUSTOMER_DATA_PATH
     # Use the version of the model to determine the file's naming convention.
-    service_model_name = (
-        f"service-{int(float(service_definition.get('version', '2.0'))):d}.json"
-    )
+    service_model_name = f"service-{int(float(service_definition.get('version', '2.0'))):d}.json"
     return os.path.join(
         data_path, service_name, api_version, service_model_name
     )

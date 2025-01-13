@@ -100,5 +100,9 @@ class GetStatusCommand(BasicCommand):
         last_status = status['lastStatus']
         sys.stdout.write(f'last {status_name}status: {last_status}\n')
         if last_status == "FAILURE":
-            sys.stdout.write('error code: {}\n'.format(status['lastErrorCode']))
-            sys.stdout.write('message: {}\n'.format(status['lastErrorMessage']))
+            sys.stdout.write(
+                'error code: {}\n'.format(status['lastErrorCode'])
+            )
+            sys.stdout.write(
+                'message: {}\n'.format(status['lastErrorMessage'])
+            )

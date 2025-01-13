@@ -78,9 +78,7 @@ def assert_cloudtrail_arn_is_valid(trail_arn):
     ARNs look like: arn:aws:cloudtrail:us-east-1:123456789012:trail/foo"""
     pattern = re.compile(r'arn:.+:cloudtrail:.+:\d{12}:trail/.+')
     if not pattern.match(trail_arn):
-        raise ParamValidationError(
-            f'Invalid trail ARN provided: {trail_arn}'
-        )
+        raise ParamValidationError(f'Invalid trail ARN provided: {trail_arn}')
 
 
 def create_digest_traverser(
@@ -589,19 +587,15 @@ class DigestTraverser:
             or digest_data['digestS3Object'] != key
         ):
             raise DigestError(
-                
-                    f'Digest file\ts3://{bucket}/{key}\tINVALID: has been moved from its '
-                    'original location'
-                
+                f'Digest file\ts3://{bucket}/{key}\tINVALID: has been moved from its '
+                'original location'
             )
         # Get the public keys in the given time range.
         fingerprint = digest_data['digestPublicKeyFingerprint']
         if fingerprint not in public_keys:
             raise DigestError(
-                
-                    f'Digest file\ts3://{bucket}/{key}\tINVALID: public key not found in '
-                    f'region {self.digest_provider.trail_home_region} for fingerprint {fingerprint}'
-                
+                f'Digest file\ts3://{bucket}/{key}\tINVALID: public key not found in '
+                f'region {self.digest_provider.trail_home_region} for fingerprint {fingerprint}'
             )
         public_key_hex = public_keys[fingerprint]['Value']
         self._digest_validator.validate(
@@ -649,7 +643,9 @@ class Sha256RSADigestValidator:
                 (
                     'Digest file\ts3://{}/{}\tINVALID: Unable to load PKCS #1 key'
                     ' with fingerprint {}'
-                ).format(bucket, key, digest_data['digestPublicKeyFingerprint'])
+                ).format(
+                    bucket, key, digest_data['digestPublicKeyFingerprint']
+                )
             )
 
         to_sign = self._create_string_to_sign(digest_data, inflated_digest)
@@ -889,7 +885,9 @@ class CloudTrailValidateLogs(BasicCommand):
             self._track_found_times(digest)
             self._valid_digests += 1
             self._write_status(
-                'Digest file\ts3://{}/{}\tvalid'.format(digest['digestS3Bucket'], digest['digestS3Object'])
+                'Digest file\ts3://{}/{}\tvalid'.format(
+                    digest['digestS3Bucket'], digest['digestS3Object']
+                )
             )
             if not digest['logFiles']:
                 continue
@@ -931,9 +929,9 @@ class CloudTrailValidateLogs(BasicCommand):
             else:
                 self._valid_logs += 1
                 self._write_status(
-                    
-                        'Log file\ts3://{}/{}\tvalid'.format(log['s3Bucket'], log['s3Object'])
-                    
+                    'Log file\ts3://{}/{}\tvalid'.format(
+                        log['s3Bucket'], log['s3Object']
+                    )
                 )
         except ClientError as e:
             if e.response['Error']['Code'] != 'NoSuchKey':
@@ -1010,7 +1008,9 @@ class CloudTrailValidateLogs(BasicCommand):
         self._invalid_logs += 1
         self._write_status(
             (
-                'Log file\ts3://{}/{}\tINVALID: invalid format'.format(log_data['s3Bucket'], log_data['s3Object'])
+                'Log file\ts3://{}/{}\tINVALID: invalid format'.format(
+                    log_data['s3Bucket'], log_data['s3Object']
+                )
             ),
             True,
         )
@@ -1018,13 +1018,17 @@ class CloudTrailValidateLogs(BasicCommand):
     def _on_log_invalid(self, log_data):
         self._invalid_logs += 1
         self._write_status(
-            "Log file\ts3://{}/{}\tINVALID: hash value doesn't match".format(log_data['s3Bucket'], log_data['s3Object']),
+            "Log file\ts3://{}/{}\tINVALID: hash value doesn't match".format(
+                log_data['s3Bucket'], log_data['s3Object']
+            ),
             True,
         )
 
     def _on_missing_log(self, log_data):
         self._invalid_logs += 1
         self._write_status(
-            'Log file\ts3://{}/{}\tINVALID: not found'.format(log_data['s3Bucket'], log_data['s3Object']),
+            'Log file\ts3://{}/{}\tINVALID: not found'.format(
+                log_data['s3Bucket'], log_data['s3Object']
+            ),
             True,
         )

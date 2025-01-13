@@ -208,9 +208,7 @@ class ConfigFileWriter:
                 subindent = indent + '    '
                 new_contents.append(f'{indent}{key} =\n')
                 for subkey, subval in list(value.items()):
-                    new_contents.append(
-                        f'{subindent}{subkey} = {subval}\n'
-                    )
+                    new_contents.append(f'{subindent}{subkey} = {subval}\n')
             else:
                 new_contents.append(f'{indent}{key} = {value}\n')
             del new_values[key]

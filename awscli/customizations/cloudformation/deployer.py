@@ -69,9 +69,7 @@ class Deployer:
             msg = str(e)
 
             if f"Stack with id {stack_name} does not exist" in msg:
-                LOG.debug(
-                    f"Stack with id {stack_name} does not exist"
-                )
+                LOG.debug(f"Stack with id {stack_name} does not exist")
                 return False
             else:
                 # We don't know anything about this exception. Don't handle
@@ -239,9 +237,7 @@ class Deployer:
         elif changeset_type == "UPDATE":
             waiter = self._client.get_waiter("stack_update_complete")
         else:
-            raise RuntimeError(
-                f"Invalid changeset type {changeset_type}"
-            )
+            raise RuntimeError(f"Invalid changeset type {changeset_type}")
 
         # Poll every 30 seconds. Polling too frequently risks hitting rate limits
         # on CloudFormation's DescribeStacks API

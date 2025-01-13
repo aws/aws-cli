@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import string
+
 from awscli.compat import shlex
 
 NOT_SET = '<not set>'
@@ -18,7 +19,7 @@ PREDEFINED_SECTION_NAMES = 'plugins'
 _WHITESPACE = ' \t'
 
 
-class ConfigValue(object):
+class ConfigValue:
     def __init__(self, value, config_type, config_variable):
         self.value = value
         self.config_type = config_type

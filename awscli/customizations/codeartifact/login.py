@@ -1,24 +1,23 @@
 import errno
 import os
 import platform
-import sys
-import subprocess
 import re
-
+import subprocess
+import sys
 from configparser import RawConfigParser
+from datetime import datetime
 from io import StringIO
 from urllib.parse import urlsplit
 
-from datetime import datetime
-from dateutil.tz import tzutc
-from dateutil.relativedelta import relativedelta
 from botocore.utils import parse_timestamp
+from dateutil.relativedelta import relativedelta
+from dateutil.tz import tzutc
 
-from awscli.compat import is_windows, urlparse, get_stderr_encoding, is_macos
+from awscli.compat import get_stderr_encoding, is_macos, is_windows, urlparse
 from awscli.customizations import utils as cli_utils
 from awscli.customizations.commands import BasicCommand
-from awscli.utils import original_ld_library_path
 from awscli.customizations.utils import uni_print
+from awscli.utils import original_ld_library_path
 
 
 def get_relative_expiration_time(remaining):
@@ -90,16 +89,12 @@ class BaseLogin:
         expiration_message = get_relative_expiration_time(remaining)
 
         sys.stdout.write(
-            'Successfully configured {} to use '
-            'AWS CodeArtifact repository {} '.format(
-                tool, self.repository_endpoint
-            )
+            f'Successfully configured {tool} to use '
+            f'AWS CodeArtifact repository {self.repository_endpoint} '
         )
         sys.stdout.write(os.linesep)
         sys.stdout.write(
-            'Login expires in {} at {}'.format(
-                expiration_message, self.expiration
-            )
+            f'Login expires in {expiration_message} at {self.expiration}'
         )
         sys.stdout.write(os.linesep)
 
@@ -185,7 +180,7 @@ class SwiftLogin(BaseLogin):
         if not os.path.isfile(netrc_path):
             self._create_netrc_file(netrc_path, new_entry)
         else:
-            with open(netrc_path, 'r') as f:
+            with open(netrc_path) as f:
                 contents = f.read()
             escaped_auth_token = self.auth_token.replace('\\', r'\\')
             new_contents = re.sub(
@@ -367,7 +362,7 @@ class NuGetBaseLogin(BaseLogin):
         return source_to_url_dict
 
     def _get_source_name(self, codeartifact_url, source_dict):
-        default_name = '{}/{}'.format(self.domain, self.repository)
+        default_name = f'{self.domain}/{self.repository}'
 
         # Check if the CodeArtifact URL is already present in the
         # NuGet.Config file. If the URL already exists, use the source name
@@ -474,7 +469,7 @@ class NpmLogin(BaseLogin):
         if namespace.startswith('@'):
             scope = namespace
         else:
-            scope = '@{}'.format(namespace)
+            scope = f'@{namespace}'
 
         if not valid_scope_name.match(scope):
             raise ValueError(
@@ -490,7 +485,7 @@ class NpmLogin(BaseLogin):
         scope = kwargs.get('scope')
 
         # prepend scope if it exists
-        registry = '{}:registry'.format(scope) if scope else 'registry'
+        registry = f'{scope}:registry' if scope else 'registry'
 
         # set up the codeartifact repository as the npm registry.
         commands.append([cls.NPM_CMD, 'config', 'set', registry, endpoint])
@@ -498,17 +493,13 @@ class NpmLogin(BaseLogin):
         repo_uri = urlsplit(endpoint)
 
         # configure npm to always require auth for the repository.
-        always_auth_config = '//{}{}:always-auth'.format(
-            repo_uri.netloc, repo_uri.path
-        )
+        always_auth_config = f'//{repo_uri.netloc}{repo_uri.path}:always-auth'
         commands.append(
             [cls.NPM_CMD, 'config', 'set', always_auth_config, 'true']
         )
 
         # set auth info for the repository.
-        auth_token_config = '//{}{}:_authToken'.format(
-            repo_uri.netloc, repo_uri.path
-        )
+        auth_token_config = f'//{repo_uri.netloc}{repo_uri.path}:_authToken'
         commands.append(
             [cls.NPM_CMD, 'config', 'set', auth_token_config, auth_token]
         )
@@ -756,7 +747,7 @@ class CodeArtifactLogin(BasicCommand):
 
         if not namespace_compatible and parsed_args.namespace:
             raise ValueError(
-                'Argument --namespace is not supported for {}'.format(tool)
+                f'Argument --namespace is not supported for {tool}'
             )
         else:
             return parsed_args.namespace

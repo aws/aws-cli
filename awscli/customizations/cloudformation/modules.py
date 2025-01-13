@@ -125,6 +125,7 @@ Resources:
 import copy
 import logging
 import os
+import urllib
 from collections import OrderedDict
 
 from awscli.customizations.cloudformation import exceptions
@@ -191,9 +192,16 @@ def make_module(template, name, config, base_path, parent_path):
     if SOURCE not in config:
         msg = f"{name} missing {SOURCE}"
         raise exceptions.InvalidModulePathError(msg=msg)
-    relative_path = config[SOURCE]
-    module_config[SOURCE] = os.path.join(base_path, relative_path)
-    module_config[SOURCE] = os.path.normpath(module_config[SOURCE])
+
+    source_path = config[SOURCE]
+
+    if not is_url(source_path):
+        relative_path = source_path
+        module_config[SOURCE] = os.path.join(base_path, relative_path)
+        module_config[SOURCE] = os.path.normpath(module_config[SOURCE])
+    else:
+        module_config[SOURCE] = source_path
+
     if module_config[SOURCE] == parent_path:
         msg = f"Module refers to itself: {parent_path}"
         raise exceptions.InvalidModuleError(msg=msg)
@@ -279,10 +287,26 @@ def isdict(v):
     return isinstance(v, (dict, OrderedDict))
 
 
+def is_url(p):
+    "Returns true if the path looks like a URL instead of a local file"
+    return p.startswith("https")
+
+
 def read_source(source):
     "Read the source file and return the content as a string"
 
-    if not isinstance(source, str) or not os.path.isfile(source):
+    if not isinstance(source, str):
+        raise exceptions.InvalidModulePathError(source=source)
+
+    if is_url(source):
+        try:
+            with urllib.request.urlopen(source) as response:
+                return response.read()
+        except Exception as e:
+            print(e)
+            raise exceptions.InvalidModulePathError(source=source)
+
+    if not os.path.isfile(source):
         raise exceptions.InvalidModulePathError(source=source)
 
     with open(source, "r", encoding="utf-8") as s:

@@ -250,7 +250,7 @@ class CloudTrailVerifyQueryResult(BasicCommand):
       CloudTrail delivered them.
 
     .. note::
-        For verify export file from S3, this command requires that the user or 
+        For verify export file from S3, this command requires that the user or
         role executing the command has permission to call GetObject, and
         GetBucketLocation for the bucket that store the export file.
     """

@@ -562,8 +562,8 @@ class Sha256RSADigestValidator(object):
         signature_bytes = binascii.unhexlify(digest_data['_signature'])
 
         result = public_key.verify(
-            signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256, 
-            digest=hashlib.sha256(to_sign).digest(), 
+            signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
+            digest=hashlib.sha256(to_sign).digest(),
             signature=signature_bytes
         )
         if not result:

@@ -77,7 +77,7 @@ def get_paramfile(path, cases):
 
 
 def get_file(prefix, path, mode):
-    file_path = os.path.expandvars(os.path.expanduser(path[len(prefix):]))
+    file_path = os.path.expandvars(os.path.expanduser(path[len(prefix) :]))
     try:
         with compat_open(file_path, mode) as f:
             return f.read()
@@ -85,10 +85,12 @@ def get_file(prefix, path, mode):
         raise ResourceLoadingError(
             'Unable to load paramfile (%s), text contents could '
             'not be decoded.  If this is a binary file, please use the '
-            'fileb:// prefix instead of the file:// prefix.' % file_path)
+            'fileb:// prefix instead of the file:// prefix.' % file_path
+        )
     except (OSError, IOError) as e:
-        raise ResourceLoadingError('Unable to load paramfile %s: %s' % (
-            path, e))
+        raise ResourceLoadingError(
+            'Unable to load paramfile %s: %s' % (path, e)
+        )
 
 
 LOCAL_PREFIX_MAP = {

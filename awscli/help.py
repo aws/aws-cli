@@ -40,7 +40,8 @@ LOG = logging.getLogger('awscli.help')
 class ExecutableNotFoundError(Exception):
     def __init__(self, executable_name):
         super(ExecutableNotFoundError, self).__init__(
-            'Could not find executable named "%s"' % executable_name)
+            'Could not find executable named "%s"' % executable_name
+        )
 
 
 def get_renderer():
@@ -62,6 +63,7 @@ class PagingHelpRenderer(object):
     a particular platform.
 
     """
+
     def __init__(self, output_stream=sys.stdout):
         self.output_stream = output_stream
 
@@ -118,7 +120,8 @@ class PosixHelpRenderer(PagingHelpRenderer):
         settings_overrides = self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES.copy()
         settings_overrides["report_level"] = 3
         man_contents = publish_string(
-            contents, writer=manpage.Writer(),
+            contents,
+            writer=manpage.Writer(),
             settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
         )
         if self._exists_on_path('groff'):
@@ -135,8 +138,9 @@ class PosixHelpRenderer(PagingHelpRenderer):
     def _send_output_to_pager(self, output):
         cmdline = self.get_pager_cmdline()
         if not self._exists_on_path(cmdline[0]):
-            LOG.debug("Pager '%s' not found in PATH, printing raw help." %
-                      cmdline[0])
+            LOG.debug(
+                "Pager '%s' not found in PATH, printing raw help." % cmdline[0]
+            )
             self.output_stream.write(output.decode('utf-8') + "\n")
             self.output_stream.flush()
             return
@@ -159,8 +163,12 @@ class PosixHelpRenderer(PagingHelpRenderer):
     def _exists_on_path(self, name):
         # Since we're only dealing with POSIX systems, we can
         # ignore things like PATHEXT.
-        return any([os.path.exists(os.path.join(p, name))
-                    for p in os.environ.get('PATH', '').split(os.pathsep)])
+        return any(
+            [
+                os.path.exists(os.path.join(p, name))
+                for p in os.environ.get('PATH', '').split(os.pathsep)
+            ]
+        )
 
 
 class WindowsHelpRenderer(PagingHelpRenderer):
@@ -170,7 +178,8 @@ class WindowsHelpRenderer(PagingHelpRenderer):
 
     def _convert_doc_content(self, contents):
         text_output = publish_string(
-            contents, writer=TextWriter(),
+            contents,
+            writer=TextWriter(),
             settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
         )
         return text_output
@@ -280,8 +289,9 @@ class HelpCommand(object):
             subcommand_parser = ArgTableArgParser({}, self.subcommand_table)
             parsed, remaining = subcommand_parser.parse_known_args(args)
             if getattr(parsed, 'subcommand', None) is not None:
-                return self.subcommand_table[parsed.subcommand](remaining,
-                                                                parsed_globals)
+                return self.subcommand_table[parsed.subcommand](
+                    remaining, parsed_globals
+                )
 
         # Create an event handler for a Provider Document
         instance = self.EventHandlerClass(self)
@@ -299,12 +309,13 @@ class ProviderHelpCommand(HelpCommand):
     This is what is called when ``aws help`` is run.
 
     """
+
     EventHandlerClass = ProviderDocumentEventHandler
 
-    def __init__(self, session, command_table, arg_table,
-                 description, synopsis, usage):
-        HelpCommand.__init__(self, session, None,
-                             command_table, arg_table)
+    def __init__(
+        self, session, command_table, arg_table, description, synopsis, usage
+    ):
+        HelpCommand.__init__(self, session, None, command_table, arg_table)
         self.description = description
         self.synopsis = synopsis
         self.help_usage = usage
@@ -353,10 +364,12 @@ class ServiceHelpCommand(HelpCommand):
 
     EventHandlerClass = ServiceDocumentEventHandler
 
-    def __init__(self, session, obj, command_table, arg_table, name,
-                 event_class):
-        super(ServiceHelpCommand, self).__init__(session, obj, command_table,
-                                                 arg_table)
+    def __init__(
+        self, session, obj, command_table, arg_table, name, event_class
+    ):
+        super(ServiceHelpCommand, self).__init__(
+            session, obj, command_table, arg_table
+        )
         self._name = name
         self._event_class = event_class
 
@@ -376,10 +389,10 @@ class OperationHelpCommand(HelpCommand):
     e.g. ``aws ec2 describe-instances help``.
 
     """
+
     EventHandlerClass = OperationDocumentEventHandler
 
-    def __init__(self, session, operation_model, arg_table, name,
-                 event_class):
+    def __init__(self, session, operation_model, arg_table, name, event_class):
         HelpCommand.__init__(self, session, operation_model, None, arg_table)
         self.param_shorthand = ParamShorthandParser()
         self._name = name

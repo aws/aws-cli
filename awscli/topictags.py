@@ -67,19 +67,25 @@ class TopicTagDB(object):
     that all tag values for a specific tag of a specific topic are unique.
     """
 
-    VALID_TAGS = ['category', 'description', 'title', 'related topic',
-                  'related command']
+    VALID_TAGS = [
+        'category',
+        'description',
+        'title',
+        'related topic',
+        'related command',
+    ]
 
     # The default directory to look for topics.
     TOPIC_DIR = os.path.join(
-        os.path.dirname(
-            os.path.abspath(__file__)), 'topics')
+        os.path.dirname(os.path.abspath(__file__)), 'topics'
+    )
 
     # The default JSON index to load.
     JSON_INDEX = os.path.join(TOPIC_DIR, 'topic-tags.json')
 
-    def __init__(self, tag_dictionary=None, index_file=JSON_INDEX,
-                 topic_dir=TOPIC_DIR):
+    def __init__(
+        self, tag_dictionary=None, index_file=JSON_INDEX, topic_dir=TOPIC_DIR
+    ):
         """
         :param index_file: The path to a specific JSON index to load.
             If nothing is specified it will default to the default JSON
@@ -164,7 +170,8 @@ class TopicTagDB(object):
                 topic_content = f.read()
                 # Record the tags and the values
                 self._add_tag_and_values_from_content(
-                    topic_name, topic_content)
+                    topic_name, topic_content
+                )
 
     def _find_topic_name(self, topic_src_file):
         # Get the name of each of these files
@@ -259,9 +266,9 @@ class TopicTagDB(object):
                     # no value constraints are provided or if the tag value
                     # falls in the allowed tag values.
                     if values is None or tag_value in values:
-                        self._add_key_values(query_dict,
-                                             key=tag_value,
-                                             values=[topic_name])
+                        self._add_key_values(
+                            query_dict, key=tag_value, values=[topic_name]
+                        )
         return query_dict
 
     def get_tag_value(self, topic_name, tag, default_value=None):

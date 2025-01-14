@@ -14,7 +14,7 @@
 import socket
 
 import botocore.config
-from tests import mock, unittest
+from tests import get_botocore_default_config_mapping, mock, unittest
 
 from botocore import args
 from botocore import exceptions
@@ -29,7 +29,8 @@ from botocore.useragent import UserAgentString
 class TestCreateClientArgs(unittest.TestCase):
     def setUp(self):
         self.event_emitter = mock.Mock(HierarchicalEmitter)
-        self.config_store = ConfigValueStore()
+        default_config_mapping = get_botocore_default_config_mapping()
+        self.config_store = ConfigValueStore(mapping=default_config_mapping)
         user_agent_creator = UserAgentString(
             platform_name=None,
             platform_version=None,

@@ -43,6 +43,7 @@ from botocore.compat import urlparse
 from botocore.compat import parse_qs
 from botocore import utils
 from botocore import credentials
+from botocore.configprovider import create_botocore_default_config_mapping
 from botocore.stub import Stubber
 
 
@@ -102,6 +103,11 @@ def create_session(**kwargs):
     session.register_component('data_loader', _LOADER)
     session.set_config_variable('credentials_file', 'noexist/foo/botocore')
     return session
+
+
+def get_botocore_default_config_mapping():
+    session = botocore.session.get_session()
+    return create_botocore_default_config_mapping(session)
 
 
 @contextlib.contextmanager

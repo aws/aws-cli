@@ -322,11 +322,17 @@ class TestCreateClientArgs(unittest.TestCase):
         )['client_config']
         self.assertEqual(config.retries['max_attempts'], 2)
 
-    def test_max_attempts_expected_if_retries_is_none(self):
+    def test_max_attempts_matches_config_store_if_retries_is_none(self):
         config = self.call_get_client_args(
                 client_config=Config(retries=None)
         )['client_config']
-        self.assertEqual(config.retries, {'max_attempts': 3, 'mode': 'standard'})
+        self.assertEqual(
+            config.retries,
+            {
+                'max_attempts': self.config_store.get_config_variable('max_attempts'),
+                'mode': 'standard'
+            }
+        )
 
     def test_retry_mode_set_on_config_store(self):
         self.config_store.set_config_variable('retry_mode', 'standard')

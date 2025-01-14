@@ -94,6 +94,7 @@ class TestPackageModules(unittest.TestCase):
             "conditional",
             "cond-intrinsics",
             "example",
+            "getatt",
         ]
         for test in tests:
             base = "unit/customizations/cloudformation/modules"

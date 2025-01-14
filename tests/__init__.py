@@ -57,7 +57,7 @@ from tests.utils.botocore import (
     assert_url_equal, create_session, random_chars, temporary_file,
     patch_load_service_model, ALL_SERVICES, BaseEnvVar, BaseSessionTest,
     BaseClientDriverTest, StubbedSession, ClientHTTPStubber, SessionHTTPStubber,
-    IntegerRefresher, FreezeTime, get_botocore_default_config_mapping
+    IntegerRefresher, FreezeTime,
 )
 # S3transfer testing utilities that we want to preserve import statements for
 # in s3transfer specific tests.

@@ -14,7 +14,7 @@
 import socket
 
 import botocore.config
-from tests import get_botocore_default_config_mapping, mock, unittest
+from tests import mock, unittest
 
 from botocore import args
 from botocore import exceptions
@@ -29,8 +29,7 @@ from botocore.useragent import UserAgentString
 class TestCreateClientArgs(unittest.TestCase):
     def setUp(self):
         self.event_emitter = mock.Mock(HierarchicalEmitter)
-        default_config_mapping = get_botocore_default_config_mapping()
-        self.config_store = ConfigValueStore(mapping=default_config_mapping)
+        self.config_store = ConfigValueStore()
         user_agent_creator = UserAgentString(
             platform_name=None,
             platform_version=None,
@@ -322,11 +321,11 @@ class TestCreateClientArgs(unittest.TestCase):
         )['client_config']
         self.assertEqual(config.retries['max_attempts'], 2)
 
-    def test_max_attempts_expected_if_retries_is_none(self):
+    def test_max_attempts_unset_if_retries_is_none(self):
         config = self.call_get_client_args(
                 client_config=Config(retries=None)
         )['client_config']
-        self.assertEqual(config.retries, {'max_attempts': 3, 'mode': 'standard'})
+        self.assertEqual(config.retries, {'mode': 'standard'})
 
     def test_retry_mode_set_on_config_store(self):
         self.config_store.set_config_variable('retry_mode', 'standard')

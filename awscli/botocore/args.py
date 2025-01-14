@@ -398,24 +398,25 @@ class ClientArgsCreator(object):
     def _validate_min_compression_size(self, min_size):
         min_allowed_min_size = 1
         max_allowed_min_size = 1048576
-        error_msg_base = (
-            f'Invalid value "{min_size}" for '
-            'request_min_compression_size_bytes.'
-        )
-        try:
-            min_size = int(min_size)
-        except (ValueError, TypeError):
-            msg = (
-                f'{error_msg_base} Value must be an integer. '
-                f'Received {type(min_size)} instead.'
+        if min_size is not None:
+            error_msg_base = (
+                f'Invalid value "{min_size}" for '
+                'request_min_compression_size_bytes.'
             )
-            raise botocore.exceptions.InvalidConfigError(error_msg=msg)
-        if not min_allowed_min_size <= min_size <= max_allowed_min_size:
-            msg = (
-                f'{error_msg_base} Value must be between '
-                f'{min_allowed_min_size} and {max_allowed_min_size}.'
-            )
-            raise botocore.exceptions.InvalidConfigError(error_msg=msg)
+            try:
+                min_size = int(min_size)
+            except (ValueError, TypeError):
+                msg = (
+                    f'{error_msg_base} Value must be an integer. '
+                    f'Received {type(min_size)} instead.'
+                )
+                raise botocore.exceptions.InvalidConfigError(error_msg=msg)
+            if not min_allowed_min_size <= min_size <= max_allowed_min_size:
+                msg = (
+                    f'{error_msg_base} Value must be between '
+                    f'{min_allowed_min_size} and {max_allowed_min_size}.'
+                )
+                raise botocore.exceptions.InvalidConfigError(error_msg=msg)
 
         return min_size
 

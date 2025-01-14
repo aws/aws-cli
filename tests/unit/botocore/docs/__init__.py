@@ -17,7 +17,7 @@ import shutil
 
 from botocore.docs.bcdoc.restdoc import DocumentStructure
 
-from tests import get_botocore_default_config_mapping, mock, unittest
+from tests import mock, unittest
 from botocore.compat import OrderedDict
 from botocore.hooks import HierarchicalEmitter
 from botocore.model import ServiceModel, OperationModel
@@ -101,12 +101,11 @@ class BaseDocsTest(unittest.TestCase):
             'signatureVersions': ['v4']
         }
 
-        default_config_mapping = get_botocore_default_config_mapping()
         self.creator = ClientCreator(
             loader=self.loader, endpoint_resolver=endpoint_resolver,
             user_agent='user-agent', event_emitter=self.events,
             exceptions_factory=mock.Mock(),
-            config_store=ConfigValueStore(mapping=default_config_mapping)
+            config_store=ConfigValueStore()
         )
 
         self.client = self.creator.create_client('myservice', 'us-east-1')

@@ -42,6 +42,8 @@ An example module::
           OverrideMe: abc
         Properties:
           BucketName: !Ref Name
+    Outputs:
+      BucketArn: !GetAtt Bucket.Arn
 
 Packaging the template with this module would result in the following output::
 

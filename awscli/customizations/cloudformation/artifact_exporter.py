@@ -480,7 +480,7 @@ class CloudFormationStackResource(Resource):
 
         exported_template_str = yaml_dump(exported_template_dict)
 
-        if uploader is None:
+        if self.uploader is None:
             raise exceptions.PackageBucketRequiredError()
 
         with mktempfile() as temporary_file:

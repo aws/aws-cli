@@ -971,7 +971,7 @@
         {"shape":"NotFoundException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Retrieves information, including current status, about a game session placement request. </p> <p>To get game session placement details, specify the placement ID.</p> <p>This operation is not designed to be continually called to track game session status. This practice can cause you to exceed your API limit, which results in errors. Instead, you must configure configure an Amazon Simple Notification Service (SNS) topic to receive notifications from FlexMatch or queues. Continuously polling with <code>DescribeGameSessionPlacement</code> should only be used for games in development with low game session usage. </p>"
+      "documentation":"<p>Retrieves information, including current status, about a game session placement request. </p> <p>To get game session placement details, specify the placement ID.</p> <p>This operation is not designed to be continually called to track game session status. This practice can cause you to exceed your API limit, which results in errors. Instead, you must configure an Amazon Simple Notification Service (SNS) topic to receive notifications from FlexMatch or queues. Continuously polling with <code>DescribeGameSessionPlacement</code> should only be used for games in development with low game session usage. </p>"
     },
     "DescribeGameSessionQueues":{
       "name":"DescribeGameSessionQueues",
@@ -1585,9 +1585,10 @@
         {"shape":"InternalServiceException"},
         {"shape":"InvalidRequestException"},
         {"shape":"NotFoundException"},
-        {"shape":"UnauthorizedException"}
+        {"shape":"UnauthorizedException"},
+        {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p>Places a request for a new game session in a queue. When processing a placement request, Amazon GameLift searches for available resources on the queue's destinations, scanning each until it finds resources or the placement request times out.</p> <p>A game session placement request can also request player sessions. When a new game session is successfully created, Amazon GameLift creates a player session for each player included in the request.</p> <p>When placing a game session, by default Amazon GameLift tries each fleet in the order they are listed in the queue configuration. Ideally, a queue's destinations are listed in preference order.</p> <p>Alternatively, when requesting a game session with players, you can also provide latency data for each player in relevant Regions. Latency data indicates the performance lag a player experiences when connected to a fleet in the Region. Amazon GameLift uses latency data to reorder the list of destinations to place the game session in a Region with minimal lag. If latency data is provided for multiple players, Amazon GameLift calculates each Region's average lag for all players and reorders to get the best game play across all players. </p> <p>To place a new game session request, specify the following:</p> <ul> <li> <p>The queue name and a set of game session properties and settings</p> </li> <li> <p>A unique ID (such as a UUID) for the placement. You use this ID to track the status of the placement request</p> </li> <li> <p>(Optional) A set of player data and a unique player ID for each player that you are joining to the new game session (player data is optional, but if you include it, you must also provide a unique ID for each player)</p> </li> <li> <p>Latency data for all players (if you want to optimize game play for the players)</p> </li> </ul> <p>If successful, a new game session placement is created.</p> <p>To track the status of a placement request, call <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeGameSessionPlacement.html\">DescribeGameSessionPlacement</a> and check the request's status. If the status is <code>FULFILLED</code>, a new game session has been created and a game session ARN and Region are referenced. If the placement request times out, you can resubmit the request or retry it with a different queue. </p>"
+      "documentation":"<p>Makes a request to start a new game session using a game session queue. When processing a placement request in a queue, Amazon GameLift finds the best possible available resource to host the game session and prompts the resource to start the game session. </p> <p> <b>Request options</b> </p> <p>Call this API with the following minimum parameters: <i>GameSessionQueueName</i>, <i>MaximumPlayerSessionCount</i>, and <i>PlacementID</i>. You can also include game session data (data formatted as strings) or game properties (data formatted as key-value pairs) to pass to the new game session.</p> <ul> <li> <p>You can change how Amazon GameLift chooses a hosting resource for the new game session. Prioritizing resources for game session placements is defined when you configure a game session queue. You can use the default prioritization process or specify a custom process by providing a <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_PriorityConfiguration.html\"> PriorityConfiguration</a> when you create or update a queue.</p> <ul> <li> <p>Prioritize based on resource cost and location, using the queue's configured priority settings. Call this API with the minimum parameters.</p> </li> <li> <p>Prioritize based on latency. Include a set of values for <i>PlayerLatencies</i>. You can provide latency data with or without player session data. This option instructs Amazon GameLift to reorder the queue's prioritized locations list based on the latency data. If latency data is provided for multiple players, Amazon GameLift calculates each location's average latency for all players and reorders to find the lowest latency across all players. Don't include latency data if you're providing a custom list of locations.</p> </li> <li> <p>Prioritize based on a custom list of locations. If you're using a queue that's configured to prioritize location first (see <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_PriorityConfiguration.html\">PriorityConfiguration</a> for game session queues), use the <i>PriorityConfigurationOverride</i> parameter to substitute a different location list for this placement request. When prioritizing placements by location, Amazon GameLift searches each location in prioritized order to find an available hosting resource for the new game session. You can choose whether to use the override list for the first placement attempt only or for all attempts.</p> </li> </ul> </li> <li> <p>You can request new player sessions for a group of players. Include the <i>DesiredPlayerSessions</i> parameter and include at minimum a unique player ID for each. You can also include player-specific data to pass to the new game session. </p> </li> </ul> <p> <b>Result</b> </p> <p>If successful, this request generates a new game session placement request and adds it to the game session queue for Amazon GameLift to process in turn. You can track the status of individual placement requests by calling <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeGameSessionPlacement.html\">DescribeGameSessionPlacement</a>. A new game session is running if the status is <code>FULFILLED</code> and the request returns the game session connection information (IP address and port). If you include player session data, Amazon GameLift creates a player session for each player ID in the request.</p> <p>The request results in a <code>BadRequestException</code> in the following situations:</p> <ul> <li> <p>If the request includes both <i>PlayerLatencies</i> and <i>PriorityConfigurationOverride</i> parameters.</p> </li> <li> <p>If the request includes the <i>PriorityConfigurationOverride</i> parameter and designates a queue doesn't prioritize locations.</p> </li> </ul> <p>Amazon GameLift continues to retry each placement request until it reaches the queue's timeout setting. If a request times out, you can resubmit the request to the same queue or try a different queue. </p>"
     },
     "StartMatchBackfill":{
       "name":"StartMatchBackfill",
@@ -1719,7 +1720,7 @@
         {"shape":"InvalidGameSessionStatusException"},
         {"shape":"NotReadyException"}
       ],
-      "documentation":"<p>Ends a game session that's currently in progress. You can use this action to terminate any game session that isn't in <code>TERMINATED</code> or <code>TERMINATING</code> status. Terminating a game session is the most efficient way to free up a server process when it's hosting a game session that's in a bad state or not ending naturally. You can use this action to terminate a game session that's being hosted on any type of Amazon GameLift fleet compute, including computes for managed EC2, managed container, and Anywhere fleets.</p> <p>There are two potential methods for terminating a game session:</p> <ul> <li> <p>With a graceful termination, the Amazon GameLift service prompts the server process to initiate its normal game session shutdown sequence. This sequence is implemented in the game server code and might involve a variety of actions to gracefully end a game session, such as notifying players, and stop the server process. </p> </li> <li> <p>With a forceful termination, the Amazon GameLift service takes immediate action to terminate the game session by stopping the server process. Termination occurs without the normal game session shutdown sequence. </p> </li> </ul> <p> <b>Request options</b> </p> <ul> <li> <p>Request termination for a single game session. Provide the game session ID and the termination method. </p> </li> </ul> <p> <b>Results</b> </p> <p>If successful, game session termination is initiated, which includes changing the game session status to <code>TERMINATING</code>. As a result of this action, and depending on the implementation of <code>OnProcessTerminate()</code>, the server process either becomes available to host a new game session, or it's recycled and a new server process started with availability to host a game session. The game session status is changed to <code>TERMINATED</code>, with a status reason that indicates the termination method used.</p>"
+      "documentation":"<p>Ends a game session that's currently in progress. Use this action to terminate any game session that isn't in <code>ERROR</code> status. Terminating a game session is the most efficient way to free up a server process when it's hosting a game session that's in a bad state or not ending properly. You can use this action to terminate a game session that's being hosted on any type of Amazon GameLift fleet compute, including computes for managed EC2, managed container, and Anywhere fleets. The game server must be integrated with Amazon GameLift server SDK 5.x or greater.</p> <p> <b>Request options</b> </p> <p>Request termination for a single game session. Provide the game session ID and the termination mode. There are two potential methods for terminating a game session:</p> <ul> <li> <p>Initiate a graceful termination using the normal game session shutdown sequence. With this mode, the Amazon GameLift service prompts the server process that's hosting the game session by calling the server SDK callback method <code>OnProcessTerminate()</code>. The callback implementation is part of the custom game server code. It might involve a variety of actions to gracefully end a game session, such as notifying players, before stopping the server process.</p> </li> <li> <p>Force an immediate game session termination. With this mode, the Amazon GameLift service takes action to stop the server process, which ends the game session without the normal game session shutdown sequence. </p> </li> </ul> <p> <b>Results</b> </p> <p>If successful, game session termination is initiated. During this activity, the game session status is changed to <code>TERMINATING</code>. When completed, the server process that was hosting the game session has been stopped and replaced with a new server process that's ready to host a new game session. The old game session's status is changed to <code>TERMINATED</code> with a status reason that indicates the termination method used.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html\">Add Amazon GameLift to your game server</a> </p> <p>Amazon GameLift server SDK 5 reference guide for <code>OnProcessTerminate()</code> (<a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/integration-server-sdk5-cpp-initsdk.html\">C++</a>) (<a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/integration-server-sdk5-csharp-initsdk.html\">C#</a>) (<a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/integration-server-sdk5-unreal-initsdk.html\">Unreal</a>) (<a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/integration-server-sdk-go-initsdk.html\">Go</a>) </p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -2534,7 +2535,7 @@
           "documentation":"<p>The Amazon Resource Name (<a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-arn-format.html\">ARN</a>) that is assigned to a Amazon GameLift fleet resource and uniquely identifies it. ARNs are unique across all Regions. Format is <code>arn:aws:gamelift:&lt;region&gt;::fleet/fleet-a1234567-b8c9-0d1e-2fa3-b45c6d7e8912</code>. In a GameLift fleet ARN, the resource ID matches the <code>FleetId</code> value.</p>"
         },
         "FleetRoleArn":{
-          "shape":"ArnStringModel",
+          "shape":"IamRoleArn",
           "documentation":"<p>The unique identifier for an Identity and Access Management (IAM) role with permissions to run your containers on resources that are managed by Amazon GameLift. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/setting-up-role.html\">Set up an IAM service role</a>. This fleet property can't be changed.</p>"
         },
         "GameServerContainerGroupDefinitionName":{
@@ -3027,7 +3028,7 @@
       "required":["FleetRoleArn"],
       "members":{
         "FleetRoleArn":{
-          "shape":"ArnStringModel",
+          "shape":"IamRoleArn",
           "documentation":"<p>The unique identifier for an Identity and Access Management (IAM) role with permissions to run your containers on resources that are managed by Amazon GameLift. Use an IAM service role with the <code>GameLiftContainerFleetPolicy</code> managed policy attached. For more information, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/setting-up-role.html\">Set up an IAM service role</a>. You can't change this fleet property after the fleet is created.</p> <p>IAM role ARN values use the following pattern: <code>arn:aws:iam::[Amazon Web Services account]:role/[role name]</code>.</p>"
         },
         "Description":{
@@ -5415,7 +5416,7 @@
           "documentation":"<p> A list of locations to allow game session placement in, in the form of Amazon Web Services Region codes such as <code>us-west-2</code>. </p>"
         }
       },
-      "documentation":"<p>A list of fleet locations where a game session queue can place new game sessions. You can use a filter to temporarily turn off placements for specific locations. For queues that have multi-location fleets, you can use a filter configuration allow placement with some, but not all of these locations.</p>"
+      "documentation":"<p>A list of fleet locations where a game session queue can place new game sessions. You can use a filter to temporarily exclude specific locations from receiving placements. For queues that have multi-location fleets, you can use a filter configuration allow placement with some, but not all, of a fleet's locations.</p>"
     },
     "FilterInstanceStatus":{
       "type":"string",
@@ -6443,7 +6444,7 @@
         },
         "PlayerLatencies":{
           "shape":"PlayerLatencyList",
-          "documentation":"<p>A set of values, expressed in milliseconds, that indicates the amount of latency that a player experiences when connected to @aws; Regions.</p>"
+          "documentation":"<p>A set of values, expressed in milliseconds, that indicates the amount of latency that a player experiences when connected to Amazon Web Services Regions.</p>"
         },
         "StartTime":{
           "shape":"Timestamp",
@@ -6476,9 +6477,13 @@
         "MatchmakerData":{
           "shape":"MatchmakerData",
           "documentation":"<p>Information on the matchmaking process for this game. Data is in JSON syntax, formatted as a string. It identifies the matchmaking configuration used to create the match, and contains data on all players assigned to the match, including player attributes and team assignments. For more details on matchmaker data, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-server.html#match-server-data\">Match Data</a>.</p>"
+        },
+        "PriorityConfigurationOverride":{
+          "shape":"PriorityConfigurationOverride",
+          "documentation":"<p>A prioritized list of locations to use with a game session placement request and instructions on how to use it. This list overrides a queue's prioritized location list for a single game session placement request only. The list can include Amazon Web Services Regions, local zones, and custom locations (for Anywhere fleets). The fallback strategy instructs Amazon GameLift to use the override list for the first placement attempt only or for all placement attempts.</p>"
         }
       },
-      "documentation":"<p>Represents a potential game session placement, including the full details of the original placement request and the current status. </p> <note> <p>If the game session placement status is <code>PENDING</code>, the properties for game session ID/ARN, region, IP address/DNS, and port aren't final. A game session is not active and ready to accept players until placement status reaches <code>FULFILLED</code>. When the placement is in <code>PENDING</code> status, Amazon GameLift may attempt to place a game session multiple times before succeeding. With each attempt it creates a <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameSession\">https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameSession</a> object and updates this placement object with the new game session properties..</p> </note>"
+      "documentation":"<p>Represents a potential game session placement, including the full details of the original placement request and the current status. </p> <note> <p>If the game session placement status is <code>PENDING</code>, the properties for game session ID/ARN, region, IP address/DNS, and port aren't final. A game session is not active and ready to accept players until placement status reaches <code>FULFILLED</code>. When the placement is in <code>PENDING</code> status, Amazon GameLift may attempt to place a game session multiple times before succeeding. With each attempt it creates a <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameSession\">https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameSession</a> object and updates this placement object with the new game session properties.</p> </note>"
     },
     "GameSessionPlacementState":{
       "type":"string",
@@ -7545,6 +7550,12 @@
       "type":"list",
       "member":{"shape":"LocationModel"}
     },
+    "LocationOrderOverrideList":{
+      "type":"list",
+      "member":{"shape":"LocationStringModel"},
+      "max":10,
+      "min":1
+    },
     "LocationState":{
       "type":"structure",
       "members":{
@@ -7996,6 +8007,13 @@
       "type":"list",
       "member":{"shape":"PlacedPlayerSession"}
     },
+    "PlacementFallbackStrategy":{
+      "type":"string",
+      "enum":[
+        "DEFAULT_AFTER_SINGLE_PASS",
+        "NONE"
+      ]
+    },
     "Player":{
       "type":"structure",
       "members":{
@@ -8013,7 +8031,7 @@
         },
         "LatencyInMs":{
           "shape":"LatencyMap",
-          "documentation":"<p>A set of values, expressed in milliseconds, that indicates the amount of latency that a player experiences when connected to @aws; Regions. If this property is present, FlexMatch considers placing the match only in Regions for which latency is reported. </p> <p>If a matchmaker has a rule that evaluates player latency, players must report latency in order to be matched. If no latency is reported in this scenario, FlexMatch assumes that no Regions are available to the player and the ticket is not matchable. </p>"
+          "documentation":"<p>A set of values, expressed in milliseconds, that indicates the amount of latency that a player experiences when connected to Amazon Web Services Regions. If this property is present, FlexMatch considers placing the match only in Regions for which latency is reported. </p> <p>If a matchmaker has a rule that evaluates player latency, players must report latency in order to be matched. If no latency is reported in this scenario, FlexMatch assumes that no Regions are available to the player and the ticket is not matchable. </p>"
         }
       },
       "documentation":"<p>Represents a player in matchmaking. When starting a matchmaking request, a player has a player ID, attributes, and may have latency data. Team information is added after a match has been successfully completed.</p>"
@@ -8213,14 +8231,29 @@
       "members":{
         "PriorityOrder":{
           "shape":"PriorityTypeList",
-          "documentation":"<p>The recommended sequence to use when prioritizing where to place new game sessions. Each type can only be listed once.</p> <ul> <li> <p> <code>LATENCY</code> -- FleetIQ prioritizes locations where the average player latency (provided in each game session request) is lowest. </p> </li> <li> <p> <code>COST</code> -- FleetIQ prioritizes destinations with the lowest current hosting costs. Cost is evaluated based on the location, instance type, and fleet type (Spot or On-Demand) for each destination in the queue.</p> </li> <li> <p> <code>DESTINATION</code> -- FleetIQ prioritizes based on the order that destinations are listed in the queue configuration.</p> </li> <li> <p> <code>LOCATION</code> -- FleetIQ prioritizes based on the provided order of locations, as defined in <code>LocationOrder</code>. </p> </li> </ul>"
+          "documentation":"<p>A custom sequence to use when prioritizing where to place new game sessions. Each priority type is listed once.</p> <ul> <li> <p> <code>LATENCY</code> -- Amazon GameLift prioritizes locations where the average player latency is lowest. Player latency data is provided in each game session placement request.</p> </li> <li> <p> <code>COST</code> -- Amazon GameLift prioritizes destinations with the lowest current hosting costs. Cost is evaluated based on the location, instance type, and fleet type (Spot or On-Demand) of each destination in the queue.</p> </li> <li> <p> <code>DESTINATION</code> -- Amazon GameLift prioritizes based on the list order of destinations in the queue configuration.</p> </li> <li> <p> <code>LOCATION</code> -- Amazon GameLift prioritizes based on the provided order of locations, as defined in <code>LocationOrder</code>. </p> </li> </ul>"
         },
         "LocationOrder":{
           "shape":"LocationList",
-          "documentation":"<p>The prioritization order to use for fleet locations, when the <code>PriorityOrder</code> property includes <code>LOCATION</code>. Locations are identified by Amazon Web Services Region codes such as <code>us-west-2</code>. Each location can only be listed once. </p>"
+          "documentation":"<p>The prioritization order to use for fleet locations, when the <code>PriorityOrder</code> property includes <code>LOCATION</code>. Locations can include Amazon Web Services Region codes (such as <code>us-west-2</code>), local zones, and custom locations (for Anywhere fleets). Each location must be listed only once. For details, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html\">Amazon GameLift service locations.</a> </p>"
         }
       },
-      "documentation":"<p>Custom prioritization settings for use by a game session queue when placing new game sessions with available game servers. When defined, this configuration replaces the default FleetIQ prioritization process, which is as follows:</p> <ul> <li> <p>If player latency data is included in a game session request, destinations and locations are prioritized first based on lowest average latency (1), then on lowest hosting cost (2), then on destination list order (3), and finally on location (alphabetical) (4). This approach ensures that the queue's top priority is to place game sessions where average player latency is lowest, and--if latency is the same--where the hosting cost is less, etc.</p> </li> <li> <p>If player latency data is not included, destinations and locations are prioritized first on destination list order (1), and then on location (alphabetical) (2). This approach ensures that the queue's top priority is to place game sessions on the first destination fleet listed. If that fleet has multiple locations, the game session is placed on the first location (when listed alphabetically).</p> </li> </ul> <p>Changing the priority order will affect how game sessions are placed.</p>"
+      "documentation":"<p>Custom prioritization settings for a game session queue to use when searching for available game servers to place new game sessions. This configuration replaces the default FleetIQ prioritization process. </p> <p>By default, a queue makes placements based on the following default prioritizations:</p> <ul> <li> <p>If player latency data is included in a game session request, Amazon GameLift prioritizes placing game sessions where the average player latency is lowest. Amazon GameLift re-orders the queue's destinations and locations (for multi-location fleets) based on the following priorities: (1) the lowest average latency across all players, (2) the lowest hosting cost, (3) the queue's default destination order, and then (4), an alphabetic list of locations.</p> </li> <li> <p>If player latency data is not included, Amazon GameLift prioritizes placing game sessions in the queue's first destination. If that fleet has multiple locations, the game session is placed on the first location (when listed alphabetically). Amazon GameLift re-orders the queue's destinations and locations (for multi-location fleets) based on the following priorities: (1) the queue's default destination order, and then (2) an alphabetic list of locations.</p> </li> </ul>"
+    },
+    "PriorityConfigurationOverride":{
+      "type":"structure",
+      "required":["LocationOrder"],
+      "members":{
+        "PlacementFallbackStrategy":{
+          "shape":"PlacementFallbackStrategy",
+          "documentation":"<p>Instructions for how to use the override list if the first round of placement attempts fails. The first round is a failure if Amazon GameLift searches all listed locations, in all of the queue's destinations, without finding an available hosting resource for a new game session. Valid strategies include: </p> <ul> <li> <p> <code>DEFAULT_AFTER_SINGLE_PASS</code> -- After the first round of placement attempts, discard the override list and use the queue's default location priority list. Continue to use the queue's default list until the placement request times out.</p> </li> <li> <p> <code>NONE</code> -- Continue to use the override list for all rounds of placement attempts until the placement request times out.</p> </li> </ul>"
+        },
+        "LocationOrder":{
+          "shape":"LocationOrderOverrideList",
+          "documentation":"<p>A prioritized list of hosting locations. The list can include Amazon Web Services Regions (such as <code>us-west-2</code>), local zones, and custom locations (for Anywhere fleets). Each location must be listed only once. For details, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-regions.html\">Amazon GameLift service locations.</a> </p>"
+        }
+      },
+      "documentation":"<p>An alternate list of prioritized locations for use with a game session queue. When this property is included in a <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_StartGameSessionPlacement.html\">StartGameSessionPlacement</a> request, this list overrides the queue's default location prioritization, as defined in the queue's <a href=\"gamelift/latest/apireference/API_PriorityConfiguration.html\">PriorityConfiguration</a> setting (<i>LocationOrder</i>). This property overrides the queue's default priority list for individual placement requests only. Use this property only with queues that have a <code>PriorityConfiguration</code> setting that prioritizes first. </p> <note> <p>A priority configuration override list does not override a queue's FilterConfiguration setting, if the queue has one. Filter configurations are used to limit placements to a subset of the locations in a queue's destinations. If the override list includes a location that's not included in the FilterConfiguration allowed list, Amazon GameLift won't attempt to place a game session there.</p> </note>"
     },
     "PriorityType":{
       "type":"string",
@@ -8863,7 +8896,7 @@
         },
         "PlayerLatencies":{
           "shape":"PlayerLatencyList",
-          "documentation":"<p>A set of values, expressed in milliseconds, that indicates the amount of latency that a player experiences when connected to @aws; Regions. This information is used to try to place the new game session where it can offer the best possible gameplay experience for the players. </p>"
+          "documentation":"<p>A set of values, expressed in milliseconds, that indicates the amount of latency that a player experiences when connected to Amazon Web Services Regions. This information is used to try to place the new game session where it can offer the best possible gameplay experience for the players. </p>"
         },
         "DesiredPlayerSessions":{
           "shape":"DesiredPlayerSessionList",
@@ -8872,6 +8905,10 @@
         "GameSessionData":{
           "shape":"LargeGameSessionData",
           "documentation":"<p>A set of custom game session properties, formatted as a single string value. This data is passed to a game server process with a request to start a new game session. For more information, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession\">Start a game session</a>.</p>"
+        },
+        "PriorityConfigurationOverride":{
+          "shape":"PriorityConfigurationOverride",
+          "documentation":"<p>A prioritized list of locations to use for the game session placement and instructions on how to use it. This list overrides a queue's prioritized location list for this game session placement request only. You can include Amazon Web Services Regions, local zones, and custom locations (for Anywhere fleets). Choose a fallback strategy to instruct Amazon GameLift to use the override list for the first placement attempt only or for all placement attempts.</p>"
         }
       }
     },
@@ -9272,7 +9309,7 @@
         },
         "TerminationMode":{
           "shape":"TerminationMode",
-          "documentation":"<p>The method to use to terminate the game session. Available methods include: </p> <ul> <li> <p> <code>TRIGGER_ON_PROCESS_TERMINATE</code> – Sends an <code>OnProcessTerminate()</code> callback to the server process to initiate the normal game session shutdown sequence. At a minimum, the callback method must include a call to the server SDK action <code>ProcessEnding()</code>, which is how the server process signals that a game session is ending. If the server process doesn't call <code>ProcessEnding()</code>, this termination method won't be successful.</p> </li> <li> <p> <code>FORCE_TERMINATE</code> – Takes action to stop the server process, using existing methods to control how server processes run on an Amazon GameLift managed compute. </p> <note> <p>This method is not available for game sessions that are running on Anywhere fleets unless the fleet is deployed with the Amazon GameLift Agent. In this scenario, a force terminate request results in an invalid or bad request exception.</p> </note> </li> </ul>"
+          "documentation":"<p>The method to use to terminate the game session. Available methods include: </p> <ul> <li> <p> <code>TRIGGER_ON_PROCESS_TERMINATE</code> – Prompts the Amazon GameLift service to send an <code>OnProcessTerminate()</code> callback to the server process and initiate the normal game session shutdown sequence. The <code>OnProcessTerminate</code> method, which is implemented in the game server code, must include a call to the server SDK action <code>ProcessEnding()</code>, which is how the server process signals to Amazon GameLift that a game session is ending. If the server process doesn't call <code>ProcessEnding()</code>, the game session termination won't conclude successfully.</p> </li> <li> <p> <code>FORCE_TERMINATE</code> – Prompts the Amazon GameLift service to stop the server process immediately. Amazon GameLift takes action (depending on the type of fleet) to shut down the server process without the normal game session shutdown sequence. </p> <note> <p>This method is not available for game sessions that are running on Anywhere fleets unless the fleet is deployed with the Amazon GameLift Agent. In this scenario, a force terminate request results in an invalid or bad request exception.</p> </note> </li> </ul>"
         }
       }
     },

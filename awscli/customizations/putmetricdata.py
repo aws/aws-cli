@@ -23,21 +23,32 @@ cloudwatch put-metric-data operation:
 * --storage-resolution
 
 """
+
 import decimal
 
 from awscli.arguments import CustomArgument
-from awscli.utils import split_on_commas
 from awscli.customizations.utils import validate_mutually_exclusive_handler
+from awscli.utils import split_on_commas
 
 
 def register_put_metric_data(event_handler):
     event_handler.register(
-        'building-argument-table.cloudwatch.put-metric-data', _promote_args)
+        'building-argument-table.cloudwatch.put-metric-data', _promote_args
+    )
     event_handler.register(
         'operation-args-parsed.cloudwatch.put-metric-data',
         validate_mutually_exclusive_handler(
-            ['metric_data'], ['metric_name', 'timestamp', 'unit', 'value',
-                              'dimensions', 'statistic_values']))
+            ['metric_data'],
+            [
+                'metric_name',
+                'timestamp',
+                'unit',
+                'value',
+                'dimensions',
+                'statistic_values',
+            ],
+        ),
+    )
 
 
 def _promote_args(argument_table, operation_model, **kwargs):
@@ -48,25 +59,32 @@ def _promote_args(argument_table, operation_model, **kwargs):
     argument_table['metric-data'].required = False
 
     argument_table['metric-name'] = PutMetricArgument(
-        'metric-name', help_text='The name of the metric.')
+        'metric-name', help_text='The name of the metric.'
+    )
     argument_table['timestamp'] = PutMetricArgument(
-        'timestamp', help_text='The time stamp used for the metric.  '
-                               'If not specified, the default value is '
-                               'set to the time the metric data was '
-                               'received.')
+        'timestamp',
+        help_text='The time stamp used for the metric.  '
+        'If not specified, the default value is '
+        'set to the time the metric data was '
+        'received.',
+    )
     argument_table['unit'] = PutMetricArgument(
-        'unit', help_text='The unit of metric.')
+        'unit', help_text='The unit of metric.'
+    )
     argument_table['value'] = PutMetricArgument(
-        'value', help_text='The value for the metric.  Although the --value '
-                           'parameter accepts numbers of type Double, '
-                           'Amazon CloudWatch truncates values with very '
-                           'large exponents.  Values with base-10 exponents '
-                           'greater than 126 (1 x 10^126) are truncated.  '
-                           'Likewise, values with base-10 exponents less '
-                           'than -130 (1 x 10^-130) are also truncated.')
+        'value',
+        help_text='The value for the metric.  Although the --value '
+        'parameter accepts numbers of type Double, '
+        'Amazon CloudWatch truncates values with very '
+        'large exponents.  Values with base-10 exponents '
+        'greater than 126 (1 x 10^126) are truncated.  '
+        'Likewise, values with base-10 exponents less '
+        'than -130 (1 x 10^-130) are also truncated.',
+    )
 
     argument_table['dimensions'] = PutMetricArgument(
-        'dimensions', help_text=(
+        'dimensions',
+        help_text=(
             'The --dimensions argument further expands '
             'on the identity of a metric using a Name=Value '
             'pair, separated by commas, for example: '
@@ -76,11 +94,12 @@ def _promote_args(argument_table, operation_model, **kwargs):
             'where for the same example you would use the format '
             '<code>--dimensions Name=InstanceID,Value=i-aaba32d4 '
             'Name=InstanceType,value=m1.small </code>.'
-        )
+        ),
     )
     argument_table['statistic-values'] = PutMetricArgument(
-        'statistic-values', help_text='A set of statistical values describing '
-                                      'the metric.')
+        'statistic-values',
+        help_text='A set of statistical values describing ' 'the metric.',
+    )
 
     metric_data = operation_model.input_shape.members['MetricData'].member
     storage_resolution = metric_data.members['StorageResolution']
@@ -103,7 +122,9 @@ def insert_first_element(name):
                 parameters[name] = [{}]
             first_element = parameters[name][0]
             return func(self, first_element, value)
+
         return _add_to_params
+
     return _wrap_add_to_params
 
 

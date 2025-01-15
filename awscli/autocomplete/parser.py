@@ -14,9 +14,16 @@ WORD_BOUNDARY = ''
 
 
 class ParsedResult(object):
-    def __init__(self, current_command=None, current_param=None,
-                 global_params=None, parsed_params=None,
-                 lineage=None, current_fragment=None, unparsed_items=None):
+    def __init__(
+        self,
+        current_command=None,
+        current_param=None,
+        global_params=None,
+        parsed_params=None,
+        lineage=None,
+        current_fragment=None,
+        unparsed_items=None,
+    ):
         """
 
         :param current_command: The name of the leaf command; the most
@@ -126,6 +133,7 @@ class CLIParser(object):
     not a general purpose AWS CLI parser.
 
     """
+
     def __init__(self, index, return_first_command_match=False):
         self._index = index
         self._return_first_command_match = return_first_command_match
@@ -149,18 +157,26 @@ class CLIParser(object):
         while remaining_parts:
             current = remaining_parts.pop(0)
             if current.startswith('--'):
-                self._handle_option(current, remaining_parts,
-                                    current_args, global_args, parsed, state)
+                self._handle_option(
+                    current,
+                    remaining_parts,
+                    current_args,
+                    global_args,
+                    parsed,
+                    state,
+                )
             else:
                 current_args = self._handle_positional(
-                    current, state, remaining_parts, parsed)
+                    current, state, remaining_parts, parsed
+                )
         parsed.current_command = state.current_command
         parsed.current_param = state.current_param
         parsed.lineage = state.lineage
         return parsed
 
-    def _consume_value(self, remaining_parts, option_name,
-                       lineage, current_command, state):
+    def _consume_value(
+        self, remaining_parts, option_name, lineage, current_command, state
+    ):
         # We have a special case where a user is trying to complete
         # a value for an option, which is the last fragment of the command,
         # e.g. 'aws ec2 describe-instances --instance-ids '
@@ -205,8 +221,9 @@ class CLIParser(object):
             # an empty list being returned.  This is acceptable
             # for auto-completion purposes.
             value = []
-            while len(remaining_parts) > 0 and \
-                    not remaining_parts == [WORD_BOUNDARY]:
+            while len(remaining_parts) > 0 and not remaining_parts == [
+                WORD_BOUNDARY
+            ]:
                 if remaining_parts[0].startswith('--'):
                     state.current_param = None
                     break
@@ -243,8 +260,15 @@ class CLIParser(object):
             state.current_command = 'aws'
         return state, parts
 
-    def _handle_option(self, current, remaining_parts, current_args,
-                       global_args, parsed, state):
+    def _handle_option(
+        self,
+        current,
+        remaining_parts,
+        current_args,
+        global_args,
+        parsed,
+        state,
+    ):
         if current_args is None:
             # If there are no arguments found for this current scope,
             # it usually indicates we've encounted a command we don't know.
@@ -257,15 +281,21 @@ class CLIParser(object):
         if option_name in global_args:
             state.current_param = option_name
             value = self._consume_value(
-                remaining_parts, option_name, lineage=[],
+                remaining_parts,
+                option_name,
+                lineage=[],
                 state=state,
-                current_command='aws')
+                current_command='aws',
+            )
             parsed.global_params[option_name] = value
         elif option_name in current_args:
             state.current_param = option_name
             value = self._consume_value(
-                remaining_parts, option_name, state.lineage,
-                state.current_command, state=state,
+                remaining_parts,
+                option_name,
+                state.lineage,
+                state.current_command,
+                state=state,
             )
             parsed.parsed_params[option_name] = value
         elif self._is_last_word(remaining_parts, current):
@@ -284,8 +314,10 @@ class CLIParser(object):
         return not remaining_parts and current
 
     def _is_part_of_command(self, current, command_names):
-        return any(command.startswith(current) and command != current
-                   for command in command_names)
+        return any(
+            command.startswith(current) and command != current
+            for command in command_names
+        )
 
     def _is_command_name(self, current, remaining_parts, command_names):
         # If _return_first_command_match is True
@@ -323,16 +355,18 @@ class CLIParser(object):
             state.current_command = current
             # We also need to get the next set of command line options.
             current_args = self._index.arg_names(
-                lineage=state.lineage,
-                command_name=state.current_command)
+                lineage=state.lineage, command_name=state.current_command
+            )
             return current_args
         if not command_names:
             # If there are no more command names check. See if the command
             # has a positional argument. This will require an additional
             # select on the argument index.
             positional_argname = self._get_positional_argname(state)
-        if (positional_argname and
-            positional_argname not in parsed.parsed_params):
+        if (
+            positional_argname
+            and positional_argname not in parsed.parsed_params
+        ):
             # Parse the current string to be a positional argument
             # if the command has the a positional arg and the positional arg
             # has not already been parsed.
@@ -347,8 +381,8 @@ class CLIParser(object):
                 parsed.parsed_params[positional_argname] = current
                 state.current_param = None
             return self._index.arg_names(
-                lineage=state.lineage,
-                command_name=state.current_command)
+                lineage=state.lineage, command_name=state.current_command
+            )
         else:
             if not remaining_parts:
                 # If this is the last chunk of the command line but
@@ -371,7 +405,8 @@ class CLIParser(object):
                     state.current_param = None
                     return self._index.arg_names(
                         lineage=state.lineage,
-                        command_name=state.current_command)
+                        command_name=state.current_command,
+                    )
                 else:
                     # Otherwise this is some command we don't know about
                     # so we add it to the list of unparsed_items.
@@ -382,7 +417,7 @@ class CLIParser(object):
         positional_args = self._index.arg_names(
             lineage=state.lineage,
             command_name=state.current_command,
-            positional_arg=True
+            positional_arg=True,
         )
         if positional_args:
             # We are assuming there is only ever one positional

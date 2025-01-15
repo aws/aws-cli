@@ -716,12 +716,22 @@ class S3Transfer:
 
     def __init__(self, client, config=None, osutil=None):
         self._client = client
+        self._client.meta.events.register(
+            'before-call.s3.*', self._update_checksum_context
+        )
         if config is None:
             config = TransferConfig()
         self._config = config
         if osutil is None:
             osutil = OSUtils()
         self._osutil = osutil
+
+    def _update_checksum_context(self, params, **kwargs):
+        request_context = params.get("context", {})
+        checksum_context = request_context.get("checksum", {})
+        if "request_algorithm" in checksum_context:
+            # Force request checksum algorithm in the header if specified.
+            checksum_context["request_algorithm"]["in"] = "header"
 
     def upload_file(
         self, filename, bucket, key, callback=None, extra_args=None

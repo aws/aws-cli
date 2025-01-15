@@ -26,7 +26,7 @@ from io import BytesIO
 
 import botocore
 import botocore.auth
-from botocore import utils
+from botocore import utils, UNSIGNED
 from botocore.compat import (
     MD5_AVAILABLE,
     ETree,
@@ -61,8 +61,6 @@ from botocore.signers import (
 from botocore.utils import (
     SAFE_CHARS,
     ArnParser,
-    conditionally_calculate_checksum,
-    conditionally_calculate_md5,
     hyphenize_service_id,
     is_global_accesspoint,
     percent_encode,
@@ -1158,6 +1156,31 @@ def add_query_compatibility_header(model, params, **kwargs):
     params['headers']['x-amzn-query-mode'] = 'true'
 
 
+def _handle_request_validation_mode_member(params, model, **kwargs):
+    client_config = kwargs.get("context", {}).get("client_config")
+    if client_config is None:
+        return
+    response_checksum_validation = client_config.response_checksum_validation
+    http_checksum = model.http_checksum
+    mode_member = http_checksum.get("requestValidationModeMember")
+    if (
+            mode_member is not None
+            and response_checksum_validation == "when_supported"
+    ):
+        params.setdefault(mode_member, "ENABLED")
+
+
+def _set_extra_headers_for_unsigned_request(request, signature_version, **kwargs):
+    # When sending a checksum in the trailer of an unsigned chunked request, S3
+    # requires us to set the "X-Amz-Content-SHA256" header to "STREAMING-UNSIGNED-PAYLOAD-TRAILER".
+    checksum_context = request.context.get("checksum", {})
+    algorithm = checksum_context.get("request_algorithm", {})
+    in_trailer = algorithm.get("in") == "trailer"
+    headers = request.headers
+    if signature_version == UNSIGNED and in_trailer:
+        headers["X-Amz-Content-SHA256"] = "STREAMING-UNSIGNED-PAYLOAD-TRAILER"
+
+
 # This is a list of (event_name, handler).
 # When a Session is created, everything in this list will be
 # automatically registered with that Session.
@@ -1184,7 +1207,7 @@ BUILTIN_HANDLERS = [
     ('before-parse.s3.*', handle_expires_header),
     ('before-parse.s3.*', _handle_200_error, REGISTER_FIRST),
     ('before-parameter-build', generate_idempotent_uuid),
-
+    ('before-parameter-build', _handle_request_validation_mode_member),
     ('before-parameter-build.s3', validate_bucket_name),
     ('before-parameter-build.s3', remove_bucket_from_url_paths_from_model),
 
@@ -1212,10 +1235,7 @@ BUILTIN_HANDLERS = [
     ('before-call.s3', add_expect_header),
     ('before-call.glacier', add_glacier_version),
     ('before-call.api-gateway', add_accept_header),
-    ('before-call.s3.PutObject', conditionally_calculate_checksum),
-    ('before-call.s3.UploadPart', conditionally_calculate_md5),
     ('before-call.s3.DeleteObjects', escape_xml_payload),
-    ('before-call.s3.DeleteObjects', conditionally_calculate_checksum),
     ('before-call.s3.PutBucketLifecycleConfiguration', escape_xml_payload),
     ('before-call.glacier.UploadArchive', add_glacier_checksums),
     ('before-call.glacier.UploadMultipartPart', add_glacier_checksums),
@@ -1246,6 +1266,7 @@ BUILTIN_HANDLERS = [
     ('before-parameter-build.route-53', fix_route53_ids),
     ('before-parameter-build.glacier', inject_account_id),
     ('before-sign.s3', remove_arn_from_signing_path),
+    ('before-sign.s3', _set_extra_headers_for_unsigned_request),
     ('after-call.s3.ListObjects', decode_list_object),
     ('after-call.s3.ListObjectsV2', decode_list_object_v2),
     ('after-call.s3.ListObjectVersions', decode_list_object_versions),

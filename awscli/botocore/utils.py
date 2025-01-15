@@ -2996,6 +2996,7 @@ def get_encoding_from_headers(headers, default='ISO-8859-1'):
 
 
 def calculate_md5(body, **kwargs):
+    """This function has been deprecated, but is kept for backwards compatibility."""
     if isinstance(body, (bytes, bytearray)):
         binary_md5 = _calculate_md5_from_bytes(body)
     else:
@@ -3004,11 +3005,13 @@ def calculate_md5(body, **kwargs):
 
 
 def _calculate_md5_from_bytes(body_bytes):
+    """This function has been deprecated, but is kept for backwards compatibility."""
     md5 = get_md5(body_bytes)
     return md5.digest()
 
 
 def _calculate_md5_from_file(fileobj):
+    """This function has been deprecated, but is kept for backwards compatibility."""
     start_position = fileobj.tell()
     md5 = get_md5()
     for chunk in iter(lambda: fileobj.read(1024 * 1024), b''):
@@ -3024,15 +3027,17 @@ def _is_s3express_request(params):
     return endpoint_properties.get('backend') == 'S3Express'
 
 
-def _has_checksum_header(params):
+def has_checksum_header(params):
+    """
+    Checks if a header starting with "x-amz-checksum-" is provided in a request.
+
+    This function is considered private and subject to abrupt breaking changes or
+    removal without prior announcement. Please do not use it directly.
+    """
     headers = params['headers']
-    # If a user provided Content-MD5 is present,
-    # don't try to compute a new one.
-    if 'Content-MD5' in headers:
-        return True
 
     # If a header matching the x-amz-checksum-* pattern is present, we
-    # assume a checksum has already been provided and an md5 is not needed
+    # assume a checksum has already been provided by the user.
     for header in headers:
         if CHECKSUM_HEADER_PATTERN.match(header):
             return True
@@ -3041,12 +3046,14 @@ def _has_checksum_header(params):
 
 
 def conditionally_calculate_checksum(params, **kwargs):
-    if not _has_checksum_header(params):
+    """This function has been deprecated, but is kept for backwards compatibility."""
+    if not has_checksum_header(params):
         conditionally_calculate_md5(params, **kwargs)
         conditionally_enable_crc32(params, **kwargs)
 
 
 def conditionally_enable_crc32(params, **kwargs):
+    """This function has been deprecated, but is kept for backwards compatibility."""
     checksum_context = params.get('context', {}).get('checksum', {})
     checksum_algorithm = checksum_context.get('request_algorithm')
     if (
@@ -3064,7 +3071,10 @@ def conditionally_enable_crc32(params, **kwargs):
 
 
 def conditionally_calculate_md5(params, **kwargs):
-    """Only add a Content-MD5 if the system supports it."""
+    """Only add a Content-MD5 if the system supports it.
+
+    This function has been deprecated, but is kept for backwards compatibility.
+    """
     body = params['body']
     checksum_context = params.get('context', {}).get('checksum', {})
     checksum_algorithm = checksum_context.get('request_algorithm')
@@ -3072,7 +3082,7 @@ def conditionally_calculate_md5(params, **kwargs):
         # Skip for requests that will have a flexible checksum applied
         return
 
-    if _has_checksum_header(params):
+    if has_checksum_header(params):
         # Don't add a new header if one is already available.
         return
 

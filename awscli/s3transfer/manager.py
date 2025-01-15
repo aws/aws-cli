@@ -16,7 +16,12 @@ import re
 import threading
 
 from s3transfer.bandwidth import BandwidthLimiter, LeakyBucket
-from s3transfer.constants import ALLOWED_DOWNLOAD_ARGS, KB, MB
+from s3transfer.constants import (
+    ALLOWED_DOWNLOAD_ARGS,
+    FULL_OBJECT_CHECKSUM_ARGS,
+    KB,
+    MB,
+)
 from s3transfer.copies import CopySubmissionTask
 from s3transfer.delete import DeleteSubmissionTask
 from s3transfer.download import DownloadSubmissionTask
@@ -35,8 +40,8 @@ from s3transfer.utils import (
     OSUtils,
     SlidingWindowSemaphore,
     TaskSemaphore,
-    add_s3express_defaults,
     get_callbacks,
+    set_default_checksum_algorithm,
     signal_not_transferring,
     signal_transferring,
 )
@@ -157,7 +162,7 @@ class TransferConfig:
 class TransferManager:
     ALLOWED_DOWNLOAD_ARGS = ALLOWED_DOWNLOAD_ARGS
 
-    ALLOWED_UPLOAD_ARGS = [
+    _ALLOWED_SHARED_ARGS = [
         'ACL',
         'CacheControl',
         'ChecksumAlgorithm',
@@ -184,7 +189,16 @@ class TransferManager:
         'WebsiteRedirectLocation',
     ]
 
-    ALLOWED_COPY_ARGS = ALLOWED_UPLOAD_ARGS + [
+    ALLOWED_UPLOAD_ARGS = (
+            _ALLOWED_SHARED_ARGS
+            + [
+                'ChecksumType',
+                'MpuObjectSize',
+            ]
+            + FULL_OBJECT_CHECKSUM_ARGS
+    )
+
+    ALLOWED_COPY_ARGS = _ALLOWED_SHARED_ARGS + [
         'CopySourceIfMatch',
         'CopySourceIfModifiedSince',
         'CopySourceIfNoneMatch',
@@ -312,13 +326,12 @@ class TransferManager:
         :rtype: s3transfer.futures.TransferFuture
         :returns: Transfer future representing the upload
         """
-        if extra_args is None:
-            extra_args = {}
+        extra_args = extra_args.copy() if extra_args else {}
         if subscribers is None:
             subscribers = []
         self._validate_all_known_args(extra_args, self.ALLOWED_UPLOAD_ARGS)
         self._validate_if_bucket_supported(bucket)
-        self._add_operation_defaults(bucket, extra_args)
+        self._add_operation_defaults(extra_args)
         call_args = CallArgs(
             fileobj=fileobj,
             bucket=bucket,
@@ -501,8 +514,8 @@ class TransferManager:
                     "must be one of: %s" % (kwarg, ', '.join(allowed))
                 )
 
-    def _add_operation_defaults(self, bucket, extra_args):
-        add_s3express_defaults(bucket, extra_args)
+    def _add_operation_defaults(self, extra_args):
+        set_default_checksum_algorithm(extra_args)
 
     def _submit_transfer(
         self, call_args, submission_task_cls, extra_main_kwargs=None

@@ -114,6 +114,7 @@ class TestCRTTransferManager(unittest.TestCase):
         expected_body_content=None,
         expected_content_length=None,
         expected_missing_headers=None,
+        expected_extra_headers=None,
     ):
         if expected_host is None:
             expected_host = self.expected_host
@@ -136,10 +137,10 @@ class TestCRTTransferManager(unittest.TestCase):
                 crt_http_request.headers.get('Content-Length'),
                 str(expected_content_length),
             )
+        header_names = [
+            header[0].lower() for header in crt_http_request.headers
+        ]
         if expected_missing_headers is not None:
-            header_names = [
-                header[0].lower() for header in crt_http_request.headers
-            ]
             for expected_missing_header in expected_missing_headers:
                 self.assertNotIn(expected_missing_header.lower(), header_names)
 
@@ -193,7 +194,7 @@ class TestCRTTransferManager(unittest.TestCase):
 
     def _get_expected_upload_checksum_config(self, **overrides):
         checksum_config_kwargs = {
-            'algorithm': awscrt.s3.S3ChecksumAlgorithm.CRC32,
+            'algorithm': awscrt.s3.S3ChecksumAlgorithm.CRC64NVME,
             'location': awscrt.s3.S3ChecksumLocation.TRAILER,
         }
         checksum_config_kwargs.update(overrides)
@@ -422,6 +423,37 @@ class TestCRTTransferManager(unittest.TestCase):
             self.s3_crt_client.make_request.call_args[1],
             expected_http_method='PUT'
         )
+
+    def test_upload_with_full_checksum(self):
+        future = self.transfer_manager.upload(
+            self.filename,
+            self.bucket,
+            self.key,
+            {"ChecksumCRC32": "abc123"},
+            [self.record_subscriber],
+        )
+        future.result()
+
+        callargs_kwargs = self.s3_crt_client.make_request.call_args[1]
+        self.assertEqual(
+            callargs_kwargs,
+            {
+                'request': mock.ANY,
+                'type': awscrt.s3.S3RequestType.PUT_OBJECT,
+                'send_filepath': self.filename,
+                'on_progress': mock.ANY,
+                'on_done': mock.ANY,
+                'checksum_config': None,
+            },
+        )
+        self._assert_expected_crt_http_request(
+            callargs_kwargs["request"],
+            expected_http_method='PUT',
+            expected_content_length=len(self.expected_content),
+            expected_missing_headers=['Content-MD5'],
+            expected_extra_headers={"x-amz-checksum-crc32": "abc123"},
+        )
+        self._assert_subscribers_called(future)
 
     def test_download(self):
         future = self.transfer_manager.download(

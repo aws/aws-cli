@@ -25,14 +25,15 @@ from binascii import crc32
 from hashlib import sha1, sha256
 
 from awscrt import checksums as crt_checksums
+from botocore.compat import urlparse
 from botocore.exceptions import AwsChunkedWrapperError, FlexibleChecksumError
+from botocore.model import StructureShape
 from botocore.response import StreamingBody
-from botocore.utils import (
-    conditionally_calculate_md5,
-    determine_content_length,
-)
+from botocore.utils import determine_content_length, has_checksum_header
 
 logger = logging.getLogger(__name__)
+
+DEFAULT_CHECKSUM_ALGORITHM = "CRC64NVME"
 
 
 class BaseChecksum:
@@ -97,6 +98,19 @@ class CrtCrc32cChecksum(BaseChecksum):
 
     def digest(self):
         return self._int_crc32c.to_bytes(4, byteorder="big")
+
+
+class CrtCrc64NvmeChecksum(BaseChecksum):
+    # Note: This class is only used if the CRT is available
+    def __init__(self):
+        self._int_crc64nvme = 0
+
+    def update(self, chunk):
+        new_checksum = crt_checksums.crc64nvme(chunk, self._int_crc64nvme)
+        self._int_crc64nvme = new_checksum & 0xFFFFFFFFFFFFFFFF
+
+    def digest(self):
+        return self._int_crc64nvme.to_bytes(8, byteorder="big")
 
 
 class Sha1Checksum(BaseChecksum):
@@ -233,7 +247,19 @@ def resolve_checksum_context(request, operation_model, params):
 def resolve_request_checksum_algorithm(
     request, operation_model, params, supported_algorithms=None,
 ):
+    # If the header is already set by the customer, skip calculation
+    if has_checksum_header(request):
+        return
+
+    checksum_context = request["context"].get("checksum", {})
+    request_checksum_calculation = request["context"][
+        "client_config"
+    ].request_checksum_calculation
     http_checksum = operation_model.http_checksum
+    request_checksum_required = (
+        operation_model.http_checksum_required
+        or http_checksum.get("requestChecksumRequired")
+    )
     algorithm_member = http_checksum.get("requestAlgorithmMember")
     if algorithm_member and algorithm_member in params:
         # If the client has opted into using flexible checksums and the
@@ -246,35 +272,59 @@ def resolve_request_checksum_algorithm(
             raise FlexibleChecksumError(
                 error_msg="Unsupported checksum algorithm: %s" % algorithm_name
             )
-
-        location_type = "header"
-        if operation_model.has_streaming_input:
-            # Operations with streaming input must support trailers.
-            if request["url"].startswith("https:"):
-                # We only support unsigned trailer checksums currently. As this
-                # disables payload signing we'll only use trailers over TLS.
-                location_type = "trailer"
-
-        algorithm = {
-            "algorithm": algorithm_name,
-            "in": location_type,
-            "name": "x-amz-checksum-%s" % algorithm_name,
-        }
-
-        if algorithm["name"] in request["headers"]:
-            # If the header is already set by the customer, skip calculation
-            return
-
-        checksum_context = request["context"].get("checksum", {})
-        checksum_context["request_algorithm"] = algorithm
-        request["context"]["checksum"] = checksum_context
-    elif operation_model.http_checksum_required or http_checksum.get(
-        "requestChecksumRequired"
+    elif request_checksum_required or (
+        algorithm_member and request_checksum_calculation == "when_supported"
     ):
-        # Otherwise apply the old http checksum behavior via Content-MD5
-        checksum_context = request["context"].get("checksum", {})
-        checksum_context["request_algorithm"] = "conditional-md5"
-        request["context"]["checksum"] = checksum_context
+        # Don't use a default checksum for presigned requests.
+        if request["context"].get("is_presign_request"):
+            return
+        algorithm_name = DEFAULT_CHECKSUM_ALGORITHM.lower()
+        algorithm_member_header = _get_request_algorithm_member_header(
+            operation_model, request, algorithm_member
+        )
+        if algorithm_member_header is not None:
+            checksum_context["request_algorithm_header"] = {
+                "name": algorithm_member_header,
+                "value": DEFAULT_CHECKSUM_ALGORITHM,
+            }
+    else:
+        return
+
+    location_type = "header"
+    if (
+        operation_model.has_streaming_input
+        and urlparse(request["url"]).scheme == "https"
+    ):
+        if request["context"]["client_config"].signature_version != 's3':
+            # Operations with streaming input must support trailers.
+            # We only support unsigned trailer checksums currently. As this
+            # disables payload signing we'll only use trailers over TLS.
+            location_type = "trailer"
+
+    algorithm = {
+        "algorithm": algorithm_name,
+        "in": location_type,
+        "name": f"x-amz-checksum-{algorithm_name}",
+    }
+
+    checksum_context["request_algorithm"] = algorithm
+    request["context"]["checksum"] = checksum_context
+
+
+def _get_request_algorithm_member_header(
+    operation_model, request, algorithm_member
+):
+    """Get the name of the header targeted by the "requestAlgorithmMember"."""
+    operation_input_shape = operation_model.input_shape
+    if not isinstance(operation_input_shape, StructureShape):
+        return
+
+    algorithm_member_shape = operation_input_shape.members.get(
+        algorithm_member
+    )
+
+    if algorithm_member_shape:
+        return algorithm_member_shape.serialization.get("name")
 
 
 def apply_request_checksum(request):
@@ -284,16 +334,18 @@ def apply_request_checksum(request):
     if not algorithm:
         return
 
-    if algorithm == "conditional-md5":
-        # Special case to handle the http checksum required trait
-        conditionally_calculate_md5(request)
-    elif algorithm["in"] == "header":
+    if algorithm["in"] == "header":
         _apply_request_header_checksum(request)
     elif algorithm["in"] == "trailer":
         _apply_request_trailer_checksum(request)
     else:
         raise FlexibleChecksumError(
             error_msg="Unknown checksum variant: %s" % algorithm["in"]
+        )
+    if "request_algorithm_header" in checksum_context:
+        request_algorithm_header = checksum_context["request_algorithm_header"]
+        request["headers"][request_algorithm_header["name"]] = (
+            request_algorithm_header["value"]
         )
 
 
@@ -438,6 +490,7 @@ def _handle_bytes_response(http_response, response, algorithm):
 
 
 _CHECKSUM_CLS = {
+    'crc64nvme': CrtCrc64NvmeChecksum,
     "crc32c": CrtCrc32cChecksum,
     "crc32": CrtCrc32Checksum,
     "sha1": Sha1Checksum,
@@ -446,4 +499,4 @@ _CHECKSUM_CLS = {
 
 
 _SUPPORTED_CHECKSUM_ALGORITHMS = list(_CHECKSUM_CLS.keys())
-_ALGORITHMS_PRIORITY_LIST = ['crc32c', 'crc32', 'sha1', 'sha256']
+_ALGORITHMS_PRIORITY_LIST = ['crc64nvme', 'crc32c', 'crc32', 'sha1', 'sha256']

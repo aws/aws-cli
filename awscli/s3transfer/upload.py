@@ -14,6 +14,7 @@ import math
 from io import BytesIO
 
 from s3transfer.compat import readable, seekable
+from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS
 from s3transfer.futures import IN_MEMORY_UPLOAD_TAG
 from s3transfer.tasks import (
     CompleteMultipartUploadTask,
@@ -512,6 +513,10 @@ class UploadNonSeekableInputManager(UploadInputManager):
 class UploadSubmissionTask(SubmissionTask):
     """Task for submitting tasks to execute an upload"""
 
+    PUT_OBJECT_BLOCKLIST = ["ChecksumType", "MpuObjectSize"]
+
+    CREATE_MULTIPART_BLOCKLIST = FULL_OBJECT_CHECKSUM_ARGS + ["MpuObjectSize"]
+
     UPLOAD_PART_ARGS = [
         'ChecksumAlgorithm',
         'SSECustomerKey',
@@ -527,7 +532,9 @@ class UploadSubmissionTask(SubmissionTask):
         'SSECustomerKeyMD5',
         'RequestPayer',
         'ExpectedBucketOwner',
-    ]
+        'ChecksumType',
+        'MpuObjectSize',
+    ] + FULL_OBJECT_CHECKSUM_ARGS
 
     def _get_upload_input_manager_cls(self, transfer_future):
         """Retrieves a class for managing input for an upload based on file type
@@ -623,6 +630,10 @@ class UploadSubmissionTask(SubmissionTask):
     ):
         call_args = transfer_future.meta.call_args
 
+        put_object_extra_args = self._extra_put_object_args(
+            call_args.extra_args
+        )
+
         # Get any tags that need to be associated to the put object task
         put_object_tag = self._get_upload_task_tag(
             upload_input_manager, 'put_object'
@@ -640,7 +651,7 @@ class UploadSubmissionTask(SubmissionTask):
                     ),
                     'bucket': call_args.bucket,
                     'key': call_args.key,
-                    'extra_args': call_args.extra_args,
+                    'extra_args': put_object_extra_args,
                 },
                 is_final=True,
             ),
@@ -658,6 +669,19 @@ class UploadSubmissionTask(SubmissionTask):
     ):
         call_args = transfer_future.meta.call_args
 
+        # When a user provided checksum is passed, set "ChecksumType" to "FULL_OBJECT"
+        # and "ChecksumAlgorithm" to the related algorithm.
+        for checksum in FULL_OBJECT_CHECKSUM_ARGS:
+            if checksum in call_args.extra_args:
+                call_args.extra_args["ChecksumType"] = "FULL_OBJECT"
+                call_args.extra_args["ChecksumAlgorithm"] = checksum.replace(
+                    "Checksum", ""
+                )
+
+        create_multipart_extra_args = self._extra_create_multipart_args(
+            call_args.extra_args
+        )
+
         # Submit the request to create a multipart upload.
         create_multipart_future = self._transfer_coordinator.submit(
             request_executor,
@@ -667,7 +691,7 @@ class UploadSubmissionTask(SubmissionTask):
                     'client': client,
                     'bucket': call_args.bucket,
                     'key': call_args.key,
-                    'extra_args': call_args.extra_args,
+                    'extra_args':create_multipart_extra_args,
                 },
             ),
         )
@@ -740,6 +764,16 @@ class UploadSubmissionTask(SubmissionTask):
 
     def _extra_complete_multipart_args(self, extra_args):
         return get_filtered_dict(extra_args, self.COMPLETE_MULTIPART_ARGS)
+
+    def _extra_create_multipart_args(self, extra_args):
+        return get_filtered_dict(
+            extra_args, blocklisted_keys=self.CREATE_MULTIPART_BLOCKLIST
+        )
+
+    def _extra_put_object_args(self, extra_args):
+        return get_filtered_dict(
+            extra_args, blocklisted_keys=self.PUT_OBJECT_BLOCKLIST
+        )
 
     def _get_upload_task_tag(self, upload_input_manager, operation_name):
         tag = None

@@ -38,13 +38,13 @@ from s3transfer.utils import (
     SlidingWindowSemaphore,
     StreamReaderProgress,
     TaskSemaphore,
-    add_s3express_defaults,
     calculate_num_parts,
     calculate_range_parameter,
     get_callbacks,
     get_filtered_dict,
     invoke_progress_callbacks,
     random_file_extension,
+    set_default_checksum_algorithm,
 )
 from tests import NonSeekableWriter, RecordingSubscriber, mock, unittest
 
@@ -1192,32 +1192,44 @@ class TestAdjustChunksize(unittest.TestCase):
         self.assertEqual(new_size, MAX_SINGLE_UPLOAD_SIZE)
 
 
-class TestS3ExpressDefaults:
+class TestS3Defaults:
     @pytest.mark.parametrize(
         "bucket,extra_args,expected",
         (
             (
                 "mytestbucket--usw2-az2--x-s3",
                 {},
-                {"ChecksumAlgorithm": "crc32"},
+                {"ChecksumAlgorithm": "CRC64NVME"},
             ),
             (
                 "mytestbucket--usw2-az2--x-s3",
                 {"Some": "Setting"},
-                {"ChecksumAlgorithm": "crc32", "Some": "Setting"},
+                {"ChecksumAlgorithm": "CRC64NVME", "Some": "Setting"},
+            ),
+            (
+                "mytestbucket--usw2-az2--x-s3",
+                {"ChecksumAlgorithm": "sha256"},
+                {"ChecksumAlgorithm": "sha256"},
             ),
             (
                 "mytestbucket",
                 {},
-                {},
+                {"ChecksumAlgorithm": "CRC64NVME"},
             ),
             (
-                "mytestbucket--usw2-az2--x-s3",
+                "mytestbucket",
+                 {"Some": "Setting"},
+                 {"ChecksumAlgorithm": "CRC64NVME", "Some": "Setting"},
+             ),
+             (
+                "mytestbucket",
                 {"ChecksumAlgorithm": "sha256"},
                 {"ChecksumAlgorithm": "sha256"},
             ),
         ),
     )
-    def test_add_s3express_defaults(self, bucket, extra_args, expected):
-        add_s3express_defaults(bucket, extra_args)
+    def test_set_default_checksum_algorithm(
+        self, bucket, extra_args, expected
+    ):
+        set_default_checksum_algorithm(extra_args)
         assert extra_args == expected

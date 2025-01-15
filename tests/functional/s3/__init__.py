@@ -149,6 +149,7 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
         params = {
             'Bucket': bucket,
             'Key': key,
+            'ChecksumAlgorithm': 'CRC64NVME',
             'Body': mock.ANY,
         }
         params.update(override_kwargs)

@@ -44,7 +44,7 @@ from botocore.config import Config
 from botocore.exceptions import NoCredentialsError
 from botocore.utils import ArnParser, InvalidArnException, is_s3express_bucket
 
-from s3transfer.constants import MB
+from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS, MB
 from s3transfer.exceptions import TransferNotDoneError
 from s3transfer.futures import BaseTransferFuture, BaseTransferMeta
 from s3transfer.utils import CallArgs, OSUtils, get_callbacks
@@ -456,6 +456,9 @@ class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
         self._client.meta.events.register(
             'before-send.s3.*', self._make_fake_http_response
         )
+        self._client.meta.events.register(
+            'before-call.s3.*', self._remove_checksum_context
+        )
 
     def _resolve_client_config(self, session, client_kwargs):
         user_provided_config = None
@@ -584,6 +587,11 @@ class BotocoreCRTRequestSerializer(BaseCRTRequestSerializer):
         error_code = parsed_response.get("Error", {}).get("Code")
         error_class = self._client.exceptions.from_code(error_code)
         return error_class(parsed_response, operation_name=operation_name)
+
+    def _remove_checksum_context(self, params, **kwargs):
+        request_context = params.get("context", {})
+        if "checksum" in request_context:
+            del request_context["checksum"]
 
 
 class FakeRawResponse(BytesIO):
@@ -751,13 +759,18 @@ class S3ClientArgsCreator:
         else:
             call_args.extra_args["Body"] = call_args.fileobj
 
-        checksum_algorithm = call_args.extra_args.pop(
-            'ChecksumAlgorithm', 'CRC32'
-        ).upper()
-        checksum_config = awscrt.s3.S3ChecksumConfig(
-            algorithm=awscrt.s3.S3ChecksumAlgorithm[checksum_algorithm],
-            location=awscrt.s3.S3ChecksumLocation.TRAILER,
-        )
+        checksum_config = None
+        if not any(
+            checksum_arg in call_args.extra_args
+            for checksum_arg in FULL_OBJECT_CHECKSUM_ARGS
+        ):
+            checksum_algorithm = call_args.extra_args.pop(
+                'ChecksumAlgorithm', 'CRC64NVME'
+            ).upper()
+            checksum_config = awscrt.s3.S3ChecksumConfig(
+                algorithm=awscrt.s3.S3ChecksumAlgorithm[checksum_algorithm],
+                location=awscrt.s3.S3ChecksumLocation.TRAILER,
+            )
         # Suppress botocore's automatic MD5 calculation by setting an override
         # value that will get deleted in the BotocoreCRTRequestSerializer.
         # As part of the CRT S3 request, we request the CRT S3 client to

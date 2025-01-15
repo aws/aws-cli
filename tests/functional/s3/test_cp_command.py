@@ -113,7 +113,7 @@ class TestCPCommand(BaseCPCommandTest):
             {'Key': u'key.txt', 'Bucket': u'bucket', 'GrantRead': u'id=foo',
              'GrantFullControl': u'id=bar', 'GrantReadACP': u'id=biz',
              'GrantWriteACP': u'id=baz', 'ContentType': u'text/plain',
-             'Body': mock.ANY}
+             'Body': mock.ANY, 'ChecksumAlgorithm': 'CRC64NVME'}
         )
 
     def test_upload_expires(self):
@@ -518,6 +518,7 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertDictEqual(
             self.operations_called[0][1],
             {'Key': 'key.txt', 'Bucket': 'bucket',
+             'ChecksumAlgorithm': 'CRC64NVME',
              'ContentType': 'text/plain', 'Body': mock.ANY,
              'ServerSideEncryption': 'AES256'}
         )
@@ -533,6 +534,7 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertDictEqual(
             self.operations_called[0][1],
             {'Key': 'key.txt', 'Bucket': 'bucket',
+             'ChecksumAlgorithm': 'CRC64NVME',
              'ContentType': 'text/plain', 'Body': mock.ANY,
              'SSECustomerAlgorithm': 'AES256', 'SSECustomerKey': 'foo'}
         )
@@ -557,6 +559,7 @@ class TestCPCommand(BaseCPCommandTest):
 
         expected_args = {
             'Key': 'key.txt', 'Bucket': 'bucket',
+            'ChecksumAlgorithm': 'CRC64NVME',
             'ContentType': 'text/plain',
             'Body': mock.ANY,
             'SSECustomerAlgorithm': 'AES256',
@@ -631,6 +634,7 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertDictEqual(
             self.operations_called[0][1],
             {'Key': 'key.txt', 'Bucket': 'bucket',
+             'ChecksumAlgorithm': 'CRC64NVME',
              'ContentType': 'text/plain', 'Body': mock.ANY,
              'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms'}
         )
@@ -657,6 +661,7 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertDictEqual(
             self.operations_called[0][1],
             {'Key': 'key.txt', 'Bucket': 'bucket',
+             'ChecksumAlgorithm': 'CRC64NVME',
              'ContentType': 'text/plain',
              'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms'}
         )
@@ -774,6 +779,13 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
         self.assertEqual(self.operations_called[0][1]['ChecksumAlgorithm'], 'CRC32C')
 
+    def test_upload_with_checksum_algorithm_crc64nvme(self):
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm CRC64NVME'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['ChecksumAlgorithm'], 'CRC64NVME')
+
     def test_multipart_upload_with_checksum_algorithm_crc32(self):
         full_path = self.files.create_file('foo.txt', 'a' * 10 * (1024 ** 2))
         self.parsed_responses = [
@@ -857,6 +869,7 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
         expected_args = {
             'Bucket': 'bucket',
             'Key': 'streaming.txt',
+            'ChecksumAlgorithm': 'CRC64NVME',
             'Body': mock.ANY
         }
 
@@ -878,6 +891,7 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
         expected_args = {
             'Bucket': 'bucket',
             'Key': 'streaming.txt',
+            'ChecksumAlgorithm': 'CRC64NVME',
             'Body': mock.ANY
         }
 
@@ -987,6 +1001,7 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
                 ('PutObject', {
                     'Bucket': 'mybucket',
                     'Key': 'mykey',
+                    'ChecksumAlgorithm': 'CRC64NVME',
                     'RequestPayer': 'requester',
                     'Body': mock.ANY,
                 })
@@ -1011,11 +1026,13 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
                 ('CreateMultipartUpload', {
                     'Bucket': 'mybucket',
                     'Key': 'mykey',
+                    'ChecksumAlgorithm': 'CRC64NVME',
                     'RequestPayer': 'requester',
                 }),
                 ('UploadPart', {
                     'Bucket': 'mybucket',
                     'Key': 'mykey',
+                    'ChecksumAlgorithm': 'CRC64NVME',
                     'RequestPayer': 'requester',
                     'UploadId': 'myid',
                     'PartNumber': mock.ANY,
@@ -1024,6 +1041,7 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
                 ('UploadPart', {
                     'Bucket': 'mybucket',
                     'Key': 'mykey',
+                    'ChecksumAlgorithm': 'CRC64NVME',
                     'RequestPayer': 'requester',
                     'UploadId': 'myid',
                     'PartNumber': mock.ANY,
@@ -1056,6 +1074,7 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
                 ('PutObject', {
                     'Bucket': 'mybucket',
                     'Key': 'myfile',
+                    'ChecksumAlgorithm': 'CRC64NVME',
                     'RequestPayer': 'requester',
                     'Body': mock.ANY,
                 })

@@ -304,5 +304,5 @@ class TestS3ExpressRequests:
         # Confirm we signed both called with S3Express credentials
         self._assert_s3express_credentials(stubber.requests[1].headers)
         self._assert_checksum_algorithm_added(
-            'crc32', stubber.requests[1].headers
+            'crc64nvme', stubber.requests[1].headers
         )

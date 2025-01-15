@@ -440,6 +440,22 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
         self.assertIn(('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items())
 
+    def test_download_with_checksum_mode_crc64nvme(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumCRC64NVME': 'checksum',
+                'Body': BytesIO(b'foo')
+            }
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items())
+
 
 class TestSyncSourceRegion(BaseS3CLIRunnerTest):
     def test_respects_source_region(self):

@@ -22,6 +22,7 @@ from botocore.exceptions import ClientError
 from botocore.stub import ANY
 
 from s3transfer.manager import TransferConfig, TransferManager
+from s3transfer.upload import UploadSubmissionTask
 from s3transfer.utils import ChunksizeAdjuster
 from tests import (
     BaseGeneralInterfaceTest,
@@ -147,7 +148,12 @@ class TestNonMultipartUpload(BaseUploadTest):
         if bucket is None:
             bucket = self.bucket
 
-        expected_params = {'Body': ANY, 'Bucket': bucket, 'Key': self.key}
+        expected_params = {
+            'Body': ANY,
+            'Bucket': bucket,
+            'Key': self.key,
+            'ChecksumAlgorithm': 'CRC64NVME',
+        }
         if extra_expected_params:
             expected_params.update(extra_expected_params)
         upload_response = self.create_stubbed_responses()[0]
@@ -186,7 +192,6 @@ class TestNonMultipartUpload(BaseUploadTest):
         self.assertFalse("ChecksumAlgorithm" in self.extra_args)
 
         self.add_put_object_response_with_default_expected_params(
-            extra_expected_params={'ChecksumAlgorithm': 'crc32'},
             bucket=s3express_bucket,
         )
         future = self.manager.upload(
@@ -278,7 +283,12 @@ class TestNonMultipartUpload(BaseUploadTest):
 
     def test_allowed_upload_params_are_valid(self):
         op_model = self.client.meta.service_model.operation_model('PutObject')
-        for allowed_upload_arg in self._manager.ALLOWED_UPLOAD_ARGS:
+        allowed_upload_arg = [
+            arg
+            for arg in self._manager.ALLOWED_UPLOAD_ARGS
+            if arg not in UploadSubmissionTask.PUT_OBJECT_BLOCKLIST
+        ]
+        for allowed_upload_arg in allowed_upload_arg:
             self.assertIn(allowed_upload_arg, op_model.input_shape.members)
 
     def test_upload_with_bandwidth_limiter(self):
@@ -367,7 +377,11 @@ class TestMultipartUpload(BaseUploadTest):
         if bucket is None:
             bucket = self.bucket
 
-        expected_params = {'Bucket': bucket, 'Key': self.key}
+        expected_params = {
+            'Bucket': bucket,
+            'Key': self.key,
+            'ChecksumAlgorithm': 'CRC64NVME',
+        }
         if extra_expected_params:
             expected_params.update(extra_expected_params)
         response = self.create_stubbed_responses()[0]
@@ -392,15 +406,15 @@ class TestMultipartUpload(BaseUploadTest):
                 'UploadId': self.multipart_id,
                 'Body': ANY,
                 'PartNumber': i + 1,
+                'ChecksumAlgorithm': 'CRC64NVME',
             }
             if extra_expected_params:
                 expected_params.update(extra_expected_params)
-                # If ChecksumAlgorithm is present stub the response checksums
-                if 'ChecksumAlgorithm' in extra_expected_params:
-                    name = extra_expected_params['ChecksumAlgorithm']
-                    checksum_member = 'Checksum%s' % name.upper()
-                    response = upload_part_response['service_response']
-                    response[checksum_member] = 'sum%s==' % (i + 1)
+
+            name = expected_params['ChecksumAlgorithm']
+            checksum_member = f'Checksum{name.upper()}'
+            response = upload_part_response['service_response']
+            response[checksum_member] = f'sum{i + 1}=='
 
             upload_part_response['expected_params'] = expected_params
             self.stubber.add_response(**upload_part_response)
@@ -419,9 +433,21 @@ class TestMultipartUpload(BaseUploadTest):
             'UploadId': self.multipart_id,
             'MultipartUpload': {
                 'Parts': [
-                    {'ETag': 'etag-1', 'PartNumber': 1},
-                    {'ETag': 'etag-2', 'PartNumber': 2},
-                    {'ETag': 'etag-3', 'PartNumber': 3},
+                    {
+                        'ETag': 'etag-1',
+                        'PartNumber': 1,
+                        'ChecksumCRC64NVME': 'sum1==',
+                    },
+                    {
+                        'ETag': 'etag-2',
+                        'PartNumber': 2,
+                        'ChecksumCRC64NVME': 'sum2==',
+                    },
+                    {
+                        'ETag': 'etag-3',
+                        'PartNumber': 3,
+                        'ChecksumCRC64NVME': 'sum3==',
+                    },
                 ]
             },
         }
@@ -539,17 +565,22 @@ class TestMultipartUpload(BaseUploadTest):
         self.stubber.add_response(
             method='create_multipart_upload',
             service_response={'UploadId': self.multipart_id},
-            expected_params={'Bucket': self.bucket, 'Key': self.key},
+            expected_params={
+                'Bucket': self.bucket,
+                'Key': self.key,
+                'ChecksumAlgorithm': 'CRC64NVME',
+            },
         )
         self.stubber.add_response(
             method='upload_part',
-            service_response={'ETag': 'etag-1'},
+            service_response={'ETag': 'etag-1', 'ChecksumCRC64NVME': 'sum1=='},
             expected_params={
                 'Bucket': self.bucket,
                 'Body': ANY,
                 'Key': self.key,
                 'UploadId': self.multipart_id,
                 'PartNumber': 1,
+                'ChecksumAlgorithm': 'CRC64NVME',
             },
         )
         # With the upload part failing this should immediately initiate
@@ -639,13 +670,13 @@ class TestMultipartUpload(BaseUploadTest):
 
         # ChecksumAlgorithm should be passed on the create_multipart call
         self.add_create_multipart_response_with_default_expected_params(
-            extra_expected_params={'ChecksumAlgorithm': 'crc32'},
+            extra_expected_params={'ChecksumAlgorithm': 'CRC64NVME'},
             bucket=s3express_bucket,
         )
 
         # ChecksumAlgorithm should be forwarded and a SHA1 will come back
         self.add_upload_part_responses_with_default_expected_params(
-            extra_expected_params={'ChecksumAlgorithm': 'crc32'},
+            extra_expected_params={'ChecksumAlgorithm': 'CRC64NVME'},
             bucket=s3express_bucket,
         )
 
@@ -657,17 +688,17 @@ class TestMultipartUpload(BaseUploadTest):
                         {
                             'ETag': 'etag-1',
                             'PartNumber': 1,
-                            'ChecksumCRC32': 'sum1==',
+                            'ChecksumCRC64NVME': 'sum1==',
                         },
                         {
                             'ETag': 'etag-2',
                             'PartNumber': 2,
-                            'ChecksumCRC32': 'sum2==',
+                            'ChecksumCRC64NVME': 'sum2==',
                         },
                         {
                             'ETag': 'etag-3',
                             'PartNumber': 3,
-                            'ChecksumCRC32': 'sum3==',
+                            'ChecksumCRC64NVME': 'sum3==',
                         },
                     ]
                 }
@@ -697,6 +728,31 @@ class TestMultipartUpload(BaseUploadTest):
         self.add_upload_part_responses_with_default_expected_params(
             extra_expected_params=params
         )
+        self.add_complete_multipart_response_with_default_expected_params(
+            extra_expected_params=params
+        )
+        future = self.manager.upload(
+            self.filename, self.bucket, self.key, self.extra_args
+        )
+        future.result()
+        self.assert_expected_client_calls_were_correct()
+
+    def test_multipart_upload_with_full_object_checksum_args(self):
+        checksum_type_param = {
+            'ChecksumType': 'FULL_OBJECT',
+        }
+        params = {
+            'ChecksumCRC64NVME': 'example-checksum-value',
+            'MpuObjectSize': 12345,
+        }
+        params.update(checksum_type_param)
+        self.extra_args.update(params)
+
+        self.add_create_multipart_response_with_default_expected_params(
+            extra_expected_params=checksum_type_param
+        )
+
+        self.add_upload_part_responses_with_default_expected_params()
         self.add_complete_multipart_response_with_default_expected_params(
             extra_expected_params=params
         )

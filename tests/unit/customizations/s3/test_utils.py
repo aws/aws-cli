@@ -656,7 +656,7 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
 class TestRequestParamsMapperChecksumAlgorithm:
     @pytest.fixture
     def cli_params(self):
-        return {'checksum_algorithm': 'CRC32'}
+        return {'checksum_algorithm': 'CRC64NVME'}
 
     @pytest.fixture
     def cli_params_no_algorithm(self):
@@ -665,7 +665,7 @@ class TestRequestParamsMapperChecksumAlgorithm:
     def test_put_object(self, cli_params):
         request_params = {}
         RequestParamsMapper.map_put_object_params(request_params, cli_params)
-        assert request_params == {'ChecksumAlgorithm': 'CRC32'}
+        assert request_params == {'ChecksumAlgorithm': 'CRC64NVME'}
 
     def test_put_object_no_checksum(self, cli_params_no_algorithm):
         request_params = {}
@@ -675,7 +675,7 @@ class TestRequestParamsMapperChecksumAlgorithm:
     def test_copy_object(self, cli_params):
         request_params = {}
         RequestParamsMapper.map_copy_object_params(request_params, cli_params)
-        assert request_params == {'ChecksumAlgorithm': 'CRC32'}
+        assert request_params == {'ChecksumAlgorithm': 'CRC64NVME'}
 
     def test_copy_object_no_checksum(self, cli_params_no_algorithm):
         request_params = {}

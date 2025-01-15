@@ -26,5 +26,13 @@ ALLOWED_DOWNLOAD_ARGS = [
     'ExpectedBucketOwner',
 ]
 
+FULL_OBJECT_CHECKSUM_ARGS = [
+     'ChecksumCRC32',
+     'ChecksumCRC32C',
+     'ChecksumCRC64NVME',
+     'ChecksumSHA1',
+     'ChecksumSHA256',
+]
+
 USER_AGENT = 's3transfer/%s' % s3transfer.__version__
 PROCESS_USER_AGENT = '%s processpool' % USER_AGENT

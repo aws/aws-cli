@@ -16,11 +16,13 @@ from awscli.customizations.arguments import NestedBlobArgumentHoister
 _ASSET_BUNDLE_FILE_DOCSTRING = (
     '<p>The content of the asset bundle to be uploaded. '
     'To specify the content of a local file use the '
-    'fileb:// prefix. Example: fileb://asset-bundle.zip</p>')
+    'fileb:// prefix. Example: fileb://asset-bundle.zip</p>'
+)
 
 _ASSET_BUNDLE_DOCSTRING_ADDENDUM = (
     '<p>To specify a local file use '
-    '<code>--asset-bundle-import-source-bytes</code> instead.</p>')
+    '<code>--asset-bundle-import-source-bytes</code> instead.</p>'
+)
 
 
 def register_quicksight_asset_bundle_customizations(cli):
@@ -31,4 +33,6 @@ def register_quicksight_asset_bundle_customizations(cli):
             source_arg_blob_member='Body',
             new_arg='asset-bundle-import-source-bytes',
             new_arg_doc_string=_ASSET_BUNDLE_FILE_DOCSTRING,
-            doc_string_addendum=_ASSET_BUNDLE_DOCSTRING_ADDENDUM))
+            doc_string_addendum=_ASSET_BUNDLE_DOCSTRING_ADDENDUM,
+        ),
+    )

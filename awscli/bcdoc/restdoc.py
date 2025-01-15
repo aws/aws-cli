@@ -13,6 +13,7 @@
 import logging
 
 from botocore.compat import OrderedDict
+
 from awscli.bcdoc.docstringparser import DocStringParser
 from awscli.bcdoc.style import ReSTStyle
 
@@ -20,7 +21,6 @@ LOG = logging.getLogger('bcdocs')
 
 
 class ReSTDocument(object):
-
     def __init__(self, target='man'):
         self.style = ReSTStyle(self)
         self.target = target
@@ -194,8 +194,9 @@ class DocumentStructure(ReSTDocument):
             to the document structure it was instantiated from.
         """
         # Add a new section
-        section = self.__class__(name=name, target=self.target,
-                                 context=context)
+        section = self.__class__(
+            name=name, target=self.target, context=context
+        )
         section.path = self.path + [name]
         # Indent the section apporpriately as well
         section.style.indentation = self.style.indentation

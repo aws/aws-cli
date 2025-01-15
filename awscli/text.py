@@ -61,8 +61,7 @@ def _partition_list(item):
 def _format_scalar_list(elements, identifier, stream):
     if identifier is not None:
         for item in elements:
-            stream.write('%s\t%s\n' % (identifier.upper(),
-                                       item))
+            stream.write(f'{identifier.upper()}\t{item}\n')
     else:
         # For a bare list, just print the contents.
         stream.write('\t'.join([str(item) for item in elements]))

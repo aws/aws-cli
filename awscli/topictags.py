@@ -24,7 +24,7 @@ import json
 import docutils.core
 
 
-class TopicTagDB(object):
+class TopicTagDB:
     """This class acts like a database for the tags of all available topics.
 
     A tag is an element in a topic reStructured text file that contains
@@ -121,7 +121,7 @@ class TopicTagDB(object):
 
     def load_json_index(self):
         """Loads a JSON file into the tag dictionary."""
-        with open(self.index_file, 'r') as f:
+        with open(self.index_file) as f:
             self._tag_dictionary = json.load(f)
 
     def save_to_json_index(self):
@@ -156,7 +156,7 @@ class TopicTagDB(object):
         :param topic_files: A list of paths to topics to scan into memory.
         """
         for topic_file in topic_files:
-            with open(topic_file, 'r') as f:
+            with open(topic_file) as f:
                 # Parse out the name of the topic
                 topic_name = self._find_topic_name(topic_file)
                 # Add the topic to the dictionary if it does not exist
@@ -193,8 +193,7 @@ class TopicTagDB(object):
                 self._add_tag_to_dict(topic_name, tag, tag_values)
             else:
                 raise ValueError(
-                    "Tag %s found under topic %s is not supported."
-                    % (tag, topic_name)
+                    f"Tag {tag} found under topic {topic_name} is not supported."
                 )
 
     def _add_topic_name_to_dict(self, topic_name):
@@ -288,8 +287,8 @@ class TopicTagDB(object):
         if value is not None:
             if len(value) != 1:
                 raise ValueError(
-                    'Tag %s for topic %s has value %s. Expected a single '
-                    'element in list.' % (tag, topic_name, value)
+                    f'Tag {tag} for topic {topic_name} has value {value}. Expected a single '
+                    'element in list.'
                 )
             value = value[0]
         return value

@@ -488,6 +488,10 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
 
     def _prompt_for_profile_config(self, config_name, text, completions=None):
         current_value = self._profile_config.get(config_name)
+
+        if config_name == 'output' and not current_value:
+            current_value = 'json'
+
         new_value = self._prompter.get_value(
             current_value, text,
             completions=completions,

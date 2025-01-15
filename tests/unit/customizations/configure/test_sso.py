@@ -375,7 +375,7 @@ def region_prompt():
 
 @pytest.fixture
 def output_prompt():
-    return OutputPrompt(answer="json", expected_default=None)
+    return OutputPrompt(answer="json", expected_default="json")
 
 
 @pytest.fixture
@@ -1099,6 +1099,9 @@ class TestConfigureSSOCommand:
             expected_sso_region=inputs.sso_region_prompt.answer,
             expected_start_url=inputs.start_url_prompt.answer,
         )
+
+        # expected_output = inputs.output_prompt.answer or 'json'
+
         assert_aws_config(
             aws_config,
             expected_lines=[
@@ -1112,7 +1115,7 @@ class TestConfigureSSOCommand:
             ],
         )
 
-    def test_cli_config_is_none_not_written(
+    def test_cli_config_is_none_defaults_to_json(
         self,
         sso_cmd,
         ptk_stubber,
@@ -1142,6 +1145,7 @@ class TestConfigureSSOCommand:
                 f"sso_region = {inputs.sso_region_prompt.answer}",
                 f"sso_account_id = {account_id}",
                 f"sso_role_name = {role_name}",
+                "output = json",
             ],
         )
 

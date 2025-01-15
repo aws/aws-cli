@@ -422,7 +422,7 @@ class TestConfigLoaderObject(BaseSessionTest):
             # values from the shared credentials file.
             self.assertEqual(session.get_scoped_config(),
                              {'aws_access_key_id': 'a',
-                              'aws_secret_access_key': 'b'})
+                              'aws_secret_access_key': 'b', 'output': 'json'})
 
 
 class TestGetServiceModel(BaseSessionTest):

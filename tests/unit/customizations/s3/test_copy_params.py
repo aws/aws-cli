@@ -50,7 +50,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
-        result = {'Bucket': u'mybucket', 'Key': u'mykey'}
+        result = {'Bucket': u'mybucket', 'Key': u'mykey', 'ChecksumAlgorithm': 'CRC32'}
         self.assert_params(cmdline, result)
 
     def test_sse(self):
@@ -59,7 +59,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --sse'
         result = {'Bucket': u'mybucket', 'Key': u'mykey',
-                  'ServerSideEncryption': 'AES256'}
+                  'ServerSideEncryption': 'AES256', 'ChecksumAlgorithm': 'CRC32'}
         self.assert_params(cmdline, result)
 
     def test_storage_class(self):
@@ -68,7 +68,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --storage-class REDUCED_REDUNDANCY'
         result = {'Bucket': u'mybucket', 'Key': u'mykey',
-                  'StorageClass': u'REDUCED_REDUNDANCY'}
+                  'StorageClass': u'REDUCED_REDUNDANCY', 'ChecksumAlgorithm': 'CRC32'}
         self.assert_params(cmdline, result)
 
     def test_standard_ia_storage_class(self):
@@ -77,7 +77,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --storage-class STANDARD_IA'
         result = {'Bucket': u'mybucket', 'Key': u'mykey',
-                  'StorageClass': u'STANDARD_IA'}
+                  'StorageClass': u'STANDARD_IA', 'ChecksumAlgorithm': 'CRC32'}
         self.assert_params(cmdline, result)
 
     def test_glacier_ir_storage_class(self):
@@ -86,7 +86,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --storage-class GLACIER_IR'
         result = {'Bucket': u'mybucket', 'Key': u'mykey',
-                  'StorageClass': u'GLACIER_IR'}
+                  'ChecksumAlgorithm': 'CRC32', 'StorageClass': u'GLACIER_IR'}
         self.assert_params(cmdline, result)
 
     def test_website_redirect(self):
@@ -96,6 +96,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' --website-redirect /foobar'
         result = {'Bucket': u'mybucket',
                   'Key': u'mykey',
+                  'ChecksumAlgorithm': 'CRC32',
                   'WebsiteRedirectLocation': u'/foobar'}
         self.assert_params(cmdline, result)
 
@@ -104,7 +105,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --acl public-read'
-        result = {'Bucket': 'mybucket', 'Key': 'mykey', 'ACL': 'public-read'}
+        result = {'Bucket': 'mybucket', 'Key': 'mykey', 'ChecksumAlgorithm': 'CRC32', 'ACL': 'public-read'}
         self.assert_params(cmdline, result)
 
     def test_content_params(self):
@@ -116,6 +117,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' --cache-control max-age=3600,must-revalidate'
         cmdline += ' --content-disposition attachment;filename="fname.ext"'
         result = {'Bucket': 'mybucket', 'Key': 'mykey',
+                  'ChecksumAlgorithm': 'CRC32',
                   'ContentEncoding': 'x-gzip',
                   'ContentLanguage': 'piglatin',
                   'ContentDisposition': 'attachment;filename="fname.ext"',
@@ -131,7 +133,8 @@ class TestGetObject(BaseAWSCommandParamsTest):
         result = {'Bucket': u'mybucket',
                   'GrantFullControl': u'alice',
                   'GrantRead': u'bob',
-                  'Key': u'mykey'}
+                  'Key': u'mykey',
+                  'ChecksumAlgorithm': 'CRC32'}
         self.assert_params(cmdline, result)
 
     def test_grants_bad(self):
@@ -148,7 +151,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --content-type text/xml'
         result = {'Bucket': u'mybucket', 'ContentType': u'text/xml',
-                  'Key': u'mykey'}
+                  'Key': u'mykey', 'ChecksumAlgorithm': 'CRC32'}
         self.assert_params(cmdline, result)
 
 

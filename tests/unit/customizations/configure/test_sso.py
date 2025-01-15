@@ -1100,8 +1100,6 @@ class TestConfigureSSOCommand:
             expected_start_url=inputs.start_url_prompt.answer,
         )
 
-        # expected_output = inputs.output_prompt.answer or 'json'
-
         assert_aws_config(
             aws_config,
             expected_lines=[

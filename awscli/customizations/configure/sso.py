@@ -481,8 +481,6 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
             'region', 'Default client Region')
 
     def _prompt_for_cli_output_format(self):
-        if 'output' not in self._profile_config:
-            self._profile_config['output'] = 'json'
         return self._prompt_for_profile_config(
             'output', 'CLI default output format',
             completions=list(CLI_OUTPUT_FORMATS.keys()),

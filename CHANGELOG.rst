@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+1.37.0
+======
+
+* api-change:``apigateway``: Documentation updates for Amazon API Gateway
+* api-change:``bedrock-agent-runtime``: Now supports streaming for inline agents.
+* api-change:``cognito-identity``: corrects the dual-stack endpoint configuration
+* api-change:``partnercentral-selling``: Add Tagging support for ResourceSnapshotJob resources
+* api-change:``s3``: This change enhances integrity protections for new SDK requests to S3. S3 SDKs now support the CRC64NVME checksum algorithm, full object checksums for multipart S3 objects, and new default integrity protections for S3 requests.
+* api-change:``security-ir``: Increase minimum length of Threat Actor IP 'userAgent' to 1.
+* api-change:``sesv2``: This release introduces a new recommendation in Virtual Deliverability Manager Advisor, which detects elevated complaint rates for customer sending identities.
+* api-change:``workspaces``: Added GeneralPurpose.4xlarge & GeneralPurpose.8xlarge ComputeTypes.
+* api-change:``workspaces-thin-client``: Mark type in MaintenanceWindow as required.
+* feature:``s3``: The S3 client attempts to validate response checksums for all S3 API operations that support checksums. However, if the SDK has not implemented the specified checksum algorithm then this validation is skipped. Checksum validation behavior can be configured using the ``when_supported`` and ``when_required`` options - in code using the ``response_checksum_validation`` parameter for ``botocore.config.Config``, in the shared AWS config file using ``response_checksum_validation``, or as an env variable using ``AWS_RESPONSE_CHECKSUM_VALIDATION``.
+* feature:``s3``: Added support for the CRC64NVME checksum algorithm in the S3 client through the optional AWS CRT (``awscrt``) dependency.
+* feature:``s3``: S3 client behavior is updated to always calculate a CRC32 checksum by default for operations that support it (such as PutObject or UploadPart), or require it (such as DeleteObjects). Checksum behavior can be configured using ``when_supported`` and ``when_required`` options - in code using the ``request_checksum_calculation`` parameter for ``botocore.config.Config``, in the shared AWS config file using ``request_checksum_calculation``, or as an env variable using ``AWS_REQUEST_CHECKSUM_CALCULATION``. Note: Botocore will no longer automatically compute and populate the Content-MD5 header.
+
+
 1.36.40
 =======
 

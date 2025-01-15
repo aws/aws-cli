@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.23.0
+======
+
+* api-change:``apigateway``: Documentation updates for Amazon API Gateway
+* api-change:``workspaces-thin-client``: Mark type in MaintenanceWindow as required.
+* api-change:``workspaces``: Added GeneralPurpose.4xlarge & GeneralPurpose.8xlarge ComputeTypes.
+* api-change:``security-ir``: Increase minimum length of Threat Actor IP 'userAgent' to 1.
+* api-change:``cognito-identity``: corrects the dual-stack endpoint configuration
+* feature:``s3``: The S3 client attempts to validate response checksums for all S3 API operations that support checksums. However, if the SDK has not implemented the specified checksum algorithm then this validation is skipped. Checksum validation behavior can be configured using the ``when_supported`` and ``when_required`` options - in the shared AWS config file using ``response_checksum_validation``, and as an env variable using ``AWS_RESPONSE_CHECKSUM_VALIDATION``.
+* feature:``s3``: S3 client behavior is updated to always calculate CRC64NVME checksum by default for operations that support it, such as PutObject or UploadPart, or require it, such as DeleteObjects. Checksum behavior can be configured using the ``when_supported`` and ``when_required`` options - in the shared AWS config file using ``request_checksum_calculation`` and as an env variable using ``AWS_REQUEST_CHECKSUM_CALCULATION``. Note: AWS CLI will no longer automatically compute and populate the Content-MD5 header.
+* api-change:``sesv2``: This release introduces a new recommendation in Virtual Deliverability Manager Advisor, which detects elevated complaint rates for customer sending identities.
+* api-change:``s3``: This change enhances integrity protections for new SDK requests to S3. S3 SDKs now support the CRC64NVME checksum algorithm, full object checksums for multipart S3 objects, and new default integrity protections for S3 requests.
+* feature:``s3``: Added support for the CRC64NVME checksum algorithm in the S3 CRT-based client.
+* api-change:``bedrock-agent-runtime``: Now supports streaming for inline agents.
+* api-change:``partnercentral-selling``: Add Tagging support for ResourceSnapshotJob resources
+
+
 2.22.35
 =======
 

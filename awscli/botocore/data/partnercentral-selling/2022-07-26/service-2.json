@@ -24,12 +24,13 @@
       "input":{"shape":"AcceptEngagementInvitationRequest"},
       "errors":[
         {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Use the <code>AcceptEngagementInvitation</code> action to accept an engagement invitation shared by AWS. Accepting the invitation indicates your willingness to participate in the engagement, granting you access to all engagement-related data. </p>"
+      "documentation":"<p>Use the <code>AcceptEngagementInvitation</code> action to accept an engagement invitation shared by AWS. Accepting the invitation indicates your willingness to participate in the engagement, granting you access to all engagement-related data.</p>"
     },
     "AssignOpportunity":{
       "name":"AssignOpportunity",
@@ -79,7 +80,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> The <code>CreateEngagement</code> action allows you to create an <code>Engagement</code>, which serves as a collaborative space between different parties such as AWS Partners and AWS Sellers. This action automatically adds the caller's AWS account as an active member of the newly created <code>Engagement</code>. </p>",
+      "documentation":"<p>The <code>CreateEngagement</code> action allows you to create an <code>Engagement</code>, which serves as a collaborative space between different parties such as AWS Partners and AWS Sellers. This action automatically adds the caller's AWS account as an active member of the newly created <code>Engagement</code>.</p>",
       "idempotent":true
     },
     "CreateEngagementInvitation":{
@@ -117,7 +118,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Creates an <code>Opportunity</code> record in Partner Central. Use this operation to create a potential business opportunity for submission to Amazon Web Services. Creating an opportunity sets <code>Lifecycle.ReviewStatus</code> to <code>Pending Submission</code>.</p> <p>To submit an opportunity, follow these steps:</p> <ol> <li> <p>To create the opportunity, use <code>CreateOpportunity</code>.</p> </li> <li> <p>To associate a solution with the opportunity, use <code>AssociateOpportunity</code>.</p> </li> <li> <p>To submit the opportunity, use <code>StartEngagementFromOpportunityTask</code>.</p> </li> </ol> <p>After submission, you can't edit the opportunity until the review is complete. But opportunities in the <code>Pending Submission</code> state must have complete details. You can update the opportunity while it's in the <code>Pending Submission</code> state.</p> <p>There's a set of mandatory fields to create opportunities, but consider providing optional fields to enrich the opportunity record.</p>",
+      "documentation":"<p>Creates an <code>Opportunity</code> record in Partner Central. Use this operation to create a potential business opportunity for submission to Amazon Web Services. Creating an opportunity sets <code>Lifecycle.ReviewStatus</code> to <code>Pending Submission</code>.</p> <p>To submit an opportunity, follow these steps:</p> <ol> <li> <p>To create the opportunity, use <code>CreateOpportunity</code>.</p> </li> <li> <p>To associate a solution with the opportunity, use <code>AssociateOpportunity</code>.</p> </li> <li> <p>To start the engagement with AWS, use <code>StartEngagementFromOpportunity</code>.</p> </li> </ol> <p>After submission, you can't edit the opportunity until the review is complete. But opportunities in the <code>Pending Submission</code> state must have complete details. You can update the opportunity while it's in the <code>Pending Submission</code> state.</p> <p>There's a set of mandatory fields to create opportunities, but consider providing optional fields to enrich the opportunity record.</p>",
       "idempotent":true
     },
     "CreateResourceSnapshot":{
@@ -155,7 +156,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Use this action to create a job to generate a snapshot of the specified resource within an engagement. It initiates an asynchronous process to create a resource snapshot. The job creates a new snapshot only if the resource state has changed, adhering to the same access control and immutability rules as direct snapshot creation. </p>",
+      "documentation":"<p>Use this action to create a job to generate a snapshot of the specified resource within an engagement. It initiates an asynchronous process to create a resource snapshot. The job creates a new snapshot only if the resource state has changed, adhering to the same access control and immutability rules as direct snapshot creation.</p>",
       "idempotent":true
     },
     "DeleteResourceSnapshotJob":{
@@ -167,6 +168,7 @@
       "input":{"shape":"DeleteResourceSnapshotJobRequest"},
       "errors":[
         {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
@@ -221,7 +223,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Use this action to retrieve the engagement record for a given <code>EngagementIdentifier</code>. </p>"
+      "documentation":"<p>Use this action to retrieve the engagement record for a given <code>EngagementIdentifier</code>.</p>"
     },
     "GetEngagementInvitation":{
       "name":"GetEngagementInvitation",
@@ -287,7 +289,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Use this action to retrieves information about a specific resource snapshot job. </p>"
+      "documentation":"<p>Use this action to retrieves information about a specific resource snapshot job.</p>"
     },
     "GetSellingSystemSettings":{
       "name":"GetSellingSystemSettings",
@@ -368,7 +370,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Retrieves the details of member partners in an engagement. This operation can only be invoked by members of the engagement. The <code>ListEngagementMembers</code> operation allows you to fetch information about the members of a specific engagement. This action is restricted to members of the engagement being queried. </p>"
+      "documentation":"<p>Retrieves the details of member partners in an Engagement. This operation can only be invoked by members of the Engagement. The <code>ListEngagementMembers</code> operation allows you to fetch information about the members of a specific Engagement. This action is restricted to members of the Engagement being queried. </p>"
     },
     "ListEngagementResourceAssociations":{
       "name":"ListEngagementResourceAssociations",
@@ -384,7 +386,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Lists the associations between resources and engagements where the caller is a member and has at least one snapshot in the engagement. </p>"
+      "documentation":"<p>Lists the associations between resources and engagements where the caller is a member and has at least one snapshot in the engagement.</p>"
     },
     "ListEngagements":{
       "name":"ListEngagements",
@@ -400,7 +402,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> This action allows users to retrieve a list of engagement records from Partner Central. This action can be used to manage and track various engagements across different stages of the partner selling process. </p>"
+      "documentation":"<p>This action allows users to retrieve a list of Engagement records from Partner Central. This action can be used to manage and track various engagements across different stages of the partner selling process. </p>"
     },
     "ListOpportunities":{
       "name":"ListOpportunities",
@@ -430,7 +432,8 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p> Lists resource snapshot jobs owned by the customer. This operation supports various filtering scenarios, including listing all jobs owned by the caller, jobs for a specific engagement, jobs with a specific status, or any combination of these filters. </p>"
     },
@@ -448,7 +451,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Retrieves a list of resource view snapshots based on specified criteria. </p>"
+      "documentation":"<p>Retrieves a list of resource view snapshots based on specified criteria. This operation supports various use cases, including: </p> <ul> <li> <p>Fetching all snapshots associated with an engagement.</p> </li> <li> <p>Retrieving snapshots of a specific resource type within an engagement.</p> </li> <li> <p>Obtaining snapshots for a particular resource using a specified template.</p> </li> <li> <p>Accessing the latest snapshot of a resource within an engagement.</p> </li> <li> <p>Filtering snapshots by resource owner.</p> </li> </ul>"
     },
     "ListSolutions":{
       "name":"ListSolutions",
@@ -465,6 +468,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves a list of Partner Solutions that the partner registered on Partner Central. This API is used to generate a list of solutions that an end user selects from for association with an opportunity.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of tags for a resource.</p>"
     },
     "PutSellingSystemSettings":{
       "name":"PutSellingSystemSettings",
@@ -492,6 +512,7 @@
       "input":{"shape":"RejectEngagementInvitationRequest"},
       "errors":[
         {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
@@ -550,7 +571,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Starts a resource snapshot job that has been previously created. </p>",
+      "documentation":"<p>Starts a resource snapshot job that has been previously created.</p>",
       "idempotent":true
     },
     "StopResourceSnapshotJob":{
@@ -566,7 +587,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Stops a resource snapshot job. The job must be started prior to being stopped. </p>",
+      "documentation":"<p>Stops a resource snapshot job. The job must be started prior to being stopped.</p>",
       "idempotent":true
     },
     "SubmitOpportunity":{
@@ -583,7 +604,45 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Use this action to submit an opportunity that was previously created by partner for AWS review. After you perform this action, the opportunity becomes non-editable until it is reviewed by AWS and has <code> LifeCycle.ReviewStatus </code> as either <code>Approved</code> or <code>Action Required</code>. </p>"
+      "documentation":"<p>Use this action to submit an Opportunity that was previously created by partner for AWS review. After you perform this action, the Opportunity becomes non-editable until it is reviewed by AWS and has <code> LifeCycle.ReviewStatus </code> as either <code>Approved</code> or <code>Action Required</code>. </p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Assigns one or more tags (key-value pairs) to the specified resource.</p>",
+      "idempotent":true
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Removes a tag or tags from a resource.</p>",
+      "idempotent":true
     },
     "UpdateOpportunity":{
       "name":"UpdateOpportunity",
@@ -614,7 +673,7 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> The <code>CatalogType</code> parameter specifies the catalog associated with the engagement invitation. Accepted values are <code>AWS</code> and <code>Sandbox</code>, which determine the environment in which the engagement invitation is managed. </p>"
+          "documentation":"<p>The <code>CatalogType</code> parameter specifies the catalog associated with the engagement invitation. Accepted values are <code>AWS</code> and <code>Sandbox</code>, which determine the environment in which the engagement invitation is managed.</p>"
         },
         "Identifier":{
           "shape":"EngagementInvitationArnOrIdentifier",
@@ -1624,24 +1683,24 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> The <code>CreateEngagementRequest$Catalog</code> parameter specifies the catalog related to the engagement. Accepted values are <code>AWS</code> and <code>Sandbox</code>, which determine the environment in which the engagement is managed. </p>"
+          "documentation":"<p>The <code>CreateEngagementRequest$Catalog</code> parameter specifies the catalog related to the engagement. Accepted values are <code>AWS</code> and <code>Sandbox</code>, which determine the environment in which the engagement is managed.</p>"
         },
         "ClientToken":{
           "shape":"CreateEngagementRequestClientTokenString",
-          "documentation":"<p> The <code>CreateEngagementRequest$ClientToken</code> parameter specifies a unique, case-sensitive identifier to ensure that the request is handled exactly once. The value must not exceed sixty-four alphanumeric characters. </p>",
+          "documentation":"<p>The <code>CreateEngagementRequest$ClientToken</code> parameter specifies a unique, case-sensitive identifier to ensure that the request is handled exactly once. The value must not exceed sixty-four alphanumeric characters.</p>",
           "idempotencyToken":true
         },
         "Contexts":{
           "shape":"EngagementContexts",
-          "documentation":"<p> The <code>Contexts</code> field is a required array of objects, with a maximum of 5 contexts allowed, specifying detailed information about customer projects associated with the Engagement. Each context object contains a <code>Type</code> field indicating the context type, which must be <code>CustomerProject</code> in this version, and a <code>Payload</code> field containing the <code>CustomerProject</code> details. The <code>CustomerProject</code> object is composed of two main components: <code>Customer</code> and <code>Project</code>. The <code>Customer</code> object includes information such as <code>CompanyName</code>, <code>WebsiteUrl</code>, <code>Industry</code>, and <code>CountryCode</code>, providing essential details about the customer. The <code>Project</code> object contains <code>Title</code>, <code>BusinessProblem</code>, and <code>TargetCompletionDate</code>, offering insights into the specific project associated with the customer. This structure allows comprehensive context to be included within the Engagement, facilitating effective collaboration between parties by providing relevant customer and project information. </p>"
+          "documentation":"<p>The <code>Contexts</code> field is a required array of objects, with a maximum of 5 contexts allowed, specifying detailed information about customer projects associated with the Engagement. Each context object contains a <code>Type</code> field indicating the context type, which must be <code>CustomerProject</code> in this version, and a <code>Payload</code> field containing the <code>CustomerProject</code> details. The <code>CustomerProject</code> object is composed of two main components: <code>Customer</code> and <code>Project</code>. The <code>Customer</code> object includes information such as <code>CompanyName</code>, <code>WebsiteUrl</code>, <code>Industry</code>, and <code>CountryCode</code>, providing essential details about the customer. The <code>Project</code> object contains <code>Title</code>, <code>BusinessProblem</code>, and <code>TargetCompletionDate</code>, offering insights into the specific project associated with the customer. This structure allows comprehensive context to be included within the Engagement, facilitating effective collaboration between parties by providing relevant customer and project information.</p>"
         },
         "Description":{
           "shape":"EngagementDescription",
-          "documentation":"<p> Provides a description of the <code>Engagement</code>. </p>"
+          "documentation":"<p>Provides a description of the <code>Engagement</code>.</p>"
         },
         "Title":{
           "shape":"EngagementTitle",
-          "documentation":"<p> Specifies the title of the <code>Engagement</code>. </p>"
+          "documentation":"<p>Specifies the title of the <code>Engagement</code>.</p>"
         }
       }
     },
@@ -1654,11 +1713,11 @@
       "members":{
         "Arn":{
           "shape":"EngagementArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) that identifies the engagement. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the engagement.</p>"
         },
         "Id":{
           "shape":"EngagementIdentifier",
-          "documentation":"<p> Unique identifier assigned to the newly created engagement. </p>"
+          "documentation":"<p>Unique identifier assigned to the newly created engagement.</p>"
         }
       }
     },
@@ -1712,7 +1771,7 @@
         },
         "PrimaryNeedsFromAws":{
           "shape":"PrimaryNeedsFromAws",
-          "documentation":"<p>Identifies the type of support the partner needs from Amazon Web Services.</p> <p>Valid values:</p> <ul> <li> <p>Cosell—Architectural Validation: Confirmation from Amazon Web Services that the partner's proposed solution architecture is aligned with Amazon Web Services best practices and poses minimal architectural risks.</p> </li> <li> <p>Cosell—Business Presentation: Request Amazon Web Services seller's participation in a joint customer presentation.</p> </li> <li> <p>Cosell—Competitive Information: Access to Amazon Web Services competitive resources and support for the partner's proposed solution.</p> </li> <li> <p>Cosell—Pricing Assistance: Connect with an Amazon Web Services seller for support situations where a partner may be receiving an upfront discount on a service (for example: EDP deals).</p> </li> <li> <p>Cosell—Technical Consultation: Connect with an Amazon Web Services Solutions Architect to address the partner's questions about the proposed solution.</p> </li> <li> <p>Cosell—Total Cost of Ownership Evaluation: Assistance with quoting different cost savings of proposed solutions on Amazon Web Services versus on-premises or a traditional hosting environment.</p> </li> <li> <p>Cosell—Deal Support: Request Amazon Web Services seller's support to progress the opportunity (for example: joint customer call, strategic positioning).</p> </li> <li> <p>Cosell—Support for Public Tender/RFx: Opportunity related to the public sector where the partner needs Amazon Web Services RFx support.</p> </li> <li> <p>Do Not Need Support from AWS Sales Rep: Indicates that a partner doesn't need support from an Amazon Web Services sales representative, and the partner solely manages the opportunity. It's possible to request coselling support on these opportunities at any stage during their lifecycles. This is also known as a for-visibility-only (FVO) opportunity.</p> </li> </ul>"
+          "documentation":"<p>Identifies the type of support the partner needs from Amazon Web Services.</p> <p>Valid values:</p> <ul> <li> <p>Cosell—Architectural Validation: Confirmation from Amazon Web Services that the partner's proposed solution architecture is aligned with Amazon Web Services best practices and poses minimal architectural risks.</p> </li> <li> <p>Cosell—Business Presentation: Request Amazon Web Services seller's participation in a joint customer presentation.</p> </li> <li> <p>Cosell—Competitive Information: Access to Amazon Web Services competitive resources and support for the partner's proposed solution.</p> </li> <li> <p>Cosell—Pricing Assistance: Connect with an Amazon Web Services seller for support situations where a partner may be receiving an upfront discount on a service (for example: EDP deals).</p> </li> <li> <p>Cosell—Technical Consultation: Connect with an Amazon Web Services Solutions Architect to address the partner's questions about the proposed solution.</p> </li> <li> <p>Cosell—Total Cost of Ownership Evaluation: Assistance with quoting different cost savings of proposed solutions on Amazon Web Services versus on-premises or a traditional hosting environment.</p> </li> <li> <p>Cosell—Deal Support: Request Amazon Web Services seller's support to progress the opportunity (for example: joint customer call, strategic positioning).</p> </li> <li> <p>Cosell—Support for Public Tender/RFx: Opportunity related to the public sector where the partner needs Amazon Web Services RFx support.</p> </li> </ul>"
         },
         "Project":{
           "shape":"Project",
@@ -1764,28 +1823,32 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> Specifies the catalog in which to create the snapshot job. Valid values are <code>AWS</code> and <code> Sandbox</code>. </p>"
+          "documentation":"<p>Specifies the catalog in which to create the snapshot job. Valid values are <code>AWS</code> and <code> Sandbox</code>.</p>"
         },
         "ClientToken":{
           "shape":"CreateResourceSnapshotJobRequestClientTokenString",
-          "documentation":"<p> Specifies a unique, client-generated UUID to ensure that the request is handled exactly once. This token helps prevent duplicate snapshot job creations. </p>",
+          "documentation":"<p>A client-generated UUID used for idempotency check. The token helps prevent duplicate job creations.</p>",
           "idempotencyToken":true
         },
         "EngagementIdentifier":{
           "shape":"EngagementIdentifier",
-          "documentation":"<p> Specifies the identifier of the engagement associated with the resource to be snapshotted. </p>"
+          "documentation":"<p>Specifies the identifier of the engagement associated with the resource to be snapshotted.</p>"
         },
         "ResourceIdentifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p> Specifies the identifier of the specific resource to be snapshotted. The format depends on the <code>ResourceType</code>. </p>"
+          "documentation":"<p>Specifies the identifier of the specific resource to be snapshotted. The format depends on the <code> ResourceType</code>.</p>"
         },
         "ResourceSnapshotTemplateIdentifier":{
           "shape":"ResourceTemplateName",
-          "documentation":"<p> Specifies the name of the template that defines the schema for the snapshot. </p>"
+          "documentation":"<p>Specifies the name of the template that defines the schema for the snapshot.</p>"
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p> The type of resource for which the snapshot job is being created. Must be one of the supported resource types <code>Opportunity</code>. </p>"
+          "documentation":"<p>The type of resource for which the snapshot job is being created. Must be one of the supported resource types i.e. <code>Opportunity</code> </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of objects specifying each tag name and value.</p>"
         }
       }
     },
@@ -1798,11 +1861,11 @@
       "members":{
         "Arn":{
           "shape":"ResourceSnapshotJobArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the created snapshot job. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created snapshot job.</p>"
         },
         "Id":{
           "shape":"ResourceSnapshotJobIdentifier",
-          "documentation":"<p> The unique identifier for the created snapshot job. </p>"
+          "documentation":"<p>The unique identifier for the created snapshot job.</p>"
         }
       }
     },
@@ -2059,10 +2122,10 @@
         "Customer":{"shape":"EngagementCustomer"},
         "Project":{
           "shape":"EngagementCustomerProjectDetails",
-          "documentation":"<p> Information about the customer project associated with the Engagement. </p>"
+          "documentation":"<p>Information about the customer project associated with the Engagement.</p>"
         }
       },
-      "documentation":"<p> The CustomerProjects structure in Engagements offers a flexible framework for managing customer-project relationships. It supports multiple customers per Engagement and multiple projects per customer, while also allowing for customers without projects and projects without specific customers. </p> <p>All Engagement members have full visibility of customers and their associated projects, enabling the capture of relevant context even when project details are not fully defined. This structure also facilitates targeted invitations, allowing partners to focus on specific customers and their business problems when sending Engagement invitations. </p>"
+      "documentation":"<p>The CustomerProjects structure in Engagements offers a flexible framework for managing customer-project relationships. It supports multiple customers per Engagement and multiple projects per customer, while also allowing for customers without projects and projects without specific customers. </p> <p>All Engagement members have full visibility of customers and their associated projects, enabling the capture of relevant context even when project details are not fully defined. This structure also facilitates targeted invitations, allowing partners to focus on specific customers and their business problems when sending Engagement invitations. </p>"
     },
     "CustomerSummary":{
       "type":"structure",
@@ -2172,24 +2235,24 @@
       "members":{
         "Payload":{
           "shape":"EngagementContextPayload",
-          "documentation":"<p> Contains the specific details of the Engagement context. The structure of this payload varies depending on the Type field. </p>"
+          "documentation":"<p>Contains the specific details of the Engagement context. The structure of this payload varies depending on the Type field. </p>"
         },
         "Type":{
           "shape":"EngagementContextType",
-          "documentation":"<p> Specifies the type of Engagement context. Valid values are \"CustomerProject\" or \"Document\", indicating whether the context relates to a customer project or a document respectively. </p>"
+          "documentation":"<p>Specifies the type of Engagement context. Valid values are \"CustomerProject\" or \"Document\", indicating whether the context relates to a customer project or a document respectively. </p>"
         }
       },
-      "documentation":"<p> Provides detailed context information for an Engagement. This structure allows for specifying the type of context and its associated payload. </p>"
+      "documentation":"<p>Provides detailed context information for an Engagement. This structure allows for specifying the type of context and its associated payload. </p>"
     },
     "EngagementContextPayload":{
       "type":"structure",
       "members":{
         "CustomerProject":{
           "shape":"CustomerProjectsContext",
-          "documentation":"<p> Contains detailed information about a customer project when the context type is \"CustomerProject\". This field is present only when the Type in EngagementContextDetails is set to \"CustomerProject\". </p>"
+          "documentation":"<p>Contains detailed information about a customer project when the context type is \"CustomerProject\". This field is present only when the Type in EngagementContextDetails is set to \"CustomerProject\". </p>"
         }
       },
-      "documentation":"<p> Represents the payload of an Engagement context. The structure of this payload varies based on the context type specified in the EngagementContextDetails. </p>",
+      "documentation":"<p>Represents the payload of an Engagement context. The structure of this payload varies based on the context type specified in the EngagementContextDetails. </p>",
       "union":true
     },
     "EngagementContextType":{
@@ -2246,18 +2309,18 @@
       "members":{
         "BusinessProblem":{
           "shape":"EngagementCustomerBusinessProblem",
-          "documentation":"<p> A description of the business problem the project aims to solve. </p>"
+          "documentation":"<p>A description of the business problem the project aims to solve.</p>"
         },
         "TargetCompletionDate":{
           "shape":"EngagementCustomerProjectDetailsTargetCompletionDateString",
-          "documentation":"<p> The target completion date for the customer's project. </p>"
+          "documentation":"<p>The target completion date for the customer's project.</p>"
         },
         "Title":{
           "shape":"EngagementCustomerProjectTitle",
-          "documentation":"<p> The title of the project. </p>"
+          "documentation":"<p>The title of the project.</p>"
         }
       },
-      "documentation":"<p> Provides comprehensive details about a customer project associated with an Engagement. This may include information such as project goals, timelines, and specific customer requirements. </p>"
+      "documentation":"<p>Provides comprehensive details about a customer project associated with an Engagement. This may include information such as project goals, timelines, and specific customer requirements. </p>"
     },
     "EngagementCustomerProjectDetailsTargetCompletionDateString":{
       "type":"string",
@@ -2387,15 +2450,15 @@
       "members":{
         "AccountId":{
           "shape":"AwsAccount",
-          "documentation":"<p> This is the unique identifier for the AWS account associated with the member organization. It's used for AWS-related operations and identity verification. </p>"
+          "documentation":"<p>This is the unique identifier for the AWS account associated with the member organization. It's used for AWS-related operations and identity verification. </p>"
         },
         "CompanyName":{
           "shape":"MemberCompanyName",
-          "documentation":"<p> The official name of the member's company or organization. </p>"
+          "documentation":"<p>The official name of the member's company or organization.</p>"
         },
         "WebsiteUrl":{
           "shape":"String",
-          "documentation":"<p> The URL of the member company's website. This offers a way to find more information about the member organization and serves as an additional identifier. </p>"
+          "documentation":"<p>The URL of the member company's website. This offers a way to find more information about the member organization and serves as an additional identifier. </p>"
         }
       },
       "documentation":"<p>Engagement members are the participants in an Engagement, which is likely a collaborative project or business opportunity within the AWS partner network. Members can be different partner organizations or AWS accounts that are working together on a specific engagement. </p> <p>Each member is represented by their AWS Account ID, Company Name, and associated details. Members have a status within the Engagement (PENDING, ACCEPTED, REJECTED, or WITHDRAWN), indicating their current state of participation. Only existing members of an Engagement can view the list of other members. This implies a level of privacy and access control within the Engagement structure. </p>"
@@ -2409,14 +2472,14 @@
       "members":{
         "CompanyName":{
           "shape":"MemberCompanyName",
-          "documentation":"<p> The official name of the member's company or organization. </p>"
+          "documentation":"<p>The official name of the member's company or organization.</p>"
         },
         "WebsiteUrl":{
           "shape":"String",
-          "documentation":"<p> The URL of the member company's website. This offers a way to find more information about the member organization and serves as an additional identifier. </p>"
+          "documentation":"<p>The URL of the member company's website. This offers a way to find more information about the member organization and serves as an additional identifier. </p>"
         }
       },
-      "documentation":"<p> The EngagementMemberSummary provides a snapshot of essential information about participants in an AWS Partner Central Engagement. This compact data structure encapsulates key details of each member, facilitating efficient collaboration and management within the Engagement. </p>"
+      "documentation":"<p>The EngagementMemberSummary provides a snapshot of essential information about participants in an AWS Partner Central Engagement. This compact data structure encapsulates key details of each member, facilitating efficient collaboration and management within the Engagement. </p>"
     },
     "EngagementMembers":{
       "type":"list",
@@ -2440,7 +2503,7 @@
         },
         "CreatedBy":{
           "shape":"AwsAccount",
-          "documentation":"<p> The AWS account ID of the entity that created the association. </p>"
+          "documentation":"<p>The AWS account ID of the entity that owns the resource. Identifies the account responsible for or having primary control over the resource. </p>"
         },
         "EngagementId":{
           "shape":"EngagementIdentifier",
@@ -2478,14 +2541,14 @@
       "members":{
         "SortBy":{
           "shape":"EngagementSortName",
-          "documentation":"<p> The field by which to sort the results. </p>"
+          "documentation":"<p>The field by which to sort the results.</p>"
         },
         "SortOrder":{
           "shape":"SortOrder",
-          "documentation":"<p> The order in which to sort the results. </p>"
+          "documentation":"<p>The order in which to sort the results.</p>"
         }
       },
-      "documentation":"<p> Specifies the sorting parameters for listing Engagements. </p>"
+      "documentation":"<p>Specifies the sorting parameters for listing Engagements.</p>"
     },
     "EngagementSortName":{
       "type":"string",
@@ -2496,30 +2559,30 @@
       "members":{
         "Arn":{
           "shape":"EngagementArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the created engagement. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created Engagement.</p>"
         },
         "CreatedAt":{
           "shape":"DateTime",
-          "documentation":"<p> The date and time when the engagement was created. </p>"
+          "documentation":"<p>The date and time when the Engagement was created.</p>"
         },
         "CreatedBy":{
           "shape":"AwsAccount",
-          "documentation":"<p> The AWS account ID of the engagement creator. </p>"
+          "documentation":"<p>The AWS Account ID of the Engagement creator.</p>"
         },
         "Id":{
           "shape":"EngagementIdentifier",
-          "documentation":"<p> The unique identifier for the engagement. </p>"
+          "documentation":"<p>The unique identifier for the Engagement.</p>"
         },
         "MemberCount":{
           "shape":"Integer",
-          "documentation":"<p> The number of members in the engagement. </p>"
+          "documentation":"<p>The number of members in the Engagement.</p>"
         },
         "Title":{
           "shape":"EngagementTitle",
-          "documentation":"<p> The title of the engagement. </p>"
+          "documentation":"<p>The title of the Engagement.</p>"
         }
       },
-      "documentation":"<p> An object that contains an <code>Engagement</code>'s subset of fields. </p>"
+      "documentation":"<p>An object that contains an <code>Engagement</code>'s subset of fields. </p>"
     },
     "EngagementSummaryList":{
       "type":"list",
@@ -2549,7 +2612,7 @@
         },
         "EstimationUrl":{
           "shape":"WebsiteUrl",
-          "documentation":"<p> A URL providing additional information or context about the spend estimation. </p>"
+          "documentation":"<p>A URL providing additional information or context about the spend estimation.</p>"
         },
         "Frequency":{
           "shape":"PaymentFrequency",
@@ -2852,11 +2915,11 @@
         },
         "EngagementDescription":{
           "shape":"EngagementDescription",
-          "documentation":"<p> The description of the engagement associated with this invitation. </p>"
+          "documentation":"<p>The description of the engagement associated with this invitation.</p>"
         },
         "EngagementId":{
           "shape":"EngagementIdentifier",
-          "documentation":"<p> The identifier of the engagement associated with this invitation.This ID links the invitation to its corresponding engagement. </p>"
+          "documentation":"<p>The identifier of the engagement associated with this invitation.This ID links the invitation to its corresponding engagement.</p>"
         },
         "EngagementTitle":{
           "shape":"EngagementTitle",
@@ -2864,7 +2927,7 @@
         },
         "ExistingMembers":{
           "shape":"EngagementMemberSummaries",
-          "documentation":"<p> A list of active members currently part of the Engagement. This array contains a maximum of 10 members, each represented by an object with the following properties. </p> <ul> <li> <p> CompanyName: The name of the member's company. </p> </li> <li> <p> WebsiteUrl: The website URL of the member's company. </p> </li> </ul>"
+          "documentation":"<p>A list of active members currently part of the Engagement. This array contains a maximum of 10 members, each represented by an object with the following properties.</p> <ul> <li> <p>CompanyName: The name of the member's company.</p> </li> <li> <p>WebsiteUrl: The website URL of the member's company.</p> </li> </ul>"
         },
         "ExpirationDate":{
           "shape":"DateTime",
@@ -2880,7 +2943,7 @@
         },
         "InvitationMessage":{
           "shape":"InvitationMessage",
-          "documentation":"<p> The message sent to the invited partner when the invitation was created. </p>"
+          "documentation":"<p>The message sent to the invited partner when the invitation was created.</p>"
         },
         "Payload":{
           "shape":"Payload",
@@ -2926,11 +2989,11 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> Specifies the catalog related to the engagement request. Valid values are <code>AWS</code> and <code>Sandbox</code>. </p>"
+          "documentation":"<p>Specifies the catalog related to the engagement request. Valid values are <code>AWS</code> and <code>Sandbox</code>.</p>"
         },
         "Identifier":{
           "shape":"EngagementArnOrIdentifier",
-          "documentation":"<p> Specifies the identifier of the Engagement record to retrieve. </p>"
+          "documentation":"<p>Specifies the identifier of the Engagement record to retrieve.</p>"
         }
       }
     },
@@ -2939,35 +3002,35 @@
       "members":{
         "Arn":{
           "shape":"EngagementArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the engagement retrieved. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the engagement retrieved.</p>"
         },
         "Contexts":{
           "shape":"EngagementContexts",
-          "documentation":"<p> A list of context objects associated with the engagement. Each context provides additional information related to the Engagement, such as customer projects or documents. </p>"
+          "documentation":"<p>A list of context objects associated with the engagement. Each context provides additional information related to the Engagement, such as customer projects or documents.</p>"
         },
         "CreatedAt":{
           "shape":"DateTime",
-          "documentation":"<p> The date and time when the Engagement was created, presented in ISO 8601 format (UTC). For example: \"2023-05-01T20:37:46Z\". This timestamp helps track the lifecycle of the Engagement. </p>"
+          "documentation":"<p>The date and time when the Engagement was created, presented in ISO 8601 format (UTC). For example: \"2023-05-01T20:37:46Z\". This timestamp helps track the lifecycle of the Engagement.</p>"
         },
         "CreatedBy":{
           "shape":"AwsAccount",
-          "documentation":"<p> The AWS account ID of the user who originally created the engagement. This field helps in tracking the origin of the engagement. </p>"
+          "documentation":"<p>The AWS account ID of the user who originally created the engagement. This field helps in tracking the origin of the engagement.</p>"
         },
         "Description":{
           "shape":"EngagementDescription",
-          "documentation":"<p> A more detailed description of the engagement. This provides additional context or information about the engagement's purpose or scope. </p>"
+          "documentation":"<p>A more detailed description of the engagement. This provides additional context or information about the engagement's purpose or scope.</p>"
         },
         "Id":{
           "shape":"EngagementIdentifier",
-          "documentation":"<p> The unique resource identifier of the engagement retrieved. </p>"
+          "documentation":"<p>The unique resource identifier of the engagement retrieved.</p>"
         },
         "MemberCount":{
           "shape":"Integer",
-          "documentation":"<p> Specifies the current count of members participating in the Engagement. This count includes all active members regardless of their roles or permissions within the Engagement. </p>"
+          "documentation":"<p>Specifies the current count of members participating in the Engagement. This count includes all active members regardless of their roles or permissions within the Engagement.</p>"
         },
         "Title":{
           "shape":"EngagementTitle",
-          "documentation":"<p> The title of the engagement. It provides a brief, descriptive name for the engagement that is meaningful and easily recognizable. </p>"
+          "documentation":"<p>The title of the engagement. It provides a brief, descriptive name for the engagement that is meaningful and easily recognizable.</p>"
         }
       }
     },
@@ -3048,7 +3111,7 @@
         },
         "PrimaryNeedsFromAws":{
           "shape":"PrimaryNeedsFromAws",
-          "documentation":"<p>Identifies the type of support the partner needs from Amazon Web Services.</p> <p>Valid values:</p> <ul> <li> <p>Cosell—Architectural Validation: Confirmation from Amazon Web Services that the partner's proposed solution architecture is aligned with Amazon Web Services best practices and poses minimal architectural risks.</p> </li> <li> <p>Cosell—Business Presentation: Request Amazon Web Services seller's participation in a joint customer presentation.</p> </li> <li> <p>Cosell—Competitive Information: Access to Amazon Web Services competitive resources and support for the partner's proposed solution.</p> </li> <li> <p>Cosell—Pricing Assistance: Connect with an Amazon Web Services seller for support situations where a partner may be receiving an upfront discount on a service (for example: EDP deals).</p> </li> <li> <p>Cosell—Technical Consultation: Connect with an Amazon Web Services Solutions Architect to address the partner's questions about the proposed solution.</p> </li> <li> <p>Cosell—Total Cost of Ownership Evaluation: Assistance with quoting different cost savings of proposed solutions on Amazon Web Services versus on-premises or a traditional hosting environment.</p> </li> <li> <p>Cosell—Deal Support: Request Amazon Web Services seller's support to progress the opportunity (for example: joint customer call, strategic positioning).</p> </li> <li> <p>Cosell—Support for Public Tender/RFx: Opportunity related to the public sector where the partner needs Amazon Web Services RFx support.</p> </li> <li> <p>Do Not Need Support from Amazon Web Services Sales Rep: Indicates that a partner doesn't need support from an Amazon Web Services sales representative, and the partner solely manages the opportunity. It's possible to request coselling support on these opportunities at any stage during their lifecycle. Also known as, for-visibility-only (FVO) opportunity.</p> </li> </ul>"
+          "documentation":"<p>Identifies the type of support the partner needs from Amazon Web Services.</p> <p>Valid values:</p> <ul> <li> <p>Cosell—Architectural Validation: Confirmation from Amazon Web Services that the partner's proposed solution architecture is aligned with Amazon Web Services best practices and poses minimal architectural risks.</p> </li> <li> <p>Cosell—Business Presentation: Request Amazon Web Services seller's participation in a joint customer presentation.</p> </li> <li> <p>Cosell—Competitive Information: Access to Amazon Web Services competitive resources and support for the partner's proposed solution.</p> </li> <li> <p>Cosell—Pricing Assistance: Connect with an Amazon Web Services seller for support situations where a partner may be receiving an upfront discount on a service (for example: EDP deals).</p> </li> <li> <p>Cosell—Technical Consultation: Connect with an Amazon Web Services Solutions Architect to address the partner's questions about the proposed solution.</p> </li> <li> <p>Cosell—Total Cost of Ownership Evaluation: Assistance with quoting different cost savings of proposed solutions on Amazon Web Services versus on-premises or a traditional hosting environment.</p> </li> <li> <p>Cosell—Deal Support: Request Amazon Web Services seller's support to progress the opportunity (for example: joint customer call, strategic positioning).</p> </li> <li> <p>Cosell—Support for Public Tender/RFx: Opportunity related to the public sector where the partner needs Amazon Web Services RFx support.</p> </li> </ul>"
         },
         "Project":{
           "shape":"Project",
@@ -3078,11 +3141,11 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> Specifies the catalog related to the request. Valid values are: </p> <ul> <li> <p> AWS: Retrieves the snapshot job from the production AWS environment. </p> </li> <li> <p> Sandbox: Retrieves the snapshot job from a sandbox environment used for testing or development purposes. </p> </li> </ul>"
+          "documentation":"<p>Specifies the catalog related to the request. Valid values are:</p> <ul> <li> <p> AWS: Retrieves the snapshot job from the production AWS environment. </p> </li> <li> <p> Sandbox: Retrieves the snapshot job from a sandbox environment used for testing or development purposes. </p> </li> </ul>"
         },
         "ResourceSnapshotJobIdentifier":{
           "shape":"ResourceSnapshotJobIdentifier",
-          "documentation":"<p> The unique identifier of the resource snapshot job to be retrieved. This identifier is crucial for pinpointing the specific job you want to query. </p>"
+          "documentation":"<p>The unique identifier of the resource snapshot job to be retrieved. This identifier is crucial for pinpointing the specific job you want to query. </p>"
         }
       }
     },
@@ -3092,51 +3155,51 @@
       "members":{
         "Arn":{
           "shape":"ResourceSnapshotJobArn",
-          "documentation":"<p> he Amazon Resource Name (ARN) of the snapshot job. This globally unique identifier can be used for resource-specific operations across AWS services. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the snapshot job. This globally unique identifier can be used for resource-specific operations across AWS services. </p>"
         },
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> The catalog in which the snapshot job was created. This will match the catalog specified in the request. </p>"
+          "documentation":"<p>The catalog in which the snapshot job was created. This will match the Catalog specified in the request. </p>"
         },
         "CreatedAt":{
           "shape":"DateTime",
-          "documentation":"<p> The date and time when the snapshot job was created, in ISO 8601 format (UTC). Example: \"2023-05-01T20:37:46Z\" </p>"
+          "documentation":"<p>The date and time when the snapshot job was created in ISO 8601 format (UTC). Example: \"2023-05-01T20:37:46Z\" </p>"
         },
         "EngagementId":{
           "shape":"EngagementIdentifier",
-          "documentation":"<p> The identifier of the engagement associated with this snapshot job. This links the job to a specific engagement context. </p>"
+          "documentation":"<p>The identifier of the engagement associated with this snapshot job. This links the job to a specific engagement context. </p>"
         },
         "Id":{
           "shape":"ResourceSnapshotJobIdentifier",
-          "documentation":"<p> The unique identifier of the snapshot job. This matches the <code>ResourceSnapshotJobIdentifier</code> provided in the request. </p>"
+          "documentation":"<p>The unique identifier of the snapshot job. This matches the ResourceSnapshotJobIdentifier provided in the request. </p>"
         },
         "LastFailure":{
           "shape":"String",
-          "documentation":"<p> If the job has encountered any failures, this field contains the error message from the most recent failure. This can be useful for troubleshooting issues with the job. </p>"
+          "documentation":"<p>If the job has encountered any failures, this field contains the error message from the most recent failure. This can be useful for troubleshooting issues with the job. </p>"
         },
         "LastSuccessfulExecutionDate":{
           "shape":"DateTime",
-          "documentation":"<p> The date and time of the last successful execution of the job, in ISO 8601 format (UTC). Example: \"2023-05-01T20:37:46Z\" </p>"
+          "documentation":"<p>The date and time of the last successful execution of the job, in ISO 8601 format (UTC). Example: \"2023-05-01T20:37:46Z\" </p>"
         },
         "ResourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the resource being snapshotted. This provides a globally unique identifier for the resource across AWS. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource being snapshotted. This provides a globally unique identifier for the resource across AWS. </p>"
         },
         "ResourceId":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p> The identifier of the specific resource being snapshotted. The format may vary depending on the <code>ResourceType</code>. </p>"
+          "documentation":"<p>The identifier of the specific resource being snapshotted. The format might vary depending on the ResourceType. </p>"
         },
         "ResourceSnapshotTemplateName":{
           "shape":"ResourceTemplateName",
-          "documentation":"<p> The name of the template used for creating the snapshot. This is the same as the template name. It defines the structure and content of the snapshot. </p>"
+          "documentation":"<p>The name of the template used for creating the snapshot. This is the same as the template name. It defines the structure and content of the snapshot.</p>"
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p> The type of resource being snapshotted. This would have <code>Opportunity</code> as a value as it is dependent on the supported resource type. </p>"
+          "documentation":"<p>The type of resource being snapshotted. This would have \"Opportunity\" as a value as it is dependent on the supported resource type.</p>"
         },
         "Status":{
           "shape":"ResourceSnapshotJobStatus",
-          "documentation":"<p> The current status of the snapshot job. Valid values: </p> <ul> <li> <p> STOPPED: The job is not currently running. </p> </li> <li> <p> RUNNING: The job is actively executing. </p> </li> </ul>"
+          "documentation":"<p>The current status of the snapshot job. Valid values:</p> <ul> <li> <p>STOPPED: The job is not currently running.</p> </li> <li> <p>RUNNING: The job is actively executing.</p> </li> </ul>"
         }
       }
     },
@@ -3182,7 +3245,7 @@
       "members":{
         "Arn":{
           "shape":"ResourceArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the snapshot. This globally unique identifier can be used for resource-specific operations across AWS services. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the resource snapshot.</p>"
         },
         "Catalog":{
           "shape":"CatalogIdentifier",
@@ -3203,19 +3266,19 @@
         "Payload":{"shape":"ResourceSnapshotPayload"},
         "ResourceId":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p> The identifier of the specific resource that was snapshotted. Matches the <code>ResourceIdentifier</code> specified in the request. </p>"
+          "documentation":"<p>The identifier of the specific resource that was snapshotted. Matches the ResourceIdentifier specified in the request.</p>"
         },
         "ResourceSnapshotTemplateName":{
           "shape":"ResourceTemplateName",
-          "documentation":"<p> The name of the view used for this snapshot. This is the same as the template name. </p>"
+          "documentation":"<p>The name of the view used for this snapshot. This is the same as the template name.</p>"
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p> The type of the resource that was snapshotted. Matches the <code>ResourceType</code> specified in the request. </p>"
+          "documentation":"<p>The type of the resource that was snapshotted. Matches the ResourceType specified in the request.</p>"
         },
         "Revision":{
           "shape":"ResourceSnapshotRevision",
-          "documentation":"<p> The revision number of this snapshot. This is a positive integer that is sequential and unique within the context of a resource view. </p>"
+          "documentation":"<p>The revision number of this snapshot. This is a positive integer that is sequential and unique within the context of a resource view.</p>"
         }
       }
     },
@@ -3595,7 +3658,7 @@
         },
         "EngagementInvitationId":{
           "shape":"EngagementInvitationIdentifier",
-          "documentation":"<p> The unique identifier of the engagement identifier created as a result of the task. This field is populated when the task is completed successfully. </p>"
+          "documentation":"<p>The unique identifier of the Engagement Invitation.</p>"
         },
         "Message":{
           "shape":"String",
@@ -3761,19 +3824,19 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> The catalog related to the request. </p>"
+          "documentation":"<p>The catalog related to the request.</p>"
         },
         "Identifier":{
           "shape":"EngagementArnOrIdentifier",
-          "documentation":"<p> Identifier of the engagement record to retrieve members from. </p>"
+          "documentation":"<p>Identifier of the Engagement record to retrieve members from.</p>"
         },
         "MaxResults":{
           "shape":"MemberPageSize",
-          "documentation":"<p> The maximum number of results to return in a single call. </p>"
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
         },
         "NextToken":{
           "shape":"String",
-          "documentation":"<p> The token for the next set of results. </p>"
+          "documentation":"<p>The token for the next set of results.</p>"
         }
       }
     },
@@ -3787,7 +3850,7 @@
         },
         "NextToken":{
           "shape":"String",
-          "documentation":"<p> A pagination token used to retrieve the next set of results. If there are more results available than can be returned in a single response, this token will be present. Use this token in a subsequent request to retrieve the next page of results. If there are no more results, this value will be null. </p>"
+          "documentation":"<p>A pagination token used to retrieve the next set of results. If there are more results available than can be returned in a single response, this token will be present. Use this token in a subsequent request to retrieve the next page of results. If there are no more results, this value will be null. </p>"
         }
       }
     },
@@ -3797,27 +3860,27 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> Specifies the catalog in which to search for engagement-resource associations. </p>"
+          "documentation":"<p>Specifies the catalog in which to search for engagement-resource associations. Valid Values: \"AWS\" or \"Sandbox\"</p> <ul> <li> <p> <code>AWS</code> for production environments.</p> </li> <li> <p> <code>Sandbox</code> for testing and development purposes.</p> </li> </ul>"
         },
         "CreatedBy":{
           "shape":"AwsAccount",
-          "documentation":"<p> Filters the results to include only associations with resources owned by the specified AWS account. Use this when you want to find associations related to resources owned by a particular account. </p>"
+          "documentation":"<p>Filters the response to include only snapshots of resources owned by the specified AWS account ID. Use this when you want to find associations related to resources owned by a particular account. </p>"
         },
         "EngagementIdentifier":{
           "shape":"EngagementIdentifier",
-          "documentation":"<p> Filters the results to include only associations related to the specified engagement. Use this when you want to find all resources associated with a specific engagement. </p>"
+          "documentation":"<p>Filters the results to include only associations related to the specified engagement. Use this when you want to find all resources associated with a specific engagement.</p>"
         },
         "MaxResults":{
           "shape":"ListEngagementResourceAssociationsRequestMaxResultsInteger",
-          "documentation":"<p> Limits the number of results returned in a single call. Use this to control the number of results returned, especially useful for pagination. </p>"
+          "documentation":"<p>Limits the number of results returned in a single call. Use this to control the number of results returned, especially useful for pagination.</p>"
         },
         "NextToken":{
           "shape":"String",
-          "documentation":"<p> A token used for pagination of results. Include this token in subsequent requests to retrieve the next set of results. </p>"
+          "documentation":"<p>A token used for pagination of results. Include this token in subsequent requests to retrieve the next set of results.</p>"
         },
         "ResourceIdentifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p> Filters the results to include only associations with the specified resource. Varies depending on the resource type. Use this when you want to find all engagements associated with a specific resource. </p>"
+          "documentation":"<p>Filters the results to include only associations with the specified resource. Varies depending on the resource type. Use this when you want to find all engagements associated with a specific resource.</p>"
         },
         "ResourceType":{
           "shape":"ResourceType",
@@ -3859,19 +3922,19 @@
         },
         "EngagementIdentifier":{
           "shape":"EngagementIdentifiers",
-          "documentation":"<p> An array of strings representing engagement identifiers to retrieve. </p>"
+          "documentation":"<p>An array of strings representing engagement identifiers to retrieve.</p>"
         },
         "ExcludeCreatedBy":{
           "shape":"AwsAccountList",
-          "documentation":"<p> An array of strings representing AWS Account IDs. Use this to exclude engagements created by specific users. </p>"
+          "documentation":"<p>An array of strings representing AWS Account IDs. Use this to exclude engagements created by specific users. </p>"
         },
         "MaxResults":{
           "shape":"EngagementPageSize",
-          "documentation":"<p> The maximum number of results to return in a single call. </p>"
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
         },
         "NextToken":{
           "shape":"String",
-          "documentation":"<p> The token for the next set of results. This value is returned from a previous call. </p>"
+          "documentation":"<p>The token for the next set of results. This value is returned from a previous call.</p>"
         },
         "Sort":{
           "shape":"EngagementSort",
@@ -3885,11 +3948,11 @@
       "members":{
         "EngagementSummaryList":{
           "shape":"EngagementSummaryList",
-          "documentation":"<p> An array of engagement summary objects. </p>"
+          "documentation":"<p>An array of engagement summary objects.</p>"
         },
         "NextToken":{
           "shape":"String",
-          "documentation":"<p> The token to retrieve the next set of results. This field will be null if there are no more results. </p>"
+          "documentation":"<p>The token to retrieve the next set of results. This field will be null if there are no more results. </p>"
         }
       }
     },
@@ -4036,7 +4099,7 @@
         },
         "CreatedBy":{
           "shape":"AwsAccount",
-          "documentation":"<p> Filters the response to include only snapshots of resources created by the specified AWS account. </p>"
+          "documentation":"<p>Filters the response to include only snapshots of resources owned by the specified AWS account. </p>"
         },
         "EngagementIdentifier":{
           "shape":"EngagementIdentifier",
@@ -4056,7 +4119,7 @@
         },
         "ResourceSnapshotTemplateIdentifier":{
           "shape":"ResourceTemplateName",
-          "documentation":"<p> Filters the response to include only snapshots created using the specified template. </p>"
+          "documentation":"<p>Filters the response to include only snapshots created using the specified template.</p>"
         },
         "ResourceType":{
           "shape":"ResourceType",
@@ -4147,6 +4210,26 @@
         "SolutionSummaries":{
           "shape":"SolutionList",
           "documentation":"<p>An array with minimal details for solutions matching the request criteria.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"TaggableResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for which you want to retrieve tags.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "required":["Tags"],
+      "members":{
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
         }
       }
     },
@@ -4731,12 +4814,12 @@
         "EngagementConflict",
         "OpportunitySubmissionFailed",
         "EngagementInvitationConflict",
+        "InternalError",
         "OpportunityValidationFailed",
         "OpportunityConflict",
         "ResourceSnapshotAccessDenied",
         "ResourceSnapshotValidationFailed",
         "ResourceSnapshotConflict",
-        "InternalError",
         "ServiceQuotaExceeded",
         "RequestThrottled"
       ]
@@ -4877,7 +4960,7 @@
         },
         "EngagementId":{
           "shape":"EngagementIdentifier",
-          "documentation":"<p> The unique identifier for the engagement within the AWS Partner Central system. This ID is used for direct references to the engagement within the service. </p>"
+          "documentation":"<p>The unique identifier of the Engagement.</p>"
         },
         "Id":{
           "shape":"ResourceSnapshotJobIdentifier",
@@ -4885,7 +4968,7 @@
         },
         "Status":{
           "shape":"ResourceSnapshotJobStatus",
-          "documentation":"<p> Represents the current status of the resource snapshot job. </p>"
+          "documentation":"<p>The current status of the snapshot job.</p> <p>Valid values:</p> <ul> <li> <p> STOPPED: The job is not currently running. </p> </li> <li> <p> RUNNING: The job is actively executing. </p> </li> </ul>"
         }
       },
       "documentation":"<p> An object that contains a <code>Resource Snapshot Job</code>'s subset of fields. </p>"
@@ -4919,7 +5002,7 @@
         },
         "CreatedBy":{
           "shape":"AwsAccount",
-          "documentation":"<p>The AWS account ID of the principal (user or role) who created the snapshot. This helps in tracking the origin of the snapshot. </p>"
+          "documentation":"<p>The AWS account ID of the entity that owns the resource from which the snapshot was created.</p>"
         },
         "ResourceId":{
           "shape":"ResourceIdentifier",
@@ -4935,7 +5018,7 @@
         },
         "Revision":{
           "shape":"ResourceSnapshotRevision",
-          "documentation":"<p> The revision number of the snapshot. This integer value is incremented each time the snapshot is updated, allowing for version tracking of the resource snapshot. </p>"
+          "documentation":"<p>The revision number of the snapshot. This integer value is incremented each time the snapshot is updated, allowing for version tracking of the resource snapshot. </p>"
         }
       },
       "documentation":"<p> Provides a concise summary of a resource snapshot, including its unique identifier and version information. This structure is used to quickly reference and identify specific versions of resource snapshots. </p>"
@@ -5216,6 +5299,10 @@
         "Identifier":{
           "shape":"EngagementInvitationArnOrIdentifier",
           "documentation":"<p>Specifies the unique identifier of the <code>EngagementInvitation</code> to be accepted. Providing the correct identifier helps ensure that the correct engagement is processed.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of objects specifying each tag name and value.</p>"
         }
       }
     },
@@ -5245,7 +5332,7 @@
         },
         "ResourceSnapshotJobId":{
           "shape":"ResourceSnapshotJobIdentifier",
-          "documentation":"<p> The identifier of the resource snapshot job created as part of this task. </p>"
+          "documentation":"<p>The identifier of the Resource Snapshot Job created as part of this task.</p>"
         },
         "StartTime":{
           "shape":"DateTime",
@@ -5287,6 +5374,10 @@
         "Identifier":{
           "shape":"OpportunityIdentifier",
           "documentation":"<p>The unique identifier of the opportunity from which the engagement task is to be initiated. This helps ensure that the task is applied to the correct opportunity.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of objects specifying each tag name and value.</p>"
         }
       }
     },
@@ -5300,11 +5391,11 @@
       "members":{
         "EngagementId":{
           "shape":"EngagementIdentifier",
-          "documentation":"<p> The identifier of the newly created engagement. Only populated if TaskStatus is COMPLETE. </p>"
+          "documentation":"<p>The identifier of the newly created Engagement. Only populated if TaskStatus is COMPLETE.</p>"
         },
         "EngagementInvitationId":{
           "shape":"EngagementInvitationIdentifier",
-          "documentation":"<p> The identifier of the new engagement invitation. Only populated if TaskStatus is COMPLETE. </p>"
+          "documentation":"<p>The identifier of the new Engagement invitation. Only populated if TaskStatus is COMPLETE.</p>"
         },
         "Message":{
           "shape":"String",
@@ -5320,7 +5411,7 @@
         },
         "ResourceSnapshotJobId":{
           "shape":"ResourceSnapshotJobIdentifier",
-          "documentation":"<p> The identifier of the resource snapshot job created to add the opportunity resource snapshot to the Engagement. Only populated if TaskStatus is COMPLETE. </p>"
+          "documentation":"<p>The identifier of the resource snapshot job created to add the opportunity resource snapshot to the Engagement. Only populated if TaskStatus is COMPLETE</p>"
         },
         "StartTime":{
           "shape":"DateTime",
@@ -5349,11 +5440,11 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> Specifies the catalog related to the request. </p>"
+          "documentation":"<p>Specifies the catalog related to the request. Valid values are:</p> <ul> <li> <p>AWS: Starts the request from the production AWS environment.</p> </li> <li> <p>Sandbox: Starts the request from a sandbox environment used for testing or development purposes.</p> </li> </ul>"
         },
         "ResourceSnapshotJobIdentifier":{
           "shape":"ResourceSnapshotJobIdentifier",
-          "documentation":"<p> The identifier of the resource snapshot job to start. </p>"
+          "documentation":"<p>The identifier of the resource snapshot job to start.</p>"
         }
       }
     },
@@ -5366,11 +5457,11 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> Specifies the catalog related to the request. </p>"
+          "documentation":"<p>Specifies the catalog related to the request. Valid values are:</p> <ul> <li> <p>AWS: Stops the request from the production AWS environment.</p> </li> <li> <p>Sandbox: Stops the request from a sandbox environment used for testing or development purposes.</p> </li> </ul>"
         },
         "ResourceSnapshotJobIdentifier":{
           "shape":"ResourceSnapshotJobIdentifier",
-          "documentation":"<p> The identifier of the job to stop. </p>"
+          "documentation":"<p>The identifier of the job to stop.</p>"
         }
       }
     },
@@ -5385,21 +5476,91 @@
       "members":{
         "Catalog":{
           "shape":"CatalogIdentifier",
-          "documentation":"<p> Specifies the catalog related to the request. </p>"
+          "documentation":"<p>Specifies the catalog related to the request. Valid values are:</p> <ul> <li> <p>AWS: Submits the opportunity request from the production AWS environment.</p> </li> <li> <p>Sandbox: Submits the opportunity request from a sandbox environment used for testing or development purposes.</p> </li> </ul>"
         },
         "Identifier":{
           "shape":"OpportunityIdentifier",
-          "documentation":"<p> The identifier of the opportunity previously created by partner and needs to be submitted. </p>"
+          "documentation":"<p>The identifier of the Opportunity previously created by partner and needs to be submitted.</p>"
         },
         "InvolvementType":{
           "shape":"SalesInvolvementType",
-          "documentation":"<p> Specifies the level of AWS sellers' involvement on the opportunity. </p>"
+          "documentation":"<p>Specifies the level of AWS sellers' involvement on the opportunity. Valid values:</p> <ul> <li> <p> <code>Co-sell</code>: Indicates the user wants to co-sell with AWS. Share the opportunity with AWS to receive deal assistance and support.</p> </li> <li> <p> <code>For Visibility Only</code>: Indicates that the user does not need support from AWS Sales Rep. Share this opportunity with AWS for visibility only, you will not receive deal assistance and support.</p> </li> </ul>"
         },
         "Visibility":{
           "shape":"Visibility",
-          "documentation":"<p> Determines whether to restrict visibility of the opportunity from AWS sales. Default value is Full. </p>"
+          "documentation":"<p>Determines whether to restrict visibility of the opportunity from AWS sales. Default value is Full. Valid values:</p> <ul> <li> <p> <code>Full</code>: The opportunity is fully visible to AWS sales.</p> </li> <li> <p> <code>Limited</code>: The opportunity has restricted visibility to AWS sales.</p> </li> </ul>"
         }
       }
+    },
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"TagKey",
+          "documentation":"<p>The key in the tag.</p>"
+        },
+        "Value":{
+          "shape":"TagValue",
+          "documentation":"<p>The value in the tag.</p>"
+        }
+      },
+      "documentation":"<p>The key-value pair assigned to a specified resource.</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":50,
+      "min":1
+    },
+    "TagList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "max":200,
+      "min":1
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Tags"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"TaggableResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that you want to tag.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+    },
+    "TaggableResourceArn":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"^arn:[\\w+=/,.@-]+:partnercentral:[\\w+=/,.@-]*:[0-9]{12}:catalog/([a-zA-Z]+)/[\\w+=,.@-]+(/[\\w+=,.@-]+)*$"
     },
     "TaskArn":{
       "type":"string",
@@ -5440,6 +5601,28 @@
       },
       "documentation":"<p>This error occurs when there are too many requests sent. Review the provided quotas and adapt your usage to avoid throttling.</p> <p>This error occurs when there are too many requests sent. Review the provided <a href=\"https://docs.aws.amazon.com/partner-central/latest/selling-api/quotas.html\">Quotas</a> and retry after the provided delay.</p>",
       "exception":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "TagKeys"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"TaggableResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that you want to untag.</p>"
+        },
+        "TagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The keys of the key-value pairs for the tag or tags you want to remove from the specified resource.</p>"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "UpdateOpportunityRequest":{
       "type":"structure",
@@ -5487,7 +5670,7 @@
         },
         "PrimaryNeedsFromAws":{
           "shape":"PrimaryNeedsFromAws",
-          "documentation":"<p>Identifies the type of support the partner needs from Amazon Web Services.</p> <p>Valid values:</p> <ul> <li> <p>Cosell—Architectural Validation: Confirmation from Amazon Web Services that the partner's proposed solution architecture is aligned with Amazon Web Services best practices and poses minimal architectural risks.</p> </li> <li> <p>Cosell—Business Presentation: Request Amazon Web Services seller's participation in a joint customer presentation.</p> </li> <li> <p>Cosell—Competitive Information: Access to Amazon Web Services competitive resources and support for the partner's proposed solution.</p> </li> <li> <p>Cosell—Pricing Assistance: Connect with an AWS seller for support situations where a partner may be receiving an upfront discount on a service (for example: EDP deals).</p> </li> <li> <p>Cosell—Technical Consultation: Connection with an Amazon Web Services Solutions Architect to address the partner's questions about the proposed solution.</p> </li> <li> <p>Cosell—Total Cost of Ownership Evaluation: Assistance with quoting different cost savings of proposed solutions on Amazon Web Services versus on-premises or a traditional hosting environment.</p> </li> <li> <p>Cosell—Deal Support: Request Amazon Web Services seller's support to progress the opportunity (for example: joint customer call, strategic positioning).</p> </li> <li> <p>Cosell—Support for Public Tender/RFx: Opportunity related to the public sector where the partner needs RFx support from Amazon Web Services.</p> </li> <li> <p>Do Not Need Support from AWS Sales Rep: Indicates that a partner doesn't need support from an Amazon Web Services Sales representative. The opportunity is managed solely by the partner. It's possible to request coselling support on these opportunities at any stage during their lifecycle. Also known as, for-visibility-only (FVO) opportunity.</p> </li> </ul>"
+          "documentation":"<p>Identifies the type of support the partner needs from Amazon Web Services.</p> <p>Valid values:</p> <ul> <li> <p>Cosell—Architectural Validation: Confirmation from Amazon Web Services that the partner's proposed solution architecture is aligned with Amazon Web Services best practices and poses minimal architectural risks.</p> </li> <li> <p>Cosell—Business Presentation: Request Amazon Web Services seller's participation in a joint customer presentation.</p> </li> <li> <p>Cosell—Competitive Information: Access to Amazon Web Services competitive resources and support for the partner's proposed solution.</p> </li> <li> <p>Cosell—Pricing Assistance: Connect with an AWS seller for support situations where a partner may be receiving an upfront discount on a service (for example: EDP deals).</p> </li> <li> <p>Cosell—Technical Consultation: Connection with an Amazon Web Services Solutions Architect to address the partner's questions about the proposed solution.</p> </li> <li> <p>Cosell—Total Cost of Ownership Evaluation: Assistance with quoting different cost savings of proposed solutions on Amazon Web Services versus on-premises or a traditional hosting environment.</p> </li> <li> <p>Cosell—Deal Support: Request Amazon Web Services seller's support to progress the opportunity (for example: joint customer call, strategic positioning).</p> </li> <li> <p>Cosell—Support for Public Tender/RFx: Opportunity related to the public sector where the partner needs RFx support from Amazon Web Services.</p> </li> </ul>"
         },
         "Project":{
           "shape":"Project",

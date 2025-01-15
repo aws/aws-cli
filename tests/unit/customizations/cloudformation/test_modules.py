@@ -7,6 +7,11 @@ from awscli.customizations.cloudformation import yamlhelper
 from awscli.customizations.cloudformation import modules
 from awscli.customizations.cloudformation.parse_sub import SubWord, WordType
 from awscli.customizations.cloudformation.parse_sub import parse_sub
+from awscli.customizations.cloudformation.module_visitor import Visitor
+from awscli.customizations.cloudformation.module_constants import (
+    process_constants,
+    replace_constants,
+)
 
 MODULES = "Modules"
 RESOURCES = "Resources"
@@ -95,12 +100,17 @@ class TestPackageModules(unittest.TestCase):
             "cond-intrinsics",
             "example",
             "getatt",
+            "constant",
         ]
         for test in tests:
             base = "unit/customizations/cloudformation/modules"
             t = modules.read_source(f"{base}/{test}-template.yaml")
             td = yamlhelper.yaml_parse(t)
             e = modules.read_source(f"{base}/{test}-expect.yaml")
+
+            constants = process_constants(td)
+            if constants is not None:
+                replace_constants(constants, td)
 
             # Modules section
             td = modules.process_module_section(td, base, t)
@@ -110,3 +120,35 @@ class TestPackageModules(unittest.TestCase):
 
         processed = yamlhelper.yaml_dump(td)
         self.assertEqual(e, processed)
+
+    def test_visitor(self):
+        "Test module_visitor"
+
+        template_dict = {}
+        resources = {}
+        template_dict["Resources"] = resources
+        resources["Bucket"] = {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "BucketName": "foo",
+                "TestList": [
+                    "Item0",
+                    {"BucketName": "foo"},
+                    {"Item2": {"BucketName": "foo"}},
+                ],
+            },
+        }
+        v = Visitor(template_dict, None, "")
+
+        def vf(v):
+            if isinstance(v.d, str) and v.p is not None:
+                if v.k == "BucketName":
+                    v.p[v.k] = "bar"
+
+        v.visit(vf)
+        self.assertEqual(
+            resources["Bucket"]["Properties"]["BucketName"], "bar"
+        )
+        test_list = resources["Bucket"]["Properties"]["TestList"]
+        self.assertEqual(test_list[1]["BucketName"], "bar")
+        self.assertEqual(test_list[2]["Item2"]["BucketName"], "bar")

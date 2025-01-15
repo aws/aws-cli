@@ -26,6 +26,7 @@ from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
     yaml_parse
 from awscli.customizations.cloudformation import modules
+from awscli.customizations.cloudformation import module_constants
 import jmespath
 
 
@@ -665,6 +666,11 @@ class Template(object):
         :return: The template with references to artifacts that have been
         exported to s3.
         """
+
+        # Process constants
+        constants = module_constants.process_constants(self.template_dict)
+        if constants is not None:
+            module_constants.replace_constants(constants, self.template_dict)
 
         # Process modules
         try:

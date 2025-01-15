@@ -25,10 +25,11 @@ SPACE = ' '
 
 class WordType(Enum):
     "Word type enumeration"
-    STR = 0    # A literal string fragment
-    REF = 1    # ${ParamOrResourceName}
-    AWS = 2    # ${AWS::X}
-    GETATT = 3 # ${X.Y}
+    STR = 0      # A literal string fragment
+    REF = 1      # ${ParamOrResourceName}
+    AWS = 2      # ${AWS::X}
+    GETATT = 3   # ${X.Y}
+    CONSTANT = 4 # ${Constant::name}
 
 class State(Enum):
     "State machine enumeration"
@@ -86,11 +87,14 @@ def parse_sub(sub_str, leave_bang=False):
                 # Figure out what type it is
                 if buf.startswith("AWS::"):
                     word_type = WordType.AWS
+                elif buf.startswith("Constant::"):
+                    word_type = WordType.CONSTANT
                 elif '.' in buf:
                     word_type = WordType.GETATT
                 else:
                     word_type = WordType.REF
                 buf = buf.replace("AWS::", "", 1)
+                buf = buf.replace("Constant::", "", 1)
                 words.append(SubWord(word_type, buf))
                 buf = ''
                 state = State.READSTR

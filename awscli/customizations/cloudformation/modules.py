@@ -1,4 +1,4 @@
-# Copyright 2012-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2012-2024 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -130,6 +130,10 @@ from collections import OrderedDict
 
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation import yamlhelper
+from awscli.customizations.cloudformation.module_constants import (
+    process_constants,
+    replace_constants,
+)
 
 from awscli.customizations.cloudformation.parse_sub import WordType
 from awscli.customizations.cloudformation.parse_sub import parse_sub
@@ -414,6 +418,12 @@ class Module:
         content = read_source(self.source)
 
         module_dict = yamlhelper.yaml_parse(content)
+
+        # Process constants
+        constants = process_constants(module_dict)
+        if constants is not None:
+            replace_constants(constants, module_dict)
+
         if RESOURCES not in module_dict:
             # The module may only have sub modules in the Modules section
             self.resources = {}
@@ -435,7 +445,7 @@ class Module:
             section = RESOURCES
             process_resources_section(module_dict, bp, self.source, self)
         except Exception as e:
-            msg = f"Failed to process {section} section: {e}"
+            msg = f"Failed to process {self.source} {section} section: {e}"
             LOG.exception(msg)
             raise exceptions.InvalidModuleError(msg=msg)
 
@@ -447,7 +457,12 @@ class Module:
             def find_ref(v):
                 return self.find_ref(v)
 
-            self.conditions = parse_conditions(cs, find_ref)
+            try:
+                self.conditions = parse_conditions(cs, find_ref)
+            except Exception as e:
+                msg = f"Failed to process conditions in {self.source}: {e}"
+                LOG.exception(msg)
+                raise exceptions.InvalidModuleError(msg=msg)
 
         for logical_id, resource in self.resources.items():
             self.process_resource(logical_id, resource)
@@ -657,6 +672,8 @@ class Module:
             return
 
         resource_overrides = self.overrides[logical_id]
+        if resource_overrides is None:
+            return
         if attr_name not in resource_overrides:
             return
 
@@ -765,7 +782,7 @@ class Module:
                 found = self.find_ref(word.w)
                 if found is not None:
                     if isinstance(found, str):
-                        need_sub = False
+                        # need_sub = False
                         resolved = found
                     else:
                         if REF in found:

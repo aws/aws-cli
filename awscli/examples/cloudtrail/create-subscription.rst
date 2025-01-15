@@ -2,11 +2,11 @@
 
 The following ``create-subscription`` command creates a new S3 bucket and SNS topic for ``Trail1``::
 
-  aws cloudtrail create-subscription --name Trail1 --s3-new-bucket my-bucket --sns-new-topic my-topic
+  aws cloudtrail create-subscription --name Trail1 --s3-new-bucket amzn-s3-demo-bucket --sns-new-topic my-topic
 
 Output::
 
-  Setting up new S3 bucket my-bucket...
+  Setting up new S3 bucket amzn-s3-demo-bucket...
   Setting up new SNS topic my-topic...
   Creating/updating CloudTrail configuration...
   CloudTrail configuration:
@@ -18,7 +18,7 @@ Output::
       "TrailARN": "arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail1", 
       "LogFileValidationEnabled": false, 
       "IsMultiRegionTrail": false, 
-      "S3BucketName": "my-bucket", 
+      "S3BucketName": "amzn-s3-demo-bucket", 
       "SnsTopicName": "my-topic", 
       "HomeRegion": "us-east-1"
     }
@@ -29,4 +29,4 @@ Output::
   }
   }
   Starting CloudTrail service...
-  Logs will be delivered to my-bucket
+  Logs will be delivered to amzn-s3-demo-bucket

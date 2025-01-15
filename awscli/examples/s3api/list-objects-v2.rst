@@ -3,7 +3,7 @@
 The following ``list-objects-v2`` example lists the objects in the specified bucket. ::
 
     aws s3api list-objects-v2 \
-        --bucket my-bucket
+        --bucket amzn-s3-demo-bucket
 
 Output::
 

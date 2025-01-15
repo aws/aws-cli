@@ -2,11 +2,11 @@
 
 The following ``update-subscription`` command updates the trail to specify a new S3 bucket and SNS topic::
 
-  aws cloudtrail update-subscription --name Trail1 --s3-new-bucket my-bucket-new --sns-new-topic my-topic-new
+  aws cloudtrail update-subscription --name Trail1 --s3-new-bucket amzn-s3-demo-bucket-new --sns-new-topic my-topic-new
 
 Output::
 
-  Setting up new S3 bucket my-bucket-new...
+  Setting up new S3 bucket amzn-s3-demo-bucket-new...
   Setting up new SNS topic my-topic-new...
   Creating/updating CloudTrail configuration...
   CloudTrail configuration:
@@ -18,7 +18,7 @@ Output::
       "TrailARN": "arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail1", 
       "LogFileValidationEnabled": false, 
       "IsMultiRegionTrail": false, 
-      "S3BucketName": "my-bucket-new", 
+      "S3BucketName": "amzn-s3-demo-bucket-new", 
       "SnsTopicName": "my-topic-new", 
       "HomeRegion": "us-east-1"
     }

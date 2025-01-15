@@ -3,7 +3,7 @@
 The following ``get-public-access-block`` example displays the block public access configuration for the specified bucket. ::
 
     aws s3api get-public-access-block \
-        --bucket my-bucket
+        --bucket amzn-s3-demo-bucket
 
 Output::
 

@@ -12,7 +12,7 @@ The following ``create-data-source`` creates and configures an Amazon Kendra dat
         --schedule "0 0 18 ? * TUE,MON,WED,THU,FRI,SAT *" \
         --configuration '{"TemplateConfiguration": {"Template": file://s3schemaconfig.json}}' \
         --type "TEMPLATE" \
-        --custom-document-enrichment-configuration '{"PostExtractionHookConfiguration": {"LambdaArn": "arn:aws:iam::my-account-id:function/my-function-ocr-docs", "S3Bucket": "s3://my-s3-bucket/scanned-image-text-example-docs"}, "RoleArn": "arn:aws:iam:my-account-id:role/KendraRoleForCDE"}' \
+        --custom-document-enrichment-configuration '{"PostExtractionHookConfiguration": {"LambdaArn": "arn:aws:iam::my-account-id:function/my-function-ocr-docs", "S3Bucket": "s3://amzn-s3-demo-bucket/scanned-image-text-example-docs"}, "RoleArn": "arn:aws:iam:my-account-id:role/KendraRoleForCDE"}' \
         --vpc-configuration '{"SecurityGroupIds": ["sg-1234567890abcdef0"], "SubnetIds": ["subnet-1c234","subnet-2b134"]}'
 
 Output::

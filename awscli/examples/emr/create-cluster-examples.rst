@@ -114,7 +114,7 @@ The following example references ``configurations.json`` as a local file. ::
 The following example references ``configurations.json`` as a file in Amazon S3. ::
 
     aws emr create-cluster \
-        --configurations https://s3.amazonaws.com/myBucket/configurations.json \
+        --configurations https://s3.amazonaws.com/amzn-s3-demo-bucket/configurations.json \
         --release-label emr-5.9.0 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -223,7 +223,7 @@ The following ``create-cluster`` example uses the ``--enable-debugging`` paramet
 
     aws emr create-cluster \
         --enable-debugging \
-        --log-uri s3://myBucket/myLog \
+        --log-uri s3://amzn-s3-demo-bucket/myLog \
         --release-label emr-5.9.0 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -357,7 +357,7 @@ The following ``create-cluster`` example adds steps by specifying a JAR file sto
 Custom JAR steps require the ``Jar=`` parameter, which specifies the path and file name of the JAR. Optional parameters are ``Type``, ``Name``, ``ActionOnFailure``, ``Args``, and ``MainClass``. If main class is not specified, the JAR file should specify ``Main-Class`` in its manifest file. ::
 
     aws emr create-cluster \
-        --steps Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://myBucket/mytest.jar,Args=arg1,arg2,arg3 Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://myBucket/mytest.jar,MainClass=mymainclass,Args=arg1,arg2,arg3  \
+        --steps Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://amzn-s3-demo-bucket/mytest.jar,Args=arg1,arg2,arg3 Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://amzn-s3-demo-bucket/mytest.jar,MainClass=mymainclass,Args=arg1,arg2,arg3  \
         --release-label emr-5.3.1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -369,7 +369,7 @@ The following ``create-cluster`` examples add a streaming step to a cluster that
 The following example specifies the step inline. ::
 
     aws emr create-cluster \
-        --steps Type=STREAMING,Name='Streaming Program',ActionOnFailure=CONTINUE,Args=[-files,s3://elasticmapreduce/samples/wordcount/wordSplitter.py,-mapper,wordSplitter.py,-reducer,aggregate,-input,s3://elasticmapreduce/samples/wordcount/input,-output,s3://mybucket/wordcount/output] \
+        --steps Type=STREAMING,Name='Streaming Program',ActionOnFailure=CONTINUE,Args=[-files,s3://elasticmapreduce/samples/wordcount/wordSplitter.py,-mapper,wordSplitter.py,-reducer,aggregate,-input,s3://elasticmapreduce/samples/wordcount/input,-output,s3://amzn-s3-demo-bucket/wordcount/output] \
         --release-label emr-5.3.1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -397,7 +397,7 @@ Contents of ``multiplefiles.json``::
                 "-input",
                 "s3://elasticmapreduce/samples/wordcount/input",
                 "-output",
-                "s3://mybucket/wordcount/output"
+                "s3://amzn-s3-demo-bucket/wordcount/output"
             ],
             "ActionOnFailure": "CONTINUE",
             "Type": "STREAMING"
@@ -409,7 +409,7 @@ Contents of ``multiplefiles.json``::
 The following example add Hive steps when creating a cluster. Hive steps require parameters ``Type`` and ``Args``. Hive steps optional parameters are ``Name`` and ``ActionOnFailure``. ::
 
     aws emr create-cluster \
-        --steps Type=HIVE,Name='Hive program',ActionOnFailure=CONTINUE,ActionOnFailure=TERMINATE_CLUSTER,Args=[-f,s3://elasticmapreduce/samples/hive-ads/libs/model-build.q,-d,INPUT=s3://elasticmapreduce/samples/hive-ads/tables,-d,OUTPUT=s3://mybucket/hive-ads/output/2014-04-18/11-07-32,-d,LIBS=s3://elasticmapreduce/samples/hive-ads/libs] \
+        --steps Type=HIVE,Name='Hive program',ActionOnFailure=CONTINUE,ActionOnFailure=TERMINATE_CLUSTER,Args=[-f,s3://elasticmapreduce/samples/hive-ads/libs/model-build.q,-d,INPUT=s3://elasticmapreduce/samples/hive-ads/tables,-d,OUTPUT=s3://amzn-s3-demo-bucket/hive-ads/output/2014-04-18/11-07-32,-d,LIBS=s3://elasticmapreduce/samples/hive-ads/libs] \
         --applications Name=Hive \
         --release-label emr-5.3.1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
@@ -419,7 +419,7 @@ The following example add Hive steps when creating a cluster. Hive steps require
 The following example adds Pig steps when creating a cluster. Pig steps required parameters are ``Type`` and ``Args``. Pig steps optional parameters are ``Name`` and ``ActionOnFailure``. ::
 
     aws emr create-cluster \
-        --steps Type=PIG,Name='Pig program',ActionOnFailure=CONTINUE,Args=[-f,s3://elasticmapreduce/samples/pig-apache/do-reports2.pig,-p,INPUT=s3://elasticmapreduce/samples/pig-apache/input,-p,OUTPUT=s3://mybucket/pig-apache/output] \
+        --steps Type=PIG,Name='Pig program',ActionOnFailure=CONTINUE,Args=[-f,s3://elasticmapreduce/samples/pig-apache/do-reports2.pig,-p,INPUT=s3://elasticmapreduce/samples/pig-apache/input,-p,OUTPUT=s3://amzn-s3-demo-bucket/pig-apache/output] \
         --applications Name=Pig \
         --release-label emr-5.3.1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
@@ -429,7 +429,7 @@ The following example adds Pig steps when creating a cluster. Pig steps required
 The following ``create-cluster`` example runs two bootstrap actions defined as scripts that are stored in Amazon S3. ::
 
     aws emr create-cluster \
-        --bootstrap-actions Path=s3://mybucket/myscript1,Name=BootstrapAction1,Args=[arg1,arg2] Path=s3://mybucket/myscript2,Name=BootstrapAction2,Args=[arg1,arg2] \
+        --bootstrap-actions Path=s3://amzn-s3-demo-bucket/myscript1,Name=BootstrapAction1,Args=[arg1,arg2] Path=s3://amzn-s3-demo-bucket/myscript2,Name=BootstrapAction2,Args=[arg1,arg2] \
         --release-label emr-5.3.1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -503,7 +503,7 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
 
     aws emr create-cluster \
         --release-label emr-5.30.0 \
-        --log-uri s3://myBucket/myLog \
+        --log-uri s3://amzn-s3-demo-bucket/myLog \
         --log-encryption-kms-key-id arn:aws:kms:us-east-1:110302272565:key/dd559181-283e-45d7-99d1-66da348c4d33 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
 

@@ -28,7 +28,7 @@ KEY_PAIR_FILE_HELP_TEXT = '\nA value for the variable Key Pair File ' \
 class Socks(Command):
     NAME = 'socks'
     DESCRIPTION = ('Create a socks tunnel on port 8157 from your machine '
-                   'to the master.\n%s' % KEY_PAIR_FILE_HELP_TEXT)
+                   f'to the master.\n{KEY_PAIR_FILE_HELP_TEXT}')
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to ssh into'},
@@ -45,7 +45,7 @@ class Socks(Command):
 
             key_file = parsed_args.key_pair_file
             sshutils.validate_ssh_with_key_file(key_file)
-            f = tempfile.NamedTemporaryFile(delete=False)
+            tempfile.NamedTemporaryFile(delete=False)
             if (emrutils.which('ssh') or emrutils.which('ssh.exe')):
                 command = ['ssh', '-o', 'StrictHostKeyChecking=no', '-o',
                            'ServerAliveInterval=10', '-ND', '8157', '-i',
@@ -66,8 +66,7 @@ class Socks(Command):
 
 class SSH(Command):
     NAME = 'ssh'
-    DESCRIPTION = ('SSH into master node of the cluster.\n%s' %
-                   KEY_PAIR_FILE_HELP_TEXT)
+    DESCRIPTION = (f'SSH into master node of the cluster.\n{KEY_PAIR_FILE_HELP_TEXT}')
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to ssh into'},
@@ -110,8 +109,7 @@ class SSH(Command):
 
 class Put(Command):
     NAME = 'put'
-    DESCRIPTION = ('Put file onto the master node.\n%s' %
-                   KEY_PAIR_FILE_HELP_TEXT)
+    DESCRIPTION = (f'Put file onto the master node.\n{KEY_PAIR_FILE_HELP_TEXT}')
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to put file onto'},
@@ -150,7 +148,7 @@ class Put(Command):
 
 class Get(Command):
     NAME = 'get'
-    DESCRIPTION = ('Get file from master node.\n%s' % KEY_PAIR_FILE_HELP_TEXT)
+    DESCRIPTION = (f'Get file from master node.\n{KEY_PAIR_FILE_HELP_TEXT}')
     ARG_TABLE = [
         {'name': 'cluster-id', 'required': True,
          'help_text': 'Cluster Id of cluster you want to get file from'},

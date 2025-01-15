@@ -49,7 +49,7 @@ def _get_new_kubeconfig_content():
     ])
 
 
-class Kubeconfig(object):
+class Kubeconfig:
     def __init__(self, path, content=None):
         self.path = path
         if content is None:
@@ -78,7 +78,7 @@ class Kubeconfig(object):
         )
 
 
-class KubeconfigValidator(object):
+class KubeconfigValidator:
     def __init__(self):
         # Validation_content is an empty Kubeconfig
         # It is used as a way to know what types different entries should be
@@ -125,15 +125,14 @@ class KubeconfigValidator(object):
         :type config: Kubeconfig
         """
         for key, value in self._validation_content.items():
-            if (key in config.content and
-                    type(config.content[key]) == list):
+            if key in config.content and isinstance(config.content[key], list):
                 for element in config.content[key]:
                     if not isinstance(element, OrderedDict):
                         raise KubeconfigCorruptedError(
                             f"Entry in {key} not a {dict}. ")
 
 
-class KubeconfigLoader(object):
+class KubeconfigLoader:
     def __init__(self, validator = None):
         if validator is None:
             validator=KubeconfigValidator()
@@ -159,7 +158,7 @@ class KubeconfigLoader(object):
         try:
             with compat_open(path, "r") as stream:
                 loaded_content = ordered_yaml_load(stream)
-        except IOError as e:
+        except OSError as e:
             if e.errno == errno.ENOENT:
                 loaded_content=None
             else:
@@ -175,7 +174,7 @@ class KubeconfigLoader(object):
         return loaded_config
 
 
-class KubeconfigWriter(object):
+class KubeconfigWriter:
     def write_kubeconfig(self, config):
         """
         Write config to disk.
@@ -199,12 +198,12 @@ class KubeconfigWriter(object):
             with compat_open(
                     config.path, "w+", access_permissions=0o600) as stream:
                 ordered_yaml_dump(config.content, stream)
-        except IOError as e:
+        except OSError as e:
             raise KubeconfigInaccessableError(
                 f"Can't open kubeconfig for writing: {e}")
 
 
-class KubeconfigAppender(object):
+class KubeconfigAppender:
     def insert_entry(self, config, key, new_entry):
         """
         Insert entry into the entries list at content[key]

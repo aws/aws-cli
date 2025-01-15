@@ -148,11 +148,11 @@ class UpdateKubeconfigCommand(BasicCommand):
             writer.write_kubeconfig(config)
 
             if updating_existing:
-                uni_print("Updated context {0} in {1}\n".format(
+                uni_print("Updated context {} in {}\n".format(
                     new_context_dict["name"], config.path
                 ))
             else:
-                uni_print("Added new context {0} to {1}\n".format(
+                uni_print("Added new context {} to {}\n".format(
                     new_context_dict["name"], config.path
                 ))
 
@@ -165,7 +165,7 @@ class UpdateKubeconfigCommand(BasicCommand):
         return 0
 
 
-class KubeconfigSelector(object):
+class KubeconfigSelector:
 
     def __init__(self, env_variable, path_in, validator=None,
                                               loader=None):
@@ -219,12 +219,10 @@ class KubeconfigSelector(object):
                 loaded_config = self._loader.load_kubeconfig(candidate_path)
 
                 if loaded_config.has_cluster(cluster_name):
-                    LOG.debug("Found entry to update at {0}".format(
-                        candidate_path
-                    ))
+                    LOG.debug(f"Found entry to update at {candidate_path}")
                     return loaded_config
             except KubeconfigError as e:
-                LOG.warning("Passing {0}:{1}".format(candidate_path, e))
+                LOG.warning(f"Passing {candidate_path}:{e}")
 
         # No entry was found, use the first file in KUBECONFIG
         #
@@ -236,7 +234,7 @@ class KubeconfigSelector(object):
         return os.path.abspath(os.path.expanduser(path))
 
 
-class EKSClient(object):
+class EKSClient:
     def __init__(self, session, parsed_args, parsed_globals=None):
         self._session = session
         self._cluster_name = parsed_args.cluster_name
@@ -267,7 +265,7 @@ class EKSClient(object):
             if "status" not in self._cluster_description:
                 raise EKSClusterError("Cluster not found")
             if self._cluster_description["status"] not in ["ACTIVE", "UPDATING"]:
-                raise EKSClusterError("Cluster status is {0}".format(
+                raise EKSClusterError("Cluster status is {}".format(
                     self._cluster_description["status"]
                 ))
 

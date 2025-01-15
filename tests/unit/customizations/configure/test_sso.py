@@ -902,7 +902,7 @@ class TestConfigureSSOCommand:
         )
         stdout = capsys.readouterr().out
         assert "WARNING: Configuring using legacy format" in stdout
-        assert f"aws s3 ls --profile {inputs.profile_prompt.answer}" in stdout
+        assert f"aws sts get-caller-identity --profile {inputs.profile_prompt.answer}" in stdout
 
     def test_single_account_single_role_flow_no_browser(
         self,
@@ -1235,7 +1235,7 @@ class TestConfigureSSOCommand:
         )
         stdout = capsys.readouterr().out
         assert "WARNING: Configuring using legacy format" not in stdout
-        assert f"aws s3 ls --profile {inputs.profile_prompt.answer}" in stdout
+        assert f"aws sts get-caller-identity --profile {inputs.profile_prompt.answer}" in stdout
 
     def test_configure_sso_with_existing_sso_session(
         self,

@@ -2,7 +2,7 @@
 
 The following ``create-trail`` command creates a multi-region trail named ``Trail1`` and specifies an S3 bucket::
 
-  aws cloudtrail create-trail --name Trail1 --s3-bucket-name my-bucket --is-multi-region-trail
+  aws cloudtrail create-trail --name Trail1 --s3-bucket-name amzn-s3-demo-bucket --is-multi-region-trail
 
 Output::
 
@@ -12,6 +12,6 @@ Output::
     "TrailARN": "arn:aws:cloudtrail:us-west-2:123456789012:trail/Trail1", 
     "LogFileValidationEnabled": false, 
     "IsMultiRegionTrail": true, 
-    "S3BucketName": "my-bucket"
+    "S3BucketName": "amzn-s3-demo-bucket"
   }
  

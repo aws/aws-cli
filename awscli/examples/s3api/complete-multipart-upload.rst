@@ -1,6 +1,6 @@
-The following command completes a multipart upload for the key ``multipart/01`` in the bucket ``my-bucket``::
+The following command completes a multipart upload for the key ``multipart/01`` in the bucket ``amzn-s3-demo-bucket``::
 
-  aws s3api complete-multipart-upload --multipart-upload file://mpustruct --bucket my-bucket --key 'multipart/01' --upload-id dfRtDYU0WWCCcH43C3WFbkRONycyCpTJJvxu2i5GYkZljF.Yxwh6XG7WfS2vC4to6HiV6Yjlx.cph0gtNBtJ8P3URCSbB7rjxI5iEwVDmgaXZOGgkk5nVTW16HOQ5l0R
+  aws s3api complete-multipart-upload --multipart-upload file://mpustruct --bucket amzn-s3-demo-bucket --key 'multipart/01' --upload-id dfRtDYU0WWCCcH43C3WFbkRONycyCpTJJvxu2i5GYkZljF.Yxwh6XG7WfS2vC4to6HiV6Yjlx.cph0gtNBtJ8P3URCSbB7rjxI5iEwVDmgaXZOGgkk5nVTW16HOQ5l0R
 
 The upload ID required by this command is output by ``create-multipart-upload`` and can also be retrieved with ``list-multipart-uploads``.
 
@@ -31,7 +31,7 @@ Output::
 
   {
       "ETag": "\"3944a9f7a4faab7f78788ff6210f63f0-3\"",
-      "Bucket": "my-bucket",
-      "Location": "https://my-bucket.s3.amazonaws.com/multipart%2F01",
+      "Bucket": "amzn-s3-demo-bucket",
+      "Location": "https://amzn-s3-demo-bucket.s3.amazonaws.com/multipart%2F01",
       "Key": "multipart/01"
   }

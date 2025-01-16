@@ -3,7 +3,7 @@
 The following ``list-bucket-inventory-configurations`` example lists the inventory configurations for the specified bucket. ::
 
     aws s3api list-bucket-inventory-configurations \
-        --bucket my-bucket
+        --bucket amzn-s3-demo-bucket
 
 Output::
 
@@ -14,7 +14,7 @@ Output::
                 "Destination": {
                     "S3BucketDestination": {
                         "Format": "ORC",
-                        "Bucket": "arn:aws:s3:::my-bucket",
+                        "Bucket": "arn:aws:s3:::amzn-s3-demo-bucket",
                         "AccountId": "123456789012"
                     }
                 },
@@ -29,7 +29,7 @@ Output::
                 "Destination": {
                     "S3BucketDestination": {
                         "Format": "CSV",
-                        "Bucket": "arn:aws:s3:::my-bucket",
+                        "Bucket": "arn:aws:s3:::amzn-s3-demo-bucket",
                         "AccountId": "123456789012"
                     }
                 },

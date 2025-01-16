@@ -114,7 +114,7 @@ The following example references ``configurations.json`` as a local file. ::
 The following example references ``configurations.json`` as a file in Amazon S3. ::
 
     aws emr create-cluster \
-        --configurations https://s3.amazonaws.com/myBucket/configurations.json \
+        --configurations https://s3.amazonaws.com/amzn-s3-demo-bucket/configurations.json \
         --release-label emr-5.9.0 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -223,7 +223,7 @@ The following ``create-cluster`` example uses the ``--enable-debugging`` paramet
 
     aws emr create-cluster \
         --enable-debugging \
-        --log-uri s3://myBucket/myLog \
+        --log-uri s3://amzn-s3-demo-bucket/myLog \
         --release-label emr-5.9.0 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -357,7 +357,7 @@ The following ``create-cluster`` example adds steps by specifying a JAR file sto
 Custom JAR steps require the ``Jar=`` parameter, which specifies the path and file name of the JAR. Optional parameters are ``Type``, ``Name``, ``ActionOnFailure``, ``Args``, and ``MainClass``. If main class is not specified, the JAR file should specify ``Main-Class`` in its manifest file. ::
 
     aws emr create-cluster \
-        --steps Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://myBucket/mytest.jar,Args=arg1,arg2,arg3 Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://myBucket/mytest.jar,MainClass=mymainclass,Args=arg1,arg2,arg3  \
+        --steps Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://amzn-s3-demo-bucket/mytest.jar,Args=arg1,arg2,arg3 Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://amzn-s3-demo-bucket/mytest.jar,MainClass=mymainclass,Args=arg1,arg2,arg3  \
         --release-label emr-5.3.1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -503,7 +503,7 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
 
     aws emr create-cluster \
         --release-label emr-5.30.0 \
-        --log-uri s3://myBucket/myLog \
+        --log-uri s3://amzn-s3-demo-bucket/myLog \
         --log-encryption-kms-key-id arn:aws:kms:us-east-1:110302272565:key/dd559181-283e-45d7-99d1-66da348c4d33 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
 

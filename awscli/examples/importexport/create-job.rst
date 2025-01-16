@@ -17,7 +17,7 @@ The file ``manifest`` is a YAML formatted text file in the current directory wit
   deviceId: 49382
   eraseDevice: yes
   notificationEmail: john.doe@example.com;jane.roe@example.com
-  bucket: myBucket
+  bucket: amzn-s3-demo-bucket
 
 For more information on the manifest file format, see `Creating Import Manifests`_ in the *AWS Import/Export Developer Guide*.
 
@@ -38,7 +38,7 @@ You can also pass the manifest as a string in quotes::
    deviceId: 49382
    eraseDevice: yes
    notificationEmail: john.doe@example.com;jane.roe@example.com
-   bucket: myBucket'
+   bucket: amzn-s3-demo-bucket'
 
 For information on quoting string arguments and using files, see `Specifying Parameter Values`_ in the *AWS CLI User Guide*.
 

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.23.1
+======
+
+* api-change:``ecs``: The release addresses Amazon ECS documentation tickets.
+* api-change:``sagemaker``: Added support for ml.trn1.32xlarge instance type in Reserved Capacity Offering
+
+
 2.23.0
 ======
 

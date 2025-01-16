@@ -13,7 +13,7 @@ Contents of create-report-group-source.json::
         "exportConfig": {
             "exportConfigType": "S3",
             "s3Destination": {
-                "bucket": "my-s3-bucket",
+                "bucket": "amzn-s3-demo-bucket",
                 "path": "",
                 "packaging": "ZIP",
                 "encryptionDisabled": true
@@ -31,7 +31,7 @@ Output::
             "exportConfig": {
                 "exportConfigType": "S3",
                 "s3Destination": {
-                    "bucket": "my-s3-bucket",
+                    "bucket": "amzn-s3-demo-bucket",
                     "path": "",
                     "packaging": "ZIP",
                     "encryptionDisabled": true

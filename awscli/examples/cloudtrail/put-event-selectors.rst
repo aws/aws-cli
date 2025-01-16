@@ -119,7 +119,7 @@ The following example creates an event selector for a trail named ``TrailName`` 
 
     aws cloudtrail put-event-selectors \
         --trail-name TrailName \
-        --event-selectors '[{"ReadWriteType": "All","IncludeManagementEvents": true,"DataResources": [{"Type":"AWS::S3::Object", "Values": ["arn:aws:s3:::mybucket/prefix","arn:aws:s3:::mybucket2/prefix2"]},{"Type": "AWS::Lambda::Function","Values": ["arn:aws:lambda:us-west-2:999999999999:function:hello-world-python-function"]}]}]'
+        --event-selectors '[{"ReadWriteType": "All","IncludeManagementEvents": true,"DataResources": [{"Type":"AWS::S3::Object", "Values": ["arn:aws:s3:::amzn-s3-demo-bucket/prefix","arn:aws:s3:::amzn-s3-demo-bucket2/prefix2"]},{"Type": "AWS::Lambda::Function","Values": ["arn:aws:lambda:us-west-2:999999999999:function:hello-world-python-function"]}]}]'
 
 Output::
 
@@ -130,8 +130,8 @@ Output::
                 "DataResources": [
                     {
                         "Values": [
-                            "arn:aws:s3:::mybucket/prefix",
-                            "arn:aws:s3:::mybucket2/prefix2"
+                            "arn:aws:s3:::amzn-s3-demo-bucket/prefix",
+                            "arn:aws:s3:::amzn-s3-demo-bucket2/prefix2"
                         ],
                         "Type": "AWS::S3::Object"
                     },

@@ -14,7 +14,7 @@ Output::
     "version": "1",
     "sources": [
         {
-            "s3Bucket": "my-bucket",
+            "s3Bucket": "amzn-s3-demo-bucket",
             "s3Key": "my-simulation-application.tar.gz",
             "etag": "00d8a94ff113856688c4fce618ae0f45-94",
             "architecture": "X86_64"

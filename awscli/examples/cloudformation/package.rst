@@ -55,3 +55,15 @@ Packaging the template with this module would result in the following output::
         Properties:
           BucketName: foo
 
+The following is an example of adding constants to a template::
+
+    Constants:
+      foo: bar
+      baz: ${Constant:foo}-xyz-${AWS::AccountId}
+
+    Resources:
+      Bucket:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: !Sub ${Constant::baz}
+

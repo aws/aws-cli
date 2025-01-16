@@ -34,8 +34,8 @@ Output::
                     "Quantity": 1,
                     "Items": [
                         {
-                            "Id": "awsexamplebucket.s3.amazonaws.com-cli-example",
-                            "DomainName": "awsexamplebucket.s3.amazonaws.com",
+                            "Id": "amzn-s3-demo-bucket.s3.amazonaws.com-cli-example",
+                            "DomainName": "amzn-s3-demo-bucket.s3.amazonaws.com",
                             "OriginPath": "",
                             "CustomHeaders": {
                                 "Quantity": 0
@@ -50,7 +50,7 @@ Output::
                     "Quantity": 0
                 },
                 "DefaultCacheBehavior": {
-                    "TargetOriginId": "awsexamplebucket.s3.amazonaws.com-cli-example",
+                    "TargetOriginId": "amzn-s3-demo-bucket.s3.amazonaws.com-cli-example",
                     "ForwardedValues": {
                         "QueryString": false,
                         "Cookies": {

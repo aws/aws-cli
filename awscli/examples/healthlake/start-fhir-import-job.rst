@@ -16,4 +16,5 @@ Output::
         "JobId": "c145fbb27b192af392f8ce6e7838e34f"
     }
 
-For more information, see `Importing files to a FHIR data store 'https://docs.aws.amazon.com/healthlake/latest/devguide/import-datastore.html`__ in the *AWS HealthLake Developer Guide*.
+For more information, see `Importing files to a FHIR data store <https://docs.aws.amazon.com/healthlake/latest/devguide/import-datastore.html>`__ in the *AWS HealthLake Developer Guide*.
+

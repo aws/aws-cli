@@ -25,10 +25,11 @@ class Visitor:
 
     Example of a visitor that replaces all strings:
 
-        v = Visitor(template_dict, None, "")
+        v = Visitor(template_dict)
         def vf(v):
             if isinstance(v.d, string) and v.p is not None:
                 v.p[v.k] = "replacement"
+        v.vist(vf)
     """
 
     def __init__(self, d, p=None, k=""):

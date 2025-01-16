@@ -17,7 +17,7 @@ Module constants.
 Add a Constants section to the module or the parent template for
 string constants, to help reduce copy-paste within the template.
 
-Refer to constants in Sub strings later in the template using ${Constant:name}
+Refer to constants in Sub strings later in the template using ${Constant::name}
 
 Constants can refer to other constants that were defined previously.
 
@@ -53,9 +53,11 @@ SUB = "Fn::Sub"
 
 def process_constants(d):
     """
-    Look for a Constants item in d and if it's found, replace all instances
-    of those constants in Subs later in the dictionary.
-    Returns a dict of constants.
+    Look for a Constants item in d and if it's found, return it
+    as a dict. Looks for references to previously defined constants
+    and substitutes them.
+    Deletes the Constants item from d.
+    Returns a dict of the constants.
     """
     if CONSTANTS not in d:
         return None
@@ -97,6 +99,9 @@ def replace_constants(constants, s):
         return retval
 
     if isdict(s):
+
+        # Recursively dive into d and replace all string constants
+        # that are found in Subs. Error if the constant does not exist.
 
         def vf(v):
             if isdict(v.d) and SUB in v.d and v.p is not None:

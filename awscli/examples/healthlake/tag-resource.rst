@@ -8,4 +8,4 @@ The following ``tag-resource`` example shows how to add a tag to a data store. :
 
 This command produces no output.
 
-For more information, see 'Adding a tag to a data store <https://docs.aws.amazon.com/healthlake/latest/devguide/add-a-tag.html>'__ in the *AWS HealthLake Developer Guide.*.
+For more information, see `Adding a tag to a data store <https://docs.aws.amazon.com/healthlake/latest/devguide/add-a-tag.html>`__ in the *AWS HealthLake Developer Guide.*.

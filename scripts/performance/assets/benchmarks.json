@@ -1,0 +1,166 @@
+[
+  {
+    "name": "s3.cp.upload",
+    "command": ["s3", "cp", "test_file", "s3://bucket/test_file", "--quiet"],
+    "dimensions": [
+      {"FileSize": "32MB"},
+      {"S3TransferClient": "Classic"}
+    ],
+    "environment": {
+      "files": [
+        {
+          "name": "test_file",
+          "size": 3.2e7
+        }
+      ],
+      "config": "[default]\ns3 =\n preferred_transfer_client = classic"
+    },
+    "responses": [
+      {
+        "body": "<InitiateMultipartUploadResult><Bucket>bucket</Bucket>  <Key>key</Key>  <UploadId>upload-id</UploadId></InitiateMultipartUploadResult>"
+      },
+      {
+        "headers": {"ETag":  "etag"},
+        "instances": 4
+      },
+      {
+        "body": "<CompleteMultipartUploadResult><Bucket>bucket</Bucket>  <Key>key</Key>  <ETag>etag-123</ETag></CompleteMultipartUploadResult>"
+      }
+    ]
+  },
+  {
+    "name": "s3.cp.upload",
+    "command": ["s3", "cp", "test_file", "s3://bucket/test_file", "--quiet"],
+    "dimensions": [
+      {"FileSize": "32MB"},
+      {"S3TransferClient": "CRT"}
+    ],
+    "environment": {
+      "files": [
+        {
+          "name": "test_file",
+          "size": 3.2e7
+        }
+      ],
+      "config": "[default]\ns3 =\n preferred_transfer_client = crt"
+    },
+    "responses": [
+      {
+        "body": "<InitiateMultipartUploadResult><Bucket>bucket</Bucket>  <Key>key</Key>  <UploadId>upload-id</UploadId></InitiateMultipartUploadResult>"
+      },
+      {
+        "headers": {"ETag":  "etag"},
+        "instances": 4
+      },
+      {
+        "body": "<CompleteMultipartUploadResult><Bucket>bucket</Bucket>  <Key>key</Key>  <ETag>etag-123</ETag></CompleteMultipartUploadResult>"
+      }
+    ]
+  },
+  {
+    "name": "s3.mv.upload",
+    "command": ["s3", "mv", "test_file", "s3://bucket/test_file", "--quiet"],
+    "dimensions": [
+      {"FileSize": "32MB"}
+    ],
+    "environment": {
+      "files": [
+        {
+          "name": "test_file",
+          "size": 3.2e7
+        }
+      ]
+    },
+    "responses": [
+      {
+        "headers": {},
+        "body": "<InitiateMultipartUploadResult><Bucket>bucket</Bucket>  <Key>key</Key>  <UploadId>upload-id</UploadId></InitiateMultipartUploadResult>"
+      },
+      {
+        "headers": {"ETag":  "etag"},
+        "instances": 4
+      },
+      {
+        "headers": {},
+        "body": "<CompleteMultipartUploadResult><Bucket>bucket</Bucket>  <Key>key</Key>  <ETag>etag-123</ETag></CompleteMultipartUploadResult>"
+      }
+    ]
+  },
+  {
+    "name": "s3.mv.download",
+    "command": ["s3", "mv", "s3://bucket/test_file123", "./test_file123", "--quiet"],
+    "dimensions": [
+      {"FileSize": "32MB"},
+      {"S3TransferClient": "Classic"}
+    ],
+    "environment": {
+      "config": "[default]\ns3 =\n preferred_transfer_client = classic"
+    },
+    "responses": [
+      {
+        "headers": {"Content-Length": "0", "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT", "ETag": "etag-1"}
+      },
+      {
+        "headers": {"Content-Length": "7", "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT", "ETag": "etag-1"},
+        "body": "content"
+      },
+      {}
+    ]
+  },
+  {
+    "name": "s3.sync.upload",
+    "command": ["s3", "sync", "./test_dir", "s3://bucket/test_dir", "--quiet"],
+    "dimensions": [
+      {"FileCount": "50,000"},
+      {"FileSize": "4KB"},
+      {"S3TransferClient": "Classic"}
+    ],
+    "environment": {
+      "file_dirs": [
+        {
+          "name": "test_dir",
+          "file_count": 5e4,
+          "file_size": 4e3
+        }
+      ],
+      "config": "[default]\ns3 =\n preferred_transfer_client = classic"
+    },
+    "responses": [
+      {
+        "body": "<ListBucketResult><Contents><LastModified>2015-12-08T18:26:43.000Z</LastModified>  <Key>key</Key>  <Size>100</Size>  </Contents>  <Prefix/></ListBucketResult>"
+      },
+      {
+        "headers": {"ETag": "etag"},
+        "instances": 5e4
+      }
+    ]
+  },
+  {
+    "name": "s3.sync.upload",
+    "command": ["s3", "sync", "./test_dir", "s3://bucket/test_dir", "--quiet"],
+    "dimensions": [
+      {"FileCount": "50,000"},
+      {"FileSize": "4KB"},
+      {"S3TransferClient": "CRT"}
+    ],
+    "environment": {
+      "file_dirs": [
+        {
+          "name": "test_dir",
+          "file_count": 5e4,
+          "file_size": 4e3
+        }
+      ],
+      "config": "[default]\ns3 =\n preferred_transfer_client = crt"
+    },
+    "responses": [
+      {
+        "body": "<ListBucketResult><Contents><LastModified>2015-12-08T18:26:43.000Z</LastModified>  <Key>key</Key>  <Size>100</Size>  </Contents>  <Prefix/></ListBucketResult>"
+      },
+      {
+        "headers": {"ETag": "etag"},
+        "instances": 5e4
+      }
+    ]
+  }
+]

@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.23.3
+======
+
+* api-change:``quicksight``: Added `DigitGroupingStyle` in ThousandsSeparator to allow grouping by `LAKH`( Indian Grouping system ) currency. Support LAKH and `CRORE` currency types in Column Formatting.
+* api-change:``connect``: Added DeleteContactFlowVersion API and the CAMPAIGN flow type
+* api-change:``batch``: Documentation-only update: clarified the description of the shareDecaySeconds parameter of the FairsharePolicy data type, clarified the description of the priority parameter of the JobQueueDetail data type.
+* api-change:``cognito-idp``: corrects the dual-stack endpoint configuration for cognitoidp
+* api-change:``iotsitewise``: AWS IoT SiteWise now supports ingestion and querying of Null (all data types) and NaN (double type) values of bad or uncertain data quality. New partial error handling prevents data loss during ingestion. Enabled by default for new customers; existing customers can opt-in.
+* api-change:``logs``: Documentation-only update to address doc errors
+* api-change:``sns``: This release adds support for the topic attribute FifoThroughputScope for SNS FIFO topics. For details, see the documentation history in the Amazon Simple Notification Service Developer Guide.
+* api-change:``emr-serverless``: Increasing entryPoint in SparkSubmit to accept longer script paths. New limit is 4kb.
+
+
 2.23.2
 ======
 

@@ -1,0 +1,363 @@
+#!/usr/bin/env python
+import argparse
+import json
+import os
+import psutil
+import shutil
+import subprocess
+import time
+from unittest import mock
+
+
+import awscli.botocore.awsrequest
+from awscli.clidriver import AWSCLIEntryPoint
+from awscli.compat import BytesIO
+
+_BENCHMARK_DEFINITIONS = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        'assets',
+        'benchmarks.json'
+    )
+
+
+class RawResponse(BytesIO):
+    """
+    A bytes-like streamable HTTP response representation.
+    """
+    def stream(self, **kwargs):
+        contents = self.read()
+        while contents:
+            yield contents
+            contents = self.read()
+
+
+class StubbedHTTPClient(object):
+    """
+    A generic stubbed HTTP client.
+    """
+    def setup(self):
+        urllib3_session_send = 'botocore.httpsession.URLLib3Session.send'
+        self._urllib3_patch = mock.patch(urllib3_session_send)
+        self._send = self._urllib3_patch.start()
+        self._send.side_effect = self.get_response
+        self._responses = []
+
+    def tearDown(self):
+        self._urllib3_patch.stop()
+
+    def get_response(self, request):
+        response = self._responses.pop(0)
+        if isinstance(response, Exception):
+            raise response
+        return response
+
+    def add_response(self, body, headers, status_code):
+        response = awscli.botocore.awsrequest.AWSResponse(
+            url='http://169.254.169.254/',
+            status_code=status_code,
+            headers=headers,
+            raw=RawResponse(body.encode())
+        )
+        self._responses.append(response)
+
+
+class ProcessBenchmarker(object):
+    """
+    Periodically samples CPU and memory usage of a process given its pid. Writes
+    all collected samples to a CSV file.
+    """
+    def benchmark_process(self, pid, output_file, data_interval):
+        parent_pid = os.getpid()
+        try:
+            # Benchmark the process where the script is being run.
+            self._run_benchmark(pid, output_file, data_interval)
+        except KeyboardInterrupt:
+            # If there is an interrupt, then try to clean everything up.
+            proc = psutil.Process(parent_pid)
+            procs = proc.children(recursive=True)
+
+            for child in procs:
+                child.terminate()
+
+            gone, alive = psutil.wait_procs(procs, timeout=1)
+            for child in alive:
+                child.kill()
+            raise
+
+
+    def _run_benchmark(self, pid, output_file, data_interval):
+        process_to_measure = psutil.Process(pid)
+
+        with open(output_file, 'w') as f:
+            while process_to_measure.is_running():
+                if process_to_measure.status() == psutil.STATUS_ZOMBIE:
+                    process_to_measure.kill()
+                    break
+                time.sleep(data_interval)
+                try:
+                    # Collect the memory and cpu usage.
+                    memory_used = process_to_measure.memory_info().rss
+                    cpu_percent = process_to_measure.cpu_percent()
+                except (psutil.AccessDenied, psutil.ZombieProcess):
+                    # Trying to get process information from a closed or
+                    # zombie process will result in corresponding exceptions.
+                    break
+
+                # Determine the lapsed time for bookkeeping
+                current_time = time.time()
+
+                # Save all the data into a CSV file.
+                f.write(
+                    f"{current_time},{memory_used},{cpu_percent}\n"
+                )
+                f.flush()
+
+
+def _create_file_with_size(path, size):
+    """
+    Creates a full-access file in the given directory with the
+    specified name and size.
+    """
+    f = open(path, 'wb')
+    os.chmod(path, 0o777)
+    size = int(size)
+    f.truncate(size)
+    f.close()
+
+
+def _create_file_dir(dir_path, file_count, size):
+    """
+    Creates a directory with the specified name. Also creates identical files
+    with the given size in the created directory. The number of identical files
+    to be created is specified by file_count.
+    """
+    os.mkdir(dir_path, 0o777)
+    for i in range(int(file_count)):
+        file_path = os.path.join(dir_path, f'{i}')
+        _create_file_with_size(file_path, size)
+
+
+def _overwrite_dir_full_access(directory):
+    if os.path.exists(directory):
+        shutil.rmtree(directory)
+    os.makedirs(directory, 0o777)
+
+
+def _get_default_env(config_file):
+    return {
+        'AWS_CONFIG_FILE': config_file,
+        'AWS_DEFAULT_REGION': 'us-west-2',
+        'AWS_ACCESS_KEY_ID': 'access_key',
+        'AWS_SECRET_ACCESS_KEY': 'secret_key'
+    }
+
+
+def _default_config_file_contents():
+    return (
+        '[default]'
+    )
+
+
+def _setup_environment(env, result_dir, config_file):
+    """
+    Creates all files / directories defined in the env struct.
+    Also, writes a config file named 'config' to the result directory
+    with contents optionally specified by the env struct.
+    """
+    if "files" in env:
+        for file_def in env['files']:
+            path = os.path.join(result_dir, file_def['name'])
+            _create_file_with_size(path, file_def['size'])
+    if "file_dirs" in env:
+        for file_dir_def in env['file_dirs']:
+            dir_path = os.path.join(result_dir, file_dir_def['name'])
+            _create_file_dir(
+                dir_path,
+                file_dir_def['file_count'],
+                file_dir_def['file_size']
+            )
+    with open(config_file, 'w') as f:
+        f.write(env.get('config', _default_config_file_contents()))
+        f.flush()
+
+
+def _setup_iteration(
+        benchmark,
+        client,
+        result_dir,
+        performance_dir,
+        config_file
+):
+    """
+    Performs the setup for a single iteration of a benchmark. This
+    includes creating the files used by a command and stubbing
+    the HTTP client to use during execution.
+    """
+    env = benchmark.get('environment', {})
+    _setup_environment(env, result_dir, config_file)
+    _overwrite_dir_full_access(performance_dir)
+    client.setup()
+    _stub_responses(
+        benchmark.get('responses', [{"headers": {}, "body": ""}]),
+        client
+    )
+
+
+def _reset_dir(dir):
+    """
+    Deletes everything in the given folder, and recreates it anew.
+    """
+    shutil.rmtree(dir, ignore_errors=True)
+    _overwrite_dir_full_access(dir)
+
+
+def _stub_responses(responses, client):
+    """
+    Stubs the supplied HTTP client using the response instructions in the supplied
+    responses struct. Each instruction will generate one or more stubbed responses.
+    """
+    for response in responses:
+        body = response.get("body", "")
+        headers = response.get("headers", {})
+        status_code = response.get("status_code", 200)
+        # use the instances key to support duplicating responses a configured number of times
+        if "instances" in response:
+            for _ in range(int(response['instances'])):
+                client.add_response(body, headers, status_code)
+        else:
+            client.add_response(body, headers, status_code)
+
+
+def _process_measurements(benchmark_result):
+    """
+    Perform post-processing of the output of S3Transfer's summarize script,
+    such as removing unneeded entries.
+    """
+    del benchmark_result['std_dev_total_time']
+    del benchmark_result['std_dev_max_memory']
+    del benchmark_result['std_dev_average_memory']
+    del benchmark_result['std_dev_average_cpu']
+
+
+def _run_isolated_benchmark(
+        result_dir,
+        performance_dir,
+        benchmark,
+        client,
+        process_benchmarker,
+        args
+):
+    """
+    Runs a single iteration of one benchmark execution. Includes setting up
+    the environment, running the benchmarked execution, formatting
+    the results, and cleaning up the environment.
+    """
+    out_file = os.path.join(performance_dir, 'performance.csv')
+    assets_dir = os.path.join(result_dir, 'assets')
+    config_file = os.path.join(assets_dir, 'config')
+    # setup for iteration of benchmark
+    _setup_iteration(benchmark, client, result_dir, performance_dir, config_file)
+    os.chdir(result_dir)
+    # patch the OS environment with our supplied defaults
+    env_patch = mock.patch.dict('os.environ', _get_default_env(config_file))
+    env_patch.start()
+    # fork a child process to run the command on.
+    # the parent process benchmarks the child process until the child terminates.
+    pid = os.fork()
+
+    try:
+        # execute command on child process
+        if pid == 0:
+            AWSCLIEntryPoint().main(benchmark['command'])
+            os._exit(0)
+        # benchmark child process from parent process until child terminates
+        process_benchmarker.benchmark_process(
+            pid,
+            out_file,
+            args.data_interval
+        )
+        # summarize benchmark results & process summary
+        summary = json.loads(subprocess.check_output(
+            [args.summarize_script, out_file, '--output-format', 'json']
+        ))
+    finally:
+        # cleanup iteration of benchmark
+        client.tearDown()
+        _reset_dir(result_dir)
+        _reset_dir(assets_dir)
+        env_patch.stop()
+    return summary
+
+
+def run_benchmarks(args):
+    """
+    Orchestrates benchmarking via the benchmark definitions in
+    the arguments.
+    """
+    summaries = {'results': []}
+    result_dir = args.result_dir
+    assets_dir = os.path.join(result_dir, 'assets')
+    performance_dir = os.path.join(result_dir, 'performance')
+    client = StubbedHTTPClient()
+    process_benchmarker = ProcessBenchmarker()
+    _overwrite_dir_full_access(result_dir)
+    _overwrite_dir_full_access(assets_dir)
+
+    with open(args.benchmark_definitions, 'r') as file:
+        definitions = json.load(file)
+
+    try:
+        for benchmark in definitions:
+            benchmark_result = {
+                'name': benchmark['name'],
+                'dimensions': benchmark['dimensions'],
+                'measurements': []
+            }
+            for _ in range(args.num_iterations):
+                measurements = _run_isolated_benchmark(
+                    result_dir,
+                    performance_dir,
+                    benchmark,
+                    client,
+                    process_benchmarker,
+                    args
+                )
+                _process_measurements(measurements)
+                benchmark_result['measurements'].append(measurements)
+            summaries['results'].append(benchmark_result)
+    finally:
+        # final cleanup
+        shutil.rmtree(result_dir, ignore_errors=True)
+    print(summaries)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--benchmark-definitions', default=_BENCHMARK_DEFINITIONS,
+        help=('The JSON file defining the commands to benchmark.')
+    )
+    parser.add_argument(
+        '--summarize-script',
+        required=True,
+        help=('The summarize script to run the commands with. This should be '
+              'from s3transfer.')
+    )
+    parser.add_argument(
+        '-o', '--result-dir', default='results',
+        help='The directory to output performance results to. Existing '
+             'results will be deleted.'
+    )
+    parser.add_argument(
+        '--data-interval',
+        default=0.01,
+        type=float,
+        help='The interval in seconds to poll for data points.',
+    )
+    parser.add_argument(
+        '--num-iterations',
+        default=1,
+        type=int,
+        help='The number of iterations to repeat the benchmark for.',
+    )
+    run_benchmarks(parser.parse_args())

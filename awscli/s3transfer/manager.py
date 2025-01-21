@@ -515,7 +515,11 @@ class TransferManager:
                 )
 
     def _add_operation_defaults(self, extra_args):
-        set_default_checksum_algorithm(extra_args)
+        if (
+            self.client.meta.config.request_checksum_calculation
+            == "when_supported"
+        ):
+            set_default_checksum_algorithm(extra_args)
 
     def _submit_transfer(
         self, call_args, submission_task_cls, extra_main_kwargs=None

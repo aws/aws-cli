@@ -16920,6 +16920,13 @@
       },
       "documentation":"<p>The configuration of destination parameter values.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
     },
+    "DigitGroupingStyle":{
+      "type":"string",
+      "enum":[
+        "DEFAULT",
+        "LAKHS"
+      ]
+    },
     "DimensionField":{
       "type":"structure",
       "members":{
@@ -25217,7 +25224,9 @@
         "THOUSANDS",
         "MILLIONS",
         "BILLIONS",
-        "TRILLIONS"
+        "TRILLIONS",
+        "LAKHS",
+        "CRORES"
       ]
     },
     "NumericAxisOptions":{
@@ -31878,7 +31887,7 @@
     "TableFieldOptionList":{
       "type":"list",
       "member":{"shape":"TableFieldOption"},
-      "max":100
+      "max":201
     },
     "TableFieldOptions":{
       "type":"structure",
@@ -32089,11 +32098,16 @@
         "SCROLLED"
       ]
     },
+    "TableUnaggregatedFieldList":{
+      "type":"list",
+      "member":{"shape":"UnaggregatedField"},
+      "max":201
+    },
     "TableUnaggregatedFieldWells":{
       "type":"structure",
       "members":{
         "Values":{
-          "shape":"UnaggregatedFieldList",
+          "shape":"TableUnaggregatedFieldList",
           "documentation":"<p>The values field well for a pivot table. Values are unaggregated for an unaggregated table.</p>"
         }
       },
@@ -32846,6 +32860,10 @@
         "Visibility":{
           "shape":"Visibility",
           "documentation":"<p>Determines the visibility of the thousands separator.</p>"
+        },
+        "GroupingStyle":{
+          "shape":"DigitGroupingStyle",
+          "documentation":"<p>Determines the way numbers are styled to accommodate different readability standards. The <code>DEFAULT</code> value uses the standard international grouping system and groups numbers by the thousands. The <code>LAKHS</code> value uses the Indian numbering system and groups numbers by lakhs and crores.</p>"
         }
       },
       "documentation":"<p>The options that determine the thousands separator configuration.</p>"

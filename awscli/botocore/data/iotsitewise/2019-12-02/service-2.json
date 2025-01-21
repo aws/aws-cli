@@ -3583,6 +3583,10 @@
       "type":"structure",
       "required":["entries"],
       "members":{
+        "enablePartialEntryProcessing":{
+          "shape":"BooleanValue",
+          "documentation":"<p>This setting enables partial ingestion at entry-level. If set to <code>true</code>, we ingest all TQVs not resulting in an error. If set to <code>false</code>, an invalid TQV fails ingestion of the entire entry that contains it.</p>"
+        },
         "entries":{
           "shape":"PutAssetPropertyValueEntries",
           "documentation":"<p>The list of asset property value entries for the batch put request. You can specify up to 10 entries per request.</p>"
@@ -3599,6 +3603,7 @@
         }
       }
     },
+    "BooleanValue":{"type":"boolean"},
     "Bucket":{
       "type":"string",
       "max":63,
@@ -6023,6 +6028,10 @@
         "warmTierRetentionPeriod":{
           "shape":"WarmTierRetentionPeriod",
           "documentation":"<p>Set this period to specify how long your data is stored in the warm tier before it is deleted. You can set this only if cold tier is enabled.</p>"
+        },
+        "disallowIngestNullNaN":{
+          "shape":"DisallowIngestNullNaN",
+          "documentation":"<p>Describes the configuration for ingesting NULL and NaN data. By default the feature is allowed. The feature is disallowed if the value is <code>true</code>.</p>"
         }
       }
     },
@@ -6133,6 +6142,7 @@
       "type":"list",
       "member":{"shape":"DetailedError"}
     },
+    "DisallowIngestNullNaN":{"type":"boolean"},
     "DisassociateAssetsRequest":{
       "type":"structure",
       "required":[
@@ -8206,10 +8216,7 @@
       "type":"boolean",
       "box":true
     },
-    "NumberOfDays":{
-      "type":"integer",
-      "min":30
-    },
+    "NumberOfDays":{"type":"integer"},
     "Offset":{
       "type":"string",
       "max":25,
@@ -8543,6 +8550,17 @@
     "PropertyValueBooleanValue":{"type":"boolean"},
     "PropertyValueDoubleValue":{"type":"double"},
     "PropertyValueIntegerValue":{"type":"integer"},
+    "PropertyValueNullValue":{
+      "type":"structure",
+      "required":["valueType"],
+      "members":{
+        "valueType":{
+          "shape":"RawValueType",
+          "documentation":"<p>The type of null asset property data.</p>"
+        }
+      },
+      "documentation":"<p>The value type of null asset property data with BAD and UNCERTAIN qualities.</p>"
+    },
     "PropertyValueStringValue":{"type":"string"},
     "PutAssetPropertyValueEntries":{
       "type":"list",
@@ -8652,6 +8670,10 @@
         "warmTierRetentionPeriod":{
           "shape":"WarmTierRetentionPeriod",
           "documentation":"<p>Set this period to specify how long your data is stored in the warm tier before it is deleted. You can set this only if cold tier is enabled.</p>"
+        },
+        "disallowIngestNullNaN":{
+          "shape":"DisallowIngestNullNaN",
+          "documentation":"<p>Describes the configuration for ingesting NULL and NaN data. By default the feature is allowed. The feature is disallowed if the value is <code>true</code>.</p>"
         }
       }
     },
@@ -8683,6 +8705,10 @@
         "warmTierRetentionPeriod":{
           "shape":"WarmTierRetentionPeriod",
           "documentation":"<p>Set this period to specify how long your data is stored in the warm tier before it is deleted. You can set this only if cold tier is enabled.</p>"
+        },
+        "disallowIngestNullNaN":{
+          "shape":"DisallowIngestNullNaN",
+          "documentation":"<p>Describes the configuration for ingesting NULL and NaN data. By default the feature is allowed. The feature is disallowed if the value is <code>true</code>.</p>"
         }
       }
     },
@@ -8713,6 +8739,16 @@
       "documentation":"<p>The query timed out.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "RawValueType":{
+      "type":"string",
+      "enum":[
+        "D",
+        "B",
+        "S",
+        "I",
+        "U"
+      ]
     },
     "Reference":{
       "type":"structure",
@@ -9773,7 +9809,7 @@
       "members":{
         "stringValue":{
           "shape":"PropertyValueStringValue",
-          "documentation":"<p>Asset property data of type string (sequence of characters).</p>"
+          "documentation":"<p> Asset property data of type string (sequence of characters). The allowed pattern: \"^$|[^\\u0000-\\u001F\\u007F]+\". The max length is 1024. </p>"
         },
         "integerValue":{
           "shape":"PropertyValueIntegerValue",
@@ -9781,11 +9817,15 @@
         },
         "doubleValue":{
           "shape":"PropertyValueDoubleValue",
-          "documentation":"<p>Asset property data of type double (floating point number).</p>"
+          "documentation":"<p> Asset property data of type double (floating point number). The min value is -10^10. The max value is 10^10. Double.NaN is allowed. </p>"
         },
         "booleanValue":{
           "shape":"PropertyValueBooleanValue",
           "documentation":"<p>Asset property data of type Boolean (true or false).</p>"
+        },
+        "nullValue":{
+          "shape":"PropertyValueNullValue",
+          "documentation":"<p>The type of null asset property data with BAD and UNCERTAIN qualities.</p>"
         }
       },
       "documentation":"<p>Contains an asset property value (of a single type only).</p>"

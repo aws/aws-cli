@@ -275,7 +275,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>&gt;Associates a set of proficiencies with a user.</p>"
+      "documentation":"<p>Associates a set of proficiencies with a user.</p>"
     },
     "BatchAssociateAnalyticsDataSet":{
       "name":"BatchAssociateAnalyticsDataSet",
@@ -499,7 +499,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Publishes a new version of the flow provided. Versions are immutable and monotonically increasing. If a version of the same flow content already exists, no new version is created and instead the existing version number is returned. If the <code>FlowContentSha256</code> provided is different from the <code>FlowContentSha256</code> of the <code>$LATEST</code> published flow content, then an error is returned. This API only supports creating versions for flows of type <code>Campaign</code>.</p>"
+      "documentation":"<p>Publishes a new version of the flow provided. Versions are immutable and monotonically increasing. If the <code>FlowContentSha256</code> provided is different from the <code>FlowContentSha256</code> of the <code>$LATEST</code> published flow content, then an error is returned. This API only supports creating versions for flows of type <code>Campaign</code>.</p>"
     },
     "CreateEmailAddress":{
       "name":"CreateEmailAddress",
@@ -1040,6 +1040,24 @@
       ],
       "documentation":"<p>Deletes the specified flow module.</p>"
     },
+    "DeleteContactFlowVersion":{
+      "name":"DeleteContactFlowVersion",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/contact-flows/{InstanceId}/{ContactFlowId}/version/{ContactFlowVersion}"
+      },
+      "input":{"shape":"DeleteContactFlowVersionRequest"},
+      "output":{"shape":"DeleteContactFlowVersionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes the particular version specified in flow version identifier.</p>"
+    },
     "DeleteEmailAddress":{
       "name":"DeleteEmailAddress",
       "http":{
@@ -1203,7 +1221,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Deletes a queue. It isn't possible to delete a queue by using the Amazon Connect admin website.</p>"
+      "documentation":"<p>Deletes a queue.</p>"
     },
     "DeleteQuickConnect":{
       "name":"DeleteQuickConnect",
@@ -1493,7 +1511,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Describes the specified flow.</p> <p>You can also create and update flows using the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/flow-language.html\">Amazon Connect Flow language</a>.</p> <p>Use the <code>$SAVED</code> alias in the request to describe the <code>SAVED</code> content of a Flow. For example, <code>arn:aws:.../contact-flow/{id}:$SAVED</code>. After a flow is published, <code>$SAVED</code> needs to be supplied to view saved content that has not been published.</p> <p>In the response, <b>Status</b> indicates the flow status as either <code>SAVED</code> or <code>PUBLISHED</code>. The <code>PUBLISHED</code> status will initiate validation on the content. <code>SAVED</code> does not initiate validation of the content. <code>SAVED</code> | <code>PUBLISHED</code> </p>"
+      "documentation":"<p>Describes the specified flow.</p> <p>You can also create and update flows using the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/flow-language.html\">Amazon Connect Flow language</a>.</p> <p>Use the <code>$SAVED</code> alias in the request to describe the <code>SAVED</code> content of a Flow. For example, <code>arn:aws:.../contact-flow/{id}:$SAVED</code>. After a flow is published, <code>$SAVED</code> needs to be supplied to view saved content that has not been published.</p> <p>Use <code>arn:aws:.../contact-flow/{id}:{version}</code> to retrieve the content of a specific flow version.</p> <p>In the response, <b>Status</b> indicates the flow status as either <code>SAVED</code> or <code>PUBLISHED</code>. The <code>PUBLISHED</code> status will initiate validation on the content. <code>SAVED</code> does not initiate validation of the content. <code>SAVED</code> | <code>PUBLISHED</code> </p>"
     },
     "DescribeContactFlowModule":{
       "name":"DescribeContactFlowModule",
@@ -7381,7 +7399,8 @@
         "AGENT_WHISPER",
         "OUTBOUND_WHISPER",
         "AGENT_TRANSFER",
-        "QUEUE_TRANSFER"
+        "QUEUE_TRANSFER",
+        "CAMPAIGN"
       ]
     },
     "ContactFlowTypes":{
@@ -7832,7 +7851,7 @@
         },
         "FlowContentSha256":{
           "shape":"FlowContentSha256",
-          "documentation":"<p>Indicates the checksum value of the flow content.</p>"
+          "documentation":"<p>Indicates the checksum value of the latest published flow content.</p>"
         }
       }
     },
@@ -7862,6 +7881,10 @@
         "FlowContentSha256":{
           "shape":"FlowContentSha256",
           "documentation":"<p>Indicates the checksum value of the flow content.</p>"
+        },
+        "ContactFlowVersion":{
+          "shape":"ResourceVersion",
+          "documentation":"<p>The identifier of the flow version.</p>"
         },
         "LastModifiedTime":{
           "shape":"Timestamp",
@@ -9613,6 +9636,39 @@
       }
     },
     "DeleteContactFlowResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteContactFlowVersionRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactFlowId",
+        "ContactFlowVersion"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactFlowId":{
+          "shape":"ARN",
+          "documentation":"<p>The identifier of the flow.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowId"
+        },
+        "ContactFlowVersion":{
+          "shape":"ResourceVersion",
+          "documentation":"<p>The identifier of the flow version.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowVersion"
+        }
+      }
+    },
+    "DeleteContactFlowVersionResponse":{
       "type":"structure",
       "members":{
       }

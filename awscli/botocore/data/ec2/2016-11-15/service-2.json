@@ -152,7 +152,7 @@
       },
       "input":{"shape":"AssignIpv6AddressesRequest"},
       "output":{"shape":"AssignIpv6AddressesResult"},
-      "documentation":"<p>Assigns one or more IPv6 addresses to the specified network interface. You can specify one or more specific IPv6 addresses, or you can specify the number of IPv6 addresses to be automatically assigned from within the subnet's IPv6 CIDR block range. You can assign as many IPv6 addresses to a network interface as you can assign private IPv4 addresses, and the limit varies per instance type.</p> <p>You must specify either the IPv6 addresses or the IPv6 address count in the request. </p> <p>You can optionally use Prefix Delegation on the network interface. You must specify either the IPV6 Prefix Delegation prefixes, or the IPv6 Prefix Delegation count. For information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-prefix-eni.html\"> Assigning prefixes to network interfaces</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Assigns the specified IPv6 addresses to the specified network interface. You can specify specific IPv6 addresses, or you can specify the number of IPv6 addresses to be automatically assigned from the subnet's IPv6 CIDR block range. You can assign as many IPv6 addresses to a network interface as you can assign private IPv4 addresses, and the limit varies by instance type.</p> <p>You must specify either the IPv6 addresses or the IPv6 address count in the request. </p> <p>You can optionally use Prefix Delegation on the network interface. You must specify either the IPV6 Prefix Delegation prefixes, or the IPv6 Prefix Delegation count. For information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-prefix-eni.html\"> Assigning prefixes to network interfaces</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "AssignPrivateIpAddresses":{
       "name":"AssignPrivateIpAddresses",
@@ -162,7 +162,7 @@
       },
       "input":{"shape":"AssignPrivateIpAddressesRequest"},
       "output":{"shape":"AssignPrivateIpAddressesResult"},
-      "documentation":"<p>Assigns one or more secondary private IP addresses to the specified network interface.</p> <p>You can specify one or more specific secondary IP addresses, or you can specify the number of secondary IP addresses to be automatically assigned within the subnet's CIDR block range. The number of secondary IP addresses that you can assign to an instance varies by instance type. For more information about Elastic IP addresses, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP Addresses</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>When you move a secondary private IP address to another network interface, any Elastic IP address that is associated with the IP address is also moved.</p> <p>Remapping an IP address is an asynchronous operation. When you move an IP address from one network interface to another, check <code>network/interfaces/macs/mac/local-ipv4s</code> in the instance metadata to confirm that the remapping is complete.</p> <p>You must specify either the IP addresses or the IP address count in the request.</p> <p>You can optionally use Prefix Delegation on the network interface. You must specify either the IPv4 Prefix Delegation prefixes, or the IPv4 Prefix Delegation count. For information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-prefix-eni.html\"> Assigning prefixes to network interfaces</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Assigns the specified secondary private IP addresses to the specified network interface.</p> <p>You can specify specific secondary IP addresses, or you can specify the number of secondary IP addresses to be automatically assigned from the subnet's CIDR block range. The number of secondary IP addresses that you can assign to an instance varies by instance type. For more information about Elastic IP addresses, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP Addresses</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>When you move a secondary private IP address to another network interface, any Elastic IP address that is associated with the IP address is also moved.</p> <p>Remapping an IP address is an asynchronous operation. When you move an IP address from one network interface to another, check <code>network/interfaces/macs/mac/local-ipv4s</code> in the instance metadata to confirm that the remapping is complete.</p> <p>You must specify either the IP addresses or the IP address count in the request.</p> <p>You can optionally use Prefix Delegation on the network interface. You must specify either the IPv4 Prefix Delegation prefixes, or the IPv4 Prefix Delegation count. For information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-prefix-eni.html\"> Assigning prefixes to network interfaces</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "AssignPrivateNatGatewayAddress":{
       "name":"AssignPrivateNatGatewayAddress",
@@ -938,7 +938,7 @@
       },
       "input":{"shape":"CreateManagedPrefixListRequest"},
       "output":{"shape":"CreateManagedPrefixListResult"},
-      "documentation":"<p>Creates a managed prefix list. You can specify one or more entries for the prefix list. Each entry consists of a CIDR block and an optional description.</p>"
+      "documentation":"<p>Creates a managed prefix list. You can specify entries for the prefix list. Each entry consists of a CIDR block and an optional description.</p>"
     },
     "CreateNatGateway":{
       "name":"CreateNatGateway",
@@ -3176,7 +3176,7 @@
       },
       "input":{"shape":"DescribeNetworkInterfacesRequest"},
       "output":{"shape":"DescribeNetworkInterfacesResult"},
-      "documentation":"<p>Describes one or more of your network interfaces.</p> <p>If you have a large number of network interfaces, the operation fails unless you use pagination or one of the following filters: <code>group-id</code>, <code>mac-address</code>, <code>private-dns-name</code>, <code>private-ip-address</code>, <code>private-dns-name</code>, <code>subnet-id</code>, or <code>vpc-id</code>.</p> <important> <p>We strongly recommend using only paginated requests. Unpaginated requests are susceptible to throttling and timeouts.</p> </important>"
+      "documentation":"<p>Describes the specified network interfaces or all your network interfaces.</p> <p>If you have a large number of network interfaces, the operation fails unless you use pagination or one of the following filters: <code>group-id</code>, <code>mac-address</code>, <code>private-dns-name</code>, <code>private-ip-address</code>, <code>private-dns-name</code>, <code>subnet-id</code>, or <code>vpc-id</code>.</p> <important> <p>We strongly recommend using only paginated requests. Unpaginated requests are susceptible to throttling and timeouts.</p> </important>"
     },
     "DescribePlacementGroups":{
       "name":"DescribePlacementGroups",
@@ -6469,7 +6469,7 @@
       },
       "input":{"shape":"UnassignIpv6AddressesRequest"},
       "output":{"shape":"UnassignIpv6AddressesResult"},
-      "documentation":"<p>Unassigns one or more IPv6 addresses IPv4 Prefix Delegation prefixes from a network interface.</p>"
+      "documentation":"<p>Unassigns the specified IPv6 addresses or Prefix Delegation prefixes from a network interface.</p>"
     },
     "UnassignPrivateIpAddresses":{
       "name":"UnassignPrivateIpAddresses",
@@ -6478,7 +6478,7 @@
         "requestUri":"/"
       },
       "input":{"shape":"UnassignPrivateIpAddressesRequest"},
-      "documentation":"<p>Unassigns one or more secondary private IP addresses, or IPv4 Prefix Delegation prefixes from a network interface.</p>"
+      "documentation":"<p>Unassigns the specified secondary private IP addresses or IPv4 Prefix Delegation prefixes from a network interface.</p>"
     },
     "UnassignPrivateNatGatewayAddress":{
       "name":"UnassignPrivateNatGatewayAddress",
@@ -8211,7 +8211,7 @@
         },
         "Ipv6Prefixes":{
           "shape":"IpPrefixList",
-          "documentation":"<p>One or more IPv6 prefixes assigned to the network interface. You cannot use this option if you use the <code>Ipv6PrefixCount</code> option.</p>",
+          "documentation":"<p>One or more IPv6 prefixes assigned to the network interface. You can't use this option if you use the <code>Ipv6PrefixCount</code> option.</p>",
           "locationName":"Ipv6Prefix"
         },
         "NetworkInterfaceId":{
@@ -8257,12 +8257,12 @@
       "members":{
         "Ipv4Prefixes":{
           "shape":"IpPrefixList",
-          "documentation":"<p>One or more IPv4 prefixes assigned to the network interface. You cannot use this option if you use the <code>Ipv4PrefixCount</code> option.</p>",
+          "documentation":"<p>One or more IPv4 prefixes assigned to the network interface. You can't use this option if you use the <code>Ipv4PrefixCount</code> option.</p>",
           "locationName":"Ipv4Prefix"
         },
         "Ipv4PrefixCount":{
           "shape":"Integer",
-          "documentation":"<p>The number of IPv4 prefixes that Amazon Web Services automatically assigns to the network interface. You cannot use this option if you use the <code>Ipv4 Prefixes</code> option.</p>"
+          "documentation":"<p>The number of IPv4 prefixes that Amazon Web Services automatically assigns to the network interface. You can't use this option if you use the <code>Ipv4 Prefixes</code> option.</p>"
         },
         "NetworkInterfaceId":{
           "shape":"NetworkInterfaceId",
@@ -15177,7 +15177,7 @@
         },
         "Groups":{
           "shape":"SecurityGroupIdStringList",
-          "documentation":"<p>The IDs of one or more security groups.</p>",
+          "documentation":"<p>The IDs of the security groups.</p>",
           "locationName":"SecurityGroupId"
         },
         "PrivateIpAddresses":{
@@ -38319,7 +38319,7 @@
         },
         "AcceleratorTypes":{
           "shape":"AcceleratorTypeSet",
-          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p> </li> <li> <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
+          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p> </li> <li> <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p> </li> <li> <p>For instance types with Inference accelerators, specify <code>inference</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
           "locationName":"acceleratorTypeSet"
         },
         "AcceleratorCount":{
@@ -38442,7 +38442,7 @@
         },
         "AcceleratorTypes":{
           "shape":"AcceleratorTypeSet",
-          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>To include instance types with GPU hardware, specify <code>gpu</code>.</p> </li> <li> <p>To include instance types with FPGA hardware, specify <code>fpga</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
+          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p> </li> <li> <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p> </li> <li> <p>For instance types with Inference accelerators, specify <code>inference</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
           "locationName":"AcceleratorType"
         },
         "AcceleratorCount":{
@@ -39707,7 +39707,15 @@
         "i8g.12xlarge",
         "i8g.16xlarge",
         "i8g.24xlarge",
-        "i8g.metal-24xl"
+        "i8g.metal-24xl",
+        "u7i-6tb.112xlarge",
+        "u7i-8tb.112xlarge",
+        "u7inh-32tb.480xlarge",
+        "p5e.48xlarge",
+        "p5en.48xlarge",
+        "f2.12xlarge",
+        "f2.48xlarge",
+        "trn2.48xlarge"
       ]
     },
     "InstanceTypeHypervisor":{
@@ -41874,7 +41882,7 @@
           "documentation":"<p>The IPv6 prefix.</p>"
         }
       },
-      "documentation":"<p>Describes the IPv4 prefix option for a network interface.</p>"
+      "documentation":"<p>Describes the IPv6 prefix option for a network interface.</p>"
     },
     "Ipv6PrefixSpecificationResponse":{
       "type":"structure",
@@ -61959,7 +61967,7 @@
         },
         "UnassignedIpv6Prefixes":{
           "shape":"IpPrefixList",
-          "documentation":"<p>The IPv4 prefixes that have been unassigned from the network interface.</p>",
+          "documentation":"<p>The IPv6 prefixes that have been unassigned from the network interface.</p>",
           "locationName":"unassignedIpv6PrefixSet"
         }
       }

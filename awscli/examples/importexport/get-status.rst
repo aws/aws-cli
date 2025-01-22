@@ -6,7 +6,7 @@ The output for the get-status command looks like the following::
 
   2015-05-27T18:58:21Z    manifestVersion:2.0
   generator:Text editor
-  bucket:myBucket
+  bucket:amzn-s3-demo-bucket
   deviceId:49382
   eraseDevice:yes
   notificationEmail:john.doe@example.com;jane.roe@example.com

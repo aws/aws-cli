@@ -1314,7 +1314,16 @@
     },
     "FlowCompletionReason":{
       "type":"string",
-      "enum":["SUCCESS"]
+      "enum":[
+        "SUCCESS",
+        "INPUT_REQUIRED"
+      ]
+    },
+    "FlowExecutionId":{
+      "type":"string",
+      "max":100,
+      "min":2,
+      "pattern":"^[0-9a-zA-Z._:-]+$"
     },
     "FlowIdentifier":{
       "type":"string",
@@ -1326,13 +1335,16 @@
       "type":"structure",
       "required":[
         "content",
-        "nodeName",
-        "nodeOutputName"
+        "nodeName"
       ],
       "members":{
         "content":{
           "shape":"FlowInputContent",
           "documentation":"<p>Contains information about an input into the prompt flow.</p>"
+        },
+        "nodeInputName":{
+          "shape":"NodeInputName",
+          "documentation":"<p>The name of the input from the flow input node.</p>"
         },
         "nodeName":{
           "shape":"NodeName",
@@ -1362,6 +1374,42 @@
       "member":{"shape":"FlowInput"},
       "max":1,
       "min":1
+    },
+    "FlowMultiTurnInputContent":{
+      "type":"structure",
+      "members":{
+        "document":{
+          "shape":"Document",
+          "documentation":"<p>The requested additional input to send back to the multi-turn flow node.</p>"
+        }
+      },
+      "documentation":"<p>The content structure containing input information for multi-turn flow interactions.</p>",
+      "union":true
+    },
+    "FlowMultiTurnInputRequestEvent":{
+      "type":"structure",
+      "required":[
+        "content",
+        "nodeName",
+        "nodeType"
+      ],
+      "members":{
+        "content":{
+          "shape":"FlowMultiTurnInputContent",
+          "documentation":"<p>The content payload containing the input request details for the multi-turn interaction.</p>"
+        },
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the node in the flow that is requesting the input.</p>"
+        },
+        "nodeType":{
+          "shape":"NodeType",
+          "documentation":"<p>The type of the node in the flow that is requesting the input.</p>"
+        }
+      },
+      "documentation":"<p>Response object from the flow multi-turn node requesting additional information.</p>",
+      "event":true,
+      "sensitive":true
     },
     "FlowOutputContent":{
       "type":"structure",
@@ -1421,6 +1469,10 @@
         "flowCompletionEvent":{
           "shape":"FlowCompletionEvent",
           "documentation":"<p>Contains information about why the flow completed.</p>"
+        },
+        "flowMultiTurnInputRequestEvent":{
+          "shape":"FlowMultiTurnInputRequestEvent",
+          "documentation":"<p>The event stream containing the multi-turn input request information from the flow.</p>"
         },
         "flowOutputEvent":{
           "shape":"FlowOutputEvent",
@@ -2805,6 +2857,10 @@
           "shape":"Boolean",
           "documentation":"<p>Specifies whether to return the trace for the flow or not. Traces track inputs and outputs for nodes in the flow. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html\">Track each step in your prompt flow by viewing its trace in Amazon Bedrock</a>.</p>"
         },
+        "executionId":{
+          "shape":"FlowExecutionId",
+          "documentation":"<p>The unique identifier for the current flow execution. If you don't provide a value, Amazon Bedrock creates the identifier for you. </p>"
+        },
         "flowAliasIdentifier":{
           "shape":"FlowAliasIdentifier",
           "documentation":"<p>The unique identifier of the flow alias.</p>",
@@ -2831,6 +2887,12 @@
       "type":"structure",
       "required":["responseStream"],
       "members":{
+        "executionId":{
+          "shape":"FlowExecutionId",
+          "documentation":"<p>The unique identifier for the current flow execution.</p>",
+          "location":"header",
+          "locationName":"x-amz-bedrock-flow-execution-id"
+        },
         "responseStream":{
           "shape":"FlowResponseStream",
           "documentation":"<p>The output of the flow, returned as a stream. If there's an error, the error is returned.</p>"

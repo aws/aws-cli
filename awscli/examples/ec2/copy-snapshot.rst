@@ -6,15 +6,13 @@ The following ``copy-snapshot`` example command copies the specified snapshot fr
         --region us-east-1 \
         --source-region us-west-2 \
         --source-snapshot-id snap-066877671789bd71b \
-        --description "This is my copied snapshot."
+        --description 'This is my copied snapshot.'
 
 Output::
 
     {
         "SnapshotId": "snap-066877671789bd71b"
     }
-
-For more information, see `Copy an Amazon EBS snapshot <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-copy-snapshot.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 2: To copy an unencrypted snapshot and encrypt the new snapshot**
 
@@ -32,4 +30,4 @@ Output::
         "SnapshotId": "snap-066877671789bd71b"
     }
 
-For more information, see `Copy an Amazon EBS snapshot <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-copy-snapshot.html>`__ in the *Amazon EC2 User Guide*.
+For more information, see `Copy an Amazon EBS snapshot <https://docs.aws.amazon.com/ebs/latest/userguide/ebs-copy-snapshot.html>`__ in the *Amazon EBS User Guide*.

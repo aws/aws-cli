@@ -45,11 +45,11 @@ Output::
 
 The following ``cp`` command copies a single object to a specified bucket while retaining its original name::
 
-    aws s3 cp s3://mybucket/test.txt s3://mybucket2/
+    aws s3 cp s3://mybucket/test.txt s3://amzn-s3-demo-bucket2/
 
 Output::
 
-    copy: s3://mybucket/test.txt to s3://mybucket2/test.txt
+    copy: s3://mybucket/test.txt to s3://amzn-s3-demo-bucket2/test.txt
 
 **Example 6: Recursively copying S3 objects to a local directory**
 
@@ -85,25 +85,25 @@ When passed with the parameter ``--recursive``, the following ``cp`` command rec
 specified bucket to another bucket while excluding some objects by using an ``--exclude`` parameter.  In this example,
 the bucket ``mybucket`` has the objects ``test1.txt`` and ``another/test1.txt``::
 
-    aws s3 cp s3://mybucket/ s3://mybucket2/ \
+    aws s3 cp s3://mybucket/ s3://amzn-s3-demo-bucket2/ \
         --recursive \
         --exclude "another/*"
 
 Output::
 
-    copy: s3://mybucket/test1.txt to s3://mybucket2/test1.txt
+    copy: s3://mybucket/test1.txt to s3://amzn-s3-demo-bucket2/test1.txt
 
 You can combine ``--exclude`` and ``--include`` options to copy only objects that match a pattern, excluding all others::
 
-    aws s3 cp s3://mybucket/logs/ s3://mybucket2/logs/ \
+    aws s3 cp s3://mybucket/logs/ s3://amzn-s3-demo-bucket2/logs/ \
         --recursive \
         --exclude "*" \
         --include "*.log"
 
 Output::
 
-    copy: s3://mybucket/logs/test/test.log to s3://mybucket2/logs/test/test.log
-    copy: s3://mybucket/logs/test3.log to s3://mybucket2/logs/test3.log
+    copy: s3://mybucket/logs/test/test.log to s3://amzn-s3-demo-bucket2/logs/test/test.log
+    copy: s3://mybucket/logs/test3.log to s3://amzn-s3-demo-bucket2/logs/test3.log
 
 **Example 9: Setting the Access Control List (ACL) while copying an S3 object**
 

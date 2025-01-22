@@ -27,7 +27,9 @@ jobs:
         run: |
           gh pr checkout $PR_NUMBER
           PR_COMMITS=$(gh pr view $PR_NUMBER --json commits --jq '.commits[].oid')
-          echo "PR_COMMITS=$PR_COMMITS" >> $GITHUB_OUTPUT
+          echo "PR_COMMITS<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$PR_COMMITS" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.inputs.pr_number }}

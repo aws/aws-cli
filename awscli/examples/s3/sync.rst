@@ -21,15 +21,15 @@ prefix and bucket by copying S3 objects. An S3 object will require copying if th
 the last modified time of the source is newer than the last modified time of the destination, or the S3 object does not
 exist under the specified bucket and prefix destination. 
 
-In this example, the user syncs the bucket ``mybucket`` to the bucket ``mybucket2``. The bucket ``mybucket`` contains the objects ``test.txt`` and ``test2.txt``. The bucket
-``mybucket2`` contains no objects::
+In this example, the user syncs the bucket ``mybucket`` to the bucket ``amzn-s3-demo-bucket2``. The bucket ``mybucket`` contains the objects ``test.txt`` and ``test2.txt``. The bucket
+``amzn-s3-demo-bucket2`` contains no objects::
 
-    aws s3 sync s3://mybucket s3://mybucket2
+    aws s3 sync s3://mybucket s3://amzn-s3-demo-bucket2
 
 Output::
 
-    copy: s3://mybucket/test.txt to s3://mybucket2/test.txt
-    copy: s3://mybucket/test2.txt to s3://mybucket2/test2.txt
+    copy: s3://mybucket/test.txt to s3://amzn-s3-demo-bucket2/test.txt
+    copy: s3://mybucket/test2.txt to s3://amzn-s3-demo-bucket2/test2.txt
 
 **Example 3: Sync all S3 objects from the specified S3 bucket to the local directory**
 

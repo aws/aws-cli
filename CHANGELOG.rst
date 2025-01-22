@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.23.4
+======
+
+* api-change:``workspaces-thin-client``: Rename WorkSpaces Web to WorkSpaces Secure Browser
+* api-change:``bedrock-agent-runtime``: Adds multi-turn input support for an Agent node in an Amazon Bedrock Flow
+* api-change:``medialive``: AWS Elemental MediaLive adds a new feature, ID3 segment tagging, in CMAF Ingest output groups. It allows customers to insert ID3 tags into every output segment, controlled by a newly added channel schedule action Id3SegmentTagging.
+* api-change:``glue``: Docs Update for timeout changes
+
+
 2.23.3
 ======
 

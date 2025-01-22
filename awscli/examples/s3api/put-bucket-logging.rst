@@ -65,7 +65,7 @@ Contents of ``logging.json``::
     {
         "LoggingEnabled": {
             "TargetBucket": "amzn-s3-demo-bucket",
-            "TargetPrefix": "amzn-s3-demo-bucketLogs/",
+            "TargetPrefix": "amzn-s3-demo-bucket-logs/",
             "TargetGrants": [
                 {
                     "Grantee": {

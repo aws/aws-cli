@@ -21,4 +21,4 @@ The data feed is stored in the Amazon S3 bucket that you specified. The file nam
 
     my-bucket.s3.amazonaws.com/spot-data-feed/123456789012.YYYY-MM-DD-HH.n.abcd1234.gz
 
-For more information, see `Spot Instance data feed <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-data-feeds.html>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Spot Instance data feed <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-data-feeds.html>`__ in the *Amazon EC2 User Guide*.

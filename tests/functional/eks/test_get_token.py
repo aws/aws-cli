@@ -25,6 +25,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         super(TestGetTokenCommand, self).setUp()
         self.cluster_name = 'MyCluster'
         self.role_arn = 'arn:aws:iam::012345678910:role/RoleArn'
+        self.session_name = 'CustomSessionName123'
         self.access_key = 'ABCDEFGHIJKLMNOPQRST'
         self.secret_key = 'TSRQPONMLKJUHGFEDCBA'
         self.session_token = 'TOKENTOKENTOKENTOKEN'
@@ -171,6 +172,28 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         self.assertEqual(
             assume_role_call[1],
             {'RoleArn': self.role_arn, 'RoleSessionName': 'EKSGetTokenAuth'},
+        )
+        self.assert_url_correct(response, has_session_token=True)
+
+    def test_url_with_arn_and_session_name(self):
+        cmd = 'eks get-token --cluster-name %s' % self.cluster_name
+        cmd += ' --role-arn %s' % self.role_arn
+        cmd += ' --session-name %s' % self.session_name
+        self.parsed_responses = [
+            {
+                "Credentials": {
+                    "AccessKeyId": self.access_key,
+                    "SecretAccessKey": self.secret_key,
+                    "SessionToken": self.session_token,
+                },
+            }
+        ]
+        response = self.run_get_token(cmd)
+        assume_role_call = self.operations_called[0]
+        self.assertEqual(assume_role_call[0].name, 'AssumeRole')
+        self.assertEqual(
+            assume_role_call[1],
+            {'RoleArn': self.role_arn, 'RoleSessionName': self.session_name},
         )
         self.assert_url_correct(response, has_session_token=True)
 

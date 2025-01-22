@@ -20,7 +20,6 @@ from awscli.errorhandler import SilenceParamValidationMsgErrorHandler
 
 
 class AutoPromptDriver:
-
     _NO_PROMPT_ARGS = ['help', '--version']
     _CLI_AUTO_PROMPT_OPTION = '--cli-auto-prompt'
     _NO_CLI_AUTO_PROMPT_OPTION = '--no-cli-auto-prompt'
@@ -32,13 +31,15 @@ class AutoPromptDriver:
         self._driver = driver
         if self._completion_source is None:
             self._completion_source = create_autocompleter(
-                driver=self._driver, response_filter=fuzzy_filter)
+                driver=self._driver, response_filter=fuzzy_filter
+            )
 
     @property
     def prompter(self):
         if self._prompter is None:
-            self._prompter = AutoPrompter(self._completion_source,
-                                          self._driver)
+            self._prompter = AutoPrompter(
+                self._completion_source, self._driver
+            )
         return self._prompter
 
     def validate_auto_prompt_args_are_mutually_exclusive(self, args):
@@ -84,12 +85,14 @@ class AutoPrompter:
     the UI prompt backend easily if needed.
 
     """
+
     def __init__(self, completion_source, driver, prompter=None):
         self._completion_source = completion_source
         self._driver = driver
         if prompter is None:
-            prompter = PromptToolkitPrompter(self._completion_source,
-                                             self._driver)
+            prompter = PromptToolkitPrompter(
+                self._completion_source, self._driver
+            )
         self._prompter = prompter
 
     def prompt_for_values(self, original_args):

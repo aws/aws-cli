@@ -34,13 +34,16 @@ class OutputGetter:
 
     def get_output(self, parsed):
         operation_model = self._cli_driver_fetcher.get_operation_model(
-            parsed.lineage, parsed.current_command)
+            parsed.lineage, parsed.current_command
+        )
         if operation_model:
             output_shape = getattr(operation_model, 'output_shape', None)
             if self._shape_has_members(output_shape):
                 operation = ''.join(
-                    [part.capitalize()
-                     for part in parsed.current_command.split('-')]
+                    [
+                        part.capitalize()
+                        for part in parsed.current_command.split('-')
+                    ]
                 )
                 output, error_message = self._get_output(parsed)
                 if error_message is not None:
@@ -48,13 +51,15 @@ class OutputGetter:
                 query, error_message = self._get_query(parsed)
                 if error_message is not None:
                     return error_message
-                return self._get_display(operation, output_shape,
-                                         output, query)
+                return self._get_display(
+                    operation, output_shape, output, query
+                )
         return 'No output'
 
     def _shape_has_members(self, shape):
-        return shape and (getattr(shape, 'members', False) or
-                          getattr(shape, 'member', False))
+        return shape and (
+            getattr(shape, 'members', False) or getattr(shape, 'member', False)
+        )
 
     def _get_output(self, parsed):
         error_message = None
@@ -65,8 +70,8 @@ class OutputGetter:
         output = parsed.global_params.get('output') or session_output
         if output not in self._output_formats:
             error_message = (
-                "Bad value for --output: %s\n\nValid values are: %s" %
-                (output, ', '.join(self._output_formats))
+                "Bad value for --output: %s\n\nValid values are: %s"
+                % (output, ', '.join(self._output_formats))
             )
         return output, error_message
 

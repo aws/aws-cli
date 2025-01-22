@@ -25,16 +25,30 @@ from prompt_toolkit.layout.controls import BufferControl
 from prompt_toolkit.layout.dimension import Dimension
 from prompt_toolkit.layout.processors import Processor, Transformation
 from prompt_toolkit.layout import (
-    HSplit, Window, VSplit, FloatContainer, Float, ConditionalContainer
+    HSplit,
+    Window,
+    VSplit,
+    FloatContainer,
+    Float,
+    ConditionalContainer,
 )
 from prompt_toolkit.widgets import (
-    Frame, HorizontalLine, Dialog, Button, TextArea, Label
+    Frame,
+    HorizontalLine,
+    Dialog,
+    Button,
+    TextArea,
+    Label,
 )
 from prompt_toolkit.widgets.base import Border
 
 from awscli.autoprompt.filters import (
-    help_section_visible, doc_window_has_focus, search_input_has_focus,
-    input_buffer_has_focus, is_history_mode, is_debug_mode,
+    help_section_visible,
+    doc_window_has_focus,
+    search_input_has_focus,
+    input_buffer_has_focus,
+    is_history_mode,
+    is_debug_mode,
 )
 
 
@@ -43,24 +57,30 @@ class FormatTextProcessor(Processor):
     format inside a ``prompt_toolkit.buffer.Buffer``.
 
     """
+
     def apply_transformation(self, text_input):
         # https://python-prompt-toolkit.readthedocs.io/en/master/pages/reference.html#module-prompt_toolkit.formatted_text
         fragments = to_formatted_text(
-            HTML(fragment_list_to_text(text_input.fragments)))
+            HTML(fragment_list_to_text(text_input.fragments))
+        )
         return Transformation(fragments)
 
 
 class TitleLine:
-
     def __init__(self, title):
         fill = partial(Window, style='class:frame.border')
-        self.container = VSplit([
-            fill(char=Border.HORIZONTAL),
-            fill(width=1, height=1, char='|'),
-            Label(title, style='class:frame.label', dont_extend_width=True),
-            fill(width=1, height=1, char='|'),
-            fill(char=Border.HORIZONTAL),
-        ], height=1)
+        self.container = VSplit(
+            [
+                fill(char=Border.HORIZONTAL),
+                fill(width=1, height=1, char='|'),
+                Label(
+                    title, style='class:frame.label', dont_extend_width=True
+                ),
+                fill(width=1, height=1, char='|'),
+                fill(char=Border.HORIZONTAL),
+            ],
+            height=1,
+        )
 
     def __pt_container__(self):
         return self.container
@@ -92,10 +112,10 @@ class BaseHelpContainer(ConditionalContainer):
             content=BufferControl(
                 buffer=help_buffer,
                 input_processors=[FormatTextProcessor()],
-                focusable=self.FOCUSABLE
+                focusable=self.FOCUSABLE,
             ),
             wrap_lines=True,
-            **self.DIMENSIONS
+            **self.DIMENSIONS,
         )
 
 
@@ -106,7 +126,7 @@ class BaseHelpView(BaseHelpContainer):
     def create_window(self, help_buffer):
         return Frame(
             super(BaseHelpView, self).create_window(help_buffer),
-            title=self.TITLE
+            title=self.TITLE,
         )
 
 
@@ -203,7 +223,7 @@ class InputToolbarView(BaseToolbarView):
             f'{self.STYLE}[F2]</style> Focus on next panel{self.SPACING}'
             f'{self.STYLE}[F3]</style> Hide/Show Docs{self.SPACING}'
             f'{self.STYLE}[F5]</style> Hide/Show Output'
-            )
+        )
 
 
 class OutputToolbarView(BaseToolbarView):
@@ -217,7 +237,7 @@ class OutputToolbarView(BaseToolbarView):
             f'{self.STYLE}[F2]</style> Focus on next panel{self.SPACING}'
             f'{self.STYLE}[F3]</style> Hide/Show Docs{self.SPACING}'
             f'{self.STYLE}[F5]</style> Hide/Show Output'
-            )
+        )
 
 
 class DebugToolbarView(BaseToolbarView):
@@ -226,9 +246,7 @@ class DebugToolbarView(BaseToolbarView):
 
     @property
     def help_text(self):
-        return (
-            f'{self.STYLE}[CONTROL+S]</style> Save log to file'
-        )
+        return f'{self.STYLE}[CONTROL+S]</style> Save log to file'
 
 
 class HistorySignToolbarView(BaseToolbarView):
@@ -246,31 +264,37 @@ class HistorySignToolbarView(BaseToolbarView):
 
 
 class ToolbarWidget:
-
     def __init__(self):
-        self.container = HSplit([
-            ConditionalContainer(HorizontalLine(), ~help_section_visible),
-            VSplit([
-                HistorySignToolbarView(),
-                ConditionalContainer(
-                    VSplit([InputToolbarView(),
-                            DocToolbarView(),
-                            OutputToolbarView()]),
-                    ~help_section_visible
-                )
-            ])
-        ])
+        self.container = HSplit(
+            [
+                ConditionalContainer(HorizontalLine(), ~help_section_visible),
+                VSplit(
+                    [
+                        HistorySignToolbarView(),
+                        ConditionalContainer(
+                            VSplit(
+                                [
+                                    InputToolbarView(),
+                                    DocToolbarView(),
+                                    OutputToolbarView(),
+                                ]
+                            ),
+                            ~help_section_visible,
+                        ),
+                    ]
+                ),
+            ]
+        )
 
     def __pt_container__(self):
         return self.container
 
 
 class HelpPanelWidget:
-
     def __init__(self):
         self.container = ConditionalContainer(
             HSplit([DocHelpView(), InputHelpView(), OutputHelpView()]),
-            help_section_visible
+            help_section_visible,
         )
 
     def __pt_container__(self):
@@ -289,7 +313,8 @@ class DebugPanelWidget:
 
         _kb = KeyBindings()
         _kb.add(Keys.ControlS, filter=is_debug_mode, is_global=True)(
-            self._activate_dialog)
+            self._activate_dialog
+        )
 
         self.float_container = FloatContainer(
             Window(
@@ -299,19 +324,21 @@ class DebugPanelWidget:
                 wrap_lines=True,
             ),
             key_bindings=_kb,
-            floats=[]
+            floats=[],
         )
         self.container = ConditionalContainer(
             Frame(
-                HSplit([
-                    self.float_container,
-                    HorizontalLine(),
-                    DebugToolbarView()
-                ]),
+                HSplit(
+                    [
+                        self.float_container,
+                        HorizontalLine(),
+                        DebugToolbarView(),
+                    ]
+                ),
                 **self.DIMENSIONS,
-                title='Debug panel'
+                title='Debug panel',
             ),
-            filter=is_debug_mode
+            filter=is_debug_mode,
         )
 
     def _activate_dialog(self, event):
@@ -347,15 +374,20 @@ class DebugPanelWidget:
 
         dialog = Dialog(
             title='Save logs to file',
-            body=HSplit([
-                Label(text='Log file name', dont_extend_height=True),
-                textfield,
-            ], padding=Dimension(preferred=1, max=1)),
+            body=HSplit(
+                [
+                    Label(text='Log file name', dont_extend_height=True),
+                    textfield,
+                ],
+                padding=Dimension(preferred=1, max=1),
+            ),
             buttons=[ok_button, cancel_button],
-            with_background=True)
+            with_background=True,
+        )
         # add keybinding to save file on press Enter in textfield
         dialog.container.body.container.content.key_bindings.add(
-            Keys.Enter, filter=has_focus(textfield))(ok_handler)
+            Keys.Enter, filter=has_focus(textfield)
+        )(ok_handler)
 
         return dialog
 

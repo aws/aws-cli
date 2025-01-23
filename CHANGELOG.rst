@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.23.5
+======
+
+* api-change:``ec2``: Added "future" allocation type for future dated capacity reservation
+
+
 2.23.4
 ======
 

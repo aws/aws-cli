@@ -2,6 +2,51 @@
 CHANGELOG
 =========
 
+1.37.5
+======
+
+* api-change:``ec2``: Added "future" allocation type for future dated capacity reservation
+
+
+1.37.4
+======
+
+* api-change:``bedrock-agent-runtime``: Adds multi-turn input support for an Agent node in an Amazon Bedrock Flow
+* api-change:``glue``: Docs Update for timeout changes
+* api-change:``medialive``: AWS Elemental MediaLive adds a new feature, ID3 segment tagging, in CMAF Ingest output groups. It allows customers to insert ID3 tags into every output segment, controlled by a newly added channel schedule action Id3SegmentTagging.
+* api-change:``workspaces-thin-client``: Rename WorkSpaces Web to WorkSpaces Secure Browser
+
+
+1.37.3
+======
+
+* api-change:``batch``: Documentation-only update: clarified the description of the shareDecaySeconds parameter of the FairsharePolicy data type, clarified the description of the priority parameter of the JobQueueDetail data type.
+* api-change:``cognito-idp``: corrects the dual-stack endpoint configuration for cognitoidp
+* api-change:``connect``: Added DeleteContactFlowVersion API and the CAMPAIGN flow type
+* api-change:``emr-serverless``: Increasing entryPoint in SparkSubmit to accept longer script paths. New limit is 4kb.
+* api-change:``iotsitewise``: AWS IoT SiteWise now supports ingestion and querying of Null (all data types) and NaN (double type) values of bad or uncertain data quality. New partial error handling prevents data loss during ingestion. Enabled by default for new customers; existing customers can opt-in.
+* api-change:``logs``: Documentation-only update to address doc errors
+* api-change:``quicksight``: Added `DigitGroupingStyle` in ThousandsSeparator to allow grouping by `LAKH`( Indian Grouping system ) currency. Support LAKH and `CRORE` currency types in Column Formatting.
+* api-change:``sns``: This release adds support for the topic attribute FifoThroughputScope for SNS FIFO topics. For details, see the documentation history in the Amazon Simple Notification Service Developer Guide.
+
+
+1.37.2
+======
+
+* api-change:``bedrock-runtime``: Allow hyphens in tool name for Converse and ConverseStream APIs
+* api-change:``detective``: Doc only update for Detective documentation.
+* api-change:``ec2``: Release u7i-6tb.112xlarge, u7i-8tb.112xlarge, u7inh-32tb.480xlarge, p5e.48xlarge, p5en.48xlarge, f2.12xlarge, f2.48xlarge, trn2.48xlarge instance types.
+* api-change:``notifications``: Added support for Managed Notifications, integration with AWS Organization and added aggregation summaries for Aggregate Notifications
+* api-change:``sagemaker``: Correction of docs for  "Added support for ml.trn1.32xlarge instance type in Reserved Capacity Offering"
+
+
+1.37.1
+======
+
+* api-change:``ecs``: The release addresses Amazon ECS documentation tickets.
+* api-change:``sagemaker``: Added support for ml.trn1.32xlarge instance type in Reserved Capacity Offering
+
+
 1.37.0
 ======
 

@@ -12,7 +12,7 @@ The following ``export-journal-to-s3`` example creates an export job for journal
 Contents of ``my-s3-export-config.json``::
 
     {
-        "Bucket": "awsExampleBucket",
+        "Bucket": "amzn-s3-demo-bucket",
         "Prefix": "ledgerexport1/",
         "EncryptionConfiguration": {
             "ObjectEncryptionType": "SSE_S3"

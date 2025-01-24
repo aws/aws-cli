@@ -357,17 +357,14 @@ class Session(object):
         # profile config or an empty config dict if we don't have
         # a default profile.
         if profile_name is None:
-            config = profile_map.get('default', {})
+            return profile_map.get('default', {})
         elif profile_name not in profile_map:
             # Otherwise if they specified a profile, it has to
             # exist (even if it's the default profile) otherwise
             # we complain.
             raise ProfileNotFound(profile=profile_name)
         else:
-            config = profile_map[profile_name]
-        if 'output' not in config:
-            config['output'] = 'json'
-        return config
+            return profile_map[profile_name]
 
     @property
     def full_config(self):

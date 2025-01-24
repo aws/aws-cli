@@ -482,15 +482,12 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
 
     def _prompt_for_cli_output_format(self):
         return self._prompt_for_profile_config(
-            'output', 'CLI default output format',
+            'output', 'CLI default output format (json if not specified)',
             completions=list(CLI_OUTPUT_FORMATS.keys()),
         )
 
     def _prompt_for_profile_config(self, config_name, text, completions=None):
         current_value = self._profile_config.get(config_name)
-
-        if config_name == 'output' and not current_value:
-            current_value = 'json'
 
         new_value = self._prompter.get_value(
             current_value, text,

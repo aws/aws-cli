@@ -1,0 +1,26 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "module1"
+authors = [
+    {name = "Sir Röbin", email = "robin@camelot.uk"}
+]
+readme = "README.rst"
+license = {file = "LICENSE"}
+requires-python = ">=3.7"
+dependencies = [
+    "requests >= 2.18",
+    "docutils",
+]
+dynamic = [
+    "version",
+    "description",
+]
+
+[project.scripts]
+foo = "module1:main"
+
+[tool.flit.external-data]
+directory = "data"

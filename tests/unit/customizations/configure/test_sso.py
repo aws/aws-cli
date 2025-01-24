@@ -375,7 +375,7 @@ def region_prompt():
 
 @pytest.fixture
 def output_prompt():
-    return OutputPrompt(answer="json", expected_default="json")
+    return OutputPrompt(answer="json", expected_default=None)
 
 
 @pytest.fixture
@@ -681,7 +681,7 @@ class RegionPrompt(PromptWithDefault):
 @dataclasses.dataclass
 class OutputPrompt(PromptWithDefault):
     msg_format: str = dataclasses.field(
-        init=False, default="CLI default output format [{default}]: "
+        init=False, default="CLI default output format (json if not specified) [{default}]: "
     )
 
 
@@ -1113,7 +1113,7 @@ class TestConfigureSSOCommand:
             ],
         )
 
-    def test_cli_config_is_none_defaults_to_json(
+    def test_cli_config_is_none_not_written(
         self,
         sso_cmd,
         ptk_stubber,
@@ -1143,7 +1143,6 @@ class TestConfigureSSOCommand:
                 f"sso_region = {inputs.sso_region_prompt.answer}",
                 f"sso_account_id = {account_id}",
                 f"sso_role_name = {role_name}",
-                "output = json",
             ],
         )
 

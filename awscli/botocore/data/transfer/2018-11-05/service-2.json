@@ -49,7 +49,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ResourceExistsException"}
       ],
-      "documentation":"<p>Creates an agreement. An agreement is a bilateral trading partner agreement, or partnership, between an Transfer Family server and an AS2 process. The agreement defines the file and message transfer relationship between the server and the AS2 process. To define an agreement, Transfer Family combines a server, local profile, partner profile, certificate, and other attributes.</p> <p>The partner is identified with the <code>PartnerProfileId</code>, and the AS2 process is identified with the <code>LocalProfileId</code>.</p>"
+      "documentation":"<p>Creates an agreement. An agreement is a bilateral trading partner agreement, or partnership, between an Transfer Family server and an AS2 process. The agreement defines the file and message transfer relationship between the server and the AS2 process. To define an agreement, Transfer Family combines a server, local profile, partner profile, certificate, and other attributes.</p> <p>The partner is identified with the <code>PartnerProfileId</code>, and the AS2 process is identified with the <code>LocalProfileId</code>.</p> <note> <p>Specify <i>either</i> <code>BaseDirectory</code> or <code>CustomDirectories</code>, but not both. Specifying both causes the command to fail.</p> </note>"
     },
     "CreateConnector":{
       "name":"CreateConnector",
@@ -1028,7 +1028,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ResourceExistsException"}
       ],
-      "documentation":"<p>Updates some of the parameters for an existing agreement. Provide the <code>AgreementId</code> and the <code>ServerId</code> for the agreement that you want to update, along with the new values for the parameters to update.</p>"
+      "documentation":"<p>Updates some of the parameters for an existing agreement. Provide the <code>AgreementId</code> and the <code>ServerId</code> for the agreement that you want to update, along with the new values for the parameters to update.</p> <note> <p>Specify <i>either</i> <code>BaseDirectory</code> or <code>CustomDirectories</code>, but not both. Specifying both causes the command to fail.</p> <p>If you update an agreement from using base directory to custom directories, the base directory is no longer used. Similarly, if you change from custom directories to a base directory, the custom directories are no longer used.</p> </note>"
     },
     "UpdateCertificate":{
       "name":"UpdateCertificate",
@@ -1482,7 +1482,6 @@
         "ServerId",
         "LocalProfileId",
         "PartnerProfileId",
-        "BaseDirectory",
         "AccessRole"
       ],
       "members":{
@@ -1525,6 +1524,10 @@
         "EnforceMessageSigning":{
           "shape":"EnforceMessageSigningType",
           "documentation":"<p> Determines whether or not unsigned messages from your trading partners will be accepted. </p> <ul> <li> <p> <code>ENABLED</code>: Transfer Family rejects unsigned messages from your trading partner.</p> </li> <li> <p> <code>DISABLED</code> (default value): Transfer Family accepts unsigned messages from your trading partner.</p> </li> </ul>"
+        },
+        "CustomDirectories":{
+          "shape":"CustomDirectoriesType",
+          "documentation":"<p>A <code>CustomDirectoriesType</code> structure. This structure specifies custom directories for storing various AS2 message files. You can specify directories for the following types of files.</p> <ul> <li> <p>Failed files</p> </li> <li> <p>MDN files</p> </li> <li> <p>Payload files</p> </li> <li> <p>Status files</p> </li> <li> <p>Temporary files</p> </li> </ul>"
         }
       }
     },
@@ -1833,6 +1836,39 @@
           "documentation":"<p>A unique identifier for the workflow.</p>"
         }
       }
+    },
+    "CustomDirectoriesType":{
+      "type":"structure",
+      "required":[
+        "FailedFilesDirectory",
+        "MdnFilesDirectory",
+        "PayloadFilesDirectory",
+        "StatusFilesDirectory",
+        "TemporaryFilesDirectory"
+      ],
+      "members":{
+        "FailedFilesDirectory":{
+          "shape":"HomeDirectory",
+          "documentation":"<p>Specifies a location to store failed AS2 message files.</p>"
+        },
+        "MdnFilesDirectory":{
+          "shape":"HomeDirectory",
+          "documentation":"<p>Specifies a location to store MDN files.</p>"
+        },
+        "PayloadFilesDirectory":{
+          "shape":"HomeDirectory",
+          "documentation":"<p>Specifies a location to store the payload for AS2 message files.</p>"
+        },
+        "StatusFilesDirectory":{
+          "shape":"HomeDirectory",
+          "documentation":"<p>Specifies a location to store AS2 status messages.</p>"
+        },
+        "TemporaryFilesDirectory":{
+          "shape":"HomeDirectory",
+          "documentation":"<p>Specifies a location to store temporary AS2 message files.</p>"
+        }
+      },
+      "documentation":"<p>Contains Amazon S3 locations for storing specific types of AS2 message files.</p>"
     },
     "CustomStepDetails":{
       "type":"structure",
@@ -2478,6 +2514,10 @@
         "EnforceMessageSigning":{
           "shape":"EnforceMessageSigningType",
           "documentation":"<p> Determines whether or not unsigned messages from your trading partners will be accepted. </p> <ul> <li> <p> <code>ENABLED</code>: Transfer Family rejects unsigned messages from your trading partner.</p> </li> <li> <p> <code>DISABLED</code> (default value): Transfer Family accepts unsigned messages from your trading partner.</p> </li> </ul>"
+        },
+        "CustomDirectories":{
+          "shape":"CustomDirectoriesType",
+          "documentation":"<p>A <code>CustomDirectoriesType</code> structure. This structure specifies custom directories for storing various AS2 message files. You can specify directories for the following types of files.</p> <ul> <li> <p>Failed files</p> </li> <li> <p>MDN files</p> </li> <li> <p>Payload files</p> </li> <li> <p>Status files</p> </li> <li> <p>Temporary files</p> </li> </ul>"
         }
       },
       "documentation":"<p>Describes the properties of an agreement.</p>"
@@ -5406,6 +5446,10 @@
         "EnforceMessageSigning":{
           "shape":"EnforceMessageSigningType",
           "documentation":"<p> Determines whether or not unsigned messages from your trading partners will be accepted. </p> <ul> <li> <p> <code>ENABLED</code>: Transfer Family rejects unsigned messages from your trading partner.</p> </li> <li> <p> <code>DISABLED</code> (default value): Transfer Family accepts unsigned messages from your trading partner.</p> </li> </ul>"
+        },
+        "CustomDirectories":{
+          "shape":"CustomDirectoriesType",
+          "documentation":"<p>A <code>CustomDirectoriesType</code> structure. This structure specifies custom directories for storing various AS2 message files. You can specify directories for the following types of files.</p> <ul> <li> <p>Failed files</p> </li> <li> <p>MDN files</p> </li> <li> <p>Payload files</p> </li> <li> <p>Status files</p> </li> <li> <p>Temporary files</p> </li> </ul>"
         }
       }
     },

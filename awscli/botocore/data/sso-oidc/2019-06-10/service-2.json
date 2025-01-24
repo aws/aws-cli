@@ -11,7 +11,8 @@
     "serviceId":"SSO OIDC",
     "signatureVersion":"v4",
     "signingName":"sso-oauth",
-    "uid":"sso-oidc-2019-06-10"
+    "uid":"sso-oidc-2019-06-10",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateToken":{
@@ -35,8 +36,9 @@
         {"shape":"ExpiredTokenException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates and returns access and refresh tokens for clients that are authenticated using client secrets. The access token can be used to fetch short-term credentials for the assigned AWS accounts or to access application APIs using <code>bearer</code> authentication.</p>",
-      "authtype":"none"
+      "documentation":"<p>Creates and returns access and refresh tokens for clients that are authenticated using client secrets. The access token can be used to fetch short-lived credentials for the assigned AWS accounts or to access application APIs using <code>bearer</code> authentication.</p>",
+      "authtype":"none",
+      "auth":["smithy.api#noAuth"]
     },
     "CreateTokenWithIAM":{
       "name":"CreateTokenWithIAM",
@@ -60,7 +62,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidRequestRegionException"}
       ],
-      "documentation":"<p>Creates and returns access and refresh tokens for clients and applications that are authenticated using IAM entities. The access token can be used to fetch short-term credentials for the assigned Amazon Web Services accounts or to access application APIs using <code>bearer</code> authentication.</p>"
+      "documentation":"<p>Creates and returns access and refresh tokens for clients and applications that are authenticated using IAM entities. The access token can be used to fetch short-lived credentials for the assigned Amazon Web Services accounts or to access application APIs using <code>bearer</code> authentication.</p>"
     },
     "RegisterClient":{
       "name":"RegisterClient",
@@ -78,8 +80,9 @@
         {"shape":"InvalidRedirectUriException"},
         {"shape":"UnsupportedGrantTypeException"}
       ],
-      "documentation":"<p>Registers a client with IAM Identity Center. This allows clients to initiate device authorization. The output should be persisted for reuse through many authentication requests.</p>",
-      "authtype":"none"
+      "documentation":"<p>Registers a public client with IAM Identity Center. This allows clients to perform authorization using the authorization code grant with Proof Key for Code Exchange (PKCE) or the device code grant.</p>",
+      "authtype":"none",
+      "auth":["smithy.api#noAuth"]
     },
     "StartDeviceAuthorization":{
       "name":"StartDeviceAuthorization",
@@ -97,7 +100,8 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Initiates device authorization by requesting a pair of verification codes from the authorization service.</p>",
-      "authtype":"none"
+      "authtype":"none",
+      "auth":["smithy.api#noAuth"]
     }
   },
   "shapes":{
@@ -172,19 +176,19 @@
         },
         "grantType":{
           "shape":"GrantType",
-          "documentation":"<p>Supports the following OAuth grant types: Device Code and Refresh Token. Specify either of the following values, depending on the grant type that you want:</p> <p>* Device Code - <code>urn:ietf:params:oauth:grant-type:device_code</code> </p> <p>* Refresh Token - <code>refresh_token</code> </p> <p>For information about how to obtain the device code, see the <a>StartDeviceAuthorization</a> topic.</p>"
+          "documentation":"<p>Supports the following OAuth grant types: Authorization Code, Device Code, and Refresh Token. Specify one of the following values, depending on the grant type that you want:</p> <p>* Authorization Code - <code>authorization_code</code> </p> <p>* Device Code - <code>urn:ietf:params:oauth:grant-type:device_code</code> </p> <p>* Refresh Token - <code>refresh_token</code> </p>"
         },
         "deviceCode":{
           "shape":"DeviceCode",
-          "documentation":"<p>Used only when calling this API for the Device Code grant type. This short-term code is used to identify this authorization request. This comes from the result of the <a>StartDeviceAuthorization</a> API.</p>"
+          "documentation":"<p>Used only when calling this API for the Device Code grant type. This short-lived code is used to identify this authorization request. This comes from the result of the <a>StartDeviceAuthorization</a> API.</p>"
         },
         "code":{
           "shape":"AuthCode",
-          "documentation":"<p>Used only when calling this API for the Authorization Code grant type. The short-term code is used to identify this authorization request. This grant type is currently unsupported for the <a>CreateToken</a> API.</p>"
+          "documentation":"<p>Used only when calling this API for the Authorization Code grant type. The short-lived code is used to identify this authorization request.</p>"
         },
         "refreshToken":{
           "shape":"RefreshToken",
-          "documentation":"<p>Used only when calling this API for the Refresh Token grant type. This token is used to refresh short-term tokens, such as the access token, that might expire.</p> <p>For more information about the features and limitations of the current IAM Identity Center OIDC implementation, see <i>Considerations for Using this Guide</i> in the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/OIDCAPIReference/Welcome.html\">IAM Identity Center OIDC API Reference</a>.</p>"
+          "documentation":"<p>Used only when calling this API for the Refresh Token grant type. This token is used to refresh short-lived tokens, such as the access token, that might expire.</p> <p>For more information about the features and limitations of the current IAM Identity Center OIDC implementation, see <i>Considerations for Using this Guide</i> in the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/OIDCAPIReference/Welcome.html\">IAM Identity Center OIDC API Reference</a>.</p>"
         },
         "scope":{
           "shape":"Scopes",
@@ -242,11 +246,11 @@
         },
         "code":{
           "shape":"AuthCode",
-          "documentation":"<p>Used only when calling this API for the Authorization Code grant type. This short-term code is used to identify this authorization request. The code is obtained through a redirect from IAM Identity Center to a redirect URI persisted in the Authorization Code GrantOptions for the application.</p>"
+          "documentation":"<p>Used only when calling this API for the Authorization Code grant type. This short-lived code is used to identify this authorization request. The code is obtained through a redirect from IAM Identity Center to a redirect URI persisted in the Authorization Code GrantOptions for the application.</p>"
         },
         "refreshToken":{
           "shape":"RefreshToken",
-          "documentation":"<p>Used only when calling this API for the Refresh Token grant type. This token is used to refresh short-term tokens, such as the access token, that might expire.</p> <p>For more information about the features and limitations of the current IAM Identity Center OIDC implementation, see <i>Considerations for Using this Guide</i> in the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/OIDCAPIReference/Welcome.html\">IAM Identity Center OIDC API Reference</a>.</p>"
+          "documentation":"<p>Used only when calling this API for the Refresh Token grant type. This token is used to refresh short-lived tokens, such as the access token, that might expire.</p> <p>For more information about the features and limitations of the current IAM Identity Center OIDC implementation, see <i>Considerations for Using this Guide</i> in the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/OIDCAPIReference/Welcome.html\">IAM Identity Center OIDC API Reference</a>.</p>"
         },
         "assertion":{
           "shape":"Assertion",
@@ -514,7 +518,7 @@
         },
         "grantTypes":{
           "shape":"GrantTypes",
-          "documentation":"<p>The list of OAuth 2.0 grant types that are defined by the client. This list is used to restrict the token granting flows available to the client.</p>"
+          "documentation":"<p>The list of OAuth 2.0 grant types that are defined by the client. This list is used to restrict the token granting flows available to the client. Supports the following OAuth 2.0 grant types: Authorization Code, Device Code, and Refresh Token. </p> <p>* Authorization Code - <code>authorization_code</code> </p> <p>* Device Code - <code>urn:ietf:params:oauth:grant-type:device_code</code> </p> <p>* Refresh Token - <code>refresh_token</code> </p>"
         },
         "issuerUrl":{
           "shape":"URI",
@@ -668,5 +672,5 @@
     },
     "UserCode":{"type":"string"}
   },
-  "documentation":"<p>IAM Identity Center OpenID Connect (OIDC) is a web service that enables a client (such as CLI or a native application) to register with IAM Identity Center. The service also enables the client to fetch the user’s access token upon successful authentication and authorization with IAM Identity Center.</p> <note> <p>IAM Identity Center uses the <code>sso</code> and <code>identitystore</code> API namespaces.</p> </note> <p> <b>Considerations for Using This Guide</b> </p> <p>Before you begin using this guide, we recommend that you first review the following important information about how the IAM Identity Center OIDC service works.</p> <ul> <li> <p>The IAM Identity Center OIDC service currently implements only the portions of the OAuth 2.0 Device Authorization Grant standard (<a href=\"https://tools.ietf.org/html/rfc8628\">https://tools.ietf.org/html/rfc8628</a>) that are necessary to enable single sign-on authentication with the CLI. </p> </li> <li> <p>With older versions of the CLI, the service only emits OIDC access tokens, so to obtain a new token, users must explicitly re-authenticate. To access the OIDC flow that supports token refresh and doesn’t require re-authentication, update to the latest CLI version (1.27.10 for CLI V1 and 2.9.0 for CLI V2) with support for OIDC token refresh and configurable IAM Identity Center session durations. For more information, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/configure-user-session.html\">Configure Amazon Web Services access portal session duration </a>. </p> </li> <li> <p>The access tokens provided by this service grant access to all Amazon Web Services account entitlements assigned to an IAM Identity Center user, not just a particular application.</p> </li> <li> <p>The documentation in this guide does not describe the mechanism to convert the access token into Amazon Web Services Auth (“sigv4”) credentials for use with IAM-protected Amazon Web Services service endpoints. For more information, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/PortalAPIReference/API_GetRoleCredentials.html\">GetRoleCredentials</a> in the <i>IAM Identity Center Portal API Reference Guide</i>.</p> </li> </ul> <p>For general information about IAM Identity Center, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html\">What is IAM Identity Center?</a> in the <i>IAM Identity Center User Guide</i>.</p>"
+  "documentation":"<p>IAM Identity Center OpenID Connect (OIDC) is a web service that enables a client (such as CLI or a native application) to register with IAM Identity Center. The service also enables the client to fetch the user’s access token upon successful authentication and authorization with IAM Identity Center.</p> <p> <b>API namespaces</b> </p> <p>IAM Identity Center uses the <code>sso</code> and <code>identitystore</code> API namespaces. IAM Identity Center OpenID Connect uses the <code>sso-oidc</code> namespace.</p> <p> <b>Considerations for using this guide</b> </p> <p>Before you begin using this guide, we recommend that you first review the following important information about how the IAM Identity Center OIDC service works.</p> <ul> <li> <p>The IAM Identity Center OIDC service currently implements only the portions of the OAuth 2.0 Device Authorization Grant standard (<a href=\"https://tools.ietf.org/html/rfc8628\">https://tools.ietf.org/html/rfc8628</a>) that are necessary to enable single sign-on authentication with the CLI. </p> </li> <li> <p>With older versions of the CLI, the service only emits OIDC access tokens, so to obtain a new token, users must explicitly re-authenticate. To access the OIDC flow that supports token refresh and doesn’t require re-authentication, update to the latest CLI version (1.27.10 for CLI V1 and 2.9.0 for CLI V2) with support for OIDC token refresh and configurable IAM Identity Center session durations. For more information, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/configure-user-session.html\">Configure Amazon Web Services access portal session duration </a>. </p> </li> <li> <p>The access tokens provided by this service grant access to all Amazon Web Services account entitlements assigned to an IAM Identity Center user, not just a particular application.</p> </li> <li> <p>The documentation in this guide does not describe the mechanism to convert the access token into Amazon Web Services Auth (“sigv4”) credentials for use with IAM-protected Amazon Web Services service endpoints. For more information, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/PortalAPIReference/API_GetRoleCredentials.html\">GetRoleCredentials</a> in the <i>IAM Identity Center Portal API Reference Guide</i>.</p> </li> </ul> <p>For general information about IAM Identity Center, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html\">What is IAM Identity Center?</a> in the <i>IAM Identity Center User Guide</i>.</p>"
 }

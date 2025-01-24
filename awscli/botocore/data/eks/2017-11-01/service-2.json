@@ -155,7 +155,7 @@
         {"shape":"ResourceLimitExceededException"},
         {"shape":"UnsupportedAvailabilityZoneException"}
       ],
-      "documentation":"<p>Creates an Fargate profile for your Amazon EKS cluster. You must have at least one Fargate profile in a cluster to be able to run pods on Fargate.</p> <p>The Fargate profile allows an administrator to declare which pods run on Fargate and specify which pods run on which Fargate profile. This declaration is done through the profile’s selectors. Each profile can have up to five selectors that contain a namespace and labels. A namespace is required for every selector. The label field consists of multiple optional key-value pairs. Pods that match the selectors are scheduled on Fargate. If a to-be-scheduled pod matches any of the selectors in the Fargate profile, then that pod is run on Fargate.</p> <p>When you create a Fargate profile, you must specify a pod execution role to use with the pods that are scheduled with the profile. This role is added to the cluster's Kubernetes <a href=\"https://kubernetes.io/docs/reference/access-authn-authz/rbac/\">Role Based Access Control</a> (RBAC) for authorization so that the <code>kubelet</code> that is running on the Fargate infrastructure can register with your Amazon EKS cluster so that it can appear in your cluster as a node. The pod execution role also provides IAM permissions to the Fargate infrastructure to allow read access to Amazon ECR image repositories. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/pod-execution-role.html\">Pod Execution Role</a> in the <i>Amazon EKS User Guide</i>.</p> <p>Fargate profiles are immutable. However, you can create a new updated profile to replace an existing profile and then delete the original after the updated profile has finished creating.</p> <p>If any Fargate profiles in a cluster are in the <code>DELETING</code> status, you must wait for that Fargate profile to finish deleting before you can create any other profiles in that cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html\">Fargate profile</a> in the <i>Amazon EKS User Guide</i>.</p>"
+      "documentation":"<p>Creates an Fargate profile for your Amazon EKS cluster. You must have at least one Fargate profile in a cluster to be able to run pods on Fargate.</p> <p>The Fargate profile allows an administrator to declare which pods run on Fargate and specify which pods run on which Fargate profile. This declaration is done through the profile's selectors. Each profile can have up to five selectors that contain a namespace and labels. A namespace is required for every selector. The label field consists of multiple optional key-value pairs. Pods that match the selectors are scheduled on Fargate. If a to-be-scheduled pod matches any of the selectors in the Fargate profile, then that pod is run on Fargate.</p> <p>When you create a Fargate profile, you must specify a pod execution role to use with the pods that are scheduled with the profile. This role is added to the cluster's Kubernetes <a href=\"https://kubernetes.io/docs/reference/access-authn-authz/rbac/\">Role Based Access Control</a> (RBAC) for authorization so that the <code>kubelet</code> that is running on the Fargate infrastructure can register with your Amazon EKS cluster so that it can appear in your cluster as a node. The pod execution role also provides IAM permissions to the Fargate infrastructure to allow read access to Amazon ECR image repositories. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/pod-execution-role.html\">Pod Execution Role</a> in the <i>Amazon EKS User Guide</i>.</p> <p>Fargate profiles are immutable. However, you can create a new updated profile to replace an existing profile and then delete the original after the updated profile has finished creating.</p> <p>If any Fargate profiles in a cluster are in the <code>DELETING</code> status, you must wait for that Fargate profile to finish deleting before you can create any other profiles in that cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/fargate-profile.html\">Fargate profile</a> in the <i>Amazon EKS User Guide</i>.</p>"
     },
     "CreateNodegroup":{
       "name":"CreateNodegroup",
@@ -888,7 +888,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Updates an Amazon EKS cluster to the specified Kubernetes version. Your cluster continues to function during the update. The response output includes an update ID that you can use to track the status of your cluster update with the <a>DescribeUpdate</a> API operation.</p> <p>Cluster updates are asynchronous, and they should finish within a few minutes. During an update, the cluster status moves to <code>UPDATING</code> (this status transition is eventually consistent). When the update is complete (either <code>Failed</code> or <code>Successful</code>), the cluster status moves to <code>Active</code>.</p> <p>If your cluster has managed node groups attached to it, all of your node groups’ Kubernetes versions must match the cluster’s Kubernetes version in order to update the cluster to a new Kubernetes version.</p>"
+      "documentation":"<p>Updates an Amazon EKS cluster to the specified Kubernetes version. Your cluster continues to function during the update. The response output includes an update ID that you can use to track the status of your cluster update with the <a>DescribeUpdate</a> API operation.</p> <p>Cluster updates are asynchronous, and they should finish within a few minutes. During an update, the cluster status moves to <code>UPDATING</code> (this status transition is eventually consistent). When the update is complete (either <code>Failed</code> or <code>Successful</code>), the cluster status moves to <code>Active</code>.</p> <p>If your cluster has managed node groups attached to it, all of your node groups' Kubernetes versions must match the cluster's Kubernetes version in order to update the cluster to a new Kubernetes version.</p>"
     },
     "UpdateEksAnywhereSubscription":{
       "name":"UpdateEksAnywhereSubscription",
@@ -923,7 +923,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Updates an Amazon EKS managed node group configuration. Your node group continues to function during the update. The response output includes an update ID that you can use to track the status of your node group update with the <a>DescribeUpdate</a> API operation. Currently you can update the Kubernetes labels for a node group or the scaling configuration.</p>"
+      "documentation":"<p>Updates an Amazon EKS managed node group configuration. Your node group continues to function during the update. The response output includes an update ID that you can use to track the status of your node group update with the <a>DescribeUpdate</a> API operation. You can update the Kubernetes labels and taints for a node group and the scaling and version update configuration.</p>"
     },
     "UpdateNodegroupVersion":{
       "name":"UpdateNodegroupVersion",
@@ -1155,7 +1155,7 @@
         },
         "podIdentityAssociations":{
           "shape":"StringList",
-          "documentation":"<p>An array of Pod Identity Assocations owned by the Addon. Each EKS Pod Identity association maps a role to a service account in a namespace in the cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html\">Attach an IAM Role to an Amazon EKS add-on using Pod Identity</a> in the EKS User Guide.</p>"
+          "documentation":"<p>An array of Pod Identity Assocations owned by the Addon. Each EKS Pod Identity association maps a role to a service account in a namespace in the cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html\">Attach an IAM Role to an Amazon EKS add-on using Pod Identity</a> in the <i>Amazon EKS User Guide</i>.</p>"
         }
       },
       "documentation":"<p>An Amazon EKS add-on. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html\">Amazon EKS add-ons</a> in the <i>Amazon EKS User Guide</i>.</p>"
@@ -1169,10 +1169,10 @@
         },
         "compatibleVersions":{
           "shape":"StringList",
-          "documentation":"<p>A list of compatible add-on versions.</p>"
+          "documentation":"<p>The list of compatible Amazon EKS add-on versions for the next Kubernetes version.</p>"
         }
       },
-      "documentation":"<p>Contains compatibility information for an Amazon EKS add-on.</p>"
+      "documentation":"<p>The summary information about the Amazon EKS add-on compatibility for the next Kubernetes version for an insight check in the <code>UPGRADE_READINESS</code> category.</p>"
     },
     "AddonCompatibilityDetails":{
       "type":"list",
@@ -1271,7 +1271,7 @@
           "documentation":"<p>The ARN of an IAM Role.</p>"
         }
       },
-      "documentation":"<p>A type of Pod Identity Association owned by an Amazon EKS Add-on.</p> <p>Each EKS Pod Identity Association maps a role to a service account in a namespace in the cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html\">Attach an IAM Role to an Amazon EKS add-on using Pod Identity</a> in the EKS User Guide.</p>"
+      "documentation":"<p>A type of Pod Identity Association owned by an Amazon EKS Add-on.</p> <p>Each EKS Pod Identity Association maps a role to a service account in a namespace in the cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html\">Attach an IAM Role to an Amazon EKS add-on using Pod Identity</a> in the <i>Amazon EKS User Guide</i>.</p>"
     },
     "AddonPodIdentityAssociationsList":{
       "type":"list",
@@ -1530,7 +1530,7 @@
           "documentation":"<p>Indicates if the block storage capability is enabled on your EKS Auto Mode cluster. If the block storage capability is enabled, EKS Auto Mode will create and delete EBS volumes in your Amazon Web Services account.</p>"
         }
       },
-      "documentation":"<p>Indicates the current configuration of the block storage capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled. If the block storage capability is enabled, EKS Auto Mode will create and delete EBS volumes in your Amazon Web Services account. For more information, see EKS Auto Mode block storage capability in the EKS User Guide.</p>"
+      "documentation":"<p>Indicates the current configuration of the block storage capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled. If the block storage capability is enabled, EKS Auto Mode will create and delete EBS volumes in your Amazon Web Services account. For more information, see EKS Auto Mode block storage capability in the <i>Amazon EKS User Guide</i>.</p>"
     },
     "Boolean":{"type":"boolean"},
     "BoxedBoolean":{
@@ -1711,7 +1711,7 @@
         },
         "upgradePolicy":{
           "shape":"UpgradePolicyResponse",
-          "documentation":"<p>This value indicates if extended support is enabled or disabled for the cluster.</p> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html\">Learn more about EKS Extended Support in the EKS User Guide.</a> </p>"
+          "documentation":"<p>This value indicates if extended support is enabled or disabled for the cluster.</p> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html\">Learn more about EKS Extended Support in the <i>Amazon EKS User Guide</i>.</a> </p>"
         },
         "zonalShiftConfig":{
           "shape":"ZonalShiftConfigResponse",
@@ -1723,11 +1723,11 @@
         },
         "computeConfig":{
           "shape":"ComputeConfigResponse",
-          "documentation":"<p>Indicates the current configuration of the compute capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled. If the compute capability is enabled, EKS Auto Mode will create and delete EC2 Managed Instances in your Amazon Web Services account. For more information, see EKS Auto Mode compute capability in the EKS User Guide.</p>"
+          "documentation":"<p>Indicates the current configuration of the compute capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled. If the compute capability is enabled, EKS Auto Mode will create and delete EC2 Managed Instances in your Amazon Web Services account. For more information, see EKS Auto Mode compute capability in the <i>Amazon EKS User Guide</i>.</p>"
         },
         "storageConfig":{
           "shape":"StorageConfigResponse",
-          "documentation":"<p>Indicates the current configuration of the block storage capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled. If the block storage capability is enabled, EKS Auto Mode will create and delete EBS volumes in your Amazon Web Services account. For more information, see EKS Auto Mode block storage capability in the EKS User Guide.</p>"
+          "documentation":"<p>Indicates the current configuration of the block storage capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled. If the block storage capability is enabled, EKS Auto Mode will create and delete EBS volumes in your Amazon Web Services account. For more information, see EKS Auto Mode block storage capability in the <i>Amazon EKS User Guide</i>.</p>"
         }
       },
       "documentation":"<p>An object representing an Amazon EKS cluster.</p>"
@@ -1890,14 +1890,14 @@
         },
         "nodePools":{
           "shape":"StringList",
-          "documentation":"<p>Configuration for node pools that defines the compute resources for your EKS Auto Mode cluster. For more information, see EKS Auto Mode Node Pools in the EKS User Guide.</p>"
+          "documentation":"<p>Configuration for node pools that defines the compute resources for your EKS Auto Mode cluster. For more information, see EKS Auto Mode Node Pools in the <i>Amazon EKS User Guide</i>.</p>"
         },
         "nodeRoleArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the IAM Role EKS will assign to EC2 Managed Instances in your EKS Auto Mode cluster. This value cannot be changed after the compute capability of EKS Auto Mode is enabled. For more information, see the IAM Reference in the EKS User Guide.</p>"
+          "documentation":"<p>The ARN of the IAM Role EKS will assign to EC2 Managed Instances in your EKS Auto Mode cluster. This value cannot be changed after the compute capability of EKS Auto Mode is enabled. For more information, see the IAM Reference in the <i>Amazon EKS User Guide</i>.</p>"
         }
       },
-      "documentation":"<p>Request to update the configuration of the compute capability of your EKS Auto Mode cluster. For example, enable the capability. For more information, see EKS Auto Mode compute capability in the EKS User Guide.</p>"
+      "documentation":"<p>Request to update the configuration of the compute capability of your EKS Auto Mode cluster. For example, enable the capability. For more information, see EKS Auto Mode compute capability in the <i>Amazon EKS User Guide</i>.</p>"
     },
     "ComputeConfigResponse":{
       "type":"structure",
@@ -1908,7 +1908,7 @@
         },
         "nodePools":{
           "shape":"StringList",
-          "documentation":"<p>Indicates the current configuration of node pools in your EKS Auto Mode cluster. For more information, see EKS Auto Mode Node Pools in the EKS User Guide.</p>"
+          "documentation":"<p>Indicates the current configuration of node pools in your EKS Auto Mode cluster. For more information, see EKS Auto Mode Node Pools in the <i>Amazon EKS User Guide</i>.</p>"
         },
         "nodeRoleArn":{
           "shape":"String",
@@ -1983,7 +1983,7 @@
           "documentation":"<p>The name of the placement group for the Kubernetes control plane instances. This setting can't be changed after cluster creation. </p>"
         }
       },
-      "documentation":"<p>The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the Amazon EKS User Guide.</p>"
+      "documentation":"<p>The placement configuration for all the control plane instances of your local Amazon EKS cluster on an Amazon Web Services Outpost. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-capacity-considerations.html\">Capacity considerations</a> in the <i>Amazon EKS User Guide</i>.</p>"
     },
     "ControlPlanePlacementResponse":{
       "type":"structure",
@@ -2024,7 +2024,7 @@
         },
         "principalArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the IAM principal for the <code>AccessEntry</code>. You can specify one ARN for each access entry. You can't specify the same ARN in more than one access entry. This value can't be changed after access entry creation.</p> <p>The valid principals differ depending on the type of the access entry in the <code>type</code> field. The only valid ARN is IAM roles for the types of access entries for nodes: <code/> <code/>. You can use every IAM principal type for <code>STANDARD</code> access entries. You can't use the STS session principal type with access entries because this is a temporary principal for each session and not a permanent identity that can be assigned permissions.</p> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#bp-users-federation-idp\">IAM best practices</a> recommend using IAM roles with temporary credentials, rather than IAM users with long-term credentials. </p>"
+          "documentation":"<p>The ARN of the IAM principal for the <code>AccessEntry</code>. You can specify one ARN for each access entry. You can't specify the same ARN in more than one access entry. This value can't be changed after access entry creation.</p> <p>The valid principals differ depending on the type of the access entry in the <code>type</code> field. For <code>STANDARD</code> access entries, you can use every IAM principal type. For nodes (<code>EC2</code> (for EKS Auto Mode), <code>EC2_LINUX</code>, <code>EC2_WINDOWS</code>, <code>FARGATE_LINUX</code>, and <code>HYBRID_LINUX</code>), the only valid ARN is IAM roles. You can't use the STS session principal type with access entries because this is a temporary principal for each session and not a permanent identity that can be assigned permissions.</p> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#bp-users-federation-idp\">IAM best practices</a> recommend using IAM roles with temporary credentials, rather than IAM users with long-term credentials. </p>"
         },
         "kubernetesGroups":{
           "shape":"StringList",
@@ -2045,7 +2045,7 @@
         },
         "type":{
           "shape":"String",
-          "documentation":"<p>The type of the new access entry. Valid values are <code>Standard</code>, <code>FARGATE_LINUX</code>, <code>EC2_LINUX</code>, and <code>EC2_WINDOWS</code>.</p> <p>If the <code>principalArn</code> is for an IAM role that's used for self-managed Amazon EC2 nodes, specify <code>EC2_LINUX</code> or <code>EC2_WINDOWS</code>. Amazon EKS grants the necessary permissions to the node for you. If the <code>principalArn</code> is for any other purpose, specify <code>STANDARD</code>. If you don't specify a value, Amazon EKS sets the value to <code>STANDARD</code>. It's unnecessary to create access entries for IAM roles used with Fargate profiles or managed Amazon EC2 nodes, because Amazon EKS creates entries in the <code>aws-auth</code> <code>ConfigMap</code> for the roles. You can't change this value once you've created the access entry.</p> <p>If you set the value to <code>EC2_LINUX</code> or <code>EC2_WINDOWS</code>, you can't specify values for <code>kubernetesGroups</code>, or associate an <code>AccessPolicy</code> to the access entry.</p>"
+          "documentation":"<p>The type of the new access entry. Valid values are <code>STANDARD</code>, <code>FARGATE_LINUX</code>, <code>EC2_LINUX</code>, <code>EC2_WINDOWS</code>, <code>EC2</code> (for EKS Auto Mode), <code>HYBRID_LINUX</code>, and <code>HYPERPOD_LINUX</code>. </p> <p>If the <code>principalArn</code> is for an IAM role that's used for self-managed Amazon EC2 nodes, specify <code>EC2_LINUX</code> or <code>EC2_WINDOWS</code>. Amazon EKS grants the necessary permissions to the node for you. If the <code>principalArn</code> is for any other purpose, specify <code>STANDARD</code>. If you don't specify a value, Amazon EKS sets the value to <code>STANDARD</code>. If you have the access mode of the cluster set to <code>API_AND_CONFIG_MAP</code>, it's unnecessary to create access entries for IAM roles used with Fargate profiles or managed Amazon EC2 nodes, because Amazon EKS creates entries in the <code>aws-auth</code> <code>ConfigMap</code> for the roles. You can't change this value once you've created the access entry.</p> <p>If you set the value to <code>EC2_LINUX</code> or <code>EC2_WINDOWS</code>, you can't specify values for <code>kubernetesGroups</code>, or associate an <code>AccessPolicy</code> to the access entry.</p>"
         }
       }
     },
@@ -2099,7 +2099,7 @@
         },
         "podIdentityAssociations":{
           "shape":"AddonPodIdentityAssociationsList",
-          "documentation":"<p>An array of Pod Identity Assocations to be created. Each EKS Pod Identity association maps a Kubernetes service account to an IAM Role.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html\">Attach an IAM Role to an Amazon EKS add-on using Pod Identity</a> in the EKS User Guide.</p>"
+          "documentation":"<p>An array of Pod Identity Assocations to be created. Each EKS Pod Identity association maps a Kubernetes service account to an IAM Role.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html\">Attach an IAM Role to an Amazon EKS add-on using Pod Identity</a> in the <i>Amazon EKS User Guide</i>.</p>"
         }
       }
     },
@@ -2139,7 +2139,7 @@
         },
         "logging":{
           "shape":"Logging",
-          "documentation":"<p>Enable or disable exporting the Kubernetes control plane logs for your cluster to CloudWatch Logs. By default, cluster control plane logs aren't exported to CloudWatch Logs. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html\">Amazon EKS Cluster control plane logs</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> <note> <p>CloudWatch Logs ingestion, archive storage, and data scanning rates apply to exported control plane logs. For more information, see <a href=\"http://aws.amazon.com/cloudwatch/pricing/\">CloudWatch Pricing</a>.</p> </note>"
+          "documentation":"<p>Enable or disable exporting the Kubernetes control plane logs for your cluster to CloudWatch Logs . By default, cluster control plane logs aren't exported to CloudWatch Logs . For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html\">Amazon EKS Cluster control plane logs</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> <note> <p>CloudWatch Logs ingestion, archive storage, and data scanning rates apply to exported control plane logs. For more information, see <a href=\"http://aws.amazon.com/cloudwatch/pricing/\">CloudWatch Pricing</a>.</p> </note>"
         },
         "clientRequestToken":{
           "shape":"String",
@@ -2172,7 +2172,7 @@
         },
         "zonalShiftConfig":{
           "shape":"ZonalShiftConfigRequest",
-          "documentation":"<p>Enable or disable ARC zonal shift for the cluster. If zonal shift is enabled, Amazon Web Services configures zonal autoshift for the cluster.</p> <p>Zonal shift is a feature of Amazon Application Recovery Controller (ARC). ARC zonal shift is designed to be a temporary measure that allows you to move traffic for a resource away from an impaired AZ until the zonal shift expires or you cancel it. You can extend the zonal shift if necessary.</p> <p>You can start a zonal shift for an EKS cluster, or you can allow Amazon Web Services to do it for you by enabling <i>zonal autoshift</i>. This shift updates the flow of east-to-west network traffic in your cluster to only consider network endpoints for Pods running on worker nodes in healthy AZs. Additionally, any ALB or NLB handling ingress traffic for applications in your EKS cluster will automatically route traffic to targets in the healthy AZs. For more information about zonal shift in EKS, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/zone-shift.html\">Learn about Amazon Application Recovery Controller (ARC) Zonal Shift in Amazon EKS</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p>"
+          "documentation":"<p>Enable or disable ARC zonal shift for the cluster. If zonal shift is enabled, Amazon Web Services configures zonal autoshift for the cluster.</p> <p>Zonal shift is a feature of Amazon Application Recovery Controller (ARC). ARC zonal shift is designed to be a temporary measure that allows you to move traffic for a resource away from an impaired AZ until the zonal shift expires or you cancel it. You can extend the zonal shift if necessary.</p> <p>You can start a zonal shift for an Amazon EKS cluster, or you can allow Amazon Web Services to do it for you by enabling <i>zonal autoshift</i>. This shift updates the flow of east-to-west network traffic in your cluster to only consider network endpoints for Pods running on worker nodes in healthy AZs. Additionally, any ALB or NLB handling ingress traffic for applications in your Amazon EKS cluster will automatically route traffic to targets in the healthy AZs. For more information about zonal shift in EKS, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/zone-shift.html\">Learn about Amazon Application Recovery Controller (ARC) Zonal Shift in Amazon EKS</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p>"
         },
         "remoteNetworkConfig":{
           "shape":"RemoteNetworkConfigRequest",
@@ -3315,7 +3315,7 @@
           "documentation":"<p>Indicates if the load balancing capability is enabled on your EKS Auto Mode cluster. If the load balancing capability is enabled, EKS Auto Mode will create and delete load balancers in your Amazon Web Services account.</p>"
         }
       },
-      "documentation":"<p>Indicates the current configuration of the load balancing capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled. For more information, see EKS Auto Mode load balancing capability in the EKS User Guide.</p>"
+      "documentation":"<p>Indicates the current configuration of the load balancing capability on your EKS Auto Mode cluster. For example, if the capability is enabled or disabled. For more information, see EKS Auto Mode load balancing capability in the <i>Amazon EKS User Guide</i>.</p>"
     },
     "EncryptionConfig":{
       "type":"structure",
@@ -3615,7 +3615,7 @@
         },
         "addonCompatibilityDetails":{
           "shape":"AddonCompatibilityDetails",
-          "documentation":"<p>A list of AddonCompatibilityDetail objects for Amazon EKS add-ons.</p>"
+          "documentation":"<p>A list of <code>AddonCompatibilityDetail</code> objects for Amazon EKS add-ons.</p>"
         }
       },
       "documentation":"<p>Summary information that relates to the category of the insight. Currently only returned with certain insights having category <code>UPGRADE_READINESS</code>.</p>"
@@ -3828,11 +3828,11 @@
         },
         "ipFamily":{
           "shape":"IpFamily",
-          "documentation":"<p>Specify which IP family is used to assign Kubernetes pod and service IP addresses. If you don't specify a value, <code>ipv4</code> is used by default. You can only specify an IP family when you create a cluster and can't change this value once the cluster is created. If you specify <code>ipv6</code>, the VPC and subnets that you specify for cluster creation must have both <code>IPv4</code> and <code>IPv6</code> CIDR blocks assigned to them. You can't specify <code>ipv6</code> for clusters in China Regions.</p> <p>You can only specify <code>ipv6</code> for <code>1.21</code> and later clusters that use version <code>1.10.1</code> or later of the Amazon VPC CNI add-on. If you specify <code>ipv6</code>, then ensure that your VPC meets the requirements listed in the considerations listed in <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/cni-ipv6.html\">Assigning IPv6 addresses to pods and services</a> in the Amazon EKS User Guide. Kubernetes assigns services <code>IPv6</code> addresses from the unique local address range <code>(fc00::/7)</code>. You can't specify a custom <code>IPv6</code> CIDR block. Pod addresses are assigned from the subnet's <code>IPv6</code> CIDR.</p>"
+          "documentation":"<p>Specify which IP family is used to assign Kubernetes pod and service IP addresses. If you don't specify a value, <code>ipv4</code> is used by default. You can only specify an IP family when you create a cluster and can't change this value once the cluster is created. If you specify <code>ipv6</code>, the VPC and subnets that you specify for cluster creation must have both <code>IPv4</code> and <code>IPv6</code> CIDR blocks assigned to them. You can't specify <code>ipv6</code> for clusters in China Regions.</p> <p>You can only specify <code>ipv6</code> for <code>1.21</code> and later clusters that use version <code>1.10.1</code> or later of the Amazon VPC CNI add-on. If you specify <code>ipv6</code>, then ensure that your VPC meets the requirements listed in the considerations listed in <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/cni-ipv6.html\">Assigning IPv6 addresses to pods and services</a> in the <i>Amazon EKS User Guide</i>. Kubernetes assigns services <code>IPv6</code> addresses from the unique local address range <code>(fc00::/7)</code>. You can't specify a custom <code>IPv6</code> CIDR block. Pod addresses are assigned from the subnet's <code>IPv6</code> CIDR.</p>"
         },
         "elasticLoadBalancing":{
           "shape":"ElasticLoadBalancing",
-          "documentation":"<p>Request to enable or disable the load balancing capability on your EKS Auto Mode cluster. For more information, see EKS Auto Mode load balancing capability in the EKS User Guide.</p>"
+          "documentation":"<p>Request to enable or disable the load balancing capability on your EKS Auto Mode cluster. For more information, see EKS Auto Mode load balancing capability in the <i>Amazon EKS User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The Kubernetes network configuration for the cluster.</p>"
@@ -4099,7 +4099,7 @@
       "members":{
         "clusters":{
           "shape":"StringList",
-          "documentation":"<p>A list of all of the clusters for your account in the specified Amazon Web Services Region.</p>"
+          "documentation":"<p>A list of all of the clusters for your account in the specified Amazon Web Services Region .</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -4455,7 +4455,7 @@
         },
         "enabled":{
           "shape":"BoxedBoolean",
-          "documentation":"<p>If a log type is enabled, that log type exports its control plane logs to CloudWatch Logs. If a log type isn't enabled, that log type doesn't export its control plane logs. Each individual log type can be enabled or disabled independently.</p>"
+          "documentation":"<p>If a log type is enabled, that log type exports its control plane logs to CloudWatch Logs . If a log type isn't enabled, that log type doesn't export its control plane logs. Each individual log type can be enabled or disabled independently.</p>"
         }
       },
       "documentation":"<p>An object representing the enabled or disabled Kubernetes control plane logs for your cluster.</p>"
@@ -4719,9 +4719,20 @@
         "maxUnavailablePercentage":{
           "shape":"PercentCapacity",
           "documentation":"<p>The maximum percentage of nodes unavailable during a version update. This percentage of nodes are updated in parallel, up to 100 nodes at once. This value or <code>maxUnavailable</code> is required to have a value.</p>"
+        },
+        "updateStrategy":{
+          "shape":"NodegroupUpdateStrategies",
+          "documentation":"<p>The configuration for the behavior to follow during a node group version update of this managed node group. You choose between two possible strategies for replacing nodes during an <a href=\"https://docs.aws.amazon.com/latest/APIReference/API_UpdateNodegroupVersion.html\">UpdateNodegroupVersion</a> action.</p> <p>An Amazon EKS managed node group updates by replacing nodes with new nodes of newer AMI versions in parallel. The <i>update strategy</i> changes the managed node update behavior of the managed node group for each quantity. The <i>default</i> strategy has guardrails to protect you from misconfiguration and launches the new instances first, before terminating the old instances. The <i>minimal</i> strategy removes the guardrails and terminates the old instances before launching the new instances. This minimal strategy is useful in scenarios where you are constrained to resources or costs (for example, with hardware accelerators such as GPUs).</p>"
         }
       },
-      "documentation":"<p>The node group update configuration.</p>"
+      "documentation":"<p>The node group update configuration. An Amazon EKS managed node group updates by replacing nodes with new nodes of newer AMI versions in parallel. You choose the <i>maximum unavailable</i> and the <i>update strategy</i>.</p>"
+    },
+    "NodegroupUpdateStrategies":{
+      "type":"string",
+      "enum":[
+        "DEFAULT",
+        "MINIMAL"
+      ]
     },
     "NonZeroInteger":{
       "type":"integer",
@@ -5246,7 +5257,7 @@
           "documentation":"<p>Request to configure EBS Block Storage settings for your EKS Auto Mode cluster.</p>"
         }
       },
-      "documentation":"<p>Request to update the configuration of the storage capability of your EKS Auto Mode cluster. For example, enable the capability. For more information, see EKS Auto Mode block storage capability in the EKS User Guide.</p>"
+      "documentation":"<p>Request to update the configuration of the storage capability of your EKS Auto Mode cluster. For example, enable the capability. For more information, see EKS Auto Mode block storage capability in the <i>Amazon EKS User Guide</i>.</p>"
     },
     "StorageConfigResponse":{
       "type":"structure",
@@ -5521,7 +5532,7 @@
         },
         "podIdentityAssociations":{
           "shape":"AddonPodIdentityAssociationsList",
-          "documentation":"<p>An array of Pod Identity Assocations to be updated. Each EKS Pod Identity association maps a Kubernetes service account to an IAM Role. If this value is left blank, no change. If an empty array is provided, existing Pod Identity Assocations owned by the Addon are deleted.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html\">Attach an IAM Role to an Amazon EKS add-on using Pod Identity</a> in the EKS User Guide.</p>"
+          "documentation":"<p>An array of Pod Identity Assocations to be updated. Each EKS Pod Identity association maps a Kubernetes service account to an IAM Role. If this value is left blank, no change. If an empty array is provided, existing Pod Identity Assocations owned by the Addon are deleted.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html\">Attach an IAM Role to an Amazon EKS add-on using Pod Identity</a> in the <i>Amazon EKS User Guide</i>.</p>"
         }
       }
     },
@@ -5544,7 +5555,7 @@
         "resourcesVpcConfig":{"shape":"VpcConfigRequest"},
         "logging":{
           "shape":"Logging",
-          "documentation":"<p>Enable or disable exporting the Kubernetes control plane logs for your cluster to CloudWatch Logs. By default, cluster control plane logs aren't exported to CloudWatch Logs. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html\">Amazon EKS cluster control plane logs</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> <note> <p>CloudWatch Logs ingestion, archive storage, and data scanning rates apply to exported control plane logs. For more information, see <a href=\"http://aws.amazon.com/cloudwatch/pricing/\">CloudWatch Pricing</a>.</p> </note>"
+          "documentation":"<p>Enable or disable exporting the Kubernetes control plane logs for your cluster to CloudWatch Logs . By default, cluster control plane logs aren't exported to CloudWatch Logs . For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html\">Amazon EKS cluster control plane logs</a> in the <i> <i>Amazon EKS User Guide</i> </i>.</p> <note> <p>CloudWatch Logs ingestion, archive storage, and data scanning rates apply to exported control plane logs. For more information, see <a href=\"http://aws.amazon.com/cloudwatch/pricing/\">CloudWatch Pricing</a>.</p> </note>"
         },
         "clientRequestToken":{
           "shape":"String",
@@ -5801,6 +5812,7 @@
         "MaxUnavailable",
         "MaxUnavailablePercentage",
         "NodeRepairEnabled",
+        "UpdateStrategy",
         "ConfigurationValues",
         "SecurityGroups",
         "Subnets",
@@ -5902,20 +5914,20 @@
       "members":{
         "supportType":{
           "shape":"SupportType",
-          "documentation":"<p>If the cluster is set to <code>EXTENDED</code>, it will enter extended support at the end of standard support. If the cluster is set to <code>STANDARD</code>, it will be automatically upgraded at the end of standard support.</p> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html\">Learn more about EKS Extended Support in the EKS User Guide.</a> </p>"
+          "documentation":"<p>If the cluster is set to <code>EXTENDED</code>, it will enter extended support at the end of standard support. If the cluster is set to <code>STANDARD</code>, it will be automatically upgraded at the end of standard support.</p> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html\">Learn more about EKS Extended Support in the <i>Amazon EKS User Guide</i>.</a> </p>"
         }
       },
-      "documentation":"<p>The support policy to use for the cluster. Extended support allows you to remain on specific Kubernetes versions for longer. Clusters in extended support have higher costs. The default value is <code>EXTENDED</code>. Use <code>STANDARD</code> to disable extended support.</p> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html\">Learn more about EKS Extended Support in the EKS User Guide.</a> </p>"
+      "documentation":"<p>The support policy to use for the cluster. Extended support allows you to remain on specific Kubernetes versions for longer. Clusters in extended support have higher costs. The default value is <code>EXTENDED</code>. Use <code>STANDARD</code> to disable extended support.</p> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html\">Learn more about EKS Extended Support in the <i>Amazon EKS User Guide</i>.</a> </p>"
     },
     "UpgradePolicyResponse":{
       "type":"structure",
       "members":{
         "supportType":{
           "shape":"SupportType",
-          "documentation":"<p>If the cluster is set to <code>EXTENDED</code>, it will enter extended support at the end of standard support. If the cluster is set to <code>STANDARD</code>, it will be automatically upgraded at the end of standard support.</p> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html\">Learn more about EKS Extended Support in the EKS User Guide.</a> </p>"
+          "documentation":"<p>If the cluster is set to <code>EXTENDED</code>, it will enter extended support at the end of standard support. If the cluster is set to <code>STANDARD</code>, it will be automatically upgraded at the end of standard support.</p> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html\">Learn more about EKS Extended Support in the <i>Amazon EKS User Guide</i>.</a> </p>"
         }
       },
-      "documentation":"<p>This value indicates if extended support is enabled or disabled for the cluster.</p> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html\">Learn more about EKS Extended Support in the EKS User Guide.</a> </p>"
+      "documentation":"<p>This value indicates if extended support is enabled or disabled for the cluster.</p> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html\">Learn more about EKS Extended Support in the <i>Amazon EKS User Guide</i>.</a> </p>"
     },
     "VpcConfigRequest":{
       "type":"structure",

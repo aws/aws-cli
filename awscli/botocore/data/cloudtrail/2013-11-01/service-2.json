@@ -533,7 +533,7 @@
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Describes the settings for the Insights event selectors that you configured for your trail or event data store. <code>GetInsightSelectors</code> shows if CloudTrail Insights event logging is enabled on the trail or event data store, and if it is, which Insights types are enabled. If you run <code>GetInsightSelectors</code> on a trail or event data store that does not have Insights events enabled, the operation throws the exception <code>InsightNotEnabledException</code> </p> <p>Specify either the <code>EventDataStore</code> parameter to get Insights event selectors for an event data store, or the <code>TrailName</code> parameter to the get Insights event selectors for a trail. You cannot specify these parameters together.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html\">Logging CloudTrail Insights events</a> in the <i>CloudTrail User Guide</i>.</p>",
+      "documentation":"<p>Describes the settings for the Insights event selectors that you configured for your trail or event data store. <code>GetInsightSelectors</code> shows if CloudTrail Insights event logging is enabled on the trail or event data store, and if it is, which Insights types are enabled. If you run <code>GetInsightSelectors</code> on a trail or event data store that does not have Insights events enabled, the operation throws the exception <code>InsightNotEnabledException</code> </p> <p>Specify either the <code>EventDataStore</code> parameter to get Insights event selectors for an event data store, or the <code>TrailName</code> parameter to the get Insights event selectors for a trail. You cannot specify these parameters together.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html\">Working with CloudTrail Insights</a> in the <i>CloudTrail User Guide</i>.</p>",
       "idempotent":true
     },
     "GetQueryResults":{
@@ -836,7 +836,7 @@
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"InsufficientDependencyServiceAccessPermissionException"}
       ],
-      "documentation":"<p>Configures event selectors (also referred to as <i>basic event selectors</i>) or advanced event selectors for your trail. You can use either <code>AdvancedEventSelectors</code> or <code>EventSelectors</code>, but not both. If you apply <code>AdvancedEventSelectors</code> to a trail, any existing <code>EventSelectors</code> are overwritten.</p> <p>You can use <code>AdvancedEventSelectors</code> to log management events, data events for all resource types, and network activity events.</p> <p>You can use <code>EventSelectors</code> to log management events and data events for the following resource types:</p> <ul> <li> <p> <code>AWS::DynamoDB::Table</code> </p> </li> <li> <p> <code>AWS::Lambda::Function</code> </p> </li> <li> <p> <code>AWS::S3::Object</code> </p> </li> </ul> <p>You can't use <code>EventSelectors</code> to log network activity events.</p> <p>If you want your trail to log Insights events, be sure the event selector or advanced event selector enables logging of the Insights event types you want configured for your trail. For more information about logging Insights events, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html\">Logging Insights events</a> in the <i>CloudTrail User Guide</i>. By default, trails created without specific event selectors are configured to log all read and write management events, and no data events or network activity events.</p> <p>When an event occurs in your account, CloudTrail evaluates the event selectors or advanced event selectors in all trails. For each trail, if the event matches any event selector, the trail processes and logs the event. If the event doesn't match any event selector, the trail doesn't log the event.</p> <p>Example</p> <ol> <li> <p>You create an event selector for a trail and specify that you want to log write-only events.</p> </li> <li> <p>The EC2 <code>GetConsoleOutput</code> and <code>RunInstances</code> API operations occur in your account.</p> </li> <li> <p>CloudTrail evaluates whether the events match your event selectors.</p> </li> <li> <p>The <code>RunInstances</code> is a write-only event and it matches your event selector. The trail logs the event.</p> </li> <li> <p>The <code>GetConsoleOutput</code> is a read-only event that doesn't match your event selector. The trail doesn't log the event. </p> </li> </ol> <p>The <code>PutEventSelectors</code> operation must be called from the Region in which the trail was created; otherwise, an <code>InvalidHomeRegionException</code> exception is thrown.</p> <p>You can configure up to five event selectors for each trail.</p> <p>You can add advanced event selectors, and conditions for your advanced event selectors, up to a maximum of 500 values for all conditions and selectors on a trail. For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html\">Logging management events</a>, <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events</a>, <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-network-events-with-cloudtrail.html\">Logging network activity events</a>, and <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/WhatIsCloudTrail-Limits.html\">Quotas in CloudTrail</a> in the <i>CloudTrail User Guide</i>.</p>",
+      "documentation":"<p>Configures event selectors (also referred to as <i>basic event selectors</i>) or advanced event selectors for your trail. You can use either <code>AdvancedEventSelectors</code> or <code>EventSelectors</code>, but not both. If you apply <code>AdvancedEventSelectors</code> to a trail, any existing <code>EventSelectors</code> are overwritten.</p> <p>You can use <code>AdvancedEventSelectors</code> to log management events, data events for all resource types, and network activity events.</p> <p>You can use <code>EventSelectors</code> to log management events and data events for the following resource types:</p> <ul> <li> <p> <code>AWS::DynamoDB::Table</code> </p> </li> <li> <p> <code>AWS::Lambda::Function</code> </p> </li> <li> <p> <code>AWS::S3::Object</code> </p> </li> </ul> <p>You can't use <code>EventSelectors</code> to log network activity events.</p> <p>If you want your trail to log Insights events, be sure the event selector or advanced event selector enables logging of the Insights event types you want configured for your trail. For more information about logging Insights events, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html\">Working with CloudTrail Insights</a> in the <i>CloudTrail User Guide</i>. By default, trails created without specific event selectors are configured to log all read and write management events, and no data events or network activity events.</p> <p>When an event occurs in your account, CloudTrail evaluates the event selectors or advanced event selectors in all trails. For each trail, if the event matches any event selector, the trail processes and logs the event. If the event doesn't match any event selector, the trail doesn't log the event.</p> <p>Example</p> <ol> <li> <p>You create an event selector for a trail and specify that you want to log write-only events.</p> </li> <li> <p>The EC2 <code>GetConsoleOutput</code> and <code>RunInstances</code> API operations occur in your account.</p> </li> <li> <p>CloudTrail evaluates whether the events match your event selectors.</p> </li> <li> <p>The <code>RunInstances</code> is a write-only event and it matches your event selector. The trail logs the event.</p> </li> <li> <p>The <code>GetConsoleOutput</code> is a read-only event that doesn't match your event selector. The trail doesn't log the event. </p> </li> </ol> <p>The <code>PutEventSelectors</code> operation must be called from the Region in which the trail was created; otherwise, an <code>InvalidHomeRegionException</code> exception is thrown.</p> <p>You can configure up to five event selectors for each trail.</p> <p>You can add advanced event selectors, and conditions for your advanced event selectors, up to a maximum of 500 values for all conditions and selectors on a trail. For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html\">Logging management events</a>, <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events</a>, <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-network-events-with-cloudtrail.html\">Logging network activity events</a>, and <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/WhatIsCloudTrail-Limits.html\">Quotas in CloudTrail</a> in the <i>CloudTrail User Guide</i>.</p>",
       "idempotent":true
     },
     "PutInsightSelectors":{
@@ -865,7 +865,7 @@
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lets you enable Insights event logging by specifying the Insights selectors that you want to enable on an existing trail or event data store. You also use <code>PutInsightSelectors</code> to turn off Insights event logging, by passing an empty list of Insights types. The valid Insights event types are <code>ApiErrorRateInsight</code> and <code>ApiCallRateInsight</code>.</p> <p>To enable Insights on an event data store, you must specify the ARNs (or ID suffix of the ARNs) for the source event data store (<code>EventDataStore</code>) and the destination event data store (<code>InsightsDestination</code>). The source event data store logs management events and enables Insights. The destination event data store logs Insights events based upon the management event activity of the source event data store. The source and destination event data stores must belong to the same Amazon Web Services account.</p> <p>To log Insights events for a trail, you must specify the name (<code>TrailName</code>) of the CloudTrail trail for which you want to change or add Insights selectors.</p> <p>To log CloudTrail Insights events on API call volume, the trail or event data store must log <code>write</code> management events. To log CloudTrail Insights events on API error rate, the trail or event data store must log <code>read</code> or <code>write</code> management events. You can call <code>GetEventSelectors</code> on a trail to check whether the trail logs management events. You can call <code>GetEventDataStore</code> on an event data store to check whether the event data store logs management events.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html\">Logging CloudTrail Insights events</a> in the <i>CloudTrail User Guide</i>.</p>",
+      "documentation":"<p>Lets you enable Insights event logging by specifying the Insights selectors that you want to enable on an existing trail or event data store. You also use <code>PutInsightSelectors</code> to turn off Insights event logging, by passing an empty list of Insights types. The valid Insights event types are <code>ApiErrorRateInsight</code> and <code>ApiCallRateInsight</code>.</p> <p>To enable Insights on an event data store, you must specify the ARNs (or ID suffix of the ARNs) for the source event data store (<code>EventDataStore</code>) and the destination event data store (<code>InsightsDestination</code>). The source event data store logs management events and enables Insights. The destination event data store logs Insights events based upon the management event activity of the source event data store. The source and destination event data stores must belong to the same Amazon Web Services account.</p> <p>To log Insights events for a trail, you must specify the name (<code>TrailName</code>) of the CloudTrail trail for which you want to change or add Insights selectors.</p> <p>To log CloudTrail Insights events on API call volume, the trail or event data store must log <code>write</code> management events. To log CloudTrail Insights events on API error rate, the trail or event data store must log <code>read</code> or <code>write</code> management events. You can call <code>GetEventSelectors</code> on a trail to check whether the trail logs management events. You can call <code>GetEventDataStore</code> on an event data store to check whether the event data store logs management events.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html\">Working with CloudTrail Insights</a> in the <i>CloudTrail User Guide</i>.</p>",
       "idempotent":true
     },
     "PutResourcePolicy":{
@@ -966,6 +966,22 @@
         {"shape":"OrganizationNotInAllFeaturesModeException"}
       ],
       "documentation":"<p>Restores a deleted event data store specified by <code>EventDataStore</code>, which accepts an event data store ARN. You can only restore a deleted event data store within the seven-day wait period after deletion. Restoring an event data store can take several minutes, depending on the size of the event data store.</p>"
+    },
+    "SearchSampleQueries":{
+      "name":"SearchSampleQueries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SearchSampleQueriesRequest"},
+      "output":{"shape":"SearchSampleQueriesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p> Searches sample queries and returns a list of sample queries that are sorted by relevance. To search for sample queries, provide a natural language <code>SearchPhrase</code> in English. </p>",
+      "idempotent":true
     },
     "StartDashboardRefresh":{
       "name":"StartDashboardRefresh",
@@ -1349,7 +1365,7 @@
           "documentation":"<p>Contains all selector statements in an advanced event selector.</p>"
         }
       },
-      "documentation":"<p>Advanced event selectors let you create fine-grained selectors for CloudTrail management, data, and network activity events. They help you control costs by logging only those events that are important to you. For more information about configuring advanced event selectors, see the <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events</a>, <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-network-events-with-cloudtrail.html\">Logging network activity events</a>, and <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html\">Logging management events</a> topics in the <i>CloudTrail User Guide</i>.</p> <p>You cannot apply both event selectors and advanced event selectors to a trail.</p> <p>For information about configurable advanced event selector fields, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_AdvancedEventSelector.html\">AdvancedEventSelector</a> in the <i>CloudTrailUser Guide</i>.</p>"
+      "documentation":"<p>Advanced event selectors let you create fine-grained selectors for CloudTrail management, data, and network activity events. They help you control costs by logging only those events that are important to you. For more information about configuring advanced event selectors, see the <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html\">Logging data events</a>, <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-network-events-with-cloudtrail.html\">Logging network activity events</a>, and <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html\">Logging management events</a> topics in the <i>CloudTrail User Guide</i>.</p> <p>You cannot apply both event selectors and advanced event selectors to a trail.</p> <p>For information about configurable advanced event selector fields, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_AdvancedEventSelector.html\">AdvancedEventSelector</a> in the <i>CloudTrail API Reference</i>.</p>"
     },
     "AdvancedEventSelectors":{
       "type":"list",
@@ -1361,7 +1377,7 @@
       "members":{
         "Field":{
           "shape":"SelectorField",
-          "documentation":"<p> A field in a CloudTrail event record on which to filter events to be logged. For event data stores for CloudTrail Insights events, Config configuration items, Audit Manager evidence, or events outside of Amazon Web Services, the field is used only for selecting events as filtering is not supported.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_AdvancedFieldSelector.html\">AdvancedFieldSelector</a> in the <i>CloudTrailUser Guide</i>.</p>"
+          "documentation":"<p> A field in a CloudTrail event record on which to filter events to be logged. For event data stores for CloudTrail Insights events, Config configuration items, Audit Manager evidence, or events outside of Amazon Web Services, the field is used only for selecting events as filtering is not supported.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_AdvancedFieldSelector.html\">AdvancedFieldSelector</a> in the <i>CloudTrail API Reference</i>.</p> <note> <p>Selectors don't support the use of wildcards like <code>*</code> . To match multiple values with a single condition, you may use <code>StartsWith</code>, <code>EndsWith</code>, <code>NotStartsWith</code>, or <code>NotEndsWith</code> to explicitly match the beginning or end of the event field.</p> </note>"
         },
         "Equals":{
           "shape":"Operator",
@@ -4657,6 +4673,78 @@
         }
       },
       "documentation":"<p> The settings for the source S3 bucket. </p>"
+    },
+    "SampleQueryDescription":{"type":"string"},
+    "SampleQueryName":{"type":"string"},
+    "SampleQueryRelevance":{"type":"float"},
+    "SampleQuerySQL":{"type":"string"},
+    "SearchSampleQueriesMaxResults":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
+    "SearchSampleQueriesRequest":{
+      "type":"structure",
+      "required":["SearchPhrase"],
+      "members":{
+        "SearchPhrase":{
+          "shape":"SearchSampleQueriesSearchPhrase",
+          "documentation":"<p> The natural language phrase to use for the semantic search. The phrase must be in English. The length constraint is in characters, not words.</p>"
+        },
+        "MaxResults":{
+          "shape":"SearchSampleQueriesMaxResults",
+          "documentation":"<p> The maximum number of results to return on a single page. The default value is 10. </p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p> A token you can use to get the next page of results. The length constraint is in characters, not words. </p>"
+        }
+      }
+    },
+    "SearchSampleQueriesResponse":{
+      "type":"structure",
+      "members":{
+        "SearchResults":{
+          "shape":"SearchSampleQueriesSearchResults",
+          "documentation":"<p> A list of objects containing the search results ordered from most relevant to least relevant. </p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p> A token you can use to get the next page of results.</p>"
+        }
+      }
+    },
+    "SearchSampleQueriesSearchPhrase":{
+      "type":"string",
+      "max":1000,
+      "min":2,
+      "pattern":"^[ -~\\n]*$"
+    },
+    "SearchSampleQueriesSearchResult":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"SampleQueryName",
+          "documentation":"<p> The name of a sample query. </p>"
+        },
+        "Description":{
+          "shape":"SampleQueryDescription",
+          "documentation":"<p> A longer description of a sample query. </p>"
+        },
+        "SQL":{
+          "shape":"SampleQuerySQL",
+          "documentation":"<p> The SQL code of the sample query. </p>"
+        },
+        "Relevance":{
+          "shape":"SampleQueryRelevance",
+          "documentation":"<p> A value between 0 and 1 indicating the similarity between the search phrase and result. </p>"
+        }
+      },
+      "documentation":"<p> A search result returned by the <code>SearchSampleQueries</code> operation. </p>"
+    },
+    "SearchSampleQueriesSearchResults":{
+      "type":"list",
+      "member":{"shape":"SearchSampleQueriesSearchResult"}
     },
     "SelectorField":{
       "type":"string",

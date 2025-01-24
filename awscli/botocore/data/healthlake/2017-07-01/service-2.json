@@ -5,13 +5,15 @@
     "endpointPrefix":"healthlake",
     "jsonVersion":"1.0",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"HealthLake",
     "serviceFullName":"Amazon HealthLake",
     "serviceId":"HealthLake",
     "signatureVersion":"v4",
     "signingName":"healthlake",
     "targetPrefix":"HealthLake",
-    "uid":"healthlake-2017-07-01"
+    "uid":"healthlake-2017-07-01",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateFHIRDatastore":{
@@ -241,6 +243,7 @@
       "type":"string",
       "enum":[
         "SMART_ON_FHIR_V1",
+        "SMART_ON_FHIR",
         "AWS_AUTH"
       ]
     },
@@ -807,6 +810,7 @@
       "type":"string",
       "enum":[
         "SUBMITTED",
+        "QUEUED",
         "IN_PROGRESS",
         "COMPLETED_WITH_ERRORS",
         "COMPLETED",
@@ -1073,8 +1077,7 @@
       "required":[
         "OutputDataConfig",
         "DatastoreId",
-        "DataAccessRoleArn",
-        "ClientToken"
+        "DataAccessRoleArn"
       ],
       "members":{
         "JobName":{
@@ -1127,8 +1130,7 @@
         "InputDataConfig",
         "JobOutputDataConfig",
         "DatastoreId",
-        "DataAccessRoleArn",
-        "ClientToken"
+        "DataAccessRoleArn"
       ],
       "members":{
         "JobName":{

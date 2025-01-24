@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.23.6
+======
+
+* api-change:``sso-oidc``: Fixed typos in the descriptions.
+* api-change:``healthlake``: Added new authorization strategy value 'SMART_ON_FHIR' for CreateFHIRDatastore API to support Smart App 2.0
+* api-change:``cloudtrail``: This release introduces the SearchSampleQueries API that allows users to search for CloudTrail Lake sample queries.
+* api-change:``eks``: Adds support for UpdateStrategies in EKS Managed Node Groups.
+* api-change:``ssm``: Systems Manager doc-only update for January, 2025.
+* api-change:``transfer``: Added CustomDirectories as a new directory option for storing inbound AS2 messages, MDN files and Status files.
+
+
 2.23.5
 ======
 

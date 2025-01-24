@@ -1,4 +1,4 @@
-**Example 1: To creates or updates the catalog data for a repository in a public registry.**
+**To create or update the catalog data for a repository in a public registry**
 
 The following ``put-repository-catalog-data`` example creates or update catalog data for reposiotry named `project-a/nginx-web-app` in a public registry, along with logoImageBlob, aboutText, usageText and tags information. ::
 
@@ -10,6 +10,7 @@ The following ``put-repository-catalog-data`` example creates or update catalog 
 Contents of ``repository-catalog-data.json``::
 
     {
+        "repositoryName": "project-a/nginx-web-app",
         "catalogData": {
             "description": "My project-a ECR Public Repository",
             "architectures": [
@@ -21,9 +22,9 @@ Contents of ``repository-catalog-data.json``::
             "operatingSystems": [
                 "Linux"
             ],
-            "logoImageBlob": "iVBORw0KGgoAAAANSUhEUgAAAYYAAAGGCAMAAABIXtbXAAAAq1BMVEVHcEz// <abbreviated>",
+            "logoImageBlob": "iVBORw0KGgoA<<truncated-for-better-reading>>ErkJggg==",
             "aboutText": "## Quick reference.",
-            "usageText": "## Supported architectures are as follows"
+            "usageText": "## Supported architectures are as follows."
         }
     }
 
@@ -41,7 +42,7 @@ Output::
             "operatingSystems": [
                 "Linux"
             ],
-            "logoUrl": "https://d3g9o9u8re44ak.cloudfront.net/logo/491d3846-8f33-4d8b-a10c-c2ce271e6c0d/4f09d87c-2569-4916-a932-5c296bf6f88a.png",
+            "logoUrl": "https://d3g9o9u8re44ak.cloudfront.net/logo/df86cf58-ee60-4061-b804-0be24d97ccb1/4a9ed9b2-69e4-4ede-b924-461462d20ef0.png",
             "aboutText": "## Quick reference.",
             "usageText": "## Supported architectures are as follows."
         }

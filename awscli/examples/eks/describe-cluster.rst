@@ -3,7 +3,7 @@
 The following ``describe-cluster`` example actively running EKS addon in your Amazon EKS cluster. ::
 
     aws eks describe-cluster \
-        --cluster-name my-eks-cluster
+        --name my-eks-cluster
 
 Output::
 

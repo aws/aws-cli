@@ -1,6 +1,6 @@
 **Example 1: To describe all VPC endpoint services**
 
-The following "describe-vpc-endpoint-services" example lists all VPC endpoint services for an AWS Region. ::
+The following ``describe-vpc-endpoint-services`` example lists all VPC endpoint services for an AWS Region. ::
 
     aws ec2 describe-vpc-endpoint-services
 
@@ -87,14 +87,12 @@ Output::
         ]
     }
 
-For more information, see `View available AWS service names <https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-interface.html#vpce-view-services>`__ in the *User Guide for AWSPrivateLink*.
-
 **Example 2: To describe the details about an endpoint service**
 
-The following "describe-vpc-endpoint-services" example lists the details of the Amazon S3 interface endpoint srvice ::
+The following ``describe-vpc-endpoint-services`` example lists the details of the Amazon S3 interface endpoint service. ::
 
     aws ec2 describe-vpc-endpoint-services \
-        --filter "Name=service-type,Values=Interface" Name=service-name,Values=com.amazonaws.us-east-1.s3
+        --filter 'Name=service-type,Values=Interface' Name=service-name,Values=com.amazonaws.us-east-1.s3
 
 Output::
 
@@ -131,4 +129,4 @@ Output::
         ]
     }
 
-For more information, see `View available AWS service names <https://docs.aws.amazon.com/vpc/latest/privatelink/vpce-interface.html#vpce-view-services>`__ in the *User Guide for AWSPrivateLink*.
+For more information, see `View available AWS service names <https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html#vpce-view-available-services>`__ in the *AWS PrivateLink User Guide*.

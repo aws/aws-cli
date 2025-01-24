@@ -10,35 +10,45 @@ Output::
         "CapacityReservations": [
             {
                 "CapacityReservationId": "cr-1234abcd56EXAMPLE ",
-                "EndDateType": "unlimited",
-                "AvailabilityZone": "eu-west-1a",
-                "InstanceMatchCriteria": "open",
-                "Tags": [],
-                "EphemeralStorage": false,
-                "CreateDate": "2019-08-16T09:03:18.000Z",
-                "AvailableInstanceCount": 1,
+                "OwnerId": "123456789111",
+                "CapacityReservationArn": "arn:aws:ec2:us-east-1:123456789111:capacity-reservation/cr-1234abcd56EXAMPLE",
+                "AvailabilityZoneId": "use1-az2",
+                "InstanceType": "c5.large",
                 "InstancePlatform": "Linux/UNIX",
-                "TotalInstanceCount": 1,
-                "State": "active",
+                "AvailabilityZone": "us-east-1a",
                 "Tenancy": "default",
+                "TotalInstanceCount": 1,
+                "AvailableInstanceCount": 1,
                 "EbsOptimized": true,
-                "InstanceType": "a1.medium"
+                "EphemeralStorage": false,
+                "State": "active",
+                "StartDate": "2024-10-23T15:00:24+00:00",
+                "EndDateType": "unlimited",
+                "InstanceMatchCriteria": "open",
+                "CreateDate": "2024-10-23T15:00:24+00:00",
+                "Tags": [],
+                "CapacityAllocations": []
             },
             {
                 "CapacityReservationId": "cr-abcdEXAMPLE9876ef ",
-                "EndDateType": "unlimited",
-                "AvailabilityZone": "eu-west-1a",
-                "InstanceMatchCriteria": "open",
-                "Tags": [],
-                "EphemeralStorage": false,
-                "CreateDate": "2019-08-07T11:34:19.000Z",
-                "AvailableInstanceCount": 3,
+                "OwnerId": "123456789111",
+                "CapacityReservationArn": "arn:aws:ec2:us-east-1:123456789111:capacity-reservation/cr-abcdEXAMPLE9876ef",
+                "AvailabilityZoneId": "use1-az2",
+                "InstanceType": "c4.large",
                 "InstancePlatform": "Linux/UNIX",
-                "TotalInstanceCount": 3,
-                "State": "cancelled",
+                "AvailabilityZone": "us-east-1a",
                 "Tenancy": "default",
+                "TotalInstanceCount": 1,
+                "AvailableInstanceCount": 1,
                 "EbsOptimized": true,
-                "InstanceType": "m5.large"
+                "EphemeralStorage": false,
+                "State": "cancelled",
+                "StartDate": "2024-10-23T15:01:03+00:00",
+                "EndDateType": "unlimited",
+                "InstanceMatchCriteria": "open",
+                "CreateDate": "2024-10-23T15:01:02+00:00",
+                "Tags": [],
+                "CapacityAllocations": []
             }
         ]
     }
@@ -55,20 +65,25 @@ Output::
     {
         "CapacityReservations": [
             {
-                "CapacityReservationId": "cr-1234abcd56EXAMPLE",
-                "EndDateType": "unlimited",
-                "AvailabilityZone": "eu-west-1a",
-                "InstanceMatchCriteria": "open",
-                "Tags": [],
-                "EphemeralStorage": false,
-                "CreateDate": "2019-08-16T09:03:18.000Z",
-                "AvailableInstanceCount": 1,
+                "CapacityReservationId": "cr-abcdEXAMPLE9876ef ",
+                "OwnerId": "123456789111",
+                "CapacityReservationArn": "arn:aws:ec2:us-east-1:123456789111:capacity-reservation/cr-abcdEXAMPLE9876ef",
+                "AvailabilityZoneId": "use1-az2",
+                "InstanceType": "c4.large",
                 "InstancePlatform": "Linux/UNIX",
-                "TotalInstanceCount": 1,
-                "State": "active",
+                "AvailabilityZone": "us-east-1a",
                 "Tenancy": "default",
+                "TotalInstanceCount": 1,
+                "AvailableInstanceCount": 1,
                 "EbsOptimized": true,
-                "InstanceType": "a1.medium"
+                "EphemeralStorage": false,
+                "State": "active",
+                "StartDate": "2024-10-23T15:01:03+00:00",
+                "EndDateType": "unlimited",
+                "InstanceMatchCriteria": "open",
+                "CreateDate": "2024-10-23T15:01:02+00:00",
+                "Tags": [],
+                "CapacityAllocations": []
             }
         ]
     }

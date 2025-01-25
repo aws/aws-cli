@@ -21,4 +21,4 @@ Output::
         "InstanceType": "t2.medium"
     }
 
-For more information, see `Viewing Shared Capacity Reservation Usage <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservation-sharing.html#shared-cr-usage>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Shared Capacity Reservations <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservation-sharing.html>`__ in the *Amazon EC2 User Guide*.

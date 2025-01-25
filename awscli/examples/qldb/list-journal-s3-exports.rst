@@ -15,7 +15,7 @@ Output::
                     "EncryptionConfiguration": {
                         "ObjectEncryptionType": "SSE_S3"
                     },
-                    "Bucket": "awsExampleBucket",
+                    "Bucket": "amzn-s3-demo-bucket",
                     "Prefix": "ledgerexport1/"
                 },
                 "RoleArn": "arn:aws:iam::123456789012:role/my-s3-export-role",
@@ -31,7 +31,7 @@ Output::
                     "EncryptionConfiguration": {
                         "ObjectEncryptionType": "SSE_S3"
                     },
-                    "Bucket": "awsExampleBucket",
+                    "Bucket": "amzn-s3-demo-bucket",
                     "Prefix": "ledgerexport1/"
                 },
                 "RoleArn": "arn:aws:iam::123456789012:role/my-s3-export-role",

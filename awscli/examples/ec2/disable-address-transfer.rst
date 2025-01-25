@@ -15,4 +15,4 @@ Output::
         }
     }
 
-For more information, see `Transfer Elastic IP addresses <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html#transfer-EIPs-intro>`__ in the *Amazon VPC User Guide*.
+For more information, see `Transfer Elastic IP addresses <https://docs.aws.amazon.com/vpc/latest/userguide/WorkWithEIPs.html#transfer-EIPs-intro>`__ in the *Amazon VPC User Guide*.

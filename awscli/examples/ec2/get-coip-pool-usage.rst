@@ -27,4 +27,4 @@ Output::
         "LocalGatewayRouteTableId": "lgw-rtb-059615ef7dEXAMPLE"
     }
 
-For more information, see `Customer-owned IP addresses <https://docs.aws.amazon.com/outposts/latest/userguide/outposts-networking-components.html#ip-addressing>`__ in the *AWS Outposts User Guide*.
+For more information, see `Customer-owned IP addresses <https://docs.aws.amazon.com/outposts/latest/userguide/routing.html#ip-addressing>`__ in the *AWS Outposts User Guide for Outposts racks*.

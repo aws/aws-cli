@@ -3,7 +3,7 @@
 The following ``get-bucket-ownership-controls`` example retrieves the bucket ownership settings of a bucket. ::
 
     aws s3api get-bucket-ownership-controls \
-        --bucket DOC-EXAMPLE-BUCKET
+        --bucket amzn-s3-demo-bucket
 
 Output::
 

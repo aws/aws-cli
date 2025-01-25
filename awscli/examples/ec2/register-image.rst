@@ -4,7 +4,7 @@ The following ``register-image`` example registers an AMI using the specified ma
 
     aws ec2 register-image \
         --name my-image \
-        --image-location my-s3-bucket/myimage/image.manifest.xml
+        --image-location amzn-s3-demo-bucket/myimage/image.manifest.xml
 
 Output::
 

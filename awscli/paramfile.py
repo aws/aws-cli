@@ -18,7 +18,7 @@ from botocore.awsrequest import AWSRequest
 from botocore.exceptions import ProfileNotFound
 from botocore.httpsession import URLLib3Session
 
-from awscli.argprocess import ParamError
+from awscli import argprocess
 from awscli.compat import compat_open
 
 logger = logging.getLogger(__name__)
@@ -183,7 +183,7 @@ class URIArgumentHandler:
         try:
             return get_paramfile(value, self._prefixes)
         except ResourceLoadingError as e:
-            raise ParamError(param.cli_name, str(e))
+            raise argprocess.ParamError(param.cli_name, str(e))
 
 
 def get_paramfile(path, cases):

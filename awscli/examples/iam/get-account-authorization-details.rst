@@ -1,4 +1,4 @@
-**To list an AWS accounts IAM users, groups, roles, and policies**
+**To list an AWS account's IAM users, groups, roles, and policies**
 
 The following ``get-account-authorization-details`` command returns information about all IAM users, groups, roles, and policies in the AWS account. ::
 
@@ -236,8 +236,8 @@ Output::
                                         "s3:List*"
                                     ],
                                     "Resource": [
-                                        "arn:aws:s3:::example-bucket",
-                                        "arn:aws:s3:::example-bucket/*"
+                                        "arn:aws:s3:::amzn-s3-demo-bucket",
+                                        "arn:aws:s3:::amzn-s3-demo-bucket/*"
                                     ]
                                 }
                             ]

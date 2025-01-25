@@ -21,7 +21,7 @@ Output::
             {
                 "arn": "arn:aws:access-analyzer:us-west-2:111122223333:analyzer/ConsoleAnalyzer-organization",
                 "createdAt": "2020-04-25T07:43:28+00:00",
-                "lastResourceAnalyzed": "arn:aws:s3:::DOC-EXAMPLE-BUCKET",
+                "lastResourceAnalyzed": "arn:aws:s3:::amzn-s3-demo-bucket",
                 "lastResourceAnalyzedAt": "2024-02-15T21:51:56.517000+00:00",
                 "name": "ConsoleAnalyzer-organization",
                 "status": "ACTIVE",

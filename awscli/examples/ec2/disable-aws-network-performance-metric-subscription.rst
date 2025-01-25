@@ -14,4 +14,4 @@ Output::
         "Output": true
     }
 
-For more information, see `Manage subscriptions <https://docs.aws.amazon.com/network-manager/latest/infrastructure-performance/nmip-subscriptions-cw.html>`__ in the *Infrastructure Performance User Guide*.
+For more information, see `Manage CloudWatch subscriptions using the CLI <https://docs.aws.amazon.com/network-manager/latest/infrastructure-performance/getting-started-nmip-cli.html>`__ in the *Infrastructure Performance User Guide*.

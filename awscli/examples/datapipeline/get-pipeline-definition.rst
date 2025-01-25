@@ -83,7 +83,7 @@ The following is example output::
         }
     ],
     "values": {
-        "myS3OutputLoc": "s3://my-s3-bucket/",
+        "myS3OutputLoc": "s3://amzn-s3-demo-bucket/",
         "myS3InputLoc": "s3://us-east-1.elasticmapreduce.samples/pig-apache-logs/data",
         "myShellCmd": "grep -rc \"GET\" ${INPUT1_STAGING_DIR}/* > ${OUTPUT1_STAGING_DIR}/output.txt"
     }

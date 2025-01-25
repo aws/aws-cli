@@ -849,6 +849,22 @@ MANAGED_SCALING_POLICY_SCHEMA = {
                       "The parameter is used to split capacity allocation between core and task nodes."
                }
             } 
+        },
+        "ScalingStrategy": {
+            "type": "string",
+            "enum": ["DEFAULT", "ADVANCED"],
+            "description":
+                      "Determines whether a custom scaling utilization performance index can be set. "
+                      "Possible values include ADVANCED or DEFAULT."
+        },
+        "UtilizationPerformanceIndex": {
+            "type": "integer",
+            "description":
+                      "An integer value that represents an advanced scaling strategy. "
+                      "Setting a higher value optimizes for performance. "
+                      "Setting a lower value optimizes for resource conservation. "
+                      "Setting the value to 50 balances performance and resource conservation. "
+                      "Possible values are 1, 25, 50, 75, and 100."
         }
     }
 }

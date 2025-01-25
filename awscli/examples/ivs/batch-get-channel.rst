@@ -13,9 +13,15 @@ Output::
             {
                 "arn": "arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh",
                 "authorized": false,
+                "containerFormat": "TS",
                 "ingestEndpoint": "a1b2c3d4e5f6.global-contribute.live-video.net",
                 "insecureIngest": false,
                 "latencyMode": "LOW",
+                "multitrackInputConfiguration": {
+                    "enabled": false,
+                    "maximumResolution": "FULL_HD",
+                    "policy": "ALLOW"
+                },
                 "name": "channel-1",
                 "playbackUrl": "https://a1b2c3d4e5f6.us-west-2.playback.live-video.net/api/video/v1/us-west-2.123456789012.channel-1.abcdEFGH.m3u8",
                 "preset": "",
@@ -31,9 +37,15 @@ Output::
             {
                 "arn": "arn:aws:ivs:us-west-2:123456789012:channel/efghEFGHijkl",
                 "authorized": false,
+                "containerFormat": "FRAGMENTED_MP4",
                 "ingestEndpoint": "a1b2c3d4e5f6.global-contribute.live-video.net",
-                "insecureIngest": true,
+                "insecureIngest": false,
                 "latencyMode": "LOW",
+                "multitrackInputConfiguration": {
+                    "enabled": true,
+                    "maximumResolution": "FULL_HD",
+                    "policy": "ALLOW"
+                },
                 "name": "channel-2",
                 "playbackUrl": "https://a1b2c3d4e5f6.us-west-2.playback.live-video.net/api/video/v1/us-west-2.123456789012.channel-2.abcdEFGH.m3u8",
                 "preset": "",

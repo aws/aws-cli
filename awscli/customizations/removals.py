@@ -55,9 +55,14 @@ def register_removals(event_handler):
                                           'converse-stream'])
     cmd_remover.remove(on_event='building-command-table.bedrock-agent-runtime',
                          remove_commands=['invoke-agent',
-                                          'invoke-flow'])
+                                          'invoke-flow',
+                                          'invoke-inline-agent',
+                                          'optimize-prompt',
+                                          'retrieve-and-generate-stream'])
     cmd_remover.remove(on_event='building-command-table.qbusiness',
                         remove_commands=['chat'])
+    cmd_remover.remove(on_event='building-command-table.iotsitewise',
+                        remove_commands=['invoke-assistant'])
 
 
 class CommandRemover(object):

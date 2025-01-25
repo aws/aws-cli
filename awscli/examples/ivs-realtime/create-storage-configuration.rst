@@ -3,7 +3,7 @@
 The following ``create-storage-configuration`` example creates a composition storage configuration with the specified properties. ::
 
     aws ivs-realtime create-storage-configuration \
-        --name "test-sc" --s3 "bucketName=test-bucket-name"
+        --name "test-sc" --s3 "bucketName=amzn-s3-demo-bucket"
 
 Output::
 
@@ -12,7 +12,7 @@ Output::
             "arn": "arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/ABabCDcdEFef",
             "name": "test-sc",
             "s3": {
-                "bucketName": "test-bucket-name"
+                "bucketName": "amzn-s3-demo-bucket"
             },
             "tags": {}
         }

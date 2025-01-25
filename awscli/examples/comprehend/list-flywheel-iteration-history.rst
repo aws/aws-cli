@@ -24,7 +24,7 @@ Output::
                     "AverageRecall": 0.9445600253081214,
                     "AverageAccuracy": 0.9997281665190434
                 },
-                "EvaluationManifestS3Prefix": "s3://DOC-EXAMPLE-BUCKET/example-flywheel/schemaVersion=1/20230619TEXAMPLE/evaluation/20230619TEXAMPLE/"
+                "EvaluationManifestS3Prefix": "s3://amzn-s3-demo-bucket/example-flywheel/schemaVersion=1/20230619TEXAMPLE/evaluation/20230619TEXAMPLE/"
             },
             {
                 "FlywheelArn": "arn:aws:comprehend:us-west-2:111122223333:flywheel/example-flywheel-2",
@@ -41,7 +41,7 @@ Output::
                     "AverageRecall": 0.9767700253081214,
                     "AverageAccuracy": 0.9858281665190434
                 },
-                "EvaluationManifestS3Prefix": "s3://DOC-EXAMPLE-BUCKET/example-flywheel-2/schemaVersion=1/20230616TEXAMPLE/evaluation/20230616TEXAMPLE/"
+                "EvaluationManifestS3Prefix": "s3://amzn-s3-demo-bucket/example-flywheel-2/schemaVersion=1/20230616TEXAMPLE/evaluation/20230616TEXAMPLE/"
             }
         ]
     }

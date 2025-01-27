@@ -24,7 +24,8 @@ completer_exe = EXE(completer_pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True)
+          console=True,
+          contents_directory='.')
 coll = COLLECT(completer_exe,
                completer_a.binaries,
                completer_a.zipfiles,

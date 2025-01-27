@@ -23,7 +23,8 @@ aws_exe = EXE(aws_pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True )
+          console=True,
+          contents_directory='.')
 coll = COLLECT(aws_exe,
                aws_a.binaries,
                aws_a.zipfiles,

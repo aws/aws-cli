@@ -3,7 +3,7 @@
 The following ``put-bucket-metrics-configuration`` example sets a metric configuration with ID 123 for the specified bucket. ::
 
     aws s3api put-bucket-metrics-configuration \
-        --bucket my-bucket \
+        --bucket amzn-s3-demo-bucket \
         --id 123 \
         --metrics-configuration '{"Id": "123", "Filter": {"Prefix": "logs"}}'
 

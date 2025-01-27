@@ -4,7 +4,7 @@ This example creates a simulation application.
 
 Command::
 
-   aws robomaker create-simulation-application  --name MyRobotApplication --sources s3Bucket=my-bucket,s3Key=my-simulation-application.tar.gz,architecture=ARMHF --robot-software-suite name=ROS,version=Kinetic --simulation-software-suite name=Gazebo,version=7 --rendering-engine name=OGRE,version=1.x
+   aws robomaker create-simulation-application  --name MyRobotApplication --sources s3Bucket=amzn-s3-demo-bucket,s3Key=my-simulation-application.tar.gz,architecture=ARMHF --robot-software-suite name=ROS,version=Kinetic --simulation-software-suite name=Gazebo,version=7 --rendering-engine name=OGRE,version=1.x
 
 Output::
 
@@ -14,7 +14,7 @@ Output::
     "version": "$LATEST",
     "sources": [
         {
-            "s3Bucket": "my-bucket",
+            "s3Bucket": "amzn-s3-demo-bucket",
             "s3Key": "my-simulation-application.tar.gz",
             "architecture": "X86_64"
         }

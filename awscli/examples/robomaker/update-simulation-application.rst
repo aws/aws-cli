@@ -4,7 +4,7 @@ This example updates a simulation application.
 
 Command::
 
-   aws robomaker update-simulation-application --application arn:aws:robomaker:us-west-2:111111111111:simulation-application/MySimulationApplication/1551203427605 --sources s3Bucket=my-bucket,s3Key=my-simulation-application.tar.gz,architecture=X86_64 --robot-software-suite name=ROS,version=Kinetic --simulation-software-suite name=Gazebo,version=7 --rendering-engine name=OGRE,version=1.x
+   aws robomaker update-simulation-application --application arn:aws:robomaker:us-west-2:111111111111:simulation-application/MySimulationApplication/1551203427605 --sources s3Bucket=amzn-s3-demo-bucket,s3Key=my-simulation-application.tar.gz,architecture=X86_64 --robot-software-suite name=ROS,version=Kinetic --simulation-software-suite name=Gazebo,version=7 --rendering-engine name=OGRE,version=1.x
 
 Output::
 
@@ -14,7 +14,7 @@ Output::
     "version": "$LATEST",
     "sources": [
         {
-            "s3Bucket": "my-bucket",
+            "s3Bucket": "amzn-s3-demo-bucket",
             "s3Key": "my-simulation-application.tar.gz",
             "architecture": "X86_64"
         }

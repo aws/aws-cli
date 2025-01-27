@@ -3,7 +3,7 @@
 The following ``get-bucket-inventory-configuration`` example retrieves the inventory configuration for the specified bucket with ID ``1``. ::
 
     aws s3api get-bucket-inventory-configuration \
-        --bucket my-bucket \
+        --bucket amzn-s3-demo-bucket \
         --id 1
 
 Output::
@@ -14,7 +14,7 @@ Output::
             "Destination": {
                 "S3BucketDestination": {
                     "Format": "ORC",
-                    "Bucket": "arn:aws:s3:::my-bucket",
+                    "Bucket": "arn:aws:s3:::amzn-s3-demo-bucket",
                     "AccountId": "123456789012"
                 }
             },

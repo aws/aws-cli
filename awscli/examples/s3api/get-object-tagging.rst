@@ -3,7 +3,7 @@
 The following ``get-object-tagging`` example retrieves the values for the specified key from the specified object. ::
 
     aws s3api get-object-tagging \
-        --bucket my-bucket \
+        --bucket amzn-s3-demo-bucket \
         --key doc1.rtf
 
 Output::
@@ -20,7 +20,7 @@ Output::
 The following ``get-object-tagging`` example tries to retrieve the tag sets of the object ``doc2.rtf``, which has no tags. ::
 
     aws s3api get-object-tagging \
-        --bucket my-bucket \
+        --bucket amzn-s3-demo-bucket \
         --key doc2.rtf
 
 Output::
@@ -33,7 +33,7 @@ Output::
 The following ``get-object-tagging`` example retrieves the tag sets of the object ``doc3.rtf``, which has multiple tags. ::
 
     aws s3api get-object-tagging \
-        --bucket my-bucket \
+        --bucket amzn-s3-demo-bucket \
         --key doc3.rtf
 
 Output::

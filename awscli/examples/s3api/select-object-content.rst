@@ -3,7 +3,7 @@
 The following ``select-object-content`` example filters the object ``my-data-file.csv`` with the specified SQL statement and sends output to a file. ::
 
     aws s3api select-object-content \
-        --bucket my-bucket \
+        --bucket amzn-s3-demo-bucket \
         --key my-data-file.csv \
         --expression "select * from s3object limit 100" \
         --expression-type 'SQL' \

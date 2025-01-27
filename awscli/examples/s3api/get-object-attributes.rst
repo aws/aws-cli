@@ -3,7 +3,7 @@
 The following ``get-object-attributes`` example retrieves metadata from the object ``doc1.rtf``. ::
 
     aws s3api get-object-attributes \
-        --bucket my-bucket \
+        --bucket amzn-s3-demo-bucket \
         --key doc1.rtf \
         --object-attributes "StorageClass" "ETag" "ObjectSize"
 

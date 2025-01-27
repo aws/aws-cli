@@ -14,6 +14,7 @@
 """This script is to programatically regenerate the requirements/*-lock.txt
 files. In order to run it you need to have pip-tools installed into the
 currently active virtual environment."""
+
 import argparse
 import sys
 import os
@@ -124,10 +125,10 @@ def show_file(path: Path):
 
 
 def main(
-        build_directory: Path,
-        should_show_files: bool,
-        include_sdist: bool,
-        include_base: bool
+    build_directory: Path,
+    should_show_files: bool,
+    include_sdist: bool,
+    include_base: bool,
 ):
     builder = LockFileBuilder(
         source_directory=ROOT,
@@ -204,13 +205,24 @@ if __name__ == "__main__":
         help=("Default base directory where output lock files to be written."),
     )
     parser.add_argument('--show-files', action='store_true')
-    parser.add_argument('--no-show-files', action='store_false', dest='show_files')
+    parser.add_argument(
+        '--no-show-files', action='store_false', dest='show_files'
+    )
     parser.set_defaults(show_files=False)
     parser.add_argument('--include-sdist', action='store_true')
-    parser.add_argument('--no-include-sdist', action='store_false', dest='include_sdist')
+    parser.add_argument(
+        '--no-include-sdist', action='store_false', dest='include_sdist'
+    )
     parser.set_defaults(include_sdist=True)
     parser.add_argument('--include-base', action='store_true')
-    parser.add_argument('--no-include-base', action='store_false', dest='include_base')
+    parser.add_argument(
+        '--no-include-base', action='store_false', dest='include_base'
+    )
     parser.set_defaults(include_base=False)
     args = parser.parse_args()
-    main(args.output_directory, args.show_files, args.include_sdist, args.include_base)
+    main(
+        args.output_directory,
+        args.show_files,
+        args.include_sdist,
+        args.include_base,
+    )

@@ -87,7 +87,7 @@ def parse_sub(sub_str, leave_bang=False):
                 # Figure out what type it is
                 if buf.startswith("AWS::"):
                     word_type = WordType.AWS
-                elif buf.startswith("Constant::"):
+                elif buf.startswith("Constant::") or buf.startswith("Constants::"):
                     word_type = WordType.CONSTANT
                 elif '.' in buf:
                     word_type = WordType.GETATT
@@ -95,6 +95,8 @@ def parse_sub(sub_str, leave_bang=False):
                     word_type = WordType.REF
                 buf = buf.replace("AWS::", "", 1)
                 buf = buf.replace("Constant::", "", 1)
+                # Very common typo to put Constants instead of Constant
+                buf = buf.replace("Constants::", "", 1)
                 words.append(SubWord(word_type, buf))
                 buf = ''
                 state = State.READSTR

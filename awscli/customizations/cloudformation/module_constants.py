@@ -35,7 +35,7 @@ Example:
       Bucket:
         Type: AWS::S3::Bucket
         Metadata:
-          Test: !Sub ${Constants:baz}
+          Test: !Sub ${Constant:baz}
         Properties:
           BucketName: !Sub ${Constant::foo}
 

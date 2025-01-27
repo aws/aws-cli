@@ -34,10 +34,16 @@ LOCK_SUFFIX = "win-lock.txt" if IS_WINDOWS else "lock.txt"
 REQUIREMENTS_DIR = ROOT_DIR / "requirements"
 BOOTSTRAP_REQUIREMENTS = REQUIREMENTS_DIR / "bootstrap.txt"
 DOWNLOAD_DEPS_BOOTSTRAP = REQUIREMENTS_DIR / "download-deps" / "bootstrap.txt"
-DOWNLOAD_DEPS_BOOTSTRAP_LOCK = REQUIREMENTS_DIR / "download-deps" / f"bootstrap-{LOCK_SUFFIX}"
+DOWNLOAD_DEPS_BOOTSTRAP_LOCK = (
+    REQUIREMENTS_DIR / "download-deps" / f"bootstrap-{LOCK_SUFFIX}"
+)
 PORTABLE_EXE_REQUIREMENTS = REQUIREMENTS_DIR / "portable-exe-extras.txt"
-PORTABLE_EXE_REQUIREMENTS_LOCK = REQUIREMENTS_DIR / "download-deps" / f"portable-exe-{LOCK_SUFFIX}"
-SYSTEM_SANDBOX_REQUIREMENTS_LOCK = REQUIREMENTS_DIR / "download-deps" / f"system-sandbox-{LOCK_SUFFIX}"
+PORTABLE_EXE_REQUIREMENTS_LOCK = (
+    REQUIREMENTS_DIR / "download-deps" / f"portable-exe-{LOCK_SUFFIX}"
+)
+SYSTEM_SANDBOX_REQUIREMENTS_LOCK = (
+    REQUIREMENTS_DIR / "download-deps" / f"system-sandbox-{LOCK_SUFFIX}"
+)
 
 # Auto-complete index
 AC_INDEX = ROOT_DIR / "awscli" / "data" / "ac.index"

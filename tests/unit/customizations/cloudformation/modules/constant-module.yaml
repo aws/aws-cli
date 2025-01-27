@@ -1,0 +1,12 @@
+Constants:
+  foo: bar
+  sub: "${Constant::foo}-abc-${AWS::AccountId}"
+
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    Metadata:
+      Test: !Sub ${Constant::sub}-xyz
+    Properties:
+      BucketName: !Sub ${Constant::foo}
+

@@ -1,0 +1,59 @@
+Parameters:
+
+  AZSelection:
+    Type: Number
+
+  SubnetCidrBlock:
+    Type: String
+
+Resources:
+
+  Subnet:
+    Type: AWS::EC2::Subnet
+    Metadata:
+      guard:
+        SuppressedRules:
+          - SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED
+    Properties:
+      AvailabilityZone: !Select [!Ref AZSelection, Fn::GetAZs: !Ref "AWS::Region"]
+      CidrBlock: !Ref SubnetCidrBlock 
+      MapIpOnLaunch: true
+      VpcId: !Ref VPC
+
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+
+  RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref SubnetRouteTable
+      SubnetId: !Ref Subnet
+
+  DefaultRoute:
+    Type: AWS::EC2::Route
+    Metadata:
+      guard:
+        SuppressedRules:
+          - NO_UNRESTRICTED_ROUTE_TO_IGW
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+      RouteTableId: !Ref SubnetRouteTable
+    DependsOn: VPCGW
+
+  EIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+
+  NATGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt SubnetEIP.AllocationId
+      SubnetId: !Ref Subnet
+    DependsOn:
+      - SubnetDefaultRoute
+      - SubnetRouteTableAssociation
+

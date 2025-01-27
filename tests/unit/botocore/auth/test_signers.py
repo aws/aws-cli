@@ -216,7 +216,7 @@ class TestS3SigV4Auth(BaseTestWithFixedDate):
         cqs = self.auth.canonical_query_string(request)
         self.assertEqual('marker=%C3%A4%C3%B6%C3%BC-01.txt&prefix=', cqs)
 
-    def _test_blacklist_header(self, header, value):
+    def _test_blocklist_header(self, header, value):
         request = AWSRequest()
         request.url = 'https://s3.amazonaws.com/bucket/foo'
         request.method = 'PUT'
@@ -227,15 +227,18 @@ class TestS3SigV4Auth(BaseTestWithFixedDate):
         auth.add_auth(request)
         self.assertNotIn(header, request.headers['Authorization'])
 
-    def test_blacklist_expect_headers(self):
-        self._test_blacklist_header('expect', '100-continue')
+    def test_blocklist_expect_headers(self):
+        self._test_blocklist_header('expect', '100-continue')
 
-    def test_blacklist_trace_id(self):
-        self._test_blacklist_header('x-amzn-trace-id',
+    def test_blocklist_trace_id(self):
+        self._test_blocklist_header('x-amzn-trace-id',
                                     'Root=foo;Parent=bar;Sampleid=1')
 
-    def test_blacklist_headers(self):
-        self._test_blacklist_header('user-agent', 'botocore/1.4.11')
+    def test_blocklist_user_agent_header(self):
+        self._test_blocklist_header('user-agent', 'botocore/1.4.11')
+
+    def test_blocklist_transfer_encoding_header(self):
+        self._test_blocklist_header('transfer-encoding', 'chunked')
 
     def test_uses_sha256_if_config_value_is_true(self):
         self.client_config.s3['payload_signing_enabled'] = True

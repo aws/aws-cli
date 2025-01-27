@@ -57,6 +57,7 @@ ISO8601 = '%Y-%m-%dT%H:%M:%SZ'
 SIGV4_TIMESTAMP = '%Y%m%dT%H%M%SZ'
 SIGNED_HEADERS_BLACKLIST = [
     'expect',
+    'transfer-encoding',
     'user-agent',
     'x-amzn-trace-id',
 ]

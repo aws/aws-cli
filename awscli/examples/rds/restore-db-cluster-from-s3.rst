@@ -7,7 +7,7 @@ The following ``restore-db-cluster-from-s3`` example restores an Amazon Aurora M
         --engine aurora-mysql \
         --master-username admin \
         --master-user-password mypassword \
-        --s3-bucket-name mybucket \
+        --s3-bucket-name amzn-s3-demo-bucket \
         --s3-prefix test-backup \
         --s3-ingestion-role-arn arn:aws:iam::123456789012:role/service-role/TestBackup \
         --source-engine mysql \

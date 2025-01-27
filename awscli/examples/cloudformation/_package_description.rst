@@ -40,7 +40,7 @@ For example, if your AWS Lambda function source code is in the
 ``/home/user/code/lambdafunction/`` folder, specify
 ``CodeUri: /home/user/code/lambdafunction`` for the
 ``AWS::Serverless::Function`` resource. The command returns a template and replaces
-the local path with the S3 location: ``CodeUri: s3://mybucket/lambdafunction.zip``.
+the local path with the S3 location: ``CodeUri: s3://amzn-s3-demo-bucket/lambdafunction.zip``.
 
 If you specify a file, the command directly uploads it to the S3 bucket. If you
 specify a folder, the command zips the folder and then uploads the .zip file.

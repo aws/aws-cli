@@ -1708,7 +1708,7 @@
         },
         "agentAliasStatus":{
           "shape":"AgentAliasStatus",
-          "documentation":"<p>The status of the alias of the agent and whether it is ready for use. The following statuses are possible:</p> <ul> <li> <p>CREATING – The agent alias is being created.</p> </li> <li> <p>PREPARED – The agent alias is finished being created or updated and is ready to be invoked.</p> </li> <li> <p>FAILED – The agent alias API operation failed.</p> </li> <li> <p>UPDATING – The agent alias is being updated.</p> </li> <li> <p>DELETING – The agent alias is being deleted.</p> </li> </ul>"
+          "documentation":"<p>The status of the alias of the agent and whether it is ready for use. The following statuses are possible:</p> <ul> <li> <p>CREATING – The agent alias is being created.</p> </li> <li> <p>PREPARED – The agent alias is finished being created or updated and is ready to be invoked.</p> </li> <li> <p>FAILED – The agent alias API operation failed.</p> </li> <li> <p>UPDATING – The agent alias is being updated.</p> </li> <li> <p>DELETING – The agent alias is being deleted.</p> </li> <li> <p>DISSOCIATED - The agent alias has no version associated with it.</p> </li> </ul>"
         },
         "agentId":{
           "shape":"Id",
@@ -1804,7 +1804,8 @@
         "PREPARED",
         "FAILED",
         "UPDATING",
-        "DELETING"
+        "DELETING",
+        "DISSOCIATED"
       ]
     },
     "AgentAliasSummaries":{
@@ -2508,6 +2509,21 @@
       "type":"string",
       "pattern":"[a-z]{1,20}/.{1,20}"
     },
+    "CachePointBlock":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"CachePointType",
+          "documentation":"<p>Indicates that the CachePointBlock is of the default type</p>"
+        }
+      },
+      "documentation":"<p>Indicates where a cache checkpoint is located. All information before this checkpoint is cached to be accessed on subsequent requests.</p>"
+    },
+    "CachePointType":{
+      "type":"string",
+      "enum":["default"]
+    },
     "ChatPromptTemplateConfiguration":{
       "type":"structure",
       "required":["messages"],
@@ -2678,6 +2694,10 @@
     "ContentBlock":{
       "type":"structure",
       "members":{
+        "cachePoint":{
+          "shape":"CachePointBlock",
+          "documentation":"<p>Creates a cache checkpoint within a message.</p>"
+        },
         "text":{
           "shape":"String",
           "documentation":"<p>The text in the message.</p>"
@@ -4910,7 +4930,7 @@
     "FlowNodes":{
       "type":"list",
       "member":{"shape":"FlowNode"},
-      "max":20,
+      "max":40,
       "min":0
     },
     "FlowStatus":{
@@ -5092,6 +5112,14 @@
           "shape":"UnknownConnectionTargetInputFlowValidationDetails",
           "documentation":"<p>Details about an unknown target input for a connection.</p>"
         },
+        "unknownNodeInput":{
+          "shape":"UnknownNodeInputFlowValidationDetails",
+          "documentation":"<p>Details about an unknown input for a node.</p>"
+        },
+        "unknownNodeOutput":{
+          "shape":"UnknownNodeOutputFlowValidationDetails",
+          "documentation":"<p>Details about an unknown output for a node.</p>"
+        },
         "unreachableNode":{
           "shape":"UnreachableNodeFlowValidationDetails",
           "documentation":"<p>Details about an unreachable node in the flow.</p>"
@@ -5142,7 +5170,9 @@
         "MultipleNodeInputConnections",
         "UnfulfilledNodeInput",
         "UnsatisfiedConnectionConditions",
-        "Unspecified"
+        "Unspecified",
+        "UnknownNodeInput",
+        "UnknownNodeOutput"
       ]
     },
     "FlowValidations":{
@@ -7227,7 +7257,7 @@
     "MaximumLength":{
       "type":"integer",
       "box":true,
-      "max":4096,
+      "max":8192,
       "min":0
     },
     "MemoryConfiguration":{
@@ -8131,7 +8161,7 @@
     "PromptInputVariablesList":{
       "type":"list",
       "member":{"shape":"PromptInputVariable"},
-      "max":5,
+      "max":10,
       "min":0,
       "sensitive":true
     },
@@ -9451,6 +9481,10 @@
     "SystemContentBlock":{
       "type":"structure",
       "members":{
+        "cachePoint":{
+          "shape":"CachePointBlock",
+          "documentation":"<p>Creates a cache checkpoint within a tool designation</p>"
+        },
         "text":{
           "shape":"NonEmptyString",
           "documentation":"<p>The text in the system prompt.</p>"
@@ -9544,6 +9578,10 @@
       "type":"structure",
       "required":["text"],
       "members":{
+        "cachePoint":{
+          "shape":"CachePointBlock",
+          "documentation":"<p>A cache checkpoint within a template configuration.</p>"
+        },
         "inputVariables":{
           "shape":"PromptInputVariablesList",
           "documentation":"<p>An array of the variables in the prompt template.</p>"
@@ -9571,6 +9609,10 @@
     "Tool":{
       "type":"structure",
       "members":{
+        "cachePoint":{
+          "shape":"CachePointBlock",
+          "documentation":"<p>Creates a cache checkpoint within a tool designation</p>"
+        },
         "toolSpec":{
           "shape":"ToolSpecification",
           "documentation":"<p>The specification for the tool.</p>"
@@ -9799,6 +9841,42 @@
         }
       },
       "documentation":"<p>Details about an unknown target input for a connection.</p>"
+    },
+    "UnknownNodeInputFlowValidationDetails":{
+      "type":"structure",
+      "required":[
+        "input",
+        "node"
+      ],
+      "members":{
+        "input":{
+          "shape":"FlowNodeInputName",
+          "documentation":"<p>The name of the node with the unknown input.</p>"
+        },
+        "node":{
+          "shape":"FlowNodeName",
+          "documentation":"<p>The name of the unknown input.</p>"
+        }
+      },
+      "documentation":"<p>Details about an unknown input for a node.</p>"
+    },
+    "UnknownNodeOutputFlowValidationDetails":{
+      "type":"structure",
+      "required":[
+        "node",
+        "output"
+      ],
+      "members":{
+        "node":{
+          "shape":"FlowNodeName",
+          "documentation":"<p>The name of the node with the unknown output.</p>"
+        },
+        "output":{
+          "shape":"FlowNodeOutputName",
+          "documentation":"<p>The name of the unknown output.</p>"
+        }
+      },
+      "documentation":"<p>Details about an unknown output for a node.</p>"
     },
     "UnreachableNodeFlowValidationDetails":{
       "type":"structure",

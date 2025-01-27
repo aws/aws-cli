@@ -2004,7 +2004,7 @@
         "ExternalAudioFileInput": {
           "shape": "__stringPatternS3Https",
           "locationName": "externalAudioFileInput",
-          "documentation": "Specifies audio data from an external file source."
+          "documentation": "Specify the S3, HTTP, or HTTPS URL for your external audio file input."
         },
         "HlsRenditionGroupSettings": {
           "shape": "HlsRenditionGroupSettings",
@@ -2014,12 +2014,12 @@
         "LanguageCode": {
           "shape": "LanguageCode",
           "locationName": "languageCode",
-          "documentation": "Selects a specific language code from within an audio source."
+          "documentation": "Specify the language to select from your audio input. In the MediaConvert console choose from a list of languages. In your JSON job settings choose from an ISO 639-2 three-letter code listed at https://www.loc.gov/standards/iso639-2/php/code_list.php"
         },
         "Offset": {
           "shape": "__integerMinNegative2147483648Max2147483647",
           "locationName": "offset",
-          "documentation": "Specifies a time delta in milliseconds to offset the audio from the input video."
+          "documentation": "Specify a time delta, in milliseconds, to offset the audio from the input video.\nTo specify no offset: Keep the default value, 0.\nTo specify an offset: Enter an integer from -2147483648 to 2147483647"
         },
         "Pids": {
           "shape": "__listOf__integerMin1Max2147483647",
@@ -4995,6 +4995,45 @@
         "NO_DISPLAY_WINDOW"
       ]
     },
+    "DynamicAudioSelector": {
+      "type": "structure",
+      "members": {
+        "AudioDurationCorrection": {
+          "shape": "AudioDurationCorrection",
+          "locationName": "audioDurationCorrection",
+          "documentation": "Apply audio timing corrections to help synchronize audio and video in your output. To apply timing corrections, your input must meet the following requirements: * Container: MP4, or MOV, with an accurate time-to-sample (STTS) table. * Audio track: AAC. Choose from the following audio timing correction settings: * Disabled (Default): Apply no correction. * Auto: Recommended for most inputs. MediaConvert analyzes the audio timing in your input and determines which correction setting to use, if needed. * Track: Adjust the duration of each audio frame by a constant amount to align the audio track length with STTS duration. Track-level correction does not affect pitch, and is recommended for tonal audio content such as music. * Frame: Adjust the duration of each audio frame by a variable amount to align audio frames with STTS timestamps. No corrections are made to already-aligned frames. Frame-level correction may affect the pitch of corrected frames, and is recommended for atonal audio content such as speech or percussion. * Force: Apply audio duration correction, either Track or Frame depending on your input, regardless of the accuracy of your input's STTS table. Your output audio and video may not be aligned or it may contain audio artifacts."
+        },
+        "ExternalAudioFileInput": {
+          "shape": "__stringPatternS3Https",
+          "locationName": "externalAudioFileInput",
+          "documentation": "Specify the S3, HTTP, or HTTPS URL for your external audio file input."
+        },
+        "LanguageCode": {
+          "shape": "LanguageCode",
+          "locationName": "languageCode",
+          "documentation": "Specify the language to select from your audio input. In the MediaConvert console choose from a list of languages. In your JSON job settings choose from an ISO 639-2 three-letter code listed at https://www.loc.gov/standards/iso639-2/php/code_list.php"
+        },
+        "Offset": {
+          "shape": "__integerMinNegative2147483648Max2147483647",
+          "locationName": "offset",
+          "documentation": "Specify a time delta, in milliseconds, to offset the audio from the input video.\nTo specify no offset: Keep the default value, 0.\nTo specify an offset: Enter an integer from -2147483648 to 2147483647"
+        },
+        "SelectorType": {
+          "shape": "DynamicAudioSelectorType",
+          "locationName": "selectorType",
+          "documentation": "Specify which audio tracks to dynamically select from your source. To select all audio tracks: Keep the default value, All tracks. To select all audio tracks with a specific language code: Choose Language code. When you do, you must also specify a language code under the Language code setting. If there is no matching Language code in your source, then no track will be selected."
+        }
+      },
+      "documentation": "Use Dynamic audio selectors when you do not know the track layout of your source when you submit your job, but want to select multiple audio tracks. When you include an audio track in your output and specify this Dynamic audio selector as the Audio source, MediaConvert creates an output audio track for each dynamically selected track. Note that when you include a Dynamic audio selector for two or more inputs, each input must have the same number of audio tracks and audio channels."
+    },
+    "DynamicAudioSelectorType": {
+      "type": "string",
+      "documentation": "Specify which audio tracks to dynamically select from your source. To select all audio tracks: Keep the default value, All tracks. To select all audio tracks with a specific language code: Choose Language code. When you do, you must also specify a language code under the Language code setting. If there is no matching Language code in your source, then no track will be selected.",
+      "enum": [
+        "ALL_TRACKS",
+        "LANGUAGE_CODE"
+      ]
+    },
     "Eac3AtmosBitstreamMode": {
       "type": "string",
       "documentation": "Specify the bitstream mode for the E-AC-3 stream that the encoder emits. For more information about the EAC3 bitstream mode, see ATSC A/52-2012 (Annex E).",
@@ -6427,6 +6466,14 @@
         "MAIN_422_10BIT_HIGH"
       ]
     },
+    "H265Deblocking": {
+      "type": "string",
+      "documentation": "Use Deblocking to improve the video quality of your output by smoothing the edges of macroblock artifacts created during video compression. To reduce blocking artifacts at block boundaries, and improve overall video quality: Keep the default value, Enabled. To not apply any deblocking: Choose Disabled. Visible block edge artifacts might appear in the output, especially at lower bitrates.",
+      "enum": [
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "H265DynamicSubGop": {
       "type": "string",
       "documentation": "Choose Adaptive to improve subjective video quality for high-motion content. This will cause the service to use fewer B-frames (which infer information based on other frames) for high-motion portions of the video and more B-frames for low-motion portions. The maximum number of B-frames is limited by the value you provide for the setting B frames between reference frames.",
@@ -6601,6 +6648,11 @@
           "shape": "H265CodecProfile",
           "locationName": "codecProfile",
           "documentation": "Represents the Profile and Tier, per the HEVC (H.265) specification. Selections are grouped as [Profile] / [Tier], so \"Main/High\" represents Main Profile with High Tier. 4:2:2 profiles are only available with the HEVC 4:2:2 License."
+        },
+        "Deblocking": {
+          "shape": "H265Deblocking",
+          "locationName": "deblocking",
+          "documentation": "Use Deblocking to improve the video quality of your output by smoothing the edges of macroblock artifacts created during video compression. To reduce blocking artifacts at block boundaries, and improve overall video quality: Keep the default value, Enabled. To not apply any deblocking: Choose Disabled. Visible block edge artifacts might appear in the output, especially at lower bitrates."
         },
         "DynamicSubGop": {
           "shape": "H265DynamicSubGop",
@@ -7652,6 +7704,11 @@
           "locationName": "dolbyVisionMetadataXml",
           "documentation": "Use this setting only when your video source has Dolby Vision studio mastering metadata that is carried in a separate XML file. Specify the Amazon S3 location for the metadata XML file. MediaConvert uses this file to provide global and frame-level metadata for Dolby Vision preprocessing. When you specify a file here and your input also has interleaved global and frame level metadata, MediaConvert ignores the interleaved metadata and uses only the the metadata from this external XML file. Note that your IAM service role must grant MediaConvert read permissions to this file. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/iam-role.html."
         },
+        "DynamicAudioSelectors": {
+          "shape": "__mapOfDynamicAudioSelector",
+          "locationName": "dynamicAudioSelectors",
+          "documentation": "Use Dynamic audio selectors when you do not know the track layout of your source when you submit your job, but want to select multiple audio tracks. When you include an audio track in your output and specify this Dynamic audio selector as the Audio source, MediaConvert creates an output audio track for each dynamically selected track. Note that when you include a Dynamic audio selector for two or more inputs, each input must have the same number of audio tracks and audio channels."
+        },
         "FileInput": {
           "shape": "__stringMax2048PatternS3Https",
           "locationName": "fileInput",
@@ -7888,6 +7945,11 @@
           "shape": "__stringMin14PatternS3XmlXMLHttpsXmlXML",
           "locationName": "dolbyVisionMetadataXml",
           "documentation": "Use this setting only when your video source has Dolby Vision studio mastering metadata that is carried in a separate XML file. Specify the Amazon S3 location for the metadata XML file. MediaConvert uses this file to provide global and frame-level metadata for Dolby Vision preprocessing. When you specify a file here and your input also has interleaved global and frame level metadata, MediaConvert ignores the interleaved metadata and uses only the the metadata from this external XML file. Note that your IAM service role must grant MediaConvert read permissions to this file. For more information, see https://docs.aws.amazon.com/mediaconvert/latest/ug/iam-role.html."
+        },
+        "DynamicAudioSelectors": {
+          "shape": "__mapOfDynamicAudioSelector",
+          "locationName": "dynamicAudioSelectors",
+          "documentation": "Use Dynamic audio selectors when you do not know the track layout of your source when you submit your job, but want to select multiple audio tracks. When you include an audio track in your output and specify this Dynamic audio selector as the Audio source, MediaConvert creates an output audio track for each dynamically selected track. Note that when you include a Dynamic audio selector for two or more inputs, each input must have the same number of audio tracks and audio channels."
         },
         "FilterEnable": {
           "shape": "InputFilterEnable",
@@ -8294,7 +8356,7 @@
         "FollowSource": {
           "shape": "__integerMin1Max150",
           "locationName": "followSource",
-          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
+          "documentation": "Specify the input that MediaConvert references for your default output settings. MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
         },
         "Inputs": {
           "shape": "__listOfInput",
@@ -8465,7 +8527,7 @@
         "FollowSource": {
           "shape": "__integerMin1Max150",
           "locationName": "followSource",
-          "documentation": "Specify the input that MediaConvert references for your default output settings.  MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all  outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
+          "documentation": "Specify the input that MediaConvert references for your default output settings. MediaConvert uses this input's Resolution, Frame rate, and Pixel aspect ratio for all outputs that you don't manually specify different output settings for. Enabling this setting will disable \"Follow source\" for all other inputs.  If MediaConvert cannot follow your source, for example if you specify an audio-only input,  MediaConvert uses the first followable input instead. In your JSON job specification, enter an integer from 1 to 150 corresponding  to the order of your inputs."
         },
         "Inputs": {
           "shape": "__listOfInputTemplate",
@@ -14642,6 +14704,15 @@
       },
       "value": {
         "shape": "CaptionSelector"
+      }
+    },
+    "__mapOfDynamicAudioSelector": {
+      "type": "map",
+      "key": {
+        "shape": "__string"
+      },
+      "value": {
+        "shape": "DynamicAudioSelector"
       }
     },
     "__mapOf__string": {

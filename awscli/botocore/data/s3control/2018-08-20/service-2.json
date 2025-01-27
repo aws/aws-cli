@@ -3380,7 +3380,7 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
+      "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
     },
     "GeneratedManifestEncryption":{
       "type":"structure",
@@ -5102,7 +5102,7 @@
         },
         "ExpiredObjectDeleteMarker":{
           "shape":"ExpiredObjectDeleteMarker",
-          "documentation":"<p>Indicates whether Amazon S3 will remove a delete marker with no noncurrent versions. If set to true, the delete marker will be expired. If set to false, the policy takes no action. This cannot be specified with Days or Date in a Lifecycle Expiration Policy.</p>"
+          "documentation":"<p>Indicates whether Amazon S3 will remove a delete marker with no noncurrent versions. If set to true, the delete marker will be expired. If set to false, the policy takes no action. This cannot be specified with Days or Date in a Lifecycle Expiration Policy. To learn more about delete markers, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/DeleteMarker.html\">Working with delete markers</a>.</p>"
         }
       },
       "documentation":"<p>The container of the Outposts bucket lifecycle expiration.</p>"
@@ -7408,7 +7408,7 @@
       "members":{
         "TargetResource":{
           "shape":"S3RegionalOrS3ExpressBucketArnString",
-          "documentation":"<p>Specifies the destination bucket Amazon Resource Name (ARN) for the batch copy operation.</p> <ul> <li> <p> <b>General purpose buckets</b> - For example, to copy objects to a general purpose bucket named <code>destinationBucket</code>, set the <code>TargetResource</code> property to <code>arn:aws:s3:::destinationBucket</code>.</p> </li> <li> <p> <b>Directory buckets</b> - For example, to copy objects to a directory bucket named <code>destinationBucket</code> in the Availability Zone; identified by the AZ ID <code>usw2-az1</code>, set the <code>TargetResource</code> property to <code>arn:aws:s3express:<i>region</i>:<i>account_id</i>:/bucket/<i>destination_bucket_base_name</i>--<i>usw2-az1</i>--x-s3</code>.</p> </li> </ul>"
+          "documentation":"<p>Specifies the destination bucket Amazon Resource Name (ARN) for the batch copy operation.</p> <ul> <li> <p> <b>General purpose buckets</b> - For example, to copy objects to a general purpose bucket named <code>destinationBucket</code>, set the <code>TargetResource</code> property to <code>arn:aws:s3:::destinationBucket</code>.</p> </li> <li> <p> <b>Directory buckets</b> - For example, to copy objects to a directory bucket named <code>destinationBucket</code> in the Availability Zone identified by the AZ ID <code>usw2-az1</code>, set the <code>TargetResource</code> property to <code>arn:aws:s3express:<i>region</i>:<i>account_id</i>:/bucket/<i>destination_bucket_base_name</i>--<i>usw2-az1</i>--x-s3</code>. A directory bucket as a destination bucket can be in Availability Zone or Local Zone. </p> <note> <p>Copying objects across different Amazon Web Services Regions isn't supported when the source or destination bucket is in Amazon Web Services Local Zones. The source and destination buckets must have the same parent Amazon Web Services Region. Otherwise, you get an HTTP <code>400 Bad Request</code> error with the error code <code>InvalidRequest</code>.</p> </note> </li> </ul>"
         },
         "CannedAccessControlList":{
           "shape":"S3CannedAccessControlList",

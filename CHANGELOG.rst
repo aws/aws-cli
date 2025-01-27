@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.37.7
+======
+
+* api-change:``bedrock-agent``: Add support for the prompt caching feature for Bedrock Prompt Management
+* api-change:``iot``: Raised the documentParameters size limit to 30 KB for AWS IoT Device Management - Jobs.
+* api-change:``mediaconvert``: This release adds support for dynamic audio configuration and the ability to disable the deblocking filter for h265 encodes.
+* api-change:``s3control``: Minor fix to ARN validation for Lambda functions passed to S3 Batch Operations
+
+
 1.37.6
 ======
 

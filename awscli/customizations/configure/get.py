@@ -85,6 +85,13 @@ class ConfigureGetCommand(BasicCommand):
                     section, {}).get(config_name)
             return value
 
+        if parts[0] == 'sso-session':
+            session_name = parts[1]
+            config_name = parts[2]
+            value = self._session.full_config['sso_sessions'].get(
+                session_name, {}).get(config_name)
+            return value
+
         if parts[0] == 'profile':
             profile_name = parts[1]
             config_name = parts[2]

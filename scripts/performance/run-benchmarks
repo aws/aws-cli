@@ -11,7 +11,7 @@ import awscli.botocore.awsrequest
 from unittest import mock
 from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
 from awscli.compat import BytesIO
-
+from scripts.performance.benchmark_utils import Summarizer
 
 _BENCHMARK_DEFINITIONS = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
@@ -171,6 +171,8 @@ class BenchmarkHarness(object):
     Orchestrates running benchmarks in isolated, configurable environments defined
     via a specified JSON file.
     """
+    def __init__(self):
+        self._summarizer = Summarizer()
     def _setup_environment(self, env, result_dir, config_file):
         """
         Creates all files / directories defined in the env struct.
@@ -232,18 +234,6 @@ class BenchmarkHarness(object):
                     client.add_response(body, headers, status_code)
             else:
                 client.add_response(body, headers, status_code)
-
-
-    def _process_measurements(self, benchmark_result):
-        """
-        Perform post-processing of the output of S3Transfer's summarize script,
-        such as removing unneeded entries.
-        """
-        del benchmark_result['std_dev_total_time']
-        del benchmark_result['std_dev_max_memory']
-        del benchmark_result['std_dev_average_memory']
-        del benchmark_result['std_dev_max_cpu']
-        del benchmark_result['std_dev_average_cpu']
 
 
     def _run_isolated_benchmark(
@@ -312,9 +302,7 @@ class BenchmarkHarness(object):
                 args.data_interval
             )
             # summarize benchmark results & process summary
-            summary = json.loads(subprocess.check_output(
-                [args.summarize_script, out_file, '--output-format', 'json']
-            ))
+            summary = self._summarizer.summarize(out_file)
             # load the internally-collected metrics and append to the summary
             metrics_f = json.load(open(os.path.join(result_dir, 'metrics.json'), 'r'))
             summary['total_time'] = metrics_f['end_time'] - metrics_f['start_time']
@@ -361,13 +349,12 @@ class BenchmarkHarness(object):
                         process_benchmarker,
                         args
                     )
-                    self._process_measurements(measurements)
                     benchmark_result['measurements'].append(measurements)
                 summaries['results'].append(benchmark_result)
         finally:
             # final cleanup
             shutil.rmtree(result_dir, ignore_errors=True)
-        print(summaries)
+        print(json.dumps(summaries, indent=2))
 
 
 if __name__ == "__main__":
@@ -378,19 +365,13 @@ if __name__ == "__main__":
         help=('The JSON file defining the commands to benchmark.')
     )
     parser.add_argument(
-        '--summarize-script',
-        required=True,
-        help=('The summarize script to run the commands with. This should be '
-              'from s3transfer.')
-    )
-    parser.add_argument(
         '-o', '--result-dir', default='results',
         help='The directory to output performance results to. Existing '
              'results will be deleted.'
     )
     parser.add_argument(
         '--data-interval',
-        default=0.01,
+        default=0.001,
         type=float,
         help='The interval in seconds to poll for data points.',
     )

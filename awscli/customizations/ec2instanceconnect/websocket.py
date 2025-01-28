@@ -288,8 +288,9 @@ class Websocket:
 
 
 class WebsocketManager:
-    def __init__(self, port, max_websocket_connections, eice_request_signer, user_agent=None):
+    def __init__(self, port, local_ip, max_websocket_connections, eice_request_signer, user_agent=None):
         self._port = port
+        self._local_ip = local_ip
         self._executor = ThreadPoolExecutor(
             max_workers=max_websocket_connections
         )
@@ -332,7 +333,7 @@ class WebsocketManager:
     def _listen_on_port(self):
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self._socket.bind(("localhost", self._port))
+        self._socket.bind((self._local_ip, self._port))
         self._socket.listen()
         print(f"Listening for connections on port {self._port}.")
         while not self.RUNNING.is_set():

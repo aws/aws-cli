@@ -211,7 +211,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Creates a transfer <i>location</i> for a Server Message Block (SMB) file server. DataSync can use this location as a source or destination for transferring data.</p> <p>Before you begin, make sure that you understand how DataSync <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb\">accesses SMB file servers</a>.</p>"
+      "documentation":"<p>Creates a transfer <i>location</i> for a Server Message Block (SMB) file server. DataSync can use this location as a source or destination for transferring data.</p> <p>Before you begin, make sure that you understand how DataSync accesses SMB file servers. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">Providing DataSync access to SMB file servers</a>.</p>"
     },
     "CreateTask":{
       "name":"CreateTask",
@@ -1679,30 +1679,28 @@
       "required":[
         "Subdirectory",
         "ServerHostname",
-        "User",
-        "Password",
         "AgentArns"
       ],
       "members":{
         "Subdirectory":{
           "shape":"SmbSubdirectory",
-          "documentation":"<p>Specifies the name of the share exported by your SMB file server where DataSync will read or write data. You can include a subdirectory in the share path (for example, <code>/path/to/subdirectory</code>). Make sure that other SMB clients in your network can also mount this path.</p> <p>To copy all data in the subdirectory, DataSync must be able to mount the SMB share and access all of its data. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">required permissions</a> for SMB locations.</p>"
+          "documentation":"<p>Specifies the name of the share exported by your SMB file server where DataSync will read or write data. You can include a subdirectory in the share path (for example, <code>/path/to/subdirectory</code>). Make sure that other SMB clients in your network can also mount this path.</p> <p>To copy all data in the subdirectory, DataSync must be able to mount the SMB share and access all of its data. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">Providing DataSync access to SMB file servers</a>.</p>"
         },
         "ServerHostname":{
           "shape":"ServerHostname",
-          "documentation":"<p>Specifies the Domain Name Service (DNS) name or IP address of the SMB file server that your DataSync agent will mount.</p> <note> <p>You can't specify an IP version 6 (IPv6) address.</p> </note>"
+          "documentation":"<p>Specifies the domain name or IP address of the SMB file server that your DataSync agent will mount.</p> <p>Remember the following when configuring this parameter:</p> <ul> <li> <p>You can't specify an IP version 6 (IPv6) address.</p> </li> <li> <p>If you're using Kerberos authentication, you must specify a domain name.</p> </li> </ul>"
         },
         "User":{
           "shape":"SmbUser",
-          "documentation":"<p>Specifies the user that can mount and access the files, folders, and file metadata in your SMB file server.</p> <p>For information about choosing a user with the right level of access for your transfer, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">required permissions</a> for SMB locations.</p>"
+          "documentation":"<p>Specifies the user that can mount and access the files, folders, and file metadata in your SMB file server. This parameter applies only if <code>AuthenticationType</code> is set to <code>NTLM</code>.</p> <p>For information about choosing a user with the right level of access for your transfer, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">Providing DataSync access to SMB file servers</a>.</p>"
         },
         "Domain":{
           "shape":"SmbDomain",
-          "documentation":"<p>Specifies the name of the Active Directory domain that your SMB file server belongs to. </p> <p>If you have multiple Active Directory domains in your environment, configuring this parameter makes sure that DataSync connects to the right file server.</p>"
+          "documentation":"<p>Specifies the Windows domain name that your SMB file server belongs to. This parameter applies only if <code>AuthenticationType</code> is set to <code>NTLM</code>.</p> <p>If you have multiple domains in your environment, configuring this parameter makes sure that DataSync connects to the right file server.</p>"
         },
         "Password":{
           "shape":"SmbPassword",
-          "documentation":"<p>Specifies the password of the user who can mount your SMB file server and has permission to access the files and folders involved in your transfer.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">required permissions</a> for SMB locations.</p>"
+          "documentation":"<p>Specifies the password of the user who can mount your SMB file server and has permission to access the files and folders involved in your transfer. This parameter applies only if <code>AuthenticationType</code> is set to <code>NTLM</code>.</p>"
         },
         "AgentArns":{
           "shape":"AgentArnList",
@@ -1715,6 +1713,26 @@
         "Tags":{
           "shape":"InputTagList",
           "documentation":"<p>Specifies labels that help you categorize, filter, and search for your Amazon Web Services resources. We recommend creating at least a name tag for your location.</p>"
+        },
+        "AuthenticationType":{
+          "shape":"SmbAuthenticationType",
+          "documentation":"<p>Specifies the authentication protocol that DataSync uses to connect to your SMB file server. DataSync supports <code>NTLM</code> (default) and <code>KERBEROS</code> authentication.</p>"
+        },
+        "DnsIpAddresses":{
+          "shape":"DnsIpList",
+          "documentation":"<p>Specifies the IPv4 addresses for the DNS servers that your SMB file server belongs to. This parameter applies only if <code>AuthenticationType</code> is set to <code>KERBEROS</code>.</p> <p>If you have multiple domains in your environment, configuring this parameter makes sure that DataSync connects to the right SMB file server.</p>"
+        },
+        "KerberosPrincipal":{
+          "shape":"KerberosPrincipal",
+          "documentation":"<p>Specifies a service principal name (SPN), which is an identity in your Kerberos realm that has permission to access the files, folders, and file metadata in your SMB file server.</p> <p>SPNs are case sensitive and must include a prepended <code>cifs/</code>. For example, an SPN might look like <code>cifs/kerberosuser@EXAMPLE.COM</code>.</p> <p>Your task execution will fail if the SPN that you provide for this parameter doesn’t match what’s exactly in your keytab or <code>krb5.conf</code> files. </p>"
+        },
+        "KerberosKeytab":{
+          "shape":"KerberosKeytabFile",
+          "documentation":"<p>Specifies your Kerberos key table (keytab) file, which includes mappings between your service principal name (SPN) and encryption keys.</p> <p>You can specify the keytab using a file path (for example, <code>file://path/to/file.keytab</code>). The file must be base64 encoded. If you're using the CLI, the encoding is done for you.</p> <p>To avoid task execution errors, make sure that the SPN in the keytab file matches exactly what you specify for <code>KerberosPrincipal</code> and in your <code>krb5.conf</code> file. </p>"
+        },
+        "KerberosKrb5Conf":{
+          "shape":"KerberosKrb5ConfFile",
+          "documentation":"<p>Specifies a Kerberos configuration file (<code>krb5.conf</code>) that defines your Kerberos realm configuration.</p> <p>You can specify the <code>krb5.conf</code> using a file path (for example, <code>file://path/to/krb5.conf</code>). The file must be base64 encoded. If you're using the CLI, the encoding is done for you.</p> <p>To avoid task execution errors, make sure that the service principal name (SPN) in the <code>krb5.conf</code> file matches exactly what you specify for <code>KerberosPrincipal</code> and in your keytab file.</p>"
         }
       },
       "documentation":"<p>CreateLocationSmbRequest</p>"
@@ -2393,19 +2411,31 @@
         },
         "User":{
           "shape":"SmbUser",
-          "documentation":"<p>The user that can mount and access the files, folders, and file metadata in your SMB file server.</p>"
+          "documentation":"<p>The user that can mount and access the files, folders, and file metadata in your SMB file server. This element applies only if <code>AuthenticationType</code> is set to <code>NTLM</code>.</p>"
         },
         "Domain":{
           "shape":"SmbDomain",
-          "documentation":"<p>The name of the Microsoft Active Directory domain that the SMB file server belongs to.</p>"
+          "documentation":"<p>The name of the Windows domain that the SMB file server belongs to. This element applies only if <code>AuthenticationType</code> is set to <code>NTLM</code>.</p>"
         },
         "MountOptions":{
           "shape":"SmbMountOptions",
-          "documentation":"<p>The protocol that DataSync use to access your SMB file.</p>"
+          "documentation":"<p>The SMB protocol version that DataSync uses to access your SMB file server.</p>"
         },
         "CreationTime":{
           "shape":"Time",
           "documentation":"<p>The time that the SMB location was created.</p>"
+        },
+        "DnsIpAddresses":{
+          "shape":"DnsIpList",
+          "documentation":"<p>The IPv4 addresses for the DNS servers that your SMB file server belongs to. This element applies only if <code>AuthenticationType</code> is set to <code>KERBEROS</code>.</p>"
+        },
+        "KerberosPrincipal":{
+          "shape":"KerberosPrincipal",
+          "documentation":"<p>The Kerberos service principal name (SPN) that has permission to access the files, folders, and file metadata in your SMB file server.</p>"
+        },
+        "AuthenticationType":{
+          "shape":"SmbAuthenticationType",
+          "documentation":"<p>The authentication protocol that DataSync uses to connect to your SMB file server.</p>"
         }
       },
       "documentation":"<p>DescribeLocationSmbResponse</p>"
@@ -2867,6 +2897,11 @@
       "enum":["NetAppONTAP"]
     },
     "DiscoveryTime":{"type":"timestamp"},
+    "DnsIpList":{
+      "type":"list",
+      "member":{"shape":"ServerIpAddress"},
+      "max":2
+    },
     "Duration":{
       "type":"long",
       "min":0
@@ -3074,7 +3109,7 @@
       "type":"structure",
       "members":{
         "Domain":{
-          "shape":"FsxUpdateSmbDomain",
+          "shape":"UpdateSmbDomain",
           "documentation":"<p>Specifies the name of the Windows domain that your storage virtual machine (SVM) belongs to.</p> <p>If you have multiple Active Directory domains in your environment, configuring this parameter makes sure that DataSync connects to the right SVM.</p>"
         },
         "MountOptions":{"shape":"SmbMountOptions"},
@@ -3088,11 +3123,6 @@
         }
       },
       "documentation":"<p>Specifies the Server Message Block (SMB) protocol configuration that DataSync uses to access your Amazon FSx for NetApp ONTAP file system's storage virtual machine (SVM). For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-ontap-location.html#create-ontap-location-access\">Providing DataSync access to FSx for ONTAP file systems</a>.</p>"
-    },
-    "FsxUpdateSmbDomain":{
-      "type":"string",
-      "max":253,
-      "pattern":"^([A-Za-z0-9]((\\.|-+)?[A-Za-z0-9]){0,252})?$"
     },
     "FsxWindowsSubdirectory":{
       "type":"string",
@@ -3944,7 +3974,7 @@
       "type":"string",
       "max":63,
       "min":3,
-      "pattern":"^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$"
+      "pattern":"^[a-zA-Z0-9_\\-\\+\\.\\(\\)\\$\\p{Zs}]+$"
     },
     "ObjectStorageCertificate":{
       "type":"blob",
@@ -4523,6 +4553,19 @@
       "max":255,
       "pattern":"^(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])$"
     },
+    "ServerIpAddress":{
+      "type":"string",
+      "max":15,
+      "min":7,
+      "pattern":"\\A(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}\\z"
+    },
+    "SmbAuthenticationType":{
+      "type":"string",
+      "enum":[
+        "NTLM",
+        "KERBEROS"
+      ]
+    },
     "SmbDomain":{
       "type":"string",
       "max":253,
@@ -4560,7 +4603,7 @@
     "SmbUser":{
       "type":"string",
       "max":104,
-      "pattern":"^[^\\x5B\\x5D\\\\/:;|=,+*?]{1,104}$"
+      "pattern":"^[^\\x22\\x5B\\x5D/\\\\:;|=,+*?\\x3C\\x3E]{1,104}$"
     },
     "SmbVersion":{
       "type":"string",
@@ -5293,7 +5336,7 @@
           "documentation":"<p>Specifies a mount path for your file system using forward slashes. DataSync uses this subdirectory to read or write data (depending on whether the file system is a source or destination location).</p>"
         },
         "Domain":{
-          "shape":"FsxUpdateSmbDomain",
+          "shape":"UpdateSmbDomain",
           "documentation":"<p>Specifies the name of the Windows domain that your FSx for Windows File Server file system belongs to.</p> <p>If you have multiple Active Directory domains in your environment, configuring this parameter makes sure that DataSync connects to the right file system.</p>"
         },
         "User":{
@@ -5472,31 +5515,56 @@
         },
         "Subdirectory":{
           "shape":"SmbSubdirectory",
-          "documentation":"<p>Specifies the name of the share exported by your SMB file server where DataSync will read or write data. You can include a subdirectory in the share path (for example, <code>/path/to/subdirectory</code>). Make sure that other SMB clients in your network can also mount this path.</p> <p>To copy all data in the specified subdirectory, DataSync must be able to mount the SMB share and access all of its data. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">required permissions</a> for SMB locations.</p>"
+          "documentation":"<p>Specifies the name of the share exported by your SMB file server where DataSync will read or write data. You can include a subdirectory in the share path (for example, <code>/path/to/subdirectory</code>). Make sure that other SMB clients in your network can also mount this path.</p> <p>To copy all data in the specified subdirectory, DataSync must be able to mount the SMB share and access all of its data. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">Providing DataSync access to SMB file servers</a>.</p>"
         },
         "User":{
           "shape":"SmbUser",
-          "documentation":"<p>Specifies the user name that can mount your SMB file server and has permission to access the files and folders involved in your transfer.</p> <p>For information about choosing a user with the right level of access for your transfer, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">required permissions</a> for SMB locations.</p>"
+          "documentation":"<p>Specifies the user name that can mount your SMB file server and has permission to access the files and folders involved in your transfer. This parameter applies only if <code>AuthenticationType</code> is set to <code>NTLM</code>.</p> <p>For information about choosing a user with the right level of access for your transfer, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">Providing DataSync access to SMB file servers</a>.</p>"
         },
         "Domain":{
           "shape":"SmbDomain",
-          "documentation":"<p>Specifies the Windows domain name that your SMB file server belongs to. </p> <p>If you have multiple domains in your environment, configuring this parameter makes sure that DataSync connects to the right file server.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">required permissions</a> for SMB locations.</p>"
+          "documentation":"<p>Specifies the Windows domain name that your SMB file server belongs to. This parameter applies only if <code>AuthenticationType</code> is set to <code>NTLM</code>.</p> <p>If you have multiple domains in your environment, configuring this parameter makes sure that DataSync connects to the right file server.</p>"
         },
         "Password":{
           "shape":"SmbPassword",
-          "documentation":"<p>Specifies the password of the user who can mount your SMB file server and has permission to access the files and folders involved in your transfer.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">required permissions</a> for SMB locations.</p>"
+          "documentation":"<p>Specifies the password of the user who can mount your SMB file server and has permission to access the files and folders involved in your transfer. This parameter applies only if <code>AuthenticationType</code> is set to <code>NTLM</code>.</p>"
         },
         "AgentArns":{
           "shape":"AgentArnList",
           "documentation":"<p>Specifies the DataSync agent (or agents) that can connect to your SMB file server. You specify an agent by using its Amazon Resource Name (ARN).</p>"
         },
-        "MountOptions":{"shape":"SmbMountOptions"}
+        "MountOptions":{"shape":"SmbMountOptions"},
+        "AuthenticationType":{
+          "shape":"SmbAuthenticationType",
+          "documentation":"<p>Specifies the authentication protocol that DataSync uses to connect to your SMB file server. DataSync supports <code>NTLM</code> (default) and <code>KERBEROS</code> authentication.</p>"
+        },
+        "DnsIpAddresses":{
+          "shape":"DnsIpList",
+          "documentation":"<p>Specifies the IPv4 addresses for the DNS servers that your SMB file server belongs to. This parameter applies only if <code>AuthenticationType</code> is set to <code>KERBEROS</code>.</p> <p>If you have multiple domains in your environment, configuring this parameter makes sure that DataSync connects to the right SMB file server. </p>"
+        },
+        "KerberosPrincipal":{
+          "shape":"KerberosPrincipal",
+          "documentation":"<p>Specifies a service principal name (SPN), which is an identity in your Kerberos realm that has permission to access the files, folders, and file metadata in your SMB file server.</p> <p>SPNs are case sensitive and must include a prepended <code>cifs/</code>. For example, an SPN might look like <code>cifs/kerberosuser@EXAMPLE.COM</code>.</p> <p>Your task execution will fail if the SPN that you provide for this parameter doesn’t match what’s exactly in your keytab or <code>krb5.conf</code> files.</p>"
+        },
+        "KerberosKeytab":{
+          "shape":"KerberosKeytabFile",
+          "documentation":"<p>Specifies your Kerberos key table (keytab) file, which includes mappings between your service principal name (SPN) and encryption keys.</p> <p>You can specify the keytab using a file path (for example, <code>file://path/to/file.keytab</code>). The file must be base64 encoded. If you're using the CLI, the encoding is done for you.</p> <p>To avoid task execution errors, make sure that the SPN in the keytab file matches exactly what you specify for <code>KerberosPrincipal</code> and in your <code>krb5.conf</code> file.</p>"
+        },
+        "KerberosKrb5Conf":{
+          "shape":"KerberosKrb5ConfFile",
+          "documentation":"<p>Specifies a Kerberos configuration file (<code>krb5.conf</code>) that defines your Kerberos realm configuration.</p> <p>You can specify the <code>krb5.conf</code> using a file path (for example, <code>file://path/to/krb5.conf</code>). The file must be base64 encoded. If you're using the CLI, the encoding is done for you.</p> <p>To avoid task execution errors, make sure that the service principal name (SPN) in the <code>krb5.conf</code> file matches exactly what you specify for <code>KerberosPrincipal</code> and in your keytab file.</p>"
+        }
       }
     },
     "UpdateLocationSmbResponse":{
       "type":"structure",
       "members":{
       }
+    },
+    "UpdateSmbDomain":{
+      "type":"string",
+      "max":253,
+      "pattern":"^([A-Za-z0-9]((\\.|-+)?[A-Za-z0-9]){0,252})?$"
     },
     "UpdateStorageSystemRequest":{
       "type":"structure",

@@ -312,7 +312,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a job. A job is a set of instructions that AWS Deadline Cloud uses to schedule and run work on available workers. For more information, see <a href=\"https://docs.aws.amazon.com/deadline-cloud/latest/userguide/deadline-cloud-jobs.html\">Deadline Cloud jobs</a>.</p>",
+      "documentation":"<p>Creates a job. A job is a set of instructions that Deadline Cloud uses to schedule and run work on available workers. For more information, see <a href=\"https://docs.aws.amazon.com/deadline-cloud/latest/userguide/deadline-cloud-jobs.html\">Deadline Cloud jobs</a>.</p>",
       "endpoint":{"hostPrefix":"management."},
       "idempotent":true
     },
@@ -334,6 +334,27 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates a license endpoint to integrate your various licensed software used for rendering on Deadline Cloud.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "idempotent":true
+    },
+    "CreateLimit":{
+      "name":"CreateLimit",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2023-10-12/farms/{farmId}/limits",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateLimitRequest"},
+      "output":{"shape":"CreateLimitResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a limit that manages the distribution of shared resources, such as floating licenses. A limit can throttle work assignments, help manage workloads, and track current usage. Before you use a limit, you must associate the limit with one or more queues. </p> <p>You must add the <code>amountRequirementName</code> to a step in a job template to declare the limit requirement.</p>",
       "endpoint":{"hostPrefix":"management."},
       "idempotent":true
     },
@@ -416,6 +437,26 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Creates an association between a queue and a fleet.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "idempotent":true
+    },
+    "CreateQueueLimitAssociation":{
+      "name":"CreateQueueLimitAssociation",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2023-10-12/farms/{farmId}/queue-limit-associations",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateQueueLimitAssociationRequest"},
+      "output":{"shape":"CreateQueueLimitAssociationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Associates a limit with a particular queue. After the limit is associated, all workers for jobs that specify the limit associated with the queue are subject to the limit. You can't associate two limits with the same <code>amountRequirementName</code> to the same queue.</p>",
       "endpoint":{"hostPrefix":"management."},
       "idempotent":true
     },
@@ -543,6 +584,25 @@
       "endpoint":{"hostPrefix":"management."},
       "idempotent":true
     },
+    "DeleteLimit":{
+      "name":"DeleteLimit",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2023-10-12/farms/{farmId}/limits/{limitId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteLimitRequest"},
+      "output":{"shape":"DeleteLimitResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Removes a limit from the specified farm. Before you delete a limit you must use the <code>DeleteQueueLimitAssociation</code> operation to remove the association with any queues. </p>",
+      "endpoint":{"hostPrefix":"management."},
+      "idempotent":true
+    },
     "DeleteMeteredProduct":{
       "name":"DeleteMeteredProduct",
       "http":{
@@ -641,6 +701,27 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes a queue-fleet association.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "idempotent":true
+    },
+    "DeleteQueueLimitAssociation":{
+      "name":"DeleteQueueLimitAssociation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2023-10-12/farms/{farmId}/queue-limit-associations/{queueId}/{limitId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteQueueLimitAssociationRequest"},
+      "output":{"shape":"DeleteQueueLimitAssociationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Removes the association between a queue and a limit. You must use the <code>UpdateQueueLimitAssociation</code> operation to set the status to <code>STOP_LIMIT_USAGE_AND_COMPLETE_TASKS</code> or <code>STOP_LIMIT_USAGE_AND_CANCEL_TASKS</code>. The status does not change immediately. Use the <code>GetQueueLimitAssociation</code> operation to see if the status changed to <code>STOPPED</code> before deleting the association.</p>",
       "endpoint":{"hostPrefix":"management."},
       "idempotent":true
     },
@@ -861,6 +942,25 @@
       "documentation":"<p>Gets a licence endpoint.</p>",
       "endpoint":{"hostPrefix":"management."}
     },
+    "GetLimit":{
+      "name":"GetLimit",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2023-10-12/farms/{farmId}/limits/{limitId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetLimitRequest"},
+      "output":{"shape":"GetLimitResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets information about a specific limit.</p>",
+      "endpoint":{"hostPrefix":"management."}
+    },
     "GetMonitor":{
       "name":"GetMonitor",
       "http":{
@@ -935,6 +1035,25 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Gets a queue-fleet association.</p>",
+      "endpoint":{"hostPrefix":"management."}
+    },
+    "GetQueueLimitAssociation":{
+      "name":"GetQueueLimitAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2023-10-12/farms/{farmId}/queue-limit-associations/{queueId}/{limitId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetQueueLimitAssociationRequest"},
+      "output":{"shape":"GetQueueLimitAssociationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets information about a specific association between a queue and a limit.</p>",
       "endpoint":{"hostPrefix":"management."}
     },
     "GetSession":{
@@ -1275,6 +1394,25 @@
       "documentation":"<p>Lists license endpoints.</p>",
       "endpoint":{"hostPrefix":"management."}
     },
+    "ListLimits":{
+      "name":"ListLimits",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2023-10-12/farms/{farmId}/limits",
+        "responseCode":200
+      },
+      "input":{"shape":"ListLimitsRequest"},
+      "output":{"shape":"ListLimitsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets a list of limits defined in the specified farm.</p>",
+      "endpoint":{"hostPrefix":"management."}
+    },
     "ListMeteredProducts":{
       "name":"ListMeteredProducts",
       "http":{
@@ -1347,6 +1485,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists queue-fleet associations.</p>",
+      "endpoint":{"hostPrefix":"management."}
+    },
+    "ListQueueLimitAssociations":{
+      "name":"ListQueueLimitAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2023-10-12/farms/{farmId}/queue-limit-associations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListQueueLimitAssociationsRequest"},
+      "output":{"shape":"ListQueueLimitAssociationsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets a list of the associations between queues and limits defined in a farm.</p>",
       "endpoint":{"hostPrefix":"management."}
     },
     "ListQueueMembers":{
@@ -1834,6 +1990,26 @@
       "endpoint":{"hostPrefix":"management."},
       "idempotent":true
     },
+    "UpdateLimit":{
+      "name":"UpdateLimit",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/2023-10-12/farms/{farmId}/limits/{limitId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateLimitRequest"},
+      "output":{"shape":"UpdateLimitResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates the properties of the specified limit. </p>",
+      "endpoint":{"hostPrefix":"management."},
+      "idempotent":true
+    },
     "UpdateMonitor":{
       "name":"UpdateMonitor",
       "http":{
@@ -1910,6 +2086,26 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Updates a queue-fleet association.</p>",
+      "endpoint":{"hostPrefix":"management."},
+      "idempotent":true
+    },
+    "UpdateQueueLimitAssociation":{
+      "name":"UpdateQueueLimitAssociation",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/2023-10-12/farms/{farmId}/queue-limit-associations/{queueId}/{limitId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateQueueLimitAssociationRequest"},
+      "output":{"shape":"UpdateQueueLimitAssociationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates the status of the queue. If you set the status to one of the <code>STOP_LIMIT_USAGE*</code> values, there will be a delay before the status transitions to the <code>STOPPED</code> state. </p>",
       "endpoint":{"hostPrefix":"management."},
       "idempotent":true
     },
@@ -2046,14 +2242,14 @@
       "members":{
         "selections":{
           "shape":"AcceleratorSelections",
-          "documentation":"<p>A list of objects that contain the GPU name of the accelerator and driver for the instance types that support the accelerator.</p>"
+          "documentation":"<p>A list of accelerator capabilities requested for this fleet. Only Amazon Elastic Compute Cloud instances that provide these capabilities will be used. For example, if you specify both L4 and T4 chips, Deadline Cloud will use Amazon EC2 instances that have either the L4 or the T4 chip installed.</p>"
         },
         "count":{
           "shape":"AcceleratorCountRange",
-          "documentation":"<p>The number of GPUs on each worker. The default is 1.</p>"
+          "documentation":"<p>The number of GPU accelerators specified for worker hosts in this fleet. </p>"
         }
       },
-      "documentation":"<p>Provides information about the GPU accelerators and drivers for the instance types in a fleet. If you include the <code>acceleratorCapabilities</code> property in the <a href=\"https://docs.aws.amazon.com/deadline-cloud/latest/APIReference/API_ServiceManagedEc2InstanceCapabilities\">ServiceManagedEc2InstanceCapabilities</a> object, all of the Amazon EC2 instances will have at least one accelerator. </p>"
+      "documentation":"<p>Provides information about the GPU accelerators used for jobs processed by a fleet.</p>"
     },
     "AcceleratorCountRange":{
       "type":"structure",
@@ -2061,14 +2257,14 @@
       "members":{
         "min":{
           "shape":"MinZeroMaxInteger",
-          "documentation":"<p>The minimum number of GPUs for the accelerator. If you set the value to 0, a worker will still have 1 GPU.</p>"
+          "documentation":"<p>The minimum number of GPU accelerators in the worker host.</p>"
         },
         "max":{
           "shape":"MinZeroMaxInteger",
-          "documentation":"<p>The maximum number of GPUs for the accelerator.</p>"
+          "documentation":"<p>The maximum number of GPU accelerators in the worker host.</p>"
         }
       },
-      "documentation":"<p>The range for the GPU fleet acceleration.</p>"
+      "documentation":"<p>Defines the maximum and minimum number of GPU accelerators required for a worker instance..</p>"
     },
     "AcceleratorName":{
       "type":"string",
@@ -2090,14 +2286,14 @@
       "members":{
         "name":{
           "shape":"AcceleratorName",
-          "documentation":"<p>The name of the GPU accelerator.</p>"
+          "documentation":"<p>The name of the chip used by the GPU accelerator.</p> <p>If you specify <code>l4</code> as the name of the accelerator, you must specify <code>latest</code> or <code>grid:r550</code> as the runtime.</p> <p>The available GPU accelerators are:</p> <ul> <li> <p> <code>t4</code> - NVIDIA T4 Tensor Core GPU</p> </li> <li> <p> <code>a10g</code> - NVIDIA A10G Tensor Core GPU</p> </li> <li> <p> <code>l4</code> - NVIDIA L4 Tensor Core GPU</p> </li> <li> <p> <code>l40s</code> - NVIDIA L40S Tensor Core GPU</p> </li> </ul>"
         },
         "runtime":{
           "shape":"AcceleratorRuntime",
-          "documentation":"<p>The driver version that the GPU accelerator uses. </p>"
+          "documentation":"<p>Specifies the runtime driver to use for the GPU accelerator. You must use the same runtime for all GPUs. </p> <p>You can choose from the following runtimes:</p> <ul> <li> <p> <code>latest</code> - Use the latest runtime available for the chip. If you specify <code>latest</code> and a new version of the runtime is released, the new version of the runtime is used.</p> </li> <li> <p> <code>grid:r550</code> - <a href=\"https://docs.nvidia.com/vgpu/17.0/index.html\">NVIDIA vGPU software 17</a> </p> </li> <li> <p> <code>grid:r535</code> - <a href=\"https://docs.nvidia.com/vgpu/16.0/index.html\">NVIDIA vGPU software 16</a> </p> </li> </ul> <p>If you don't specify a runtime, Deadline Cloud uses <code>latest</code> as the default. However, if you have multiple accelerators and specify <code>latest</code> for some and leave others blank, Deadline Cloud raises an exception.</p>"
         }
       },
-      "documentation":"<p>Values that you can use to select a particular Amazon EC2 instance type. </p>"
+      "documentation":"<p>Describes a specific GPU accelerator required for an Amazon Elastic Compute Cloud worker host.</p>"
     },
     "AcceleratorSelections":{
       "type":"list",
@@ -2116,7 +2312,7 @@
           "documentation":"<p>The maximum amount of memory to use for the accelerator, measured in MiB.</p>"
         }
       },
-      "documentation":"<p>The range for memory, in MiB, to use for the accelerator.</p>"
+      "documentation":"<p>Defines the maximum and minimum amount of memory, in MiB, to use for the accelerator.</p>"
     },
     "AcceleratorType":{
       "type":"string",
@@ -2147,6 +2343,28 @@
       "type":"string",
       "sensitive":true
     },
+    "AcquiredLimit":{
+      "type":"structure",
+      "required":[
+        "limitId",
+        "count"
+      ],
+      "members":{
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit.</p>"
+        },
+        "count":{
+          "shape":"MinOneMaxInteger",
+          "documentation":"<p>The number of limit resources used.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the number of resources used.</p>"
+    },
+    "AcquiredLimits":{
+      "type":"list",
+      "member":{"shape":"AcquiredLimit"}
+    },
     "AggregationId":{
       "type":"string",
       "pattern":"[0-9a-f]{32}"
@@ -2162,6 +2380,11 @@
       "max":100,
       "min":1,
       "pattern":"([a-zA-Z][a-zA-Z0-9]{0,63}:)?amount(\\.[a-zA-Z][a-zA-Z0-9]{0,63})+"
+    },
+    "AmountRequirementName":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "AssignedEnvironmentEnterSessionActionDefinition":{
       "type":"structure",
@@ -3328,6 +3551,10 @@
           "shape":"MaxRetriesPerTask",
           "documentation":"<p>The maximum number of retries for each task.</p>"
         },
+        "maxWorkerCount":{
+          "shape":"MaxWorkerCount",
+          "documentation":"<p>The maximum number of worker hosts that can concurrently process a job. When the <code>maxWorkerCount</code> is reached, no more workers will be assigned to process the job, even if the fleets assigned to the job's queue has available workers.</p> <p>You can't set the <code>maxWorkerCount</code> to 0. If you set it to -1, there is no maximum number of workers.</p> <p>If you don't specify the <code>maxWorkerCount</code>, Deadline Cloud won't throttle the number of workers used to process the job.</p>"
+        },
         "sourceJobId":{
           "shape":"JobId",
           "documentation":"<p>The job ID for the source job.</p>"
@@ -3403,6 +3630,56 @@
         "licenseEndpointId":{
           "shape":"LicenseEndpointId",
           "documentation":"<p>The license endpoint ID.</p>"
+        }
+      }
+    },
+    "CreateLimitRequest":{
+      "type":"structure",
+      "required":[
+        "displayName",
+        "amountRequirementName",
+        "maxCount",
+        "farmId"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amz-Client-Token"
+        },
+        "displayName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The display name of the limit.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
+        },
+        "amountRequirementName":{
+          "shape":"AmountRequirementName",
+          "documentation":"<p>The value that you specify as the <code>name</code> in the <code>amounts</code> field of the <code>hostRequirements</code> in a step of a job template to declare the limit requirement.</p>"
+        },
+        "maxCount":{
+          "shape":"MaxCount",
+          "documentation":"<p>The maximum number of resources constrained by this limit. When all of the resources are in use, steps that require the limit won't be scheduled until the resource is available.</p> <p>The <code>maxCount</code> must not be 0. If the value is -1, there is no restriction on the number of resources that can be acquired for this limit.</p>"
+        },
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the farm that contains the limit.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the limit. A description helps you identify the purpose of the limit.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
+        }
+      }
+    },
+    "CreateLimitResponse":{
+      "type":"structure",
+      "required":["limitId"],
+      "members":{
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>A unique identifier for the limit. Use this identifier in other operations, such as <code>CreateQueueLimitAssociation</code> and <code>DeleteLimit</code>.</p>"
         }
       }
     },
@@ -3535,6 +3812,35 @@
       }
     },
     "CreateQueueFleetAssociationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "CreateQueueLimitAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "limitId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The unique identifier of the farm that contains the queue and limit to associate.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The unique identifier of the queue to associate with the limit.</p>"
+        },
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit to associate with the queue.</p>"
+        }
+      }
+    },
+    "CreateQueueLimitAssociationResponse":{
       "type":"structure",
       "members":{
       }
@@ -3913,6 +4219,32 @@
       "members":{
       }
     },
+    "DeleteLimitRequest":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "limitId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The unique identifier of the farm that contains the limit to delete.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit to delete.</p>",
+          "location":"uri",
+          "locationName":"limitId"
+        }
+      }
+    },
+    "DeleteLimitResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteMeteredProductRequest":{
       "type":"structure",
       "required":[
@@ -4018,6 +4350,39 @@
       }
     },
     "DeleteQueueFleetAssociationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteQueueLimitAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "limitId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The unique identifier of the farm that contains the queue and limit to disassociate.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The unique identifier of the queue to disassociate.</p>",
+          "location":"uri",
+          "locationName":"queueId"
+        },
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit to disassociate.</p>",
+          "location":"uri",
+          "locationName":"limitId"
+        }
+      }
+    },
+    "DeleteQueueLimitAssociationResponse":{
       "type":"structure",
       "members":{
       }
@@ -4288,10 +4653,7 @@
       "members":{
       }
     },
-    "DnsName":{
-      "type":"string",
-      "pattern":"vpce-[\\w]+-[\\w]+.vpce-svc-[\\w]+.*.vpce.amazonaws.com"
-    },
+    "DnsName":{"type":"string"},
     "Document":{
       "type":"structure",
       "members":{
@@ -5165,8 +5527,8 @@
       "type":"structure",
       "required":[
         "farmId",
-        "jobId",
-        "queueId"
+        "queueId",
+        "jobId"
       ],
       "members":{
         "farmId":{
@@ -5175,17 +5537,17 @@
           "location":"uri",
           "locationName":"farmId"
         },
-        "jobId":{
-          "shape":"JobId",
-          "documentation":"<p>The job ID.</p>",
-          "location":"uri",
-          "locationName":"jobId"
-        },
         "queueId":{
           "shape":"QueueId",
           "documentation":"<p>The queue ID associated with the job.</p>",
           "location":"uri",
           "locationName":"queueId"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID.</p>",
+          "location":"uri",
+          "locationName":"jobId"
         }
       }
     },
@@ -5281,6 +5643,10 @@
           "shape":"JobDescription",
           "documentation":"<p>The description of the job.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
         },
+        "maxWorkerCount":{
+          "shape":"MaxWorkerCount",
+          "documentation":"<p>The maximum number of worker hosts that can concurrently process a job. When the <code>maxWorkerCount</code> is reached, no more workers will be assigned to process the job, even if the fleets assigned to the job's queue has available workers.</p> <p>If you don't set the <code>maxWorkerCount</code> when you create a job, this value is not returned in the response.</p>"
+        },
         "sourceJobId":{
           "shape":"JobId",
           "documentation":"<p>The job ID for the source job.</p>"
@@ -5348,6 +5714,86 @@
       "member":{"shape":"SubnetId"},
       "max":10,
       "min":1
+    },
+    "GetLimitRequest":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "limitId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The unique identifier of the farm that contains the limit.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit to return.</p>",
+          "location":"uri",
+          "locationName":"limitId"
+        }
+      }
+    },
+    "GetLimitResponse":{
+      "type":"structure",
+      "required":[
+        "displayName",
+        "amountRequirementName",
+        "maxCount",
+        "createdAt",
+        "createdBy",
+        "farmId",
+        "limitId",
+        "currentCount"
+      ],
+      "members":{
+        "displayName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The display name of the limit.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
+        },
+        "amountRequirementName":{
+          "shape":"AmountRequirementName",
+          "documentation":"<p>The value that you specify as the <code>name</code> in the <code>amounts</code> field of the <code>hostRequirements</code> in a step of a job template to declare the limit requirement.</p>"
+        },
+        "maxCount":{
+          "shape":"MaxCount",
+          "documentation":"<p>The maximum number of resources constrained by this limit. When all of the resources are in use, steps that require the limit won't be scheduled until the resource is available.</p> <p>The <code>maxValue</code> must not be 0. If the value is -1, there is no restriction on the number of resources that can be acquired for this limit.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The Unix timestamp of the date and time that the limit was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user identifier of the person that created the limit.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The Unix timestamp of the date and time that the limit was last updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user identifier of the person that last updated the limit.</p>"
+        },
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The unique identifier of the farm that contains the limit.</p>"
+        },
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit.</p>"
+        },
+        "currentCount":{
+          "shape":"MinZeroMaxInteger",
+          "documentation":"<p>The number of resources from the limit that are being used by jobs. The result is delayed and may not be the count at the time that you called the operation.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the limit that helps identify what the limit is used for.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
+        }
+      }
     },
     "GetMonitorRequest":{
       "type":"structure",
@@ -5567,6 +6013,74 @@
         }
       }
     },
+    "GetQueueLimitAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "limitId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The unique identifier of the farm that contains the associated queue and limit.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The unique identifier of the queue associated with the limit.</p>",
+          "location":"uri",
+          "locationName":"queueId"
+        },
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit associated with the queue.</p>",
+          "location":"uri",
+          "locationName":"limitId"
+        }
+      }
+    },
+    "GetQueueLimitAssociationResponse":{
+      "type":"structure",
+      "required":[
+        "createdAt",
+        "createdBy",
+        "queueId",
+        "limitId",
+        "status"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The Unix timestamp of the date and time that the association was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user identifier of the person that created the association.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The Unix timestamp of the date and time that the association was last updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user identifier of the person that last updated the association.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The unique identifier of the queue associated with the limit.</p>"
+        },
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit associated with the queue.</p>"
+        },
+        "status":{
+          "shape":"QueueLimitAssociationStatus",
+          "documentation":"<p>The current status of the limit.</p>"
+        }
+      }
+    },
     "GetQueueRequest":{
       "type":"structure",
       "required":[
@@ -5749,6 +6263,10 @@
         "definition":{
           "shape":"SessionActionDefinition",
           "documentation":"<p>The session action definition.</p>"
+        },
+        "acquiredLimits":{
+          "shape":"AcquiredLimits",
+          "documentation":"<p>The limits and their amounts acquired during a session action. If no limits were acquired during the session, this field isn't returned.</p>"
         }
       }
     },
@@ -6271,18 +6789,14 @@
     "GetWorkerResponse":{
       "type":"structure",
       "required":[
-        "workerId",
         "farmId",
         "fleetId",
+        "workerId",
         "status",
         "createdAt",
         "createdBy"
       ],
       "members":{
-        "workerId":{
-          "shape":"WorkerId",
-          "documentation":"<p>The worker ID.</p>"
-        },
         "farmId":{
           "shape":"FarmId",
           "documentation":"<p>The farm ID.</p>"
@@ -6290,6 +6804,10 @@
         "fleetId":{
           "shape":"FleetId",
           "documentation":"<p>The fleet ID.</p>"
+        },
+        "workerId":{
+          "shape":"WorkerId",
+          "documentation":"<p>The worker ID.</p>"
         },
         "hostProperties":{
           "shape":"HostPropertiesResponse",
@@ -6878,6 +7396,10 @@
           "shape":"JobParameters",
           "documentation":"<p>The job parameters.</p>"
         },
+        "maxWorkerCount":{
+          "shape":"MaxWorkerCount",
+          "documentation":"<p>The maximum number of worker hosts that can concurrently process a job. When the <code>maxWorkerCount</code> is reached, no more workers will be assigned to process the job, even if the fleets assigned to the job's queue has available workers.</p> <p>You can't set the <code>maxWorkerCount</code> to 0. If you set it to -1, there is no maximum number of workers.</p> <p>If you don't specify the <code>maxWorkerCount</code>, the default is -1.</p>"
+        },
         "sourceJobId":{
           "shape":"JobId",
           "documentation":"<p>The job ID for the source job.</p>"
@@ -6965,6 +7487,10 @@
           "shape":"MaxRetriesPerTask",
           "documentation":"<p>The maximum number of retries for a job.</p>"
         },
+        "maxWorkerCount":{
+          "shape":"MaxWorkerCount",
+          "documentation":"<p>The maximum number of worker hosts that can concurrently process a job. When the <code>maxWorkerCount</code> is reached, no more workers will be assigned to process the job, even if the fleets assigned to the job's queue has available workers.</p> <p>You can't set the <code>maxWorkerCount</code> to 0. If you set it to -1, there is no maximum number of workers.</p> <p>If you don't specify the <code>maxWorkerCount</code>, the default is -1.</p>"
+        },
         "sourceJobId":{
           "shape":"JobId",
           "documentation":"<p>The job ID for the source job.</p>"
@@ -7040,6 +7566,70 @@
       "documentation":"<p>The details for a license endpoint.</p>"
     },
     "LicenseProduct":{"type":"string"},
+    "LimitId":{
+      "type":"string",
+      "pattern":"limit-[0-9a-f]{32}"
+    },
+    "LimitSummaries":{
+      "type":"list",
+      "member":{"shape":"LimitSummary"}
+    },
+    "LimitSummary":{
+      "type":"structure",
+      "required":[
+        "displayName",
+        "amountRequirementName",
+        "maxCount",
+        "createdAt",
+        "createdBy",
+        "farmId",
+        "limitId",
+        "currentCount"
+      ],
+      "members":{
+        "displayName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the limit used in lists to identify the limit.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
+        },
+        "amountRequirementName":{
+          "shape":"AmountRequirementName",
+          "documentation":"<p>The value that you specify as the <code>name</code> in the <code>amounts</code> field of the <code>hostRequirements</code> in a step of a job template to declare the limit requirement.</p>"
+        },
+        "maxCount":{
+          "shape":"MaxCount",
+          "documentation":"<p>The maximum number of resources constrained by this limit. When all of the resources are in use, steps that require the limit won't be scheduled until the resource is available.</p> <p>The <code>maxValue</code> must not be 0. If the value is -1, there is no restriction on the number of resources that can be acquired for this limit.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The Unix timestamp of the date and time that the limit was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user identifier of the person that created the limit.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The Unix timestamp of the date and time that the limit was last updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user identifier of the person that last updated the limit.</p>"
+        },
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The unique identifier of the farm that contains the limit.</p>"
+        },
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit.</p>"
+        },
+        "currentCount":{
+          "shape":"MinZeroMaxInteger",
+          "documentation":"<p>The number of resources from the limit that are being used by jobs. The result is delayed and may not be the count at the time that you called the operation.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about a specific limit.</p>"
+    },
     "ListAttributeCapabilityValue":{
       "type":"list",
       "member":{"shape":"AttributeCapabilityValue"}
@@ -7489,6 +8079,44 @@
         }
       }
     },
+    "ListLimitsRequest":{
+      "type":"structure",
+      "required":["farmId"],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The unique identifier of the farm that contains the limits.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or <code>null</code> to start from the beginning.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of limits to return in each page of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListLimitsResponse":{
+      "type":"structure",
+      "required":["limits"],
+      "members":{
+        "limits":{
+          "shape":"LimitSummaries",
+          "documentation":"<p>A list of limits that the farm contains.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
+        }
+      }
+    },
     "ListMeteredProductsRequest":{
       "type":"structure",
       "required":["licenseEndpointId"],
@@ -7648,6 +8276,56 @@
         "queueFleetAssociations":{
           "shape":"QueueFleetAssociationSummaries",
           "documentation":"<p>The queue-fleet associations on the list.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If Deadline Cloud returns <code>nextToken</code>, then there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page, call the operation again using the returned token. Keep all other arguments unchanged. If no results remain, then <code>nextToken</code> is set to <code>null</code>. Each pagination token expires after 24 hours. If you provide a token that isn't valid, then you receive an HTTP 400 <code>ValidationException</code> error.</p>"
+        }
+      }
+    },
+    "ListQueueLimitAssociationsRequest":{
+      "type":"structure",
+      "required":["farmId"],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The unique identifier of the farm that contains the limits and associations.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>Specifies that the operation should return only the queue limit associations for the specified queue. If you specify both the <code>queueId</code> and the <code>limitId</code>, only the specified limit is returned if it exists.</p>",
+          "location":"querystring",
+          "locationName":"queueId"
+        },
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>Specifies that the operation should return only the queue limit associations for the specified limit. If you specify both the <code>queueId</code> and the <code>limitId</code>, only the specified limit is returned if it exists.</p>",
+          "location":"querystring",
+          "locationName":"limitId"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or <code>null</code> to start from the beginning.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of associations to return in each page of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListQueueLimitAssociationsResponse":{
+      "type":"structure",
+      "required":["queueLimitAssociations"],
+      "members":{
+        "queueLimitAssociations":{
+          "shape":"QueueLimitAssociationSummaries",
+          "documentation":"<p>A list of associations between limits and queues in the farm specified in the request.</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -8411,7 +9089,7 @@
         },
         "inputManifestHash":{
           "shape":"ManifestPropertiesInputManifestHashString",
-          "documentation":"<p>The has value of the file.</p>"
+          "documentation":"<p>The hash value of the file.</p>"
         }
       },
       "documentation":"<p>The details of the manifest that links a job's source information.</p>",
@@ -8438,6 +9116,12 @@
       "max":1024,
       "min":1
     },
+    "MaxCount":{
+      "type":"integer",
+      "box":true,
+      "max":2147483647,
+      "min":-1
+    },
     "MaxFailedTasksCount":{
       "type":"integer",
       "box":true,
@@ -8455,6 +9139,12 @@
       "box":true,
       "max":2147483647,
       "min":0
+    },
+    "MaxWorkerCount":{
+      "type":"integer",
+      "box":true,
+      "max":2147483647,
+      "min":-1
     },
     "MembershipLevel":{
       "type":"string",
@@ -8521,6 +9211,12 @@
     "MeteredProductSummaryList":{
       "type":"list",
       "member":{"shape":"MeteredProductSummary"}
+    },
+    "MinOneMaxInteger":{
+      "type":"integer",
+      "box":true,
+      "max":2147483647,
+      "min":1
     },
     "MinOneMaxTenThousand":{
       "type":"integer",
@@ -8911,6 +9607,60 @@
     "QueueId":{
       "type":"string",
       "pattern":"queue-[0-9a-f]{32}"
+    },
+    "QueueLimitAssociationStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "STOP_LIMIT_USAGE_AND_COMPLETE_TASKS",
+        "STOP_LIMIT_USAGE_AND_CANCEL_TASKS",
+        "STOPPED"
+      ]
+    },
+    "QueueLimitAssociationSummaries":{
+      "type":"list",
+      "member":{"shape":"QueueLimitAssociationSummary"}
+    },
+    "QueueLimitAssociationSummary":{
+      "type":"structure",
+      "required":[
+        "createdAt",
+        "createdBy",
+        "queueId",
+        "limitId",
+        "status"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The Unix timestamp of the date and time that the association was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user identifier of the person that created the association.</p>"
+        },
+        "updatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The Unix timestamp of the date and time that the association was last updated.</p>"
+        },
+        "updatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user identifier of the person that updated the association.</p>"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The unique identifier of the queue in the association.</p>"
+        },
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit in the association.</p>"
+        },
+        "status":{
+          "shape":"QueueLimitAssociationStatus",
+          "documentation":"<p>The status of task scheduling in the queue-limit association.</p> <ul> <li> <p> <code>ACTIVE</code> - Association is active.</p> </li> <li> <p> <code>STOP_LIMIT_USAGE_AND_COMPLETE_TASKS</code> - Association has stopped scheduling new tasks and is completing current tasks.</p> </li> <li> <p> <code>STOP_LIMIT_USAGE_AND_CANCEL_TASKS</code> - Association has stopped scheduling new tasks and is canceling current tasks.</p> </li> <li> <p> <code>STOPPED</code> - Association has been stopped.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Provides information about the association between a queue and a limit.</p>"
     },
     "QueueMember":{
       "type":"structure",
@@ -9587,7 +10337,7 @@
         },
         "acceleratorCapabilities":{
           "shape":"AcceleratorCapabilities",
-          "documentation":"<p>The GPU accelerator capabilities required for the Amazon EC2 instances. If you include the <code>acceleratorCapabilities</code> property in the <a href=\"https://docs.aws.amazon.com/deadline-cloud/latest/APIReference/API_ServiceManagedEc2InstanceCapabilities\">ServiceManagedEc2InstanceCapabilities</a> object, all of the Amazon EC2 instances will have at least one accelerator. </p>"
+          "documentation":"<p>Describes the GPU accelerator capabilities required for worker host instances in this fleet.</p>"
         },
         "allowedInstanceTypes":{
           "shape":"InstanceTypes",
@@ -11085,24 +11835,6 @@
           "location":"header",
           "locationName":"X-Amz-Client-Token"
         },
-        "farmId":{
-          "shape":"FarmId",
-          "documentation":"<p>The farm ID of the job to update.</p>",
-          "location":"uri",
-          "locationName":"farmId"
-        },
-        "queueId":{
-          "shape":"QueueId",
-          "documentation":"<p>The queue ID of the job to update.</p>",
-          "location":"uri",
-          "locationName":"queueId"
-        },
-        "jobId":{
-          "shape":"JobId",
-          "documentation":"<p>The job ID to update.</p>",
-          "location":"uri",
-          "locationName":"jobId"
-        },
         "targetTaskRunStatus":{
           "shape":"JobTargetTaskRunStatus",
           "documentation":"<p>The task status to update the job's tasks to.</p>"
@@ -11122,10 +11854,70 @@
         "lifecycleStatus":{
           "shape":"UpdateJobLifecycleStatus",
           "documentation":"<p>The status of a job in its lifecycle. When you change the status of the job to <code>ARCHIVED</code>, the job can't be scheduled or archived.</p> <important> <p>An archived jobs and its steps and tasks are deleted after 120 days. The job can't be recovered.</p> </important>"
+        },
+        "maxWorkerCount":{
+          "shape":"MaxWorkerCount",
+          "documentation":"<p>The maximum number of worker hosts that can concurrently process a job. When the <code>maxWorkerCount</code> is reached, no more workers will be assigned to process the job, even if the fleets assigned to the job's queue has available workers.</p> <p>You can't set the <code>maxWorkerCount</code> to 0. If you set it to -1, there is no maximum number of workers.</p> <p>If you don't specify the <code>maxWorkerCount</code>, the default is -1.</p> <p>The maximum number of workers that can process tasks in the job.</p>"
+        },
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The farm ID of the job to update.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The queue ID of the job to update.</p>",
+          "location":"uri",
+          "locationName":"queueId"
+        },
+        "jobId":{
+          "shape":"JobId",
+          "documentation":"<p>The job ID to update.</p>",
+          "location":"uri",
+          "locationName":"jobId"
         }
       }
     },
     "UpdateJobResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateLimitRequest":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "limitId"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The unique identifier of the farm that contains the limit.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit to update.</p>",
+          "location":"uri",
+          "locationName":"limitId"
+        },
+        "displayName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The new display name of the limit.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The new description of the limit.</p> <important> <p>This field can store any content. Escape or encode this content before displaying it on a webpage or any other system that might interpret the content of this field.</p> </important>"
+        },
+        "maxCount":{
+          "shape":"MaxCount",
+          "documentation":"<p>The maximum number of resources constrained by this limit. When all of the resources are in use, steps that require the limit won't be scheduled until the resource is available.</p> <p>If more than the new maximum number is currently in use, running jobs finish but no new jobs are started until the number of resources in use is below the new maximum number.</p> <p>The <code>maxCount</code> must not be 0. If the value is -1, there is no restriction on the number of resources that can be acquired for this limit.</p>"
+        }
+      }
+    },
+    "UpdateLimitResponse":{
       "type":"structure",
       "members":{
       }
@@ -11257,6 +12049,52 @@
         "STOP_SCHEDULING_AND_CANCEL_TASKS"
       ]
     },
+    "UpdateQueueLimitAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "farmId",
+        "queueId",
+        "limitId",
+        "status"
+      ],
+      "members":{
+        "farmId":{
+          "shape":"FarmId",
+          "documentation":"<p>The unique identifier of the farm that contains the associated queues and limits.</p>",
+          "location":"uri",
+          "locationName":"farmId"
+        },
+        "queueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The unique identifier of the queue associated to the limit.</p>",
+          "location":"uri",
+          "locationName":"queueId"
+        },
+        "limitId":{
+          "shape":"LimitId",
+          "documentation":"<p>The unique identifier of the limit associated to the queue.</p>",
+          "location":"uri",
+          "locationName":"limitId"
+        },
+        "status":{
+          "shape":"UpdateQueueLimitAssociationStatus",
+          "documentation":"<p>Sets the status of the limit. You can mark the limit active, or you can stop usage of the limit and either complete existing tasks or cancel any existing tasks immediately. </p>"
+        }
+      }
+    },
+    "UpdateQueueLimitAssociationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateQueueLimitAssociationStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "STOP_LIMIT_USAGE_AND_COMPLETE_TASKS",
+        "STOP_LIMIT_USAGE_AND_CANCEL_TASKS"
+      ]
+    },
     "UpdateQueueRequest":{
       "type":"structure",
       "required":[
@@ -11333,11 +12171,11 @@
     "UpdateSessionRequest":{
       "type":"structure",
       "required":[
+        "targetLifecycleStatus",
         "farmId",
         "queueId",
         "jobId",
-        "sessionId",
-        "targetLifecycleStatus"
+        "sessionId"
       ],
       "members":{
         "clientToken":{
@@ -11346,6 +12184,10 @@
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
+        },
+        "targetLifecycleStatus":{
+          "shape":"SessionLifecycleTargetStatus",
+          "documentation":"<p>The life cycle status to update in the session.</p>"
         },
         "farmId":{
           "shape":"FarmId",
@@ -11370,10 +12212,6 @@
           "documentation":"<p>The session ID to update.</p>",
           "location":"uri",
           "locationName":"sessionId"
-        },
-        "targetLifecycleStatus":{
-          "shape":"SessionLifecycleTargetStatus",
-          "documentation":"<p>The life cycle status to update in the session.</p>"
         }
       }
     },
@@ -11385,13 +12223,17 @@
     "UpdateStepRequest":{
       "type":"structure",
       "required":[
+        "targetTaskRunStatus",
         "farmId",
         "queueId",
         "jobId",
-        "stepId",
-        "targetTaskRunStatus"
+        "stepId"
       ],
       "members":{
+        "targetTaskRunStatus":{
+          "shape":"StepTargetTaskRunStatus",
+          "documentation":"<p>The task status to update the step's tasks to.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>The unique token which the server uses to recognize retries of the same request.</p>",
@@ -11422,10 +12264,6 @@
           "documentation":"<p>The step ID to update.</p>",
           "location":"uri",
           "locationName":"stepId"
-        },
-        "targetTaskRunStatus":{
-          "shape":"StepTargetTaskRunStatus",
-          "documentation":"<p>The task status to update the step's tasks to.</p>"
         }
       }
     },
@@ -11486,12 +12324,12 @@
     "UpdateTaskRequest":{
       "type":"structure",
       "required":[
+        "targetRunStatus",
         "farmId",
         "queueId",
         "jobId",
         "stepId",
-        "taskId",
-        "targetRunStatus"
+        "taskId"
       ],
       "members":{
         "clientToken":{
@@ -11500,6 +12338,10 @@
           "idempotencyToken":true,
           "location":"header",
           "locationName":"X-Amz-Client-Token"
+        },
+        "targetRunStatus":{
+          "shape":"TaskTargetRunStatus",
+          "documentation":"<p>The run status with which to start the task.</p>"
         },
         "farmId":{
           "shape":"FarmId",
@@ -11530,10 +12372,6 @@
           "documentation":"<p>The task ID to update.</p>",
           "location":"uri",
           "locationName":"taskId"
-        },
-        "targetRunStatus":{
-          "shape":"TaskTargetRunStatus",
-          "documentation":"<p>The run status with which to start the task.</p>"
         }
       }
     },

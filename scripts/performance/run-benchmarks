@@ -17,6 +17,7 @@ _BENCHMARK_DEFINITIONS = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         'benchmarks.json'
     )
+_DEFAULT_FILE_CONFIG_CONTENTS = "[default]"
 
 
 class RawResponse(BytesIO):
@@ -151,12 +152,6 @@ def _get_default_env(config_file):
     }
 
 
-def _default_config_file_contents():
-    return (
-        '[default]'
-    )
-
-
 def _setup_environment(env, result_dir, config_file):
     """
     Creates all files / directories defined in the env struct.
@@ -176,7 +171,7 @@ def _setup_environment(env, result_dir, config_file):
                 file_dir_def['file_size']
             )
     with open(config_file, 'w') as f:
-        f.write(env.get('config', _default_config_file_contents()))
+        f.write(env.get('config', _DEFAULT_FILE_CONFIG_CONTENTS))
         f.flush()
 
 

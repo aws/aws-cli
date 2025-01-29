@@ -1,16 +1,10 @@
-import csv
 import json
 import math
 import time
 import psutil
 
-import s3transfer
 import os
-import subprocess
-import uuid
 import shutil
-import argparse
-import tempfile
 from awscli.botocore.awsrequest import AWSResponse
 
 from unittest import mock
@@ -22,93 +16,78 @@ class Summarizer:
     DATA_INDEX_IN_ROW = {'time': 0, 'memory': 1, 'cpu': 2}
 
     def __init__(self):
-        self._num_rows = 0
         self._start_time = None
         self._end_time = None
-        self._averages = {
+        self._samples = []
+        self._sums = {
             'memory': 0.0,
             'cpu': 0.0,
         }
-        self._samples = {
-            'memory': [],
-            'cpu': [],
-        }
-        self._maximums = {'memory': 0.0, 'cpu': 0.0}
 
-    def summarize(self, benchmark_file):
-        """Processes the data from the CSV file"""
-        with open(benchmark_file) as f:
-            reader = csv.reader(f)
-            # Process each row from the CSV file
-            row = None
-            for row in reader:
-                self._validate_row(row, benchmark_file)
-                self.process_data_row(row)
-            self._validate_row(row, benchmark_file)
-            self._end_time = self._get_time(row)
-            metrics = self._finalize_processed_data_for_file()
+    def summarize(self, samples):
+        """Processes benchmark data from a dictionary."""
+        self._samples = samples
+        self._validate_samples(samples)
+        for idx, sample in enumerate(samples):
+            # If the sample is the first one, collect the start time.
+            if idx == 0:
+                self._start_time = self._get_time(sample)
+            self.process_data_sample(sample)
+        self._end_time = self._get_time(samples[-1])
+        metrics = self._finalize_processed_data_for_file(samples)
         return metrics
 
-    def _validate_row(self, row, filename):
-        if not row:
+    def _validate_samples(self, samples):
+        if not samples:
             raise RuntimeError(
-                f'Row: {row} could not be processed. The CSV file ({filename}) may be '
-                'empty.'
+                'Benchmark samples could not be processed. ' 
+                'The samples list is empty'
             )
 
-    def process_data_row(self, row):
-        # If the row is the first row collect the start time.
-        if self._num_rows == 0:
-            self._start_time = self._get_time(row)
-        self._num_rows += 1
-        self.process_data_point(row, 'memory')
-        self.process_data_point(row, 'cpu')
+    def process_data_sample(self, sample):
+        self._add_to_sums('memory', sample['memory'])
+        self._add_to_sums('cpu', sample['cpu'])
 
-    def process_data_point(self, row, name):
-        # Determine where in the CSV row the requested data is located.
-        index = self.DATA_INDEX_IN_ROW[name]
-        # Get the data point.
-        data_point = float(row[index])
-        self._add_to_average(name, data_point)
-        self._account_for_maximum(name, data_point)
-        self._samples[name].append(data_point)
-
-    def _finalize_processed_data_for_file(self):
-        self._samples['memory'].sort()
-        self._samples['cpu'].sort()
+    def _finalize_processed_data_for_file(self, samples):
+        self._samples.sort(key=self._get_memory)
+        memory_p50 = self._compute_metric_percentile(50, 'memory')
+        memory_p95 = self._compute_metric_percentile(95, 'memory')
+        self._samples.sort(key=self._get_cpu)
+        cpu_p50 = self._compute_metric_percentile(50, 'cpu')
+        cpu_p95 = self._compute_metric_percentile(95, 'cpu')
+        max_memory = max(samples, key=self._get_memory)['memory']
+        max_cpu = max(samples, key=self._get_cpu)['cpu']
         metrics = {
             'time': self._end_time - self._start_time,
-            'average_memory': self._averages['memory'] / self._num_rows,
-            'average_cpu': self._averages['cpu'] / self._num_rows,
-            'max_memory': self._maximums['memory'],
-            'max_cpu': self._maximums['cpu'],
-            'memory_p50': self._compute_metric_percentile(50, 'memory'),
-            'memory_p95': self._compute_metric_percentile(95, 'memory'),
-            'cpu_p50': self._compute_metric_percentile(50, 'cpu'),
-            'cpu_p95': self._compute_metric_percentile(95, 'cpu'),
+            'average_memory': self._sums['memory'] / len(samples),
+            'average_cpu': self._sums['cpu'] / len(samples),
+            'max_memory': max_memory,
+            'max_cpu': max_cpu,
+            'memory_p50': memory_p50,
+            'memory_p95': memory_p95,
+            'cpu_p50': cpu_p50,
+            'cpu_p95': cpu_p95,
         }
-        # Reset some of the data needed to be tracked for each execution
-        self._num_rows = 0
-        self._maximums = self._maximums.fromkeys(self._maximums, 0.0)
-        self._averages = self._averages.fromkeys(self._averages, 0.0)
-        self._samples['memory'].clear()
-        self._samples['cpu'].clear()
+        # Reset samples after we're done with it
+        self._samples.clear()
         return metrics
 
     def _compute_metric_percentile(self, percentile, name):
-        num_samples = len(self._samples[name])
+        num_samples = len(self._samples)
         p_idx = math.ceil(percentile*num_samples/100) - 1
-        return self._samples[name][p_idx]
+        return self._samples[p_idx][name]
 
-    def _get_time(self, row):
-        return float(row[self.DATA_INDEX_IN_ROW['time']])
+    def _get_time(self, sample):
+        return sample['time']
 
-    def _add_to_average(self, name, data_point):
-        self._averages[name] += data_point
+    def _get_memory(self, sample):
+        return sample['memory']
 
-    def _account_for_maximum(self, name, data_point):
-        if data_point > self._maximums[name]:
-            self._maximums[name] = data_point
+    def _get_cpu(self, sample):
+        return sample['cpu']
+
+    def _add_to_sums(self, name, data_point):
+        self._sums[name] += data_point
 
 
 class RawResponse(BytesIO):
@@ -154,14 +133,13 @@ class StubbedHTTPClient(object):
 
 class ProcessBenchmarker(object):
     """
-    Periodically samples CPU and memory usage of a process given its pid. Writes
-    all collected samples to a CSV file.
+    Periodically samples CPU and memory usage of a process given its pid.
     """
-    def benchmark_process(self, pid, output_file, data_interval):
+    def benchmark_process(self, pid, data_interval):
         parent_pid = os.getpid()
         try:
             # Benchmark the process where the script is being run.
-            self._run_benchmark(pid, output_file, data_interval)
+            return self._run_benchmark(pid, data_interval)
         except KeyboardInterrupt:
             # If there is an interrupt, then try to clean everything up.
             proc = psutil.Process(parent_pid)
@@ -175,10 +153,9 @@ class ProcessBenchmarker(object):
                 child.kill()
             raise
 
-
-    def _run_benchmark(self, pid, output_file, data_interval):
+    def _run_benchmark(self, pid, data_interval):
         process_to_measure = psutil.Process(pid)
-        output_f = open(output_file, 'w')
+        samples = []
 
         while process_to_measure.is_running():
             if process_to_measure.status() == psutil.STATUS_ZOMBIE:
@@ -193,18 +170,17 @@ class ProcessBenchmarker(object):
                 # Trying to get process information from a closed or
                 # zombie process will result in corresponding exceptions.
                 break
-
             # Determine the lapsed time for bookkeeping
             current_time = time.time()
-
-            # Save all the data into a CSV file.
-            output_f.write(
-                f"{current_time},{memory_used},{cpu_percent}\n"
-            )
-            output_f.flush()
+            samples.append({
+                "time": current_time, "memory": memory_used, "cpu": cpu_percent
+            })
+        return samples
 
 
 class BenchmarkHarness(object):
+    _DEFAULT_FILE_CONFIG_CONTENTS = "[default]"
+
     """
     Orchestrates running benchmarks in isolated, configurable environments defined
     via a specified JSON file.
@@ -219,11 +195,6 @@ class BenchmarkHarness(object):
             'AWS_ACCESS_KEY_ID': 'access_key',
             'AWS_SECRET_ACCESS_KEY': 'secret_key'
         }
-
-    def _default_config_file_contents(self):
-        return (
-            '[default]'
-        )
 
     def _create_file_with_size(self, path, size):
         """
@@ -266,7 +237,7 @@ class BenchmarkHarness(object):
                     file_dir_def['file_size']
                 )
         with open(config_file, 'w') as f:
-            f.write(env.get('config', self._default_config_file_contents()))
+            f.write(env.get('config', self._DEFAULT_FILE_CONFIG_CONTENTS))
             f.flush()
 
     def _setup_iteration(
@@ -357,7 +328,6 @@ class BenchmarkHarness(object):
         the environment, running the benchmarked execution, formatting
         the results, and cleaning up the environment.
         """
-        out_file = os.path.join(performance_dir, 'performance.csv')
         assets_dir = os.path.join(result_dir, 'assets')
         config_file = os.path.join(assets_dir, 'config')
         # setup for iteration of benchmark
@@ -376,13 +346,12 @@ class BenchmarkHarness(object):
                 self._run_command_with_metric_hooks(benchmark['command'], result_dir)
 
             # benchmark child process from parent process until child terminates
-            process_benchmarker.benchmark_process(
+            samples = process_benchmarker.benchmark_process(
                 pid,
-                out_file,
                 args.data_interval
             )
             # summarize benchmark results and process summary
-            summary = self._summarizer.summarize(out_file)
+            summary = self._summarizer.summarize(samples)
             # load the internally-collected metrics and append to the summary
             metrics_f = json.load(open(os.path.join(result_dir, 'metrics.json'), 'r'))
             # override the summarizer's sample-based timing with the
@@ -443,247 +412,3 @@ class BenchmarkHarness(object):
             # final cleanup
             shutil.rmtree(result_dir, ignore_errors=True)
         print(json.dumps(summaries, indent=2))
-
-
-def summarize(script, result_dir, summary_dir):
-    """Run the given summary script on every file in the given directory.
-
-    :param script: A summarization script that takes a list of csv files.
-    :param result_dir: A directory containing csv performance result files.
-    :param summary_dir: The directory to put the summary file in.
-    """
-    summarize_args = [script]
-    for f in os.listdir(result_dir):
-        path = os.path.join(result_dir, f)
-        if os.path.isfile(path):
-            summarize_args.append(path)
-
-    with open(os.path.join(summary_dir, 'summary.txt'), 'wb') as f:
-        subprocess.check_call(summarize_args, stdout=f)
-    with open(os.path.join(summary_dir, 'summary.json'), 'wb') as f:
-        summarize_args.extend(['--output-format', 'json'])
-        subprocess.check_call(summarize_args, stdout=f)
-
-
-def _get_s3transfer_performance_script(script_name):
-    """Retrieves an s3transfer performance script if available."""
-    s3transfer_directory = os.path.dirname(s3transfer.__file__)
-    s3transfer_directory = os.path.dirname(s3transfer_directory)
-    scripts_directory = 'scripts/performance'
-    scripts_directory = os.path.join(s3transfer_directory, scripts_directory)
-    script = os.path.join(scripts_directory, script_name)
-
-    if os.path.isfile(script):
-        return script
-    else:
-        return None
-
-
-def get_benchmark_script():
-    return _get_s3transfer_performance_script('benchmark')
-
-
-def get_summarize_script():
-    return _get_s3transfer_performance_script('summarize')
-
-
-def backup(source, recursive):
-    """Backup a given source to a temporary location.
-
-    :type source: str
-    :param source: A local path or s3 path to backup.
-
-    :type recursive: bool
-    :param recursive: if True, the source will be treated as a directory.
-    """
-    if source[:5] == 's3://':
-        parts = source.split('/')
-        parts.insert(3, str(uuid.uuid4()))
-        backup_path = '/'.join(parts)
-    else:
-        name = os.path.split(source)[-1]
-        temp_dir = tempfile.mkdtemp()
-        backup_path = os.path.join(temp_dir, name)
-
-    copy(source, backup_path, recursive)
-    return backup_path
-
-
-def copy(source, destination, recursive):
-    """Copy files from one location to another.
-
-    The source and destination must both be s3 paths or both be local paths.
-
-    :type source: str
-    :param source: A local path or s3 path to backup.
-
-    :type destination: str
-    :param destination: A local path or s3 path to backup the source to.
-
-    :type recursive: bool
-    :param recursive: if True, the source will be treated as a directory.
-    """
-    if 's3://' in [source[:5], destination[:5]]:
-        cp_args = ['aws', 's3', 'cp', source, destination, '--quiet']
-        if recursive:
-            cp_args.append('--recursive')
-        subprocess.check_call(cp_args)
-        return
-
-    if recursive:
-        shutil.copytree(source, destination)
-    else:
-        shutil.copy(source, destination)
-
-
-def clean(destination, recursive):
-    """Delete a file or directory either locally or on S3."""
-    if destination[:5] == 's3://':
-        rm_args = ['aws', 's3', 'rm', '--quiet', destination]
-        if recursive:
-            rm_args.append('--recursive')
-        subprocess.check_call(rm_args)
-    else:
-        if recursive:
-            shutil.rmtree(destination)
-        else:
-            os.remove(destination)
-
-
-def create_random_subfolder(destination):
-    """Create a random subdirectory in a given directory."""
-    folder_name = str(uuid.uuid4())
-    if destination.startswith('s3://'):
-        parts = destination.split('/')
-        parts.append(folder_name)
-        return '/'.join(parts)
-    else:
-        parts = list(os.path.split(destination))
-        parts.append(folder_name)
-        path = os.path.join(*parts)
-        os.makedirs(path)
-        return path
-
-
-def get_transfer_command(command, recursive, quiet):
-    """Get a full cli transfer command.
-
-    Performs common transformations, e.g. adding --quiet
-    """
-    cli_command = 'aws s3 ' + command
-
-    if recursive:
-        cli_command += ' --recursive'
-
-    if quiet:
-        cli_command += ' --quiet'
-    else:
-        print(cli_command)
-
-    return cli_command
-
-
-def benchmark_command(command, benchmark_script, summarize_script,
-                      output_dir, num_iterations, dry_run, upkeep=None,
-                      cleanup=None):
-    """Benchmark several runs of a long-running command.
-
-    :type command: str
-    :param command: The full aws cli command to benchmark
-
-    :type benchmark_script: str
-    :param benchmark_script: A benchmark script that takes a command to run
-        and outputs performance data to a file. This should be from s3transfer.
-
-    :type summarize_script: str
-    :param summarize_script:  A summarization script that the output of the
-        benchmark script. This should be from s3transfer.
-
-    :type output_dir: str
-    :param output_dir: The directory to output performance results to.
-
-    :type num_iterations: int
-    :param num_iterations: The number of times to run the benchmark on the
-        command.
-
-    :type dry_run: bool
-    :param dry_run: Whether or not to actually run the benchmarks.
-
-    :type upkeep: function that takes no arguments
-    :param upkeep: A function that is run after every iteration of the
-        benchmark process. This should be used for upkeep, such as restoring
-        files that were deleted as part of the command executing.
-
-    :type cleanup: function that takes no arguments
-    :param cleanup: A function that is run at the end of the benchmark
-        process or if there are any problems during the benchmark process.
-        It should be uses for the final cleanup, such as deleting files that
-        were created at some destination.
-    """
-    performance_dir = os.path.join(output_dir, 'performance')
-    if os.path.exists(performance_dir):
-        shutil.rmtree(performance_dir)
-    os.makedirs(performance_dir)
-
-    try:
-        for i in range(num_iterations):
-            out_file = 'performance%s.csv' % i
-            out_file = os.path.join(performance_dir, out_file)
-            benchmark_args = [
-                benchmark_script, command, '--output-file', out_file
-            ]
-            if not dry_run:
-                subprocess.check_call(benchmark_args)
-                if upkeep is not None:
-                    upkeep()
-
-        if not dry_run:
-            summarize(summarize_script, performance_dir, output_dir)
-    finally:
-        if not dry_run and cleanup is not None:
-            cleanup()
-
-
-def get_default_argparser():
-    """Get an ArgumentParser with all the base benchmark arguments added in."""
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--no-cleanup', action='store_true', default=False,
-        help='Do not remove the destination after the tests complete.'
-    )
-    parser.add_argument(
-        '--recursive', action='store_true', default=False,
-        help='Indicates that this is a recursive transfer.'
-    )
-    benchmark_script = get_benchmark_script()
-    parser.add_argument(
-        '--benchmark-script', default=benchmark_script,
-        required=benchmark_script is None,
-        help=('The benchmark script to run the commands with. This should be '
-              'from s3transfer.')
-    )
-    summarize_script = get_summarize_script()
-    parser.add_argument(
-        '--summarize-script', default=summarize_script,
-        required=summarize_script is None,
-        help=('The summarize script to run the commands with. This should be '
-              'from s3transfer.')
-    )
-    parser.add_argument(
-        '-o', '--result-dir', default='results',
-        help='The directory to output performance results to. Existing '
-             'results will be deleted.'
-    )
-    parser.add_argument(
-        '--dry-run', default=False, action='store_true',
-        help='If set, commands will only be printed out, not executed.'
-    )
-    parser.add_argument(
-        '--quiet', default=False, action='store_true',
-        help='If set, output is suppressed.'
-    )
-    parser.add_argument(
-        '-n', '--num-iterations', default=1, type=int,
-        help='The number of times to run the test.'
-    )
-    return parser

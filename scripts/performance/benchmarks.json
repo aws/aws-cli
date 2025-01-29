@@ -108,7 +108,7 @@
   },
   {
     "name": "dynamodb.getitem",
-    "command": ["dynamodb", "get-item", "--table-name", "MyTable", "--key", "file://key.json", "--return-consumed-capacity", "TOTAL", "--debug"],
+    "command": ["dynamodb", "get-item", "--table-name", "MyTable", "--key", "file://key.json", "--return-consumed-capacity", "TOTAL"],
     "environment": {
       "file_literals": [
         {
@@ -125,18 +125,18 @@
   },
   {
     "name": "dynamodb.batchgetitem",
-    "command": ["dynamodb", "batch-get-item", "--table-name", "MyTable", "--key", "file://key.json", "--return-consumed-capacity", "TOTAL", "--debug"],
+    "command": ["dynamodb", "batch-get-item", "--request-items", "file://request-items.json", "--return-consumed-capacity", "TOTAL", "--no-paginate"],
     "environment": {
       "file_literals": [
         {
-          "name": "key.json",
-          "content": "{\n \"Group\": {\"S\": \"Group1\"},\n \"Item\": {\"S\": \"Item1\"} }"
+          "name": "request-items.json",
+          "content": "{\"MyTable\": { \"Keys\": [ {\"Group\": {\"S\": \"Group1\"}, \"Item\": {\"S\": \"Item1\"}}, { \"Group\": {\"S\": \"Group1\"}, \"Item\": {\"S\": \"Item1\"} }, { \"Group\": {\"S\": \"Group1\"}, \"Item\": {\"S\": \"Item1\"} }],\"ProjectionExpression\":\"Genre\"}}"
         }
       ]
     },
     "responses": [
       {
-        "body": "{\"ConsumedCapacity\": {\"CapacityUnits\": 0.5, \"TableName\": \"MyTable\"}, \"Item\": {\"Group\": {\"S\": \"Group1\"}, {\"Item\": {\"S\": \"Item1\"} }"
+        "body": "{\"Responses\": {\"MyTable\": [{\"Genre\": {\"S\": \"Genre1\"}}, {\"Genre\": {\"S\": \"Genre2\"}},{\"Genre\": {\"S\": \"Genre3\"}}]}, \"UnprocessedKeys\": {},\"ConsumedCapacity\": [{\"TableName\": \"MyTable\",\"CapacityUnits\": 1.5}]}"
       }
     ]
   }

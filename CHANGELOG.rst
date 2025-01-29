@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.37.9
+======
+
+* api-change:``bcm-pricing-calculator``: Added ConflictException error type in DeleteBillScenario, BatchDeleteBillScenarioCommitmentModification, BatchDeleteBillScenarioUsageModification, BatchUpdateBillScenarioUsageModification, and BatchUpdateBillScenarioCommitmentModification API operations.
+* api-change:``ecr``: Add support for Dualstack and Dualstack-with-FIPS Endpoints
+* api-change:``ecr-public``: Add support for Dualstack Endpoints
+* api-change:``mailmanager``: This release includes a new feature for Amazon SES Mail Manager which allows customers to specify known addresses and domains and make use of those in traffic policies and rules actions to distinguish between known and unknown entries.
+* api-change:``s3``: Change the type of MpuObjectSize in CompleteMultipartUploadRequest from int to long.
+
+
 1.37.8
 ======
 

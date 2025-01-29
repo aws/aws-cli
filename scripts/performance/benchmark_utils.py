@@ -69,8 +69,9 @@ class Summarizer:
             'cpu_p50': cpu_p50,
             'cpu_p95': cpu_p95,
         }
-        # reset samples array
+        # reset data state
         self._samples.clear()
+        self._sums = self._sums.fromkeys(self._sums, 0.0)
         return metrics
 
     def _compute_metric_percentile(self, percentile, name):
@@ -247,6 +248,13 @@ class BenchmarkHarness(object):
                     file_dir_def['file_count'],
                     file_dir_def['file_size']
                 )
+        if "file_literals" in env:
+            for file_lit in env['file_literals']:
+                path = os.path.join(result_dir, file_lit['name'])
+                f = open(path, 'w')
+                os.chmod(path, 0o777)
+                f.write(file_lit['content'])
+                f.close()
         # create config file at specified path
         with open(config_file, 'w') as f:
             f.write(env.get('config', self._DEFAULT_FILE_CONFIG_CONTENTS))
@@ -274,7 +282,7 @@ class BenchmarkHarness(object):
             else:
                 client.add_response(body, headers, status_code)
 
-    def _run_command_with_metric_hooks(self, cmd, result_dir):
+    def _run_command_with_metric_hooks(self, cmd, out_file):
         """
         Runs a CLI command and logs CLI-specific metrics to a file.
         """
@@ -293,13 +301,14 @@ class BenchmarkHarness(object):
             _log_invocation_time,
             'benchmarks.log-invocation-time'
         )
-        AWSCLIEntryPoint(driver).main(cmd)
+        rc = AWSCLIEntryPoint(driver).main(cmd)
         end_time = time.time()
 
         # write the collected metrics to a file
-        metrics_f = open(os.path.join(result_dir, 'metrics.json'), 'w')
+        metrics_f = open(out_file, 'w')
         metrics_f.write(json.dumps(
             {
+                'return_code': rc,
                 'start_time': start_time,
                 'end_time': end_time,
                 'first_client_invocation_time': first_client_invocation_time
@@ -324,6 +333,7 @@ class BenchmarkHarness(object):
         """
         assets_dir = os.path.join(result_dir, 'assets')
         config_file = os.path.join(assets_dir, 'config')
+        metrics_file = os.path.join(result_dir, 'metrics.json')
         os.makedirs(assets_dir, 0o777)
         # setup for iteration of benchmark
         self._setup_iteration(benchmark, client, result_dir, config_file)
@@ -338,16 +348,21 @@ class BenchmarkHarness(object):
         try:
             # execute command on child process
             if pid == 0:
-                self._run_command_with_metric_hooks(benchmark['command'], result_dir)
+                self._run_command_with_metric_hooks(benchmark['command'], metrics_file)
             # benchmark child process from parent process until child terminates
             samples = process_benchmarker.benchmark_process(
                 pid,
                 args.data_interval
             )
+            # load child-collected metrics if exists
+            if not os.path.exists(metrics_file):
+                raise RuntimeError('Child process execution failed: output file not found.')
+            metrics_f = json.load(open(os.path.join(result_dir, 'metrics.json'), 'r'))
+            # raise error if child process failed
+            if (rc := metrics_f['return_code']) != 0:
+                raise RuntimeError(f'Child process execution failed: return code {rc}')
             # summarize benchmark results and process summary
             summary = self._summarizer.summarize(samples)
-            # load the child-collected metrics and append to the summary
-            metrics_f = json.load(open(os.path.join(result_dir, 'metrics.json'), 'r'))
             summary['total_time'] = metrics_f['end_time'] - metrics_f['start_time']
             summary['first_client_invocation_time'] = (metrics_f['first_client_invocation_time']
                                                        - metrics_f['start_time'])
@@ -377,9 +392,10 @@ class BenchmarkHarness(object):
             for benchmark in definitions:
                 benchmark_result = {
                     'name': benchmark['name'],
-                    'dimensions': benchmark['dimensions'],
                     'measurements': []
                 }
+                if 'dimensions' in benchmark:
+                    benchmark_result['dimensions'] = benchmark['dimensions']
                 for _ in range(args.num_iterations):
                     measurements = self._run_isolated_benchmark(
                         result_dir,

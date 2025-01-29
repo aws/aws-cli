@@ -49,6 +49,7 @@ class Summarizer:
         self._add_to_sums('cpu', sample['cpu'])
 
     def _finalize_processed_data_for_file(self, samples):
+        # compute percentiles
         self._samples.sort(key=self._get_memory)
         memory_p50 = self._compute_metric_percentile(50, 'memory')
         memory_p95 = self._compute_metric_percentile(95, 'memory')
@@ -57,8 +58,8 @@ class Summarizer:
         cpu_p95 = self._compute_metric_percentile(95, 'cpu')
         max_memory = max(samples, key=self._get_memory)['memory']
         max_cpu = max(samples, key=self._get_cpu)['cpu']
+        # format computed statistics
         metrics = {
-            'time': self._end_time - self._start_time,
             'average_memory': self._sums['memory'] / len(samples),
             'average_cpu': self._sums['cpu'] / len(samples),
             'max_memory': max_memory,
@@ -68,7 +69,7 @@ class Summarizer:
             'cpu_p50': cpu_p50,
             'cpu_p95': cpu_p95,
         }
-        # Reset samples after we're done with it
+        # reset samples array
         self._samples.clear()
         return metrics
 
@@ -199,7 +200,8 @@ class BenchmarkHarness(object):
     def _create_file_with_size(self, path, size):
         """
         Creates a full-access file in the given directory with the
-        specified name and size.
+        specified name and size. The created file will be full of
+        null bytes to achieve the specified size.
         """
         f = open(path, 'wb')
         os.chmod(path, 0o777)
@@ -211,19 +213,28 @@ class BenchmarkHarness(object):
         """
         Creates a directory with the specified name. Also creates identical files
         with the given size in the created directory. The number of identical files
-        to be created is specified by file_count.
+        to be created is specified by file_count. Each file will be full of
+        null bytes to achieve the specified size.
         """
         os.mkdir(dir_path, 0o777)
         for i in range(int(file_count)):
             file_path = os.path.join(dir_path, f'{i}')
             self._create_file_with_size(file_path, size)
 
-    def _setup_environment(self, env, result_dir, config_file):
+    def _setup_iteration(
+            self,
+            benchmark,
+            client,
+            result_dir,
+            config_file
+    ):
         """
-        Creates all files / directories defined in the env struct.
-        Also, writes a config file named 'config' to the result directory
-        with contents optionally specified by the env struct.
+        Performs the environment setup for a single iteration of a
+        benchmark. This includes creating the files used by a
+        command and stubbing the HTTP client to use during execution.
         """
+        # create necessary files for iteration
+        env = benchmark.get('environment', {})
         if "files" in env:
             for file_def in env['files']:
                 path = os.path.join(result_dir, file_def['name'])
@@ -236,33 +247,16 @@ class BenchmarkHarness(object):
                     file_dir_def['file_count'],
                     file_dir_def['file_size']
                 )
+        # create config file at specified path
         with open(config_file, 'w') as f:
             f.write(env.get('config', self._DEFAULT_FILE_CONFIG_CONTENTS))
             f.flush()
-
-    def _setup_iteration(
-            self,
-            benchmark,
-            client,
-            result_dir,
-            performance_dir,
-            config_file
-    ):
-        """
-        Performs the setup for a single iteration of a benchmark. This
-        includes creating the files used by a command and stubbing
-        the HTTP client to use during execution.
-        """
-        env = benchmark.get('environment', {})
-        self._setup_environment(env, result_dir, config_file)
+        # setup and stub HTTP client
         client.setup()
         self._stub_responses(
             benchmark.get('responses', [{"headers": {}, "body": ""}]),
             client
         )
-        if os.path.exists(performance_dir):
-            shutil.rmtree(performance_dir)
-        os.makedirs(performance_dir, 0o777)
 
     def _stub_responses(self, responses, client):
         """
@@ -312,12 +306,12 @@ class BenchmarkHarness(object):
             }
         ))
         metrics_f.close()
+        # terminate the process
         os._exit(0)
 
     def _run_isolated_benchmark(
             self,
             result_dir,
-            performance_dir,
             benchmark,
             client,
             process_benchmarker,
@@ -330,8 +324,9 @@ class BenchmarkHarness(object):
         """
         assets_dir = os.path.join(result_dir, 'assets')
         config_file = os.path.join(assets_dir, 'config')
+        os.makedirs(assets_dir, 0o777)
         # setup for iteration of benchmark
-        self._setup_iteration(benchmark, client, result_dir, performance_dir, config_file)
+        self._setup_iteration(benchmark, client, result_dir, config_file)
         os.chdir(result_dir)
         # patch the OS environment with our supplied defaults
         env_patch = mock.patch.dict('os.environ', self._get_default_env(config_file))
@@ -344,7 +339,6 @@ class BenchmarkHarness(object):
             # execute command on child process
             if pid == 0:
                 self._run_command_with_metric_hooks(benchmark['command'], result_dir)
-
             # benchmark child process from parent process until child terminates
             samples = process_benchmarker.benchmark_process(
                 pid,
@@ -352,11 +346,8 @@ class BenchmarkHarness(object):
             )
             # summarize benchmark results and process summary
             summary = self._summarizer.summarize(samples)
-            # load the internally-collected metrics and append to the summary
+            # load the child-collected metrics and append to the summary
             metrics_f = json.load(open(os.path.join(result_dir, 'metrics.json'), 'r'))
-            # override the summarizer's sample-based timing with the
-            # wall-clock time measured by the child process
-            del summary['time']
             summary['total_time'] = metrics_f['end_time'] - metrics_f['start_time']
             summary['first_client_invocation_time'] = (metrics_f['first_client_invocation_time']
                                                        - metrics_f['start_time'])
@@ -365,10 +356,7 @@ class BenchmarkHarness(object):
             client.tearDown()
             shutil.rmtree(result_dir, ignore_errors=True)
             os.makedirs(result_dir, 0o777)
-            shutil.rmtree(assets_dir, ignore_errors=True)
-            os.makedirs(assets_dir, 0o777)
             env_patch.stop()
-            self._time_of_call = None
         return summary
 
     def run_benchmarks(self, args):
@@ -378,17 +366,12 @@ class BenchmarkHarness(object):
         """
         summaries = {'results': []}
         result_dir = args.result_dir
-        assets_dir = os.path.join(result_dir, 'assets')
-        performance_dir = os.path.join(result_dir, 'performance')
         client = StubbedHTTPClient()
         process_benchmarker = ProcessBenchmarker()
         definitions = json.load(open(args.benchmark_definitions, 'r'))
         if os.path.exists(result_dir):
             shutil.rmtree(result_dir)
         os.makedirs(result_dir, 0o777)
-        if os.path.exists(assets_dir):
-            shutil.rmtree(assets_dir)
-        os.makedirs(assets_dir, 0o777)
 
         try:
             for benchmark in definitions:
@@ -400,7 +383,6 @@ class BenchmarkHarness(object):
                 for _ in range(args.num_iterations):
                     measurements = self._run_isolated_benchmark(
                         result_dir,
-                        performance_dir,
                         benchmark,
                         client,
                         process_benchmarker,

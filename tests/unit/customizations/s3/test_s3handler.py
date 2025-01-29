@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+import tempfile
 
 from s3transfer.manager import TransferManager
 
@@ -1112,3 +1113,29 @@ class TestLocalDeleteRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(result.transfer_type, 'delete')
         self.assertTrue(result.src.endswith(self.filename))
         self.assertIsNone(result.dest)
+
+    def test_submit_directory(self):
+        temp_dir = tempfile.mkdtemp()
+        self.addCleanup(os.rmdir, temp_dir)
+        directory = os.path.join(temp_dir, 'foo')
+        os.mkdir(directory)
+        fileinfo = FileInfo(
+            src=directory, dest=None, operation_name='',
+            src_type='local')
+        rval = self.transfer_request_submitter.submit(fileinfo)
+        self.assertTrue(rval)
+
+        queued_result = self.result_queue.get()
+        self.assertIsInstance(queued_result, QueuedResult)
+        self.assertEqual(queued_result.transfer_type, 'delete')
+        self.assertTrue(queued_result.src.endswith('foo'))
+        self.assertIsNone(queued_result.dest)
+        self.assertEqual(queued_result.total_transfer_size, 0)
+
+        success_result = self.result_queue.get()
+        self.assertIsInstance(success_result, SuccessResult)
+        self.assertEqual(success_result.transfer_type, 'delete')
+        self.assertTrue(success_result.src.endswith('foo'))
+        self.assertIsNone(success_result.dest)
+
+        self.assertFalse(os.path.exists(directory))

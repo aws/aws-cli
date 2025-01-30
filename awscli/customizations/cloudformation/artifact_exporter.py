@@ -25,11 +25,15 @@ from contextlib import contextmanager
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
     yaml_parse
+from awscli.customizations.cloudformation import modules
+from awscli.customizations.cloudformation import module_constants
 import jmespath
 
 
 LOG = logging.getLogger(__name__)
 
+MODULES = "Modules"
+RESOURCES = "Resources"
 
 def is_path_value_valid(path):
     return isinstance(path, str)
@@ -139,6 +143,9 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
 
     local_path = make_abs_path(parent_dir, local_path)
 
+    if uploader is None:
+        raise exceptions.PackageBucketRequiredError()
+
     # Or, pointing to a folder. Zip the folder and upload
     if is_local_folder(local_path):
         return zip_and_upload(local_path, uploader)
@@ -154,6 +161,8 @@ def upload_local_artifacts(resource_id, resource_dict, property_name,
 
 
 def zip_and_upload(local_path, uploader):
+    if uploader is None:
+        raise exceptions.PackageBucketRequiredError()
     with zip_folder(local_path) as zipfile:
             return uploader.upload_with_dedup(zipfile)
 
@@ -472,6 +481,9 @@ class CloudFormationStackResource(Resource):
 
         exported_template_str = yaml_dump(exported_template_dict)
 
+        if self.uploader is None:
+            raise exceptions.PackageBucketRequiredError()
+
         with mktempfile() as temporary_file:
             temporary_file.write(exported_template_str)
             temporary_file.flush()
@@ -558,6 +570,9 @@ def include_transform_export_handler(template_dict, uploader, parent_dir):
         return template_dict
 
     # We are confident at this point that `include_location` is a string containing the local path
+    if uploader is None:
+        raise exceptions.PackageBucketRequiredError()
+
     abs_include_location = os.path.join(parent_dir, include_location)
     if is_local_file(abs_include_location):
         template_dict["Parameters"]["Location"] = uploader.upload_with_dedup(abs_include_location)
@@ -591,8 +606,8 @@ class Template(object):
             raise ValueError("parent_dir parameter must be "
                              "an absolute path to a folder {0}"
                              .format(parent_dir))
-
         abs_template_path = make_abs_path(parent_dir, template_path)
+        self.module_parent_path = abs_template_path
         template_dir = os.path.dirname(abs_template_path)
 
         with open(abs_template_path, "r") as handle:
@@ -651,14 +666,44 @@ class Template(object):
         :return: The template with references to artifacts that have been
         exported to s3.
         """
+
+        # Process constants
+        constants = module_constants.process_constants(self.template_dict)
+        if constants is not None:
+            module_constants.replace_constants(constants, self.template_dict)
+
+        # Process modules
+        try:
+            self.template_dict = modules.process_module_section(
+                    self.template_dict, 
+                    self.template_dir,
+                    self.module_parent_path)
+        except Exception as e:
+            msg=f"Failed to process Modules section: {e}"
+            LOG.exception(msg)
+            raise exceptions.InvalidModuleError(msg=msg)
+
         self.template_dict = self.export_metadata(self.template_dict)
 
-        if "Resources" not in self.template_dict:
+        if RESOURCES not in self.template_dict:
             return self.template_dict
+
+        # Process modules that are specified as Resources, not in Modules
+        try:
+            self.template_dict = modules.process_resources_section(
+                    self.template_dict, 
+                    self.template_dir, 
+                    self.module_parent_path, 
+                    None)
+        except Exception as e:
+            msg=f"Failed to process modules in Resources: {e}"
+            LOG.exception(msg)
+            raise exceptions.InvalidModuleError(msg=msg)
+
 
         self.template_dict = self.export_global_artifacts(self.template_dict)
 
-        self.export_resources(self.template_dict["Resources"])
+        self.export_resources(self.template_dict[RESOURCES])
 
         return self.template_dict
 

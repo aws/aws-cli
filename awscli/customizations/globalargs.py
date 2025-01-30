@@ -118,7 +118,7 @@ def _resolve_timeout(session, parsed_args, arg_name):
 
 def _update_default_client_config(session, arg_name, arg_value):
     current_default_config = session.get_default_client_config()
-    new_default_config = Config(**{arg_name: arg_value})
+    new_default_config = Config(**{arg_name: arg_value}, inject_host_prefix=None)
     if current_default_config is not None:
         new_default_config = current_default_config.merge(new_default_config)
     session.set_default_client_config(new_default_config)

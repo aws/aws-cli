@@ -1558,7 +1558,12 @@ class TestCanSendIntegerHeaders(BaseSessionTest):
 
     def test_int_values_with_sigv4(self):
         s3 = self.session.create_client(
-            's3', config=Config(signature_version='s3v4'))
+            "s3",
+            config=Config(
+                signature_version="s3v4",
+                request_checksum_calculation="when_required",
+            ),
+        )
         with ClientHTTPStubber(s3) as http_stubber:
             http_stubber.add_response()
             s3.upload_part(Bucket='foo', Key='bar', Body=b'foo',

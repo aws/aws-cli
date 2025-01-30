@@ -32,7 +32,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Adds or updates a permission policy for a Q Business application, allowing cross-account access for an ISV. This operation creates a new policy statement for the specified Q Business application. The policy statement defines the IAM actions that the ISV is allowed to perform on the Q Business application's resources.</p>"
+      "documentation":"<p>Adds or updates a permission policy for a Amazon Q Business application, allowing cross-account access for an ISV. This operation creates a new policy statement for the specified Amazon Q Business application. The policy statement defines the IAM actions that the ISV is allowed to perform on the Amazon Q Business application's resources.</p>"
     },
     "BatchDeleteDocument":{
       "name":"BatchDeleteDocument",
@@ -72,6 +72,25 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Adds one or more documents to an Amazon Q Business index.</p> <p>You use this API to:</p> <ul> <li> <p>ingest your structured and unstructured documents and documents stored in an Amazon S3 bucket into an Amazon Q Business index.</p> </li> <li> <p>add custom attributes to documents in an Amazon Q Business index.</p> </li> <li> <p>attach an access control list to the documents added to an Amazon Q Business index.</p> </li> </ul> <p>You can see the progress of the deletion, and any error messages related to the process, by using CloudWatch.</p>"
+    },
+    "CancelSubscription":{
+      "name":"CancelSubscription",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/applications/{applicationId}/subscriptions/{subscriptionId}",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelSubscriptionRequest"},
+      "output":{"shape":"CancelSubscriptionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Unsubscribes a user or a group from their pricing tier in an Amazon Q Business application. An unsubscribed user or group loses all Amazon Q Business feature access at the start of next month. </p>",
+      "idempotent":true
     },
     "Chat":{
       "name":"Chat",
@@ -154,7 +173,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a new data accessor for an ISV to access data from a Q Business application. The data accessor is an entity that represents the ISV's access to the Q Business application's data. It includes the IAM role ARN for the ISV, a friendly name, and a set of action configurations that define the specific actions the ISV is allowed to perform and any associated data filters. When the data accessor is created, an AWS IAM Identity Center application is also created to manage the ISV's identity and authentication for accessing the Q Business application.</p>",
+      "documentation":"<p>Creates a new data accessor for an ISV to access data from a Amazon Q Business application. The data accessor is an entity that represents the ISV's access to the Amazon Q Business application's data. It includes the IAM role ARN for the ISV, a friendly name, and a set of action configurations that define the specific actions the ISV is allowed to perform and any associated data filters. When the data accessor is created, an IAM Identity Center application is also created to manage the ISV's identity and authentication for accessing the Amazon Q Business application.</p>",
       "idempotent":true
     },
     "CreateDataSource":{
@@ -238,6 +257,26 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Adds a retriever to your Amazon Q Business application.</p>"
+    },
+    "CreateSubscription":{
+      "name":"CreateSubscription",
+      "http":{
+        "method":"POST",
+        "requestUri":"/applications/{applicationId}/subscriptions",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateSubscriptionRequest"},
+      "output":{"shape":"CreateSubscriptionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Subscribes an IAM Identity Center user or a group to a pricing tier for an Amazon Q Business application.</p> <p>Amazon Q Business offers two subscription tiers: <code>Q_LITE</code> and <code>Q_BUSINESS</code>. Subscription tier determines feature access for the user. For more information on subscriptions and pricing tiers, see <a href=\"https://aws.amazon.com/q/business/pricing/\">Amazon Q Business pricing</a>.</p>",
+      "idempotent":true
     },
     "CreateUser":{
       "name":"CreateUser",
@@ -356,7 +395,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Deletes a specified data accessor. This operation permanently removes the data accessor and its associated AWS IAM Identity Center application. Any access granted to the ISV through this data accessor will be revoked</p>",
+      "documentation":"<p>Deletes a specified data accessor. This operation permanently removes the data accessor and its associated IAM Identity Center application. Any access granted to the ISV through this data accessor will be revoked.</p>",
       "idempotent":true
     },
     "DeleteDataSource":{
@@ -516,7 +555,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Removes a permission policy from a Q Business application, revoking the cross-account access that was previously granted to an ISV. This operation deletes the specified policy statement from the application's permission policy.</p>",
+      "documentation":"<p>Removes a permission policy from a Amazon Q Business application, revoking the cross-account access that was previously granted to an ISV. This operation deletes the specified policy statement from the application's permission policy.</p>",
       "idempotent":true
     },
     "GetApplication":{
@@ -571,7 +610,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Retrieves information about a specified data accessor. This operation returns details about the data accessor, including its display name, unique identifier, Amazon Resource Name (ARN), the associated Q Business application and AWS IAM Identity Center application, the IAM role for the ISV, the action configurations, and the timestamps for when the data accessor was created and last updated.</p>"
+      "documentation":"<p>Retrieves information about a specified data accessor. This operation returns details about the data accessor, including its display name, unique identifier, Amazon Resource Name (ARN), the associated Amazon Q Business application and IAM Identity Center application, the IAM role for the ISV, the action configurations, and the timestamps for when the data accessor was created and last updated.</p>"
     },
     "GetDataSource":{
       "name":"GetDataSource",
@@ -682,7 +721,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Retrieves the current permission policy for a Q Business application. The policy is returned as a JSON-formatted string and defines the IAM actions that are allowed or denied for the application's resources.</p>"
+      "documentation":"<p>Retrieves the current permission policy for a Amazon Q Business application. The policy is returned as a JSON-formatted string and defines the IAM actions that are allowed or denied for the application's resources.</p>"
     },
     "GetRetriever":{
       "name":"GetRetriever",
@@ -810,7 +849,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the data accessors for a Q Business application. This operation returns a paginated list of data accessor summaries, including the friendly name, unique identifier, ARN, associated IAM role, and creation/update timestamps for each data accessor.</p>"
+      "documentation":"<p>Lists the data accessors for a Amazon Q Business application. This operation returns a paginated list of data accessor summaries, including the friendly name, unique identifier, ARN, associated IAM role, and creation/update timestamps for each data accessor.</p>"
     },
     "ListDataSourceSyncJobs":{
       "name":"ListDataSourceSyncJobs",
@@ -1011,6 +1050,25 @@
       ],
       "documentation":"<p>Lists the retriever used by an Amazon Q Business application.</p>"
     },
+    "ListSubscriptions":{
+      "name":"ListSubscriptions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{applicationId}/subscriptions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSubscriptionsRequest"},
+      "output":{"shape":"ListSubscriptionsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Lists all subscriptions created in an Amazon Q Business application. </p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -1082,7 +1140,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Create, or updates, a mapping of users—who have access to a document—to groups.</p> <p>You can also map sub groups to groups. For example, the group \"Company Intellectual Property Teams\" includes sub groups \"Research\" and \"Engineering\". These sub groups include their own list of users or people who work in these teams. Only users who work in research and engineering, and therefore belong in the intellectual property group, can see top-secret company documents in their Amazon Q Business chat results.</p>",
+      "documentation":"<p>Create, or updates, a mapping of users—who have access to a document—to groups.</p> <p>You can also map sub groups to groups. For example, the group \"Company Intellectual Property Teams\" includes sub groups \"Research\" and \"Engineering\". These sub groups include their own list of users or people who work in these teams. Only users who work in research and engineering, and therefore belong in the intellectual property group, can see top-secret company documents in their Amazon Q Business chat results.</p> <p>There are two options for creating groups, either passing group members inline or using an S3 file via the S3PathForGroupMembers field. For inline groups, there is a limit of 1000 members per group and for provided S3 files there is a limit of 100 thousand members. When creating a group using an S3 file, you provide both an S3 file and a <code>RoleArn</code> for Amazon Q Buisness to access the file.</p>",
       "idempotent":true
     },
     "SearchRelevantContent":{
@@ -1102,7 +1160,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Searches for relevant content in a Q Business application based on a query. This operation takes a search query text, the Q Business application identifier, and optional filters (such as content source and maximum results) as input. It returns a list of relevant content items, where each item includes the content text, the unique document identifier, the document title, the document URI, any relevant document attributes, and score attributes indicating the confidence level of the relevance.</p>"
+      "documentation":"<p>Searches for relevant content in a Amazon Q Business application based on a query. This operation takes a search query text, the Amazon Q Business application identifier, and optional filters (such as content source and maximum results) as input. It returns a list of relevant content items, where each item includes the content text, the unique document identifier, the document title, the document URI, any relevant document attributes, and score attributes indicating the confidence level of the relevance.</p>"
     },
     "StartDataSourceSyncJob":{
       "name":"StartDataSourceSyncJob",
@@ -1326,6 +1384,26 @@
       "documentation":"<p>Updates the retriever used for your Amazon Q Business application.</p>",
       "idempotent":true
     },
+    "UpdateSubscription":{
+      "name":"UpdateSubscription",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/applications/{applicationId}/subscriptions/{subscriptionId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSubscriptionRequest"},
+      "output":{"shape":"UpdateSubscriptionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the pricing tier for an Amazon Q Business subscription. Upgrades are instant. Downgrades apply at the start of the next month. Subscription tier determines feature access for the user. For more information on subscriptions and pricing tiers, see <a href=\"https://aws.amazon.com/q/business/pricing/\">Amazon Q Business pricing</a>.</p>",
+      "idempotent":true
+    },
     "UpdateUser":{
       "name":"UpdateUser",
       "http":{
@@ -1440,7 +1518,7 @@
       "members":{
         "action":{
           "shape":"QIamAction",
-          "documentation":"<p>The Q Business action that is allowed.</p>"
+          "documentation":"<p>The Amazon Q Business action that is allowed.</p>"
         },
         "filterConfiguration":{
           "shape":"ActionFilterConfiguration",
@@ -1807,7 +1885,7 @@
       "members":{
         "applicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p>The unique identifier of the Q Business application.</p>",
+          "documentation":"<p>The unique identifier of the Amazon Q Business application.</p>",
           "location":"uri",
           "locationName":"applicationId"
         },
@@ -1817,11 +1895,11 @@
         },
         "actions":{
           "shape":"QIamActions",
-          "documentation":"<p>The list of Q Business actions that the ISV is allowed to perform.</p>"
+          "documentation":"<p>The list of Amazon Q Business actions that the ISV is allowed to perform.</p>"
         },
         "principal":{
           "shape":"PrincipalRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role for the ISV that is being granted permission.</p>"
+          "documentation":"<p>The Amazon Resource Name of the IAM role for the ISV that is being granted permission.</p>"
         }
       }
     },
@@ -2302,6 +2380,44 @@
       "member":{"shape":"BrowserExtension"},
       "max":2,
       "min":0
+    },
+    "CancelSubscriptionRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "subscriptionId"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The identifier of the Amazon Q Business application for which the subscription is being cancelled.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "subscriptionId":{
+          "shape":"SubscriptionId",
+          "documentation":"<p>The identifier of the Amazon Q Business subscription being cancelled.</p>",
+          "location":"uri",
+          "locationName":"subscriptionId"
+        }
+      }
+    },
+    "CancelSubscriptionResponse":{
+      "type":"structure",
+      "members":{
+        "subscriptionArn":{
+          "shape":"SubscriptionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q Business subscription being cancelled.</p>"
+        },
+        "currentSubscription":{
+          "shape":"SubscriptionDetails",
+          "documentation":"<p>The type of your current Amazon Q Business subscription.</p>"
+        },
+        "nextSubscription":{
+          "shape":"SubscriptionDetails",
+          "documentation":"<p>The type of the Amazon Q Business subscription for the next month.</p>"
+        }
+      }
     },
     "ChatInput":{
       "type":"structure",
@@ -2795,7 +2911,7 @@
       "members":{
         "applicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p>The unique identifier of the Q Business application.</p>",
+          "documentation":"<p>The unique identifier of the Amazon Q Business application.</p>",
           "location":"uri",
           "locationName":"applicationId"
         },
@@ -2836,7 +2952,7 @@
         },
         "idcApplicationArn":{
           "shape":"IdcApplicationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS IAM Identity Center application created for this data accessor.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity Center application created for this data accessor.</p>"
         },
         "dataAccessorArn":{
           "shape":"DataAccessorArn",
@@ -3083,6 +3199,56 @@
         }
       }
     },
+    "CreateSubscriptionRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "principal",
+        "type"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The identifier of the Amazon Q Business application the subscription should be added to.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "principal":{
+          "shape":"SubscriptionPrincipal",
+          "documentation":"<p>The IAM Identity Center <code>UserId</code> or <code>GroupId</code> of a user or group in the IAM Identity Center instance connected to the Amazon Q Business application.</p>"
+        },
+        "type":{
+          "shape":"SubscriptionType",
+          "documentation":"<p>The type of Amazon Q Business subscription you want to create.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A token that you provide to identify the request to create a subscription for your Amazon Q Business application.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateSubscriptionResponse":{
+      "type":"structure",
+      "members":{
+        "subscriptionId":{
+          "shape":"SubscriptionId",
+          "documentation":"<p>The identifier of the Amazon Q Business subscription created.</p>"
+        },
+        "subscriptionArn":{
+          "shape":"SubscriptionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q Business subscription created.</p>"
+        },
+        "currentSubscription":{
+          "shape":"SubscriptionDetails",
+          "documentation":"<p>The type of your current Amazon Q Business subscription.</p>"
+        },
+        "nextSubscription":{
+          "shape":"SubscriptionDetails",
+          "documentation":"<p>The type of the Amazon Q Business subscription for the next month.</p>"
+        }
+      }
+    },
     "CreateUserRequest":{
       "type":"structure",
       "required":[
@@ -3278,7 +3444,7 @@
         },
         "idcApplicationArn":{
           "shape":"IdcApplicationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the associated AWS IAM Identity Center application.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the associated IAM Identity Center application.</p>"
         },
         "principal":{
           "shape":"PrincipalRoleArn",
@@ -3584,7 +3750,7 @@
       "members":{
         "applicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p>The unique identifier of the Q Business application.</p>",
+          "documentation":"<p>The unique identifier of the Amazon Q Business application.</p>",
           "location":"uri",
           "locationName":"applicationId"
         },
@@ -3833,7 +3999,7 @@
       "members":{
         "applicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p>The unique identifier of the Q Business application.</p>",
+          "documentation":"<p>The unique identifier of the Amazon Q Business application.</p>",
           "location":"uri",
           "locationName":"applicationId"
         },
@@ -4459,7 +4625,7 @@
       "members":{
         "applicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p>The unique identifier of the Q Business application.</p>",
+          "documentation":"<p>The unique identifier of the Amazon Q Business application.</p>",
           "location":"uri",
           "locationName":"applicationId"
         },
@@ -4488,11 +4654,11 @@
         },
         "applicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p>The unique identifier of the Q Business application associated with this data accessor.</p>"
+          "documentation":"<p>The unique identifier of the Amazon Q Business application associated with this data accessor.</p>"
         },
         "idcApplicationArn":{
           "shape":"IdcApplicationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS IAM Identity Center application associated with this data accessor.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity Center application associated with this data accessor.</p>"
         },
         "principal":{
           "shape":"PrincipalRoleArn",
@@ -4860,7 +5026,7 @@
       "members":{
         "applicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p>The unique identifier of the Q Business application.</p>",
+          "documentation":"<p>The unique identifier of the Amazon Q Business application.</p>",
           "location":"uri",
           "locationName":"applicationId"
         }
@@ -5067,6 +5233,12 @@
           "documentation":"<p>Gets the custom logo, favicon, font, and color used in the Amazon Q web experience. </p>"
         }
       }
+    },
+    "GroupIdentifier":{
+      "type":"string",
+      "max":47,
+      "min":1,
+      "pattern":"([0-9a-f]{10}-|)[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}"
     },
     "GroupMembers":{
       "type":"structure",
@@ -5532,7 +5704,7 @@
       "members":{
         "applicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p>The unique identifier of the Q Business application.</p>",
+          "documentation":"<p>The unique identifier of the Amazon Q Business application.</p>",
           "location":"uri",
           "locationName":"applicationId"
         },
@@ -6071,6 +6243,43 @@
         }
       }
     },
+    "ListSubscriptionsRequest":{
+      "type":"structure",
+      "required":["applicationId"],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The identifier of the Amazon Q Business application linked to the subscription.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the <code>maxResults</code> response was incomplete because there is more data to retrieve, Amazon Q Business returns a pagination token in the response. You can use this pagination token to retrieve the next set of Amazon Q Business subscriptions.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResultsIntegerForListSubscriptions",
+          "documentation":"<p>The maximum number of Amazon Q Business subscriptions to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListSubscriptionsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, Amazon Q Business returns this token. You can use this token in a subsequent request to retrieve the next set of subscriptions.</p>"
+        },
+        "subscriptions":{
+          "shape":"Subscriptions",
+          "documentation":"<p>An array of summary information on the subscriptions configured for an Amazon Q Business application.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceARN"],
@@ -6237,6 +6446,12 @@
       "type":"integer",
       "box":true,
       "max":50,
+      "min":1
+    },
+    "MaxResultsIntegerForListSubscriptions":{
+      "type":"integer",
+      "box":true,
+      "max":100,
       "min":1
     },
     "MaxResultsIntegerForListWebExperiencesRequest":{
@@ -6903,7 +7118,7 @@
         "groupMembers":{"shape":"GroupMembers"},
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that has access to the S3 file that contains your list of users that belong to a group.The Amazon Resource Name (ARN) of an IAM role that has access to the S3 file that contains your list of users that belong to a group.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that has access to the S3 file that contains your list of users that belong to a group.</p>"
         }
       }
     },
@@ -7285,7 +7500,7 @@
       "members":{
         "applicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p>The unique identifier of the Q Business application to search.</p>",
+          "documentation":"<p>The unique identifier of the Amazon Q Business application to search.</p>",
           "location":"uri",
           "locationName":"applicationId"
         },
@@ -7558,12 +7773,78 @@
       "type":"list",
       "member":{"shape":"SubnetId"}
     },
+    "Subscription":{
+      "type":"structure",
+      "members":{
+        "subscriptionId":{
+          "shape":"SubscriptionId",
+          "documentation":"<p>The identifier of the Amazon Q Business subscription to be updated.</p>"
+        },
+        "subscriptionArn":{
+          "shape":"SubscriptionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q Business subscription that was updated.</p>"
+        },
+        "principal":{
+          "shape":"SubscriptionPrincipal",
+          "documentation":"<p>The IAM Identity Center <code>UserId</code> or <code>GroupId</code> of a user or group in the IAM Identity Center instance connected to the Amazon Q Business application.</p>"
+        },
+        "currentSubscription":{
+          "shape":"SubscriptionDetails",
+          "documentation":"<p>The type of your current Amazon Q Business subscription.</p>"
+        },
+        "nextSubscription":{
+          "shape":"SubscriptionDetails",
+          "documentation":"<p>The type of the Amazon Q Business subscription for the next month.</p>"
+        }
+      },
+      "documentation":"<p>Information about an Amazon Q Business subscription.</p> <p>Subscriptions are used to provide access for an IAM Identity Center user or a group to an Amazon Q Business application.</p> <p>Amazon Q Business offers two subscription tiers: <code>Q_LITE</code> and <code>Q_BUSINESS</code>. Subscription tier determines feature access for the user. For more information on subscriptions and pricing tiers, see <a href=\"https://aws.amazon.com/q/business/pricing/\">Amazon Q Business pricing</a>.</p>"
+    },
+    "SubscriptionArn":{
+      "type":"string",
+      "max":1224,
+      "min":10,
+      "pattern":"arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
+    },
+    "SubscriptionDetails":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"SubscriptionType",
+          "documentation":"<p> The type of an Amazon Q Business subscription. </p>"
+        }
+      },
+      "documentation":"<p> The details of an Amazon Q Business subscription. </p>"
+    },
+    "SubscriptionId":{
+      "type":"string",
+      "max":1224,
+      "min":0
+    },
+    "SubscriptionPrincipal":{
+      "type":"structure",
+      "members":{
+        "user":{
+          "shape":"UserIdentifier",
+          "documentation":"<p>The identifier of a user in the IAM Identity Center instance connected to the Amazon Q Business application.</p>"
+        },
+        "group":{
+          "shape":"GroupIdentifier",
+          "documentation":"<p>The identifier of a group in the IAM Identity Center instance connected to the Amazon Q Business application.</p>"
+        }
+      },
+      "documentation":"<p>A user or group in the IAM Identity Center instance connected to the Amazon Q Business application.</p>",
+      "union":true
+    },
     "SubscriptionType":{
       "type":"string",
       "enum":[
         "Q_LITE",
         "Q_BUSINESS"
       ]
+    },
+    "Subscriptions":{
+      "type":"list",
+      "member":{"shape":"Subscription"}
     },
     "SyncSchedule":{
       "type":"string",
@@ -7916,7 +8197,7 @@
       "members":{
         "applicationId":{
           "shape":"ApplicationId",
-          "documentation":"<p>The unique identifier of the Q Business application.</p>",
+          "documentation":"<p>The unique identifier of the Amazon Q Business application.</p>",
           "location":"uri",
           "locationName":"applicationId"
         },
@@ -8120,6 +8401,49 @@
       "members":{
       }
     },
+    "UpdateSubscriptionRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "subscriptionId",
+        "type"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The identifier of the Amazon Q Business application where the subscription update should take effect.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "subscriptionId":{
+          "shape":"SubscriptionId",
+          "documentation":"<p>The identifier of the Amazon Q Business subscription to be updated.</p>",
+          "location":"uri",
+          "locationName":"subscriptionId"
+        },
+        "type":{
+          "shape":"SubscriptionType",
+          "documentation":"<p>The type of the Amazon Q Business subscription to be updated.</p>"
+        }
+      }
+    },
+    "UpdateSubscriptionResponse":{
+      "type":"structure",
+      "members":{
+        "subscriptionArn":{
+          "shape":"SubscriptionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q Business subscription that was updated.</p>"
+        },
+        "currentSubscription":{
+          "shape":"SubscriptionDetails",
+          "documentation":"<p>The type of your current Amazon Q Business subscription.</p>"
+        },
+        "nextSubscription":{
+          "shape":"SubscriptionDetails",
+          "documentation":"<p>The type of the Amazon Q Business subscription for the next month.</p>"
+        }
+      }
+    },
     "UpdateUserRequest":{
       "type":"structure",
       "required":[
@@ -8272,6 +8596,12 @@
       "max":1024,
       "min":1,
       "pattern":"\\P{C}*"
+    },
+    "UserIdentifier":{
+      "type":"string",
+      "max":47,
+      "min":1,
+      "pattern":"([0-9a-f]{10}-|)[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}"
     },
     "UserIds":{
       "type":"list",

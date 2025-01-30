@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2018-04-23",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"api.mediatailor",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"MediaTailor",
     "serviceFullName":"AWS MediaTailor",
     "serviceId":"MediaTailor",
@@ -33,7 +34,7 @@
       },
       "input":{"shape":"ConfigureLogsForPlaybackConfigurationRequest"},
       "output":{"shape":"ConfigureLogsForPlaybackConfigurationResponse"},
-      "documentation":"<p>Amazon CloudWatch log settings for a playback configuration.</p>",
+      "documentation":"<p>Defines where AWS Elemental MediaTailor sends logs for the playback configuration.</p>",
       "idempotent":true
     },
     "CreateChannel":{
@@ -557,10 +558,6 @@
       "type":"structure",
       "required":["OffsetMillis"],
       "members":{
-        "AdBreakMetadata":{
-          "shape":"AdBreakMetadataList",
-          "documentation":"<p>Defines a list of key/value pairs that MediaTailor generates within the <code>EXT-X-ASSET</code>tag for <code>SCTE35_ENHANCED</code> output.</p>"
-        },
         "MessageType":{
           "shape":"MessageType",
           "documentation":"<p>The SCTE-35 ad insertion type. Accepted value: <code>SPLICE_INSERT</code>, <code>TIME_SIGNAL</code>.</p>"
@@ -580,6 +577,10 @@
         "TimeSignalMessage":{
           "shape":"TimeSignalMessage",
           "documentation":"<p>Defines the SCTE-35 <code>time_signal</code> message inserted around the ad.</p> <p>Programs on a channel's schedule can be configured with one or more ad breaks. You can attach a <code>splice_insert</code> SCTE-35 message to the ad break. This message provides basic metadata about the ad break.</p> <p>See section 9.7.4 of the 2022 SCTE-35 specification for more information.</p>"
+        },
+        "AdBreakMetadata":{
+          "shape":"AdBreakMetadataList",
+          "documentation":"<p>Defines a list of key/value pairs that MediaTailor generates within the <code>EXT-X-ASSET</code>tag for <code>SCTE35_ENHANCED</code> output.</p>"
         }
       },
       "documentation":"<p>Ad break configuration parameters.</p>"
@@ -603,6 +604,17 @@
         }
       },
       "documentation":"<p>A location at which a zero-duration ad marker was detected in a VOD source manifest.</p>"
+    },
+    "AdConditioningConfiguration":{
+      "type":"structure",
+      "required":["StreamingMediaFileConditioning"],
+      "members":{
+        "StreamingMediaFileConditioning":{
+          "shape":"StreamingMediaFileConditioning",
+          "documentation":"<p>For ads that have media files with streaming delivery, indicates what transcoding action MediaTailor it first receives these ads from the ADS. <code>TRANSCODE</code> indicates that MediaTailor must transcode the ads. <code>NONE</code> indicates that you have already transcoded the ads outside of MediaTailor and don't need them transcoded as part of the ad insertion workflow. For more information about ad conditioning see <a href=\"https://docs.aws.amazon.com/precondition-ads.html\">https://docs.aws.amazon.com/precondition-ads.html</a>.</p>"
+        }
+      },
+      "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns.</p>"
     },
     "AdMarkerPassthrough":{
       "type":"structure",
@@ -639,10 +651,6 @@
           "shape":"__string",
           "documentation":"<p>If an alert is generated for a resource, an explanation of the reason for the alert.</p>"
         },
-        "Category":{
-          "shape":"AlertCategory",
-          "documentation":"<p>The category that MediaTailor assigns to the alert.</p>"
-        },
         "LastModifiedTime":{
           "shape":"__timestampUnix",
           "documentation":"<p>The timestamp when the alert was last modified.</p>"
@@ -654,6 +662,10 @@
         "ResourceArn":{
           "shape":"__string",
           "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
+        },
+        "Category":{
+          "shape":"AlertCategory",
+          "documentation":"<p>The category that MediaTailor assigns to the alert.</p>"
         }
       },
       "documentation":"<p>Alert configuration parameters.</p>"
@@ -669,30 +681,30 @@
     "AlternateMedia":{
       "type":"structure",
       "members":{
-        "AdBreaks":{
-          "shape":"__listOfAdBreak",
-          "documentation":"<p>Ad break configuration parameters defined in AlternateMedia.</p>"
-        },
-        "ClipRange":{"shape":"ClipRange"},
-        "DurationMillis":{
-          "shape":"__long",
-          "documentation":"<p>The duration of the alternateMedia in milliseconds.</p>"
+        "SourceLocationName":{
+          "shape":"__string",
+          "documentation":"<p>The name of the source location for alternateMedia.</p>"
         },
         "LiveSourceName":{
           "shape":"__string",
           "documentation":"<p>The name of the live source for alternateMedia.</p>"
         },
+        "VodSourceName":{
+          "shape":"__string",
+          "documentation":"<p>The name of the VOD source for alternateMedia.</p>"
+        },
+        "ClipRange":{"shape":"ClipRange"},
         "ScheduledStartTimeMillis":{
           "shape":"__long",
           "documentation":"<p>The date and time that the alternateMedia is scheduled to start, in epoch milliseconds.</p>"
         },
-        "SourceLocationName":{
-          "shape":"__string",
-          "documentation":"<p>The name of the source location for alternateMedia.</p>"
+        "AdBreaks":{
+          "shape":"__listOfAdBreak",
+          "documentation":"<p>Ad break configuration parameters defined in AlternateMedia.</p>"
         },
-        "VodSourceName":{
-          "shape":"__string",
-          "documentation":"<p>The name of the VOD source for alternateMedia.</p>"
+        "DurationMillis":{
+          "shape":"__long",
+          "documentation":"<p>The duration of the alternateMedia in milliseconds.</p>"
         }
       },
       "documentation":"<p>A playlist of media (VOD and/or live) to be played instead of the default media on a particular program.</p>"
@@ -700,13 +712,13 @@
     "AudienceMedia":{
       "type":"structure",
       "members":{
-        "AlternateMedia":{
-          "shape":"__listOfAlternateMedia",
-          "documentation":"<p>The list of AlternateMedia defined in AudienceMedia.</p>"
-        },
         "Audience":{
           "shape":"__string",
           "documentation":"<p>The Audience defined in AudienceMedia.</p>"
+        },
+        "AlternateMedia":{
+          "shape":"__listOfAlternateMedia",
+          "documentation":"<p>The list of AlternateMedia defined in AudienceMedia.</p>"
         }
       },
       "documentation":"<p>An AudienceMedia object contains an Audience and a list of AlternateMedia.</p>"
@@ -736,10 +748,6 @@
     "AvailSuppression":{
       "type":"structure",
       "members":{
-        "FillPolicy":{
-          "shape":"FillPolicy",
-          "documentation":"<p>Defines the policy to apply to the avail suppression mode. <code>BEHIND_LIVE_EDGE</code> will always use the full avail suppression policy. <code>AFTER_LIVE_EDGE</code> mode can be used to invoke partial ad break fills when a session starts mid-break.</p>"
-        },
         "Mode":{
           "shape":"Mode",
           "documentation":"<p>Sets the ad suppression mode. By default, ad suppression is off and all ad breaks are filled with ads or slate. When Mode is set to <code>BEHIND_LIVE_EDGE</code>, ad suppression is active and MediaTailor won't fill ad breaks on or behind the ad suppression Value time in the manifest lookback window. When Mode is set to <code>AFTER_LIVE_EDGE</code>, ad suppression is active and MediaTailor won't fill ad breaks that are within the live edge plus the avail suppression value.</p>"
@@ -747,6 +755,10 @@
         "Value":{
           "shape":"__string",
           "documentation":"<p>A live edge offset time in HH:MM:SS. MediaTailor won't fill ad breaks on or behind this time in the manifest lookback window. If Value is set to 00:00:00, it is in sync with the live edge, and MediaTailor won't fill any ad breaks on or behind the live edge. If you set a Value time, MediaTailor won't fill any ad breaks on or behind this time in the manifest lookback window. For example, if you set 00:45:00, then MediaTailor will fill ad breaks that occur within 45 minutes behind the live edge, but won't fill ad breaks on or behind 45 minutes behind the live edge.</p>"
+        },
+        "FillPolicy":{
+          "shape":"FillPolicy",
+          "documentation":"<p>Defines the policy to apply to the avail suppression mode. <code>BEHIND_LIVE_EDGE</code> will always use the full avail suppression policy. <code>AFTER_LIVE_EDGE</code> mode can be used to invoke partial ad break fills when a session starts mid-break.</p>"
         }
       },
       "documentation":"<p>The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html\">Ad Suppression</a>.</p>"
@@ -797,19 +809,15 @@
         "Arn",
         "ChannelName",
         "ChannelState",
-        "LogConfiguration",
         "Outputs",
         "PlaybackMode",
-        "Tier"
+        "Tier",
+        "LogConfiguration"
       ],
       "members":{
         "Arn":{
           "shape":"__string",
           "documentation":"<p>The ARN of the channel.</p>"
-        },
-        "Audiences":{
-          "shape":"Audiences",
-          "documentation":"<p>The list of audiences defined in channel.</p>"
         },
         "ChannelName":{
           "shape":"__string",
@@ -831,10 +839,6 @@
           "shape":"__timestampUnix",
           "documentation":"<p>The timestamp of when the channel was last modified.</p>"
         },
-        "LogConfiguration":{
-          "shape":"LogConfigurationForChannel",
-          "documentation":"<p>The log configuration.</p>"
-        },
         "Outputs":{
           "shape":"ResponseOutputs",
           "documentation":"<p>The channel's output properties.</p>"
@@ -851,6 +855,14 @@
         "Tier":{
           "shape":"__string",
           "documentation":"<p>The tier for this channel. STANDARD tier channels can contain live programs.</p>"
+        },
+        "LogConfiguration":{
+          "shape":"LogConfigurationForChannel",
+          "documentation":"<p>The log configuration.</p>"
+        },
+        "Audiences":{
+          "shape":"Audiences",
+          "documentation":"<p>The list of audiences defined in channel.</p>"
         }
       },
       "documentation":"<p>The configuration parameters for a channel. For information about MediaTailor channels, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/channel-assembly-channels.html\">Working with channels</a> in the <i>MediaTailor User Guide</i>.</p>"
@@ -940,7 +952,7 @@
       "members":{
         "PercentEnabled":{
           "shape":"__integer",
-          "documentation":"<p>The percentage of session logs that MediaTailor sends to your Cloudwatch Logs account. For example, if your playback configuration has 1000 sessions and percentEnabled is set to <code>60</code>, MediaTailor sends logs for 600 of the sessions to CloudWatch Logs. MediaTailor decides at random which of the playback configuration sessions to send logs for. If you want to view logs for a specific session, you can use the <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/debug-log-mode.html\">debug log mode</a>.</p> <p>Valid values: <code>0</code> - <code>100</code> </p>"
+          "documentation":"<p>The percentage of session logs that MediaTailor sends to your CloudWatch Logs account. For example, if your playback configuration has 1000 sessions and percentEnabled is set to <code>60</code>, MediaTailor sends logs for 600 of the sessions to CloudWatch Logs. MediaTailor decides at random which of the playback configuration sessions to send logs for. If you want to view logs for a specific session, you can use the <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/debug-log-mode.html\">debug log mode</a>.</p> <p>Valid values: <code>0</code> - <code>100</code> </p>"
         },
         "PlaybackConfigurationName":{
           "shape":"__string",
@@ -971,10 +983,6 @@
         "PlaybackMode"
       ],
       "members":{
-        "Audiences":{
-          "shape":"Audiences",
-          "documentation":"<p>The list of audiences defined in channel.</p>"
-        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name of the channel.</p>",
@@ -1005,6 +1013,10 @@
         "TimeShiftConfiguration":{
           "shape":"TimeShiftConfiguration",
           "documentation":"<p> The time-shifted viewing configuration you want to associate to the channel. </p>"
+        },
+        "Audiences":{
+          "shape":"Audiences",
+          "documentation":"<p>The list of audiences defined in channel.</p>"
         }
       }
     },
@@ -1014,10 +1026,6 @@
         "Arn":{
           "shape":"__string",
           "documentation":"<p>The Amazon Resource Name (ARN) to assign to the channel.</p>"
-        },
-        "Audiences":{
-          "shape":"Audiences",
-          "documentation":"<p>The list of audiences defined in channel.</p>"
         },
         "ChannelName":{
           "shape":"__string",
@@ -1059,6 +1067,10 @@
         "TimeShiftConfiguration":{
           "shape":"TimeShiftConfiguration",
           "documentation":"<p> The time-shifted viewing configuration assigned to the channel. </p>"
+        },
+        "Audiences":{
+          "shape":"Audiences",
+          "documentation":"<p>The list of audiences defined in channel.</p>"
         }
       }
     },
@@ -1204,10 +1216,6 @@
           "shape":"__listOfAdBreak",
           "documentation":"<p>The ad break configuration settings.</p>"
         },
-        "AudienceMedia":{
-          "shape":"__listOfAudienceMedia",
-          "documentation":"<p>The list of AudienceMedia defined in program.</p>"
-        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name of the channel for this Program.</p>",
@@ -1235,6 +1243,10 @@
         "VodSourceName":{
           "shape":"__string",
           "documentation":"<p>The name that's used to refer to a VOD source.</p>"
+        },
+        "AudienceMedia":{
+          "shape":"__listOfAudienceMedia",
+          "documentation":"<p>The list of AudienceMedia defined in program.</p>"
         }
       }
     },
@@ -1249,25 +1261,13 @@
           "shape":"__string",
           "documentation":"<p>The ARN to assign to the program.</p>"
         },
-        "AudienceMedia":{
-          "shape":"__listOfAudienceMedia",
-          "documentation":"<p>The list of AudienceMedia defined in program.</p>"
-        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name to assign to the channel for this program.</p>"
         },
-        "ClipRange":{
-          "shape":"ClipRange",
-          "documentation":"<p>The clip range configuration settings.</p>"
-        },
         "CreationTime":{
           "shape":"__timestampUnix",
           "documentation":"<p>The time the program was created.</p>"
-        },
-        "DurationMillis":{
-          "shape":"__long",
-          "documentation":"<p>The duration of the live program in milliseconds.</p>"
         },
         "LiveSourceName":{
           "shape":"__string",
@@ -1288,6 +1288,18 @@
         "VodSourceName":{
           "shape":"__string",
           "documentation":"<p>The name that's used to refer to a VOD source.</p>"
+        },
+        "ClipRange":{
+          "shape":"ClipRange",
+          "documentation":"<p>The clip range configuration settings.</p>"
+        },
+        "DurationMillis":{
+          "shape":"__long",
+          "documentation":"<p>The duration of the live program in milliseconds.</p>"
+        },
+        "AudienceMedia":{
+          "shape":"__listOfAudienceMedia",
+          "documentation":"<p>The list of AudienceMedia defined in program.</p>"
         }
       }
     },
@@ -1690,10 +1702,6 @@
           "shape":"__string",
           "documentation":"<p>The ARN of the channel.</p>"
         },
-        "Audiences":{
-          "shape":"Audiences",
-          "documentation":"<p>The list of audiences defined in channel.</p>"
-        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name of the channel.</p>"
@@ -1714,10 +1722,6 @@
           "shape":"__timestampUnix",
           "documentation":"<p>The timestamp of when the channel was last modified.</p>"
         },
-        "LogConfiguration":{
-          "shape":"LogConfigurationForChannel",
-          "documentation":"<p>The log configuration for the channel.</p>"
-        },
         "Outputs":{
           "shape":"ResponseOutputs",
           "documentation":"<p>The channel's output properties.</p>"
@@ -1735,9 +1739,17 @@
           "shape":"__string",
           "documentation":"<p>The channel's tier.</p>"
         },
+        "LogConfiguration":{
+          "shape":"LogConfigurationForChannel",
+          "documentation":"<p>The log configuration for the channel.</p>"
+        },
         "TimeShiftConfiguration":{
           "shape":"TimeShiftConfiguration",
           "documentation":"<p> The time-shifted viewing configuration for the channel. </p>"
+        },
+        "Audiences":{
+          "shape":"Audiences",
+          "documentation":"<p>The list of audiences defined in channel.</p>"
         }
       }
     },
@@ -1828,25 +1840,13 @@
           "shape":"__string",
           "documentation":"<p>The ARN of the program.</p>"
         },
-        "AudienceMedia":{
-          "shape":"__listOfAudienceMedia",
-          "documentation":"<p>The list of AudienceMedia defined in program.</p>"
-        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name of the channel that the program belongs to.</p>"
         },
-        "ClipRange":{
-          "shape":"ClipRange",
-          "documentation":"<p>The clip range configuration settings.</p>"
-        },
         "CreationTime":{
           "shape":"__timestampUnix",
           "documentation":"<p>The timestamp of when the program was created.</p>"
-        },
-        "DurationMillis":{
-          "shape":"Long",
-          "documentation":"<p>The duration of the live program in milliseconds.</p>"
         },
         "LiveSourceName":{
           "shape":"__string",
@@ -1867,6 +1867,18 @@
         "VodSourceName":{
           "shape":"__string",
           "documentation":"<p>The name that's used to refer to a VOD source.</p>"
+        },
+        "ClipRange":{
+          "shape":"ClipRange",
+          "documentation":"<p>The clip range configuration settings.</p>"
+        },
+        "DurationMillis":{
+          "shape":"Long",
+          "documentation":"<p>The duration of the live program in milliseconds.</p>"
+        },
+        "AudienceMedia":{
+          "shape":"__listOfAudienceMedia",
+          "documentation":"<p>The list of AudienceMedia defined in program.</p>"
         }
       }
     },
@@ -2015,12 +2027,6 @@
       "type":"structure",
       "required":["ChannelName"],
       "members":{
-        "Audience":{
-          "shape":"__string",
-          "documentation":"<p>The single audience for GetChannelScheduleRequest.</p>",
-          "location":"querystring",
-          "locationName":"audience"
-        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name of the channel associated with this Channel Schedule.</p>",
@@ -2044,6 +2050,12 @@
           "documentation":"<p>(Optional) If the playback configuration has more than <code>MaxResults</code> channel schedules, use <code>NextToken</code> to get the second and subsequent pages of results.</p> <p>For the first <code>GetChannelScheduleRequest</code> request, omit this value.</p> <p>For the second and subsequent requests, get the value of <code>NextToken</code> from the previous response and specify that value for <code>NextToken</code> in the request.</p> <p>If the previous response didn't include a <code>NextToken</code> element, there are no more channel schedules to get.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "Audience":{
+          "shape":"__string",
+          "documentation":"<p>The single audience for GetChannelScheduleRequest.</p>",
+          "location":"querystring",
+          "locationName":"audience"
         }
       }
     },
@@ -2093,7 +2105,7 @@
         },
         "ConfigurationAliases":{
           "shape":"ConfigurationAliasesResponse",
-          "documentation":"<p>The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html\">Domain Variables</a>.</p>"
+          "documentation":"<p>The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domains.html\">Domain Variables</a>.</p>"
         },
         "DashConfiguration":{
           "shape":"DashConfiguration",
@@ -2113,7 +2125,7 @@
         },
         "LogConfiguration":{
           "shape":"LogConfiguration",
-          "documentation":"<p>The Amazon CloudWatch log settings for a playback configuration.</p>"
+          "documentation":"<p>The configuration that defines where AWS Elemental MediaTailor sends logs for the playback configuration.</p>"
         },
         "ManifestProcessingRules":{
           "shape":"ManifestProcessingRules",
@@ -2155,6 +2167,10 @@
         "VideoContentSourceUrl":{
           "shape":"__string",
           "documentation":"<p>The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.</p>"
+        },
+        "AdConditioningConfiguration":{
+          "shape":"AdConditioningConfiguration",
+          "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns. </p>"
         }
       }
     },
@@ -2221,13 +2237,13 @@
     "HlsPlaylistSettings":{
       "type":"structure",
       "members":{
-        "AdMarkupType":{
-          "shape":"adMarkupTypes",
-          "documentation":"<p>Determines the type of SCTE 35 tags to use in ad markup. Specify <code>DATERANGE</code> to use <code>DATERANGE</code> tags (for live or VOD content). Specify <code>SCTE35_ENHANCED</code> to use <code>EXT-X-CUE-OUT</code> and <code>EXT-X-CUE-IN</code> tags (for VOD content only).</p>"
-        },
         "ManifestWindowSeconds":{
           "shape":"__integer",
           "documentation":"<p>The total duration (in seconds) of each manifest. Minimum value: <code>30</code> seconds. Maximum value: <code>3600</code> seconds.</p>"
+        },
+        "AdMarkupType":{
+          "shape":"adMarkupTypes",
+          "documentation":"<p>Determines the type of SCTE 35 tags to use in ad markup. Specify <code>DATERANGE</code> to use <code>DATERANGE</code> tags (for live or VOD content). Specify <code>SCTE35_ENHANCED</code> to use <code>EXT-X-CUE-OUT</code> and <code>EXT-X-CUE-IN</code> tags (for VOD content only).</p>"
         }
       },
       "documentation":"<p>HLS playlist configuration parameters.</p>"
@@ -2622,10 +2638,10 @@
       "members":{
         "PercentEnabled":{
           "shape":"__integer",
-          "documentation":"<p>The percentage of session logs that MediaTailor sends to your Cloudwatch Logs account. For example, if your playback configuration has 1000 sessions and <code>percentEnabled</code> is set to <code>60</code>, MediaTailor sends logs for 600 of the sessions to CloudWatch Logs. MediaTailor decides at random which of the playback configuration sessions to send logs for. If you want to view logs for a specific session, you can use the <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/debug-log-mode.html\">debug log mode</a>.</p> <p>Valid values: <code>0</code> - <code>100</code> </p>"
+          "documentation":"<p>The percentage of session logs that MediaTailor sends to your configured log destination. For example, if your playback configuration has 1000 sessions and <code>percentEnabled</code> is set to <code>60</code>, MediaTailor sends logs for 600 of the sessions to CloudWatch Logs. MediaTailor decides at random which of the playback configuration sessions to send logs for. If you want to view logs for a specific session, you can use the <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/debug-log-mode.html\">debug log mode</a>.</p> <p>Valid values: <code>0</code> - <code>100</code> </p>"
         }
       },
-      "documentation":"<p>Returns Amazon CloudWatch log settings for a playback configuration.</p>"
+      "documentation":"<p>Defines where AWS Elemental MediaTailor sends logs for the playback configuration.</p>"
     },
     "LogConfigurationForChannel":{
       "type":"structure",
@@ -2712,7 +2728,7 @@
         },
         "ConfigurationAliases":{
           "shape":"ConfigurationAliasesResponse",
-          "documentation":"<p>The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html\">Domain Variables</a>.</p>"
+          "documentation":"<p>The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domains.html\">Domain Variables</a>.</p>"
         },
         "DashConfiguration":{
           "shape":"DashConfiguration",
@@ -2732,7 +2748,7 @@
         },
         "LogConfiguration":{
           "shape":"LogConfiguration",
-          "documentation":"<p>The Amazon CloudWatch log settings for a playback configuration.</p>"
+          "documentation":"<p>Defines where AWS Elemental MediaTailor sends logs for the playback configuration.</p>"
         },
         "ManifestProcessingRules":{
           "shape":"ManifestProcessingRules",
@@ -2774,6 +2790,10 @@
         "VideoContentSourceUrl":{
           "shape":"__string",
           "documentation":"<p>The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.</p>"
+        },
+        "AdConditioningConfiguration":{
+          "shape":"AdConditioningConfiguration",
+          "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns.</p>"
         }
       },
       "documentation":"<p>A playback configuration. For information about MediaTailor configurations, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/configurations.html\">Working with configurations in AWS Elemental MediaTailor</a>.</p>"
@@ -2799,7 +2819,7 @@
         },
         "StartTime":{
           "shape":"__timestampUnix",
-          "documentation":"<p>The time when prefetched ads are considered for use in an ad break. If you don't specify <code>StartTime</code>, the prefetched ads are available after MediaTailor retrives them from the ad decision server.</p>"
+          "documentation":"<p>The time when prefetched ads are considered for use in an ad break. If you don't specify <code>StartTime</code>, the prefetched ads are available after MediaTailor retrieves them from the ad decision server.</p>"
         }
       },
       "documentation":"<p>A complex type that contains settings that determine how and when that MediaTailor places prefetched ads into upcoming ad breaks.</p>"
@@ -2906,7 +2926,7 @@
         },
         "ConfigurationAliases":{
           "shape":"ConfigurationAliasesRequest",
-          "documentation":"<p>The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html\">Domain Variables</a>.</p>"
+          "documentation":"<p>The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domains.html\">Domain Variables</a>.</p>"
         },
         "DashConfiguration":{
           "shape":"DashConfigurationForPut",
@@ -2948,6 +2968,10 @@
         "VideoContentSourceUrl":{
           "shape":"__string",
           "documentation":"<p>The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.</p>"
+        },
+        "AdConditioningConfiguration":{
+          "shape":"AdConditioningConfiguration",
+          "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns.</p>"
         }
       }
     },
@@ -2972,7 +2996,7 @@
         },
         "ConfigurationAliases":{
           "shape":"ConfigurationAliasesResponse",
-          "documentation":"<p>The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html\">Domain Variables</a>.</p>"
+          "documentation":"<p>The player parameters and aliases used as dynamic variables during session initialization. For more information, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domains.html\">Domain Variables</a>.</p>"
         },
         "DashConfiguration":{
           "shape":"DashConfiguration",
@@ -2992,7 +3016,7 @@
         },
         "LogConfiguration":{
           "shape":"LogConfiguration",
-          "documentation":"<p>The Amazon CloudWatch log settings for a playback configuration.</p>"
+          "documentation":"<p>The configuration that defines where AWS Elemental MediaTailor sends logs for the playback configuration.</p>"
         },
         "ManifestProcessingRules":{
           "shape":"ManifestProcessingRules",
@@ -3034,6 +3058,10 @@
         "VideoContentSourceUrl":{
           "shape":"__string",
           "documentation":"<p>The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters.</p>"
+        },
+        "AdConditioningConfiguration":{
+          "shape":"AdConditioningConfiguration",
+          "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns.</p>"
         }
       }
     },
@@ -3136,13 +3164,13 @@
       "type":"structure",
       "required":["Transition"],
       "members":{
-        "ClipRange":{
-          "shape":"ClipRange",
-          "documentation":"<p>Program clip range configuration.</p>"
-        },
         "Transition":{
           "shape":"Transition",
           "documentation":"<p>Program transition configurations.</p>"
+        },
+        "ClipRange":{
+          "shape":"ClipRange",
+          "documentation":"<p>Program clip range configuration.</p>"
         }
       },
       "documentation":"<p>Schedule configuration parameters. A channel must be stopped before changes can be made to the schedule.</p>"
@@ -3167,10 +3195,6 @@
         "Arn":{
           "shape":"__string",
           "documentation":"<p>The ARN of the program.</p>"
-        },
-        "Audiences":{
-          "shape":"Audiences",
-          "documentation":"<p>The list of audiences defined in ScheduleEntry.</p>"
         },
         "ChannelName":{
           "shape":"__string",
@@ -3199,6 +3223,10 @@
         "VodSourceName":{
           "shape":"__string",
           "documentation":"<p>The name of the VOD source.</p>"
+        },
+        "Audiences":{
+          "shape":"Audiences",
+          "documentation":"<p>The list of audiences defined in ScheduleEntry.</p>"
         }
       },
       "documentation":"<p>The properties for a schedule.</p>"
@@ -3246,25 +3274,25 @@
     "SegmentationDescriptor":{
       "type":"structure",
       "members":{
-        "SegmentNum":{
-          "shape":"Integer",
-          "documentation":"<p>The segment number to assign to the <code>segmentation_descriptor.segment_num</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification Values must be between 0 and 256, inclusive. The default value is 0.</p>"
-        },
         "SegmentationEventId":{
           "shape":"Integer",
           "documentation":"<p>The Event Identifier to assign to the <code>segmentation_descriptor.segmentation_event_id</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. The default value is 1.</p>"
         },
-        "SegmentationTypeId":{
+        "SegmentationUpidType":{
           "shape":"Integer",
-          "documentation":"<p>The Type Identifier to assign to the <code>segmentation_descriptor.segmentation_type_id</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The default value is 48.</p>"
+          "documentation":"<p>The Upid Type to assign to the <code>segmentation_descriptor.segmentation_upid_type</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The default value is 14.</p>"
         },
         "SegmentationUpid":{
           "shape":"String",
           "documentation":"<p>The Upid to assign to the <code>segmentation_descriptor.segmentation_upid</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. The value must be a hexadecimal string containing only the characters 0 though 9 and A through F. The default value is \"\" (an empty string).</p>"
         },
-        "SegmentationUpidType":{
+        "SegmentationTypeId":{
           "shape":"Integer",
-          "documentation":"<p>The Upid Type to assign to the <code>segmentation_descriptor.segmentation_upid_type</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The default value is 14.</p>"
+          "documentation":"<p>The Type Identifier to assign to the <code>segmentation_descriptor.segmentation_type_id</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification. Values must be between 0 and 256, inclusive. The default value is 48.</p>"
+        },
+        "SegmentNum":{
+          "shape":"Integer",
+          "documentation":"<p>The segment number to assign to the <code>segmentation_descriptor.segment_num</code> message, as defined in section 10.3.3.1 of the 2022 SCTE-35 specification Values must be between 0 and 256, inclusive. The default value is 0.</p>"
         },
         "SegmentsExpected":{
           "shape":"Integer",
@@ -3403,6 +3431,13 @@
       "members":{
       }
     },
+    "StreamingMediaFileConditioning":{
+      "type":"string",
+      "enum":[
+        "TRANSCODE",
+        "NONE"
+      ]
+    },
     "String":{"type":"string"},
     "TagResourceRequest":{
       "type":"structure",
@@ -3517,10 +3552,6 @@
         "Outputs"
       ],
       "members":{
-        "Audiences":{
-          "shape":"Audiences",
-          "documentation":"<p>The list of audiences defined in channel.</p>"
-        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name of the channel.</p>",
@@ -3538,6 +3569,10 @@
         "TimeShiftConfiguration":{
           "shape":"TimeShiftConfiguration",
           "documentation":"<p> The time-shifted viewing configuration you want to associate to the channel. </p>"
+        },
+        "Audiences":{
+          "shape":"Audiences",
+          "documentation":"<p>The list of audiences defined in channel.</p>"
         }
       }
     },
@@ -3547,10 +3582,6 @@
         "Arn":{
           "shape":"__string",
           "documentation":"<p>The Amazon Resource Name (ARN) associated with the channel.</p>"
-        },
-        "Audiences":{
-          "shape":"Audiences",
-          "documentation":"<p>The list of audiences defined in channel.</p>"
         },
         "ChannelName":{
           "shape":"__string",
@@ -3592,6 +3623,10 @@
         "TimeShiftConfiguration":{
           "shape":"TimeShiftConfiguration",
           "documentation":"<p> The time-shifted viewing configuration for the channel. </p>"
+        },
+        "Audiences":{
+          "shape":"Audiences",
+          "documentation":"<p>The list of audiences defined in channel.</p>"
         }
       }
     },
@@ -3667,10 +3702,6 @@
           "shape":"__listOfAdBreak",
           "documentation":"<p>The ad break configuration settings.</p>"
         },
-        "AudienceMedia":{
-          "shape":"__listOfAudienceMedia",
-          "documentation":"<p>The list of AudienceMedia defined in program.</p>"
-        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name of the channel for this Program.</p>",
@@ -3686,6 +3717,10 @@
         "ScheduleConfiguration":{
           "shape":"UpdateProgramScheduleConfiguration",
           "documentation":"<p>The schedule configuration settings.</p>"
+        },
+        "AudienceMedia":{
+          "shape":"__listOfAudienceMedia",
+          "documentation":"<p>The list of AudienceMedia defined in program.</p>"
         }
       }
     },
@@ -3700,37 +3735,17 @@
           "shape":"__string",
           "documentation":"<p>The ARN to assign to the program.</p>"
         },
-        "AudienceMedia":{
-          "shape":"__listOfAudienceMedia",
-          "documentation":"<p>The list of AudienceMedia defined in program.</p>"
-        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name to assign to the channel for this program.</p>"
-        },
-        "ClipRange":{
-          "shape":"ClipRange",
-          "documentation":"<p>The clip range configuration settings.</p>"
         },
         "CreationTime":{
           "shape":"__timestampUnix",
           "documentation":"<p>The time the program was created.</p>"
         },
-        "DurationMillis":{
-          "shape":"__long",
-          "documentation":"<p>The duration of the live program in milliseconds.</p>"
-        },
-        "LiveSourceName":{
-          "shape":"__string",
-          "documentation":"<p>The name of the LiveSource for this Program.</p>"
-        },
         "ProgramName":{
           "shape":"__string",
           "documentation":"<p>The name to assign to this program.</p>"
-        },
-        "ScheduledStartTime":{
-          "shape":"__timestampUnix",
-          "documentation":"<p>The scheduled start time for this Program.</p>"
         },
         "SourceLocationName":{
           "shape":"__string",
@@ -3739,19 +3754,39 @@
         "VodSourceName":{
           "shape":"__string",
           "documentation":"<p>The name that's used to refer to a VOD source.</p>"
+        },
+        "LiveSourceName":{
+          "shape":"__string",
+          "documentation":"<p>The name of the LiveSource for this Program.</p>"
+        },
+        "ClipRange":{
+          "shape":"ClipRange",
+          "documentation":"<p>The clip range configuration settings.</p>"
+        },
+        "DurationMillis":{
+          "shape":"__long",
+          "documentation":"<p>The duration of the live program in milliseconds.</p>"
+        },
+        "ScheduledStartTime":{
+          "shape":"__timestampUnix",
+          "documentation":"<p>The scheduled start time for this Program.</p>"
+        },
+        "AudienceMedia":{
+          "shape":"__listOfAudienceMedia",
+          "documentation":"<p>The list of AudienceMedia defined in program.</p>"
         }
       }
     },
     "UpdateProgramScheduleConfiguration":{
       "type":"structure",
       "members":{
-        "ClipRange":{
-          "shape":"ClipRange",
-          "documentation":"<p>Program clip range configuration.</p>"
-        },
         "Transition":{
           "shape":"UpdateProgramTransition",
           "documentation":"<p>Program transition configuration.</p>"
+        },
+        "ClipRange":{
+          "shape":"ClipRange",
+          "documentation":"<p>Program clip range configuration.</p>"
         }
       },
       "documentation":"<p>Schedule configuration parameters.</p>"
@@ -3759,13 +3794,13 @@
     "UpdateProgramTransition":{
       "type":"structure",
       "members":{
-        "DurationMillis":{
-          "shape":"__long",
-          "documentation":"<p>The duration of the live program in seconds.</p>"
-        },
         "ScheduledStartTimeMillis":{
           "shape":"__long",
           "documentation":"<p>The date and time that the program is scheduled to start, in epoch milliseconds.</p>"
+        },
+        "DurationMillis":{
+          "shape":"__long",
+          "documentation":"<p>The duration of the live program in seconds.</p>"
         }
       },
       "documentation":"<p>Program transition configuration.</p>"

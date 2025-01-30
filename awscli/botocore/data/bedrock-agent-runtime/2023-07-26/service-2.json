@@ -253,7 +253,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Queries a knowledge base and generates responses based on the retrieved results, with output in streaming format.</p> <note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>InvokeModelWithResponseStream</code>.</p> </note>"
+      "documentation":"<p>Queries a knowledge base and generates responses based on the retrieved results, with output in streaming format.</p> <note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>InvokeModelWithResponseStream</code>.</p> </note> <p>This operation requires permission for the <code> bedrock:RetrieveAndGenerate</code> action.</p>"
     }
   },
   "shapes":{
@@ -2666,7 +2666,11 @@
     "InternalServerException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"NonBlankString"}
+        "message":{"shape":"NonBlankString"},
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the exception. If the reason is <code>BEDROCK_MODEL_INVOCATION_SERVICE_UNAVAILABLE</code>, the model invocation service is unavailable. Retry your request.</p>"
+        }
       },
       "documentation":"<p>An internal server error occurred. Retry your request.</p>",
       "error":{"httpStatusCode":500},

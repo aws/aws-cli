@@ -125,7 +125,7 @@
   },
   {
     "name": "dynamodb.batchgetitem",
-    "command": ["dynamodb", "batch-get-item", "--request-items", "file://request-items.json", "--return-consumed-capacity", "TOTAL", "--no-paginate"],
+    "command": ["dynamodb", "batch-get-item", "--request-items", "file://request-items.json", "--return-consumed-capacity", "TOTAL", "--no-cli-pager"],
     "environment": {
       "file_literals": [
         {
@@ -137,6 +137,43 @@
     "responses": [
       {
         "body": "{\"Responses\": {\"MyTable\": [{\"Genre\": {\"S\": \"Genre1\"}}, {\"Genre\": {\"S\": \"Genre2\"}},{\"Genre\": {\"S\": \"Genre3\"}}]}, \"UnprocessedKeys\": {},\"ConsumedCapacity\": [{\"TableName\": \"MyTable\",\"CapacityUnits\": 1.5}]}"
+      }
+    ]
+  },
+  {
+    "name": "dynamodb.putitem",
+    "command": ["dynamodb", "put-item", "--table-name", "MyTable", "--item", "file://item.json", "--return-consumed-capacity", "TOTAL", "--return-item-collection-metrics", "SIZE", "--no-cli-pager"],
+    "environment": {
+      "file_literals": [
+        {
+          "name": "item.json",
+          "content": "{\"Group\": {\"S\": \"Group1\"},\"Item\": {\"S\": \"Item1\"},\"Category\": {\"S\": \"Category1\"}}"
+        }
+      ]
+    },
+    "responses": [
+      {
+        "body": "{\"ConsumedCapacity\": {\"TableName\": \"MyTable\",\"CapacityUnits\": 1.0}, \"ItemCollectionMetrics\": {\"ItemCollectionKey\": {\"Group\": {\"S\": \"Group1\"}}, \"SizeEstimateRangeGB\": [0.0, 1.0]}}"
+      }
+    ]
+  },
+  {
+    "name": "ddb.put",
+    "command": ["ddb", "put", "MyTable", "file://items.json"],
+    "dimensions": [
+      {"ItemCount": 10}
+    ],
+    "environment": {
+      "file_literals": [
+        {
+          "name": "items.json",
+          "content": "[{\"Category\": \"Cat1\",\"Item\": \"Item1\",\"Group\": \"Group1\"}, {\"Category\": \"Cat1\",\"Item\": \"Item2\",\"Group\": \"Group2\"}, {\"Category\": \"Cat1\",\"Item\": \"Item3\",\"Group\": \"Group2\"}, {\"Category\": \"Cat2\",\"Item\": \"Item4\",\"Group\": \"Group3\"}, {\"Category\": \"Cat2\",\"Item\": \"Item5\",\"Group\": \"Group4\"}, {\"Category\": \"Cat3\",\"Item\": \"Item6\",\"Group\": \"Group5\"}, {\"Category\": \"Cat3\",\"Item\": \"Item7\",\"Group\": \"Group6\"}, {\"Category\": \"Cat3\",\"Item\": \"Item8\",\"Group\": \"Group6\"}, {\"Category\": \"Cat4\",\"Item\": \"Item9\",\"Group\": \"Group7\"}, {\"Category\": \"Cat4\",\"Item\": \"Item10\",\"Group\": \"Group4\"}]"
+        }
+      ]
+    },
+    "responses": [
+      {
+        "body": "{\"UnprocessedItems\":{}}"
       }
     ]
   }

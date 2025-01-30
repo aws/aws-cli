@@ -1,5 +1,6 @@
 import json
 import math
+import sys
 import time
 import psutil
 
@@ -256,6 +257,7 @@ class BenchmarkHarness(object):
                 f.write(file_lit['content'])
                 f.close()
         # create config file at specified path
+        os.makedirs(os.path.dirname(config_file), mode=0o777, exist_ok=True)
         with open(config_file, 'w') as f:
             f.write(env.get('config', self._DEFAULT_FILE_CONFIG_CONTENTS))
             f.flush()
@@ -315,8 +317,6 @@ class BenchmarkHarness(object):
             }
         ))
         metrics_f.close()
-        # terminate the process
-        os._exit(0)
 
     def _run_isolated_benchmark(
             self,
@@ -331,36 +331,46 @@ class BenchmarkHarness(object):
         the environment, running the benchmarked execution, formatting
         the results, and cleaning up the environment.
         """
-        assets_dir = os.path.join(result_dir, 'assets')
-        config_file = os.path.join(assets_dir, 'config')
-        metrics_file = os.path.join(result_dir, 'metrics.json')
-        os.makedirs(assets_dir, 0o777)
+        assets_path = os.path.join(result_dir, 'assets')
+        config_path = os.path.join(assets_path, 'config')
+        metrics_path = os.path.join(assets_path, 'metrics.json')
+        child_output_path = os.path.join(assets_path, 'output.txt')
+        child_err_path = os.path.join(assets_path, 'err.txt')
         # setup for iteration of benchmark
-        self._setup_iteration(benchmark, client, result_dir, config_file)
+        self._setup_iteration(benchmark, client, result_dir, config_path)
         os.chdir(result_dir)
         # patch the OS environment with our supplied defaults
-        env_patch = mock.patch.dict('os.environ', self._get_default_env(config_file))
+        env_patch = mock.patch.dict('os.environ', self._get_default_env(config_path))
         env_patch.start()
         # fork a child process to run the command on.
         # the parent process benchmarks the child process until the child terminates.
         pid = os.fork()
 
         try:
-            # execute command on child process
             if pid == 0:
-                self._run_command_with_metric_hooks(benchmark['command'], metrics_file)
+                with open(child_output_path, 'w') as out, open(child_err_path, 'w') as err:
+                    # redirect standard output of the child process to a file
+                    os.dup2(out.fileno(), sys.stdout.fileno())
+                    os.dup2(err.fileno(), sys.stderr.fileno())
+                    # execute command on child process
+                    self._run_command_with_metric_hooks(benchmark['command'], metrics_path)
+                    # terminate the child process
+                    os._exit(0)
             # benchmark child process from parent process until child terminates
             samples = process_benchmarker.benchmark_process(
                 pid,
                 args.data_interval
             )
             # load child-collected metrics if exists
-            if not os.path.exists(metrics_file):
+            if not os.path.exists(metrics_path):
                 raise RuntimeError('Child process execution failed: output file not found.')
-            metrics_f = json.load(open(os.path.join(result_dir, 'metrics.json'), 'r'))
+            metrics_f = json.load(open(metrics_path, 'r'))
             # raise error if child process failed
             if (rc := metrics_f['return_code']) != 0:
-                raise RuntimeError(f'Child process execution failed: return code {rc}')
+                with open(child_err_path, 'r') as err:
+                    raise RuntimeError(
+                        f'Child process execution failed: return code {rc}.\n'
+                        f'Error: {err.read()}')
             # summarize benchmark results and process summary
             summary = self._summarizer.summarize(samples)
             summary['total_time'] = metrics_f['end_time'] - metrics_f['start_time']

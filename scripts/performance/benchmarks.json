@@ -176,5 +176,32 @@
         "body": "{\"UnprocessedItems\":{}}"
       }
     ]
+  },
+  {
+    "name": "sts.assumerole",
+    "command": ["sts", "assume-role", "--role-arn", "arn:aws:iam::123456789012:role/role123", "--role-session-name", "role-session123"],
+    "responses": [
+      {
+        "body": "<AssumeRoleResponse xmlns=\"https://sts.amazonaws.com/doc/2011-06-15/\"> <AssumeRoleResult> <AssumedRoleUser> <Arn>arn:aws:sts::123456789012:assumed-role/role123/role-session123</Arn> <AssumedRoleId>id1234:role-session123</AssumedRoleId></AssumedRoleUser> <Credentials> <SecretAccessKey>accesskey</SecretAccessKey><SessionToken>token123</SessionToken><Expiration>2016-03-15T00:05:07Z</Expiration><AccessKeyId>acesskeyid123</AccessKeyId> </Credentials></AssumeRoleResult></AssumeRoleResponse>"
+      }
+    ]
+  },
+  {
+    "name": "sts.getcalleridentity",
+    "command": ["sts", "get-caller-identity"],
+    "responses": [
+      {
+        "body": "<GetCallerIdentityResponse xmlns=\"https://sts.amazonaws.com/doc/2011-06-15/\"> <GetCallerIdentityResult> <Arn>arn:aws:iam::123456789012:user/user123</Arn> <UserId>userid123</UserId> <Account>123456789012</Account> </GetCallerIdentityResult></GetCallerIdentityResponse>"
+      }
+    ]
+  },
+  {
+    "name": "sts.assumerolewithwebidentity",
+    "command": ["sts", "assume-role-with-web-identity", "--duration-seconds", "3600", "--role-session-name", "session-name", "--provider-id", "www.amazon.com", "--policy-arns", "arn=arn:aws:iam::123456789012:policy/q=webidentitypolicy1", "arn=arn:aws:iam::123456789012:policy/webidentitypolicy2", "--role-arn", "arn:aws:iam::123456789012:role/FederatedRole1", "--web-identity-token", "token-123"],
+    "responses": [
+      {
+        "body": "<AssumeRoleWithWebIdentityResponse xmlns=\"https://sts.amazonaws.com/doc/2011-06-15/\"> <AssumeRoleWithWebIdentityResult> <SubjectFromWebIdentityToken>amzn1.account.tokenvalue</SubjectFromWebIdentityToken> <Audience>client.12345.6789@email.address</Audience> <AssumedRoleUser> <Arn>arn:aws:sts::123456789012:assumed-role/FederatedRole1/session-name</Arn> <AssumedRoleId>roleid123:session-name</AssumedRoleId> </AssumedRoleUser> <Credentials> <SessionToken>session-token123</SessionToken> <SecretAccessKey>secret-access-key</SecretAccessKey> <Expiration>2014-10-24T23:00:23Z</Expiration> <AccessKeyId>access-key-id123</AccessKeyId></Credentials> <Provider>www.amazon.com</Provider></AssumeRoleWithWebIdentityResult></AssumeRoleWithWebIdentityResponse>"
+      }
+    ]
   }
 ]

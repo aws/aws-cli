@@ -25,12 +25,14 @@ def add_get_status(command_table, session, **kwargs):
 
 class GetStatusCommand(BasicCommand):
     NAME = 'get-status'
-    DESCRIPTION = ('Reports the status of all of configuration '
-                   'recorders and delivery channels.')
+    DESCRIPTION = (
+        'Reports the status of all of configuration '
+        'recorders and delivery channels.'
+    )
 
     def __init__(self, session):
         self._config_client = None
-        super(GetStatusCommand, self).__init__(session)
+        super().__init__(session)
 
     def _run_main(self, parsed_args, parsed_globals):
         self._setup_client(parsed_globals)
@@ -42,10 +44,11 @@ class GetStatusCommand(BasicCommand):
         client_args = {
             'verify': parsed_globals.verify_ssl,
             'region_name': parsed_globals.region,
-            'endpoint_url': parsed_globals.endpoint_url
+            'endpoint_url': parsed_globals.endpoint_url,
         }
-        self._config_client = self._session.create_client('config',
-                                                          **client_args)
+        self._config_client = self._session.create_client(
+            'config', **client_args
+        )
 
     def _check_configuration_recorders(self):
         status = self._config_client.describe_configuration_recorder_status()
@@ -57,12 +60,12 @@ class GetStatusCommand(BasicCommand):
     def _check_configure_recorder_status(self, configuration_recorder):
         # Get the name of the recorder and print it out.
         name = configuration_recorder['name']
-        sys.stdout.write('name: %s\n' % name)
+        sys.stdout.write(f'name: {name}\n')
 
         # Get the recording status and print it out.
         recording = configuration_recorder['recording']
         recording_map = {False: 'OFF', True: 'ON'}
-        sys.stdout.write('recorder: %s\n' % recording_map[recording])
+        sys.stdout.write(f'recorder: {recording_map[recording]}\n')
 
         # If the recorder is on, get the last status and print it out.
         if recording:
@@ -78,7 +81,7 @@ class GetStatusCommand(BasicCommand):
     def _check_delivery_channel_status(self, delivery_channel):
         # Get the name of the delivery channel and print it out.
         name = delivery_channel['name']
-        sys.stdout.write('name: %s\n' % name)
+        sys.stdout.write(f'name: {name}\n')
 
         # Obtain the various delivery statuses.
         stream_delivery = delivery_channel['configStreamDeliveryInfo']
@@ -95,7 +98,11 @@ class GetStatusCommand(BasicCommand):
 
     def _check_last_status(self, status, status_name=''):
         last_status = status['lastStatus']
-        sys.stdout.write('last %sstatus: %s\n' % (status_name, last_status))
+        sys.stdout.write(f'last {status_name}status: {last_status}\n')
         if last_status == "FAILURE":
-            sys.stdout.write('error code: %s\n' % status['lastErrorCode'])
-            sys.stdout.write('message: %s\n' % status['lastErrorMessage'])
+            sys.stdout.write(
+                'error code: {}\n'.format(status['lastErrorCode'])
+            )
+            sys.stdout.write(
+                'message: {}\n'.format(status['lastErrorMessage'])
+            )

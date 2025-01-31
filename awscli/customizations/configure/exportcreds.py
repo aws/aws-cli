@@ -10,21 +10,21 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
-import io
-import sys
 import csv
+import io
 import json
-from datetime import datetime
+import os
+import sys
 from collections import namedtuple
+from datetime import datetime
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ConfigurationError
 
-
 # Takes botocore's ReadOnlyCredentials and exposes an expiry_time.
 Credentials = namedtuple(
-    'Credentials', ['access_key', 'secret_key', 'token', 'expiry_time'])
+    'Credentials', ['access_key', 'secret_key', 'token', 'expiry_time']
+)
 
 
 def convert_botocore_credentials(credentials):
@@ -46,8 +46,7 @@ def convert_botocore_credentials(credentials):
     )
 
 
-class BaseCredentialFormatter(object):
-
+class BaseCredentialFormatter:
     FORMAT = None
     DOCUMENTATION = ""
 
@@ -61,27 +60,28 @@ class BaseCredentialFormatter(object):
 
 
 class BasePerLineFormatter(BaseCredentialFormatter):
-
     _VAR_FORMAT = 'export {var_name}={var_value}'
 
     def display_credentials(self, credentials):
-        output = (
-            self._format_line('AWS_ACCESS_KEY_ID', credentials.access_key) +
-            self._format_line('AWS_SECRET_ACCESS_KEY', credentials.secret_key))
+        output = self._format_line(
+            'AWS_ACCESS_KEY_ID', credentials.access_key
+        ) + self._format_line('AWS_SECRET_ACCESS_KEY', credentials.secret_key)
         if credentials.token is not None:
             output += self._format_line('AWS_SESSION_TOKEN', credentials.token)
         if credentials.expiry_time is not None:
             output += self._format_line(
-                'AWS_CREDENTIAL_EXPIRATION', credentials.expiry_time)
+                'AWS_CREDENTIAL_EXPIRATION', credentials.expiry_time
+            )
         self._stream.write(output)
 
     def _format_line(self, var_name, var_value):
-        return self._VAR_FORMAT.format(
-            var_name=var_name, var_value=var_value) + '\n'
+        return (
+            self._VAR_FORMAT.format(var_name=var_name, var_value=var_value)
+            + '\n'
+        )
 
 
 class BashEnvVarFormatter(BasePerLineFormatter):
-
     FORMAT = 'env'
     DOCUMENTATION = (
         "Display credentials as exported shell variables: "
@@ -91,7 +91,6 @@ class BashEnvVarFormatter(BasePerLineFormatter):
 
 
 class BashNoExportEnvFormatter(BasePerLineFormatter):
-
     FORMAT = 'env-no-export'
     DOCUMENTATION = (
         "Display credentials as non-exported shell variables: "
@@ -101,7 +100,6 @@ class BashNoExportEnvFormatter(BasePerLineFormatter):
 
 
 class PowershellFormatter(BasePerLineFormatter):
-
     FORMAT = 'powershell'
     DOCUMENTATION = (
         'Display credentials as PowerShell environment variables: '
@@ -111,7 +109,6 @@ class PowershellFormatter(BasePerLineFormatter):
 
 
 class WindowsCmdFormatter(BasePerLineFormatter):
-
     FORMAT = 'windows-cmd'
     DOCUMENTATION = (
         'Display credentials as Windows cmd environment variables: '
@@ -121,7 +118,6 @@ class WindowsCmdFormatter(BasePerLineFormatter):
 
 
 class CredentialProcessFormatter(BaseCredentialFormatter):
-
     FORMAT = 'process'
     DOCUMENTATION = (
         "Display credentials as JSON output, in the schema "
@@ -149,15 +145,23 @@ class CredentialProcessFormatter(BaseCredentialFormatter):
 
 
 SUPPORTED_FORMATS = {
-    format_cls.FORMAT: format_cls for format_cls in
-    [CredentialProcessFormatter, BashEnvVarFormatter, BashNoExportEnvFormatter,
-     PowershellFormatter, WindowsCmdFormatter]
+    format_cls.FORMAT: format_cls
+    for format_cls in [
+        CredentialProcessFormatter,
+        BashEnvVarFormatter,
+        BashNoExportEnvFormatter,
+        PowershellFormatter,
+        WindowsCmdFormatter,
+    ]
 }
 
 
 def generate_docs(formats):
-    lines = ['The output format to display credentials.  '
-             'Defaults to `process`.  ', '<ul>']
+    lines = [
+        'The output format to display credentials.  '
+        'Defaults to `process`.  ',
+        '<ul>',
+    ]
     for name, cls in formats.items():
         line = f'<li>``{name}`` - {cls.DOCUMENTATION} </li>'
         lines.append(line)
@@ -166,7 +170,6 @@ def generate_docs(formats):
 
 
 class ConfigureExportCredentialsCommand(BasicCommand):
-
     NAME = 'export-credentials'
     SYNOPSIS = 'aws configure export-credentials --profile profile-name'
     DESCRIPTION = (
@@ -179,11 +182,13 @@ class ConfigureExportCredentialsCommand(BasicCommand):
         "``--output`` options."
     )
     ARG_TABLE = [
-        {'name': 'format',
-         'help_text': generate_docs(SUPPORTED_FORMATS),
-         'action': 'store',
-         'choices': list(SUPPORTED_FORMATS),
-         'default': CredentialProcessFormatter.FORMAT},
+        {
+            'name': 'format',
+            'help_text': generate_docs(SUPPORTED_FORMATS),
+            'action': 'store',
+            'choices': list(SUPPORTED_FORMATS),
+            'default': CredentialProcessFormatter.FORMAT,
+        },
     ]
     _RECURSION_VAR = '_AWS_CLI_PROFILE_CHAIN'
     # Two levels is reasonable because you might explicitly run
@@ -194,7 +199,7 @@ class ConfigureExportCredentialsCommand(BasicCommand):
     _MAX_RECURSION = 4
 
     def __init__(self, session, out_stream=None, error_stream=None, env=None):
-        super(ConfigureExportCredentialsCommand, self).__init__(session)
+        super().__init__(session)
         if out_stream is None:
             out_stream = sys.stdout
         if error_stream is None:
@@ -208,7 +213,8 @@ class ConfigureExportCredentialsCommand(BasicCommand):
     def _detect_recursion_barrier(self):
         profile = self._get_current_profile()
         seen_profiles = self._parse_profile_chain(
-            self._env.get(self._RECURSION_VAR, ''))
+            self._env.get(self._RECURSION_VAR, '')
+        )
         if len(seen_profiles) >= self._MAX_RECURSION:
             raise ConfigurationError(
                 f"Maximum recursive credential process resolution reached "
@@ -224,7 +230,8 @@ class ConfigureExportCredentialsCommand(BasicCommand):
     def _update_recursion_barrier(self):
         profile = self._get_current_profile()
         seen_profiles = self._parse_profile_chain(
-            self._env.get(self._RECURSION_VAR, ''))
+            self._env.get(self._RECURSION_VAR, '')
+        )
         seen_profiles.append(profile)
         serialized = self._serialize_to_csv_str(seen_profiles)
         self._env[self._RECURSION_VAR] = serialized
@@ -254,10 +261,12 @@ class ConfigureExportCredentialsCommand(BasicCommand):
         except Exception as e:
             original_msg = str(e).strip()
             raise ConfigurationError(
-                f"Unable to retrieve credentials: {original_msg}\n")
+                f"Unable to retrieve credentials: {original_msg}\n"
+            )
         if creds is None:
             raise ConfigurationError(
-                "Unable to retrieve credentials: no credentials found")
+                "Unable to retrieve credentials: no credentials found"
+            )
         creds_with_expiry = convert_botocore_credentials(creds)
         formatter = SUPPORTED_FORMATS[parsed_args.format](self._out_stream)
         formatter.display_credentials(creds_with_expiry)

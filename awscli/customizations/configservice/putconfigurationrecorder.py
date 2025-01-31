@@ -18,7 +18,8 @@ from awscli.arguments import CLIArgument
 def register_modify_put_configuration_recorder(cli):
     cli.register(
         'building-argument-table.configservice.put-configuration-recorder',
-        extract_recording_group)
+        extract_recording_group,
+    )
 
 
 def extract_recording_group(session, argument_table, **kwargs):
@@ -29,10 +30,13 @@ def extract_recording_group(session, argument_table, **kwargs):
     configuration_recorder_argument = argument_table['configuration-recorder']
 
     configuration_recorder_model = copy.deepcopy(
-        configuration_recorder_argument.argument_model)
+        configuration_recorder_argument.argument_model
+    )
     recording_group_model = copy.deepcopy(
-        configuration_recorder_argument.argument_model.
-        members['recordingGroup'])
+        configuration_recorder_argument.argument_model.members[
+            'recordingGroup'
+        ]
+    )
 
     del configuration_recorder_model.members['recordingGroup']
     argument_table['configuration-recorder'] = ConfigurationRecorderArgument(
@@ -41,7 +45,7 @@ def extract_recording_group(session, argument_table, **kwargs):
         operation_model=configuration_recorder_argument._operation_model,
         is_required=True,
         event_emitter=session.get_component('event_emitter'),
-        serialized_name='ConfigurationRecorder'
+        serialized_name='ConfigurationRecorder',
     )
 
     argument_table['recording-group'] = RecordingGroupArgument(
@@ -50,7 +54,7 @@ def extract_recording_group(session, argument_table, **kwargs):
         operation_model=configuration_recorder_argument._operation_model,
         is_required=False,
         event_emitter=session.get_component('event_emitter'),
-        serialized_name='recordingGroup'
+        serialized_name='recordingGroup',
     )
 
 

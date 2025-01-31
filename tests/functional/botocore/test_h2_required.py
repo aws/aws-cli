@@ -47,6 +47,7 @@ def _all_test_cases():
 H2_SERVICES, H2_OPERATIONS = _all_test_cases()
 
 
+@pytest.mark.validates_models
 @pytest.mark.parametrize("h2_service", H2_SERVICES)
 def test_all_uses_of_h2_are_known(h2_service):
     # Validates that a service that requires HTTP 2 for all operations is known
@@ -54,6 +55,7 @@ def test_all_uses_of_h2_are_known(h2_service):
     assert _KNOWN_SERVICES.get(h2_service) is _H2_REQUIRED, message
 
 
+@pytest.mark.validates_models
 @pytest.mark.parametrize("h2_service, operation", H2_OPERATIONS)
 def test_all_h2_operations_are_known(h2_service, operation):
     # Validates that an operation that requires HTTP 2 is known

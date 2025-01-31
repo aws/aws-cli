@@ -241,7 +241,7 @@ class Config(object):
         ('s3', None),
         ('retries', None),
         ('client_cert', None),
-        ('inject_host_prefix', True),
+        ('inject_host_prefix', None),
         ('endpoint_discovery_enabled', None),
         ('use_dualstack_endpoint', None),
         ('use_fips_endpoint', None),

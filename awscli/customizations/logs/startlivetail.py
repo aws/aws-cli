@@ -770,9 +770,9 @@ class InteractiveUI(BaseLiveTailUI):
         elapsed_time = int(
             current_time - self._session_metadata.session_start_time
         )
-        hours = "{:02d}".format(elapsed_time // 3600)
-        minutes = "{:02d}".format((elapsed_time // 60) % 60)
-        seconds = "{:02d}".format(elapsed_time % 60)
+        hours = f"{elapsed_time // 3600:02d}"
+        minutes = f"{(elapsed_time // 60) % 60:02d}"
+        seconds = f"{elapsed_time % 60:02d}"
         keyword_count_map = ", ".join(
             [
                 value.get_string_to_print()
@@ -893,7 +893,7 @@ class LiveTailLogEventsCollector(Thread):
     def _collect_log_events(self):
         try:
             for event in self._response_stream:
-                if not "sessionUpdate" in event:
+                if "sessionUpdate" not in event:
                     continue
 
                 session_update = event["sessionUpdate"]
@@ -929,7 +929,7 @@ class StartLiveTailCommand(BasicCommand):
     ]
 
     def __init__(self, session):
-        super(StartLiveTailCommand, self).__init__(session)
+        super().__init__(session)
         self._output = get_stdout_text_writer()
 
     def _get_client(self, parsed_globals):

@@ -27,7 +27,7 @@ from awscli.compat import binary_type
 LOG = logging.getLogger(__name__)
 
 
-class DatabaseConnection(object):
+class DatabaseConnection:
     _CREATE_TABLE = """
         CREATE TABLE IF NOT EXISTS records (
           id TEXT,
@@ -100,7 +100,7 @@ class PayloadSerializer(json.JSONEncoder):
 
     def encode(self, obj):
         try:
-            return super(PayloadSerializer, self).encode(obj)
+            return super().encode(obj)
         except UnicodeDecodeError:
             # This happens in PY2 in the case where a record payload has some
             # binary data in it that is not utf-8 encodable. PY2 will not call
@@ -114,7 +114,7 @@ class PayloadSerializer(json.JSONEncoder):
             # ourselves and replace all strings that are not utf-8 decodable
             # and try to encode again.
             scrubbed_obj = self._remove_non_unicode_stings(obj)
-            return super(PayloadSerializer, self).encode(scrubbed_obj)
+            return super().encode(scrubbed_obj)
 
     def default(self, obj):
         if isinstance(obj, datetime.datetime):
@@ -132,7 +132,7 @@ class PayloadSerializer(json.JSONEncoder):
             return repr(obj)
 
 
-class DatabaseRecordWriter(object):
+class DatabaseRecordWriter:
     _WRITE_RECORD = """
         INSERT INTO records(
             id, request_id, source, event_type, timestamp, payload)
@@ -165,14 +165,14 @@ class DatabaseRecordWriter(object):
         return db_record
 
 
-class DatabaseRecordReader(object):
+class DatabaseRecordReader:
     _ORDERING = 'ORDER BY timestamp'
-    _GET_LAST_ID_RECORDS = """
+    _GET_LAST_ID_RECORDS = f"""
         SELECT * FROM records
         WHERE id =
         (SELECT id FROM records WHERE timestamp =
-        (SELECT max(timestamp) FROM records)) %s;""" % _ORDERING
-    _GET_RECORDS_BY_ID = 'SELECT * from records where id = ? %s' % _ORDERING
+        (SELECT max(timestamp) FROM records)) {_ORDERING};"""
+    _GET_RECORDS_BY_ID = f'SELECT * from records where id = ? {_ORDERING}'
     _GET_ALL_RECORDS = (
         'SELECT a.id AS id_a, '
         '    b.id AS id_b, '
@@ -183,7 +183,7 @@ class DatabaseRecordReader(object):
         'where a.event_type == "CLI_ARGUMENTS" AND '
         '    b.event_type = "CLI_RC" AND '
         '    id_a == id_b '
-        '%s DESC' % _ORDERING
+        f'{_ORDERING} DESC'
     )
 
     def __init__(self, connection):
@@ -204,21 +204,18 @@ class DatabaseRecordReader(object):
 
     def iter_latest_records(self):
         cursor = self._connection.execute(self._GET_LAST_ID_RECORDS)
-        for row in cursor:
-            yield row
+        yield from cursor
 
     def iter_records(self, record_id):
         cursor = self._connection.execute(self._GET_RECORDS_BY_ID, [record_id])
-        for row in cursor:
-            yield row
+        yield from cursor
 
     def iter_all_records(self):
         cursor = self._connection.execute(self._GET_ALL_RECORDS)
-        for row in cursor:
-            yield row
+        yield from cursor
 
 
-class RecordBuilder(object):
+class RecordBuilder:
     _REQUEST_LIFECYCLE_EVENTS = set(
         ['API_CALL', 'HTTP_REQUEST', 'HTTP_RESPONSE', 'PARSED_RESPONSE'])
     _START_OF_REQUEST_LIFECYCLE_EVENT = 'API_CALL'

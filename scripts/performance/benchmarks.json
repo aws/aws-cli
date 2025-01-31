@@ -108,7 +108,7 @@
   },
   {
     "name": "dynamodb.getitem",
-    "command": ["dynamodb", "get-item", "--table-name", "MyTable", "--key", "file://key.json", "--return-consumed-capacity", "TOTAL"],
+    "command": ["dynamodb", "get-item", "--table-name", "MyTable", "--key", "{\n \"Group\": {\"S\": \"Group1\"},\n \"Item\": {\"S\": \"Item1\"} }", "--return-consumed-capacity", "TOTAL"],
     "environment": {
       "file_literals": [
         {
@@ -255,6 +255,51 @@
     "responses": [
       {
         "body": "{ \"containerInstanceArns\": [ \"arn:aws:ecs:us-east-1:012345678910:container-instance/example/1eb22c8ab33149b397dc769f68cc1319\", \"arn:aws:ecs:us-east-1:012345678910:container-instance/example/5cf7e311a2b74d3882650353cf3b2214\" ] }"
+      }
+    ]
+  },
+  {
+    "name": "logs.putlogevents",
+    "command": ["logs", "put-log-events", "--log-group-name", "my-logs", "--log-stream-name", "20150601", "--log-events", "[\n  {\n    \"timestamp\": 1433190184356,\n    \"message\": \"Example Event 1\"\n  },\n  {\n    \"timestamp\": 1433190184358,\n    \"message\": \"Example Event 2\"\n  },\n  {\n    \"timestamp\": 1433190184360,\n    \"message\": \"Example Event 3\"\n  }\n]"],
+    "responses": [
+      {
+        "body": "{  \"nextSequenceToken\": \"token123\"}"
+      }
+    ]
+  },
+  {
+    "name": "logs.createloggroup",
+    "command": ["logs", "create-log-group", "--log-group-name", "my-logs"],
+    "responses": [
+      {
+        "body": ""
+      }
+    ]
+  },
+  {
+    "name": "cloudwatch.putmetricdata",
+    "command": ["cloudwatch", "put-metric-data", "--namespace", "Usage Metrics", "--metric-data", "[\n  {\n    \"MetricName\": \"New Posts\",\n    \"Timestamp\": \"Wednesday, June 12, 2013 8:28:20 PM\",\n    \"Value\": 0.50,\n    \"Unit\": \"Count\"\n  }\n]\n"],
+    "responses": [
+      {
+        "body": "<PutMetricDataOutput></PutMetricDataOutput>"
+      }
+    ]
+  },
+  {
+    "name": "cloudwatch.getmetricstatistics",
+    "command": ["cloudwatch", "get-metric-statistics", "--metric-name", "CPUUtilization", "--start-time", "2014-04-08T23:18:00Z", "--end-time", "2014-04-09T23:18:00Z", "--period", "3600", "--namespace", "AWS/EC2", "--statistics", "Maximum", "--dimensions", "Name=InstanceId,Value=i-abcdef"],
+    "responses": [
+      {
+        "body": "<GetMetricStatisticsOutput> <GetMetricStatisticsResult> <Datapoints> <Datapoint>\n         <Timestamp>2014-04-09T11:18:00Z</Timestamp>\n         <Maximum>44.79</Maximum>\n         <Unit>Percent</Unit>\n     </Datapoint>\n     <Datapoint>\n         <Timestamp>2014-04-09T20:18:00Z</Timestamp>\n         <Maximum>47.92</Maximum>\n         <Unit>Percent</Unit>\n     </Datapoint>\n     <Datapoint>\n         <Timestamp>2014-04-09T19:18:00Z</Timestamp>\n         <Maximum>50.85</Maximum>\n         <Unit>Percent</Unit>\n     </Datapoint>\n     <Datapoint>\n         <Timestamp>2014-04-09T09:18:00Z</Timestamp>\n         <Maximum>47.92</Maximum>\n         <Unit>Percent</Unit>\n     </Datapoint>\n     <Datapoint>\n         <Timestamp>2014-04-09T03:18:00Z</Timestamp>\n         <Maximum>76.84</Maximum>\n         <Unit>Percent</Unit>\n     </Datapoint>\n     <Datapoint>\n         <Timestamp>2014-04-09T21:18:00Z</Timestamp>\n         <Maximum>48.96</Maximum>\n         <Unit>Percent</Unit>\n     </Datapoint>\n     <Datapoint>\n         <Timestamp>2014-04-09T14:18:00Z</Timestamp>\n         <Maximum>47.92</Maximum>\n         <Unit>Percent</Unit>\n     </Datapoint>\n     <Datapoint>\n         <Timestamp>2014-04-09T08:18:00Z</Timestamp>\n         <Maximum>47.92</Maximum>\n         <Unit>Percent</Unit>\n     </Datapoint>  </Datapoints> <Label>CPUUtilization</Label> </GetMetricStatisticsResult> </GetMetricStatisticsOutput> "
+      }
+    ]
+  },
+  {
+    "name": "cloudwatch.getmetricdata",
+    "command": ["cloudwatch", "get-metric-data", "--metric-data-queries", "[ { \"Id\": \"m3\", \"Expression\": \"(m1+m2)/300\", \"Label\": \"Avg Total IOPS\" }, { \"Id\": \"m1\", \"MetricStat\": { \"Metric\": { \"Namespace\": \"AWS/EC2\", \"MetricName\": \"EBSReadOps\", \"Dimensions\": [ { \"Name\": \"InstanceId\", \"Value\": \"i-abcdef\" } ] }, \"Period\": 300, \"Stat\": \"Sum\", \"Unit\": \"Count\" }, \"ReturnData\": false }, { \"Id\": \"m2\", \"MetricStat\": { \"Metric\": { \"Namespace\": \"AWS/EC2\", \"MetricName\": \"EBSWriteOps\", \"Dimensions\": [ { \"Name\": \"InstanceId\", \"Value\": \"i-abcdef\" } ] }, \"Period\": 300, \"Stat\": \"Sum\", \"Unit\": \"Count\" }, \"ReturnData\": false } ]", "--start-time", "2024-09-29T22:10:00Z", "--end-time", "2024-09-29T22:15:00Z"],
+    "responses": [
+      {
+        "body": "<GetMetricDataOutput> <GetMetricDataResult> <Messages></Messages> <MetricDataResults> <MetricDataResult> <Id>m3</Id> <Label>Avg Total IOPS</Label> <Timestamps><Timestamp>2024-09-29T22:10:00+00:00</Timestamp></Timestamps> <Values> <DatapointValue>96.85</DatapointValue> </Values> <StatusCode>Complete</StatusCode> </MetricDataResult> </MetricDataResults> </GetMetricDataResult> </GetMetricDataOutput>"
       }
     ]
   }

@@ -203,5 +203,59 @@
         "body": "<AssumeRoleWithWebIdentityResponse xmlns=\"https://sts.amazonaws.com/doc/2011-06-15/\"> <AssumeRoleWithWebIdentityResult> <SubjectFromWebIdentityToken>amzn1.account.tokenvalue</SubjectFromWebIdentityToken> <Audience>client.12345.6789@email.address</Audience> <AssumedRoleUser> <Arn>arn:aws:sts::123456789012:assumed-role/FederatedRole1/session-name</Arn> <AssumedRoleId>roleid123:session-name</AssumedRoleId> </AssumedRoleUser> <Credentials> <SessionToken>session-token123</SessionToken> <SecretAccessKey>secret-access-key</SecretAccessKey> <Expiration>2014-10-24T23:00:23Z</Expiration> <AccessKeyId>access-key-id123</AccessKeyId></Credentials> <Provider>www.amazon.com</Provider></AssumeRoleWithWebIdentityResult></AssumeRoleWithWebIdentityResponse>"
       }
     ]
+  },
+  {
+    "name": "ec2.describetags",
+    "command": ["ec2", "describe-tags", "--filters", "Name=resource-id,Values=i-1234567890"],
+    "responses": [
+      {
+        "body": "<DescribeTagsResponse xmlns=\"http://ec2.amazonaws.com/doc/2016-11-15/\"> <requestId>EXAMPLE</requestId><tagSet> <item> <resourceId>i-1234567890</resourceId> <resourceType>instance</resourceType> <key>webserver</key> <value/> </item> <item> <resourceId>i-1234567890</resourceId> <resourceType>instance</resourceType> <key>stack</key> <value>Production</value> </item> <item> <resourceId>i-1234567890</resourceId> <resourceType>instance</resourceType> <key>database_server</key> <value/> </item> <item> <resourceId>i-1234567890</resourceId> <resourceType>instance</resourceType> <key>stack</key> <value>Test</value> </item> </tagSet></DescribeTagsResponse>"
+      }
+    ]
+  },
+  {
+    "name": "ec2.describeinstances",
+    "command": ["ec2", "describe-instances", "--instance-ids", "i-1234567890abcdef0"],
+    "responses": [
+      {
+        "body": "<DescribeInstancesResponse xmlns=\"http://ec2.amazonaws.com/doc/2016-11-15/\"> <requestId>8f7724cf-496f-496e-8fe3-example</requestId> <reservationSet> <item> <reservationId>r-1234567890abcdef0</reservationId> <ownerId>123456789012</ownerId> <groupSet/> <instancesSet> <item> <instanceId>i-1234567890abcdef0</instanceId> <imageId>ami-bff32ccc</imageId> <instanceState> <code>16</code> <name>running</name> </instanceState> <privateDnsName>ip-192-168-1-88.eu-west-1.compute.internal</privateDnsName> <dnsName>ec2-54-194-252-215.eu-west-1.compute.amazonaws.com</dnsName> <reason/> <keyName>my_keypair</keyName> <amiLaunchIndex>0</amiLaunchIndex> <productCodes/> <instanceType>t2.micro</instanceType> <launchTime>2018-05-08T16:46:19.000Z</launchTime> <placement> <availabilityZone>eu-west-1c</availabilityZone> <groupName/> <tenancy>default</tenancy> </placement> <monitoring> <state>disabled</state> </monitoring> <subnetId>subnet-56f5f633</subnetId> <vpcId>vpc-11112222</vpcId> <privateIpAddress>192.168.1.88</privateIpAddress> <ipAddress>54.194.252.215</ipAddress> <sourceDestCheck>true</sourceDestCheck> <groupSet> <item> <groupId>sg-e4076980</groupId> <groupName>SecurityGroup1</groupName> </item> </groupSet> <architecture>x86_64</architecture> <rootDeviceType>ebs</rootDeviceType> <rootDeviceName>/dev/xvda</rootDeviceName> <blockDeviceMapping> <item> <deviceName>/dev/xvda</deviceName> <ebs> <volumeId>vol-1234567890abcdef0</volumeId> <status>attached</status> <attachTime>2015-12-22T10:44:09.000Z</attachTime> <deleteOnTermination>true</deleteOnTermination> </ebs> </item> </blockDeviceMapping> <virtualizationType>hvm</virtualizationType> <clientToken>xMcwG14507example</clientToken> <tagSet> <item> <key>Name</key> <value>Server_1</value> </item> </tagSet> <hypervisor>xen</hypervisor> <networkInterfaceSet> <item> <networkInterfaceId>eni-551ba033</networkInterfaceId> <subnetId>subnet-56f5f633</subnetId> <vpcId>vpc-11112222</vpcId> <description>Primary network interface</description> <ownerId>123456789012</ownerId> <status>in-use</status> <macAddress>02:dd:2c:5e:01:69</macAddress> <privateIpAddress>192.168.1.88</privateIpAddress> <privateDnsName>ip-192-168-1-88.eu-west-1.compute.internal</privateDnsName> <sourceDestCheck>true</sourceDestCheck> <groupSet> <item> <groupId>sg-e4076980</groupId> <groupName>SecurityGroup1</groupName> </item> </groupSet> <attachment> <attachmentId>eni-attach-39697adc</attachmentId> <deviceIndex>0</deviceIndex> <status>attached</status> <attachTime>2018-05-08T16:46:19.000Z</attachTime> <deleteOnTermination>true</deleteOnTermination> </attachment> <association> <publicIp>54.194.252.215</publicIp> <publicDnsName>ec2-54-194-252-215.eu-west-1.compute.amazonaws.com</publicDnsName> <ipOwnerId>amazon</ipOwnerId> </association> <privateIpAddressesSet> <item> <privateIpAddress>192.168.1.88</privateIpAddress> <privateDnsName>ip-192-168-1-88.eu-west-1.compute.internal</privateDnsName> <primary>true</primary> <association> <publicIp>54.194.252.215</publicIp> <publicDnsName>ec2-54-194-252-215.eu-west-1.compute.amazonaws.com</publicDnsName> <ipOwnerId>amazon</ipOwnerId> </association> </item> </privateIpAddressesSet> <ipv6AddressesSet> <item> <ipv6Address>2001:db8:1234:1a2b::123</ipv6Address> </item> </ipv6AddressesSet> </item> </networkInterfaceSet> <iamInstanceProfile> <arn>arn:aws:iam::123456789012:instance-profile/AdminRole</arn> <id>ABCAJEDNCAA64SSD123AB</id> </iamInstanceProfile> <ebsOptimized>false</ebsOptimized> <cpuOptions> <coreCount>1</coreCount> <threadsPerCore>1</threadsPerCore> </cpuOptions> </item> </instancesSet> </item> </reservationSet> </DescribeInstancesResponse>"
+      }
+    ]
+  },
+  {
+    "name": "ec2.describevolumesmodifications",
+    "command": ["ec2", "describe-volumes-modifications", "--volume-ids", "vol-0123456789EXAMPLE"],
+    "responses": [
+      {
+        "body": "<DescribeVolumesModificationsResponse xmlns=\"http://ec2.amazonaws.com/doc/2016-11-15/\"> <requestId>59dbff89-35bd-4eac-99ed-be587EXAMPLE</requestId> <volumeModificationSet> <item> <targetIops>10000</targetIops> <originalIops>300</originalIops> <modificationState>optimizing</modificationState> <targetSize>200</targetSize> <targetVolumeType>io1</targetVolumeType> <volumeId>vol-0123456789EXAMPLE</volumeId> <progress>40</progress> <startTime>2017-01-19T23:58:04.922Z</startTime> <originalSize>100</originalSize> <originalVolumeType>gp2</originalVolumeType> <originalMultiAttachEnabled>false</originalMultiAttachEnabled> <targetMultiAttachEnabled>true</targetMultiAttachEnabled> </item> </volumeModificationSet> </DescribeVolumesModificationsResponse>"
+      }
+    ]
+  },
+  {
+    "name": "ecs.describecontainerinstances",
+    "command": ["ecs", "describe-container-instances", "--cluster", "update", "--container-instances", "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE"],
+    "responses": [
+      {
+        "body": "{ \"containerInstances\": [ { \"agentConnected\": true, \"attributes\": [ { \"name\": \"com.amazonaws.ecs.capability.privileged-container\" }, { \"name\": \"com.amazonaws.ecs.capability.docker-remote-api.1.17\" }, { \"name\": \"com.amazonaws.ecs.capability.docker-remote-api.1.18\" }, { \"name\": \"com.amazonaws.ecs.capability.docker-remote-api.1.19\" }, { \"name\": \"com.amazonaws.ecs.capability.docker-remote-api.1.20\" }, { \"name\": \"com.amazonaws.ecs.capability.docker-remote-api.1.21\" }, { \"name\": \"com.amazonaws.ecs.capability.logging-driver.json-file\" }, { \"name\": \"com.amazonaws.ecs.capability.logging-driver.syslog\" }, { \"name\": \"com.amazonaws.ecs.capability.logging-driver.awslogs\" }, { \"name\": \"com.amazonaws.ecs.capability.ecr-auth\" } ], \"containerInstanceArn\": \"arn:aws:ecs:us-west-2:012345678910:container-instance/default/f9cc75bb-0c94-46b9-bf6d-49d320bc1551\", \"ec2InstanceId\": \"i-042f39dc\", \"pendingTasksCount\": 0, \"registeredResources\": [ { \"doubleValue\": 0, \"integerValue\": 1024, \"longValue\": 0, \"name\": \"CPU\", \"type\": \"INTEGER\" }, { \"doubleValue\": 0, \"integerValue\": 995, \"longValue\": 0, \"name\": \"MEMORY\", \"type\": \"INTEGER\" }, { \"doubleValue\": 0, \"integerValue\": 0, \"longValue\": 0, \"name\": \"PORTS\", \"stringSetValue\": [ \"22\", \"2376\", \"2375\", \"51678\" ], \"type\": \"STRINGSET\" }, { \"doubleValue\": 0, \"integerValue\": 0, \"longValue\": 0, \"name\": \"PORTS_UDP\", \"stringSetValue\": [], \"type\": \"STRINGSET\" } ], \"remainingResources\": [ { \"doubleValue\": 0, \"integerValue\": 1024, \"longValue\": 0, \"name\": \"CPU\", \"type\": \"INTEGER\" }, { \"doubleValue\": 0, \"integerValue\": 995, \"longValue\": 0, \"name\": \"MEMORY\", \"type\": \"INTEGER\" }, { \"doubleValue\": 0, \"integerValue\": 0, \"longValue\": 0, \"name\": \"PORTS\", \"stringSetValue\": [ \"22\", \"2376\", \"2375\", \"51678\" ], \"type\": \"STRINGSET\" }, { \"doubleValue\": 0, \"integerValue\": 0, \"longValue\": 0, \"name\": \"PORTS_UDP\", \"stringSetValue\": [], \"type\": \"STRINGSET\" } ], \"runningTasksCount\": 0, \"status\": \"ACTIVE\", \"version\": 850, \"versionInfo\": { \"agentHash\": \"0931217\", \"agentVersion\": \"1.9.0\", \"dockerVersion\": \"DockerVersion: 1.9.1\" } } ], \"failures\": [] }"
+      }
+    ]
+  },
+  {
+    "name": "ecs.describetasks",
+    "command": ["ecs", "describe-tasks", "--cluster", "default", "--tasks", "1dc5c17a-422b-4dc4-b493-371970c6c4d6"],
+    "responses": [
+      {
+        "body": "{ \"failures\": [], \"tasks\": [ { \"taskArn\": \"arn:aws:ecs:us-east-1:012345678910:task/1dc5c17a-422b-4dc4-b493-371970c6c4d6\", \"overrides\": { \"containerOverrides\": [ { \"name\": \"simple-app\" }, { \"name\": \"busybox\" } ] }, \"lastStatus\": \"RUNNING\", \"containerInstanceArn\": \"arn:aws:ecs:us-east-1:012345678910:container-instance/default/5991d8da-1d59-49d2-a31f-4230f9e73140\", \"createdAt\": 1476822811.295, \"version\": 0, \"clusterArn\": \"arn:aws:ecs:us-east-1:012345678910:cluster/default\", \"startedAt\": 1476822833.998, \"desiredStatus\": \"RUNNING\", \"taskDefinitionArn\": \"arn:aws:ecs:us-east-1:012345678910:task-definition/console-sample-app-dynamic-ports:1\", \"startedBy\": \"ecs-svc/9223370560032507596\", \"containers\": [ { \"containerArn\": \"arn:aws:ecs:us-east-1:012345678910:container/4df26bb4-f057-467b-a079-961675296e64\", \"taskArn\": \"arn:aws:ecs:us-east-1:012345678910:task/default/1dc5c17a-422b-4dc4-b493-371970c6c4d6\", \"lastStatus\": \"RUNNING\", \"name\": \"simple-app\", \"networkBindings\": [ { \"protocol\": \"tcp\", \"bindIP\": \"0.0.0.0\", \"containerPort\": 80, \"hostPort\": 32774 } ], \"runtimeId\": \"runtime-123\" }, { \"containerArn\": \"arn:aws:ecs:us-east-1:012345678910:container/e09064f7-7361-4c87-8ab9-8d073bbdbcb9\", \"taskArn\": \"arn:aws:ecs:us-east-1:012345678910:task/default/1dc5c17a-422b-4dc4-b493-371970c6c4d6\", \"lastStatus\": \"RUNNING\", \"name\": \"busybox\", \"networkBindings\": [] } ] } ] }"
+      }
+    ]
+  },
+  {
+    "name": "ecs.listcontainerinstances",
+    "command": ["ecs", "list-container-instances", "--cluster", "example"],
+    "responses": [
+      {
+        "body": "{ \"containerInstanceArns\": [ \"arn:aws:ecs:us-east-1:012345678910:container-instance/example/1eb22c8ab33149b397dc769f68cc1319\", \"arn:aws:ecs:us-east-1:012345678910:container-instance/example/5cf7e311a2b74d3882650353cf3b2214\" ] }"
+      }
+    ]
   }
 ]

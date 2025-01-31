@@ -12,16 +12,23 @@ Output::
             "activeSessionId": "st-a1b2c3d4e5f6g",
             "arn": "arn:aws:ivs:us-west-2:123456789012:stage/abcdABCDefgh",
             "autoParticipantRecordingConfiguration": {
+                 "storageConfigurationArn": "",
                  "mediaTypes": [
-                       "AUDIO_VIDEO"
+                     "AUDIO_VIDEO"
                  ],
-                 "storageConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:storage-configuration/abcdABCDefgh",
-            },
+                 "thumbnailConfiguration": {
+                     "targetIntervalSeconds": 60,
+                     "storage": [
+                         "SEQUENTIAL"
+                     ],
+                     "recordingMode": "DISABLED",
+                 }
+            },            
             "endpoints": {
                 "events": "wss://global.events.live-video.net",
                 "rtmp": "rtmp://9x0y8z7s6t5u.global-contribute-staging.live-video.net/app/",
                 "rtmps": "rtmps://9x0y8z7s6t5u.global-contribute-staging.live-video.net:443/app/",
-                "whip": "https://1a2b3c4d5e6f.global-bm.whip.live-video.net"
+                "whip": "https://9x0y8z7s6t5u.global-bm.whip.live-video.net"
             },
             "name": "test",
             "tags": {}

@@ -3,7 +3,7 @@
 The following ``put-bucket-accelerate-configuration`` example enables the accelerate configuration for the specified bucket. ::
 
     aws s3api put-bucket-accelerate-configuration \
-        --bucket my-bucket \
+        --bucket amzn-s3-demo-bucket \
         --accelerate-configuration Status=Enabled
 
 This command produces no output.

@@ -14,7 +14,7 @@ Output::
                 "Template": {
                     "connectionConfiguration": {
                         "repositoryEndpointMetadata": {
-                            "BucketName": "my-bucket"
+                            "BucketName": "amzn-s3-demo-bucket"
                         }
                     },
                     "repositoryConfigurations": {

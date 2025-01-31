@@ -1,6 +1,6 @@
-The following command retrieves the notification configuration for a bucket named ``my-bucket``::
+The following command retrieves the notification configuration for a bucket named ``amzn-s3-demo-bucket``::
 
-  aws s3api get-bucket-notification-configuration --bucket my-bucket
+  aws s3api get-bucket-notification-configuration --bucket amzn-s3-demo-bucket
 
 Output::
 

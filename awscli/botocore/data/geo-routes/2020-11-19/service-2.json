@@ -45,7 +45,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Calculates route matrix containing the results for all pairs of Origins to Destinations. Each row corresponds to one entry in Origins. Each entry in the row corresponds to the route from that entry in Origins to an entry in Destinations positions.</p>"
+      "documentation":"<p> Use <code>CalculateRouteMatrix</code> to compute results for all pairs of Origins to Destinations. Each row corresponds to one entry in Origins. Each entry in the row corresponds to the route from that entry in Origins to an entry in Destinations positions.</p>"
     },
     "CalculateRoutes":{
       "name":"CalculateRoutes",
@@ -62,7 +62,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Calculates a route given the following required parameters: <code>Origin</code> and <code>Destination</code>.</p>"
+      "documentation":"<p> <code>CalculateRoutes</code> computes routes given the following required parameters: <code>Origin</code> and <code>Destination</code>.</p>"
     },
     "OptimizeWaypoints":{
       "name":"OptimizeWaypoints",
@@ -79,7 +79,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Calculates the optimal order to travel between a set of waypoints to minimize either the travel time or the distance travelled during the journey, based on road network restrictions and the traffic pattern data.</p>"
+      "documentation":"<p> <code>OptimizeWaypoints</code> calculates the optimal order to travel between a set of waypoints to minimize either the travel time or the distance travelled during the journey, based on road network restrictions and the traffic pattern data.</p>"
     },
     "SnapToRoads":{
       "name":"SnapToRoads",
@@ -96,7 +96,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>The SnapToRoads action matches GPS trace to roads most likely traveled on.</p>"
+      "documentation":"<p> <code>SnapToRoads</code> matches GPS trace to roads most likely traveled on.</p>"
     }
   },
   "shapes":{
@@ -143,7 +143,7 @@
       "members":{
         "Allow":{
           "shape":"IsolineAllowOptions",
-          "documentation":"<p>Features that are allowed while calculating. a route</p>"
+          "documentation":"<p>Features that are allowed while calculating an isoline.</p>"
         },
         "ArrivalTime":{
           "shape":"TimestampWithTimezoneOffset",
@@ -175,7 +175,7 @@
         },
         "IsolineGranularity":{
           "shape":"IsolineGranularityOptions",
-          "documentation":"<p>Defines the granularity of the returned Isoline</p>"
+          "documentation":"<p>Defines the granularity of the returned Isoline.</p>"
         },
         "Key":{
           "shape":"ApiKey",
@@ -201,7 +201,7 @@
         },
         "Thresholds":{
           "shape":"IsolineThresholds",
-          "documentation":"<p>Threshold to be used for the isoline calculation. Up to 3 thresholds per provided type can be requested.</p>"
+          "documentation":"<p>Threshold to be used for the isoline calculation. Up to 3 thresholds per provided type can be requested.</p> <p> You incur a calculation charge for each threshold. Using a large amount of thresholds in a request can lead you to incur unexpected charges. See <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/routes-pricing.html`\"> Amazon Location's pricing page</a> for more information.</p>"
         },
         "Traffic":{
           "shape":"IsolineTrafficOptions",
@@ -267,7 +267,7 @@
       "members":{
         "Allow":{
           "shape":"RouteMatrixAllowOptions",
-          "documentation":"<p>Features that are allowed while calculating. a route</p>"
+          "documentation":"<p>Features that are allowed while calculating a route.</p>"
         },
         "Avoid":{
           "shape":"RouteMatrixAvoidanceOptions",
@@ -283,7 +283,7 @@
         },
         "Destinations":{
           "shape":"CalculateRouteMatrixRequestDestinationsList",
-          "documentation":"<p>List of destinations for the route.</p>"
+          "documentation":"<p>List of destinations for the route.</p> <note> <p>Route calculations are billed for each origin and destination pair. If you use a large matrix of origins and destinations, your costs will increase accordingly. See <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/routes-pricing.html`\"> Amazon Location's pricing page</a> for more information.</p> </note>"
         },
         "Exclude":{
           "shape":"RouteMatrixExclusionOptions",
@@ -301,7 +301,7 @@
         },
         "Origins":{
           "shape":"CalculateRouteMatrixRequestOriginsList",
-          "documentation":"<p>The position in longitude and latitude for the origin.</p>"
+          "documentation":"<p>The position in longitude and latitude for the origin.</p> <note> <p>Route calculations are billed for each origin and destination pair. Using a large amount of Origins in a request can lead you to incur unexpected charges. See <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/routes-pricing.html`\"> Amazon Location's pricing page</a> for more information.</p> </note>"
         },
         "RoutingBoundary":{
           "shape":"RouteMatrixBoundary",
@@ -374,7 +374,7 @@
       "members":{
         "Allow":{
           "shape":"RouteAllowOptions",
-          "documentation":"<p>Features that are allowed while calculating. a route</p>"
+          "documentation":"<p>Features that are allowed while calculating a route.</p>"
         },
         "ArrivalTime":{
           "shape":"TimestampWithTimezoneOffset",
@@ -468,7 +468,7 @@
         },
         "TravelStepType":{
           "shape":"RouteTravelStepType",
-          "documentation":"<p>Type of step returned by the response. Default provides basic steps intended for web based applications. TurnByTurn provides detailed instructions with more granularity intended for a turn based naviagtion system.</p>"
+          "documentation":"<p>Type of step returned by the response. Default provides basic steps intended for web based applications. TurnByTurn provides detailed instructions with more granularity intended for a turn based navigation system.</p>"
         },
         "Waypoints":{
           "shape":"RouteWaypointList",
@@ -535,6 +535,11 @@
       },
       "documentation":"<p>Geometry defined as a circle. When request routing boundary was set as <code>AutoCircle</code>, the response routing boundary will return <code>Circle</code> derived from the <code>AutoCircle</code> settings.</p>",
       "sensitive":true
+    },
+    "ClusterIndex":{
+      "type":"integer",
+      "box":true,
+      "min":0
     },
     "Corridor":{
       "type":"structure",
@@ -687,14 +692,14 @@
       "members":{
         "Hot":{
           "shape":"Boolean",
-          "documentation":"<p>Allow Hot (High Occupancy Toll) lanes while calculating the route.</p>"
+          "documentation":"<p>Allow Hot (High Occupancy Toll) lanes while calculating an isoline.</p> <p>Default value: <code>false</code> </p>"
         },
         "Hov":{
           "shape":"Boolean",
-          "documentation":"<p>Allow Hov (High Occupancy vehicle) lanes while calculating the route.</p>"
+          "documentation":"<p>Allow Hov (High Occupancy vehicle) lanes while calculating an isoline.</p> <p>Default value: <code>false</code> </p>"
         }
       },
-      "documentation":"<p>Features that are allowed while calculating. a route</p>"
+      "documentation":"<p>Features that are allowed while calculating an isoline.</p>"
     },
     "IsolineAvoidanceArea":{
       "type":"structure",
@@ -702,7 +707,7 @@
       "members":{
         "Except":{
           "shape":"IsolineAvoidanceAreaGeometryList",
-          "documentation":"<p>Exceptions to the provided avoidance geometry, to be included while calculating the route.</p>"
+          "documentation":"<p>Exceptions to the provided avoidance geometry, to be included while calculating an isoline.</p>"
         },
         "Geometry":{
           "shape":"IsolineAvoidanceAreaGeometry",
@@ -735,7 +740,7 @@
           "documentation":"<p>A list of PolylinePolygon's that are excluded for calculating isolines, the list can only contain 1 polygon. For more information on polyline encoding, see <a href=\"https://github.com/heremaps/flexiblepolyline/blob/master/README.md\">https://github.com/heremaps/flexiblepolyline/blob/master/README.md</a>. </p>"
         }
       },
-      "documentation":"<p>The avoidance geometry, to be included while calculating the route.</p>"
+      "documentation":"<p>The avoidance geometry, to be included while calculating an isoline.</p>"
     },
     "IsolineAvoidanceAreaGeometryList":{
       "type":"list",
@@ -766,23 +771,23 @@
         },
         "CarShuttleTrains":{
           "shape":"Boolean",
-          "documentation":"<p>Avoid car-shuttle-trains while calculating the route.</p>"
+          "documentation":"<p>Avoid car-shuttle-trains while calculating an isoline.</p>"
         },
         "ControlledAccessHighways":{
           "shape":"Boolean",
-          "documentation":"<p>Avoid controlled access highways while calculating the route.</p>"
+          "documentation":"<p>Avoid controlled access highways while calculating an isoline.</p>"
         },
         "DirtRoads":{
           "shape":"Boolean",
-          "documentation":"<p>Avoid dirt roads while calculating the route.</p>"
+          "documentation":"<p>Avoid dirt roads while calculating an isoline.</p>"
         },
         "Ferries":{
           "shape":"Boolean",
-          "documentation":"<p>Avoid ferries while calculating the route.</p>"
+          "documentation":"<p>Avoid ferries while calculating an isoline.</p>"
         },
         "SeasonalClosure":{
           "shape":"Boolean",
-          "documentation":"<p>Avoid roads that have seasonal closure while calculating the route.</p>"
+          "documentation":"<p>Avoid roads that have seasonal closure while calculating an isoline.</p>"
         },
         "TollRoads":{
           "shape":"Boolean",
@@ -798,7 +803,7 @@
         },
         "Tunnels":{
           "shape":"Boolean",
-          "documentation":"<p>Avoid tunnels while calculating the route.</p>"
+          "documentation":"<p>Avoid tunnels while calculating an isoline.</p>"
         },
         "UTurns":{
           "shape":"Boolean",
@@ -809,7 +814,7 @@
           "documentation":"<p>Zone categories to be avoided.</p>"
         }
       },
-      "documentation":"<p>Features that are avoided while calculating a route. Avoidance is on a best-case basis. If an avoidance can't be satisfied for a particular case, it violates the avoidance and the returned response produces a notice for the violation.</p>"
+      "documentation":"<p>Features that are avoided while calculating isolines. Avoidance is on a best-case basis. If an avoidance can't be satisfied for a particular case, it violates the avoidance and the returned response produces a notice for the violation.</p>"
     },
     "IsolineAvoidanceZoneCategory":{
       "type":"structure",
@@ -848,7 +853,7 @@
           "documentation":"<p>The number of occupants in the vehicle.</p> <p>Default Value: <code>1</code> </p>"
         }
       },
-      "documentation":"<p>Options for vehicles.</p>"
+      "documentation":"<p>Travel mode options when the provided travel mode is <code>Car</code>.</p>"
     },
     "IsolineCarOptionsMaxSpeedDouble":{
       "type":"double",
@@ -900,7 +905,7 @@
           "documentation":"<p>An ordered list of positions used to plot a route on a map in a lossy compression format.</p> <note> <p>LineString and Polyline are mutually exclusive properties.</p> </note>"
         }
       },
-      "documentation":"<p>Geometry of the connection between different Isoline components.</p>"
+      "documentation":"<p>Geometry of the connection between different isoline components.</p>"
     },
     "IsolineConnectionList":{
       "type":"list",
@@ -950,7 +955,7 @@
         },
         "MaxResolution":{
           "shape":"DistanceMeters",
-          "documentation":"<p>Maximum resolution of the returned isoline.</p> <p> <b>Unit</b>: <code>centimeters</code> </p>"
+          "documentation":"<p>Maximum resolution of the returned isoline.</p> <p> <b>Unit</b>: <code>meters</code> </p>"
         }
       },
       "documentation":"<p>Isoline granularity related options.</p>"
@@ -1038,7 +1043,7 @@
           "documentation":"<p>Options to configure matching the provided position to a side of the street.</p>"
         }
       },
-      "documentation":"<p>Options for the property.</p>"
+      "documentation":"<p>Origin related options.</p>"
     },
     "IsolineScooterOptions":{
       "type":"structure",
@@ -1061,7 +1066,7 @@
           "documentation":"<p>The number of occupants in the vehicle.</p> <p>Default Value: <code>1</code> </p>"
         }
       },
-      "documentation":"<p>Options for the property.</p>"
+      "documentation":"<p>Travel mode options when the provided travel mode is <code>Scooter</code> </p>"
     },
     "IsolineScooterOptionsMaxSpeedDouble":{
       "type":"double",
@@ -1118,7 +1123,7 @@
           "documentation":"<p>Time to be used for the isoline calculation.</p>"
         }
       },
-      "documentation":"<p>Threshold to be used for the isoline calculation. Up to 3 thresholds per provided type can be requested.</p>"
+      "documentation":"<p>Threshold to be used for the isoline calculation. Up to 5 thresholds per provided type can be requested.</p>"
     },
     "IsolineTrafficOptions":{
       "type":"structure",
@@ -1177,7 +1182,7 @@
         },
         "Scooter":{
           "shape":"IsolineScooterOptions",
-          "documentation":"<p>Travel mode options when the provided travel mode is \"Scooter\"</p>"
+          "documentation":"<p>Travel mode options when the provided travel mode is <code>Scooter</code> </p> <note> <p>When travel mode is set to <code>Scooter</code>, then the avoidance option <code>ControlledAccessHighways</code> defaults to <code>true</code>.</p> </note>"
         },
         "Truck":{
           "shape":"IsolineTruckOptions",
@@ -1401,7 +1406,11 @@
       "members":{
         "Avoid":{
           "shape":"WaypointOptimizationAvoidanceOptions",
-          "documentation":"<p>Features that are avoided while calculating a route. Avoidance is on a best-case basis. If an avoidance can't be satisfied for a particular case, this setting is ignored.</p>"
+          "documentation":"<p>Features that are avoided. Avoidance is on a best-case basis. If an avoidance can't be satisfied for a particular case, this setting is ignored.</p>"
+        },
+        "Clustering":{
+          "shape":"WaypointOptimizationClusteringOptions",
+          "documentation":"<p>Clustering allows you to specify how nearby waypoints can be clustered to improve the optimized sequence.</p>"
         },
         "DepartureTime":{
           "shape":"TimestampWithTimezoneOffset",
@@ -1804,14 +1813,14 @@
       "members":{
         "Hot":{
           "shape":"Boolean",
-          "documentation":"<p>Allow Hot (High Occupancy Toll) lanes while calculating the route.</p>"
+          "documentation":"<p>Allow Hot (High Occupancy Toll) lanes while calculating the route.</p> <p>Default value: <code>false</code> </p>"
         },
         "Hov":{
           "shape":"Boolean",
-          "documentation":"<p>Allow Hov (High Occupancy vehicle) lanes while calculating the route.</p>"
+          "documentation":"<p>Allow Hov (High Occupancy vehicle) lanes while calculating the route.</p> <p>Default value: <code>false</code> </p>"
         }
       },
-      "documentation":"<p>Features that are allowed while calculating. a route</p>"
+      "documentation":"<p>Features that are allowed while calculating a route.</p>"
     },
     "RouteAvoidanceArea":{
       "type":"structure",
@@ -1923,7 +1932,7 @@
           "documentation":"<p>Zone categories to be avoided.</p>"
         }
       },
-      "documentation":"<p>Options related to areas to be avoided.</p>"
+      "documentation":"<p>Specifies options for areas to avoid when calculating the route. This is a best-effort avoidance setting, meaning the router will try to honor the avoidance preferences but may still include restricted areas if no feasible alternative route exists. If avoidance options are not followed, the response will indicate that the avoidance criteria were violated.</p>"
     },
     "RouteAvoidanceZoneCategory":{
       "type":"structure",
@@ -1963,7 +1972,7 @@
           "documentation":"<p>The number of occupants in the vehicle.</p> <p>Default Value: <code>1</code> </p>"
         }
       },
-      "documentation":"<p>Travel mode options when the provided travel mode is \"Car\"</p>"
+      "documentation":"<p>Travel mode options when the provided travel mode is <code>Car</code>.</p>"
     },
     "RouteCarOptionsMaxSpeedDouble":{
       "type":"double",
@@ -2139,7 +2148,7 @@
           "documentation":"<p>List of countries to be avoided defined by two-letter or three-letter country codes.</p>"
         }
       },
-      "documentation":"<p>Exclusion options for the route.</p>"
+      "documentation":"<p>Specifies strict exclusion options for the route calculation. This setting mandates that the router will avoid any routes that include the specified options, rather than merely attempting to minimize them.</p>"
     },
     "RouteExitStepDetails":{
       "type":"structure",
@@ -2342,7 +2351,8 @@
         "NoSchedule",
         "Other",
         "ViolatedAvoidFerry",
-        "ViolatedAvoidRailFerry"
+        "ViolatedAvoidRailFerry",
+        "SeasonalClosure"
       ]
     },
     "RouteFerryNoticeList":{
@@ -2404,7 +2414,7 @@
         },
         "Distance":{
           "shape":"DistanceMeters",
-          "documentation":"<p>Distance of the computed span. This feature doesn't split a span, but is always computed on a span split by other properties.</p>"
+          "documentation":"<p>Distance of the computed span. This feature doesn't split a span, but is always computed on a span split by other properties.</p> <p> <b>Unit</b>: <code>meters</code> </p>"
         },
         "Duration":{
           "shape":"DurationSeconds",
@@ -2640,7 +2650,8 @@
         "Ferry",
         "Pedestrian",
         "Scooter",
-        "Truck"
+        "Truck",
+        "CarShuttleTrain"
       ]
     },
     "RouteLegType":{
@@ -2712,11 +2723,11 @@
       "members":{
         "Hot":{
           "shape":"Boolean",
-          "documentation":"<p>Allow Hot (High Occupancy Toll) lanes while calculating the route.</p>"
+          "documentation":"<p>Allow Hot (High Occupancy Toll) lanes while calculating the route.</p> <p>Default value: <code>false</code> </p>"
         },
         "Hov":{
           "shape":"Boolean",
-          "documentation":"<p>Allow Hov (High Occupancy vehicle) lanes while calculating the route.</p>"
+          "documentation":"<p>Allow Hov (High Occupancy vehicle) lanes while calculating the route.</p> <p>Default value: <code>false</code> </p>"
         }
       },
       "documentation":"<p>Allow Options related to the route matrix.</p>"
@@ -2834,7 +2845,7 @@
           "documentation":"<p>Zone categories to be avoided.</p>"
         }
       },
-      "documentation":"<p>Options related to the route matrix.</p>"
+      "documentation":"<p>Specifies options for areas to avoid when calculating the route. This is a best-effort avoidance setting, meaning the router will try to honor the avoidance preferences but may still include restricted areas if no feasible alternative route exists. If avoidance options are not followed, the response will indicate that the avoidance criteria were violated.</p>"
     },
     "RouteMatrixAvoidanceOptionsAreasList":{
       "type":"list",
@@ -2917,7 +2928,7 @@
           "documentation":"<p>The number of occupants in the vehicle.</p> <p>Default Value: <code>1</code> </p>"
         }
       },
-      "documentation":"<p>Options related to the car.</p>"
+      "documentation":"<p>Travel mode options when the provided travel mode is <code>Car</code>.</p>"
     },
     "RouteMatrixCarOptionsMaxSpeedDouble":{
       "type":"double",
@@ -3015,7 +3026,7 @@
           "documentation":"<p>List of countries to be avoided defined by two-letter or three-letter country codes.</p>"
         }
       },
-      "documentation":"<p>Exclusion options.</p>"
+      "documentation":"<p>Specifies strict exclusion options for the route calculation. This setting mandates that the router will avoid any routes that include the specified options, rather than merely attempting to minimize them.</p>"
     },
     "RouteMatrixHazardousCargoType":{
       "type":"string",
@@ -3127,7 +3138,7 @@
           "documentation":"<p>The number of occupants in the vehicle.</p> <p>Default Value: <code>1</code> </p>"
         }
       },
-      "documentation":"<p>Travel mode options when the provided travel mode is \"Scooter\"</p>"
+      "documentation":"<p>Travel mode options when the provided travel mode is <code>Scooter</code> </p>"
     },
     "RouteMatrixScooterOptionsMaxSpeedDouble":{
       "type":"double",
@@ -3202,7 +3213,7 @@
         },
         "Scooter":{
           "shape":"RouteMatrixScooterOptions",
-          "documentation":"<p>Travel mode options when the provided travel mode is \"Scooter\"</p>"
+          "documentation":"<p>Travel mode options when the provided travel mode is <code>Scooter</code> </p> <note> <p>When travel mode is set to <code>Scooter</code>, then the avoidance option <code>ControlledAccessHighways</code> defaults to <code>true</code>.</p> </note>"
         },
         "Truck":{
           "shape":"RouteMatrixTruckOptions",
@@ -4030,7 +4041,7 @@
           "documentation":"<p>The number of occupants in the vehicle.</p> <p>Default Value: <code>1</code> </p>"
         }
       },
-      "documentation":"<p>Travel mode options when the provided travel mode is \"Scooter\"</p>"
+      "documentation":"<p>Travel mode options when the provided travel mode is <code>Scooter</code> </p>"
     },
     "RouteScooterOptionsMaxSpeedDouble":{
       "type":"double",
@@ -4702,7 +4713,7 @@
         },
         "Scooter":{
           "shape":"RouteScooterOptions",
-          "documentation":"<p>Travel mode options when the provided travel mode is \"Scooter\"</p>"
+          "documentation":"<p>Travel mode options when the provided travel mode is <code>Scooter</code> </p> <note> <p>When travel mode is set to <code>Scooter</code>, then the avoidance option <code>ControlledAccessHighways</code> defaults to <code>true</code>.</p> </note>"
         },
         "Truck":{
           "shape":"RouteTruckOptions",
@@ -5988,13 +5999,35 @@
           "documentation":"<p>Avoid U-turns for calculation on highways and motorways.</p>"
         }
       },
-      "documentation":"<p>Options for WaypointOptimizationAvoidance.</p>"
+      "documentation":"<p>Specifies options for areas to avoid. This is a best-effort avoidance setting, meaning the router will try to honor the avoidance preferences but may still include restricted areas if no feasible alternative route exists. If avoidance options are not followed, the response will indicate that the avoidance criteria were violated.</p>"
     },
     "WaypointOptimizationAvoidanceOptionsAreasList":{
       "type":"list",
       "member":{"shape":"WaypointOptimizationAvoidanceArea"},
       "max":20,
       "min":0
+    },
+    "WaypointOptimizationClusteringAlgorithm":{
+      "type":"string",
+      "enum":[
+        "DrivingDistance",
+        "TopologySegment"
+      ]
+    },
+    "WaypointOptimizationClusteringOptions":{
+      "type":"structure",
+      "required":["Algorithm"],
+      "members":{
+        "Algorithm":{
+          "shape":"WaypointOptimizationClusteringAlgorithm",
+          "documentation":"<p>The algorithm to be used. <code>DrivingDistance</code> assigns all the waypoints that are within driving distance of each other into a single cluster. <code>TopologySegment</code> assigns all the waypoints that are within the same topology segment into a single cluster. A Topology segment is a linear stretch of road between two junctions.</p>"
+        },
+        "DrivingDistanceOptions":{
+          "shape":"WaypointOptimizationDrivingDistanceOptions",
+          "documentation":"<p>Driving distance options to be used when the clustering algorithm is DrivingDistance.</p>"
+        }
+      },
+      "documentation":"<p>Options for WaypointOptimizationClustering.</p>"
     },
     "WaypointOptimizationConnection":{
       "type":"structure",
@@ -6097,6 +6130,17 @@
       },
       "documentation":"<p>Driver related options.</p>"
     },
+    "WaypointOptimizationDrivingDistanceOptions":{
+      "type":"structure",
+      "required":["DrivingDistance"],
+      "members":{
+        "DrivingDistance":{
+          "shape":"DistanceMeters",
+          "documentation":"<p>DrivingDistance assigns all the waypoints that are within driving distance of each other into a single cluster.</p>"
+        }
+      },
+      "documentation":"<p>Driving distance related options.</p>"
+    },
     "WaypointOptimizationExclusionOptions":{
       "type":"structure",
       "required":["Countries"],
@@ -6106,7 +6150,7 @@
           "documentation":"<p>List of countries to be avoided defined by two-letter or three-letter country codes.</p>"
         }
       },
-      "documentation":"<p>Exclusion options.</p>"
+      "documentation":"<p>Specifies strict exclusion options for the route calculation. This setting mandates that the router will avoid any routes that include the specified options, rather than merely attempting to minimize them.</p>"
     },
     "WaypointOptimizationFailedConstraint":{
       "type":"structure",
@@ -6185,6 +6229,10 @@
           "shape":"TimestampWithTimezoneOffset",
           "documentation":"<p>Estimated time of arrival at the destination.</p> <p>Time format:<code>YYYY-MM-DDThh:mm:ss.sssZ | YYYY-MM-DDThh:mm:ss.sss+hh:mm</code> </p> <p>Examples:</p> <p> <code>2020-04-22T17:57:24Z</code> </p> <p> <code>2020-04-22T17:57:24+02:00</code> </p>"
         },
+        "ClusterIndex":{
+          "shape":"ClusterIndex",
+          "documentation":"<p>Index of the cluster the waypoint is associated with. The index is included in the response only if clustering was performed while processing the request.</p>"
+        },
         "DepartureTime":{
           "shape":"TimestampWithTimezoneOffset",
           "documentation":"<p>Estimated time of departure from thr origin.</p> <p>Time format:<code>YYYY-MM-DDThh:mm:ss.sssZ | YYYY-MM-DDThh:mm:ss.sss+hh:mm</code> </p> <p>Examples:</p> <p> <code>2020-04-22T17:57:24Z</code> </p> <p> <code>2020-04-22T17:57:24+02:00</code> </p>"
@@ -6212,7 +6260,7 @@
           "documentation":"<p>The Origin Id.</p>"
         }
       },
-      "documentation":"<p>Options related to the origin.</p>"
+      "documentation":"<p>Origin related options.</p>"
     },
     "WaypointOptimizationPedestrianOptions":{
       "type":"structure",

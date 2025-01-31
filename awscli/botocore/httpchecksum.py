@@ -388,7 +388,13 @@ def _apply_request_trailer_checksum(request):
         # Send the decoded content length if we can determine it. Some
         # services such as S3 may require the decoded content length
         headers["X-Amz-Decoded-Content-Length"] = str(content_length)
-
+        
+        if "Content-Length" in headers:
+            del headers["Content-Length"]
+            logger.debug(
+                "Removing the Content-Length header since 'chunked' is specified for Transfer-Encoding."
+            )
+    
     if isinstance(body, (bytes, bytearray)):
         body = io.BytesIO(body)
 

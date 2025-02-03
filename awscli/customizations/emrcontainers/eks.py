@@ -60,5 +60,4 @@ class EKS(object):
                  clusterName = cluster_name,
                  namespace = namespace,
                  serviceAccount = service_account
-            ) 
-        
+            )

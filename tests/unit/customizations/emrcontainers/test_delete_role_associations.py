@@ -542,7 +542,7 @@ class TestDeleteRoleAssociationsCommand:
 
     # Use case: Expect to do nothing on deletion when resource not found but print warning message
     # Expected results: Association deletions are skipped
-    def test_create_role_associations_already_exists_for_start_job_run(
+    def test_delete_role_associations_already_exists_for_start_job_run(
         self,
         cli_runner,
         cluster_name,

@@ -62,8 +62,8 @@ class DeleteRoleAssociationsCommand(BasicCommand):
         {
             "name": "type",
             "help_text": (
-                "Specify the EMR on EKS submission model and choose service accounts that you want to dissociate "
-                "with Amazon EMR on EKS. By default is start_job_run. Supported Types: start_job_run, "
+                "Specify the Amazon EMR on EKS submission model and choose service accounts that you want to "
+                "dissociate from Amazon EMR on EKS. The default is start_job_run. Supported types: start_job_run, "
                 "interactive_endpoint, spark_operator, flink_operator, livy."
             ),
             "required": False,
@@ -78,10 +78,10 @@ class DeleteRoleAssociationsCommand(BasicCommand):
         {
             "name": "operator-namespace",
             "help_text": (
-                "Specify the namespace that you want to dissociate the operator service account "
-                "with the IAM role. Default to the job/application namespace specified. Note: If jobs are running "
+                "Specify the namespace under which you want to dissociate the operator service account "
+                "from the IAM role. Default to the job/application namespace specified. Note: If jobs are running "
                 "in a different namespace than the operator installation namespace, this parameter needs to be set as "
-                "where the operator is running on."
+                "the namespace that the operator is running on."
             ),
             "required": False,
         },
@@ -89,7 +89,7 @@ class DeleteRoleAssociationsCommand(BasicCommand):
             "name": "service-account-name",
             "help_text": (
                 "Specify the service account name that you want to dissociate "
-                "with the IAM role. Default to Amazon EMR on EKS service accounts."
+                "from the IAM role. Default to Amazon EMR on EKS service accounts."
             ),
             "required": False,
         },
@@ -152,14 +152,14 @@ class DeleteRoleAssociationsCommand(BasicCommand):
                 if not association.get("associations", []):
                     uni_print(
                         f"Skipping deletion as no pod identity association found for service account {service_account_name} "
-                        + f"and role {self._role_name} in namespace {namespace}\n",
+                        f"and role {self._role_name} in namespace {namespace}\n",
                         out_file=sys.stderr
                     )
                     continue
                 association_id = association["associations"][0]["associationId"]
                 LOG.debug(
-                    f"Deleting pod identity association for service account {service_account_name}"
-                    + f"and role {self._role_name} in {namespace} {association_id} with association id %s"
+                    f"Deleting pod identity association for service account {service_account_name} "
+                    f"and role {self._role_name} in {namespace} with association id {association_id}"
                 )
                 result = eks_client.delete_pod_identity_association(
                     self._cluster_name, association_id
@@ -170,7 +170,7 @@ class DeleteRoleAssociationsCommand(BasicCommand):
             except botocore.exceptions.ClientError as error:
                 raise Exception(
                     f"Failed to delete pod identity association for service account {service_account_name}, "
-                    + f"role {self._role_name} in namespace {namespace}: {error.response['Error']['Message']}"
+                    f"role {self._role_name} in namespace {namespace}: {error.response['Error']['Message']}"
                 ) from error
         return results
 

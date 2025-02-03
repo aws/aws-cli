@@ -62,8 +62,8 @@ class CreateRoleAssociationsCommand(BasicCommand):
         {
             "name": "type",
             "help_text": (
-                "Specify the EMR on EKS submission model and choose service accounts that you want to associate "
-                "with Amazon EMR on EKS. By default is start_job_run. Supported Types: start_job_run, "
+                "Specify the Amazon EMR on EKS submission model and choose service accounts that you want to associate "
+                "with Amazon EMR on EKS. The default is start_job_run. Supported types: start_job_run, "
                 "interactive_endpoint, spark_operator, flink_operator, livy."
             ),
             "required": False,
@@ -81,7 +81,7 @@ class CreateRoleAssociationsCommand(BasicCommand):
                 "Specify the namespace that you want to associate the operator service account "
                 "with the IAM role. Default to the job/application namespace specified. Note: "
                 "If jobs are running in a different namespace than the operator installation namespace, "
-                "this parameter needs to be set as where the operator is running on."
+                "this parameter needs to be set as the namespace that the operator is running on."
             ),
             "required": False,
         },
@@ -167,7 +167,7 @@ class CreateRoleAssociationsCommand(BasicCommand):
                     for result in results:
                         uni_print(
                             f"Rolling back association for service account {service_account_name} "
-                            + f"and role {self._role_name} in namespace {namespace} as encountered an error",
+                            f"and role {self._role_name} in namespace {namespace} as encountered an error\n",
                             out_file=sys.stderr,
                         )
                         eks_client.delete_pod_identity_association(
@@ -176,11 +176,12 @@ class CreateRoleAssociationsCommand(BasicCommand):
                         )
                     raise Exception(
                         f"Failed to create pod identity association for service account {service_account_name}, "
-                        + f"role {self._role_name} in namespace {namespace}: {error.response['Error']['Message']}"
+                        f"role {self._role_name} in namespace {namespace}: {error.response['Error']['Message']}"
                     ) from error
                 uni_print(
                     f"Skipping pod identity association creation because pod identity association already exists for "
-                    + f"service account {service_account_name}and role {self._role_name} in namespace {namespace}: {error.response['Error']['Message']}\n",
+                    f"service account {service_account_name} and role {self._role_name} in namespace {namespace}: "
+                    f"{error.response['Error']['Message']}\n",
                     out_file=sys.stderr,
                 )
         return results

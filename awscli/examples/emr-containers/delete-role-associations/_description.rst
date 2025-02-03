@@ -1,7 +1,7 @@
 Deletes role associations of given IAM role with EMR service accounts such that it will be removed from Amazon EMR on EKS with the given namespace from the given EKS cluster.
 
 Note:
-The command would dissociate EMR service accounts with provided IAM role to EKS pod identity:
+The command would dissociate EMR service accounts with provided IAM role from EKS pod identity:
 
 * "emr-containers-sa-%(FRAMEWORK)s-%(COMPONENT)s-%(AWS_ACCOUNT_ID)s-%(BASE36_ENCODED_ROLE_NAME)s"
 

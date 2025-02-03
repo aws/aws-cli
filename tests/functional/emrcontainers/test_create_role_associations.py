@@ -528,7 +528,7 @@ class TestCreateRoleAssociationsCommand:
         for component in components:
             expected_out += (
                 f"Skipping pod identity association creation because pod identity association already exists for service "
-                + f"account emr-containers-sa-spark-{component}-123456789012-16o0gwny3pand role myrole in namespace test: "
+                + f"account emr-containers-sa-spark-{component}-123456789012-16o0gwny3p and role myrole in namespace test: "
                 + f"An error occurred (ResourceInUseException) when calling the "
                 + f"CreatePodIdentityAssociation operation: Association already exists: a-1\n"
             )

@@ -88,8 +88,8 @@ class DeleteRoleAssociationsCommand(BasicCommand):
         {
             "name": "service-account-name",
             "help_text": (
-                "Specify the service account name that you want to dissociate "
-                "from the IAM role. Default to Amazon EMR on EKS service accounts."
+                "Specify the service account name that you want to dissociate with the IAM role. "
+                "By default, Amazon EMR on EKS service accounts will be used for association."
             ),
             "required": False,
         },

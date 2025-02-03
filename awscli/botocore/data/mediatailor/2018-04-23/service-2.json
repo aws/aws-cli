@@ -611,7 +611,7 @@
       "members":{
         "StreamingMediaFileConditioning":{
           "shape":"StreamingMediaFileConditioning",
-          "documentation":"<p>For ads that have media files with streaming delivery, indicates what transcoding action MediaTailor it first receives these ads from the ADS. <code>TRANSCODE</code> indicates that MediaTailor must transcode the ads. <code>NONE</code> indicates that you have already transcoded the ads outside of MediaTailor and don't need them transcoded as part of the ad insertion workflow. For more information about ad conditioning see <a href=\"https://docs.aws.amazon.com/precondition-ads.html\">https://docs.aws.amazon.com/precondition-ads.html</a>.</p>"
+          "documentation":"<p>For ads that have media files with streaming delivery and supported file extensions, indicates what transcoding action MediaTailor takes when it first receives these ads from the ADS. <code>TRANSCODE</code> indicates that MediaTailor must transcode the ads. <code>NONE</code> indicates that you have already transcoded the ads outside of MediaTailor and don't need them transcoded as part of the ad insertion workflow. For more information about ad conditioning see <a href=\"https://docs.aws.amazon.com/precondition-ads.html\">https://docs.aws.amazon.com/precondition-ads.html</a>.</p>"
         }
       },
       "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns.</p>"
@@ -957,6 +957,10 @@
         "PlaybackConfigurationName":{
           "shape":"__string",
           "documentation":"<p>The name of the playback configuration.</p>"
+        },
+        "EnabledLoggingStrategies":{
+          "shape":"__listOfLoggingStrategies",
+          "documentation":"<p>The method used for collecting logs from AWS Elemental MediaTailor. To configure MediaTailor to send logs directly to Amazon CloudWatch Logs, choose <code>LEGACY_CLOUDWATCH</code>. To configure MediaTailor to send logs to CloudWatch, which then vends the logs to your destination of choice, choose <code>VENDED_LOGS</code>. Supported destinations are CloudWatch Logs log group, Amazon S3 bucket, and Amazon Data Firehose stream.</p> <p>To use vended logs, you must configure the delivery destination in Amazon CloudWatch, as described in <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html#AWS-vended-logs-permissions-V2\">Enable logging from AWS services, Logging that requires additional permissions [V2]</a>.</p>"
         }
       },
       "documentation":"<p>Configures Amazon CloudWatch log settings for a playback configuration.</p>"
@@ -972,6 +976,10 @@
         "PlaybackConfigurationName":{
           "shape":"__string",
           "documentation":"<p>The name of the playback configuration.</p>"
+        },
+        "EnabledLoggingStrategies":{
+          "shape":"__listOfLoggingStrategies",
+          "documentation":"<p>The method used for collecting logs from AWS Elemental MediaTailor. <code>LEGACY_CLOUDWATCH</code> indicates that MediaTailor is sending logs directly to Amazon CloudWatch Logs. <code>VENDED_LOGS</code> indicates that MediaTailor is sending logs to CloudWatch, which then vends the logs to your destination of choice. Supported destinations are CloudWatch Logs log group, Amazon S3 bucket, and Amazon Data Firehose stream. </p>"
         }
       }
     },
@@ -2170,7 +2178,7 @@
         },
         "AdConditioningConfiguration":{
           "shape":"AdConditioningConfiguration",
-          "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns. </p>"
+          "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns, and what priority MediaTailor uses when inserting ads. </p>"
         }
       }
     },
@@ -2639,6 +2647,10 @@
         "PercentEnabled":{
           "shape":"__integer",
           "documentation":"<p>The percentage of session logs that MediaTailor sends to your configured log destination. For example, if your playback configuration has 1000 sessions and <code>percentEnabled</code> is set to <code>60</code>, MediaTailor sends logs for 600 of the sessions to CloudWatch Logs. MediaTailor decides at random which of the playback configuration sessions to send logs for. If you want to view logs for a specific session, you can use the <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/debug-log-mode.html\">debug log mode</a>.</p> <p>Valid values: <code>0</code> - <code>100</code> </p>"
+        },
+        "EnabledLoggingStrategies":{
+          "shape":"__listOfLoggingStrategies",
+          "documentation":"<p>The method used for collecting logs from AWS Elemental MediaTailor. <code>LEGACY_CLOUDWATCH</code> indicates that MediaTailor is sending logs directly to Amazon CloudWatch Logs. <code>VENDED_LOGS</code> indicates that MediaTailor is sending logs to CloudWatch, which then vends the logs to your destination of choice. Supported destinations are CloudWatch Logs log group, Amazon S3 bucket, and Amazon Data Firehose stream. </p>"
         }
       },
       "documentation":"<p>Defines where AWS Elemental MediaTailor sends logs for the playback configuration.</p>"
@@ -2660,6 +2672,13 @@
     "LogTypes":{
       "type":"list",
       "member":{"shape":"LogType"}
+    },
+    "LoggingStrategy":{
+      "type":"string",
+      "enum":[
+        "VENDED_LOGS",
+        "LEGACY_CLOUDWATCH"
+      ]
     },
     "Long":{
       "type":"long",
@@ -2793,7 +2812,7 @@
         },
         "AdConditioningConfiguration":{
           "shape":"AdConditioningConfiguration",
-          "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns.</p>"
+          "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns, and what priority MediaTailor uses when inserting ads.</p>"
         }
       },
       "documentation":"<p>A playback configuration. For information about MediaTailor configurations, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/configurations.html\">Working with configurations in AWS Elemental MediaTailor</a>.</p>"
@@ -2971,7 +2990,7 @@
         },
         "AdConditioningConfiguration":{
           "shape":"AdConditioningConfiguration",
-          "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns.</p>"
+          "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns, and what priority MediaTailor uses when inserting ads. </p>"
         }
       }
     },
@@ -3061,7 +3080,7 @@
         },
         "AdConditioningConfiguration":{
           "shape":"AdConditioningConfiguration",
-          "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns.</p>"
+          "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns, and what priority MediaTailor uses when inserting ads. </p>"
         }
       }
     },
@@ -4025,6 +4044,10 @@
     "__listOfLiveSource":{
       "type":"list",
       "member":{"shape":"LiveSource"}
+    },
+    "__listOfLoggingStrategies":{
+      "type":"list",
+      "member":{"shape":"LoggingStrategy"}
     },
     "__listOfPlaybackConfiguration":{
       "type":"list",

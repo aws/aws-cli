@@ -1,25 +1,24 @@
-**To initiate authorization**
+**To sign in a user as an admin**
 
-This example initiates authorization using the ADMIN_NO_SRP_AUTH flow for username jane@example.com
+The following ``admin-initiate-auth`` example signs in the user diego@example.com. This example also includes metadata for threat protection and ClientMetadata for Lambda triggers. The user is configured for TOTP MFA and receives a challenge to provide a code from their authenticator app before they can complete authentication. ::
 
-The client must have sign-in API for server-based authentication (ADMIN_NO_SRP_AUTH) enabled.
+    aws cognito-idp admin-initiate-auth \
+        --user-pool-id us-west-2_EXAMPLE \
+        --client-id 1example23456789 \
+        --auth-flow ADMIN_USER_PASSWORD_AUTH \
+        --auth-parameters USERNAME=diego@example.com,PASSWORD="My@Example$Password3!",SECRET_HASH=ExampleEncodedClientIdSecretAndUsername= \
+        --context-data="{\"EncodedData\":\"abc123example\",\"HttpHeaders\":[{\"headerName\":\"UserAgent\",\"headerValue\":\"Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0\"}],\"IpAddress\":\"192.0.2.1\",\"ServerName\":\"example.com\",\"ServerPath\":\"/login\"}" \
+        --client-metadata="{\"MyExampleKey\": \"MyExampleValue\"}"
 
-Use the session information in the return value to call `admin-respond-to-auth-challenge`_.
-
-Command::
-
-  aws cognito-idp admin-initiate-auth --user-pool-id us-west-2_aaaaaaaaa --client-id 3n4b5urk1ft4fl3mg5e62d9ado --auth-flow ADMIN_NO_SRP_AUTH --auth-parameters USERNAME=jane@example.com,PASSWORD=password
-  
 Output::
 
-  {
-    "ChallengeName": "NEW_PASSWORD_REQUIRED",
-    "Session": "SESSION",
-    "ChallengeParameters": {
-        "USER_ID_FOR_SRP": "84514837-dcbc-4af1-abff-f3c109334894",
-        "requiredAttributes": "[]",
-        "userAttributes": "{\"email_verified\":\"true\",\"phone_number_verified\":\"true\",\"phone_number\":\"+01xxx5550100\",\"email\":\"jane@example.com\"}"
+    {
+        "ChallengeName": "SOFTWARE_TOKEN_MFA",
+        "Session": "AYABeExample...",
+        "ChallengeParameters": {
+            "FRIENDLY_DEVICE_NAME": "MyAuthenticatorApp",
+            "USER_ID_FOR_SRP": "diego@example.com"
+        }
     }
-  }
-  
-.. _`admin-respond-to-auth-challenge`: https://docs.aws.amazon.com/cli/latest/reference/cognito-idp/admin-respond-to-auth-challenge.html
+
+For more information, see `Admin authentication flow <https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow.html#amazon-cognito-user-pools-admin-authentication-flow>`__ in the *Amazon Cognito Developer Guide*.

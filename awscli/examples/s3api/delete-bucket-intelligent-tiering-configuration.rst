@@ -3,7 +3,7 @@
 The following ``delete-bucket-intelligent-tiering-configuration`` example removes an S3 Intelligent-Tiering configuration, named ExampleConfig, on a bucket. ::
 
     aws s3api delete-bucket-intelligent-tiering-configuration \
-        --bucket DOC-EXAMPLE-BUCKET \
+        --bucket amzn-s3-demo-bucket \
         --id ExampleConfig
 
 This command produces no output.

@@ -3,7 +3,7 @@
 This example describes the specified Auto Scaling group. ::
 
     aws autoscaling describe-auto-scaling-groups \
-        --auto-scaling-group-name my-asg
+        --auto-scaling-group-names my-asg
 
 Output::
 
@@ -66,7 +66,7 @@ This example describes the specified Auto Scaling groups. It allows you to speci
 
     aws autoscaling describe-auto-scaling-groups \
         --max-items 100 \
-        --auto-scaling-group-name "group1" "group2" "group3" "group4"
+        --auto-scaling-group-names "group1" "group2" "group3" "group4"
 
 See example 1 for sample output.
 

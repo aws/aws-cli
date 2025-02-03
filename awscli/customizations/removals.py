@@ -56,7 +56,9 @@ def register_removals(event_handler):
     cmd_remover.remove(on_event='building-command-table.bedrock-agent-runtime',
                          remove_commands=['invoke-agent',
                                           'invoke-flow',
-                                          'optimize-prompt'])
+                                          'invoke-inline-agent',
+                                          'optimize-prompt',
+                                          'retrieve-and-generate-stream'])
     cmd_remover.remove(on_event='building-command-table.qbusiness',
                         remove_commands=['chat'])
     cmd_remover.remove(on_event='building-command-table.iotsitewise',

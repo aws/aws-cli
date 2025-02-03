@@ -11,7 +11,7 @@ Output::
     {
         "ExportDescription": {
             "S3ExportConfiguration": {
-                "Bucket": "awsExampleBucket",
+                "Bucket": "amzn-s3-demo-bucket",
                 "Prefix": "ledgerexport1/",
                 "EncryptionConfiguration": {
                     "ObjectEncryptionType": "SSE_S3"

@@ -24,11 +24,11 @@ Output::
                         }
                     ],
                     "Documents": {
-                        "S3Uri": "s3://DOC-EXAMPLE-BUCKET/trainingdata/dataset/",
+                        "S3Uri": "s3://amzn-s3-demo-bucket/trainingdata/dataset/",
                         "InputFormat": "ONE_DOC_PER_LINE"
                     },
                     "EntityList": {
-                        "S3Uri": "s3://DOC-EXAMPLE-BUCKET/trainingdata/entity.csv"
+                        "S3Uri": "s3://amzn-s3-demo-bucket/trainingdata/entity.csv"
                     }
                 },
                 "RecognizerMetadata": {
@@ -70,11 +70,11 @@ Output::
                         }
                     ],
                     "Documents": {
-                        "S3Uri": "s3://DOC-EXAMPLE-BUCKET/trainingdata/raw_txt.csv",
+                        "S3Uri": "s3://amzn-s3-demo-bucket/trainingdata/raw_txt.csv",
                         "InputFormat": "ONE_DOC_PER_LINE"
                     },
                     "EntityList": {
-                        "S3Uri": "s3://DOC-EXAMPLE-BUCKET/trainingdata/entity_list.csv"
+                        "S3Uri": "s3://amzn-s3-demo-bucket/trainingdata/entity_list.csv"
                     }
                 },
                 "RecognizerMetadata": {

@@ -5,7 +5,7 @@ The following ``create-medical-vocabulary`` example creates a custom vocabulary.
     aws transcribe create-medical-vocabulary \
         --vocabulary-name cli-medical-vocab-example \
         --language-code language-code \
-        --vocabulary-file-uri https://DOC-EXAMPLE-BUCKET.AWS-Region.amazonaws.com/the-text-file-for-the-medical-custom-vocabulary.txt
+        --vocabulary-file-uri https://amzn-s3-demo-bucket.AWS-Region.amazonaws.com/the-text-file-for-the-medical-custom-vocabulary.txt
 
 Output::
 

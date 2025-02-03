@@ -13,7 +13,7 @@ Output::
         "IsPermanentRestore": true
     }
 
-For more information about snapshot archiving, see `Archive Amazon EBS snapshots <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-archive.html>` in the *Amazon EC2 User Guide*.
+For more information about snapshot archiving, see `Archive Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-archive.html>`__ in the *Amazon EBS User Guide*.
 
 **Example 2: To temporarily restore an archived snapshot**
 
@@ -31,7 +31,7 @@ Output::
         "IsPermanentRestore": false
     }
 
-For more information about snapshot archiving, see `Archive Amazon EBS snapshots <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-archive.html>` in the *Amazon EC2 User Guide*.
+For more information about snapshot archiving, see `Archive Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-archive.html>`__ in the *Amazon EBS User Guide*.
 
 **Example 3: To modify the restore period**
 
@@ -49,7 +49,7 @@ Output::
         "IsPermanentRestore": false
     }
 
-For more information about snapshot archiving, see `Archive Amazon EBS snapshots <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-archive.html>` in the *Amazon EC2 User Guide*.
+For more information about snapshot archiving, see `Archive Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-archive.html>`__ in the *Amazon EBS User Guide*.
 
 **Example 4: To modify the restore type**
 
@@ -66,4 +66,4 @@ Output::
         "IsPermanentRestore": true
     }
 
-For more information about snapshot archiving, see `Archive Amazon EBS snapshots <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-archive.html>` in the *Amazon EC2 User Guide*.
+For more information about snapshot archiving, see `Archive Amazon EBS snapshots <https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-archive.html>`__ in the *Amazon EBS User Guide*.

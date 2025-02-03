@@ -16,11 +16,11 @@ Output::
                 "SubmitTime": "2023-06-12T19:14:57.751000+00:00",
                 "EndTime": "2023-06-12T19:21:04.962000+00:00",
                 "InputDataConfig": {
-                    "S3Uri": "s3://DOC-EXAMPLE-SOURCE-BUCKET/EventsData/",
+                    "S3Uri": "s3://amzn-s3-demo-source-bucket/EventsData/",
                     "InputFormat": "ONE_DOC_PER_LINE"
                 },
                 "OutputDataConfig": {
-                    "S3Uri": "s3://DOC-EXAMPLE-DESTINATION-BUCKET/testfolder/1111222233333-EVENTS-aa9593f9203e84f3ef032ce18EXAMPLE/output/"
+                    "S3Uri": "s3://amzn-s3-demo-destination-bucket/testfolder/1111222233333-EVENTS-aa9593f9203e84f3ef032ce18EXAMPLE/output/"
                 },
                 "LanguageCode": "en",
                 "DataAccessRoleArn": "arn:aws:iam::1111222233333:role/service-role/AmazonComprehendServiceRole-example-role",
@@ -40,11 +40,11 @@ Output::
                 "SubmitTime": "2023-06-12T19:55:43.702000+00:00",
                 "EndTime": "2023-06-12T20:03:49.893000+00:00",
                 "InputDataConfig": {
-                    "S3Uri": "s3://DOC-EXAMPLE-SOURCE-BUCKET/EventsData/",
+                    "S3Uri": "s3://amzn-s3-demo-source-bucket/EventsData/",
                     "InputFormat": "ONE_DOC_PER_LINE"
                 },
                 "OutputDataConfig": {
-                    "S3Uri": "s3://DOC-EXAMPLE-DESTINATION-BUCKET/testfolder/1111222233333-EVENTS-4a990a2f7e82adfca6e171135EXAMPLE/output/"
+                    "S3Uri": "s3://amzn-s3-demo-destination-bucket/testfolder/1111222233333-EVENTS-4a990a2f7e82adfca6e171135EXAMPLE/output/"
                 },
                 "LanguageCode": "en",
                 "DataAccessRoleArn": "arn:aws:iam::1111222233333:role/service-role/AmazonComprehendServiceRole-example-role",

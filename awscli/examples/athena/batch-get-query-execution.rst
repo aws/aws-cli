@@ -14,7 +14,7 @@ Output::
                 "Query": "create database if not exists webdata",
                 "StatementType": "DDL",
                 "ResultConfiguration": {
-                    "OutputLocation": "s3://awsdoc-example-bucket/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111.txt"
+                    "OutputLocation": "s3://amzn-s3-demo-bucket/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111.txt"
                 },
                 "QueryExecutionContext": {},
                 "Status": {
@@ -38,7 +38,7 @@ Output::
                 "Query": "select date, location, browser, uri, status from cloudfront_logs where method = 'GET' and status = 200 and location like 'SFO%' limit 10",
                 "StatementType": "DML",
                 "ResultConfiguration": {
-                    "OutputLocation": "s3://awsdoc-example-bucket/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222.csv"
+                    "OutputLocation": "s3://amzn-s3-demo-bucket/a1b2c3d4-5678-90ab-cdef-EXAMPLE22222.csv"
                 },
                 "QueryExecutionContext": {
                     "Database": "mydatabase",

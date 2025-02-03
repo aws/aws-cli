@@ -16,4 +16,4 @@ Output::
         ]
     }
 
-For more information, see `Working with Capacity Reservations <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-using.html>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Capacity Reservation groups <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-cr-group.html>`__ in the *Amazon EC2 User Guide*.

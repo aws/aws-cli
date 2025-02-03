@@ -41,7 +41,7 @@ Output::
             "Parameters": {
                 "EXTERNAL": "TRUE",
                 "inputformat": "com.esri.json.hadoop.EnclosedJsonInputFormat",
-                "location": "s3://awsdoc-example-bucket/json",
+                "location": "s3://amzn-s3-demo-bucket/json",
                 "outputformat": "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat",
                 "serde.param.serialization.format": "1",
                 "serde.serialization.lib": "com.esri.hadoop.hive.serde.JsonSerde",

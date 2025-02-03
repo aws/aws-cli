@@ -24,4 +24,4 @@ Output::
         }
     }
 
-For more information, see `Working with multicast <https://docs.aws.amazon.com/vpc/latest/tgw/working-with-multicast.html>`__ in the *Transit Gateways Guide*'.
+For more information, see `Multicast domains <https://docs.aws.amazon.com/vpc/latest/tgw/multicast-domains-about.html>`__ in the *Transit Gateways Guide*'.

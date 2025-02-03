@@ -1,9 +1,9 @@
 **To query data about one or more S3 buckets that Amazon Macie monitors and analyzes for your account**
 
-The following ``describe-buckets`` example queries metadata for all S3 buckets whose names begin with MY-S3 and are in the current AWS Region. ::
+The following ``describe-buckets`` example queries metadata for all S3 buckets whose names begin with amzn-s3-demo-bucket and are in the current AWS Region. ::
 
     aws macie2 describe-buckets \
-        --criteria '{"bucketName":{"prefix":"my-S3"}}'
+        --criteria '{"bucketName":{"prefix":"amzn-s3-demo-bucket"}}'
 
 Output::
 
@@ -12,19 +12,20 @@ Output::
             {
                 "accountId": "123456789012",
                 "allowsUnencryptedObjectUploads": "FALSE",
-                "bucketArn": "arn:aws:s3:::MY-S3-DOC-EXAMPLE-BUCKET1",
+                "automatedDiscoveryMonitoringStatus": "MONITORED",
+                "bucketArn": "arn:aws:s3:::amzn-s3-demo-bucket1",
                 "bucketCreatedAt": "2020-05-18T19:54:00+00:00",
-                "bucketName": "MY-S3-DOC-EXAMPLE-BUCKET1",
+                "bucketName": "amzn-s3-demo-bucket1",
                 "classifiableObjectCount": 13,
                 "classifiableSizeInBytes": 1592088,
                 "jobDetails": {
                     "isDefinedInJob": "TRUE",
                     "isMonitoredByJob": "TRUE",
-                    "lastJobId": "08c81dc4a2f3377fae45c9ddaexample",
-                    "lastJobRunTime": "2021-04-26T14:55:30.270000+00:00"
+                    "lastJobId": "08c81dc4a2f3377fae45c9ddaEXAMPLE",
+                    "lastJobRunTime": "2024-08-19T14:55:30.270000+00:00"
                 },
-                "lastAutomatedDiscoveryTime": "2022-12-10T19:11:25.364000+00:00",
-                "lastUpdated": "2022-12-13T07:33:06.337000+00:00",
+                "lastAutomatedDiscoveryTime": "2024-10-22T19:11:25.364000+00:00",
+                "lastUpdated": "2024-10-25T07:33:06.337000+00:00",
                 "objectCount": 13,
                 "objectCountByEncryptionType": {
                     "customerManaged": 0,
@@ -101,19 +102,20 @@ Output::
             {
                 "accountId": "123456789012",
                 "allowsUnencryptedObjectUploads": "TRUE",
-                "bucketArn": "arn:aws:s3:::MY-S3-DOC-EXAMPLE-BUCKET2",
+                "automatedDiscoveryMonitoringStatus": "MONITORED",
+                "bucketArn": "arn:aws:s3:::amzn-s3-demo-bucket2",
                 "bucketCreatedAt": "2020-11-25T18:24:38+00:00",
-                "bucketName": "MY-S3-DOC-EXAMPLE-BUCKET2",
+                "bucketName": "amzn-s3-demo-bucket2",
                 "classifiableObjectCount": 8,
                 "classifiableSizeInBytes": 133810,
                 "jobDetails": {
                     "isDefinedInJob": "TRUE",
                     "isMonitoredByJob": "FALSE",
-                    "lastJobId": "188d4f6044d621771ef7d65f2example",
-                    "lastJobRunTime": "2021-04-09T19:37:11.511000+00:00"
+                    "lastJobId": "188d4f6044d621771ef7d65f2EXAMPLE",
+                    "lastJobRunTime": "2024-07-09T19:37:11.511000+00:00"
                 },
-                "lastAutomatedDiscoveryTime": "2022-12-12T19:11:25.364000+00:00",
-                "lastUpdated": "2022-12-13T07:33:06.337000+00:00",
+                "lastAutomatedDiscoveryTime": "2024-10-24T19:11:25.364000+00:00",
+                "lastUpdated": "2024-10-25T07:33:06.337000+00:00",
                 "objectCount": 8,
                 "objectCountByEncryptionType": {
                     "customerManaged": 0,

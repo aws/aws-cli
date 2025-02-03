@@ -71,6 +71,7 @@ class TestCreateRoleAssociationsCommand:
 
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
+        assert len(result.aws_requests) == len(start_job_run_service_accounts) + 1
         for i in range(len(start_job_run_service_accounts)):
             self.assert_call_matches(
                 result.aws_requests[i + 1],
@@ -122,6 +123,7 @@ class TestCreateRoleAssociationsCommand:
 
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
+        assert len(result.aws_requests) == len(interactive_endpoint_service_accounts) + 1
         for i in range(len(interactive_endpoint_service_accounts)):
             self.assert_call_matches(
                 result.aws_requests[i + 1],
@@ -173,6 +175,7 @@ class TestCreateRoleAssociationsCommand:
 
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
+        assert len(result.aws_requests) == len(spark_operator_service_accounts) + 1
         for i in range(len(spark_operator_service_accounts)):
             self.assert_call_matches(
                 result.aws_requests[i + 1],
@@ -223,9 +226,9 @@ class TestCreateRoleAssociationsCommand:
                 "spark-operator",
             ]
         )
-
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
+        assert len(result.aws_requests) == len(spark_operator_service_accounts) + 1
         for i in range(len(spark_operator_service_accounts)):
             ns = "spark-operator" if i == 0 else namespace
             self.assert_call_matches(
@@ -278,6 +281,7 @@ class TestCreateRoleAssociationsCommand:
 
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
+        assert len(result.aws_requests) == len(flink_operator_service_accounts) + 1
         for i in range(len(flink_operator_service_accounts)):
             self.assert_call_matches(
                 result.aws_requests[i + 1],
@@ -331,6 +335,7 @@ class TestCreateRoleAssociationsCommand:
 
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
+        assert len(result.aws_requests) == len(flink_operator_service_accounts) + 1
         for i in range(len(flink_operator_service_accounts)):
             ns = "flink-operator" if i == 0 else namespace
             self.assert_call_matches(
@@ -380,6 +385,7 @@ class TestCreateRoleAssociationsCommand:
 
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
+        assert len(result.aws_requests) == len(livy_service_accounts) + 1
         for i in range(len(livy_service_accounts)):
             self.assert_call_matches(
                 result.aws_requests[i + 1],
@@ -430,6 +436,7 @@ class TestCreateRoleAssociationsCommand:
 
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
+        assert len(result.aws_requests) == len(livy_service_accounts) + 1
         for i in range(len(livy_service_accounts)):
             ns = "livy" if i == 0 else namespace
             self.assert_call_matches(
@@ -476,6 +483,7 @@ class TestCreateRoleAssociationsCommand:
 
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
+        assert len(result.aws_requests) == 2
         self.assert_call_matches(
             result.aws_requests[1], "test_sa", cluster_name, namespace, role_arn
         )

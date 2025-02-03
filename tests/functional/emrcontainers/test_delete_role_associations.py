@@ -73,6 +73,7 @@ class TestDeleteRoleAssociationsCommand:
         assert (
             result.aws_requests[request_idx].operation_name == "DescribeCluster"
         )
+        assert len(result.aws_requests) == (len(start_job_run_service_accounts) * 2) + 1
         for i in range(len(start_job_run_service_accounts)):
             request_idx += 1
             self.assert_list_call_matches(
@@ -130,6 +131,7 @@ class TestDeleteRoleAssociationsCommand:
         assert (
             result.aws_requests[request_idx].operation_name == "DescribeCluster"
         )
+        assert len(result.aws_requests) == (len(interactive_endpoint_service_accounts) * 2) + 1
         for i in range(len(interactive_endpoint_service_accounts)):
             request_idx += 1
             self.assert_list_call_matches(
@@ -187,6 +189,7 @@ class TestDeleteRoleAssociationsCommand:
         assert (
             result.aws_requests[request_idx].operation_name == "DescribeCluster"
         )
+        assert len(result.aws_requests) == (len(spark_operator_service_accounts) * 2) + 1
         for i in range(len(spark_operator_service_accounts)):
             request_idx += 1
             self.assert_list_call_matches(
@@ -246,6 +249,7 @@ class TestDeleteRoleAssociationsCommand:
         assert (
             result.aws_requests[request_idx].operation_name == "DescribeCluster"
         )
+        assert len(result.aws_requests) == (len(spark_operator_service_accounts) * 2) + 1
         for i in range(len(spark_operator_service_accounts)):
             request_idx += 1
             ns = "spark-operator" if i == 0 else namespace
@@ -304,6 +308,7 @@ class TestDeleteRoleAssociationsCommand:
         assert (
             result.aws_requests[request_idx].operation_name == "DescribeCluster"
         )
+        assert len(result.aws_requests) == (len(flink_operator_service_accounts) * 2) + 1
         for i in range(len(flink_operator_service_accounts)):
             request_idx += 1
             self.assert_list_call_matches(
@@ -363,6 +368,7 @@ class TestDeleteRoleAssociationsCommand:
         assert (
             result.aws_requests[request_idx].operation_name == "DescribeCluster"
         )
+        assert len(result.aws_requests) == (len(flink_operator_service_accounts) * 2) + 1
         for i in range(len(flink_operator_service_accounts)):
             request_idx += 1
             ns = "flink-operator" if i == 0 else namespace
@@ -421,6 +427,7 @@ class TestDeleteRoleAssociationsCommand:
         assert (
             result.aws_requests[request_idx].operation_name == "DescribeCluster"
         )
+        assert len(result.aws_requests) == (len(livy_service_accounts) * 2) + 1
         for i in range(len(livy_service_accounts)):
             request_idx += 1
             self.assert_list_call_matches(
@@ -480,6 +487,7 @@ class TestDeleteRoleAssociationsCommand:
         assert (
             result.aws_requests[request_idx].operation_name == "DescribeCluster"
         )
+        assert len(result.aws_requests) == (len(livy_service_accounts) * 2) + 1
         for i in range(len(livy_service_accounts)):
             request_idx += 1
             ns = "livy" if i == 0 else namespace
@@ -533,6 +541,7 @@ class TestDeleteRoleAssociationsCommand:
 
         assert result.aws_requests[0].service_name == "eks"
         assert result.aws_requests[0].operation_name == "DescribeCluster"
+        assert len(result.aws_requests) == 3
         self.assert_list_call_matches(
             result.aws_requests[1], "test_sa", cluster_name, namespace
         )

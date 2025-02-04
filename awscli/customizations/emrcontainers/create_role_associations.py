@@ -167,7 +167,7 @@ class CreateRoleAssociationsCommand(BasicCommand):
                     for result in results:
                         uni_print(
                             f"Rolling back association for service account {service_account_name} "
-                            f"and role {self._role_name} in namespace {namespace} as encountered an error\n",
+                            f"and role {self._role_name} in namespace {namespace} as an error was encountered\n",
                             out_file=sys.stderr,
                         )
                         eks_client.delete_pod_identity_association(

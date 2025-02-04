@@ -1,7 +1,7 @@
-**Create role associations of an IAM Role with EMR service accounts to be used with Amazon EMR on EKS**
+**To create role associations of an IAM Role with EMR service accounts to be used with Amazon EMR on EKS**
 
-The following command creates EKS pod identity associations of a role named **example_iam_role** with EMR service accounts such that it can be used with Amazon EMR on EKS with
-**example_namespace** namespace from an EKS cluster named **example_cluster**::
+The following ``create-role-associations`` example command creates EKS pod identity associations of a role named **example_iam_role** with EMR service accounts such that it can be used with Amazon EMR on EKS with
+**example_namespace** namespace from an EKS cluster named **example_cluster**.::
 
     aws emr-containers create-role-associations \
         --cluster-name example_cluster \

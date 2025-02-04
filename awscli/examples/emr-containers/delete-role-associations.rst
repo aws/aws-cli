@@ -1,9 +1,9 @@
-**Delete role associations of an IAM Role with EMR service accounts**
+**To delete role associations of an IAM Role with EMR service accounts**
 
 EKS allows associations with non existing resources (namespace, service account), so EMR on EKS suggest to delete the associations if the namespace is deleted or the role is not in use to release the space for other associations.
 
-This example command deletes EKS pod identity associations of a role named **example_iam_role** with EMR service accounts such that it can be removed from Amazon EMR on EKS with
-**example_namespace** namespace from an EKS cluster named **example_cluster**::
+The following ``delete-role-associations`` example command deletes EKS pod identity associations of a role named **example_iam_role** with EMR service accounts such that it can be removed from Amazon EMR on EKS with
+**example_namespace** namespace from an EKS cluster named **example_cluster**.::
 
     aws emr-containers delete-role-associations \
         --cluster-name example_cluster \

@@ -582,6 +582,6 @@ class TestDeleteRoleAssociationsCommand:
         for service_account in start_job_run_service_accounts:
             expected_out += (
                 f"Skipping deletion as no pod identity association found for service account {service_account} "
-                + f"and role {role_name} in namespace {namespace}\n"
+                f"and role {role_name} in namespace {namespace}\n"
             )
         assert result.stderr == expected_out

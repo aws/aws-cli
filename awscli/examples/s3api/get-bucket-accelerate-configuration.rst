@@ -3,7 +3,7 @@
 The following ``get-bucket-accelerate-configuration`` example retrieves the accelerate configuration for the specified bucket. ::
 
     aws s3api get-bucket-accelerate-configuration \
-        --bucket my-bucket
+        --bucket amzn-s3-demo-bucket
 
 Output::
 

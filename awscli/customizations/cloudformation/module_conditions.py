@@ -20,6 +20,7 @@ This section is not emitted into the output.
 We have to be able to fully resolve it locally.
 """
 
+from collections import OrderedDict
 from awscli.customizations.cloudformation import exceptions
 
 AND = "Fn::And"
@@ -56,19 +57,21 @@ def resolve_if(v, find_ref, prior):
 # pylint: disable=too-many-branches,too-many-statements
 def istrue(v, find_ref, prior):
     "Recursive function to evaluate a Condition"
+    if not isdict(v):
+        return False
     retval = False
     if EQUALS in v:
         eq = v[EQUALS]
         if len(eq) == 2:
             val0 = eq[0]
             val1 = eq[1]
-            if IF in val0:
+            if isdict(val0) and IF in val0:
                 val0 = resolve_if(val0[IF], find_ref, prior)
-            if IF in val1:
+            if isdict(val1) and IF in val1:
                 val1 = resolve_if(val1[IF], find_ref, prior)
-            if REF in val0:
+            if isdict(val0) and REF in val0:
                 val0 = find_ref(val0[REF])
-            if REF in val1:
+            if isdict(val1) and REF in val1:
                 val1 = find_ref(val1[REF])
             retval = val0 == val1
         else:
@@ -114,3 +117,8 @@ def istrue(v, find_ref, prior):
             # We are depending on the author putting them in order
 
     return retval
+
+
+def isdict(v):
+    "Returns True if the type is a dict or OrderedDict"
+    return isinstance(v, (dict, OrderedDict))

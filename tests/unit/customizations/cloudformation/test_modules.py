@@ -101,6 +101,7 @@ class TestPackageModules(unittest.TestCase):
             "example",
             "getatt",
             "constant",
+            "proparray",
         ]
         for test in tests:
             base = "unit/customizations/cloudformation/modules"

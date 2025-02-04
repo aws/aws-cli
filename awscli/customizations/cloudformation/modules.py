@@ -544,6 +544,8 @@ class Module:
                         resolved = "${" + self.name + ".".join(getatt) + "}"
                     elif SUB in output:
                         resolved = "${" + self.name + output[SUB] + "}"
+                    elif REF in output:
+                        resolved = "${" + self.name + output[REF] + "}"
                 sub += resolved
 
         d[n] = {SUB: sub}
@@ -715,8 +717,6 @@ class Module:
             k = BucketName, v = {!Ref, Name}, d = Bucket{}, n = Properties
         """
 
-        # print(f"k: {k}, v: {v}, d: {d}, n: {n}")
-
         if k == REF:
             self.resolve_ref(v, d, n)
         elif k == SUB:
@@ -766,7 +766,6 @@ class Module:
 
         Use the same logic as with resolve_ref.
         """
-        # print(f"resolve_sub v: {v}, d: {d}, n: {n}")
         words = parse_sub(v, True)
         sub = ""
         need_sub = False
@@ -830,7 +829,6 @@ class Module:
         :param name The name to search for
         :return The referenced element or None
         """
-        # print(f"find_ref {name}, props: {self.props}, params: {self.params}")
         if name in self.props:
             if name not in self.params:
                 # The parent tried to set a property that doesn't exist

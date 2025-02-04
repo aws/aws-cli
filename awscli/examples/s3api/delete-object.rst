@@ -1,6 +1,6 @@
-The following command deletes an object named ``test.txt`` from a bucket named ``my-bucket``::
+The following command deletes an object named ``test.txt`` from a bucket named ``amzn-s3-demo-bucket``::
 
-  aws s3api delete-object --bucket my-bucket --key test.txt
+  aws s3api delete-object --bucket amzn-s3-demo-bucket --key test.txt
 
 If bucket versioning is enabled, the output will contain the version ID of the delete marker::
 

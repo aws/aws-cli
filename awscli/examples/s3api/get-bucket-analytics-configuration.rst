@@ -3,7 +3,7 @@
 The following ``get-bucket-analytics-configuration`` example displays the analytics configuration for the specified bucket and ID. ::
 
     aws s3api get-bucket-analytics-configuration \
-        --bucket my-bucket \
+        --bucket amzn-s3-demo-bucket \
         --id 1
 
 Output::

@@ -3,9 +3,9 @@
 The following ``upload-part-copy`` example uploads a part by copying data from an existing object as a data source. ::
 
     aws s3api upload-part-copy \
-        --bucket my-bucket \
+        --bucket amzn-s3-demo-bucket \
         --key "Map_Data_June.mp4" \
-        --copy-source "my-bucket/copy_of_Map_Data_June.mp4" \
+        --copy-source "amzn-s3-demo-bucket/copy_of_Map_Data_June.mp4" \
         --part-number 1 \
         --upload-id "bq0tdE1CDpWQYRPLHuNG50xAT6pA5D.m_RiBy0ggOH6b13pVRY7QjvLlf75iFdJqp_2wztk5hvpUM2SesXgrzbehG5hViyktrfANpAD0NO.Nk3XREBqvGeZF6U3ipiSm"
 

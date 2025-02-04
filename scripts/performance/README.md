@@ -251,6 +251,12 @@ is the value of the dimension (e.g. `32MB`).
 - `environment` (object) **(optional)**: Specifies settings for the environment to run 
 the command in. 
   - The environment object supports the following keys:
+    - `file_literals` (list) **(optional)**: Specifies files that must be 
+created before executing the benchmark. The files created will contain 
+the specified contents.
+      - Each element is an object with the following keys:
+        - `name` (string): Name of the file to create
+        - `content` (string): The contents of the file.
     - `files` (list) **(optional)**: Specifies the files that must be 
 created before executing the benchmark. The files created will be filled with 
 null bytes to achieve the specified size.

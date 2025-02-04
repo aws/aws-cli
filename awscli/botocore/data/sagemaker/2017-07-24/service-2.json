@@ -7655,7 +7655,10 @@
           "shape":"InstanceGroupTrainingPlanStatus",
           "documentation":"<p>The current status of the training plan associated with this cluster instance group.</p>"
         },
-        "OverrideVpcConfig":{"shape":"VpcConfig"}
+        "OverrideVpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The customized VPC configuration at the instance group level that overrides the default VPC configuration of the SageMaker HyperPod cluster.</p>"
+        }
       },
       "documentation":"<p>Details of an instance group in a SageMaker HyperPod cluster.</p>"
     },
@@ -7715,7 +7718,10 @@
           "shape":"TrainingPlanArn",
           "documentation":"<p>The Amazon Resource Name (ARN); of the training plan to use for this cluster instance group.</p> <p>For more information about how to reserve GPU capacity for your SageMaker HyperPod clusters using Amazon SageMaker Training Plan, see <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingPlan.html\">CreateTrainingPlan</a> </code>.</p>"
         },
-        "OverrideVpcConfig":{"shape":"VpcConfig"}
+        "OverrideVpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>To configure multi-AZ deployments, customize the VPC configuration at the instance group level. You can specify different subnets and security groups across different AZs in the instance group specification to override a SageMaker HyperPod cluster's default VPC configuration. For more information about deploying a cluster in multiple AZs, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-prerequisites.html#sagemaker-hyperpod-prerequisites-multiple-availability-zones\">Setting up SageMaker HyperPod clusters across multiple AZs</a>.</p> <note> <p> If you configure your VPC with IPv6 support and specify subnets with IPv6 addressing enabled in your instance group VPC configuration, the nodes automatically use IPv6 addressing for network communication.</p> <p> For information about adding IPv6 support for your VPC, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-migrate-ipv6.html\">IPv6 support for your VPC</a>.</p> <p> For information about creating a new VPC for use with IPv6, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/create-vpc.html\">Create a VPC</a>.</p> </note>"
+        }
       },
       "documentation":"<p>The specifications of an instance group that you need to define.</p>"
     },
@@ -7934,7 +7940,10 @@
           "shape":"ClusterLifeCycleConfig",
           "documentation":"<p>The LifeCycle configuration applied to the instance.</p>"
         },
-        "OverrideVpcConfig":{"shape":"VpcConfig"},
+        "OverrideVpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The customized VPC configuration at the instance group level that overrides the default VPC configuration of the SageMaker HyperPod cluster.</p>"
+        },
         "ThreadsPerCore":{
           "shape":"ClusterThreadsPerCore",
           "documentation":"<p>The number of threads per CPU core you specified under <code>CreateCluster</code>.</p>"
@@ -7949,7 +7958,7 @@
         },
         "PrivatePrimaryIpv6":{
           "shape":"ClusterPrivatePrimaryIpv6",
-          "documentation":"<p>The private primary IPv6 address of the SageMaker HyperPod cluster node.</p>"
+          "documentation":"<p>The private primary IPv6 address of the SageMaker HyperPod cluster node when configured with an Amazon VPC that supports IPv6 and includes subnets with IPv6 addressing enabled in either the cluster VPC configuration or the instance group VPC configuration.</p>"
         },
         "PrivateDnsHostname":{
           "shape":"ClusterPrivateDnsHostname",
@@ -9311,7 +9320,10 @@
           "shape":"ClusterInstanceGroupSpecifications",
           "documentation":"<p>The instance groups to be created in the SageMaker HyperPod cluster.</p>"
         },
-        "VpcConfig":{"shape":"VpcConfig"},
+        "VpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>Specifies the Amazon Virtual Private Cloud (VPC) that is associated with the Amazon SageMaker HyperPod cluster. You can control access to and from your resources by configuring your VPC. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html\">Give SageMaker access to resources in your Amazon VPC</a>.</p> <note> <p> If you configure your VPC with IPv6 support and specify subnets with IPv6 addressing enabled in your VPC configuration, the cluster automatically uses IPv6 addressing for network communication.</p> <p> For information about adding IPv6 support for your VPC, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-migrate-ipv6.html\">IPv6 support for your VPC</a>.</p> <p> For information about creating a new VPC for use with IPv6, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/create-vpc.html\">Create a VPC</a>.</p> </note>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>Custom tags for managing the SageMaker HyperPod cluster as an Amazon Web Services resource. You can add tags to your cluster in the same way you add them in other Amazon Web Services services that support tagging. To learn more about tagging Amazon Web Services resources in general, see <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging.html\">Tagging Amazon Web Services Resources User Guide</a>.</p>"

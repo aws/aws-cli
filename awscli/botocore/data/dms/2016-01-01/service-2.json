@@ -2202,6 +2202,10 @@
           "shape":"SourceDataSettings",
           "documentation":"<p>Specifies information about the source data provider.</p>"
         },
+        "TargetDataSettings":{
+          "shape":"TargetDataSettings",
+          "documentation":"<p>Specifies information about the target data provider.</p>"
+        },
         "NumberOfJobs":{
           "shape":"IntegerOptional",
           "documentation":"<p>The number of parallel jobs that trigger parallel threads to unload the tables from the source, and then load them to the target.</p>"
@@ -2932,6 +2936,10 @@
         "SourceDataSettings":{
           "shape":"SourceDataSettings",
           "documentation":"<p>Specifies information about the data migration's source data provider.</p>"
+        },
+        "TargetDataSettings":{
+          "shape":"TargetDataSettings",
+          "documentation":"<p>Specifies information about the data migration's target data provider.</p>"
         },
         "DataMigrationStatistics":{
           "shape":"DataMigrationStatistics",
@@ -6135,18 +6143,18 @@
       "members":{
         "KeyCacheSecretId":{
           "shape":"String",
-          "documentation":"<p>Specifies the secret ID of the key cache for the replication instance.</p>"
+          "documentation":"<p>Specifies the ID of the secret that stores the key cache file required for kerberos authentication.</p>"
         },
         "KeyCacheSecretIamArn":{
           "shape":"String",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the IAM role that grants Amazon Web Services DMS access to the secret containing key cache file for the replication instance.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the IAM role that grants Amazon Web Services DMS access to the secret containing key cache file for the kerberos authentication.</p>"
         },
         "Krb5FileContents":{
           "shape":"String",
-          "documentation":"<p>Specifies the ID of the secret that stores the key cache file required for kerberos authentication of the replication instance.</p>"
+          "documentation":"<p>Specifies the contents of krb5 configuration file required for kerberos authentication.</p>"
         }
       },
-      "documentation":"<p>Specifies using Kerberos authentication settings for use with DMS.</p>"
+      "documentation":"<p>Specifies the settings required for kerberos authentication when creating the replication instance.</p>"
     },
     "KeyList":{
       "type":"list",
@@ -6376,7 +6384,7 @@
         },
         "AuthenticationMethod":{
           "shape":"SqlServerAuthenticationMethod",
-          "documentation":"<p>Specifies using Kerberos authentication with Microsoft SQL Server.</p>"
+          "documentation":"<p>Specifies the authentication method to be used with Microsoft SQL Server.</p>"
         }
       },
       "documentation":"<p>Provides information that defines a Microsoft SQL Server endpoint.</p>"
@@ -6518,6 +6526,10 @@
         "SourceDataSettings":{
           "shape":"SourceDataSettings",
           "documentation":"<p>The new information about the source data provider for the data migration.</p>"
+        },
+        "TargetDataSettings":{
+          "shape":"TargetDataSettings",
+          "documentation":"<p>The new information about the target data provider for the data migration.</p>"
         },
         "NumberOfJobs":{
           "shape":"IntegerOptional",
@@ -7567,7 +7579,7 @@
         },
         "AuthenticationMethod":{
           "shape":"OracleAuthenticationMethod",
-          "documentation":"<p>Specifies using Kerberos authentication with Oracle.</p>"
+          "documentation":"<p>Specifies the authentication method to be used with Oracle.</p>"
         }
       },
       "documentation":"<p>Provides information that defines an Oracle endpoint.</p>"
@@ -10175,6 +10187,14 @@
       "type":"list",
       "member":{"shape":"TableToReload"}
     },
+    "TablePreparationMode":{
+      "type":"string",
+      "enum":[
+        "do-nothing",
+        "truncate",
+        "drop-tables-on-target"
+      ]
+    },
     "TableStatistics":{
       "type":"structure",
       "members":{
@@ -10316,6 +10336,20 @@
     "TagList":{
       "type":"list",
       "member":{"shape":"Tag"}
+    },
+    "TargetDataSetting":{
+      "type":"structure",
+      "members":{
+        "TablePreparationMode":{
+          "shape":"TablePreparationMode",
+          "documentation":"<p>This setting determines how DMS handles the target tables before starting a data migration, either by leaving them untouched, dropping and recreating them, or truncating the existing data in the target tables.</p>"
+        }
+      },
+      "documentation":"<p>Defines settings for a target data provider for a data migration.</p>"
+    },
+    "TargetDataSettings":{
+      "type":"list",
+      "member":{"shape":"TargetDataSetting"}
     },
     "TargetDbType":{
       "type":"string",

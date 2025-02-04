@@ -3,7 +3,7 @@
 The following ``put-object-retention`` example sets an object retention configuration for the specified object until 2025-01-01. ::
 
     aws s3api put-object-retention \
-        --bucket my-bucket-with-object-lock \
+        --bucket amzn-s3-demo-bucket-with-object-lock \
         --key doc1.rtf \
         --retention '{ "Mode": "GOVERNANCE", "RetainUntilDate": "2025-01-01T00:00:00" }'
 

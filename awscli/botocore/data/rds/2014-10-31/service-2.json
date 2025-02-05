@@ -479,7 +479,7 @@
         {"shape":"DBParameterGroupQuotaExceededFault"},
         {"shape":"DBParameterGroupAlreadyExistsFault"}
       ],
-      "documentation":"<p>Creates a new DB parameter group.</p> <p>A DB parameter group is initially created with the default parameters for the database engine used by the DB instance. To provide custom values for any of the parameters, you must modify the group after creating it using <code>ModifyDBParameterGroup</code>. Once you've created a DB parameter group, you need to associate it with your DB instance using <code>ModifyDBInstance</code>. When you associate a new DB parameter group with a running DB instance, you need to reboot the DB instance without failover for the new DB parameter group and associated settings to take effect.</p> <p>This command doesn't apply to RDS Custom.</p> <important> <p>After you create a DB parameter group, you should wait at least 5 minutes before creating your first DB instance that uses that DB parameter group as the default parameter group. This allows Amazon RDS to fully complete the create action before the parameter group is used as the default for a new DB instance. This is especially important for parameters that are critical when creating the default database for a DB instance, such as the character set for the default database defined by the <code>character_set_database</code> parameter. You can use the <i>Parameter Groups</i> option of the <a href=\"https://console.aws.amazon.com/rds/\">Amazon RDS console</a> or the <i>DescribeDBParameters</i> command to verify that your DB parameter group has been created or modified.</p> </important>"
+      "documentation":"<p>Creates a new DB parameter group.</p> <p>A DB parameter group is initially created with the default parameters for the database engine used by the DB instance. To provide custom values for any of the parameters, you must modify the group after creating it using <code>ModifyDBParameterGroup</code>. Once you've created a DB parameter group, you need to associate it with your DB instance using <code>ModifyDBInstance</code>. When you associate a new DB parameter group with a running DB instance, you need to reboot the DB instance without failover for the new DB parameter group and associated settings to take effect.</p> <p>This command doesn't apply to RDS Custom.</p>"
     },
     "CreateDBProxy":{
       "name":"CreateDBProxy",
@@ -2283,7 +2283,7 @@
         {"shape":"InvalidIntegrationStateFault"},
         {"shape":"IntegrationConflictOperationFault"}
       ],
-      "documentation":"<p>Modifies a zero-ETL integration with Amazon Redshift.</p> <note> <p>Currently, you can only modify integrations that have Aurora MySQL source DB clusters. Integrations with Aurora PostgreSQL and RDS sources currently don't support modifying the integration.</p> </note>"
+      "documentation":"<p>Modifies a zero-ETL integration with Amazon Redshift.</p>"
     },
     "ModifyOptionGroup":{
       "name":"ModifyOptionGroup",
@@ -5271,7 +5271,7 @@
         "Tags":{"shape":"TagList"},
         "DataFilter":{
           "shape":"DataFilter",
-          "documentation":"<p>Data filtering options for the integration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/zero-etl.filtering.html\">Data filtering for Aurora zero-ETL integrations with Amazon Redshift</a>. </p> <p>Valid for: Integrations with Aurora MySQL source DB clusters only</p>"
+          "documentation":"<p>Data filtering options for the integration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/zero-etl.filtering.html\">Data filtering for Aurora zero-ETL integrations with Amazon Redshift</a> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/zero-etl.filtering.html\">Data filtering for Amazon RDS zero-ETL integrations with Amazon Redshift</a>. </p>"
         },
         "Description":{
           "shape":"IntegrationDescription",
@@ -5452,7 +5452,7 @@
       "members":{
         "AllocatedStorage":{
           "shape":"IntegerOptional",
-          "documentation":"<p>For all database engines except Amazon Aurora, <code>AllocatedStorage</code> specifies the allocated storage size in gibibytes (GiB). For Aurora, <code>AllocatedStorage</code> always returns 1, because Aurora DB cluster storage size isn't fixed, but instead automatically adjusts as needed.</p>"
+          "documentation":"<p> <code>AllocatedStorage</code> specifies the allocated storage size in gibibytes (GiB). For Aurora, <code>AllocatedStorage</code> can vary because Aurora DB cluster storage size adjusts as needed.</p>"
         },
         "AvailabilityZones":{
           "shape":"AvailabilityZones",
@@ -8808,7 +8808,7 @@
         },
         "DeleteAutomatedBackups":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether to remove automated backups immediately after the DB cluster is deleted. This parameter isn't case-sensitive. The default is to remove automated backups immediately after the DB cluster is deleted.</p>"
+          "documentation":"<p>Specifies whether to remove automated backups immediately after the DB cluster is deleted. This parameter isn't case-sensitive. The default is to remove automated backups immediately after the DB cluster is deleted, unless the Amazon Web Services Backup policy specifies a point-in-time restore rule.</p>"
         }
       },
       "documentation":"<p/>"
@@ -12891,7 +12891,7 @@
         },
         "NewName":{
           "shape":"String",
-          "documentation":"<p>The new name for the modified <code>DBProxyTarget</code>. An identifier must begin with a letter and must contain only ASCII letters, digits, and hyphens; it can't end with a hyphen or contain two consecutive hyphens.</p>"
+          "documentation":"<p>The new name for the modified <code>DBProxyTarget</code>. An identifier must begin with a letter and must contain only ASCII letters, digits, and hyphens; it can't end with a hyphen or contain two consecutive hyphens.</p> <p>You can't rename the <code>default</code> target group.</p>"
         }
       }
     },
@@ -13110,7 +13110,7 @@
         },
         "DataFilter":{
           "shape":"DataFilter",
-          "documentation":"<p>A new data filter for the integration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Zero_ETL_Filtering.html\">Data filtering for Aurora zero-ETL integrations with Amazon Redshift</a>.</p>"
+          "documentation":"<p>A new data filter for the integration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Zero_ETL_Filtering.html\">Data filtering for Aurora zero-ETL integrations with Amazon Redshift</a> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/zero-etl.filtering.html\">Data filtering for Amazon RDS zero-ETL integrations with Amazon Redshift</a>.</p>"
         },
         "Description":{
           "shape":"IntegrationDescription",

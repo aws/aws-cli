@@ -28,6 +28,25 @@ Resources:
         - AttributeName: id
           KeyType: HASH
 
+  TestResourceConditional:
+    Type: A::B::C
+    Properties:
+      Show:
+        Fn::If:
+        - IfLambdaRoleIsSet
+        - Foo
+        - !Ref AWS::NoValue
+      Hide:
+        Fn::If:
+        - IfLambdaRoleIsSet
+        - !Ref AWS::NoValue
+        - Foo
+      ShowA:
+        Fn::If:
+        - IfLambdaRoleIsSet
+        - A
+        - B
+
   LambdaPolicy:
     Type: AWS::IAM::RolePolicy
     Condition: IfLambdaRoleIsSet

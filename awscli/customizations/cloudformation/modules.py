@@ -143,6 +143,7 @@ from awscli.customizations.cloudformation.parse_sub import (
 from awscli.customizations.cloudformation.module_conditions import (
     parse_conditions,
 )
+from awscli.customizations.cloudformation.module_visitor import Visitor
 
 LOG = logging.getLogger(__name__)
 
@@ -172,6 +173,7 @@ MAP_PLACEHOLDER = "$MapValue"
 INDEX_PLACEHOLDER = "$MapIndex"
 CONDITIONS = "Conditions"
 CONDITION = "Condition"
+IF = "Fn::If"
 
 
 def process_module_section(template, base_path, parent_path):
@@ -641,6 +643,52 @@ class Module:
         self.resolve(logical_id, resource, container, RESOURCES)
 
         self.template[RESOURCES][self.name + logical_id] = resource
+
+        self.process_resource_conditions()
+
+    def process_resource_conditions(self):
+        "Visit all resources to look for Fn::If conditions"
+
+        # Example
+        #
+        # Resources
+        #   Foo:
+        #     Properties:
+        #       Something:
+        #         Fn::If:
+        #         - ConditionName
+        #         - AnObject
+        #         - !Ref AWS::NoValue
+        #
+        # In this case, delete the 'Something' node entirely
+        # Otherwise replace the Fn::If with the correct value
+        def vf(v):
+            if isdict(v.d) and IF in v.d and v.p is not None:
+                conditional = v.d[IF]
+                print(f"\nIF in {self.name}: ")
+                print("  v:", v)
+                print("  conditional:", conditional)
+                if len(conditional) != 3:
+                    msg = f"Invalid conditional in {self.name}: {conditional}"
+                    raise exceptions.InvalidModuleError(msg=msg)
+                condition_name = conditional[0]
+                trueval = conditional[1]
+                falseval = conditional[2]
+                if condition_name not in self.conditions:
+                    return  # Assume this is a parent template condition?
+                if self.conditions[condition_name]:
+                    v.p[v.k] = trueval
+                else:
+                    v.p[v.k] = falseval
+                newval = v.p[v.k]
+                if isdict(newval) and REF in newval:
+                    if newval[REF] == "AWS::NoValue":
+                        del v.p[v.k]
+
+        v = Visitor(self.resources)
+        v.visit(vf)
+        v = Visitor(self.outputs)
+        v.visit(vf)
 
     def process_overrides(self, logical_id, resource, attr_name):
         """

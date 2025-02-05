@@ -58,7 +58,7 @@ class Visitor:
         def walk(visitor):
             visit_func(visitor)
             if isinstance(visitor.d, (dict, OrderedDict)):
-                for k, v in visitor.d.items():
+                for k, v in visitor.d.copy().items():
                     walk(Visitor(v, visitor.d, k))
             if isinstance(visitor.d, list):
                 for i, v in enumerate(visitor.d):

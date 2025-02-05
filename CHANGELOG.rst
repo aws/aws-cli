@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.37.14
+=======
+
+* api-change:``rds``: Documentation updates to clarify the description for the parameter AllocatedStorage for the DB cluster data type, the description for the parameter DeleteAutomatedBackups for the DeleteDBCluster API operation, and removing an outdated note for the CreateDBParameterGroup API operation.
+
+
 1.37.13
 =======
 

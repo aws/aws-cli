@@ -136,7 +136,10 @@ from awscli.customizations.cloudformation.module_constants import (
 )
 
 from awscli.customizations.cloudformation.parse_sub import WordType
-from awscli.customizations.cloudformation.parse_sub import parse_sub
+from awscli.customizations.cloudformation.parse_sub import (
+    parse_sub,
+    is_sub_needed,
+)
 from awscli.customizations.cloudformation.module_conditions import (
     parse_conditions,
 )
@@ -556,9 +559,13 @@ class Module:
         if not isinstance(v, list) or len(v) < 2:
             msg = f"GetAtt {v} invalid"
             raise exceptions.InvalidModuleError(msg=msg)
+
         if v[0] == self.name and v[1] in self.outputs:
             output = self.outputs[v[1]]
-            if GETATT in output:
+            if REF in output:
+                ref = output[REF]
+                d[n] = {GETATT: [self.name, ref]}
+            elif GETATT in output:
                 getatt = output[GETATT]
                 if len(getatt) < 2:
                     msg = f"GetAtt {getatt} in Output {v[1]} is invalid"
@@ -768,29 +775,33 @@ class Module:
         """
         words = parse_sub(v, True)
         sub = ""
-        need_sub = False
         for word in words:
             if word.t == WordType.STR:
                 sub += word.w
             elif word.t == WordType.AWS:
                 sub += "${AWS::" + word.w + "}"
-                need_sub = True
             elif word.t == WordType.REF:
                 resolved = "${" + word.w + "}"
-                need_sub = True
                 found = self.find_ref(word.w)
                 if found is not None:
                     if isinstance(found, str):
-                        # need_sub = False
                         resolved = found
                     else:
                         if REF in found:
                             resolved = "${" + found[REF] + "}"
                         elif SUB in found:
                             resolved = found[SUB]
+                        elif GETATT in found:
+                            tokens = found[GETATT]
+                            if len(tokens) < 2:
+                                msg = (
+                                    "Invalid Sub referencing a GetAtt. "
+                                    + f"{word.w}: {found}"
+                                )
+                                raise exceptions.InvalidModuleError(msg=msg)
+                            resolved = "${" + ".".join(tokens) + "}"
                 sub += resolved
             elif word.t == WordType.GETATT:
-                need_sub = True
                 resolved = "${" + word.w + "}"
                 tokens = word.w.split(".", 1)
                 if len(tokens) < 2:
@@ -801,6 +812,7 @@ class Module:
                 resolved = "${" + tokens[0] + "." + tokens[1] + "}"
                 sub += resolved
 
+        need_sub = is_sub_needed(sub)
         if need_sub:
             d[n] = {SUB: sub}
         else:

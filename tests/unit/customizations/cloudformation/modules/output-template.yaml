@@ -3,9 +3,14 @@ Modules:
     Source: ./output-module.yaml
     Properties:
       Name: foo
+  AnotherModule:
+    Source: ./output-module2.yaml
+    Properties:
+      Name: !GetAtt ContentBucket.Arn
+    
 Resources:
   A:
-    Type: A::B::C
+    Type: D::E::F
     Properties:
       Object:
         Arn: !Sub ${Content.BucketArn}

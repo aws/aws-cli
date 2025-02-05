@@ -44,6 +44,7 @@ Example:
 from collections import OrderedDict
 from awscli.customizations.cloudformation.parse_sub import WordType
 from awscli.customizations.cloudformation.parse_sub import parse_sub
+from awscli.customizations.cloudformation.parse_sub import is_sub_needed
 from awscli.customizations.cloudformation.module_visitor import Visitor
 from awscli.customizations.cloudformation import exceptions
 
@@ -122,12 +123,3 @@ def replace_constants(constants, s):
 def isdict(d):
     "Returns true if d is a dict"
     return isinstance(d, (dict, OrderedDict))
-
-
-def is_sub_needed(s):
-    "Returns true if the string has any Sub variables"
-    words = parse_sub(s)
-    for w in words:
-        if w.t != WordType.STR:
-            return True
-    return False

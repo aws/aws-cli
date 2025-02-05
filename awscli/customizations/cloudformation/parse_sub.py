@@ -47,6 +47,14 @@ class SubWord:
     def __str__(self):
         return f"{self.t} {self.w}"
 
+def is_sub_needed(s):
+    "Returns true if the string has any Sub variables"
+    words = parse_sub(s)
+    for w in words:
+        if w.t != WordType.STR:
+            return True
+    return False
+
 #pylint: disable=too-many-branches,too-many-statements
 def parse_sub(sub_str, leave_bang=False):
     """

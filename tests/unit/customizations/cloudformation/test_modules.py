@@ -84,6 +84,9 @@ class TestPackageModules(unittest.TestCase):
     def test_main(self):
         "Run tests on sample templates that include local modules"
 
+        # pylint: disable=invalid-name
+        self.maxDiff = None
+
         # The tests are in the modules directory.
         # Each test has 3 files:
         # test-template.yaml, test-module.yaml, and test-expect.yaml
@@ -119,8 +122,8 @@ class TestPackageModules(unittest.TestCase):
             # Resources with Type LocalModule
             td = modules.process_resources_section(td, base, t, None)
 
-        processed = yamlhelper.yaml_dump(td)
-        self.assertEqual(e, processed)
+            processed = yamlhelper.yaml_dump(td)
+            self.assertEqual(e, processed, f"{test} failed")
 
     def test_visitor(self):
         "Test module_visitor"

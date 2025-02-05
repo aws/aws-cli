@@ -557,7 +557,15 @@ class Module:
 
     # pylint:disable=too-many-branches
     def resolve_output_getatt(self, v, d, n):
-        "Resolve a GetAtt that refers to a module output"
+        """
+        Resolve a GetAtt that refers to a module output.
+
+        :param v The value
+        :param d The dictionary
+        :param n The name of the node
+
+        This function sets d[n]
+        """
         if not isinstance(v, list) or len(v) < 2:
             msg = f"GetAtt {v} invalid"
             raise exceptions.InvalidModuleError(msg=msg)
@@ -566,7 +574,7 @@ class Module:
             output = self.outputs[v[1]]
             if REF in output:
                 ref = output[REF]
-                d[n] = {GETATT: [self.name, ref]}
+                d[n] = {REF: self.name + ref}
             elif GETATT in output:
                 getatt = output[GETATT]
                 if len(getatt) < 2:
@@ -665,9 +673,6 @@ class Module:
         def vf(v):
             if isdict(v.d) and IF in v.d and v.p is not None:
                 conditional = v.d[IF]
-                print(f"\nIF in {self.name}: ")
-                print("  v:", v)
-                print("  conditional:", conditional)
                 if len(conditional) != 3:
                     msg = f"Invalid conditional in {self.name}: {conditional}"
                     raise exceptions.InvalidModuleError(msg=msg)

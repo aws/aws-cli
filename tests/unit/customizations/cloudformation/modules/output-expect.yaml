@@ -5,6 +5,10 @@ Resources:
       Object:
         Arn:
           Fn::Sub: ${ContentBucket.Arn}
+        ArnGetAtt:
+          Fn::GetAtt:
+          - ContentBucket
+          - Arn
   ContentBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -26,3 +30,6 @@ Outputs:
   ExampleGetSub:
     Value:
       Fn::Sub: ${ContentBucket.Arn}
+  ExampleRef:
+    Value:
+      Ref: ContentBucket

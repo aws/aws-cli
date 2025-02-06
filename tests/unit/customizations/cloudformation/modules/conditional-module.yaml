@@ -15,6 +15,11 @@ Conditions:
         - !Ref LambdaRoleName
         - ""
 
+Modules:
+  HideMe:
+    Condition: IfLambdaRoleIsSet
+    Source: conditional-module2.yaml 
+
 Resources:
   Table:
     Type: AWS::DynamoDB::Table

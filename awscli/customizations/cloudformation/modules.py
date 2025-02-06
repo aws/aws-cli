@@ -156,7 +156,6 @@ CREATIONPOLICY = "CreationPolicy"
 UPDATEPOLICY = "UpdatePolicy"
 DELETIONPOLICY = "DeletionPolicy"
 UPDATEREPLACEPOLICY = "UpdateReplacePolicy"
-CONDITION = "Condition"
 DEFAULT = "Default"
 NAME = "Name"
 SOURCE = "Source"
@@ -413,6 +412,7 @@ class Module:
             + f"source: {self.source}, props: {self.props}"
         )
 
+    # pylint: disable=too-many-branches
     def process(self):
         """
         Read the module source process it.
@@ -441,6 +441,37 @@ class Module:
         if OUTPUTS in module_dict:
             self.outputs = module_dict[OUTPUTS]
 
+        # Read the Conditions section and store it as a dict of string:boolean
+        if CONDITIONS in module_dict:
+            cs = module_dict[CONDITIONS]
+
+            def find_ref(v):
+                return self.find_ref(v)
+
+            try:
+                self.conditions = parse_conditions(cs, find_ref)
+            except Exception as e:
+                msg = f"Failed to process conditions in {self.source}: {e}"
+                LOG.exception(msg)
+                raise exceptions.InvalidModuleError(msg=msg)
+
+            # Check each resource to see if a Condition omits it
+            for logical_id, resource in self.resources.copy().items():
+                if CONDITION in resource:
+                    if resource[CONDITION] in self.conditions:
+                        if self.conditions[resource[CONDITION]] is False:
+                            del self.resources[logical_id]
+                        else:
+                            del self.resources[logical_id][CONDITION]
+
+            # Do the same for modules in the Modules section
+            if MODULES in module_dict:
+                for k, v in module_dict[MODULES].copy().items():
+                    if CONDITION in v:
+                        if v[CONDITION] in self.conditions:
+                            if self.conditions[v[CONDITION]] is False:
+                                del module_dict[MODULES][k]
+
         # Recurse on nested modules
         bp = os.path.dirname(self.source)
         section = ""
@@ -455,19 +486,6 @@ class Module:
             raise exceptions.InvalidModuleError(msg=msg)
 
         self.validate_overrides()
-
-        if CONDITIONS in module_dict:
-            cs = module_dict[CONDITIONS]
-
-            def find_ref(v):
-                return self.find_ref(v)
-
-            try:
-                self.conditions = parse_conditions(cs, find_ref)
-            except Exception as e:
-                msg = f"Failed to process conditions in {self.source}: {e}"
-                LOG.exception(msg)
-                raise exceptions.InvalidModuleError(msg=msg)
 
         for logical_id, resource in self.resources.items():
             self.process_resource(logical_id, resource)
@@ -619,14 +637,6 @@ class Module:
 
     def process_resource(self, logical_id, resource):
         "Process a single resource"
-
-        # First, check to see if a Conditions omits this resource
-        if CONDITION in resource:
-            if resource[CONDITION] in self.conditions:
-                if self.conditions[resource[CONDITION]] is False:
-                    return
-                del resource[CONDITION]
-            # else leave it and assume it's in the parent?
 
         # For each property (and property-like attribute),
         # replace the value if it appears in parent overrides.

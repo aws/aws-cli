@@ -169,6 +169,19 @@
       ],
       "documentation":"<p>Creates stack instances for the specified accounts, within the specified Amazon Web Services Regions. A stack instance refers to a stack in a specific account and Region. You must specify at least one value for either <code>Accounts</code> or <code>DeploymentTargets</code>, and you must specify at least one value for <code>Regions</code>.</p>"
     },
+    "CreateStackRefactor":{
+      "name":"CreateStackRefactor",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateStackRefactorInput"},
+      "output":{
+        "shape":"CreateStackRefactorOutput",
+        "resultWrapper":"CreateStackRefactorResult"
+      },
+      "documentation":"<p>Creates a refactor across multiple stacks, with the list of stacks and resources that are affected.</p>"
+    },
     "CreateStackSet":{
       "name":"CreateStackSet",
       "http":{
@@ -472,6 +485,22 @@
       ],
       "documentation":"<p>Returns the stack instance that's associated with the specified StackSet, Amazon Web Services account, and Amazon Web Services Region.</p> <p>For a list of stack instances that are associated with a specific StackSet, use <a>ListStackInstances</a>.</p>"
     },
+    "DescribeStackRefactor":{
+      "name":"DescribeStackRefactor",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeStackRefactorInput"},
+      "output":{
+        "shape":"DescribeStackRefactorOutput",
+        "resultWrapper":"DescribeStackRefactorResult"
+      },
+      "errors":[
+        {"shape":"StackRefactorNotFoundException"}
+      ],
+      "documentation":"<p>Describes the stack refactor status.</p>"
+    },
     "DescribeStackResource":{
       "name":"DescribeStackResource",
       "http":{
@@ -634,7 +663,7 @@
         {"shape":"OperationInProgressException"},
         {"shape":"StackSetNotFoundException"}
       ],
-      "documentation":"<p>Detect drift on a stack set. When CloudFormation performs drift detection on a stack set, it performs drift detection on the stack associated with each stack instance in the stack set. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html\">How CloudFormation performs drift detection on a stack set</a>.</p> <p> <code>DetectStackSetDrift</code> returns the <code>OperationId</code> of the stack set drift detection operation. Use this operation id with <a>DescribeStackSetOperation</a> to monitor the progress of the drift detection operation. The drift detection operation may take some time, depending on the number of stack instances included in the stack set, in addition to the number of resources included in each stack.</p> <p>Once the operation has completed, use the following actions to return drift information:</p> <ul> <li> <p>Use <a>DescribeStackSet</a> to return detailed information about the stack set, including detailed information about the last <i>completed</i> drift operation performed on the stack set. (Information about drift operations that are in progress isn't included.)</p> </li> <li> <p>Use <a>ListStackInstances</a> to return a list of stack instances belonging to the stack set, including the drift status and last drift time checked of each instance.</p> </li> <li> <p>Use <a>DescribeStackInstance</a> to return detailed information about a specific stack instance, including its drift status and last drift time checked.</p> </li> </ul> <p>For more information about performing a drift detection operation on a stack set, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html\">Detecting unmanaged changes in stack sets</a>.</p> <p>You can only run a single drift detection operation on a given stack set at one time.</p> <p>To stop a drift detection stack set operation, use <a>StopStackSetOperation</a>.</p>"
+      "documentation":"<p>Detect drift on a stack set. When CloudFormation performs drift detection on a stack set, it performs drift detection on the stack associated with each stack instance in the stack set. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html\">Performing drift detection on CloudFormation StackSets</a>.</p> <p> <code>DetectStackSetDrift</code> returns the <code>OperationId</code> of the stack set drift detection operation. Use this operation id with <a>DescribeStackSetOperation</a> to monitor the progress of the drift detection operation. The drift detection operation may take some time, depending on the number of stack instances included in the stack set, in addition to the number of resources included in each stack.</p> <p>Once the operation has completed, use the following actions to return drift information:</p> <ul> <li> <p>Use <a>DescribeStackSet</a> to return detailed information about the stack set, including detailed information about the last <i>completed</i> drift operation performed on the stack set. (Information about drift operations that are in progress isn't included.)</p> </li> <li> <p>Use <a>ListStackInstances</a> to return a list of stack instances belonging to the stack set, including the drift status and last drift time checked of each instance.</p> </li> <li> <p>Use <a>DescribeStackInstance</a> to return detailed information about a specific stack instance, including its drift status and last drift time checked.</p> </li> </ul> <p>You can only run a single drift detection operation on a given stack set at one time.</p> <p>To stop a drift detection stack set operation, use <a>StopStackSetOperation</a>.</p>"
     },
     "EstimateTemplateCost":{
       "name":"EstimateTemplateCost",
@@ -667,6 +696,15 @@
         {"shape":"TokenAlreadyExistsException"}
       ],
       "documentation":"<p>Updates a stack using the input information that was provided when the specified change set was created. After the call successfully completes, CloudFormation starts updating the stack. Use the <a>DescribeStacks</a> action to view the status of the update.</p> <p>When you execute a change set, CloudFormation deletes all other change sets associated with the stack because they aren't valid for the updated stack.</p> <p>If a stack policy is associated with the stack, CloudFormation enforces the policy during the update. You can't specify a temporary stack policy that overrides the current policy.</p> <p>To create a change set for the entire stack hierarchy, <code>IncludeNestedStacks</code> must have been set to <code>True</code>.</p>"
+    },
+    "ExecuteStackRefactor":{
+      "name":"ExecuteStackRefactor",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ExecuteStackRefactorInput"},
+      "documentation":"<p>Executes the stack refactor operation.</p>"
     },
     "GetGeneratedTemplate":{
       "name":"GetGeneratedTemplate",
@@ -899,6 +937,32 @@
         {"shape":"StackSetNotFoundException"}
       ],
       "documentation":"<p>Returns summary information about stack instances that are associated with the specified stack set. You can filter for stack instances that are associated with a specific Amazon Web Services account name or Region, or that have a specific status.</p>"
+    },
+    "ListStackRefactorActions":{
+      "name":"ListStackRefactorActions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListStackRefactorActionsInput"},
+      "output":{
+        "shape":"ListStackRefactorActionsOutput",
+        "resultWrapper":"ListStackRefactorActionsResult"
+      },
+      "documentation":"<p>Lists the stack refactor actions that will be taken after calling the <a>ExecuteStackRefactor</a> action.</p>"
+    },
+    "ListStackRefactors":{
+      "name":"ListStackRefactors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListStackRefactorsInput"},
+      "output":{
+        "shape":"ListStackRefactorsOutput",
+        "resultWrapper":"ListStackRefactorsResult"
+      },
+      "documentation":"<p>Lists all account stack refactor operations and their statuses.</p>"
     },
     "ListStackResources":{
       "name":"ListStackResources",
@@ -1362,7 +1426,7 @@
           "documentation":"<p>The reason for the account gate status assigned to this account and Region for the stack set operation.</p>"
         }
       },
-      "documentation":"<p>Structure that contains the results of the account gate function which CloudFormation invokes, if present, before proceeding with a stack set operation in an account and Region.</p> <p>For each account and Region, CloudFormation lets you specify a Lambda function that encapsulates any requirements that must be met before CloudFormation can proceed with a stack set operation in that account and Region. CloudFormation invokes the function each time a stack set operation is requested for that account and Region; if the function returns <code>FAILED</code>, CloudFormation cancels the operation in that account and Region, and sets the stack set operation result status for that account and Region to <code>FAILED</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-account-gating.html\">Configuring a target account gate</a>.</p>"
+      "documentation":"<p>Structure that contains the results of the account gate function which CloudFormation invokes, if present, before proceeding with a stack set operation in an account and Region.</p> <p>For each account and Region, CloudFormation lets you specify a Lambda function that encapsulates any requirements that must be met before CloudFormation can proceed with a stack set operation in that account and Region. CloudFormation invokes the function each time a stack set operation is requested for that account and Region; if the function returns <code>FAILED</code>, CloudFormation cancels the operation in that account and Region, and sets the stack set operation result status for that account and Region to <code>FAILED</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-account-gating.html\">Configuring a target account gate in StackSets</a> in the <i>CloudFormation User Guide</i>.</p>"
     },
     "AccountGateStatus":{
       "type":"string",
@@ -1640,7 +1704,7 @@
         },
         "HookInvocationCount":{
           "shape":"HookInvocationCount",
-          "documentation":"<p>Is either <code>null</code>, if no hooks invoke for the resource, or contains the number of hooks that will invoke for the resource.</p>"
+          "documentation":"<p>Is either <code>null</code>, if no Hooks invoke for the resource, or contains the number of Hooks that will invoke for the resource.</p>"
         },
         "ResourceChange":{
           "shape":"ResourceChange",
@@ -1705,7 +1769,7 @@
           "documentation":"<p>Specifies the action of the resource.</p>"
         }
       },
-      "documentation":"<p>Specifies <code>RESOURCE</code> type target details for activated hooks.</p>"
+      "documentation":"<p>Specifies <code>RESOURCE</code> type target details for activated Hooks.</p>"
     },
     "ChangeSetHookTargetDetails":{
       "type":"structure",
@@ -1805,7 +1869,7 @@
         },
         "Status":{
           "shape":"ChangeSetStatus",
-          "documentation":"<p>The state of the change set, such as <code>CREATE_IN_PROGRESS</code>, <code>CREATE_COMPLETE</code>, or <code>FAILED</code>.</p>"
+          "documentation":"<p>The state of the change set, such as <code>CREATE_PENDING</code>, <code>CREATE_COMPLETE</code>, or <code>FAILED</code>.</p>"
         },
         "StatusReason":{
           "shape":"ChangeSetStatusReason",
@@ -1952,7 +2016,7 @@
         },
         "TemplateURL":{
           "shape":"TemplateURL",
-          "documentation":"<p>The location of the file that contains the revised template. The URL must point to a template (max size: 460,800 bytes) that's located in an Amazon S3 bucket or a Systems Manager document. CloudFormation generates the change set by comparing this template with the stack that you specified. The location for an Amazon S3 bucket must start with <code>https://</code>.</p> <p>Conditional: You must specify only <code>TemplateBody</code> or <code>TemplateURL</code>.</p>"
+          "documentation":"<p>The URL of the file that contains the revised template. The URL must point to a template (max size: 1 MB) that's located in an Amazon S3 bucket or a Systems Manager document. CloudFormation generates the change set by comparing this template with the stack that you specified. The location for an Amazon S3 bucket must start with <code>https://</code>.</p> <p>Conditional: You must specify only <code>TemplateBody</code> or <code>TemplateURL</code>.</p>"
         },
         "UsePreviousTemplate":{
           "shape":"UsePreviousTemplate",
@@ -1964,11 +2028,11 @@
         },
         "Capabilities":{
           "shape":"Capabilities",
-          "documentation":"<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to create the stack.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new IAM users. For those stacks, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don't specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we suggest that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-accesskey.html\"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-group.html\"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html\">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html\"> AWS::IAM::Policy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html\"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-user.html\"> AWS::IAM::User</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-usertogroupaddition.html\">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some template contain macros. Macros perform custom processing on templates; this can include simple actions like find-and-replace operations, all the way to extensive transformations of entire templates. Because of this, users typically create a change set from the processed template, so that they can review the changes resulting from the macros before actually creating the stack. If your stack template contains one or more macros, and you choose to create a stack directly from the processed template, without first reviewing the resulting changes in a change set, you must acknowledge this capability. This includes the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/create-reusable-transform-function-snippets-and-add-to-your-template-with-aws-include-transform.html\">AWS::Include</a> and <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html\">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.</p> <note> <p>This capacity doesn't apply to creating change sets, and specifying it when creating change sets has no effect.</p> <p>If you want to create a stack from a stack template that contains macros <i>and</i> nested stacks, you must create or update the stack directly from the template using the <a>CreateStack</a> or <a>UpdateStack</a> action, and specifying this capability.</p> </note> <p>For more information about macros, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html\">Perform custom processing on CloudFormation templates with template macros</a>.</p> </li> </ul> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
+          "documentation":"<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to create the stack.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new IAM users. For those stacks, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don't specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we suggest that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-accesskey.html\"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-group.html\"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html\">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html\"> AWS::IAM::ManagedPolicy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html\"> AWS::IAM::Policy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html\"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-user.html\"> AWS::IAM::User</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-usertogroupaddition.html\">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some template contain macros. Macros perform custom processing on templates; this can include simple actions like find-and-replace operations, all the way to extensive transformations of entire templates. Because of this, users typically create a change set from the processed template, so that they can review the changes resulting from the macros before actually creating the stack. If your stack template contains one or more macros, and you choose to create a stack directly from the processed template, without first reviewing the resulting changes in a change set, you must acknowledge this capability. This includes the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-include.html\">AWS::Include</a> and <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html\">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.</p> <note> <p>This capacity doesn't apply to creating change sets, and specifying it when creating change sets has no effect.</p> <p>If you want to create a stack from a stack template that contains macros <i>and</i> nested stacks, you must create or update the stack directly from the template using the <a>CreateStack</a> or <a>UpdateStack</a> action, and specifying this capability.</p> </note> <p>For more information about macros, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html\">Perform custom processing on CloudFormation templates with template macros</a>.</p> </li> </ul> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
         },
         "ResourceTypes":{
           "shape":"ResourceTypes",
-          "documentation":"<p>The template resource types that you have permissions to work with if you execute this change set, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>.</p> <p>If the list of resource types doesn't include a resource type that you're updating, the stack update fails. By default, CloudFormation grants permissions to all resource types. IAM uses this parameter for condition keys in IAM policies for CloudFormation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html\">Control access with Identity and Access Management</a> in the <i>CloudFormation User Guide</i>.</p> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
+          "documentation":"<p>The template resource types that you have permissions to work with if you execute this change set, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>.</p> <p>If the list of resource types doesn't include a resource type that you're updating, the stack update fails. By default, CloudFormation grants permissions to all resource types. IAM uses this parameter for condition keys in IAM policies for CloudFormation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html\">Control access with Identity and Access Management</a> in the <i>CloudFormation User Guide</i>.</p> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
         },
         "RoleARN":{
           "shape":"RoleARN",
@@ -2080,7 +2144,7 @@
         },
         "TemplateURL":{
           "shape":"TemplateURL",
-          "documentation":"<p>Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that's located in an Amazon S3 bucket or a Systems Manager document. The location for an Amazon S3 bucket must start with <code>https://</code>.</p> <p>Conditional: You must specify either the <code>TemplateBody</code> or the <code>TemplateURL</code> parameter, but not both.</p>"
+          "documentation":"<p>The URL of a file containing the template body. The URL must point to a template (max size: 1 MB) that's located in an Amazon S3 bucket or a Systems Manager document. The location for an Amazon S3 bucket must start with <code>https://</code>.</p> <p>Conditional: You must specify either the <code>TemplateBody</code> or the <code>TemplateURL</code> parameter, but not both.</p>"
         },
         "Parameters":{
           "shape":"Parameters",
@@ -2104,11 +2168,11 @@
         },
         "Capabilities":{
           "shape":"Capabilities",
-          "documentation":"<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to create the stack.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new IAM users. For those stacks, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don't specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we recommend that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-accesskey.html\">AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-group.html\">AWS::IAM::Group</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html\">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html\">AWS::IAM::Policy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html\">AWS::IAM::Role</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-user.html\">AWS::IAM::User</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-usertogroupaddition.html\">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some template contain macros. Macros perform custom processing on templates; this can include simple actions like find-and-replace operations, all the way to extensive transformations of entire templates. Because of this, users typically create a change set from the processed template, so that they can review the changes resulting from the macros before actually creating the stack. If your stack template contains one or more macros, and you choose to create a stack directly from the processed template, without first reviewing the resulting changes in a change set, you must acknowledge this capability. This includes the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/create-reusable-transform-function-snippets-and-add-to-your-template-with-aws-include-transform.html\">AWS::Include</a> and <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html\">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.</p> <p>If you want to create a stack from a stack template that contains macros <i>and</i> nested stacks, you must create the stack directly from the template using this capability.</p> <important> <p>You should only create stacks directly from a stack template that contains macros if you know what processing the macro performs.</p> <p>Each macro relies on an underlying Lambda service function for processing stack templates. Be aware that the Lambda function owner can update the function operation without CloudFormation being notified.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html\">Perform custom processing on CloudFormation templates with template macros</a>.</p> </li> </ul> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
+          "documentation":"<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to create the stack.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new IAM users. For those stacks, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don't specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we recommend that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-accesskey.html\">AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-group.html\">AWS::IAM::Group</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html\">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html\"> AWS::IAM::ManagedPolicy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html\">AWS::IAM::Policy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html\">AWS::IAM::Role</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-user.html\">AWS::IAM::User</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-usertogroupaddition.html\">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some template contain macros. Macros perform custom processing on templates; this can include simple actions like find-and-replace operations, all the way to extensive transformations of entire templates. Because of this, users typically create a change set from the processed template, so that they can review the changes resulting from the macros before actually creating the stack. If your stack template contains one or more macros, and you choose to create a stack directly from the processed template, without first reviewing the resulting changes in a change set, you must acknowledge this capability. This includes the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-include.html\">AWS::Include</a> and <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html\">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.</p> <p>If you want to create a stack from a stack template that contains macros <i>and</i> nested stacks, you must create the stack directly from the template using this capability.</p> <important> <p>You should only create stacks directly from a stack template that contains macros if you know what processing the macro performs.</p> <p>Each macro relies on an underlying Lambda service function for processing stack templates. Be aware that the Lambda function owner can update the function operation without CloudFormation being notified.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html\">Perform custom processing on CloudFormation templates with template macros</a>.</p> </li> </ul> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
         },
         "ResourceTypes":{
           "shape":"ResourceTypes",
-          "documentation":"<p>The template resource types that you have permissions to work with for this create stack action, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>. Use the following syntax to describe template resource types: <code>AWS::*</code> (for all Amazon Web Services resources), <code>Custom::*</code> (for all custom resources), <code>Custom::<i>logical_ID</i> </code> (for a specific custom resource), <code>AWS::<i>service_name</i>::*</code> (for all resources of a particular Amazon Web Services service), and <code>AWS::<i>service_name</i>::<i>resource_logical_ID</i> </code> (for a specific Amazon Web Services resource).</p> <p>If the list of resource types doesn't include a resource that you're creating, the stack creation fails. By default, CloudFormation grants permissions to all resource types. IAM uses this parameter for CloudFormation-specific condition keys in IAM policies. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html\">Control access with Identity and Access Management</a>.</p> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
+          "documentation":"<p>The template resource types that you have permissions to work with for this create stack action, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>. Use the following syntax to describe template resource types: <code>AWS::*</code> (for all Amazon Web Services resources), <code>Custom::*</code> (for all custom resources), <code>Custom::<i>logical_ID</i> </code> (for a specific custom resource), <code>AWS::<i>service_name</i>::*</code> (for all resources of a particular Amazon Web Services service), and <code>AWS::<i>service_name</i>::<i>resource_logical_ID</i> </code> (for a specific Amazon Web Services resource).</p> <p>If the list of resource types doesn't include a resource that you're creating, the stack creation fails. By default, CloudFormation grants permissions to all resource types. IAM uses this parameter for CloudFormation-specific condition keys in IAM policies. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html\">Control access with Identity and Access Management</a>.</p> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
         },
         "RoleARN":{
           "shape":"RoleARN",
@@ -2158,7 +2222,7 @@
         },
         "Accounts":{
           "shape":"AccountList",
-          "documentation":"<p>[Self-managed permissions] The names of one or more Amazon Web Services accounts that you want to create stack instances in the specified Region(s) for.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>"
+          "documentation":"<p>[Self-managed permissions] The account IDs of one or more Amazon Web Services accounts that you want to create stack instances in the specified Region(s) for.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>"
         },
         "DeploymentTargets":{
           "shape":"DeploymentTargets",
@@ -2206,6 +2270,38 @@
       },
       "documentation":"<p>The output for a <a>CreateStack</a> action.</p>"
     },
+    "CreateStackRefactorInput":{
+      "type":"structure",
+      "required":["StackDefinitions"],
+      "members":{
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description to help you identify the stack refactor.</p>"
+        },
+        "EnableStackCreation":{
+          "shape":"EnableStackCreation",
+          "documentation":"<p>Determines if a new stack is created with the refactor.</p>"
+        },
+        "ResourceMappings":{
+          "shape":"ResourceMappings",
+          "documentation":"<p>The mappings for the stack resource <code>Source</code> and stack resource <code>Destination</code>.</p>"
+        },
+        "StackDefinitions":{
+          "shape":"StackDefinitions",
+          "documentation":"<p>The stacks being refactored.</p>"
+        }
+      }
+    },
+    "CreateStackRefactorOutput":{
+      "type":"structure",
+      "required":["StackRefactorId"],
+      "members":{
+        "StackRefactorId":{
+          "shape":"StackRefactorId",
+          "documentation":"<p>The ID associated with the stack refactor created from the <a>CreateStackRefactor</a> action.</p>"
+        }
+      }
+    },
     "CreateStackSetInput":{
       "type":"structure",
       "required":["StackSetName"],
@@ -2224,7 +2320,7 @@
         },
         "TemplateURL":{
           "shape":"TemplateURL",
-          "documentation":"<p>The location of the file that contains the template body. The URL must point to a template (maximum size: 460,800 bytes) that's located in an Amazon S3 bucket or a Systems Manager document.</p> <p>Conditional: You must specify either the TemplateBody or the TemplateURL parameter, but not both.</p>"
+          "documentation":"<p>The URL of a file that contains the template body. The URL must point to a template (maximum size: 1 MB) that's located in an Amazon S3 bucket or a Systems Manager document. The location for an Amazon S3 bucket must start with <code>https://</code>.</p> <p>Conditional: You must specify either the TemplateBody or the TemplateURL parameter, but not both.</p>"
         },
         "StackId":{
           "shape":"StackId",
@@ -2236,7 +2332,7 @@
         },
         "Capabilities":{
           "shape":"Capabilities",
-          "documentation":"<p>In some cases, you must explicitly acknowledge that your stack set template contains certain capabilities in order for CloudFormation to create the stack set and related stack instances.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new IAM users. For those stack sets, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don't specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we recommend that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-accesskey.html\">AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-group.html\">AWS::IAM::Group</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html\">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html\">AWS::IAM::Policy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html\">AWS::IAM::Role</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-user.html\">AWS::IAM::User</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-usertogroupaddition.html\">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some templates reference macros. If your stack set template references one or more macros, you must create the stack set directly from the processed template, without first reviewing the resulting changes in a change set. To create the stack set directly, you must acknowledge this capability. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html\">Using CloudFormation Macros to Perform Custom Processing on Templates</a>.</p> <important> <p>Stack sets with service-managed permissions don't currently support the use of macros in templates. (This includes the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/create-reusable-transform-function-snippets-and-add-to-your-template-with-aws-include-transform.html\">AWS::Include</a> and <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html\">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.) Even if you specify this capability for a stack set with service-managed permissions, if you reference a macro in your template the stack set operation will fail.</p> </important> </li> </ul>"
+          "documentation":"<p>In some cases, you must explicitly acknowledge that your stack set template contains certain capabilities in order for CloudFormation to create the stack set and related stack instances.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new IAM users. For those stack sets, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don't specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we recommend that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-accesskey.html\">AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-group.html\">AWS::IAM::Group</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html\">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html\">AWS::IAM::Policy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html\">AWS::IAM::Role</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-user.html\">AWS::IAM::User</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-usertogroupaddition.html\">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some templates reference macros. If your stack set template references one or more macros, you must create the stack set directly from the processed template, without first reviewing the resulting changes in a change set. To create the stack set directly, you must acknowledge this capability. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html\">Perform custom processing on CloudFormation templates with template macros</a>.</p> <important> <p>Stack sets with service-managed permissions don't currently support the use of macros in templates. (This includes the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-include.html\">AWS::Include</a> and <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html\">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.) Even if you specify this capability for a stack set with service-managed permissions, if you reference a macro in your template the stack set operation will fail.</p> </important> </li> </ul>"
         },
         "Tags":{
           "shape":"Tags",
@@ -2244,7 +2340,7 @@
         },
         "AdministrationRoleARN":{
           "shape":"RoleARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to use to create this stack set.</p> <p>Specify an IAM role only if you are using customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs.html\">Prerequisites: Granting Permissions for Stack Set Operations</a> in the <i>CloudFormation User Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to use to create this stack set.</p> <p>Specify an IAM role only if you are using customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs.html\">Prerequisites for using StackSets</a> in the <i>CloudFormation User Guide</i>.</p>"
         },
         "ExecutionRoleName":{
           "shape":"ExecutionRoleName",
@@ -2252,7 +2348,7 @@
         },
         "PermissionModel":{
           "shape":"PermissionModels",
-          "documentation":"<p>Describes how the IAM roles required for stack set operations are created. By default, <code>SELF-MANAGED</code> is specified.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html\">Grant Self-Managed Stack Set Permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-service-managed.html\">Grant Service-Managed Stack Set Permissions</a>.</p> </li> </ul>"
+          "documentation":"<p>Describes how the IAM roles required for stack set operations are created. By default, <code>SELF-MANAGED</code> is specified.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html\">Grant self-managed permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-activate-trusted-access.html\">Activate trusted access for stack sets with Organizations</a>.</p> </li> </ul>"
         },
         "AutoDeployment":{
           "shape":"AutoDeployment",
@@ -2399,7 +2495,7 @@
         },
         "Accounts":{
           "shape":"AccountList",
-          "documentation":"<p>[Self-managed permissions] The names of the Amazon Web Services accounts that you want to delete stack instances for.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>"
+          "documentation":"<p>[Self-managed permissions] The account IDs of the Amazon Web Services accounts that you want to delete stack instances for.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>"
         },
         "DeploymentTargets":{
           "shape":"DeploymentTargets",
@@ -2469,15 +2565,15 @@
       "members":{
         "Accounts":{
           "shape":"AccountList",
-          "documentation":"<p>The names of one or more Amazon Web Services accounts for which you want to deploy stack set updates.</p>"
+          "documentation":"<p>The account IDs of the Amazon Web Services accounts. If you have many account numbers, you can provide those accounts using the <code>AccountsUrl</code> property instead.</p>"
         },
         "AccountsUrl":{
           "shape":"AccountsUrl",
-          "documentation":"<p>Returns the value of the <code>AccountsUrl</code> property.</p>"
+          "documentation":"<p>The Amazon S3 URL path to a file that contains a list of Amazon Web Services account IDs. The file format must be either <code>.csv</code> or <code>.txt</code>, and the data can be comma-separated or new-line-separated. There is currently a 10MB limit for the data (approximately 800,000 accounts).</p> <p/>"
         },
         "OrganizationalUnitIds":{
           "shape":"OrganizationalUnitIdList",
-          "documentation":"<p>The organization root ID or organizational unit (OU) IDs to which StackSets deploys.</p>"
+          "documentation":"<p>The organization root ID or organizational unit (OU) IDs.</p>"
         },
         "AccountFilterType":{
           "shape":"AccountFilterType",
@@ -2561,7 +2657,7 @@
         },
         "LogicalResourceId":{
           "shape":"LogicalResourceId",
-          "documentation":"<p>If specified, lists only the hooks related to the specified <code>LogicalResourceId</code>.</p>"
+          "documentation":"<p>If specified, lists only the Hooks related to the specified <code>LogicalResourceId</code>.</p>"
         }
       }
     },
@@ -2658,7 +2754,7 @@
         },
         "Status":{
           "shape":"ChangeSetStatus",
-          "documentation":"<p>The current status of the change set, such as <code>CREATE_IN_PROGRESS</code>, <code>CREATE_COMPLETE</code>, or <code>FAILED</code>.</p>"
+          "documentation":"<p>The current status of the change set, such as <code>CREATE_PENDING</code>, <code>CREATE_COMPLETE</code>, or <code>FAILED</code>.</p>"
         },
         "StatusReason":{
           "shape":"ChangeSetStatusReason",
@@ -2978,6 +3074,49 @@
         "StackInstance":{
           "shape":"StackInstance",
           "documentation":"<p>The stack instance that matches the specified request parameters.</p>"
+        }
+      }
+    },
+    "DescribeStackRefactorInput":{
+      "type":"structure",
+      "required":["StackRefactorId"],
+      "members":{
+        "StackRefactorId":{
+          "shape":"StackRefactorId",
+          "documentation":"<p>The ID associated with the stack refactor created from the <a>CreateStackRefactor</a> action.</p>"
+        }
+      }
+    },
+    "DescribeStackRefactorOutput":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description to help you identify the refactor.</p>"
+        },
+        "StackRefactorId":{
+          "shape":"StackRefactorId",
+          "documentation":"<p>The ID associated with the stack refactor created from the <a>CreateStackRefactor</a> action.</p>"
+        },
+        "StackIds":{
+          "shape":"StackIds",
+          "documentation":"<p>The unique ID for each stack.</p>"
+        },
+        "ExecutionStatus":{
+          "shape":"StackRefactorExecutionStatus",
+          "documentation":"<p>The stack refactor execution operation status that's provided after calling the <a>ExecuteStackRefactor</a> action.</p>"
+        },
+        "ExecutionStatusReason":{
+          "shape":"ExecutionStatusReason",
+          "documentation":"<p>A detailed explanation for the stack refactor <code>ExecutionStatus</code>.</p>"
+        },
+        "Status":{
+          "shape":"StackRefactorStatus",
+          "documentation":"<p>The stack refactor operation status that's provided after calling the <a>CreateStackRefactor</a> action.</p>"
+        },
+        "StatusReason":{
+          "shape":"StackRefactorStatusReason",
+          "documentation":"<p>A detailed explanation for the stack refactor operation <code>Status</code>.</p>"
         }
       }
     },
@@ -3422,6 +3561,7 @@
         }
       }
     },
+    "DetectionReason":{"type":"string"},
     "DifferenceType":{
       "type":"string",
       "enum":[
@@ -3435,6 +3575,7 @@
       "type":"integer",
       "min":0
     },
+    "EnableStackCreation":{"type":"boolean"},
     "EnableTerminationProtection":{"type":"boolean"},
     "ErrorCode":{
       "type":"string",
@@ -3455,7 +3596,7 @@
         },
         "TemplateURL":{
           "shape":"TemplateURL",
-          "documentation":"<p>Location of file containing the template body. The URL must point to a template that's located in an Amazon S3 bucket or a Systems Manager document. The location for an Amazon S3 bucket must start with <code>https://</code>.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>"
+          "documentation":"<p>The URL of a file containing the template body. The URL must point to a template that's located in an Amazon S3 bucket or a Systems Manager document. The location for an Amazon S3 bucket must start with <code>https://</code>.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>"
         },
         "Parameters":{
           "shape":"Parameters",
@@ -3515,6 +3656,16 @@
       },
       "documentation":"<p>The output for the <a>ExecuteChangeSet</a> action.</p>"
     },
+    "ExecuteStackRefactorInput":{
+      "type":"structure",
+      "required":["StackRefactorId"],
+      "members":{
+        "StackRefactorId":{
+          "shape":"StackRefactorId",
+          "documentation":"<p>The ID associated with the stack refactor created from the <a>CreateStackRefactor</a> action.</p>"
+        }
+      }
+    },
     "ExecutionRoleName":{
       "type":"string",
       "max":64,
@@ -3532,6 +3683,7 @@
         "OBSOLETE"
       ]
     },
+    "ExecutionStatusReason":{"type":"string"},
     "Export":{
       "type":"structure",
       "members":{
@@ -3716,7 +3868,7 @@
         },
         "TemplateURL":{
           "shape":"TemplateURL",
-          "documentation":"<p>Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that's located in an Amazon S3 bucket or a Systems Manager document. The location for an Amazon S3 bucket must start with <code>https://</code>.</p> <p>Conditional: You must specify only one of the following parameters: <code>StackName</code>, <code>StackSetName</code>, <code>TemplateBody</code>, or <code>TemplateURL</code>.</p>"
+          "documentation":"<p>The URL of a file containing the template body. The URL must point to a template (max size: 1 MB) that's located in an Amazon S3 bucket or a Systems Manager document. The location for an Amazon S3 bucket must start with <code>https://</code>.</p> <p>Conditional: You must specify only one of the following parameters: <code>StackName</code>, <code>StackSetName</code>, <code>TemplateBody</code>, or <code>TemplateURL</code>.</p>"
         },
         "StackName":{
           "shape":"StackNameOrId",
@@ -3750,7 +3902,7 @@
         },
         "Capabilities":{
           "shape":"Capabilities",
-          "documentation":"<p>The capabilities found within the template. If your template contains IAM resources, you must specify the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> value for this parameter when you use the <a>CreateStack</a> or <a>UpdateStack</a> actions with your template; otherwise, those actions return an <code>InsufficientCapabilities</code> error.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p>"
+          "documentation":"<p>The capabilities found within the template. If your template contains IAM resources, you must specify the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> value for this parameter when you use the <a>CreateStack</a> or <a>UpdateStack</a> actions with your template; otherwise, those actions return an <code>InsufficientCapabilities</code> error.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p>"
         },
         "CapabilitiesReason":{
           "shape":"CapabilitiesReason",
@@ -4441,6 +4593,69 @@
         }
       }
     },
+    "ListStackRefactorActionsInput":{
+      "type":"structure",
+      "required":["StackRefactorId"],
+      "members":{
+        "StackRefactorId":{
+          "shape":"StackRefactorId",
+          "documentation":"<p>The ID associated with the stack refactor created from the <a>CreateStackRefactor</a> action.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.</p>"
+        }
+      }
+    },
+    "ListStackRefactorActionsOutput":{
+      "type":"structure",
+      "required":["StackRefactorActions"],
+      "members":{
+        "StackRefactorActions":{
+          "shape":"StackRefactorActions",
+          "documentation":"<p>The stack refactor actions.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.</p>"
+        }
+      }
+    },
+    "ListStackRefactorsInput":{
+      "type":"structure",
+      "members":{
+        "ExecutionStatusFilter":{
+          "shape":"StackRefactorExecutionStatusFilter",
+          "documentation":"<p>Execution status to use as a filter. Specify one or more execution status codes to list only stack refactors with the specified execution status codes.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned with a single call. If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can assign to the <code>NextToken</code> request parameter to get the next set of results.</p>"
+        }
+      }
+    },
+    "ListStackRefactorsOutput":{
+      "type":"structure",
+      "required":["StackRefactorSummaries"],
+      "members":{
+        "StackRefactorSummaries":{
+          "shape":"StackRefactorSummaries",
+          "documentation":"<p>Provides a summary of a stack refactor, including the following:</p> <ul> <li> <p> <code>StackRefactorId</code> </p> </li> <li> <p> <code>Status</code> </p> </li> <li> <p> <code>StatusReason</code> </p> </li> <li> <p> <code>ExecutionStatus</code> </p> </li> <li> <p> <code>ExecutionStatusReason</code> </p> </li> <li> <p> <code>Description</code> </p> </li> </ul>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.</p>"
+        }
+      }
+    },
     "ListStackResourcesInput":{
       "type":"structure",
       "required":["StackName"],
@@ -5060,7 +5275,7 @@
         },
         "ResolvedValue":{
           "shape":"ParameterValue",
-          "documentation":"<p>Read-only. The value that corresponds to a Systems Manager parameter key. This field is returned only for Systems Manager parameter types in the template. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-supplied-parameter-types.html\">Use CloudFormation-supplied parameter types</a> in the <i>CloudFormation User Guide</i>.</p>"
+          "documentation":"<p>Read-only. The value that corresponds to a Systems Manager parameter key. This field is returned only for Systems Manager parameter types in the template. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-supplied-parameter-types.html\">Specify existing resources at runtime with CloudFormation-supplied parameter types</a> in the <i>CloudFormation User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The Parameter data type.</p>"
@@ -5362,7 +5577,7 @@
         },
         "TypeName":{
           "shape":"TypeName",
-          "documentation":"<p>The name of the extension being registered.</p> <p>We suggest that extension names adhere to the following patterns:</p> <ul> <li> <p>For resource types, <code>company_or_organization::service::type</code>.</p> </li> <li> <p>For modules, <code>company_or_organization::service::type::MODULE</code>.</p> </li> <li> <p>For hooks, <code>MyCompany::Testing::MyTestHook</code>.</p> </li> </ul> <note> <p>The following organization namespaces are reserved and can't be used in your extension names:</p> <ul> <li> <p> <code>Alexa</code> </p> </li> <li> <p> <code>AMZN</code> </p> </li> <li> <p> <code>Amazon</code> </p> </li> <li> <p> <code>AWS</code> </p> </li> <li> <p> <code>Custom</code> </p> </li> <li> <p> <code>Dev</code> </p> </li> </ul> </note>"
+          "documentation":"<p>The name of the extension being registered.</p> <p>We suggest that extension names adhere to the following patterns:</p> <ul> <li> <p>For resource types, <code>company_or_organization::service::type</code>.</p> </li> <li> <p>For modules, <code>company_or_organization::service::type::MODULE</code>.</p> </li> <li> <p>For Hooks, <code>MyCompany::Testing::MyTestHook</code>.</p> </li> </ul> <note> <p>The following organization namespaces are reserved and can't be used in your extension names:</p> <ul> <li> <p> <code>Alexa</code> </p> </li> <li> <p> <code>AMZN</code> </p> </li> <li> <p> <code>Amazon</code> </p> </li> <li> <p> <code>AWS</code> </p> </li> <li> <p> <code>Custom</code> </p> </li> <li> <p> <code>Dev</code> </p> </li> </ul> </note>"
         },
         "SchemaHandlerPackage":{
           "shape":"S3Url",
@@ -5670,6 +5885,46 @@
       "type":"list",
       "member":{"shape":"ResourceIdentifierPropertyKey"}
     },
+    "ResourceLocation":{
+      "type":"structure",
+      "required":[
+        "StackName",
+        "LogicalResourceId"
+      ],
+      "members":{
+        "StackName":{
+          "shape":"StackName",
+          "documentation":"<p>The name associated with the stack.</p>"
+        },
+        "LogicalResourceId":{
+          "shape":"LogicalResourceId",
+          "documentation":"<p>The logical name of the resource specified in the template.</p>"
+        }
+      },
+      "documentation":"<p>The location of the resource in a stack template.</p>"
+    },
+    "ResourceMapping":{
+      "type":"structure",
+      "required":[
+        "Source",
+        "Destination"
+      ],
+      "members":{
+        "Source":{
+          "shape":"ResourceLocation",
+          "documentation":"<p>The source stack <code>StackName</code> and <code>LogicalResourceId</code> for the resource being refactored.</p>"
+        },
+        "Destination":{
+          "shape":"ResourceLocation",
+          "documentation":"<p>The destination stack <code>StackName</code> and <code>LogicalResourceId</code> for the resource being refactored.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the current source of the resource and the destination of where it will be moved to.</p>"
+    },
+    "ResourceMappings":{
+      "type":"list",
+      "member":{"shape":"ResourceMapping"}
+    },
     "ResourceModel":{
       "type":"string",
       "max":16384,
@@ -5793,6 +6048,12 @@
         "IMPORT_ROLLBACK_IN_PROGRESS",
         "IMPORT_ROLLBACK_FAILED",
         "IMPORT_ROLLBACK_COMPLETE",
+        "EXPORT_FAILED",
+        "EXPORT_COMPLETE",
+        "EXPORT_IN_PROGRESS",
+        "EXPORT_ROLLBACK_IN_PROGRESS",
+        "EXPORT_ROLLBACK_FAILED",
+        "EXPORT_ROLLBACK_COMPLETE",
         "UPDATE_ROLLBACK_IN_PROGRESS",
         "UPDATE_ROLLBACK_COMPLETE",
         "UPDATE_ROLLBACK_FAILED",
@@ -6265,6 +6526,28 @@
       },
       "documentation":"<p>The Stack data type.</p>"
     },
+    "StackDefinition":{
+      "type":"structure",
+      "members":{
+        "StackName":{
+          "shape":"StackName",
+          "documentation":"<p>The name associated with the stack.</p>"
+        },
+        "TemplateBody":{
+          "shape":"TemplateBody",
+          "documentation":"<p>The file path for the stack template file.</p>"
+        },
+        "TemplateURL":{
+          "shape":"TemplateURL",
+          "documentation":"<p>The desired final state of the stack template.</p>"
+        }
+      },
+      "documentation":"<p>Describes the stack and the template used by the stack.</p>"
+    },
+    "StackDefinitions":{
+      "type":"list",
+      "member":{"shape":"StackDefinition"}
+    },
     "StackDriftDetectionId":{
       "type":"string",
       "max":36,
@@ -6385,7 +6668,7 @@
         },
         "HookInvocationPoint":{
           "shape":"HookInvocationPoint",
-          "documentation":"<p>Invocation points are points in provisioning logic where hooks are initiated.</p>"
+          "documentation":"<p>Invocation points are points in provisioning logic where Hooks are initiated.</p>"
         },
         "HookFailureMode":{
           "shape":"HookFailureMode",
@@ -6404,6 +6687,10 @@
     },
     "StackId":{"type":"string"},
     "StackIdList":{
+      "type":"list",
+      "member":{"shape":"StackId"}
+    },
+    "StackIds":{
       "type":"list",
       "member":{"shape":"StackId"}
     },
@@ -6683,6 +6970,163 @@
       "type":"string",
       "max":1350,
       "min":1
+    },
+    "StackRefactorAction":{
+      "type":"structure",
+      "members":{
+        "Action":{
+          "shape":"StackRefactorActionType",
+          "documentation":"<p>The action that CloudFormation takes on the stack.</p>"
+        },
+        "Entity":{
+          "shape":"StackRefactorActionEntity",
+          "documentation":"<p>The type that will be evaluated in the <code>StackRefactorAction</code>. The following are potential <code>Entity</code> types:</p> <ul> <li> <p> <code>Stack</code> </p> </li> <li> <p> <code>Resource</code> </p> </li> </ul>"
+        },
+        "PhysicalResourceId":{
+          "shape":"PhysicalResourceId",
+          "documentation":"<p>The name or unique identifier associated with the physical instance of the resource.</p>"
+        },
+        "ResourceIdentifier":{
+          "shape":"StackRefactorResourceIdentifier",
+          "documentation":"<p>A key-value pair that identifies the target resource. The key is an identifier property (for example, <code>BucketName</code> for <code>AWS::S3::Bucket</code> resources) and the value is the actual property value (for example, <code>MyS3Bucket</code>).</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description to help you identify the refactor.</p>"
+        },
+        "Detection":{
+          "shape":"StackRefactorDetection",
+          "documentation":"<p>The detection type is one of the following:</p> <ul> <li> <p>Auto: CloudFormation figured out the mapping on its own.</p> </li> <li> <p>Manual: The customer provided the mapping in the <code>ResourceMapping</code> parameter.</p> </li> </ul>"
+        },
+        "DetectionReason":{
+          "shape":"DetectionReason",
+          "documentation":"<p>The description of the detection type.</p>"
+        },
+        "TagResources":{
+          "shape":"StackRefactorTagResources",
+          "documentation":"<p>Assigns one or more tags to specified resources.</p>"
+        },
+        "UntagResources":{
+          "shape":"StackRefactorUntagResources",
+          "documentation":"<p>Removes one or more tags to specified resources.</p>"
+        },
+        "ResourceMapping":{
+          "shape":"ResourceMapping",
+          "documentation":"<p>The mapping for the stack resource <code>Source</code> and stack resource <code>Destination</code>.</p>"
+        }
+      },
+      "documentation":"<p>Describes the stack and the action that CloudFormation will perform on it if you execute the stack refactor.</p>"
+    },
+    "StackRefactorActionEntity":{
+      "type":"string",
+      "enum":[
+        "RESOURCE",
+        "STACK"
+      ]
+    },
+    "StackRefactorActionType":{
+      "type":"string",
+      "enum":[
+        "MOVE",
+        "CREATE"
+      ]
+    },
+    "StackRefactorActions":{
+      "type":"list",
+      "member":{"shape":"StackRefactorAction"}
+    },
+    "StackRefactorDetection":{
+      "type":"string",
+      "enum":[
+        "AUTO",
+        "MANUAL"
+      ]
+    },
+    "StackRefactorExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "UNAVAILABLE",
+        "AVAILABLE",
+        "OBSOLETE",
+        "EXECUTE_IN_PROGRESS",
+        "EXECUTE_COMPLETE",
+        "EXECUTE_FAILED",
+        "ROLLBACK_IN_PROGRESS",
+        "ROLLBACK_COMPLETE",
+        "ROLLBACK_FAILED"
+      ]
+    },
+    "StackRefactorExecutionStatusFilter":{
+      "type":"list",
+      "member":{"shape":"StackRefactorExecutionStatus"}
+    },
+    "StackRefactorId":{"type":"string"},
+    "StackRefactorNotFoundException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified stack refactor can't be found.</p>",
+      "error":{
+        "code":"StackRefactorNotFoundException",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "StackRefactorResourceIdentifier":{"type":"string"},
+    "StackRefactorStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_IN_PROGRESS",
+        "CREATE_COMPLETE",
+        "CREATE_FAILED",
+        "DELETE_IN_PROGRESS",
+        "DELETE_COMPLETE",
+        "DELETE_FAILED"
+      ]
+    },
+    "StackRefactorStatusReason":{"type":"string"},
+    "StackRefactorSummaries":{
+      "type":"list",
+      "member":{"shape":"StackRefactorSummary"}
+    },
+    "StackRefactorSummary":{
+      "type":"structure",
+      "members":{
+        "StackRefactorId":{
+          "shape":"StackRefactorId",
+          "documentation":"<p>The ID associated with the stack refactor created from the <a>CreateStackRefactor</a> action.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description to help you identify the refactor.</p>"
+        },
+        "ExecutionStatus":{
+          "shape":"StackRefactorExecutionStatus",
+          "documentation":"<p>The operation status that's provided after calling the <a>ExecuteStackRefactor</a> action.</p>"
+        },
+        "ExecutionStatusReason":{
+          "shape":"ExecutionStatusReason",
+          "documentation":"<p>A detailed explanation for the stack refactor <code>ExecutionStatus</code>.</p>"
+        },
+        "Status":{
+          "shape":"StackRefactorStatus",
+          "documentation":"<p>The stack refactor operation status that's provided after calling the <a>CreateStackRefactor</a> action.</p>"
+        },
+        "StatusReason":{
+          "shape":"StackRefactorStatusReason",
+          "documentation":"<p>A detailed explanation for the stack refactor <code>Status</code>.</p>"
+        }
+      },
+      "documentation":"<p>The summary of a stack refactor operation.</p>"
+    },
+    "StackRefactorTagResources":{
+      "type":"list",
+      "member":{"shape":"Tag"}
+    },
+    "StackRefactorUntagResources":{
+      "type":"list",
+      "member":{"shape":"TagKey"}
     },
     "StackResource":{
       "type":"structure",
@@ -6987,7 +7431,7 @@
         },
         "Capabilities":{
           "shape":"Capabilities",
-          "documentation":"<p>The capabilities that are allowed in the stack set. Some stack set templates might include resources that can affect permissions in your Amazon Web Services account—for example, by creating new Identity and Access Management (IAM) users. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p>"
+          "documentation":"<p>The capabilities that are allowed in the stack set. Some stack set templates might include resources that can affect permissions in your Amazon Web Services account—for example, by creating new Identity and Access Management (IAM) users. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p>"
         },
         "Tags":{
           "shape":"Tags",
@@ -6999,7 +7443,7 @@
         },
         "AdministrationRoleARN":{
           "shape":"RoleARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used to create or update the stack set.</p> <p>Use customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs.html\">Prerequisites: Granting Permissions for Stack Set Operations</a> in the <i>CloudFormation User Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used to create or update the stack set.</p> <p>Use customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs.html\">Prerequisites for using CloudFormation StackSets</a> in the <i>CloudFormation User Guide</i>.</p>"
         },
         "ExecutionRoleName":{
           "shape":"ExecutionRoleName",
@@ -7015,7 +7459,7 @@
         },
         "PermissionModel":{
           "shape":"PermissionModels",
-          "documentation":"<p>Describes how the IAM roles required for stack set operations are created.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html\">Grant Self-Managed Stack Set Permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-service-managed.html\">Grant Service-Managed Stack Set Permissions</a>.</p> </li> </ul>"
+          "documentation":"<p>Describes how the IAM roles required for stack set operations are created.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html\">Grant self-managed permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-activate-trusted-access.html\">Activate trusted access for stack sets with Organizations</a>.</p> </li> </ul>"
         },
         "OrganizationalUnitIds":{
           "shape":"OrganizationalUnitIdList",
@@ -7087,7 +7531,7 @@
           "documentation":"<p>The number of stack instances for which the drift detection operation failed.</p>"
         }
       },
-      "documentation":"<p>Detailed information about the drift status of the stack set.</p> <p>For stack sets, contains information about the last <i>completed</i> drift operation performed on the stack set. Information about drift operations in-progress isn't included.</p> <p>For stack set operations, includes information about drift operations currently being performed on the stack set.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html\">Detecting unmanaged changes in stack sets</a> in the <i>CloudFormation User Guide</i>.</p>"
+      "documentation":"<p>Detailed information about the drift status of the stack set.</p> <p>For stack sets, contains information about the last <i>completed</i> drift operation performed on the stack set. Information about drift operations in-progress isn't included.</p> <p>For stack set operations, includes information about drift operations currently being performed on the stack set.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html\">Performing drift detection on CloudFormation StackSets</a> in the <i>CloudFormation User Guide</i>.</p>"
     },
     "StackSetDriftDetectionStatus":{
       "type":"string",
@@ -7154,7 +7598,7 @@
         },
         "Status":{
           "shape":"StackSetOperationStatus",
-          "documentation":"<p>The status of the operation.</p> <ul> <li> <p> <code>FAILED</code>: The operation exceeded the specified failure tolerance. The failure tolerance value that you've set for an operation is applied for each Region during stack create and update operations. If the number of failed stacks within a Region exceeds the failure tolerance, the status of the operation in the Region is set to <code>FAILED</code>. This in turn sets the status of the operation as a whole to <code>FAILED</code>, and CloudFormation cancels the operation in any remaining Regions.</p> </li> <li> <p> <code>QUEUED</code>: [Service-managed permissions] For automatic deployments that require a sequence of operations, the operation is queued to be performed. For more information, see the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html#stackset-status-codes\">stack set operation status codes</a> in the <i>CloudFormation User Guide</i>.</p> </li> <li> <p> <code>RUNNING</code>: The operation is currently being performed.</p> </li> <li> <p> <code>STOPPED</code>: The user has canceled the operation.</p> </li> <li> <p> <code>STOPPING</code>: The operation is in the process of stopping, at user request.</p> </li> <li> <p> <code>SUCCEEDED</code>: The operation completed creating or updating all the specified stacks without exceeding the failure tolerance for the operation.</p> </li> </ul>"
+          "documentation":"<p>The status of the operation.</p> <ul> <li> <p> <code>FAILED</code>: The operation exceeded the specified failure tolerance. The failure tolerance value that you've set for an operation is applied for each Region during stack create and update operations. If the number of failed stacks within a Region exceeds the failure tolerance, the status of the operation in the Region is set to <code>FAILED</code>. This in turn sets the status of the operation as a whole to <code>FAILED</code>, and CloudFormation cancels the operation in any remaining Regions.</p> </li> <li> <p> <code>QUEUED</code>: [Service-managed permissions] For automatic deployments that require a sequence of operations, the operation is queued to be performed. For more information, see the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html#stackset-status-codes\">StackSets status codes</a> in the <i>CloudFormation User Guide</i>.</p> </li> <li> <p> <code>RUNNING</code>: The operation is currently being performed.</p> </li> <li> <p> <code>STOPPED</code>: The user has canceled the operation.</p> </li> <li> <p> <code>STOPPING</code>: The operation is in the process of stopping, at user request.</p> </li> <li> <p> <code>SUCCEEDED</code>: The operation completed creating or updating all the specified stacks without exceeding the failure tolerance for the operation.</p> </li> </ul>"
         },
         "OperationPreferences":{
           "shape":"StackSetOperationPreferences",
@@ -7166,7 +7610,7 @@
         },
         "AdministrationRoleARN":{
           "shape":"RoleARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used to perform this stack set operation.</p> <p>Use customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs.html\">Define Permissions for Multiple Administrators</a> in the <i>CloudFormation User Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used to perform this stack set operation.</p> <p>Use customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html\">Grant self-managed permissions</a> in the <i>CloudFormation User Guide</i>.</p>"
         },
         "ExecutionRoleName":{
           "shape":"ExecutionRoleName",
@@ -7186,7 +7630,7 @@
         },
         "StackSetDriftDetectionDetails":{
           "shape":"StackSetDriftDetectionDetails",
-          "documentation":"<p>Detailed information about the drift status of the stack set. This includes information about drift operations currently being performed on the stack set.</p> <p>This information will only be present for stack set operations whose <code>Action</code> type is <code>DETECT_DRIFT</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html\">Detect stack set drift</a> in the <i>CloudFormation User Guide</i>.</p>"
+          "documentation":"<p>Detailed information about the drift status of the stack set. This includes information about drift operations currently being performed on the stack set.</p> <p>This information will only be present for stack set operations whose <code>Action</code> type is <code>DETECT_DRIFT</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-drift.html\">Performing drift detection on CloudFormation StackSets</a> in the <i>CloudFormation User Guide</i>.</p>"
         },
         "StatusReason":{
           "shape":"StackSetOperationStatusReason",
@@ -7386,7 +7830,7 @@
         },
         "PermissionModel":{
           "shape":"PermissionModels",
-          "documentation":"<p>Describes how the IAM roles required for stack set operations are created.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html\">Grant Self-Managed Stack Set Permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-service-managed.html\">Grant Service-Managed Stack Set Permissions</a>.</p> </li> </ul>"
+          "documentation":"<p>Describes how the IAM roles required for stack set operations are created.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html\">Grant self-managed permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-activate-trusted-access.html\">Activate trusted access for stack sets with Organizations</a>.</p> </li> </ul>"
         },
         "DriftStatus":{
           "shape":"StackDriftStatus",
@@ -8156,7 +8600,7 @@
         },
         "TemplateURL":{
           "shape":"TemplateURL",
-          "documentation":"<p>Location of file containing the template body. The URL must point to a template that's located in an Amazon S3 bucket or a Systems Manager document. The location for an Amazon S3 bucket must start with <code>https://</code>.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>"
+          "documentation":"<p>The URL of a file containing the template body. The URL must point to a template that's located in an Amazon S3 bucket or a Systems Manager document. The location for an Amazon S3 bucket must start with <code>https://</code>.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>"
         },
         "UsePreviousTemplate":{
           "shape":"UsePreviousTemplate",
@@ -8176,11 +8620,11 @@
         },
         "Capabilities":{
           "shape":"Capabilities",
-          "documentation":"<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to update the stack.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account, for example, by creating new IAM users. For those stacks, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don't specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we suggest that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-accesskey.html\"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-group.html\"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html\">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html\">AWS::IAM::Policy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html\"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-user.html\"> AWS::IAM::User</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-usertogroupaddition.html\">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some template contain macros. Macros perform custom processing on templates; this can include simple actions like find-and-replace operations, all the way to extensive transformations of entire templates. Because of this, users typically create a change set from the processed template, so that they can review the changes resulting from the macros before actually updating the stack. If your stack template contains one or more macros, and you choose to update a stack directly from the processed template, without first reviewing the resulting changes in a change set, you must acknowledge this capability. This includes the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/create-reusable-transform-function-snippets-and-add-to-your-template-with-aws-include-transform.html\">AWS::Include</a> and <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html\">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.</p> <p>If you want to update a stack from a stack template that contains macros <i>and</i> nested stacks, you must update the stack directly from the template using this capability.</p> <important> <p>You should only update stacks directly from a stack template that contains macros if you know what processing the macro performs.</p> <p>Each macro relies on an underlying Lambda service function for processing stack templates. Be aware that the Lambda function owner can update the function operation without CloudFormation being notified.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html\">Perform custom processing on CloudFormation templates with template macros</a>.</p> </li> </ul> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
+          "documentation":"<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to update the stack.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account, for example, by creating new IAM users. For those stacks, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don't specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we suggest that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-accesskey.html\"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-group.html\"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html\">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html\"> AWS::IAM::ManagedPolicy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html\">AWS::IAM::Policy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html\"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-user.html\"> AWS::IAM::User</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-usertogroupaddition.html\">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some template contain macros. Macros perform custom processing on templates; this can include simple actions like find-and-replace operations, all the way to extensive transformations of entire templates. Because of this, users typically create a change set from the processed template, so that they can review the changes resulting from the macros before actually updating the stack. If your stack template contains one or more macros, and you choose to update a stack directly from the processed template, without first reviewing the resulting changes in a change set, you must acknowledge this capability. This includes the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-include.html\">AWS::Include</a> and <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html\">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.</p> <p>If you want to update a stack from a stack template that contains macros <i>and</i> nested stacks, you must update the stack directly from the template using this capability.</p> <important> <p>You should only update stacks directly from a stack template that contains macros if you know what processing the macro performs.</p> <p>Each macro relies on an underlying Lambda service function for processing stack templates. Be aware that the Lambda function owner can update the function operation without CloudFormation being notified.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html\">Perform custom processing on CloudFormation templates with template macros</a>.</p> </li> </ul> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
         },
         "ResourceTypes":{
           "shape":"ResourceTypes",
-          "documentation":"<p>The template resource types that you have permissions to work with for this update stack action, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>.</p> <p>If the list of resource types doesn't include a resource that you're updating, the stack update fails. By default, CloudFormation grants permissions to all resource types. IAM uses this parameter for CloudFormation-specific condition keys in IAM policies. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html\">Control access with Identity and Access Management</a>.</p> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
+          "documentation":"<p>The template resource types that you have permissions to work with for this update stack action, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>.</p> <p>If the list of resource types doesn't include a resource that you're updating, the stack update fails. By default, CloudFormation grants permissions to all resource types. IAM uses this parameter for CloudFormation-specific condition keys in IAM policies. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html\">Control access with Identity and Access Management</a>.</p> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
         },
         "RoleARN":{
           "shape":"RoleARN",
@@ -8234,7 +8678,7 @@
         },
         "Accounts":{
           "shape":"AccountList",
-          "documentation":"<p>[Self-managed permissions] The names of one or more Amazon Web Services accounts for which you want to update parameter values for stack instances. The overridden parameter values will be applied to all stack instances in the specified accounts and Amazon Web Services Regions.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>"
+          "documentation":"<p>[Self-managed permissions] The account IDs of one or more Amazon Web Services accounts for which you want to update parameter values for stack instances. The overridden parameter values will be applied to all stack instances in the specified accounts and Amazon Web Services Regions.</p> <p>You can specify <code>Accounts</code> or <code>DeploymentTargets</code>, but not both.</p>"
         },
         "DeploymentTargets":{
           "shape":"DeploymentTargets",
@@ -8300,7 +8744,7 @@
         },
         "TemplateURL":{
           "shape":"TemplateURL",
-          "documentation":"<p>The location of the file that contains the template body. The URL must point to a template (maximum size: 460,800 bytes) that is located in an Amazon S3 bucket or a Systems Manager document.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code> or <code>TemplateURL</code>—or set <code>UsePreviousTemplate</code> to true.</p>"
+          "documentation":"<p>The URL of a file that contains the template body. The URL must point to a template (maximum size: 1 MB) that is located in an Amazon S3 bucket or a Systems Manager document. The location for an Amazon S3 bucket must start with <code>https://</code>.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code> or <code>TemplateURL</code>—or set <code>UsePreviousTemplate</code> to true.</p>"
         },
         "UsePreviousTemplate":{
           "shape":"UsePreviousTemplate",
@@ -8312,7 +8756,7 @@
         },
         "Capabilities":{
           "shape":"Capabilities",
-          "documentation":"<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to update the stack set and its associated stack instances.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account, for example, by creating new IAM users. For those stacks sets, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don't specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we recommend that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-accesskey.html\">AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-group.html\">AWS::IAM::Group</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html\">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html\">AWS::IAM::Policy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html\">AWS::IAM::Role</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-user.html\">AWS::IAM::User</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-usertogroupaddition.html\">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some templates reference macros. If your stack set template references one or more macros, you must update the stack set directly from the processed template, without first reviewing the resulting changes in a change set. To update the stack set directly, you must acknowledge this capability. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html\">Using CloudFormation Macros to Perform Custom Processing on Templates</a>.</p> <important> <p>Stack sets with service-managed permissions do not currently support the use of macros in templates. (This includes the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/create-reusable-transform-function-snippets-and-add-to-your-template-with-aws-include-transform.html\">AWS::Include</a> and <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html\">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.) Even if you specify this capability for a stack set with service-managed permissions, if you reference a macro in your template the stack set operation will fail.</p> </important> </li> </ul>"
+          "documentation":"<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to update the stack set and its associated stack instances.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account, for example, by creating new IAM users. For those stacks sets, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don't specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we recommend that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-accesskey.html\">AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-group.html\">AWS::IAM::Group</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html\">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html\">AWS::IAM::Policy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html\">AWS::IAM::Role</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-user.html\">AWS::IAM::User</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-usertogroupaddition.html\">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some templates reference macros. If your stack set template references one or more macros, you must update the stack set directly from the processed template, without first reviewing the resulting changes in a change set. To update the stack set directly, you must acknowledge this capability. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html\">Perform custom processing on CloudFormation templates with template macros</a>.</p> <important> <p>Stack sets with service-managed permissions do not currently support the use of macros in templates. (This includes the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-include.html\">AWS::Include</a> and <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html\">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.) Even if you specify this capability for a stack set with service-managed permissions, if you reference a macro in your template the stack set operation will fail.</p> </important> </li> </ul>"
         },
         "Tags":{
           "shape":"Tags",
@@ -8324,7 +8768,7 @@
         },
         "AdministrationRoleARN":{
           "shape":"RoleARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to use to update this stack set.</p> <p>Specify an IAM role only if you are using customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs.html\">Granting Permissions for Stack Set Operations</a> in the <i>CloudFormation User Guide</i>.</p> <p>If you specified a customized administrator role when you created the stack set, you must specify a customized administrator role, even if it is the same customized administrator role used with this stack set previously.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to use to update this stack set.</p> <p>Specify an IAM role only if you are using customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs.html\">Prerequisites for using CloudFormation StackSets</a> in the <i>CloudFormation User Guide</i>.</p> <p>If you specified a customized administrator role when you created the stack set, you must specify a customized administrator role, even if it is the same customized administrator role used with this stack set previously.</p>"
         },
         "ExecutionRoleName":{
           "shape":"ExecutionRoleName",
@@ -8336,7 +8780,7 @@
         },
         "PermissionModel":{
           "shape":"PermissionModels",
-          "documentation":"<p>Describes how the IAM roles required for stack set operations are created. You cannot modify <code>PermissionModel</code> if there are stack instances associated with your stack set.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html\">Grant Self-Managed Stack Set Permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-service-managed.html\">Grant Service-Managed Stack Set Permissions</a>.</p> </li> </ul>"
+          "documentation":"<p>Describes how the IAM roles required for stack set operations are created. You cannot modify <code>PermissionModel</code> if there are stack instances associated with your stack set.</p> <ul> <li> <p>With <code>self-managed</code> permissions, you must create the administrator and execution roles required to deploy to target accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs-self-managed.html\">Grant self-managed permissions</a>.</p> </li> <li> <p>With <code>service-managed</code> permissions, StackSets automatically creates the IAM roles required to deploy to accounts managed by Organizations. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-activate-trusted-access.html\">Activate trusted access for stack sets with Organizations</a>.</p> </li> </ul>"
         },
         "AutoDeployment":{
           "shape":"AutoDeployment",
@@ -8412,7 +8856,7 @@
         },
         "TemplateURL":{
           "shape":"TemplateURL",
-          "documentation":"<p>Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that is located in an Amazon S3 bucket or a Systems Manager document. The location for an Amazon S3 bucket must start with <code>https://</code>.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>"
+          "documentation":"<p>The URL of a file containing the template body. The URL must point to a template (max size: 1 MB) that is located in an Amazon S3 bucket or a Systems Manager document. The location for an Amazon S3 bucket must start with <code>https://</code>.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>"
         }
       },
       "documentation":"<p>The input for <a>ValidateTemplate</a> action.</p>"
@@ -8430,7 +8874,7 @@
         },
         "Capabilities":{
           "shape":"Capabilities",
-          "documentation":"<p>The capabilities found within the template. If your template contains IAM resources, you must specify the CAPABILITY_IAM or CAPABILITY_NAMED_IAM value for this parameter when you use the <a>CreateStack</a> or <a>UpdateStack</a> actions with your template; otherwise, those actions return an InsufficientCapabilities error.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p>"
+          "documentation":"<p>The capabilities found within the template. If your template contains IAM resources, you must specify the CAPABILITY_IAM or CAPABILITY_NAMED_IAM value for this parameter when you use the <a>CreateStack</a> or <a>UpdateStack</a> actions with your template; otherwise, those actions return an InsufficientCapabilities error.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p>"
         },
         "CapabilitiesReason":{
           "shape":"CapabilitiesReason",

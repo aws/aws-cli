@@ -15,7 +15,7 @@ import os
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.writer import ConfigFileWriter
 
-from . import PREDEFINED_SECTION_NAMES, profile_to_section
+from . import PREDEFINED_SECTION_NAMES, profile_to_section, get_section_header
 
 
 class ConfigureSetCommand(BasicCommand):
@@ -53,7 +53,8 @@ class ConfigureSetCommand(BasicCommand):
     def _run_main(self, args, parsed_globals):
         varname = args.varname
         value = args.value
-        profile = 'default'
+        section_name = 'default'
+        section_type = 'profile'
         # Before handing things off to the config writer,
         # we need to find out three things:
         # 1. What section we're writing to (profile).
@@ -64,44 +65,51 @@ class ConfigureSetCommand(BasicCommand):
             # profile (or leave it as the 'default' section if
             # no profile is set).
             if self._session.profile is not None:
-                profile = self._session.profile
+                section_name = self._session.profile
         else:
             # First figure out if it's been scoped to a profile.
             parts = varname.split('.')
             if parts[0] in ('default', 'profile'):
                 # Then we know we're scoped to a profile.
                 if parts[0] == 'default':
-                    profile = 'default'
+                    section_name = 'default'
                     remaining = parts[1:]
                 else:
                     # [profile, profile_name, ...]
-                    profile = parts[1]
+                    section_name = parts[1]
                     remaining = parts[2:]
                 varname = remaining[0]
                 if len(remaining) == 2:
                     value = {remaining[1]: value}
+            elif parts[0] == 'sso-session':
+                section_type = 'sso-session'
+                section_name = parts[1]
+                varname = parts[2]
             elif parts[0] not in PREDEFINED_SECTION_NAMES:
                 if self._session.profile is not None:
-                    profile = self._session.profile
+                    section_name = self._session.profile
                 else:
                     profile_name = self._session.get_config_variable('profile')
                     if profile_name is not None:
-                        profile = profile_name
+                        section_name = profile_name
                 varname = parts[0]
                 if len(parts) == 2:
                     value = {parts[1]: value}
             elif len(parts) == 2:
                 # Otherwise it's something in the [plugin] section
-                profile, varname = parts
+                section_type = 'top-level'
+                section_name, varname = parts
         config_filename = self._get_config_file('config_file')
         if varname in self._WRITE_TO_CREDS_FILE:
             # When writing to the creds file, the section is just the profile
-            section = profile
+            section = section_name
             config_filename = self._get_config_file('credentials_file')
-        elif profile in PREDEFINED_SECTION_NAMES or profile == 'default':
-            section = profile
+        elif section_type == 'top-level' or section_name == 'default':
+            section = section_name
+        elif section_type == 'sso-session':
+            section = get_section_header(section_type, section_name)
         else:
-            section = profile_to_section(profile)
+            section = profile_to_section(section_name)
         updated_config = {'__section__': section, varname: value}
         self._config_writer.update_config(updated_config, config_filename)
         return 0

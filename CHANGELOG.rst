@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.37.16
+=======
+
+* api-change:``ecr``: Adds support to handle the new basic scanning daily quota.
+* api-change:``eks``: Introduce versionStatus field to take place of status field in EKS DescribeClusterVersions API
+* api-change:``mediaconvert``: This release adds support for Animated GIF output, forced chroma sample positioning metadata, and Extensible Wave Container format
+* api-change:``pi``: Adds documentation for dimension groups and dimensions to analyze locks for Database Insights.
+* api-change:``transcribe``: This release adds support for the Clinical Note Template Customization feature for the AWS HealthScribe APIs within Amazon Transcribe.
+
+
 1.37.15
 =======
 

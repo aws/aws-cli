@@ -257,7 +257,7 @@ class ServiceAliasCommand(BaseAliasCommand):
                 if parsed_param in self.UNSUPPORTED_GLOBAL_PARAMETERS:
                     raise InvalidAliasException(
                         f'Global parameter "--{parsed_param}" detected in alias '
-                        f'"{self._alias_name}" which is not support in '
+                        f'"{self._alias_name}" which is not supported in '
                         'subcommand aliases.'
                     )
                 else:

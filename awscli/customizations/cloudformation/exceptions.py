@@ -53,7 +53,15 @@ class DeployBucketRequiredError(CloudFormationCommandError):
          "via an S3 Bucket. Please add the --s3-bucket parameter to your "
          "command. The local template will be copied to that S3 bucket and "
          "then deployed.")
-
+        
+class PackageBucketRequiredError(CloudFormationCommandError):
+    fmt = "Add the --s3-bucket parameter to your command to upload artifacts to S3"
 
 class InvalidForEachIntrinsicFunctionError(CloudFormationCommandError):
     fmt = 'The value of {resource_id} has an invalid "Fn::ForEach::" format: Must be a list of three entries'
+
+class InvalidModulePathError(CloudFormationCommandError):
+    fmt = 'The value of {source} is not a valid path to a local file'
+
+class InvalidModuleError(CloudFormationCommandError):
+    fmt = 'Invalid module: {msg}'

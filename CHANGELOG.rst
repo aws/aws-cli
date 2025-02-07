@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.24.0
+======
+
+* api-change:``ecr``: Adds support to handle the new basic scanning daily quota.
+* api-change:``pi``: Adds documentation for dimension groups and dimensions to analyze locks for Database Insights.
+* api-change:``eks``: Introduce versionStatus field to take place of status field in EKS DescribeClusterVersions API
+* api-change:``transcribe``: This release adds support for the Clinical Note Template Customization feature for the AWS HealthScribe APIs within Amazon Transcribe.
+* feature:``emr-containers``: Add custom ``create-role-associations`` and ``delete-role-associations`` commands to create/delete role associations for EMR service accounts and provided IAM role.
+* api-change:``mediaconvert``: This release adds support for Animated GIF output, forced chroma sample positioning metadata, and Extensible Wave Container format
+
+
 2.23.15
 =======
 

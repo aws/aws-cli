@@ -2,6 +2,42 @@
 CHANGELOG
 =========
 
+1.37.16
+=======
+
+* api-change:``ecr``: Adds support to handle the new basic scanning daily quota.
+* api-change:``eks``: Introduce versionStatus field to take place of status field in EKS DescribeClusterVersions API
+* api-change:``mediaconvert``: This release adds support for Animated GIF output, forced chroma sample positioning metadata, and Extensible Wave Container format
+* api-change:``pi``: Adds documentation for dimension groups and dimensions to analyze locks for Database Insights.
+* api-change:``transcribe``: This release adds support for the Clinical Note Template Customization feature for the AWS HealthScribe APIs within Amazon Transcribe.
+
+
+1.37.15
+=======
+
+* api-change:``cloudformation``: We added 5 new stack refactoring APIs: CreateStackRefactor, ExecuteStackRefactor, ListStackRefactors, DescribeStackRefactor, ListStackRefactorActions.
+* api-change:``connectcases``: This release adds the ability to conditionally require fields on a template. Check public documentation for more information.
+* api-change:``cost-optimization-hub``: This release enables AWS Cost Optimization Hub to show cost optimization recommendations for Amazon Auto Scaling Groups, including those with single and mixed instance types.
+* api-change:``s3``: Updated list of the valid AWS Region values for the LocationConstraint parameter for general purpose buckets.
+
+
+1.37.14
+=======
+
+* api-change:``rds``: Documentation updates to clarify the description for the parameter AllocatedStorage for the DB cluster data type, the description for the parameter DeleteAutomatedBackups for the DeleteDBCluster API operation, and removing an outdated note for the CreateDBParameterGroup API operation.
+
+
+1.37.13
+=======
+
+* api-change:``datasync``: Doc-only update to provide more information on using Kerberos authentication with SMB locations.
+* api-change:``dms``: Introduces TargetDataSettings with the TablePreparationMode option available for data migrations.
+* api-change:``iam``: This release adds support for accepting encrypted SAML assertions. Customers can now configure their identity provider to encrypt the SAML assertions it sends to IAM.
+* api-change:``neptune-graph``: Added argument to `list-export` to filter by graph ID
+* api-change:``qbusiness``: Adds functionality to enable/disable a new Q Business Chat orchestration feature. If enabled, Q Business can orchestrate over datasources and plugins without the need for customers to select specific chat modes.
+* api-change:``sagemaker``: IPv6 support for Hyperpod clusters
+
+
 1.37.12
 =======
 

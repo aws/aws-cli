@@ -683,6 +683,8 @@ class Template(object):
             LOG.exception(msg)
             raise exceptions.InvalidModuleError(msg=msg)
 
+        self.template_dict = self.export_metadata(self.template_dict)
+
         if RESOURCES not in self.template_dict:
             return self.template_dict
 
@@ -698,7 +700,6 @@ class Template(object):
             LOG.exception(msg)
             raise exceptions.InvalidModuleError(msg=msg)
 
-        self.template_dict = self.export_metadata(self.template_dict)
         self.template_dict = self.export_global_artifacts(self.template_dict)
         self.export_resources(self.template_dict[RESOURCES])
 

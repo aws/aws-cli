@@ -13,7 +13,6 @@
 
 
 class CLICommand(object):
-
     """Interface for a CLI command.
 
     This class represents a top level CLI command

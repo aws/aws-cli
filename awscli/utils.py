@@ -128,12 +128,15 @@ class IMDSRegionProvider(BaseProvider):
 
     def _create_fetcher(self):
         metadata_timeout = self._session.get_config_variable(
-            'metadata_service_timeout')
+            'metadata_service_timeout'
+        )
         metadata_num_attempts = self._session.get_config_variable(
-            'metadata_service_num_attempts')
+            'metadata_service_num_attempts'
+        )
         imds_config = {
             'ec2_metadata_service_endpoint': self._session.get_config_variable(
-                'ec2_metadata_service_endpoint'),
+                'ec2_metadata_service_endpoint'
+            ),
             'ec2_metadata_service_endpoint_mode': resolve_imds_endpoint_mode(
                 self._session
             ),
@@ -175,13 +178,14 @@ class InstanceMetadataRegionFetcher(IMDSFetcher):
             logger.debug(
                 "Max number of attempts exceeded (%s) when "
                 "attempting to retrieve data from metadata service.",
-                self._num_attempts
+                self._num_attempts,
             )
         except BadIMDSRequestError as e:
             logger.debug(
                 "Failed to retrieve a region from IMDS. "
                 "Region detection may not be supported from this endpoint: "
-                "%s", e.request.url
+                "%s",
+                e.request.url,
             )
         return None
 
@@ -190,7 +194,7 @@ class InstanceMetadataRegionFetcher(IMDSFetcher):
         response = self._get_request(
             url_path=self._URL_PATH,
             retry_func=self._default_retry,
-            token=token
+            token=token,
         )
         availability_zone = response.text
         region = availability_zone[:-1]
@@ -229,16 +233,19 @@ def _split_with_quotes(value):
         # Find an opening list bracket
         list_start = part.find('=[')
 
-        if list_start >= 0 and value.find(']') != -1 and \
-           (quote_char is None or part.find(quote_char) > list_start):
+        if (
+            list_start >= 0
+            and value.find(']') != -1
+            and (quote_char is None or part.find(quote_char) > list_start)
+        ):
             # This is a list, eat all the items until the end
             if ']' in part:
                 # Short circuit for only one item
                 new_chunk = part
             else:
                 new_chunk = _eat_items(value, iter_parts, part, ']')
-            list_items = _split_with_quotes(new_chunk[list_start + 2:-1])
-            new_chunk = new_chunk[:list_start + 1] + ','.join(list_items)
+            list_items = _split_with_quotes(new_chunk[list_start + 2 : -1])
+            new_chunk = new_chunk[: list_start + 1] + ','.join(list_items)
             new_parts.append(new_chunk)
             continue
         elif quote_char is None:
@@ -334,8 +341,11 @@ def is_document_type_container(shape):
 
 def is_streaming_blob_type(shape):
     """Check if the shape is a streaming blob type."""
-    return (shape and shape.type_name == 'blob' and
-            shape.serialization.get('streaming', False))
+    return (
+        shape
+        and shape.type_name == 'blob'
+        and shape.serialization.get('streaming', False)
+    )
 
 
 def is_tagged_union_type(shape):
@@ -373,8 +383,7 @@ def ignore_ctrl_c():
 
 
 def emit_top_level_args_parsed_event(session, args):
-    session.emit(
-        'top-level-args-parsed', parsed_args=args, session=session)
+    session.emit('top-level-args-parsed', parsed_args=args, session=session)
 
 
 def is_a_tty():
@@ -392,8 +401,9 @@ def is_stdin_a_tty():
 
 
 class OutputStreamFactory(object):
-    def __init__(self, session, popen=None, environ=None,
-                 default_less_flags='FRX'):
+    def __init__(
+        self, session, popen=None, environ=None, default_less_flags='FRX'
+    ):
         self._session = session
         self._popen = popen
         if popen is None:
@@ -537,12 +547,14 @@ class ShapeWalker(object):
 
 class BaseShapeVisitor(object):
     """Visit shape encountered by ShapeWalker"""
+
     def visit_shape(self, shape):
         pass
 
 
 class ShapeRecordingVisitor(BaseShapeVisitor):
     """Record shapes visited by ShapeWalker"""
+
     def __init__(self):
         self.visited = []
 
@@ -558,12 +570,13 @@ def add_component_to_user_agent_extra(session, component):
 
 def add_metadata_component_to_user_agent_extra(session, name, value=None):
     add_component_to_user_agent_extra(
-        session,
-        UserAgentComponent("md", name, value)
+        session, UserAgentComponent("md", name, value)
     )
 
 
 def add_command_lineage_to_user_agent_extra(session, lineage):
     # Only add a command lineage if one is not already present in the user agent extra.
     if not re.search(r'md\/command#[\w\.]*', session.user_agent_extra):
-        add_metadata_component_to_user_agent_extra(session, "command", ".".join(lineage))
+        add_metadata_component_to_user_agent_extra(
+            session, "command", ".".join(lineage)
+        )

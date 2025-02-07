@@ -36,6 +36,7 @@ Arguments generally fall into one of several categories:
   user input and maps the input value to several API parameters.
 
 """
+
 import logging
 
 from botocore import xform_name
@@ -203,11 +204,24 @@ class CustomArgument(BaseCLIArgument):
 
     """
 
-    def __init__(self, name, help_text='', dest=None, default=None,
-                 action=None, required=None, choices=None, nargs=None,
-                 cli_type_name=None, group_name=None, positional_arg=False,
-                 no_paramfile=False, argument_model=None, synopsis='',
-                 const=None):
+    def __init__(
+        self,
+        name,
+        help_text='',
+        dest=None,
+        default=None,
+        action=None,
+        required=None,
+        choices=None,
+        nargs=None,
+        cli_type_name=None,
+        group_name=None,
+        positional_arg=False,
+        no_paramfile=False,
+        argument_model=None,
+        synopsis='',
+        const=None,
+    ):
         self._name = name
         self._help = help_text
         self._dest = dest
@@ -235,8 +249,10 @@ class CustomArgument(BaseCLIArgument):
 
         # If the top level element is a list then set nargs to
         # accept multiple values seperated by a space.
-        if self.argument_model is not None and \
-                self.argument_model.type_name == 'list':
+        if (
+            self.argument_model is not None
+            and self.argument_model.type_name == 'list'
+        ):
             self._nargs = '+'
 
     def _create_scalar_argument_model(self):
@@ -337,9 +353,7 @@ class CustomArgument(BaseCLIArgument):
 
 
 class CLIArgument(BaseCLIArgument):
-    """Represents a CLI argument that maps to a service parameter.
-
-    """
+    """Represents a CLI argument that maps to a service parameter."""
 
     TYPE_MAP = {
         'structure': str,
@@ -352,12 +366,18 @@ class CLIArgument(BaseCLIArgument):
         'long': int,
         'boolean': bool,
         'double': float,
-        'blob': str
+        'blob': str,
     }
 
-    def __init__(self, name, argument_model, operation_model,
-                 event_emitter, is_required=False,
-                 serialized_name=None):
+    def __init__(
+        self,
+        name,
+        argument_model,
+        operation_model,
+        event_emitter,
+        is_required=False,
+        serialized_name=None,
+    ):
         """
 
         :type name: str
@@ -433,7 +453,8 @@ class CLIArgument(BaseCLIArgument):
             cli_name,
             help=self.documentation,
             type=self.cli_type,
-            required=self.required)
+            required=self.required,
+        )
 
     def add_to_params(self, parameters, value):
         if value is None:
@@ -451,16 +472,23 @@ class CLIArgument(BaseCLIArgument):
             # below.  Sometimes this can be more complicated, and subclasses
             # can customize as they need.
             unpacked = self._unpack_argument(value)
-            LOG.debug('Unpacked value of %r for parameter "%s": %r', value,
-                      self.py_name, unpacked)
+            LOG.debug(
+                'Unpacked value of %r for parameter "%s": %r',
+                value,
+                self.py_name,
+                unpacked,
+            )
             parameters[self._serialized_name] = unpacked
 
     def _unpack_argument(self, value):
         service_name = self._operation_model.service_model.service_name
         operation_name = xform_name(self._operation_model.name, '-')
-        override = self._emit_first_response('process-cli-arg.%s.%s' % (
-            service_name, operation_name), param=self.argument_model,
-            cli_argument=self, value=value)
+        override = self._emit_first_response(
+            'process-cli-arg.%s.%s' % (service_name, operation_name),
+            param=self.argument_model,
+            cli_argument=self,
+            value=value,
+        )
         if override is not None:
             # A plugin supplied an alternate conversion,
             # use it instead.
@@ -478,17 +506,18 @@ class CLIArgument(BaseCLIArgument):
 
 
 class ListArgument(CLIArgument):
-
     @property
     def nargs(self):
         return '*'
 
     def add_to_parser(self, parser):
         cli_name = self.cli_name
-        parser.add_argument(cli_name,
-                            nargs=self.nargs,
-                            type=self.cli_type,
-                            required=self.required)
+        parser.add_argument(
+            cli_name,
+            nargs=self.nargs,
+            type=self.cli_type,
+            required=self.required,
+        )
 
 
 class BooleanArgument(CLIArgument):
@@ -508,17 +537,27 @@ class BooleanArgument(CLIArgument):
 
     """
 
-    def __init__(self, name, argument_model, operation_model,
-                 event_emitter,
-                 is_required=False, action='store_true', dest=None,
-                 group_name=None, default=None,
-                 serialized_name=None):
-        super(BooleanArgument, self).__init__(name,
-                                              argument_model,
-                                              operation_model,
-                                              event_emitter,
-                                              is_required,
-                                              serialized_name=serialized_name)
+    def __init__(
+        self,
+        name,
+        argument_model,
+        operation_model,
+        event_emitter,
+        is_required=False,
+        action='store_true',
+        dest=None,
+        group_name=None,
+        default=None,
+        serialized_name=None,
+    ):
+        super(BooleanArgument, self).__init__(
+            name,
+            argument_model,
+            operation_model,
+            event_emitter,
+            is_required,
+            serialized_name=serialized_name,
+        )
         self._mutex_group = None
         self._action = action
         if dest is None:
@@ -549,18 +588,25 @@ class BooleanArgument(CLIArgument):
         argument_table[self.name] = self
         negative_name = 'no-%s' % self.name
         negative_version = self.__class__(
-            negative_name, self.argument_model,
-            self._operation_model, self._event_emitter,
-            action='store_false', dest=self._destination,
-            group_name=self.group_name, serialized_name=self._serialized_name)
+            negative_name,
+            self.argument_model,
+            self._operation_model,
+            self._event_emitter,
+            action='store_false',
+            dest=self._destination,
+            group_name=self.group_name,
+            serialized_name=self._serialized_name,
+        )
         argument_table[negative_name] = negative_version
 
     def add_to_parser(self, parser):
-        parser.add_argument(self.cli_name,
-                            help=self.documentation,
-                            action=self._action,
-                            default=self._default,
-                            dest=self._destination)
+        parser.add_argument(
+            self.cli_name,
+            help=self.documentation,
+            action=self._action,
+            default=self._default,
+            dest=self._destination,
+        )
 
     @property
     def group_name(self):

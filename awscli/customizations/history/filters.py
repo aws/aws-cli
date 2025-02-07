@@ -1,7 +1,7 @@
 import re
 
 
-class RegexFilter(object):
+class RegexFilter:
     def __init__(self, pattern, replacement):
         self._pattern = pattern
         self._replacement = replacement

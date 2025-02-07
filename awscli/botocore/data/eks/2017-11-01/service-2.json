@@ -532,7 +532,7 @@
         {"shape":"ServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Describes an update to an Amazon EKS resource.</p> <p>When the status of the update is <code>Succeeded</code>, the update is complete. If an update fails, the status is <code>Failed</code>, and an error detail explains the reason for the failure.</p>"
+      "documentation":"<p>Describes an update to an Amazon EKS resource.</p> <p>When the status of the update is <code>Successful</code>, the update is complete. If an update fails, the status is <code>Failed</code>, and an error detail explains the reason for the failure.</p>"
     },
     "DisassociateAccessPolicy":{
       "name":"DisassociateAccessPolicy",
@@ -790,7 +790,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"ResourcePropagationDelayException"}
       ],
-      "documentation":"<p>Connects a Kubernetes cluster to the Amazon EKS control plane. </p> <p>Any Kubernetes cluster can be connected to the Amazon EKS control plane to view current information about the cluster and its nodes. </p> <p>Cluster connection requires two steps. First, send a <code> <a>RegisterClusterRequest</a> </code> to add it to the Amazon EKS control plane.</p> <p>Second, a <a href=\"https://amazon-eks.s3.us-west-2.amazonaws.com/eks-connector/manifests/eks-connector/latest/eks-connector.yaml\">Manifest</a> containing the <code>activationID</code> and <code>activationCode</code> must be applied to the Kubernetes cluster through it's native provider to provide visibility.</p> <p>After the manifest is updated and applied, the connected cluster is visible to the Amazon EKS control plane. If the manifest isn't applied within three days, the connected cluster will no longer be visible and must be deregistered using <code>DeregisterCluster</code>.</p>"
+      "documentation":"<p>Connects a Kubernetes cluster to the Amazon EKS control plane. </p> <p>Any Kubernetes cluster can be connected to the Amazon EKS control plane to view current information about the cluster and its nodes. </p> <p>Cluster connection requires two steps. First, send a <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_RegisterClusterRequest.html\"> <code>RegisterClusterRequest</code> </a> to add it to the Amazon EKS control plane.</p> <p>Second, a <a href=\"https://amazon-eks.s3.us-west-2.amazonaws.com/eks-connector/manifests/eks-connector/latest/eks-connector.yaml\">Manifest</a> containing the <code>activationID</code> and <code>activationCode</code> must be applied to the Kubernetes cluster through it's native provider to provide visibility.</p> <p>After the manifest is updated and applied, the connected cluster is visible to the Amazon EKS control plane. If the manifest isn't applied within three days, the connected cluster will no longer be visible and must be deregistered using <code>DeregisterCluster</code>.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -888,7 +888,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Updates an Amazon EKS cluster to the specified Kubernetes version. Your cluster continues to function during the update. The response output includes an update ID that you can use to track the status of your cluster update with the <a>DescribeUpdate</a> API operation.</p> <p>Cluster updates are asynchronous, and they should finish within a few minutes. During an update, the cluster status moves to <code>UPDATING</code> (this status transition is eventually consistent). When the update is complete (either <code>Failed</code> or <code>Successful</code>), the cluster status moves to <code>Active</code>.</p> <p>If your cluster has managed node groups attached to it, all of your node groups' Kubernetes versions must match the cluster's Kubernetes version in order to update the cluster to a new Kubernetes version.</p>"
+      "documentation":"<p>Updates an Amazon EKS cluster to the specified Kubernetes version. Your cluster continues to function during the update. The response output includes an update ID that you can use to track the status of your cluster update with the <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeUpdate.html\"> <code>DescribeUpdate</code> </a> API operation.</p> <p>Cluster updates are asynchronous, and they should finish within a few minutes. During an update, the cluster status moves to <code>UPDATING</code> (this status transition is eventually consistent). When the update is complete (either <code>Failed</code> or <code>Successful</code>), the cluster status moves to <code>Active</code>.</p> <p>If your cluster has managed node groups attached to it, all of your node groups' Kubernetes versions must match the cluster's Kubernetes version in order to update the cluster to a new Kubernetes version.</p>"
     },
     "UpdateEksAnywhereSubscription":{
       "name":"UpdateEksAnywhereSubscription",
@@ -923,7 +923,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Updates an Amazon EKS managed node group configuration. Your node group continues to function during the update. The response output includes an update ID that you can use to track the status of your node group update with the <a>DescribeUpdate</a> API operation. You can update the Kubernetes labels and taints for a node group and the scaling and version update configuration.</p>"
+      "documentation":"<p>Updates an Amazon EKS managed node group configuration. Your node group continues to function during the update. The response output includes an update ID that you can use to track the status of your node group update with the <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeUpdate.html\"> <code>DescribeUpdate</code> </a> API operation. You can update the Kubernetes labels and taints for a node group and the scaling and version update configuration.</p>"
     },
     "UpdateNodegroupVersion":{
       "name":"UpdateNodegroupVersion",
@@ -1838,6 +1838,10 @@
         },
         "status":{
           "shape":"ClusterVersionStatus",
+          "documentation":"<important> <p>This field is deprecated. Use <code>versionStatus</code> instead, as that field matches for input and output of this action.</p> </important> <p>Current status of this cluster version.</p>"
+        },
+        "versionStatus":{
+          "shape":"VersionStatus",
           "documentation":"<p>Current status of this cluster version.</p>"
         },
         "kubernetesPatchVersion":{
@@ -2082,7 +2086,7 @@
         },
         "resolveConflicts":{
           "shape":"ResolveConflicts",
-          "documentation":"<p>How to resolve field value conflicts for an Amazon EKS add-on. Conflicts are handled based on the value you choose:</p> <ul> <li> <p> <b>None</b> – If the self-managed version of the add-on is installed on your cluster, Amazon EKS doesn't change the value. Creation of the add-on might fail.</p> </li> <li> <p> <b>Overwrite</b> – If the self-managed version of the add-on is installed on your cluster and the Amazon EKS default value is different than the existing value, Amazon EKS changes the value to the Amazon EKS default value.</p> </li> <li> <p> <b>Preserve</b> – This is similar to the NONE option. If the self-managed version of the add-on is installed on your cluster Amazon EKS doesn't change the add-on resource properties. Creation of the add-on might fail if conflicts are detected. This option works differently during the update operation. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_UpdateAddon.html\">UpdateAddon</a>.</p> </li> </ul> <p>If you don't currently have the self-managed version of the add-on installed on your cluster, the Amazon EKS add-on is installed. Amazon EKS sets all values to default values, regardless of the option that you specify.</p>"
+          "documentation":"<p>How to resolve field value conflicts for an Amazon EKS add-on. Conflicts are handled based on the value you choose:</p> <ul> <li> <p> <b>None</b> – If the self-managed version of the add-on is installed on your cluster, Amazon EKS doesn't change the value. Creation of the add-on might fail.</p> </li> <li> <p> <b>Overwrite</b> – If the self-managed version of the add-on is installed on your cluster and the Amazon EKS default value is different than the existing value, Amazon EKS changes the value to the Amazon EKS default value.</p> </li> <li> <p> <b>Preserve</b> – This is similar to the NONE option. If the self-managed version of the add-on is installed on your cluster Amazon EKS doesn't change the add-on resource properties. Creation of the add-on might fail if conflicts are detected. This option works differently during the update operation. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_UpdateAddon.html\"> <code>UpdateAddon</code> </a>.</p> </li> </ul> <p>If you don't currently have the self-managed version of the add-on installed on your cluster, the Amazon EKS add-on is installed. Amazon EKS sets all values to default values, regardless of the option that you specify.</p>"
         },
         "clientRequestToken":{
           "shape":"String",
@@ -2912,9 +2916,18 @@
         },
         "status":{
           "shape":"ClusterVersionStatus",
-          "documentation":"<p>Filter versions by their current status.</p>",
+          "documentation":"<important> <p>This field is deprecated. Use <code>versionStatus</code> instead, as that field matches for input and output of this action.</p> </important> <p>Filter versions by their current status.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"status has been replaced by versionStatus",
+          "deprecatedSince":"2025-02-15",
           "location":"querystring",
           "locationName":"status"
+        },
+        "versionStatus":{
+          "shape":"VersionStatus",
+          "documentation":"<p>Filter versions by their current status.</p>",
+          "location":"querystring",
+          "locationName":"versionStatus"
         }
       }
     },
@@ -4362,7 +4375,7 @@
       "members":{
         "associations":{
           "shape":"PodIdentityAssociationSummaries",
-          "documentation":"<p>The list of summarized descriptions of the associations that are in the cluster and match any filters that you provided.</p> <p>Each summary is simplified by removing these fields compared to the full <code> <a>PodIdentityAssociation</a> </code>:</p> <ul> <li> <p>The IAM role: <code>roleArn</code> </p> </li> <li> <p>The timestamp that the association was created at: <code>createdAt</code> </p> </li> <li> <p>The most recent timestamp that the association was modified at:. <code>modifiedAt</code> </p> </li> <li> <p>The tags on the association: <code>tags</code> </p> </li> </ul>"
+          "documentation":"<p>The list of summarized descriptions of the associations that are in the cluster and match any filters that you provided.</p> <p>Each summary is simplified by removing these fields compared to the full <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_PodIdentityAssociation.html\"> <code>PodIdentityAssociation</code> </a>:</p> <ul> <li> <p>The IAM role: <code>roleArn</code> </p> </li> <li> <p>The timestamp that the association was created at: <code>createdAt</code> </p> </li> <li> <p>The most recent timestamp that the association was modified at:. <code>modifiedAt</code> </p> </li> <li> <p>The tags on the association: <code>tags</code> </p> </li> </ul>"
         },
         "nextToken":{
           "shape":"String",
@@ -4722,7 +4735,7 @@
         },
         "updateStrategy":{
           "shape":"NodegroupUpdateStrategies",
-          "documentation":"<p>The configuration for the behavior to follow during a node group version update of this managed node group. You choose between two possible strategies for replacing nodes during an <a href=\"https://docs.aws.amazon.com/latest/APIReference/API_UpdateNodegroupVersion.html\">UpdateNodegroupVersion</a> action.</p> <p>An Amazon EKS managed node group updates by replacing nodes with new nodes of newer AMI versions in parallel. The <i>update strategy</i> changes the managed node update behavior of the managed node group for each quantity. The <i>default</i> strategy has guardrails to protect you from misconfiguration and launches the new instances first, before terminating the old instances. The <i>minimal</i> strategy removes the guardrails and terminates the old instances before launching the new instances. This minimal strategy is useful in scenarios where you are constrained to resources or costs (for example, with hardware accelerators such as GPUs).</p>"
+          "documentation":"<p>The configuration for the behavior to follow during a node group version update of this managed node group. You choose between two possible strategies for replacing nodes during an <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_UpdateNodegroupVersion.html\"> <code>UpdateNodegroupVersion</code> </a> action.</p> <p>An Amazon EKS managed node group updates by replacing nodes with new nodes of newer AMI versions in parallel. The <i>update strategy</i> changes the managed node update behavior of the managed node group for each quantity. The <i>default</i> strategy has guardrails to protect you from misconfiguration and launches the new instances first, before terminating the old instances. The <i>minimal</i> strategy removes the guardrails and terminates the old instances before launching the new instances. This minimal strategy is useful in scenarios where you are constrained to resources or costs (for example, with hardware accelerators such as GPUs).</p>"
         }
       },
       "documentation":"<p>The node group update configuration. An Amazon EKS managed node group updates by replacing nodes with new nodes of newer AMI versions in parallel. You choose the <i>maximum unavailable</i> and the <i>update strategy</i>.</p>"
@@ -4986,7 +4999,7 @@
           "documentation":"<p>If defined, the Pod Identity Association is owned by an Amazon EKS Addon.</p>"
         }
       },
-      "documentation":"<p>The summarized description of the association.</p> <p>Each summary is simplified by removing these fields compared to the full <code> <a>PodIdentityAssociation</a> </code>:</p> <ul> <li> <p>The IAM role: <code>roleArn</code> </p> </li> <li> <p>The timestamp that the association was created at: <code>createdAt</code> </p> </li> <li> <p>The most recent timestamp that the association was modified at:. <code>modifiedAt</code> </p> </li> <li> <p>The tags on the association: <code>tags</code> </p> </li> </ul>"
+      "documentation":"<p>The summarized description of the association.</p> <p>Each summary is simplified by removing these fields compared to the full <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_PodIdentityAssociation.html\"> <code>PodIdentityAssociation</code> </a>:</p> <ul> <li> <p>The IAM role: <code>roleArn</code> </p> </li> <li> <p>The timestamp that the association was created at: <code>createdAt</code> </p> </li> <li> <p>The most recent timestamp that the association was modified at:. <code>modifiedAt</code> </p> </li> <li> <p>The tags on the association: <code>tags</code> </p> </li> </ul>"
     },
     "Provider":{
       "type":"structure",
@@ -5928,6 +5941,14 @@
         }
       },
       "documentation":"<p>This value indicates if extended support is enabled or disabled for the cluster.</p> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/extended-support-control.html\">Learn more about EKS Extended Support in the <i>Amazon EKS User Guide</i>.</a> </p>"
+    },
+    "VersionStatus":{
+      "type":"string",
+      "enum":[
+        "UNSUPPORTED",
+        "STANDARD_SUPPORT",
+        "EXTENDED_SUPPORT"
+      ]
     },
     "VpcConfigRequest":{
       "type":"structure",

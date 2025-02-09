@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+import argparse
+import os
+
+from scripts.performance.benchmark_utils import BenchmarkHarness
+
+
+_BENCHMARK_DEFINITIONS = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        'benchmarks.json'
+    )
+
+
+if __name__ == "__main__":
+    harness = BenchmarkHarness()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--benchmark-definitions', default=_BENCHMARK_DEFINITIONS,
+        help=('The JSON file defining the commands to benchmark.')
+    )
+    parser.add_argument(
+        '-o', '--result-dir', default='results',
+        help='The directory to output performance results to. Existing '
+             'results will be deleted.'
+    )
+    parser.add_argument(
+        '--data-interval',
+        default=0.001,
+        type=float,
+        help='The interval in seconds to poll for data points.',
+    )
+    parser.add_argument(
+        '--num-iterations',
+        default=1,
+        type=int,
+        help='The number of iterations to repeat the benchmark for.',
+    )
+    harness.run_benchmarks(parser.parse_args())

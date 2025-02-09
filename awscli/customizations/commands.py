@@ -1,8 +1,8 @@
 import logging
 import os
+from collections import OrderedDict
 
 from botocore import model
-from botocore.compat import OrderedDict
 from botocore.validate import validate_parameters
 
 import awscli

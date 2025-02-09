@@ -10,11 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
+from collections import OrderedDict
+
 from awscli.customizations.datapipeline.translator \
     import PipelineDefinitionError
 from awscli.testutils import unittest
-
-from botocore.compat import OrderedDict, json
 
 from awscli.customizations.datapipeline import translator
 

@@ -167,7 +167,7 @@ class ProcessBenchmarker(object):
                 # Collect the memory and cpu usage.
                 memory_used = process_to_measure.memory_info().rss
                 cpu_percent = process_to_measure.cpu_percent()
-            except (psutil.AccessDenied, psutil.ZombieProcess):
+            except (psutil.AccessDenied, psutil.ZombieProcess, psutil.NoSuchProcess):
                 # Trying to get process information from a closed or
                 # zombie process will result in corresponding exceptions.
                 break

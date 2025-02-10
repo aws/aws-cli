@@ -1,5 +1,6 @@
 import json
 import math
+import sys
 import time
 import psutil
 
@@ -69,8 +70,9 @@ class Summarizer:
             'cpu_p50': cpu_p50,
             'cpu_p95': cpu_p95,
         }
-        # reset samples array
+        # reset data state
         self._samples.clear()
+        self._sums = self._sums.fromkeys(self._sums, 0.0)
         return metrics
 
     def _compute_metric_percentile(self, percentile, name):
@@ -247,7 +249,15 @@ class BenchmarkHarness(object):
                     file_dir_def['file_count'],
                     file_dir_def['file_size']
                 )
+        if "file_literals" in env:
+            for file_lit in env['file_literals']:
+                path = os.path.join(result_dir, file_lit['name'])
+                f = open(path, 'w')
+                os.chmod(path, 0o777)
+                f.write(file_lit['content'])
+                f.close()
         # create config file at specified path
+        os.makedirs(os.path.dirname(config_file), mode=0o777, exist_ok=True)
         with open(config_file, 'w') as f:
             f.write(env.get('config', self._DEFAULT_FILE_CONFIG_CONTENTS))
             f.flush()
@@ -274,7 +284,7 @@ class BenchmarkHarness(object):
             else:
                 client.add_response(body, headers, status_code)
 
-    def _run_command_with_metric_hooks(self, cmd, result_dir):
+    def _run_command_with_metric_hooks(self, cmd, out_file):
         """
         Runs a CLI command and logs CLI-specific metrics to a file.
         """
@@ -293,21 +303,20 @@ class BenchmarkHarness(object):
             _log_invocation_time,
             'benchmarks.log-invocation-time'
         )
-        AWSCLIEntryPoint(driver).main(cmd)
+        rc = AWSCLIEntryPoint(driver).main(cmd)
         end_time = time.time()
 
         # write the collected metrics to a file
-        metrics_f = open(os.path.join(result_dir, 'metrics.json'), 'w')
+        metrics_f = open(out_file, 'w')
         metrics_f.write(json.dumps(
             {
+                'return_code': rc,
                 'start_time': start_time,
                 'end_time': end_time,
                 'first_client_invocation_time': first_client_invocation_time
             }
         ))
         metrics_f.close()
-        # terminate the process
-        os._exit(0)
 
     def _run_isolated_benchmark(
             self,
@@ -322,32 +331,48 @@ class BenchmarkHarness(object):
         the environment, running the benchmarked execution, formatting
         the results, and cleaning up the environment.
         """
-        assets_dir = os.path.join(result_dir, 'assets')
-        config_file = os.path.join(assets_dir, 'config')
-        os.makedirs(assets_dir, 0o777)
+        assets_path = os.path.join(result_dir, 'assets')
+        config_path = os.path.join(assets_path, 'config')
+        metrics_path = os.path.join(assets_path, 'metrics.json')
+        child_output_path = os.path.join(assets_path, 'output.txt')
+        child_err_path = os.path.join(assets_path, 'err.txt')
         # setup for iteration of benchmark
-        self._setup_iteration(benchmark, client, result_dir, config_file)
+        self._setup_iteration(benchmark, client, result_dir, config_path)
         os.chdir(result_dir)
         # patch the OS environment with our supplied defaults
-        env_patch = mock.patch.dict('os.environ', self._get_default_env(config_file))
+        env_patch = mock.patch.dict('os.environ', self._get_default_env(config_path))
         env_patch.start()
         # fork a child process to run the command on.
         # the parent process benchmarks the child process until the child terminates.
         pid = os.fork()
 
         try:
-            # execute command on child process
             if pid == 0:
-                self._run_command_with_metric_hooks(benchmark['command'], result_dir)
+                with open(child_output_path, 'w') as out, open(child_err_path, 'w') as err:
+                    # redirect standard output of the child process to a file
+                    os.dup2(out.fileno(), sys.stdout.fileno())
+                    os.dup2(err.fileno(), sys.stderr.fileno())
+                    # execute command on child process
+                    self._run_command_with_metric_hooks(benchmark['command'], metrics_path)
+                    # terminate the child process
+                    os._exit(0)
             # benchmark child process from parent process until child terminates
             samples = process_benchmarker.benchmark_process(
                 pid,
                 args.data_interval
             )
+            # load child-collected metrics if exists
+            if not os.path.exists(metrics_path):
+                raise RuntimeError('Child process execution failed: output file not found.')
+            metrics_f = json.load(open(metrics_path, 'r'))
+            # raise error if child process failed
+            if (rc := metrics_f['return_code']) != 0:
+                with open(child_err_path, 'r') as err:
+                    raise RuntimeError(
+                        f'Child process execution failed: return code {rc}.\n'
+                        f'Error: {err.read()}')
             # summarize benchmark results and process summary
             summary = self._summarizer.summarize(samples)
-            # load the child-collected metrics and append to the summary
-            metrics_f = json.load(open(os.path.join(result_dir, 'metrics.json'), 'r'))
             summary['total_time'] = metrics_f['end_time'] - metrics_f['start_time']
             summary['first_client_invocation_time'] = (metrics_f['first_client_invocation_time']
                                                        - metrics_f['start_time'])
@@ -377,9 +402,10 @@ class BenchmarkHarness(object):
             for benchmark in definitions:
                 benchmark_result = {
                     'name': benchmark['name'],
-                    'dimensions': benchmark['dimensions'],
                     'measurements': []
                 }
+                if 'dimensions' in benchmark:
+                    benchmark_result['dimensions'] = benchmark['dimensions']
                 for _ in range(args.num_iterations):
                     measurements = self._run_isolated_benchmark(
                         result_dir,

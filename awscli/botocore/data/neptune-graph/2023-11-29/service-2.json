@@ -6,7 +6,6 @@
     "endpointPrefix":"neptune-graph",
     "protocol":"rest-json",
     "protocols":["rest-json"],
-    "ripServiceName":"neptune-graph",
     "serviceAbbreviation":"Neptune Graph",
     "serviceFullName":"Amazon Neptune Graph",
     "serviceId":"Neptune Graph",
@@ -1101,7 +1100,7 @@
         },
         "maxProvisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The maximum provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph. Default: 1024, or the approved upper limit for your account.</p> <p> If both the minimum and maximum values are specified, the max of the <code>min-provisioned-memory</code> and <code>max-provisioned memory</code> is used to create the graph. If neither value is specified 128 m-NCUs are used.</p>"
+          "documentation":"<p>The maximum provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph. Default: 1024, or the approved upper limit for your account.</p> <p> If both the minimum and maximum values are specified, the final <code>provisioned-memory</code> will be chosen per the actual size of your imported data. If neither value is specified, 128 m-NCUs are used.</p>"
         },
         "minProvisionedMemory":{
           "shape":"ProvisionedMemory",
@@ -2445,6 +2444,12 @@
     "ListExportTasksInput":{
       "type":"structure",
       "members":{
+        "graphIdentifier":{
+          "shape":"GraphIdentifier",
+          "documentation":"<p>The unique identifier of the Neptune Analytics graph.</p>",
+          "location":"querystring",
+          "locationName":"graphIdentifier"
+        },
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>Pagination token used to paginate input.</p>",

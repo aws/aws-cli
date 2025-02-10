@@ -438,7 +438,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a new contact.</p>"
+      "documentation":"<important> <p>Only the EMAIL channel is supported. The supported initiation methods are: OUTBOUND, AGENT_REPLY, and FLOW.</p> </important> <p>Creates a new EMAIL contact. </p>"
     },
     "CreateContactFlow":{
       "name":"CreateContactFlow",
@@ -4708,7 +4708,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Updates the traffic distribution for a given traffic distribution group. </p> <note> <p>The <code>SignInConfig</code> distribution is available only on a default <code>TrafficDistributionGroup</code> (see the <code>IsDefault</code> parameter in the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_TrafficDistributionGroup.html\">TrafficDistributionGroup</a> data type). If you call <code>UpdateTrafficDistribution</code> with a modified <code>SignInConfig</code> and a non-default <code>TrafficDistributionGroup</code>, an <code>InvalidRequestException</code> is returned.</p> </note> <p>For more information about updating a traffic distribution group, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/update-telephony-traffic-distribution.html\">Update telephony traffic distribution across Amazon Web Services Regions </a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
+      "documentation":"<p>Updates the traffic distribution for a given traffic distribution group. </p> <important> <p>When you shift telephony traffic, also shift agents and/or agent sign-ins to ensure they can handle the calls in the other Region. If you don't shift the agents, voice calls will go to the shifted Region but there won't be any agents available to receive the calls.</p> </important> <note> <p>The <code>SignInConfig</code> distribution is available only on a default <code>TrafficDistributionGroup</code> (see the <code>IsDefault</code> parameter in the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_TrafficDistributionGroup.html\">TrafficDistributionGroup</a> data type). If you call <code>UpdateTrafficDistribution</code> with a modified <code>SignInConfig</code> and a non-default <code>TrafficDistributionGroup</code>, an <code>InvalidRequestException</code> is returned.</p> </note> <p>For more information about updating a traffic distribution group, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/update-telephony-traffic-distribution.html\">Update telephony traffic distribution across Amazon Web Services Regions </a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
     },
     "UpdateUserHierarchy":{
       "name":"UpdateUserHierarchy",
@@ -7940,11 +7940,11 @@
         },
         "Channel":{
           "shape":"Channel",
-          "documentation":"<p>The channel for the contact</p>"
+          "documentation":"<p>The channel for the contact</p> <important> <p>CreateContact only supports the EMAIL channel. The following information that states other channels are supported is incorrect. We are working to update this topic.</p> </important>"
         },
         "InitiationMethod":{
           "shape":"ContactInitiationMethod",
-          "documentation":"<p>Indicates how the contact was initiated.</p>"
+          "documentation":"<p>Indicates how the contact was initiated. </p> <important> <p>CreateContact only supports the following initiation methods: OUTBOUND, AGENT_REPLY, and FLOW. The following information that states other initiation methods are supported is incorrect. We are working to update this topic.</p> </important>"
         },
         "ExpiryDurationInMinutes":{
           "shape":"ExpiryDurationInMinutes",
@@ -8765,7 +8765,7 @@
         },
         "TagRestrictedResources":{
           "shape":"TagRestrictedResourceList",
-          "documentation":"<p>The list of resources that a security profile applies tag restrictions to in Amazon Connect. Following are acceptable ResourceNames: <code>User</code> | <code>SecurityProfile</code> | <code>Queue</code> | <code>RoutingProfile</code> </p>"
+          "documentation":"<p>The list of resources that a security profile applies tag restrictions to in Amazon Connect. For a list of Amazon Connect resources that you can tag, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/tagging.html\">Add tags to resources in Amazon Connect</a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
         },
         "Applications":{
           "shape":"Applications",
@@ -17631,7 +17631,7 @@
         },
         "UserIds":{
           "shape":"UserIdList",
-          "documentation":"<p>A list of user IDs.</p>"
+          "documentation":"<p>A list of user IDs. Supports variable injection of <code>$.ContactLens.ContactEvaluation.Agent.AgentId</code> for <code>OnContactEvaluationSubmit</code> event source. </p>"
         }
       },
       "documentation":"<p>The type of notification recipient.</p>"
@@ -21296,7 +21296,7 @@
         },
         "ResourceTypes":{
           "shape":"ResourceTypeList",
-          "documentation":"<p>The list of resource types to be used to search tags from. If not provided or if any empty list is provided, this API will search from all supported resource types.</p> <p class=\"title\"> <b>Supported resource types</b> </p> <ul> <li> <p>AGENT</p> </li> <li> <p>ROUTING_PROFILE</p> </li> <li> <p>STANDARD_QUEUE</p> </li> <li> <p>SECURITY_PROFILE</p> </li> <li> <p>OPERATING_HOURS</p> </li> <li> <p>PROMPT</p> </li> <li> <p>CONTACT_FLOW</p> </li> <li> <p>FLOW_MODULE</p> </li> </ul>"
+          "documentation":"<p>The list of resource types to be used to search tags from. If not provided or if any empty list is provided, this API will search from all supported resource types. Note that lowercase and - are required.</p> <p class=\"title\"> <b>Supported resource types</b> </p> <ul> <li> <p>agent</p> </li> <li> <p>agent-state</p> </li> <li> <p>routing-profile</p> </li> <li> <p>standard-queue</p> </li> <li> <p>security-profile</p> </li> <li> <p>operating-hours</p> </li> <li> <p>prompt</p> </li> <li> <p>contact-flow</p> </li> <li> <p>flow- module</p> </li> <li> <p>transfer-destination (also known as quick connect)</p> </li> </ul>"
         },
         "NextToken":{
           "shape":"NextToken2500",
@@ -21475,7 +21475,7 @@
       "members":{
         "InstanceId":{
           "shape":"InstanceId",
-          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p> <note> <p>InstanceID is a required field. The \"Required: No\" below is incorrect.</p> </note>"
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>"
         },
         "NextToken":{
           "shape":"NextToken2500",
@@ -24100,7 +24100,7 @@
         },
         "Attributes":{
           "shape":"Attributes",
-          "documentation":"<p>The Amazon Connect attributes. These attributes can be accessed in flows just like any other contact attributes.</p> <p>You can have up to 32,768 UTF-8 bytes across all attributes for a contact. Attribute keys can include only alphanumeric, dash, and underscore characters.</p> <p>When the attributes for a contact exceed 32 KB, the contact is routed down the Error branch of the flow. As a mitigation, consider the following options:</p> <ul> <li> <p>Remove unnecessary attributes by setting their values to empty.</p> </li> <li> <p>If the attributes are only used in one flow and don't need to be referred to outside of that flow (for example, by a Lambda or another flow), then use flow attributes. This way you aren't needlessly persisting the 32 KB of information from one flow to another. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/set-contact-attributes.html\">Flow block: Set contact attributes</a> in the <i>Amazon Connect Administrator Guide</i>. </p> </li> </ul>"
+          "documentation":"<p>The Amazon Connect attributes. These attributes can be accessed in flows just like any other contact attributes.</p> <p>You can have up to 32,768 UTF-8 bytes across all attributes for a contact. Attribute keys can include only alphanumeric, dash, and underscore characters.</p> <p>In the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/set-contact-attributes.html\">Set contact attributes</a> block, when the attributes for a contact exceed 32 KB, the contact is routed down the Error branch of the flow. As a mitigation, consider the following options:</p> <ul> <li> <p>Remove unnecessary attributes by setting their values to empty.</p> </li> <li> <p>If the attributes are only used in one flow and don't need to be referred to outside of that flow (for example, by a Lambda or another flow), then use flow attributes. This way you aren't needlessly persisting the 32 KB of information from one flow to another. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/set-contact-attributes.html\">Flow block: Set contact attributes</a> in the <i>Amazon Connect Administrator Guide</i>. </p> </li> </ul>"
         }
       }
     },

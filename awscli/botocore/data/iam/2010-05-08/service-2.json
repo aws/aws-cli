@@ -44,7 +44,7 @@
         {"shape":"UnmodifiableEntityException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Adds the specified IAM role to the specified instance profile. An instance profile can contain only one role, and this quota cannot be increased. You can remove the existing role and then add a different role to an instance profile. You must then wait for the change to appear across all of Amazon Web Services because of <a href=\"https://en.wikipedia.org/wiki/Eventual_consistency\">eventual consistency</a>. To force the change, you must <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DisassociateIamInstanceProfile.html\">disassociate the instance profile</a> and then <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_AssociateIamInstanceProfile.html\">associate the instance profile</a>, or you can stop your instance and then restart it.</p> <note> <p>The caller of this operation must be granted the <code>PassRole</code> permission on the IAM role by a permissions policy.</p> </note> <p> For more information about roles, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html\">IAM roles</a> in the <i>IAM User Guide</i>. For more information about instance profiles, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html\">Using instance profiles</a> in the <i>IAM User Guide</i>.</p>"
+      "documentation":"<p>Adds the specified IAM role to the specified instance profile. An instance profile can contain only one role, and this quota cannot be increased. You can remove the existing role and then add a different role to an instance profile. You must then wait for the change to appear across all of Amazon Web Services because of <a href=\"https://en.wikipedia.org/wiki/Eventual_consistency\">eventual consistency</a>. To force the change, you must <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DisassociateIamInstanceProfile.html\">disassociate the instance profile</a> and then <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_AssociateIamInstanceProfile.html\">associate the instance profile</a>, or you can stop your instance and then restart it.</p> <note> <p>The caller of this operation must be granted the <code>PassRole</code> permission on the IAM role by a permissions policy.</p> </note> <important> <p>When using the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#available-keys-for-iam\">iam:AssociatedResourceArn</a> condition in a policy to restrict the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html\">PassRole</a> IAM action, special considerations apply if the policy is intended to define access for the <code>AddRoleToInstanceProfile</code> action. In this case, you cannot specify a Region or instance ID in the EC2 instance ARN. The ARN value must be <code>arn:aws:ec2:*:CallerAccountId:instance/*</code>. Using any other ARN value may lead to unexpected evaluation results.</p> </important> <p> For more information about roles, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html\">IAM roles</a> in the <i>IAM User Guide</i>. For more information about instance profiles, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html\">Using instance profiles</a> in the <i>IAM User Guide</i>.</p>"
     },
     "AddUserToGroup":{
       "name":"AddUserToGroup",
@@ -817,7 +817,7 @@
         {"shape":"OrganizationNotFoundException"},
         {"shape":"OrganizationNotInAllFeaturesModeException"}
       ],
-      "documentation":"<p>Disables the management of privileged root user credentials across member accounts in your organization. When you disable this feature, the management account and the delegated admininstrator for IAM can no longer manage root user credentials for member accounts in your organization.</p>"
+      "documentation":"<p>Disables the management of privileged root user credentials across member accounts in your organization. When you disable this feature, the management account and the delegated administrator for IAM can no longer manage root user credentials for member accounts in your organization.</p>"
     },
     "DisableOrganizationsRootSessions":{
       "name":"DisableOrganizationsRootSessions",
@@ -836,7 +836,7 @@
         {"shape":"OrganizationNotFoundException"},
         {"shape":"OrganizationNotInAllFeaturesModeException"}
       ],
-      "documentation":"<p>Disables root user sessions for privileged tasks across member accounts in your organization. When you disable this feature, the management account and the delegated admininstrator for IAM can no longer perform privileged tasks on member accounts in your organization.</p>"
+      "documentation":"<p>Disables root user sessions for privileged tasks across member accounts in your organization. When you disable this feature, the management account and the delegated administrator for IAM can no longer perform privileged tasks on member accounts in your organization.</p>"
     },
     "EnableMFADevice":{
       "name":"EnableMFADevice",
@@ -874,7 +874,7 @@
         {"shape":"OrganizationNotInAllFeaturesModeException"},
         {"shape":"CallerIsNotManagementAccountException"}
       ],
-      "documentation":"<p>Enables the management of privileged root user credentials across member accounts in your organization. When you enable root credentials management for <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html#id_root-user-access-management\">centralized root access</a>, the management account and the delegated admininstrator for IAM can manage root user credentials for member accounts in your organization.</p> <p>Before you enable centralized root access, you must have an account configured with the following settings:</p> <ul> <li> <p>You must manage your Amazon Web Services accounts in <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html\">Organizations</a>.</p> </li> <li> <p>Enable trusted access for Identity and Access Management in Organizations. For details, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/services-that-can-integrate-ra.html\">IAM and Organizations</a> in the <i>Organizations User Guide</i>.</p> </li> </ul>"
+      "documentation":"<p>Enables the management of privileged root user credentials across member accounts in your organization. When you enable root credentials management for <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html#id_root-user-access-management\">centralized root access</a>, the management account and the delegated administrator for IAM can manage root user credentials for member accounts in your organization.</p> <p>Before you enable centralized root access, you must have an account configured with the following settings:</p> <ul> <li> <p>You must manage your Amazon Web Services accounts in <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html\">Organizations</a>.</p> </li> <li> <p>Enable trusted access for Identity and Access Management in Organizations. For details, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/services-that-can-integrate-iam.html\">IAM and Organizations</a> in the <i>Organizations User Guide</i>.</p> </li> </ul>"
     },
     "EnableOrganizationsRootSessions":{
       "name":"EnableOrganizationsRootSessions",
@@ -1414,7 +1414,7 @@
       "errors":[
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Lists the account alias associated with the Amazon Web Services account (Note: you can have only one). For information about using an Amazon Web Services account alias, see <a href=\"https://docs.aws.amazon.com/signin/latest/userguide/CreateAccountAlias.html\">Creating, deleting, and listing an Amazon Web Services account alias</a> in the <i>Amazon Web Services Sign-In User Guide</i>.</p>"
+      "documentation":"<p>Lists the account alias associated with the Amazon Web Services account (Note: you can have only one). For information about using an Amazon Web Services account alias, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/console_account-alias.html#CreateAccountAlias\">Creating, deleting, and listing an Amazon Web Services account alias</a> in the <i>IAM User Guide</i>.</p>"
     },
     "ListAttachedGroupPolicies":{
       "name":"ListAttachedGroupPolicies",
@@ -2578,7 +2578,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Updates the metadata document for an existing SAML provider resource object.</p> <note> <p>This operation requires <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4</a>.</p> </note>"
+      "documentation":"<p>Updates the metadata document, SAML encryption settings, and private keys for an existing SAML provider. To rotate private keys, add your new private key and then remove the old key in a separate request.</p>"
     },
     "UpdateSSHPublicKey":{
       "name":"UpdateSSHPublicKey",
@@ -3382,6 +3382,14 @@
         "Tags":{
           "shape":"tagListType",
           "documentation":"<p>A list of tags that you want to attach to the new IAM SAML provider. Each tag consists of a key name and an associated value. For more information about tagging, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html\">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>"
+        },
+        "AssertionEncryptionMode":{
+          "shape":"assertionEncryptionModeType",
+          "documentation":"<p>Specifies the encryption setting for the SAML provider.</p>"
+        },
+        "AddPrivateKey":{
+          "shape":"privateKeyType",
+          "documentation":"<p>The private key generated from your external identity provider. The private key must be a .pem file that uses AES-GCM or AES-CBC encryption algorithm to decrypt SAML assertions.</p>"
         }
       }
     },
@@ -4814,6 +4822,10 @@
     "GetSAMLProviderResponse":{
       "type":"structure",
       "members":{
+        "SAMLProviderUUID":{
+          "shape":"privateKeyIdType",
+          "documentation":"<p>The unique identifier assigned to the SAML provider.</p>"
+        },
         "SAMLMetadataDocument":{
           "shape":"SAMLMetadataDocumentType",
           "documentation":"<p>The XML metadata document that includes information about an identity provider.</p>"
@@ -4829,6 +4841,14 @@
         "Tags":{
           "shape":"tagListType",
           "documentation":"<p>A list of tags that are attached to the specified IAM SAML provider. The returned list of tags is sorted by tag key. For more information about tagging, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html\">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p>"
+        },
+        "AssertionEncryptionMode":{
+          "shape":"assertionEncryptionModeType",
+          "documentation":"<p>Specifies the encryption setting for the SAML provider.</p>"
+        },
+        "PrivateKeyList":{
+          "shape":"privateKeyList",
+          "documentation":"<p>The private key metadata for the SAML provider.</p>"
         }
       },
       "documentation":"<p>Contains the response to a successful <a>GetSAMLProvider</a> request. </p>"
@@ -7481,6 +7501,20 @@
       "max":10000000,
       "min":1000
     },
+    "SAMLPrivateKey":{
+      "type":"structure",
+      "members":{
+        "KeyId":{
+          "shape":"privateKeyIdType",
+          "documentation":"<p>The unique identifier for the SAML private key.</p>"
+        },
+        "Timestamp":{
+          "shape":"dateType",
+          "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time </a> format, when the private key was uploaded.</p>"
+        }
+      },
+      "documentation":"<p>Contains the private keys for the SAML provider.</p> <p>This data type is used as a response element in the <a>GetSAMLProvider</a> operation.</p>"
+    },
     "SAMLProviderListEntry":{
       "type":"structure",
       "members":{
@@ -8538,18 +8572,27 @@
     },
     "UpdateSAMLProviderRequest":{
       "type":"structure",
-      "required":[
-        "SAMLMetadataDocument",
-        "SAMLProviderArn"
-      ],
+      "required":["SAMLProviderArn"],
       "members":{
         "SAMLMetadataDocument":{
           "shape":"SAMLMetadataDocumentType",
-          "documentation":"<p>An XML document generated by an identity provider (IdP) that supports SAML 2.0. The document includes the issuer's name, expiration information, and keys that can be used to validate the SAML authentication response (assertions) that are received from the IdP. You must generate the metadata document using the identity management software that is used as your organization's IdP.</p>"
+          "documentation":"<p>An XML document generated by an identity provider (IdP) that supports SAML 2.0. The document includes the issuer's name, expiration information, and keys that can be used to validate the SAML authentication response (assertions) that are received from the IdP. You must generate the metadata document using the identity management software that is used as your IdP.</p>"
         },
         "SAMLProviderArn":{
           "shape":"arnType",
           "documentation":"<p>The Amazon Resource Name (ARN) of the SAML provider to update.</p> <p>For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
+        "AssertionEncryptionMode":{
+          "shape":"assertionEncryptionModeType",
+          "documentation":"<p>Specifies the encryption setting for the SAML provider.</p>"
+        },
+        "AddPrivateKey":{
+          "shape":"privateKeyType",
+          "documentation":"<p>Specifies the new private key from your external identity provider. The private key must be a .pem file that uses AES-GCM or AES-CBC encryption algorithm to decrypt SAML assertions.</p>"
+        },
+        "RemovePrivateKey":{
+          "shape":"privateKeyIdType",
+          "documentation":"<p>The Key ID of the private key to remove.</p>"
         }
       }
     },
@@ -8913,6 +8956,13 @@
       "max":2048,
       "min":20
     },
+    "assertionEncryptionModeType":{
+      "type":"string",
+      "enum":[
+        "Required",
+        "Allowed"
+      ]
+    },
     "assignmentStatusType":{
       "type":"string",
       "enum":[
@@ -9217,6 +9267,17 @@
     "policyVersionIdType":{
       "type":"string",
       "pattern":"v[1-9][0-9]*(\\.[A-Za-z0-9-]*)?"
+    },
+    "privateKeyIdType":{
+      "type":"string",
+      "max":64,
+      "min":22,
+      "pattern":"[A-Z0-9]+"
+    },
+    "privateKeyList":{
+      "type":"list",
+      "member":{"shape":"SAMLPrivateKey"},
+      "max":2
     },
     "privateKeyType":{
       "type":"string",

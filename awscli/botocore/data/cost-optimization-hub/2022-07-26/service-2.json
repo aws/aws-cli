@@ -184,7 +184,8 @@
         "PurchaseSavingsPlans",
         "PurchaseReservedInstances",
         "MigrateToGraviton",
-        "Delete"
+        "Delete",
+        "ScaleIn"
       ]
     },
     "ActionTypeList":{
@@ -192,6 +193,13 @@
       "member":{"shape":"ActionType"},
       "max":100,
       "min":1
+    },
+    "AllocationStrategy":{
+      "type":"string",
+      "enum":[
+        "Prioritized",
+        "LowestPrice"
+      ]
     },
     "BlockStoragePerformanceConfiguration":{
       "type":"structure",
@@ -335,10 +343,29 @@
       "members":{
         "instance":{
           "shape":"InstanceConfiguration",
-          "documentation":"<p>Details about the instance.</p>"
+          "documentation":"<p>Details about the instance for the EC2 Auto Scaling group with a single instance type.</p>"
+        },
+        "mixedInstances":{
+          "shape":"MixedInstanceConfigurationList",
+          "documentation":"<p>A list of instance types for an EC2 Auto Scaling group with mixed instance types.</p>"
+        },
+        "type":{
+          "shape":"Ec2AutoScalingGroupType",
+          "documentation":"<p>The type of EC2 Auto Scaling group, showing whether it consists of a single instance type or mixed instance types.</p>"
+        },
+        "allocationStrategy":{
+          "shape":"AllocationStrategy",
+          "documentation":"<p>The strategy used for allocating instances, based on a predefined priority order or based on the lowest available price.</p>"
         }
       },
-      "documentation":"<p>The EC2 auto scaling group configuration used for recommendations.</p>"
+      "documentation":"<p>The EC2 Auto Scaling group configuration used for recommendations.</p>"
+    },
+    "Ec2AutoScalingGroupType":{
+      "type":"string",
+      "enum":[
+        "SingleInstanceType",
+        "MixedInstanceTypes"
+      ]
     },
     "Ec2Instance":{
       "type":"structure",
@@ -809,10 +836,10 @@
       "members":{
         "type":{
           "shape":"String",
-          "documentation":"<p>Details about the type.</p>"
+          "documentation":"<p>The instance type of the configuration.</p>"
         }
       },
-      "documentation":"<p>The Instance configuration used for recommendations.</p>"
+      "documentation":"<p>The instance configuration used for recommendations.</p>"
     },
     "Integer":{
       "type":"integer",
@@ -1004,6 +1031,20 @@
         "All",
         "None"
       ]
+    },
+    "MixedInstanceConfiguration":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The instance type of the configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the EC2 Auto Scaling group with mixed instance types.</p>"
+    },
+    "MixedInstanceConfigurationList":{
+      "type":"list",
+      "member":{"shape":"MixedInstanceConfiguration"}
     },
     "OpenSearchReservedInstances":{
       "type":"structure",
@@ -1542,7 +1583,7 @@
         },
         "sageMakerSavingsPlans":{
           "shape":"SageMakerSavingsPlans",
-          "documentation":"<p>The SageMaker Savings Plans recommendation details.</p>"
+          "documentation":"<p>The SageMaker AI Savings Plans recommendation details.</p>"
         },
         "rdsDbInstance":{
           "shape":"RdsDbInstance",

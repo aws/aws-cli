@@ -592,7 +592,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Gets information about an chat controls configured for an existing Amazon Q Business application.</p>"
+      "documentation":"<p>Gets information about chat controls configured for an existing Amazon Q Business application.</p>"
     },
     "GetDataAccessor":{
       "name":"GetDataAccessor",
@@ -1278,7 +1278,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Updates an set of chat controls configured for an existing Amazon Q Business application.</p>",
+      "documentation":"<p>Updates a set of chat controls configured for an existing Amazon Q Business application.</p>",
       "idempotent":true
     },
     "UpdateDataAccessor":{
@@ -1873,6 +1873,17 @@
         }
       },
       "documentation":"<p>The creator mode specific admin controls configured for an Amazon Q Business application. Determines whether an end user can generate LLM-only responses when they use the web experience.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/guardrails.html\">Admin controls and guardrails</a> and <a href=\"https://docs.aws.amazon.com/amazonq/latest/business-use-dg/using-web-experience.html#chat-source-scope\">Conversation settings</a>.</p>"
+    },
+    "AppliedOrchestrationConfiguration":{
+      "type":"structure",
+      "required":["control"],
+      "members":{
+        "control":{
+          "shape":"OrchestrationControl",
+          "documentation":"<p> Information about whether chat orchestration is enabled or disabled for an Amazon Q Business application. </p>"
+        }
+      },
+      "documentation":"<p>The chat orchestration specific admin controls configured for an Amazon Q Business application. Determines whether Amazon Q Business automatically routes chat requests across configured plugins and data sources in your Amazon Q Business application.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/guardrails-global-controls.html#guardrails-global-orchestration\">Chat orchestration settings</a>.</p>"
     },
     "AssociatePermissionRequest":{
       "type":"structure",
@@ -4598,6 +4609,10 @@
           "shape":"ResponseScope",
           "documentation":"<p>The response scope configured for a Amazon Q Business application. This determines whether your application uses its retrieval augmented generation (RAG) system to generate answers only from your enterprise data, or also uses the large language models (LLM) knowledge to respons to end user questions in chat.</p>"
         },
+        "orchestrationConfiguration":{
+          "shape":"AppliedOrchestrationConfiguration",
+          "documentation":"<p> The chat response orchestration settings for your application.</p> <note> <p>Chat orchestration is optimized to work for English language content. For more details on language support in Amazon Q Business, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/supported-languages.html\">Supported languages</a>.</p> </note>"
+        },
         "blockedPhrases":{
           "shape":"BlockedPhrasesConfiguration",
           "documentation":"<p>The phrases blocked from chat by your chat control configuration.</p>"
@@ -6780,6 +6795,24 @@
       },
       "documentation":"<p>Information about the OIDC-compliant identity provider (IdP) used to authenticate end users of an Amazon Q Business web experience.</p>"
     },
+    "OrchestrationConfiguration":{
+      "type":"structure",
+      "required":["control"],
+      "members":{
+        "control":{
+          "shape":"OrchestrationControl",
+          "documentation":"<p> Status information about whether chat orchestration is activated or deactivated for your Amazon Q Business application.</p>"
+        }
+      },
+      "documentation":"<p>Configuration information required to enable chat orchestration for your Amazon Q Business application.</p> <note> <p>Chat orchestration is optimized to work for English language content. For more details on language support in Amazon Q Business, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/supported-languages.html\">Supported languages</a>.</p> </note>"
+    },
+    "OrchestrationControl":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "Origin":{
       "type":"string",
       "max":256,
@@ -8163,6 +8196,10 @@
         "responseScope":{
           "shape":"ResponseScope",
           "documentation":"<p>The response scope configured for your application. This determines whether your application uses its retrieval augmented generation (RAG) system to generate answers only from your enterprise data, or also uses the large language models (LLM) knowledge to respons to end user questions in chat.</p>"
+        },
+        "orchestrationConfiguration":{
+          "shape":"OrchestrationConfiguration",
+          "documentation":"<p> The chat response orchestration settings for your application.</p>"
         },
         "blockedPhrasesConfigurationUpdate":{
           "shape":"BlockedPhrasesConfigurationUpdate",

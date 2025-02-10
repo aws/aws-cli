@@ -2,6 +2,52 @@
 CHANGELOG
 =========
 
+2.24.1
+======
+
+* api-change:``connect``: Updated the CreateContact API documentation to indicate that it only applies to EMAIL contacts.
+* api-change:``apigatewayv2``: Documentation updates for Amazon API Gateway
+* api-change:``cloudfront``: Doc-only update that adds defaults for CloudFront VpcOriginEndpointConfig values.
+* api-change:``dms``: New vendors for DMS Data Providers: DB2 LUW and DB2 for z/OS
+
+
+2.24.0
+======
+
+* api-change:``ecr``: Adds support to handle the new basic scanning daily quota.
+* api-change:``pi``: Adds documentation for dimension groups and dimensions to analyze locks for Database Insights.
+* api-change:``eks``: Introduce versionStatus field to take place of status field in EKS DescribeClusterVersions API
+* api-change:``transcribe``: This release adds support for the Clinical Note Template Customization feature for the AWS HealthScribe APIs within Amazon Transcribe.
+* feature:``emr-containers``: Add custom ``create-role-associations`` and ``delete-role-associations`` commands to create/delete role associations for EMR service accounts and provided IAM role.
+* api-change:``mediaconvert``: This release adds support for Animated GIF output, forced chroma sample positioning metadata, and Extensible Wave Container format
+
+
+2.23.15
+=======
+
+* api-change:``cost-optimization-hub``: This release enables AWS Cost Optimization Hub to show cost optimization recommendations for Amazon Auto Scaling Groups, including those with single and mixed instance types.
+* api-change:``s3``: Updated list of the valid AWS Region values for the LocationConstraint parameter for general purpose buckets.
+* api-change:``connectcases``: This release adds the ability to conditionally require fields on a template. Check public documentation for more information.
+* api-change:``cloudformation``: We added 5 new stack refactoring APIs: CreateStackRefactor, ExecuteStackRefactor, ListStackRefactors, DescribeStackRefactor, ListStackRefactorActions.
+
+
+2.23.14
+=======
+
+* api-change:``rds``: Documentation updates to clarify the description for the parameter AllocatedStorage for the DB cluster data type, the description for the parameter DeleteAutomatedBackups for the DeleteDBCluster API operation, and removing an outdated note for the CreateDBParameterGroup API operation.
+
+
+2.23.13
+=======
+
+* api-change:``neptune-graph``: Added argument to `list-export` to filter by graph ID
+* api-change:``iam``: This release adds support for accepting encrypted SAML assertions. Customers can now configure their identity provider to encrypt the SAML assertions it sends to IAM.
+* api-change:``qbusiness``: Adds functionality to enable/disable a new Q Business Chat orchestration feature. If enabled, Q Business can orchestrate over datasources and plugins without the need for customers to select specific chat modes.
+* api-change:``sagemaker``: IPv6 support for Hyperpod clusters
+* api-change:``dms``: Introduces TargetDataSettings with the TablePreparationMode option available for data migrations.
+* api-change:``datasync``: Doc-only update to provide more information on using Kerberos authentication with SMB locations.
+
+
 2.23.12
 =======
 

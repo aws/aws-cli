@@ -88,11 +88,27 @@ class TestLSCommand(unittest.TestCase):
         self.session.create_client.return_value.get_paginator.return_value\
             .paginate.return_value = [{'Contents': [], 'CommonPrefixes': []}]
 
+    def _get_fake_kwargs(self, override=None):
+        fake_kwargs = {
+            'paths': 's3://',
+            'dir_op': False,
+            'human_readable': False,
+            'summarize': False,
+            'page_size': None,
+            'request_payer': None,
+            'bucket_name_prefix': None,
+            'bucket_region': None,
+        }
+        fake_kwargs.update(override or {})
+
+        return fake_kwargs
+
     def test_ls_command_for_bucket(self):
         ls_command = ListCommand(self.session)
-        parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False,
-                               page_size='5', human_readable=False,
-                               summarize=False, request_payer=None)
+        parsed_args = FakeArgs(**self._get_fake_kwargs({
+            'paths': 's3://mybucket/',
+            'page_size': '5',
+        }))
         parsed_globals = mock.Mock()
         ls_command._run_main(parsed_args, parsed_globals)
         call = self.session.create_client.return_value.list_objects_v2
@@ -113,15 +129,21 @@ class TestLSCommand(unittest.TestCase):
         ls_command = ListCommand(self.session)
         parsed_global = FakeArgs(region=None, endpoint_url=None,
                                  verify_ssl=None)
-        parsed_args = FakeArgs(dir_op=False, paths='s3://',
-                               human_readable=False, summarize=False,
-                               request_payer=None)
+        parsed_args = FakeArgs(**self._get_fake_kwargs())
         ls_command._run_main(parsed_args, parsed_global)
-        # We should only be a single call.
         call = self.session.create_client.return_value.list_buckets
-        self.assertTrue(call.called)
-        self.assertEqual(call.call_count, 1)
-        self.assertEqual(call.call_args[1], {})
+        paginate = self.session.create_client.return_value.get_paginator\
+            .return_value.paginate
+
+        # We should make no operation calls.
+        self.assertEqual(call.call_count, 0)
+        # And only a single pagination call to ListBuckets.
+        self.session.create_client.return_value.get_paginator.\
+            assert_called_with('list_buckets')
+        ref_call_args = {'PaginationConfig': {'PageSize': None}}
+
+        paginate.assert_called_with(**ref_call_args)
+
         # Verify get_client
         get_client = self.session.create_client
         args = get_client.call_args
@@ -129,14 +151,61 @@ class TestLSCommand(unittest.TestCase):
             's3', region_name=None, endpoint_url=None, verify=None,
             config=None))
 
+    def test_ls_with_bucket_name_prefix(self):
+        ls_command = ListCommand(self.session)
+        parsed_args = FakeArgs(**self._get_fake_kwargs({
+            'bucket_name_prefix': 'myprefix',
+        }))
+        parsed_globals = FakeArgs(
+            region=None,
+            endpoint_url=None,
+            verify_ssl=None,
+        )
+        ls_command._run_main(parsed_args, parsed_globals)
+        call = self.session.create_client.return_value.list_objects
+        paginate = self.session.create_client.return_value.get_paginator\
+            .return_value.paginate
+        # We should make no operation calls.
+        self.assertEqual(call.call_count, 0)
+        self.session.create_client.return_value.get_paginator.\
+            assert_called_with('list_buckets')
+        ref_call_args = {
+            'PaginationConfig': {'PageSize': None},
+            'Prefix': 'myprefix',
+        }
+
+        paginate.assert_called_with(**ref_call_args)
+
+    def test_ls_with_bucket_region(self):
+        ls_command = ListCommand(self.session)
+        parsed_args = FakeArgs(**self._get_fake_kwargs({
+            'bucket_region': 'us-west-1',
+        }))
+        parsed_globals = FakeArgs(
+            region=None,
+            endpoint_url=None,
+            verify_ssl=None,
+        )
+        ls_command._run_main(parsed_args, parsed_globals)
+        call = self.session.create_client.return_value.list_objects
+        paginate = self.session.create_client.return_value.get_paginator\
+            .return_value.paginate
+        # We should make no operation calls.
+        self.assertEqual(call.call_count, 0)
+        self.session.create_client.return_value.get_paginator.\
+            assert_called_with('list_buckets')
+        ref_call_args = {
+            'PaginationConfig': {'PageSize': None},
+            'BucketRegion': 'us-west-1',
+        }
+
+        paginate.assert_called_with(**ref_call_args)
+
     def test_ls_with_verify_argument(self):
-        options = {'default': 's3://', 'nargs': '?'}
         ls_command = ListCommand(self.session)
         parsed_global = FakeArgs(region='us-west-2', endpoint_url=None,
                                  verify_ssl=False)
-        parsed_args = FakeArgs(paths='s3://', dir_op=False,
-                               human_readable=False, summarize=False,
-                               request_payer=None)
+        parsed_args = FakeArgs(**self._get_fake_kwargs({}))
         ls_command._run_main(parsed_args, parsed_global)
         # Verify get_client
         get_client = self.session.create_client
@@ -147,9 +216,11 @@ class TestLSCommand(unittest.TestCase):
 
     def test_ls_with_requester_pays(self):
         ls_command = ListCommand(self.session)
-        parsed_args = FakeArgs(paths='s3://mybucket/', dir_op=False,
-                               human_readable=False, summarize=False,
-                               request_payer='requester', page_size='5')
+        parsed_args = FakeArgs(**self._get_fake_kwargs({
+            'paths': 's3://mybucket/',
+            'page_size': '5',
+            'request_payer': 'requester',
+        }))
         parsed_globals = mock.Mock()
         ls_command._run_main(parsed_args, parsed_globals)
         call = self.session.create_client.return_value.list_objects
@@ -553,6 +624,11 @@ class CommandParametersTest(unittest.TestCase):
         self.file_creator = FileCreator()
         self.loc_files = make_loc_files(self.file_creator)
         self.bucket = 's3testbucket'
+        self.session = mock.Mock()
+        self.parsed_global = FakeArgs(
+            region='us-west-2',
+            endpoint_url=None,
+            verify_ssl=False)
 
     def tearDown(self):
         self.environ_patch.stop()
@@ -577,7 +653,8 @@ class CommandParametersTest(unittest.TestCase):
                   'locallocal': [local_file, local_file]}
 
         for cmd in cmds.keys():
-            cmd_param = CommandParameters(cmd, {}, '')
+            cmd_param = CommandParameters(cmd, {}, '',
+                                          self.session, self.parsed_global)
             cmd_param.add_region(mock.Mock())
             correct_paths = cmds[cmd]
             for path_args in correct_paths:
@@ -605,7 +682,8 @@ class CommandParametersTest(unittest.TestCase):
                   'locallocal': [local_file, local_file]}
 
         for cmd in cmds.keys():
-            cmd_param = CommandParameters(cmd, {}, '')
+            cmd_param = CommandParameters(cmd, {}, '',
+                                          self.session, self.parsed_global)
             cmd_param.add_region(mock.Mock())
             wrong_paths = cmds[cmd]
             for path_args in wrong_paths:
@@ -633,6 +711,46 @@ class CommandParametersTest(unittest.TestCase):
         cmd_params = CommandParameters('cp', {}, '')
         cmd_params.add_paths(paths)
         self.assertFalse(cmd_params.parameters['is_stream'])
+
+    def test_validate_checksum_algorithm_download_error(self):
+        paths = ['s3://bucket/key', self.file_creator.rootdir]
+        parameters = {'checksum_algorithm': 'CRC32'}
+        cmd_params = CommandParameters('cp', parameters, '')
+        with self.assertRaises(ValueError) as cm:
+            cmd_params.add_paths(paths)
+            self.assertIn('Expected checksum-algorithm parameter to be used with one of following path formats', cm.msg)
+
+    def test_validate_checksum_algorithm_sync_download_error(self):
+        paths = ['s3://bucket/key', self.file_creator.rootdir]
+        parameters = {'checksum_algorithm': 'CRC32C'}
+        cmd_params = CommandParameters('sync', parameters, '')
+        with self.assertRaises(ValueError) as cm:
+            cmd_params.add_paths(paths)
+            self.assertIn('Expected checksum-algorithm parameter to be used with one of following path formats', cm.msg)
+
+    def test_validate_checksum_mode_upload_error(self):
+        paths = [self.file_creator.rootdir, 's3://bucket/key']
+        parameters = {'checksum_mode': 'ENABLED'}
+        cmd_params = CommandParameters('cp', parameters, '')
+        with self.assertRaises(ValueError) as cm:
+            cmd_params.add_paths(paths)
+            self.assertIn('Expected checksum-mode parameter to be used with one of following path formats', cm.msg)
+
+    def test_validate_checksum_mode_sync_upload_error(self):
+        paths = [self.file_creator.rootdir, 's3://bucket/key']
+        parameters = {'checksum_mode': 'ENABLED'}
+        cmd_params = CommandParameters('sync', parameters, '')
+        with self.assertRaises(ValueError) as cm:
+            cmd_params.add_paths(paths)
+            self.assertIn('Expected checksum-mode parameter to be used with one of following path formats', cm.msg)
+
+    def test_validate_checksum_mode_move_error(self):
+        paths = ['s3://bucket/key', 's3://bucket2/key']
+        parameters = {'checksum_mode': 'ENABLED'}
+        cmd_params = CommandParameters('mv', parameters, '')
+        with self.assertRaises(ValueError) as cm:
+            cmd_params.add_paths(paths)
+            self.assertIn('Expected checksum-mode parameter to be used with one of following path formats', cm.msg)
 
     def test_validate_streaming_paths_error(self):
         parameters = {'src': '-', 'dest': 's3://bucket'}
@@ -696,7 +814,9 @@ class CommandParametersTest(unittest.TestCase):
 
     def test_adds_is_move(self):
         params = {}
-        CommandParameters('mv', params, '')
+        CommandParameters('mv', params, '',
+                          session=self.session,
+                          parsed_globals=self.parsed_global)
         self.assertTrue(params.get('is_move'))
 
         # is_move should only be true for mv

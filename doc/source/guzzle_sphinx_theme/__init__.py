@@ -13,7 +13,7 @@ from pygments.token import Keyword, Name, Comment, String, Error, \
 
 
 def setup(app):
-    """Setup conntects events to the sitemap builder"""
+    """Setup connects events to the sitemap builder"""
     app.connect('html-page-context', add_html_link)
     app.connect('build-finished', create_sitemap)
     app.sitemap_links = []

@@ -24,7 +24,7 @@ def _generate_command_tests():
         if hasattr(sub_help, 'command_table'):
             yield command_name, sub_help.command_table, top_level_params
 
-
+@pytest.mark.validates_models
 @pytest.mark.parametrize(
     "command_name, command_table, builtins",
     _generate_command_tests()

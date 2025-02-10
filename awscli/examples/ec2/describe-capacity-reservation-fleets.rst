@@ -1,6 +1,6 @@
 **To view a Capacity Reservation Fleet**
 
-The following ``describe-capacity-reservation-fleets`` example lists configuration and capacity information for the specified Capacity Reservation Fleet. It also lists details about the individual Capacity Reservations that are inside the Fleet.::
+The following ``describe-capacity-reservation-fleets`` example lists configuration and capacity information for the specified Capacity Reservation Fleet. It also lists details about the individual Capacity Reservations that are inside the Fleet. ::
 
     aws ec2 describe-capacity-reservation-fleets \
         --capacity-reservation-fleet-ids crf-abcdef01234567890
@@ -10,7 +10,7 @@ Output::
     {
         "CapacityReservationFleets": [
             {
-                "Status": "active", 
+                "State": "active", 
                 "EndDate": "2022-12-31T23:59:59.000Z", 
                 "InstanceMatchCriteria": "open", 
                 "Tags": [], 

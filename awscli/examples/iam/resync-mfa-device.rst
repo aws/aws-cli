@@ -10,4 +10,4 @@ The following ``resync-mfa-device`` example synchronizes the MFA device that is 
 
 This command produces no output.
 
-For more information, see `Using Multi-Factor Authentication (MFA) Devices in AWS <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html>`__ in the *AWS Identity and Access Management User Guide*.
+For more information, see `Using multi-factor authentication (MFA) in AWS <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html>`__ in the *AWS IAM User Guide*.

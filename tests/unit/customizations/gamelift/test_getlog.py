@@ -15,9 +15,9 @@ import os
 
 from botocore.session import get_session
 
-from awscli.compat import six
 from awscli.testutils import unittest, mock, FileCreator
 from awscli.customizations.gamelift.getlog import GetGameSessionLogCommand
+from awscli.compat import BytesIO
 
 
 class TestGetGameSessionLogCommand(unittest.TestCase):
@@ -37,7 +37,7 @@ class TestGetGameSessionLogCommand(unittest.TestCase):
         self.urlopen_patch = mock.patch(
             'awscli.customizations.gamelift.getlog.urlopen')
         self.urlopen_mock = self.urlopen_patch.start()
-        self.urlopen_mock.return_value = six.BytesIO(self.contents)
+        self.urlopen_mock.return_value = BytesIO(self.contents)
 
     def tearDown(self):
         self.create_client_patch.stop()

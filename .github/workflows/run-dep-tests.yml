@@ -1,0 +1,27 @@
+name: Run dependency tests
+
+on:
+  push:
+  pull_request:
+    branches-ignore: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+
+    steps:
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: python scripts/ci/install
+    - name: Run tests
+      run: python scripts/ci/run-dep-tests

@@ -19,7 +19,7 @@ Output::
 
 For more information, see `Findings <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html>`__ in the GuardDuty User Guide.
 
-**Example 2: To list findings for the current region matching a specfic finding criteria**
+**Example 2: To list findings for the current region matching a specific finding criteria**
 
 The following ``list-findings`` example displays a list of all findingIds that match a specified finding type. ::
 
@@ -42,7 +42,7 @@ Output::
 
 For more information, see `Findings <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings.html>`__ in the GuardDuty User Guide.
 
-**Example 3: To list findings for the current region matching a specfic set of finding criteria defined within a JSON file**
+**Example 3: To list findings for the current region matching a specific set of finding criteria defined within a JSON file**
 
 The following ``list-findings`` example displays a list of all findingIds that are not archived, and involve the IAM user named "testuser", as specified in a JSON file. ::
 

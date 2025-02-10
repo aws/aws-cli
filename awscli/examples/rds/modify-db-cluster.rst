@@ -1,4 +1,4 @@
-**To modify a DB cluster**
+**Example 1: To modify a DB cluster**
 
 The following ``modify-db-cluster`` example changes the master user password for the DB cluster named ``cluster-2`` and sets the backup retention period to 14 days. The ``--apply-immediately`` parameter causes the changes to be made immediately, instead of waiting until the next maintenance window. ::
 
@@ -7,7 +7,6 @@ The following ``modify-db-cluster`` example changes the master user password for
         --backup-retention-period 14 \
         --master-user-password newpassword99 \
         --apply-immediately
-
 
 Output::
 
@@ -69,3 +68,58 @@ Output::
     }
 
 For more information, see `Modifying an Amazon Aurora DB Cluster <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Modifying.html>`__ in the *Amazon Aurora User Guide*.
+
+**Example 2: To associate VPC security group with a DB cluster**
+
+The following ``modify-db-instance`` example associates a specific VPC security group and removes DB security groups from a DB cluster. ::
+
+    aws rds modify-db-cluster \
+        --db-cluster-identifier dbName \
+        --vpc-security-group-ids sg-ID
+
+Output::
+
+    {
+        "DBCluster": {
+            "AllocatedStorage": 1,
+            "AvailabilityZones": [
+                "us-west-2c",
+                "us-west-2b",
+                "us-west-2a"
+            ],
+            "BackupRetentionPeriod": 1,
+            "DBClusterIdentifier": "dbName",
+            "DBClusterParameterGroup": "default.aurora-mysql8.0",
+            "DBSubnetGroup": "default",
+            "Status": "available",
+            "EarliestRestorableTime": "2024-02-15T01:12:13.966000+00:00",
+            "Endpoint": "dbName.cluster-abcdefghji.us-west-2.rds.amazonaws.com",
+            "ReaderEndpoint": "dbName.cluster-ro-abcdefghji.us-west-2.rds.amazonaws.com",
+            "MultiAZ": false,
+            "Engine": "aurora-mysql",
+            "EngineVersion": "8.0.mysql_aurora.3.04.1",
+            "LatestRestorableTime": "2024-02-15T02:25:33.696000+00:00",
+            "Port": 3306,
+            "MasterUsername": "admin",
+            "PreferredBackupWindow": "10:59-11:29",
+            "PreferredMaintenanceWindow": "thu:08:54-thu:09:24",
+            "ReadReplicaIdentifiers": [],
+            "DBClusterMembers": [
+                {
+                    "DBInstanceIdentifier": "dbName-instance-1",
+                    "IsClusterWriter": true,
+                    "DBClusterParameterGroupStatus": "in-sync",
+                    "PromotionTier": 1
+                }
+            ],
+            "VpcSecurityGroups": [
+                {
+                    "VpcSecurityGroupId": "sg-ID",
+                    "Status": "active"
+                }
+            ],
+            ...output omitted...
+        }
+    }
+
+For more information, see `Controlling access with security groups <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Overview.RDSSecurityGroups.html>`__ in the *Amazon Aurora User Guide*.

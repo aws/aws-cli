@@ -40,6 +40,12 @@ class TestLSCommand(BaseS3TransferCommandTest):
         self.assertIn('Unknown options', stderr)
         self.assertIn('--extra-argument-foo', stderr)
 
+    def test_list_buckets_use_page_size(self):
+        stdout, _, _ = self.run_cmd('s3 ls --page-size 8', expected_rc=0)
+        call_args = self.operations_called[0][1]
+        # The page size gets translated to ``MaxBuckets`` in the s3 model
+        self.assertEqual(call_args['MaxBuckets'], 8)
+
     def test_operations_use_page_size(self):
         time_utc = "2014-01-09T20:45:49.000Z"
         self.parsed_responses = [{"CommonPrefixes": [], "Contents": [
@@ -209,3 +215,23 @@ class TestLSCommand(BaseS3TransferCommandTest):
         self.run_cmd('s3 ls s3://%s' % arn, expected_rc=0)
         call_args = self.operations_called[0][1]
         self.assertEqual(call_args['Bucket'], arn)
+
+    def test_list_buckets_uses_bucket_name_prefix(self):
+        stdout, _, _ = self.run_cmd('s3 ls --bucket-name-prefix myprefix', expected_rc=0)
+        call_args = self.operations_called[0][1]
+        self.assertEqual(call_args['Prefix'], 'myprefix')
+
+    def test_list_buckets_uses_bucket_region(self):
+        stdout, _, _ = self.run_cmd('s3 ls --bucket-region us-west-1', expected_rc=0)
+        call_args = self.operations_called[0][1]
+        self.assertEqual(call_args['BucketRegion'], 'us-west-1')
+
+    def test_list_objects_ignores_bucket_name_prefix(self):
+        stdout, _, _ = self.run_cmd('s3 ls s3://mybucket --bucket-name-prefix myprefix', expected_rc=0)
+        call_args = self.operations_called[0][1]
+        self.assertEqual(call_args['Prefix'], '')
+
+    def test_list_objects_ignores_bucket_region(self):
+        stdout, _, _ = self.run_cmd('s3 ls s3://mybucket --bucket-region us-west-1', expected_rc=0)
+        call_args = self.operations_called[0][1]
+        self.assertNotIn('BucketRegion', call_args)

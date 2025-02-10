@@ -45,3 +45,8 @@ class TestMBCommand(BaseAWSCommandParamsTest):
     def test_nonzero_exit_if_invalid_path_provided(self):
         command = self.prefix + 'bucket'
         self.run_cmd(command, expected_rc=255)
+
+    def test_incompatible_with_express_directory_bucket(self):
+        command = self.prefix + 's3://bucket--usw2-az1--x-s3/'
+        stderr = self.run_cmd(command, expected_rc=255)[1]
+        self.assertIn('Cannot use mb command with a directory bucket.', stderr)

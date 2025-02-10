@@ -4,7 +4,7 @@ The following ``update-resource-definition`` example updates the name for the sp
 
     aws greengrass update-resource-definition \
         --resource-definition-id "c8bb9ebc-c3fd-40a4-9c6a-568d75569d38" \
-        --name GreengrassConnectorResoruces
+        --name GreengrassConnectorResources
 
 This command produces no output.
 

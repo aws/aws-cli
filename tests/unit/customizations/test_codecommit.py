@@ -14,12 +14,12 @@
 import awscli
 
 from argparse import Namespace
-from six import StringIO
 from botocore.session import Session
 from botocore.credentials import Credentials
 from awscli.customizations.codecommit import CodeCommitGetCommand
 from awscli.customizations.codecommit import CodeCommitCommand
 from awscli.testutils import mock, unittest, StringIOWithFileNo
+from awscli.compat import StringIO
 
 from botocore.auth import SigV4Auth
 from botocore.awsrequest import AWSRequest

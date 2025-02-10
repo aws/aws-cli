@@ -13,12 +13,11 @@
 # language governing permissions and limitations under the License.
 from botocore.compat import json
 import platform
-from awscli.compat import six
 from awscli.formatter import JSONFormatter
 
 from awscli.testutils import BaseAWSCommandParamsTest, unittest
 from awscli.testutils import mock, skip_if_windows
-from awscli.compat import get_stdout_text_writer
+from awscli.compat import StringIO, get_stdout_text_writer
 
 
 class TestGetPasswordData(BaseAWSCommandParamsTest):
@@ -105,7 +104,7 @@ class TestListUsers(BaseAWSCommandParamsTest):
     def test_json_prints_unicode_chars(self):
         self.parsed_response['Users'][1]['UserId'] = u'\u2713'
         output = self.run_cmd('iam list-users', expected_rc=0)[0]
-        with mock.patch('sys.stdout', six.StringIO()) as f:
+        with mock.patch('sys.stdout', StringIO()) as f:
             out = get_stdout_text_writer()
             out.write(u'\u2713')
             expected = f.getvalue()
@@ -120,7 +119,7 @@ class TestFormattersHandleClosedPipes(unittest.TestCase):
         args = mock.Mock(query=None)
         operation = mock.Mock(can_paginate=False)
         response = '{"Foo": "Bar"}'
-        fake_closed_stream = mock.Mock(spec=six.StringIO)
+        fake_closed_stream = mock.Mock(spec=StringIO)
         fake_closed_stream.flush.side_effect = IOError
         formatter = JSONFormatter(args)
         formatter('command_name', response, stream=fake_closed_stream)

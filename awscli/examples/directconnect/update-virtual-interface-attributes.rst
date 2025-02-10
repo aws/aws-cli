@@ -14,7 +14,7 @@ Output::
         "location": "loc1",
         "connectionId": "dxlag-fEXAMPLE",
         "virtualInterfaceType": "transit",
-        "virtualInterfaceName": "example trasit virtual interface",
+        "virtualInterfaceName": "example transit virtual interface",
         "vlan": 125,
         "asn": 650001,
         "amazonSideAsn": 64512,

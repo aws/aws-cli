@@ -17,8 +17,8 @@ from awscli.testutils import BaseAWSCommandParamsTest
 import logging
 import io
 import sys
+import importlib
 
-from awscli.compat import six
 from botocore.awsrequest import AWSResponse
 from botocore.exceptions import NoCredentialsError
 from botocore.compat import OrderedDict
@@ -35,6 +35,7 @@ from awscli.paramfile import URIArgumentHandler
 from awscli.customizations.commands import BasicCommand
 from awscli import formatter
 from awscli.argparser import HELP_BLURB
+from awscli.compat import StringIO
 from botocore.hooks import HierarchicalEmitter
 
 
@@ -314,14 +315,8 @@ class TestCliDriver(unittest.TestCase):
         self.assertEqual(rc, 130)
 
     def test_error_unicode(self):
-        # We need a different type for Py3 and Py2 because on Py3 six.StringIO
-        # doesn't let us set the encoding and returns a string.
-        if six.PY3:
-            stderr_b = io.BytesIO()
-            stderr = io.TextIOWrapper(stderr_b, encoding="UTF-8")
-        else:
-            stderr = stderr_b = six.StringIO()
-            stderr.encoding = "UTF-8"
+        stderr_b = io.BytesIO()
+        stderr = io.TextIOWrapper(stderr_b, encoding="UTF-8")
         driver = CLIDriver(session=self.session)
         fake_client = mock.Mock()
         fake_client.list_objects.side_effect = Exception(u"☃")
@@ -341,8 +336,8 @@ class TestCliDriverHooks(unittest.TestCase):
         self.session = FakeSession()
         self.emitter = mock.Mock()
         self.emitter.emit.return_value = []
-        self.stdout = six.StringIO()
-        self.stderr = six.StringIO()
+        self.stdout = StringIO()
+        self.stderr = StringIO()
         self.stdout_patch = mock.patch('sys.stdout', self.stdout)
         #self.stdout_patch.start()
         self.stderr_patch = mock.patch('sys.stderr', self.stderr)
@@ -419,7 +414,7 @@ class TestCliDriverHooks(unittest.TestCase):
 
 class TestSearchPath(unittest.TestCase):
     def tearDown(self):
-        six.moves.reload_module(awscli)
+        importlib.reload(awscli)
 
     @mock.patch('os.pathsep', ';')
     @mock.patch('os.environ', {'AWS_DATA_PATH': 'c:\\foo;c:\\bar'})
@@ -427,7 +422,7 @@ class TestSearchPath(unittest.TestCase):
         driver = CLIDriver()
         # Because the os.environ patching happens at import time,
         # we have to force a reimport of the module to test our changes.
-        six.moves.reload_module(awscli)
+        importlib.reload(awscli)
         # Our two overrides should be the last two elements in the search path.
         search_paths = driver.session.get_component(
             'data_loader').search_paths
@@ -440,7 +435,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
     # but with the http part mocked out.
     def setUp(self):
         super(TestAWSCommand, self).setUp()
-        self.stderr = six.StringIO()
+        self.stderr = StringIO()
         self.stderr_patch = mock.patch('sys.stderr', self.stderr)
         self.stderr_patch.start()
 
@@ -807,7 +802,7 @@ class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
 
     def setUp(self):
         super(TestHTTPParamFileDoesNotExist, self).setUp()
-        self.stderr = six.StringIO()
+        self.stderr = StringIO()
         self.stderr_patch = mock.patch('sys.stderr', self.stderr)
         self.stderr_patch.start()
 

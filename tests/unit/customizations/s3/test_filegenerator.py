@@ -20,7 +20,6 @@ import shutil
 import socket
 
 from botocore.exceptions import ClientError
-from awscli.compat import six
 
 from awscli.customizations.s3.filegenerator import FileGenerator, \
     FileDecodingError, FileStat, is_special_file, is_readable
@@ -311,7 +310,7 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
         self.files.remove_all()
 
     def test_no_follow_symlink(self):
-        abs_root = six.text_type(os.path.abspath(self.root) + os.sep)
+        abs_root = str(os.path.abspath(self.root) + os.sep)
         input_local_dir = {'src': {'path': abs_root,
                                    'type': 'local'},
                            'dest': {'path': self.bucket,
@@ -325,14 +324,14 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
         self.assertEqual(len(result_list), len(self.filenames))
         # Just check to make sure the right local files are generated.
         for i in range(len(result_list)):
-            filename = six.text_type(os.path.abspath(self.filenames[i]))
+            filename = str(os.path.abspath(self.filenames[i]))
             self.assertEqual(result_list[i], filename)
 
     def test_warn_bad_symlink(self):
         """
         This tests to make sure it fails when following bad symlinks.
         """
-        abs_root = six.text_type(os.path.abspath(self.root) + os.sep)
+        abs_root = str(os.path.abspath(self.root) + os.sep)
         input_local_dir = {'src': {'path': abs_root,
                                    'type': 'local'},
                            'dest': {'path': self.bucket,
@@ -349,14 +348,14 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
         self.assertEqual(len(result_list), len(all_filenames))
         # Just check to make sure the right local files are generated.
         for i in range(len(result_list)):
-            filename = six.text_type(os.path.abspath(all_filenames[i]))
+            filename = str(os.path.abspath(all_filenames[i]))
             self.assertEqual(result_list[i], filename)
         self.assertFalse(file_gen.result_queue.empty())
 
     def test_follow_symlink(self):
         # First remove the bad symlink.
         os.remove(os.path.join(self.root, 'symlink_2'))
-        abs_root = six.text_type(os.path.abspath(self.root) + os.sep)
+        abs_root = str(os.path.abspath(self.root) + os.sep)
         input_local_dir = {'src': {'path': abs_root,
                                    'type': 'local'},
                            'dest': {'path': self.bucket,
@@ -371,7 +370,7 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
         self.assertEqual(len(result_list), len(all_filenames))
         # Just check to make sure the right local files are generated.
         for i in range(len(result_list)):
-            filename = six.text_type(os.path.abspath(all_filenames[i]))
+            filename = str(os.path.abspath(all_filenames[i]))
             self.assertEqual(result_list[i], filename)
 
 
@@ -379,7 +378,7 @@ class TestListFilesLocally(unittest.TestCase):
     maxDiff = None
 
     def setUp(self):
-        self.directory = six.text_type(tempfile.mkdtemp())
+        self.directory = str(tempfile.mkdtemp())
 
     def tearDown(self):
         shutil.rmtree(self.directory)

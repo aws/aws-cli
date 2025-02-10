@@ -1,9 +1,11 @@
 **To add a tag to a user**
 
-The following ``tag-user`` command adds a tag with the associated Department to the specified user. This command produces no output. ::
+The following ``tag-user`` command adds a tag with the associated Department to the specified user. ::
 
-    aws iam tag-user --user-name alice --tags '{"Key": "Department", "Value": "Accounting"}'
+    aws iam tag-user \
+        --user-name alice \
+        --tags '{"Key": "Department", "Value": "Accounting"}'
 
-For more information, see `Tagging IAM Entities`_ in the *AWS IAM User Guide*
+This command produces no output.
 
-.. _`Tagging IAM Entities`: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html
+For more information, see `Tagging IAM resources <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html>`__ in the *AWS IAM User Guide*.

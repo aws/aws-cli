@@ -1,6 +1,6 @@
-**To analyze the input text for the presense of PII information**
+**To analyze the input text for the presence of PII information**
 
-The following ``contains-pii-entities`` example analyzes the input text for the presense of personally identifiable information (PII) and returns the labels of identified PII entity types such as name, address, bank account number, or phone number. ::
+The following ``contains-pii-entities`` example analyzes the input text for the presence of personally identifiable information (PII) and returns the labels of identified PII entity types such as name, address, bank account number, or phone number. ::
 
     aws comprehend contains-pii-entities \
         --language-code en \

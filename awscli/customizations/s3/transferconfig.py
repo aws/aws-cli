@@ -13,7 +13,6 @@
 from s3transfer.manager import TransferConfig
 
 from awscli.customizations.s3.utils import human_readable_to_bytes
-from awscli.compat import six
 # If the user does not specify any overrides,
 # these are the default values we use for the s3 transfer
 # commands.
@@ -64,13 +63,13 @@ class RuntimeConfig(object):
     def _convert_human_readable_sizes(self, runtime_config):
         for attr in self.HUMAN_READABLE_SIZES:
             value = runtime_config.get(attr)
-            if value is not None and not isinstance(value, six.integer_types):
+            if value is not None and not isinstance(value, int):
                 runtime_config[attr] = human_readable_to_bytes(value)
 
     def _convert_human_readable_rates(self, runtime_config):
         for attr in self.HUMAN_READABLE_RATES:
             value = runtime_config.get(attr)
-            if value is not None and not isinstance(value, six.integer_types):
+            if value is not None and not isinstance(value, int):
                 if not value.endswith('B/s'):
                     raise InvalidConfigError(
                         'Invalid rate: %s. The value must be expressed '

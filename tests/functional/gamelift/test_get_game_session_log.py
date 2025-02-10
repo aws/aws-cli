@@ -13,7 +13,7 @@
 import os
 
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
-from awscli.compat import six
+from awscli.compat import BytesIO
 
 
 class TestGetGameSessionLog(BaseAWSCommandParamsTest):
@@ -28,7 +28,7 @@ class TestGetGameSessionLog(BaseAWSCommandParamsTest):
             'awscli.customizations.gamelift.getlog.urlopen')
         self.contents = b'My Contents'
         self.urlopen_mock = self.urlopen_patch.start()
-        self.urlopen_mock.return_value = six.BytesIO(self.contents)
+        self.urlopen_mock.return_value = BytesIO(self.contents)
 
     def tearDown(self):
         super(TestGetGameSessionLog, self).tearDown()

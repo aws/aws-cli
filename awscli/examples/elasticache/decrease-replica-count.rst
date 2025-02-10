@@ -1,6 +1,6 @@
 **To decrease replica count**
 
-The following ``decrease-replica-count`` example dynamically decreases the number of replics in a Redis (cluster mode disabled) replication group or the number of replica nodes in one or more node groups (shards) of a Redis (cluster mode enabled) replication group. This operation is performed with no cluster downtime. ::
+The following ``decrease-replica-count`` example dynamically decreases the number of replicas in a Redis (cluster mode disabled) replication group or the number of replica nodes in one or more node groups (shards) of a Redis (cluster mode enabled) replication group. This operation is performed with no cluster downtime. ::
 
     aws elasticache decrease-replica-count \
         --replication-group-id my-cluster \

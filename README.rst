@@ -26,23 +26,22 @@ Requirements
 
 The aws-cli package works on Python versions:
 
--  3.7.x and greater
 -  3.8.x and greater
 -  3.9.x and greater
 -  3.10.x and greater
 -  3.11.x and greater
+-  3.12.x and greater
 
 Notices
 ~~~~~~~
 
-On 2021-01-15, deprecation for Python 2.7 was announced and support was dropped
-on 2021-07-15. To avoid disruption, customers using the AWS CLI on Python 2.7 may
-need to upgrade their version of Python or pin the version of the AWS CLI. For
-more information, see this `blog post <https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-python-2-7-in-aws-sdk-for-python-and-aws-cli-v1/>`__.
-
 On 2022-05-30, support for Python 3.6 was ended. This follows the
 Python Software Foundation `end of support <https://www.python.org/dev/peps/pep-0494/#lifespan>`__
 for the runtime which occurred on 2021-12-23.
+
+On 2023-12-13, support for Python 3.7 was ended. This follows the
+Python Software Foundation `end of support <https://www.python.org/dev/peps/pep-0537/#lifespan>`__
+for the runtime which occurred on 2023-06-27.
 For more information, see this `blog post <https://aws.amazon.com/blogs/developer/python-support-policy-updates-for-aws-sdks-and-tools/>`__.
 
 *Attention!*
@@ -158,7 +157,7 @@ this:
    aws_secret_access_key=MYSECRETKEY
 
    [testing]
-   aws_access_key_id=MYACCESKEY
+   aws_access_key_id=MYACCESSKEY
    aws_secret_access_key=MYSECRETKEY
 
 and place it in ``~/.aws/credentials`` (or in

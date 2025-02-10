@@ -3,8 +3,7 @@
 The following ``get-stream-key`` example gets information about the specified stream key. ::
 
     aws ivs get-stream-key \
-        --arn arn:aws:ivs:us-west-2:123456789012:stream-key/skSKABCDefgh \
-        --region=us-west-2
+        --arn arn:aws:ivs:us-west-2:123456789012:stream-key/skSKABCDefgh --region=us-west-2
 
 Output::
 
@@ -17,4 +16,4 @@ Output::
         }
     }
 
-For more information, see `Create a Channel <https://docs.aws.amazon.com/ivs/latest/userguide/GSIVS-create-channel.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `Create a Channel <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/getting-started-create-channel.html>`__ in the *IVS Low-Latency User Guide*.

@@ -19,12 +19,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import os
 import json
+import os
+
 import docutils.core
 
 
-class TopicTagDB(object):
+class TopicTagDB:
     """This class acts like a database for the tags of all available topics.
 
     A tag is an element in a topic reStructured text file that contains
@@ -67,19 +68,25 @@ class TopicTagDB(object):
     that all tag values for a specific tag of a specific topic are unique.
     """
 
-    VALID_TAGS = ['category', 'description', 'title', 'related topic',
-                  'related command']
+    VALID_TAGS = [
+        'category',
+        'description',
+        'title',
+        'related topic',
+        'related command',
+    ]
 
     # The default directory to look for topics.
     TOPIC_DIR = os.path.join(
-        os.path.dirname(
-            os.path.abspath(__file__)), 'topics')
+        os.path.dirname(os.path.abspath(__file__)), 'topics'
+    )
 
     # The default JSON index to load.
     JSON_INDEX = os.path.join(TOPIC_DIR, 'topic-tags.json')
 
-    def __init__(self, tag_dictionary=None, index_file=JSON_INDEX,
-                 topic_dir=TOPIC_DIR):
+    def __init__(
+        self, tag_dictionary=None, index_file=JSON_INDEX, topic_dir=TOPIC_DIR
+    ):
         """
         :param index_file: The path to a specific JSON index to load.
             If nothing is specified it will default to the default JSON
@@ -121,7 +128,7 @@ class TopicTagDB(object):
 
     def load_json_index(self):
         """Loads a JSON file into the tag dictionary."""
-        with open(self.index_file, 'r') as f:
+        with open(self.index_file) as f:
             self._tag_dictionary = json.load(f)
 
     def save_to_json_index(self):
@@ -156,7 +163,7 @@ class TopicTagDB(object):
         :param topic_files: A list of paths to topics to scan into memory.
         """
         for topic_file in topic_files:
-            with open(topic_file, 'r') as f:
+            with open(topic_file) as f:
                 # Parse out the name of the topic
                 topic_name = self._find_topic_name(topic_file)
                 # Add the topic to the dictionary if it does not exist
@@ -164,7 +171,8 @@ class TopicTagDB(object):
                 topic_content = f.read()
                 # Record the tags and the values
                 self._add_tag_and_values_from_content(
-                    topic_name, topic_content)
+                    topic_name, topic_content
+                )
 
     def _find_topic_name(self, topic_src_file):
         # Get the name of each of these files
@@ -259,9 +267,9 @@ class TopicTagDB(object):
                     # no value constraints are provided or if the tag value
                     # falls in the allowed tag values.
                     if values is None or tag_value in values:
-                        self._add_key_values(query_dict,
-                                             key=tag_value,
-                                             values=[topic_name])
+                        self._add_key_values(
+                            query_dict, key=tag_value, values=[topic_name]
+                        )
         return query_dict
 
     def get_tag_value(self, topic_name, tag, default_value=None):

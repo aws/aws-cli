@@ -23,4 +23,4 @@ Output::
         ]
     }
 
-For more information, see `Managing multicast groups <https://docs.aws.amazon.com/vpc/latest/tgw/manage-multicast-group.html>`__ in the *Transit Gateways Guide*.
+For more information, see `Multicast on transit gateways <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-multicast-overview.html>`__ in the *Transit Gateways Guide*.

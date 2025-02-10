@@ -38,8 +38,8 @@ def get_relative_expiration_time(remaining):
 
 
 class CommandFailedError(Exception):
-    def __init__(self, called_process_error):
-        msg = str(called_process_error)
+    def __init__(self, called_process_error, auth_token):
+        msg = str(called_process_error).replace(auth_token, '******')
         if called_process_error.stderr is not None:
             msg +=(
                 f' Stderr from command:\n'
@@ -105,7 +105,7 @@ class BaseLogin(object):
             )
         except subprocess.CalledProcessError as ex:
             if not ignore_errors:
-                raise CommandFailedError(ex)
+                raise CommandFailedError(ex, self.auth_token)
         except OSError as ex:
             if ex.errno == errno.ENOENT:
                 raise ValueError(
@@ -305,7 +305,7 @@ class NuGetBaseLogin(BaseLogin):
             )
         except subprocess.CalledProcessError as e:
             uni_print('Failed to update the NuGet.Config\n')
-            raise CommandFailedError(e)
+            raise CommandFailedError(e, self.auth_token)
 
         uni_print(source_configured_message % source_name)
         self._write_success_message('nuget')
@@ -721,11 +721,17 @@ class CodeArtifactLogin(BasicCommand):
             'required': True,
         },
         {
+            'name': 'endpoint-type',
+            'help_text': 'The type of endpoint you want the tool to interact with',
+            'required': False
+        },
+        {
             'name': 'dry-run',
             'action': 'store_true',
             'help_text': 'Only print the commands that would be executed '
                          'to connect your tool with your repository without '
-                         'making any changes to your configuration',
+                         'making any changes to your configuration. Note that '
+                         'this prints the unredacted auth token as part of the output',
             'required': False,
             'default': False
         },
@@ -749,6 +755,8 @@ class CodeArtifactLogin(BasicCommand):
             'repository': parsed_args.repository,
             'format': package_format
         }
+        if parsed_args.endpoint_type:
+            kwargs['endpointType'] = parsed_args.endpoint_type
         if parsed_args.domain_owner:
             kwargs['domainOwner'] = parsed_args.domain_owner
 

@@ -9,7 +9,7 @@ Output::
     {
         "instances": [
             {
-                "name": "Windows_Server_2016-1",
+                "name": "Windows_Server_2022-1",
                 "arn": "arn:aws:lightsail:us-west-2:111122223333:Instance/0f44fbb9-8f55-4e47-a25e-EXAMPLE04763",
                 "supportCode": "62EXAMPLE362/i-0bEXAMPLE71a686b9",
                 "createdAt": 1571332358.665,
@@ -19,9 +19,9 @@ Output::
                 },
                 "resourceType": "Instance",
                 "tags": [],
-                "blueprintId": "windows_server_2016",
-                "blueprintName": "Windows Server 2016",
-                "bundleId": "small_win_2_0",
+                "blueprintId": "windows_server_2022",
+                "blueprintName": "Windows Server 2022",
+                "bundleId": "large_win_3_0",
                 "isStaticIp": false,
                 "privateIpAddress": "192.0.2.0",
                 "publicIpAddress": "192.0.2.0",
@@ -30,11 +30,11 @@ Output::
                     "disks": [
                         {
                             "createdAt": 1571332358.665,
-                            "sizeInGb": 60,
+                            "sizeInGb": 160,
                             "isSystemDisk": true,
                             "iops": 180,
                             "path": "/dev/sda1",
-                            "attachedTo": "Windows_Server_2016-1",
+                            "attachedTo": "Windows_Server_2022-1",
                             "attachmentState": "attached"
                         },
                         {
@@ -53,12 +53,12 @@ Output::
                             "iops": 384,
                             "path": "/dev/xvdf",
                             "state": "in-use",
-                            "attachedTo": "Windows_Server_2016-1",
+                            "attachedTo": "Windows_Server_2022-1",
                             "isAttached": true,
                             "attachmentState": "attached"
                         }
                     ],
-                    "ramSizeInGb": 2.0
+                    "ramSizeInGb": 8.0
                 },
                 "networking": {
                     "monthlyTransfer": {
@@ -112,9 +112,9 @@ Output::
                 },
                 "resourceType": "Instance",
                 "tags": [],
-                "blueprintId": "mean_4_0_9",
+                "blueprintId": "mean",
                 "blueprintName": "MEAN",
-                "bundleId": "medium_2_0",
+                "bundleId": "medium_3_0",
                 "isStaticIp": false,
                 "privateIpAddress": "192.0.2.0",
                 "publicIpAddress": "192.0.2.0",
@@ -138,7 +138,7 @@ Output::
                             ],
                             "sizeInGb": 8,
                             "isSystemDisk": false,
-                            "iops": 100,
+                            "iops": 240,
                             "path": "/dev/xvdf",
                             "state": "in-use",
                             "attachedTo": "MEAN-1",

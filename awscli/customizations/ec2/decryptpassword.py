@@ -14,7 +14,6 @@ import logging
 import os
 import base64
 import rsa
-from awscli.compat import six
 
 from botocore import model
 
@@ -109,7 +108,7 @@ class LaunchKeyArgument(BaseCLIArgument):
             try:
                 with open(self._key_path) as pk_file:
                     pk_contents = pk_file.read()
-                    private_key = rsa.PrivateKey.load_pkcs1(six.b(pk_contents))
+                    private_key = rsa.PrivateKey.load_pkcs1(pk_contents.encode("latin-1"))
                     value = base64.b64decode(value)
                     value = rsa.decrypt(value, private_key)
                     logger.debug(parsed)

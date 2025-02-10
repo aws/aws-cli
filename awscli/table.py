@@ -1,24 +1,23 @@
 # Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-
+#
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
 # the License is located at
-
+#
 #     http://aws.amazon.com/apache2.0/
-
+#
 # or in the "license" file accompanying this file. This file is
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import sys
+
 import struct
+import sys
 import unicodedata
 
 import colorama
 
 from awscli.utils import is_a_tty
-from awscli.compat import six
-
 
 # `autoreset` allows us to not have to sent reset sequences for every
 # string. `strip` lets us preserve color when redirecting.
@@ -35,29 +34,33 @@ def get_text_length(text):
     # * A(Ambiguous)
     # * F(Fullwidth)
     # * W(Wide)
-    text = six.text_type(text)
-    return sum(2 if unicodedata.east_asian_width(char) in 'WFA' else 1
-               for char in text)
+    text = str(text)
+    return sum(
+        2 if unicodedata.east_asian_width(char) in 'WFA' else 1
+        for char in text
+    )
 
 
 def determine_terminal_width(default_width=80):
     # If we can't detect the terminal width, the default_width is returned.
     try:
-        from termios import TIOCGWINSZ
         from fcntl import ioctl
+        from termios import TIOCGWINSZ
     except ImportError:
         return default_width
     try:
-        height, width = struct.unpack('hhhh', ioctl(sys.stdout,
-                                                    TIOCGWINSZ, '\000' * 8))[0:2]
+        height, width = struct.unpack(
+            'hhhh', ioctl(sys.stdout, TIOCGWINSZ, '\000' * 8)
+        )[0:2]
     except Exception:
         return default_width
     else:
         return width
 
 
-def center_text(text, length=80, left_edge='|', right_edge='|',
-                text_length=None):
+def center_text(
+    text, length=80, left_edge='|', right_edge='|', text_length=None
+):
     """Center text with specified edge chars.
 
     You can pass in the length of the text as an arg, otherwise it is computed
@@ -78,15 +81,24 @@ def center_text(text, length=80, left_edge='|', right_edge='|',
     return final
 
 
-def align_left(text, length, left_edge='|', right_edge='|', text_length=None,
-               left_padding=2):
+def align_left(
+    text,
+    length,
+    left_edge='|',
+    right_edge='|',
+    text_length=None,
+    left_padding=2,
+):
     """Left align text."""
     # postcondition: get_text_length(returned_text) == length
     if text_length is None:
         text_length = get_text_length(text)
     computed_length = (
-        text_length + left_padding + \
-        get_text_length(left_edge) + get_text_length(right_edge))
+        text_length
+        + left_padding
+        + get_text_length(left_edge)
+        + get_text_length(right_edge)
+    )
     if length - computed_length >= 0:
         padding = left_padding
     else:
@@ -126,9 +138,10 @@ def convert_to_vertical_table(sections):
             sections[i] = new_section
 
 
-class IndentedStream(object):
-    def __init__(self, stream, indent_level, left_indent_char='|',
-                 right_indent_char='|'):
+class IndentedStream:
+    def __init__(
+        self, stream, indent_level, left_indent_char='|', right_indent_char='|'
+    ):
         self._stream = stream
         self._indent_level = indent_level
         self._left_indent_char = left_indent_char
@@ -147,7 +160,7 @@ class IndentedStream(object):
         return getattr(self._stream, attr)
 
 
-class Styler(object):
+class Styler:
     def style_title(self, text):
         return text
 
@@ -168,25 +181,38 @@ class ColorizedStyler(Styler):
     def style_title(self, text):
         # Originally bold + underline
         return text
-        #return colorama.Style.BOLD + text + colorama.Style.RESET_ALL
 
     def style_header_column(self, text):
         # Originally underline
         return text
 
     def style_row_element(self, text):
-        return (colorama.Style.BRIGHT + colorama.Fore.BLUE +
-                text + colorama.Style.RESET_ALL)
+        return (
+            colorama.Style.BRIGHT
+            + colorama.Fore.BLUE
+            + text
+            + colorama.Style.RESET_ALL
+        )
 
     def style_indentation_char(self, text):
-        return (colorama.Style.DIM + colorama.Fore.YELLOW +
-                text + colorama.Style.RESET_ALL)
+        return (
+            colorama.Style.DIM
+            + colorama.Fore.YELLOW
+            + text
+            + colorama.Style.RESET_ALL
+        )
 
 
-class MultiTable(object):
-    def __init__(self, terminal_width=None, initial_section=True,
-                 column_separator='|', terminal=None,
-                 styler=None, auto_reformat=True):
+class MultiTable:
+    def __init__(
+        self,
+        terminal_width=None,
+        initial_section=True,
+        column_separator='|',
+        terminal=None,
+        styler=None,
+        auto_reformat=True,
+    ):
         self._auto_reformat = auto_reformat
         if initial_section:
             self._current_section = Section()
@@ -239,16 +265,22 @@ class MultiTable(object):
             return self._auto_reformat
 
     def _calculate_max_width(self):
-        max_width = max(s.total_width(padding=4, with_border=True,
-                                      outer_padding=s.indent_level)
-                        for s in self._sections)
+        max_width = max(
+            s.total_width(
+                padding=4, with_border=True, outer_padding=s.indent_level
+            )
+            for s in self._sections
+        )
         return max_width
 
     def _render_section(self, section, max_width, stream):
-        stream = IndentedStream(stream, section.indent_level,
-                                self._styler.style_indentation_char('|'),
-                                self._styler.style_indentation_char('|'))
-        max_width -= (section.indent_level * 2)
+        stream = IndentedStream(
+            stream,
+            section.indent_level,
+            self._styler.style_indentation_char('|'),
+            self._styler.style_indentation_char('|'),
+        )
+        max_width -= section.indent_level * 2
         self._render_title(section, max_width, stream)
         self._render_column_titles(section, max_width, stream)
         self._render_rows(section, max_width, stream)
@@ -259,8 +291,12 @@ class MultiTable(object):
         # bottom_border:  ----------------------------
         if section.title:
             title = self._styler.style_title(section.title)
-            stream.write(center_text(title, max_width, '|', '|',
-                                     get_text_length(section.title)) + '\n')
+            stream.write(
+                center_text(
+                    title, max_width, '|', '|', get_text_length(section.title)
+                )
+                + '\n'
+            )
             if not section.headers and not section.rows:
                 stream.write('+%s+' % ('-' * (max_width - 2)) + '\n')
 
@@ -269,8 +305,9 @@ class MultiTable(object):
             return
         # In order to render the column titles we need to know
         # the width of each of the columns.
-        widths = section.calculate_column_widths(padding=4,
-                                                 max_width=max_width)
+        widths = section.calculate_column_widths(
+            padding=4, max_width=max_width
+        )
         # TODO: Built a list instead of +=, it's more efficient.
         current = ''
         length_so_far = 0
@@ -284,9 +321,13 @@ class MultiTable(object):
                 first = False
             else:
                 left_edge = ''
-            current += center_text(text=stylized_header, length=width,
-                                   left_edge=left_edge, right_edge='|',
-                                   text_length=get_text_length(header))
+            current += center_text(
+                text=stylized_header,
+                length=width,
+                left_edge=left_edge,
+                right_edge='|',
+                text_length=get_text_length(header),
+            )
             length_so_far += width
         self._write_line_break(stream, widths)
         stream.write(current + '\n')
@@ -308,8 +349,9 @@ class MultiTable(object):
     def _render_rows(self, section, max_width, stream):
         if not section.rows:
             return
-        widths = section.calculate_column_widths(padding=4,
-                                                 max_width=max_width)
+        widths = section.calculate_column_widths(
+            padding=4, max_width=max_width
+        )
         if not widths:
             return
         self._write_line_break(stream, widths)
@@ -326,16 +368,19 @@ class MultiTable(object):
                 else:
                     left_edge = ''
                 stylized = self._styler.style_row_element(element)
-                current += align_left(text=stylized, length=width,
-                                      left_edge=left_edge,
-                                      right_edge=self._column_separator,
-                                      text_length=get_text_length(element))
+                current += align_left(
+                    text=stylized,
+                    length=width,
+                    left_edge=left_edge,
+                    right_edge=self._column_separator,
+                    text_length=get_text_length(element),
+                )
                 length_so_far += width
             stream.write(current + '\n')
         self._write_line_break(stream, widths)
 
 
-class Section(object):
+class Section:
     def __init__(self):
         self.title = ''
         self.headers = []
@@ -345,8 +390,10 @@ class Section(object):
         self._max_widths = []
 
     def __repr__(self):
-        return ("Section(title=%s, headers=%s, indent_level=%s, num_rows=%s)" %
-                (self.title, self.headers, self.indent_level, len(self.rows)))
+        return (
+            f"Section(title={self.title}, headers={self.headers}, "
+            f"indent_level={self.indent_level}, num_rows={len(self.rows)})"
+        )
 
     def calculate_column_widths(self, padding=0, max_width=None):
         # postcondition: sum(widths) == max_width
@@ -386,8 +433,13 @@ class Section(object):
         if with_border:
             total += border_padding
         total += outer_padding + outer_padding
-        return max(get_text_length(self.title) + border_padding + outer_padding +
-                   outer_padding, total)
+        return max(
+            get_text_length(self.title)
+            + border_padding
+            + outer_padding
+            + outer_padding,
+            total,
+        )
 
     def add_title(self, title):
         self.title = title
@@ -405,18 +457,22 @@ class Section(object):
         if self._num_cols is None:
             self._num_cols = len(row)
         if len(row) != self._num_cols:
-            raise ValueError("Row should have %s elements, instead "
-                             "it has %s" % (self._num_cols, len(row)))
+            raise ValueError(
+                f"Row should have {self._num_cols} elements, instead "
+                f"it has {len(row)}"
+            )
         row = self._format_row(row)
         self.rows.append(row)
         self._update_max_widths(row)
 
     def _format_row(self, row):
-        return [six.text_type(r) for r in row]
+        return [str(r) for r in row]
 
     def _update_max_widths(self, row):
         if not self._max_widths:
             self._max_widths = [get_text_length(el) for el in row]
         else:
             for i, el in enumerate(row):
-                self._max_widths[i] = max(get_text_length(el), self._max_widths[i])
+                self._max_widths[i] = max(
+                    get_text_length(el), self._max_widths[i]
+                )

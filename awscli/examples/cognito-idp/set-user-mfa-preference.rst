@@ -1,8 +1,12 @@
 **To set user MFA settings**
 
-This example modifies the MFA delivery options. It changes the MFA delivery medium to SMS.
+The following ``set-user-mfa-preference`` example modifies the MFA delivery options. It changes the MFA delivery medium to SMS. ::
 
-Command::
+    aws cognito-idp set-user-mfa-preference \
+        --access-token "eyJra12345EXAMPLE" \
+        --software-token-mfa-settings Enabled=true,PreferredMfa=true \
+        --sms-mfa-settings Enabled=false,PreferredMfa=false
 
-  aws cognito-idp set-user-mfa-preference --access-token ACCESS_TOKEN --mfa-options DeliveryMedium="SMS",AttributeName="phone_number"
+This command produces no output.
 
+For more information, see `Adding MFA to a user pool <https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-mfa.html>`__ in the *Amazon Cognito Developer Guide*.

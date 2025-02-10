@@ -1,6 +1,6 @@
 **Example 1: To create a Bitbucket repository association**
 
-The following ``associate-repository`` example creates a respository association using an existing Bitbucket repository. ::
+The following ``associate-repository`` example creates a repository association using an existing Bitbucket repository. ::
 
     aws codeguru-reviewer associate-repository \
         --repository 'Bitbucket={Owner=sample-owner, Name=mySampleRepo, ConnectionArn=arn:aws:codestar-connections:us-west-2:123456789012:connection/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 }'
@@ -26,7 +26,7 @@ For more information, see `Create a Bitbucket repository association in Amazon C
 
 **Example 2: To create a GitHub Enterprise repository association**
 
-The following ``associate-repository`` example creates a respository association using an existing GitHub Enterprise repository. ::
+The following ``associate-repository`` example creates a repository association using an existing GitHub Enterprise repository. ::
 
     aws codeguru-reviewer associate-repository \
         --repository 'GitHubEnterpriseServer={Owner=sample-owner, Name=mySampleRepo, ConnectionArn=arn:aws:codestar-connections:us-west-2:123456789012:connection/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 }'
@@ -52,7 +52,7 @@ For more information, see `Create a GitHub Enterprise Server repository associat
 
 **Example 3: To create an AWS CodeCommit repository association**
 
-The following ``associate-repository`` example creates a respository association using an existing AWS CodeCommit repository. ::
+The following ``associate-repository`` example creates a repository association using an existing AWS CodeCommit repository. ::
 
     aws codeguru-reviewer associate-repository \
         --repository CodeCommit={Name=mySampleRepo}

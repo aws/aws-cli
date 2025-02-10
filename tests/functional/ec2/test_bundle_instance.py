@@ -14,11 +14,9 @@
 import base64
 import datetime
 
-from six.moves import cStringIO
-
 import awscli.customizations.ec2.bundleinstance
-from awscli.compat import six
 from awscli.testutils import mock, BaseAWSCommandParamsTest
+from awscli.compat import StringIO
 
 
 class TestBundleInstance(BaseAWSCommandParamsTest):
@@ -69,7 +67,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
 
     def test_policy_provided(self):
         policy = '{"notarealpolicy":true}'
-        base64policy = base64.encodebytes(six.b(policy)).strip().decode('utf-8')
+        base64policy = base64.encodebytes(policy.encode('latin-1')).strip().decode('utf-8')
         policy_signature = 'a5SmoLOxoM0MHpOdC25nE7KIafg='
         args = ' --instance-id i-12345678 --owner-akid AKIAIOSFODNN7EXAMPLE'
         args += ' --owner-sak wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
@@ -88,7 +86,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(args_list, result)
 
     def test_both(self):
-        captured = cStringIO()
+        captured = StringIO()
         json = """{"S3":{"Bucket":"foobar","Prefix":"fiebaz"}}"""
         args = ' --instance-id i-12345678 --owner-aki blah --owner-sak blah --storage %s' % json
         args_list = (self.prefix + args).split()

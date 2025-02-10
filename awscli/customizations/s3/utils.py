@@ -474,12 +474,14 @@ class RequestParamsMapper(object):
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_request_payer_param(request_params, cli_params)
+        cls._set_checksum_algorithm_param(request_params, cli_params)
 
     @classmethod
     def map_get_object_params(cls, request_params, cli_params):
         """Map CLI params to GetObject request params"""
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_request_payer_param(request_params, cli_params)
+        cls._set_checksum_mode_param(request_params, cli_params)
 
     @classmethod
     def map_copy_object_params(cls, request_params, cli_params):
@@ -492,6 +494,7 @@ class RequestParamsMapper(object):
         cls._set_sse_c_and_copy_source_request_params(
             request_params, cli_params)
         cls._set_request_payer_param(request_params, cli_params)
+        cls._set_checksum_algorithm_param(request_params, cli_params)
 
     @classmethod
     def map_head_object_params(cls, request_params, cli_params):
@@ -533,6 +536,16 @@ class RequestParamsMapper(object):
     def _set_request_payer_param(cls, request_params, cli_params):
         if cli_params.get('request_payer'):
             request_params['RequestPayer'] = cli_params['request_payer']
+
+    @classmethod
+    def _set_checksum_mode_param(cls, request_params, cli_params):
+        if cli_params.get('checksum_mode'):
+            request_params['ChecksumMode'] = cli_params['checksum_mode']
+
+    @classmethod
+    def _set_checksum_algorithm_param(cls, request_params, cli_params):
+        if cli_params.get('checksum_algorithm'):
+            request_params['ChecksumAlgorithm'] = cli_params['checksum_algorithm']
 
     @classmethod
     def _set_general_object_params(cls, request_params, cli_params):
@@ -796,3 +809,114 @@ class NonSeekableStream(object):
             return self._fileobj.read()
         else:
             return self._fileobj.read(amt)
+
+
+class S3PathResolver:
+    _S3_ACCESSPOINT_ARN_TO_ACCOUNT_NAME_REGEX = re.compile(
+        r'^arn:aws.*:s3:[a-z0-9\-]+:(?P<account>[0-9]{12}):accesspoint[:/]'
+        r'(?P<name>[a-z0-9\-]{3,50})$'
+    )
+    _S3_OUTPOST_ACCESSPOINT_ARN_TO_ACCOUNT_REGEX = re.compile(
+        r'^arn:aws.*:s3-outposts:[a-z0-9\-]+:(?P<account>[0-9]{12}):outpost/'
+        r'op-[a-zA-Z0-9]+/accesspoint[:/][a-z0-9\-]{3,50}$'
+    )
+    _S3_MRAP_ARN_TO_ACCOUNT_ALIAS_REGEX = re.compile(
+        r'^arn:aws:s3::(?P<account>[0-9]{12}):accesspoint[:/]'
+        r'(?P<alias>[a-zA-Z0-9]+\.mrap)$'
+    )
+
+    def __init__(self, s3control_client, sts_client):
+        self._s3control_client = s3control_client
+        self._sts_client = sts_client
+
+    @classmethod
+    def has_underlying_s3_path(self, path):
+        bucket, _ = split_s3_bucket_key(path)
+        return bool(
+            self._S3_ACCESSPOINT_ARN_TO_ACCOUNT_NAME_REGEX.match(bucket) or
+            self._S3_OUTPOST_ACCESSPOINT_ARN_TO_ACCOUNT_REGEX.match(bucket) or
+            self._S3_MRAP_ARN_TO_ACCOUNT_ALIAS_REGEX.match(bucket) or
+            bucket.endswith('-s3alias') or bucket.endswith('--op-s3'))
+
+    @classmethod
+    def from_session(cls, session, region, verify_ssl):
+        s3control_client = session.create_client(
+            's3control',
+            region_name=region,
+            verify=verify_ssl,
+        )
+        sts_client = session.create_client(
+            'sts',
+            verify=verify_ssl,
+        )
+        return cls(s3control_client, sts_client)
+
+    def resolve_underlying_s3_paths(self, path):
+        bucket, key = split_s3_bucket_key(path)
+        match = self._S3_ACCESSPOINT_ARN_TO_ACCOUNT_NAME_REGEX.match(bucket)
+        if match:
+            return self._resolve_accesspoint_arn(
+                match.group('account'), match.group('name'), key
+            )
+        match = self._S3_OUTPOST_ACCESSPOINT_ARN_TO_ACCOUNT_REGEX.match(bucket)
+        if match:
+            return self._resolve_accesspoint_arn(
+                match.group('account'), bucket, key
+            )
+        match = self._S3_MRAP_ARN_TO_ACCOUNT_ALIAS_REGEX.match(bucket)
+        if match:
+            return self._resolve_mrap_alias(
+                match.group('account'), match.group('alias'), key
+            )
+        if bucket.endswith('-s3alias'):
+            return self._resolve_accesspoint_alias(bucket, key)
+        if bucket.endswith('--op-s3'):
+            raise ValueError(
+                "Can't resolve underlying bucket name of s3 outposts "
+                "access point alias. Use arn instead to resolve the "
+                "bucket name and validate the mv command."
+            )
+        return [path]
+
+    def _resolve_accesspoint_arn(self, account, name, key):
+        bucket = self._get_access_point_bucket(account, name)
+        return [f"s3://{bucket}/{key}"]
+
+    def _resolve_accesspoint_alias(self, alias, key):
+        account = self._get_account_id()
+        bucket = self._get_access_point_bucket(account, alias)
+        return [f"s3://{bucket}/{key}"]
+
+    def _resolve_mrap_alias(self, account, alias, key):
+        buckets = self._get_mrap_buckets(account, alias)
+        return [f"s3://{bucket}/{key}" for bucket in buckets]
+
+    def _get_access_point_bucket(self, account, name):
+        return self._s3control_client.get_access_point(
+            AccountId=account,
+            Name=name
+        )['Bucket']
+
+    def _get_account_id(self):
+        return self._sts_client.get_caller_identity()['Account']
+
+    def _get_mrap_buckets(self, account, alias):
+        next_token = None
+        while True:
+            args = {"AccountId": account}
+            if next_token:
+                args['NextToken'] = next_token
+            response = self._s3control_client.list_multi_region_access_points(
+                **args
+            )
+            for access_point in response['AccessPoints']:
+                if access_point['Alias'] == alias:
+                    return [
+                        region["Bucket"] for region in access_point["Regions"]
+                    ]
+            next_token = response.get('NextToken')
+            if not next_token:
+                raise ValueError(
+                    "Couldn't find multi-region access point "
+                    f"with alias {alias} in account {account}"
+                )

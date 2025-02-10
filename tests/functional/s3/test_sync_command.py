@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.compat import six
-from awscli.testutils import mock
+from awscli.testutils import mock, cd
+from awscli.compat import BytesIO
 from tests.functional.s3 import BaseS3TransferCommandTest
 
 
@@ -65,7 +65,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                 {"Key": key, "Size": 3,
                  "LastModified": "2014-01-09T20:45:49.000Z"}]},
             {'ETag': '"c8afdb36c52cf4727836669019e69222-"',
-             'Body': six.BytesIO(b'foo')}
+             'Body': BytesIO(b'foo')}
         ]
         self.run_cmd(cmdline, expected_rc=0)
         # Make sure the file now exists.
@@ -83,7 +83,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                 ],
                 'CommonPrefixes': []
             },
-            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+            {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
         ]
         cmdline = '%s s3://bucket/foo %s --force-glacier-transfer' % (
             self.prefix, self.files.rootdir)
@@ -287,3 +287,144 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                 self.get_object_request(accesspoint_arn, 'mykey')
             ]
         )
+
+    def test_upload_with_checksum_algorithm_sha1(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm SHA1'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'SHA1')
+
+    def test_copy_with_checksum_algorithm_update_sha1(self):
+        cmdline = f'{self.prefix} s3://src-bucket/ s3://dest-bucket/ --checksum-algorithm SHA1'
+        self.parsed_responses = [
+            # Response for ListObjects on source bucket
+            {
+                'Contents': [
+                    {
+                        'Key': 'mykey',
+                        'LastModified': '00:00:00Z',
+                        'Size': 100,
+                        'ChecksumAlgorithm': 'SHA1'
+                    }
+                ],
+                'CommonPrefixes': []
+            },
+            # Response for ListObjects on destination bucket
+            self.list_objects_response([]),
+            # Response for CopyObject
+            {
+                'ChecksumSHA1': 'sha1-checksum'
+            }
+        ]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_operations_called(
+            [
+                self.list_objects_request('src-bucket'),
+                self.list_objects_request('dest-bucket'),
+                (
+                    'CopyObject', {
+                        'CopySource': {
+                            'Bucket': 'src-bucket',
+                            'Key': 'mykey'
+                        },
+                        'Bucket': 'dest-bucket',
+                        'Key': 'mykey',
+                        'ChecksumAlgorithm': 'SHA1'
+                    }
+                )
+            ]
+        )
+
+    def test_upload_with_checksum_algorithm_sha256(self):
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm SHA256'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'SHA256')
+
+    def test_download_with_checksum_mode_sha1(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumSHA1': 'checksum',
+                'Body': BytesIO(b'foo')
+            }
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items())
+
+    def test_download_with_checksum_mode_sha256(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumSHA256': 'checksum',
+                'Body': BytesIO(b'foo')
+            }
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items())
+
+    def test_download_with_checksum_mode_crc64nvme(self):
+        self.parsed_responses = [
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with a checksum algorithm specified
+            {
+                'ETag': 'foo-1',
+                'ChecksumCRC64NVME': 'checksum',
+                'Body': BytesIO(b'foo')
+            }
+        ]
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items())
+
+
+class TestSyncCommandWithS3Express(BaseS3TransferCommandTest):
+
+    prefix = 's3 sync '
+
+    def test_incompatible_with_sync_upload(self):
+        cmdline = '%s %s s3://testdirectorybucket--usw2-az1--x-s3/' % (self.prefix, self.files.rootdir)
+        stderr = self.run_cmd(cmdline, expected_rc=255)[1]
+        self.assertIn('Cannot use sync command with a directory bucket.', stderr)
+
+    def test_incompatible_with_sync_download(self):
+        cmdline = '%s s3://testdirectorybucket--usw2-az1--x-s3/ %s' % (self.prefix, self.files.rootdir)
+        stderr = self.run_cmd(cmdline, expected_rc=255)[1]
+        self.assertIn('Cannot use sync command with a directory bucket.', stderr)
+
+    def test_incompatible_with_sync_copy(self):
+        cmdline = '%s s3://bucket/ s3://testdirectorybucket--usw2-az1--x-s3/' % self.prefix
+        stderr = self.run_cmd(cmdline, expected_rc=255)[1]
+        self.assertIn('Cannot use sync command with a directory bucket.', stderr)
+
+    def test_incompatible_with_sync_with_delete(self):
+        cmdline = '%s s3://bucket/ s3://testdirectorybucket--usw2-az1--x-s3/ --delete' % self.prefix
+        stderr = self.run_cmd(cmdline, expected_rc=255)[1]
+        self.assertIn('Cannot use sync command with a directory bucket.', stderr)
+
+    def test_compatible_with_sync_with_local_directory_like_directory_bucket(self):
+        self.parsed_responses = [
+            {'Contents': []}
+        ]
+
+        cmdline = '%s s3://bucket/ testdirectorybucket--usw2-az1--x-s3/' % self.prefix
+        with cd(self.files.rootdir):
+            _, stderr, _ = self.run_cmd(cmdline)
+
+        # Just asserting that command validated and made an API call
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')

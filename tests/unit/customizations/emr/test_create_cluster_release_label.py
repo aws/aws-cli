@@ -455,6 +455,31 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result = self.run_cmd(cmd, 255)
         self.assertEqual(expected_error_msg, result[1])
 
+    def test_unhealthy_node_replacement(self):
+        cmd = DEFAULT_CMD + '--unhealthy-node-replacement'
+        result = copy.deepcopy(DEFAULT_RESULT)
+        instances = copy.deepcopy(DEFAULT_INSTANCES)
+        instances['UnhealthyNodeReplacement'] = True
+        result['Instances'] = instances
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_no_unhealthy_node_replacement(self):
+        cmd = DEFAULT_CMD + '--no-unhealthy-node-replacement'
+        result = copy.deepcopy(DEFAULT_RESULT)
+        instances = copy.deepcopy(DEFAULT_INSTANCES)
+        instances['UnhealthyNodeReplacement'] = False
+        result['Instances'] = instances
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_unhealthy_node_replacement_and_no_unhealthy_node_replacement(self):
+        cmd = DEFAULT_CMD + \
+            '--unhealthy-node-replacement --no-unhealthy-node-replacement'
+        expected_error_msg = (
+            '\naws: error: cannot use both --unhealthy-node-replacement'
+            ' and --no-unhealthy-node-replacement options together.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEqual(expected_error_msg, result[1])
+
     def test_visible_to_all_users(self):
         cmd = DEFAULT_CMD + '--visible-to-all-users'
         self.assert_params_for_cmd(cmd, DEFAULT_RESULT)
@@ -1101,7 +1126,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             ' configuring an AutoScaling policy for an instance group.\n')
         result = self.run_cmd(cmd, 255)
         self.assertEqual(expected_error_msg, result[1])
-        
+
     def test_scale_down_behavior(self):
         cmd = (self.prefix + '--release-label emr-4.0.0 --scale-down-behavior TERMINATE_AT_INSTANCE_HOUR '
                              '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
@@ -1384,6 +1409,38 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_create_cluster_with_ebs_root_volume_iops(self):
+        cmd = (self.prefix + '--release-label emr-6.15.0 --security-configuration MySecurityConfig '+
+               ' --ebs-root-volume-iops 3000' +
+               ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': DEFAULT_INSTANCES,
+                'ReleaseLabel': 'emr-6.15.0',
+                'VisibleToAllUsers': True,
+                'Tags': [],
+                'EbsRootVolumeIops': 3000,
+                'SecurityConfiguration': 'MySecurityConfig'
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_with_ebs_root_volume_throughput(self):
+        cmd = (self.prefix + '--release-label emr-6.15.0 --security-configuration MySecurityConfig '+
+               ' --ebs-root-volume-throughput 125' +
+               ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+             {
+                 'Name': DEFAULT_CLUSTER_NAME,
+                 'Instances': DEFAULT_INSTANCES,
+                 'ReleaseLabel': 'emr-6.15.0',
+                 'VisibleToAllUsers': True,
+                 'Tags': [],
+                 'EbsRootVolumeThroughput': 125,
+                 'SecurityConfiguration': 'MySecurityConfig'
+             }
+        self.assert_params_for_cmd(cmd, result)
+
     def test_create_cluster_with_repo_upgrade_on_boot(self):
         cmd = (self.prefix + '--release-label emr-4.7.2 --security-configuration MySecurityConfig '+
                ' --repo-upgrade-on-boot NONE' +
@@ -1433,7 +1490,33 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                        'MaximumCapacityUnits': 4,
                        'UnitType': 'Instances',
                        'MaximumCoreCapacityUnits': 1
-                   } 
+                   }
+                },
+                'SecurityConfiguration': 'MySecurityConfig'
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_with_managed_scaling_policy_customer_knobs(self):
+        cmd = (self.prefix + '--release-label emr-5.28.0 --security-configuration MySecurityConfig ' +
+               '--managed-scaling-policy ComputeLimits={MinimumCapacityUnits=2,MaximumCapacityUnits=4,' +
+               'UnitType=Instances,MaximumCoreCapacityUnits=1},ScalingStrategy=ADVANCED,' +
+               'UtilizationPerformanceIndex=1 --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': DEFAULT_INSTANCES,
+                'ReleaseLabel': 'emr-5.28.0',
+                'VisibleToAllUsers': True,
+                'Tags': [],
+                'ManagedScalingPolicy': {
+                   'ComputeLimits': {
+                       'MinimumCapacityUnits': 2,
+                       'MaximumCapacityUnits': 4,
+                       'UnitType': 'Instances',
+                       'MaximumCoreCapacityUnits': 1
+                   },
+                   'ScalingStrategy': 'ADVANCED',
+                   'UtilizationPerformanceIndex': 1,
                 },
                 'SecurityConfiguration': 'MySecurityConfig'
             }
@@ -1495,10 +1578,30 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_instance_fleets_with_resize_allocation_strategy_spot_od(self):
+        cmd = (self.prefix + '--release-label emr-4.2.0 --instance-fleets ' +
+               CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_RESIZE_ALLOCATION_STRATEGY_SPOT_AND_OD +
+               ' --ec2-attributes AvailabilityZones=[us-east-1a,us-east-1b]')
+        instance_fleets = CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_RESIZE_ALLOCATION_STRATEGY_SPOT_AND_OD
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceFleets':
+                                instance_fleets,
+                              'Placement': {'AvailabilityZones': ['us-east-1a','us-east-1b']}
+                            },
+                'ReleaseLabel': 'emr-4.2.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
     def test_create_cluster_with_os_release_label(self):
         test_os_release_label = '2.0.20220406.1'
-        cmd = (self.prefix + '--release-label emr-6.6.0' 
-                + ' --os-release-label ' + test_os_release_label 
+        cmd = (self.prefix + '--release-label emr-6.6.0'
+                + ' --os-release-label ' + test_os_release_label
                 + ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG)
         result = \
              {
@@ -1522,6 +1625,25 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
                               'TerminationProtected': False,
                               'InstanceFleets':
                                 CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_SPOT_ALLOCATION_STRATEGY,
+                              'Placement': {'AvailabilityZones': ['us-east-1a','us-east-1b']}
+                            },
+                'ReleaseLabel': 'emr-4.2.0',
+                'VisibleToAllUsers': True,
+                'Tags': []
+            }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_instance_fleets_with_prioritized_allocation_strategy_spot_ondemand(self):
+        cmd = (self.prefix + '--release-label emr-4.2.0 --instance-fleets ' +
+               CONSTANTS_FLEET.INSTANCE_FLEETS_WITH_PRIORITIZED_ALLOCATION_STRATEGY_SPOT_AND_OD +
+               ' --ec2-attributes AvailabilityZones=[us-east-1a,us-east-1b]')
+        result = \
+            {
+                'Name': DEFAULT_CLUSTER_NAME,
+                'Instances': {'KeepJobFlowAliveWhenNoSteps': True,
+                              'TerminationProtected': False,
+                              'InstanceFleets':
+                                CONSTANTS_FLEET.RES_INSTANCE_FLEETS_WITH_PRIORITIZED_ALLOCATION_STRATEGY_SPOT_AND_OD,
                               'Placement': {'AvailabilityZones': ['us-east-1a','us-east-1b']}
                             },
                 'ReleaseLabel': 'emr-4.2.0',

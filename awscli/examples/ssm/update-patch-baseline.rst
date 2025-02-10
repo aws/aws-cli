@@ -53,7 +53,7 @@ Output::
 
 **Example 2: To rename a patch baseline**
 
-The following ``update-patch-baseline`` example renames theh specified patch baseline. ::
+The following ``update-patch-baseline`` example renames the specified patch baseline. ::
 
     aws ssm update-patch-baseline \
         --baseline-id "pb-0713accee01234567" \

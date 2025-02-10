@@ -1,6 +1,6 @@
 **To delete a task definition**
 
-The following ``deletee-task-definitions`` example deletes an INACTIVE task definition. ::
+The following ``delete-task-definitions`` example deletes an INACTIVE task definition. ::
 
     aws ecs delete-task-definitions \
         --task-definition curltest:1

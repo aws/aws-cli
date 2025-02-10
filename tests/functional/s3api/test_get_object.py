@@ -12,10 +12,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.compat import StringIO
 import os
 import re
-
-from awscli.compat import six
 
 import awscli.clidriver
 
@@ -26,7 +25,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
 
     def setUp(self):
         super(TestGetObject, self).setUp()
-        self.parsed_response = {'Body': six.StringIO()}
+        self.parsed_response = {'Body': StringIO()}
 
     def remove_file_if_exists(self, filename):
         if os.path.isfile(filename):
@@ -39,6 +38,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' outfile'
         self.addCleanup(self.remove_file_if_exists, 'outfile')
         self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket',
+                                              'ChecksumMode': 'ENABLED',
                                               'Key': 'mykey'})
 
     def test_range(self):
@@ -49,6 +49,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' outfile'
         self.addCleanup(self.remove_file_if_exists, 'outfile')
         self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket',
+                                              'ChecksumMode': 'ENABLED',
                                               'Key': 'mykey',
                                               'Range': 'bytes=0-499'})
 
@@ -62,7 +63,9 @@ class TestGetObject(BaseAWSCommandParamsTest):
         self.addCleanup(self.remove_file_if_exists, 'outfile')
         self.assert_params_for_cmd(
             cmdline, {
-                'Bucket': 'mybucket', 'Key': 'mykey',
+                'Bucket': 'mybucket',
+                'ChecksumMode': 'ENABLED',
+                'Key': 'mykey',
                 'ResponseCacheControl': 'No-cache',
                 'ResponseContentEncoding': 'x-gzip'
             }
@@ -84,7 +87,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' outfile'
         self.addCleanup(self.remove_file_if_exists, 'outfile')
         self.assert_params_for_cmd(
-            cmdline, {'Bucket': 'mybucket', 'Key': 'mykey'})
+            cmdline, {'Bucket': 'mybucket', 'ChecksumMode': 'ENABLED', 'Key': 'mykey'})
 
 
 if __name__ == "__main__":

@@ -39,11 +39,41 @@ from awscli.customizations.s3.utils import (
     ProvideUploadContentTypeSubscriber, ProvideCopyContentTypeSubscriber,
     ProvideLastModifiedTimeSubscriber, DirectoryCreatorSubscriber,
     DeleteSourceObjectSubscriber, DeleteSourceFileSubscriber,
-    DeleteCopySourceObjectSubscriber, NonSeekableStream, CreateDirectoryError)
+    DeleteCopySourceObjectSubscriber, NonSeekableStream, CreateDirectoryError,
+    S3PathResolver)
 from awscli.customizations.s3.results import WarningResult
 from tests.unit.customizations.s3 import FakeTransferFuture
 from tests.unit.customizations.s3 import FakeTransferFutureMeta
 from tests.unit.customizations.s3 import FakeTransferFutureCallArgs
+
+
+@pytest.fixture
+def s3control_client():
+    client = mock.MagicMock()
+    client.get_access_point.return_value = {
+        "Bucket": "mybucket"
+    }
+    client.list_multi_region_access_points.return_value = {
+        "AccessPoints": [{
+            "Alias": "myalias.mrap",
+            "Regions": [{"Bucket": "mybucket"}]
+        }]
+    }
+    return client
+
+
+@pytest.fixture
+def sts_client():
+    client = mock.MagicMock()
+    client.get_caller_identity.return_value = {
+        "Account": "123456789012"
+    }
+    return client
+
+
+@pytest.fixture
+def s3_path_resolver(s3control_client, sts_client):
+    return S3PathResolver(s3control_client, sts_client)
 
 
 @pytest.mark.parametrize(
@@ -635,6 +665,56 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
              'SSECustomerKey': 'my-sse-c-key'})
 
 
+class TestRequestParamsMapperChecksumAlgorithm:
+    @pytest.fixture
+    def cli_params(self):
+        return {'checksum_algorithm': 'CRC32'}
+
+    @pytest.fixture
+    def cli_params_no_algorithm(self):
+        return {}
+
+    def test_put_object(self, cli_params):
+        request_params = {}
+        RequestParamsMapper.map_put_object_params(request_params, cli_params)
+        assert request_params == {'ChecksumAlgorithm': 'CRC32'}
+
+    def test_put_object_no_checksum(self, cli_params_no_algorithm):
+        request_params = {}
+        RequestParamsMapper.map_put_object_params(request_params, cli_params_no_algorithm)
+        assert 'ChecksumAlgorithm' not in request_params
+
+    def test_copy_object(self, cli_params):
+        request_params = {}
+        RequestParamsMapper.map_copy_object_params(request_params, cli_params)
+        assert request_params == {'ChecksumAlgorithm': 'CRC32'}
+
+    def test_copy_object_no_checksum(self, cli_params_no_algorithm):
+        request_params = {}
+        RequestParamsMapper.map_put_object_params(request_params, cli_params_no_algorithm)
+        assert 'ChecksumAlgorithm' not in request_params
+
+
+class TestRequestParamsMapperChecksumMode:
+    @pytest.fixture
+    def cli_params(self):
+        return {'checksum_mode': 'ENABLED'}
+
+    @pytest.fixture
+    def cli_params_no_checksum(self):
+        return {}
+
+    def test_get_object(self, cli_params):
+        request_params = {}
+        RequestParamsMapper.map_get_object_params(request_params, cli_params)
+        assert request_params == {'ChecksumMode': 'ENABLED'}
+
+    def test_get_object_no_checksums(self, cli_params_no_checksum):
+        request_params = {}
+        RequestParamsMapper.map_get_object_params(request_params, cli_params_no_checksum)
+        assert 'ChecksumMode' not in request_params
+
+
 class TestRequestParamsMapperRequestPayer(unittest.TestCase):
     def setUp(self):
         self.cli_params = {'request_payer': 'requester'}
@@ -976,3 +1056,141 @@ class TestNonSeekableStream(unittest.TestCase):
     def test_can_specify_amount_for_nonseekable_stream(self):
         nonseekable_fileobj = NonSeekableStream(StringIO('foobar'))
         self.assertEqual(nonseekable_fileobj.read(3), 'foo')
+
+
+class TestS3PathResolver:
+    _BASE_ACCESSPOINT_ARN = (
+        "s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint")
+    _BASE_OUTPOST_ACCESSPOINT_ARN = (
+        "s3://arn:aws:s3-outposts:us-east-1:123456789012:outpost"
+        "/op-foo/accesspoint/myaccesspoint")
+    _BASE_ACCESSPOINT_ALIAS = "s3://myaccesspoint-foobar12345-s3alias"
+    _BASE_OUTPOST_ACCESSPOINT_ALIAS = "s3://myaccesspoint-foobar12345--op-s3"
+    _BASE_MRAP_ARN = "s3://arn:aws:s3::123456789012:accesspoint/myalias.mrap"
+
+    @pytest.mark.parametrize(
+        "path,resolved",
+        [(_BASE_ACCESSPOINT_ARN,"s3://mybucket/"),
+         (f"{_BASE_ACCESSPOINT_ARN}/","s3://mybucket/"),
+         (f"{_BASE_ACCESSPOINT_ARN}/mykey","s3://mybucket/mykey"),
+         (f"{_BASE_ACCESSPOINT_ARN}/myprefix/","s3://mybucket/myprefix/"),
+         (f"{_BASE_ACCESSPOINT_ARN}/myprefix/mykey",
+          "s3://mybucket/myprefix/mykey")]
+    )
+    def test_resolves_accesspoint_arn(
+        self, path, resolved, s3_path_resolver, s3control_client
+    ):
+        resolved_paths = s3_path_resolver.resolve_underlying_s3_paths(path)
+        assert resolved_paths == [resolved]
+        s3control_client.get_access_point.assert_called_with(
+            AccountId="123456789012",
+            Name="myaccesspoint"
+        )
+
+    @pytest.mark.parametrize(
+        "path,resolved",
+        [(_BASE_OUTPOST_ACCESSPOINT_ARN,"s3://mybucket/"),
+         (f"{_BASE_OUTPOST_ACCESSPOINT_ARN}/","s3://mybucket/"),
+         (f"{_BASE_OUTPOST_ACCESSPOINT_ARN}/mykey","s3://mybucket/mykey"),
+         (f"{_BASE_OUTPOST_ACCESSPOINT_ARN}/myprefix/",
+          "s3://mybucket/myprefix/"),
+         (f"{_BASE_OUTPOST_ACCESSPOINT_ARN}/myprefix/mykey",
+          "s3://mybucket/myprefix/mykey")]
+    )
+    def test_resolves_outpost_accesspoint_arn(
+        self, path, resolved, s3_path_resolver, s3control_client
+    ):
+        resolved_paths = s3_path_resolver.resolve_underlying_s3_paths(path)
+        assert resolved_paths == [resolved]
+        s3control_client.get_access_point.assert_called_with(
+            AccountId="123456789012",
+            Name=("arn:aws:s3-outposts:us-east-1:123456789012:outpost"
+                  "/op-foo/accesspoint/myaccesspoint")
+        )
+
+    @pytest.mark.parametrize(
+        "path,resolved",
+        [(_BASE_ACCESSPOINT_ALIAS,"s3://mybucket/"),
+         (f"{_BASE_ACCESSPOINT_ALIAS}/","s3://mybucket/"),
+         (f"{_BASE_ACCESSPOINT_ALIAS}/mykey","s3://mybucket/mykey"),
+         (f"{_BASE_ACCESSPOINT_ALIAS}/myprefix/","s3://mybucket/myprefix/"),
+         (f"{_BASE_ACCESSPOINT_ALIAS}/myprefix/mykey",
+          "s3://mybucket/myprefix/mykey")]
+    )
+    def test_resolves_accesspoint_alias(
+        self, path, resolved, s3_path_resolver, s3control_client, sts_client
+    ):
+        resolved_paths = s3_path_resolver.resolve_underlying_s3_paths(path)
+        assert resolved_paths == [resolved]
+        sts_client.get_caller_identity.assert_called_once()
+        s3control_client.get_access_point.assert_called_with(
+            AccountId="123456789012",
+            Name="myaccesspoint-foobar12345-s3alias"
+        )
+
+    @pytest.mark.parametrize(
+        "path",
+        [(_BASE_OUTPOST_ACCESSPOINT_ALIAS),
+         (f"{_BASE_OUTPOST_ACCESSPOINT_ALIAS}/"),
+         (f"{_BASE_OUTPOST_ACCESSPOINT_ALIAS}/mykey"),
+         (f"{_BASE_OUTPOST_ACCESSPOINT_ALIAS}/myprefix/"),
+         (f"{_BASE_OUTPOST_ACCESSPOINT_ALIAS}/myprefix/mykey")]
+    )
+    def test_outpost_accesspoint_alias_raises_exception(
+        self, path, s3_path_resolver
+    ):
+        with pytest.raises(ValueError) as e:
+            s3_path_resolver.resolve_underlying_s3_paths(path)
+        assert "Can't resolve underlying bucket name" in str(e.value)
+
+    @pytest.mark.parametrize(
+        "path,resolved",
+        [(_BASE_MRAP_ARN,"s3://mybucket/"),
+         (f"{_BASE_MRAP_ARN}/","s3://mybucket/"),
+         (f"{_BASE_MRAP_ARN}/mykey","s3://mybucket/mykey"),
+         (f"{_BASE_MRAP_ARN}/myprefix/","s3://mybucket/myprefix/"),
+         (f"{_BASE_MRAP_ARN}/myprefix/mykey","s3://mybucket/myprefix/mykey")]
+    )
+    def test_resolves_mrap_arn(
+        self, path, resolved, s3_path_resolver, s3control_client
+    ):
+        resolved_paths = s3_path_resolver.resolve_underlying_s3_paths(path)
+        assert resolved_paths == [resolved]
+        s3control_client.list_multi_region_access_points.assert_called_with(
+            AccountId="123456789012"
+        )
+
+    @pytest.mark.parametrize(
+            "path,resolved,name",
+            [(f"{_BASE_ACCESSPOINT_ARN}-s3alias/mykey","s3://mybucket/mykey",
+              "myaccesspoint-s3alias"),
+             (f"{_BASE_OUTPOST_ACCESSPOINT_ARN}--op-s3/mykey",
+              "s3://mybucket/mykey",
+              f"{_BASE_OUTPOST_ACCESSPOINT_ARN[5:]}--op-s3")]
+    )
+    def test_alias_suffixes_dont_match_accesspoint_arns(
+        self, path, resolved, name, s3_path_resolver, s3control_client
+    ):
+        resolved_paths = s3_path_resolver.resolve_underlying_s3_paths(path)
+        assert resolved_paths == [resolved]
+        s3control_client.get_access_point.assert_called_with(
+            AccountId="123456789012",
+            Name=name
+        )
+
+    @pytest.mark.parametrize(
+            "path,expected_has_underlying_s3_path",
+            [(_BASE_ACCESSPOINT_ARN,True),
+             (f"{_BASE_ACCESSPOINT_ARN}/mykey",True),
+             (f"{_BASE_ACCESSPOINT_ARN}/myprefix/mykey",True),
+             (_BASE_ACCESSPOINT_ALIAS,True),
+             (_BASE_OUTPOST_ACCESSPOINT_ARN,True),
+             (_BASE_OUTPOST_ACCESSPOINT_ALIAS,True),
+             (_BASE_MRAP_ARN,True),
+             ("s3://mybucket/",False),
+             ("s3://mybucket/mykey",False),
+             ("s3://mybucket/myprefix/mykey",False)]
+    )
+    def test_has_underlying_s3_path(self, path, expected_has_underlying_s3_path):
+        has_underlying_s3_path = S3PathResolver.has_underlying_s3_path(path)
+        assert has_underlying_s3_path == expected_has_underlying_s3_path

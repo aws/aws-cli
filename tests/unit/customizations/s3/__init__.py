@@ -12,8 +12,6 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.compat import six
-
 
 class FakeTransferFuture(object):
     def __init__(self, result=None, exception=None, meta=None):
@@ -56,8 +54,8 @@ def make_loc_files(file_creator, size=None):
 
     filename2 = file_creator.create_file(
         os.path.join('some_directory', 'another_directory', 'text2.txt'), body)
-    filename1 = six.text_type(filename1)
-    filename2 = six.text_type(filename2)
+    filename1 = str(filename1)
+    filename2 = str(filename2)
     return [filename1, filename2, os.path.dirname(filename2),
             os.path.dirname(filename1)]
 

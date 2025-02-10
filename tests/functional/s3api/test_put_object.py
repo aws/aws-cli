@@ -16,7 +16,6 @@ import re
 import copy
 
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
-from awscli.compat import six
 
 import awscli.clidriver
 

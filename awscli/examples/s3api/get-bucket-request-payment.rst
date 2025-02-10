@@ -3,7 +3,7 @@
 The following ``get-bucket-request-payment`` example retrieves the requester pays configuration for the specified bucket. ::
 
     aws s3api get-bucket-request-payment \
-        --bucket my-bucket
+        --bucket amzn-s3-demo-bucket
 
 Output::
 

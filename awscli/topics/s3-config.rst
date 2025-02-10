@@ -171,7 +171,9 @@ file is divided into chunks.  This configuration option specifies what
 the chunk size (also referred to as the part size) should be.  This
 value can specified using the same semantics as ``multipart_threshold``,
 that is either as the number of bytes as an integer, or using a size
-suffix.
+suffix. If the specified chunk size does not fit within the established
+limits for S3 multipart uploads, the chunk size will be automatically 
+adjusted to a valid value.
 
 
 max_bandwidth

@@ -3,6 +3,7 @@ import os
 import platform
 import subprocess
 import time
+import re
 
 from botocore.utils import parse_timestamp
 
@@ -25,6 +26,7 @@ class TestCodeArtifactLogin(unittest.TestCase):
         self.domain = 'domain'
         self.domain_owner = 'domain-owner'
         self.repository = 'repository'
+        self.endpoint_type = 'ipv4'
         self.auth_token = 'auth-token'
         self.namespace = 'namespace'
         self.nuget_index_url_fmt = '{endpoint}v3/index.json'
@@ -65,7 +67,9 @@ class TestCodeArtifactLogin(unittest.TestCase):
         self.file_creator.remove_all()
 
     def _setup_cmd(self, tool,
-                   include_domain_owner=False, dry_run=False,
+                   include_domain_owner=False,
+                   dry_run=False,
+                   include_endpoint_type=False,
                    include_duration_seconds=False,
                    include_namespace=False):
         package_format = CodeArtifactLogin.TOOL_MAP[tool]['package_format']
@@ -86,6 +90,9 @@ class TestCodeArtifactLogin(unittest.TestCase):
 
         if include_domain_owner:
             cmdline.extend(['--domain-owner', self.domain_owner])
+
+        if include_endpoint_type:
+            cmdline.extend(['--endpoint-type', self.endpoint_type])
 
         if dry_run:
             cmdline.append('--dry-run')
@@ -263,7 +270,8 @@ password: {auth_token}'''
 
     def _assert_operations_called(
         self, package_format, result,
-        include_domain_owner=False, include_duration_seconds=False
+        include_domain_owner=False, include_duration_seconds=False,
+        include_endpoint_type=False
     ):
 
         get_auth_token_kwargs = {
@@ -278,6 +286,9 @@ password: {auth_token}'''
         if include_domain_owner:
             get_auth_token_kwargs['domainOwner'] = self.domain_owner
             get_repo_endpoint_kwargs['domainOwner'] = self.domain_owner
+
+        if include_endpoint_type:
+            get_repo_endpoint_kwargs['endpointType'] = self.endpoint_type
 
         if include_duration_seconds:
             get_auth_token_kwargs['durationSeconds'] = self.duration
@@ -528,6 +539,34 @@ password: {auth_token}'''
         self._assert_dry_run_execution(
             self._get_swift_commands(scope=self.namespace),result.stdout)
 
+    @mock.patch('awscli.customizations.codeartifact.login.is_macos', False)
+    def test_swift_login_with_namespace_with_endpoint_type(self):
+        cmdline = self._setup_cmd(
+            tool='swift', include_namespace=True, include_endpoint_type=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='swift', result=result, include_endpoint_type=True)
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_execution(
+            self._get_swift_commands(scope=self.namespace)
+        )
+        self._assert_netrc_has_expected_content()
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_macos', True)
+    def test_swift_login_with_domain_owner_with_endpoint_type(self):
+        cmdline = self._setup_cmd(
+            tool='swift', include_domain_owner=True, include_endpoint_type=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='swift', result=result, include_endpoint_type=True,
+                                       include_domain_owner=True)
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_execution(
+            self._get_swift_commands(token=self.auth_token)
+        )
+
     def test_nuget_login_without_domain_owner_without_duration_seconds(self):
         cmdline = self._setup_cmd(tool='nuget')
         result = self.cli_runner.run(cmdline)
@@ -578,6 +617,27 @@ password: {auth_token}'''
             package_format='nuget',
             include_domain_owner=True,
             include_duration_seconds=True,
+            result=result
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_execution(
+            self._get_nuget_commands()
+        )
+
+    def test_nuget_login_with_domain_owner_duration_endpoint_type(self):
+        cmdline = self._setup_cmd(
+            tool='nuget',
+            include_domain_owner=True,
+            include_duration_seconds=True,
+            include_endpoint_type=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            include_duration_seconds=True,
+            include_endpoint_type=True,
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
@@ -645,12 +705,43 @@ password: {auth_token}'''
             result.stdout
         )
 
+    def test_nuget_login_with_domain_owner_duration_seconds_with_endpoint_type_dryrun(self):
+        cmdline = self._setup_cmd(
+            tool='nuget', include_domain_owner=True,
+            include_duration_seconds=True,
+            dry_run=True, include_endpoint_type=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='nuget',
+            include_domain_owner=True,
+            include_duration_seconds=True,
+            include_endpoint_type=True,
+            result=result
+        )
+        self._assert_dry_run_execution(
+            self._get_nuget_commands(),
+            result.stdout
+        )
+
     @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
     def test_dotnet_login_without_domain_owner_without_duration_seconds(self):
         cmdline = self._setup_cmd(tool='dotnet')
         result = self.cli_runner.run(cmdline)
         self.assertEqual(result.rc, 0)
         self._assert_operations_called(package_format='nuget', result=result)
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_execution(
+            self._get_dotnet_commands()
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_without_domain_owner_without_duration_seconds_with_endpoint_type(self):
+        cmdline = self._setup_cmd(tool='dotnet', include_endpoint_type=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='nuget', result=result, include_endpoint_type=True)
         self._assert_expiration_printed_to_stdout(result.stdout)
         self._assert_subprocess_execution(
             self._get_dotnet_commands()
@@ -798,6 +889,21 @@ to an 'HTTPS' source."""
         ]]
         self._assert_subprocess_check_output_execution(commands)
 
+    @mock.patch('awscli.customizations.codeartifact.login.is_windows', True)
+    def test_dotnet_login_sources_listed_with_extra_non_list_text_with_endpoint_type(self):
+
+        self.subprocess_check_output_patch.return_value = \
+            self._NUGET_SOURCES_LIST_RESPONSE_WITH_EXTRA_NON_LIST_TEXT
+
+        cmdline = self._setup_cmd(tool='dotnet', include_endpoint_type=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='nuget', result=result, include_endpoint_type=True)
+        commands = [[
+            'dotnet', 'nuget', 'list', 'source', '--format', 'detailed'
+        ]]
+        self._assert_subprocess_check_output_execution(commands)
+
     def test_npm_login_without_domain_owner(self):
         cmdline = self._setup_cmd(tool='npm')
         result = self.cli_runner.run(cmdline)
@@ -844,6 +950,18 @@ to an 'HTTPS' source."""
         self._assert_operations_called(
             package_format='npm', result=result,
             include_domain_owner=True, include_duration_seconds=False
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_execution(self._get_npm_commands())
+
+    def test_npm_login_with_domain_owner_endpoint_type(self):
+        cmdline = self._setup_cmd(tool='npm', include_domain_owner=True, include_endpoint_type=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='npm', result=result,
+            include_domain_owner=True, include_duration_seconds=False,
+            include_endpoint_type=True
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
         self._assert_subprocess_execution(self._get_npm_commands())
@@ -895,6 +1013,18 @@ to an 'HTTPS' source."""
             result.stdout
         )
 
+    def test_npm_login_with_namespace_endpoint_type_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='npm', include_namespace=True, dry_run=True, include_endpoint_type=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='npm', result=result, include_endpoint_type=True)
+        self._assert_dry_run_execution(
+            self._get_npm_commands(scope='@{}'.format(self.namespace)),
+            result.stdout
+        )
+
     def test_pip_login_without_domain_owner(self):
         cmdline = self._setup_cmd(tool='pip')
         result = self.cli_runner.run(cmdline)
@@ -932,6 +1062,18 @@ to an 'HTTPS' source."""
         self._assert_expiration_printed_to_stdout(result.stdout)
         self._assert_subprocess_execution(self._get_pip_commands())
 
+    def test_pip_login_with_domain_owner_duration_endpoint_type(self):
+        cmdline = self._setup_cmd(tool='pip', include_domain_owner=True,
+                                  include_duration_seconds=True, include_endpoint_type=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='pypi', result=result, include_domain_owner=True,
+            include_duration_seconds=True, include_endpoint_type=True
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_execution(self._get_pip_commands())
+
     def test_pip_login_with_domain_owner_dry_run(self):
         cmdline = self._setup_cmd(
             tool='pip', include_domain_owner=True, dry_run=True
@@ -962,6 +1104,24 @@ to an 'HTTPS' source."""
             'Argument --namespace is not supported for pip', result.stderr
         )
 
+    def test_pip_login_command_failed_auth_token_redacted(self):
+        def side_effect(command, capture_output, check):
+            raise subprocess.CalledProcessError(
+                returncode=1,
+                cmd=command
+            )
+
+        self.subprocess_mock.side_effect = side_effect
+        cmdline = self._setup_cmd(tool='pip')
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 255)
+        self.assertIn(
+            "Command '['pip', 'config', 'set', 'global.index-url',"
+            " 'https://aws:******@domain-domain-owner.codeartifact.aws.a2z.com/pypi/repository/simple/']'"
+            " returned non-zero exit status 1.",
+            result.stderr
+        )
+
     def test_twine_login_without_domain_owner(self):
         cmdline = self._setup_cmd(tool='twine')
         result = self.cli_runner.run(cmdline)
@@ -984,6 +1144,20 @@ to an 'HTTPS' source."""
         result = self.cli_runner.run(cmdline)
         self.assertEqual(result.rc, 0)
         self._assert_operations_called(package_format='pypi', result=result)
+        self.assertFalse(os.path.exists(self.test_pypi_rc_path))
+        self._assert_pypi_rc_has_expected_content(
+            pypi_rc_str=self._get_twine_commands(),
+            server='codeartifact',
+            repo_url=self.endpoint,
+            username='aws',
+            password=self.auth_token
+        )
+
+    def test_twine_login_without_domain_owner_dry_run_endpoint_type(self):
+        cmdline = self._setup_cmd(tool='twine', dry_run=True, include_endpoint_type=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='pypi', result=result, include_endpoint_type=True)
         self.assertFalse(os.path.exists(self.test_pypi_rc_path))
         self._assert_pypi_rc_has_expected_content(
             pypi_rc_str=self._get_twine_commands(),

@@ -11,12 +11,21 @@ Output::
 
     {
         "participant": {
+            "browserName", "Google Chrome",
+            "browserVersion", "116",
             "firstJoinTime": "2023-04-26T20:30:34+00:00",
+            "ispName", "Comcast",
+            "osName", "Microsoft Windows 10 Pro",
+            "osVersion", "10.0.19044"
             "participantId": "abCDEf12GHIj",
             "published": true,
-            "state": "DISCONNECTED",
-            "userId": ""
+            "recordingS3BucketName": "bucket-name",
+            "recordingS3Prefix": "abcdABCDefgh/st-a1b2c3d4e5f6g/abCDEf12GHIj/1234567890",
+            "recordingState": "ACTIVE",
+            "sdkVersion", "",
+            "state": "CONNECTED",
+            "userId": "",
         }
     }
 
-For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/userguide/multiple-hosts.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/multiple-hosts.html>`__ in the *Amazon Interactive Video Service User Guide*.

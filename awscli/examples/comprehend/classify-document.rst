@@ -1,6 +1,6 @@
 **To classify document with model-specific endpoint**
 
-The following ``classify-document`` example classifys a document with an endpoint of a custom model. The model in this example was trained on
+The following ``classify-document`` example classifies a document with an endpoint of a custom model. The model in this example was trained on
 a dataset containing sms messages labeled as spam or non-spam, or, "ham". ::
 
     aws comprehend classify-document \

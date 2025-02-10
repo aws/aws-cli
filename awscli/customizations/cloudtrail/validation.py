@@ -73,16 +73,24 @@ def assert_cloudtrail_arn_is_valid(trail_arn):
     """Ensures that the arn looks correct.
 
     ARNs look like: arn:aws:cloudtrail:us-east-1:123456789012:trail/foo"""
-    pattern = re.compile('arn:.+:cloudtrail:.+:\d{12}:trail/.+')
+    pattern = re.compile(r'arn:.+:cloudtrail:.+:\d{12}:trail/.+')
     if not pattern.match(trail_arn):
         raise ValueError('Invalid trail ARN provided: %s' % trail_arn)
 
 
-def create_digest_traverser(cloudtrail_client, organization_client,
-                            s3_client_provider, trail_arn,
-                            trail_source_region=None, on_invalid=None,
-                            on_gap=None, on_missing=None, bucket=None,
-                            prefix=None, account_id=None):
+def create_digest_traverser(
+    cloudtrail_client,
+    organization_client,
+    s3_client_provider,
+    trail_arn,
+    trail_source_region=None,
+    on_invalid=None,
+    on_gap=None,
+    on_missing=None,
+    bucket=None,
+    prefix=None,
+    account_id=None,
+):
     """Creates a CloudTrail DigestTraverser and its object graph.
 
     :type cloudtrail_client: botocore.client.CloudTrail
@@ -244,9 +252,16 @@ class DigestProvider(object):
     dict. This class is not responsible for validation or iterating from
     one digest to the next.
     """
-    def __init__(self, s3_client_provider, account_id, trail_name,
-                 trail_home_region, trail_source_region=None,
-                 organization_id=None):
+
+    def __init__(
+        self,
+        s3_client_provider,
+        account_id,
+        trail_name,
+        trail_home_region,
+        trail_source_region=None,
+        organization_id=None,
+    ):
         self._client_provider = s3_client_provider
         self.trail_name = trail_name
         self.account_id = account_id

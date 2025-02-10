@@ -1,6 +1,6 @@
 **To describe commands**
 
-The following ``describe-commands`` commmand describes the commands in a specified instance. ::
+The following ``describe-commands`` command describes the commands in a specified instance. ::
 
     aws opsworks describe-commands \
         --instance-id 8c2673b9-3fe5-420d-9cfa-78d875ee7687 \

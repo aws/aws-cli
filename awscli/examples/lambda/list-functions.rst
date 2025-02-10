@@ -22,8 +22,8 @@ Output::
                 "Handler": "helloworld.handler",
                 "Role": "arn:aws:iam::123456789012:role/service-role/MyTestFunction-role-zgur6bf4",
                 "Timeout": 3,
-                "LastModified": "2019-09-23T18:32:33.857+0000",
-                "Runtime": "nodejs10.x",
+                "LastModified": "2023-09-23T18:32:33.857+0000",
+                "Runtime": "nodejs18.x",
                 "Description": ""
             },
             {
@@ -45,8 +45,8 @@ Output::
                 "Handler": "index.handler",
                 "Role": "arn:aws:iam::123456789012:role/service-role/helloWorldPython-role-uy3l9qyq",
                 "Timeout": 3,
-                "LastModified": "2019-10-01T16:47:28.490+0000",
-                "Runtime": "nodejs10.x",
+                "LastModified": "2023-10-01T16:47:28.490+0000",
+                "Runtime": "nodejs18.x",
                 "Description": ""
             },
             {
@@ -78,8 +78,8 @@ Output::
                 "Handler": "lambda_function.lambda_handler",
                 "Role": "arn:aws:iam::123456789012:role/service-role/my-python-function-role-z5g7dr6n",
                 "Timeout": 3,
-                "LastModified": "2019-10-01T19:40:41.643+0000",
-                "Runtime": "python3.7",
+                "LastModified": "2023-10-01T19:40:41.643+0000",
+                "Runtime": "python3.11",
                 "Description": ""
             }
         ]

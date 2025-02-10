@@ -8,7 +8,7 @@
 #
 # or in the "license" file accompanying this file. This file is
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
-# mock.ANY KIND, either express or implied. See the License for the specific
+# ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
 
@@ -16,8 +16,8 @@ from botocore.client import ClientError
 from botocore.session import Session
 
 from tests.unit.test_clidriver import FakeSession
-from awscli.compat import six
 from awscli.customizations.cloudtrail.subscribe import CloudTrailError, CloudTrailSubscribe
+from awscli.compat import BytesIO
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import mock, unittest, temporary_file
 
@@ -70,7 +70,7 @@ class TestCloudTrailCommand(unittest.TestCase):
 
         self.subscribe.s3 = mock.Mock()
         self.subscribe.s3.meta.region_name = 'us-east-1'
-        policy_template = six.BytesIO(six.b(u'{"Statement": []}'))
+        policy_template = BytesIO(u'{"Statement": []}'.encode('latin-1'))
         self.subscribe.s3.get_object = mock.Mock(
             return_value={'Body': policy_template})
         self.subscribe.s3.head_bucket.return_value = {}

@@ -16,7 +16,7 @@ import os
 
 from datetime import datetime
 
-from six import StringIO
+from awscli.compat import StringIO
 from botocore.session import Session
 from botocore.credentials import Credentials
 from awscli.customizations.codecommit import CodeCommitGetCommand

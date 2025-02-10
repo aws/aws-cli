@@ -30,7 +30,7 @@ import logging
 
 import pytest
 
-from awscli.compat import six, urlopen
+from awscli.compat import BytesIO, urlopen
 import botocore.session
 
 from awscli.testutils import unittest, get_stdout_encoding
@@ -45,7 +45,10 @@ from awscli.customizations.scalarparse import add_scalar_parsers, identity
 # Using the same log name as testutils.py
 LOG = logging.getLogger('awscli.tests.integration')
 _SHARED_BUCKET = random_bucket_name()
+_NON_EXISTENT_BUCKET = random_bucket_name()
 _DEFAULT_REGION = 'us-west-2'
+_DEFAULT_AZ = 'usw2-az1'
+_SHARED_DIR_BUCKET = f'{random_bucket_name()}--{_DEFAULT_AZ}--x-s3'
 
 
 def setup_module():
@@ -58,23 +61,49 @@ def setup_module():
         },
         'ObjectOwnership': 'ObjectWriter'
     }
+    dir_bucket_params = {
+        'Bucket': _SHARED_DIR_BUCKET,
+        'CreateBucketConfiguration': {
+            'Location': {
+                'Type': 'AvailabilityZone',
+                'Name': _DEFAULT_AZ
+            },
+            'Bucket': {
+                'Type': 'Directory',
+                'DataRedundancy': 'SingleAvailabilityZone'
+            }
+        }
+    }
     try:
         s3.create_bucket(**params)
+        s3.create_bucket(**dir_bucket_params)
     except Exception as e:
         # A create_bucket can fail for a number of reasons.
         # We're going to defer to the waiter below to make the
         # final call as to whether or not the bucket exists.
         LOG.debug("create_bucket() raised an exception: %s", e, exc_info=True)
     waiter.wait(Bucket=_SHARED_BUCKET)
+    waiter.wait(Bucket=_SHARED_DIR_BUCKET)
     s3.delete_public_access_block(
         Bucket=_SHARED_BUCKET
     )
+
+    # Validate that "_NON_EXISTENT_BUCKET" doesn't exist.
+    waiter = s3.get_waiter('bucket_not_exists')
+    try:
+        waiter.wait(Bucket=_NON_EXISTENT_BUCKET)
+    except Exception as e:
+        LOG.debug(
+            f"The following bucket was unexpectedly discovered: {_NON_EXISTENT_BUCKET}",
+            e,
+            exc_info=True,
+        )
 
 
 def clear_out_bucket(bucket, delete_bucket=False):
     s3 = botocore.session.get_session().create_client(
         's3', region_name=_DEFAULT_REGION)
-    page = s3.get_paginator('list_objects')
+    page = s3.get_paginator('list_objects_v2')
     # Use pages paired with batch delete_objects().
     for page in page.paginate(Bucket=bucket):
         keys = [{'Key': obj['Key']} for obj in page.get('Contents', [])]
@@ -96,6 +125,7 @@ def clear_out_bucket(bucket, delete_bucket=False):
 
 def teardown_module():
     clear_out_bucket(_SHARED_BUCKET, delete_bucket=True)
+    clear_out_bucket(_SHARED_DIR_BUCKET, delete_bucket=True)
 
 
 @contextlib.contextmanager
@@ -141,25 +171,23 @@ class BaseS3IntegrationTest(BaseS3CLICommand):
 
     def setUp(self):
         clear_out_bucket(_SHARED_BUCKET)
+        clear_out_bucket(_SHARED_DIR_BUCKET)
         super(BaseS3IntegrationTest, self).setUp()
 
 
 class TestMoveCommand(BaseS3IntegrationTest):
-
-    def test_mv_local_to_s3(self):
-        bucket_name = _SHARED_BUCKET
+    def assert_mv_local_to_s3(self, bucket_name):
         full_path = self.files.create_file('foo.txt', 'this is foo.txt')
         p = aws('s3 mv %s s3://%s/foo.txt' % (full_path,
-                                              bucket_name))
+                                                bucket_name))
         self.assert_no_errors(p)
         # When we move an object, the local file is gone:
         self.assertTrue(not os.path.exists(full_path))
         # And now resides in s3.
         self.assert_key_contents_equal(bucket_name, 'foo.txt',
-                                       'this is foo.txt')
+                                        'this is foo.txt')
 
-    def test_mv_s3_to_local(self):
-        bucket_name = _SHARED_BUCKET
+    def assert_mv_s3_to_local(self, bucket_name):
         self.put_object(bucket_name, 'foo.txt', 'this is foo.txt')
         full_path = self.files.full_path('foo.txt')
         self.assertTrue(self.key_exists(bucket_name, key_name='foo.txt'))
@@ -171,9 +199,8 @@ class TestMoveCommand(BaseS3IntegrationTest):
         # The s3 file should not be there anymore.
         self.assertTrue(self.key_not_exists(bucket_name, key_name='foo.txt'))
 
-    def test_mv_s3_to_s3(self):
-        from_bucket = _SHARED_BUCKET
-        to_bucket = self.create_bucket()
+    def assert_mv_s3_to_s3(self, from_bucket, create_bucket_call):
+        to_bucket = create_bucket_call()
         self.put_object(from_bucket, 'foo.txt', 'this is foo.txt')
 
         p = aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket,
@@ -184,11 +211,35 @@ class TestMoveCommand(BaseS3IntegrationTest):
         # And verify that the object no longer exists in the from_bucket.
         self.assertTrue(self.key_not_exists(from_bucket, key_name='foo.txt'))
 
+    def test_mv_local_to_s3(self):
+        self.assert_mv_local_to_s3(_SHARED_BUCKET)
+
+    def test_mv_local_to_s3_express(self):
+        self.assert_mv_local_to_s3(_SHARED_DIR_BUCKET)
+
+    def test_mv_s3_to_local(self):
+        self.assert_mv_s3_to_local(_SHARED_BUCKET)
+
+    def test_mv_s3_express_to_local(self):
+        self.assert_mv_s3_to_local(_SHARED_DIR_BUCKET)
+
+    def test_mv_s3_to_s3(self):
+        self.assert_mv_s3_to_s3(_SHARED_BUCKET, self.create_bucket)
+
+    def test_mv_s3_to_s3_express(self):
+        self.assert_mv_s3_to_s3(_SHARED_BUCKET, self.create_dir_bucket)
+
+    def test_mv_s3_express_to_s3_express(self):
+        self.assert_mv_s3_to_s3(_SHARED_DIR_BUCKET, self.create_dir_bucket)
+
+    def test_mv_s3_express_to_s3(self):
+        self.assert_mv_s3_to_s3(_SHARED_DIR_BUCKET, self.create_bucket)
+
     @pytest.mark.slow
     def test_mv_s3_to_s3_multipart(self):
         from_bucket = _SHARED_BUCKET
         to_bucket = self.create_bucket()
-        file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        file_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         self.put_object(from_bucket, 'foo.txt', file_contents)
 
         p = aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket,
@@ -202,7 +253,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
         from_bucket = _SHARED_BUCKET
         to_bucket = self.create_bucket()
 
-        large_file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        large_file_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         small_file_contents = 'small file contents'
         self.put_object(from_bucket, 'largefile', large_file_contents)
         self.put_object(from_bucket, 'smallfile', small_file_contents)
@@ -250,7 +301,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
     def test_mv_with_large_file(self):
         bucket_name = _SHARED_BUCKET
         # 40MB will force a multipart upload.
-        file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        file_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         foo_txt = self.files.create_file(
             'foo.txt', file_contents.getvalue().decode('utf-8'))
         p = aws('s3 mv %s s3://%s/foo.txt' % (foo_txt, bucket_name))
@@ -269,7 +320,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
 
     def test_mv_to_nonexistent_bucket(self):
         full_path = self.files.create_file('foo.txt', 'this is foo.txt')
-        p = aws('s3 mv %s s3://bad-noexist-13143242/foo.txt' % (full_path,))
+        p = aws(f's3 mv {full_path} s3://{_NON_EXISTENT_BUCKET}/foo.txt')
         self.assertEqual(p.rc, 1)
 
     def test_cant_move_file_onto_itself_small_file(self):
@@ -287,7 +338,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
         # but a mv command doesn't make sense because a mv is just a
         # cp + an rm of the src file.  We should be consistent and
         # not allow large files to be mv'd onto themselves.
-        file_contents = six.BytesIO(b'a' * (1024 * 1024 * 10))
+        file_contents = BytesIO(b'a' * (1024 * 1024 * 10))
         bucket_name = _SHARED_BUCKET
         self.put_object(bucket_name, key_name='key.txt',
                         contents=file_contents)
@@ -298,6 +349,14 @@ class TestMoveCommand(BaseS3IntegrationTest):
 
 
 class TestRm(BaseS3IntegrationTest):
+    def assert_rm_with_page_size(self, bucket_name):
+        self.put_object(bucket_name, 'foo.txt', contents='hello world')
+        self.put_object(bucket_name, 'bar.txt', contents='hello world2')
+        p = aws('s3 rm s3://%s/ --recursive --page-size 1' % bucket_name)
+        self.assert_no_errors(p)
+
+        self.assertTrue(self.key_not_exists(bucket_name, key_name='foo.txt'))
+        self.assertTrue(self.key_not_exists(bucket_name, key_name='bar.txt'))
     @skip_if_windows('Newline in filename test not valid on windows.')
     # Windows won't let you do this.  You'll get:
     # [Errno 22] invalid mode ('w') or filename:
@@ -320,23 +379,18 @@ class TestRm(BaseS3IntegrationTest):
         self.assertTrue(self.key_not_exists(bucket_name, key_name='foo\r.txt'))
 
     def test_rm_with_page_size(self):
-        bucket_name = _SHARED_BUCKET
-        self.put_object(bucket_name, 'foo.txt', contents='hello world')
-        self.put_object(bucket_name, 'bar.txt', contents='hello world2')
-        p = aws('s3 rm s3://%s/ --recursive --page-size 1' % bucket_name)
-        self.assert_no_errors(p)
+        self.assert_rm_with_page_size(_SHARED_BUCKET)
 
-        self.assertTrue(self.key_not_exists(bucket_name, key_name='foo.txt'))
-        self.assertTrue(self.key_not_exists(bucket_name, key_name='bar.txt'))
+    def test_s3_express_rm_with_page_size(self):
+        self.assert_rm_with_page_size(_SHARED_DIR_BUCKET)
 
 
 class TestCp(BaseS3IntegrationTest):
 
-    def test_cp_to_and_from_s3(self):
+    def assert_cp_to_and_from_s3(self, bucket_name):
         # This tests the ability to put a single file in s3
         # move it to a different bucket.
         # and download the file locally
-        bucket_name = _SHARED_BUCKET
 
         # copy file into bucket.
         foo_txt = self.files.create_file('foo.txt', 'this is foo.txt')
@@ -361,6 +415,12 @@ class TestCp(BaseS3IntegrationTest):
         with open(full_path, 'r') as f:
             self.assertEqual(f.read(), 'this is foo.txt')
 
+    def test_cp_to_and_from_s3(self):
+        self.assert_cp_to_and_from_s3(_SHARED_BUCKET)
+
+    def test_cp_to_and_from_s3_express(self):
+        self.assert_cp_to_and_from_s3(_SHARED_DIR_BUCKET)
+
     def test_cp_without_trailing_slash(self):
         # There's a unit test for this, but we still want to verify this
         # with an integration test.
@@ -382,7 +442,7 @@ class TestCp(BaseS3IntegrationTest):
     def test_cp_s3_s3_multipart(self):
         from_bucket = _SHARED_BUCKET
         to_bucket = self.create_bucket()
-        file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        file_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         self.put_object(from_bucket, 'foo.txt', file_contents)
 
         p = aws('s3 cp s3://%s/foo.txt s3://%s/foo.txt' %
@@ -407,7 +467,7 @@ class TestCp(BaseS3IntegrationTest):
     def test_download_large_file(self):
         # This will force a multipart download.
         bucket_name = _SHARED_BUCKET
-        foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        foo_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         self.put_object(bucket_name, key_name='foo.txt',
                         contents=foo_contents)
         local_foo_txt = self.files.full_path('foo.txt')
@@ -420,7 +480,7 @@ class TestCp(BaseS3IntegrationTest):
     @skip_if_windows('SIGINT not supported on Windows.')
     def test_download_ctrl_c_does_not_hang(self):
         bucket_name = _SHARED_BUCKET
-        foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 40))
+        foo_contents = BytesIO(b'abcd' * (1024 * 1024 * 40))
         self.put_object(bucket_name, key_name='foo.txt',
                         contents=foo_contents)
         local_foo_txt = self.files.full_path('foo.txt')
@@ -471,7 +531,7 @@ class TestCp(BaseS3IntegrationTest):
 
     def test_cp_to_nonexistent_bucket(self):
         foo_txt = self.files.create_file('foo.txt', 'this is foo.txt')
-        p = aws('s3 cp %s s3://noexist-bucket-foo-bar123/foo.txt' % (foo_txt,))
+        p = aws(f's3 cp {foo_txt} s3://{_NON_EXISTENT_BUCKET}/foo.txt')
         self.assertEqual(p.rc, 1)
 
     def test_cp_empty_file(self):
@@ -483,7 +543,7 @@ class TestCp(BaseS3IntegrationTest):
         self.assertTrue(self.key_exists(bucket_name, 'foo.txt'))
 
     def test_download_non_existent_key(self):
-        p = aws('s3 cp s3://jasoidfjasdjfasdofijasdf/foo.txt foo.txt')
+        p = aws(f's3 cp s3://{_NON_EXISTENT_BUCKET}/foo.txt foo.txt')
         self.assertEqual(p.rc, 1)
         expected_err_msg = (
             'An error occurred (404) when calling the '
@@ -993,7 +1053,7 @@ class TestUnableToWriteToFile(BaseS3IntegrationTest):
         # which effectively disables the expect 100 continue logic.
         # This will result in a test error because we won't follow
         # the temporary redirect for the newly created bucket.
-        contents = six.BytesIO(b'a' * 10 * 1024 * 1024)
+        contents = BytesIO(b'a' * 10 * 1024 * 1024)
         self.put_object(bucket_name, 'foo.txt',
                         contents=contents)
         os.chmod(self.files.rootdir, 0o444)
@@ -1133,6 +1193,28 @@ class TestLs(BaseS3IntegrationTest):
     This tests using the ``ls`` command.
     """
 
+    def assert_ls_with_prefix(self, bucket_name):
+        self.put_object(bucket_name, 'foo.txt', 'contents')
+        self.put_object(bucket_name, 'foo', 'contents')
+        self.put_object(bucket_name, 'bar.txt', 'contents')
+        self.put_object(bucket_name, 'subdir/foo.txt', 'contents')
+        p = aws('s3 ls s3://%s' % bucket_name)
+        self.assertIn('PRE subdir/', p.stdout)
+        self.assertIn('8 foo.txt', p.stdout)
+        self.assertIn('8 foo', p.stdout)
+        self.assertIn('8 bar.txt', p.stdout)
+
+    def assert_ls_recursive(self, bucket_name):
+        self.put_object(bucket_name, 'foo.txt', 'contents')
+        self.put_object(bucket_name, 'foo', 'contents')
+        self.put_object(bucket_name, 'bar.txt', 'contents')
+        self.put_object(bucket_name, 'subdir/foo.txt', 'contents')
+        p = aws('s3 ls s3://%s --recursive' % bucket_name)
+        self.assertIn('8 foo.txt', p.stdout)
+        self.assertIn('8 foo', p.stdout)
+        self.assertIn('8 bar.txt', p.stdout)
+        self.assertIn('8 subdir/foo.txt', p.stdout)
+
     def test_ls_bucket(self):
         p = aws('s3 ls')
         self.assert_no_errors(p)
@@ -1153,7 +1235,7 @@ class TestLs(BaseS3IntegrationTest):
         self.assert_no_errors(p)
 
     def test_ls_non_existent_bucket(self):
-        p = aws('s3 ls s3://foobara99842u4wbts829381')
+        p = aws(f's3 ls s3://{_NON_EXISTENT_BUCKET}')
         self.assertEqual(p.rc, 255)
         self.assertIn(
             ('An error occurred (NoSuchBucket) when calling the '
@@ -1163,28 +1245,16 @@ class TestLs(BaseS3IntegrationTest):
         self.assertEqual(p.stdout, '')
 
     def test_ls_with_prefix(self):
-        bucket_name = _SHARED_BUCKET
-        self.put_object(bucket_name, 'foo.txt', 'contents')
-        self.put_object(bucket_name, 'foo', 'contents')
-        self.put_object(bucket_name, 'bar.txt', 'contents')
-        self.put_object(bucket_name, 'subdir/foo.txt', 'contents')
-        p = aws('s3 ls s3://%s' % bucket_name)
-        self.assertIn('PRE subdir/', p.stdout)
-        self.assertIn('8 foo.txt', p.stdout)
-        self.assertIn('8 foo', p.stdout)
-        self.assertIn('8 bar.txt', p.stdout)
+        self.assert_ls_with_prefix(_SHARED_BUCKET)
+
+    def test_s3_express_ls_with_prefix(self):
+        self.assert_ls_with_prefix(_SHARED_DIR_BUCKET)
 
     def test_ls_recursive(self):
-        bucket_name = _SHARED_BUCKET
-        self.put_object(bucket_name, 'foo.txt', 'contents')
-        self.put_object(bucket_name, 'foo', 'contents')
-        self.put_object(bucket_name, 'bar.txt', 'contents')
-        self.put_object(bucket_name, 'subdir/foo.txt', 'contents')
-        p = aws('s3 ls s3://%s --recursive' % bucket_name)
-        self.assertIn('8 foo.txt', p.stdout)
-        self.assertIn('8 foo', p.stdout)
-        self.assertIn('8 bar.txt', p.stdout)
-        self.assertIn('8 subdir/foo.txt', p.stdout)
+        self.assert_ls_recursive(_SHARED_BUCKET)
+
+    def test_s3_express_ls_recursive(self):
+        self.assert_ls_recursive(_SHARED_DIR_BUCKET)
 
     def test_ls_without_prefix(self):
         # The ls command does not require an s3:// prefix,
@@ -1302,7 +1372,7 @@ class TestOutput(BaseS3IntegrationTest):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://non-existant-bucket/' % foo_txt)
+        p = aws(f's3 cp {foo_txt} s3://{_NON_EXISTENT_BUCKET}/')
         # Check that there were errors and that the error was print to stderr.
         self.assertEqual(p.rc, 1)
         self.assertIn('upload failed', p.stderr)
@@ -1311,7 +1381,7 @@ class TestOutput(BaseS3IntegrationTest):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://non-existant-bucket/ --quiet' % foo_txt)
+        p = aws(f's3 cp {foo_txt} s3://{_NON_EXISTENT_BUCKET}/ --quiet')
         # Check that there were errors and that the error was not
         # print to stderr.
         self.assertEqual(p.rc, 1)
@@ -1321,8 +1391,7 @@ class TestOutput(BaseS3IntegrationTest):
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://non-existant-bucket/ --only-show-errors'
-                % foo_txt)
+        p = aws(f's3 cp {foo_txt} s3://{_NON_EXISTENT_BUCKET}/ --only-show-errors')
         # Check that there were errors and that the error was print to stderr.
         self.assertEqual(p.rc, 1)
         self.assertIn('upload failed', p.stderr)

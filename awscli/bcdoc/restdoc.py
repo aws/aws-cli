@@ -67,6 +67,23 @@ class ReSTDocument(object):
         """
         self._writes.append(s)
 
+    def find_last_write(self, content):
+        """
+        Returns the index of the last occurrence of the content argument
+        in the stack, or returns None if content is not on the stack.
+        """
+        try:
+            return len(self._writes) - self._writes[::-1].index(content) - 1
+        except ValueError:
+            return None
+
+    def insert_write(self, index, content):
+        """
+        Inserts the content argument to the stack directly before the
+        supplied index.
+        """
+        self._writes.insert(index, content)
+
     def getvalue(self):
         """
         Returns the current content of the document as a string.

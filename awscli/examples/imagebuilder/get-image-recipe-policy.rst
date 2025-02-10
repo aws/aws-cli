@@ -3,7 +3,7 @@
 The following ``get-image-recipe-policy`` example lists the details of an image recipe policy by specifying its ARN. ::
 
     aws imagebuilder get-image-recipe-policy \
-        --image-arn arn:aws:imagebuilder:us-west-2:123456789012:image-recipe/my-example-image-recipe/2019.12.03/1
+        --image-recipe-arn arn:aws:imagebuilder:us-west-2:123456789012:image-recipe/my-example-image-recipe/2019.12.03/1
 
 Output::
 

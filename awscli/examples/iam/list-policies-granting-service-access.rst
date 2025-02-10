@@ -25,4 +25,4 @@ Output::
         "IsTruncated": false
     }
 
-For more information, see `Using IAM with CodeCommit: Git Credentials, SSH Keys, and AWS Access Keys <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_ssh-keys.html>`_ in the *AWS IAM User Guide*.
+For more information, see `Using IAM with CodeCommit: Git credentials, SSH keys, and AWS access keys <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_ssh-keys.html>`__ in the *AWS IAM User Guide*.

@@ -1,6 +1,6 @@
 **To delete a DB parameter group**
 
-The following ``commmand`` example deletes a DB parameter group. ::
+The following ``command`` example deletes a DB parameter group. ::
 
     aws rds delete-db-parameter-group \
         --db-parameter-group-name mydbparametergroup

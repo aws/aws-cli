@@ -10,10 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.compat import six
+from html.parser import HTMLParser
 
 
-class DocStringParser(six.moves.html_parser.HTMLParser):
+class DocStringParser(HTMLParser):
     """
     A simple HTML parser.  Focused on converting the subset of HTML
     that appears in the documentation strings of the JSON models into
@@ -23,20 +23,20 @@ class DocStringParser(six.moves.html_parser.HTMLParser):
     def __init__(self, doc):
         self.tree = None
         self.doc = doc
-        six.moves.html_parser.HTMLParser.__init__(self)
+        HTMLParser.__init__(self)
 
     def reset(self):
-        six.moves.html_parser.HTMLParser.reset(self)
+        HTMLParser.reset(self)
         self.tree = HTMLTree(self.doc)
 
     def feed(self, data):
         # HTMLParser is an old style class, so the super() method will not work.
-        six.moves.html_parser.HTMLParser.feed(self, data)
+        HTMLParser.feed(self, data)
         self.tree.write()
         self.tree = HTMLTree(self.doc)
 
     def close(self):
-        six.moves.html_parser.HTMLParser.close(self)
+        HTMLParser.close(self)
         # Write if there is anything remaining.
         self.tree.write()
         self.tree = HTMLTree(self.doc)
@@ -51,12 +51,13 @@ class DocStringParser(six.moves.html_parser.HTMLParser):
         self.tree.add_data(data)
 
 
-class HTMLTree(object):
+class HTMLTree:
     """
     A tree which handles HTML nodes. Designed to work with a python HTML parser,
     meaning that the current_node will be the most recently opened tag. When
     a tag is closed, the current_node moves up to the parent node.
     """
+
     def __init__(self, doc):
         self.doc = doc
         self.head = StemNode()
@@ -93,7 +94,7 @@ class HTMLTree(object):
         self.head.write(self.doc)
 
 
-class Node(object):
+class Node:
     def __init__(self, parent=None):
         self.parent = parent
 
@@ -103,7 +104,7 @@ class Node(object):
 
 class StemNode(Node):
     def __init__(self, parent=None):
-        super(StemNode, self).__init__(parent)
+        super().__init__(parent)
         self.children = []
 
     def add_child(self, child):
@@ -122,8 +123,9 @@ class TagNode(StemNode):
     """
     A generic Tag node. It will verify that handlers exist before writing.
     """
+
     def __init__(self, tag, attrs=None, parent=None):
-        super(TagNode, self).__init__(parent)
+        super().__init__(parent)
         self.attrs = attrs
         self.tag = tag
 
@@ -145,11 +147,11 @@ class TagNode(StemNode):
 
 class LineItemNode(TagNode):
     def __init__(self, attrs=None, parent=None):
-        super(LineItemNode, self).__init__('li', attrs, parent)
+        super().__init__('li', attrs, parent)
 
     def write(self, doc):
         self._lstrip(self)
-        super(LineItemNode, self).write(doc)
+        super().write(doc)
 
     def _lstrip(self, node):
         """
@@ -174,9 +176,10 @@ class DataNode(Node):
     """
     A Node that contains only string data.
     """
+
     def __init__(self, data, parent=None):
-        super(DataNode, self).__init__(parent)
-        if not isinstance(data, six.string_types):
+        super().__init__(parent)
+        if not isinstance(data, str):
             raise ValueError("Expecting string type, %s given." % type(data))
         self.data = data
 

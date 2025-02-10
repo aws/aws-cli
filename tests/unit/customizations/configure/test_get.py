@@ -11,9 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import unittest
+from awscli.compat import StringIO
 
 from awscli.customizations.configure.get import ConfigureGetCommand
-from awscli.compat import six
 
 from . import FakeSession
 
@@ -21,8 +21,8 @@ from . import FakeSession
 class TestConfigureGetCommand(unittest.TestCase):
 
     def create_command(self, session):
-        stdout = six.StringIO()
-        stderr = six.StringIO()
+        stdout = StringIO()
+        stderr = StringIO()
         command = ConfigureGetCommand(session, stdout, stderr)
         return stdout, stderr, command
 

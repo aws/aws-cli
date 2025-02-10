@@ -119,8 +119,9 @@ class TestKubeconfigLoader(unittest.TestCase):
         ])
         loaded_config = self._loader.load_kubeconfig(simple_path)
         self.assertEqual(loaded_config.content, content)
-        self._validator.validate_config.called_with(Kubeconfig(simple_path,
-                                                               content))
+        self._validator.validate_config.assert_called_with(
+            Kubeconfig(simple_path, content)
+        )
 
     def test_load_noexist(self):
         no_exist_path = os.path.join(self._temp_directory,
@@ -128,17 +129,18 @@ class TestKubeconfigLoader(unittest.TestCase):
         loaded_config = self._loader.load_kubeconfig(no_exist_path)
         self.assertEqual(loaded_config.content,
                          _get_new_kubeconfig_content())
-        self._validator.validate_config.called_with(
-            Kubeconfig(no_exist_path, _get_new_kubeconfig_content()))
+        self._validator.validate_config.assert_called_with(
+            Kubeconfig(no_exist_path, _get_new_kubeconfig_content())
+        )
 
     def test_load_empty(self):
         empty_path = self._clone_config("valid_empty_existing")
         loaded_config = self._loader.load_kubeconfig(empty_path)
         self.assertEqual(loaded_config.content,
                          _get_new_kubeconfig_content())
-        self._validator.validate_config.called_with(
-            Kubeconfig(empty_path,
-                       _get_new_kubeconfig_content()))
+        self._validator.validate_config.assert_called_with(
+            Kubeconfig(empty_path, _get_new_kubeconfig_content())
+        )
 
     def test_load_directory(self):
         current_directory = self._temp_directory

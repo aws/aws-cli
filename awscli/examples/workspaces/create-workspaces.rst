@@ -42,4 +42,27 @@ Output::
         ]
     }
 
+**Example 3: To create a user-decoupled WorkSpace**
+
+The following ``create-workspaces`` example creates a user-decoupled WorkSpace by setting the username to ``[UNDEFINED]``, and specifying a WorkSpace name, directory ID, and bundle ID. ::
+
+    aws workspaces create-workspaces \
+        --workspaces DirectoryId=d-926722edaf,UserName='"[UNDEFINED]"',WorkspaceName=MaryWorkspace1,BundleId=wsb-0zsvgp8fc,WorkspaceProperties={RunningMode=ALWAYS_ON}
+
+Output::
+
+    {
+        "FailedRequests": [],
+        "PendingRequests": [
+            {
+                "WorkspaceId": "ws-abcd1234",
+                "DirectoryId": "d-926722edaf",
+                "UserName": "[UNDEFINED]",
+                "State": "PENDING",
+                "BundleId": "wsb-0zsvgp8fc",
+                "WorkspaceName": "MaryWorkspace1"
+            }
+        ]
+    }
+
 For more information, see `Launch a virtual desktop <https://docs.aws.amazon.com/workspaces/latest/adminguide/launch-workspaces-tutorials.html>`__ in the *Amazon WorkSpaces Administration Guide*.

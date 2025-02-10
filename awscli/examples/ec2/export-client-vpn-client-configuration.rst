@@ -40,4 +40,4 @@ Output::
     </ca>
     reneg-sec 0
 
-For more information, see `Client VPN Endpoints <https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/cvpn-working-endpoints.html>`__ in the *AWS Client VPN Administrator Guide*.
+For more information, see `Client VPN endpoint configuration file export <https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/cvpn-working-endpoint-export.html>`__ in the *AWS Client VPN Administrator Guide*.

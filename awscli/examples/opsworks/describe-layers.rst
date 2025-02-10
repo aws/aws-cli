@@ -1,6 +1,6 @@
 **To describe a stack's layers**
 
-The following ``describe-layers`` commmand describes the layers in a specified stack::
+The following ``describe-layers`` command describes the layers in a specified stack::
 
   aws opsworks --region us-east-1 describe-layers --stack-id 38ee91e2-abdc-4208-a107-0b7168b3cc7a
 

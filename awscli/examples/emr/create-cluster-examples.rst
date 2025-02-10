@@ -114,7 +114,7 @@ The following example references ``configurations.json`` as a local file. ::
 The following example references ``configurations.json`` as a file in Amazon S3. ::
 
     aws emr create-cluster \
-        --configurations https://s3.amazonaws.com/myBucket/configurations.json \
+        --configurations https://s3.amazonaws.com/amzn-s3-demo-bucket/configurations.json \
         --release-label emr-5.9.0 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -223,7 +223,7 @@ The following ``create-cluster`` example uses the ``--enable-debugging`` paramet
 
     aws emr create-cluster \
         --enable-debugging \
-        --log-uri s3://myBucket/myLog \
+        --log-uri s3://amzn-s3-demo-bucket/myLog \
         --release-label emr-5.9.0 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -357,7 +357,7 @@ The following ``create-cluster`` example adds steps by specifying a JAR file sto
 Custom JAR steps require the ``Jar=`` parameter, which specifies the path and file name of the JAR. Optional parameters are ``Type``, ``Name``, ``ActionOnFailure``, ``Args``, and ``MainClass``. If main class is not specified, the JAR file should specify ``Main-Class`` in its manifest file. ::
 
     aws emr create-cluster \
-        --steps Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://myBucket/mytest.jar,Args=arg1,arg2,arg3 Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://myBucket/mytest.jar,MainClass=mymainclass,Args=arg1,arg2,arg3  \
+        --steps Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://amzn-s3-demo-bucket/mytest.jar,Args=arg1,arg2,arg3 Type=CUSTOM_JAR,Name=CustomJAR,ActionOnFailure=CONTINUE,Jar=s3://amzn-s3-demo-bucket/mytest.jar,MainClass=mymainclass,Args=arg1,arg2,arg3  \
         --release-label emr-5.3.1 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
         --auto-terminate
@@ -503,7 +503,7 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
 
     aws emr create-cluster \
         --release-label emr-5.30.0 \
-        --log-uri s3://myBucket/myLog \
+        --log-uri s3://amzn-s3-demo-bucket/myLog \
         --log-encryption-kms-key-id arn:aws:kms:us-east-1:110302272565:key/dd559181-283e-45d7-99d1-66da348c4d33 \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large
 
@@ -533,3 +533,18 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --service-role EMR_DefaultRole \
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large
+
+**Example 24: To specify an EBS root volume attributes: size, iops and throughput for cluster instances created with EMR releases 6.15.0 and later**
+
+The following ``create-cluster`` example creates an Amazon EMR cluster that uses root volume attributes to configure root volumes specifications for the EC2 instances. ::
+
+    aws emr create-cluster \
+        --name "Cluster with My Custom AMI" \
+        --custom-ami-id ami-a518e6df \
+        --ebs-root-volume-size 20 \
+        --ebs-root-volume-iops 3000 \
+        --ebs-root-volume-throughput 125 \
+        --release-label emr-6.15.0 \
+        --use-default-roles \
+        --instance-count 2 \
+        --instance-type m4.large

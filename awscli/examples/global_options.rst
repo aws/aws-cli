@@ -12,7 +12,7 @@
   
 ``--no-paginate`` (boolean)
   
-  Disable automatic pagination.
+  Disable automatic pagination. If automatic pagination is disabled, the AWS CLI will only make one call, for the first page of results.
   
 ``--output`` (string)
   

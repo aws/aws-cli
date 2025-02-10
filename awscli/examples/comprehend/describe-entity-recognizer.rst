@@ -24,11 +24,11 @@ Output::
                     }
                 ],
                 "Documents": {
-                    "S3Uri": "s3://DOC-EXAMPLE-BUCKET/trainingdata/dataset/",
+                    "S3Uri": "s3://amzn-s3-demo-bucket/trainingdata/dataset/",
                     "InputFormat": "ONE_DOC_PER_LINE"
                 },
                 "EntityList": {
-                    "S3Uri": "s3://DOC-EXAMPLE-BUCKET/trainingdata/entity.csv"
+                    "S3Uri": "s3://amzn-s3-demo-bucket/trainingdata/entity.csv"
                 }
             },
             "RecognizerMetadata": {

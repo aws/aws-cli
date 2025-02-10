@@ -10,39 +10,46 @@ Output::
     {
         "TargetGroups": [
             {
+                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
                 "TargetGroupName": "my-targets",
                 "Protocol": "HTTP",
                 "Port": 80,
                 "VpcId": "vpc-3ac0fb5f",
-                "TargetType": "instance",
+                "HealthCheckProtocol": "HTTP",
+                "HealthCheckPort": "traffic-port",
                 "HealthCheckEnabled": true,
-                "UnhealthyThresholdCount": 2,
+                "HealthCheckIntervalSeconds": 30,
+                "HealthCheckTimeoutSeconds": 5,
                 "HealthyThresholdCount": 5,
+                "UnhealthyThresholdCount": 2,
                 "HealthCheckPath": "/",
                 "Matcher": {
                     "HttpCode": "200"
                 },
-                "HealthCheckProtocol": "HTTP",
-                "HealthCheckPort": "traffic-port",
-                "HealthCheckIntervalSeconds": 30,
-                "HealthCheckTimeoutSeconds": 5,
-                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067",
                 "LoadBalancerArns": [
                     "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188"
-                ]
+                ],
+                "TargetType": "instance",
+                "ProtocolVersion": "HTTP1",
+                "IpAddressType": "ipv4"
             }
         ]
     }
 
 **Example 2: To describe all target groups for a load balancer**
 
-The following ``describe-target-groups`` example displays details for all target groups for the specified load balancer. ::
+The following ``describe-target-groups`` example displays details for all target groups for the specified load balancer. The example uses the ``--query`` parameter to display only the target group names. ::
 
     aws elbv2 describe-target-groups \
-        --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188
+        --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188 \
+        --query TargetGroups[*].TargetGroupName
 
-**Example 3: To describe all target groups**
+Output::
 
-The following ``describe-target-groups`` example dislplays details for all of your target groups. ::
+    [
+        "my-instance-targets",
+        "my-ip-targets",
+        "my-lambda-target"
+    ]
 
-    aws elbv2 describe-target-groups 
+For more information, see `Target groups <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html>`__ in the *Applicaion Load Balancers Guide*.

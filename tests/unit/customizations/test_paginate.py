@@ -10,6 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import pytest
+
+from awscli.customizations.paginate import PageArgument
 from awscli.testutils import mock, unittest
 
 from botocore.exceptions import DataNotFoundError, PaginationError
@@ -18,6 +21,9 @@ from awscli.help import OperationHelpCommand, OperationDocumentEventHandler
 
 from awscli.customizations import paginate
 
+@pytest.fixture
+def max_items_page_arg():
+    return PageArgument('max-items', 'documentation', int, 'MaxItems')
 
 class TestPaginateBase(unittest.TestCase):
 
@@ -321,3 +327,20 @@ class TestEnsurePagingParamsNotSet(TestPaginateBase):
         del self.parsed_args.page_size
         self.assertIsNone(paginate.ensure_paging_params_not_set(
             self.parsed_args, {}))
+
+
+class TestNonPositiveMaxItems:
+    def test_positive_integer_does_not_raise_warning(self, max_items_page_arg, capsys):
+        max_items_page_arg.add_to_params({}, 1)
+        captured = capsys.readouterr()
+        assert captured.err == ""
+
+    def test_zero_raises_warning(self, max_items_page_arg, capsys):
+        max_items_page_arg.add_to_params({}, 0)
+        captured = capsys.readouterr()
+        assert "Non-positive values for --max-items" in captured.err
+
+    def test_negative_integer_raises_warning(self, max_items_page_arg, capsys):
+        max_items_page_arg.add_to_params({}, -1)
+        captured = capsys.readouterr()
+        assert "Non-positive values for --max-items" in captured.err

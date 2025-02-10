@@ -1,6 +1,6 @@
 **To retrieve details about multiple Resource Explorer views**
 
-The following ``batch-get-view`` example displays the details about two views specified by their ARNs. Use spaces to separate the multiple ARNs in the --view-arn paramter. ::
+The following ``batch-get-view`` example displays the details about two views specified by their ARNs. Use spaces to separate the multiple ARNs in the --view-arn parameter. ::
 
     aws resource-explorer-2 batch-get-view \
         --view-arns arn:aws:resource-explorer-2:us-east-1:123456789012:view/My-EC2-Only-View/EXAMPLE8-90ab-cdef-fedc-EXAMPLE22222, \

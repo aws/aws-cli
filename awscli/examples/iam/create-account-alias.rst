@@ -5,6 +5,6 @@ The following ``create-account-alias`` command creates the alias ``examplecorp``
     aws iam create-account-alias \
         --account-alias examplecorp
 
-For more information, see `Your AWS account ID and its alias`_ in the *Using IAM* guide. 
+This command produces no output.
 
-.. _`Your AWS Account ID and Its Alias`: <https://docs.aws.amazon.com/IAM/latest/UserGuide/console_account-alias.html>
+For more information, see `Your AWS account ID and its alias <https://docs.aws.amazon.com/IAM/latest/UserGuide/console_account-alias.html>`__ in the *AWS IAM User Guide*.

@@ -19,7 +19,6 @@ import xml.dom.minidom
 import colorama
 
 from awscli.table import COLORAMA_KWARGS
-from awscli.compat import six
 from awscli.customizations.history.commands import HistorySubcommand
 from awscli.customizations.history.filters import RegexFilter
 
@@ -213,7 +212,7 @@ class DetailedFormatter(Formatter):
         self._write_output(formatted_value)
 
     def _write_output(self, content):
-        if isinstance(content, six.text_type):
+        if isinstance(content, str):
             content = content.encode('utf-8')
         self._output.write(content)
 

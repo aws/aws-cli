@@ -865,7 +865,7 @@
       "errors":[
         {"shape":"ResourceNotFoundFault"}
       ],
-      "documentation":"<p>For internal use only</p>"
+      "documentation":"<p>Returns a list of upcoming maintenance events for replication instances in your account in the current Region.</p>"
     },
     "DescribeRecommendationLimitations":{
       "name":"DescribeRecommendationLimitations",
@@ -1773,7 +1773,7 @@
         },
         "ApplyAction":{
           "shape":"String",
-          "documentation":"<p>The pending maintenance action to apply to this resource.</p> <p>Valid values: <code>os-upgrade</code>, <code>system-update</code>, <code>db-upgrade</code> </p>"
+          "documentation":"<p>The pending maintenance action to apply to this resource.</p> <p>Valid values: <code>os-upgrade</code>, <code>system-update</code>, <code>db-upgrade</code>, <code>os-patch</code> </p>"
         },
         "OptInType":{
           "shape":"String",
@@ -2246,7 +2246,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
+          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code> and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
         },
         "Settings":{
           "shape":"DataProviderSettings",
@@ -2759,7 +2759,7 @@
         },
         "KerberosAuthenticationSettings":{
           "shape":"KerberosAuthenticationSettings",
-          "documentation":"<p>Specifies the ID of the secret that stores the key cache file required for kerberos authentication, when creating a replication instance.</p>"
+          "documentation":"<p>Specifies the settings required for kerberos authentication when creating the replication instance.</p>"
         }
       },
       "documentation":"<p/>"
@@ -3057,7 +3057,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
+          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code> and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
         },
         "Settings":{
           "shape":"DataProviderSettings",
@@ -3131,6 +3131,14 @@
         "MariaDbSettings":{
           "shape":"MariaDbDataProviderSettings",
           "documentation":"<p>Provides information that defines a MariaDB data provider.</p>"
+        },
+        "IbmDb2LuwSettings":{
+          "shape":"IbmDb2LuwDataProviderSettings",
+          "documentation":"<p>Provides information that defines an IBM DB2 LUW data provider.</p>"
+        },
+        "IbmDb2zOsSettings":{
+          "shape":"IbmDb2zOsDataProviderSettings",
+          "documentation":"<p>Provides information that defines an IBM DB2 for z/OS data provider.</p>"
         },
         "MongoDbSettings":{
           "shape":"MongoDbDataProviderSettings",
@@ -5804,6 +5812,58 @@
       },
       "documentation":"<p>Provides information that defines an IBM Db2 LUW endpoint.</p>"
     },
+    "IbmDb2LuwDataProviderSettings":{
+      "type":"structure",
+      "members":{
+        "ServerName":{
+          "shape":"String",
+          "documentation":"<p>The name of the DB2 LUW server.</p>"
+        },
+        "Port":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The port value for the DB2 LUW data provider.</p>"
+        },
+        "DatabaseName":{
+          "shape":"String",
+          "documentation":"<p>The database name on the DB2 LUW data provider.</p>"
+        },
+        "SslMode":{
+          "shape":"DmsSslModeValue",
+          "documentation":"<p>The SSL mode used to connect to the DB2 LUW data provider. The default value is <code>none</code>. Valid Values: <code>none</code> and <code>verify-ca</code>.</p>"
+        },
+        "CertificateArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate used for SSL connection.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about an IBM DB2 LUW data provider.</p>"
+    },
+    "IbmDb2zOsDataProviderSettings":{
+      "type":"structure",
+      "members":{
+        "ServerName":{
+          "shape":"String",
+          "documentation":"<p>The name of the DB2 for z/OS server.</p>"
+        },
+        "Port":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The port value for the DB2 for z/OS data provider.</p>"
+        },
+        "DatabaseName":{
+          "shape":"String",
+          "documentation":"<p>The database name on the DB2 for z/OS data provider.</p>"
+        },
+        "SslMode":{
+          "shape":"DmsSslModeValue",
+          "documentation":"<p>The SSL mode used to connect to the DB2 for z/OS data provider. The default value is <code>none</code>. Valid Values: <code>none</code> and <code>verify-ca</code>.</p>"
+        },
+        "CertificateArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate used for SSL connection.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about an IBM DB2 for z/OS data provider.</p>"
+    },
     "ImportCertificateMessage":{
       "type":"structure",
       "required":["CertificateIdentifier"],
@@ -6568,7 +6628,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
+          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code> and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
         },
         "ExactSettings":{
           "shape":"BooleanOptional",
@@ -6980,7 +7040,7 @@
         },
         "KerberosAuthenticationSettings":{
           "shape":"KerberosAuthenticationSettings",
-          "documentation":"<p>Specifies the ID of the secret that stores the key cache file required for kerberos authentication, when modifying a replication instance.</p>"
+          "documentation":"<p>Specifies the settings required for kerberos authentication when modifying a replication instance.</p>"
         }
       },
       "documentation":"<p/>"
@@ -8646,7 +8706,7 @@
         },
         "KerberosAuthenticationSettings":{
           "shape":"KerberosAuthenticationSettings",
-          "documentation":"<p>Specifies the ID of the secret that stores the key cache file required for kerberos authentication, when replicating an instance.</p>"
+          "documentation":"<p>Specifies the settings required for kerberos authentication when replicating an instance.</p>"
         }
       },
       "documentation":"<p>Provides information that defines a replication instance.</p>"

@@ -13,32 +13,55 @@ Below are common questions regarding the use of Amazon S3 in the AWS CLI.
 Q: Does the AWS CLI validate checksums?
 ---------------------------------------
 
-The AWS CLI will perform checksum validation for uploading files in 
-specific scenarios.
+The AWS CLI will attempt to perform checksum validation for uploading and
+downloading files, as described below.
 
 Upload
 ~~~~~~
 
-The AWS CLI will calculate and auto-populate the ``Content-MD5`` header for
-both standard and multipart uploads.  If the checksum that S3 calculates does
-not match the ``Content-MD5`` provided, S3 will not store the object and
-instead will return an error message back the AWS CLI.  The AWS CLI will retry
-this error up to 5 times before giving up.  On the case that any files fail to
-transfer successfully to S3, the AWS CLI will exit with a non zero RC.
-See ``aws help return-codes`` for more information.
+The AWS CLI v1 will calculate and auto-populate a ``x-amz-checksum-<algorithm>`` HTTP header by
+default for each upload, where ``<algorithm>`` is the algorithm used to calculate the checksum.
+By default, the Cyclic Redundancy Check 32 (CRC32) algorithm
+is used to calculate checksums, but an alternative algorithm can be specified by using the
+``--checksum-algorithm`` argument on high-level ``aws s3`` commands. The checksum algorithms
+supported by the AWS CLI v1 are:
 
-If the upload request is signed with Signature Version 4, then the AWS CLI uses the
-``x-amz-content-sha256`` header as a checksum instead of ``Content-MD5``.
-The AWS CLI will use Signature Version 4 for S3 in several cases:
+- CRC64NVME (Recommended)
+- CRC32
+- CRC32C
+- SHA1
+- SHA256
 
-* You're using an AWS region that only supports Signature Version 4.  This
-  includes ``eu-central-1`` and ``ap-northeast-2``.
-* You explicitly opt in and set ``signature_version = s3v4`` in your
-  ``~/.aws/config`` file.
+Amazon S3 will use the algorithm specified in the header to calculate the checksum of the object. If it
+does not match the checksum provided, the object will not be stored and an error message
+will be returned. Otherwise, the checksum is stored in object metadata that you can use
+later to verify data integrity of download operations (see Download section).
 
-Note that the AWS CLI will add a ``Content-MD5`` header for both
-the high level ``aws s3`` commands that perform uploads
-(``aws s3 cp``, ``aws s3 sync``) as well as the low level ``s3api``
-commands including ``aws s3api put-object`` and ``aws s3api upload-part``.
+.. note::
+    Note that the AWS CLI will perform the above checksum calculations for commands that perform uploads. This
+    includes high-level commands like ``aws s3 cp``, ``aws s3 sync``, and ``aws s3 mv``, and low-level commands
+    like ``aws s3api put-object`` and ``aws s3api upload-part``."
 
-If you want to verify the integrity of an object during upload, see `How can I check the integrity of an object uploaded to Amazon S3? <https://aws.amazon.com/premiumsupport/knowledge-center/data-integrity-s3/>`_ in the *AWS Knowledge Center*.
+    For high-level command invocations that result in uploading multiple files (e.g. ``aws s3 sync``),
+    the same checksum algorithm will be used for all file uploads included in the command execution.
+
+For more information about verifying data integrity in Amazon S3, see
+`Checking object integrity in Amazon S3?
+<https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html/>`_ in the Amazon S3 User Guide.
+
+Download
+~~~~~~
+
+The AWS CLI will attempt to verify the checksum of downloads when possible. If a non-MD5 checksum is returned
+with a downloaded object, the CLI will use the same algorithm to recalculate the checksum and verify
+it matches the one stored in Amazon S3. If checksum validation fails, an error is raised and the request will NOT be
+retried.
+
+.. note::
+    Note that the AWS CLI will perform the above checksum calculations for commands that perform uploads. This
+    includes high-level commands like ``aws s3 cp``, ``aws s3 sync``, and ``aws s3 mv``, and low-level commands
+    like ``aws s3api get-object``"
+
+For more information about verifying data integrity in Amazon S3, see
+`Checking object integrity in Amazon S3?
+<https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html/>`_ in the Amazon S3 User Guide.

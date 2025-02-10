@@ -13,7 +13,7 @@ Output::
         "AutoRecovery": "disabled"
     }
 
-For more information, see `Recover your instance <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html#instance-configuration-recovery>`__ in the *Amazon EC2 User Guide for Linux Instances*.
+For more information, see `Configure simplified automatic recovery <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-configuration-recovery.html>`__ in the *Amazon EC2 User Guide*.
 
 **Example 2: To set the recovery behavior of an instance to default**
 
@@ -30,4 +30,4 @@ Output::
         "AutoRecovery": "default"
     }
 
-For more information, see `Recover your instance <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-recover.html#instance-configuration-recovery>`__ in the *Amazon EC2 User Guide for Linux Instances*.
+For more information, see `Configure simplified automatic recovery <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-configuration-recovery.html>`__ in the *Amazon EC2 User Guide*.

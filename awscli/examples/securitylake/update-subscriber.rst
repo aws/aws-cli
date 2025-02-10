@@ -54,7 +54,7 @@ Output::
                             "tableArn": "arn:aws:glue:eu-west-2:123456789012:table/E1WG1ZNPRXT0D4"
                         },
                         "provider": {
-                            "location": "DOC-EXAMPLE-BUCKET--usw2-az1--x-s3",
+                            "location": "amzn-s3-demo-bucket--usw2-az1--x-s3",
                             "roleArn": "arn:aws:iam::123456789012:role/AmazonSecurityLake-E1WG1ZNPRXT0D4"
                         },
                         "sourceName": "testCustom2"

@@ -12,6 +12,8 @@ Output::
         "Return": true
     }
 
+For more information, see `Modify the Capacity Reservation settings of your instance <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-modify-instance.html>`__ in the *Amazon EC2 User Guide*.
+
 **Example 2: To modify an instance's capacity reservation targeting settings**
 
 The following ``modify-instance-capacity-reservation-attributes`` example modifies a stopped instance that targets the specified capacity reservation to launch in any capacity reservation that has matching attributes (instance type, platform, Availability Zone) and that has open instance matching criteria. ::
@@ -26,4 +28,4 @@ Output::
         "Return": true
     }
 
-For more information, see `Modifying an Instance's Capacity Reservation Settings <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-using.html#capacity-reservations-modify-instance>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
+For more information, see `Modify the Capacity Reservation settings of your instance <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/capacity-reservations-modify-instance.html>`__ in the *Amazon EC2 User Guide*.

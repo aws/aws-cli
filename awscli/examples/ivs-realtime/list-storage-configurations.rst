@@ -12,7 +12,7 @@ Output::
                 "arn": "arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/abcdABCDefgh",
                 "name": "test-sc-1",
                 "s3": {
-                    "bucketName": "test-bucket-1-name"
+                    "bucketName": "amzn-s3-demo-bucket-1"
                 },
                 "tags": {}
             },
@@ -20,7 +20,7 @@ Output::
                 "arn": "arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/ABCefgEFGabc",
                 "name": "test-sc-2",
                 "s3": {
-                    "bucketName": "test-bucket-2-name"
+                    "bucketName": "amzn-s3-demo-bucket-2"
                 },
                 "tags": {}
             }

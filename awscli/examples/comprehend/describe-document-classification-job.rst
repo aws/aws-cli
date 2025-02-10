@@ -17,11 +17,11 @@ Output::
             "EndTime": "2023-06-14T17:15:58.582000+00:00",
             "DocumentClassifierArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/mymodel/version/1",
             "InputDataConfig": {
-                "S3Uri": "s3://DOC-EXAMPLE-BUCKET/jobdata/",
+                "S3Uri": "s3://amzn-s3-demo-bucket/jobdata/",
                 "InputFormat": "ONE_DOC_PER_LINE"
             },
             "OutputDataConfig": {
-                "S3Uri": "s3://DOC-EXAMPLE-DESTINATION-BUCKET/testfolder/111122223333-CLN-123456abcdeb0e11022f22a11EXAMPLE/output/output.tar.gz"
+                "S3Uri": "s3://amzn-s3-demo-destination-bucket/testfolder/111122223333-CLN-123456abcdeb0e11022f22a11EXAMPLE/output/output.tar.gz"
             },
             "DataAccessRoleArn": "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-servicerole"
         }

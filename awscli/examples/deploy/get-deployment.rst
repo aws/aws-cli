@@ -25,7 +25,7 @@ Output::
                 "s3Location":  {
                 "bundleType": "zip",
                 "eTag": "\"dd56cfdEXAMPLE8e768f9d77fEXAMPLE\"",
-                "bucket": "CodeDeployDemoBucket",
+                "bucket": "amzn-s3-demo-bucket",
                 "key": "WordPressApp.zip"
                 }
             },

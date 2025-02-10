@@ -14,7 +14,7 @@ Output::
                 "Template": {
                     "connectionConfiguration": {
                         "repositoryEndpointMetadata": {
-                            "BucketName": "my-bucket"
+                            "BucketName": "amzn-s3-demo-bucket"
                         }
                     },
                     "repositoryConfigurations": {
@@ -61,7 +61,7 @@ Output::
         "CustomDocumentEnrichmentConfiguration": {
             "PostExtractionHookConfiguration": {
                 "LambdaArn": "arn:aws:iam::my-account-id:function/my-function-ocr-docs",
-                "S3Bucket": "s3://my-s3-bucket/scanned-image-text-example-docs/function"
+                "S3Bucket": "s3://amzn-s3-demo-bucket/scanned-image-text-example-docs/function"
             },
             "RoleArn": "arn:aws:iam:my-account-id:role/KendraRoleForCDE"
         }

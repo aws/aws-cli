@@ -18,4 +18,4 @@ Output::
         ]
     }
 
-For more information, see `Recover AMIs from the Recycle Bin <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin-working-with-amis.html>`__ in the *Amazon Elastic Compute Cloud User Guide*.
+For more information, see `Recover deleted AMIs from the Recycle Bin <https://docs.aws.amazon.com/ebs/latest/userguide/recycle-bin-working-with-amis.html>`__ in the *Amazon EBS User Guide*.

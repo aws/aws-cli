@@ -32,11 +32,11 @@ Output::
 
 The following ``mv`` command moves a single object to a specified bucket while retaining its original name::
 
-    aws s3 mv s3://mybucket/test.txt s3://mybucket2/
+    aws s3 mv s3://mybucket/test.txt s3://amzn-s3-demo-bucket2/
 
 Output::
 
-    move: s3://mybucket/test.txt to s3://mybucket2/test.txt
+    move: s3://mybucket/test.txt to s3://amzn-s3-demo-bucket2/test.txt
 
 **Example 5: Move all objects and prefixes in a bucket to the local directory**
 
@@ -64,7 +64,7 @@ this example, the directory ``myDir`` has the files ``test1.txt`` and ``test2.jp
 
 Output::
 
-    move: myDir/test1.txt to s3://mybucket2/test1.txt
+    move: myDir/test1.txt to s3://amzn-s3-demo-bucket2/test1.txt
 
 **Example 7: Move all objects and prefixes in a bucket to the local directory, except specified prefix**
 
@@ -72,13 +72,13 @@ When passed with the parameter ``--recursive``, the following ``mv`` command rec
 specified bucket to another bucket while excluding some objects by using an ``--exclude`` parameter.  In this example,
 the bucket ``mybucket`` has the objects ``test1.txt`` and ``another/test1.txt``. ::
 
-    aws s3 mv s3://mybucket/ s3://mybucket2/ \
+    aws s3 mv s3://mybucket/ s3://amzn-s3-demo-bucket2/ \
         --recursive \
         --exclude "mybucket/another/*"
 
 Output::
 
-    move: s3://mybucket/test1.txt to s3://mybucket2/test1.txt
+    move: s3://mybucket/test1.txt to s3://amzn-s3-demo-bucket2/test1.txt
 
 **Example 8: Move an object to the specified bucket and set the ACL**
 

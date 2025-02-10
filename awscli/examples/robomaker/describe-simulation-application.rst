@@ -14,7 +14,7 @@ Output::
     "version": "$LATEST",
     "sources": [
         {
-            "s3Bucket": "my-bucket",
+            "s3Bucket": "amzn-s3-demo-bucket",
             "s3Key": "my-simulation-application.tar.gz",
             "architecture": "X86_64"
         }

@@ -24,4 +24,4 @@ Output::
         }
     }
 
-For more information, see `Prefix list references <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-prefix-lists.html>`__ in the *Transit Gateways Guide*.
+For more information, see `Create a prefix list reference <https://docs.aws.amazon.com/vpc/latest/tgw/create-prefix-list-reference.html>`__ in the *Transit Gateways Guide*.

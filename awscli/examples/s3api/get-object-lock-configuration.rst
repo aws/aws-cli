@@ -3,7 +3,7 @@
 The following ``get-object-lock-configuration`` example retrieves the object lock configuration for the specified bucket. ::
 
     aws s3api get-object-lock-configuration \
-        --bucket my-bucket-with-object-lock
+        --bucket amzn-s3-demo-bucket-with-object-lock
 
 Output::
 

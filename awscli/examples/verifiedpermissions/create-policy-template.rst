@@ -1,12 +1,12 @@
-**Example 1: To create a policy template**
+**To create a policy template**
 
 The following ``create-policy-template`` example creates a policy template with a statement that contains a placeholder for the principal. ::
 
     aws verifiedpermissions create-policy-template \
-        --definition file://template1.txt \
+        --statement file://template1.txt \
         --policy-store-id PSEXAMPLEabcdefg111111
 
-Contents of file ``template1.txt``::
+Contents of ``template1.txt``::
 
     permit(
         principal in ?principal,

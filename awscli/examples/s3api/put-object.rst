@@ -1,13 +1,21 @@
-The following example uses the ``put-object`` command to upload an object to Amazon S3::
+**Example 1: Upload an object to Amazon S3** 
 
-    aws s3api put-object --bucket text-content --key dir-1/my_images.tar.bz2 --body my_images.tar.bz2
+The following ``put-object`` command example uploads an object to Amazon S3. ::
 
-The following example shows an upload of a video file (The video file is
-specified using Windows file system syntax.)::
+    aws s3api put-object \
+        --bucket amzn-s3-demo-bucket \
+        --key my-dir/MySampleImage.png \
+        --body MySampleImage.png
 
-    aws s3api put-object --bucket text-content --key dir-1/big-video-file.mp4 --body e:\media\videos\f-sharp-3-data-services.mp4
+For more information about uploading objects, see `Uploading Objects < http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html>`__ in the *Amazon S3 Developer Guide*.
 
-For more information about uploading objects, see `Uploading Objects`_ in the *Amazon S3 Developer Guide*.
+**Example 2: Upload a video file to Amazon S3** 
 
-.. _`Uploading Objects`: http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html
+The following ``put-object`` command example uploads a video file. ::
 
+    aws s3api put-object \
+        --bucket amzn-s3-demo-bucket \
+        --key my-dir/big-video-file.mp4 \
+        --body /media/videos/f-sharp-3-data-services.mp4
+
+For more information about uploading objects, see `Uploading Objects < http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html>`__ in the *Amazon S3 Developer Guide*.

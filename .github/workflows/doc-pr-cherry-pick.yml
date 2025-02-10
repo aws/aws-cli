@@ -1,0 +1,71 @@
+name: Cherry-Pick PR to v2
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to cherry-pick'
+        type: string
+        required: true
+
+jobs:
+  cherry_pick_and_create_pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "aws-sdk-python-automation"
+          git config user.email "github-aws-sdk-python-automation@amazon.com"
+
+      - name: Get PR commits
+        id: get_commits
+        run: |
+          gh pr checkout $PR_NUMBER
+          PR_COMMITS=$(gh pr view $PR_NUMBER --json commits --jq '.commits[].oid')
+          echo "PR_COMMITS<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$PR_COMMITS" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.inputs.pr_number }}
+
+      - name: Create new branch and cherry-pick commits
+        id: create_branch
+        run: |
+          git fetch origin v2
+          NEW_BRANCH="v2-sync-pr-$PR_NUMBER"
+          git checkout -b $NEW_BRANCH origin/v2
+          for commit in $PR_COMMITS; do
+            git cherry-pick $commit
+          done
+          git push origin $NEW_BRANCH
+          echo "NEW_BRANCH=$NEW_BRANCH" >> $GITHUB_OUTPUT
+        env:
+          PR_NUMBER: ${{ github.event.inputs.pr_number }}
+          PR_COMMITS: ${{ steps.get_commits.outputs.PR_COMMITS}}
+
+      - name: Create new PR
+        run: |
+          PR_TITLE=$(gh pr view $PR_NUMBER --json title --jq '.title')
+          PR_BODY=$(cat << EOF
+          This PR cherry-picks the commits from #$PR_NUMBER to the v2 branch.
+
+          Please complete the following checklist before merging:
+
+          - [ ] Verify that the original PR (#$PR_NUMBER) is approved
+          - [ ] Verify that this merge to v2 is appropriate
+
+          By submitting this pull request, I confirm that you can use, modify, copy, and redistribute this contribution, under the terms of your choice.
+
+          EOF
+          )
+          gh pr create --title "[V2] $PR_TITLE" --body "$PR_BODY" --base v2 --head $NEW_BRANCH
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.inputs.pr_number }}
+          NEW_BRANCH: ${{ steps.create_branch.outputs.NEW_BRANCH}}

@@ -1,10 +1,10 @@
 **To get metadata for a specified stream**
 
-The following ``get-stream-session`` example gets the metadata configuration for the specified channel ARN (Amazon Resource Name) and the specified stream; if streamId is not provided, the most recent stream for the channel is selected. ::
+The following ``get-stream-session`` example gets the metadata configuration for the specified channel ARN (Amazon Resource Name) and the specified stream; if ``streamId`` is not provided, the most recent stream for the channel is selected. ::
 
     aws ivs get-stream-session \
-        --channel-arn arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh \
-        --stream-id "mystream"
+        --channel-arn 'arn:aws:ivs:us-west-2:123456789012:channel/abcdABCDefgh' \
+        --stream-id 'mystream'
 
 Output::
 
@@ -18,10 +18,6 @@ Output::
                 "latencyMode": "LOW",
                 "type": "STANDARD",
                 "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABcdef34ghIJ",
-                "srt": {
-                    "endpoint": "a1b2c3d4e5f6.srt.live-video.net",
-                    "passphrase": "AB1C2defGHijkLMNo3PqQRstUvwxyzaBCDEfghh4ijklMN5opqrStuVWxyzAbCDEfghIJ"
-                },
                 "ingestEndpoint": "a1b2c3d4e5f6.global-contribute.live-video.net",
                 "playbackUrl": "url-string",
                 "authorized": false,
@@ -29,22 +25,50 @@ Output::
                 "preset": ""
             },
             "ingestConfiguration": {
+                "audio": {
+                    "channels": 2,
+                    "codec": "mp4a.40.2",
+                    "sampleRate": 8000,
+                    "targetBitrate": 46875,
+                    "track": "Track0"
+                },
                 "video": {
                     "avcProfile": "Baseline",
                     "avcLevel": "4.2",
                     "codec": "avc1.42C02A",
                     "encoder": "Lavf58.45.100",
+                    "level": "4.2",
+                    "profile": "Baseline",
                     "targetBitrate": 8789062,
                     "targetFramerate": 60,
+                    "track": "Track0",
                     "videoHeight": 1080,
                     "videoWidth": 1920
-                },
-                "audio": {
-                    "codec": "mp4a.40.2",
-                    "targetBitrate": 46875,
-                    "sampleRate": 8000,
-                    "channels": 2
                 }
+            },
+            "ingestConfigurations": {
+                "audioConfigurations": [
+                    {
+                        "channels": 2,
+                        "codec": "mp4a.40.2",
+                        "sampleRate": 8000,
+                        "targetBitrate": 46875,
+                        "track": "Track0"
+                    }
+                ],
+                "videoConfigurations": [
+                    {
+                        "codec": "avc1.42C02A",
+                        "encoder": "Lavf58.45.100",
+                        "level": "4.2",
+                        "profile": "Baseline",
+                        "targetBitrate": 8789062,
+                        "targetFramerate": 60,
+                        "track": "Track0",
+                        "videoHeight": 1080,
+                        "videoWidth": 1920
+                    }
+                ]
             },
             "recordingConfiguration": {
                 "arn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABcdef34ghIJ",
@@ -76,6 +100,17 @@ Output::
                 }
             },
             "truncatedEvents": [
+                {
+                    "code": "StreamTakeoverInvalidPriority",
+                    "name": "Stream Takeover Failure",
+                    "type": "IVS Stream State Change",
+                    "eventTime": "2023-06-26T19:09:48+00:00"
+                },
+                {
+                    "name": "Stream Takeover",
+                    "type": "IVS Stream State Change",
+                    "eventTime": "2023-06-26T19:09:47+00:00"
+                },
                 {
                     "name": "Recording Start",
                     "type": "IVS Recording State Change",

@@ -12,4 +12,4 @@ Output::
         "Return": "true"
     }
 
-For more information, see `Deprecate an AMI <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-deprecate.html#deprecate-ami>` in the *Amazon EC2 User Guide*.
+For more information, see `Deprecate an AMI <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-deprecate.html>`__ in the *Amazon EC2 User Guide*.

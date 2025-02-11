@@ -504,7 +504,7 @@ class Module:
         Recurse over all sections in the parent template looking for
         GetAtts and Subs that reference a module output value.
         """
-        sections = [RESOURCES, OUTPUTS]  # TODO: Any others?
+        sections = [RESOURCES, OUTPUTS, MODULES]
         for section in sections:
             if section not in self.template:
                 continue

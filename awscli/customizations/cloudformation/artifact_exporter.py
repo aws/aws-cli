@@ -661,23 +661,28 @@ class Template(object):
     def export(self):
         """
         Exports the local artifacts referenced by the given template to an
-        s3 bucket.
+        s3 bucket, and/or packages a template with module.
 
-        :return: The template with references to artifacts that have been
-        exported to s3.
+        :return: The modified template (which is altered in place)
         """
 
         # Process constants
-        constants = module_constants.process_constants(self.template_dict)
-        if constants is not None:
-            module_constants.replace_constants(constants, self.template_dict)
+        try:
+            constants = module_constants.process_constants(self.template_dict)
+            if constants is not None:
+                module_constants.replace_constants(constants, self.template_dict)
+        except Exception as e:
+            msg=f"Failed to process Constants section: {e}"
+            LOG.exception(msg)
+            raise exceptions.InvalidModuleError(msg=msg)
 
         # Process modules
         try:
             self.template_dict = modules.process_module_section(
                     self.template_dict, 
                     self.template_dir,
-                    self.module_parent_path)
+                    self.module_parent_path, 
+                    None)
         except Exception as e:
             msg=f"Failed to process Modules section: {e}"
             LOG.exception(msg)
@@ -685,22 +690,11 @@ class Template(object):
 
         self.template_dict = self.export_metadata(self.template_dict)
 
+        self.template_dict = self.export_global_artifacts(self.template_dict)
+
         if RESOURCES not in self.template_dict:
             return self.template_dict
 
-        # Process modules that are specified as Resources, not in Modules
-        try:
-            self.template_dict = modules.process_resources_section(
-                    self.template_dict, 
-                    self.template_dir, 
-                    self.module_parent_path, 
-                    None)
-        except Exception as e:
-            msg=f"Failed to process modules in Resources: {e}"
-            LOG.exception(msg)
-            raise exceptions.InvalidModuleError(msg=msg)
-
-        self.template_dict = self.export_global_artifacts(self.template_dict)
         self.export_resources(self.template_dict[RESOURCES])
 
         return self.template_dict

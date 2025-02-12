@@ -9,6 +9,21 @@ Parameters:
   PublicCidrBlocks:
     Type: CommaDelimitedList
 
+Modules:
+  PublicSubnet:
+    Map: !Ref PublicCidrBlocks
+    Source: ./subnet-module.yaml
+    Properties:
+      SubnetCidrBlock: $MapValue
+      AZSelection: $MapIndex
+
+  PrivateSubnet:
+    Map: !Ref PrivateCidrBlocks
+    Source: ./subnet-module.yaml
+    Properties:
+      SubnetCidrBlock: $MapValue
+      AZSelection: $MapIndex
+
 Resources:
 
   VPC:
@@ -19,19 +34,4 @@ Resources:
       EnableDnsSupport: true
       InstanceTenancy: default
 
-  PublicSubnet:
-    Type: LocalModule
-    Map: !Ref PublicCidrBlocks
-    Source: ./subnet-module.yaml
-    Properties:
-      SubnetCidrBlock: $MapValue
-      AZSelection: $MapIndex
-
-  PrivateSubnet:
-    Type: LocalModule
-    Map: !Ref PrivateCidrBlocks
-    Source: ./subnet-module.yaml
-    Properties:
-      SubnetCidrBlock: $MapValue
-      AZSelection: $MapIndex
 

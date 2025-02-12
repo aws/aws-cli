@@ -1,20 +1,6 @@
 Resources:
-  ATable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      BillingMode: PAY_PER_REQUEST
-      TableName: table-a
-      AttributeDefinitions:
-      - AttributeName: id
-        AttributeType: S
-      KeySchema:
-      - AttributeName: id
-        KeyType: HASH
-  ATestResourceConditional:
+  AHideMeFoo:
     Type: A::B::C
-    Properties:
-      Show: Foo
-      ShowA: A
   ALambdaPolicy:
     Type: AWS::IAM::RolePolicy
     Metadata:
@@ -37,8 +23,22 @@ Resources:
             - Arn
       PolicyName: table-a-policy
       RoleName: my-role
-  AHideMeFoo:
+  ATable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      TableName: table-a
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+  ATestResourceConditional:
     Type: A::B::C
+    Properties:
+      Show: Foo
+      ShowA: A
   BTable:
     Type: AWS::DynamoDB::Table
     Properties:

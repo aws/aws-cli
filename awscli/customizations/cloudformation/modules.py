@@ -17,11 +17,10 @@ This file implements local module support for the package command
 See tests/unit/customizations/cloudformation/modules for examples of what the
 Modules section of a template looks like.
 
-Modules can be referenced in a new Modules section in the template, or they can
-be referenced as Resources with the Type LocalModule.  Modules have a Source
-attribute pointing to a local file, a Properties attribute that corresponds to
-Parameters in the modules, and an Overrides attribute that can override module
-output.
+Modules are imported in a new Modules section in the template. Modules have a
+Source attribute pointing to a local file, a Properties attribute that
+corresponds to Parameters in the modules, and an Overrides attribute that can
+override module output.
 
 The `Modules` section.
 
@@ -37,29 +36,13 @@ Modules:
           OverrideMe: def
 ```
 
-A module configured as a `Resource`.
-
-```yaml
-Resources:
-  Content:
-    Type: LocalModule
-    Source: ./module.yaml
-    Properties:
-      Name: foo
-    Overrides:
-      Bucket:
-        Properties:
-          OverrideMe: def
-```
-
 A module is itself basically a CloudFormation template, with a Parameters
 section and Resources that are injected into the parent template. The
 Properties defined in the Modules section correspond to the Parameters in the
 module. These modules operate in a similar way to registry modules.
 
 The name of the module in the Modules section is used as a prefix to logical
-ids that are defined in the module. Or if the module is referenced in the Type
-attribute of a Resource, the logical id of the resource is used as the prefix.
+ids that are defined in the module. 
 
 In addition to the parent setting Properties, all attributes of the module can
 be overridden with Overrides, which require the consumer to know how the module
@@ -94,6 +77,21 @@ Parameters:
     Type: CommaDelimitedList
   PublicCidrBlocks:
     Type: CommaDelimitedList
+Modules:
+  PublicSubnet:
+    Map: !Ref PublicCidrBlocks
+    Source: ./subnet-module.yaml
+    Properties:
+      SubnetCidrBlock: $MapValue
+      AZSelection: $MapIndex
+      VpcId: !Ref VPC
+  PrivateSubnet:
+    Map: !Ref PrivateCidrBlocks
+    Source: ./subnet-module.yaml
+    Properties:
+      SubnetCidrBlock: $MapValue
+      AZSelection: $MapIndex
+      VpcId: !Ref VPC
 Resources:
   VPC:
     Type: AWS::EC2::VPC
@@ -102,20 +100,6 @@ Resources:
       EnableDnsHostnames: true
       EnableDnsSupport: true
       InstanceTenancy: default
-  PublicSubnet:
-    Type: LocalModule
-    Map: !Ref PublicCidrBlocks
-    Source: ./subnet-module.yaml
-    Properties:
-      SubnetCidrBlock: $MapValue
-      AZSelection: $MapIndex
-  PrivateSubnet:
-    Type: LocalModule
-    Map: !Ref PrivateCidrBlocks
-    Source: ./subnet-module.yaml
-    Properties:
-      SubnetCidrBlock: $MapValue
-      AZSelection: $MapIndex
 ```
 
 """
@@ -175,24 +159,6 @@ CONDITION = "Condition"
 IF = "Fn::If"
 
 
-def process_module_section(template, base_path, parent_path):
-    "Recursively process the Modules section of a template"
-    if MODULES in template:
-        if not isdict(template[MODULES]):
-            msg = "Modules section is invalid"
-            raise exceptions.InvalidModuleError(msg=msg)
-
-        # Process each Module node separately
-        for k, v in template[MODULES].items():
-            module = make_module(template, k, v, base_path, parent_path)
-            template = module.process()
-
-        # Remove the Modules section from the template
-        del template[MODULES]
-
-    return template
-
-
 def make_module(template, name, config, base_path, parent_path):
     "Create an instance of a module based on a template and the module config"
     module_config = {}
@@ -240,9 +206,16 @@ def map_placeholders(i, token, val):
     return r
 
 
-# pylint: disable=too-many-locals,too-many-nested-blocks
-def process_resources_section(template, base_path, parent_path, parent_module):
-    "Recursively process the Resources section of the template"
+def process_module_section(template, base_path, parent_path, parent_module):
+    "Recursively process the Modules section of a template"
+
+    if MODULES not in template:
+        return template
+
+    if not isdict(template[MODULES]):
+        msg = "Modules section is invalid"
+        raise exceptions.InvalidModuleError(msg=msg)
+
     if parent_module is None:
         # Make a fake Module instance to handle find_ref for Maps
         # The only valid way to do this at the template level
@@ -252,42 +225,52 @@ def process_resources_section(template, base_path, parent_path, parent_module):
         if PARAMETERS in template:
             parent_module.params = template[PARAMETERS]
 
-    for k, v in template[RESOURCES].copy().items():
-        if TYPE in v and v[TYPE] == LOCAL_MODULE:
-            # First, pre-process local modules that are looping over a list
-            if MAP in v:
-                # Expect Map to be a CSV or ref to a CSV
-                m = v[MAP]
-                if isdict(m) and REF in m:
-                    if parent_module is None:
-                        msg = "Map is only valid in a module"
-                        raise exceptions.InvalidModuleError(msg=msg)
-                    m = parent_module.find_ref(m[REF])
-                    if m is None:
-                        msg = f"{k} has an invalid Map Ref"
-                        raise exceptions.InvalidModuleError(msg=msg)
-                tokens = m.split(",")  # TODO - use an actual csv parser?
-                for i, token in enumerate(tokens):
-                    # Make a new resource
-                    logical_id = f"{k}{i}"
-                    resource = copy.deepcopy(v)
-                    del resource[MAP]
-                    # Replace $Map and $Index placeholders
-                    for prop, val in resource[PROPERTIES].copy().items():
-                        resource[PROPERTIES][prop] = map_placeholders(
+    # First, pre-process local modules that are looping over a list
+    process_module_maps(template, parent_module)
+
+    # Process each Module node separately after processing Maps
+    modules = template[MODULES]
+    for k, v in modules.items():
+        module = make_module(template, k, v, base_path, parent_path)
+        template = module.process()
+
+    # Remove the Modules section from the template
+    del template[MODULES]
+
+    # Lift the created resources up to the parent
+    for k, v in template[RESOURCES].items():
+        parent_module.template[RESOURCES][parent_module.name + k] = v
+
+    return template
+
+
+def process_module_maps(template, parent_module):
+    "Loop over Maps in modules"
+    modules = template[MODULES]
+    for k, v in modules.copy().items():
+        if MAP in v:
+            # Expect Map to be a CSV or ref to a CSV
+            m = v[MAP]
+            if isdict(m) and REF in m:
+                m = parent_module.find_ref(m[REF])
+                if m is None:
+                    msg = f"{k} has an invalid Map Ref"
+                    raise exceptions.InvalidModuleError(msg=msg)
+            tokens = m.split(",")
+            for i, token in enumerate(tokens):
+                # Make a new module
+                module_id = f"{k}{i}"
+                copied_module = copy.deepcopy(v)
+                del copied_module[MAP]
+                # Replace $Map and $Index placeholders
+                if PROPERTIES in copied_module:
+                    for prop, val in copied_module[PROPERTIES].copy().items():
+                        copied_module[PROPERTIES][prop] = map_placeholders(
                             i, token, val
                         )
-                    template[RESOURCES][logical_id] = resource
+                modules[module_id] = copied_module
 
-                del template[RESOURCES][k]
-
-    # Start over after pre-processing maps
-    for k, v in template[RESOURCES].copy().items():
-        if TYPE in v and v[TYPE] == LOCAL_MODULE:
-            module = make_module(template, k, v, base_path, parent_path)
-            template = module.process()
-            del template[RESOURCES][k]
-    return template
+            del modules[k]
 
 
 def isdict(v):
@@ -474,14 +457,10 @@ class Module:
 
         # Recurse on nested modules
         bp = os.path.dirname(self.source)
-        section = ""
         try:
-            section = MODULES
-            process_module_section(module_dict, bp, self.source)
-            section = RESOURCES
-            process_resources_section(module_dict, bp, self.source, self)
+            process_module_section(module_dict, bp, self.source, self)
         except Exception as e:
-            msg = f"Failed to process {self.source} {section} section: {e}"
+            msg = f"Failed to process {self.source} Modules section: {e}"
             LOG.exception(msg)
             raise exceptions.InvalidModuleError(msg=msg)
 
@@ -659,9 +638,7 @@ class Module:
         # We need the container for the first iteration of the recursion
         container[RESOURCES] = self.resources
         self.resolve(logical_id, resource, container, RESOURCES)
-
         self.template[RESOURCES][self.name + logical_id] = resource
-
         self.process_resource_conditions()
 
     def process_resource_conditions(self):
@@ -827,6 +804,41 @@ class Module:
         if found is not None:
             d[n] = found
 
+    def resolve_sub_ref(self, w):
+        "Resolve a ref inside of a Sub string"
+        resolved = "${" + w + "}"
+        found = self.find_ref(w)
+        if found is not None:
+            if isinstance(found, str):
+                resolved = found
+            else:
+                if REF in found:
+                    resolved = "${" + found[REF] + "}"
+                elif SUB in found:
+                    resolved = found[SUB]
+                elif GETATT in found:
+                    tokens = found[GETATT]
+                    if len(tokens) < 2:
+                        msg = (
+                            "Invalid Sub referencing a GetAtt. "
+                            + f"{w}: {found}"
+                        )
+                        raise exceptions.InvalidModuleError(msg=msg)
+                    resolved = "${" + ".".join(tokens) + "}"
+        return resolved
+
+    def resolve_sub_getatt(self, w):
+        "Resolve a GetAtt ('A.B') inside a Sub string"
+        resolved = "${" + w + "}"
+        tokens = w.split(".", 1)
+        if len(tokens) < 2:
+            msg = f"GetAtt {w} has unexpected number of tokens"
+            raise exceptions.InvalidModuleError(msg=msg)
+        if tokens[0] in self.resources:
+            tokens[0] = self.name + tokens[0]
+        resolved = "${" + tokens[0] + "." + tokens[1] + "}"
+        return resolved
+
     # pylint: disable=too-many-branches,unused-argument
     def resolve_sub(self, v, d, n):
         """
@@ -844,36 +856,9 @@ class Module:
             elif word.t == WordType.AWS:
                 sub += "${AWS::" + word.w + "}"
             elif word.t == WordType.REF:
-                resolved = "${" + word.w + "}"
-                found = self.find_ref(word.w)
-                if found is not None:
-                    if isinstance(found, str):
-                        resolved = found
-                    else:
-                        if REF in found:
-                            resolved = "${" + found[REF] + "}"
-                        elif SUB in found:
-                            resolved = found[SUB]
-                        elif GETATT in found:
-                            tokens = found[GETATT]
-                            if len(tokens) < 2:
-                                msg = (
-                                    "Invalid Sub referencing a GetAtt. "
-                                    + f"{word.w}: {found}"
-                                )
-                                raise exceptions.InvalidModuleError(msg=msg)
-                            resolved = "${" + ".".join(tokens) + "}"
-                sub += resolved
+                sub += self.resolve_sub_ref(word.w)
             elif word.t == WordType.GETATT:
-                resolved = "${" + word.w + "}"
-                tokens = word.w.split(".", 1)
-                if len(tokens) < 2:
-                    msg = f"GetAtt {word.w} has unexpected number of tokens"
-                    raise exceptions.InvalidModuleError(msg=msg)
-                if tokens[0] in self.resources:
-                    tokens[0] = self.name + tokens[0]
-                resolved = "${" + tokens[0] + "." + tokens[1] + "}"
-                sub += resolved
+                sub += self.resolve_sub_getatt(word.w)
 
         need_sub = is_sub_needed(sub)
         if need_sub:

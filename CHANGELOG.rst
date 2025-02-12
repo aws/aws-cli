@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.37.19
+=======
+
+* api-change:``b2bi``: Allow spaces in the following fields in the Partnership resource: ISA 06 - Sender ID, ISA 08 - Receiver ID, GS 02 - Application Sender Code, GS 03 - Application Receiver Code
+* api-change:``bedrock-agent``: This releases adds the additionalModelRequestFields field to the CreateAgent and UpdateAgent operations. Use additionalModelRequestFields to specify  additional inference parameters for a model beyond the base inference parameters.
+* api-change:``bedrock-agent-runtime``: This releases adds the additionalModelRequestFields field to the InvokeInlineAgent operation. Use additionalModelRequestFields to specify  additional inference parameters for a model beyond the base inference parameters.
+* api-change:``codebuild``: Add note for the RUNNER_BUILDKITE_BUILD buildType.
+* api-change:``fsx``: Support for in-place Lustre version upgrades
+* api-change:``medialive``: Adds a RequestId parameter to all MediaLive Workflow Monitor create operations.  The RequestId parameter allows idempotent operations.
+* api-change:``opensearchserverless``: Custom OpenSearchServerless Entity ID for SAML Config.
+* api-change:``polly``: Added support for the new voice - Jasmine (en-SG). Jasmine is available as a Neural voice only.
+
+
 1.37.18
 =======
 

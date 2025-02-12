@@ -172,7 +172,7 @@ class ProcessBenchmarker(object):
                 # Collect the memory and cpu usage.
                 memory_used = process_to_measure.memory_info().rss
                 cpu_percent = process_to_measure.cpu_percent()
-            except (psutil.AccessDenied, psutil.ZombieProcess):
+            except (psutil.AccessDenied, psutil.ZombieProcess, psutil.NoSuchProcess):
                 # Trying to get process information from a closed or
                 # zombie process will result in corresponding exceptions.
                 break
@@ -352,14 +352,14 @@ class BenchmarkHarness(object):
 
         try:
             if pid == 0:
-                with open(child_output_path, 'w') as out, open(child_err_path, 'w') as err:
+                # with open(child_output_path, 'w') as out, open(child_err_path, 'w') as err:
                     # redirect standard output of the child process to a file
-                    os.dup2(out.fileno(), sys.stdout.fileno())
-                    os.dup2(err.fileno(), sys.stderr.fileno())
+                    # os.dup2(out.fileno(), sys.stdout.fileno())
+                    # os.dup2(err.fileno(), sys.stderr.fileno())
                     # execute command on child process
-                    self._run_command_with_metric_hooks(benchmark['command'], metrics_path)
+                self._run_command_with_metric_hooks(benchmark['command'], metrics_path)
                     # terminate the child process
-                    os._exit(0)
+                os._exit(0)
             # benchmark child process from parent process until child terminates
             samples = process_benchmarker.benchmark_process(
                 pid,

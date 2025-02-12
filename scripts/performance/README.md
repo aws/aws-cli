@@ -21,7 +21,7 @@ such as service latency or network throughput.
 The following example command runs the benchmarks defined in `benchmarks.json`, 
 and executes each command 2 times.
 
-`./run-benchmark --result-dir ./results --num-iterations 2`
+`./run-benchmarks --num-iterations 2`
 
 An example output for this command is shown below.
 

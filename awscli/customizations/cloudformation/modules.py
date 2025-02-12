@@ -17,10 +17,9 @@ This file implements local module support for the package command
 See tests/unit/customizations/cloudformation/modules for examples of what the
 Modules section of a template looks like.
 
-Modules are imported in a new Modules section in the template. Modules have a
-Source attribute pointing to a local file, a Properties attribute that
-corresponds to Parameters in the modules, and an Overrides attribute that can
-override module output.
+Modules are imported with a Source attribute pointing to a local file, a
+Properties attribute that corresponds to Inputs in the modules, and an
+Overrides attribute that can override module output.
 
 The `Modules` section.
 
@@ -36,22 +35,22 @@ Modules:
           OverrideMe: def
 ```
 
-A module is itself basically a CloudFormation template, with a Parameters
+A module is itself basically a CloudFormation template, with an Inputs
 section and Resources that are injected into the parent template. The
-Properties defined in the Modules section correspond to the Parameters in the
+Properties defined in the Modules section correspond to the Inputs in the
 module. These modules operate in a similar way to registry modules.
 
 The name of the module in the Modules section is used as a prefix to logical
-ids that are defined in the module. 
+ids that are defined in the module.
 
 In addition to the parent setting Properties, all attributes of the module can
 be overridden with Overrides, which require the consumer to know how the module
 is structured. This "escape hatch" is considered a first class citizen in the
 design, to avoid excessive Parameter definitions to cover every possible use
 case. One caveat is that using Overrides is less stable, since the module
-author might change logical ids. Using module Outputs can mitigate this.
+author might change logical ids. Using module References can mitigate this.
 
-Module Parameters (set by Properties in the parent) are handled with Refs,
+Module Inputs (set by Properties in the parent) are referenced with Refs,
 Subs, and GetAtts in the module. These are handled in a way that fixes
 references to match module prefixes, fully resolving values that are actually
 strings and leaving others to be resolved at deploy time.
@@ -59,12 +58,13 @@ strings and leaving others to be resolved at deploy time.
 Modules can contain other modules, with no enforced limit to the levels of
 nesting.
 
-Modules can define Outputs, which are key-value pairs that can be referenced by
-the parent.
+Modules can define References, which are key-value pairs that can be referenced
+by the parent using Sub and GetAtt.
 
 When using modules, you can use a comma-delimited list to create a number of
-similar resources. This is simpler than using `Fn::ForEach` but has the
-limitation of requiring the list to be resolved at build time.  See
+similar resources with the Map attribute. This is simpler than using
+`Fn::ForEach` but has the limitation of requiring the list to be resolved at
+build time.  See
 tests/unit/customizations/cloudformation/modules/vpc-module.yaml.
 
 An example of a Map is defining subnets in a VPC.
@@ -157,6 +157,8 @@ INDEX_PLACEHOLDER = "$MapIndex"
 CONDITIONS = "Conditions"
 CONDITION = "Condition"
 IF = "Fn::If"
+INPUTS = "Inputs"
+REFERENCES = "References"
 
 
 def make_module(template, name, config, base_path, parent_path):
@@ -222,8 +224,14 @@ def process_module_section(template, base_path, parent_path, parent_module):
         # is to specify a default for a Parameter, since we need to
         # resolve the actual value client-side
         parent_module = Module(template, {NAME: "", SOURCE: ""})
+
+        # The actual parent template will have Parameters
         if PARAMETERS in template:
-            parent_module.params = template[PARAMETERS]
+            parent_module.inputs = template[PARAMETERS]
+
+        # A module will have Inputs instead of Parameters
+        if INPUTS in template:
+            parent_module.inputs = template[INPUTS]
 
     # First, pre-process local modules that are looping over a list
     process_module_maps(template, parent_module)
@@ -379,11 +387,11 @@ class Module:
         # Resources defined in the module
         self.resources = {}
 
-        # Parameters defined in the module
-        self.params = {}
+        # Input parameters defined in the module
+        self.inputs = {}
 
         # Outputs defined in the module
-        self.outputs = {}
+        self.references = {}
 
         # Conditions defined in the module
         self.conditions = {}
@@ -418,11 +426,11 @@ class Module:
         else:
             self.resources = module_dict[RESOURCES]
 
-        if PARAMETERS in module_dict:
-            self.params = module_dict[PARAMETERS]
+        if INPUTS in module_dict:
+            self.inputs = module_dict[INPUTS]
 
-        if OUTPUTS in module_dict:
-            self.outputs = module_dict[OUTPUTS]
+        if REFERENCES in module_dict:
+            self.references = module_dict[REFERENCES]
 
         # Read the Conditions section and store it as a dict of string:boolean
         if CONDITIONS in module_dict:
@@ -469,30 +477,30 @@ class Module:
         for logical_id, resource in self.resources.items():
             self.process_resource(logical_id, resource)
 
-        self.process_outputs()
+        self.process_references()
 
         return self.template
 
-    def process_outputs(self):
+    def process_references(self):
         """
-        Fix parent template output references.
+        Fix parent template GetAtt and Sub that point to module references.
 
         In the parent you can !GetAtt ModuleName.OutputName
         This will be converted so that it's correct in the packaged template.
 
         Recurse over all sections in the parent template looking for
-        GetAtts and Subs that reference a module output value.
+        GetAtts and Subs that reference a module References value.
         """
-        sections = [RESOURCES, OUTPUTS, MODULES]
+        sections = [RESOURCES, REFERENCES, MODULES]
         for section in sections:
             if section not in self.template:
                 continue
             for k, v in self.template[section].items():
-                self.resolve_outputs(k, v, self.template, section)
+                self.resolve_references(k, v, self.template, section)
 
-    def resolve_outputs(self, k, v, d, n):
+    def resolve_references(self, k, v, d, n):
         """
-        Recursively resolve GetAtts and Subs that reference module outputs.
+        Recursively resolve GetAtts and Subs that reference module references.
 
         :param name The name of the output
         :param output The output dict
@@ -510,14 +518,14 @@ class Module:
         else:
             if isdict(v):
                 for k2, v2 in v.copy().items():
-                    self.resolve_outputs(k2, v2, d[n], k)
+                    self.resolve_references(k2, v2, d[n], k)
             elif isinstance(v, list):
                 idx = -1
                 for v2 in v:
                     idx = idx + 1
                     if isdict(v2):
                         for k3, v3 in v2.copy().items():
-                            self.resolve_outputs(k3, v3, v, idx)
+                            self.resolve_references(k3, v3, v, idx)
 
     def resolve_output_sub(self, v, d, n):
         "Resolve a Sub that refers to a module output"
@@ -539,8 +547,8 @@ class Module:
                     msg = f"GetAtt {word.w} has unexpected number of tokens"
                     raise exceptions.InvalidModuleError(msg=msg)
                 # !Sub ${Content.BucketArn} -> !Sub ${ContentBucket.Arn}
-                if tokens[0] == self.name and tokens[1] in self.outputs:
-                    output = self.outputs[tokens[1]]
+                if tokens[0] == self.name and tokens[1] in self.references:
+                    output = self.references[tokens[1]]
                     if GETATT in output:
                         getatt = output[GETATT]
                         resolved = "${" + self.name + ".".join(getatt) + "}"
@@ -567,8 +575,8 @@ class Module:
             msg = f"GetAtt {v} invalid"
             raise exceptions.InvalidModuleError(msg=msg)
 
-        if v[0] == self.name and v[1] in self.outputs:
-            output = self.outputs[v[1]]
+        if v[0] == self.name and v[1] in self.references:
+            output = self.references[v[1]]
             if REF in output:
                 ref = output[REF]
                 d[n] = {REF: self.name + ref}
@@ -633,7 +641,7 @@ class Module:
             self.process_overrides(logical_id, resource, a)
 
         # Resolve refs, subs, and getatts
-        #    (Process module Parameters and parent Properties)
+        #    (Process module Inputs and parent Properties)
         container = {}
         # We need the container for the first iteration of the recursion
         container[RESOURCES] = self.resources
@@ -679,7 +687,7 @@ class Module:
 
         v = Visitor(self.resources)
         v.visit(vf)
-        v = Visitor(self.outputs)
+        v = Visitor(self.references)
         v.visit(vf)
 
     def process_overrides(self, logical_id, resource, attr_name):
@@ -890,15 +898,15 @@ class Module:
         :return The referenced element or None
         """
         if name in self.props:
-            if name not in self.params:
+            if name not in self.inputs:
                 # The parent tried to set a property that doesn't exist
-                # in the Parameters section of this module
-                msg = f"{name} not found in module Parameters: {self.source}"
+                # in the Inputs section of this module
+                msg = f"{name} not found in module Inputs: {self.source}"
                 raise exceptions.InvalidModuleError(msg=msg)
             return self.props[name]
 
-        if name in self.params:
-            param = self.params[name]
+        if name in self.inputs:
+            param = self.inputs[name]
             if DEFAULT in param:
                 # Use the default value of the Parameter
                 return param[DEFAULT]

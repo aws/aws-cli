@@ -125,11 +125,13 @@ To use IAM Roles Anywhere, you must first complete the following:
 * Setup your trust anchors and profiles by following the `IAM Roles Anywhere documentation <https://docs.aws.amazon.com/rolesanywhere/latest/userguide/getting-started.html>`
 
 Once you complete the pre-requisites, you can test your setup with the following::
-    docker run --rm -v </path/to/your/certificates>:</path/to/expose/your/certificates>:ro --entrypoint aws_signing_helper amazon/aws-cli --region <an AWS region code> --certificate </path/to/expose/your/certificates>/<yourcert.pem> --private-key </path/to/expose/your/certificates>/<yourprivatekey.pem> --profile-arn <your profile ARN> --role-arn <an AWS IAM ROLE ARN> --trust-anchor-arn <your trust anchor ARN>
+    docker run --rm -v </path/to/your/certificates>:</path/to/expose/your/certificates>:ro --entrypoint /usr/local/bin/aws_signing_helper amazon/aws-cli --region <an AWS region code> --certificate </path/to/expose/your/certificates>/<yourcert.pem> --private-key </path/to/expose/your/certificates>/<yourprivatekey.pem> --profile-arn <your profile ARN> --role-arn <an AWS IAM ROLE ARN> --trust-anchor-arn <your trust anchor ARN>
 
-To use it with the AWS CLI, first create a config file like this::
+To use it with the AWS CLI, first create a configuration file like this::
     [profile default]
-    credential_process = /usr/bin/aws_signing_helper --region <an AWS region code> --certificate </path/to/expose/your/certificates>/<yourcert.pem> --private-key </path/to/expose/your/certificates>/<yourprivatekey.pem> --profile-arn <your profile ARN> --role-arn <an AWS IAM ROLE ARN> --trust-anchor-arn <your trust anchor ARN>
+    credential_process = /usr/local/bin/aws_signing_helper --region <an AWS region code> --certificate </path/to/expose/your/certificates>/<yourcert.pem> --private-key </path/to/expose/your/certificates>/<yourprivatekey.pem> --profile-arn <your profile ARN> --role-arn <an AWS IAM ROLE ARN> --trust-anchor-arn <your trust anchor ARN>
+
+and place it in ~/.aws/config. If you place this else where, you will need to use that directory path for the next step.
 
 Then you can test an AWS command, like the following::
     docker run --rm -v </path/to/your/certificates>:</path/to/expose/your/certificates>:ro -v <path to your AWS config directory>:/root/.aws:ro amazon/aws-cli s3api list-buckets

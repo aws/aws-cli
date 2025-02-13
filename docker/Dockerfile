@@ -22,7 +22,7 @@ RUN yum update -y \
   && yum clean all
 COPY --from=installer /usr/local/aws-cli/ /usr/local/aws-cli/
 COPY --from=installer /aws-cli-bin/ /usr/local/bin/
-COPY --from=installer /rolesanywhere-credential-helper/build/bin/* /usr/bin/
+COPY --from=installer /rolesanywhere-credential-helper/build/bin/* /usr/local/bin/
 
 WORKDIR /aws
 ENTRYPOINT ["/usr/local/bin/aws"]

@@ -109,7 +109,6 @@ Resources:
 import copy
 import logging
 import os
-import urllib
 from collections import OrderedDict
 
 from awscli.customizations.cloudformation import exceptions
@@ -128,6 +127,10 @@ from awscli.customizations.cloudformation.module_conditions import (
     parse_conditions,
 )
 from awscli.customizations.cloudformation.module_visitor import Visitor
+from awscli.customizations.cloudformation.module_read import (
+    read_source,
+    is_url,
+)
 
 LOG = logging.getLogger(__name__)
 
@@ -159,6 +162,8 @@ CONDITION = "Condition"
 IF = "Fn::If"
 INPUTS = "Inputs"
 REFERENCES = "References"
+AWSTOOLSMETRICS = "AWSToolsMetrics"
+CLOUDFORMATION_PACKAGE = "CloudForCloudFormationPackage"
 
 
 def make_module(template, name, config, base_path, parent_path):
@@ -208,6 +213,19 @@ def map_placeholders(i, token, val):
     return r
 
 
+def add_metrics_metadata(template):
+    "Add metadata to the template so we know modules were used"
+    if METADATA not in template:
+        template[METADATA] = {}
+    metadata = template[METADATA]
+    if AWSTOOLSMETRICS not in metadata:
+        metadata[AWSTOOLSMETRICS] = {}
+    metrics = metadata[AWSTOOLSMETRICS]
+    if CLOUDFORMATION_PACKAGE not in metrics:
+        metrics[CLOUDFORMATION_PACKAGE] = {}
+    metrics[CLOUDFORMATION_PACKAGE]["Modules"] = "true"
+
+
 def process_module_section(template, base_path, parent_path, parent_module):
     "Recursively process the Modules section of a template"
 
@@ -219,6 +237,9 @@ def process_module_section(template, base_path, parent_path, parent_module):
         raise exceptions.InvalidModuleError(msg=msg)
 
     if parent_module is None:
+
+        # This is the actual parent template, not a module
+
         # Make a fake Module instance to handle find_ref for Maps
         # The only valid way to do this at the template level
         # is to specify a default for a Parameter, since we need to
@@ -284,32 +305,6 @@ def process_module_maps(template, parent_module):
 def isdict(v):
     "Returns True if the type is a dict or OrderedDict"
     return isinstance(v, (dict, OrderedDict))
-
-
-def is_url(p):
-    "Returns true if the path looks like a URL instead of a local file"
-    return p.startswith("https")
-
-
-def read_source(source):
-    "Read the source file and return the content as a string"
-
-    if not isinstance(source, str):
-        raise exceptions.InvalidModulePathError(source=source)
-
-    if is_url(source):
-        try:
-            with urllib.request.urlopen(source) as response:
-                return response.read()
-        except Exception as e:
-            print(e)
-            raise exceptions.InvalidModulePathError(source=source)
-
-    if not os.path.isfile(source):
-        raise exceptions.InvalidModulePathError(source=source)
-
-    with open(source, "r", encoding="utf-8") as s:
-        return s.read()
 
 
 def merge_props(original, overrides):

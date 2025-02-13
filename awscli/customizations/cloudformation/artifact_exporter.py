@@ -618,6 +618,7 @@ class Template(object):
         self.resources_to_export = resources_to_export
         self.metadata_to_export = metadata_to_export
         self.uploader = uploader
+        self.no_metrics = False # TODO - New parameter for package command
 
     def export_global_artifacts(self, template_dict):
         """
@@ -683,6 +684,8 @@ class Template(object):
                     self.template_dir,
                     self.module_parent_path, 
                     None)
+            if not self.no_metrics:
+                modules.add_metrics_metadata(self.template_dict)
         except Exception as e:
             msg=f"Failed to process Modules section: {e}"
             LOG.exception(msg)

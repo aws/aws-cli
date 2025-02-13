@@ -17,7 +17,9 @@ Read CloudFormation Module source files.
 
 import os
 import urllib
+
 from awscli.customizations.cloudformation import exceptions
+from awscli.customizations.cloudformation import yamlhelper
 
 
 def is_url(p):
@@ -26,7 +28,10 @@ def is_url(p):
 
 
 def read_source(source):
-    "Read the source file and return the content as a string"
+    """
+    Read the source file and return the content as a string,
+    plus a dictionary with line numbers.
+    """
 
     if not isinstance(source, str):
         raise exceptions.InvalidModulePathError(source=source)
@@ -42,5 +47,25 @@ def read_source(source):
     if not os.path.isfile(source):
         raise exceptions.InvalidModulePathError(source=source)
 
+    content = ""
     with open(source, "r", encoding="utf-8") as s:
-        return s.read()
+        content = s.read()
+
+    node = yamlhelper.yaml_compose(content)
+    lines = {}
+    read_line_numbers(node, lines)
+
+    return content, lines
+
+
+def read_line_numbers(node, lines):
+    """
+    Read resource line numbers from a yaml node,
+    using the logical id as the key.
+    """
+    for n in node.value:
+        if n[0].value == "Resources":
+            resource_map = n[1].value
+            for r in resource_map:
+                logical_id = r[0].value
+                lines[logical_id] = r[1].start_mark.line

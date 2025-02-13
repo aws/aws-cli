@@ -403,6 +403,8 @@ class Module:
         # Conditions defined in the module
         self.conditions = {}
 
+        # Line numbers for resources
+        self.lines = {}
         self.no_source_map = False
         if module_config.get(NO_SOURCE_MAP, False):
             self.no_source_map = True
@@ -422,7 +424,8 @@ class Module:
         :return: The modified parent template dictionary
         """
 
-        content = read_source(self.source)
+        content, lines = read_source(self.source)
+        self.lines = lines
 
         module_dict = yamlhelper.yaml_parse(content)
 
@@ -733,7 +736,8 @@ class Module:
 
     def get_source_map(self, logical_id):
         "Get the string to put in the resource metadata source map"
-        return f"{self.source}:{logical_id}:0"
+        n = self.lines.get(logical_id, 0)
+        return f"{self.source}:{logical_id}:{n}"
 
     def process_resource_conditions(self):
         "Visit all resources to look for Fn::If conditions"

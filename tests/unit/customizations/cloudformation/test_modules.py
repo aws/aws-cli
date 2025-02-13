@@ -12,6 +12,7 @@ from awscli.customizations.cloudformation.module_constants import (
     process_constants,
     replace_constants,
 )
+from awscli.customizations.cloudformation.module_read import read_source
 
 MODULES = "Modules"
 RESOURCES = "Resources"
@@ -108,9 +109,9 @@ class TestPackageModules(unittest.TestCase):
         ]
         for test in tests:
             base = "unit/customizations/cloudformation/modules"
-            t = modules.read_source(f"{base}/{test}-template.yaml")
+            t, _ = modules.read_source(f"{base}/{test}-template.yaml")
             td = yamlhelper.yaml_parse(t)
-            e = modules.read_source(f"{base}/{test}-expect.yaml")
+            e, _ = modules.read_source(f"{base}/{test}-expect.yaml")
 
             constants = process_constants(td)
             if constants is not None:
@@ -153,3 +154,10 @@ class TestPackageModules(unittest.TestCase):
         test_list = resources["Bucket"]["Properties"]["TestList"]
         self.assertEqual(test_list[1]["BucketName"], "bar")
         self.assertEqual(test_list[2]["Item2"]["BucketName"], "bar")
+
+    def test_read_source(self):
+        "Test reading a source file"
+
+        base = "unit/customizations/cloudformation/modules"
+        _, lines = read_source(f"{base}/example-module.yaml")
+        self.assertEqual(lines["Bucket"], 5)

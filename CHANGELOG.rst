@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.24.4
+======
+
+* api-change:``acm-pca``: Private Certificate Authority (PCA) documentation updates
+* api-change:``ecs``: This is a documentation only release to support migrating Amazon ECS service ARNs to the long ARN format.
+* api-change:``sagemaker``: Adds additional values to the InferenceAmiVersion parameter in the ProductionVariant data type.
+* api-change:``fis``: Adds auto-pagination for the following operations: ListActions, ListExperimentTemplates, ListTargetAccountConfigurations, ListExperiments, ListExperimentResolvedTargets, ListTargetResourceTypes. Reduces length constraints of prefixes for logConfiguration and experimentReportConfiguration.
+* api-change:``accessanalyzer``: This release introduces the getFindingsStatistics API, enabling users to retrieve aggregated finding statistics for IAM Access Analyzer's external access and unused access analysis features. Updated service API and documentation.
+* api-change:``storagegateway``: This release adds support for generating cache reports on S3 File Gateways for files that fail to upload.
+
+
 2.24.3
 ======
 

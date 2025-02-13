@@ -104,7 +104,7 @@ Resources:
 
 """
 
-# pylint: disable=fixme,too-many-instance-attributes
+# pylint: disable=fixme,too-many-instance-attributes,too-many-lines
 
 import copy
 import logging
@@ -164,9 +164,12 @@ INPUTS = "Inputs"
 REFERENCES = "References"
 AWSTOOLSMETRICS = "AWSToolsMetrics"
 CLOUDFORMATION_PACKAGE = "CloudForCloudFormationPackage"
+SOURCE_MAP = "SourceMap"
+NO_SOURCE_MAP = "NoSourceMap"
 
 
-def make_module(template, name, config, base_path, parent_path):
+# pylint:disable=too-many-arguments,too-many-positional-arguments
+def make_module(template, name, config, base_path, parent_path, no_source_map):
     "Create an instance of a module based on a template and the module config"
     module_config = {}
     module_config[NAME] = name
@@ -190,6 +193,7 @@ def make_module(template, name, config, base_path, parent_path):
         module_config[PROPERTIES] = config[PROPERTIES]
     if OVERRIDES in config:
         module_config[OVERRIDES] = config[OVERRIDES]
+    module_config[NO_SOURCE_MAP] = no_source_map
     return Module(template, module_config)
 
 
@@ -226,7 +230,10 @@ def add_metrics_metadata(template):
     metrics[CLOUDFORMATION_PACKAGE]["Modules"] = "true"
 
 
-def process_module_section(template, base_path, parent_path, parent_module):
+# pylint:disable=too-many-arguments,too-many-positional-arguments
+def process_module_section(
+    template, base_path, parent_path, parent_module, no_metrics, no_source_map
+):
     "Recursively process the Modules section of a template"
 
     if MODULES not in template:
@@ -239,6 +246,9 @@ def process_module_section(template, base_path, parent_path, parent_module):
     if parent_module is None:
 
         # This is the actual parent template, not a module
+
+        if not no_metrics:
+            add_metrics_metadata(template)
 
         # Make a fake Module instance to handle find_ref for Maps
         # The only valid way to do this at the template level
@@ -260,7 +270,9 @@ def process_module_section(template, base_path, parent_path, parent_module):
     # Process each Module node separately after processing Maps
     modules = template[MODULES]
     for k, v in modules.items():
-        module = make_module(template, k, v, base_path, parent_path)
+        module = make_module(
+            template, k, v, base_path, parent_path, no_source_map
+        )
         template = module.process()
 
     # Remove the Modules section from the template
@@ -391,6 +403,10 @@ class Module:
         # Conditions defined in the module
         self.conditions = {}
 
+        self.no_source_map = False
+        if module_config.get(NO_SOURCE_MAP, False):
+            self.no_source_map = True
+
     def __str__(self):
         "Print out a string with module details for logs"
         return (
@@ -461,7 +477,9 @@ class Module:
         # Recurse on nested modules
         bp = os.path.dirname(self.source)
         try:
-            process_module_section(module_dict, bp, self.source, self)
+            process_module_section(
+                module_dict, bp, self.source, self, True, self.no_source_map
+            )
         except Exception as e:
             msg = f"Failed to process {self.source} Modules section: {e}"
             LOG.exception(msg)
@@ -705,6 +723,17 @@ class Module:
         self.resolve(logical_id, resource, container, RESOURCES)
         self.template[RESOURCES][self.name + logical_id] = resource
         self.process_resource_conditions()
+
+        # Add the source map to Metadata
+        if not self.no_source_map:
+            if METADATA not in resource:
+                resource[METADATA] = {}
+            metadata = resource[METADATA]
+            metadata[SOURCE_MAP] = self.get_source_map(logical_id)
+
+    def get_source_map(self, logical_id):
+        "Get the string to put in the resource metadata source map"
+        return f"{self.source}:{logical_id}:0"
 
     def process_resource_conditions(self):
         "Visit all resources to look for Fn::If conditions"

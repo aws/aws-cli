@@ -117,7 +117,7 @@ class TestPackageModules(unittest.TestCase):
                 replace_constants(constants, td)
 
             # Modules section
-            td = modules.process_module_section(td, base, t, None)
+            td = modules.process_module_section(td, base, t, None, True, True)
 
             processed = yamlhelper.yaml_dump(td)
             self.assertEqual(e, processed, f"{test} failed")

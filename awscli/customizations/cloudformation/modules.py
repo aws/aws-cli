@@ -488,10 +488,14 @@ class Module:
         In the parent you can !GetAtt ModuleName.OutputName
         This will be converted so that it's correct in the packaged template.
 
+        The parent can also refer to module Properties as a convenience,
+        so !GetAtt ModuleName.PropertyName will simply copy the
+        configured property value.
+
         Recurse over all sections in the parent template looking for
         GetAtts and Subs that reference a module References value.
         """
-        sections = [RESOURCES, REFERENCES, MODULES]
+        sections = [RESOURCES, REFERENCES, MODULES, OUTPUTS]
         for section in sections:
             if section not in self.template:
                 continue
@@ -502,8 +506,7 @@ class Module:
         """
         Recursively resolve GetAtts and Subs that reference module references.
 
-        :param name The name of the output
-        :param output The output dict
+        :param name The name of the reference
         :param k The name of the node
         :param v The value of the node
         :param d The dict that holds the parent of k
@@ -512,9 +515,9 @@ class Module:
         If a reference is found, this function sets the value of d[n]
         """
         if k == SUB:
-            self.resolve_output_sub(v, d, n)
+            self.resolve_reference_sub(v, d, n)
         elif k == GETATT:
-            self.resolve_output_getatt(v, d, n)
+            self.resolve_reference_getatt(v, d, n)
         else:
             if isdict(v):
                 for k2, v2 in v.copy().items():
@@ -527,8 +530,72 @@ class Module:
                         for k3, v3 in v2.copy().items():
                             self.resolve_references(k3, v3, v, idx)
 
-    def resolve_output_sub(self, v, d, n):
-        "Resolve a Sub that refers to a module output"
+    def resolve_reference_sub_getatt(self, w):
+        """
+        Resolve a reference to a module in a Sub GetAtt word.
+
+        For example, the parent has
+
+        Modules:
+          A:
+            Properties:
+              Name: foo
+        Outputs:
+          B:
+            Value: !Sub ${A.MyName}
+          C:
+            Value: !Sub ${A.Name}
+
+        The module has:
+
+          Inputs:
+            Name:
+              Type: String
+          Resources:
+            X:
+              Properties:
+                Y: !Ref Name
+          References:
+            MyName: !GetAtt Y.Name
+
+        The resulting output:
+          B: !Sub ${AX.Name}
+          C: foo
+
+        """
+
+        resolved = "${" + w + "}"
+        tokens = w.split(".", 1)
+        if len(tokens) < 2:
+            msg = f"GetAtt {w} has unexpected number of tokens"
+            raise exceptions.InvalidModuleError(msg=msg)
+
+        # !Sub ${Content.BucketArn} -> !Sub ${ContentBucket.Arn}
+
+        r = None
+        if tokens[0] == self.name:
+            if tokens[1] in self.references:
+                # We're referring to the module's References
+                r = self.references[tokens[1]]
+            elif tokens[1] in self.props:
+                # We're referring to parent Module Properties
+                r = self.props[tokens[1]]
+            if r is not None:
+                if GETATT in r:
+                    getatt = r[GETATT]
+                    resolved = "${" + self.name + ".".join(getatt) + "}"
+                elif SUB in r:
+                    resolved = "${" + self.name + r[SUB] + "}"
+                elif REF in r:
+                    resolved = "${" + self.name + r[REF] + "}"
+                else:
+                    # Handle scalar properties
+                    resolved = r
+
+        return resolved
+
+    def resolve_reference_sub(self, v, d, n):
+        "Resolve a Sub that refers to a module reference or property"
         words = parse_sub(v, True)
         sub = ""
         for word in words:
@@ -537,33 +604,21 @@ class Module:
             elif word.t == WordType.AWS:
                 sub += "${AWS::" + word.w + "}"
             elif word.t == WordType.REF:
-                # A reference to an output has to be a getatt
+                # A ref to a module reference has to be a getatt
                 resolved = "${" + word.w + "}"
                 sub += resolved
             elif word.t == WordType.GETATT:
-                resolved = "${" + word.w + "}"
-                tokens = word.w.split(".", 1)
-                if len(tokens) < 2:
-                    msg = f"GetAtt {word.w} has unexpected number of tokens"
-                    raise exceptions.InvalidModuleError(msg=msg)
-                # !Sub ${Content.BucketArn} -> !Sub ${ContentBucket.Arn}
-                if tokens[0] == self.name and tokens[1] in self.references:
-                    output = self.references[tokens[1]]
-                    if GETATT in output:
-                        getatt = output[GETATT]
-                        resolved = "${" + self.name + ".".join(getatt) + "}"
-                    elif SUB in output:
-                        resolved = "${" + self.name + output[SUB] + "}"
-                    elif REF in output:
-                        resolved = "${" + self.name + output[REF] + "}"
-                sub += resolved
+                sub += self.resolve_reference_sub_getatt(word.w)
 
-        d[n] = {SUB: sub}
+        if is_sub_needed(sub):
+            d[n] = {SUB: sub}
+        else:
+            d[n] = sub
 
     # pylint:disable=too-many-branches
-    def resolve_output_getatt(self, v, d, n):
+    def resolve_reference_getatt(self, v, d, n):
         """
-        Resolve a GetAtt that refers to a module output.
+        Resolve a GetAtt that refers to a module Reference.
 
         :param v The value
         :param d The dictionary
@@ -575,20 +630,25 @@ class Module:
             msg = f"GetAtt {v} invalid"
             raise exceptions.InvalidModuleError(msg=msg)
 
-        if v[0] == self.name and v[1] in self.references:
-            output = self.references[v[1]]
-            if REF in output:
-                ref = output[REF]
+        r = None
+        if v[0] == self.name:
+            if v[1] in self.references:
+                r = self.references[v[1]]
+            elif v[1] in self.props:
+                r = self.props[v[1]]
+        if r is not None:
+            if REF in r:
+                ref = r[REF]
                 d[n] = {REF: self.name + ref}
-            elif GETATT in output:
-                getatt = output[GETATT]
+            elif GETATT in r:
+                getatt = r[GETATT]
                 if len(getatt) < 2:
                     msg = f"GetAtt {getatt} in Output {v[1]} is invalid"
                     raise exceptions.InvalidModuleError(msg=msg)
                 d[n] = {GETATT: [self.name + getatt[0], getatt[1]]}
-            elif SUB in output:
-                # Parse the Sub in the module output
-                words = parse_sub(output[SUB], True)
+            elif SUB in r:
+                # Parse the Sub in the module reference
+                words = parse_sub(r[SUB], True)
                 sub = ""
                 for word in words:
                     if word.t == WordType.STR:
@@ -612,8 +672,10 @@ class Module:
                         if tokens[0] in self.resources:
                             resolved = "${" + self.name + word.w + "}"
                         sub += resolved
-
                 d[n] = {SUB: sub}
+            else:
+                # Handle scalars in Properties
+                d[n] = r
 
     def validate_overrides(self):
         "Make sure resources referenced by overrides actually exist"

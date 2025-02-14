@@ -19,6 +19,9 @@ string constants, to help reduce copy-paste within the template.
 
 Refer to constants in Sub strings later in the template using ${Constant::name}
 
+You can also create constants that are objects, which can be referred to
+with Ref.
+
 Constants can refer to other constants that were defined previously.
 
 Adding constants to a template has side effects, since we have to
@@ -30,12 +33,16 @@ Example:
     Constants:
       foo: bar
       baz: abc-${AWS::AccountId}-${Constant::foo}
+      obj:
+        AnObject:
+            Foo: bar
 
     Resources:
       Bucket:
         Type: AWS::S3::Bucket
         Metadata:
-          Test: !Sub ${Constant:baz}
+          Test: !Sub ${Constant::baz}
+          TestObj: !Ref Constant::obj
         Properties:
           BucketName: !Sub ${Constant::foo}
 
@@ -50,6 +57,9 @@ from awscli.customizations.cloudformation import exceptions
 
 CONSTANTS = "Constants"
 SUB = "Fn::Sub"
+REF = "Ref"
+CONSTANT_REF = "Constant::"
+CONSTANTS_REF = "Constants::"
 
 
 def process_constants(d):
@@ -66,22 +76,26 @@ def process_constants(d):
     constants = {}
     for k, v in d[CONSTANTS].items():
         s = replace_constants(constants, v)
-        constants[k] = s
+        if s is not None:
+            constants[k] = s
+        else:
+            # Add an object constant
+            constants[k] = v
 
     del d[CONSTANTS]
 
     return constants
 
 
-def replace_constants(constants, s):
+def replace_constants(constants, item):
     """
     Replace all constants in a string or in an entire dictionary.
-    If s is a string, returns the modified string.
-    If s is a dictionary, modifies the dictionary in place.
+    If item is a string, returns the modified string.
+    If item is a dictionary, modifies the dictionary in place.
     """
-    if isinstance(s, str):
+    if isinstance(item, str):
         retval = ""
-        words = parse_sub(s)
+        words = parse_sub(item)
         for w in words:
             if w.t == WordType.STR:
                 retval += w.w
@@ -99,10 +113,11 @@ def replace_constants(constants, s):
                     raise exceptions.InvalidModuleError(msg=msg)
         return retval
 
-    if isdict(s):
+    if isdict(item):
 
         # Recursively dive into d and replace all string constants
-        # that are found in Subs. Error if the constant does not exist.
+        # that are found in Subs.
+        # Also replace Refs to objects
 
         def vf(v):
             if isdict(v.d) and SUB in v.d and v.p is not None:
@@ -113,8 +128,16 @@ def replace_constants(constants, s):
                         v.p[v.k] = {SUB: newval}
                     else:
                         v.p[v.k] = newval
+            if isdict(v.d) and REF in v.d and v.p is not None:
+                r = v.d[REF]
+                # If this has the form Constant::name, replace it
+                if r.startswith(CONSTANT_REF) or r.startswith(CONSTANTS_REF):
+                    r = r.replace(CONSTANT_REF, "")
+                    r = r.replace(CONSTANTS_REF, "")
+                    if r in constants:
+                        v.p[v.k] = constants[r]
 
-        v = Visitor(s)
+        v = Visitor(item)
         v.visit(vf)
 
     return None

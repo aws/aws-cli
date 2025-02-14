@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.24.5
+======
+
+* api-change:``codebuild``: Added test suite names to test case metadata
+* api-change:``connect``: Release Notes: 1) Analytics API enhancements: Added new ListAnalyticsDataLakeDataSets API. 2)  Onboarding API Idempotency: Adds ClientToken to instance creation and management APIs to support idempotency.
+* api-change:``workspaces-thin-client``: Update Environment and Device name field definitions
+* api-change:``rds-data``: Add support for Stop DB feature.
+* api-change:``dms``: Introduces premigration assessment feature to DMS Serverless API for start-replication and describe-replications
+* api-change:``s3``: Added support for Content-Range header in HeadObject response.
+* api-change:``wafv2``: The WAFv2 API now supports configuring data protection in webACLs.
+
+
 2.24.4
 ======
 

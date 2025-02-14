@@ -69,7 +69,7 @@ This command also allows you to add a ``Constants`` section to the template
 or to a local module. This section is a simple set of key-value pairs that 
 can be used to reduce copy-paste within the template. Constants values are 
 strings that can be references within ``Fn::Sub`` functions using the format 
-``${Constant::NAME}``.
+``${Const::NAME}``.
 
 
 

@@ -65,5 +65,5 @@ The following is an example of adding constants to a template::
       Bucket:
         Type: AWS::S3::Bucket
         Properties:
-          BucketName: !Sub ${Constant::baz}
+          BucketName: !Sub ${Const::baz}
 

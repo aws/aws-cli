@@ -12,40 +12,48 @@ The string is broken down into "words" that are one of four types:
     AWS: An AWS pseudo-parameter like ${AWS::Region}
     GetAtt: A reference to an attribute like ${Foo.Bar}
 """
-#pylint: disable=too-few-public-methods
+
+# pylint: disable=too-few-public-methods
 
 from enum import Enum
 
-DATA = ' '  # Any other character
-DOLLAR = '$'
-OPEN = '{'
-CLOSE = '}'
-BANG = '!'
-SPACE = ' '
+DATA = " "  # Any other character
+DOLLAR = "$"
+OPEN = "{"
+CLOSE = "}"
+BANG = "!"
+SPACE = " "
+
 
 class WordType(Enum):
     "Word type enumeration"
-    STR = 0      # A literal string fragment
-    REF = 1      # ${ParamOrResourceName}
-    AWS = 2      # ${AWS::X}
-    GETATT = 3   # ${X.Y}
-    CONSTANT = 4 # ${Constant::name}
+
+    STR = 0  # A literal string fragment
+    REF = 1  # ${ParamOrResourceName}
+    AWS = 2  # ${AWS::X}
+    GETATT = 3  # ${X.Y}
+    CONSTANT = 4  # ${Const::name}
+
 
 class State(Enum):
     "State machine enumeration"
+
     READSTR = 0
     READVAR = 1
     MAYBE = 2
     READLIT = 3
 
+
 class SubWord:
     "A single word with a type and the word itself"
+
     def __init__(self, word_type, word):
         self.t = word_type
         self.w = word  # Does not include the ${} if it's not a STR
 
     def __str__(self):
         return f"{self.t} {self.w}"
+
 
 def is_sub_needed(s):
     "Returns true if the string has any Sub variables"
@@ -55,7 +63,8 @@ def is_sub_needed(s):
             return True
     return False
 
-#pylint: disable=too-many-branches,too-many-statements
+
+# pylint: disable=too-many-branches,too-many-statements
 def parse_sub(sub_str, leave_bang=False):
     """
     Parse a Sub string
@@ -65,8 +74,8 @@ def parse_sub(sub_str, leave_bang=False):
     """
     words = []
     state = State.READSTR
-    buf = ''
-    last = ''
+    buf = ""
+    last = ""
     for i, char in enumerate(sub_str):
         if char == DOLLAR:
             if state != State.READVAR:
@@ -77,7 +86,7 @@ def parse_sub(sub_str, leave_bang=False):
         elif char == OPEN:
             if state == State.MAYBE:
                 # Peek to see if we're about to start a LITERAL !
-                if len(sub_str) > i+1 and sub_str[i+1] == BANG:
+                if len(sub_str) > i + 1 and sub_str[i + 1] == BANG:
                     # Treat this as part of the string, not a var
                     buf += "${"
                     state = State.READLIT
@@ -87,7 +96,7 @@ def parse_sub(sub_str, leave_bang=False):
                     # Append the last word in the buffer if it's not empty
                     if buf:
                         words.append(SubWord(WordType.STR, buf))
-                        buf = ''
+                        buf = ""
             else:
                 buf += char
         elif char == CLOSE:
@@ -95,18 +104,18 @@ def parse_sub(sub_str, leave_bang=False):
                 # Figure out what type it is
                 if buf.startswith("AWS::"):
                     word_type = WordType.AWS
-                elif buf.startswith("Constant::") or buf.startswith("Constants::"):
+                elif buf.startswith("Const::"):
                     word_type = WordType.CONSTANT
-                elif '.' in buf:
+                elif "." in buf:
                     word_type = WordType.GETATT
                 else:
                     word_type = WordType.REF
                 buf = buf.replace("AWS::", "", 1)
-                buf = buf.replace("Constant::", "", 1)
+                buf = buf.replace("Const::", "", 1)
                 # Very common typo to put Constants instead of Constant
                 buf = buf.replace("Constants::", "", 1)
                 words.append(SubWord(word_type, buf))
-                buf = ''
+                buf = ""
                 state = State.READSTR
             else:
                 buf += char

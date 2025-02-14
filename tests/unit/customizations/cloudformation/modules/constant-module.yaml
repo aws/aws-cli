@@ -1,6 +1,6 @@
 Constants:
   foo: bar
-  sub: "${Constant::foo}-abc-${AWS::AccountId}"
+  sub: "${Const::foo}-abc-${AWS::AccountId}"
   obj:
     TestObject:
       A: b
@@ -9,8 +9,8 @@ Resources:
   Bucket:
     Type: AWS::S3::Bucket
     Metadata:
-      Test: !Sub ${Constant::sub}-xyz
-      TestObj: !Ref Constants::obj
+      Test: !Sub ${Const::sub}-xyz
+      TestObj: !Ref Const::obj
     Properties:
-      BucketName: !Sub ${Constant::foo}
+      BucketName: !Sub ${Const::foo}
 

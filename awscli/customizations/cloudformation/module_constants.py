@@ -17,7 +17,7 @@ Module constants.
 Add a Constants section to the module or the parent template for
 string constants, to help reduce copy-paste within the template.
 
-Refer to constants in Sub strings later in the template using ${Constant::name}
+Refer to constants in Sub strings later in the template using ${Const::name}
 
 You can also create constants that are objects, which can be referred to
 with Ref.
@@ -32,7 +32,7 @@ Example:
 
     Constants:
       foo: bar
-      baz: abc-${AWS::AccountId}-${Constant::foo}
+      baz: abc-${AWS::AccountId}-${Const::foo}
       obj:
         AnObject:
             Foo: bar
@@ -41,10 +41,10 @@ Example:
       Bucket:
         Type: AWS::S3::Bucket
         Metadata:
-          Test: !Sub ${Constant::baz}
-          TestObj: !Ref Constant::obj
+          Test: !Sub ${Const::baz}
+          TestObj: !Ref Const::obj
         Properties:
-          BucketName: !Sub ${Constant::foo}
+          BucketName: !Sub ${Const::foo}
 
 """
 
@@ -58,8 +58,7 @@ from awscli.customizations.cloudformation import exceptions
 CONSTANTS = "Constants"
 SUB = "Fn::Sub"
 REF = "Ref"
-CONSTANT_REF = "Constant::"
-CONSTANTS_REF = "Constants::"
+CONSTANT_REF = "Const::"
 
 
 def process_constants(d):
@@ -130,10 +129,9 @@ def replace_constants(constants, item):
                         v.p[v.k] = newval
             if isdict(v.d) and REF in v.d and v.p is not None:
                 r = v.d[REF]
-                # If this has the form Constant::name, replace it
-                if r.startswith(CONSTANT_REF) or r.startswith(CONSTANTS_REF):
+                # If this has the form Const::name, replace it
+                if r.startswith(CONSTANT_REF):
                     r = r.replace(CONSTANT_REF, "")
-                    r = r.replace(CONSTANTS_REF, "")
                     if r in constants:
                         v.p[v.k] = constants[r]
 

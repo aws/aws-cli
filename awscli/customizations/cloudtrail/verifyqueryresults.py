@@ -1,17 +1,19 @@
 import base64
 import binascii
-import json
 import hashlib
+import json
 import sys
 from abc import ABC, abstractmethod
 from os import path
 
-from awscli.customizations.exceptions import ParamValidationError
-
 from awscrt.crypto import RSA, RSASignatureAlgorithm
 
+from awscli.customizations.cloudtrail.utils import (
+    PublicKeyProvider,
+    parse_date,
+)
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.cloudtrail.utils import parse_date, PublicKeyProvider
+from awscli.customizations.exceptions import ParamValidationError
 
 SIGN_FILE_NAME = "result_sign.json"
 
@@ -65,8 +67,10 @@ class Sha256RsaSignatureValidator:
         signature_bytes = binascii.unhexlify(sign_file["hashSignature"])
         result = public_key.verify(
             signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
-            digest=hashlib.sha256(self._create_string_to_sign(sign_file)).digest(),
-            signature=signature_bytes
+            digest=hashlib.sha256(
+                self._create_string_to_sign(sign_file)
+            ).digest(),
+            signature=signature_bytes,
         )
         if not result:
             # The previous implementation caught a cryptography.exceptions.InvalidSignature
@@ -187,7 +191,6 @@ class S3ExportFilesHashValidator(BaseExportFilesHashValidator):
         s3_bucket=None,
         s3_path_prefix=None,
     ):
-
         self._s3_client = s3_client
         self._s3_bucket = s3_bucket
         self._s3_path_prefix = s3_path_prefix
@@ -197,9 +200,13 @@ class S3ExportFilesHashValidator(BaseExportFilesHashValidator):
 
         for file_info in sign_file["files"]:
             key = self._s3_path_prefix + file_info["fileName"]
-            response = self._s3_client.get_object(Bucket=self._s3_bucket, Key=key)
+            response = self._s3_client.get_object(
+                Bucket=self._s3_bucket, Key=key
+            )
             self._validate_hash_value(
-                response["Body"], file_info["fileName"], file_info["fileHashValue"]
+                response["Body"],
+                file_info["fileName"],
+                file_info["fileHashValue"],
             )
 
 
@@ -218,7 +225,9 @@ class LocalExportFilesHashValidator(BaseExportFilesHashValidator):
                 path.join(self.local_path_prefix, file_info["fileName"]), "rb"
             ) as export_file:
                 self._validate_hash_value(
-                    export_file, file_info["fileName"], file_info["fileHashValue"]
+                    export_file,
+                    file_info["fileName"],
+                    file_info["fileHashValue"],
                 )
 
 
@@ -250,7 +259,7 @@ class CloudTrailVerifyQueryResult(BasicCommand):
       CloudTrail delivered them.
 
     .. note::
-        For verify export file from S3, this command requires that the user or 
+        For verify export file from S3, this command requires that the user or
         role executing the command has permission to call GetObject, and
         GetBucketLocation for the bucket that store the export file.
     """
@@ -358,7 +367,9 @@ class CloudTrailVerifyQueryResult(BasicCommand):
         )
         signature_validator.validate(public_key, sign_file)
         self._return_code = 0
-        sys.stdout.write("Successfully validated sign and query result files\n")
+        sys.stdout.write(
+            "Successfully validated sign and query result files\n"
+        )
 
     def _initialize_components(
         self,

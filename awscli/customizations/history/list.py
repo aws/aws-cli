@@ -55,7 +55,7 @@ class ListCommand(HistorySubcommand):
         return 0
 
 
-class RecordAdapter(object):
+class RecordAdapter:
     """This class is just to read one ahead to make sure there are records
 
     If there are no records we can just exit early.
@@ -80,7 +80,7 @@ class RecordAdapter(object):
             self._advance()
 
 
-class TextFormatter(object):
+class TextFormatter:
     def __init__(self, col_widths, output_stream):
         self._col_widths = col_widths
         self._output_stream = output_stream
@@ -95,11 +95,11 @@ class TextFormatter(object):
         json_value = json.loads(args)
         formatted = ' '.join(json_value[:2])
         if len(formatted) >= arg_width:
-            formatted = '%s...' % formatted[:arg_width-4]
+            formatted = f'{formatted[:arg_width-4]}...'
         return formatted
 
     def _format_record(self, record):
-        fmt_string = "{0:<%s}{1:<%s}{2:<%s}{3}\n" % (
+        fmt_string = "{{0:<{}}}{{1:<{}}}{{2:<{}}}{{3}}\n".format(
             self._col_widths['id_a'],
             self._col_widths['timestamp'],
             self._col_widths['args']

@@ -19,7 +19,9 @@ aws_a = Analysis(['../../bin/aws'],
 # since we're not signing via PyInstaller
 updated_binaries = []
 for dest, src, typecode in aws_a.binaries:
-    if dest.startswith('Python.framework/') and dest.endswith('/Python'):
+    # Look for the actual Python executable, regardless of the version
+    if dest.startswith('Python.framework/Versions/') and dest.endswith('/Python'):
+        # and move it to the top
         dest = 'Python'
     updated_binaries.append((dest, src, typecode))
 aws_a.binaries = updated_binaries

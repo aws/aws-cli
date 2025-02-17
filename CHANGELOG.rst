@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.37.22
+=======
+
+* api-change:``amplify``: Add ComputeRoleArn to CreateApp, UpdateApp, CreateBranch, and UpdateBranch, allowing caller to specify a role to be assumed by Amplify Hosting for server-side rendered applications.
+* api-change:``dms``: Support replicationConfigArn in DMS DescribeApplicableIndividualAssessments API.
+* api-change:``timestream-influxdb``: This release introduces APIs to manage DbClusters and adds support for read replicas
+
+
 1.37.21
 =======
 

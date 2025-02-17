@@ -20,6 +20,7 @@ from botocore.exceptions import (
     InvalidRetryModeError,
     InvalidS3AddressingStyleError,
 )
+from botocore.utils import DEFAULT_TRUE
 
 
 class Config(object):
@@ -241,7 +242,7 @@ class Config(object):
         ('s3', None),
         ('retries', None),
         ('client_cert', None),
-        ('inject_host_prefix', True),
+        ('inject_host_prefix', DEFAULT_TRUE),
         ('endpoint_discovery_enabled', None),
         ('use_dualstack_endpoint', None),
         ('use_fips_endpoint', None),

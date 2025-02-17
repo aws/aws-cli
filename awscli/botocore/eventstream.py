@@ -20,7 +20,6 @@ from botocore.exceptions import EventStreamError
 # byte length of the prelude (total_length + header_length + prelude_crc)
 _PRELUDE_LENGTH = 12
 _MAX_HEADERS_LENGTH = 128 * 1024  # 128 Kb
-_MAX_PAYLOAD_LENGTH = 16 * 1024 ** 2  # 16 Mb
 
 
 class ParserError(Exception):
@@ -42,15 +41,6 @@ class InvalidHeadersLength(ParserError):
             length, _MAX_HEADERS_LENGTH
         )
         super(InvalidHeadersLength, self).__init__(message)
-
-
-class InvalidPayloadLength(ParserError):
-    """Payload length is longer than the maximum. """
-    def __init__(self, length):
-        message = 'Payload length of %s exceeded the maximum of %s' % (
-            length, _MAX_PAYLOAD_LENGTH
-        )
-        super(InvalidPayloadLength, self).__init__(message)
 
 
 class ChecksumMismatch(ParserError):
@@ -456,16 +446,13 @@ class EventStreamBuffer(object):
         if prelude.headers_length > _MAX_HEADERS_LENGTH:
             raise InvalidHeadersLength(prelude.headers_length)
 
-        if prelude.payload_length > _MAX_PAYLOAD_LENGTH:
-            raise InvalidPayloadLength(prelude.payload_length)
-
     def _parse_prelude(self):
         prelude_bytes = self._data[:_PRELUDE_LENGTH]
         raw_prelude, _ = DecodeUtils.unpack_prelude(prelude_bytes)
         prelude = MessagePrelude(*raw_prelude)
-        self._validate_prelude(prelude)
         # The minus 4 removes the prelude crc from the bytes to be checked
         _validate_checksum(prelude_bytes[:_PRELUDE_LENGTH-4], prelude.crc)
+        self._validate_prelude(prelude)
         return prelude
 
     def _parse_headers(self):

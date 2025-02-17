@@ -15,6 +15,26 @@
     "uid":"timestream-influxdb-2023-01-27"
   },
   "operations":{
+    "CreateDbCluster":{
+      "name":"CreateDbCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateDbClusterInput"},
+      "output":{"shape":"CreateDbClusterOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a new Timestream for InfluxDB cluster.</p>",
+      "idempotent":true
+    },
     "CreateDbInstance":{
       "name":"CreateDbInstance",
       "http":{
@@ -55,6 +75,25 @@
       "documentation":"<p>Creates a new Timestream for InfluxDB DB parameter group to associate with DB instances.</p>",
       "idempotent":true
     },
+    "DeleteDbCluster":{
+      "name":"DeleteDbCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteDbClusterInput"},
+      "output":{"shape":"DeleteDbClusterOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a Timestream for InfluxDB cluster.</p>",
+      "idempotent":true
+    },
     "DeleteDbInstance":{
       "name":"DeleteDbInstance",
       "http":{
@@ -73,6 +112,23 @@
       ],
       "documentation":"<p>Deletes a Timestream for InfluxDB DB instance.</p>",
       "idempotent":true
+    },
+    "GetDbCluster":{
+      "name":"GetDbCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDbClusterInput"},
+      "output":{"shape":"GetDbClusterOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves information about a Timestream for InfluxDB cluster.</p>"
     },
     "GetDbInstance":{
       "name":"GetDbInstance",
@@ -108,6 +164,23 @@
       ],
       "documentation":"<p>Returns a Timestream for InfluxDB DB parameter group.</p>"
     },
+    "ListDbClusters":{
+      "name":"ListDbClusters",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDbClustersInput"},
+      "output":{"shape":"ListDbClustersOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of Timestream for InfluxDB DB clusters.</p>"
+    },
     "ListDbInstances":{
       "name":"ListDbInstances",
       "http":{
@@ -124,6 +197,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a list of Timestream for InfluxDB DB instances.</p>"
+    },
+    "ListDbInstancesForCluster":{
+      "name":"ListDbInstancesForCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDbInstancesForClusterInput"},
+      "output":{"shape":"ListDbInstancesForClusterOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of Timestream for InfluxDB clusters.</p>"
     },
     "ListDbParameterGroups":{
       "name":"ListDbParameterGroups",
@@ -182,6 +272,25 @@
       "documentation":"<p>Removes the tag from the specified resource.</p>",
       "idempotent":true
     },
+    "UpdateDbCluster":{
+      "name":"UpdateDbCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateDbClusterInput"},
+      "output":{"shape":"UpdateDbClusterOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates a Timestream for InfluxDB cluster.</p>",
+      "idempotent":true
+    },
     "UpdateDbInstance":{
       "name":"UpdateDbInstance",
       "http":{
@@ -215,14 +324,14 @@
     "AllocatedStorage":{
       "type":"integer",
       "box":true,
-      "max":16384,
+      "max":15360,
       "min":20
     },
     "Arn":{
       "type":"string",
       "max":1011,
       "min":1,
-      "pattern":"arn:aws[a-z\\-]*:timestream\\-influxdb:[a-z0-9\\-]+:[0-9]{12}:(db\\-instance|db\\-parameter\\-group)/[a-zA-Z0-9]{3,64}"
+      "pattern":"arn:aws[a-z\\-]*:timestream\\-influxdb:[a-z0-9\\-]+:[0-9]{12}:(db\\-instance|db\\-cluster|db\\-parameter\\-group)/[a-zA-Z0-9]{3,64}"
     },
     "Boolean":{
       "type":"boolean",
@@ -233,6 +342,21 @@
       "max":64,
       "min":2,
       "pattern":"[^_\"][^\"]*"
+    },
+    "ClusterDeploymentType":{
+      "type":"string",
+      "enum":["MULTI_NODE_READ_REPLICAS"]
+    },
+    "ClusterStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "UPDATING",
+        "DELETING",
+        "AVAILABLE",
+        "FAILED",
+        "DELETED"
+      ]
     },
     "ConflictException":{
       "type":"structure",
@@ -254,6 +378,105 @@
       },
       "documentation":"<p>The request conflicts with an existing resource in Timestream for InfluxDB.</p>",
       "exception":true
+    },
+    "CreateDbClusterInput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "password",
+        "dbInstanceType",
+        "allocatedStorage",
+        "vpcSubnetIds",
+        "vpcSecurityGroupIds",
+        "deploymentType"
+      ],
+      "members":{
+        "name":{
+          "shape":"DbClusterName",
+          "documentation":"<p>The name that uniquely identifies the DB cluster when interacting with the Amazon Timestream for InfluxDB API and CLI commands. This name will also be a prefix included in the endpoint. DB cluster names must be unique per customer and per region.</p>"
+        },
+        "username":{
+          "shape":"Username",
+          "documentation":"<p>The username of the initial admin user created in InfluxDB. Must start with a letter and can't end with a hyphen or contain two consecutive hyphens. For example, my-user1. This username will allow you to access the InfluxDB UI to perform various administrative tasks and also use the InfluxDB CLI to create an operator token. These attributes will be stored in a secret created in Amazon Web Services Secrets Manager in your account.</p>"
+        },
+        "password":{
+          "shape":"Password",
+          "documentation":"<p>The password of the initial admin user created in InfluxDB. This password will allow you to access the InfluxDB UI to perform various administrative tasks and also use the InfluxDB CLI to create an operator token. These attributes will be stored in a secret created in Amazon Web Services Secrets Manager in your account.</p>"
+        },
+        "organization":{
+          "shape":"Organization",
+          "documentation":"<p>The name of the initial organization for the initial admin user in InfluxDB. An InfluxDB organization is a workspace for a group of users.</p>"
+        },
+        "bucket":{
+          "shape":"Bucket",
+          "documentation":"<p>The name of the initial InfluxDB bucket. All InfluxDB data is stored in a bucket. A bucket combines the concept of a database and a retention period (the duration of time that each data point persists). A bucket belongs to an organization.</p>"
+        },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port number on which InfluxDB accepts connections.</p> <p>Valid Values: 1024-65535</p> <p>Default: 8086</p> <p>Constraints: The value can't be 2375-2376, 7788-7799, 8090, or 51678-51680</p>"
+        },
+        "dbParameterGroupIdentifier":{
+          "shape":"DbParameterGroupIdentifier",
+          "documentation":"<p>The ID of the DB parameter group to assign to your DB cluster. DB parameter groups specify how the database is configured. For example, DB parameter groups can specify the limit for query concurrency.</p>"
+        },
+        "dbInstanceType":{
+          "shape":"DbInstanceType",
+          "documentation":"<p>The Timestream for InfluxDB DB instance type to run InfluxDB on.</p>"
+        },
+        "dbStorageType":{
+          "shape":"DbStorageType",
+          "documentation":"<p>The Timestream for InfluxDB DB storage type to read and write InfluxDB data.</p> <p>You can choose between three different types of provisioned Influx IOPS Included storage according to your workload requirements:</p> <ul> <li> <p>Influx I/O Included 3000 IOPS</p> </li> <li> <p>Influx I/O Included 12000 IOPS</p> </li> <li> <p>Influx I/O Included 16000 IOPS</p> </li> </ul>"
+        },
+        "allocatedStorage":{
+          "shape":"AllocatedStorage",
+          "documentation":"<p>The amount of storage to allocate for your DB storage type in GiB (gibibytes).</p>"
+        },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Specifies whether the network type of the Timestream for InfluxDB cluster is IPv4, which can communicate over IPv4 protocol only, or DUAL, which can communicate over both IPv4 and IPv6 protocols.</p>"
+        },
+        "publiclyAccessible":{
+          "shape":"Boolean",
+          "documentation":"<p>Configures the Timestream for InfluxDB cluster with a public IP to facilitate access from outside the VPC.</p>"
+        },
+        "vpcSubnetIds":{
+          "shape":"VpcSubnetIdList",
+          "documentation":"<p>A list of VPC subnet IDs to associate with the DB cluster. Provide at least two VPC subnet IDs in different Availability Zones when deploying with a Multi-AZ standby.</p>"
+        },
+        "vpcSecurityGroupIds":{
+          "shape":"VpcSecurityGroupIdList",
+          "documentation":"<p>A list of VPC security group IDs to associate with the Timestream for InfluxDB cluster.</p>"
+        },
+        "deploymentType":{
+          "shape":"ClusterDeploymentType",
+          "documentation":"<p>Specifies the type of cluster to create.</p>"
+        },
+        "failoverMode":{
+          "shape":"FailoverMode",
+          "documentation":"<p>Specifies the behavior of failure recovery when the primary node of the cluster fails.</p>"
+        },
+        "logDeliveryConfiguration":{
+          "shape":"LogDeliveryConfiguration",
+          "documentation":"<p>Configuration for sending InfluxDB engine logs to a specified S3 bucket.</p>"
+        },
+        "tags":{
+          "shape":"RequestTagMap",
+          "documentation":"<p>A list of key-value pairs to associate with the DB instance.</p>"
+        }
+      }
+    },
+    "CreateDbClusterOutput":{
+      "type":"structure",
+      "members":{
+        "dbClusterId":{
+          "shape":"DbClusterId",
+          "documentation":"<p>A service-generated unique identifier.</p>"
+        },
+        "dbClusterStatus":{
+          "shape":"ClusterStatus",
+          "documentation":"<p>The status of the DB cluster.</p>"
+        }
+      }
     },
     "CreateDbInstanceInput":{
       "type":"structure",
@@ -420,6 +643,14 @@
         "influxAuthParametersSecretArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
+        },
+        "dbClusterId":{
+          "shape":"DbClusterId",
+          "documentation":"<p>Specifies the DbCluster to which this DbInstance belongs to.</p>"
+        },
+        "instanceMode":{
+          "shape":"InstanceMode",
+          "documentation":"<p>Specifies the DbInstance's role in the cluster.</p>"
         }
       }
     },
@@ -479,6 +710,144 @@
           "documentation":"<p>A list of the parameters that comprise the DB parameter group.</p>"
         }
       }
+    },
+    "DbClusterId":{
+      "type":"string",
+      "max":64,
+      "min":3,
+      "pattern":"[a-zA-Z0-9]+"
+    },
+    "DbClusterName":{
+      "type":"string",
+      "max":40,
+      "min":3,
+      "pattern":"[a-zA-z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*"
+    },
+    "DbClusterSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "arn"
+      ],
+      "members":{
+        "id":{
+          "shape":"DbClusterId",
+          "documentation":"<p>Service-generated unique identifier of the DB cluster to retrieve.</p>"
+        },
+        "name":{
+          "shape":"DbClusterName",
+          "documentation":"<p>Customer supplied name of the Timestream for InfluxDB cluster.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the DB cluster.</p>"
+        },
+        "status":{
+          "shape":"ClusterStatus",
+          "documentation":"<p>The status of the DB cluster.</p>"
+        },
+        "endpoint":{
+          "shape":"String",
+          "documentation":"<p>The endpoint used to connect to the Timestream for InfluxDB cluster for write and read operations.</p>"
+        },
+        "readerEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The endpoint used to connect to the Timestream for InfluxDB cluster for read-only operations.</p>"
+        },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port number on which InfluxDB accepts connections.</p>"
+        },
+        "deploymentType":{
+          "shape":"ClusterDeploymentType",
+          "documentation":"<p>Deployment type of the DB cluster</p>"
+        },
+        "dbInstanceType":{
+          "shape":"DbInstanceType",
+          "documentation":"<p>The Timestream for InfluxDB DB instance type that InfluxDB runs on.</p>"
+        },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Specifies whether the network type of the Timestream for InfluxDB Cluster is IPv4, which can communicate over IPv4 protocol only, or DUAL, which can communicate over both IPv4 and IPv6 protocols.</p>"
+        },
+        "dbStorageType":{
+          "shape":"DbStorageType",
+          "documentation":"<p>The Timestream for InfluxDB DB storage type that InfluxDB stores data on.</p>"
+        },
+        "allocatedStorage":{
+          "shape":"AllocatedStorage",
+          "documentation":"<p>The amount of storage allocated for your DB storage type (in gibibytes).</p>"
+        }
+      },
+      "documentation":"<p>Describes a summary of a Timestream for InfluxDB cluster.</p>"
+    },
+    "DbClusterSummaryList":{
+      "type":"list",
+      "member":{"shape":"DbClusterSummary"}
+    },
+    "DbInstanceForClusterSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "arn"
+      ],
+      "members":{
+        "id":{
+          "shape":"DbInstanceId",
+          "documentation":"<p>The service-generated unique identifier of the DB instance.</p>"
+        },
+        "name":{
+          "shape":"DbInstanceName",
+          "documentation":"<p>A service-generated name for the DB instance based on the customer-supplied name for the DB cluster.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the DB instance.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the DB instance.</p>"
+        },
+        "endpoint":{
+          "shape":"String",
+          "documentation":"<p>The endpoint used to connect to InfluxDB. The default InfluxDB port is 8086.</p>"
+        },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port number on which InfluxDB accepts connections.</p>"
+        },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Specifies whether the network type of the Timestream for InfluxDB instance is IPv4, which can communicate over IPv4 protocol only, or DUAL, which can communicate over both IPv4 and IPv6 protocols.</p>"
+        },
+        "dbInstanceType":{
+          "shape":"DbInstanceType",
+          "documentation":"<p>The Timestream for InfluxDB instance type to run InfluxDB on.</p>"
+        },
+        "dbStorageType":{
+          "shape":"DbStorageType",
+          "documentation":"<p>The storage type for your DB instance.</p>"
+        },
+        "allocatedStorage":{
+          "shape":"AllocatedStorage",
+          "documentation":"<p>The amount of storage allocated for your DB storage type in GiB (gibibytes).</p>"
+        },
+        "deploymentType":{
+          "shape":"DeploymentType",
+          "documentation":"<p>Specifies the deployment type if applicable.</p>"
+        },
+        "instanceMode":{
+          "shape":"InstanceMode",
+          "documentation":"<p>Specifies the DB instance's role in the cluster.</p>"
+        }
+      },
+      "documentation":"<p>Contains a summary of a DB instance belonging to a DB cluster.</p>"
+    },
+    "DbInstanceForClusterSummaryList":{
+      "type":"list",
+      "member":{"shape":"DbInstanceForClusterSummary"}
     },
     "DbInstanceId":{
       "type":"string",
@@ -627,6 +996,25 @@
         "InfluxIOIncludedT3"
       ]
     },
+    "DeleteDbClusterInput":{
+      "type":"structure",
+      "required":["dbClusterId"],
+      "members":{
+        "dbClusterId":{
+          "shape":"DbClusterId",
+          "documentation":"<p>Service-generated unique identifier of the DB cluster.</p>"
+        }
+      }
+    },
+    "DeleteDbClusterOutput":{
+      "type":"structure",
+      "members":{
+        "dbClusterStatus":{
+          "shape":"ClusterStatus",
+          "documentation":"<p>The status of the DB cluster.</p>"
+        }
+      }
+    },
     "DeleteDbInstanceInput":{
       "type":"structure",
       "required":["identifier"],
@@ -721,6 +1109,14 @@
         "influxAuthParametersSecretArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
+        },
+        "dbClusterId":{
+          "shape":"DbClusterId",
+          "documentation":"<p>Specifies the DbCluster to which this DbInstance belongs to.</p>"
+        },
+        "instanceMode":{
+          "shape":"InstanceMode",
+          "documentation":"<p>Specifies the DbInstance's role in the cluster.</p>"
         }
       }
     },
@@ -762,6 +1158,109 @@
       "type":"long",
       "box":true,
       "min":0
+    },
+    "FailoverMode":{
+      "type":"string",
+      "enum":[
+        "AUTOMATIC",
+        "NO_FAILOVER"
+      ]
+    },
+    "GetDbClusterInput":{
+      "type":"structure",
+      "required":["dbClusterId"],
+      "members":{
+        "dbClusterId":{
+          "shape":"DbClusterId",
+          "documentation":"<p>Service-generated unique identifier of the DB cluster to retrieve.</p>"
+        }
+      }
+    },
+    "GetDbClusterOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "arn"
+      ],
+      "members":{
+        "id":{
+          "shape":"DbClusterId",
+          "documentation":"<p>Service-generated unique identifier of the DB cluster to retrieve.</p>"
+        },
+        "name":{
+          "shape":"DbClusterName",
+          "documentation":"<p>Customer-supplied name of the Timestream for InfluxDB cluster.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the DB cluster.</p>"
+        },
+        "status":{
+          "shape":"ClusterStatus",
+          "documentation":"<p>The status of the DB cluster.</p>"
+        },
+        "endpoint":{
+          "shape":"String",
+          "documentation":"<p>The endpoint used to connect to the Timestream for InfluxDB cluster for write and read operations.</p>"
+        },
+        "readerEndpoint":{
+          "shape":"String",
+          "documentation":"<p>The endpoint used to connect to the Timestream for InfluxDB cluster for read-only operations.</p>"
+        },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port number on which InfluxDB accepts connections.</p>"
+        },
+        "deploymentType":{
+          "shape":"ClusterDeploymentType",
+          "documentation":"<p>Deployment type of the DB cluster.</p>"
+        },
+        "dbInstanceType":{
+          "shape":"DbInstanceType",
+          "documentation":"<p>The Timestream for InfluxDB instance type that InfluxDB runs on.</p>"
+        },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Specifies whether the network type of the Timestream for InfluxDB cluster is IPv4, which can communicate over IPv4 protocol only, or DUAL, which can communicate over both IPv4 and IPv6 protocols.</p>"
+        },
+        "dbStorageType":{
+          "shape":"DbStorageType",
+          "documentation":"<p>The Timestream for InfluxDB DB storage type that InfluxDB stores data on.</p>"
+        },
+        "allocatedStorage":{
+          "shape":"AllocatedStorage",
+          "documentation":"<p>The amount of storage allocated for your DB storage type (in gibibytes).</p>"
+        },
+        "publiclyAccessible":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates if the DB cluster has a public IP to facilitate access from outside the VPC.</p>"
+        },
+        "dbParameterGroupIdentifier":{
+          "shape":"DbParameterGroupIdentifier",
+          "documentation":"<p>The ID of the DB parameter group assigned to your DB cluster.</p>"
+        },
+        "logDeliveryConfiguration":{
+          "shape":"LogDeliveryConfiguration",
+          "documentation":"<p>Configuration for sending InfluxDB engine logs to send to specified S3 bucket.</p>"
+        },
+        "influxAuthParametersSecretArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
+        },
+        "vpcSubnetIds":{
+          "shape":"VpcSubnetIdList",
+          "documentation":"<p>A list of VPC subnet IDs associated with the DB cluster.</p>"
+        },
+        "vpcSecurityGroupIds":{
+          "shape":"VpcSecurityGroupIdList",
+          "documentation":"<p>A list of VPC security group IDs associated with the DB cluster.</p>"
+        },
+        "failoverMode":{
+          "shape":"FailoverMode",
+          "documentation":"<p>The configured failover mode for the DB cluster.</p>"
+        }
+      }
     },
     "GetDbInstanceInput":{
       "type":"structure",
@@ -857,6 +1356,14 @@
         "influxAuthParametersSecretArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
+        },
+        "dbClusterId":{
+          "shape":"DbClusterId",
+          "documentation":"<p>Specifies the DbCluster to which this DbInstance belongs to.</p>"
+        },
+        "instanceMode":{
+          "shape":"InstanceMode",
+          "documentation":"<p>Specifies the DbInstance's role in the cluster.</p>"
         }
       }
     },
@@ -1144,6 +1651,14 @@
       "max":256,
       "min":0
     },
+    "InstanceMode":{
+      "type":"string",
+      "enum":[
+        "PRIMARY",
+        "STANDBY",
+        "REPLICA"
+      ]
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -1158,6 +1673,65 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "ListDbClustersInput":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token. To resume pagination, provide the nextToken value as an argument of a subsequent API invocation.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to return in the output. If the total number of items available is more than the value specified, a nextToken is provided in the output. To resume pagination, provide the nextToken value as an argument of a subsequent API invocation.</p>"
+        }
+      }
+    },
+    "ListDbClustersOutput":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"DbClusterSummaryList",
+          "documentation":"<p>A list of Timestream for InfluxDB cluster summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Token from a previous call of the operation. When this value is provided, the service returns results from where the previous response left off.</p>"
+        }
+      }
+    },
+    "ListDbInstancesForClusterInput":{
+      "type":"structure",
+      "required":["dbClusterId"],
+      "members":{
+        "dbClusterId":{
+          "shape":"DbClusterId",
+          "documentation":"<p>Service-generated unique identifier of the DB cluster.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token. To resume pagination, provide the nextToken value as an argument of a subsequent API invocation.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to return in the output. If the total number of items available is more than the value specified, a nextToken is provided in the output. To resume pagination, provide the nextToken value as an argument of a subsequent API invocation.</p>"
+        }
+      }
+    },
+    "ListDbInstancesForClusterOutput":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"DbInstanceForClusterSummaryList",
+          "documentation":"<p>A list of Timestream for InfluxDB instance summaries belonging to the cluster.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Token from a previous call of the operation. When this value is provided, the service returns results from where the previous response left off.</p>"
+        }
+      }
     },
     "ListDbInstancesInput":{
       "type":"structure",
@@ -1451,6 +2025,45 @@
         }
       }
     },
+    "UpdateDbClusterInput":{
+      "type":"structure",
+      "required":["dbClusterId"],
+      "members":{
+        "dbClusterId":{
+          "shape":"DbClusterId",
+          "documentation":"<p>Service-generated unique identifier of the DB cluster to update.</p>"
+        },
+        "logDeliveryConfiguration":{
+          "shape":"LogDeliveryConfiguration",
+          "documentation":"<p>The log delivery configuration to apply to the DB cluster.</p>"
+        },
+        "dbParameterGroupIdentifier":{
+          "shape":"DbParameterGroupIdentifier",
+          "documentation":"<p>Update the DB cluster to use the specified DB parameter group.</p>"
+        },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>Update the DB cluster to use the specified port.</p>"
+        },
+        "dbInstanceType":{
+          "shape":"DbInstanceType",
+          "documentation":"<p>Update the DB cluster to use the specified DB instance Type.</p>"
+        },
+        "failoverMode":{
+          "shape":"FailoverMode",
+          "documentation":"<p>Update the DB cluster's failover behavior.</p>"
+        }
+      }
+    },
+    "UpdateDbClusterOutput":{
+      "type":"structure",
+      "members":{
+        "dbClusterStatus":{
+          "shape":"ClusterStatus",
+          "documentation":"<p>The status of the DB cluster.</p>"
+        }
+      }
+    },
     "UpdateDbInstanceInput":{
       "type":"structure",
       "required":["identifier"],
@@ -1573,6 +2186,14 @@
         "influxAuthParametersSecretArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
+        },
+        "dbClusterId":{
+          "shape":"DbClusterId",
+          "documentation":"<p>Specifies the DbCluster to which this DbInstance belongs to.</p>"
+        },
+        "instanceMode":{
+          "shape":"InstanceMode",
+          "documentation":"<p>Specifies the DbInstance's role in the cluster.</p>"
         }
       }
     },

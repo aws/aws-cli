@@ -689,9 +689,13 @@
           "shape":"UpdateTime",
           "documentation":"<p>A timestamp of when Amplify updated the application.</p>"
         },
+        "computeRoleArn":{
+          "shape":"ComputeRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role for an SSR app. The Compute role allows the Amplify Hosting compute service to securely access specific Amazon Web Services resources based on the role's permissions. For more information about the SSR Compute role, see <a href=\"https://docs.aws.amazon.com/latest/userguide/amplify-SSR-compute-role.html\">Adding an SSR Compute role</a> in the <i>Amplify User Guide</i>.</p>"
+        },
         "iamServiceRoleArn":{
           "shape":"ServiceRoleArn",
-          "documentation":"<p>The AWS Identity and Access Management (IAM) service role for the Amazon Resource Name (ARN) of the Amplify app. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role for the Amplify app.</p>"
         },
         "environmentVariables":{
           "shape":"EnvironmentVariables",
@@ -1098,7 +1102,11 @@
           "shape":"BackendEnvironmentArn",
           "documentation":"<p> The Amazon Resource Name (ARN) for a backend environment that is part of an Amplify app. </p> <p>This property is available to Amplify Gen 1 apps only. When you deploy an application with Amplify Gen 2, you provision the app's backend infrastructure using Typescript code.</p>"
         },
-        "backend":{"shape":"Backend"}
+        "backend":{"shape":"Backend"},
+        "computeRoleArn":{
+          "shape":"ComputeRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role for a branch of an SSR app. The Compute role allows the Amplify Hosting compute service to securely access specific Amazon Web Services resources based on the role's permissions. For more information about the SSR Compute role, see <a href=\"https://docs.aws.amazon.com/latest/userguide/amplify-SSR-compute-role.html\">Adding an SSR Compute role</a> in the <i>Amplify User Guide</i>.</p>"
+        }
       },
       "documentation":"<p> The branch for an Amplify app, which maps to a third-party repository branch. </p>"
     },
@@ -1207,6 +1215,12 @@
       "pattern":"(?s).*"
     },
     "CommitTime":{"type":"timestamp"},
+    "ComputeRoleArn":{
+      "type":"string",
+      "max":1000,
+      "min":0,
+      "pattern":"(?s).*"
+    },
     "Condition":{
       "type":"string",
       "max":2048,
@@ -1234,9 +1248,13 @@
           "shape":"Platform",
           "documentation":"<p>The platform for the Amplify app. For a static app, set the platform type to <code>WEB</code>. For a dynamic server-side rendered (SSR) app, set the platform type to <code>WEB_COMPUTE</code>. For an app requiring Amplify Hosting's original SSR support only, set the platform type to <code>WEB_DYNAMIC</code>.</p> <p>If you are deploying an SSG only app with Next.js version 14 or later, you must set the platform type to <code>WEB_COMPUTE</code> and set the artifacts <code>baseDirectory</code> to <code>.next</code> in the application's build settings. For an example of the build specification settings, see <a href=\"https://docs.aws.amazon.com/amplify/latest/userguide/deploy-nextjs-app.html#build-setting-detection-ssg-14\">Amplify build settings for a Next.js 14 SSG application</a> in the <i>Amplify Hosting User Guide</i>.</p>"
         },
+        "computeRoleArn":{
+          "shape":"ComputeRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to assign to an SSR app. The SSR Compute role allows the Amplify Hosting compute service to securely access specific Amazon Web Services resources based on the role's permissions. For more information about the SSR Compute role, see <a href=\"https://docs.aws.amazon.com/latest/userguide/amplify-SSR-compute-role.html\">Adding an SSR Compute role</a> in the <i>Amplify User Guide</i>.</p>"
+        },
         "iamServiceRoleArn":{
           "shape":"ServiceRoleArn",
-          "documentation":"<p>The AWS Identity and Access Management (IAM) service role for an Amplify app. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role for the Amplify app.</p>"
         },
         "oauthToken":{
           "shape":"OauthToken",
@@ -1431,6 +1449,10 @@
         "backend":{
           "shape":"Backend",
           "documentation":"<p>The backend for a <code>Branch</code> of an Amplify app. Use for a backend created from an CloudFormation stack.</p> <p>This field is available to Amplify Gen 2 apps only. When you deploy an application with Amplify Gen 2, you provision the app's backend infrastructure using Typescript code.</p>"
+        },
+        "computeRoleArn":{
+          "shape":"ComputeRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to assign to a branch of an SSR app. The SSR Compute role allows the Amplify Hosting compute service to securely access specific Amazon Web Services resources based on the role's permissions. For more information about the SSR Compute role, see <a href=\"https://docs.aws.amazon.com/latest/userguide/amplify-SSR-compute-role.html\">Adding an SSR Compute role</a> in the <i>Amplify User Guide</i>.</p>"
         }
       },
       "documentation":"<p> The request structure for the create branch request. </p>"
@@ -3271,9 +3293,13 @@
           "shape":"Platform",
           "documentation":"<p>The platform for the Amplify app. For a static app, set the platform type to <code>WEB</code>. For a dynamic server-side rendered (SSR) app, set the platform type to <code>WEB_COMPUTE</code>. For an app requiring Amplify Hosting's original SSR support only, set the platform type to <code>WEB_DYNAMIC</code>.</p> <p>If you are deploying an SSG only app with Next.js version 14 or later, you must set the platform type to <code>WEB_COMPUTE</code>.</p>"
         },
+        "computeRoleArn":{
+          "shape":"ComputeRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to assign to an SSR app. The SSR Compute role allows the Amplify Hosting compute service to securely access specific Amazon Web Services resources based on the role's permissions. For more information about the SSR Compute role, see <a href=\"https://docs.aws.amazon.com/latest/userguide/amplify-SSR-compute-role.html\">Adding an SSR Compute role</a> in the <i>Amplify User Guide</i>.</p>"
+        },
         "iamServiceRoleArn":{
           "shape":"ServiceRoleArn",
-          "documentation":"<p>The AWS Identity and Access Management (IAM) service role for an Amplify app. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role for the Amplify app.</p>"
         },
         "environmentVariables":{
           "shape":"EnvironmentVariables",
@@ -3431,6 +3457,10 @@
         "backend":{
           "shape":"Backend",
           "documentation":"<p>The backend for a <code>Branch</code> of an Amplify app. Use for a backend created from an CloudFormation stack.</p> <p>This field is available to Amplify Gen 2 apps only. When you deploy an application with Amplify Gen 2, you provision the app's backend infrastructure using Typescript code.</p>"
+        },
+        "computeRoleArn":{
+          "shape":"ComputeRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to assign to a branch of an SSR app. The SSR Compute role allows the Amplify Hosting compute service to securely access specific Amazon Web Services resources based on the role's permissions. For more information about the SSR Compute role, see <a href=\"https://docs.aws.amazon.com/latest/userguide/amplify-SSR-compute-role.html\">Adding an SSR Compute role</a> in the <i>Amplify User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The request structure for the update branch request. </p>"

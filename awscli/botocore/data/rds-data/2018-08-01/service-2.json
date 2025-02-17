@@ -30,6 +30,7 @@
         {"shape":"DatabaseUnavailableException"},
         {"shape":"TransactionNotFoundException"},
         {"shape":"InvalidSecretException"},
+        {"shape":"InvalidResourceStateException"},
         {"shape":"ServiceUnavailableError"},
         {"shape":"ForbiddenException"},
         {"shape":"DatabaseNotFoundException"},
@@ -57,6 +58,7 @@
         {"shape":"DatabaseUnavailableException"},
         {"shape":"TransactionNotFoundException"},
         {"shape":"InvalidSecretException"},
+        {"shape":"InvalidResourceStateException"},
         {"shape":"ServiceUnavailableError"},
         {"shape":"ForbiddenException"},
         {"shape":"DatabaseNotFoundException"},
@@ -83,6 +85,7 @@
         {"shape":"DatabaseUnavailableException"},
         {"shape":"TransactionNotFoundException"},
         {"shape":"InvalidSecretException"},
+        {"shape":"InvalidResourceStateException"},
         {"shape":"ServiceUnavailableError"},
         {"shape":"ForbiddenException"},
         {"shape":"DatabaseNotFoundException"},
@@ -132,6 +135,7 @@
         {"shape":"DatabaseUnavailableException"},
         {"shape":"TransactionNotFoundException"},
         {"shape":"InvalidSecretException"},
+        {"shape":"InvalidResourceStateException"},
         {"shape":"ServiceUnavailableError"},
         {"shape":"ForbiddenException"},
         {"shape":"DatabaseNotFoundException"},
@@ -159,6 +163,7 @@
         {"shape":"DatabaseUnavailableException"},
         {"shape":"TransactionNotFoundException"},
         {"shape":"InvalidSecretException"},
+        {"shape":"InvalidResourceStateException"},
         {"shape":"ServiceUnavailableError"},
         {"shape":"ForbiddenException"},
         {"shape":"DatabaseNotFoundException"},
@@ -476,7 +481,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>A request was canceled because the Aurora Serverless v2 DB instance was in a paused state. The Data API request automatically causes the DB instance to begin resuming. Wait a few seconds and try again.</p>",
+      "documentation":"<p>A request was cancelled because the Aurora Serverless v2 DB instance was paused. The Data API request automatically resumes the DB instance. Wait a few seconds and try again.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -713,6 +718,18 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "InvalidResourceStateException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The resource is in an invalid state.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
     },
     "InvalidSecretException":{
       "type":"structure",

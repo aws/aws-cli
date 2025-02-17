@@ -2,6 +2,51 @@
 CHANGELOG
 =========
 
+2.24.5
+======
+
+* api-change:``codebuild``: Added test suite names to test case metadata
+* api-change:``connect``: Release Notes: 1) Analytics API enhancements: Added new ListAnalyticsDataLakeDataSets API. 2)  Onboarding API Idempotency: Adds ClientToken to instance creation and management APIs to support idempotency.
+* api-change:``workspaces-thin-client``: Update Environment and Device name field definitions
+* api-change:``rds-data``: Add support for Stop DB feature.
+* api-change:``dms``: Introduces premigration assessment feature to DMS Serverless API for start-replication and describe-replications
+* api-change:``s3``: Added support for Content-Range header in HeadObject response.
+* api-change:``wafv2``: The WAFv2 API now supports configuring data protection in webACLs.
+
+
+2.24.4
+======
+
+* api-change:``acm-pca``: Private Certificate Authority (PCA) documentation updates
+* api-change:``ecs``: This is a documentation only release to support migrating Amazon ECS service ARNs to the long ARN format.
+* api-change:``sagemaker``: Adds additional values to the InferenceAmiVersion parameter in the ProductionVariant data type.
+* api-change:``fis``: Adds auto-pagination for the following operations: ListActions, ListExperimentTemplates, ListTargetAccountConfigurations, ListExperiments, ListExperimentResolvedTargets, ListTargetResourceTypes. Reduces length constraints of prefixes for logConfiguration and experimentReportConfiguration.
+* api-change:``accessanalyzer``: This release introduces the getFindingsStatistics API, enabling users to retrieve aggregated finding statistics for IAM Access Analyzer's external access and unused access analysis features. Updated service API and documentation.
+* api-change:``storagegateway``: This release adds support for generating cache reports on S3 File Gateways for files that fail to upload.
+
+
+2.24.3
+======
+
+* api-change:``fsx``: Support for in-place Lustre version upgrades
+* api-change:``b2bi``: Allow spaces in the following fields in the Partnership resource: ISA 06 - Sender ID, ISA 08 - Receiver ID, GS 02 - Application Sender Code, GS 03 - Application Receiver Code
+* api-change:``polly``: Added support for the new voice - Jasmine (en-SG). Jasmine is available as a Neural voice only.
+* api-change:``bedrock-agent-runtime``: This releases adds the additionalModelRequestFields field to the InvokeInlineAgent operation. Use additionalModelRequestFields to specify  additional inference parameters for a model beyond the base inference parameters.
+* api-change:``bedrock-agent``: This releases adds the additionalModelRequestFields field to the CreateAgent and UpdateAgent operations. Use additionalModelRequestFields to specify  additional inference parameters for a model beyond the base inference parameters.
+* api-change:``opensearchserverless``: Custom OpenSearchServerless Entity ID for SAML Config.
+* api-change:``codebuild``: Add note for the RUNNER_BUILDKITE_BUILD buildType.
+* api-change:``medialive``: Adds a RequestId parameter to all MediaLive Workflow Monitor create operations.  The RequestId parameter allows idempotent operations.
+
+
+2.24.2
+======
+
+* api-change:``pi``: Documentation only update for RDS Performance Insights dimensions for execution plans and locking analysis.
+* api-change:``acm-pca``: Private Certificate Authority service now supports Partitioned CRL as a revocation configuration option.
+* api-change:``appsync``: Add support for operation level caching
+* api-change:``ec2``: Adding support for the new fullSnapshotSizeInBytes field in the response of the EC2 EBS DescribeSnapshots API. This field represents the size of all the blocks that were written to the source volume at the time the snapshot was created.
+
+
 2.24.1
 ======
 

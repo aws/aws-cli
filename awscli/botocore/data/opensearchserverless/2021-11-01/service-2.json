@@ -2,6 +2,7 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2021-11-01",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"aoss",
     "jsonVersion":"1.0",
     "protocol":"json",
@@ -11,8 +12,7 @@
     "signatureVersion":"v4",
     "signingName":"aoss",
     "targetPrefix":"OpenSearchServerless",
-    "uid":"opensearchserverless-2021-11-01",
-    "auth":["aws.auth#sigv4"]
+    "uid":"opensearchserverless-2021-11-01"
   },
   "operations":{
     "BatchGetCollection":{
@@ -601,33 +601,33 @@
     "AccessPolicyDetail":{
       "type":"structure",
       "members":{
-        "createdDate":{
-          "shape":"Long",
-          "documentation":"<p>The date the policy was created.</p>"
-        },
-        "description":{
-          "shape":"PolicyDescription",
-          "documentation":"<p>The description of the policy.</p>"
-        },
-        "lastModifiedDate":{
-          "shape":"Long",
-          "documentation":"<p>The timestamp of when the policy was last modified.</p>"
+        "type":{
+          "shape":"AccessPolicyType",
+          "documentation":"<p>The type of access policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
           "documentation":"<p>The name of the policy.</p>"
         },
-        "policy":{
-          "shape":"Document",
-          "documentation":"<p>The JSON policy document without any whitespaces.</p>"
-        },
         "policyVersion":{
           "shape":"PolicyVersion",
           "documentation":"<p>The version of the policy.</p>"
         },
-        "type":{
-          "shape":"AccessPolicyType",
-          "documentation":"<p>The type of access policy.</p>"
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>The description of the policy.</p>"
+        },
+        "policy":{
+          "shape":"Document",
+          "documentation":"<p>The JSON policy document without any whitespaces.</p>"
+        },
+        "createdDate":{
+          "shape":"Long",
+          "documentation":"<p>The date the policy was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Long",
+          "documentation":"<p>The timestamp of when the policy was last modified.</p>"
         }
       },
       "documentation":"<p>Details about an OpenSearch Serverless access policy.</p>"
@@ -649,17 +649,9 @@
     "AccessPolicySummary":{
       "type":"structure",
       "members":{
-        "createdDate":{
-          "shape":"Long",
-          "documentation":"<p>The Epoch time when the access policy was created.</p>"
-        },
-        "description":{
-          "shape":"PolicyDescription",
-          "documentation":"<p>The description of the access policy.</p>"
-        },
-        "lastModifiedDate":{
-          "shape":"Long",
-          "documentation":"<p>The date and time when the collection was last modified.</p>"
+        "type":{
+          "shape":"AccessPolicyType",
+          "documentation":"<p>The type of access policy. Currently, the only available type is <code>data</code>.</p>"
         },
         "name":{
           "shape":"PolicyName",
@@ -669,9 +661,17 @@
           "shape":"PolicyVersion",
           "documentation":"<p>The version of the policy.</p>"
         },
-        "type":{
-          "shape":"AccessPolicyType",
-          "documentation":"<p>The type of access policy. Currently, the only available type is <code>data</code>.</p>"
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>The description of the access policy.</p>"
+        },
+        "createdDate":{
+          "shape":"Long",
+          "documentation":"<p>The Epoch time when the access policy was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Long",
+          "documentation":"<p>The date and time when the collection was last modified.</p>"
         }
       },
       "documentation":"<p>A summary of the data access policy.</p>"
@@ -813,53 +813,13 @@
     "CollectionDetail":{
       "type":"structure",
       "members":{
-        "arn":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the collection.</p>"
-        },
-        "collectionEndpoint":{
-          "shape":"String",
-          "documentation":"<p>Collection-specific endpoint used to submit index, search, and data upload requests to an OpenSearch Serverless collection.</p>"
-        },
-        "createdDate":{
-          "shape":"Long",
-          "documentation":"<p>The Epoch time when the collection was created.</p>"
-        },
-        "dashboardEndpoint":{
-          "shape":"String",
-          "documentation":"<p>Collection-specific endpoint used to access OpenSearch Dashboards.</p>"
-        },
-        "description":{
-          "shape":"String",
-          "documentation":"<p>A description of the collection.</p>"
-        },
-        "failureCode":{
-          "shape":"String",
-          "documentation":"<p>A failure code associated with the request.</p>"
-        },
-        "failureMessage":{
-          "shape":"String",
-          "documentation":"<p>A message associated with the failure code.</p>"
-        },
         "id":{
           "shape":"CollectionId",
           "documentation":"<p>A unique identifier for the collection.</p>"
         },
-        "kmsKeyArn":{
-          "shape":"String",
-          "documentation":"<p>The ARN of the Amazon Web Services KMS key used to encrypt the collection.</p>"
-        },
-        "lastModifiedDate":{
-          "shape":"Long",
-          "documentation":"<p>The date and time when the collection was last modified.</p>"
-        },
         "name":{
           "shape":"CollectionName",
           "documentation":"<p>The name of the collection.</p>"
-        },
-        "standbyReplicas":{
-          "shape":"StandbyReplicas",
-          "documentation":"<p>Details about an OpenSearch Serverless collection.</p>"
         },
         "status":{
           "shape":"CollectionStatus",
@@ -868,6 +828,46 @@
         "type":{
           "shape":"CollectionType",
           "documentation":"<p>The type of collection.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the collection.</p>"
+        },
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collection.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the Amazon Web Services KMS key used to encrypt the collection.</p>"
+        },
+        "standbyReplicas":{
+          "shape":"StandbyReplicas",
+          "documentation":"<p>Details about an OpenSearch Serverless collection.</p>"
+        },
+        "createdDate":{
+          "shape":"Long",
+          "documentation":"<p>The Epoch time when the collection was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Long",
+          "documentation":"<p>The date and time when the collection was last modified.</p>"
+        },
+        "collectionEndpoint":{
+          "shape":"String",
+          "documentation":"<p>Collection-specific endpoint used to submit index, search, and data upload requests to an OpenSearch Serverless collection.</p>"
+        },
+        "dashboardEndpoint":{
+          "shape":"String",
+          "documentation":"<p>Collection-specific endpoint used to access OpenSearch Dashboards.</p>"
+        },
+        "failureCode":{
+          "shape":"String",
+          "documentation":"<p>A failure code associated with the request.</p>"
+        },
+        "failureMessage":{
+          "shape":"String",
+          "documentation":"<p>A message associated with the failure code.</p>"
         }
       },
       "documentation":"<p>Details about each OpenSearch Serverless collection, including the collection endpoint and the OpenSearch Dashboards endpoint.</p>"
@@ -879,14 +879,6 @@
     "CollectionErrorDetail":{
       "type":"structure",
       "members":{
-        "errorCode":{
-          "shape":"String",
-          "documentation":"<p>The error code for the request. For example, <code>NOT_FOUND</code>.</p>"
-        },
-        "errorMessage":{
-          "shape":"String",
-          "documentation":"<p>A description of the error. For example, <code>The specified Collection is not found.</code> </p>"
-        },
         "id":{
           "shape":"CollectionId",
           "documentation":"<p>If the request contains collection IDs, the response includes the IDs provided in the request.</p>"
@@ -894,6 +886,14 @@
         "name":{
           "shape":"CollectionName",
           "documentation":"<p>If the request contains collection names, the response includes the names provided in the request.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>A description of the error. For example, <code>The specified Collection is not found.</code> </p>"
+        },
+        "errorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code for the request. For example, <code>NOT_FOUND</code>.</p>"
         }
       },
       "documentation":"<p>Error information for an OpenSearch Serverless request.</p>"
@@ -920,7 +920,7 @@
       "type":"string",
       "max":40,
       "min":3,
-      "pattern":"^[a-z0-9]{3,40}$"
+      "pattern":"[a-z0-9]{3,40}"
     },
     "CollectionIds":{
       "type":"list",
@@ -932,7 +932,7 @@
       "type":"string",
       "max":32,
       "min":3,
-      "pattern":"^[a-z][a-z0-9-]+$"
+      "pattern":"[a-z][a-z0-9-]+"
     },
     "CollectionNames":{
       "type":"list",
@@ -956,10 +956,6 @@
     "CollectionSummary":{
       "type":"structure",
       "members":{
-        "arn":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the collection.</p>"
-        },
         "id":{
           "shape":"CollectionId",
           "documentation":"<p>The unique identifier of the collection.</p>"
@@ -971,6 +967,10 @@
         "status":{
           "shape":"CollectionStatus",
           "documentation":"<p>The current status of the collection.</p>"
+        },
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collection.</p>"
         }
       },
       "documentation":"<p>Details about each OpenSearch Serverless collection.</p>"
@@ -992,7 +992,7 @@
       "type":"string",
       "max":32,
       "min":3,
-      "pattern":"^[a-z][a-z0-9-]+$"
+      "pattern":"[a-z][a-z0-9-]+"
     },
     "ConflictException":{
       "type":"structure",
@@ -1005,31 +1005,31 @@
     "CreateAccessPolicyRequest":{
       "type":"structure",
       "required":[
+        "type",
         "name",
-        "policy",
-        "type"
+        "policy"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
-        },
-        "description":{
-          "shape":"PolicyDescription",
-          "documentation":"<p>A description of the policy. Typically used to store information about the permissions defined in the policy.</p>"
+        "type":{
+          "shape":"AccessPolicyType",
+          "documentation":"<p>The type of policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
           "documentation":"<p>The name of the policy.</p>"
         },
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>A description of the policy. Typically used to store information about the permissions defined in the policy.</p>"
+        },
         "policy":{
           "shape":"PolicyDocument",
           "documentation":"<p>The JSON policy document to use as the content for the policy.</p>"
         },
-        "type":{
-          "shape":"AccessPolicyType",
-          "documentation":"<p>The type of policy.</p>"
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -1045,37 +1045,13 @@
     "CreateCollectionDetail":{
       "type":"structure",
       "members":{
-        "arn":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the collection.</p>"
-        },
-        "createdDate":{
-          "shape":"Long",
-          "documentation":"<p>The Epoch time when the collection was created.</p>"
-        },
-        "description":{
-          "shape":"String",
-          "documentation":"<p>A description of the collection.</p>"
-        },
         "id":{
           "shape":"CollectionId",
           "documentation":"<p>The unique identifier of the collection.</p>"
         },
-        "kmsKeyArn":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key with which to encrypt the collection.</p>"
-        },
-        "lastModifiedDate":{
-          "shape":"Long",
-          "documentation":"<p>The date and time when the collection was last modified.</p>"
-        },
         "name":{
           "shape":"CollectionName",
           "documentation":"<p>The name of the collection.</p>"
-        },
-        "standbyReplicas":{
-          "shape":"StandbyReplicas",
-          "documentation":"<p>Creates details about an OpenSearch Serverless collection.</p>"
         },
         "status":{
           "shape":"CollectionStatus",
@@ -1084,6 +1060,30 @@
         "type":{
           "shape":"CollectionType",
           "documentation":"<p>The type of collection.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the collection.</p>"
+        },
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collection.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key with which to encrypt the collection.</p>"
+        },
+        "standbyReplicas":{
+          "shape":"StandbyReplicas",
+          "documentation":"<p>Creates details about an OpenSearch Serverless collection.</p>"
+        },
+        "createdDate":{
+          "shape":"Long",
+          "documentation":"<p>The Epoch time when the collection was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Long",
+          "documentation":"<p>The date and time when the collection was last modified.</p>"
         }
       },
       "documentation":"<p>Details about the created OpenSearch Serverless collection.</p>"
@@ -1092,30 +1092,30 @@
       "type":"structure",
       "required":["name"],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
+        "name":{
+          "shape":"CollectionName",
+          "documentation":"<p>Name of the collection.</p>"
+        },
+        "type":{
+          "shape":"CollectionType",
+          "documentation":"<p>The type of collection.</p>"
         },
         "description":{
           "shape":"CreateCollectionRequestDescriptionString",
           "documentation":"<p>Description of the collection.</p>"
         },
-        "name":{
-          "shape":"CollectionName",
-          "documentation":"<p>Name of the collection.</p>"
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>An arbitrary set of tags (key–value pairs) to associate with the OpenSearch Serverless collection.</p>"
         },
         "standbyReplicas":{
           "shape":"StandbyReplicas",
           "documentation":"<p>Indicates whether standby replicas should be used for a collection.</p>"
         },
-        "tags":{
-          "shape":"Tags",
-          "documentation":"<p>An arbitrary set of tags (key–value pairs) to associate with the OpenSearch Serverless collection.</p>"
-        },
-        "type":{
-          "shape":"CollectionType",
-          "documentation":"<p>The type of collection.</p>"
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -1137,10 +1137,6 @@
       "type":"structure",
       "required":["instanceArn"],
       "members":{
-        "groupAttribute":{
-          "shape":"IamIdentityCenterGroupAttribute",
-          "documentation":"<p>The group attribute for this IAM Identity Center integration. Defaults to <code>GroupId</code>.</p>"
-        },
         "instanceArn":{
           "shape":"IamIdentityCenterInstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance used to integrate with OpenSearch Serverless.</p>"
@@ -1148,6 +1144,10 @@
         "userAttribute":{
           "shape":"IamIdentityCenterUserAttribute",
           "documentation":"<p>The user attribute for this IAM Identity Center integration. Defaults to <code>UserId</code>.</p>"
+        },
+        "groupAttribute":{
+          "shape":"IamIdentityCenterGroupAttribute",
+          "documentation":"<p>The group attribute for this IAM Identity Center integration. Defaults to <code>GroupId</code>.</p>"
         }
       },
       "documentation":"<p>Describes IAM Identity Center options for creating an OpenSearch Serverless security configuration in the form of a key-value map.</p>"
@@ -1155,31 +1155,31 @@
     "CreateLifecyclePolicyRequest":{
       "type":"structure",
       "required":[
+        "type",
         "name",
-        "policy",
-        "type"
+        "policy"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
-        },
-        "description":{
-          "shape":"PolicyDescription",
-          "documentation":"<p>A description of the lifecycle policy.</p>"
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
           "documentation":"<p>The name of the lifecycle policy.</p>"
         },
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>A description of the lifecycle policy.</p>"
+        },
         "policy":{
           "shape":"PolicyDocument",
           "documentation":"<p>The JSON policy document to use as the content for the lifecycle policy.</p>"
         },
-        "type":{
-          "shape":"LifecyclePolicyType",
-          "documentation":"<p>The type of lifecycle policy.</p>"
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -1195,34 +1195,34 @@
     "CreateSecurityConfigRequest":{
       "type":"structure",
       "required":[
-        "name",
-        "type"
+        "type",
+        "name"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
-        },
-        "description":{
-          "shape":"ConfigDescription",
-          "documentation":"<p>A description of the security configuration.</p>"
-        },
-        "iamIdentityCenterOptions":{
-          "shape":"CreateIamIdentityCenterConfigOptions",
-          "documentation":"<p>Describes IAM Identity Center options in the form of a key-value map. This field is required if you specify iamidentitycenter for the type parameter.</p>"
+        "type":{
+          "shape":"SecurityConfigType",
+          "documentation":"<p>The type of security configuration.</p>"
         },
         "name":{
           "shape":"ConfigName",
           "documentation":"<p>The name of the security configuration.</p>"
         },
+        "description":{
+          "shape":"ConfigDescription",
+          "documentation":"<p>A description of the security configuration.</p>"
+        },
         "samlOptions":{
           "shape":"SamlConfigOptions",
           "documentation":"<p>Describes SAML options in in the form of a key-value map. This field is required if you specify <code>saml</code> for the <code>type</code> parameter.</p>"
         },
-        "type":{
-          "shape":"SecurityConfigType",
-          "documentation":"<p>The type of security configuration.</p>"
+        "iamIdentityCenterOptions":{
+          "shape":"CreateIamIdentityCenterConfigOptions",
+          "documentation":"<p>Describes IAM Identity Center options in the form of a key-value map. This field is required if you specify iamidentitycenter for the type parameter.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -1238,31 +1238,31 @@
     "CreateSecurityPolicyRequest":{
       "type":"structure",
       "required":[
+        "type",
         "name",
-        "policy",
-        "type"
+        "policy"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
-        },
-        "description":{
-          "shape":"PolicyDescription",
-          "documentation":"<p>A description of the policy. Typically used to store information about the permissions defined in the policy.</p>"
+        "type":{
+          "shape":"SecurityPolicyType",
+          "documentation":"<p>The type of security policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
           "documentation":"<p>The name of the policy.</p>"
         },
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>A description of the policy. Typically used to store information about the permissions defined in the policy.</p>"
+        },
         "policy":{
           "shape":"PolicyDocument",
           "documentation":"<p>The JSON policy document to use as the content for the new policy.</p>"
         },
-        "type":{
-          "shape":"SecurityPolicyType",
-          "documentation":"<p>The type of security policy.</p>"
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -1297,30 +1297,30 @@
       "type":"structure",
       "required":[
         "name",
-        "subnetIds",
-        "vpcId"
+        "vpcId",
+        "subnetIds"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
-        },
         "name":{
           "shape":"VpcEndpointName",
           "documentation":"<p>The name of the interface endpoint.</p>"
         },
-        "securityGroupIds":{
-          "shape":"SecurityGroupIds",
-          "documentation":"<p>The unique identifiers of the security groups that define the ports, protocols, and sources for inbound traffic that you are authorizing into your endpoint.</p>"
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC from which you'll access OpenSearch Serverless.</p>"
         },
         "subnetIds":{
           "shape":"SubnetIds",
           "documentation":"<p>The ID of one or more subnets from which you'll access OpenSearch Serverless.</p>"
         },
-        "vpcId":{
-          "shape":"VpcId",
-          "documentation":"<p>The ID of the VPC from which you'll access OpenSearch Serverless.</p>"
+        "securityGroupIds":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>The unique identifiers of the security groups that define the ports, protocols, and sources for inbound traffic that you are authorizing into your endpoint.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -1336,22 +1336,22 @@
     "DeleteAccessPolicyRequest":{
       "type":"structure",
       "required":[
-        "name",
-        "type"
+        "type",
+        "name"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
+        "type":{
+          "shape":"AccessPolicyType",
+          "documentation":"<p>The type of policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
           "documentation":"<p>The name of the policy to delete.</p>"
         },
-        "type":{
-          "shape":"AccessPolicyType",
-          "documentation":"<p>The type of policy.</p>"
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -1382,14 +1382,14 @@
       "type":"structure",
       "required":["id"],
       "members":{
+        "id":{
+          "shape":"CollectionId",
+          "documentation":"<p>The unique identifier of the collection. For example, <code>1iu5usc406kd</code>. The ID is part of the collection endpoint. You can also retrieve it using the <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/ServerlessAPIReference/API_ListCollections.html\">ListCollections</a> API.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
           "idempotencyToken":true
-        },
-        "id":{
-          "shape":"CollectionId",
-          "documentation":"<p>The unique identifier of the collection. For example, <code>1iu5usc406kd</code>. The ID is part of the collection endpoint. You can also retrieve it using the <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/ServerlessAPIReference/API_ListCollections.html\">ListCollections</a> API.</p>"
         }
       }
     },
@@ -1405,22 +1405,22 @@
     "DeleteLifecyclePolicyRequest":{
       "type":"structure",
       "required":[
-        "name",
-        "type"
+        "type",
+        "name"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
           "documentation":"<p>The name of the policy to delete.</p>"
         },
-        "type":{
-          "shape":"LifecyclePolicyType",
-          "documentation":"<p>The type of lifecycle policy.</p>"
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -1433,14 +1433,14 @@
       "type":"structure",
       "required":["id"],
       "members":{
+        "id":{
+          "shape":"SecurityConfigId",
+          "documentation":"<p>The security configuration identifier. For SAML the ID will be <code>saml/&lt;accountId&gt;/&lt;idpProviderName&gt;</code>. For example, <code>saml/123456789123/OKTADev</code>.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
           "idempotencyToken":true
-        },
-        "id":{
-          "shape":"SecurityConfigId",
-          "documentation":"<p>The security configuration identifier. For SAML the ID will be <code>saml/&lt;accountId&gt;/&lt;idpProviderName&gt;</code>. For example, <code>saml/123456789123/OKTADev</code>.</p>"
         }
       }
     },
@@ -1452,22 +1452,22 @@
     "DeleteSecurityPolicyRequest":{
       "type":"structure",
       "required":[
-        "name",
-        "type"
+        "type",
+        "name"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
+        "type":{
+          "shape":"SecurityPolicyType",
+          "documentation":"<p>The type of policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
           "documentation":"<p>The name of the policy to delete.</p>"
         },
-        "type":{
-          "shape":"SecurityPolicyType",
-          "documentation":"<p>The type of policy.</p>"
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -1498,14 +1498,14 @@
       "type":"structure",
       "required":["id"],
       "members":{
+        "id":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The VPC endpoint identifier.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
           "idempotencyToken":true
-        },
-        "id":{
-          "shape":"VpcEndpointId",
-          "documentation":"<p>The VPC endpoint identifier.</p>"
         }
       }
     },
@@ -1527,17 +1527,17 @@
     "EffectiveLifecyclePolicyDetail":{
       "type":"structure",
       "members":{
-        "noMinRetentionPeriod":{
-          "shape":"Boolean",
-          "documentation":"<p>The minimum number of index retention days set. That is an optional param that will return as <code>true</code> if the minimum number of days or hours is not set to a index resource.</p>"
-        },
-        "policyName":{
-          "shape":"PolicyName",
-          "documentation":"<p>The name of the lifecycle policy.</p>"
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
         },
         "resource":{
           "shape":"Resource",
           "documentation":"<p>The name of the OpenSearch Serverless index resource.</p>"
+        },
+        "policyName":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the lifecycle policy.</p>"
         },
         "resourceType":{
           "shape":"ResourceType",
@@ -1547,9 +1547,9 @@
           "shape":"String",
           "documentation":"<p>The minimum number of index retention in days or hours. This is an optional parameter that will return only if it’s set.</p>"
         },
-        "type":{
-          "shape":"LifecyclePolicyType",
-          "documentation":"<p>The type of lifecycle policy.</p>"
+        "noMinRetentionPeriod":{
+          "shape":"Boolean",
+          "documentation":"<p>The minimum number of index retention days set. That is an optional param that will return as <code>true</code> if the minimum number of days or hours is not set to a index resource.</p>"
         }
       },
       "documentation":"<p>Error information for an OpenSearch Serverless request.</p>"
@@ -1561,21 +1561,21 @@
     "EffectiveLifecyclePolicyErrorDetail":{
       "type":"structure",
       "members":{
-        "errorCode":{
-          "shape":"String",
-          "documentation":"<p>The error code for the request.</p>"
-        },
-        "errorMessage":{
-          "shape":"String",
-          "documentation":"<p>A description of the error. For example, <code>The specified Index resource is not found</code>.</p>"
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
         },
         "resource":{
           "shape":"Resource",
           "documentation":"<p>The name of OpenSearch Serverless index resource.</p>"
         },
-        "type":{
-          "shape":"LifecyclePolicyType",
-          "documentation":"<p>The type of lifecycle policy.</p>"
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>A description of the error. For example, <code>The specified Index resource is not found</code>.</p>"
+        },
+        "errorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code for the request.</p>"
         }
       },
       "documentation":"<p>Error information for an OpenSearch Serverless request.</p>"
@@ -1587,17 +1587,17 @@
     "GetAccessPolicyRequest":{
       "type":"structure",
       "required":[
-        "name",
-        "type"
+        "type",
+        "name"
       ],
       "members":{
-        "name":{
-          "shape":"PolicyName",
-          "documentation":"<p>The name of the access policy.</p>"
-        },
         "type":{
           "shape":"AccessPolicyType",
           "documentation":"<p>Tye type of policy. Currently, the only supported value is <code>data</code>.</p>"
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the access policy.</p>"
         }
       }
     },
@@ -1636,17 +1636,17 @@
           "shape":"AccessPolicyStats",
           "documentation":"<p>Information about the data access policies in your account.</p>"
         },
-        "LifecyclePolicyStats":{
-          "shape":"LifecyclePolicyStats",
-          "documentation":"<p>Information about the lifecycle policies in your account.</p>"
+        "SecurityPolicyStats":{
+          "shape":"SecurityPolicyStats",
+          "documentation":"<p>Information about the security policies in your account.</p>"
         },
         "SecurityConfigStats":{
           "shape":"SecurityConfigStats",
           "documentation":"<p>Information about the security configurations in your account.</p>"
         },
-        "SecurityPolicyStats":{
-          "shape":"SecurityPolicyStats",
-          "documentation":"<p>Information about the security policies in your account.</p>"
+        "LifecyclePolicyStats":{
+          "shape":"LifecyclePolicyStats",
+          "documentation":"<p>Information about the lifecycle policies in your account.</p>"
         },
         "TotalPolicyCount":{
           "shape":"Long",
@@ -1676,17 +1676,17 @@
     "GetSecurityPolicyRequest":{
       "type":"structure",
       "required":[
-        "name",
-        "type"
+        "type",
+        "name"
       ],
       "members":{
-        "name":{
-          "shape":"PolicyName",
-          "documentation":"<p>The name of the security policy.</p>"
-        },
         "type":{
           "shape":"SecurityPolicyType",
           "documentation":"<p>The type of security policy.</p>"
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the security policy.</p>"
         }
       }
     },
@@ -1703,34 +1703,34 @@
       "type":"string",
       "max":1224,
       "min":10,
-      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}$"
+      "pattern":"arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}"
     },
     "IamIdentityCenterConfigOptions":{
       "type":"structure",
       "members":{
+        "instanceArn":{
+          "shape":"IamIdentityCenterInstanceArn",
+          "documentation":"<p>The ARN of the IAM Identity Center instance used to integrate with OpenSearch Serverless.</p>"
+        },
         "applicationArn":{
           "shape":"IamIdentityCenterApplicationArn",
           "documentation":"<p>The ARN of the IAM Identity Center application used to integrate with OpenSearch Serverless.</p>"
-        },
-        "applicationDescription":{
-          "shape":"String",
-          "documentation":"<p>The description of the IAM Identity Center application used to integrate with OpenSearch Serverless.</p>"
         },
         "applicationName":{
           "shape":"String",
           "documentation":"<p>The name of the IAM Identity Center application used to integrate with OpenSearch Serverless.</p>"
         },
-        "groupAttribute":{
-          "shape":"IamIdentityCenterGroupAttribute",
-          "documentation":"<p>The group attribute for this IAM Identity Center integration. Defaults to <code>GroupId</code>.</p>"
-        },
-        "instanceArn":{
-          "shape":"IamIdentityCenterInstanceArn",
-          "documentation":"<p>The ARN of the IAM Identity Center instance used to integrate with OpenSearch Serverless.</p>"
+        "applicationDescription":{
+          "shape":"String",
+          "documentation":"<p>The description of the IAM Identity Center application used to integrate with OpenSearch Serverless.</p>"
         },
         "userAttribute":{
           "shape":"IamIdentityCenterUserAttribute",
           "documentation":"<p>The user attribute for this IAM Identity Center integration. Defaults to <code>UserId</code> </p>"
+        },
+        "groupAttribute":{
+          "shape":"IamIdentityCenterGroupAttribute",
+          "documentation":"<p>The group attribute for this IAM Identity Center integration. Defaults to <code>GroupId</code>.</p>"
         }
       },
       "documentation":"<p>Describes IAM Identity Center options for an OpenSearch Serverless security configuration in the form of a key-value map.</p>"
@@ -1746,7 +1746,7 @@
       "type":"string",
       "max":1224,
       "min":10,
-      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$"
+      "pattern":"arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}"
     },
     "IamIdentityCenterUserAttribute":{
       "type":"string",
@@ -1773,33 +1773,33 @@
     "LifecyclePolicyDetail":{
       "type":"structure",
       "members":{
-        "createdDate":{
-          "shape":"Long",
-          "documentation":"<p>The date the lifecycle policy was created.</p>"
-        },
-        "description":{
-          "shape":"PolicyDescription",
-          "documentation":"<p>The description of the lifecycle policy.</p>"
-        },
-        "lastModifiedDate":{
-          "shape":"Long",
-          "documentation":"<p>The timestamp of when the lifecycle policy was last modified.</p>"
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
           "documentation":"<p>The name of the lifecycle policy.</p>"
         },
-        "policy":{
-          "shape":"Document",
-          "documentation":"<p>The JSON policy document without any whitespaces.</p>"
-        },
         "policyVersion":{
           "shape":"PolicyVersion",
           "documentation":"<p>The version of the lifecycle policy.</p>"
         },
-        "type":{
-          "shape":"LifecyclePolicyType",
-          "documentation":"<p>The type of lifecycle policy.</p>"
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>The description of the lifecycle policy.</p>"
+        },
+        "policy":{
+          "shape":"Document",
+          "documentation":"<p>The JSON policy document without any whitespaces.</p>"
+        },
+        "createdDate":{
+          "shape":"Long",
+          "documentation":"<p>The date the lifecycle policy was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Long",
+          "documentation":"<p>The timestamp of when the lifecycle policy was last modified.</p>"
         }
       },
       "documentation":"<p>Details about an OpenSearch Serverless lifecycle policy.</p>"
@@ -1811,21 +1811,21 @@
     "LifecyclePolicyErrorDetail":{
       "type":"structure",
       "members":{
-        "errorCode":{
-          "shape":"String",
-          "documentation":"<p>The error code for the request. For example, <code>NOT_FOUND</code>.</p>"
-        },
-        "errorMessage":{
-          "shape":"String",
-          "documentation":"<p>A description of the error. For example, <code>The specified Lifecycle Policy is not found</code>.</p>"
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
           "documentation":"<p>The name of the lifecycle policy.</p>"
         },
-        "type":{
-          "shape":"LifecyclePolicyType",
-          "documentation":"<p>The type of lifecycle policy.</p>"
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>A description of the error. For example, <code>The specified Lifecycle Policy is not found</code>.</p>"
+        },
+        "errorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code for the request. For example, <code>NOT_FOUND</code>.</p>"
         }
       },
       "documentation":"<p>Error information for an OpenSearch Serverless request.</p>"
@@ -1837,17 +1837,17 @@
     "LifecyclePolicyIdentifier":{
       "type":"structure",
       "required":[
-        "name",
-        "type"
+        "type",
+        "name"
       ],
       "members":{
-        "name":{
-          "shape":"PolicyName",
-          "documentation":"<p>The name of the lifecycle policy.</p>"
-        },
         "type":{
           "shape":"LifecyclePolicyType",
           "documentation":"<p>The type of lifecycle policy.</p>"
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the lifecycle policy.</p>"
         }
       },
       "documentation":"<p>The unique identifiers of policy types and policy names.</p>"
@@ -1861,17 +1861,17 @@
     "LifecyclePolicyResourceIdentifier":{
       "type":"structure",
       "required":[
-        "resource",
-        "type"
+        "type",
+        "resource"
       ],
       "members":{
-        "resource":{
-          "shape":"ResourceName",
-          "documentation":"<p>The name of the OpenSearch Serverless ilndex resource.</p>"
-        },
         "type":{
           "shape":"LifecyclePolicyType",
           "documentation":"<p>The type of lifecycle policy.</p>"
+        },
+        "resource":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the OpenSearch Serverless ilndex resource.</p>"
         }
       },
       "documentation":"<p>The unique identifiers of policy types and resource names.</p>"
@@ -1899,17 +1899,9 @@
     "LifecyclePolicySummary":{
       "type":"structure",
       "members":{
-        "createdDate":{
-          "shape":"Long",
-          "documentation":"<p>The Epoch time when the lifecycle policy was created.</p>"
-        },
-        "description":{
-          "shape":"PolicyDescription",
-          "documentation":"<p>The description of the lifecycle policy.</p>"
-        },
-        "lastModifiedDate":{
-          "shape":"Long",
-          "documentation":"<p>The date and time when the lifecycle policy was last modified.</p>"
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
@@ -1919,9 +1911,17 @@
           "shape":"PolicyVersion",
           "documentation":"<p>The version of the lifecycle policy.</p>"
         },
-        "type":{
-          "shape":"LifecyclePolicyType",
-          "documentation":"<p>The type of lifecycle policy.</p>"
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>The description of the lifecycle policy.</p>"
+        },
+        "createdDate":{
+          "shape":"Long",
+          "documentation":"<p>The Epoch time when the lifecycle policy was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Long",
+          "documentation":"<p>The date and time when the lifecycle policy was last modified.</p>"
         }
       },
       "documentation":"<p>A summary of the lifecycle policy.</p>"
@@ -1935,21 +1935,21 @@
       "type":"structure",
       "required":["type"],
       "members":{
-        "maxResults":{
-          "shape":"ListAccessPoliciesRequestMaxResultsInteger",
-          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results. The default is 20.</p>"
-        },
-        "nextToken":{
-          "shape":"String",
-          "documentation":"<p>If your initial <code>ListAccessPolicies</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListAccessPolicies</code> operations, which returns results in the next page. </p>"
+        "type":{
+          "shape":"AccessPolicyType",
+          "documentation":"<p>The type of access policy.</p>"
         },
         "resource":{
           "shape":"ListAccessPoliciesRequestResourceList",
           "documentation":"<p>Resource filters (can be collections or indexes) that policies can apply to.</p>"
         },
-        "type":{
-          "shape":"AccessPolicyType",
-          "documentation":"<p>The type of access policy.</p>"
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If your initial <code>ListAccessPolicies</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListAccessPolicies</code> operations, which returns results in the next page. </p>"
+        },
+        "maxResults":{
+          "shape":"ListAccessPoliciesRequestMaxResultsInteger",
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results. The default is 20.</p>"
         }
       }
     },
@@ -1985,13 +1985,13 @@
           "shape":"CollectionFilters",
           "documentation":"<p> A list of filter names and values that you can use for requests.</p>"
         },
-        "maxResults":{
-          "shape":"ListCollectionsRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of results to return. Default is 20. You can use <code>nextToken</code> to get the next page of results.</p>"
-        },
         "nextToken":{
           "shape":"String",
           "documentation":"<p>If your initial <code>ListCollections</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListCollections</code> operations, which returns results in the next page.</p>"
+        },
+        "maxResults":{
+          "shape":"ListCollectionsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return. Default is 20. You can use <code>nextToken</code> to get the next page of results.</p>"
         }
       }
     },
@@ -2018,21 +2018,21 @@
       "type":"structure",
       "required":["type"],
       "members":{
-        "maxResults":{
-          "shape":"ListLifecyclePoliciesRequestMaxResultsInteger",
-          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use use <code>nextToken</code> to get the next page of results. The default is 10.</p>"
-        },
-        "nextToken":{
-          "shape":"String",
-          "documentation":"<p>If your initial <code>ListLifecyclePolicies</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListLifecyclePolicies</code> operations, which returns results in the next page.</p>"
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p>The type of lifecycle policy.</p>"
         },
         "resources":{
           "shape":"ListLifecyclePoliciesRequestResourcesList",
           "documentation":"<p>Resource filters that policies can apply to. Currently, the only supported resource type is <code>index</code>.</p>"
         },
-        "type":{
-          "shape":"LifecyclePolicyType",
-          "documentation":"<p>The type of lifecycle policy.</p>"
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If your initial <code>ListLifecyclePolicies</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListLifecyclePolicies</code> operations, which returns results in the next page.</p>"
+        },
+        "maxResults":{
+          "shape":"ListLifecyclePoliciesRequestMaxResultsInteger",
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use use <code>nextToken</code> to get the next page of results. The default is 10.</p>"
         }
       }
     },
@@ -2065,17 +2065,17 @@
       "type":"structure",
       "required":["type"],
       "members":{
-        "maxResults":{
-          "shape":"ListSecurityConfigsRequestMaxResultsInteger",
-          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results. The default is 20.</p>"
+        "type":{
+          "shape":"SecurityConfigType",
+          "documentation":"<p>The type of security configuration.</p>"
         },
         "nextToken":{
           "shape":"String",
           "documentation":"<p>If your initial <code>ListSecurityConfigs</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListSecurityConfigs</code> operations, which returns results in the next page. </p>"
         },
-        "type":{
-          "shape":"SecurityConfigType",
-          "documentation":"<p>The type of security configuration.</p>"
+        "maxResults":{
+          "shape":"ListSecurityConfigsRequestMaxResultsInteger",
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results. The default is 20.</p>"
         }
       }
     },
@@ -2088,13 +2088,13 @@
     "ListSecurityConfigsResponse":{
       "type":"structure",
       "members":{
-        "nextToken":{
-          "shape":"String",
-          "documentation":"<p>When <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.</p>"
-        },
         "securityConfigSummaries":{
           "shape":"SecurityConfigSummaries",
           "documentation":"<p>Details about the security configurations in your account.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>When <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.</p>"
         }
       }
     },
@@ -2102,21 +2102,21 @@
       "type":"structure",
       "required":["type"],
       "members":{
-        "maxResults":{
-          "shape":"ListSecurityPoliciesRequestMaxResultsInteger",
-          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results. The default is 20.</p>"
-        },
-        "nextToken":{
-          "shape":"String",
-          "documentation":"<p>If your initial <code>ListSecurityPolicies</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListSecurityPolicies</code> operations, which returns results in the next page. </p>"
+        "type":{
+          "shape":"SecurityPolicyType",
+          "documentation":"<p>The type of policy.</p>"
         },
         "resource":{
           "shape":"ListSecurityPoliciesRequestResourceList",
           "documentation":"<p>Resource filters (can be collection or indexes) that policies can apply to. </p>"
         },
-        "type":{
-          "shape":"SecurityPolicyType",
-          "documentation":"<p>The type of policy.</p>"
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If your initial <code>ListSecurityPolicies</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListSecurityPolicies</code> operations, which returns results in the next page. </p>"
+        },
+        "maxResults":{
+          "shape":"ListSecurityPoliciesRequestMaxResultsInteger",
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results. The default is 20.</p>"
         }
       }
     },
@@ -2135,13 +2135,13 @@
     "ListSecurityPoliciesResponse":{
       "type":"structure",
       "members":{
-        "nextToken":{
-          "shape":"String",
-          "documentation":"<p>When <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.</p>"
-        },
         "securityPolicySummaries":{
           "shape":"SecurityPolicySummaries",
           "documentation":"<p>Details about the security policies in your account.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>When <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.</p>"
         }
       }
     },
@@ -2167,17 +2167,17 @@
     "ListVpcEndpointsRequest":{
       "type":"structure",
       "members":{
-        "maxResults":{
-          "shape":"ListVpcEndpointsRequestMaxResultsInteger",
-          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results. The default is 20.</p>"
+        "vpcEndpointFilters":{
+          "shape":"VpcEndpointFilters",
+          "documentation":"<p>Filter the results according to the current status of the VPC endpoint. Possible statuses are <code>CREATING</code>, <code>DELETING</code>, <code>UPDATING</code>, <code>ACTIVE</code>, and <code>FAILED</code>.</p>"
         },
         "nextToken":{
           "shape":"String",
           "documentation":"<p>If your initial <code>ListVpcEndpoints</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in subsequent <code>ListVpcEndpoints</code> operations, which returns results in the next page. </p>"
         },
-        "vpcEndpointFilters":{
-          "shape":"VpcEndpointFilters",
-          "documentation":"<p>Filter the results according to the current status of the VPC endpoint. Possible statuses are <code>CREATING</code>, <code>DELETING</code>, <code>UPDATING</code>, <code>ACTIVE</code>, and <code>FAILED</code>.</p>"
+        "maxResults":{
+          "shape":"ListVpcEndpointsRequestMaxResultsInteger",
+          "documentation":"<p>An optional parameter that specifies the maximum number of results to return. You can use <code>nextToken</code> to get the next page of results. The default is 20.</p>"
         }
       }
     },
@@ -2190,13 +2190,13 @@
     "ListVpcEndpointsResponse":{
       "type":"structure",
       "members":{
-        "nextToken":{
-          "shape":"String",
-          "documentation":"<p>When <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.</p>"
-        },
         "vpcEndpointSummaries":{
           "shape":"VpcEndpointSummaries",
           "documentation":"<p>Details about each VPC endpoint, including the name and current status.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>When <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.</p>"
         }
       }
     },
@@ -2225,24 +2225,24 @@
       "type":"string",
       "max":20480,
       "min":1,
-      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]+"
+      "pattern":".*[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]+.*"
     },
     "PolicyName":{
       "type":"string",
       "max":32,
       "min":3,
-      "pattern":"^[a-z][a-z0-9-]+$"
+      "pattern":"[a-z][a-z0-9-]+"
     },
     "PolicyVersion":{
       "type":"string",
       "max":36,
       "min":20,
-      "pattern":"^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$"
+      "pattern":"([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?"
     },
     "Resource":{"type":"string"},
     "ResourceName":{
       "type":"string",
-      "pattern":"^index/[a-z][a-z0-9-]{3,32}/([a-z;0-9&$%][+.~=\\-_a-z;0-9&$%]*)$"
+      "pattern":"index/[a-z][a-z0-9-]{3,32}/([a-z;0-9&$%][+.~=\\-_a-z;0-9&$%]*)"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -2260,21 +2260,25 @@
       "type":"structure",
       "required":["metadata"],
       "members":{
-        "groupAttribute":{
-          "shape":"samlGroupAttribute",
-          "documentation":"<p>The group attribute for this SAML integration.</p>"
-        },
         "metadata":{
           "shape":"samlMetadata",
           "documentation":"<p>The XML IdP metadata file generated from your identity provider.</p>"
         },
-        "sessionTimeout":{
-          "shape":"SamlConfigOptionsSessionTimeoutInteger",
-          "documentation":"<p>The session timeout, in minutes. Default is 60 minutes (12 hours).</p>"
-        },
         "userAttribute":{
           "shape":"samlUserAttribute",
           "documentation":"<p>A user attribute for this SAML integration.</p>"
+        },
+        "groupAttribute":{
+          "shape":"samlGroupAttribute",
+          "documentation":"<p>The group attribute for this SAML integration.</p>"
+        },
+        "openSearchServerlessEntityId":{
+          "shape":"openSearchServerlessEntityId",
+          "documentation":"<p>Custom entity id attribute to override default entity id for this saml integration.</p>"
+        },
+        "sessionTimeout":{
+          "shape":"SamlConfigOptionsSessionTimeoutInteger",
+          "documentation":"<p>The session timeout, in minutes. Default is 60 minutes (12 hours).</p>"
         }
       },
       "documentation":"<p>Describes SAML options for an OpenSearch Serverless security configuration in the form of a key-value map.</p>"
@@ -2293,37 +2297,37 @@
     "SecurityConfigDetail":{
       "type":"structure",
       "members":{
+        "id":{
+          "shape":"SecurityConfigId",
+          "documentation":"<p>The unique identifier of the security configuration.</p>"
+        },
+        "type":{
+          "shape":"SecurityConfigType",
+          "documentation":"<p>The type of security configuration.</p>"
+        },
         "configVersion":{
           "shape":"PolicyVersion",
           "documentation":"<p>The version of the security configuration.</p>"
-        },
-        "createdDate":{
-          "shape":"Long",
-          "documentation":"<p>The date the configuration was created.</p>"
         },
         "description":{
           "shape":"ConfigDescription",
           "documentation":"<p>The description of the security configuration.</p>"
         },
-        "iamIdentityCenterOptions":{
-          "shape":"IamIdentityCenterConfigOptions",
-          "documentation":"<p>Describes IAM Identity Center options in the form of a key-value map.</p>"
-        },
-        "id":{
-          "shape":"SecurityConfigId",
-          "documentation":"<p>The unique identifier of the security configuration.</p>"
-        },
-        "lastModifiedDate":{
-          "shape":"Long",
-          "documentation":"<p>The timestamp of when the configuration was last modified.</p>"
-        },
         "samlOptions":{
           "shape":"SamlConfigOptions",
           "documentation":"<p>SAML options for the security configuration in the form of a key-value map.</p>"
         },
-        "type":{
-          "shape":"SecurityConfigType",
-          "documentation":"<p>The type of security configuration.</p>"
+        "iamIdentityCenterOptions":{
+          "shape":"IamIdentityCenterConfigOptions",
+          "documentation":"<p>Describes IAM Identity Center options in the form of a key-value map.</p>"
+        },
+        "createdDate":{
+          "shape":"Long",
+          "documentation":"<p>The date the configuration was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Long",
+          "documentation":"<p>The timestamp of when the configuration was last modified.</p>"
         }
       },
       "documentation":"<p>Details about a security configuration for OpenSearch Serverless. </p>"
@@ -2350,29 +2354,29 @@
     "SecurityConfigSummary":{
       "type":"structure",
       "members":{
+        "id":{
+          "shape":"SecurityConfigId",
+          "documentation":"<p>The unique identifier of the security configuration.</p>"
+        },
+        "type":{
+          "shape":"SecurityConfigType",
+          "documentation":"<p>The type of security configuration.</p>"
+        },
         "configVersion":{
           "shape":"PolicyVersion",
           "documentation":"<p>The version of the security configuration.</p>"
-        },
-        "createdDate":{
-          "shape":"Long",
-          "documentation":"<p>The Epoch time when the security configuration was created.</p>"
         },
         "description":{
           "shape":"ConfigDescription",
           "documentation":"<p>The description of the security configuration.</p>"
         },
-        "id":{
-          "shape":"SecurityConfigId",
-          "documentation":"<p>The unique identifier of the security configuration.</p>"
+        "createdDate":{
+          "shape":"Long",
+          "documentation":"<p>The Epoch time when the security configuration was created.</p>"
         },
         "lastModifiedDate":{
           "shape":"Long",
           "documentation":"<p>The timestamp of when the configuration was last modified.</p>"
-        },
-        "type":{
-          "shape":"SecurityConfigType",
-          "documentation":"<p>The type of security configuration.</p>"
         }
       },
       "documentation":"<p>A summary of a security configuration for OpenSearch Serverless.</p>"
@@ -2388,7 +2392,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^[\\w+\\-]+$"
+      "pattern":"[\\w+\\-]+"
     },
     "SecurityGroupIds":{
       "type":"list",
@@ -2399,33 +2403,33 @@
     "SecurityPolicyDetail":{
       "type":"structure",
       "members":{
-        "createdDate":{
-          "shape":"Long",
-          "documentation":"<p>The date the policy was created.</p>"
-        },
-        "description":{
-          "shape":"PolicyDescription",
-          "documentation":"<p>The description of the security policy.</p>"
-        },
-        "lastModifiedDate":{
-          "shape":"Long",
-          "documentation":"<p>The timestamp of when the policy was last modified.</p>"
+        "type":{
+          "shape":"SecurityPolicyType",
+          "documentation":"<p>The type of security policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
           "documentation":"<p>The name of the policy.</p>"
         },
-        "policy":{
-          "shape":"Document",
-          "documentation":"<p>The JSON policy document without any whitespaces.</p>"
-        },
         "policyVersion":{
           "shape":"PolicyVersion",
           "documentation":"<p>The version of the policy.</p>"
         },
-        "type":{
-          "shape":"SecurityPolicyType",
-          "documentation":"<p>The type of security policy.</p>"
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>The description of the security policy.</p>"
+        },
+        "policy":{
+          "shape":"Document",
+          "documentation":"<p>The JSON policy document without any whitespaces.</p>"
+        },
+        "createdDate":{
+          "shape":"Long",
+          "documentation":"<p>The date the policy was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Long",
+          "documentation":"<p>The timestamp of when the policy was last modified.</p>"
         }
       },
       "documentation":"<p>Details about an OpenSearch Serverless security policy.</p>"
@@ -2451,17 +2455,9 @@
     "SecurityPolicySummary":{
       "type":"structure",
       "members":{
-        "createdDate":{
-          "shape":"Long",
-          "documentation":"<p>The date the policy was created.</p>"
-        },
-        "description":{
-          "shape":"PolicyDescription",
-          "documentation":"<p>The description of the security policy.</p>"
-        },
-        "lastModifiedDate":{
-          "shape":"Long",
-          "documentation":"<p>The timestamp of when the policy was last modified.</p>"
+        "type":{
+          "shape":"SecurityPolicyType",
+          "documentation":"<p>The type of security policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
@@ -2471,9 +2467,17 @@
           "shape":"PolicyVersion",
           "documentation":"<p>The version of the policy.</p>"
         },
-        "type":{
-          "shape":"SecurityPolicyType",
-          "documentation":"<p>The type of security policy.</p>"
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>The description of the security policy.</p>"
+        },
+        "createdDate":{
+          "shape":"Long",
+          "documentation":"<p>The date the policy was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Long",
+          "documentation":"<p>The timestamp of when the policy was last modified.</p>"
         }
       },
       "documentation":"<p>A summary of a security policy for OpenSearch Serverless.</p>"
@@ -2496,10 +2500,6 @@
           "shape":"String",
           "documentation":"<p>Description of the error.</p>"
         },
-        "quotaCode":{
-          "shape":"String",
-          "documentation":"<p>Service Quotas requirement to identify originating quota.</p>"
-        },
         "resourceId":{
           "shape":"String",
           "documentation":"<p>Identifier of the resource affected.</p>"
@@ -2511,6 +2511,10 @@
         "serviceCode":{
           "shape":"String",
           "documentation":"<p>Service Quotas requirement to identify originating service.</p>"
+        },
+        "quotaCode":{
+          "shape":"String",
+          "documentation":"<p>Service Quotas requirement to identify originating quota.</p>"
         }
       },
       "documentation":"<p>Thrown when you attempt to create more resources than the service allows based on service quotas.</p>",
@@ -2528,7 +2532,7 @@
       "type":"string",
       "max":32,
       "min":1,
-      "pattern":"^subnet-([0-9a-f]{8}|[0-9a-f]{17})$"
+      "pattern":"subnet-([0-9a-f]{8}|[0-9a-f]{17})"
     },
     "SubnetIds":{
       "type":"list",
@@ -2623,35 +2627,35 @@
     "UpdateAccessPolicyRequest":{
       "type":"structure",
       "required":[
+        "type",
         "name",
-        "policyVersion",
-        "type"
+        "policyVersion"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
-        },
-        "description":{
-          "shape":"PolicyDescription",
-          "documentation":"<p>A description of the policy. Typically used to store information about the permissions defined in the policy.</p>"
+        "type":{
+          "shape":"AccessPolicyType",
+          "documentation":"<p>The type of policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
           "documentation":"<p>The name of the policy.</p>"
         },
-        "policy":{
-          "shape":"PolicyDocument",
-          "documentation":"<p>The JSON policy document to use as the content for the policy.</p>"
-        },
         "policyVersion":{
           "shape":"PolicyVersion",
           "documentation":"<p>The version of the policy being updated.</p>"
         },
-        "type":{
-          "shape":"AccessPolicyType",
-          "documentation":"<p>The type of policy.</p>"
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>A description of the policy. Typically used to store information about the permissions defined in the policy.</p>"
+        },
+        "policy":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The JSON policy document to use as the content for the policy.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -2682,25 +2686,9 @@
     "UpdateCollectionDetail":{
       "type":"structure",
       "members":{
-        "arn":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the collection.</p>"
-        },
-        "createdDate":{
-          "shape":"Long",
-          "documentation":"<p>The date and time when the collection was created.</p>"
-        },
-        "description":{
-          "shape":"String",
-          "documentation":"<p>The description of the collection.</p>"
-        },
         "id":{
           "shape":"CollectionId",
           "documentation":"<p>The unique identifier of the collection.</p>"
-        },
-        "lastModifiedDate":{
-          "shape":"Long",
-          "documentation":"<p>The date and time when the collection was last modified.</p>"
         },
         "name":{
           "shape":"CollectionName",
@@ -2713,6 +2701,22 @@
         "type":{
           "shape":"CollectionType",
           "documentation":"<p>The collection type.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the collection.</p>"
+        },
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collection.</p>"
+        },
+        "createdDate":{
+          "shape":"Long",
+          "documentation":"<p>The date and time when the collection was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Long",
+          "documentation":"<p>The date and time when the collection was last modified.</p>"
         }
       },
       "documentation":"<p>Details about an updated OpenSearch Serverless collection.</p>"
@@ -2721,18 +2725,18 @@
       "type":"structure",
       "required":["id"],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
+        "id":{
+          "shape":"CollectionId",
+          "documentation":"<p>The unique identifier of the collection.</p>"
         },
         "description":{
           "shape":"UpdateCollectionRequestDescriptionString",
           "documentation":"<p>A description of the collection.</p>"
         },
-        "id":{
-          "shape":"CollectionId",
-          "documentation":"<p>The unique identifier of the collection.</p>"
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -2753,13 +2757,13 @@
     "UpdateIamIdentityCenterConfigOptions":{
       "type":"structure",
       "members":{
-        "groupAttribute":{
-          "shape":"IamIdentityCenterGroupAttribute",
-          "documentation":"<p>The group attribute for this IAM Identity Center integration. Defaults to <code>GroupId</code>.</p>"
-        },
         "userAttribute":{
           "shape":"IamIdentityCenterUserAttribute",
           "documentation":"<p>The user attribute for this IAM Identity Center integration. Defaults to <code>UserId</code>.</p>"
+        },
+        "groupAttribute":{
+          "shape":"IamIdentityCenterGroupAttribute",
+          "documentation":"<p>The group attribute for this IAM Identity Center integration. Defaults to <code>GroupId</code>.</p>"
         }
       },
       "documentation":"<p>Describes IAM Identity Center options for updating an OpenSearch Serverless security configuration in the form of a key-value map.</p>"
@@ -2767,35 +2771,35 @@
     "UpdateLifecyclePolicyRequest":{
       "type":"structure",
       "required":[
+        "type",
         "name",
-        "policyVersion",
-        "type"
+        "policyVersion"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
-        },
-        "description":{
-          "shape":"PolicyDescription",
-          "documentation":"<p>A description of the lifecycle policy.</p>"
+        "type":{
+          "shape":"LifecyclePolicyType",
+          "documentation":"<p> The type of lifecycle policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
           "documentation":"<p>The name of the policy.</p>"
         },
-        "policy":{
-          "shape":"PolicyDocument",
-          "documentation":"<p>The JSON policy document to use as the content for the lifecycle policy.</p>"
-        },
         "policyVersion":{
           "shape":"PolicyVersion",
           "documentation":"<p>The version of the policy being updated.</p>"
         },
-        "type":{
-          "shape":"LifecyclePolicyType",
-          "documentation":"<p> The type of lifecycle policy.</p>"
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>A description of the lifecycle policy.</p>"
+        },
+        "policy":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The JSON policy document to use as the content for the lifecycle policy.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -2811,14 +2815,13 @@
     "UpdateSecurityConfigRequest":{
       "type":"structure",
       "required":[
-        "configVersion",
-        "id"
+        "id",
+        "configVersion"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
+        "id":{
+          "shape":"SecurityConfigId",
+          "documentation":"<p>The security configuration identifier. For SAML the ID will be <code>saml/&lt;accountId&gt;/&lt;idpProviderName&gt;</code>. For example, <code>saml/123456789123/OKTADev</code>.</p>"
         },
         "configVersion":{
           "shape":"PolicyVersion",
@@ -2828,17 +2831,18 @@
           "shape":"ConfigDescription",
           "documentation":"<p>A description of the security configuration.</p>"
         },
+        "samlOptions":{
+          "shape":"SamlConfigOptions",
+          "documentation":"<p>SAML options in in the form of a key-value map.</p>"
+        },
         "iamIdentityCenterOptionsUpdates":{
           "shape":"UpdateIamIdentityCenterConfigOptions",
           "documentation":"<p>Describes IAM Identity Center options in the form of a key-value map.</p>"
         },
-        "id":{
-          "shape":"SecurityConfigId",
-          "documentation":"<p>The security configuration identifier. For SAML the ID will be <code>saml/&lt;accountId&gt;/&lt;idpProviderName&gt;</code>. For example, <code>saml/123456789123/OKTADev</code>.</p>"
-        },
-        "samlOptions":{
-          "shape":"SamlConfigOptions",
-          "documentation":"<p>SAML options in in the form of a key-value map.</p>"
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -2854,35 +2858,35 @@
     "UpdateSecurityPolicyRequest":{
       "type":"structure",
       "required":[
+        "type",
         "name",
-        "policyVersion",
-        "type"
+        "policyVersion"
       ],
       "members":{
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
-        },
-        "description":{
-          "shape":"PolicyDescription",
-          "documentation":"<p>A description of the policy. Typically used to store information about the permissions defined in the policy.</p>"
+        "type":{
+          "shape":"SecurityPolicyType",
+          "documentation":"<p>The type of access policy.</p>"
         },
         "name":{
           "shape":"PolicyName",
           "documentation":"<p>The name of the policy.</p>"
         },
-        "policy":{
-          "shape":"PolicyDocument",
-          "documentation":"<p>The JSON policy document to use as the content for the new policy.</p>"
-        },
         "policyVersion":{
           "shape":"PolicyVersion",
           "documentation":"<p>The version of the policy being updated.</p>"
         },
-        "type":{
-          "shape":"SecurityPolicyType",
-          "documentation":"<p>The type of access policy.</p>"
+        "description":{
+          "shape":"PolicyDescription",
+          "documentation":"<p>A description of the policy. Typically used to store information about the permissions defined in the policy.</p>"
+        },
+        "policy":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The JSON policy document to use as the content for the new policy.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -2902,17 +2906,9 @@
           "shape":"VpcEndpointId",
           "documentation":"<p>The unique identifier of the endpoint.</p>"
         },
-        "lastModifiedDate":{
-          "shape":"Long",
-          "documentation":"<p>The timestamp of when the endpoint was last modified.</p>"
-        },
         "name":{
           "shape":"VpcEndpointName",
           "documentation":"<p>The name of the endpoint.</p>"
-        },
-        "securityGroupIds":{
-          "shape":"SecurityGroupIds",
-          "documentation":"<p>The unique identifiers of the security groups that define the ports, protocols, and sources for inbound traffic that you are authorizing into your endpoint.</p>"
         },
         "status":{
           "shape":"VpcEndpointStatus",
@@ -2921,6 +2917,14 @@
         "subnetIds":{
           "shape":"SubnetIds",
           "documentation":"<p>The ID of the subnets from which you access OpenSearch Serverless.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>The unique identifiers of the security groups that define the ports, protocols, and sources for inbound traffic that you are authorizing into your endpoint.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"Long",
+          "documentation":"<p>The timestamp of when the endpoint was last modified.</p>"
         }
       },
       "documentation":"<p>Update details for an OpenSearch Serverless-managed interface endpoint.</p>"
@@ -2929,30 +2933,30 @@
       "type":"structure",
       "required":["id"],
       "members":{
-        "addSecurityGroupIds":{
-          "shape":"SecurityGroupIds",
-          "documentation":"<p>The unique identifiers of the security groups to add to the endpoint. Security groups define the ports, protocols, and sources for inbound traffic that you are authorizing into your endpoint.</p>"
+        "id":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The unique identifier of the interface endpoint to update.</p>"
         },
         "addSubnetIds":{
           "shape":"SubnetIds",
           "documentation":"<p>The ID of one or more subnets to add to the endpoint.</p>"
         },
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
+        "removeSubnetIds":{
+          "shape":"SubnetIds",
+          "documentation":"<p>The unique identifiers of the subnets to remove from the endpoint.</p>"
         },
-        "id":{
-          "shape":"VpcEndpointId",
-          "documentation":"<p>The unique identifier of the interface endpoint to update.</p>"
+        "addSecurityGroupIds":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>The unique identifiers of the security groups to add to the endpoint. Security groups define the ports, protocols, and sources for inbound traffic that you are authorizing into your endpoint.</p>"
         },
         "removeSecurityGroupIds":{
           "shape":"SecurityGroupIds",
           "documentation":"<p>The unique identifiers of the security groups to remove from the endpoint.</p>"
         },
-        "removeSubnetIds":{
-          "shape":"SubnetIds",
-          "documentation":"<p>The unique identifiers of the subnets to remove from the endpoint.</p>"
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -2976,6 +2980,30 @@
     "VpcEndpointDetail":{
       "type":"structure",
       "members":{
+        "id":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The unique identifier of the endpoint.</p>"
+        },
+        "name":{
+          "shape":"VpcEndpointName",
+          "documentation":"<p>The name of the endpoint.</p>"
+        },
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC from which you access OpenSearch Serverless.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetIds",
+          "documentation":"<p>The ID of the subnets from which you access OpenSearch Serverless.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>The unique identifiers of the security groups that define the ports, protocols, and sources for inbound traffic that you are authorizing into your endpoint.</p>"
+        },
+        "status":{
+          "shape":"VpcEndpointStatus",
+          "documentation":"<p>The current status of the endpoint.</p>"
+        },
         "createdDate":{
           "shape":"Long",
           "documentation":"<p>The date the endpoint was created.</p>"
@@ -2987,30 +3015,6 @@
         "failureMessage":{
           "shape":"String",
           "documentation":"<p>A message associated with the failure code.</p>"
-        },
-        "id":{
-          "shape":"VpcEndpointId",
-          "documentation":"<p>The unique identifier of the endpoint.</p>"
-        },
-        "name":{
-          "shape":"VpcEndpointName",
-          "documentation":"<p>The name of the endpoint.</p>"
-        },
-        "securityGroupIds":{
-          "shape":"SecurityGroupIds",
-          "documentation":"<p>The unique identifiers of the security groups that define the ports, protocols, and sources for inbound traffic that you are authorizing into your endpoint.</p>"
-        },
-        "status":{
-          "shape":"VpcEndpointStatus",
-          "documentation":"<p>The current status of the endpoint.</p>"
-        },
-        "subnetIds":{
-          "shape":"SubnetIds",
-          "documentation":"<p>The ID of the subnets from which you access OpenSearch Serverless.</p>"
-        },
-        "vpcId":{
-          "shape":"VpcId",
-          "documentation":"<p>The ID of the VPC from which you access OpenSearch Serverless.</p>"
         }
       },
       "documentation":"<p>Details about an OpenSearch Serverless-managed interface endpoint.</p>"
@@ -3022,17 +3026,17 @@
     "VpcEndpointErrorDetail":{
       "type":"structure",
       "members":{
-        "errorCode":{
-          "shape":"String",
-          "documentation":"<p>The error code for the failed request.</p>"
+        "id":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The unique identifier of the VPC endpoint.</p>"
         },
         "errorMessage":{
           "shape":"String",
           "documentation":"<p>An error message describing the reason for the failure.</p>"
         },
-        "id":{
-          "shape":"VpcEndpointId",
-          "documentation":"<p>The unique identifier of the VPC endpoint.</p>"
+        "errorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code for the failed request.</p>"
         }
       },
       "documentation":"<p>Error information for a failed <code>BatchGetVpcEndpoint</code> request.</p>"
@@ -3055,18 +3059,19 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"^vpce-[0-9a-z]*$"
+      "pattern":"vpce-[0-9a-z]*"
     },
     "VpcEndpointIds":{
       "type":"list",
       "member":{"shape":"VpcEndpointId"},
+      "max":100,
       "min":1
     },
     "VpcEndpointName":{
       "type":"string",
       "max":32,
       "min":3,
-      "pattern":"^[a-z][a-z0-9-]+$"
+      "pattern":"[a-z][a-z0-9-]+"
     },
     "VpcEndpointStatus":{
       "type":"string",
@@ -3103,25 +3108,31 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"^vpc-[0-9a-z]*$"
+      "pattern":"vpc-[0-9a-z]*"
+    },
+    "openSearchServerlessEntityId":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"aws:opensearch:[0-9]{12}:*.*"
     },
     "samlGroupAttribute":{
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"[\\w+=,.@-]+"
+      "pattern":".*[\\w+=,.@-]+.*"
     },
     "samlMetadata":{
       "type":"string",
       "max":51200,
       "min":1,
-      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]+"
+      "pattern":".*[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]+.*"
     },
     "samlUserAttribute":{
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"[\\w+=,.@-]+"
+      "pattern":".*[\\w+=,.@-]+.*"
     }
   },
   "documentation":"<p>Use the Amazon OpenSearch Serverless API to create, configure, and manage OpenSearch Serverless collections and security policies.</p> <p>OpenSearch Serverless is an on-demand, pre-provisioned serverless configuration for Amazon OpenSearch Service. OpenSearch Serverless removes the operational complexities of provisioning, configuring, and tuning your OpenSearch clusters. It enables you to easily search and analyze petabytes of data without having to worry about the underlying infrastructure and data management.</p> <p> To learn more about OpenSearch Serverless, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-overview.html\">What is Amazon OpenSearch Serverless?</a> </p>"

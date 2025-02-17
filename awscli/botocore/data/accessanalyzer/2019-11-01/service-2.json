@@ -345,6 +345,24 @@
       ],
       "documentation":"<p>Retrieves information about the specified finding. GetFinding and GetFindingV2 both use <code>access-analyzer:GetFinding</code> in the <code>Action</code> element of an IAM policy statement. You must have permission to perform the <code>access-analyzer:GetFinding</code> action.</p>"
     },
+    "GetFindingsStatistics":{
+      "name":"GetFindingsStatistics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/analyzer/findings/statistics",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFindingsStatisticsRequest"},
+      "output":{"shape":"GetFindingsStatisticsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves a list of aggregated finding statistics for an external access or unused access analyzer.</p>"
+    },
     "GetGeneratedPolicy":{
       "name":"GetGeneratedPolicy",
       "http":{
@@ -932,6 +950,12 @@
       "member":{"shape":"Resource"},
       "max":100,
       "min":0
+    },
+    "AccountAggregations":{
+      "type":"list",
+      "member":{"shape":"FindingAggregationAccountDetails"},
+      "max":10,
+      "min":1
     },
     "AccountIdsList":{
       "type":"list",
@@ -1814,6 +1838,28 @@
       },
       "documentation":"<p>Contains information about an external access finding.</p>"
     },
+    "ExternalAccessFindingsStatistics":{
+      "type":"structure",
+      "members":{
+        "resourceTypeStatistics":{
+          "shape":"ResourceTypeStatisticsMap",
+          "documentation":"<p>The total number of active cross-account and public findings for each resource type of the specified external access analyzer.</p>"
+        },
+        "totalActiveFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The number of active findings for the specified external access analyzer.</p>"
+        },
+        "totalArchivedFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The number of archived findings for the specified external access analyzer.</p>"
+        },
+        "totalResolvedFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The number of resolved findings for the specified external access analyzer.</p>"
+        }
+      },
+      "documentation":"<p>Provides aggregate statistics about the findings for the specified external access analyzer.</p>"
+    },
     "FilterCriteriaMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -1894,6 +1940,29 @@
         }
       },
       "documentation":"<p>Contains information about a finding.</p>"
+    },
+    "FindingAggregationAccountDetails":{
+      "type":"structure",
+      "members":{
+        "account":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account for which unused access finding details are provided.</p>"
+        },
+        "numberOfActiveFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The number of active unused access findings for the specified Amazon Web Services account.</p>"
+        },
+        "details":{
+          "shape":"FindingAggregationAccountDetailsMap",
+          "documentation":"<p>Provides the number of active findings for each type of unused access for the specified Amazon Web Services account.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the findings for an Amazon Web Services account in an organization unused access analyzer.</p>"
+    },
+    "FindingAggregationAccountDetailsMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"Integer"}
     },
     "FindingChangeType":{
       "type":"string",
@@ -2144,6 +2213,25 @@
     "FindingsListV2":{
       "type":"list",
       "member":{"shape":"FindingSummaryV2"}
+    },
+    "FindingsStatistics":{
+      "type":"structure",
+      "members":{
+        "externalAccessFindingsStatistics":{
+          "shape":"ExternalAccessFindingsStatistics",
+          "documentation":"<p>The aggregate statistics for an external access analyzer.</p>"
+        },
+        "unusedAccessFindingsStatistics":{
+          "shape":"UnusedAccessFindingsStatistics",
+          "documentation":"<p>The aggregate statistics for an unused access analyzer.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the aggregate statistics for an external or unused access analyzer. Only one parameter can be used in a <code>FindingsStatistics</code> object.</p>",
+      "union":true
+    },
+    "FindingsStatisticsList":{
+      "type":"list",
+      "member":{"shape":"FindingsStatistics"}
     },
     "GenerateFindingRecommendationRequest":{
       "type":"structure",
@@ -2549,6 +2637,29 @@
         "findingType":{
           "shape":"FindingType",
           "documentation":"<p>The type of the finding. For external access analyzers, the type is <code>ExternalAccess</code>. For unused access analyzers, the type can be <code>UnusedIAMRole</code>, <code>UnusedIAMUserAccessKey</code>, <code>UnusedIAMUserPassword</code>, or <code>UnusedPermission</code>.</p>"
+        }
+      }
+    },
+    "GetFindingsStatisticsRequest":{
+      "type":"structure",
+      "required":["analyzerArn"],
+      "members":{
+        "analyzerArn":{
+          "shape":"AnalyzerArn",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources\">ARN of the analyzer</a> used to generate the statistics.</p>"
+        }
+      }
+    },
+    "GetFindingsStatisticsResponse":{
+      "type":"structure",
+      "members":{
+        "findingsStatistics":{
+          "shape":"FindingsStatisticsList",
+          "documentation":"<p>A group of external access or unused access findings statistics.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the retrieval of the findings statistics was last updated. If the findings statistics have not been previously retrieved for the specified analyzer, this field will not be populated.</p>"
         }
       }
     },
@@ -3578,6 +3689,25 @@
         "AWS::IAM::User"
       ]
     },
+    "ResourceTypeDetails":{
+      "type":"structure",
+      "members":{
+        "totalActivePublic":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of active public findings for the resource type.</p>"
+        },
+        "totalActiveCrossAccount":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of active cross-account findings for the resource type.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the total number of active cross-account and public findings for a resource type of an external access analyzer.</p>"
+    },
+    "ResourceTypeStatisticsMap":{
+      "type":"map",
+      "key":{"shape":"ResourceType"},
+      "value":{"shape":"ResourceTypeDetails"}
+    },
     "RetiringPrincipal":{"type":"string"},
     "RoleArn":{
       "type":"string",
@@ -4043,6 +4173,50 @@
         "analysisRule":{"shape":"AnalysisRule"}
       },
       "documentation":"<p>Contains information about an unused access analyzer.</p>"
+    },
+    "UnusedAccessFindingsStatistics":{
+      "type":"structure",
+      "members":{
+        "unusedAccessTypeStatistics":{
+          "shape":"UnusedAccessTypeStatisticsList",
+          "documentation":"<p>A list of details about the total number of findings for each type of unused access for the analyzer. </p>"
+        },
+        "topAccounts":{
+          "shape":"AccountAggregations",
+          "documentation":"<p>A list of one to ten Amazon Web Services accounts that have the most active findings for the unused access analyzer.</p>"
+        },
+        "totalActiveFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of active findings for the unused access analyzer.</p>"
+        },
+        "totalArchivedFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of archived findings for the unused access analyzer.</p>"
+        },
+        "totalResolvedFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of resolved findings for the unused access analyzer.</p>"
+        }
+      },
+      "documentation":"<p>Provides aggregate statistics about the findings for the specified unused access analyzer.</p>"
+    },
+    "UnusedAccessTypeStatistics":{
+      "type":"structure",
+      "members":{
+        "unusedAccessType":{
+          "shape":"String",
+          "documentation":"<p>The type of unused access.</p>"
+        },
+        "total":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of findings for the specified unused access type.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the total number of findings for a type of unused access.</p>"
+    },
+    "UnusedAccessTypeStatisticsList":{
+      "type":"list",
+      "member":{"shape":"UnusedAccessTypeStatistics"}
     },
     "UnusedAction":{
       "type":"structure",

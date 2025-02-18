@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.37.23
+=======
+
+* api-change:``batch``: This documentation-only update corrects some typos.
+* api-change:``emr-containers``: EMR on EKS StartJobRun Api will be supporting the configuration of log storage in AWS by using "managedLogs" under "MonitoringConfiguration".
+* api-change:``medialive``: Adds support for creating CloudWatchAlarmTemplates for AWS Elemental MediaTailor Playback Configuration resources.
+
+
 1.37.22
 =======
 

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.24.7
+======
+
+* enhancement:protocols: Added support for multiple protocols within a service based on performance priority.
+* api-change:``batch``: This documentation-only update corrects some typos.
+* api-change:``medialive``: Adds support for creating CloudWatchAlarmTemplates for AWS Elemental MediaTailor Playback Configuration resources.
+* api-change:``emr-containers``: EMR on EKS StartJobRun Api will be supporting the configuration of log storage in AWS by using "managedLogs" under "MonitoringConfiguration".
+* enhancement:protocol: The CLI no longer validates payload size for event streams. This is to facilitate varying payload requirements across AWS services.
+
+
 2.24.6
 ======
 

@@ -79,10 +79,15 @@ def _dict_constructor(loader, node):
 
 
 class SafeLoaderWrapper(yaml.SafeLoader):
-    """Isolated safe loader to allow for customizations without global changes.
+    """
+    Isolated safe loader to allow for customizations without global changes.
     """
 
-    pass
+#    def construct_mapping(self, node, deep=False):
+#        "Adds support for line numbers"
+#        mapping = super().construct_mapping(node, deep=deep)
+#        mapping["__line__"] = node.start_mark.line + 1
+#        return mapping
 
 def yaml_parse(yamlstr):
     """Parse a yaml string"""
@@ -96,8 +101,17 @@ def yaml_parse(yamlstr):
         loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, 
                                _dict_constructor)
         loader.add_multi_constructor("!", intrinsics_multi_constructor)
+
         return yaml.load(yamlstr, loader)
 
+def yaml_compose(yamlstr):
+    """Returns a tree after parsing the string"""
+
+    loader = SafeLoaderWrapper
+    loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, 
+                           _dict_constructor)
+    loader.add_multi_constructor("!", intrinsics_multi_constructor)
+    return yaml.compose(yamlstr, loader)
 
 class FlattenAliasDumper(yaml.SafeDumper):
     def ignore_aliases(self, data):

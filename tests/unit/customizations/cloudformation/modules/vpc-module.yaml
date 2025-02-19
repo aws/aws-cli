@@ -1,0 +1,37 @@
+Inputs:
+
+  CidrBlock:
+    Type: String
+
+  PrivateCidrBlocks:
+    Type: CommaDelimitedList
+
+  PublicCidrBlocks:
+    Type: CommaDelimitedList
+
+Modules:
+  PublicSubnet:
+    Map: !Ref PublicCidrBlocks
+    Source: ./subnet-module.yaml
+    Properties:
+      SubnetCidrBlock: $MapValue
+      AZSelection: $MapIndex
+
+  PrivateSubnet:
+    Map: !Ref PrivateCidrBlocks
+    Source: ./subnet-module.yaml
+    Properties:
+      SubnetCidrBlock: $MapValue
+      AZSelection: $MapIndex
+
+Resources:
+
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref CidrBlock 
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+
+

@@ -11,10 +11,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.compat import json
+import json
 import platform
-from awscli.formatter import JSONFormatter
 
+from awscli.formatter import JSONFormatter
 from awscli.testutils import BaseAWSCommandParamsTest, unittest
 from awscli.testutils import mock, skip_if_windows
 from awscli.compat import StringIO, get_stdout_text_writer

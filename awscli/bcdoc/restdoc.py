@@ -11,8 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+from collections import OrderedDict
 
-from botocore.compat import OrderedDict
 from awscli.bcdoc.docstringparser import DocStringParser
 from awscli.bcdoc.style import ReSTStyle
 

@@ -16,6 +16,12 @@ Modules:
     Properties:
       SubnetCidrBlock: $MapValue
       AZSelection: $MapIndex
+      VPCId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+      IsPublic: true
+    Overrides:
+      DefaultRoute:
+        DependsOn: GatewayAttachment
 
   PrivateSubnet:
     Map: !Ref PrivateCidrBlocks
@@ -23,6 +29,12 @@ Modules:
     Properties:
       SubnetCidrBlock: $MapValue
       AZSelection: $MapIndex
+      VPCId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+      IsPublic: false
+    Overrides:
+      DefaultRoute:
+        DependsOn: GatewayAttachment
 
 Resources:
 
@@ -33,5 +45,16 @@ Resources:
       EnableDnsHostnames: true
       EnableDnsSupport: true
       InstanceTenancy: default
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+
+  GatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+
+
 
 

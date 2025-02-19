@@ -6,6 +6,22 @@ Inputs:
   SubnetCidrBlock:
     Type: String
 
+  VPCId:
+    Type: String
+
+  InternetGatewayId:
+    Type: String
+
+  IsPublic:
+    Type: String
+    Description: true for public, false for private
+
+Conditions:
+  IsPublic:
+    Fn::Equals:
+      - !Ref IsPublic
+      - true
+
 Resources:
 
   Subnet:
@@ -17,18 +33,18 @@ Resources:
     Properties:
       AvailabilityZone: !Select [!Ref AZSelection, Fn::GetAZs: !Ref "AWS::Region"]
       CidrBlock: !Ref SubnetCidrBlock 
-      MapIpOnLaunch: true
-      VpcId: !Ref VPC
+      MapPublicIpOnLaunch: true
+      VpcId: !Ref VPCId
 
   RouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref VPCId
 
   RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      RouteTableId: !Ref SubnetRouteTable
+      RouteTableId: !Ref RouteTable
       SubnetId: !Ref Subnet
 
   DefaultRoute:
@@ -39,9 +55,17 @@ Resources:
           - NO_UNRESTRICTED_ROUTE_TO_IGW
     Properties:
       DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: !Ref InternetGateway
-      RouteTableId: !Ref SubnetRouteTable
-    DependsOn: VPCGW
+      GatewayId: 
+        Fn::If: 
+          - IsPublic
+          - !Ref InternetGatewayId
+          - !Ref AWS::NoValue
+      NatGatewayId:
+        Fn::If: 
+          - IsPublic
+          - !Ref AWS::NoValue
+          - !Ref NATGateway
+      RouteTableId: !Ref RouteTable
 
   EIP:
     Type: AWS::EC2::EIP
@@ -51,9 +75,6 @@ Resources:
   NATGateway:
     Type: AWS::EC2::NatGateway
     Properties:
-      AllocationId: !GetAtt SubnetEIP.AllocationId
+      AllocationId: !GetAtt EIP.AllocationId
       SubnetId: !Ref Subnet
-    DependsOn:
-      - SubnetDefaultRoute
-      - SubnetRouteTableAssociation
 

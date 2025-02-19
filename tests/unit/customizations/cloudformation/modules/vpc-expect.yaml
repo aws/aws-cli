@@ -1,4 +1,13 @@
 Resources:
+  NetworkGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId:
+        Ref: NetworkInternetGateway
+      VpcId:
+        Ref: NetworkVPC
+  NetworkInternetGateway:
+    Type: AWS::EC2::InternetGateway
   NetworkPrivateSubnet0DefaultRoute:
     Type: AWS::EC2::Route
     Metadata:
@@ -7,11 +16,11 @@ Resources:
         - NO_UNRESTRICTED_ROUTE_TO_IGW
     Properties:
       DestinationCidrBlock: 0.0.0.0/0
-      GatewayId:
-        Ref: InternetGateway
+      NatGatewayId:
+        Ref: NetworkPrivateSubnet0NATGateway
       RouteTableId:
-        Ref: SubnetRouteTable
-    DependsOn: VPCGW
+        Ref: NetworkPrivateSubnet0RouteTable
+    DependsOn: NetworkGatewayAttachment
   NetworkPrivateSubnet0EIP:
     Type: AWS::EC2::EIP
     Properties:
@@ -21,13 +30,10 @@ Resources:
     Properties:
       AllocationId:
         Fn::GetAtt:
-        - NetworkPrivateSubnet0SubnetEIP
+        - NetworkPrivateSubnet0EIP
         - AllocationId
       SubnetId:
         Ref: NetworkPrivateSubnet0Subnet
-    DependsOn:
-    - SubnetDefaultRoute
-    - SubnetRouteTableAssociation
   NetworkPrivateSubnet0RouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -37,7 +43,7 @@ Resources:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId:
-        Ref: SubnetRouteTable
+        Ref: NetworkPrivateSubnet0RouteTable
       SubnetId:
         Ref: NetworkPrivateSubnet0Subnet
   NetworkPrivateSubnet0Subnet:
@@ -53,7 +59,7 @@ Resources:
         - Fn::GetAZs:
             Ref: AWS::Region
       CidrBlock: 10.0.0.0/18
-      MapIpOnLaunch: true
+      MapPublicIpOnLaunch: true
       VpcId:
         Ref: NetworkVPC
   NetworkPrivateSubnet1DefaultRoute:
@@ -64,11 +70,11 @@ Resources:
         - NO_UNRESTRICTED_ROUTE_TO_IGW
     Properties:
       DestinationCidrBlock: 0.0.0.0/0
-      GatewayId:
-        Ref: InternetGateway
+      NatGatewayId:
+        Ref: NetworkPrivateSubnet1NATGateway
       RouteTableId:
-        Ref: SubnetRouteTable
-    DependsOn: VPCGW
+        Ref: NetworkPrivateSubnet1RouteTable
+    DependsOn: NetworkGatewayAttachment
   NetworkPrivateSubnet1EIP:
     Type: AWS::EC2::EIP
     Properties:
@@ -78,13 +84,10 @@ Resources:
     Properties:
       AllocationId:
         Fn::GetAtt:
-        - NetworkPrivateSubnet1SubnetEIP
+        - NetworkPrivateSubnet1EIP
         - AllocationId
       SubnetId:
         Ref: NetworkPrivateSubnet1Subnet
-    DependsOn:
-    - SubnetDefaultRoute
-    - SubnetRouteTableAssociation
   NetworkPrivateSubnet1RouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -94,7 +97,7 @@ Resources:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId:
-        Ref: SubnetRouteTable
+        Ref: NetworkPrivateSubnet1RouteTable
       SubnetId:
         Ref: NetworkPrivateSubnet1Subnet
   NetworkPrivateSubnet1Subnet:
@@ -110,7 +113,7 @@ Resources:
         - Fn::GetAZs:
             Ref: AWS::Region
       CidrBlock: 10.0.64.0/18
-      MapIpOnLaunch: true
+      MapPublicIpOnLaunch: true
       VpcId:
         Ref: NetworkVPC
   NetworkPublicSubnet0DefaultRoute:
@@ -122,10 +125,10 @@ Resources:
     Properties:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId:
-        Ref: InternetGateway
+        Ref: NetworkInternetGateway
       RouteTableId:
-        Ref: SubnetRouteTable
-    DependsOn: VPCGW
+        Ref: NetworkPublicSubnet0RouteTable
+    DependsOn: NetworkGatewayAttachment
   NetworkPublicSubnet0EIP:
     Type: AWS::EC2::EIP
     Properties:
@@ -135,13 +138,10 @@ Resources:
     Properties:
       AllocationId:
         Fn::GetAtt:
-        - NetworkPublicSubnet0SubnetEIP
+        - NetworkPublicSubnet0EIP
         - AllocationId
       SubnetId:
         Ref: NetworkPublicSubnet0Subnet
-    DependsOn:
-    - SubnetDefaultRoute
-    - SubnetRouteTableAssociation
   NetworkPublicSubnet0RouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -151,7 +151,7 @@ Resources:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId:
-        Ref: SubnetRouteTable
+        Ref: NetworkPublicSubnet0RouteTable
       SubnetId:
         Ref: NetworkPublicSubnet0Subnet
   NetworkPublicSubnet0Subnet:
@@ -167,7 +167,7 @@ Resources:
         - Fn::GetAZs:
             Ref: AWS::Region
       CidrBlock: 10.0.128.0/18
-      MapIpOnLaunch: true
+      MapPublicIpOnLaunch: true
       VpcId:
         Ref: NetworkVPC
   NetworkPublicSubnet1DefaultRoute:
@@ -179,10 +179,10 @@ Resources:
     Properties:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId:
-        Ref: InternetGateway
+        Ref: NetworkInternetGateway
       RouteTableId:
-        Ref: SubnetRouteTable
-    DependsOn: VPCGW
+        Ref: NetworkPublicSubnet1RouteTable
+    DependsOn: NetworkGatewayAttachment
   NetworkPublicSubnet1EIP:
     Type: AWS::EC2::EIP
     Properties:
@@ -192,13 +192,10 @@ Resources:
     Properties:
       AllocationId:
         Fn::GetAtt:
-        - NetworkPublicSubnet1SubnetEIP
+        - NetworkPublicSubnet1EIP
         - AllocationId
       SubnetId:
         Ref: NetworkPublicSubnet1Subnet
-    DependsOn:
-    - SubnetDefaultRoute
-    - SubnetRouteTableAssociation
   NetworkPublicSubnet1RouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -208,7 +205,7 @@ Resources:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId:
-        Ref: SubnetRouteTable
+        Ref: NetworkPublicSubnet1RouteTable
       SubnetId:
         Ref: NetworkPublicSubnet1Subnet
   NetworkPublicSubnet1Subnet:
@@ -224,7 +221,7 @@ Resources:
         - Fn::GetAZs:
             Ref: AWS::Region
       CidrBlock: 10.0.192.0/18
-      MapIpOnLaunch: true
+      MapPublicIpOnLaunch: true
       VpcId:
         Ref: NetworkVPC
   NetworkVPC:

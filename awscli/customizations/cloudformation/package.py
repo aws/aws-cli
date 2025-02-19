@@ -119,6 +119,16 @@ class PackageCommand(BasicCommand):
             },
             "help_text": "A map of metadata to attach to *ALL* the artifacts that"
             " are referenced in your template."
+        },
+        {
+            "name": "no-source-map",
+            "action": "store_true",
+            "help_text": "If set, packaged templates with modules will not include a source map of line numbers"
+        },
+        {
+            "name": "no-metrics",
+            "action": "store_true",
+            "help_text": "If set, packaged templates will not include a Metadata section to record metrics about usage"
         }
     ]
 
@@ -154,6 +164,8 @@ class PackageCommand(BasicCommand):
 
         output_file = parsed_args.output_template_file
         use_json = parsed_args.use_json
+        self.no_source_map = parsed_args.no_source_map
+        self.no_metrics = parsed_args.no_metrics
         exported_str = self._export(template_path, use_json)
 
         sys.stdout.write("\n")
@@ -169,7 +181,9 @@ class PackageCommand(BasicCommand):
         return 0
 
     def _export(self, template_path, use_json):
-        template = Template(template_path, os.getcwd(), self.s3_uploader)
+        template = Template(template_path, os.getcwd(), self.s3_uploader,
+            no_source_map=self.no_source_map, 
+            no_metrics=self.no_metrics)
         exported_template = template.export()
 
         if use_json:

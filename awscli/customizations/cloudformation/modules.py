@@ -67,39 +67,6 @@ similar resources with the Map attribute. This is simpler than using
 build time.  See
 tests/unit/customizations/cloudformation/modules/vpc-module.yaml.
 
-An example of a Map is defining subnets in a VPC.
-
-```yaml
-Parameters:
-  CidrBlock:
-    Type: String
-  PrivateCidrBlocks:
-    Type: CommaDelimitedList
-  PublicCidrBlocks:
-    Type: CommaDelimitedList
-Modules:
-  PublicSubnet:
-    Map: !Ref PublicCidrBlocks
-    Source: ./subnet-module.yaml
-    Properties:
-      SubnetCidrBlock: $MapValue
-      AZSelection: $MapIndex
-      VpcId: !Ref VPC
-  PrivateSubnet:
-    Map: !Ref PrivateCidrBlocks
-    Source: ./subnet-module.yaml
-    Properties:
-      SubnetCidrBlock: $MapValue
-      AZSelection: $MapIndex
-      VpcId: !Ref VPC
-Resources:
-  VPC:
-    Type: AWS::EC2::VPC
-    Properties:
-      CidrBlock: !Ref CidrBlock
-      EnableDnsHostnames: true
-      EnableDnsSupport: true
-      InstanceTenancy: default
 ```
 
 """
@@ -163,7 +130,7 @@ IF = "Fn::If"
 INPUTS = "Inputs"
 REFERENCES = "References"
 AWSTOOLSMETRICS = "AWSToolsMetrics"
-CLOUDFORMATION_PACKAGE = "CloudForCloudFormationPackage"
+CLOUDFORMATION_PACKAGE = "CloudFormationPackage"
 SOURCE_MAP = "SourceMap"
 NO_SOURCE_MAP = "NoSourceMap"
 
@@ -199,22 +166,25 @@ def make_module(template, name, config, base_path, parent_path, no_source_map):
 
 def map_placeholders(i, token, val):
     "Replace $MapValue and $MapIndex"
-    if SUB in val:
+    if isinstance(val, (dict, OrderedDict)) and SUB in val:
         sub = val[SUB]
-        r = sub.replace(MAP_PLACEHOLDER, token)
+        if MAP_PLACEHOLDER in sub or INDEX_PLACEHOLDER in sub:
+            r = sub.replace(MAP_PLACEHOLDER, token)
+            r = r.replace(INDEX_PLACEHOLDER, f"{i}")
+            words = parse_sub(r)
+            need_sub = False
+            for word in words:
+                if word.t != WordType.STR:
+                    need_sub = True
+                    break
+            if need_sub:
+                return {SUB: r}
+            return r
+    elif isinstance(val, str):
+        r = val.replace(MAP_PLACEHOLDER, token)
         r = r.replace(INDEX_PLACEHOLDER, f"{i}")
-        words = parse_sub(r)
-        need_sub = False
-        for word in words:
-            if word.t != WordType.STR:
-                need_sub = True
-                break
-        if need_sub:
-            return {SUB: r}
         return r
-    r = val.replace(MAP_PLACEHOLDER, token)
-    r = r.replace(INDEX_PLACEHOLDER, f"{i}")
-    return r
+    return val
 
 
 def add_metrics_metadata(template):
@@ -727,12 +697,61 @@ class Module:
         self.template[RESOURCES][self.name + logical_id] = resource
         self.process_resource_conditions()
 
+        # DependsOn needs special handling, since it refers directly to
+        # logical ids and does not use a !Ref to do so
+        self.depends_on(logical_id, resource)
+
         # Add the source map to Metadata
         if not self.no_source_map:
             if METADATA not in resource:
                 resource[METADATA] = {}
             metadata = resource[METADATA]
             metadata[SOURCE_MAP] = self.get_source_map(logical_id)
+
+    def depends_on(self, logical_id, resource):
+        """
+        Fix DependsOn references.
+
+        For example, in a module included as 'Content', if we have
+        DependsOn: Bucket, it needs to be DependsOn: ContentBucket.
+        But, dont edit names that already refer to packaged names.
+        So, if the author already has 'DependsOn: ContentBucket',
+        leave it alone.
+        """
+        # TODO
+        if DEPENDSON not in resource:
+            return
+
+        d = resource[DEPENDSON]
+        # DependsOn can have a string or list
+        # Make a new list to replace the old one
+        ds = []
+        replace_ds = []
+        if isinstance(d, str):
+            ds.append(d)
+        if isinstance(d, list):
+            for item in d:
+                ds.append(item)
+
+        for item in ds:
+            found = False
+            # Look at each other resource in this template for matching names
+            for k in self.resources:
+                if k == logical_id:
+                    continue
+                if item == k:
+                    # Append the module name so it's correct in the parent
+                    replace_ds.append(self.name + item)
+                    found = True
+                    break
+            if not found:
+                # We don't error here because of Overrides
+                replace_ds.append(item)
+
+        if len(replace_ds) == 1:
+            resource[DEPENDSON] = replace_ds[0]
+        else:
+            resource[DEPENDSON] = replace_ds
 
     def get_source_map(self, logical_id):
         "Get the string to put in the resource metadata source map"
@@ -891,8 +910,7 @@ class Module:
         If there is no matching Parameter, look for a resource with that
         name in this module and fix the logical id so it has the prefix.
 
-        Otherwise just leave it be and assume the module author is
-        expecting the parent template to have that Reference.
+        Otherwise raise an exception.
         """
         if not isinstance(v, str):
             msg = f"Ref should be a string: {v}"
@@ -901,6 +919,11 @@ class Module:
         found = self.find_ref(v)
         if found is not None:
             d[n] = found
+        else:
+            if isinstance(v, str) and v.startswith("AWS::"):
+                return
+            msg = f"Could not find referenced property in {self.source}: {v}"
+            raise exceptions.InvalidModuleError(msg=msg)
 
     def resolve_sub_ref(self, w):
         "Resolve a ref inside of a Sub string"

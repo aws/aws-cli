@@ -1,10 +1,11 @@
 "Tests for module support in the package command"
 
 # pylint: disable=fixme
-
+import pytest
 from awscli.testutils import unittest
 from awscli.customizations.cloudformation import yamlhelper
 from awscli.customizations.cloudformation import modules
+from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.parse_sub import SubWord, WordType
 from awscli.customizations.cloudformation.parse_sub import parse_sub
 from awscli.customizations.cloudformation.module_visitor import Visitor
@@ -91,6 +92,7 @@ class TestPackageModules(unittest.TestCase):
         # The tests are in the modules directory.
         # Each test has 3 files:
         # test-template.yaml, test-module.yaml, and test-expect.yaml
+        base = "unit/customizations/cloudformation/modules"
         tests = [
             "basic",
             "type",
@@ -106,9 +108,9 @@ class TestPackageModules(unittest.TestCase):
             "getatt",
             "constant",
             "proparray",
+            "depends",
         ]
         for test in tests:
-            base = "unit/customizations/cloudformation/modules"
             t, _ = modules.read_source(f"{base}/{test}-template.yaml")
             td = yamlhelper.yaml_parse(t)
             e, _ = modules.read_source(f"{base}/{test}-expect.yaml")
@@ -122,6 +124,19 @@ class TestPackageModules(unittest.TestCase):
 
             processed = yamlhelper.yaml_dump(td)
             self.assertEqual(e, processed, f"{test} failed")
+
+        # These tests should fail to package
+        bad_tests = ["badref"]
+        for test in bad_tests:
+            t, _ = modules.read_source(f"{base}/{test}-template.yaml")
+            td = yamlhelper.yaml_parse(t)
+            with pytest.raises(exceptions.InvalidModuleError):
+                constants = process_constants(td)
+                if constants is not None:
+                    replace_constants(constants, td)
+                td = modules.process_module_section(
+                    td, base, t, None, True, True
+                )
 
     def test_visitor(self):
         "Test module_visitor"

@@ -596,6 +596,7 @@ class Template(object):
     """
 
     def __init__(self, template_path, parent_dir, uploader,
+                 no_source_map, no_metrics,
                  resources_to_export=RESOURCES_EXPORT_LIST,
                  metadata_to_export=METADATA_EXPORT_LIST):
         """
@@ -618,8 +619,8 @@ class Template(object):
         self.resources_to_export = resources_to_export
         self.metadata_to_export = metadata_to_export
         self.uploader = uploader
-        self.no_metrics = False # TODO - New parameter for package command
-        self.no_source_map = False # TODO
+        self.no_metrics = no_metrics
+        self.no_source_map = no_source_map
 
     def export_global_artifacts(self, template_dict):
         """

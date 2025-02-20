@@ -277,7 +277,7 @@ class Module:
                 if VALUE in v:
                     self.module_outputs[k] = v[VALUE]
                 else:
-                    msg = f"Output should have Value: {k}: {v}"
+                    msg = f"Output should have Value. {self.source}: {k}: {v}"
                     raise exceptions.InvalidModuleError(msg=msg)
 
         # Read the Conditions section and store it as a dict of string:boolean

@@ -5000,6 +5000,14 @@
         "scopeConfiguration":{
           "shape":"ScopeConfiguration",
           "documentation":"<p>The scope configuration for global or organization webhooks.</p> <note> <p>Global or organization webhooks are only available for GitHub and Github Enterprise webhooks.</p> </note>"
+        },
+        "status":{
+          "shape":"WebhookStatus",
+          "documentation":"<p>The status of the webhook. Valid values include:</p> <ul> <li> <p> <code>CREATING</code>: The webhook is being created.</p> </li> <li> <p> <code>CREATE_FAILED</code>: The webhook has failed to create.</p> </li> <li> <p> <code>ACTIVE</code>: The webhook has succeeded and is active.</p> </li> <li> <p> <code>DELETING</code>: The webhook is being deleted.</p> </li> </ul>"
+        },
+        "statusMessage":{
+          "shape":"String",
+          "documentation":"<p>A message associated with the status of a webhook.</p>"
         }
       },
       "documentation":"<p>Information about a webhook that connects repository events to a build project in CodeBuild.</p>"
@@ -5055,6 +5063,15 @@
         "GITHUB_ORGANIZATION",
         "GITHUB_GLOBAL",
         "GITLAB_GROUP"
+      ]
+    },
+    "WebhookStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "CREATE_FAILED",
+        "ACTIVE",
+        "DELETING"
       ]
     },
     "WrapperBoolean":{"type":"boolean"},

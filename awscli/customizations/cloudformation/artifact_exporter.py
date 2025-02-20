@@ -596,7 +596,7 @@ class Template(object):
     """
 
     def __init__(self, template_path, parent_dir, uploader,
-                 no_source_map, no_metrics,
+                 no_source_map=False, no_metrics=False,
                  resources_to_export=RESOURCES_EXPORT_LIST,
                  metadata_to_export=METADATA_EXPORT_LIST):
         """

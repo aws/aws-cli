@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.37.25
+=======
+
+* api-change:``codebuild``: Add webhook status and status message to AWS CodeBuild webhooks
+* api-change:``guardduty``: Reduce the minimum number of required attack sequence signals from 2 to 1
+* api-change:``license-manager-user-subscriptions``: Updates entity to include Microsoft RDS SAL as a valid type of user subscription.
+* api-change:``rds``: CloudWatch Database Insights now supports Amazon RDS.
+* api-change:``sagemaker``: Added new capability in the UpdateCluster operation to remove instance groups from your SageMaker HyperPod cluster.
+* api-change:``workspaces-web``: Add support for toolbar configuration under user settings.
+
+
 1.37.24
 =======
 

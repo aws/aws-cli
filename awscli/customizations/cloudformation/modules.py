@@ -73,13 +73,15 @@ tests/unit/customizations/cloudformation/modules/vpc-module.yaml.
 
 # pylint: disable=fixme,too-many-instance-attributes,too-many-lines
 
-import copy
 import logging
 import os
 from collections import OrderedDict
 
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation import yamlhelper
+from awscli.customizations.cloudformation.module_maps import (
+    process_module_maps,
+)
 from awscli.customizations.cloudformation.module_constants import (
     process_constants,
     replace_constants,
@@ -122,8 +124,6 @@ TYPE = "Type"
 LOCAL_MODULE = "LocalModule"
 OUTPUTS = "Outputs"
 MAP = "Map"
-MAP_PLACEHOLDER = "$MapValue"
-INDEX_PLACEHOLDER = "$MapIndex"
 CONDITIONS = "Conditions"
 CONDITION = "Condition"
 IF = "Fn::If"
@@ -162,29 +162,6 @@ def make_module(template, name, config, base_path, parent_path, no_source_map):
         module_config[OVERRIDES] = config[OVERRIDES]
     module_config[NO_SOURCE_MAP] = no_source_map
     return Module(template, module_config)
-
-
-def map_placeholders(i, token, val):
-    "Replace $MapValue and $MapIndex"
-    if isinstance(val, (dict, OrderedDict)) and SUB in val:
-        sub = val[SUB]
-        if MAP_PLACEHOLDER in sub or INDEX_PLACEHOLDER in sub:
-            r = sub.replace(MAP_PLACEHOLDER, token)
-            r = r.replace(INDEX_PLACEHOLDER, f"{i}")
-            words = parse_sub(r)
-            need_sub = False
-            for word in words:
-                if word.t != WordType.STR:
-                    need_sub = True
-                    break
-            if need_sub:
-                return {SUB: r}
-            return r
-    elif isinstance(val, str):
-        r = val.replace(MAP_PLACEHOLDER, token)
-        r = r.replace(INDEX_PLACEHOLDER, f"{i}")
-        return r
-    return val
 
 
 def add_metrics_metadata(template):
@@ -253,35 +230,6 @@ def process_module_section(
         parent_module.template[RESOURCES][parent_module.name + k] = v
 
     return template
-
-
-def process_module_maps(template, parent_module):
-    "Loop over Maps in modules"
-    modules = template[MODULES]
-    for k, v in modules.copy().items():
-        if MAP in v:
-            # Expect Map to be a CSV or ref to a CSV
-            m = v[MAP]
-            if isdict(m) and REF in m:
-                m = parent_module.find_ref(m[REF])
-                if m is None:
-                    msg = f"{k} has an invalid Map Ref"
-                    raise exceptions.InvalidModuleError(msg=msg)
-            tokens = m.split(",")
-            for i, token in enumerate(tokens):
-                # Make a new module
-                module_id = f"{k}{i}"
-                copied_module = copy.deepcopy(v)
-                del copied_module[MAP]
-                # Replace $Map and $Index placeholders
-                if PROPERTIES in copied_module:
-                    for prop, val in copied_module[PROPERTIES].copy().items():
-                        copied_module[PROPERTIES][prop] = map_placeholders(
-                            i, token, val
-                        )
-                modules[module_id] = copied_module
-
-            del modules[k]
 
 
 def isdict(v):

@@ -636,6 +636,8 @@ class Module:
         for a in attrs:
             self.process_overrides(logical_id, resource, a)
 
+        self.process_resource_conditions()
+
         # Resolve refs, subs, and getatts
         #    (Process module Inputs and parent Properties)
         container = {}
@@ -643,7 +645,6 @@ class Module:
         container[RESOURCES] = self.resources
         self.resolve(logical_id, resource, container, RESOURCES)
         self.template[RESOURCES][self.name + logical_id] = resource
-        self.process_resource_conditions()
 
         # DependsOn needs special handling, since it refers directly to
         # logical ids and does not use a !Ref to do so
@@ -869,9 +870,20 @@ class Module:
             d[n] = found
         else:
             if isinstance(v, str) and v.startswith("AWS::"):
-                return
-            msg = f"Could not find referenced property in {self.source}: {v}"
-            raise exceptions.InvalidModuleError(msg=msg)
+                pass  # return
+            # msg = (
+            #    f"Not found in {self.source}: {n}:{v}"
+            # )
+            # raise exceptions.InvalidModuleError(msg=msg)
+            #
+            # Ideally we would raise an exception here. But in the case
+            # of a sub-module referring to another sub-module in
+            # the Overrides section, the name has already been fixed,
+            # so we won't find it in this template or in parameters.
+            # This is identical to the possiblity that a module author
+            # might refer to something directly in the parent, without
+            # an input. The tradeoff is that we can't detect legit typos.
+            # We have to depend on cfn-lint on the final template.
 
     def resolve_sub_ref(self, w):
         "Resolve a ref inside of a Sub string"

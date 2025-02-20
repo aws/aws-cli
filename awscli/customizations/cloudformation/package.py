@@ -142,7 +142,7 @@ class PackageCommand(BasicCommand):
 
         bucket = parsed_args.s3_bucket
 
-        # Only create the s3 uploaded if we need it, 
+        # Only create the s3 uploader if we need it, 
         # since this command now also supports local modules.
         # Local modules should be able to run without credentials.
         if bucket:

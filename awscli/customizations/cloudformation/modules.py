@@ -1,4 +1,4 @@
-# Copyright 2012-2024 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright 2012-2025 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
@@ -12,60 +12,13 @@
 # language governing permissions and limitations under the License.
 
 """
-This file implements local module support for the package command
+This file implements local module support for the package command.
 
 See tests/unit/customizations/cloudformation/modules for examples of what the
-Modules section of a template looks like.
+Modules section of a template looks like, and how modules are used from parent
+templates.
 
-Modules are imported with a Source attribute pointing to a local file, a
-Properties attribute that corresponds to Inputs in the modules, and an
-Overrides attribute that can override module output.
-
-The `Modules` section.
-
-```yaml
-Modules:
-  Content:
-    Source: ./module.yaml
-    Properties:
-      Name: foo
-    Overrides:
-      Bucket:
-        Properties:
-          OverrideMe: def
-```
-
-A module is itself basically a CloudFormation template, with an Inputs
-section and Resources that are injected into the parent template. The
-Properties defined in the Modules section correspond to the Inputs in the
-module. These modules operate in a similar way to registry modules.
-
-The name of the module in the Modules section is used as a prefix to logical
-ids that are defined in the module.
-
-In addition to the parent setting Properties, all attributes of the module can
-be overridden with Overrides, which require the consumer to know how the module
-is structured. This "escape hatch" is considered a first class citizen in the
-design, to avoid excessive Parameter definitions to cover every possible use
-case. One caveat is that using Overrides is less stable, since the module
-author might change logical ids. Using module References can mitigate this.
-
-Module Inputs (set by Properties in the parent) are referenced with Refs,
-Subs, and GetAtts in the module. These are handled in a way that fixes
-references to match module prefixes, fully resolving values that are actually
-strings and leaving others to be resolved at deploy time.
-
-Modules can contain other modules, with no enforced limit to the levels of
-nesting.
-
-Modules can define References, which are key-value pairs that can be referenced
-by the parent using Sub and GetAtt.
-
-When using modules, you can use a comma-delimited list to create a number of
-similar resources with the Map attribute. This is simpler than using
-`Fn::ForEach` but has the limitation of requiring the list to be resolved at
-build time.  See
-tests/unit/customizations/cloudformation/modules/vpc-module.yaml.
+See the public documentation for a full description of the feature.
 
 ```
 
@@ -75,10 +28,13 @@ tests/unit/customizations/cloudformation/modules/vpc-module.yaml.
 
 import logging
 import os
-from collections import OrderedDict
 
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation import yamlhelper
+from awscli.customizations.cloudformation.module_merge import (
+    isdict,
+    merge_props,
+)
 from awscli.customizations.cloudformation.module_maps import (
     process_module_maps,
 )
@@ -127,8 +83,6 @@ MAP = "Map"
 CONDITIONS = "Conditions"
 CONDITION = "Condition"
 IF = "Fn::If"
-INPUTS = "Inputs"
-REFERENCES = "References"
 AWSTOOLSMETRICS = "AWSToolsMetrics"
 CLOUDFORMATION_PACKAGE = "CloudFormationPackage"
 SOURCE_MAP = "SourceMap"
@@ -197,19 +151,11 @@ def process_module_section(
         if not no_metrics:
             add_metrics_metadata(template)
 
-        # Make a fake Module instance to handle find_ref for Maps
-        # The only valid way to do this at the template level
-        # is to specify a default for a Parameter, since we need to
-        # resolve the actual value client-side
+        # Make a fake Module instance to handle find_ref
         parent_module = Module(template, {NAME: "", SOURCE: ""})
 
-        # The actual parent template will have Parameters
         if PARAMETERS in template:
-            parent_module.inputs = template[PARAMETERS]
-
-        # A module will have Inputs instead of Parameters
-        if INPUTS in template:
-            parent_module.inputs = template[INPUTS]
+            parent_module.module_parameters = template[PARAMETERS]
 
     # First, pre-process local modules that are looping over a list
     process_module_maps(template, parent_module)
@@ -229,48 +175,10 @@ def process_module_section(
     for k, v in template[RESOURCES].items():
         parent_module.template[RESOURCES][parent_module.name + k] = v
 
+    # We only do this for resources, but in the future we might create
+    # a way to lift other sections up to the parent as well.
+
     return template
-
-
-def isdict(v):
-    "Returns True if the type is a dict or OrderedDict"
-    return isinstance(v, (dict, OrderedDict))
-
-
-def merge_props(original, overrides):
-    """
-    This function merges dicts, replacing values in the original with
-    overrides.  This function is recursive and can act on lists and scalars.
-    See the unit tests for example merges.
-    See tests/unit/customizations/cloudformation/modules/policy-*.yaml
-
-    :return A new value with the overridden properties
-    """
-    original_type = type(original)
-    override_type = type(overrides)
-    if not isdict(overrides) and override_type is not list:
-        return overrides
-
-    if original_type is not override_type:
-        return overrides
-
-    if isdict(original):
-        retval = original.copy()
-        for k in original:
-            if k in overrides:
-                retval[k] = merge_props(retval[k], overrides[k])
-        for k in overrides:
-            if k not in original:
-                retval[k] = overrides[k]
-        return retval
-
-    # original and overrides are lists
-    new_list = []
-    for item in original:
-        new_list.append(item)
-    for item in overrides:
-        new_list.append(item)
-    return new_list
 
 
 class Module:
@@ -313,10 +221,10 @@ class Module:
         self.resources = {}
 
         # Input parameters defined in the module
-        self.inputs = {}
+        self.module_parameters = {}
 
         # Outputs defined in the module
-        self.references = {}
+        self.module_outputs = {}
 
         # Conditions defined in the module
         self.conditions = {}
@@ -358,11 +266,11 @@ class Module:
         else:
             self.resources = module_dict[RESOURCES]
 
-        if INPUTS in module_dict:
-            self.inputs = module_dict[INPUTS]
+        if PARAMETERS in module_dict:
+            self.module_parameters = module_dict[PARAMETERS]
 
-        if REFERENCES in module_dict:
-            self.references = module_dict[REFERENCES]
+        if OUTPUTS in module_dict:
+            self.module_outputs = module_dict[OUTPUTS]
 
         # Read the Conditions section and store it as a dict of string:boolean
         if CONDITIONS in module_dict:
@@ -411,11 +319,11 @@ class Module:
         for logical_id, resource in self.resources.items():
             self.process_resource(logical_id, resource)
 
-        self.process_references()
+        self.process_module_outputs()
 
         return self.template
 
-    def process_references(self):
+    def process_module_outputs(self):
         """
         Fix parent template GetAtt and Sub that point to module references.
 
@@ -427,18 +335,18 @@ class Module:
         configured property value.
 
         Recurse over all sections in the parent template looking for
-        GetAtts and Subs that reference a module References value.
+        GetAtts and Subs that reference a module Outputs value.
         """
-        sections = [RESOURCES, REFERENCES, MODULES, OUTPUTS]
+        sections = [RESOURCES, MODULES, OUTPUTS]
         for section in sections:
             if section not in self.template:
                 continue
             for k, v in self.template[section].items():
-                self.resolve_references(k, v, self.template, section)
+                self.resolve_module_outputs(k, v, self.template, section)
 
-    def resolve_references(self, k, v, d, n):
+    def resolve_module_outputs(self, k, v, d, n):
         """
-        Recursively resolve GetAtts and Subs that reference module references.
+        Recursively resolve GetAtts and Subs that reference module outputs.
 
         :param name The name of the reference
         :param k The name of the node
@@ -455,14 +363,14 @@ class Module:
         else:
             if isdict(v):
                 for k2, v2 in v.copy().items():
-                    self.resolve_references(k2, v2, d[n], k)
+                    self.resolve_module_outputs(k2, v2, d[n], k)
             elif isinstance(v, list):
                 idx = -1
                 for v2 in v:
                     idx = idx + 1
                     if isdict(v2):
                         for k3, v3 in v2.copy().items():
-                            self.resolve_references(k3, v3, v, idx)
+                            self.resolve_module_outputs(k3, v3, v, idx)
 
     def resolve_reference_sub_getatt(self, w):
         """
@@ -482,14 +390,14 @@ class Module:
 
         The module has:
 
-          Inputs:
+          Parameters:
             Name:
               Type: String
           Resources:
             X:
               Properties:
                 Y: !Ref Name
-          References:
+          Outputs:
             MyName: !GetAtt Y.Name
 
         The resulting output:
@@ -508,9 +416,9 @@ class Module:
 
         r = None
         if tokens[0] == self.name:
-            if tokens[1] in self.references:
-                # We're referring to the module's References
-                r = self.references[tokens[1]]
+            if tokens[1] in self.module_outputs:
+                # We're referring to the module's Outputs
+                r = self.module_outputs[tokens[1]]
             elif tokens[1] in self.props:
                 # We're referring to parent Module Properties
                 r = self.props[tokens[1]]
@@ -566,8 +474,8 @@ class Module:
 
         r = None
         if v[0] == self.name:
-            if v[1] in self.references:
-                r = self.references[v[1]]
+            if v[1] in self.module_outputs:
+                r = self.module_outputs[v[1]]
             elif v[1] in self.props:
                 r = self.props[v[1]]
         if r is not None:
@@ -639,7 +547,7 @@ class Module:
         self.process_resource_conditions()
 
         # Resolve refs, subs, and getatts
-        #    (Process module Inputs and parent Properties)
+        #    (Process module Parameters and parent Properties)
         container = {}
         # We need the container for the first iteration of the recursion
         container[RESOURCES] = self.resources
@@ -745,7 +653,7 @@ class Module:
 
         v = Visitor(self.resources)
         v.visit(vf)
-        v = Visitor(self.references)
+        v = Visitor(self.module_outputs)
         v.visit(vf)
 
     def process_overrides(self, logical_id, resource, attr_name):
@@ -971,15 +879,15 @@ class Module:
         :return The referenced element or None
         """
         if name in self.props:
-            if name not in self.inputs:
+            if name not in self.module_parameters:
                 # The parent tried to set a property that doesn't exist
-                # in the Inputs section of this module
-                msg = f"{name} not found in module Inputs: {self.source}"
+                # in the Parameters section of this module
+                msg = f"{name} not found in module Parameters: {self.source}"
                 raise exceptions.InvalidModuleError(msg=msg)
             return self.props[name]
 
-        if name in self.inputs:
-            param = self.inputs[name]
+        if name in self.module_parameters:
+            param = self.module_parameters[name]
             if DEFAULT in param:
                 # Use the default value of the Parameter
                 return param[DEFAULT]

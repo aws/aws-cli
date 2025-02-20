@@ -24,7 +24,7 @@ See the public documentation for a full description of the feature.
 
 """
 
-# pylint: disable=fixme,too-many-instance-attributes,too-many-lines
+# pylint: disable=fixme,too-many-instance-attributes
 
 import logging
 import os
@@ -314,11 +314,14 @@ class Module:
             LOG.exception(msg)
             raise exceptions.InvalidModuleError(msg=msg)
 
+        # Make sure that overrides exist
         self.validate_overrides()
 
+        # Process resources and put them into the parent template
         for logical_id, resource in self.resources.items():
             self.process_resource(logical_id, resource)
 
+        # Process the module's outputs by modifying the parent
         self.process_module_outputs()
 
         return self.template
@@ -357,9 +360,9 @@ class Module:
         If a reference is found, this function sets the value of d[n]
         """
         if k == SUB:
-            self.resolve_reference_sub(v, d, n)
+            self.resolve_output_sub(v, d, n)
         elif k == GETATT:
-            self.resolve_reference_getatt(v, d, n)
+            self.resolve_output_getatt(v, d, n)
         else:
             if isdict(v):
                 for k2, v2 in v.copy().items():
@@ -372,7 +375,7 @@ class Module:
                         for k3, v3 in v2.copy().items():
                             self.resolve_module_outputs(k3, v3, v, idx)
 
-    def resolve_reference_sub_getatt(self, w):
+    def resolve_output_sub_getatt(self, w):
         """
         Resolve a reference to a module in a Sub GetAtt word.
 
@@ -436,7 +439,7 @@ class Module:
 
         return resolved
 
-    def resolve_reference_sub(self, v, d, n):
+    def resolve_output_sub(self, v, d, n):
         "Resolve a Sub that refers to a module reference or property"
         words = parse_sub(v, True)
         sub = ""
@@ -450,7 +453,7 @@ class Module:
                 resolved = "${" + word.w + "}"
                 sub += resolved
             elif word.t == WordType.GETATT:
-                sub += self.resolve_reference_sub_getatt(word.w)
+                sub += self.resolve_output_sub_getatt(word.w)
 
         if is_sub_needed(sub):
             d[n] = {SUB: sub}
@@ -458,7 +461,7 @@ class Module:
             d[n] = sub
 
     # pylint:disable=too-many-branches
-    def resolve_reference_getatt(self, v, d, n):
+    def resolve_output_getatt(self, v, d, n):
         """
         Resolve a GetAtt that refers to a module Reference.
 
@@ -575,7 +578,6 @@ class Module:
         So, if the author already has 'DependsOn: ContentBucket',
         leave it alone.
         """
-        # TODO
         if DEPENDSON not in resource:
             return
 

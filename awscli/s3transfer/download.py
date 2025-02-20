@@ -231,6 +231,17 @@ class DownloadNonSeekableOutputManager(DownloadOutputManager):
     def queue_file_io_task(self, fileobj, data, offset):
         with self._io_submit_lock:
             writes = self._defer_queue.request_writes(offset, data)
+            # TODO: I think this is the point of addressing the stripe s3 memory issue.
+            #
+            # in particular, we send in the chunksize we are reading in (e.g. 256k).
+            # and while request_writes has the lock,
+            #   right before it returns the data,
+            #   it asserts that each chunk to add to the writes array is 256k
+            #       BUT THEN: what if we reach end of data and there is less than
+            #       256k in the last chunk?
+            #       I dont think we can distinguish these two cases. Unless we use
+            #       some end of stream token. does s3 give something like this?
+            #       IGNORE THE BUT THEN AND TRY THIS. end of socket may already be handled upstream
             for write in writes:
                 data = write['data']
                 logger.debug(
@@ -768,23 +779,39 @@ class DeferQueue:
         each method call.
 
         """
-        if offset < self._next_offset:
+        data_len = len(data)
+        if offset + data_len <= self._next_offset:
             # This is a request for a write that we've already
             # seen.  This can happen in the event of a retry
             # where if we retry at at offset N/2, we'll requeue
             # offsets 0-N/2 again.
             return []
         writes = []
-        if offset in self._pending_offsets:
+        if (offset, data_len) in self._pending_offsets:
             # We've already queued this offset so this request is
             # a duplicate.  In this case we should ignore
             # this request and prefer what's already queued.
             return []
+        if offset < self._next_offset:
+            # This is a special case where the write request contains
+            # both seen AND unseen data. This can happen in the case
+            # that we queue part of a chunk due to an incomplete read,
+            # then pop the incomplete data for writing, then we receive the retry
+            # for the incomplete read which contains both the previously-seen
+            # partial chunk followed by the rest of the chunk (unseen).
+            #
+            # In this case, we discard the bytes of the data we've already
+            # queued before, and only queue the unseen bytes.
+            seen_bytes = self._next_offset - offset
+            data = data[seen_bytes:]
+            offset = self._next_offset
         heapq.heappush(self._writes, (offset, data))
-        self._pending_offsets.add(offset)
+        self._pending_offsets.add((offset, len(data)))
         while self._writes and self._writes[0][0] == self._next_offset:
+            # while the head of writes queue (/stack) is the next offset
             next_write = heapq.heappop(self._writes)
+            next_write_len = len(next_write[1])
             writes.append({'offset': next_write[0], 'data': next_write[1]})
-            self._pending_offsets.remove(next_write[0])
-            self._next_offset += len(next_write[1])
+            self._pending_offsets.remove((next_write[0], next_write_len))
+            self._next_offset += next_write_len
         return writes

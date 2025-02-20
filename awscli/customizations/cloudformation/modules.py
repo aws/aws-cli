@@ -87,6 +87,7 @@ AWSTOOLSMETRICS = "AWSToolsMetrics"
 CLOUDFORMATION_PACKAGE = "CloudFormationPackage"
 SOURCE_MAP = "SourceMap"
 NO_SOURCE_MAP = "NoSourceMap"
+VALUE = "Value"
 
 
 # pylint:disable=too-many-arguments,too-many-positional-arguments
@@ -270,7 +271,14 @@ class Module:
             self.module_parameters = module_dict[PARAMETERS]
 
         if OUTPUTS in module_dict:
-            self.module_outputs = module_dict[OUTPUTS]
+            self.module_outputs = {}
+            for k, v in module_dict[OUTPUTS].items():
+                # Get rid of Value, so that we have a simple dictionary
+                if VALUE in v:
+                    self.module_outputs[k] = v[VALUE]
+                else:
+                    msg = f"Output should have Value: {k}: {v}"
+                    raise exceptions.InvalidModuleError(msg=msg)
 
         # Read the Conditions section and store it as a dict of string:boolean
         if CONDITIONS in module_dict:
@@ -502,7 +510,6 @@ class Module:
                         sub += "${AWS::" + word.w + "}"
                     elif word.t == WordType.REF:
                         # This is a ref to a param or resource
-                        # TODO: If it's a ref to a param...? is this allowed?
                         # If it's a resource, concatenante the name
                         resolved = "${" + word.w + "}"
                         if word.w in self.resources:

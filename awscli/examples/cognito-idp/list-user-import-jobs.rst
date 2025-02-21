@@ -1,57 +1,61 @@
-**To list user import jobs**
+**To list user import jobs and statuses**
 
-This example lists user import jobs. 
+The following ``list-user-import-jobs`` example lists first three user import jobs and their details in the requested user pool. ::
 
-For more information about importing users, see `Importing Users into User Pools From a CSV File`_.
-
-Command::
-
-  aws cognito-idp list-user-import-jobs --user-pool-id us-west-2_aaaaaaaaa  --max-results 20
+    aws cognito-idp list-user-import-jobs \
+        --user-pool-id us-west-2_EXAMPLE \
+        --max-results 3
 
 Output::
 
-  {
-    "UserImportJobs": [
-        {
-            "JobName": "Test2",
-            "JobId": "import-d0OnwGA3mV",
-            "UserPoolId": "us-west-2_aaaaaaaaa",
-            "PreSignedUrl": "PRE_SIGNED_URL",
-            "CreationDate": 1548272793.069,
-            "Status": "Created",
-            "CloudWatchLogsRoleArn": "arn:aws:iam::111111111111:role/CognitoCloudWatchLogsRole",
-            "ImportedUsers": 0,
-            "SkippedUsers": 0,
-            "FailedUsers": 0
-        },
-        {
-            "JobName": "Test1",
-            "JobId": "import-qQ0DCt2fRh",
-            "UserPoolId": "us-west-2_aaaaaaaaa",
-            "PreSignedUrl": "PRE_SIGNED_URL",
-            "CreationDate": 1548271795.471,
-            "Status": "Created",
-            "CloudWatchLogsRoleArn": "arn:aws:iam::111111111111:role/CognitoCloudWatchLogsRole",
-            "ImportedUsers": 0,
-            "SkippedUsers": 0,
-            "FailedUsers": 0
-        },
-        {
-            "JobName": "import-Test1",
-            "JobId": "import-TZqNQvDRnW",
-            "UserPoolId": "us-west-2_aaaaaaaaa",
-            "PreSignedUrl": "PRE_SIGNED_URL",
-            "CreationDate": 1548271708.512,
-            "StartDate": 1548277247.962,
-            "CompletionDate": 1548277248.912,
-            "Status": "Failed",
-            "CloudWatchLogsRoleArn": "arn:aws:iam::111111111111:role/CognitoCloudWatchLogsRole",
-            "ImportedUsers": 0,
-            "SkippedUsers": 0,
-            "FailedUsers": 1,
-            "CompletionMessage": "Too many users have failed or been skipped during the import."
-        }
-    ]
-  }
-  
-.. _`Importing Users into User Pools From a CSV File`: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-using-import-tool.html
+    {
+        "PaginationToken": "us-west-2_EXAMPLE#import-example3#1667948397084",
+        "UserImportJobs": [
+            {
+                "CloudWatchLogsRoleArn": "arn:aws:iam::123456789012:role/service-role/Cognito-UserImport-Role",
+                "CompletionDate": 1735329786.142,
+                "CompletionMessage": "The user import job has expired.",
+                "CreationDate": 1735241621.022,
+                "FailedUsers": 0,
+                "ImportedUsers": 0,
+                "JobId": "import-example1",
+                "JobName": "Test-import-job-1",
+                "PreSignedUrl": "https://aws-cognito-idp-user-import-pdx.s3.us-west-2.amazonaws.com/123456789012/us-west-2_EXAMPLE/import-mAgUtd8PMm?X-Amz-Security-Token=[token]&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241226T193341Z&X-Amz-SignedHeaders=host%3Bx-amz-server-side-encryption&X-Amz-Expires=899&X-Amz-Credential=[credential]&X-Amz-Signature=[signature]",
+                "SkippedUsers": 0,
+                "Status": "Expired",
+                "UserPoolId": "us-west-2_EXAMPLE"
+            },
+            {
+                "CloudWatchLogsRoleArn": "arn:aws:iam::123456789012:role/service-role/Cognito-UserImport-Role",
+                "CompletionDate": 1681509058.408,
+                "CompletionMessage": "Too many users have failed or been skipped during the import.",
+                "CreationDate": 1681509001.477,
+                "FailedUsers": 1,
+                "ImportedUsers": 0,
+                "JobId": "import-example2",
+                "JobName": "Test-import-job-2",
+                "PreSignedUrl": "https://aws-cognito-idp-user-import-pdx.s3.us-west-2.amazonaws.com/123456789012/us-west-2_EXAMPLE/import-mAgUtd8PMm?X-Amz-Security-Token=[token]&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241226T193341Z&X-Amz-SignedHeaders=host%3Bx-amz-server-side-encryption&X-Amz-Expires=899&X-Amz-Credential=[credential]&X-Amz-Signature=[signature]",
+                "SkippedUsers": 0,
+                "StartDate": 1681509057.965,
+                "Status": "Failed",
+                "UserPoolId": "us-west-2_EXAMPLE"
+            },
+            {
+                "CloudWatchLogsRoleArn": "arn:aws:iam::123456789012:role/service-role/Cognito-UserImport-Role",
+                "CompletionDate": 1.667864578676E9,
+                "CompletionMessage": "Import Job Completed Successfully.",
+                "CreationDate": 1.667864480281E9,
+                "FailedUsers": 0,
+                "ImportedUsers": 6,
+                "JobId": "import-example3",
+                "JobName": "Test-import-job-3",
+                "PreSignedUrl": "https://aws-cognito-idp-user-import-pdx.s3.us-west-2.amazonaws.com/123456789012/us-west-2_EXAMPLE/import-mAgUtd8PMm?X-Amz-Security-Token=[token]&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241226T193341Z&X-Amz-SignedHeaders=host%3Bx-amz-server-side-encryption&X-Amz-Expires=899&X-Amz-Credential=[credential]&X-Amz-Signature=[signature]",
+                "SkippedUsers": 0,
+                "StartDate": 1.667864578167E9,
+                "Status": "Succeeded",
+                "UserPoolId": "us-west-2_EXAMPLE"
+            }
+        ]
+    }
+
+For more information, see `Importing users from a CSV file <https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-using-import-tool.html>`__ in the *Amazon Cognito Developer Guide*.

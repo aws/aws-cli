@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.24.10
+=======
+
+* api-change:``bedrock-agent``: Introduce a new parameter which represents the user-agent header value used by the Bedrock Knowledge Base Web Connector.
+* enhancement:Python: Update bundled Python interpreter version to 3.12.9
+* api-change:``appstream``: Added support for Certificate-Based Authentication on AppStream 2.0 multi-session fleets.
+
+
 2.24.9
 ======
 

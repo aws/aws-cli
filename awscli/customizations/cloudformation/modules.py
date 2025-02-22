@@ -37,6 +37,7 @@ from awscli.customizations.cloudformation.module_merge import (
 )
 from awscli.customizations.cloudformation.module_maps import (
     process_module_maps,
+    resolve_mapped_lists,
 )
 from awscli.customizations.cloudformation.module_constants import (
     process_constants,
@@ -91,7 +92,15 @@ VALUE = "Value"
 
 
 # pylint:disable=too-many-arguments,too-many-positional-arguments
-def make_module(template, name, config, base_path, parent_path, no_source_map):
+def make_module(
+    template,
+    name,
+    config,
+    base_path,
+    parent_path,
+    no_source_map,
+    parent_module,
+):
     "Create an instance of a module based on a template and the module config"
     module_config = {}
     module_config[NAME] = name
@@ -116,7 +125,7 @@ def make_module(template, name, config, base_path, parent_path, no_source_map):
     if OVERRIDES in config:
         module_config[OVERRIDES] = config[OVERRIDES]
     module_config[NO_SOURCE_MAP] = no_source_map
-    return Module(template, module_config)
+    return Module(template, module_config, parent_module)
 
 
 def add_metrics_metadata(template):
@@ -153,21 +162,39 @@ def process_module_section(
             add_metrics_metadata(template)
 
         # Make a fake Module instance to handle find_ref
-        parent_module = Module(template, {NAME: "", SOURCE: ""})
+        parent_module = Module(template, {NAME: "", SOURCE: ""}, None)
 
         if PARAMETERS in template:
             parent_module.module_parameters = template[PARAMETERS]
 
     # First, pre-process local modules that are looping over a list
-    process_module_maps(template, parent_module)
+    mapped = process_module_maps(template, parent_module)
+    parent_module.mapped = mapped
 
     # Process each Module node separately after processing Maps
     modules = template[MODULES]
     for k, v in modules.items():
         module = make_module(
-            template, k, v, base_path, parent_path, no_source_map
+            template,
+            k,
+            v,
+            base_path,
+            parent_path,
+            no_source_map,
+            parent_module,
         )
         template = module.process()
+
+    # Look for getatts to a mapped list like !GetAtt Content[].Arn
+    # This should be converted to an array like
+    # - !GetAtt ContentBucket0.Arn
+    # - !GetAtt ContentBucket1.Arn
+    # - !GetAtt ContentBucket2.Arn
+    #
+    # As we process module outputs, we need to remember these and
+    # apply them here, since each module is processed separately
+    # and it can't replace the entire 'Content[]'
+    resolve_mapped_lists(template, mapped)
 
     # Remove the Modules section from the template
     del template[MODULES]
@@ -188,7 +215,7 @@ class Module:
 
     """
 
-    def __init__(self, template, module_config):
+    def __init__(self, template, module_config, parent_module):
         """
         Initialize the module with values from the parent template
 
@@ -198,6 +225,7 @@ class Module:
 
         # The parent template dictionary
         self.template = template
+        self.parent_module = parent_module
         if RESOURCES not in self.template:
             # The parent might only have Modules
             self.template[RESOURCES] = {}
@@ -235,6 +263,12 @@ class Module:
         self.no_source_map = False
         if module_config.get(NO_SOURCE_MAP, False):
             self.no_source_map = True
+
+        # A dictionary of mapped modules created by this module
+        # If this module contains any sub-modules that are mapped,
+        # The dictionary will have the name as the key and length as the value.
+        # {"Name": Length}
+        self.mapped = {}
 
     def __str__(self):
         "Print out a string with module details for logs"
@@ -336,7 +370,7 @@ class Module:
 
     def process_module_outputs(self):
         """
-        Fix parent template GetAtt and Sub that point to module references.
+        Fix parent template Ref, GetAtt, and Sub that point to module outputs.
 
         In the parent you can !GetAtt ModuleName.OutputName
         This will be converted so that it's correct in the packaged template.
@@ -468,66 +502,118 @@ class Module:
         else:
             d[n] = sub
 
-    # pylint:disable=too-many-branches
+    # pylint:disable=too-many-branches,too-many-locals,too-many-statements
     def resolve_output_getatt(self, v, d, n):
         """
-        Resolve a GetAtt that refers to a module Reference.
+        Resolve a GetAtt that refers to a module Output.
 
         :param v The value
         :param d The dictionary
         :param n The name of the node
 
-        This function sets d[n]
+        This function sets d[n] and returns True if it resolved.
         """
         if not isinstance(v, list) or len(v) < 2:
             msg = f"GetAtt {v} invalid"
             raise exceptions.InvalidModuleError(msg=msg)
 
-        r = None
-        if v[0] == self.name:
-            if v[1] in self.module_outputs:
-                r = self.module_outputs[v[1]]
-            elif v[1] in self.props:
-                r = self.props[v[1]]
-        if r is not None:
-            if REF in r:
-                ref = r[REF]
-                d[n] = {REF: self.name + ref}
-            elif GETATT in r:
-                getatt = r[GETATT]
-                if len(getatt) < 2:
-                    msg = f"GetAtt {getatt} in Output {v[1]} is invalid"
+        # For example, Content.Arn or Content[0].Arn
+
+        name = v[0]
+        prop_name = v[1]
+        index = -1
+        if "[" in name:
+            tokens = name.split("[")
+            name = tokens[0]
+            if tokens[1] != "]":
+                num = tokens[1].replace("]", "")
+                if num.isdigit:
+                    index = int(num)
+                else:
+                    msg = f"Invalid index in {v}"
                     raise exceptions.InvalidModuleError(msg=msg)
-                d[n] = {GETATT: [self.name + getatt[0], getatt[1]]}
-            elif SUB in r:
-                # Parse the Sub in the module reference
-                words = parse_sub(r[SUB], True)
-                sub = ""
-                for word in words:
-                    if word.t == WordType.STR:
-                        sub += word.w
-                    elif word.t == WordType.AWS:
-                        sub += "${AWS::" + word.w + "}"
-                    elif word.t == WordType.REF:
-                        # This is a ref to a param or resource
-                        # If it's a resource, concatenante the name
-                        resolved = "${" + word.w + "}"
-                        if word.w in self.resources:
-                            resolved = "${" + self.name + word.w + "}"
-                        sub += resolved
-                    elif word.t == WordType.GETATT:
-                        resolved = "${" + word.w + "}"
-                        tokens = word.w.split(".", 1)
-                        if len(tokens) < 2:
-                            msg = f"GetAtt {word.w} unexpected length"
-                            raise exceptions.InvalidModuleError(msg=msg)
-                        if tokens[0] in self.resources:
-                            resolved = "${" + self.name + word.w + "}"
-                        sub += resolved
-                d[n] = {SUB: sub}
             else:
-                # Handle scalars in Properties
-                d[n] = r
+                mapped = self.parent_module.mapped
+                if name in mapped:
+                    self.resolve_output_getatt_map(mapped, name, prop_name)
+                else:
+                    msg = f"Invalid map name: {name}"
+                    raise exceptions.InvalidModuleError(msg=msg)
+                return False
+
+        if index > -1:
+            name = f"{name}{index}"
+
+        r = None
+        if name == self.name:
+            if prop_name in self.module_outputs:
+                r = self.module_outputs[prop_name]
+            elif prop_name in self.props:
+                r = self.props[prop_name]
+
+        if r is None:
+            return False
+
+        if REF in r:
+            ref = r[REF]
+            d[n] = {REF: self.name + ref}
+        elif GETATT in r:
+            getatt = r[GETATT]
+            if len(getatt) < 2:
+                msg = f"GetAtt {getatt} in Output {v[1]} is invalid"
+                raise exceptions.InvalidModuleError(msg=msg)
+            d[n] = {GETATT: [self.name + getatt[0], getatt[1]]}
+        elif SUB in r:
+            # Parse the Sub in the module reference
+            words = parse_sub(r[SUB], True)
+            sub = ""
+            for word in words:
+                if word.t == WordType.STR:
+                    sub += word.w
+                elif word.t == WordType.AWS:
+                    sub += "${AWS::" + word.w + "}"
+                elif word.t == WordType.REF:
+                    # This is a ref to a param or resource
+                    # If it's a resource, concatenante the name
+                    resolved = "${" + word.w + "}"
+                    if word.w in self.resources:
+                        resolved = "${" + self.name + word.w + "}"
+                    sub += resolved
+                elif word.t == WordType.GETATT:
+                    resolved = "${" + word.w + "}"
+                    tokens = word.w.split(".", 1)
+                    if len(tokens) < 2:
+                        msg = f"GetAtt {word.w} unexpected length"
+                        raise exceptions.InvalidModuleError(msg=msg)
+                    if tokens[0] in self.resources:
+                        resolved = "${" + self.name + word.w + "}"
+                    sub += resolved
+            d[n] = {SUB: sub}
+        else:
+            # Handle scalars in Properties
+            d[n] = r
+        return True
+
+    def resolve_output_getatt_map(self, mapped, name, prop_name):
+        "Resolve GetAtts that reference all Outputs from a mapped module"
+        num_items = mapped[name]
+        dd = [None] * num_items
+        for i in range(num_items):
+            # Resolve the item as if it was a normal getatt
+            vv = [f"{name}{i}", prop_name]
+            resolved = self.resolve_output_getatt(vv, dd, i)
+            if resolved:
+                # Don't set anything here, just remember it so
+                # we can go back and fix the entire getatt later
+                item_val = dd[i]
+                # Use a key like "Content.Arn"
+                key = name + "[]." + prop_name
+                if key not in mapped:
+                    mapped[key] = []
+                if item_val not in mapped[key]:
+                    # Don't double add. We already replaced refs in
+                    # modules, so it shows up twice.
+                    mapped[key].append(item_val)
 
     def validate_overrides(self):
         "Make sure resources referenced by overrides actually exist"
@@ -822,6 +908,7 @@ class Module:
                             + f"{w}: {found}"
                         )
                         raise exceptions.InvalidModuleError(msg=msg)
+
                     resolved = "${" + ".".join(tokens) + "}"
         return resolved
 

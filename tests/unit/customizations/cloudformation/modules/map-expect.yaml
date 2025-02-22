@@ -15,3 +15,31 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: my-bucket-C
+  IndexTest0Foo:
+    Type: A::B::C
+    Properties:
+      Name:
+        Fn::Sub: content-ref-${Content0Bucket.Arn}
+  IndexTest1Foo:
+    Type: A::B::C
+    Properties:
+      Name:
+        Fn::Sub: content-ref-${Content1Bucket.Arn}
+  IndexTest2Foo:
+    Type: A::B::C
+    Properties:
+      Name:
+        Fn::Sub: content-ref-${Content2Bucket.Arn}
+  ListTestBar:
+    Type: A::B::C
+    Properties:
+      Refs:
+      - Fn::GetAtt:
+        - Content0Bucket
+        - Arn
+      - Fn::GetAtt:
+        - Content1Bucket
+        - Arn
+      - Fn::GetAtt:
+        - Content2Bucket
+        - Arn

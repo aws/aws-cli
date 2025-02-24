@@ -779,19 +779,13 @@ class DeferQueue:
         each method call.
 
         """
-        data_len = len(data)
-        if offset + data_len <= self._next_offset:
+        if offset + len(data) <= self._next_offset:
             # This is a request for a write that we've already
             # seen.  This can happen in the event of a retry
             # where if we retry at at offset N/2, we'll requeue
             # offsets 0-N/2 again.
             return []
         writes = []
-        if (offset, data_len) in self._pending_offsets:
-            # We've already queued this offset so this request is
-            # a duplicate.  In this case we should ignore
-            # this request and prefer what's already queued.
-            return []
         if offset < self._next_offset:
             # This is a special case where the write request contains
             # both seen AND unseen data. This can happen in the case
@@ -805,6 +799,11 @@ class DeferQueue:
             seen_bytes = self._next_offset - offset
             data = data[seen_bytes:]
             offset = self._next_offset
+        if (offset, len(data)) in self._pending_offsets:
+            # We've already queued this offset so this request is
+            # a duplicate.  In this case we should ignore
+            # this request and prefer what's already queued.
+            return []
         heapq.heappush(self._writes, (offset, data))
         self._pending_offsets.add((offset, len(data)))
         while self._writes and self._writes[0][0] == self._next_offset:

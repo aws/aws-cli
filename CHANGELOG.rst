@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.24.10
+=======
+
+* api-change:``bedrock-agent``: Introduce a new parameter which represents the user-agent header value used by the Bedrock Knowledge Base Web Connector.
+* enhancement:Python: Update bundled Python interpreter version to 3.12.9
+* api-change:``appstream``: Added support for Certificate-Based Authentication on AppStream 2.0 multi-session fleets.
+
+
+2.24.9
+======
+
+* api-change:``rds``: CloudWatch Database Insights now supports Amazon RDS.
+* api-change:``workspaces-web``: Add support for toolbar configuration under user settings.
+* api-change:``codebuild``: Add webhook status and status message to AWS CodeBuild webhooks
+* api-change:``sagemaker``: Added new capability in the UpdateCluster operation to remove instance groups from your SageMaker HyperPod cluster.
+* api-change:``license-manager-user-subscriptions``: Updates entity to include Microsoft RDS SAL as a valid type of user subscription.
+* api-change:``guardduty``: Reduce the minimum number of required attack sequence signals from 2 to 1
+
+
 2.24.8
 ======
 

@@ -2201,6 +2201,10 @@
           "shape":"TagList",
           "documentation":"<p>The tags to add to the user settings resource. A tag is a key-value pair.</p>"
         },
+        "toolbarConfiguration":{
+          "shape":"ToolbarConfiguration",
+          "documentation":"<p>The configuration of the toolbar. This allows administrators to select the toolbar type and visual mode, set maximum display resolution for sessions, and choose which items are visible to end users during their sessions. If administrators do not modify these settings, end users retain control over their toolbar preferences.</p>"
+        },
         "uploadAllowed":{
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can upload files from the local device to the streaming session.</p>"
@@ -2941,6 +2945,10 @@
       "max":100,
       "min":1
     },
+    "HiddenToolbarItemList":{
+      "type":"list",
+      "member":{"shape":"ToolbarItem"}
+    },
     "IdentityProvider":{
       "type":"structure",
       "required":["identityProviderArn"],
@@ -3634,6 +3642,19 @@
       "max":5000,
       "min":1
     },
+    "MaxDisplayResolution":{
+      "type":"string",
+      "enum":[
+        "size4096X2160",
+        "size3840X2160",
+        "size3440X1440",
+        "size2560X1440",
+        "size1920X1080",
+        "size1280X720",
+        "size1024X768",
+        "size800X600"
+      ]
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -4228,6 +4249,45 @@
       },
       "exception":true
     },
+    "ToolbarConfiguration":{
+      "type":"structure",
+      "members":{
+        "hiddenToolbarItems":{
+          "shape":"HiddenToolbarItemList",
+          "documentation":"<p>The list of toolbar items to be hidden.</p>"
+        },
+        "maxDisplayResolution":{
+          "shape":"MaxDisplayResolution",
+          "documentation":"<p>The maximum display resolution that is allowed for the session.</p>"
+        },
+        "toolbarType":{
+          "shape":"ToolbarType",
+          "documentation":"<p>The type of toolbar displayed during the session.</p>"
+        },
+        "visualMode":{
+          "shape":"VisualMode",
+          "documentation":"<p>The visual mode of the toolbar.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the toolbar. This allows administrators to select the toolbar type and visual mode, set maximum display resolution for sessions, and choose which items are visible to end users during their sessions. If administrators do not modify these settings, end users retain control over their toolbar preferences.</p>"
+    },
+    "ToolbarItem":{
+      "type":"string",
+      "enum":[
+        "Windows",
+        "DualMonitor",
+        "FullScreen",
+        "Webcam",
+        "Microphone"
+      ]
+    },
+    "ToolbarType":{
+      "type":"string",
+      "enum":[
+        "Floating",
+        "Docked"
+      ]
+    },
     "TrustStore":{
       "type":"structure",
       "required":["trustStoreArn"],
@@ -4614,6 +4674,10 @@
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can print to the local device.</p>"
         },
+        "toolbarConfiguration":{
+          "shape":"ToolbarConfiguration",
+          "documentation":"<p>The configuration of the toolbar. This allows administrators to select the toolbar type and visual mode, set maximum display resolution for sessions, and choose which items are visible to end users during their sessions. If administrators do not modify these settings, end users retain control over their toolbar preferences.</p>"
+        },
         "uploadAllowed":{
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can upload files from the local device to the streaming session.</p>"
@@ -4722,6 +4786,10 @@
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can print to the local device.</p>"
         },
+        "toolbarConfiguration":{
+          "shape":"ToolbarConfiguration",
+          "documentation":"<p>The configuration of the toolbar. This allows administrators to select the toolbar type and visual mode, set maximum display resolution for sessions, and choose which items are visible to end users during their sessions. If administrators do not modify these settings, end users retain control over their toolbar preferences.</p>"
+        },
         "uploadAllowed":{
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can upload files from the local device to the streaming session.</p>"
@@ -4772,6 +4840,10 @@
         "printAllowed":{
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can print to the local device.</p>"
+        },
+        "toolbarConfiguration":{
+          "shape":"ToolbarConfiguration",
+          "documentation":"<p>The configuration of the toolbar. This allows administrators to select the toolbar type and visual mode, set maximum display resolution for sessions, and choose which items are visible to end users during their sessions. If administrators do not modify these settings, end users retain control over their toolbar preferences.</p>"
         },
         "uploadAllowed":{
           "shape":"EnabledType",
@@ -4840,6 +4912,13 @@
         "cannotParse",
         "fieldValidationFailed",
         "other"
+      ]
+    },
+    "VisualMode":{
+      "type":"string",
+      "enum":[
+        "Dark",
+        "Light"
       ]
     },
     "VpcId":{

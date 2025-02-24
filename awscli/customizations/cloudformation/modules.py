@@ -555,9 +555,10 @@ class Module:
             name = tokens[0]
             if tokens[1] != "]":
                 num = tokens[1].replace("]", "")
-                if num.isdigit:
+                if num.isdigit():
                     index = int(num)
                 else:
+                    print(d)
                     msg = f"Invalid index in {v}"
                     raise exceptions.InvalidModuleError(msg=msg)
             else:

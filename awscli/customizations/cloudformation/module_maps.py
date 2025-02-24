@@ -73,12 +73,12 @@ def map_placeholders(i, token, val):
             for item in getatt:
                 new_getatt.append(replace_str(item, token, i))
             return {GETATT: new_getatt}
-
     elif isinstance(val, str):
         return replace_str(val, token, i)
     return val
 
 
+# pylint: disable=cell-var-from-loop
 def process_module_maps(template, parent_module):
     """
     Loop over Maps in modules.
@@ -110,10 +110,13 @@ def process_module_maps(template, parent_module):
                 del copied_module[MAP]
                 # Replace $Map and $Index placeholders
                 if PROPERTIES in copied_module:
-                    for prop, val in copied_module[PROPERTIES].copy().items():
-                        copied_module[PROPERTIES][prop] = map_placeholders(
-                            i, token, val
-                        )
+
+                    def vf(v):
+                        if v.p is not None:
+                            v.p[v.k] = map_placeholders(i, token, v.d)
+
+                    Visitor(copied_module[PROPERTIES]).visit(vf)
+
                 modules[module_id] = copied_module
 
             del modules[k]

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.24.11
+=======
+
+* api-change:``elasticache``: Documentation update, adding clarity and rephrasing.
+* api-change:``bedrock-runtime``: This release adds Reasoning Content support to Converse and ConverseStream APIs
+* api-change:``bedrock-agent``: This release improves support for newer models in Amazon Bedrock Flows.
+* api-change:``bedrock-agent-runtime``: Adding support for ReasoningContent fields in Pre-Processing, Post-Processing and Orchestration Trace outputs.
+* api-change:``elastic-inference``: The elastic-inference client has been removed following the deprecation of the service.
+
+
 2.24.10
 =======
 

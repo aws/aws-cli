@@ -109,6 +109,7 @@ class TestPackageModules(unittest.TestCase):
             "constant",
             "proparray",
             "depends",
+            "select",
         ]
         for test in tests:
             t, _ = modules.read_source(f"{base}/{test}-template.yaml")

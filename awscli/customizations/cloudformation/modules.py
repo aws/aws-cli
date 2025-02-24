@@ -26,6 +26,7 @@ See the public documentation for a full description of the feature.
 
 # pylint: disable=fixme,too-many-instance-attributes
 
+from collections import OrderedDict
 import logging
 import os
 
@@ -51,6 +52,7 @@ from awscli.customizations.cloudformation.parse_sub import (
 )
 from awscli.customizations.cloudformation.module_conditions import (
     parse_conditions,
+    process_resource_conditions,
 )
 from awscli.customizations.cloudformation.module_visitor import Visitor
 from awscli.customizations.cloudformation.module_read import (
@@ -89,6 +91,7 @@ CLOUDFORMATION_PACKAGE = "CloudFormationPackage"
 SOURCE_MAP = "SourceMap"
 NO_SOURCE_MAP = "NoSourceMap"
 VALUE = "Value"
+SELECT = "Fn::Select"
 
 
 # pylint:disable=too-many-arguments,too-many-positional-arguments
@@ -139,6 +142,28 @@ def add_metrics_metadata(template):
     if CLOUDFORMATION_PACKAGE not in metrics:
         metrics[CLOUDFORMATION_PACKAGE] = {}
     metrics[CLOUDFORMATION_PACKAGE]["Modules"] = "true"
+
+
+def resolve_selects(template):
+    """
+    Resolve Fn::Select where all items are scalars.
+    """
+
+    def vf(v):
+        if isdict(v.d) and SELECT in v.d and v.p is not None:
+            sel = v.d[SELECT]
+            if not isinstance(sel, list) or len(sel) != 2:
+                return
+            arr = sel[0]
+            idx = sel[1]
+            if isinstance(idx, (dict, OrderedDict, list)):
+                return
+            for item in arr:
+                if isinstance(item, (dict, OrderedDict, list)):
+                    return
+            v.p[v.k] = arr[int(idx)]
+
+    Visitor(template).visit(vf)
 
 
 # pylint:disable=too-many-arguments,too-many-positional-arguments
@@ -195,6 +220,9 @@ def process_module_section(
     # apply them here, since each module is processed separately
     # and it can't replace the entire 'Content[]'
     resolve_mapped_lists(template, mapped)
+
+    # Resolve selects that can be fully resolved
+    resolve_selects(template)
 
     # Remove the Modules section from the template
     del template[MODULES]
@@ -640,7 +668,9 @@ class Module:
         for a in attrs:
             self.process_overrides(logical_id, resource, a)
 
-        self.process_resource_conditions()
+        process_resource_conditions(
+            self.name, self.conditions, self.resources, self.module_outputs
+        )
 
         # Resolve refs, subs, and getatts
         #    (Process module Parameters and parent Properties)
@@ -709,47 +739,6 @@ class Module:
         "Get the string to put in the resource metadata source map"
         n = self.lines.get(logical_id, 0)
         return f"{self.source}:{logical_id}:{n}"
-
-    def process_resource_conditions(self):
-        "Visit all resources to look for Fn::If conditions"
-
-        # Example
-        #
-        # Resources
-        #   Foo:
-        #     Properties:
-        #       Something:
-        #         Fn::If:
-        #         - ConditionName
-        #         - AnObject
-        #         - !Ref AWS::NoValue
-        #
-        # In this case, delete the 'Something' node entirely
-        # Otherwise replace the Fn::If with the correct value
-        def vf(v):
-            if isdict(v.d) and IF in v.d and v.p is not None:
-                conditional = v.d[IF]
-                if len(conditional) != 3:
-                    msg = f"Invalid conditional in {self.name}: {conditional}"
-                    raise exceptions.InvalidModuleError(msg=msg)
-                condition_name = conditional[0]
-                trueval = conditional[1]
-                falseval = conditional[2]
-                if condition_name not in self.conditions:
-                    return  # Assume this is a parent template condition?
-                if self.conditions[condition_name]:
-                    v.p[v.k] = trueval
-                else:
-                    v.p[v.k] = falseval
-                newval = v.p[v.k]
-                if isdict(newval) and REF in newval:
-                    if newval[REF] == "AWS::NoValue":
-                        del v.p[v.k]
-
-        v = Visitor(self.resources)
-        v.visit(vf)
-        v = Visitor(self.module_outputs)
-        v.visit(vf)
 
     def process_overrides(self, logical_id, resource, attr_name):
         """

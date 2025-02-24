@@ -22,6 +22,7 @@ We have to be able to fully resolve it locally.
 
 from collections import OrderedDict
 from awscli.customizations.cloudformation import exceptions
+from awscli.customizations.cloudformation.module_visitor import Visitor
 
 AND = "Fn::And"
 EQUALS = "Fn::Equals"
@@ -117,6 +118,46 @@ def istrue(v, find_ref, prior):
             # We are depending on the author putting them in order
 
     return retval
+
+
+def process_resource_conditions(name, conditions, resources, outputs):
+    "Visit all resources to look for Fn::If conditions"
+
+    # Example
+    #
+    # Resources
+    #   Foo:
+    #     Properties:
+    #       Something:
+    #         Fn::If:
+    #         - ConditionName
+    #         - AnObject
+    #         - !Ref AWS::NoValue
+    #
+    # In this case, delete the 'Something' node entirely
+    # Otherwise replace the Fn::If with the correct value
+    def vf(v):
+        if isdict(v.d) and IF in v.d and v.p is not None:
+            conditional = v.d[IF]
+            if len(conditional) != 3:
+                msg = f"Invalid conditional in {name}: {conditional}"
+                raise exceptions.InvalidModuleError(msg=msg)
+            condition_name = conditional[0]
+            trueval = conditional[1]
+            falseval = conditional[2]
+            if condition_name not in conditions:
+                return  # Assume this is a parent template condition?
+            if conditions[condition_name]:
+                v.p[v.k] = trueval
+            else:
+                v.p[v.k] = falseval
+            newval = v.p[v.k]
+            if isdict(newval) and REF in newval:
+                if newval[REF] == "AWS::NoValue":
+                    del v.p[v.k]
+
+    Visitor(resources).visit(vf)
+    Visitor(outputs).visit(vf)
 
 
 def isdict(v):

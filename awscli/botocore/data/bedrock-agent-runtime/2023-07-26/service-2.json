@@ -755,6 +755,7 @@
       },
       "documentation":"<p>Contains configurations for a reranker model.</p>"
     },
+    "Blob":{"type":"blob"},
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -3250,7 +3251,7 @@
     "MaximumLength":{
       "type":"integer",
       "box":true,
-      "max":4096,
+      "max":8192,
       "min":0
     },
     "Memories":{
@@ -3673,6 +3674,10 @@
           "shape":"RawResponse",
           "documentation":"<p>Contains details of the raw response from the foundation model output.</p>"
         },
+        "reasoningContent":{
+          "shape":"ReasoningContentBlock",
+          "documentation":"<p>Contains content about the reasoning that the model made during the orchestration step. </p>"
+        },
         "traceId":{
           "shape":"TraceId",
           "documentation":"<p>The unique identifier of the trace.</p>"
@@ -3872,6 +3877,10 @@
           "shape":"RawResponse",
           "documentation":"<p> Details of the raw response from the foundation model output. </p>"
         },
+        "reasoningContent":{
+          "shape":"ReasoningContentBlock",
+          "documentation":"<p>Contains content about the reasoning that the model made during the post-processing step.</p>"
+        },
         "traceId":{
           "shape":"TraceId",
           "documentation":"<p>The unique identifier of the trace.</p>"
@@ -3921,6 +3930,10 @@
         "rawResponse":{
           "shape":"RawResponse",
           "documentation":"<p> Details of the raw response from the foundation model output. </p>"
+        },
+        "reasoningContent":{
+          "shape":"ReasoningContentBlock",
+          "documentation":"<p>Contains content about the reasoning that the model made during the pre-processing step. </p>"
         },
         "traceId":{
           "shape":"TraceId",
@@ -3978,7 +3991,7 @@
         },
         "parserMode":{
           "shape":"CreationMode",
-          "documentation":"<p>Specifies whether to override the default parser Lambda function when parsing the raw foundation model output in the part of the agent sequence defined by the <code>promptType</code>. If you set the field as <code>OVERRIDEN</code>, the <code>overrideLambda</code> field in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> must be specified with the ARN of a Lambda function.</p>"
+          "documentation":"<p>Specifies whether to override the default parser Lambda function when parsing the raw foundation model output in the part of the agent sequence defined by the <code>promptType</code>. If you set the field as <code>OVERRIDDEN</code>, the <code>overrideLambda</code> field in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> must be specified with the ARN of a Lambda function.</p>"
         },
         "promptCreationMode":{
           "shape":"CreationMode",
@@ -4145,6 +4158,38 @@
         }
       },
       "documentation":"<p>Contains the raw output from the foundation model.</p>",
+      "sensitive":true
+    },
+    "ReasoningContentBlock":{
+      "type":"structure",
+      "members":{
+        "reasoningText":{
+          "shape":"ReasoningTextBlock",
+          "documentation":"<p>Contains information about the reasoning that the model used to return the content in the content block.</p>"
+        },
+        "redactedContent":{
+          "shape":"Blob",
+          "documentation":"<p>The content in the reasoning that was encrypted by the model provider for trust and safety reasons.</p>"
+        }
+      },
+      "documentation":"<p>Contains content regarding the reasoning that the foundation model made with respect to the content in the content block. Reasoning refers to a Chain of Thought (CoT) that the model generates to enhance the accuracy of its final response.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "ReasoningTextBlock":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "signature":{
+          "shape":"String",
+          "documentation":"<p>A hash of all the messages in the conversation to ensure that the content in the reasoning text block isn't tampered with. You must submit the signature in subsequent <code>Converse</code> requests, in addition to the previous messages. If the previous messages are tampered with, the response throws an error.</p>"
+        },
+        "text":{
+          "shape":"String",
+          "documentation":"<p>Text describing the reasoning that the model used to return the content in the content block.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the reasoning that the model used to return the content in the content block.</p>",
       "sensitive":true
     },
     "RepromptResponse":{

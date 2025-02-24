@@ -26,12 +26,15 @@ See the public documentation for a full description of the feature.
 
 # pylint: disable=fixme,too-many-instance-attributes
 
-from collections import OrderedDict
 import logging
 import os
 
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation import yamlhelper
+from awscli.customizations.cloudformation.module_functions import (
+    fn_merge,
+    fn_select,
+)
 from awscli.customizations.cloudformation.module_merge import (
     isdict,
     merge_props,
@@ -54,7 +57,6 @@ from awscli.customizations.cloudformation.module_conditions import (
     parse_conditions,
     process_resource_conditions,
 )
-from awscli.customizations.cloudformation.module_visitor import Visitor
 from awscli.customizations.cloudformation.module_read import (
     read_source,
     is_url,
@@ -91,7 +93,6 @@ CLOUDFORMATION_PACKAGE = "CloudFormationPackage"
 SOURCE_MAP = "SourceMap"
 NO_SOURCE_MAP = "NoSourceMap"
 VALUE = "Value"
-SELECT = "Fn::Select"
 
 
 # pylint:disable=too-many-arguments,too-many-positional-arguments
@@ -142,28 +143,6 @@ def add_metrics_metadata(template):
     if CLOUDFORMATION_PACKAGE not in metrics:
         metrics[CLOUDFORMATION_PACKAGE] = {}
     metrics[CLOUDFORMATION_PACKAGE]["Modules"] = "true"
-
-
-def resolve_selects(template):
-    """
-    Resolve Fn::Select where all items are scalars.
-    """
-
-    def vf(v):
-        if isdict(v.d) and SELECT in v.d and v.p is not None:
-            sel = v.d[SELECT]
-            if not isinstance(sel, list) or len(sel) != 2:
-                return
-            arr = sel[0]
-            idx = sel[1]
-            if isinstance(idx, (dict, OrderedDict, list)):
-                return
-            for item in arr:
-                if isinstance(item, (dict, OrderedDict, list)):
-                    return
-            v.p[v.k] = arr[int(idx)]
-
-    Visitor(template).visit(vf)
 
 
 # pylint:disable=too-many-arguments,too-many-positional-arguments
@@ -221,8 +200,9 @@ def process_module_section(
     # and it can't replace the entire 'Content[]'
     resolve_mapped_lists(template, mapped)
 
-    # Resolve selects that can be fully resolved
-    resolve_selects(template)
+    # Special handling for intrinsic functions
+    fn_select(template)
+    fn_merge(template)
 
     # Remove the Modules section from the template
     del template[MODULES]
@@ -558,7 +538,6 @@ class Module:
                 if num.isdigit():
                     index = int(num)
                 else:
-                    print(d)
                     msg = f"Invalid index in {v}"
                     raise exceptions.InvalidModuleError(msg=msg)
             else:
@@ -865,7 +844,7 @@ class Module:
             if isinstance(v, str) and v.startswith("AWS::"):
                 pass  # return
             # msg = (
-            #    f"Not found in {self.source}: {n}:{v}"
+            #    f"Not found in {self.source}: {n}: {v}"
             # )
             # raise exceptions.InvalidModuleError(msg=msg)
             #

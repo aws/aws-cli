@@ -5364,6 +5364,10 @@
         "enabled":{
           "shape":"Enabled",
           "documentation":"<p>True if this audit check is enabled for this account.</p>"
+        },
+        "configuration":{
+          "shape":"CheckCustomConfiguration",
+          "documentation":"<p>A structure containing the configName and corresponding configValue for configuring audit checks.</p>"
         }
       },
       "documentation":"<p>Which audit checks are enabled and disabled for this account.</p>"
@@ -6741,6 +6745,11 @@
     },
     "ChannelName":{"type":"string"},
     "CheckCompliant":{"type":"boolean"},
+    "CheckCustomConfiguration":{
+      "type":"map",
+      "key":{"shape":"ConfigName"},
+      "value":{"shape":"ConfigValue"}
+    },
     "Cidr":{
       "type":"string",
       "max":43,
@@ -7198,6 +7207,18 @@
         "MEDIUM",
         "HIGH"
       ]
+    },
+    "ConfigName":{
+      "type":"string",
+      "enum":[
+        "CERT_AGE_THRESHOLD_IN_DAYS",
+        "CERT_EXPIRATION_THRESHOLD_IN_DAYS"
+      ]
+    },
+    "ConfigValue":{
+      "type":"string",
+      "max":64,
+      "min":1
     },
     "Configuration":{
       "type":"structure",

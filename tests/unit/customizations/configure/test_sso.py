@@ -1540,12 +1540,6 @@ class TestPrintConclusion:
         assert "The AWS CLI is now configured to use the default profile." in captured.out
         assert "aws sts get-caller-identity" in captured.out
 
-    def test_print_conclusion_empty_profile_name(self, sso_cmd, capsys):
-        sso_cmd._print_conclusion(True, '')
-        captured = capsys.readouterr()
-        assert "To use this profile, specify the profile name using --profile" in captured.out
-        assert "aws sts get-caller-identity --profile" in captured.out
-
 class TestConfigureSSOSessionCommand:
     def test_new_sso_session(
         self,

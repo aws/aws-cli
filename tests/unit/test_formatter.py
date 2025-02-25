@@ -10,13 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
+import os
+import sys
 from argparse import Namespace
 
 from botocore.paginate import PageIterator
 
 from awscli.testutils import unittest, mock
-from awscli.compat import StringIO
-from awscli.formatter import YAMLDumper, StreamedYAMLFormatter
+from awscli.compat import StringIO, contextlib
+from awscli.formatter import YAMLDumper, StreamedYAMLFormatter, JSONFormatter
 
 
 class FakePageIterator(PageIterator):
@@ -134,3 +137,61 @@ class TestStreamedYAMLFormatter(unittest.TestCase):
         # immediately raised and we should not have kept paginating.
         self.assertTrue(len(io_error_dumper.dump.call_args_list), 1)
         self.assertTrue(mock_output.flush.called)
+
+    @mock.patch.dict(os.environ, {'AWS_CLI_OUTPUT_ENCODING': 'UTF-8'})
+    def test_encoding_override(self):
+        response = {
+            'TableNames': [
+                '桌子'
+            ]
+        }
+        stdout_b = io.BytesIO()
+        stdout = io.TextIOWrapper(stdout_b, encoding="cp1252", newline='\n')
+
+        formatter = StreamedYAMLFormatter(self.args)
+        with contextlib.redirect_stdout(stdout):
+            self.assertEqual('cp1252', sys.stdout.encoding)
+            formatter('list-tables', response, sys.stdout)
+            # we expect the formatter to have changed the output stream
+            # encoding based on AWS_CLI_OUTPUT_ENCODING
+            self.assertEqual('UTF-8', sys.stdout.encoding)
+            stdout.flush()
+
+        self.assertEqual(
+            stdout_b.getvalue(),
+            '- TableNames:\n  - 桌子\n'.encode('UTF-8')
+        )
+
+
+class TestJSONFormatter(unittest.TestCase):
+    def setUp(self):
+        self.args = Namespace(query=None)
+        self.formatter = JSONFormatter(self.args)
+
+    @mock.patch.dict(os.environ, {'AWS_CLI_OUTPUT_ENCODING': 'UTF-8'})
+    def test_encoding_override(self):
+        """
+        StreamedYAMLFormatter is tested above since it doesn't inherit from
+        FullyBufferedFormatter, this is implicitly testing all other
+        formatters that do.
+        """
+        response = {
+            'TableNames': [
+                '桌子'
+            ]
+        }
+        stdout_b = io.BytesIO()
+        stdout = io.TextIOWrapper(stdout_b, encoding="cp1252", newline='\n')
+
+        with contextlib.redirect_stdout(stdout):
+            self.assertEqual('cp1252', sys.stdout.encoding)
+            self.formatter('list-tables', response, sys.stdout)
+            # we expect the formatter to have changed the output stream
+            # encoding based on AWS_CLI_OUTPUT_ENCODING
+            self.assertEqual('UTF-8', sys.stdout.encoding)
+            stdout.flush()
+
+        self.assertEqual(
+            stdout_b.getvalue(),
+            '{\n    "TableNames": [\n        "桌子"\n    ]\n}\n'.encode('UTF-8')
+        )

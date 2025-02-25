@@ -13,6 +13,7 @@
 # language governing permissions and limitations under the License.
 import contextlib
 import platform
+import os
 import re
 
 from awscli.testutils import unittest
@@ -348,6 +349,20 @@ class TestCliDriver(unittest.TestCase):
         with mock.patch("sys.stderr", stderr):
             with mock.patch("locale.getpreferredencoding", lambda: "UTF-8"):
                 rc = self.driver.main('s3 list-objects --bucket foo'.split())
+        stderr.flush()
+        self.assertEqual(rc, 255)
+        self.assertEqual(stderr_b.getvalue().strip(), u"☃".encode("UTF-8"))
+
+    @mock.patch.dict(os.environ, {'AWS_CLI_OUTPUT_ENCODING': 'UTF-8'})
+    def test_error_unicode_env_override(self):
+        stderr_b = io.BytesIO()
+        stderr = io.TextIOWrapper(stderr_b, encoding="cp1252")
+        fake_client = mock.Mock()
+        fake_client.list_objects.side_effect = Exception(u"☃")
+        fake_client.can_paginate.return_value = False
+        self.driver.session.create_client = mock.Mock(return_value=fake_client)
+        with mock.patch("sys.stderr", stderr):
+            rc = self.driver.main('s3 list-objects --bucket foo'.split())
         stderr.flush()
         self.assertEqual(rc, 255)
         self.assertEqual(stderr_b.getvalue().strip(), u"☃".encode("UTF-8"))

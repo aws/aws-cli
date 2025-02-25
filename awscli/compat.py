@@ -71,6 +71,8 @@ else:
 imap = map
 raw_input = input
 
+OUTPUT_ENCODING_ENV_VAR = 'AWS_CLI_OUTPUT_ENCODING'
+
 
 class StdinMissingError(Exception):
     def __init__(self):
@@ -120,7 +122,18 @@ def get_binary_stdout():
 
 
 def _get_text_writer(stream, errors):
+    set_preferred_output_encoding(stream)
     return stream
+
+
+def set_preferred_output_encoding(stream):
+    """
+    If the user specified AWS_CLI_OUTPUT_ENCODING, use that encoding
+    for the output stream. This is useful for Windows users since
+    PyInstaller 6 no longer honors PYTHONUTF8.
+    """
+    if OUTPUT_ENCODING_ENV_VAR in os.environ:
+        stream.reconfigure(encoding=os.environ[OUTPUT_ENCODING_ENV_VAR])
 
 
 def getpreferredencoding(*args, **kwargs):

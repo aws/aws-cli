@@ -18,15 +18,11 @@ from awscli.customizations.utils import uni_print
 
 class ListProfilesCommand(BasicCommand):
     NAME = 'list-profiles'
-    DESCRIPTION = (
-        'List the profiles available to the AWS CLI.'
-    )
-    EXAMPLES = (
-        'aws configure list-profiles\n\n'
-    )
+    DESCRIPTION = 'List the profiles available to the AWS CLI.'
+    EXAMPLES = 'aws configure list-profiles\n\n'
 
     def __init__(self, session, out_stream=None):
-        super(ListProfilesCommand, self).__init__(session)
+        super().__init__(session)
 
         if out_stream is None:
             out_stream = sys.stdout
@@ -34,5 +30,5 @@ class ListProfilesCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         for profile in self._session.available_profiles:
-            uni_print('%s\n' % profile, out_file=self._out_stream)
+            uni_print(f'{profile}\n', out_file=self._out_stream)
         return 0

@@ -289,11 +289,11 @@ class DeployCommand(BasicCommand):
             'help_text': (
                 'Specify if the CLI should return a non-zero exit code '
                 'when there are no changes to be made to the stack. By '
-                'default, a non-zero exit code is returned, and this is '
+                'default, a zero exit code is returned, and this is '
                 'the same behavior that occurs when '
-                '`--fail-on-empty-changeset` is specified. If '
-                '`--no-fail-on-empty-changeset` is specified, then the '
-                'CLI will return a zero exit code.'
+                '`--no-fail-on-empty-changeset` is specified. If '
+                '`--fail-on-empty-changeset` is specified, then the '
+                'CLI will return a non-zero exit code.'
             )
         },
         {

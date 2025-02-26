@@ -2096,7 +2096,7 @@
     "DataDestinationConfigs":{
       "type":"list",
       "member":{"shape":"DataDestinationConfig"},
-      "max":1,
+      "max":3,
       "min":1
     },
     "DataExtraDimensionNodePathList":{
@@ -2380,7 +2380,7 @@
       "members":{
         "identifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p>A unique, service-generated identifier.</p>"
+          "documentation":"<p>The unique ID of the state template.</p>"
         }
       }
     },
@@ -2928,7 +2928,7 @@
       "members":{
         "identifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p>A unique, service-generated identifier.</p>"
+          "documentation":"<p>The unique ID of the state template.</p>"
         }
       }
     },
@@ -3313,6 +3313,10 @@
         "status":{
           "shape":"statusStr",
           "documentation":"<p>An optional parameter to filter the results by the status of each created campaign in your account. The status can be one of: <code>CREATING</code>, <code>WAITING_FOR_APPROVAL</code>, <code>RUNNING</code>, or <code>SUSPENDED</code>.</p>"
+        },
+        "listResponseScope":{
+          "shape":"ListResponseScope",
+          "documentation":"<p>When you set the <code>listResponseScope</code> parameter to <code>METADATA_ONLY</code>, the list response includes: campaign name, Amazon Resource Name (ARN), creation time, and last modification time.</p>"
         }
       }
     },
@@ -3405,6 +3409,10 @@
         "maxResults":{
           "shape":"maxResults",
           "documentation":"<p>The maximum number of items to return, between 1 and 100, inclusive.</p>"
+        },
+        "listResponseScope":{
+          "shape":"ListResponseScope",
+          "documentation":"<p>When you set the <code>listResponseScope</code> parameter to <code>METADATA_ONLY</code>, the list response includes: decoder manifest name, Amazon Resource Name (ARN), creation time, and last modification time.</p>"
         }
       }
     },
@@ -3462,6 +3470,10 @@
         "maxResults":{
           "shape":"maxResults",
           "documentation":"<p>The maximum number of items to return, between 1 and 100, inclusive.</p>"
+        },
+        "listResponseScope":{
+          "shape":"ListResponseScope",
+          "documentation":"<p>When you set the <code>listResponseScope</code> parameter to <code>METADATA_ONLY</code>, the list response includes: fleet ID, Amazon Resource Name (ARN), creation time, and last modification time.</p>"
         }
       }
     },
@@ -3523,6 +3535,10 @@
         "maxResults":{
           "shape":"maxResults",
           "documentation":"<p>The maximum number of items to return, between 1 and 100, inclusive.</p>"
+        },
+        "listResponseScope":{
+          "shape":"ListResponseScope",
+          "documentation":"<p>When you set the <code>listResponseScope</code> parameter to <code>METADATA_ONLY</code>, the list response includes: model manifest name, Amazon Resource Name (ARN), creation time, and last modification time.</p>"
         }
       }
     },
@@ -3538,6 +3554,10 @@
           "documentation":"<p> The token to retrieve the next set of results, or <code>null</code> if there are no more results. </p>"
         }
       }
+    },
+    "ListResponseScope":{
+      "type":"string",
+      "enum":["METADATA_ONLY"]
     },
     "ListSignalCatalogNodesRequest":{
       "type":"structure",
@@ -3610,6 +3630,10 @@
         "maxResults":{
           "shape":"maxResults",
           "documentation":"<p>The maximum number of items to return, between 1 and 100, inclusive.</p>"
+        },
+        "listResponseScope":{
+          "shape":"ListResponseScope",
+          "documentation":"<p>When you set the <code>listResponseScope</code> parameter to <code>METADATA_ONLY</code>, the list response includes: state template ID, Amazon Resource Name (ARN), creation time, and last modification time.</p>"
         }
       }
     },
@@ -3698,6 +3722,10 @@
         "maxResults":{
           "shape":"listVehiclesMaxResults",
           "documentation":"<p>The maximum number of items to return, between 1 and 100, inclusive.</p>"
+        },
+        "listResponseScope":{
+          "shape":"ListResponseScope",
+          "documentation":"<p>When you set the <code>listResponseScope</code> parameter to <code>METADATA_ONLY</code>, the list response includes: vehicle name, Amazon Resource Name (ARN), creation time, and last modification time.</p>"
         }
       }
     },
@@ -4589,7 +4617,8 @@
       "type":"list",
       "member":{"shape":"SignalFetchInformation"},
       "max":2,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "SignalInformation":{
       "type":"structure",
@@ -4648,7 +4677,7 @@
       "members":{
         "identifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p>A unique, service-generated identifier.</p>"
+          "documentation":"<p>The unique ID of the state template.</p>"
         },
         "stateTemplateUpdateStrategy":{"shape":"StateTemplateUpdateStrategy"}
       },
@@ -5388,7 +5417,7 @@
       "members":{
         "identifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p>A unique, service-generated identifier.</p>"
+          "documentation":"<p>The unique ID of the state template.</p>"
         },
         "description":{
           "shape":"description",

@@ -878,7 +878,7 @@
       },
       "input":{"shape":"CreateLaunchTemplateRequest"},
       "output":{"shape":"CreateLaunchTemplateResult"},
-      "documentation":"<p>Creates a launch template.</p> <p>A launch template contains the parameters to launch an instance. When you launch an instance using <a>RunInstances</a>, you can specify a launch template instead of providing the launch parameters in the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html\">Launch an instance from a launch template</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>To clone an existing launch template as the basis for a new launch template, use the Amazon EC2 console. The API, SDKs, and CLI do not support cloning a template. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#create-launch-template-from-existing-launch-template\">Create a launch template from an existing launch template</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Creates a launch template.</p> <p>A launch template contains the parameters to launch an instance. When you launch an instance using <a>RunInstances</a>, you can specify a launch template instead of providing the launch parameters in the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html\">Store instance launch parameters in Amazon EC2 launch templates</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>To clone an existing launch template as the basis for a new launch template, use the Amazon EC2 console. The API, SDKs, and CLI do not support cloning a template. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-launch-template.html#create-launch-template-from-existing-launch-template\">Create a launch template from an existing launch template</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "CreateLaunchTemplateVersion":{
       "name":"CreateLaunchTemplateVersion",
@@ -888,7 +888,7 @@
       },
       "input":{"shape":"CreateLaunchTemplateVersionRequest"},
       "output":{"shape":"CreateLaunchTemplateVersionResult"},
-      "documentation":"<p>Creates a new version of a launch template. You must specify an existing launch template, either by name or ID. You can determine whether the new version inherits parameters from a source version, and add or overwrite parameters as needed.</p> <p>Launch template versions are numbered in the order in which they are created. You can't specify, change, or replace the numbering of launch template versions.</p> <p>Launch templates are immutable; after you create a launch template, you can't modify it. Instead, you can create a new version of the launch template that includes the changes that you require.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#manage-launch-template-versions\">Modify a launch template (manage launch template versions)</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Creates a new version of a launch template. You must specify an existing launch template, either by name or ID. You can determine whether the new version inherits parameters from a source version, and add or overwrite parameters as needed.</p> <p>Launch template versions are numbered in the order in which they are created. You can't specify, change, or replace the numbering of launch template versions.</p> <p>Launch templates are immutable; after you create a launch template, you can't modify it. Instead, you can create a new version of the launch template that includes the changes that you require.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-launch-template-versions.html\">Modify a launch template (manage launch template versions)</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "CreateLocalGatewayRoute":{
       "name":"CreateLocalGatewayRoute",
@@ -1533,7 +1533,7 @@
       },
       "input":{"shape":"DeleteFleetsRequest"},
       "output":{"shape":"DeleteFleetsResult"},
-      "documentation":"<p>Deletes the specified EC2 Fleets.</p> <p>After you delete an EC2 Fleet, it launches no new instances.</p> <p>You must also specify whether a deleted EC2 Fleet should terminate its instances. If you choose to terminate the instances, the EC2 Fleet enters the <code>deleted_terminating</code> state. Otherwise, the EC2 Fleet enters the <code>deleted_running</code> state, and the instances continue to run until they are interrupted or you terminate them manually.</p> <p>For <code>instant</code> fleets, EC2 Fleet must terminate the instances when the fleet is deleted. Up to 1000 instances can be terminated in a single request to delete <code>instant</code> fleets. A deleted <code>instant</code> fleet with running instances is not supported.</p> <p class=\"title\"> <b>Restrictions</b> </p> <ul> <li> <p>You can delete up to 25 fleets of type <code>instant</code> in a single request.</p> </li> <li> <p>You can delete up to 100 fleets of type <code>maintain</code> or <code>request</code> in a single request.</p> </li> <li> <p>You can delete up to 125 fleets in a single request, provided you do not exceed the quota for each fleet type, as specified above.</p> </li> <li> <p>If you exceed the specified number of fleets to delete, no fleets are deleted.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-ec2-fleet.html#delete-fleet\">Delete an EC2 Fleet</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Deletes the specified EC2 Fleet request.</p> <p>After you delete an EC2 Fleet request, it launches no new instances.</p> <p>You must also specify whether a deleted EC2 Fleet request should terminate its instances. If you choose to terminate the instances, the EC2 Fleet request enters the <code>deleted_terminating</code> state. Otherwise, it enters the <code>deleted_running</code> state, and the instances continue to run until they are interrupted or you terminate them manually.</p> <p>A deleted <code>instant</code> fleet with running instances is not supported. When you delete an <code>instant</code> fleet, Amazon EC2 automatically terminates all its instances. For fleets with more than 1000 instances, the deletion request might fail. If your fleet has more than 1000 instances, first terminate most of the instances manually, leaving 1000 or fewer. Then delete the fleet, and the remaining instances will be terminated automatically.</p> <p class=\"title\"> <b>Restrictions</b> </p> <ul> <li> <p>You can delete up to 25 fleets of type <code>instant</code> in a single request.</p> </li> <li> <p>You can delete up to 100 fleets of type <code>maintain</code> or <code>request</code> in a single request.</p> </li> <li> <p>You can delete up to 125 fleets in a single request, provided you do not exceed the quota for each fleet type, as specified above.</p> </li> <li> <p>If you exceed the specified number of fleets to delete, no fleets are deleted.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/delete-fleet.html\">Delete an EC2 Fleet request and the instances in the fleet</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DeleteFlowLogs":{
       "name":"DeleteFlowLogs",
@@ -1662,7 +1662,7 @@
       },
       "input":{"shape":"DeleteLaunchTemplateVersionsRequest"},
       "output":{"shape":"DeleteLaunchTemplateVersionsResult"},
-      "documentation":"<p>Deletes one or more versions of a launch template.</p> <p>You can't delete the default version of a launch template; you must first assign a different version as the default. If the default version is the only version for the launch template, you must delete the entire launch template using <a>DeleteLaunchTemplate</a>.</p> <p>You can delete up to 200 launch template versions in a single request. To delete more than 200 versions in a single request, use <a>DeleteLaunchTemplate</a>, which deletes the launch template and all of its versions.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-launch-template-versions.html#delete-launch-template-version\">Delete a launch template version</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Deletes one or more versions of a launch template.</p> <p>You can't delete the default version of a launch template; you must first assign a different version as the default. If the default version is the only version for the launch template, you must delete the entire launch template using <a>DeleteLaunchTemplate</a>.</p> <p>You can delete up to 200 launch template versions in a single request. To delete more than 200 versions in a single request, use <a>DeleteLaunchTemplate</a>, which deletes the launch template and all of its versions.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/delete-launch-template.html#delete-launch-template-version\">Delete a launch template version</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DeleteLocalGatewayRoute":{
       "name":"DeleteLocalGatewayRoute",
@@ -2236,6 +2236,7 @@
         "requestUri":"/"
       },
       "input":{"shape":"DeregisterImageRequest"},
+      "output":{"shape":"DeregisterImageResult"},
       "documentation":"<p>Deregisters the specified AMI. After you deregister an AMI, it can't be used to launch new instances.</p> <p>If you deregister an AMI that matches a Recycle Bin retention rule, the AMI is retained in the Recycle Bin for the specified retention period. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin.html\">Recycle Bin</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>When you deregister an AMI, it doesn't affect any instances that you've already launched from the AMI. You'll continue to incur usage costs for those instances until you terminate them.</p> <p>When you deregister an Amazon EBS-backed AMI, it doesn't affect the snapshot that was created for the root volume of the instance during the AMI creation process. When you deregister an instance store-backed AMI, it doesn't affect the files that you uploaded to Amazon S3 when you created the AMI.</p>"
     },
     "DeregisterInstanceEventNotificationAttributes":{
@@ -3176,7 +3177,7 @@
       },
       "input":{"shape":"DescribeNetworkInterfacesRequest"},
       "output":{"shape":"DescribeNetworkInterfacesResult"},
-      "documentation":"<p>Describes the specified network interfaces or all your network interfaces.</p> <p>If you have a large number of network interfaces, the operation fails unless you use pagination or one of the following filters: <code>group-id</code>, <code>mac-address</code>, <code>private-dns-name</code>, <code>private-ip-address</code>, <code>private-dns-name</code>, <code>subnet-id</code>, or <code>vpc-id</code>.</p> <important> <p>We strongly recommend using only paginated requests. Unpaginated requests are susceptible to throttling and timeouts.</p> </important>"
+      "documentation":"<p>Describes the specified network interfaces or all your network interfaces.</p> <p>If you have a large number of network interfaces, the operation fails unless you use pagination or one of the following filters: <code>group-id</code>, <code>mac-address</code>, <code>private-dns-name</code>, <code>private-ip-address</code>, <code>subnet-id</code>, or <code>vpc-id</code>.</p> <important> <p>We strongly recommend using only paginated requests. Unpaginated requests are susceptible to throttling and timeouts.</p> </important>"
     },
     "DescribePlacementGroups":{
       "name":"DescribePlacementGroups",
@@ -10031,6 +10032,39 @@
         "locationName":"BlockDeviceMapping"
       }
     },
+    "BlockDeviceMappingResponse":{
+      "type":"structure",
+      "members":{
+        "DeviceName":{
+          "shape":"String",
+          "documentation":"<p>The device name (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p>",
+          "locationName":"deviceName"
+        },
+        "VirtualName":{
+          "shape":"String",
+          "documentation":"<p>The virtual device name.</p>",
+          "locationName":"virtualName"
+        },
+        "Ebs":{
+          "shape":"EbsBlockDeviceResponse",
+          "documentation":"<p>Parameters used to automatically set up EBS volumes when the instance is launched.</p>",
+          "locationName":"ebs"
+        },
+        "NoDevice":{
+          "shape":"String",
+          "documentation":"<p>Suppresses the specified device included in the block device mapping.</p>",
+          "locationName":"noDevice"
+        }
+      },
+      "documentation":"<p>Describes a block device mapping, which defines the EBS volumes and instance store volumes to attach to an instance at launch.</p>"
+    },
+    "BlockDeviceMappingResponseList":{
+      "type":"list",
+      "member":{
+        "shape":"BlockDeviceMappingResponse",
+        "locationName":"item"
+      }
+    },
     "BlockPublicAccessMode":{
       "type":"string",
       "enum":[
@@ -14585,7 +14619,7 @@
         },
         "ResolveAlias":{
           "shape":"Boolean",
-          "documentation":"<p>If <code>true</code>, and if a Systems Manager parameter is specified for <code>ImageId</code>, the AMI ID is displayed in the response for <code>imageID</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Default: <code>false</code> </p>"
+          "documentation":"<p>If <code>true</code>, and if a Systems Manager parameter is specified for <code>ImageId</code>, the AMI ID is displayed in the response for <code>imageID</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-launch-template.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Default: <code>false</code> </p>"
         }
       }
     },
@@ -20108,6 +20142,11 @@
       },
       "documentation":"<p>Contains the parameters for DeregisterImage.</p>"
     },
+    "DeregisterImageResult":{
+      "type":"structure",
+      "members":{
+}
+    },
     "DeregisterInstanceEventNotificationAttributesRequest":{
       "type":"structure",
       "required":["InstanceTagAttribute"],
@@ -23373,7 +23412,7 @@
         },
         "ResolveAlias":{
           "shape":"Boolean",
-          "documentation":"<p>If <code>true</code>, and if a Systems Manager parameter is specified for <code>ImageId</code>, the AMI ID is displayed in the response for <code>imageId</code>.</p> <p>If <code>false</code>, and if a Systems Manager parameter is specified for <code>ImageId</code>, the parameter is displayed in the response for <code>imageId</code>.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Default: <code>false</code> </p>"
+          "documentation":"<p>If <code>true</code>, and if a Systems Manager parameter is specified for <code>ImageId</code>, the AMI ID is displayed in the response for <code>imageId</code>.</p> <p>If <code>false</code>, and if a Systems Manager parameter is specified for <code>ImageId</code>, the parameter is displayed in the response for <code>imageId</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-launch-template.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Default: <code>false</code> </p>"
         }
       }
     },
@@ -29127,6 +29166,52 @@
       },
       "documentation":"<p>Describes a block device for an EBS volume.</p>"
     },
+    "EbsBlockDeviceResponse":{
+      "type":"structure",
+      "members":{
+        "Encrypted":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the volume is encrypted.</p>",
+          "locationName":"encrypted"
+        },
+        "DeleteOnTermination":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the volume is deleted on instance termination.</p>",
+          "locationName":"deleteOnTermination"
+        },
+        "Iops":{
+          "shape":"Integer",
+          "documentation":"<p>The number of I/O operations per second (IOPS). For <code>gp3</code>, <code>io1</code>, and <code>io2</code> volumes, this represents the number of IOPS that are provisioned for the volume. For <code>gp2</code> volumes, this represents the baseline performance of the volume and the rate at which the volume accumulates I/O credits for bursting.</p>",
+          "locationName":"iops"
+        },
+        "Throughput":{
+          "shape":"Integer",
+          "documentation":"<p>The throughput that the volume supports, in MiB/s.</p>",
+          "locationName":"throughput"
+        },
+        "KmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>Identifier (key ID, key alias, key ARN, or alias ARN) of the customer managed KMS key to use for EBS encryption.</p>",
+          "locationName":"kmsKeyId"
+        },
+        "SnapshotId":{
+          "shape":"SnapshotId",
+          "documentation":"<p>The ID of the snapshot.</p>",
+          "locationName":"snapshotId"
+        },
+        "VolumeSize":{
+          "shape":"Integer",
+          "documentation":"<p>The size of the volume, in GiBs.</p>",
+          "locationName":"volumeSize"
+        },
+        "VolumeType":{
+          "shape":"VolumeType",
+          "documentation":"<p>The volume type. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html\">Amazon EBS volume types</a> in the <i>Amazon EBS User Guide</i>.</p>",
+          "locationName":"volumeType"
+        }
+      },
+      "documentation":"<p>Describes a block device for an EBS volume.</p>"
+    },
     "EbsEncryptionSupport":{
       "type":"string",
       "enum":[
@@ -31584,6 +31669,35 @@
         "fulfilled"
       ]
     },
+    "FleetBlockDeviceMappingRequest":{
+      "type":"structure",
+      "members":{
+        "DeviceName":{
+          "shape":"String",
+          "documentation":"<p>The device name (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p>"
+        },
+        "VirtualName":{
+          "shape":"String",
+          "documentation":"<p>The virtual device name (<code>ephemeralN</code>). Instance store volumes are numbered starting from 0. An instance type with 2 available instance store volumes can specify mappings for <code>ephemeral0</code> and <code>ephemeral1</code>. The number of available instance store volumes depends on the instance type. After you connect to the instance, you must mount the volume.</p> <p>NVMe instance store volumes are automatically enumerated and assigned a device name. Including them in your block device mapping has no effect.</p> <p>Constraints: For M3 instances, you must specify instance store volumes in the block device mapping for the instance. When you launch an M3 instance, we ignore any instance store volumes specified in the block device mapping for the AMI.</p>"
+        },
+        "Ebs":{
+          "shape":"FleetEbsBlockDeviceRequest",
+          "documentation":"<p>Parameters used to automatically set up EBS volumes when the instance is launched.</p>"
+        },
+        "NoDevice":{
+          "shape":"String",
+          "documentation":"<p>To omit the device from the block device mapping, specify an empty string. When this property is specified, the device is removed from the block device mapping regardless of the assigned value.</p>"
+        }
+      },
+      "documentation":"<p>Describes a block device mapping, which defines the EBS volumes and instance store volumes to attach to an instance at launch.</p> <p>To override a block device mapping specified in the launch template:</p> <ul> <li> <p>Specify the exact same <code>DeviceName</code> here as specified in the launch template.</p> </li> <li> <p>Only specify the parameters you want to change.</p> </li> <li> <p>Any parameters you don't specify here will keep their original launch template values.</p> </li> </ul> <p>To add a new block device mapping:</p> <ul> <li> <p>Specify a <code>DeviceName</code> that doesn't exist in the launch template.</p> </li> <li> <p>Specify all desired parameters here.</p> </li> </ul>"
+    },
+    "FleetBlockDeviceMappingRequestList":{
+      "type":"list",
+      "member":{
+        "shape":"FleetBlockDeviceMappingRequest",
+        "locationName":"BlockDeviceMapping"
+      }
+    },
     "FleetCapacityReservation":{
       "type":"structure",
       "members":{
@@ -31771,6 +31885,44 @@
       },
       "documentation":"<p>Describes an EC2 Fleet.</p>"
     },
+    "FleetEbsBlockDeviceRequest":{
+      "type":"structure",
+      "members":{
+        "Encrypted":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the encryption state of an EBS volume is changed while being restored from a backing snapshot. The effect of setting the encryption state to <code>true</code> depends on the volume origin (new or from a snapshot), starting encryption state, ownership, and whether encryption by default is enabled. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-encryption.html\">Amazon EBS encryption</a> in the <i>Amazon EBS User Guide</i>.</p> <p>In no case can you remove encryption from an encrypted volume.</p> <p>Encrypted volumes can only be attached to instances that support Amazon EBS encryption. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-encryption-requirements.html#ebs-encryption_supported_instances\">Supported instance types</a>.</p> <p>This parameter is not returned by .</p> <p>For and , whether you can include this parameter, and the allowed values differ depending on the type of block device mapping you are creating.</p> <ul> <li> <p>If you are creating a block device mapping for a <b>new (empty) volume</b>, you can include this parameter, and specify either <code>true</code> for an encrypted volume, or <code>false</code> for an unencrypted volume. If you omit this parameter, it defaults to <code>false</code> (unencrypted).</p> </li> <li> <p>If you are creating a block device mapping from an <b>existing encrypted or unencrypted snapshot</b>, you must omit this parameter. If you include this parameter, the request will fail, regardless of the value that you specify.</p> </li> <li> <p>If you are creating a block device mapping from an <b>existing unencrypted volume</b>, you can include this parameter, but you must specify <code>false</code>. If you specify <code>true</code>, the request will fail. In this case, we recommend that you omit the parameter.</p> </li> <li> <p>If you are creating a block device mapping from an <b>existing encrypted volume</b>, you can include this parameter, and specify either <code>true</code> or <code>false</code>. However, if you specify <code>false</code>, the parameter is ignored and the block device mapping is always encrypted. In this case, we recommend that you omit the parameter.</p> </li> </ul>"
+        },
+        "DeleteOnTermination":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the EBS volume is deleted on instance termination. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/preserving-volumes-on-termination.html\">Preserve data when an instance is terminated</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+        },
+        "Iops":{
+          "shape":"Integer",
+          "documentation":"<p>The number of I/O operations per second (IOPS). For <code>gp3</code>, <code>io1</code>, and <code>io2</code> volumes, this represents the number of IOPS that are provisioned for the volume. For <code>gp2</code> volumes, this represents the baseline performance of the volume and the rate at which the volume accumulates I/O credits for bursting.</p> <p>The following are the supported values for each volume type:</p> <ul> <li> <p> <code>gp3</code>: 3,000 - 16,000 IOPS</p> </li> <li> <p> <code>io1</code>: 100 - 64,000 IOPS</p> </li> <li> <p> <code>io2</code>: 100 - 256,000 IOPS</p> </li> </ul> <p>For <code>io2</code> volumes, you can achieve up to 256,000 IOPS on <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#ec2-nitro-instances\">instances built on the Nitro System</a>. On other instances, you can achieve performance up to 32,000 IOPS.</p> <p>This parameter is required for <code>io1</code> and <code>io2</code> volumes. The default for <code>gp3</code> volumes is 3,000 IOPS.</p>"
+        },
+        "Throughput":{
+          "shape":"Integer",
+          "documentation":"<p>The throughput that the volume supports, in MiB/s.</p> <p>This parameter is valid only for <code>gp3</code> volumes.</p> <p>Valid Range: Minimum value of 125. Maximum value of 1000.</p>"
+        },
+        "KmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>Identifier (key ID, key alias, key ARN, or alias ARN) of the customer managed KMS key to use for EBS encryption.</p> <p>This parameter is only supported on <code>BlockDeviceMapping</code> objects called by <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RunInstances.html\">RunInstances</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotFleet.html\">RequestSpotFleet</a>, and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotInstances.html\">RequestSpotInstances</a>.</p>"
+        },
+        "SnapshotId":{
+          "shape":"SnapshotId",
+          "documentation":"<p>The ID of the snapshot.</p>"
+        },
+        "VolumeSize":{
+          "shape":"Integer",
+          "documentation":"<p>The size of the volume, in GiBs. You must specify either a snapshot ID or a volume size. If you specify a snapshot, the default is the snapshot size. You can specify a volume size that is equal to or larger than the snapshot size.</p> <p>The following are the supported sizes for each volume type:</p> <ul> <li> <p> <code>gp2</code> and <code>gp3</code>: 1 - 16,384 GiB</p> </li> <li> <p> <code>io1</code>: 4 - 16,384 GiB</p> </li> <li> <p> <code>io2</code>: 4 - 65,536 GiB</p> </li> <li> <p> <code>st1</code> and <code>sc1</code>: 125 - 16,384 GiB</p> </li> <li> <p> <code>standard</code>: 1 - 1024 GiB</p> </li> </ul>"
+        },
+        "VolumeType":{
+          "shape":"VolumeType",
+          "documentation":"<p>The volume type. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html\">Amazon EBS volume types</a> in the <i>Amazon EBS User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>Describes a block device for an EBS volume.</p>"
+    },
     "FleetEventType":{
       "type":"string",
       "enum":[
@@ -31851,7 +32003,7 @@
         },
         "MaxPrice":{
           "shape":"String",
-          "documentation":"<p>The maximum price per unit hour that you are willing to pay for a Spot Instance. We do not recommend using this parameter because it can lead to increased interruptions. If you do not specify this parameter, you will pay the current Spot price. </p> <important> <p>If you specify a maximum price, your instances will be interrupted more frequently than if you do not specify this parameter.</p> </important>",
+          "documentation":"<p>The maximum price per unit hour that you are willing to pay for a Spot Instance. We do not recommend using this parameter because it can lead to increased interruptions. If you do not specify this parameter, you will pay the current Spot price. </p> <important> <p>If you specify a maximum price, your instances will be interrupted more frequently than if you do not specify this parameter.</p> <p>If you specify a maximum price, it must be more than USD $0.001. Specifying a value below USD $0.001 will result in an <code>InvalidParameterValue</code> error message.</p> </important>",
           "locationName":"maxPrice"
         },
         "SubnetId":{
@@ -31888,6 +32040,11 @@
           "shape":"ImageId",
           "documentation":"<p>The ID of the AMI in the format <code>ami-17characters00000</code>.</p> <p>Alternatively, you can specify a Systems Manager parameter, using one of the following formats. The Systems Manager parameter will resolve to an AMI ID on launch.</p> <p>To reference a public parameter:</p> <ul> <li> <p> <code>resolve:ssm:<i>public-parameter</i> </code> </p> </li> </ul> <p>To reference a parameter stored in the same account:</p> <ul> <li> <p> <code>resolve:ssm:<i>parameter-name</i> </code> </p> </li> <li> <p> <code>resolve:ssm:<i>parameter-name:version-number</i> </code> </p> </li> <li> <p> <code>resolve:ssm:<i>parameter-name:label</i> </code> </p> </li> </ul> <p>To reference a parameter shared from another Amazon Web Services account:</p> <ul> <li> <p> <code>resolve:ssm:<i>parameter-ARN</i> </code> </p> </li> <li> <p> <code>resolve:ssm:<i>parameter-ARN:version-number</i> </code> </p> </li> <li> <p> <code>resolve:ssm:<i>parameter-ARN:label</i> </code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-launch-template.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon EC2 User Guide</i>.</p> <note> <p>This parameter is only available for fleets of type <code>instant</code>. For fleets of type <code>maintain</code> and <code>request</code>, you must specify the AMI ID in the launch template.</p> </note>",
           "locationName":"imageId"
+        },
+        "BlockDeviceMappings":{
+          "shape":"BlockDeviceMappingResponseList",
+          "documentation":"<p>The block device mapping, which defines the EBS volumes and instance store volumes to attach to the instance at launch. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html\">Block device mappings for volumes on Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "locationName":"blockDeviceMappingSet"
         }
       },
       "documentation":"<p>Describes overrides for a launch template.</p>"
@@ -31915,7 +32072,7 @@
         },
         "MaxPrice":{
           "shape":"String",
-          "documentation":"<p>The maximum price per unit hour that you are willing to pay for a Spot Instance. We do not recommend using this parameter because it can lead to increased interruptions. If you do not specify this parameter, you will pay the current Spot price. </p> <important> <p>If you specify a maximum price, your instances will be interrupted more frequently than if you do not specify this parameter.</p> </important>"
+          "documentation":"<p>The maximum price per unit hour that you are willing to pay for a Spot Instance. We do not recommend using this parameter because it can lead to increased interruptions. If you do not specify this parameter, you will pay the current Spot price. </p> <important> <p>If you specify a maximum price, your instances will be interrupted more frequently than if you do not specify this parameter.</p> <p>If you specify a maximum price, it must be more than USD $0.001. Specifying a value below USD $0.001 will result in an <code>InvalidParameterValue</code> error message.</p> </important>"
         },
         "SubnetId":{
           "shape":"SubnetId",
@@ -31936,6 +32093,11 @@
         "Placement":{
           "shape":"Placement",
           "documentation":"<p>The location where the instance launched, if applicable.</p>"
+        },
+        "BlockDeviceMappings":{
+          "shape":"FleetBlockDeviceMappingRequestList",
+          "documentation":"<p>The block device mapping, which defines the EBS volumes and instance store volumes to attach to the instance at launch. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html\">Block device mappings for volumes on Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>To override a block device mapping specified in the launch template:</p> <ul> <li> <p>Specify the exact same <code>DeviceName</code> here as specified in the launch template.</p> </li> <li> <p>Only specify the parameters you want to change.</p> </li> <li> <p>Any parameters you don't specify here will keep their original launch template values.</p> </li> </ul> <p>To add a new block device mapping:</p> <ul> <li> <p>Specify a <code>DeviceName</code> that doesn't exist in the launch template.</p> </li> <li> <p>Specify all desired parameters here.</p> </li> </ul>",
+          "locationName":"BlockDeviceMapping"
         },
         "InstanceRequirements":{
           "shape":"InstanceRequirementsRequest",
@@ -38327,7 +38489,7 @@
         },
         "AcceleratorTypes":{
           "shape":"AcceleratorTypeSet",
-          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p> </li> <li> <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p> </li> <li> <p>For instance types with Inference accelerators, specify <code>inference</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
+          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p> </li> <li> <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p> </li> <li> <p>For instance types with Inference accelerators, specify <code>inference</code>.</p> </li> <li> <p>For instance types with Inference accelerators, specify <code>inference</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
           "locationName":"acceleratorTypeSet"
         },
         "AcceleratorCount":{
@@ -42402,7 +42564,7 @@
         },
         "AmdSevSnp":{
           "shape":"AmdSevSnpSpecification",
-          "documentation":"<p>Indicates whether the instance is enabled for AMD SEV-SNP. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP</a>.</p>",
+          "documentation":"<p>Indicates whether the instance is enabled for AMD SEV-SNP. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP for Amazon EC2 instances</a>.</p>",
           "locationName":"amdSevSnp"
         }
       },
@@ -42421,7 +42583,7 @@
         },
         "AmdSevSnp":{
           "shape":"AmdSevSnpSpecification",
-          "documentation":"<p>Indicates whether to enable the instance for AMD SEV-SNP. AMD SEV-SNP is supported with M6a, R6a, and C6a instance types only. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP</a>.</p>"
+          "documentation":"<p>Indicates whether to enable the instance for AMD SEV-SNP. AMD SEV-SNP is supported with M6a, R6a, and C6a instance types only. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP for Amazon EC2 instances</a>.</p>"
         }
       },
       "documentation":"<p>The CPU options for the instance. Both the core count and threads per core must be specified in the request.</p>"
@@ -42485,7 +42647,7 @@
         },
         "Iops":{
           "shape":"Integer",
-          "documentation":"<p>The number of I/O operations per second (IOPS). For <code>gp3</code>, <code>io1</code>, and <code>io2</code> volumes, this represents the number of IOPS that are provisioned for the volume. For <code>gp2</code> volumes, this represents the baseline performance of the volume and the rate at which the volume accumulates I/O credits for bursting.</p> <p>The following are the supported values for each volume type:</p> <ul> <li> <p> <code>gp3</code>: 3,000 - 16,000 IOPS</p> </li> <li> <p> <code>io1</code>: 100 - 64,000 IOPS</p> </li> <li> <p> <code>io2</code>: 100 - 256,000 IOPS</p> </li> </ul> <p>For <code>io2</code> volumes, you can achieve up to 256,000 IOPS on <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#ec2-nitro-instances\">instances built on the Nitro System</a>. On other instances, you can achieve performance up to 32,000 IOPS.</p> <p>This parameter is supported for <code>io1</code>, <code>io2</code>, and <code>gp3</code> volumes only.</p>"
+          "documentation":"<p>The number of I/O operations per second (IOPS). For <code>gp3</code>, <code>io1</code>, and <code>io2</code> volumes, this represents the number of IOPS that are provisioned for the volume. For <code>gp2</code> volumes, this represents the baseline performance of the volume and the rate at which the volume accumulates I/O credits for bursting.</p> <p>The following are the supported values for each volume type:</p> <ul> <li> <p> <code>gp3</code>: 3,000 - 16,000 IOPS</p> </li> <li> <p> <code>io1</code>: 100 - 64,000 IOPS</p> </li> <li> <p> <code>io2</code>: 100 - 256,000 IOPS</p> </li> </ul> <p>For <code>io2</code> volumes, you can achieve up to 256,000 IOPS on <a href=\"https://docs.aws.amazon.com/ec2/latest/instancetypes/ec2-nitro-instances.html\">instances built on the Nitro System</a>. On other instances, you can achieve performance up to 32,000 IOPS.</p> <p>This parameter is supported for <code>io1</code>, <code>io2</code>, and <code>gp3</code> volumes only.</p>"
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
@@ -42605,7 +42767,7 @@
           "documentation":"<p>To enable the instance for Amazon Web Services Nitro Enclaves, set this parameter to <code>true</code>.</p>"
         }
       },
-      "documentation":"<p>Indicates whether the instance is enabled for Amazon Web Services Nitro Enclaves. For more information, see <a href=\"https://docs.aws.amazon.com/enclaves/latest/user/nitro-enclave.html\">What is Amazon Web Services Nitro Enclaves?</a> in the <i>Amazon Web Services Nitro Enclaves User Guide</i>.</p>"
+      "documentation":"<p>Indicates whether the instance is enabled for Amazon Web Services Nitro Enclaves. For more information, see <a href=\"https://docs.aws.amazon.com/enclaves/latest/user/nitro-enclave.html\">What is Nitro Enclaves?</a> in the <i>Amazon Web Services Nitro Enclaves User Guide</i>.</p>"
     },
     "LaunchTemplateErrorCode":{
       "type":"string",
@@ -42772,11 +42934,11 @@
         },
         "InstanceMetadataTags":{
           "shape":"LaunchTemplateInstanceMetadataTagsState",
-          "documentation":"<p>Set to <code>enabled</code> to allow access to instance tags from the instance metadata. Set to <code>disabled</code> to turn off access to instance tags from the instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with instance tags using the instance metadata</a>.</p> <p>Default: <code>disabled</code> </p>",
+          "documentation":"<p>Set to <code>enabled</code> to allow access to instance tags from the instance metadata. Set to <code>disabled</code> to turn off access to instance tags from the instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html\">View tags for your EC2 instances using instance metadata</a>.</p> <p>Default: <code>disabled</code> </p>",
           "locationName":"instanceMetadataTags"
         }
       },
-      "documentation":"<p>The metadata options for the instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html\">Instance metadata and user data</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>The metadata options for the instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html\">Use instance metadata to manage your EC2 instance</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "LaunchTemplateInstanceMetadataOptionsRequest":{
       "type":"structure",
@@ -42799,10 +42961,10 @@
         },
         "InstanceMetadataTags":{
           "shape":"LaunchTemplateInstanceMetadataTagsState",
-          "documentation":"<p>Set to <code>enabled</code> to allow access to instance tags from the instance metadata. Set to <code>disabled</code> to turn off access to instance tags from the instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with instance tags using the instance metadata</a>.</p> <p>Default: <code>disabled</code> </p>"
+          "documentation":"<p>Set to <code>enabled</code> to allow access to instance tags from the instance metadata. Set to <code>disabled</code> to turn off access to instance tags from the instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html\">View tags for your EC2 instances using instance metadata</a>.</p> <p>Default: <code>disabled</code> </p>"
         }
       },
-      "documentation":"<p>The metadata options for the instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html\">Instance metadata and user data</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>The metadata options for the instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html\">Use instance metadata to manage your EC2 instance</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "LaunchTemplateInstanceMetadataOptionsState":{
       "type":"string",
@@ -42830,7 +42992,7 @@
       "members":{
         "AssociateCarrierIpAddress":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether to associate a Carrier IP address with eth0 for a new network interface.</p> <p>Use this option when you launch an instance in a Wavelength Zone and want to associate a Carrier IP address with the network interface. For more information about Carrier IP addresses, see <a href=\"https://docs.aws.amazon.com/wavelength/latest/developerguide/how-wavelengths-work.html#provider-owned-ip\">Carrier IP addresses</a> in the <i>Wavelength Developer Guide</i>.</p>",
+          "documentation":"<p>Indicates whether to associate a Carrier IP address with eth0 for a new network interface.</p> <p>Use this option when you launch an instance in a Wavelength Zone and want to associate a Carrier IP address with the network interface. For more information about Carrier IP addresses, see <a href=\"https://docs.aws.amazon.com/wavelength/latest/developerguide/how-wavelengths-work.html#provider-owned-ip\">Carrier IP address</a> in the <i>Wavelength Developer Guide</i>.</p>",
           "locationName":"associateCarrierIpAddress"
         },
         "AssociatePublicIpAddress":{
@@ -42978,7 +43140,7 @@
         },
         "InterfaceType":{
           "shape":"String",
-          "documentation":"<p>The type of network interface. To create an Elastic Fabric Adapter (EFA), specify <code>efa</code> or <code>efa</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html\">Elastic Fabric Adapter</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>If you are not creating an EFA, specify <code>interface</code> or omit this parameter.</p> <p>If you specify <code>efa-only</code>, do not assign any IP addresses to the network interface. EFA-only network interfaces do not support IP addresses.</p> <p>Valid values: <code>interface</code> | <code>efa</code> | <code>efa-only</code> </p>"
+          "documentation":"<p>The type of network interface. To create an Elastic Fabric Adapter (EFA), specify <code>efa</code> or <code>efa</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html\">Elastic Fabric Adapter for AI/ML and HPC workloads on Amazon EC2</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>If you are not creating an EFA, specify <code>interface</code> or omit this parameter.</p> <p>If you specify <code>efa-only</code>, do not assign any IP addresses to the network interface. EFA-only network interfaces do not support IP addresses.</p> <p>Valid values: <code>interface</code> | <code>efa</code> | <code>efa-only</code> </p>"
         },
         "Ipv6AddressCount":{
           "shape":"Integer",
@@ -43331,7 +43493,7 @@
       "members":{
         "MaxPrice":{
           "shape":"String",
-          "documentation":"<p>The maximum hourly price you're willing to pay for the Spot Instances. We do not recommend using this parameter because it can lead to increased interruptions. If you do not specify this parameter, you will pay the current Spot price.</p> <important> <p>If you specify a maximum price, your Spot Instances will be interrupted more frequently than if you do not specify this parameter.</p> </important>",
+          "documentation":"<p>The maximum hourly price you're willing to pay for a Spot Instance. We do not recommend using this parameter because it can lead to increased interruptions. If you do not specify this parameter, you will pay the current Spot price. If you do specify this parameter, it must be more than USD $0.001. Specifying a value below USD $0.001 will result in an <code>InvalidParameterValue</code> error message when the launch template is used to launch an instance.</p>",
           "locationName":"maxPrice"
         },
         "SpotInstanceType":{
@@ -43362,7 +43524,7 @@
       "members":{
         "MaxPrice":{
           "shape":"String",
-          "documentation":"<p>The maximum hourly price you're willing to pay for the Spot Instances. We do not recommend using this parameter because it can lead to increased interruptions. If you do not specify this parameter, you will pay the current Spot price.</p> <important> <p>If you specify a maximum price, your Spot Instances will be interrupted more frequently than if you do not specify this parameter.</p> </important>"
+          "documentation":"<p>The maximum hourly price you're willing to pay for a Spot Instance. We do not recommend using this parameter because it can lead to increased interruptions. If you do not specify this parameter, you will pay the current Spot price. If you do specify this parameter, it must be more than USD $0.001. Specifying a value below USD $0.001 will result in an <code>InvalidParameterValue</code> error message when the launch template is used to launch an instance.</p> <important> <p>If you specify a maximum price, your Spot Instances will be interrupted more frequently than if you do not specify this parameter.</p> </important>"
         },
         "SpotInstanceType":{
           "shape":"SpotInstanceType",
@@ -45939,7 +46101,7 @@
         },
         "ClientToken":{
           "shape":"String",
-          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p> <p>Constraint: Maximum 128 ASCII characters.</p>"
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency in Amazon EC2 API requests</a>.</p> <p>Constraint: Maximum 128 ASCII characters.</p>"
         },
         "LaunchTemplateId":{
           "shape":"LaunchTemplateId",
@@ -53045,7 +53207,7 @@
       "members":{
         "KernelId":{
           "shape":"KernelId",
-          "documentation":"<p>The ID of the kernel.</p> <important> <p>We recommend that you use PV-GRUB instead of kernels and RAM disks. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedkernels.html\">User provided kernels</a> in the <i>Amazon EC2 User Guide</i>.</p> </important>"
+          "documentation":"<p>The ID of the kernel.</p> <important> <p>We recommend that you use PV-GRUB instead of kernels and RAM disks. For more information, see <a href=\"https://docs.aws.amazon.com/linux/al2/ug/UserProvidedKernels.html\">User provided kernels</a> in the <i>Amazon Linux 2 User Guide</i>.</p> </important>"
         },
         "EbsOptimized":{
           "shape":"Boolean",
@@ -53099,7 +53261,7 @@
         },
         "UserData":{
           "shape":"SensitiveUserData",
-          "documentation":"<p>The user data to make available to the instance. You must provide base64-encoded text. User data is limited to 16 KB. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html\">Run commands on your Amazon EC2 instance at launch</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>If you are creating the launch template for use with Batch, the user data must be provided in the <a href=\"https://cloudinit.readthedocs.io/en/latest/topics/format.html#mime-multi-part-archive\">MIME multi-part archive format</a>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/launch-templates.html\">Amazon EC2 user data in launch templates</a> in the <i>Batch User Guide</i>.</p>"
+          "documentation":"<p>The user data to make available to the instance. You must provide base64-encoded text. User data is limited to 16 KB. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html\">Run commands when you launch an EC2 instance with user data input</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>If you are creating the launch template for use with Batch, the user data must be provided in the <a href=\"https://cloudinit.readthedocs.io/en/latest/topics/format.html#mime-multi-part-archive\">MIME multi-part archive format</a>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/launch-templates.html#lt-user-data\">Amazon EC2 user data in launch templates</a> in the <i>Batch User Guide</i>.</p>"
         },
         "TagSpecifications":{
           "shape":"LaunchTemplateTagSpecificationRequestList",
@@ -53136,7 +53298,7 @@
         },
         "CpuOptions":{
           "shape":"LaunchTemplateCpuOptionsRequest",
-          "documentation":"<p>The CPU options for the instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-optimize-cpu.html\">Optimize CPU options</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+          "documentation":"<p>The CPU options for the instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-optimize-cpu.html\">CPU options for Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
         "CapacityReservationSpecification":{
           "shape":"LaunchTemplateCapacityReservationSpecificationRequest",
@@ -53153,11 +53315,11 @@
         },
         "MetadataOptions":{
           "shape":"LaunchTemplateInstanceMetadataOptionsRequest",
-          "documentation":"<p>The metadata options for the instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html\">Instance metadata and user data</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+          "documentation":"<p>The metadata options for the instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-options.html\">Configure the Instance Metadata Service options</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
         "EnclaveOptions":{
           "shape":"LaunchTemplateEnclaveOptionsRequest",
-          "documentation":"<p>Indicates whether the instance is enabled for Amazon Web Services Nitro Enclaves. For more information, see <a href=\"https://docs.aws.amazon.com/enclaves/latest/user/nitro-enclave.html\">What is Amazon Web Services Nitro Enclaves?</a> in the <i>Amazon Web Services Nitro Enclaves User Guide</i>.</p> <p>You can't enable Amazon Web Services Nitro Enclaves and hibernation on the same instance.</p>"
+          "documentation":"<p>Indicates whether the instance is enabled for Amazon Web Services Nitro Enclaves. For more information, see <a href=\"https://docs.aws.amazon.com/enclaves/latest/user/nitro-enclave.html\">What is Nitro Enclaves?</a> in the <i>Amazon Web Services Nitro Enclaves User Guide</i>.</p> <p>You can't enable Amazon Web Services Nitro Enclaves and hibernation on the same instance.</p>"
         },
         "InstanceRequirements":{
           "shape":"InstanceRequirementsRequest",
@@ -53173,7 +53335,7 @@
         },
         "DisableApiStop":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether to enable the instance for stop protection. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-stop-protection.html\">Enable stop protection for your instance</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+          "documentation":"<p>Indicates whether to enable the instance for stop protection. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-stop-protection.html\">Enable stop protection for your EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
         "Operator":{
           "shape":"OperatorRequest",
@@ -54350,7 +54512,7 @@
         },
         "ImageId":{
           "shape":"String",
-          "documentation":"<p>The ID of the AMI or a Systems Manager parameter. The Systems Manager parameter will resolve to the ID of the AMI at instance launch.</p> <p>The value depends on what you specified in the request. The possible values are:</p> <ul> <li> <p>If an AMI ID was specified in the request, then this is the AMI ID.</p> </li> <li> <p>If a Systems Manager parameter was specified in the request, and <code>ResolveAlias</code> was configured as <code>true</code>, then this is the AMI ID that the parameter is mapped to in the Parameter Store.</p> </li> <li> <p>If a Systems Manager parameter was specified in the request, and <code>ResolveAlias</code> was configured as <code>false</code>, then this is the parameter value.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "documentation":"<p>The ID of the AMI or a Systems Manager parameter. The Systems Manager parameter will resolve to the ID of the AMI at instance launch.</p> <p>The value depends on what you specified in the request. The possible values are:</p> <ul> <li> <p>If an AMI ID was specified in the request, then this is the AMI ID.</p> </li> <li> <p>If a Systems Manager parameter was specified in the request, and <code>ResolveAlias</code> was configured as <code>true</code>, then this is the AMI ID that the parameter is mapped to in the Parameter Store.</p> </li> <li> <p>If a Systems Manager parameter was specified in the request, and <code>ResolveAlias</code> was configured as <code>false</code>, then this is the parameter value.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/create-launch-template.html#use-an-ssm-parameter-instead-of-an-ami-id\">Use a Systems Manager parameter instead of an AMI ID</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"imageId"
         },
         "InstanceType":{
@@ -54430,7 +54592,7 @@
         },
         "CpuOptions":{
           "shape":"LaunchTemplateCpuOptions",
-          "documentation":"<p>The CPU options for the instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-optimize-cpu.html\">Optimize CPU options</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "documentation":"<p>The CPU options for the instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-optimize-cpu.html\">CPU options for Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"cpuOptions"
         },
         "CapacityReservationSpecification":{
@@ -54450,7 +54612,7 @@
         },
         "MetadataOptions":{
           "shape":"LaunchTemplateInstanceMetadataOptions",
-          "documentation":"<p>The metadata options for the instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html\">Instance metadata and user data</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "documentation":"<p>The metadata options for the instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-options.html\">Configure the Instance Metadata Service options</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"metadataOptions"
         },
         "EnclaveOptions":{
@@ -54475,7 +54637,7 @@
         },
         "DisableApiStop":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the instance is enabled for stop protection. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-stop-protection.html\">Enable stop protection for your instance</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "documentation":"<p>Indicates whether the instance is enabled for stop protection. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-stop-protection.html\">Enable stop protection for your EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"disableApiStop"
         },
         "Operator":{

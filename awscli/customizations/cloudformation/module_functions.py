@@ -30,6 +30,8 @@ from awscli.customizations.cloudformation.module_visitor import Visitor
 
 MERGE = "Fn::Merge"
 SELECT = "Fn::Select"
+REF = "Ref"
+GETATT = "Fn::GetAtt"
 
 
 def fn_select(d):
@@ -70,6 +72,12 @@ def fn_merge(d):
             if len(mrg) != 2:
                 msg = f"Fn::Merge requires 2 args: {v.k}: {v.d}"
                 raise exceptions.InvalidModuleError(msg=msg)
+            # If there are any unresolved Refs, leave these alone
+            # so that the parent can resolve them
+            if REF in mrg[0] or REF in mrg[1]:
+                return
+            if GETATT in mrg[0] or GETATT in mrg[1]:
+                return
             v.p[v.k] = merge_props(mrg[0], mrg[1])
 
     Visitor(d).visit(vf)

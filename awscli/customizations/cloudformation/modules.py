@@ -207,6 +207,7 @@ def process_module_section(
 
     # Special handling for intrinsic functions
     fn_select(template)
+
     fn_merge(template)
 
     # Remove the Modules section from the template
@@ -299,7 +300,7 @@ class Module:
     # pylint: disable=too-many-branches
     def process(self):
         """
-        Read the module source process it.
+        Read the module source and process it.
 
         :return: The modified parent template dictionary
         """

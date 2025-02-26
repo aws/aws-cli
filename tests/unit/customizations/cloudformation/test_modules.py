@@ -112,6 +112,7 @@ class TestPackageModules(unittest.TestCase):
             "depends",
             "select",
             "merge",
+            "mergetags",
         ]
         for test in tests:
             t, _ = modules.read_source(f"{base}/{test}-template.yaml")

@@ -160,11 +160,11 @@ def generate_conf_for_crosslinks(linker, crosslinks):
     # evalutes to true, the immediately next RewriteRule
     # is triggered.
     lines = [
-        'RewriteCond %%{REQUEST_URI} !^\/goto\/%s\/.*$\n' % linker.TOOL_NAME,
+        f'RewriteCond %%{{REQUEST_URI}} !^\\/goto\\/{linker.TOOL_NAME}\\/.*$\n',
         # The S=12345 means skip the next 12345 lines.  This
         # rule is only triggered if the RewriteCond above
         # evaluates to true.  Think of this as a fancy GOTO.
-        'RewriteRule ".*" "-" [S=%s]\n' % len(crosslinks)
+        f'RewriteRule ".*" "-" [S={len(crosslinks)}]\n'
     ]
     for goto_link, redirect in crosslinks:
         lines.append(create_rewrite_rule(goto_link, redirect))
@@ -183,7 +183,7 @@ def generate_tool_cross_links(session, linker):
 
 def generate_crosslinks(app: Sphinx):
     session = awscli.botocore.session.get_session()
-    out_path = os.path.join(os.path.abspath('.'), 'package.redirects.conf')
+    out_path = os.path.join(os.path.abspath(app.outdir), 'package.redirects.conf')
     with open(out_path, 'w') as out_file:
         generate_all_cross_links(session, out_file)
 
@@ -199,7 +199,6 @@ def setup(app: Sphinx):
     # generating crosslinks.
     app.connect('html-collect-pages', generate_crosslinks)
 
-    # TODO double check the returns from sphinx extensions
     return {
         'version': '1.0',
         'env_version': 1,

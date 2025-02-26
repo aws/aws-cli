@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.38.2
+======
+
+* api-change:``application-signals``: This release adds API support for reading Service Level Objectives and Services from monitoring accounts, from SLO and Service-scoped operations, including ListServices and ListServiceLevelObjectives.
+* api-change:``batch``: AWS Batch: Resource Aware Scheduling feature support
+* api-change:``chime``: Removes the Amazon Chime SDK APIs from the "chime" namespace.  Amazon Chime SDK APIs continue to be available in the AWS SDK via the dedicated Amazon Chime SDK namespaces: chime-sdk-identity, chime-sdk-mediapipelines, chime-sdk-meetings, chime-sdk-messaging, and chime-sdk-voice.
+* api-change:``cloudfront``: Documentation update for VPC origin config.
+* api-change:``ec2``: Amazon EC2 Fleet customers can now override the Block Device Mapping specified in the Launch Template when creating a new Fleet request, saving the effort of creating and associating new Launch Templates to customize the Block Device Mapping.
+* api-change:``iotfleetwise``: This release adds an optional listResponseScope request parameter in certain list API requests to limit the response to metadata only.
+* api-change:``oam``: This release adds support for sharing AWS::ApplicationSignals::Service and AWS::ApplicationSignals::ServiceLevelObjective resources.
+* api-change:``sagemaker``: AWS SageMaker InferenceComponents now support rolling update deployments for Inference Components.
+
+
 1.38.1
 ======
 

@@ -143,9 +143,9 @@ def verify_preconditions():
         '%s -m pip --version' % sys.executable).strip().split()[1]
     # Virtualenv version just has the version string: '1.14.5\n'
     virtualenv_version = run(
-        '%s -m virtualenv --version' % sys.executable).strip()
+        '%s -m virtualenv --version' % sys.executable).strip().split()[1]
     _min_version_required('9.0.1', pip_version, 'pip')
-    _min_version_required('15.1.0', virtualenv_version, 'virtualenv')
+    _min_version_required('20.26.6', virtualenv_version, 'virtualenv')
 
 
 def _min_version_required(min_version, actual_version, name):

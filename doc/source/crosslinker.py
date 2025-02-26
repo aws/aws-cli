@@ -1,120 +1,63 @@
 import os
 
+import awscli.clidriver
+import awscli.botocore.session
 from sphinx.application import Sphinx
 
-#!/usr/bin/env python
 """Generate apache rewrite rules for cross linking.
 
-Example CLI:
+Example:
 
-^/goto/aws-cli/acm-2015-12-08/AddTagsToCertificate
+^/goto/cli2/acm-2015-12-08/AddTagsToCertificate$
 
 will redirect to
 
-https://docs.aws.amazon.com/cli/latest/reference/acm/add-tags-to-certificate.html
+https://awscli.amazonaws.com/v2/documentation/api/latest/reference/acm/add-tags-to-certificate.html
 
 Usage
 =====
 
 Make sure you're in a venv with the correct versions of the AWS CLI v2 installed. 
-It will be imported directly to generate the crosslinking.
+It will be imported directly to generate the crosslinks.
 
 This is a Sphinx extension that gets run after all document updates have been 
 executed and before the cleanup phase.
 """
-import awscli.clidriver
 
-import awscli.botocore.session
-
-
-class CrossLinkGenerator(object):
-    # Subclasses must set these values:
-
-    # The name of the tool (boto3, aws-cli), this is what's
+class AWSCLICrossLinkGenerator(object):
+    # The name of the tool, this is what's
     # used in the goto links: /goto/{toolname}/{operation}
-    TOOL_NAME = None
-    # The base url for your SDK service reference.  This page
+    TOOL_NAME = 'cli2'
+    BASE_URL = 'https://awscli.amazonaws.com/v2/documentation/api/latest/reference'
+    # The base url for your SDK service reference. This page
     # is used as a fallback for goto links for unknown service
-    # uids and for the "catch all" regex for the tool.
-    FALLBACK_BASE = None
-    # The url used for an specific service.  This value
+    # uids and for the "catch-all" regex for the tool.
+    FALLBACK_BASE = (
+        'https://awscli.amazonaws.com/v2/documentation/api/latest/reference/index.html'
+    )
+    # The url used for a specific service. This value
     # must have one string placeholder value where the
     # service_name can be placed.
-    SERVICE_BASE = None
+    SERVICE_BASE = (
+        'https://awscli.amazonaws.com/v2/documentation/api/latest/reference/%s/index.html'
+    )
 
     def __init__(self):
+        self._driver = awscli.clidriver.create_clidriver()
         # Cache of service -> operation names
         # The operation names are not xformed(), they're
         # exactly as they're spelled in the API reference.
         self._service_operations = {}
-        # Mapping of service name to boto3 class name.
+        # Mapping of service name to boto class name.
         self._service_class_names = {}
         # Mapping of uid -> service_name
         self._uid_mapping = {}
         self._generate_mappings()
 
     def _generate_mappings(self):
-        raise NotImplementedError("_generate_mappings")
-
-    def _generate_cross_link(self, service_name, operation_name):
-        raise NotImplementedError("_generate_cross_link")
-
-    def generate_cross_link(self, link):
-        parts = link.split('/')
-        if len(parts) < 4:
-            return None
-        tool_name = parts[2]
-        if tool_name != self.TOOL_NAME:
-            return None
-        if self._is_catchall_regex(parts):
-            return self.FALLBACK_BASE
-        uid = parts[3]
-        if uid not in self._uid_mapping:
-            return self.FALLBACK_BASE
-        service_name = self._uid_mapping[uid]
-        if self._is_service_catchall_regex(parts):
-            return self.SERVICE_BASE % service_name
-        # At this point we know this is a valid cross link
-        # for an operation we probably know about, so we can
-        # defer to the template method.
-        return self._generate_cross_link(
-            service_name=service_name,
-            operation_name=parts[-1],
-        )
-
-    def _is_catchall_regex(self, parts):
-        # This is the catch all regex used as a safety net
-        # for any requests to our tool that we don't understand.
-        # For example: /goto/aws-cli/(.*)
-        return len(parts) == 4 and parts[-1] == '(.*)'
-
-    def _is_service_catchall_regex(self, parts):
-        # This is the catch all regex used for requests to a
-        # known service for an unknown operation/shape.
-        # For example: /goto/aws-cli/xray-2016-04-12/(.*)
-        return len(parts) == 5 and parts[-1] == '(.*)'
-
-
-# TODO maybe just remove the parent class since that's unnecessary abstraction
-# in the context of this repo
-class AWSCLICrossLinkGenerator(CrossLinkGenerator):
-    # TODO swap for v2 links
-    TOOL_NAME = 'aws-cli'
-    BASE_URL = 'https://docs.aws.amazon.com/cli/latest/reference'
-    FALLBACK_BASE = (
-        'https://docs.aws.amazon.com/cli/latest/reference/index.html'
-    )
-    SERVICE_BASE = (
-        'https://docs.aws.amazon.com/cli/latest/reference/%s/index.html'
-    )
-
-    def __init__(self):
-        self._driver = awscli.clidriver.create_clidriver()
-        self._service_operations = {}
-        super(AWSCLICrossLinkGenerator, self).__init__()
-
-    def _generate_mappings(self):
-        # TODO verify correctness against v2
+        # TODO upon skim looks good.
+        # if anything is fundamentally wrong with command selection,
+        # this likely needs a deeper dive comparison against v1
         command_table = self._driver.create_help_command().command_table
         for name, command in command_table.items():
             if hasattr(command, '_UNDOCUMENTED'):
@@ -140,6 +83,41 @@ class AWSCLICrossLinkGenerator(CrossLinkGenerator):
             self._service_operations[service_name][operation_name]
         )
 
+    def _is_catchall_regex(self, parts):
+        # This is the catch-all regex used as a safety net
+        # for any requests to our tool that we don't understand.
+        # For example: /goto/aws-cli/(.*)
+        return len(parts) == 4 and parts[-1] == '(.*)'
+
+    def _is_service_catchall_regex(self, parts):
+        # This is the catch-all regex used for requests to a
+        # known service for an unknown operation/shape.
+        # For example: /goto/cli2/xray-2016-04-12/(.*)
+        return len(parts) == 5 and parts[-1] == '(.*)'
+
+    def generate_cross_link(self, link):
+        parts = link.split('/')
+        if len(parts) < 4:
+            return None
+        tool_name = parts[2]
+        if tool_name != self.TOOL_NAME:
+            return None
+        if self._is_catchall_regex(parts):
+            return self.FALLBACK_BASE
+        uid = parts[3]
+        if uid not in self._uid_mapping:
+            return self.FALLBACK_BASE
+        service_name = self._uid_mapping[uid]
+        if self._is_service_catchall_regex(parts):
+            return self.SERVICE_BASE % service_name
+        # At this point we know this is a valid cross-link
+        # for an operation we probably know about, so we can
+        # defer to the template method.
+        return self._generate_cross_link(
+            service_name=service_name,
+            operation_name=parts[-1],
+        )
+
 
 def create_goto_links_iter(session):
     for service_name in session.get_available_services():
@@ -149,9 +127,9 @@ def create_goto_links_iter(session):
             continue
         for operation_name in m.operation_names:
             yield '/goto/{toolname}/%s/%s' % (uid, operation_name)
-        # We also want to yield a catch all link for the service.
+        # We also want to yield a catch-all link for the service.
         yield '/goto/{toolname}/%s/(.*)' % uid
-    # And a catch all for the entire tool.
+    # And a catch-all for the entire tool.
     yield '/goto/{toolname}/(.*)'
 
 
@@ -193,8 +171,6 @@ def generate_conf_for_crosslinks(linker, crosslinks):
     return lines
 
 
-# TODO can we remove the dependence on botocore session ?
-# or at least use the vendored botocore session
 def generate_tool_cross_links(session, linker):
     crosslinks = []
     for link_template in create_goto_links_iter(session):
@@ -225,7 +201,7 @@ def setup(app: Sphinx):
 
     # TODO double check the returns from sphinx extensions
     return {
-        'version': '0.1',
+        'version': '1.0',
         'env_version': 1,
         'parallel_read_safe': True,
         'parallel_write_safe': True,

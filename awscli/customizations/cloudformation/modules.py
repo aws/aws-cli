@@ -24,7 +24,7 @@ See the public documentation for a full description of the feature.
 
 """
 
-# pylint: disable=fixme,too-many-instance-attributes
+# pylint: disable=fixme,too-many-instance-attributes,too-many-lines
 
 import logging
 import os
@@ -42,6 +42,8 @@ from awscli.customizations.cloudformation.module_merge import (
 from awscli.customizations.cloudformation.module_maps import (
     process_module_maps,
     resolve_mapped_lists,
+    ORIGINAL,
+    getatt_map_list,
 )
 from awscli.customizations.cloudformation.module_constants import (
     process_constants,
@@ -128,6 +130,8 @@ def make_module(
         module_config[PROPERTIES] = config[PROPERTIES]
     if OVERRIDES in config:
         module_config[OVERRIDES] = config[OVERRIDES]
+    if ORIGINAL in config:
+        module_config[ORIGINAL] = config[ORIGINAL]
     module_config[NO_SOURCE_MAP] = no_source_map
     return Module(template, module_config, parent_module)
 
@@ -234,12 +238,18 @@ class Module:
         # The parent template dictionary
         self.template = template
         self.parent_module = parent_module
+
         if RESOURCES not in self.template:
             # The parent might only have Modules
             self.template[RESOURCES] = {}
 
         # The name of the module, which is used as a logical id prefix
         self.name = module_config[NAME]
+
+        # Only set when we copy a module with a Map attribute
+        self.original_map_name = None
+        if ORIGINAL in module_config:
+            self.original_map_name = module_config[ORIGINAL]
 
         # The location of the source for the module, a URI string
         self.source = module_config[SOURCE]
@@ -389,6 +399,9 @@ class Module:
 
         Recurse over all sections in the parent template looking for
         GetAtts and Subs that reference a module Outputs value.
+
+        This function is running from the module, inspecting everything
+        in the partially resolved parent template.
         """
         sections = [RESOURCES, MODULES, OUTPUTS]
         for section in sections:
@@ -527,8 +540,10 @@ class Module:
 
         # For example, Content.Arn or Content[0].Arn
 
+        mapped = self.parent_module.mapped
         name = v[0]
         prop_name = v[1]
+
         index = -1
         if "[" in name:
             tokens = name.split("[")
@@ -541,12 +556,10 @@ class Module:
                     msg = f"Invalid index in {v}"
                     raise exceptions.InvalidModuleError(msg=msg)
             else:
-                mapped = self.parent_module.mapped
+                # This is a reference to all of the mapped values
+                # For example, Content[].Arn
                 if name in mapped:
                     self.resolve_output_getatt_map(mapped, name, prop_name)
-                else:
-                    msg = f"Invalid map name: {name}"
-                    raise exceptions.InvalidModuleError(msg=msg)
                 return False
 
         if index > -1:
@@ -570,7 +583,17 @@ class Module:
             if len(getatt) < 2:
                 msg = f"GetAtt {getatt} in Output {v[1]} is invalid"
                 raise exceptions.InvalidModuleError(msg=msg)
-            d[n] = {GETATT: [self.name + getatt[0], getatt[1]]}
+            s = getatt_map_list(getatt)
+            if s is not None and s in self.mapped:
+                # Special handling for Overrides that GetAtt a module
+                # property, when that module has a Map attribute
+                d[n] = self.mapped[s]
+                if isinstance(d[n], list):
+                    for item in d[n]:
+                        if GETATT in item and len(item[GETATT]) > 0:
+                            item[GETATT][0] = self.name + item[GETATT][0]
+            else:
+                d[n] = {GETATT: [self.name + getatt[0], getatt[1]]}
         elif SUB in r:
             # Parse the Sub in the module reference
             words = parse_sub(r[SUB], True)
@@ -929,8 +952,16 @@ class Module:
         if not isinstance(v, list):
             msg = f"GetAtt {v} is not a list"
             raise exceptions.InvalidModuleError(msg=msg)
-        logical_id = self.name + v[0]
-        d[n] = {GETATT: [logical_id, v[1]]}
+
+        # Make sure the logical id exists
+        exists = False
+        for resource in self.resources:
+            if resource == v[0]:
+                exists = True
+                break
+        if exists:
+            logical_id = self.name + v[0]
+            d[n] = {GETATT: [logical_id, v[1]]}
 
     def find_ref(self, name):
         """

@@ -102,6 +102,7 @@ class TestPackageModules(unittest.TestCase):
             "policy",
             "vpc",
             "map",
+            "mapout",
             "conditional",
             "cond-intrinsics",
             "example",

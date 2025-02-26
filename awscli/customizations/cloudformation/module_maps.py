@@ -33,6 +33,9 @@ PROPERTIES = "Properties"
 MODULES = "Modules"
 GETATT = "Fn::GetAtt"
 RESOURCES = "Resources"
+OUTPUTS = "Outputs"
+ORIGINAL = "Original"
+VALUE = "Value"
 
 
 def replace_str(s, m, i):
@@ -107,18 +110,20 @@ def process_module_maps(template, parent_module):
                 # Make a new module
                 module_id = f"{k}{i}"
                 copied_module = copy.deepcopy(v)
+                copied_module[ORIGINAL] = k
                 del copied_module[MAP]
                 # Replace $Map and $Index placeholders
                 if PROPERTIES in copied_module:
 
-                    def vf(v):
-                        if v.p is not None:
-                            v.p[v.k] = map_placeholders(i, token, v.d)
+                    def vf(vis):
+                        if vis.p is not None:
+                            vis.p[vis.k] = map_placeholders(i, token, vis.d)
 
                     Visitor(copied_module[PROPERTIES]).visit(vf)
 
                 modules[module_id] = copied_module
 
+            # Remember the original module so we can process outputs later
             del modules[k]
 
     return retval
@@ -132,24 +137,35 @@ def resolve_mapped_lists(template, mapped):
     a module's output. These are converted to lists.
     """
 
-    # Visit the entire template
-    if RESOURCES not in template:
-        return
-
     def vf(v):
         if isdict(v.d) and GETATT in v.d and v.p is not None:
             getatt = v.d[GETATT]
-            if isinstance(getatt, list) and len(getatt) > 1:
-                if "[]" in getatt[0]:
-                    s = ".".join(getatt)  # Content[0].Arn
-                    if s in mapped:
-                        v.p[v.k] = mapped[s]
-            else:
-                msg = f"Invalid GetAtt: {getatt}"
-                raise exceptions.InvalidModuleError(msg=msg)
+            s = getatt_map_list(getatt)
+            if s is not None:
+                if s in mapped:
+                    v.p[v.k] = mapped[s]
 
-    v = Visitor(template[RESOURCES])
-    v.visit(vf)
+    if RESOURCES in template:
+        v = Visitor(template[RESOURCES])
+        v.visit(vf)
+
+    if OUTPUTS in template:
+        for _, val in template[OUTPUTS].items():
+            output_val = val.get(VALUE, None)
+            if output_val is not None and GETATT in output_val:
+                s = getatt_map_list(output_val[GETATT])
+                if s is not None and s in mapped:
+                    # Handling for Override GetAtts to module Outputs
+                    # that reference a module with a Map
+                    val[VALUE] = mapped[s]
+
+
+def getatt_map_list(getatt):
+    "Converts a getatt array like ['Content[]', 'Arn'] to a string"
+    if isinstance(getatt, list) and len(getatt) > 1:
+        if "[]" in getatt[0]:
+            return ".".join(getatt)  # Content[].Arn
+    return None
 
 
 def isdict(v):

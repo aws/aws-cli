@@ -161,7 +161,12 @@ def resolve_mapped_lists(template, mapped):
 
 
 def getatt_map_list(getatt):
-    "Converts a getatt array like ['Content[]', 'Arn'] to a string"
+    """
+    Converts a getatt array like ['Content[]', 'Arn'] to a string,
+    joining with a dot. 'Content[].Arn'
+    Returns None if the getatt is not a list at least 2 elements long,
+    and if the first element does not contain '[]'
+    """
     if isinstance(getatt, list) and len(getatt) > 1:
         if "[]" in getatt[0]:
             return ".".join(getatt)  # Content[].Arn

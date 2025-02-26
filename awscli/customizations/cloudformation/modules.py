@@ -26,6 +26,7 @@ See the public documentation for a full description of the feature.
 
 # pylint: disable=fixme,too-many-instance-attributes,too-many-lines
 
+import copy
 import logging
 import os
 
@@ -587,8 +588,8 @@ class Module:
             if s is not None and s in self.mapped:
                 # Special handling for Overrides that GetAtt a module
                 # property, when that module has a Map attribute
-                d[n] = self.mapped[s]
-                if isinstance(d[n], list):
+                if isinstance(self.mapped[s], list):
+                    d[n] = copy.deepcopy(self.mapped[s])
                     for item in d[n]:
                         if GETATT in item and len(item[GETATT]) > 0:
                             item[GETATT][0] = self.name + item[GETATT][0]

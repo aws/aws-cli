@@ -14,6 +14,7 @@
 import contextlib
 import platform
 import os
+import pytest
 import re
 
 from awscli.testutils import unittest
@@ -298,32 +299,31 @@ class FakeCommandVerify(FakeCommand):
         return 0
 
 
-class TestCliDriver(unittest.TestCase):
-    def setUp(self):
+class TestCliDriver:
+    def setup_method(self):
         self.session = FakeSession()
         self.session.set_config_variable('cli_auto_prompt', 'off')
         self.driver = CLIDriver(session=self.session)
 
     def test_session_can_be_passed_in(self):
-        self.assertEqual(self.driver.session, self.session)
+        assert self.driver.session == self.session
 
     def test_paginate_rc(self):
         rc = self.driver.main('s3 list-objects --bucket foo'.split())
-        self.assertEqual(rc, 0)
+        assert rc == 0
 
     def test_no_profile(self):
         self.driver.main('s3 list-objects --bucket foo'.split())
-        self.assertEqual(self.driver.session.profile, None)
+        assert self.driver.session.profile is None
 
     def test_profile(self):
         self.driver.main('s3 list-objects --bucket foo --profile foo'.split())
-        self.assertEqual(self.driver.session.profile, 'foo')
+        assert self.driver.session.profile == 'foo'
 
     def test_region_is_set_for_session(self):
         driver = CLIDriver(session=self.session)
         driver.main('s3 list-objects --bucket foo --region us-east-2'.split())
-        self.assertEqual(
-            driver.session.get_config_variable('region'), 'us-east-2')
+        assert driver.session.get_config_variable('region') == 'us-east-2'
 
     @mock.patch('awscli.clidriver.set_stream_logger')
     def test_error_logger(self, set_stream_logger):
@@ -337,7 +337,7 @@ class TestCliDriver(unittest.TestCase):
         fake_client.can_paginate.return_value = False
         self.driver.session.create_client = mock.Mock(return_value=fake_client)
         rc = self.driver.main('s3 list-objects --bucket foo'.split())
-        self.assertEqual(rc, 130)
+        assert rc == 130
 
     def test_error_unicode(self):
         stderr_b = io.BytesIO()
@@ -350,47 +350,62 @@ class TestCliDriver(unittest.TestCase):
             with mock.patch("locale.getpreferredencoding", lambda: "UTF-8"):
                 rc = self.driver.main('s3 list-objects --bucket foo'.split())
         stderr.flush()
-        self.assertEqual(rc, 255)
-        self.assertEqual(stderr_b.getvalue().strip(), u"☃".encode("UTF-8"))
+        assert rc == 255
+        assert stderr_b.getvalue().strip() == u"☃".encode("UTF-8")
 
-    @mock.patch.dict(os.environ, {'AWS_CLI_OUTPUT_ENCODING': 'UTF-8'})
-    def test_error_unicode_env_override(self):
+    @pytest.mark.parametrize('env_vars', [
+        {'AWS_CLI_OUTPUT_ENCODING': 'UTF-8'},
+        {'PYTHONUTF8': '1'},
+    ])
+    def test_error_unicode_env_override(self, env_vars):
         stderr_b = io.BytesIO()
         stderr = io.TextIOWrapper(stderr_b, encoding="cp1252")
         fake_client = mock.Mock()
         fake_client.list_objects.side_effect = Exception(u"☃")
         fake_client.can_paginate.return_value = False
         self.driver.session.create_client = mock.Mock(return_value=fake_client)
-        with mock.patch("sys.stderr", stderr):
-            rc = self.driver.main('s3 list-objects --bucket foo'.split())
+        with mock.patch.dict(os.environ, env_vars):
+            with mock.patch("sys.stderr", stderr):
+                rc = self.driver.main('s3 list-objects --bucket foo'.split())
         stderr.flush()
-        self.assertEqual(rc, 255)
-        self.assertEqual(stderr_b.getvalue().strip(), u"☃".encode("UTF-8"))
+        assert rc == 255
+        assert stderr_b.getvalue().strip() == u"☃".encode("UTF-8")
+
+    def test_invalid_output_encoding_throws(self):
+        stderr_b = io.BytesIO()
+        fake_stderr = io.TextIOWrapper(stderr_b)
+        with mock.patch.dict(os.environ, {'AWS_CLI_OUTPUT_ENCODING': 'invalid'}):
+            with contextlib.redirect_stderr(fake_stderr):
+                rc = self.driver.main('s3 list-objects --bucket foo'.split())
+        assert rc == 255
+        fake_stderr.flush()
+        assert stderr_b.getvalue().decode().strip() == \
+            'Unknown codec `invalid` specified for AWS_CLI_OUTPUT_ENCODING.'
 
     def test_can_access_subcommand_table(self):
         table = self.driver.subcommand_table
-        self.assertEqual(list(table), self.session.get_available_services())
+        assert list(table) == self.session.get_available_services()
 
     def test_can_access_argument_table(self):
         arg_table = self.driver.arg_table
         expected = list(GET_DATA['cli']['options'])
-        self.assertEqual(list(arg_table), expected)
+        assert list(arg_table) == expected
 
     def test_cli_driver_can_keep_log_handlers(self):
         fake_stderr = io.StringIO()
         with contextlib.redirect_stderr(fake_stderr):
             driver = create_clidriver(['--debug'])
             rc = driver.main(['ec2', '--debug'])
-        self.assertEqual(rc, 252)
-        self.assertEqual(2, fake_stderr.getvalue().count('CLI version:'))
+        assert rc == 252
+        assert 2 == fake_stderr.getvalue().count('CLI version:')
 
     def test_cli_driver_can_remove_log_handlers(self):
         fake_stderr = io.StringIO()
         with contextlib.redirect_stderr(fake_stderr):
             driver = create_clidriver(['--debug'])
             rc = driver.main(['ec2'])
-        self.assertEqual(rc, 252)
-        self.assertEqual(1, fake_stderr.getvalue().count('CLI version:'))
+        assert rc == 252
+        assert 1 == fake_stderr.getvalue().count('CLI version:')
 
     @mock.patch('awscrt.io.init_logging')
     def test_debug_enables_crt_logging(self, mock_init_logging):

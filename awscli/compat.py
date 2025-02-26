@@ -23,6 +23,7 @@ import collections.abc as collections_abc
 import locale
 import queue
 import io
+import logging
 from urllib.request import urlopen
 from configparser import RawConfigParser
 from functools import partial
@@ -72,6 +73,9 @@ imap = map
 raw_input = input
 
 OUTPUT_ENCODING_ENV_VAR = 'AWS_CLI_OUTPUT_ENCODING'
+PYTHONUTF8_ENV_VAR = 'PYTHONUTF8'
+
+LOG = logging.getLogger(__name__)
 
 
 class StdinMissingError(Exception):
@@ -126,14 +130,46 @@ def _get_text_writer(stream, errors):
     return stream
 
 
+def validate_preferred_output_encoding():
+    """
+    Validate that the preferred output encoding is valid if it's set.
+    We do this separately from set_preferred_output_encoding because that
+    may be called from error handlers while handling another exception, which
+    we still want to print successfully.
+    """
+    if OUTPUT_ENCODING_ENV_VAR in os.environ:
+        try:
+            ''.encode(os.environ[OUTPUT_ENCODING_ENV_VAR])
+        except LookupError:
+            raise ValueError(f'Unknown codec `'
+                             f'{os.environ[OUTPUT_ENCODING_ENV_VAR]}` '
+                             f'specified for {OUTPUT_ENCODING_ENV_VAR}.')
+
+
 def set_preferred_output_encoding(stream):
     """
     If the user specified AWS_CLI_OUTPUT_ENCODING, use that encoding
-    for the output stream. This is useful for Windows users since
-    PyInstaller 6 no longer honors PYTHONUTF8.
+    for the output stream. This lets us move away from the Python-specific
+    environment variables in the long-term, though we support PYTHONUTF8
+    here as well for backwards compatability.
     """
     if OUTPUT_ENCODING_ENV_VAR in os.environ:
-        stream.reconfigure(encoding=os.environ[OUTPUT_ENCODING_ENV_VAR])
+        try:
+            stream.reconfigure(encoding=os.environ[OUTPUT_ENCODING_ENV_VAR])
+        except LookupError:
+            # At this point we don't want to raise the exception, since we
+            # could be writing out another error. Callers should call
+            # validate_preferred_output_encoding first.
+            LOG.debug(f'Ignoring invalid codec '
+                      f'{os.environ[OUTPUT_ENCODING_ENV_VAR]} '
+                      f'specified for {OUTPUT_ENCODING_ENV_VAR}.')
+    # Fall back to PYTHONUTF8, for users who were setting it
+    # before the PyInstaller 6 upgrade which stopped supporting it
+    elif (
+        PYTHONUTF8_ENV_VAR in os.environ and
+        os.environ[PYTHONUTF8_ENV_VAR] == '1'
+    ):
+        stream.reconfigure(encoding='UTF-8')
 
 
 def getpreferredencoding(*args, **kwargs):

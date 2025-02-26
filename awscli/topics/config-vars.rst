@@ -469,11 +469,12 @@ make CLI ignore locale encoding and open text files using ``UTF-8``.
 
 To set the encoding used for the CLI's output, you can use the
 ``AWS_CLI_OUTPUT_ENCODING`` environment variable. For example, if you use Windows
-with default encoding ``CP1252``, setting ``AWS_CLI_OUTPUT_ENCODING=UTF-8`` would
-make CLI ignore the locale encoding and format its output using ``UTF-8``.
+with the default encoding ``CP1252``, setting ``AWS_CLI_OUTPUT_ENCODING=UTF-8``
+would make CLI ignore the locale encoding and format its output using ``UTF-8``.
 
-Recent versions of the AWS CLI v2 may no longer respect Python's environment
-variables for configuring encoding, such as ``PYTHONUTF8`` and ``PYTHONIOENCODING``.
+Refer to
+`Python's Standard Encodings documentation <https://docs.python.org/3/library/codecs.html#standard-encodings>`_
+for possible values for both settings.
 
 Pager
 -----

@@ -15,6 +15,7 @@ AWSCLI
 ----
 A Universal Command Line Environment for Amazon Web Services.
 """
+
 import os
 import importlib.abc
 import sys
@@ -36,10 +37,18 @@ _awscli_data_path.append(
 os.environ['AWS_DATA_PATH'] = os.pathsep.join(_awscli_data_path)
 
 
-SCALAR_TYPES = set([
-    'string', 'float', 'integer', 'long', 'boolean', 'double',
-    'blob', 'timestamp'
-])
+SCALAR_TYPES = set(
+    [
+        'string',
+        'float',
+        'integer',
+        'long',
+        'boolean',
+        'double',
+        'blob',
+        'timestamp',
+    ]
+)
 COMPLEX_TYPES = set(['structure', 'map', 'list'])
 
 
@@ -57,13 +66,14 @@ class TopLevelImportAliasFinder(importlib.abc.MetaPathFinder):
     Note: That this import alias only comes into affect if anything is
     imported from the awscli package.
     """
+
     _PACKAGES = [
         'botocore',
         's3transfer',
     ]
     _TARGET_FINDERS = [
         'pyimod02_importers.PyiFrozenImporter',  # Pyinstaller injected finder
-        '_frozen_importlib_external.PathFinder'  # Built-in path finder
+        '_frozen_importlib_external.PathFinder',  # Built-in path finder
     ]
 
     def __init__(self, underlying_finder):

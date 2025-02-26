@@ -29,7 +29,7 @@ def should_read_line(line):
 
 def read_lock_file(path):
     with open(path, 'r') as f:
-        lines = f.read().split('\n')
+        lines = f.read().strip('\n').split('\n')
 
     # Find source files
     source_files = get_source_files(lines)

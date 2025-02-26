@@ -6513,7 +6513,7 @@
     "BatchDeleteClusterNodesErrorList":{
       "type":"list",
       "member":{"shape":"BatchDeleteClusterNodesError"},
-      "max":99,
+      "max":3000,
       "min":1
     },
     "BatchDeleteClusterNodesRequest":{
@@ -6529,7 +6529,7 @@
         },
         "NodeIds":{
           "shape":"ClusterNodeIds",
-          "documentation":"<p>A list of node IDs to be deleted from the specified cluster.</p> <note> <p>For SageMaker HyperPod clusters using the Slurm workload manager, you cannot remove instances that are configured as Slurm controller nodes.</p> </note>"
+          "documentation":"<p>A list of node IDs to be deleted from the specified cluster.</p> <note> <ul> <li> <p>For SageMaker HyperPod clusters using the Slurm workload manager, you cannot remove instances that are configured as Slurm controller nodes.</p> </li> <li> <p>If you need to delete more than 99 instances, contact <a href=\"http://aws.amazon.com/contact-us/\">Support</a> for assistance.</p> </li> </ul> </note>"
         }
       }
     },
@@ -7986,7 +7986,7 @@
     "ClusterNodeIds":{
       "type":"list",
       "member":{"shape":"ClusterNodeId"},
-      "max":99,
+      "max":3000,
       "min":1
     },
     "ClusterNodeRecovery":{
@@ -15959,6 +15959,10 @@
         "InferenceComponentStatus":{
           "shape":"InferenceComponentStatus",
           "documentation":"<p>The status of the inference component.</p>"
+        },
+        "LastDeploymentConfig":{
+          "shape":"InferenceComponentDeploymentConfig",
+          "documentation":"<p>The deployment and rollback settings that you assigned to the inference component.</p>"
         }
       }
     },
@@ -19977,7 +19981,7 @@
           "documentation":"<p>The list of tags that are associated with the experiment. You can use <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Search.html\">Search</a> API to search on the tags.</p>"
         }
       },
-      "documentation":"<p>The properties of an experiment as returned by the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Search.html\">Search</a> API.</p>"
+      "documentation":"<p>The properties of an experiment as returned by the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Search.html\">Search</a> API. For information about experiments, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateExperiment.html\">CreateExperiment</a> API.</p>"
     },
     "ExperimentArn":{
       "type":"string",
@@ -22669,6 +22673,31 @@
       "max":2048,
       "min":20
     },
+    "InferenceComponentCapacitySize":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Value"
+      ],
+      "members":{
+        "Type":{
+          "shape":"InferenceComponentCapacitySizeType",
+          "documentation":"<p>Specifies the endpoint capacity type.</p> <dl> <dt>COPY_COUNT</dt> <dd> <p>The endpoint activates based on the number of inference component copies.</p> </dd> <dt>CAPACITY_PERCENT</dt> <dd> <p>The endpoint activates based on the specified percentage of capacity.</p> </dd> </dl>"
+        },
+        "Value":{
+          "shape":"CapacitySizeValue",
+          "documentation":"<p>Defines the capacity size, either as a number of inference component copies or a capacity percentage.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the type and size of the endpoint capacity to activate for a rolling deployment or a rollback strategy. You can specify your batches as either of the following:</p> <ul> <li> <p>A count of inference component copies </p> </li> <li> <p>The overall percentage or your fleet </p> </li> </ul> <p>For a rollback strategy, if you don't specify the fields in this object, or if you set the <code>Value</code> parameter to 100%, then SageMaker AI uses a blue/green rollback strategy and rolls all traffic back to the blue fleet.</p>"
+    },
+    "InferenceComponentCapacitySizeType":{
+      "type":"string",
+      "enum":[
+        "COPY_COUNT",
+        "CAPACITY_PERCENT"
+      ]
+    },
     "InferenceComponentComputeResourceRequirements":{
       "type":"structure",
       "required":["MinMemoryRequiredInMb"],
@@ -22729,6 +22758,18 @@
       "type":"integer",
       "min":0
     },
+    "InferenceComponentDeploymentConfig":{
+      "type":"structure",
+      "required":["RollingUpdatePolicy"],
+      "members":{
+        "RollingUpdatePolicy":{
+          "shape":"InferenceComponentRollingUpdatePolicy",
+          "documentation":"<p>Specifies a rolling deployment strategy for updating a SageMaker AI endpoint.</p>"
+        },
+        "AutoRollbackConfiguration":{"shape":"AutoRollbackConfig"}
+      },
+      "documentation":"<p>The deployment configuration for an endpoint that hosts inference components. The configuration includes the desired deployment strategy and rollback settings.</p>"
+    },
     "InferenceComponentName":{
       "type":"string",
       "max":63,
@@ -22738,6 +22779,32 @@
       "type":"string",
       "max":63,
       "pattern":"[a-zA-Z0-9-]+"
+    },
+    "InferenceComponentRollingUpdatePolicy":{
+      "type":"structure",
+      "required":[
+        "MaximumBatchSize",
+        "WaitIntervalInSeconds"
+      ],
+      "members":{
+        "MaximumBatchSize":{
+          "shape":"InferenceComponentCapacitySize",
+          "documentation":"<p>The batch size for each rolling step in the deployment process. For each step, SageMaker AI provisions capacity on the new endpoint fleet, routes traffic to that fleet, and terminates capacity on the old endpoint fleet. The value must be between 5% to 50% of the copy count of the inference component.</p>"
+        },
+        "WaitIntervalInSeconds":{
+          "shape":"WaitIntervalInSeconds",
+          "documentation":"<p>The length of the baking period, during which SageMaker AI monitors alarms for each batch on the new fleet.</p>"
+        },
+        "MaximumExecutionTimeoutInSeconds":{
+          "shape":"MaximumExecutionTimeoutInSeconds",
+          "documentation":"<p>The time limit for the total deployment. Exceeding this limit causes a timeout.</p>"
+        },
+        "RollbackMaximumBatchSize":{
+          "shape":"InferenceComponentCapacitySize",
+          "documentation":"<p>The batch size for a rollback to the old endpoint fleet. If this field is absent, the value is set to the default, which is 100% of the total capacity. When the default is used, SageMaker AI provisions the entire capacity of the old fleet at once during rollback.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a rolling deployment strategy for updating a SageMaker AI inference component.</p>"
     },
     "InferenceComponentRuntimeConfig":{
       "type":"structure",
@@ -29780,7 +29847,7 @@
       "members":{
         "ModelPackageName":{
           "shape":"EntityName",
-          "documentation":"<p>The name of the model.</p>"
+          "documentation":"<p>The name of the model package. The name can be as follows:</p> <ul> <li> <p>For a versioned model, the name is automatically generated by SageMaker Model Registry and follows the format '<code>ModelPackageGroupName/ModelPackageVersion</code>'.</p> </li> <li> <p>For an unversioned model, you must provide the name.</p> </li> </ul>"
         },
         "ModelPackageGroupName":{
           "shape":"EntityName",
@@ -29897,7 +29964,7 @@
           "documentation":"<p>Indicates if you want to skip model validation.</p>"
         }
       },
-      "documentation":"<p>A versioned model that can be deployed for SageMaker inference.</p>"
+      "documentation":"<p>A container for your trained model that can be deployed for SageMaker inference. This can include inference code, artifacts, and metadata. The model package type can be one of the following.</p> <ul> <li> <p>Versioned model: A part of a model package group in Model Registry.</p> </li> <li> <p>Unversioned model: Not part of a model package group and used in Amazon Web Services Marketplace.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateModelPackage.html\"> <code>CreateModelPackage</code> </a>.</p>"
     },
     "ModelPackageArn":{
       "type":"string",
@@ -30011,7 +30078,7 @@
           "documentation":"<p>A list of the tags associated with the model group. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>"
         }
       },
-      "documentation":"<p>A group of versioned models in the model registry.</p>"
+      "documentation":"<p>A group of versioned models in the Model Registry.</p>"
     },
     "ModelPackageGroupArn":{
       "type":"string",
@@ -40889,6 +40956,10 @@
         "RuntimeConfig":{
           "shape":"InferenceComponentRuntimeConfig",
           "documentation":"<p>Runtime settings for a model that is deployed with an inference component.</p>"
+        },
+        "DeploymentConfig":{
+          "shape":"InferenceComponentDeploymentConfig",
+          "documentation":"<p>The deployment configuration for the inference component. The configuration contains the desired deployment strategy and rollback settings.</p>"
         }
       }
     },

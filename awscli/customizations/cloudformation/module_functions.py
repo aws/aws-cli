@@ -70,17 +70,6 @@ def fn_merge(d):
             if len(mrg) != 2:
                 msg = f"Fn::Merge requires 2 args: {v.k}: {v.d}"
                 raise exceptions.InvalidModuleError(msg=msg)
-            isd1 = isdict(mrg[0])
-            isd2 = isdict(mrg[1])
-            isl1 = isinstance(mrg[0], list)
-            isl2 = isinstance(mrg[1], list)
-            if not (isd1 and isd2):
-                if not (isl1 and isl2):
-                    msg = (
-                        "Both args to Fn::Merge must be objects or lists"
-                        + f": {v.k}: {v.d}"
-                    )
-                    raise exceptions.InvalidModuleError(msg=msg)
             v.p[v.k] = merge_props(mrg[0], mrg[1])
 
     Visitor(d).visit(vf)

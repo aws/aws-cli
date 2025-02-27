@@ -471,6 +471,24 @@
       ],
       "documentation":"<p>Returns information about a <code>TableRestoreStatus</code> object.</p>"
     },
+    "GetTrack":{
+      "name":"GetTrack",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetTrackRequest"},
+      "output":{"shape":"GetTrackResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Get the Redshift Serverless version for a specified track.</p>"
+    },
     "GetUsageLimit":{
       "name":"GetUsageLimit",
       "http":{
@@ -655,6 +673,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists the tags assigned to a resource.</p>"
+    },
+    "ListTracks":{
+      "name":"ListTracks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTracksRequest"},
+      "output":{"shape":"ListTracksResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidPaginationException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>List the Amazon Redshift Serverless versions.</p>"
     },
     "ListUsageLimits":{
       "name":"ListUsageLimits",
@@ -1437,6 +1472,10 @@
           "shape":"TagList",
           "documentation":"<p>A array of tag instances.</p>"
         },
+        "trackName":{
+          "shape":"TrackName",
+          "documentation":"<p>An optional parameter for the name of the track for the workgroup. If you don't provide a track name, the workgroup is assigned to the <code>current</code> track.</p>"
+        },
         "workgroupName":{
           "shape":"WorkgroupName",
           "documentation":"<p>The name of the created workgroup.</p>"
@@ -1947,6 +1986,25 @@
         }
       }
     },
+    "GetTrackRequest":{
+      "type":"structure",
+      "required":["trackName"],
+      "members":{
+        "trackName":{
+          "shape":"TrackName",
+          "documentation":"<p>The name of the track of which its version is fetched.</p>"
+        }
+      }
+    },
+    "GetTrackResponse":{
+      "type":"structure",
+      "members":{
+        "track":{
+          "shape":"ServerlessTrack",
+          "documentation":"<p>The version of the specified track.</p>"
+        }
+      }
+    },
     "GetUsageLimitRequest":{
       "type":"structure",
       "required":["usageLimitId"],
@@ -2422,6 +2480,38 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p>A map of the key-value pairs assigned to the resource.</p>"
+        }
+      }
+    },
+    "ListTracksRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListTracksRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified MaxRecords value, a value is returned in a marker field of the response. You can retrieve the next set of records by retrying the command with the returned marker value.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If your initial <code>ListTracksRequest</code> operation returns a <code>nextToken</code>, you can include the returned <code>nextToken</code> in following <code>ListTracksRequest</code> operations, which returns results in the next page.</p>"
+        }
+      }
+    },
+    "ListTracksRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListTracksResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page.</p>"
+        },
+        "tracks":{
+          "shape":"TrackList",
+          "documentation":"<p>The returned tracks.</p>"
         }
       }
     },
@@ -3106,6 +3196,24 @@
       "type":"list",
       "member":{"shape":"SecurityGroupId"}
     },
+    "ServerlessTrack":{
+      "type":"structure",
+      "members":{
+        "trackName":{
+          "shape":"TrackName",
+          "documentation":"<p>The name of the track. Valid values are <code>current</code> and <code>trailing</code>.</p>"
+        },
+        "updateTargets":{
+          "shape":"UpdateTargetsList",
+          "documentation":"<p>An array of <code>UpdateTarget</code> objects to update with the track.</p>"
+        },
+        "workgroupVersion":{
+          "shape":"String",
+          "documentation":"<p>The workgroup version number for the workgroup release.</p>"
+        }
+      },
+      "documentation":"<p>Defines a track that determines which Amazon Redshift version to apply after a new version is released. If the value for <code>ServerlessTrack</code> is <code>current</code>, the workgroup is updated to the most recently certified release. If the value is <code>trailing</code>, the workgroup is updated to the previously certified release.</p>"
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "required":["message"],
@@ -3453,6 +3561,16 @@
       "documentation":"<p>The request exceeded the number of tags allowed for a resource.</p>",
       "exception":true
     },
+    "TrackList":{
+      "type":"list",
+      "member":{"shape":"ServerlessTrack"}
+    },
+    "TrackName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_]+$"
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -3684,6 +3802,24 @@
         }
       }
     },
+    "UpdateTarget":{
+      "type":"structure",
+      "members":{
+        "trackName":{
+          "shape":"TrackName",
+          "documentation":"<p>The name of the new track.</p>"
+        },
+        "workgroupVersion":{
+          "shape":"String",
+          "documentation":"<p>The workgroup version for the new track.</p>"
+        }
+      },
+      "documentation":"<p>A track that you can switch the current track to.</p>"
+    },
+    "UpdateTargetsList":{
+      "type":"list",
+      "member":{"shape":"UpdateTarget"}
+    },
     "UpdateUsageLimitRequest":{
       "type":"structure",
       "required":["usageLimitId"],
@@ -3754,6 +3890,10 @@
         "subnetIds":{
           "shape":"SubnetIdList",
           "documentation":"<p>An array of VPC subnet IDs to associate with the workgroup.</p>"
+        },
+        "trackName":{
+          "shape":"TrackName",
+          "documentation":"<p>An optional parameter for the name of the track for the workgroup. If you don't provide a track name, the workgroup is assigned to the <code>current</code> track.</p>"
         },
         "workgroupName":{
           "shape":"WorkgroupName",
@@ -3947,6 +4087,10 @@
           "shape":"String",
           "documentation":"<p>The patch version of your Amazon Redshift Serverless workgroup. For more information about patch versions, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/cluster-versions.html\">Cluster versions for Amazon Redshift</a>.</p>"
         },
+        "pendingTrackName":{
+          "shape":"TrackName",
+          "documentation":"<p>The name for the track that you want to assign to the workgroup. When the track changes, the workgroup is switched to the latest workgroup release available for the track. At this point, the track name is applied.</p>"
+        },
         "port":{
           "shape":"Integer",
           "documentation":"<p>The custom port to use when connecting to a workgroup. Valid port ranges are 5431-5455 and 8191-8215. The default is 5439.</p>"
@@ -3970,6 +4114,10 @@
         "subnetIds":{
           "shape":"SubnetIdList",
           "documentation":"<p>An array of subnet IDs the workgroup is associated with.</p>"
+        },
+        "trackName":{
+          "shape":"TrackName",
+          "documentation":"<p>The name of the track for the workgroup.</p>"
         },
         "workgroupArn":{
           "shape":"String",

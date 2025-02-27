@@ -4070,6 +4070,34 @@
       ],
       "documentation":"<p>Update a hub.</p>"
     },
+    "UpdateHubContent":{
+      "name":"UpdateHubContent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateHubContentRequest"},
+      "output":{"shape":"UpdateHubContentResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Updates SageMaker hub content (either a <code>Model</code> or <code>Notebook</code> resource).</p> <p>You can update the metadata that describes the resource. In addition to the required request fields, specify at least one of the following fields to update:</p> <ul> <li> <p> <code>HubContentDescription</code> </p> </li> <li> <p> <code>HubContentDisplayName</code> </p> </li> <li> <p> <code>HubContentMarkdown</code> </p> </li> <li> <p> <code>HubContentSearchKeywords</code> </p> </li> <li> <p> <code>SupportStatus</code> </p> </li> </ul> <p>For more information about hubs, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-curated-hubs.html\">Private curated hubs for foundation model access control in JumpStart</a>.</p> <note> <p>If you want to update a <code>ModelReference</code> resource in your hub, use the <code>UpdateHubContentResource</code> API instead.</p> </note>"
+    },
+    "UpdateHubContentReference":{
+      "name":"UpdateHubContentReference",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateHubContentReferenceRequest"},
+      "output":{"shape":"UpdateHubContentReferenceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Updates the contents of a SageMaker hub for a <code>ModelReference</code> resource. A <code>ModelReference</code> allows you to access public SageMaker JumpStart models from within your private hub.</p> <p>When using this API, you can update the <code>MinVersion</code> field for additional flexibility in the model version. You shouldn't update any additional fields when using this API, because the metadata in your private hub should match the public JumpStart model's metadata.</p> <note> <p>If you want to update a <code>Model</code> or <code>Notebook</code> resource in your hub, use the <code>UpdateHubContent</code> API instead.</p> </note> <p>For more information about adding model references to your hub, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-curated-hubs-admin-guide-add-models.html\"> Add models to a private hub</a>.</p>"
+    },
     "UpdateImage":{
       "name":"UpdateImage",
       "http":{
@@ -15561,6 +15589,10 @@
         "CreationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that hub content was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last modified time of the hub content.</p>"
         }
       }
     },
@@ -21148,6 +21180,17 @@
       "min":0
     },
     "Horovod":{"type":"boolean"},
+    "HubAccessConfig":{
+      "type":"structure",
+      "required":["HubContentArn"],
+      "members":{
+        "HubContentArn":{
+          "shape":"HubContentArn",
+          "documentation":"<p>The ARN of your private model hub content. This should be a <code>ModelReference</code> resource type that points to a SageMaker JumpStart public hub model.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a private hub model reference that points to a public SageMaker JumpStart model.</p> <p>For more information about private hubs, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-curated-hubs.html\">Private curated hubs for foundation model access control in JumpStart</a>.</p>"
+    },
     "HubArn":{
       "type":"string",
       "max":255,
@@ -21299,7 +21342,8 @@
       "type":"string",
       "enum":[
         "Supported",
-        "Deprecated"
+        "Deprecated",
+        "Restricted"
       ]
     },
     "HubContentType":{
@@ -22636,6 +22680,10 @@
         "HubContentDocument":{
           "shape":"HubContentDocument",
           "documentation":"<p>The hub content document that describes information about the hub content such as type, associated containers, scripts, and more.</p>"
+        },
+        "SupportStatus":{
+          "shape":"HubContentSupportStatus",
+          "documentation":"<p>The status of the hub content resource.</p>"
         },
         "HubContentSearchKeywords":{
           "shape":"HubContentSearchKeywordList",
@@ -35962,6 +36010,11 @@
         "InstanceGroupNames":{
           "shape":"InstanceGroupNames",
           "documentation":"<p>A list of names of instance groups that get data from the S3 data source.</p>"
+        },
+        "ModelAccessConfig":{"shape":"ModelAccessConfig"},
+        "HubAccessConfig":{
+          "shape":"HubAccessConfig",
+          "documentation":"<p>The configuration for a private hub model reference that points to a SageMaker JumpStart public hub model.</p>"
         }
       },
       "documentation":"<p>Describes the S3 data source.</p> <p>Your input bucket must be in the same Amazon Web Services region as your training job.</p>"
@@ -40808,6 +40861,113 @@
         "ParameterRemovals":{
           "shape":"FeatureParameterRemovals",
           "documentation":"<p>A list of parameter keys that you can specify to remove parameters that describe your feature.</p>"
+        }
+      }
+    },
+    "UpdateHubContentReferenceRequest":{
+      "type":"structure",
+      "required":[
+        "HubName",
+        "HubContentName",
+        "HubContentType"
+      ],
+      "members":{
+        "HubName":{
+          "shape":"HubNameOrArn",
+          "documentation":"<p>The name of the SageMaker hub that contains the hub content you want to update. You can optionally use the hub ARN instead.</p>"
+        },
+        "HubContentName":{
+          "shape":"HubContentName",
+          "documentation":"<p>The name of the hub content resource that you want to update.</p>"
+        },
+        "HubContentType":{
+          "shape":"HubContentType",
+          "documentation":"<p>The content type of the resource that you want to update. Only specify a <code>ModelReference</code> resource for this API. To update a <code>Model</code> or <code>Notebook</code> resource, use the <code>UpdateHubContent</code> API instead.</p>"
+        },
+        "MinVersion":{
+          "shape":"HubContentVersion",
+          "documentation":"<p>The minimum hub content version of the referenced model that you want to use. The minimum version must be older than the latest available version of the referenced model. To support all versions of a model, set the value to <code>1.0.0</code>.</p>"
+        }
+      }
+    },
+    "UpdateHubContentReferenceResponse":{
+      "type":"structure",
+      "required":[
+        "HubArn",
+        "HubContentArn"
+      ],
+      "members":{
+        "HubArn":{
+          "shape":"HubArn",
+          "documentation":"<p>The ARN of the private model hub that contains the updated hub content.</p>"
+        },
+        "HubContentArn":{
+          "shape":"HubContentArn",
+          "documentation":"<p>The ARN of the hub content resource that was updated.</p>"
+        }
+      }
+    },
+    "UpdateHubContentRequest":{
+      "type":"structure",
+      "required":[
+        "HubName",
+        "HubContentName",
+        "HubContentType",
+        "HubContentVersion"
+      ],
+      "members":{
+        "HubName":{
+          "shape":"HubNameOrArn",
+          "documentation":"<p>The name of the SageMaker hub that contains the hub content you want to update. You can optionally use the hub ARN instead.</p>"
+        },
+        "HubContentName":{
+          "shape":"HubContentName",
+          "documentation":"<p>The name of the hub content resource that you want to update.</p>"
+        },
+        "HubContentType":{
+          "shape":"HubContentType",
+          "documentation":"<p>The content type of the resource that you want to update. Only specify a <code>Model</code> or <code>Notebook</code> resource for this API. To update a <code>ModelReference</code>, use the <code>UpdateHubContentReference</code> API instead.</p>"
+        },
+        "HubContentVersion":{
+          "shape":"HubContentVersion",
+          "documentation":"<p>The hub content version that you want to update. For example, if you have two versions of a resource in your hub, you can update the second version.</p>"
+        },
+        "HubContentDisplayName":{
+          "shape":"HubContentDisplayName",
+          "documentation":"<p>The display name of the hub content.</p>"
+        },
+        "HubContentDescription":{
+          "shape":"HubContentDescription",
+          "documentation":"<p>The description of the hub content.</p>"
+        },
+        "HubContentMarkdown":{
+          "shape":"HubContentMarkdown",
+          "documentation":"<p>A string that provides a description of the hub content. This string can include links, tables, and standard markdown formatting.</p>"
+        },
+        "HubContentSearchKeywords":{
+          "shape":"HubContentSearchKeywordList",
+          "documentation":"<p>The searchable keywords of the hub content.</p>"
+        },
+        "SupportStatus":{
+          "shape":"HubContentSupportStatus",
+          "documentation":"<p>Indicates the current status of the hub content resource.</p>"
+        }
+      }
+    },
+    "UpdateHubContentResponse":{
+      "type":"structure",
+      "required":[
+        "HubArn",
+        "HubContentArn"
+      ],
+      "members":{
+        "HubArn":{
+          "shape":"HubArn",
+          "documentation":"<p>The ARN of the private model hub that contains the updated hub content.</p>"
+        },
+        "HubContentArn":{
+          "shape":"HubContentArn",
+          "documentation":"<p>The ARN of the hub content resource that was updated.</p>"
         }
       }
     },

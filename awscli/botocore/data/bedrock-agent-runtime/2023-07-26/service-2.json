@@ -14,6 +14,47 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "CreateInvocation":{
+      "name":"CreateInvocation",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/sessions/{sessionIdentifier}/invocations/",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateInvocationRequest"},
+      "output":{"shape":"CreateInvocationResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a new invocation within a session. An invocation groups the related invocation steps that store the content from a conversation. For more information about sessions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p> <p>Related APIs</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_ListInvocations.html\">ListInvocations</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_ListSessions.html\">ListSessions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_GetSession.html\">GetSession</a> </p> </li> </ul>",
+      "idempotent":true
+    },
+    "CreateSession":{
+      "name":"CreateSession",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/sessions/",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateSessionRequest"},
+      "output":{"shape":"CreateSessionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a session to temporarily store conversations for generative AI (GenAI) applications built with open-source frameworks such as LangGraph and LlamaIndex. Sessions enable you to save the state of conversations at checkpoints, with the added security and infrastructure of Amazon Web Services. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p> <p>By default, Amazon Bedrock uses Amazon Web Services-managed keys for session encryption, including session metadata, or you can use your own KMS key. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/session-encryption.html\">Amazon Bedrock session encryption</a>.</p> <note> <p> You use a session to store state and conversation history for generative AI applications built with open-source frameworks. For Amazon Bedrock Agents, the service automatically manages conversation context and associates them with the agent-specific sessionId you specify in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/API_agent-runtime_InvokeAgent.html\">InvokeAgent</a> API operation. </p> </note> <p>Related APIs:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_ListSessions.html\">ListSessions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_GetSession.html\">GetSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_EndSession.html\">EndSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_DeleteSession.html\">DeleteSession</a> </p> </li> </ul>",
+      "idempotent":true
+    },
     "DeleteAgentMemory":{
       "name":"DeleteAgentMemory",
       "http":{
@@ -35,6 +76,46 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Deletes memory from the specified memory identifier.</p>",
+      "idempotent":true
+    },
+    "DeleteSession":{
+      "name":"DeleteSession",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/sessions/{sessionIdentifier}/",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteSessionRequest"},
+      "output":{"shape":"DeleteSessionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a session that you ended. You can't delete a session with an <code>ACTIVE</code> status. To delete an active session, you must first end it with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_EndSession.html\">EndSession</a> API operation. For more information about sessions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p>",
+      "idempotent":true
+    },
+    "EndSession":{
+      "name":"EndSession",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/sessions/{sessionIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"EndSessionRequest"},
+      "output":{"shape":"EndSessionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Ends the session. After you end a session, you can still access its content but you can’t add to it. To delete the session and it's content, you use the DeleteSession API operation. For more information about sessions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p>",
       "idempotent":true
     },
     "GenerateQuery":{
@@ -80,6 +161,42 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Gets the sessions stored in the memory of the agent.</p>"
+    },
+    "GetInvocationStep":{
+      "name":"GetInvocationStep",
+      "http":{
+        "method":"POST",
+        "requestUri":"/sessions/{sessionIdentifier}/invocationSteps/{invocationStepId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetInvocationStepRequest"},
+      "output":{"shape":"GetInvocationStepResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the details of a specific invocation step within an invocation in a session. For more information about sessions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p>"
+    },
+    "GetSession":{
+      "name":"GetSession",
+      "http":{
+        "method":"GET",
+        "requestUri":"/sessions/{sessionIdentifier}/",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSessionRequest"},
+      "output":{"shape":"GetSessionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves details about a specific session. For more information about sessions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p>"
     },
     "InvokeAgent":{
       "name":"InvokeAgent",
@@ -148,6 +265,77 @@
       ],
       "documentation":"<p> Invokes an inline Amazon Bedrock agent using the configurations you provide with the request. </p> <ul> <li> <p>Specify the following fields for security purposes.</p> <ul> <li> <p>(Optional) <code>customerEncryptionKeyArn</code> – The Amazon Resource Name (ARN) of a KMS key to encrypt the creation of the agent.</p> </li> <li> <p>(Optional) <code>idleSessionTTLinSeconds</code> – Specify the number of seconds for which the agent should maintain session information. After this time expires, the subsequent <code>InvokeInlineAgent</code> request begins a new session.</p> </li> </ul> </li> <li> <p>To override the default prompt behavior for agent orchestration and to use advanced prompts, include a <code>promptOverrideConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html\">Advanced prompts</a>.</p> </li> <li> <p>The agent instructions will not be honored if your agent has only one knowledge base, uses default prompts, has no action group, and user input is disabled.</p> </li> </ul> <note> </note>"
     },
+    "ListInvocationSteps":{
+      "name":"ListInvocationSteps",
+      "http":{
+        "method":"POST",
+        "requestUri":"/sessions/{sessionIdentifier}/invocationSteps/",
+        "responseCode":200
+      },
+      "input":{"shape":"ListInvocationStepsRequest"},
+      "output":{"shape":"ListInvocationStepsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all invocation steps associated with a session and optionally, an invocation within the session. For more information about sessions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p>"
+    },
+    "ListInvocations":{
+      "name":"ListInvocations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/sessions/{sessionIdentifier}/invocations/",
+        "responseCode":200
+      },
+      "input":{"shape":"ListInvocationsRequest"},
+      "output":{"shape":"ListInvocationsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all invocations associated with a specific session. For more information about sessions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p>"
+    },
+    "ListSessions":{
+      "name":"ListSessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/sessions/",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSessionsRequest"},
+      "output":{"shape":"ListSessionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all sessions in your Amazon Web Services account. For more information about sessions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>List all the tags for the resource you specify.</p>"
+    },
     "OptimizePrompt":{
       "name":"OptimizePrompt",
       "http":{
@@ -166,6 +354,27 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Optimizes a prompt for the task that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-optimize.html\">Optimize a prompt</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
+    },
+    "PutInvocationStep":{
+      "name":"PutInvocationStep",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/sessions/{sessionIdentifier}/invocationSteps/",
+        "responseCode":201
+      },
+      "input":{"shape":"PutInvocationStepRequest"},
+      "output":{"shape":"PutInvocationStepResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Add an invocation step to an invocation in a session. An invocation step stores fine-grained state checkpoints, including text and images, for each interaction. For more information about sessions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p> <p>Related APIs:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_GetInvocationStep.html\">GetInvocationStep</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_ListInvocationSteps.html\">ListInvocationSteps</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_ListInvocations.html\">ListInvocations</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_ListInvocations.html\">ListSessions</a> </p> </li> </ul>",
+      "idempotent":true
     },
     "Rerank":{
       "name":"Rerank",
@@ -254,6 +463,64 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Queries a knowledge base and generates responses based on the retrieved results, with output in streaming format.</p> <note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>InvokeModelWithResponseStream</code>.</p> </note> <p>This operation requires permission for the <code> bedrock:RetrieveAndGenerate</code> action.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Associate tags with a resource. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Tagging resources</a> in the Amazon Bedrock User Guide.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Remove tags from a resource.</p>",
+      "idempotent":true
+    },
+    "UpdateSession":{
+      "name":"UpdateSession",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/sessions/{sessionIdentifier}/",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSessionRequest"},
+      "output":{"shape":"UpdateSessionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the metadata or encryption settings of a session. For more information about sessions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p>",
+      "idempotent":true
     }
   },
   "shapes":{
@@ -755,6 +1022,31 @@
       },
       "documentation":"<p>Contains configurations for a reranker model.</p>"
     },
+    "BedrockSessionContentBlock":{
+      "type":"structure",
+      "members":{
+        "image":{
+          "shape":"ImageBlock",
+          "documentation":"<p>The image in the invocation step.</p>"
+        },
+        "text":{
+          "shape":"BedrockSessionContentBlockTextString",
+          "documentation":"<p>The text in the invocation step.</p>"
+        }
+      },
+      "documentation":"<p>A block of content that you pass to, or receive from, a Amazon Bedrock session in an invocation step. You pass the content to a session in the <code>payLoad</code> of the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_PutInvocationStep.html\">PutInvocationStep</a> API operation. You retrieve the content with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_GetInvocationStep.html\">GetInvocationStep</a> API operation.</p> <p>For more information about sessions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "BedrockSessionContentBlockTextString":{
+      "type":"string",
+      "min":1
+    },
+    "BedrockSessionContentBlocks":{
+      "type":"list",
+      "member":{"shape":"BedrockSessionContentBlock"},
+      "min":1
+    },
     "Blob":{"type":"blob"},
     "Boolean":{
       "type":"boolean",
@@ -968,6 +1260,92 @@
         "assistant"
       ]
     },
+    "CreateInvocationRequest":{
+      "type":"structure",
+      "required":["sessionIdentifier"],
+      "members":{
+        "description":{
+          "shape":"InvocationDescription",
+          "documentation":"<p>A description for the interactions in the invocation. For example, \"User asking about weather in Seattle\".</p>"
+        },
+        "invocationId":{
+          "shape":"Uuid",
+          "documentation":"<p>A unique identifier for the invocation in UUID format.</p>"
+        },
+        "sessionIdentifier":{
+          "shape":"SessionIdentifier",
+          "documentation":"<p>The unique identifier for the associated session for the invocation. You can specify either the session's <code>sessionId</code> or its Amazon Resource Name (ARN). </p>",
+          "location":"uri",
+          "locationName":"sessionIdentifier"
+        }
+      }
+    },
+    "CreateInvocationResponse":{
+      "type":"structure",
+      "required":[
+        "createdAt",
+        "invocationId",
+        "sessionId"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp for when the invocation was created.</p>"
+        },
+        "invocationId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier for the invocation.</p>"
+        },
+        "sessionId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier for the session associated with the invocation.</p>"
+        }
+      }
+    },
+    "CreateSessionRequest":{
+      "type":"structure",
+      "members":{
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key to use to encrypt the session data. The user or role creating the session must have permission to use the key. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/session-encryption.html\">Amazon Bedrock session encryption</a>. </p>"
+        },
+        "sessionMetadata":{
+          "shape":"SessionMetadataMap",
+          "documentation":"<p>A map of key-value pairs containing attributes to be persisted across the session. For example, the user's ID, their language preference, and the type of device they are using.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Specify the key-value pairs for the tags that you want to attach to the session.</p>"
+        }
+      }
+    },
+    "CreateSessionResponse":{
+      "type":"structure",
+      "required":[
+        "createdAt",
+        "sessionArn",
+        "sessionId",
+        "sessionStatus"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp for when the session was created.</p>"
+        },
+        "sessionArn":{
+          "shape":"SessionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created session.</p>"
+        },
+        "sessionId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier for the session.</p>"
+        },
+        "sessionStatus":{
+          "shape":"SessionStatus",
+          "documentation":"<p>The current status of the session.</p>"
+        }
+      }
+    },
     "CreationMode":{
       "type":"string",
       "enum":[
@@ -1048,6 +1426,23 @@
       "members":{
       }
     },
+    "DeleteSessionRequest":{
+      "type":"structure",
+      "required":["sessionIdentifier"],
+      "members":{
+        "sessionIdentifier":{
+          "shape":"SessionIdentifier",
+          "documentation":"<p>The unique identifier for the session to be deleted. You can specify either the session's <code>sessionId</code> or its Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"sessionIdentifier"
+        }
+      }
+    },
+    "DeleteSessionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DependencyFailedException":{
       "type":"structure",
       "members":{
@@ -1073,6 +1468,40 @@
     "Double":{
       "type":"double",
       "box":true
+    },
+    "EndSessionRequest":{
+      "type":"structure",
+      "required":["sessionIdentifier"],
+      "members":{
+        "sessionIdentifier":{
+          "shape":"SessionIdentifier",
+          "documentation":"<p>The unique identifier for the session to end. You can specify either the session's <code>sessionId</code> or its Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"sessionIdentifier"
+        }
+      }
+    },
+    "EndSessionResponse":{
+      "type":"structure",
+      "required":[
+        "sessionArn",
+        "sessionId",
+        "sessionStatus"
+      ],
+      "members":{
+        "sessionArn":{
+          "shape":"SessionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the session you ended.</p>"
+        },
+        "sessionId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier of the session you ended.</p>"
+        },
+        "sessionStatus":{
+          "shape":"SessionStatus",
+          "documentation":"<p>The current status of the session you ended.</p>"
+        }
+      }
     },
     "ExecutionType":{
       "type":"string",
@@ -1989,6 +2418,94 @@
         }
       }
     },
+    "GetInvocationStepRequest":{
+      "type":"structure",
+      "required":[
+        "invocationIdentifier",
+        "invocationStepId",
+        "sessionIdentifier"
+      ],
+      "members":{
+        "invocationIdentifier":{
+          "shape":"InvocationIdentifier",
+          "documentation":"<p>The unique identifier for the invocation in UUID format.</p>"
+        },
+        "invocationStepId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier (in UUID format) for the specific invocation step to retrieve.</p>",
+          "location":"uri",
+          "locationName":"invocationStepId"
+        },
+        "sessionIdentifier":{
+          "shape":"SessionIdentifier",
+          "documentation":"<p>The unique identifier for the invocation step's associated session. You can specify either the session's <code>sessionId</code> or its Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"sessionIdentifier"
+        }
+      }
+    },
+    "GetInvocationStepResponse":{
+      "type":"structure",
+      "required":["invocationStep"],
+      "members":{
+        "invocationStep":{
+          "shape":"InvocationStep",
+          "documentation":"<p>The complete details of the requested invocation step.</p>"
+        }
+      }
+    },
+    "GetSessionRequest":{
+      "type":"structure",
+      "required":["sessionIdentifier"],
+      "members":{
+        "sessionIdentifier":{
+          "shape":"SessionIdentifier",
+          "documentation":"<p>A unique identifier for the session to retrieve. You can specify either the session's <code>sessionId</code> or its Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"sessionIdentifier"
+        }
+      }
+    },
+    "GetSessionResponse":{
+      "type":"structure",
+      "required":[
+        "createdAt",
+        "lastUpdatedAt",
+        "sessionArn",
+        "sessionId",
+        "sessionStatus"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp for when the session was created.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Key Management Service key used to encrypt the session data. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/session-encryption.html\">Amazon Bedrock session encryption</a>.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp for when the session was last modified.</p>"
+        },
+        "sessionArn":{
+          "shape":"SessionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the session.</p>"
+        },
+        "sessionId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier for the session in UUID format.</p>"
+        },
+        "sessionMetadata":{
+          "shape":"SessionMetadataMap",
+          "documentation":"<p>A map of key-value pairs containing attributes persisted across the session.</p>"
+        },
+        "sessionStatus":{
+          "shape":"SessionStatus",
+          "documentation":"<p>The current status of the session.</p>"
+        }
+      }
+    },
     "GuadrailAction":{
       "type":"string",
       "enum":[
@@ -2409,6 +2926,52 @@
       "min":1,
       "sensitive":true
     },
+    "ImageBlock":{
+      "type":"structure",
+      "required":[
+        "format",
+        "source"
+      ],
+      "members":{
+        "format":{
+          "shape":"ImageFormat",
+          "documentation":"<p>The format of the image.</p>"
+        },
+        "source":{
+          "shape":"ImageSource",
+          "documentation":"<p>The source for the image.</p>"
+        }
+      },
+      "documentation":"<p>Image content for an invocation step.</p>"
+    },
+    "ImageFormat":{
+      "type":"string",
+      "enum":[
+        "png",
+        "jpeg",
+        "gif",
+        "webp"
+      ]
+    },
+    "ImageSource":{
+      "type":"structure",
+      "members":{
+        "bytes":{
+          "shape":"ImageSourceBytesBlob",
+          "documentation":"<p> The raw image bytes for the image. If you use an Amazon Web Services SDK, you don't need to encode the image bytes in base64.</p>"
+        },
+        "s3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The path to the Amazon S3 bucket where the image is stored.</p>"
+        }
+      },
+      "documentation":"<p>The source for an image.</p>",
+      "union":true
+    },
+    "ImageSourceBytesBlob":{
+      "type":"blob",
+      "min":1
+    },
     "ImplicitFilterConfiguration":{
       "type":"structure",
       "required":[
@@ -2688,6 +3251,15 @@
       "exception":true,
       "fault":true
     },
+    "InvocationDescription":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "InvocationIdentifier":{
+      "type":"string",
+      "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
     "InvocationInput":{
       "type":"structure",
       "members":{
@@ -2754,6 +3326,109 @@
       },
       "documentation":"<p>A result from the invocation of an action. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-returncontrol.html\">Return control to the agent developer</a> and <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html\">Control session context</a>.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_RequestSyntax\">InvokeAgent request</a> </p> </li> </ul>",
       "union":true
+    },
+    "InvocationStep":{
+      "type":"structure",
+      "required":[
+        "invocationId",
+        "invocationStepId",
+        "invocationStepTime",
+        "payload",
+        "sessionId"
+      ],
+      "members":{
+        "invocationId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier (in UUID format) for the invocation that includes the invocation step.</p>"
+        },
+        "invocationStepId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier (in UUID format) for the invocation step.</p>"
+        },
+        "invocationStepTime":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp for when the invocation step was created.</p>"
+        },
+        "payload":{
+          "shape":"InvocationStepPayload",
+          "documentation":"<p>Payload content, such as text and images, for the invocation step.</p>"
+        },
+        "sessionId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier of the session containing the invocation step.</p>"
+        }
+      },
+      "documentation":"<p>Stores fine-grained state checkpoints, including text and images, for each interaction in an invocation in a session. For more information about sessions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>. </p>"
+    },
+    "InvocationStepPayload":{
+      "type":"structure",
+      "members":{
+        "contentBlocks":{
+          "shape":"BedrockSessionContentBlocks",
+          "documentation":"<p>The content for the invocation step.</p>"
+        }
+      },
+      "documentation":"<p>Payload content, such as text and images, for the invocation step.</p>",
+      "union":true
+    },
+    "InvocationStepSummaries":{
+      "type":"list",
+      "member":{"shape":"InvocationStepSummary"}
+    },
+    "InvocationStepSummary":{
+      "type":"structure",
+      "required":[
+        "invocationId",
+        "invocationStepId",
+        "invocationStepTime",
+        "sessionId"
+      ],
+      "members":{
+        "invocationId":{
+          "shape":"Uuid",
+          "documentation":"<p>A unique identifier for the invocation in UUID format.</p>"
+        },
+        "invocationStepId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier (in UUID format) for the invocation step.</p>"
+        },
+        "invocationStepTime":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp for when the invocation step was created.</p>"
+        },
+        "sessionId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier for the session associated with the invocation step.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about an invocation step within an invocation in a session. For more information about sessions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p>"
+    },
+    "InvocationSummaries":{
+      "type":"list",
+      "member":{"shape":"InvocationSummary"}
+    },
+    "InvocationSummary":{
+      "type":"structure",
+      "required":[
+        "createdAt",
+        "invocationId",
+        "sessionId"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp for when the invocation was created.</p>"
+        },
+        "invocationId":{
+          "shape":"Uuid",
+          "documentation":"<p>A unique identifier for the invocation in UUID format.</p>"
+        },
+        "sessionId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier for the session associated with the invocation.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about an invocation in a session. For more information about sessions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p>"
     },
     "InvocationType":{
       "type":"string",
@@ -3234,6 +3909,138 @@
       "max":2048,
       "min":0,
       "pattern":"^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$"
+    },
+    "ListInvocationStepsRequest":{
+      "type":"structure",
+      "required":["sessionIdentifier"],
+      "members":{
+        "invocationIdentifier":{
+          "shape":"InvocationIdentifier",
+          "documentation":"<p>The unique identifier (in UUID format) for the invocation to list invocation steps for.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sessionIdentifier":{
+          "shape":"SessionIdentifier",
+          "documentation":"<p>The unique identifier for the session associated with the invocation steps. You can specify either the session's <code>sessionId</code> or its Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"sessionIdentifier"
+        }
+      }
+    },
+    "ListInvocationStepsResponse":{
+      "type":"structure",
+      "required":["invocationStepSummaries"],
+      "members":{
+        "invocationStepSummaries":{
+          "shape":"InvocationStepSummaries",
+          "documentation":"<p>A list of summaries for each invocation step associated with a session and if you specified it, an invocation within the session.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        }
+      }
+    },
+    "ListInvocationsRequest":{
+      "type":"structure",
+      "required":["sessionIdentifier"],
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sessionIdentifier":{
+          "shape":"SessionIdentifier",
+          "documentation":"<p>The unique identifier for the session to list invocations for. You can specify either the session's <code>sessionId</code> or its Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"sessionIdentifier"
+        }
+      }
+    },
+    "ListInvocationsResponse":{
+      "type":"structure",
+      "required":["invocationSummaries"],
+      "members":{
+        "invocationSummaries":{
+          "shape":"InvocationSummaries",
+          "documentation":"<p>A list of invocation summaries associated with the session.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        }
+      }
+    },
+    "ListSessionsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListSessionsResponse":{
+      "type":"structure",
+      "required":["sessionSummaries"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        },
+        "sessionSummaries":{
+          "shape":"SessionSummaries",
+          "documentation":"<p>A list of summaries for each session in your Amazon Web Services account.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"TaggableResourcesArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for which to list tags.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The key-value pairs for the tags associated with the resource.</p>"
+        }
+      }
     },
     "MaxResults":{
       "type":"integer",
@@ -4076,6 +4883,49 @@
       },
       "documentation":"<p>Contains the parameters in the request body.</p>"
     },
+    "PutInvocationStepRequest":{
+      "type":"structure",
+      "required":[
+        "invocationIdentifier",
+        "invocationStepTime",
+        "payload",
+        "sessionIdentifier"
+      ],
+      "members":{
+        "invocationIdentifier":{
+          "shape":"InvocationIdentifier",
+          "documentation":"<p>The unique identifier (in UUID format) of the invocation to add the invocation step to.</p>"
+        },
+        "invocationStepId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier of the invocation step in UUID format.</p>"
+        },
+        "invocationStepTime":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp for when the invocation step occurred.</p>"
+        },
+        "payload":{
+          "shape":"InvocationStepPayload",
+          "documentation":"<p>The payload for the invocation step, including text and images for the interaction.</p>"
+        },
+        "sessionIdentifier":{
+          "shape":"SessionIdentifier",
+          "documentation":"<p>The unique identifier for the session to add the invocation step to. You can specify either the session's <code>sessionId</code> or its Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"sessionIdentifier"
+        }
+      }
+    },
+    "PutInvocationStepResponse":{
+      "type":"structure",
+      "required":["invocationStepId"],
+      "members":{
+        "invocationStepId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier of the invocation step in UUID format.</p>"
+        }
+      }
+    },
     "QueryGenerationInput":{
       "type":"structure",
       "required":[
@@ -4396,7 +5246,7 @@
     },
     "RerankTextDocumentTextString":{
       "type":"string",
-      "max":9000,
+      "max":32000,
       "min":1
     },
     "RerankingConfiguration":{
@@ -4842,7 +5692,7 @@
         },
         "type":{
           "shape":"RetrieveAndGenerateType",
-          "documentation":"<p>The type of resource that contains your data for retrieving information and generating responses.</p> <p>If you choose ot use <code>EXTERNAL_SOURCES</code>, then currently only Claude 3 Sonnet models for knowledge bases are supported.</p>"
+          "documentation":"<p>The type of resource that contains your data for retrieving information and generating responses.</p> <p>If you choose to use <code>EXTERNAL_SOURCES</code>, then currently only Anthropic Claude 3 Sonnet models for knowledge bases are supported.</p>"
         }
       },
       "documentation":"<p>Contains details about the resource being queried.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax\">RetrieveAndGenerate request</a> – in the <code>retrieveAndGenerateConfiguration</code> field</p> </li> </ul>"
@@ -5221,6 +6071,17 @@
       },
       "documentation":"<p> The identifier information for an Amazon S3 bucket. </p>"
     },
+    "S3Location":{
+      "type":"structure",
+      "required":["uri"],
+      "members":{
+        "uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The path to the Amazon S3 bucket where the image is stored.</p>"
+        }
+      },
+      "documentation":"<p>Information about the Amazon S3 bucket where the image is stored.</p>"
+    },
     "S3ObjectDoc":{
       "type":"structure",
       "required":["uri"],
@@ -5274,6 +6135,10 @@
       },
       "exception":true
     },
+    "SessionArn":{
+      "type":"string",
+      "pattern":"^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]+:[0-9]{12}:session/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
     "SessionAttributesMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -5284,6 +6149,27 @@
       "max":100,
       "min":2,
       "pattern":"^[0-9a-zA-Z._:-]+$"
+    },
+    "SessionIdentifier":{
+      "type":"string",
+      "pattern":"^(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]+:[0-9]{12}:session/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})|([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$"
+    },
+    "SessionMetadataKey":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "SessionMetadataMap":{
+      "type":"map",
+      "key":{"shape":"SessionMetadataKey"},
+      "value":{"shape":"SessionMetadataValue"},
+      "max":50,
+      "min":0
+    },
+    "SessionMetadataValue":{
+      "type":"string",
+      "max":5000,
+      "min":0
     },
     "SessionState":{
       "type":"structure",
@@ -5318,6 +6204,51 @@
         }
       },
       "documentation":"<p>Contains parameters that specify various attributes that persist across a session or prompt. You can define session state attributes as key-value pairs when writing a <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html\">Lambda function</a> for an action group or pass them when making an <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html\">InvokeAgent</a> request. Use session state attributes to control and provide conversational context for your agent and to help customize your agent's behavior. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html\">Control session context</a>.</p>"
+    },
+    "SessionStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "EXPIRED",
+        "ENDED"
+      ]
+    },
+    "SessionSummaries":{
+      "type":"list",
+      "member":{"shape":"SessionSummary"}
+    },
+    "SessionSummary":{
+      "type":"structure",
+      "required":[
+        "createdAt",
+        "lastUpdatedAt",
+        "sessionArn",
+        "sessionId",
+        "sessionStatus"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp for when the session was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp for when the session was last modified.</p>"
+        },
+        "sessionArn":{
+          "shape":"SessionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the session.</p>"
+        },
+        "sessionId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier for the session.</p>"
+        },
+        "sessionStatus":{
+          "shape":"SessionStatus",
+          "documentation":"<p>The current status of the session.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a session. For more information about sessions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p>"
     },
     "SessionTTL":{
       "type":"integer",
@@ -5388,6 +6319,66 @@
       "type":"string",
       "max":25000000,
       "min":0
+    },
+    "TagKey":{
+      "type":"string",
+      "documentation":"<p>Key of a tag</p>",
+      "max":128,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\s._:/=+@-]*$"
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "documentation":"<p>List of Tag Keys</p>",
+      "max":200,
+      "min":1
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"TaggableResourcesArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to tag.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>An object containing key-value pairs that define the tags to attach to the resource.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "documentation":"<p>Value of a tag</p>",
+      "max":256,
+      "min":0,
+      "pattern":"^[a-zA-Z0-9\\s._:/=+@-]*$"
+    },
+    "TaggableResourcesArn":{
+      "type":"string",
+      "documentation":"<p>ARN of Taggable resources: [session]</p>",
+      "max":1011,
+      "min":20,
+      "pattern":"(^arn:aws(-[^:]+)?:bedrock:[a-zA-Z0-9-]+:[0-9]{12}:(session)/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$)"
+    },
+    "TagsMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "documentation":"<p>A map of tag keys and values</p>",
+      "max":200,
+      "min":1
     },
     "Temperature":{
       "type":"float",
@@ -5616,6 +6607,80 @@
         "REPROMPT"
       ]
     },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"TaggableResourcesArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource from which to remove tags.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>A list of keys of the tags to remove from the resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateSessionRequest":{
+      "type":"structure",
+      "required":["sessionIdentifier"],
+      "members":{
+        "sessionIdentifier":{
+          "shape":"SessionIdentifier",
+          "documentation":"<p>The unique identifier of the session to modify. You can specify either the session's <code>sessionId</code> or its Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"sessionIdentifier"
+        },
+        "sessionMetadata":{
+          "shape":"SessionMetadataMap",
+          "documentation":"<p>A map of key-value pairs containing attributes to be persisted across the session. For example the user's ID, their language preference, and the type of device they are using.</p>"
+        }
+      }
+    },
+    "UpdateSessionResponse":{
+      "type":"structure",
+      "required":[
+        "createdAt",
+        "lastUpdatedAt",
+        "sessionArn",
+        "sessionId",
+        "sessionStatus"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp for when the session was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp for when the session was last modified.</p>"
+        },
+        "sessionArn":{
+          "shape":"SessionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the session that was updated.</p>"
+        },
+        "sessionId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier of the session you updated.</p>"
+        },
+        "sessionStatus":{
+          "shape":"SessionStatus",
+          "documentation":"<p>The status of the session you updated.</p>"
+        }
+      }
+    },
     "Usage":{
       "type":"structure",
       "members":{
@@ -5630,6 +6695,10 @@
       },
       "documentation":"<p>Contains information of the usage of the foundation model.</p>",
       "sensitive":true
+    },
+    "Uuid":{
+      "type":"string",
+      "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
     },
     "ValidationException":{
       "type":"structure",

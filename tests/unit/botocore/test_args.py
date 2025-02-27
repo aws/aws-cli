@@ -521,6 +521,32 @@ class TestCreateClientArgs(unittest.TestCase):
         with self.assertRaises(exceptions.InvalidChecksumConfigError):
             self.call_get_client_args()
 
+    def test_inject_host_prefix_default_client_config(self):
+        input_config = Config()
+        client_args = self.call_get_client_args(client_config=input_config)
+        config = client_args["client_config"]
+        self.assertEqual(config.inject_host_prefix, True)
+
+    def test_disable_host_prefix_injection_config_store(self):
+        self.config_store.set_config_variable(
+            "disable_host_prefix_injection",
+            True,
+        )
+        config = self.call_get_client_args()['client_config']
+        self.assertEqual(config.inject_host_prefix, False)
+
+    def test_inject_host_prefix_client_config_overrides_config_store(
+        self,
+    ):
+        self.config_store.set_config_variable(
+            "disable_host_prefix_injection",
+            False,
+        )
+        input_config = Config(inject_host_prefix=False)
+        client_args = self.call_get_client_args(client_config=input_config)
+        config = client_args['client_config']
+        self.assertEqual(config.inject_host_prefix, False)
+
 
 class TestEndpointResolverBuiltins(unittest.TestCase):
     def setUp(self):

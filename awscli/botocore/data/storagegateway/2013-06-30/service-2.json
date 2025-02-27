@@ -786,6 +786,20 @@
       ],
       "documentation":"<p>Disassociates an Amazon FSx file system from the specified gateway. After the disassociation process finishes, the gateway can no longer access the Amazon FSx file system. This operation is only supported in the FSx File Gateway type.</p>"
     },
+    "EvictFilesFailingUpload":{
+      "name":"EvictFilesFailingUpload",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EvictFilesFailingUploadInput"},
+      "output":{"shape":"EvictFilesFailingUploadOutput"},
+      "errors":[
+        {"shape":"InvalidGatewayRequestException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Starts a process that cleans the specified file share's cache of file entries that are failing upload to Amazon S3. This API operation reports success if the request is received with valid arguments, and there are no other cache clean operations currently in-progress for the specified file share. After a successful request, the cache clean operation occurs asynchronously and reports progress using CloudWatch logs and notifications.</p> <important> <p>If <code>ForceRemove</code> is set to <code>True</code>, the cache clean operation will delete file data from the gateway which might otherwise be recoverable. We recommend using this operation only after all other methods to clear files failing upload have been exhausted, and if your business need outweighs the potential data loss.</p> </important>"
+    },
     "JoinDomain":{
       "name":"JoinDomain",
       "http":{
@@ -3846,6 +3860,29 @@
         "VolumeNotFound",
         "VolumeNotReady"
       ]
+    },
+    "EvictFilesFailingUploadInput":{
+      "type":"structure",
+      "required":["FileShareARN"],
+      "members":{
+        "FileShareARN":{
+          "shape":"FileShareARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the file share for which you want to start the cache clean operation.</p>"
+        },
+        "ForceRemove":{
+          "shape":"boolean",
+          "documentation":"<p>Specifies whether cache entries with full or partial file data currently stored on the gateway will be forcibly removed by the cache clean operation.</p> <p>Valid arguments:</p> <ul> <li> <p> <code>False</code> - The cache clean operation skips cache entries failing upload if they are associated with data currently stored on the gateway. This preserves the cached data.</p> </li> <li> <p> <code>True</code> - The cache clean operation removes cache entries failing upload even if they are associated with data currently stored on the gateway. This deletes the cached data.</p> <important> <p>If <code>ForceRemove</code> is set to <code>True</code>, the cache clean operation will delete file data from the gateway which might otherwise be recoverable.</p> </important> </li> </ul>"
+        }
+      }
+    },
+    "EvictFilesFailingUploadOutput":{
+      "type":"structure",
+      "members":{
+        "NotificationId":{
+          "shape":"string",
+          "documentation":"<p>The randomly generated ID of the CloudWatch notification associated with the cache clean operation. This ID is in UUID format.</p>"
+        }
+      }
     },
     "FileShareARN":{
       "type":"string",

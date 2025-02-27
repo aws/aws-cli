@@ -339,6 +339,26 @@
       "documentation":"<p>Deletes an Amazon Q Business application.</p>",
       "idempotent":true
     },
+    "DeleteAttachment":{
+      "name":"DeleteAttachment",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/applications/{applicationId}/conversations/{conversationId}/attachments/{attachmentId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAttachmentRequest"},
+      "output":{"shape":"DeleteAttachmentResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"LicenseNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an attachment associated with a specific Amazon Q Business conversation.</p>",
+      "idempotent":true
+    },
     "DeleteChatControlsConfiguration":{
       "name":"DeleteChatControlsConfiguration",
       "http":{
@@ -3699,6 +3719,45 @@
       }
     },
     "DeleteApplicationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteAttachmentRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "conversationId",
+        "attachmentId"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The unique identifier for the Amazon Q Business application environment.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "conversationId":{
+          "shape":"ConversationId",
+          "documentation":"<p>The unique identifier of the conversation.</p>",
+          "location":"uri",
+          "locationName":"conversationId"
+        },
+        "attachmentId":{
+          "shape":"AttachmentId",
+          "documentation":"<p>The unique identifier for the attachment.</p>",
+          "location":"uri",
+          "locationName":"attachmentId"
+        },
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The unique identifier of the user involved in the conversation.</p>",
+          "location":"querystring",
+          "locationName":"userId"
+        }
+      }
+    },
+    "DeleteAttachmentResponse":{
       "type":"structure",
       "members":{
       }

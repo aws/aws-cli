@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.38.3
+======
+
+* api-change:``bedrock-agent-runtime``: Introduces Sessions (preview) to enable stateful conversations in GenAI applications.
+* api-change:``emr``: Definition update for EbsConfiguration.
+* api-change:``qbusiness``: This release supports deleting attachments from conversations.
+* api-change:``redshift-serverless``: Add track support for Redshift Serverless workgroup.
+* api-change:``sagemaker``: SageMaker HubService is introducing support for creating Training Jobs in Curated Hub (Private Hub). Additionally, it is introducing two new APIs: UpdateHubContent and UpdateHubContentReference.
+* api-change:``storagegateway``: This release adds support to invoke a process that cleans the specified file share's cache of file entries that are failing upload to Amazon S3.
+
+
 1.38.2
 ======
 

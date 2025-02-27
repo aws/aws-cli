@@ -852,7 +852,7 @@
         "ContentRedaction":{"shape":"ContentRedaction"},
         "LanguageOptions":{
           "shape":"LanguageOptions",
-          "documentation":"<p>You can specify two or more language codes that represent the languages you think may be present in your media. Including more than five is not recommended. If you're unsure what languages are present, do not include this parameter.</p> <p>Including language options can improve the accuracy of language identification.</p> <p>For a list of languages supported with Call Analytics, refer to the <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html\">Supported languages</a> table.</p> <p>To transcribe speech in Modern Standard Arabic (<code>ar-SA</code>), your media file must be encoded at a sample rate of 16,000 Hz or higher.</p>"
+          "documentation":"<p>You can specify two or more language codes that represent the languages you think may be present in your media. Including more than five is not recommended. If you're unsure what languages are present, do not include this parameter.</p> <p>Including language options can improve the accuracy of language identification.</p> <p>For a list of languages supported with Call Analytics, refer to the <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html\">Supported languages</a> table.</p> <p>To transcribe speech in Modern Standard Arabic (<code>ar-SA</code>) in Amazon Web Services GovCloud (US) (US-West, us-gov-west-1), Amazon Web Services GovCloud (US) (US-East, us-gov-east-1), Canada (Calgary) ca-west-1 and Africa (Cape Town) af-south-1, your media file must be encoded at a sample rate of 16,000 Hz or higher.</p>"
         },
         "LanguageIdSettings":{
           "shape":"LanguageIdSettingsMap",
@@ -1009,6 +1009,16 @@
       "type":"integer",
       "max":1,
       "min":0
+    },
+    "ClinicalNoteGenerationSettings":{
+      "type":"structure",
+      "members":{
+        "NoteTemplate":{
+          "shape":"MedicalScribeNoteTemplate",
+          "documentation":"<p>Specify one of the following templates to use for the clinical note summary. The default is <code>HISTORY_AND_PHYSICAL</code>.</p> <ul> <li> <p>HISTORY_AND_PHYSICAL: Provides summaries for key sections of the clinical documentation. Sections include Chief Complaint, History of Present Illness, Review of Systems, Past Medical History, Assessment, and Plan.</p> </li> <li> <p>GIRPP: Provides summaries based on the patients progress toward goals. Sections include Goal, Intervention, Response, Progress, and Plan.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The output configuration for clinical note generation.</p>"
     },
     "ConflictException":{
       "type":"structure",
@@ -2451,6 +2461,13 @@
       "type":"string",
       "enum":["en-US"]
     },
+    "MedicalScribeNoteTemplate":{
+      "type":"string",
+      "enum":[
+        "HISTORY_AND_PHYSICAL",
+        "GIRPP"
+      ]
+    },
     "MedicalScribeOutput":{
       "type":"structure",
       "required":[
@@ -2502,6 +2519,10 @@
         "VocabularyFilterMethod":{
           "shape":"VocabularyFilterMethod",
           "documentation":"<p>Specify how you want your custom vocabulary filter applied to your transcript.</p> <p>To replace words with <code>***</code>, choose <code>mask</code>.</p> <p>To delete words, choose <code>remove</code>.</p> <p>To flag words without changing them, choose <code>tag</code>.</p>"
+        },
+        "ClinicalNoteGenerationSettings":{
+          "shape":"ClinicalNoteGenerationSettings",
+          "documentation":"<p>Specify settings for the clinical note generation.</p>"
         }
       },
       "documentation":"<p>Makes it possible to control how your Medical Scribe job is processed using a <code>MedicalScribeSettings</code> object. Specify <code>ChannelIdentification</code> if <code>ChannelDefinitions</code> are set. Enabled <code>ShowSpeakerLabels</code> if <code>ChannelIdentification</code> and <code>ChannelDefinitions</code> are not set. One and only one of <code>ChannelIdentification</code> and <code>ShowSpeakerLabels</code> must be set. If <code>ShowSpeakerLabels</code> is set, <code>MaxSpeakerLabels</code> must also be set. Use <code>Settings</code> to specify a vocabulary or vocabulary filter or both using <code>VocabularyName</code>, <code>VocabularyFilterName</code>. <code>VocabularyFilterMethod</code> must be specified if <code>VocabularyFilterName</code> is set. </p>"
@@ -3137,7 +3158,7 @@
         },
         "LanguageCode":{
           "shape":"LanguageCode",
-          "documentation":"<p>The language code that represents the language spoken in the input media file.</p> <p>If you're unsure of the language spoken in your media file, consider using <code>IdentifyLanguage</code> or <code>IdentifyMultipleLanguages</code> to enable automatic language identification.</p> <p>Note that you must include one of <code>LanguageCode</code>, <code>IdentifyLanguage</code>, or <code>IdentifyMultipleLanguages</code> in your request. If you include more than one of these parameters, your transcription job fails.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html\">Supported languages</a> table.</p> <note> <p>To transcribe speech in Modern Standard Arabic (<code>ar-SA</code>), your media file must be encoded at a sample rate of 16,000 Hz or higher.</p> </note>"
+          "documentation":"<p>The language code that represents the language spoken in the input media file.</p> <p>If you're unsure of the language spoken in your media file, consider using <code>IdentifyLanguage</code> or <code>IdentifyMultipleLanguages</code> to enable automatic language identification.</p> <p>Note that you must include one of <code>LanguageCode</code>, <code>IdentifyLanguage</code>, or <code>IdentifyMultipleLanguages</code> in your request. If you include more than one of these parameters, your transcription job fails.</p> <p>For a list of supported languages and their associated language codes, refer to the <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html\">Supported languages</a> table.</p> <note> <p>To transcribe speech in Modern Standard Arabic (<code>ar-SA</code>) in Amazon Web Services GovCloud (US) (US-West, us-gov-west-1), Amazon Web Services GovCloud (US) (US-East, us-gov-east-1), Canada (Calgary, ca-west-1) and Africa (Cape Town, af-south-1), your media file must be encoded at a sample rate of 16,000 Hz or higher.</p> </note>"
         },
         "MediaSampleRateHertz":{
           "shape":"MediaSampleRateHertz",
@@ -3193,7 +3214,7 @@
         },
         "LanguageOptions":{
           "shape":"LanguageOptions",
-          "documentation":"<p>You can specify two or more language codes that represent the languages you think may be present in your media. Including more than five is not recommended. If you're unsure what languages are present, do not include this parameter.</p> <p>If you include <code>LanguageOptions</code> in your request, you must also include <code>IdentifyLanguage</code>.</p> <p>For more information, refer to <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html\">Supported languages</a>.</p> <p>To transcribe speech in Modern Standard Arabic (<code>ar-SA</code>), your media file must be encoded at a sample rate of 16,000 Hz or higher.</p>"
+          "documentation":"<p>You can specify two or more language codes that represent the languages you think may be present in your media. Including more than five is not recommended. If you're unsure what languages are present, do not include this parameter.</p> <p>If you include <code>LanguageOptions</code> in your request, you must also include <code>IdentifyLanguage</code>.</p> <p>For more information, refer to <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html\">Supported languages</a>.</p> <p>To transcribe speech in Modern Standard Arabic (<code>ar-SA</code>)in Amazon Web Services GovCloud (US) (US-West, us-gov-west-1), Amazon Web Services GovCloud (US) (US-East, us-gov-east-1), in Canada (Calgary) ca-west-1 and Africa (Cape Town) af-south-1, your media file must be encoded at a sample rate of 16,000 Hz or higher.</p>"
         },
         "Subtitles":{
           "shape":"Subtitles",

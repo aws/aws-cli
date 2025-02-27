@@ -40,3 +40,24 @@ class EKS(object):
             "arn", "")
 
         return cluster_arn.split(':')[4]
+    
+    def create_pod_identity_association(self, cluster_name, namespace, role_arn, service_account):
+            return self.eks_client.create_pod_identity_association(
+                clusterName = cluster_name,
+                namespace = namespace,
+                roleArn = role_arn,
+                serviceAccount = service_account
+            )
+    
+    def delete_pod_identity_association(self, cluster_name, association_id):
+            return self.eks_client.delete_pod_identity_association(
+                 clusterName = cluster_name,
+                 associationId = association_id
+            )
+    
+    def list_pod_identity_associations(self, cluster_name, namespace, service_account):
+            return self.eks_client.list_pod_identity_associations(
+                 clusterName = cluster_name,
+                 namespace = namespace,
+                 serviceAccount = service_account
+            )

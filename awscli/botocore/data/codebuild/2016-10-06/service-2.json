@@ -1236,6 +1236,10 @@
         "debugSessionEnabled":{
           "shape":"WrapperBoolean",
           "documentation":"<p>Specifies if session debugging is enabled for this batch build. For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/session-manager.html\">Viewing a running build in Session Manager</a>. Batch session debugging is not supported for matrix batch builds.</p>"
+        },
+        "reportArns":{
+          "shape":"BuildReportArns",
+          "documentation":"<p>An array that contains the ARNs of reports created by merging reports from builds associated with this batch build.</p>"
         }
       },
       "documentation":"<p>Contains information about a batch build.</p>"
@@ -1853,7 +1857,7 @@
         },
         "buildType":{
           "shape":"WebhookBuildType",
-          "documentation":"<p>Specifies the type of build this webhook will trigger.</p>"
+          "documentation":"<p>Specifies the type of build this webhook will trigger.</p> <note> <p> <code>RUNNER_BUILDKITE_BUILD</code> is only available for <code>NO_SOURCE</code> source type projects configured for Buildkite runner builds. For more information about CodeBuild-hosted Buildkite runner builds, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/sample-runner-buildkite.html\">Tutorial: Configure a CodeBuild-hosted Buildkite runner</a> in the <i>CodeBuild user guide</i>.</p> </note>"
         },
         "manualCreation":{
           "shape":"WrapperBoolean",
@@ -4629,6 +4633,10 @@
         "expired":{
           "shape":"Timestamp",
           "documentation":"<p> The date and time a test case expires. A test case expires 30 days after it is created. An expired test case is not available to view in CodeBuild. </p>"
+        },
+        "testSuiteName":{
+          "shape":"String",
+          "documentation":"<p>The name of the test suite that the test case is a part of.</p>"
         }
       },
       "documentation":"<p> Information about a test case created using a framework such as NUnit or Cucumber. A test case might be a unit test or a configuration test. </p>"
@@ -4921,7 +4929,7 @@
         },
         "buildType":{
           "shape":"WebhookBuildType",
-          "documentation":"<p>Specifies the type of build this webhook will trigger.</p>"
+          "documentation":"<p>Specifies the type of build this webhook will trigger.</p> <note> <p> <code>RUNNER_BUILDKITE_BUILD</code> is only available for <code>NO_SOURCE</code> source type projects configured for Buildkite runner builds. For more information about CodeBuild-hosted Buildkite runner builds, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/sample-runner-buildkite.html\">Tutorial: Configure a CodeBuild-hosted Buildkite runner</a> in the <i>CodeBuild user guide</i>.</p> </note>"
         }
       }
     },
@@ -4983,7 +4991,7 @@
         },
         "buildType":{
           "shape":"WebhookBuildType",
-          "documentation":"<p>Specifies the type of build this webhook will trigger.</p>"
+          "documentation":"<p>Specifies the type of build this webhook will trigger.</p> <note> <p> <code>RUNNER_BUILDKITE_BUILD</code> is only available for <code>NO_SOURCE</code> source type projects configured for Buildkite runner builds. For more information about CodeBuild-hosted Buildkite runner builds, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/sample-runner-buildkite.html\">Tutorial: Configure a CodeBuild-hosted Buildkite runner</a> in the <i>CodeBuild user guide</i>.</p> </note>"
         },
         "manualCreation":{
           "shape":"WrapperBoolean",
@@ -4996,6 +5004,14 @@
         "scopeConfiguration":{
           "shape":"ScopeConfiguration",
           "documentation":"<p>The scope configuration for global or organization webhooks.</p> <note> <p>Global or organization webhooks are only available for GitHub and Github Enterprise webhooks.</p> </note>"
+        },
+        "status":{
+          "shape":"WebhookStatus",
+          "documentation":"<p>The status of the webhook. Valid values include:</p> <ul> <li> <p> <code>CREATING</code>: The webhook is being created.</p> </li> <li> <p> <code>CREATE_FAILED</code>: The webhook has failed to create.</p> </li> <li> <p> <code>ACTIVE</code>: The webhook has succeeded and is active.</p> </li> <li> <p> <code>DELETING</code>: The webhook is being deleted.</p> </li> </ul>"
+        },
+        "statusMessage":{
+          "shape":"String",
+          "documentation":"<p>A message associated with the status of a webhook.</p>"
         }
       },
       "documentation":"<p>Information about a webhook that connects repository events to a build project in CodeBuild.</p>"
@@ -5004,7 +5020,8 @@
       "type":"string",
       "enum":[
         "BUILD",
-        "BUILD_BATCH"
+        "BUILD_BATCH",
+        "RUNNER_BUILDKITE_BUILD"
       ]
     },
     "WebhookFilter":{
@@ -5016,7 +5033,7 @@
       "members":{
         "type":{
           "shape":"WebhookFilterType",
-          "documentation":"<p> The type of webhook filter. There are nine webhook filter types: <code>EVENT</code>, <code>ACTOR_ACCOUNT_ID</code>, <code>HEAD_REF</code>, <code>BASE_REF</code>, <code>FILE_PATH</code>, <code>COMMIT_MESSAGE</code>, <code>TAG_NAME</code>, <code>RELEASE_NAME</code>, and <code>WORKFLOW_NAME</code>. </p> <ul> <li> <p> EVENT </p> <ul> <li> <p> A webhook event triggers a build when the provided <code>pattern</code> matches one of nine event types: <code>PUSH</code>, <code>PULL_REQUEST_CREATED</code>, <code>PULL_REQUEST_UPDATED</code>, <code>PULL_REQUEST_CLOSED</code>, <code>PULL_REQUEST_REOPENED</code>, <code>PULL_REQUEST_MERGED</code>, <code>RELEASED</code>, <code>PRERELEASED</code>, and <code>WORKFLOW_JOB_QUEUED</code>. The <code>EVENT</code> patterns are specified as a comma-separated string. For example, <code>PUSH, PULL_REQUEST_CREATED, PULL_REQUEST_UPDATED</code> filters all push, pull request created, and pull request updated events. </p> <note> <p> Types <code>PULL_REQUEST_REOPENED</code> and <code>WORKFLOW_JOB_QUEUED</code> work with GitHub and GitHub Enterprise only. Types <code>RELEASED</code> and <code>PRERELEASED</code> work with GitHub only.</p> </note> </li> </ul> </li> <li> <p>ACTOR_ACCOUNT_ID</p> <ul> <li> <p> A webhook event triggers a build when a GitHub, GitHub Enterprise, or Bitbucket account ID matches the regular expression <code>pattern</code>. </p> </li> </ul> </li> <li> <p>HEAD_REF</p> <ul> <li> <p> A webhook event triggers a build when the head reference matches the regular expression <code>pattern</code>. For example, <code>refs/heads/branch-name</code> and <code>refs/tags/tag-name</code>. </p> <note> <p> Works with GitHub and GitHub Enterprise push, GitHub and GitHub Enterprise pull request, Bitbucket push, and Bitbucket pull request events.</p> </note> </li> </ul> </li> <li> <p>BASE_REF</p> <ul> <li> <p> A webhook event triggers a build when the base reference matches the regular expression <code>pattern</code>. For example, <code>refs/heads/branch-name</code>. </p> <note> <p> Works with pull request events only. </p> </note> </li> </ul> </li> <li> <p>FILE_PATH</p> <ul> <li> <p> A webhook triggers a build when the path of a changed file matches the regular expression <code>pattern</code>. </p> <note> <p> Works with GitHub and Bitbucket events push and pull requests events. Also works with GitHub Enterprise push events, but does not work with GitHub Enterprise pull request events. </p> </note> </li> </ul> </li> <li> <p>COMMIT_MESSAGE</p> <ul> <li> <p>A webhook triggers a build when the head commit message matches the regular expression <code>pattern</code>.</p> <note> <p> Works with GitHub and Bitbucket events push and pull requests events. Also works with GitHub Enterprise push events, but does not work with GitHub Enterprise pull request events. </p> </note> </li> </ul> </li> <li> <p>TAG_NAME</p> <ul> <li> <p>A webhook triggers a build when the tag name of the release matches the regular expression <code>pattern</code>.</p> <note> <p> Works with <code>RELEASED</code> and <code>PRERELEASED</code> events only. </p> </note> </li> </ul> </li> <li> <p>RELEASE_NAME</p> <ul> <li> <p>A webhook triggers a build when the release name matches the regular expression <code>pattern</code>.</p> <note> <p> Works with <code>RELEASED</code> and <code>PRERELEASED</code> events only. </p> </note> </li> </ul> </li> <li> <p>REPOSITORY_NAME</p> <ul> <li> <p>A webhook triggers a build when the repository name matches the regular expression pattern.</p> <note> <p> Works with GitHub global or organization webhooks only. </p> </note> </li> </ul> </li> <li> <p>WORKFLOW_NAME</p> <ul> <li> <p>A webhook triggers a build when the workflow name matches the regular expression <code>pattern</code>.</p> <note> <p> Works with <code>WORKFLOW_JOB_QUEUED</code> events only. </p> </note> </li> </ul> </li> </ul>"
+          "documentation":"<p> The type of webhook filter. There are nine webhook filter types: <code>EVENT</code>, <code>ACTOR_ACCOUNT_ID</code>, <code>HEAD_REF</code>, <code>BASE_REF</code>, <code>FILE_PATH</code>, <code>COMMIT_MESSAGE</code>, <code>TAG_NAME</code>, <code>RELEASE_NAME</code>, and <code>WORKFLOW_NAME</code>. </p> <ul> <li> <p> EVENT </p> <ul> <li> <p> A webhook event triggers a build when the provided <code>pattern</code> matches one of nine event types: <code>PUSH</code>, <code>PULL_REQUEST_CREATED</code>, <code>PULL_REQUEST_UPDATED</code>, <code>PULL_REQUEST_CLOSED</code>, <code>PULL_REQUEST_REOPENED</code>, <code>PULL_REQUEST_MERGED</code>, <code>RELEASED</code>, <code>PRERELEASED</code>, and <code>WORKFLOW_JOB_QUEUED</code>. The <code>EVENT</code> patterns are specified as a comma-separated string. For example, <code>PUSH, PULL_REQUEST_CREATED, PULL_REQUEST_UPDATED</code> filters all push, pull request created, and pull request updated events. </p> <note> <p> Types <code>PULL_REQUEST_REOPENED</code> and <code>WORKFLOW_JOB_QUEUED</code> work with GitHub and GitHub Enterprise only. Types <code>RELEASED</code> and <code>PRERELEASED</code> work with GitHub only.</p> </note> </li> </ul> </li> <li> <p>ACTOR_ACCOUNT_ID</p> <ul> <li> <p> A webhook event triggers a build when a GitHub, GitHub Enterprise, or Bitbucket account ID matches the regular expression <code>pattern</code>. </p> </li> </ul> </li> <li> <p>HEAD_REF</p> <ul> <li> <p> A webhook event triggers a build when the head reference matches the regular expression <code>pattern</code>. For example, <code>refs/heads/branch-name</code> and <code>refs/tags/tag-name</code>. </p> <note> <p> Works with GitHub and GitHub Enterprise push, GitHub and GitHub Enterprise pull request, Bitbucket push, and Bitbucket pull request events.</p> </note> </li> </ul> </li> <li> <p>BASE_REF</p> <ul> <li> <p> A webhook event triggers a build when the base reference matches the regular expression <code>pattern</code>. For example, <code>refs/heads/branch-name</code>. </p> <note> <p> Works with pull request events only. </p> </note> </li> </ul> </li> <li> <p>FILE_PATH</p> <ul> <li> <p> A webhook triggers a build when the path of a changed file matches the regular expression <code>pattern</code>. </p> <note> <p> Works with GitHub and Bitbucket events push and pull requests events. Also works with GitHub Enterprise push events, but does not work with GitHub Enterprise pull request events. </p> </note> </li> </ul> </li> <li> <p>COMMIT_MESSAGE</p> <ul> <li> <p>A webhook triggers a build when the head commit message matches the regular expression <code>pattern</code>.</p> <note> <p> Works with GitHub and Bitbucket events push and pull requests events. Also works with GitHub Enterprise push events, but does not work with GitHub Enterprise pull request events. </p> </note> </li> </ul> </li> <li> <p>TAG_NAME</p> <ul> <li> <p>A webhook triggers a build when the tag name of the release matches the regular expression <code>pattern</code>.</p> <note> <p> Works with <code>RELEASED</code> and <code>PRERELEASED</code> events only. </p> </note> </li> </ul> </li> <li> <p>RELEASE_NAME</p> <ul> <li> <p>A webhook triggers a build when the release name matches the regular expression <code>pattern</code>.</p> <note> <p> Works with <code>RELEASED</code> and <code>PRERELEASED</code> events only. </p> </note> </li> </ul> </li> <li> <p>REPOSITORY_NAME</p> <ul> <li> <p>A webhook triggers a build when the repository name matches the regular expression pattern.</p> <note> <p> Works with GitHub global or organization webhooks only. </p> </note> </li> </ul> </li> <li> <p>WORKFLOW_NAME</p> <ul> <li> <p>A webhook triggers a build when the workflow name matches the regular expression <code>pattern</code>.</p> <note> <p> Works with <code>WORKFLOW_JOB_QUEUED</code> events only. </p> </note> <note> <p>For CodeBuild-hosted Buildkite runner builds, WORKFLOW_NAME filters will filter by pipeline name.</p> </note> </li> </ul> </li> </ul>"
         },
         "pattern":{
           "shape":"String",
@@ -5027,7 +5044,7 @@
           "documentation":"<p> Used to indicate that the <code>pattern</code> determines which webhook events do not trigger a build. If true, then a webhook event that does not match the <code>pattern</code> triggers a build. If false, then a webhook event that matches the <code>pattern</code> triggers a build. </p>"
         }
       },
-      "documentation":"<p> A filter used to determine which webhooks trigger a build. </p>"
+      "documentation":"<p>A filter used to determine which webhooks trigger a build. </p>"
     },
     "WebhookFilterType":{
       "type":"string",
@@ -5050,6 +5067,15 @@
         "GITHUB_ORGANIZATION",
         "GITHUB_GLOBAL",
         "GITLAB_GROUP"
+      ]
+    },
+    "WebhookStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "CREATE_FAILED",
+        "ACTIVE",
+        "DELETING"
       ]
     },
     "WrapperBoolean":{"type":"boolean"},

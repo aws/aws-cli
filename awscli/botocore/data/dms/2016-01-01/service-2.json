@@ -865,7 +865,7 @@
       "errors":[
         {"shape":"ResourceNotFoundFault"}
       ],
-      "documentation":"<p>For internal use only</p>"
+      "documentation":"<p>Returns a list of upcoming maintenance events for replication instances in your account in the current Region.</p>"
     },
     "DescribeRecommendationLimitations":{
       "name":"DescribeRecommendationLimitations",
@@ -1773,7 +1773,7 @@
         },
         "ApplyAction":{
           "shape":"String",
-          "documentation":"<p>The pending maintenance action to apply to this resource.</p> <p>Valid values: <code>os-upgrade</code>, <code>system-update</code>, <code>db-upgrade</code> </p>"
+          "documentation":"<p>The pending maintenance action to apply to this resource.</p> <p>Valid values: <code>os-upgrade</code>, <code>system-update</code>, <code>db-upgrade</code>, <code>os-patch</code> </p>"
         },
         "OptInType":{
           "shape":"String",
@@ -2202,6 +2202,10 @@
           "shape":"SourceDataSettings",
           "documentation":"<p>Specifies information about the source data provider.</p>"
         },
+        "TargetDataSettings":{
+          "shape":"TargetDataSettings",
+          "documentation":"<p>Specifies information about the target data provider.</p>"
+        },
         "NumberOfJobs":{
           "shape":"IntegerOptional",
           "documentation":"<p>The number of parallel jobs that trigger parallel threads to unload the tables from the source, and then load them to the target.</p>"
@@ -2242,7 +2246,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
+          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code> and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
         },
         "Settings":{
           "shape":"DataProviderSettings",
@@ -2755,7 +2759,7 @@
         },
         "KerberosAuthenticationSettings":{
           "shape":"KerberosAuthenticationSettings",
-          "documentation":"<p>Specifies the ID of the secret that stores the key cache file required for kerberos authentication, when creating a replication instance.</p>"
+          "documentation":"<p>Specifies the settings required for kerberos authentication when creating the replication instance.</p>"
         }
       },
       "documentation":"<p/>"
@@ -2933,6 +2937,10 @@
           "shape":"SourceDataSettings",
           "documentation":"<p>Specifies information about the data migration's source data provider.</p>"
         },
+        "TargetDataSettings":{
+          "shape":"TargetDataSettings",
+          "documentation":"<p>Specifies information about the data migration's target data provider.</p>"
+        },
         "DataMigrationStatistics":{
           "shape":"DataMigrationStatistics",
           "documentation":"<p>Provides information about the data migration's run, including start and stop time, latency, and data migration progress.</p>"
@@ -3049,7 +3057,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
+          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code> and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
         },
         "Settings":{
           "shape":"DataProviderSettings",
@@ -3123,6 +3131,14 @@
         "MariaDbSettings":{
           "shape":"MariaDbDataProviderSettings",
           "documentation":"<p>Provides information that defines a MariaDB data provider.</p>"
+        },
+        "IbmDb2LuwSettings":{
+          "shape":"IbmDb2LuwDataProviderSettings",
+          "documentation":"<p>Provides information that defines an IBM DB2 LUW data provider.</p>"
+        },
+        "IbmDb2zOsSettings":{
+          "shape":"IbmDb2zOsDataProviderSettings",
+          "documentation":"<p>Provides information that defines an IBM DB2 for z/OS data provider.</p>"
         },
         "MongoDbSettings":{
           "shape":"MongoDbDataProviderSettings",
@@ -3587,6 +3603,10 @@
         "ReplicationInstanceArn":{
           "shape":"String",
           "documentation":"<p>ARN of a replication instance on which you want to base the default list of individual assessments.</p>"
+        },
+        "ReplicationConfigArn":{
+          "shape":"String",
+          "documentation":"<p>Amazon Resource Name (ARN) of a serverless replication on which you want to base the default list of individual assessments.</p>"
         },
         "SourceEngineName":{
           "shape":"String",
@@ -5796,6 +5816,58 @@
       },
       "documentation":"<p>Provides information that defines an IBM Db2 LUW endpoint.</p>"
     },
+    "IbmDb2LuwDataProviderSettings":{
+      "type":"structure",
+      "members":{
+        "ServerName":{
+          "shape":"String",
+          "documentation":"<p>The name of the DB2 LUW server.</p>"
+        },
+        "Port":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The port value for the DB2 LUW data provider.</p>"
+        },
+        "DatabaseName":{
+          "shape":"String",
+          "documentation":"<p>The database name on the DB2 LUW data provider.</p>"
+        },
+        "SslMode":{
+          "shape":"DmsSslModeValue",
+          "documentation":"<p>The SSL mode used to connect to the DB2 LUW data provider. The default value is <code>none</code>. Valid Values: <code>none</code> and <code>verify-ca</code>.</p>"
+        },
+        "CertificateArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate used for SSL connection.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about an IBM DB2 LUW data provider.</p>"
+    },
+    "IbmDb2zOsDataProviderSettings":{
+      "type":"structure",
+      "members":{
+        "ServerName":{
+          "shape":"String",
+          "documentation":"<p>The name of the DB2 for z/OS server.</p>"
+        },
+        "Port":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The port value for the DB2 for z/OS data provider.</p>"
+        },
+        "DatabaseName":{
+          "shape":"String",
+          "documentation":"<p>The database name on the DB2 for z/OS data provider.</p>"
+        },
+        "SslMode":{
+          "shape":"DmsSslModeValue",
+          "documentation":"<p>The SSL mode used to connect to the DB2 for z/OS data provider. The default value is <code>none</code>. Valid Values: <code>none</code> and <code>verify-ca</code>.</p>"
+        },
+        "CertificateArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate used for SSL connection.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about an IBM DB2 for z/OS data provider.</p>"
+    },
     "ImportCertificateMessage":{
       "type":"structure",
       "required":["CertificateIdentifier"],
@@ -6135,18 +6207,18 @@
       "members":{
         "KeyCacheSecretId":{
           "shape":"String",
-          "documentation":"<p>Specifies the secret ID of the key cache for the replication instance.</p>"
+          "documentation":"<p>Specifies the ID of the secret that stores the key cache file required for kerberos authentication.</p>"
         },
         "KeyCacheSecretIamArn":{
           "shape":"String",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the IAM role that grants Amazon Web Services DMS access to the secret containing key cache file for the replication instance.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the IAM role that grants Amazon Web Services DMS access to the secret containing key cache file for the kerberos authentication.</p>"
         },
         "Krb5FileContents":{
           "shape":"String",
-          "documentation":"<p>Specifies the ID of the secret that stores the key cache file required for kerberos authentication of the replication instance.</p>"
+          "documentation":"<p>Specifies the contents of krb5 configuration file required for kerberos authentication.</p>"
         }
       },
-      "documentation":"<p>Specifies using Kerberos authentication settings for use with DMS.</p>"
+      "documentation":"<p>Specifies the settings required for kerberos authentication when creating the replication instance.</p>"
     },
     "KeyList":{
       "type":"list",
@@ -6376,7 +6448,7 @@
         },
         "AuthenticationMethod":{
           "shape":"SqlServerAuthenticationMethod",
-          "documentation":"<p>Specifies using Kerberos authentication with Microsoft SQL Server.</p>"
+          "documentation":"<p>Specifies the authentication method to be used with Microsoft SQL Server.</p>"
         }
       },
       "documentation":"<p>Provides information that defines a Microsoft SQL Server endpoint.</p>"
@@ -6519,6 +6591,10 @@
           "shape":"SourceDataSettings",
           "documentation":"<p>The new information about the source data provider for the data migration.</p>"
         },
+        "TargetDataSettings":{
+          "shape":"TargetDataSettings",
+          "documentation":"<p>The new information about the target data provider for the data migration.</p>"
+        },
         "NumberOfJobs":{
           "shape":"IntegerOptional",
           "documentation":"<p>The number of parallel jobs that trigger parallel threads to unload the tables from the source, and then load them to the target.</p>"
@@ -6556,7 +6632,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
+          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code> and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
         },
         "ExactSettings":{
           "shape":"BooleanOptional",
@@ -6968,7 +7044,7 @@
         },
         "KerberosAuthenticationSettings":{
           "shape":"KerberosAuthenticationSettings",
-          "documentation":"<p>Specifies the ID of the secret that stores the key cache file required for kerberos authentication, when modifying a replication instance.</p>"
+          "documentation":"<p>Specifies the settings required for kerberos authentication when modifying a replication instance.</p>"
         }
       },
       "documentation":"<p/>"
@@ -7567,7 +7643,7 @@
         },
         "AuthenticationMethod":{
           "shape":"OracleAuthenticationMethod",
-          "documentation":"<p>Specifies using Kerberos authentication with Oracle.</p>"
+          "documentation":"<p>Specifies the authentication method to be used with Oracle.</p>"
         }
       },
       "documentation":"<p>Provides information that defines an Oracle endpoint.</p>"
@@ -7809,6 +7885,54 @@
         }
       },
       "documentation":"<p>Provides information that defines a PostgreSQL data provider.</p>"
+    },
+    "PremigrationAssessmentStatus":{
+      "type":"structure",
+      "members":{
+        "PremigrationAssessmentRunArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of this assessment run.</p>"
+        },
+        "FailOnAssessmentFailure":{
+          "shape":"Boolean",
+          "documentation":"<p>A configurable setting you can set to <code>true</code> (the defualt setting) or <code>false</code>. Use this setting to to stop the replication from starting automatically if the assessment fails. This can help you evaluate the issue that is preventing the replication from running successfully.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>This describes the assessment run status. The status can be one of the following values:</p> <ul> <li> <p> <code>cancelling</code>: The assessment run was canceled.</p> </li> <li> <p> <code>deleting</code>: The assessment run was deleted.</p> </li> <li> <p> <code>failed</code>: At least one individual assessment completed with a failed status. </p> </li> <li> <p> <code>error-provisioning</code>: An internal error occurred while resources were provisioned (during the <code>provisioning</code> status).</p> </li> <li> <p> <code>error-executing</code> An internal error occurred while individual assessments ran (during the <code>running</code> status).</p> </li> <li> <p> <code>invalid state</code>: The assessment run is in an unknown state. </p> </li> <li> <p> <code>passed</code>: All individual assessments have completed and none have a failed status.</p> </li> <li> <p> <code>provisioning</code>: The resources required to run individual assessments are being provisioned. </p> </li> <li> <p> <code>running</code>: Individual assessments are being run. </p> </li> <li> <p> <code>starting</code>: The assessment run is starting, but resources are not yet being provisioned for individual assessments. </p> </li> <li> <p> <code>warning</code>: At least one individual assessment completed with a warning status. </p> </li> </ul>"
+        },
+        "PremigrationAssessmentRunCreationDate":{
+          "shape":"TStamp",
+          "documentation":"<p>The date which the assessment run was created.</p>"
+        },
+        "AssessmentProgress":{"shape":"ReplicationTaskAssessmentRunProgress"},
+        "LastFailureMessage":{
+          "shape":"String",
+          "documentation":"<p>The last message generated by an individual assessment failure.</p>"
+        },
+        "ResultLocationBucket":{
+          "shape":"String",
+          "documentation":"<p>The Amazon S3 bucket that Database Migration Service Serverless created to store the results of this assessment run.</p>"
+        },
+        "ResultLocationFolder":{
+          "shape":"String",
+          "documentation":"<p>The folder within an Amazon S3 bucket where you want Database Migration Service to store the results of this assessment run.</p>"
+        },
+        "ResultEncryptionMode":{
+          "shape":"String",
+          "documentation":"<p>The supported values are <code>SSE_KMS</code> and <code>SSE_S3</code>. If these values are not provided, then the files are not encrypted at rest. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.S3.html#CHAP_Target.S3.KMSKeys\">Creating Amazon Web Services KMS keys to encrypt Amazon S3 target objects</a>.</p>"
+        },
+        "ResultKmsKeyArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of a custom KMS encryption key that you specify when you set <code>ResultEncryptionMode</code> to <code>SSE_KMS</code>.</p>"
+        },
+        "ResultStatistic":{"shape":"ReplicationTaskAssessmentRunResultStatistic"}
+      },
+      "documentation":"<p>The results returned in <code>describe-replications</code> to display the results of the premigration assessment from the replication configuration.</p>"
+    },
+    "PremigrationAssessmentStatusList":{
+      "type":"list",
+      "member":{"shape":"PremigrationAssessmentStatus"}
     },
     "ProvisionData":{
       "type":"structure",
@@ -8415,6 +8539,10 @@
           "shape":"ProvisionData",
           "documentation":"<p>Information about provisioning resources for an DMS serverless replication.</p>"
         },
+        "PremigrationAssessmentStatuses":{
+          "shape":"PremigrationAssessmentStatusList",
+          "documentation":"<p>The status output of premigration assessment in describe-replications.</p>"
+        },
         "StopReason":{
           "shape":"String",
           "documentation":"<p>The reason the replication task was stopped. This response parameter can return one of the following values:</p> <ul> <li> <p> <code>\"Stop Reason NORMAL\"</code> </p> </li> <li> <p> <code>\"Stop Reason RECOVERABLE_ERROR\"</code> </p> </li> <li> <p> <code>\"Stop Reason FATAL_ERROR\"</code> </p> </li> <li> <p> <code>\"Stop Reason FULL_LOAD_ONLY_FINISHED\"</code> </p> </li> <li> <p> <code>\"Stop Reason STOPPED_AFTER_FULL_LOAD\"</code> – Full load completed, with cached changes not applied</p> </li> <li> <p> <code>\"Stop Reason STOPPED_AFTER_CACHED_EVENTS\"</code> – Full load completed, with cached changes applied</p> </li> <li> <p> <code>\"Stop Reason EXPRESS_LICENSE_LIMITS_REACHED\"</code> </p> </li> <li> <p> <code>\"Stop Reason STOPPED_AFTER_DDL_APPLY\"</code> – User-defined stop task after DDL applied</p> </li> <li> <p> <code>\"Stop Reason STOPPED_DUE_TO_LOW_MEMORY\"</code> </p> </li> <li> <p> <code>\"Stop Reason STOPPED_DUE_TO_LOW_DISK\"</code> </p> </li> <li> <p> <code>\"Stop Reason STOPPED_AT_SERVER_TIME\"</code> – User-defined server time for stopping task</p> </li> <li> <p> <code>\"Stop Reason STOPPED_AT_COMMIT_TIME\"</code> – User-defined commit time for stopping task</p> </li> <li> <p> <code>\"Stop Reason RECONFIGURATION_RESTART\"</code> </p> </li> <li> <p> <code>\"Stop Reason RECYCLE_TASK\"</code> </p> </li> </ul>"
@@ -8634,7 +8762,7 @@
         },
         "KerberosAuthenticationSettings":{
           "shape":"KerberosAuthenticationSettings",
-          "documentation":"<p>Specifies the ID of the secret that stores the key cache file required for kerberos authentication, when replicating an instance.</p>"
+          "documentation":"<p>Specifies the settings required for kerberos authentication when replicating an instance.</p>"
         }
       },
       "documentation":"<p>Provides information that defines a replication instance.</p>"
@@ -9829,6 +9957,10 @@
           "shape":"String",
           "documentation":"<p>The replication type.</p> <p>When the replication type is <code>full-load</code> or <code>full-load-and-cdc</code>, the only valid value for the first run of the replication is <code>start-replication</code>. This option will start the replication.</p> <p>You can also use <a>ReloadTables</a> to reload specific tables that failed during replication instead of restarting the replication.</p> <p>The <code>resume-processing</code> option isn't applicable for a full-load replication, because you can't resume partially loaded tables during the full load phase.</p> <p>For a <code>full-load-and-cdc</code> replication, DMS migrates table data, and then applies data changes that occur on the source. To load all the tables again, and start capturing source changes, use <code>reload-target</code>. Otherwise use <code>resume-processing</code>, to replicate the changes from the last stop position.</p>"
         },
+        "PremigrationAssessmentSettings":{
+          "shape":"String",
+          "documentation":"<p>User-defined settings for the premigration assessment. The possible values are:</p> <ul> <li> <p> <code>ResultLocationFinder</code>: The folder within an Amazon Amazon S3 bucket where you want DMS to store the results of this assessment run.</p> </li> <li> <p> <code>ResultEncryptionMode</code>: The supported values are <code>SSE_KMS</code> and <code>SSE_S3</code>. If these values are not provided, then the files are not encrypted at rest. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.S3.html#CHAP_Target.S3.KMSKeys\">Creating Amazon Web Services KMS keys to encrypt Amazon Amazon S3 target objects</a>.</p> </li> <li> <p> <code>ResultKmsKeyArn</code>: The ARN of a customer KMS encryption key that you specify when you set <code>ResultEncryptionMode</code> to <code>SSE_KMS</code>.</p> </li> <li> <p> <code>IncludeOnly</code>: A space-separated list of names for specific individual assessments that you want to include. These names come from the default list of individual assessments that Database Migration Service supports for the associated migration.</p> </li> <li> <p> <code>Exclude</code>: A space-separated list of names for specific individual assessments that you want to exclude. These names come from the default list of individual assessments that Database Migration Service supports for the associated migration.</p> </li> <li> <p> <code>FailOnAssessmentFailure</code>: A configurable setting you can set to <code>true</code> (the default setting) or <code>false</code>. Use this setting to to stop the replication from starting automatically if the assessment fails. This can help you evaluate the issue that is preventing the replication from running successfully.</p> </li> </ul>"
+        },
         "CdcStartTime":{
           "shape":"TStamp",
           "documentation":"<p>Indicates the start time for a change data capture (CDC) operation. Use either <code>CdcStartTime</code> or <code>CdcStartPosition</code> to specify when you want a CDC operation to start. Specifying both values results in an error.</p>"
@@ -10175,6 +10307,14 @@
       "type":"list",
       "member":{"shape":"TableToReload"}
     },
+    "TablePreparationMode":{
+      "type":"string",
+      "enum":[
+        "do-nothing",
+        "truncate",
+        "drop-tables-on-target"
+      ]
+    },
     "TableStatistics":{
       "type":"structure",
       "members":{
@@ -10316,6 +10456,20 @@
     "TagList":{
       "type":"list",
       "member":{"shape":"Tag"}
+    },
+    "TargetDataSetting":{
+      "type":"structure",
+      "members":{
+        "TablePreparationMode":{
+          "shape":"TablePreparationMode",
+          "documentation":"<p>This setting determines how DMS handles the target tables before starting a data migration, either by leaving them untouched, dropping and recreating them, or truncating the existing data in the target tables.</p>"
+        }
+      },
+      "documentation":"<p>Defines settings for a target data provider for a data migration.</p>"
+    },
+    "TargetDataSettings":{
+      "type":"list",
+      "member":{"shape":"TargetDataSetting"}
     },
     "TargetDbType":{
       "type":"string",

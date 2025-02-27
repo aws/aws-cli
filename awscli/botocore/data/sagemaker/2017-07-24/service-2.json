@@ -4070,6 +4070,34 @@
       ],
       "documentation":"<p>Update a hub.</p>"
     },
+    "UpdateHubContent":{
+      "name":"UpdateHubContent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateHubContentRequest"},
+      "output":{"shape":"UpdateHubContentResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Updates SageMaker hub content (either a <code>Model</code> or <code>Notebook</code> resource).</p> <p>You can update the metadata that describes the resource. In addition to the required request fields, specify at least one of the following fields to update:</p> <ul> <li> <p> <code>HubContentDescription</code> </p> </li> <li> <p> <code>HubContentDisplayName</code> </p> </li> <li> <p> <code>HubContentMarkdown</code> </p> </li> <li> <p> <code>HubContentSearchKeywords</code> </p> </li> <li> <p> <code>SupportStatus</code> </p> </li> </ul> <p>For more information about hubs, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-curated-hubs.html\">Private curated hubs for foundation model access control in JumpStart</a>.</p> <note> <p>If you want to update a <code>ModelReference</code> resource in your hub, use the <code>UpdateHubContentResource</code> API instead.</p> </note>"
+    },
+    "UpdateHubContentReference":{
+      "name":"UpdateHubContentReference",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateHubContentReferenceRequest"},
+      "output":{"shape":"UpdateHubContentReferenceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Updates the contents of a SageMaker hub for a <code>ModelReference</code> resource. A <code>ModelReference</code> allows you to access public SageMaker JumpStart models from within your private hub.</p> <p>When using this API, you can update the <code>MinVersion</code> field for additional flexibility in the model version. You shouldn't update any additional fields when using this API, because the metadata in your private hub should match the public JumpStart model's metadata.</p> <note> <p>If you want to update a <code>Model</code> or <code>Notebook</code> resource in your hub, use the <code>UpdateHubContent</code> API instead.</p> </note> <p>For more information about adding model references to your hub, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-curated-hubs-admin-guide-add-models.html\"> Add models to a private hub</a>.</p>"
+    },
     "UpdateImage":{
       "name":"UpdateImage",
       "http":{
@@ -6513,7 +6541,7 @@
     "BatchDeleteClusterNodesErrorList":{
       "type":"list",
       "member":{"shape":"BatchDeleteClusterNodesError"},
-      "max":99,
+      "max":3000,
       "min":1
     },
     "BatchDeleteClusterNodesRequest":{
@@ -6529,7 +6557,7 @@
         },
         "NodeIds":{
           "shape":"ClusterNodeIds",
-          "documentation":"<p>A list of node IDs to be deleted from the specified cluster.</p> <note> <p>For SageMaker HyperPod clusters using the Slurm workload manager, you cannot remove instances that are configured as Slurm controller nodes.</p> </note>"
+          "documentation":"<p>A list of node IDs to be deleted from the specified cluster.</p> <note> <ul> <li> <p>For SageMaker HyperPod clusters using the Slurm workload manager, you cannot remove instances that are configured as Slurm controller nodes.</p> </li> <li> <p>If you need to delete more than 99 instances, contact <a href=\"http://aws.amazon.com/contact-us/\">Support</a> for assistance.</p> </li> </ul> </note>"
         }
       }
     },
@@ -7655,7 +7683,10 @@
           "shape":"InstanceGroupTrainingPlanStatus",
           "documentation":"<p>The current status of the training plan associated with this cluster instance group.</p>"
         },
-        "OverrideVpcConfig":{"shape":"VpcConfig"}
+        "OverrideVpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The customized Amazon VPC configuration at the instance group level that overrides the default Amazon VPC configuration of the SageMaker HyperPod cluster.</p>"
+        }
       },
       "documentation":"<p>Details of an instance group in a SageMaker HyperPod cluster.</p>"
     },
@@ -7715,7 +7746,10 @@
           "shape":"TrainingPlanArn",
           "documentation":"<p>The Amazon Resource Name (ARN); of the training plan to use for this cluster instance group.</p> <p>For more information about how to reserve GPU capacity for your SageMaker HyperPod clusters using Amazon SageMaker Training Plan, see <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingPlan.html\">CreateTrainingPlan</a> </code>.</p>"
         },
-        "OverrideVpcConfig":{"shape":"VpcConfig"}
+        "OverrideVpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>To configure multi-AZ deployments, customize the Amazon VPC configuration at the instance group level. You can specify different subnets and security groups across different AZs in the instance group specification to override a SageMaker HyperPod cluster's default Amazon VPC configuration. For more information about deploying a cluster in multiple AZs, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-prerequisites.html#sagemaker-hyperpod-prerequisites-multiple-availability-zones\">Setting up SageMaker HyperPod clusters across multiple AZs</a>.</p> <note> <p>When your Amazon VPC and subnets support IPv6, network communications differ based on the cluster orchestration platform:</p> <ul> <li> <p>Slurm-orchestrated clusters automatically configure nodes with dual IPv6 and IPv4 addresses, allowing immediate IPv6 network communications.</p> </li> <li> <p>In Amazon EKS-orchestrated clusters, nodes receive dual-stack addressing, but pods can only use IPv6 when the Amazon EKS cluster is explicitly IPv6-enabled. For information about deploying an IPv6 Amazon EKS cluster, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/deploy-ipv6-cluster.html#_deploy_an_ipv6_cluster_with_eksctl\">Amazon EKS IPv6 Cluster Deployment</a>.</p> </li> </ul> <p>Additional resources for IPv6 configuration:</p> <ul> <li> <p>For information about adding IPv6 support to your VPC, see to <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-migrate-ipv6.html\">IPv6 Support for VPC</a>.</p> </li> <li> <p>For information about creating a new IPv6-compatible VPC, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/create-vpc.html\">Amazon VPC Creation Guide</a>.</p> </li> <li> <p>To configure SageMaker HyperPod with a custom Amazon VPC, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-prerequisites.html#sagemaker-hyperpod-prerequisites-optional-vpc\">Custom Amazon VPC Setup for SageMaker HyperPod</a>.</p> </li> </ul> </note>"
+        }
       },
       "documentation":"<p>The specifications of an instance group that you need to define.</p>"
     },
@@ -7724,6 +7758,12 @@
       "member":{"shape":"ClusterInstanceGroupSpecification"},
       "max":100,
       "min":1
+    },
+    "ClusterInstanceGroupsToDelete":{
+      "type":"list",
+      "member":{"shape":"ClusterInstanceGroupName"},
+      "max":100,
+      "min":0
     },
     "ClusterInstancePlacement":{
       "type":"structure",
@@ -7934,7 +7974,10 @@
           "shape":"ClusterLifeCycleConfig",
           "documentation":"<p>The LifeCycle configuration applied to the instance.</p>"
         },
-        "OverrideVpcConfig":{"shape":"VpcConfig"},
+        "OverrideVpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The customized Amazon VPC configuration at the instance group level that overrides the default Amazon VPC configuration of the SageMaker HyperPod cluster.</p>"
+        },
         "ThreadsPerCore":{
           "shape":"ClusterThreadsPerCore",
           "documentation":"<p>The number of threads per CPU core you specified under <code>CreateCluster</code>.</p>"
@@ -7949,7 +7992,7 @@
         },
         "PrivatePrimaryIpv6":{
           "shape":"ClusterPrivatePrimaryIpv6",
-          "documentation":"<p>The private primary IPv6 address of the SageMaker HyperPod cluster node.</p>"
+          "documentation":"<p>The private primary IPv6 address of the SageMaker HyperPod cluster node when configured with an Amazon VPC that supports IPv6 and includes subnets with IPv6 addressing enabled in either the cluster Amazon VPC configuration or the instance group Amazon VPC configuration.</p>"
         },
         "PrivateDnsHostname":{
           "shape":"ClusterPrivateDnsHostname",
@@ -7971,7 +8014,7 @@
     "ClusterNodeIds":{
       "type":"list",
       "member":{"shape":"ClusterNodeId"},
-      "max":99,
+      "max":3000,
       "min":1
     },
     "ClusterNodeRecovery":{
@@ -9311,7 +9354,10 @@
           "shape":"ClusterInstanceGroupSpecifications",
           "documentation":"<p>The instance groups to be created in the SageMaker HyperPod cluster.</p>"
         },
-        "VpcConfig":{"shape":"VpcConfig"},
+        "VpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>Specifies the Amazon Virtual Private Cloud (VPC) that is associated with the Amazon SageMaker HyperPod cluster. You can control access to and from your resources by configuring your VPC. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html\">Give SageMaker access to resources in your Amazon VPC</a>.</p> <note> <p>When your Amazon VPC and subnets support IPv6, network communications differ based on the cluster orchestration platform:</p> <ul> <li> <p>Slurm-orchestrated clusters automatically configure nodes with dual IPv6 and IPv4 addresses, allowing immediate IPv6 network communications.</p> </li> <li> <p>In Amazon EKS-orchestrated clusters, nodes receive dual-stack addressing, but pods can only use IPv6 when the Amazon EKS cluster is explicitly IPv6-enabled. For information about deploying an IPv6 Amazon EKS cluster, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/deploy-ipv6-cluster.html#_deploy_an_ipv6_cluster_with_eksctl\">Amazon EKS IPv6 Cluster Deployment</a>.</p> </li> </ul> <p>Additional resources for IPv6 configuration:</p> <ul> <li> <p>For information about adding IPv6 support to your VPC, see to <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-migrate-ipv6.html\">IPv6 Support for VPC</a>.</p> </li> <li> <p>For information about creating a new IPv6-compatible VPC, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/create-vpc.html\">Amazon VPC Creation Guide</a>.</p> </li> <li> <p>To configure SageMaker HyperPod with a custom Amazon VPC, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-prerequisites.html#sagemaker-hyperpod-prerequisites-optional-vpc\">Custom Amazon VPC Setup for SageMaker HyperPod</a>.</p> </li> </ul> </note>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>Custom tags for managing the SageMaker HyperPod cluster as an Amazon Web Services resource. You can add tags to your cluster in the same way you add them in other Amazon Web Services services that support tagging. To learn more about tagging Amazon Web Services resources in general, see <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging.html\">Tagging Amazon Web Services Resources User Guide</a>.</p>"
@@ -15543,6 +15589,10 @@
         "CreationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that hub content was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last modified time of the hub content.</p>"
         }
       }
     },
@@ -15941,6 +15991,10 @@
         "InferenceComponentStatus":{
           "shape":"InferenceComponentStatus",
           "documentation":"<p>The status of the inference component.</p>"
+        },
+        "LastDeploymentConfig":{
+          "shape":"InferenceComponentDeploymentConfig",
+          "documentation":"<p>The deployment and rollback settings that you assigned to the inference component.</p>"
         }
       }
     },
@@ -19959,7 +20013,7 @@
           "documentation":"<p>The list of tags that are associated with the experiment. You can use <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Search.html\">Search</a> API to search on the tags.</p>"
         }
       },
-      "documentation":"<p>The properties of an experiment as returned by the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Search.html\">Search</a> API.</p>"
+      "documentation":"<p>The properties of an experiment as returned by the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Search.html\">Search</a> API. For information about experiments, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateExperiment.html\">CreateExperiment</a> API.</p>"
     },
     "ExperimentArn":{
       "type":"string",
@@ -21126,6 +21180,17 @@
       "min":0
     },
     "Horovod":{"type":"boolean"},
+    "HubAccessConfig":{
+      "type":"structure",
+      "required":["HubContentArn"],
+      "members":{
+        "HubContentArn":{
+          "shape":"HubContentArn",
+          "documentation":"<p>The ARN of your private model hub content. This should be a <code>ModelReference</code> resource type that points to a SageMaker JumpStart public hub model.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a private hub model reference that points to a public SageMaker JumpStart model.</p> <p>For more information about private hubs, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-curated-hubs.html\">Private curated hubs for foundation model access control in JumpStart</a>.</p>"
+    },
     "HubArn":{
       "type":"string",
       "max":255,
@@ -21277,7 +21342,8 @@
       "type":"string",
       "enum":[
         "Supported",
-        "Deprecated"
+        "Deprecated",
+        "Restricted"
       ]
     },
     "HubContentType":{
@@ -22615,6 +22681,10 @@
           "shape":"HubContentDocument",
           "documentation":"<p>The hub content document that describes information about the hub content such as type, associated containers, scripts, and more.</p>"
         },
+        "SupportStatus":{
+          "shape":"HubContentSupportStatus",
+          "documentation":"<p>The status of the hub content resource.</p>"
+        },
         "HubContentSearchKeywords":{
           "shape":"HubContentSearchKeywordList",
           "documentation":"<p>The searchable keywords of the hub content.</p>"
@@ -22650,6 +22720,31 @@
       "type":"string",
       "max":2048,
       "min":20
+    },
+    "InferenceComponentCapacitySize":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Value"
+      ],
+      "members":{
+        "Type":{
+          "shape":"InferenceComponentCapacitySizeType",
+          "documentation":"<p>Specifies the endpoint capacity type.</p> <dl> <dt>COPY_COUNT</dt> <dd> <p>The endpoint activates based on the number of inference component copies.</p> </dd> <dt>CAPACITY_PERCENT</dt> <dd> <p>The endpoint activates based on the specified percentage of capacity.</p> </dd> </dl>"
+        },
+        "Value":{
+          "shape":"CapacitySizeValue",
+          "documentation":"<p>Defines the capacity size, either as a number of inference component copies or a capacity percentage.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the type and size of the endpoint capacity to activate for a rolling deployment or a rollback strategy. You can specify your batches as either of the following:</p> <ul> <li> <p>A count of inference component copies </p> </li> <li> <p>The overall percentage or your fleet </p> </li> </ul> <p>For a rollback strategy, if you don't specify the fields in this object, or if you set the <code>Value</code> parameter to 100%, then SageMaker AI uses a blue/green rollback strategy and rolls all traffic back to the blue fleet.</p>"
+    },
+    "InferenceComponentCapacitySizeType":{
+      "type":"string",
+      "enum":[
+        "COPY_COUNT",
+        "CAPACITY_PERCENT"
+      ]
     },
     "InferenceComponentComputeResourceRequirements":{
       "type":"structure",
@@ -22711,6 +22806,18 @@
       "type":"integer",
       "min":0
     },
+    "InferenceComponentDeploymentConfig":{
+      "type":"structure",
+      "required":["RollingUpdatePolicy"],
+      "members":{
+        "RollingUpdatePolicy":{
+          "shape":"InferenceComponentRollingUpdatePolicy",
+          "documentation":"<p>Specifies a rolling deployment strategy for updating a SageMaker AI endpoint.</p>"
+        },
+        "AutoRollbackConfiguration":{"shape":"AutoRollbackConfig"}
+      },
+      "documentation":"<p>The deployment configuration for an endpoint that hosts inference components. The configuration includes the desired deployment strategy and rollback settings.</p>"
+    },
     "InferenceComponentName":{
       "type":"string",
       "max":63,
@@ -22720,6 +22827,32 @@
       "type":"string",
       "max":63,
       "pattern":"[a-zA-Z0-9-]+"
+    },
+    "InferenceComponentRollingUpdatePolicy":{
+      "type":"structure",
+      "required":[
+        "MaximumBatchSize",
+        "WaitIntervalInSeconds"
+      ],
+      "members":{
+        "MaximumBatchSize":{
+          "shape":"InferenceComponentCapacitySize",
+          "documentation":"<p>The batch size for each rolling step in the deployment process. For each step, SageMaker AI provisions capacity on the new endpoint fleet, routes traffic to that fleet, and terminates capacity on the old endpoint fleet. The value must be between 5% to 50% of the copy count of the inference component.</p>"
+        },
+        "WaitIntervalInSeconds":{
+          "shape":"WaitIntervalInSeconds",
+          "documentation":"<p>The length of the baking period, during which SageMaker AI monitors alarms for each batch on the new fleet.</p>"
+        },
+        "MaximumExecutionTimeoutInSeconds":{
+          "shape":"MaximumExecutionTimeoutInSeconds",
+          "documentation":"<p>The time limit for the total deployment. Exceeding this limit causes a timeout.</p>"
+        },
+        "RollbackMaximumBatchSize":{
+          "shape":"InferenceComponentCapacitySize",
+          "documentation":"<p>The batch size for a rollback to the old endpoint fleet. If this field is absent, the value is set to the default, which is 100% of the total capacity. When the default is used, SageMaker AI provisions the entire capacity of the old fleet at once during rollback.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a rolling deployment strategy for updating a SageMaker AI inference component.</p>"
     },
     "InferenceComponentRuntimeConfig":{
       "type":"structure",
@@ -29762,7 +29895,7 @@
       "members":{
         "ModelPackageName":{
           "shape":"EntityName",
-          "documentation":"<p>The name of the model.</p>"
+          "documentation":"<p>The name of the model package. The name can be as follows:</p> <ul> <li> <p>For a versioned model, the name is automatically generated by SageMaker Model Registry and follows the format '<code>ModelPackageGroupName/ModelPackageVersion</code>'.</p> </li> <li> <p>For an unversioned model, you must provide the name.</p> </li> </ul>"
         },
         "ModelPackageGroupName":{
           "shape":"EntityName",
@@ -29879,7 +30012,7 @@
           "documentation":"<p>Indicates if you want to skip model validation.</p>"
         }
       },
-      "documentation":"<p>A versioned model that can be deployed for SageMaker inference.</p>"
+      "documentation":"<p>A container for your trained model that can be deployed for SageMaker inference. This can include inference code, artifacts, and metadata. The model package type can be one of the following.</p> <ul> <li> <p>Versioned model: A part of a model package group in Model Registry.</p> </li> <li> <p>Unversioned model: Not part of a model package group and used in Amazon Web Services Marketplace.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateModelPackage.html\"> <code>CreateModelPackage</code> </a>.</p>"
     },
     "ModelPackageArn":{
       "type":"string",
@@ -29993,7 +30126,7 @@
           "documentation":"<p>A list of the tags associated with the model group. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>"
         }
       },
-      "documentation":"<p>A group of versioned models in the model registry.</p>"
+      "documentation":"<p>A group of versioned models in the Model Registry.</p>"
     },
     "ModelPackageGroupArn":{
       "type":"string",
@@ -33595,7 +33728,7 @@
         },
         "InferenceAmiVersion":{
           "shape":"ProductionVariantInferenceAmiVersion",
-          "documentation":"<p>Specifies an option from a collection of preconfigured Amazon Machine Image (AMI) images. Each image is configured by Amazon Web Services with a set of software and driver versions. Amazon Web Services optimizes these configurations for different machine learning workloads.</p> <p>By selecting an AMI version, you can ensure that your inference environment is compatible with specific software requirements, such as CUDA driver versions, Linux kernel versions, or Amazon Web Services Neuron driver versions.</p> <p>The AMI version names, and their configurations, are the following:</p> <dl> <dt>al2-ami-sagemaker-inference-gpu-2</dt> <dd> <ul> <li> <p>Accelerator: GPU</p> </li> <li> <p>NVIDIA driver version: 535.54.03</p> </li> <li> <p>CUDA driver version: 12.2</p> </li> <li> <p>Supported instance types: ml.g4dn.*, ml.g5.*, ml.g6.*, ml.p3.*, ml.p4d.*, ml.p4de.*, ml.p5.*</p> </li> </ul> </dd> </dl>"
+          "documentation":"<p>Specifies an option from a collection of preconfigured Amazon Machine Image (AMI) images. Each image is configured by Amazon Web Services with a set of software and driver versions. Amazon Web Services optimizes these configurations for different machine learning workloads.</p> <p>By selecting an AMI version, you can ensure that your inference environment is compatible with specific software requirements, such as CUDA driver versions, Linux kernel versions, or Amazon Web Services Neuron driver versions.</p> <p>The AMI version names, and their configurations, are the following:</p> <dl> <dt>al2-ami-sagemaker-inference-gpu-2</dt> <dd> <ul> <li> <p>Accelerator: GPU</p> </li> <li> <p>NVIDIA driver version: 535</p> </li> <li> <p>CUDA version: 12.2</p> </li> </ul> </dd> <dt>al2-ami-sagemaker-inference-gpu-2-1</dt> <dd> <ul> <li> <p>Accelerator: GPU</p> </li> <li> <p>NVIDIA driver version: 535</p> </li> <li> <p>CUDA version: 12.2</p> </li> <li> <p>NVIDIA Container Toolkit with disabled CUDA-compat mounting</p> </li> </ul> </dd> <dt>al2-ami-sagemaker-inference-gpu-3-1</dt> <dd> <ul> <li> <p>Accelerator: GPU</p> </li> <li> <p>NVIDIA driver version: 550</p> </li> <li> <p>CUDA version: 12.4</p> </li> <li> <p>NVIDIA Container Toolkit with disabled CUDA-compat mounting</p> </li> </ul> </dd> </dl>"
         }
       },
       "documentation":"<p> Identifies a model that you want to host and the resources chosen to deploy for hosting it. If you are deploying multiple models, tell SageMaker how to distribute traffic among the models by specifying variant weights. For more information on production variants, check <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-ab-testing.html\"> Production variants</a>. </p>"
@@ -33633,7 +33766,11 @@
     },
     "ProductionVariantInferenceAmiVersion":{
       "type":"string",
-      "enum":["al2-ami-sagemaker-inference-gpu-2"]
+      "enum":[
+        "al2-ami-sagemaker-inference-gpu-2",
+        "al2-ami-sagemaker-inference-gpu-2-1",
+        "al2-ami-sagemaker-inference-gpu-3-1"
+      ]
     },
     "ProductionVariantInstanceType":{
       "type":"string",
@@ -33748,6 +33885,16 @@
         "ml.g6.16xlarge",
         "ml.g6.24xlarge",
         "ml.g6.48xlarge",
+        "ml.r8g.medium",
+        "ml.r8g.large",
+        "ml.r8g.xlarge",
+        "ml.r8g.2xlarge",
+        "ml.r8g.4xlarge",
+        "ml.r8g.8xlarge",
+        "ml.r8g.12xlarge",
+        "ml.r8g.16xlarge",
+        "ml.r8g.24xlarge",
+        "ml.r8g.48xlarge",
         "ml.g6e.xlarge",
         "ml.g6e.2xlarge",
         "ml.g6e.4xlarge",
@@ -33824,6 +33971,7 @@
         "ml.inf2.48xlarge",
         "ml.p5.48xlarge",
         "ml.p5e.48xlarge",
+        "ml.p5en.48xlarge",
         "ml.m7i.large",
         "ml.m7i.xlarge",
         "ml.m7i.2xlarge",
@@ -35652,7 +35800,7 @@
         },
         "SageMakerImageVersionArn":{
           "shape":"ImageVersionArn",
-          "documentation":"<p>The ARN of the image version created on the instance.</p>"
+          "documentation":"<p>The ARN of the image version created on the instance. To clear the value set for <code>SageMakerImageVersionArn</code>, pass <code>None</code> as the value.</p>"
         },
         "SageMakerImageVersionAlias":{
           "shape":"ImageVersionAlias",
@@ -35667,7 +35815,7 @@
           "documentation":"<p> The Amazon Resource Name (ARN) of the Lifecycle Configuration attached to the Resource.</p>"
         }
       },
-      "documentation":"<p>Specifies the ARN's of a SageMaker AI image and SageMaker AI image version, and the instance type that the version runs on.</p>"
+      "documentation":"<p>Specifies the ARN's of a SageMaker AI image and SageMaker AI image version, and the instance type that the version runs on.</p> <note> <p>When both <code>SageMakerImageVersionArn</code> and <code>SageMakerImageArn</code> are passed, <code>SageMakerImageVersionArn</code> is used. Any updates to <code>SageMakerImageArn</code> will not take effect if <code>SageMakerImageVersionArn</code> already exists in the <code>ResourceSpec</code> because <code>SageMakerImageVersionArn</code> always takes precedence. To clear the value set for <code>SageMakerImageVersionArn</code>, pass <code>None</code> as the value.</p> </note>"
     },
     "ResourceType":{
       "type":"string",
@@ -35862,6 +36010,11 @@
         "InstanceGroupNames":{
           "shape":"InstanceGroupNames",
           "documentation":"<p>A list of names of instance groups that get data from the S3 data source.</p>"
+        },
+        "ModelAccessConfig":{"shape":"ModelAccessConfig"},
+        "HubAccessConfig":{
+          "shape":"HubAccessConfig",
+          "documentation":"<p>The configuration for a private hub model reference that points to a SageMaker JumpStart public hub model.</p>"
         }
       },
       "documentation":"<p>Describes the S3 data source.</p> <p>Your input bucket must be in the same Amazon Web Services region as your training job.</p>"
@@ -40279,6 +40432,10 @@
         "NodeRecovery":{
           "shape":"ClusterNodeRecovery",
           "documentation":"<p>The node recovery mode to be applied to the SageMaker HyperPod cluster.</p>"
+        },
+        "InstanceGroupsToDelete":{
+          "shape":"ClusterInstanceGroupsToDelete",
+          "documentation":"<p>Specify the names of the instance groups to delete. Use a single <code>,</code> as the separator between multiple names.</p>"
         }
       }
     },
@@ -40707,6 +40864,113 @@
         }
       }
     },
+    "UpdateHubContentReferenceRequest":{
+      "type":"structure",
+      "required":[
+        "HubName",
+        "HubContentName",
+        "HubContentType"
+      ],
+      "members":{
+        "HubName":{
+          "shape":"HubNameOrArn",
+          "documentation":"<p>The name of the SageMaker hub that contains the hub content you want to update. You can optionally use the hub ARN instead.</p>"
+        },
+        "HubContentName":{
+          "shape":"HubContentName",
+          "documentation":"<p>The name of the hub content resource that you want to update.</p>"
+        },
+        "HubContentType":{
+          "shape":"HubContentType",
+          "documentation":"<p>The content type of the resource that you want to update. Only specify a <code>ModelReference</code> resource for this API. To update a <code>Model</code> or <code>Notebook</code> resource, use the <code>UpdateHubContent</code> API instead.</p>"
+        },
+        "MinVersion":{
+          "shape":"HubContentVersion",
+          "documentation":"<p>The minimum hub content version of the referenced model that you want to use. The minimum version must be older than the latest available version of the referenced model. To support all versions of a model, set the value to <code>1.0.0</code>.</p>"
+        }
+      }
+    },
+    "UpdateHubContentReferenceResponse":{
+      "type":"structure",
+      "required":[
+        "HubArn",
+        "HubContentArn"
+      ],
+      "members":{
+        "HubArn":{
+          "shape":"HubArn",
+          "documentation":"<p>The ARN of the private model hub that contains the updated hub content.</p>"
+        },
+        "HubContentArn":{
+          "shape":"HubContentArn",
+          "documentation":"<p>The ARN of the hub content resource that was updated.</p>"
+        }
+      }
+    },
+    "UpdateHubContentRequest":{
+      "type":"structure",
+      "required":[
+        "HubName",
+        "HubContentName",
+        "HubContentType",
+        "HubContentVersion"
+      ],
+      "members":{
+        "HubName":{
+          "shape":"HubNameOrArn",
+          "documentation":"<p>The name of the SageMaker hub that contains the hub content you want to update. You can optionally use the hub ARN instead.</p>"
+        },
+        "HubContentName":{
+          "shape":"HubContentName",
+          "documentation":"<p>The name of the hub content resource that you want to update.</p>"
+        },
+        "HubContentType":{
+          "shape":"HubContentType",
+          "documentation":"<p>The content type of the resource that you want to update. Only specify a <code>Model</code> or <code>Notebook</code> resource for this API. To update a <code>ModelReference</code>, use the <code>UpdateHubContentReference</code> API instead.</p>"
+        },
+        "HubContentVersion":{
+          "shape":"HubContentVersion",
+          "documentation":"<p>The hub content version that you want to update. For example, if you have two versions of a resource in your hub, you can update the second version.</p>"
+        },
+        "HubContentDisplayName":{
+          "shape":"HubContentDisplayName",
+          "documentation":"<p>The display name of the hub content.</p>"
+        },
+        "HubContentDescription":{
+          "shape":"HubContentDescription",
+          "documentation":"<p>The description of the hub content.</p>"
+        },
+        "HubContentMarkdown":{
+          "shape":"HubContentMarkdown",
+          "documentation":"<p>A string that provides a description of the hub content. This string can include links, tables, and standard markdown formatting.</p>"
+        },
+        "HubContentSearchKeywords":{
+          "shape":"HubContentSearchKeywordList",
+          "documentation":"<p>The searchable keywords of the hub content.</p>"
+        },
+        "SupportStatus":{
+          "shape":"HubContentSupportStatus",
+          "documentation":"<p>Indicates the current status of the hub content resource.</p>"
+        }
+      }
+    },
+    "UpdateHubContentResponse":{
+      "type":"structure",
+      "required":[
+        "HubArn",
+        "HubContentArn"
+      ],
+      "members":{
+        "HubArn":{
+          "shape":"HubArn",
+          "documentation":"<p>The ARN of the private model hub that contains the updated hub content.</p>"
+        },
+        "HubContentArn":{
+          "shape":"HubContentArn",
+          "documentation":"<p>The ARN of the hub content resource that was updated.</p>"
+        }
+      }
+    },
     "UpdateHubRequest":{
       "type":"structure",
       "required":["HubName"],
@@ -40852,6 +41116,10 @@
         "RuntimeConfig":{
           "shape":"InferenceComponentRuntimeConfig",
           "documentation":"<p>Runtime settings for a model that is deployed with an inference component.</p>"
+        },
+        "DeploymentConfig":{
+          "shape":"InferenceComponentDeploymentConfig",
+          "documentation":"<p>The deployment configuration for the inference component. The configuration contains the desired deployment strategy and rollback settings.</p>"
         }
       }
     },

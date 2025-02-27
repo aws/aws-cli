@@ -42,6 +42,20 @@
       ],
       "documentation":"<p>Creates an Batch compute environment. You can create <code>MANAGED</code> or <code>UNMANAGED</code> compute environments. <code>MANAGED</code> compute environments can use Amazon EC2 or Fargate resources. <code>UNMANAGED</code> compute environments can only use EC2 resources.</p> <p>In a managed compute environment, Batch manages the capacity and instance types of the compute resources within the environment. This is based on the compute resource specification that you define or the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-templates.html\">launch template</a> that you specify when you create the compute environment. Either, you can choose to use EC2 On-Demand Instances and EC2 Spot Instances. Or, you can use Fargate and Fargate Spot capacity in your managed compute environment. You can optionally set a maximum price so that Spot Instances only launch when the Spot Instance price is less than a specified percentage of the On-Demand price.</p> <note> <p>Multi-node parallel jobs aren't supported on Spot Instances.</p> </note> <p>In an unmanaged compute environment, you can manage your own EC2 compute resources and have flexibility with how you configure your compute resources. For example, you can use custom AMIs. However, you must verify that each of your AMIs meet the Amazon ECS container instance AMI specification. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/container_instance_AMIs.html\">container instance AMIs</a> in the <i>Amazon Elastic Container Service Developer Guide</i>. After you created your unmanaged compute environment, you can use the <a>DescribeComputeEnvironments</a> operation to find the Amazon ECS cluster that's associated with it. Then, launch your container instances into that Amazon ECS cluster. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_container_instance.html\">Launching an Amazon ECS container instance</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <note> <p>To create a compute environment that uses EKS resources, the caller must have permissions to call <code>eks:DescribeCluster</code>.</p> </note> <note> <p>Batch doesn't automatically upgrade the AMIs in a compute environment after it's created. For example, it also doesn't update the AMIs in your compute environment when a newer version of the Amazon ECS optimized AMI is available. You're responsible for the management of the guest operating system. This includes any updates and security patches. You're also responsible for any additional application software or utilities that you install on the compute resources. There are two ways to use a new AMI for your Batch jobs. The original method is to complete these steps:</p> <ol> <li> <p>Create a new compute environment with the new AMI.</p> </li> <li> <p>Add the compute environment to an existing job queue.</p> </li> <li> <p>Remove the earlier compute environment from your job queue.</p> </li> <li> <p>Delete the earlier compute environment.</p> </li> </ol> <p>In April 2022, Batch added enhanced support for updating compute environments. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a>. To use the enhanced updating of compute environments to update AMIs, follow these rules:</p> <ul> <li> <p>Either don't set the service role (<code>serviceRole</code>) parameter or set it to the <b>AWSBatchServiceRole</b> service-linked role.</p> </li> <li> <p>Set the allocation strategy (<code>allocationStrategy</code>) parameter to <code>BEST_FIT_PROGRESSIVE</code>, <code>SPOT_CAPACITY_OPTIMIZED</code>, or <code>SPOT_PRICE_CAPACITY_OPTIMIZED</code>.</p> </li> <li> <p>Set the update to latest image version (<code>updateToLatestImageVersion</code>) parameter to <code>true</code>. The <code>updateToLatestImageVersion</code> parameter is used when you update a compute environment. This parameter is ignored when you create a compute environment.</p> </li> <li> <p>Don't specify an AMI ID in <code>imageId</code>, <code>imageIdOverride</code> (in <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_Ec2Configuration.html\"> <code>ec2Configuration</code> </a>), or in the launch template (<code>launchTemplate</code>). In that case, Batch selects the latest Amazon ECS optimized AMI that's supported by Batch at the time the infrastructure update is initiated. Alternatively, you can specify the AMI ID in the <code>imageId</code> or <code>imageIdOverride</code> parameters, or the launch template identified by the <code>LaunchTemplate</code> properties. Changing any of these properties starts an infrastructure update. If the AMI ID is specified in the launch template, it can't be replaced by specifying an AMI ID in either the <code>imageId</code> or <code>imageIdOverride</code> parameters. It can only be replaced by specifying a different launch template, or if the launch template version is set to <code>$Default</code> or <code>$Latest</code>, by setting either a new default version for the launch template (if <code>$Default</code>) or by adding a new version to the launch template (if <code>$Latest</code>).</p> </li> </ul> <p>If these rules are followed, any update that starts an infrastructure update causes the AMI ID to be re-selected. If the <code>version</code> setting in the launch template (<code>launchTemplate</code>) is set to <code>$Latest</code> or <code>$Default</code>, the latest or default version of the launch template is evaluated up at the time of the infrastructure update, even if the <code>launchTemplate</code> wasn't updated.</p> </note>"
     },
+    "CreateConsumableResource":{
+      "name":"CreateConsumableResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/createconsumableresource"
+      },
+      "input":{"shape":"CreateConsumableResourceRequest"},
+      "output":{"shape":"CreateConsumableResourceResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Creates an Batch consumable resource.</p>"
+    },
     "CreateJobQueue":{
       "name":"CreateJobQueue",
       "http":{
@@ -83,6 +97,20 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Deletes an Batch compute environment.</p> <p>Before you can delete a compute environment, you must set its state to <code>DISABLED</code> with the <a>UpdateComputeEnvironment</a> API operation and disassociate it from any job queues with the <a>UpdateJobQueue</a> API operation. Compute environments that use Fargate resources must terminate all active jobs on that compute environment before deleting the compute environment. If this isn't done, the compute environment enters an invalid state.</p>"
+    },
+    "DeleteConsumableResource":{
+      "name":"DeleteConsumableResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/deleteconsumableresource"
+      },
+      "input":{"shape":"DeleteConsumableResourceRequest"},
+      "output":{"shape":"DeleteConsumableResourceResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Deletes the specified consumable resource.</p>"
     },
     "DeleteJobQueue":{
       "name":"DeleteJobQueue",
@@ -139,6 +167,20 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Describes one or more of your compute environments.</p> <p>If you're using an unmanaged compute environment, you can use the <code>DescribeComputeEnvironment</code> operation to determine the <code>ecsClusterArn</code> that you launch your Amazon ECS container instances into.</p>"
+    },
+    "DescribeConsumableResource":{
+      "name":"DescribeConsumableResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/describeconsumableresource"
+      },
+      "input":{"shape":"DescribeConsumableResourceRequest"},
+      "output":{"shape":"DescribeConsumableResourceResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Returns a description of the specified consumable resource.</p>"
     },
     "DescribeJobDefinitions":{
       "name":"DescribeJobDefinitions",
@@ -210,6 +252,20 @@
       ],
       "documentation":"<p>Provides a list of the first 100 <code>RUNNABLE</code> jobs associated to a single job queue.</p>"
     },
+    "ListConsumableResources":{
+      "name":"ListConsumableResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/listconsumableresources"
+      },
+      "input":{"shape":"ListConsumableResourcesRequest"},
+      "output":{"shape":"ListConsumableResourcesResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Returns a list of Batch consumable resources.</p>"
+    },
     "ListJobs":{
       "name":"ListJobs",
       "http":{
@@ -223,6 +279,20 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Returns a list of Batch jobs.</p> <p>You must specify only one of the following items:</p> <ul> <li> <p>A job queue ID to return a list of jobs in that job queue</p> </li> <li> <p>A multi-node parallel job ID to return a list of nodes for that job</p> </li> <li> <p>An array job ID to return a list of the children for that job</p> </li> </ul> <p>You can filter the results by job status with the <code>jobStatus</code> parameter. If you don't specify a status, only <code>RUNNING</code> jobs are returned.</p>"
+    },
+    "ListJobsByConsumableResource":{
+      "name":"ListJobsByConsumableResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/listjobsbyconsumableresource"
+      },
+      "input":{"shape":"ListJobsByConsumableResourceRequest"},
+      "output":{"shape":"ListJobsByConsumableResourceResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Returns a list of Batch jobs that require a specific consumable resource.</p>"
     },
     "ListSchedulingPolicies":{
       "name":"ListSchedulingPolicies",
@@ -335,6 +405,20 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Updates an Batch compute environment.</p>"
+    },
+    "UpdateConsumableResource":{
+      "name":"UpdateConsumableResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/updateconsumableresource"
+      },
+      "input":{"shape":"UpdateConsumableResourceRequest"},
+      "output":{"shape":"UpdateConsumableResourceResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Updates a consumable resource.</p>"
     },
     "UpdateJobQueue":{
       "name":"UpdateJobQueue",
@@ -615,6 +699,11 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "ClientRequestToken":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
     "ComputeEnvironmentDetail":{
       "type":"structure",
       "required":[
@@ -869,6 +958,68 @@
         }
       },
       "documentation":"<p>An object that represents the attributes of a compute environment that can be updated. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p>"
+    },
+    "ConsumableResourceList":{
+      "type":"list",
+      "member":{"shape":"ConsumableResourceRequirement"}
+    },
+    "ConsumableResourceProperties":{
+      "type":"structure",
+      "members":{
+        "consumableResourceList":{
+          "shape":"ConsumableResourceList",
+          "documentation":"<p>The list of consumable resources required by a job.</p>"
+        }
+      },
+      "documentation":"<p>Contains a list of consumable resources required by a job.</p>"
+    },
+    "ConsumableResourceRequirement":{
+      "type":"structure",
+      "members":{
+        "consumableResource":{
+          "shape":"String",
+          "documentation":"<p>The name or ARN of the consumable resource.</p>"
+        },
+        "quantity":{
+          "shape":"Long",
+          "documentation":"<p>The quantity of the consumable resource that is needed.</p>"
+        }
+      },
+      "documentation":"<p>Information about a consumable resource required to run a job.</p>"
+    },
+    "ConsumableResourceSummary":{
+      "type":"structure",
+      "required":[
+        "consumableResourceArn",
+        "consumableResourceName"
+      ],
+      "members":{
+        "consumableResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the consumable resource.</p>"
+        },
+        "consumableResourceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the consumable resource.</p>"
+        },
+        "totalQuantity":{
+          "shape":"Long",
+          "documentation":"<p>The total amount of the consumable resource that is available.</p>"
+        },
+        "inUseQuantity":{
+          "shape":"Long",
+          "documentation":"<p>The amount of the consumable resource that is currently in use.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>Indicates whether the resource is available to be re-used after a job completes. Can be one of: </p> <ul> <li> <p> <code>REPLENISHABLE</code> </p> </li> <li> <p> <code>NON_REPLENISHABLE</code> </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Current information about a consumable resource.</p>"
+    },
+    "ConsumableResourceSummaryList":{
+      "type":"list",
+      "member":{"shape":"ConsumableResourceSummary"}
     },
     "ContainerDetail":{
       "type":"structure",
@@ -1201,6 +1352,45 @@
         }
       }
     },
+    "CreateConsumableResourceRequest":{
+      "type":"structure",
+      "required":["consumableResourceName"],
+      "members":{
+        "consumableResourceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the consumable resource. Must be unique.</p>"
+        },
+        "totalQuantity":{
+          "shape":"Long",
+          "documentation":"<p>The total amount of the consumable resource that is available. Must be non-negative.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>Indicates whether the resource is available to be re-used after a job completes. Can be one of: </p> <ul> <li> <p> <code>REPLENISHABLE</code> (default)</p> </li> <li> <p> <code>NON_REPLENISHABLE</code> </p> </li> </ul>"
+        },
+        "tags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The tags that you apply to the consumable resource to help you categorize and organize your resources. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html\">Tagging your Batch resources</a>.</p>"
+        }
+      }
+    },
+    "CreateConsumableResourceResponse":{
+      "type":"structure",
+      "required":[
+        "consumableResourceName",
+        "consumableResourceArn"
+      ],
+      "members":{
+        "consumableResourceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the consumable resource.</p>"
+        },
+        "consumableResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the consumable resource.</p>"
+        }
+      }
+    },
     "CreateJobQueueRequest":{
       "type":"structure",
       "required":[
@@ -1309,6 +1499,21 @@
       "members":{
       }
     },
+    "DeleteConsumableResourceRequest":{
+      "type":"structure",
+      "required":["consumableResource"],
+      "members":{
+        "consumableResource":{
+          "shape":"String",
+          "documentation":"<p>The name or ARN of the consumable resource that will be deleted.</p>"
+        }
+      }
+    },
+    "DeleteConsumableResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteJobQueueRequest":{
       "type":"structure",
       "required":["jobQueue"],
@@ -1384,6 +1589,57 @@
         "nextToken":{
           "shape":"String",
           "documentation":"<p>The <code>nextToken</code> value to include in a future <code>DescribeComputeEnvironments</code> request. When the results of a <code>DescribeComputeEnvironments</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "DescribeConsumableResourceRequest":{
+      "type":"structure",
+      "required":["consumableResource"],
+      "members":{
+        "consumableResource":{
+          "shape":"String",
+          "documentation":"<p>The name or ARN of the consumable resource whose description will be returned.</p>"
+        }
+      }
+    },
+    "DescribeConsumableResourceResponse":{
+      "type":"structure",
+      "required":[
+        "consumableResourceName",
+        "consumableResourceArn"
+      ],
+      "members":{
+        "consumableResourceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the consumable resource.</p>"
+        },
+        "consumableResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the consumable resource.</p>"
+        },
+        "totalQuantity":{
+          "shape":"Long",
+          "documentation":"<p>The total amount of the consumable resource that is available.</p>"
+        },
+        "inUseQuantity":{
+          "shape":"Long",
+          "documentation":"<p>The amount of the consumable resource that is currently in use.</p>"
+        },
+        "availableQuantity":{
+          "shape":"Long",
+          "documentation":"<p>The amount of the consumable resource that is currently available to use.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>Indicates whether the resource is available to be re-used after a job completes. Can be one of: </p> <ul> <li> <p> <code>REPLENISHABLE</code> </p> </li> <li> <p> <code>NON_REPLENISHABLE</code> </p> </li> </ul>"
+        },
+        "createdAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the consumable resource was created.</p>"
+        },
+        "tags":{
+          "shape":"TagrisTagsMap",
+          "documentation":"<p>The tags that you apply to the consumable resource to help you categorize and organize your resources. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html\">Tagging your Batch resources</a>.</p>"
         }
       }
     },
@@ -2571,6 +2827,10 @@
         "containerOrchestrationType":{
           "shape":"OrchestrationType",
           "documentation":"<p>The orchestration type of the compute environment. The valid values are <code>ECS</code> (default) or <code>EKS</code>.</p>"
+        },
+        "consumableResourceProperties":{
+          "shape":"ConsumableResourceProperties",
+          "documentation":"<p>Contains a list of consumable resources required by the job.</p>"
         }
       },
       "documentation":"<p>An object that represents an Batch job definition.</p>"
@@ -2730,6 +2990,10 @@
         "isTerminated":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the job is terminated.</p>"
+        },
+        "consumableResourceProperties":{
+          "shape":"ConsumableResourceProperties",
+          "documentation":"<p>Contains a list of consumable resources required by the job.</p>"
         }
       },
       "documentation":"<p>An object that represents an Batch job.</p>"
@@ -2950,7 +3214,7 @@
           "documentation":"<p>The filter values.</p>"
         }
       },
-      "documentation":"<p>A filter name and value pair that's used to return a more specific list of results from a <code>ListJobs</code> API operation.</p>"
+      "documentation":"<p>A filter name and value pair that's used to return a more specific list of results from a <code>ListJobs</code> or <code>ListJobsByConsumableResource</code> API operation.</p>"
     },
     "KubernetesVersion":{
       "type":"string",
@@ -3043,6 +3307,41 @@
       "type":"list",
       "member":{"shape":"AttemptTaskContainerDetails"}
     },
+    "ListConsumableResourcesFilterList":{
+      "type":"list",
+      "member":{"shape":"KeyValuesPair"}
+    },
+    "ListConsumableResourcesRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"ListConsumableResourcesFilterList",
+          "documentation":"<p>The filters to apply to the consumable resource list query. If used, only those consumable resources that match the filter are listed. Filter names and values can be:</p> <ul> <li> <p>name: <code>CONSUMABLE_RESOURCE_NAME </code> </p> <p>values: case-insensitive matches for the consumable resource name. If a filter value ends with an asterisk (*), it matches any consumable resource name that begins with the string before the '*'.</p> </li> </ul>"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results returned by <code>ListConsumableResources</code> in paginated output. When this parameter is used, <code>ListConsumableResources</code> only returns <code>maxResults</code> results in a single page and a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListConsumableResources</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, then <code>ListConsumableResources</code> returns up to 100 results and a <code>nextToken</code> value if applicable.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated <code>ListConsumableResources</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return.</p> <note> <p>Treat this token as an opaque identifier that's only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+        }
+      }
+    },
+    "ListConsumableResourcesResponse":{
+      "type":"structure",
+      "required":["consumableResources"],
+      "members":{
+        "consumableResources":{
+          "shape":"ConsumableResourceSummaryList",
+          "documentation":"<p>A list of consumable resources that match the request.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListConsumableResources</code> request. When the results of a <code>ListConsumableResources</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
     "ListEcsTaskDetails":{
       "type":"list",
       "member":{"shape":"EcsTaskDetails"}
@@ -3050,6 +3349,109 @@
     "ListEcsTaskProperties":{
       "type":"list",
       "member":{"shape":"EcsTaskProperties"}
+    },
+    "ListJobsByConsumableResourceFilterList":{
+      "type":"list",
+      "member":{"shape":"KeyValuesPair"}
+    },
+    "ListJobsByConsumableResourceRequest":{
+      "type":"structure",
+      "required":["consumableResource"],
+      "members":{
+        "consumableResource":{
+          "shape":"String",
+          "documentation":"<p>The name or ARN of the consumable resource.</p>"
+        },
+        "filters":{
+          "shape":"ListJobsByConsumableResourceFilterList",
+          "documentation":"<p>The filters to apply to the job list query. If used, only those jobs requiring the specified consumable resource (<code>consumableResource</code>) and that match the value of the filters are listed. The filter names and values can be:</p> <ul> <li> <p>name: <code>JOB_STATUS</code> </p> <p>values: <code>SUBMITTED | PENDING | RUNNABLE | STARTING | RUNNING | SUCCEEDED | FAILED</code> </p> </li> <li> <p>name: <code>JOB_NAME </code> </p> <p>The values are case-insensitive matches for the job name. If a filter value ends with an asterisk (*), it matches any job name that begins with the string before the '*'.</p> </li> </ul>"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results returned by <code>ListJobsByConsumableResource</code> in paginated output. When this parameter is used, <code>ListJobsByConsumableResource</code> only returns <code>maxResults</code> results in a single page and a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListJobsByConsumableResource</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, then <code>ListJobsByConsumableResource</code> returns up to 100 results and a <code>nextToken</code> value if applicable.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated <code>ListJobsByConsumableResource</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return.</p> <note> <p>Treat this token as an opaque identifier that's only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+        }
+      }
+    },
+    "ListJobsByConsumableResourceResponse":{
+      "type":"structure",
+      "required":["jobs"],
+      "members":{
+        "jobs":{
+          "shape":"ListJobsByConsumableResourceSummaryList",
+          "documentation":"<p>The list of jobs that require the specified consumable resources.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListJobsByConsumableResource</code> request. When the results of a <code>ListJobsByConsumableResource</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListJobsByConsumableResourceSummary":{
+      "type":"structure",
+      "required":[
+        "jobArn",
+        "jobQueueArn",
+        "jobName",
+        "jobStatus",
+        "quantity",
+        "createdAt",
+        "consumableResourceProperties"
+      ],
+      "members":{
+        "jobArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the job.</p>"
+        },
+        "jobQueueArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the job queue.</p>"
+        },
+        "jobName":{
+          "shape":"String",
+          "documentation":"<p>The name of the job.</p>"
+        },
+        "jobDefinitionArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the job definition.</p>"
+        },
+        "shareIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The fair-share scheduling policy identifier for the job.</p>"
+        },
+        "jobStatus":{
+          "shape":"String",
+          "documentation":"<p>The status of the job. Can be one of:</p> <ul> <li> <p> <code>SUBMITTED</code> </p> </li> <li> <p> <code>PENDING</code> </p> </li> <li> <p> <code>RUNNABLE</code> </p> </li> <li> <p> <code>STARTING</code> </p> </li> <li> <p> <code>RUNNING</code> </p> </li> <li> <p> <code>SUCCEEDED</code> </p> </li> <li> <p> <code>FAILED</code> </p> </li> </ul>"
+        },
+        "quantity":{
+          "shape":"Long",
+          "documentation":"<p>The total amount of the consumable resource that is available.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>A short, human-readable string to provide more details for the current status of the job.</p>"
+        },
+        "startedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp for when the job was started. More specifically, it's when the job transitioned from the <code>STARTING</code> state to the <code>RUNNING</code> state.</p>"
+        },
+        "createdAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the consumable resource was created.</p>"
+        },
+        "consumableResourceProperties":{
+          "shape":"ConsumableResourceProperties",
+          "documentation":"<p>Contains a list of consumable resources required by the job.</p>"
+        }
+      },
+      "documentation":"<p>Current information about a consumable resource required by a job.</p>"
+    },
+    "ListJobsByConsumableResourceSummaryList":{
+      "type":"list",
+      "member":{"shape":"ListJobsByConsumableResourceSummary"}
     },
     "ListJobsFilterList":{
       "type":"list",
@@ -3351,6 +3753,10 @@
         "eksPropertiesOverride":{
           "shape":"EksPropertiesOverride",
           "documentation":"<p>An object that contains the properties that you want to replace for the existing Amazon EKS resources of a job.</p>"
+        },
+        "consumableResourcePropertiesOverride":{
+          "shape":"ConsumableResourceProperties",
+          "documentation":"<p>An object that contains overrides for the consumable resources of a job.</p>"
         }
       },
       "documentation":"<p>The object that represents any node overrides to a job definition that's used in a <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_SubmitJob.html\">SubmitJob</a> API operation.</p>"
@@ -3386,6 +3792,10 @@
         "eksProperties":{
           "shape":"EksProperties",
           "documentation":"<p>This is an object that represents the properties of the node range for a multi-node parallel job.</p>"
+        },
+        "consumableResourceProperties":{
+          "shape":"ConsumableResourceProperties",
+          "documentation":"<p>Contains a list of consumable resources required by a job.</p>"
         }
       },
       "documentation":"<p>This is an object that represents the properties of the node range for a multi-node parallel job.</p>"
@@ -3476,6 +3886,10 @@
         "ecsProperties":{
           "shape":"EcsProperties",
           "documentation":"<p>An object with properties that are specific to Amazon ECS-based jobs. This must not be specified for Amazon EKS-based job definitions.</p>"
+        },
+        "consumableResourceProperties":{
+          "shape":"ConsumableResourceProperties",
+          "documentation":"<p>Contains a list of consumable resources required by the job.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>RegisterJobDefinition</code>.</p>"
@@ -3750,6 +4164,10 @@
         "ecsPropertiesOverride":{
           "shape":"EcsPropertiesOverride",
           "documentation":"<p>An object, with properties that override defaults for the job definition, can only be specified for jobs that are run on Amazon ECS resources.</p>"
+        },
+        "consumableResourcePropertiesOverride":{
+          "shape":"ConsumableResourceProperties",
+          "documentation":"<p>An object that contains overrides for the consumable resources of a job.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>SubmitJob</code>.</p>"
@@ -4182,6 +4600,50 @@
         "computeEnvironmentArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the compute environment.</p>"
+        }
+      }
+    },
+    "UpdateConsumableResourceRequest":{
+      "type":"structure",
+      "required":["consumableResource"],
+      "members":{
+        "consumableResource":{
+          "shape":"String",
+          "documentation":"<p>The name or ARN of the consumable resource to be updated.</p>"
+        },
+        "operation":{
+          "shape":"String",
+          "documentation":"<p>Indicates how the quantity of the consumable resource will be updated. Must be one of:</p> <ul> <li> <p> <code>SET</code> </p> <p>Sets the quantity of the resource to the value specified by the <code>quantity</code> parameter.</p> </li> <li> <p> <code>ADD</code> </p> <p>Increases the quantity of the resource by the value specified by the <code>quantity</code> parameter.</p> </li> <li> <p> <code>REMOVE</code> </p> <p>Reduces the quantity of the resource by the value specified by the <code>quantity</code> parameter.</p> </li> </ul>"
+        },
+        "quantity":{
+          "shape":"Long",
+          "documentation":"<p>The change in the total quantity of the consumable resource. The <code>operation</code> parameter determines whether the value specified here will be the new total quantity, or the amount by which the total quantity will be increased or reduced. Must be a non-negative value.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>If this parameter is specified and two update requests with identical payloads and <code>clientToken</code>s are received, these requests are considered the same request and the second request is rejected. A <code>clientToken</code> is valid for 8 hours or until one hour after the consumable resource is deleted, whichever is less.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateConsumableResourceResponse":{
+      "type":"structure",
+      "required":[
+        "consumableResourceName",
+        "consumableResourceArn"
+      ],
+      "members":{
+        "consumableResourceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the consumable resource to be updated.</p>"
+        },
+        "consumableResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the consumable resource.</p>"
+        },
+        "totalQuantity":{
+          "shape":"Long",
+          "documentation":"<p>The total amount of the consumable resource that is available.</p>"
         }
       }
     },

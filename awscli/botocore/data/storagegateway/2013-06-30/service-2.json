@@ -140,6 +140,20 @@
       ],
       "documentation":"<p>Cancels archiving of a virtual tape to the virtual tape shelf (VTS) after the archiving process is initiated. This operation is only supported in the tape gateway type.</p>"
     },
+    "CancelCacheReport":{
+      "name":"CancelCacheReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelCacheReportInput"},
+      "output":{"shape":"CancelCacheReportOutput"},
+      "errors":[
+        {"shape":"InvalidGatewayRequestException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Cancels generation of a specified cache report. You can use this operation to manually cancel an IN-PROGRESS report for any reason. This action changes the report status from IN-PROGRESS to CANCELLED. You can only cancel in-progress reports. If the the report you attempt to cancel is in FAILED, ERROR, or COMPLETED state, the cancel operation returns an error.</p>"
+    },
     "CancelRetrieval":{
       "name":"CancelRetrieval",
       "http":{
@@ -310,6 +324,20 @@
       ],
       "documentation":"<p>Deletes the bandwidth rate limits of a gateway. You can delete either the upload and download bandwidth rate limit, or you can delete both. If you delete only one of the limits, the other limit remains unchanged. To specify which gateway to work with, use the Amazon Resource Name (ARN) of the gateway in your request. This operation is supported only for the stored volume, cached volume, and tape gateway types.</p>"
     },
+    "DeleteCacheReport":{
+      "name":"DeleteCacheReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteCacheReportInput"},
+      "output":{"shape":"DeleteCacheReportOutput"},
+      "errors":[
+        {"shape":"InvalidGatewayRequestException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Deletes the specified cache report and any associated tags from the Storage Gateway database. You can only delete completed reports. If the status of the report you attempt to delete still IN-PROGRESS, the delete operation returns an error. You can use <code>CancelCacheReport</code> to cancel an IN-PROGRESS report.</p> <note> <p> <code>DeleteCacheReport</code> does not delete the report object from your Amazon S3 bucket.</p> </note>"
+    },
     "DeleteChapCredentials":{
       "name":"DeleteChapCredentials",
       "http":{
@@ -477,6 +505,20 @@
         {"shape":"InternalServerError"}
       ],
       "documentation":"<p>Returns information about the cache of a gateway. This operation is only supported in the cached volume, tape, and file gateway types.</p> <p>The response includes disk IDs that are configured as cache, and it includes the amount of cache allocated and used.</p>"
+    },
+    "DescribeCacheReport":{
+      "name":"DescribeCacheReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCacheReportInput"},
+      "output":{"shape":"DescribeCacheReportOutput"},
+      "errors":[
+        {"shape":"InvalidGatewayRequestException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Returns information about the specified cache report, including completion status and generation progress.</p>"
     },
     "DescribeCachediSCSIVolumes":{
       "name":"DescribeCachediSCSIVolumes",
@@ -744,6 +786,20 @@
       ],
       "documentation":"<p>Disassociates an Amazon FSx file system from the specified gateway. After the disassociation process finishes, the gateway can no longer access the Amazon FSx file system. This operation is only supported in the FSx File Gateway type.</p>"
     },
+    "EvictFilesFailingUpload":{
+      "name":"EvictFilesFailingUpload",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EvictFilesFailingUploadInput"},
+      "output":{"shape":"EvictFilesFailingUploadOutput"},
+      "errors":[
+        {"shape":"InvalidGatewayRequestException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Starts a process that cleans the specified file share's cache of file entries that are failing upload to Amazon S3. This API operation reports success if the request is received with valid arguments, and there are no other cache clean operations currently in-progress for the specified file share. After a successful request, the cache clean operation occurs asynchronously and reports progress using CloudWatch logs and notifications.</p> <important> <p>If <code>ForceRemove</code> is set to <code>True</code>, the cache clean operation will delete file data from the gateway which might otherwise be recoverable. We recommend using this operation only after all other methods to clear files failing upload have been exhausted, and if your business need outweighs the potential data loss.</p> </important>"
+    },
     "JoinDomain":{
       "name":"JoinDomain",
       "http":{
@@ -771,6 +827,20 @@
         {"shape":"InternalServerError"}
       ],
       "documentation":"<p>Lists the automatic tape creation policies for a gateway. If there are no automatic tape creation policies for the gateway, it returns an empty list.</p> <p>This operation is only supported for tape gateways.</p>"
+    },
+    "ListCacheReports":{
+      "name":"ListCacheReports",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListCacheReportsInput"},
+      "output":{"shape":"ListCacheReportsOutput"},
+      "errors":[
+        {"shape":"InvalidGatewayRequestException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Returns a list of existing cache reports for all file shares associated with your Amazon Web Services account. This list includes all information provided by the <code>DescribeCacheReport</code> action, such as report name, status, completion progress, start time, end time, filters, and tags.</p>"
     },
     "ListFileShares":{
       "name":"ListFileShares",
@@ -924,7 +994,7 @@
         {"shape":"InvalidGatewayRequestException"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Sends you notification through CloudWatch Events when all files written to your file share have been uploaded to Amazon S3.</p> <p>Storage Gateway can send a notification through Amazon CloudWatch Events when all files written to your file share up to that point in time have been uploaded to Amazon S3. These files include files written to the file share up to the time that you make a request for notification. When the upload is done, Storage Gateway sends you notification through an Amazon CloudWatch Event. You can configure CloudWatch Events to send the notification through event targets such as Amazon SNS or Lambda function. This operation is only supported for S3 File Gateways.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/filegateway/latest/files3/monitoring-file-gateway.html#get-notification\">Getting file upload notification</a> in the <i>Amazon S3 File Gateway User Guide</i>.</p>"
+      "documentation":"<p>Sends you notification through Amazon EventBridge when all files written to your file share have been uploaded to Amazon S3.</p> <p>Storage Gateway can send a notification through Amazon EventBridge when all files written to your file share up to that point in time have been uploaded to Amazon S3. These files include files written to the file share up to the time that you make a request for notification. When the upload is done, Storage Gateway sends you notification through EventBridge. You can configure EventBridge to send the notification through event targets such as Amazon SNS or Lambda function. This operation is only supported for S3 File Gateways.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/filegateway/latest/files3/monitoring-file-gateway.html#get-notification\">Getting file upload notification</a> in the <i>Amazon S3 File Gateway User Guide</i>.</p>"
     },
     "RefreshCache":{
       "name":"RefreshCache",
@@ -1051,6 +1121,20 @@
         {"shape":"InternalServerError"}
       ],
       "documentation":"<p>Start a test that verifies that the specified gateway is configured for High Availability monitoring in your host environment. This request only initiates the test and that a successful response only indicates that the test was started. It doesn't indicate that the test passed. For the status of the test, invoke the <code>DescribeAvailabilityMonitorTest</code> API.</p> <note> <p>Starting this test will cause your gateway to go offline for a brief period.</p> </note>"
+    },
+    "StartCacheReport":{
+      "name":"StartCacheReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartCacheReportInput"},
+      "output":{"shape":"StartCacheReportOutput"},
+      "errors":[
+        {"shape":"InvalidGatewayRequestException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Starts generating a report of the file metadata currently cached by an S3 File Gateway for a specific file share. You can use this report to identify and resolve issues if you have files failing upload from your gateway to Amazon S3. The report is a CSV file containing a list of files which match the set of filter parameters you specify in the request.</p> <note> <p>The <b>Files Failing Upload</b> flag is reset every 24 hours and during gateway reboot. If this report captures the files after the reset, but before they become flagged again, they will not be reported as <b>Files Failing Upload</b>.</p> </note> <p>The following requirements must be met to successfully generate a cache report:</p> <ul> <li> <p>You must have permissions to list the entire Amazon S3 bucket associated with the specified file share.</p> </li> <li> <p>No other cache reports can currently be in-progress for the specified file share.</p> </li> <li> <p>There must be fewer than 10 existing cache reports for the specified file share.</p> </li> <li> <p>The gateway must be online and connected to Amazon Web Services.</p> </li> <li> <p>The root disk must have at least 20GB of free space when report generation starts.</p> </li> <li> <p>You must specify at least one value for <code>InclusionFilters</code> or <code>ExclusionFilters</code> in the request.</p> </li> </ul>"
     },
     "StartGateway":{
       "name":"StartGateway",
@@ -1711,6 +1795,116 @@
       },
       "documentation":"<p>The refresh cache information for the file share or FSx file systems.</p>"
     },
+    "CacheReportARN":{
+      "type":"string",
+      "max":500,
+      "min":50
+    },
+    "CacheReportFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"CacheReportFilterName",
+          "documentation":"<p>The parameter name for a filter that determines which files are included or excluded from a cache report.</p> <p> <b>Valid Names:</b> </p> <p>UploadFailureReason | UploadState</p>"
+        },
+        "Values":{
+          "shape":"CacheReportFilterValues",
+          "documentation":"<p>The parameter value for a filter that determines which files are included or excluded from a cache report.</p> <p> <b>Valid <code>UploadFailureReason</code> Values:</b> </p> <p> <code>InaccessibleStorageClass</code> | <code>InvalidObjectState</code> | <code>ObjectMissing</code> | <code>S3AccessDenied</code> </p> <p> <b>Valid <code>UploadState</code> Values:</b> </p> <p> <code>FailingUpload</code> </p>"
+        }
+      },
+      "documentation":"<p>A list of filter parameters and associated values that determine which files are included or excluded from a cache report created by a <code>StartCacheReport</code> request. Multiple instances of the same filter parameter are combined with an OR operation, while different parameters are combined with an AND operation.</p>"
+    },
+    "CacheReportFilterList":{
+      "type":"list",
+      "member":{"shape":"CacheReportFilter"}
+    },
+    "CacheReportFilterName":{
+      "type":"string",
+      "enum":[
+        "UploadState",
+        "UploadFailureReason"
+      ]
+    },
+    "CacheReportFilterValue":{
+      "type":"string",
+      "max":25,
+      "min":1
+    },
+    "CacheReportFilterValues":{
+      "type":"list",
+      "member":{"shape":"CacheReportFilterValue"}
+    },
+    "CacheReportInfo":{
+      "type":"structure",
+      "members":{
+        "CacheReportARN":{
+          "shape":"CacheReportARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cache report you want to describe.</p>"
+        },
+        "CacheReportStatus":{
+          "shape":"CacheReportStatus",
+          "documentation":"<p>The status of the specified cache report.</p>"
+        },
+        "ReportCompletionPercent":{
+          "shape":"ReportCompletionPercent",
+          "documentation":"<p>The percentage of the report generation process that has been completed at time of inquiry.</p>"
+        },
+        "EndTime":{
+          "shape":"Time",
+          "documentation":"<p>The time at which the gateway stopped generating the cache report.</p>"
+        },
+        "Role":{"shape":"Role"},
+        "FileShareARN":{"shape":"FileShareARN"},
+        "LocationARN":{
+          "shape":"LocationARN",
+          "documentation":"<p>The ARN of the Amazon S3 bucket location where the cache report is saved.</p>"
+        },
+        "StartTime":{
+          "shape":"Time",
+          "documentation":"<p>The time at which the gateway started generating the cache report.</p>"
+        },
+        "InclusionFilters":{
+          "shape":"CacheReportFilterList",
+          "documentation":"<p>The list of filters and parameters that determine which files are included in the report.</p>"
+        },
+        "ExclusionFilters":{
+          "shape":"CacheReportFilterList",
+          "documentation":"<p>The list of filters and parameters that determine which files are excluded from the report.</p>"
+        },
+        "ReportName":{
+          "shape":"CacheReportName",
+          "documentation":"<p>The file name of the completed cache report object stored in Amazon S3.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>The list of key/value tags associated with the report.</p>"
+        }
+      },
+      "documentation":"<p>Contains all informational fields associated with a cache report. Includes name, ARN, tags, status, progress, filters, start time, and end time.</p>"
+    },
+    "CacheReportList":{
+      "type":"list",
+      "member":{"shape":"CacheReportInfo"}
+    },
+    "CacheReportName":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "CacheReportStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETED",
+        "CANCELED",
+        "FAILED",
+        "ERROR"
+      ]
+    },
     "CacheStaleTimeoutInSeconds":{"type":"integer"},
     "CachediSCSIVolume":{
       "type":"structure",
@@ -1795,6 +1989,25 @@
         }
       },
       "documentation":"<p>CancelArchivalOutput</p>"
+    },
+    "CancelCacheReportInput":{
+      "type":"structure",
+      "required":["CacheReportARN"],
+      "members":{
+        "CacheReportARN":{
+          "shape":"CacheReportARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cache report you want to cancel.</p>"
+        }
+      }
+    },
+    "CancelCacheReportOutput":{
+      "type":"structure",
+      "members":{
+        "CacheReportARN":{
+          "shape":"CacheReportARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cache report you want to cancel.</p>"
+        }
+      }
     },
     "CancelRetrievalInput":{
       "type":"structure",
@@ -2525,6 +2738,25 @@
       },
       "documentation":"<p>A JSON object containing the Amazon Resource Name (ARN) of the gateway whose bandwidth rate information was deleted.</p>"
     },
+    "DeleteCacheReportInput":{
+      "type":"structure",
+      "required":["CacheReportARN"],
+      "members":{
+        "CacheReportARN":{
+          "shape":"CacheReportARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cache report you want to delete.</p>"
+        }
+      }
+    },
+    "DeleteCacheReportOutput":{
+      "type":"structure",
+      "members":{
+        "CacheReportARN":{
+          "shape":"CacheReportARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cache report you want to delete.</p>"
+        }
+      }
+    },
     "DeleteChapCredentialsInput":{
       "type":"structure",
       "required":[
@@ -2816,6 +3048,25 @@
         }
       }
     },
+    "DescribeCacheReportInput":{
+      "type":"structure",
+      "required":["CacheReportARN"],
+      "members":{
+        "CacheReportARN":{
+          "shape":"CacheReportARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cache report you want to describe.</p>"
+        }
+      }
+    },
+    "DescribeCacheReportOutput":{
+      "type":"structure",
+      "members":{
+        "CacheReportInfo":{
+          "shape":"CacheReportInfo",
+          "documentation":"<p>Contains all informational fields associated with a cache report. Includes name, ARN, tags, status, progress, filters, start time, and end time.</p>"
+        }
+      }
+    },
     "DescribeCachediSCSIVolumesInput":{
       "type":"structure",
       "required":["VolumeARNs"],
@@ -3073,7 +3324,7 @@
         },
         "ActiveDirectoryStatus":{
           "shape":"ActiveDirectoryStatus",
-          "documentation":"<p>Indicates the status of a gateway that is a member of the Active Directory domain.</p> <ul> <li> <p> <code>ACCESS_DENIED</code>: Indicates that the <code>JoinDomain</code> operation failed due to an authentication error.</p> </li> <li> <p> <code>DETACHED</code>: Indicates that gateway is not joined to a domain.</p> </li> <li> <p> <code>JOINED</code>: Indicates that the gateway has successfully joined a domain.</p> </li> <li> <p> <code>JOINING</code>: Indicates that a <code>JoinDomain</code> operation is in progress.</p> </li> <li> <p> <code>NETWORK_ERROR</code>: Indicates that <code>JoinDomain</code> operation failed due to a network or connectivity error.</p> </li> <li> <p> <code>TIMEOUT</code>: Indicates that the <code>JoinDomain</code> operation failed because the operation didn't complete within the allotted time.</p> </li> <li> <p> <code>UNKNOWN_ERROR</code>: Indicates that the <code>JoinDomain</code> operation failed due to another type of error.</p> </li> </ul>"
+          "documentation":"<p>Indicates the status of a gateway that is a member of the Active Directory domain.</p> <note> <p>This field is only used as part of a <code>JoinDomain</code> request. It is not affected by Active Directory connectivity changes that occur after the <code>JoinDomain</code> request succeeds.</p> </note> <ul> <li> <p> <code>ACCESS_DENIED</code>: Indicates that the <code>JoinDomain</code> operation failed due to an authentication error.</p> </li> <li> <p> <code>DETACHED</code>: Indicates that gateway is not joined to a domain.</p> </li> <li> <p> <code>JOINED</code>: Indicates that the gateway has successfully joined a domain.</p> </li> <li> <p> <code>JOINING</code>: Indicates that a <code>JoinDomain</code> operation is in progress.</p> </li> <li> <p> <code>NETWORK_ERROR</code>: Indicates that <code>JoinDomain</code> operation failed due to a network or connectivity error.</p> </li> <li> <p> <code>TIMEOUT</code>: Indicates that the <code>JoinDomain</code> operation failed because the operation didn't complete within the allotted time.</p> </li> <li> <p> <code>UNKNOWN_ERROR</code>: Indicates that the <code>JoinDomain</code> operation failed due to another type of error.</p> </li> </ul>"
         },
         "SMBGuestPasswordSet":{
           "shape":"Boolean",
@@ -3610,6 +3861,29 @@
         "VolumeNotReady"
       ]
     },
+    "EvictFilesFailingUploadInput":{
+      "type":"structure",
+      "required":["FileShareARN"],
+      "members":{
+        "FileShareARN":{
+          "shape":"FileShareARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the file share for which you want to start the cache clean operation.</p>"
+        },
+        "ForceRemove":{
+          "shape":"boolean",
+          "documentation":"<p>Specifies whether cache entries with full or partial file data currently stored on the gateway will be forcibly removed by the cache clean operation.</p> <p>Valid arguments:</p> <ul> <li> <p> <code>False</code> - The cache clean operation skips cache entries failing upload if they are associated with data currently stored on the gateway. This preserves the cached data.</p> </li> <li> <p> <code>True</code> - The cache clean operation removes cache entries failing upload even if they are associated with data currently stored on the gateway. This deletes the cached data.</p> <important> <p>If <code>ForceRemove</code> is set to <code>True</code>, the cache clean operation will delete file data from the gateway which might otherwise be recoverable.</p> </important> </li> </ul>"
+        }
+      }
+    },
+    "EvictFilesFailingUploadOutput":{
+      "type":"structure",
+      "members":{
+        "NotificationId":{
+          "shape":"string",
+          "documentation":"<p>The randomly generated ID of the CloudWatch notification associated with the cache clean operation. This ID is in UUID format.</p>"
+        }
+      }
+    },
     "FileShareARN":{
       "type":"string",
       "documentation":"<p>The Amazon Resource Name (ARN) of the file share.</p>",
@@ -4029,7 +4303,7 @@
         },
         "ActiveDirectoryStatus":{
           "shape":"ActiveDirectoryStatus",
-          "documentation":"<p>Indicates the status of the gateway as a member of the Active Directory domain.</p> <ul> <li> <p> <code>ACCESS_DENIED</code>: Indicates that the <code>JoinDomain</code> operation failed due to an authentication error.</p> </li> <li> <p> <code>DETACHED</code>: Indicates that gateway is not joined to a domain.</p> </li> <li> <p> <code>JOINED</code>: Indicates that the gateway has successfully joined a domain.</p> </li> <li> <p> <code>JOINING</code>: Indicates that a <code>JoinDomain</code> operation is in progress.</p> </li> <li> <p> <code>NETWORK_ERROR</code>: Indicates that <code>JoinDomain</code> operation failed due to a network or connectivity error.</p> </li> <li> <p> <code>TIMEOUT</code>: Indicates that the <code>JoinDomain</code> operation failed because the operation didn't complete within the allotted time.</p> </li> <li> <p> <code>UNKNOWN_ERROR</code>: Indicates that the <code>JoinDomain</code> operation failed due to another type of error.</p> </li> </ul>"
+          "documentation":"<p>Indicates the status of the gateway as a member of the Active Directory domain.</p> <note> <p>This field is only used as part of a <code>JoinDomain</code> request. It is not affected by Active Directory connectivity changes that occur after the <code>JoinDomain</code> request succeeds.</p> </note> <ul> <li> <p> <code>ACCESS_DENIED</code>: Indicates that the <code>JoinDomain</code> operation failed due to an authentication error.</p> </li> <li> <p> <code>DETACHED</code>: Indicates that gateway is not joined to a domain.</p> </li> <li> <p> <code>JOINED</code>: Indicates that the gateway has successfully joined a domain.</p> </li> <li> <p> <code>JOINING</code>: Indicates that a <code>JoinDomain</code> operation is in progress.</p> </li> <li> <p> <code>NETWORK_ERROR</code>: Indicates that <code>JoinDomain</code> operation failed due to a network or connectivity error.</p> </li> <li> <p> <code>TIMEOUT</code>: Indicates that the <code>JoinDomain</code> operation failed because the operation didn't complete within the allotted time.</p> </li> <li> <p> <code>UNKNOWN_ERROR</code>: Indicates that the <code>JoinDomain</code> operation failed due to another type of error.</p> </li> </ul>"
         }
       },
       "documentation":"<p>JoinDomainOutput</p>"
@@ -4058,6 +4332,28 @@
         "AutomaticTapeCreationPolicyInfos":{
           "shape":"AutomaticTapeCreationPolicyInfos",
           "documentation":"<p>Gets a listing of information about the gateway's automatic tape creation policies, including the automatic tape creation rules and the gateway that is using the policies.</p>"
+        }
+      }
+    },
+    "ListCacheReportsInput":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"Marker",
+          "documentation":"<p>Opaque pagination token returned from a previous <code>ListCacheReports</code> operation. If present, <code>Marker</code> specifies where to continue the list from after a previous call to <code>ListCacheReports</code>. Optional.</p>"
+        }
+      }
+    },
+    "ListCacheReportsOutput":{
+      "type":"structure",
+      "members":{
+        "CacheReportList":{
+          "shape":"CacheReportList",
+          "documentation":"<p>A list of existing cache reports for all file shares associated with your Amazon Web Services account. This list includes all information provided by the <code>DescribeCacheReport</code> action, such as report status, completion progress, start time, end time, filters, and tags.</p>"
+        },
+        "Marker":{
+          "shape":"Marker",
+          "documentation":"<p>If the request includes <code>Marker</code>, the response returns that value in this field.</p>"
         }
       }
     },
@@ -4687,6 +4983,11 @@
       },
       "documentation":"<p>RemoveTagsFromResourceOutput</p>"
     },
+    "ReportCompletionPercent":{
+      "type":"integer",
+      "max":100,
+      "min":0
+    },
     "ResetCacheInput":{
       "type":"structure",
       "required":["GatewayARN"],
@@ -5026,6 +5327,60 @@
       "type":"structure",
       "members":{
         "GatewayARN":{"shape":"GatewayARN"}
+      }
+    },
+    "StartCacheReportInput":{
+      "type":"structure",
+      "required":[
+        "FileShareARN",
+        "Role",
+        "LocationARN",
+        "BucketRegion",
+        "ClientToken"
+      ],
+      "members":{
+        "FileShareARN":{"shape":"FileShareARN"},
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The ARN of the IAM role used when saving the cache report to Amazon S3.</p>"
+        },
+        "LocationARN":{
+          "shape":"LocationARN",
+          "documentation":"<p>The ARN of the Amazon S3 bucket where the cache report will be saved.</p> <note> <p>We do not recommend saving the cache report to the same Amazon S3 bucket for which you are generating the report.</p> <p>This field does not accept access point ARNs.</p> </note>"
+        },
+        "BucketRegion":{
+          "shape":"RegionId",
+          "documentation":"<p>The Amazon Web Services Region of the Amazon S3 bucket associated with the file share for which you want to generate the cache report.</p>"
+        },
+        "VPCEndpointDNSName":{
+          "shape":"DNSHostName",
+          "documentation":"<p>The DNS name of the VPC endpoint associated with the Amazon S3 where you want to save the cache report. Optional.</p>"
+        },
+        "InclusionFilters":{
+          "shape":"CacheReportFilterList",
+          "documentation":"<p>The list of filters and parameters that determine which files are included in the report. You must specify at least one value for <code>InclusionFilters</code> or <code>ExclusionFilters</code> in a <code>StartCacheReport</code> request.</p>"
+        },
+        "ExclusionFilters":{
+          "shape":"CacheReportFilterList",
+          "documentation":"<p>The list of filters and parameters that determine which files are excluded from the report. You must specify at least one value for <code>InclusionFilters</code> or <code>ExclusionFilters</code> in a <code>StartCacheReport</code> request.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier that you use to ensure idempotent report generation if you need to retry an unsuccessful <code>StartCacheReport</code> request. If you retry a request, use the same <code>ClientToken</code> you specified in the initial request.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of up to 50 key/value tags that you can assign to the cache report. Using tags can help you categorize your reports and more easily locate them in search results.</p>"
+        }
+      }
+    },
+    "StartCacheReportOutput":{
+      "type":"structure",
+      "members":{
+        "CacheReportARN":{
+          "shape":"CacheReportARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cache report generated by the <code>StartCacheReport</code> request.</p>"
+        }
       }
     },
     "StartGatewayInput":{

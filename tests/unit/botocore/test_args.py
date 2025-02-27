@@ -17,12 +17,16 @@ import botocore.config
 from tests import get_botocore_default_config_mapping, mock, unittest
 
 from botocore import args
+from botocore.args import PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
 from botocore import exceptions
 from botocore.client import ClientEndpointBridge
 from botocore.config import Config
 from botocore.configprovider import ConfigValueStore
+from botocore.exceptions import UnsupportedServiceProtocolsError
 from botocore.hooks import HierarchicalEmitter
 from botocore.model import ServiceModel
+from botocore.parsers import PROTOCOL_PARSERS
+from botocore.serialize import SERIALIZERS
 from botocore.useragent import UserAgentString
 
 
@@ -66,9 +70,12 @@ class TestCreateClientArgs(unittest.TestCase):
         service_model = mock.Mock(ServiceModel)
         service_model.service_name = service_name
         service_model.endpoint_prefix = service_name
+        service_model.protocol = 'query'
+        service_model.protocols = ['query']
         service_model.metadata = {
             'serviceFullName': 'MyService',
-            'protocol': 'query'
+            'protocol': 'query',
+            'protocols': ['query'],
         }
         service_model.operation_names = []
         return service_model
@@ -108,6 +115,19 @@ class TestCreateClientArgs(unittest.TestCase):
         }
         call_kwargs.update(**override_kwargs)
         return self.args_create.get_client_args(**call_kwargs)
+
+    def call_compute_client_args(self, **override_kwargs):
+        call_kwargs = {
+            'service_model': self.service_model,
+            'client_config': None,
+            'endpoint_bridge': self.bridge,
+            'region_name': self.region,
+            'is_secure': True,
+            'endpoint_url': self.endpoint_url,
+            'scoped_config': {},
+        }
+        call_kwargs.update(**override_kwargs)
+        return self.args_create.compute_client_args(**call_kwargs)
 
     def assert_create_endpoint_call(self, mock_endpoint, **override_kwargs):
         call_kwargs = {
@@ -521,6 +541,25 @@ class TestCreateClientArgs(unittest.TestCase):
         with self.assertRaises(exceptions.InvalidChecksumConfigError):
             self.call_get_client_args()
 
+    def test_protocol_resolution_without_protocols_trait(self):
+        del self.service_model.protocols
+        del self.service_model.metadata['protocols']
+        client_args = self.call_compute_client_args()
+        self.assertEqual(client_args['protocol'], 'query')
+
+    def test_protocol_resolution_picks_highest_supported(self):
+        self.service_model.protocol = 'query'
+        self.service_model.protocols = ['query', 'json']
+        client_args = self.call_compute_client_args()
+        self.assertEqual(client_args['protocol'], 'json')
+
+    def test_protocol_raises_error_for_unsupported_protocol(self):
+        self.service_model.protocols = ['wrongprotocol']
+        with self.assertRaisesRegex(
+            UnsupportedServiceProtocolsError, self.service_model.service_name
+        ):
+            self.call_compute_client_args()
+
     def test_inject_host_prefix_default_client_config(self):
         input_config = Config()
         client_args = self.call_get_client_args(client_config=input_config)
@@ -760,3 +799,21 @@ class TestEndpointResolverBuiltins(unittest.TestCase):
             legacy_endpoint_url='https://my.legacy.endpoint.com',
         )
         self.assertEqual(bins['SDK::Endpoint'], None)
+
+
+class TestProtocolPriorityList:
+    def test_all_parsers_accounted_for(self):
+        assert set(PRIORITY_ORDERED_SUPPORTED_PROTOCOLS) == set(
+            PROTOCOL_PARSERS.keys()
+        ), (
+            "The map of protocol names to parsers is out of sync with the priority "
+            "ordered list of protocols supported by botocore"
+        )
+
+    def test_all_serializers_accounted_for(self):
+        assert set(PRIORITY_ORDERED_SUPPORTED_PROTOCOLS) == set(
+            SERIALIZERS.keys()
+        ), (
+            "The map of protocol names to serializers is out of sync with the "
+            "priority ordered list of protocols supported by botocore"
+        )

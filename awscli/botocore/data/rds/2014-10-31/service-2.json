@@ -479,7 +479,7 @@
         {"shape":"DBParameterGroupQuotaExceededFault"},
         {"shape":"DBParameterGroupAlreadyExistsFault"}
       ],
-      "documentation":"<p>Creates a new DB parameter group.</p> <p>A DB parameter group is initially created with the default parameters for the database engine used by the DB instance. To provide custom values for any of the parameters, you must modify the group after creating it using <code>ModifyDBParameterGroup</code>. Once you've created a DB parameter group, you need to associate it with your DB instance using <code>ModifyDBInstance</code>. When you associate a new DB parameter group with a running DB instance, you need to reboot the DB instance without failover for the new DB parameter group and associated settings to take effect.</p> <p>This command doesn't apply to RDS Custom.</p> <important> <p>After you create a DB parameter group, you should wait at least 5 minutes before creating your first DB instance that uses that DB parameter group as the default parameter group. This allows Amazon RDS to fully complete the create action before the parameter group is used as the default for a new DB instance. This is especially important for parameters that are critical when creating the default database for a DB instance, such as the character set for the default database defined by the <code>character_set_database</code> parameter. You can use the <i>Parameter Groups</i> option of the <a href=\"https://console.aws.amazon.com/rds/\">Amazon RDS console</a> or the <i>DescribeDBParameters</i> command to verify that your DB parameter group has been created or modified.</p> </important>"
+      "documentation":"<p>Creates a new DB parameter group.</p> <p>A DB parameter group is initially created with the default parameters for the database engine used by the DB instance. To provide custom values for any of the parameters, you must modify the group after creating it using <code>ModifyDBParameterGroup</code>. Once you've created a DB parameter group, you need to associate it with your DB instance using <code>ModifyDBInstance</code>. When you associate a new DB parameter group with a running DB instance, you need to reboot the DB instance without failover for the new DB parameter group and associated settings to take effect.</p> <p>This command doesn't apply to RDS Custom.</p>"
     },
     "CreateDBProxy":{
       "name":"CreateDBProxy",
@@ -2283,7 +2283,7 @@
         {"shape":"InvalidIntegrationStateFault"},
         {"shape":"IntegrationConflictOperationFault"}
       ],
-      "documentation":"<p>Modifies a zero-ETL integration with Amazon Redshift.</p> <note> <p>Currently, you can only modify integrations that have Aurora MySQL source DB clusters. Integrations with Aurora PostgreSQL and RDS sources currently don't support modifying the integration.</p> </note>"
+      "documentation":"<p>Modifies a zero-ETL integration with Amazon Redshift.</p>"
     },
     "ModifyOptionGroup":{
       "name":"ModifyOptionGroup",
@@ -2965,7 +2965,7 @@
         {"shape":"SnapshotQuotaExceededFault"},
         {"shape":"InvalidDBClusterStateFault"}
       ],
-      "documentation":"<p>Stops an Amazon RDS DB instance. When you stop a DB instance, Amazon RDS retains the DB instance's metadata, including its endpoint, DB parameter group, and option group membership. Amazon RDS also retains the transaction logs so you can do a point-in-time restore if necessary.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_StopInstance.html\"> Stopping an Amazon RDS DB Instance Temporarily</a> in the <i>Amazon RDS User Guide.</i> </p> <note> <p>This command doesn't apply to RDS Custom, Aurora MySQL, and Aurora PostgreSQL. For Aurora clusters, use <code>StopDBCluster</code> instead.</p> </note>"
+      "documentation":"<p>Stops an Amazon RDS DB instance temporarily. When you stop a DB instance, Amazon RDS retains the DB instance's metadata, including its endpoint, DB parameter group, and option group membership. Amazon RDS also retains the transaction logs so you can do a point-in-time restore if necessary. The instance restarts automatically after 7 days.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_StopInstance.html\"> Stopping an Amazon RDS DB Instance Temporarily</a> in the <i>Amazon RDS User Guide.</i> </p> <note> <p>This command doesn't apply to RDS Custom, Aurora MySQL, and Aurora PostgreSQL. For Aurora clusters, use <code>StopDBCluster</code> instead.</p> </note>"
     },
     "StopDBInstanceAutomatedBackupsReplication":{
       "name":"StopDBInstanceAutomatedBackupsReplication",
@@ -4234,7 +4234,7 @@
         },
         "EnableCloudwatchLogsExports":{
           "shape":"LogTypeList",
-          "documentation":"<p>The list of log types that need to be enabled for exporting to CloudWatch Logs.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>The following values are valid for each DB engine:</p> <ul> <li> <p>Aurora MySQL - <code>audit | error | general | slowquery</code> </p> </li> <li> <p>Aurora PostgreSQL - <code>postgresql</code> </p> </li> <li> <p>RDS for MySQL - <code>error | general | slowquery</code> </p> </li> <li> <p>RDS for PostgreSQL - <code>postgresql | upgrade</code> </p> </li> </ul> <p>For more information about exporting CloudWatch Logs for Amazon RDS, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about exporting CloudWatch Logs for Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+          "documentation":"<p>The list of log types that need to be enabled for exporting to CloudWatch Logs.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>The following values are valid for each DB engine:</p> <ul> <li> <p>Aurora MySQL - <code>audit | error | general | instance | slowquery</code> </p> </li> <li> <p>Aurora PostgreSQL - <code>instance | postgresql</code> </p> </li> <li> <p>RDS for MySQL - <code>error | general | slowquery</code> </p> </li> <li> <p>RDS for PostgreSQL - <code>postgresql | upgrade</code> </p> </li> </ul> <p>For more information about exporting CloudWatch Logs for Amazon RDS, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about exporting CloudWatch Logs for Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon Aurora User Guide</i>.</p>"
         },
         "EngineMode":{
           "shape":"String",
@@ -4310,7 +4310,7 @@
         },
         "DatabaseInsightsMode":{
           "shape":"DatabaseInsightsMode",
-          "documentation":"<p>The mode of Database Insights to enable for the DB cluster.</p> <p>If you set this value to <code>advanced</code>, you must also set the <code>PerformanceInsightsEnabled</code> parameter to <code>true</code> and the <code>PerformanceInsightsRetentionPeriod</code> parameter to 465.</p> <p>Valid for Cluster Type: Aurora DB clusters only</p>"
+          "documentation":"<p>The mode of Database Insights to enable for the DB cluster.</p> <p>If you set this value to <code>advanced</code>, you must also set the <code>PerformanceInsightsEnabled</code> parameter to <code>true</code> and the <code>PerformanceInsightsRetentionPeriod</code> parameter to 465.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
@@ -4617,7 +4617,7 @@
         },
         "DatabaseInsightsMode":{
           "shape":"DatabaseInsightsMode",
-          "documentation":"<p>The mode of Database Insights to enable for the DB instance.</p> <p>This setting only applies to Amazon Aurora DB instances.</p> <note> <p>Currently, this value is inherited from the DB cluster and can't be changed.</p> </note>"
+          "documentation":"<p>The mode of Database Insights to enable for the DB instance.</p> <note> <p>Aurora DB instances inherit this value from the DB cluster, so you can't change this value.</p> </note>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
@@ -4665,7 +4665,7 @@
         },
         "StorageThroughput":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The storage throughput value for the DB instance.</p> <p>This setting applies only to the <code>gp3</code> storage type.</p> <p>This setting doesn't apply to Amazon Aurora or RDS Custom DB instances.</p>"
+          "documentation":"<p>The storage throughput value, in mebibyte per second (MiBps), for the DB instance.</p> <p>This setting applies only to the <code>gp3</code> storage type.</p> <p>This setting doesn't apply to Amazon Aurora or RDS Custom DB instances.</p>"
         },
         "ManageMasterUserPassword":{
           "shape":"BooleanOptional",
@@ -4785,7 +4785,7 @@
         },
         "DatabaseInsightsMode":{
           "shape":"DatabaseInsightsMode",
-          "documentation":"<p>The mode of Database Insights to enable for the read replica.</p> <note> <p>Currently, this setting is not supported.</p> </note>"
+          "documentation":"<p>The mode of Database Insights to enable for the read replica.</p> <note> <p>This setting isn't supported.</p> </note>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
@@ -5271,7 +5271,7 @@
         "Tags":{"shape":"TagList"},
         "DataFilter":{
           "shape":"DataFilter",
-          "documentation":"<p>Data filtering options for the integration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/zero-etl.filtering.html\">Data filtering for Aurora zero-ETL integrations with Amazon Redshift</a>. </p> <p>Valid for: Integrations with Aurora MySQL source DB clusters only</p>"
+          "documentation":"<p>Data filtering options for the integration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/zero-etl.filtering.html\">Data filtering for Aurora zero-ETL integrations with Amazon Redshift</a> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/zero-etl.filtering.html\">Data filtering for Amazon RDS zero-ETL integrations with Amazon Redshift</a>. </p>"
         },
         "Description":{
           "shape":"IntegrationDescription",
@@ -5452,7 +5452,7 @@
       "members":{
         "AllocatedStorage":{
           "shape":"IntegerOptional",
-          "documentation":"<p>For all database engines except Amazon Aurora, <code>AllocatedStorage</code> specifies the allocated storage size in gibibytes (GiB). For Aurora, <code>AllocatedStorage</code> always returns 1, because Aurora DB cluster storage size isn't fixed, but instead automatically adjusts as needed.</p>"
+          "documentation":"<p> <code>AllocatedStorage</code> specifies the allocated storage size in gibibytes (GiB). For Aurora, <code>AllocatedStorage</code> can vary because Aurora DB cluster storage size adjusts as needed.</p>"
         },
         "AvailabilityZones":{
           "shape":"AvailabilityZones",
@@ -5596,7 +5596,7 @@
         },
         "CloneGroupId":{
           "shape":"String",
-          "documentation":"<p>The ID of the clone group with which the DB cluster is associated.</p>"
+          "documentation":"<p>The ID of the clone group with which the DB cluster is associated. For newly created clusters, the ID is typically null. </p> <p>If you clone a DB cluster when the ID is null, the operation populates the ID value for the source cluster and the clone because both clusters become part of the same clone group. Even if you delete the clone cluster, the clone group ID remains for the lifetime of the source cluster to show that it was used in a cloning operation.</p> <p>For PITR, the clone group ID is inherited from the source cluster. For snapshot restore operations, the clone group ID isn't inherited from the source cluster.</p>"
         },
         "ClusterCreateTime":{
           "shape":"TStamp",
@@ -8808,7 +8808,7 @@
         },
         "DeleteAutomatedBackups":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether to remove automated backups immediately after the DB cluster is deleted. This parameter isn't case-sensitive. The default is to remove automated backups immediately after the DB cluster is deleted.</p>"
+          "documentation":"<p>Specifies whether to remove automated backups immediately after the DB cluster is deleted. This parameter isn't case-sensitive. The default is to remove automated backups immediately after the DB cluster is deleted, unless the Amazon Web Services Backup policy specifies a point-in-time restore rule.</p>"
         }
       },
       "documentation":"<p/>"
@@ -12335,7 +12335,7 @@
         },
         "CloudwatchLogsExportConfiguration":{
           "shape":"CloudwatchLogsExportConfiguration",
-          "documentation":"<p>The configuration setting for the log types to be enabled for export to CloudWatch Logs for a specific DB cluster.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>The following values are valid for each DB engine:</p> <ul> <li> <p>Aurora MySQL - <code>audit | error | general | slowquery</code> </p> </li> <li> <p>Aurora PostgreSQL - <code>postgresql</code> </p> </li> <li> <p>RDS for MySQL - <code>error | general | slowquery</code> </p> </li> <li> <p>RDS for PostgreSQL - <code>postgresql | upgrade</code> </p> </li> </ul> <p>For more information about exporting CloudWatch Logs for Amazon RDS, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\"> Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about exporting CloudWatch Logs for Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+          "documentation":"<p>The configuration setting for the log types to be enabled for export to CloudWatch Logs for a specific DB cluster.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>The following values are valid for each DB engine:</p> <ul> <li> <p>Aurora MySQL - <code>audit | error | general | instance | slowquery</code> </p> </li> <li> <p>Aurora PostgreSQL - <code>instance | postgresql</code> </p> </li> <li> <p>RDS for MySQL - <code>error | general | slowquery</code> </p> </li> <li> <p>RDS for PostgreSQL - <code>postgresql | upgrade</code> </p> </li> </ul> <p>For more information about exporting CloudWatch Logs for Amazon RDS, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\"> Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about exporting CloudWatch Logs for Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon Aurora User Guide</i>.</p>"
         },
         "EngineVersion":{
           "shape":"String",
@@ -12407,7 +12407,7 @@
         },
         "DatabaseInsightsMode":{
           "shape":"DatabaseInsightsMode",
-          "documentation":"<p>Specifies the mode of Database Insights to enable for the DB cluster.</p> <p>If you change the value from <code>standard</code> to <code>advanced</code>, you must set the <code>PerformanceInsightsEnabled</code> parameter to <code>true</code> and the <code>PerformanceInsightsRetentionPeriod</code> parameter to 465.</p> <p>If you change the value from <code>advanced</code> to <code>standard</code>, you must set the <code>PerformanceInsightsEnabled</code> parameter to <code>false</code>.</p> <p>Valid for Cluster Type: Aurora DB clusters only</p>"
+          "documentation":"<p>Specifies the mode of Database Insights to enable for the DB cluster.</p> <p>If you change the value from <code>standard</code> to <code>advanced</code>, you must set the <code>PerformanceInsightsEnabled</code> parameter to <code>true</code> and the <code>PerformanceInsightsRetentionPeriod</code> parameter to 465.</p> <p>If you change the value from <code>advanced</code> to <code>standard</code>, you must set the <code>PerformanceInsightsEnabled</code> parameter to <code>false</code>.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
@@ -12679,7 +12679,7 @@
         },
         "DatabaseInsightsMode":{
           "shape":"DatabaseInsightsMode",
-          "documentation":"<p>Specifies the mode of Database Insights to enable for the DB instance.</p> <p>This setting only applies to Amazon Aurora DB instances.</p> <note> <p>Currently, this value is inherited from the DB cluster and can't be changed.</p> </note>"
+          "documentation":"<p>Specifies the mode of Database Insights to enable for the DB instance.</p> <note> <p>Aurora DB instances inherit this value from the DB cluster, so you can't change this value.</p> </note>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",
@@ -12891,7 +12891,7 @@
         },
         "NewName":{
           "shape":"String",
-          "documentation":"<p>The new name for the modified <code>DBProxyTarget</code>. An identifier must begin with a letter and must contain only ASCII letters, digits, and hyphens; it can't end with a hyphen or contain two consecutive hyphens.</p>"
+          "documentation":"<p>The new name for the modified <code>DBProxyTarget</code>. An identifier must begin with a letter and must contain only ASCII letters, digits, and hyphens; it can't end with a hyphen or contain two consecutive hyphens.</p> <p>You can't rename the <code>default</code> target group.</p>"
         }
       }
     },
@@ -13110,7 +13110,7 @@
         },
         "DataFilter":{
           "shape":"DataFilter",
-          "documentation":"<p>A new data filter for the integration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Zero_ETL_Filtering.html\">Data filtering for Aurora zero-ETL integrations with Amazon Redshift</a>.</p>"
+          "documentation":"<p>A new data filter for the integration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Zero_ETL_Filtering.html\">Data filtering for Aurora zero-ETL integrations with Amazon Redshift</a> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/zero-etl.filtering.html\">Data filtering for Amazon RDS zero-ETL integrations with Amazon Redshift</a>.</p>"
         },
         "Description":{
           "shape":"IntegrationDescription",
@@ -14971,7 +14971,7 @@
         },
         "EnableCloudwatchLogsExports":{
           "shape":"LogTypeList",
-          "documentation":"<p>The list of logs that the restored DB cluster is to export to CloudWatch Logs. The values in the list depend on the DB engine being used.</p> <p> <b>Aurora MySQL</b> </p> <p>Possible values are <code>audit</code>, <code>error</code>, <code>general</code>, and <code>slowquery</code>.</p> <p>For more information about exporting CloudWatch Logs for Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+          "documentation":"<p>The list of logs that the restored DB cluster is to export to CloudWatch Logs. The values in the list depend on the DB engine being used.</p> <p> <b>Aurora MySQL</b> </p> <p>Possible values are <code>audit</code>, <code>error</code>, <code>general</code>, <code>instance</code>, and <code>slowquery</code>.</p> <p> <b>Aurora PostgreSQL</b> </p> <p>Possible value are <code>instance</code> and <code>postgresql</code>.</p> <p>For more information about exporting CloudWatch Logs for Amazon RDS, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about exporting CloudWatch Logs for Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon Aurora User Guide</i>.</p>"
         },
         "DeletionProtection":{
           "shape":"BooleanOptional",
@@ -15084,7 +15084,7 @@
         },
         "EnableCloudwatchLogsExports":{
           "shape":"LogTypeList",
-          "documentation":"<p>The list of logs that the restored DB cluster is to export to Amazon CloudWatch Logs. The values in the list depend on the DB engine being used.</p> <p> <b>RDS for MySQL</b> </p> <p>Possible values are <code>error</code>, <code>general</code>, and <code>slowquery</code>.</p> <p> <b>RDS for PostgreSQL</b> </p> <p>Possible values are <code>postgresql</code> and <code>upgrade</code>.</p> <p> <b>Aurora MySQL</b> </p> <p>Possible values are <code>audit</code>, <code>error</code>, <code>general</code>, and <code>slowquery</code>.</p> <p> <b>Aurora PostgreSQL</b> </p> <p>Possible value is <code>postgresql</code>.</p> <p>For more information about exporting CloudWatch Logs for Amazon RDS, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about exporting CloudWatch Logs for Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>The list of logs that the restored DB cluster is to export to Amazon CloudWatch Logs. The values in the list depend on the DB engine being used.</p> <p> <b>RDS for MySQL</b> </p> <p>Possible values are <code>error</code>, <code>general</code>, and <code>slowquery</code>.</p> <p> <b>RDS for PostgreSQL</b> </p> <p>Possible values are <code>postgresql</code> and <code>upgrade</code>.</p> <p> <b>Aurora MySQL</b> </p> <p>Possible values are <code>audit</code>, <code>error</code>, <code>general</code>, <code>instance</code>, and <code>slowquery</code>.</p> <p> <b>Aurora PostgreSQL</b> </p> <p>Possible value are <code>instance</code> and <code>postgresql</code>.</p> <p>For more information about exporting CloudWatch Logs for Amazon RDS, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about exporting CloudWatch Logs for Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "EngineMode":{
           "shape":"String",
@@ -15227,7 +15227,7 @@
         },
         "EnableCloudwatchLogsExports":{
           "shape":"LogTypeList",
-          "documentation":"<p>The list of logs that the restored DB cluster is to export to CloudWatch Logs. The values in the list depend on the DB engine being used.</p> <p> <b>RDS for MySQL</b> </p> <p>Possible values are <code>error</code>, <code>general</code>, and <code>slowquery</code>.</p> <p> <b>RDS for PostgreSQL</b> </p> <p>Possible values are <code>postgresql</code> and <code>upgrade</code>.</p> <p> <b>Aurora MySQL</b> </p> <p>Possible values are <code>audit</code>, <code>error</code>, <code>general</code>, and <code>slowquery</code>.</p> <p> <b>Aurora PostgreSQL</b> </p> <p>Possible value is <code>postgresql</code>.</p> <p>For more information about exporting CloudWatch Logs for Amazon RDS, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about exporting CloudWatch Logs for Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>The list of logs that the restored DB cluster is to export to CloudWatch Logs. The values in the list depend on the DB engine being used.</p> <p> <b>RDS for MySQL</b> </p> <p>Possible values are <code>error</code>, <code>general</code>, and <code>slowquery</code>.</p> <p> <b>RDS for PostgreSQL</b> </p> <p>Possible values are <code>postgresql</code> and <code>upgrade</code>.</p> <p> <b>Aurora MySQL</b> </p> <p>Possible values are <code>audit</code>, <code>error</code>, <code>general</code>, <code>instance</code>, and <code>slowquery</code>.</p> <p> <b>Aurora PostgreSQL</b> </p> <p>Possible value are <code>instance</code> and <code>postgresql</code>.</p> <p>For more information about exporting CloudWatch Logs for Amazon RDS, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about exporting CloudWatch Logs for Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch\">Publishing Database Logs to Amazon CloudWatch Logs</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>Valid for: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "DBClusterParameterGroupName":{
           "shape":"String",
@@ -15655,7 +15655,7 @@
         },
         "DatabaseInsightsMode":{
           "shape":"DatabaseInsightsMode",
-          "documentation":"<p>Specifies the mode of Database Insights to enable for the DB instance.</p> <p>This setting only applies to Amazon Aurora DB instances.</p> <note> <p>Currently, this value is inherited from the DB cluster and can't be changed.</p> </note>"
+          "documentation":"<p>Specifies the mode of Database Insights to enable for the DB instance.</p> <note> <p>Aurora DB instances inherit this value from the DB cluster, so you can't change this value.</p> </note>"
         },
         "EnablePerformanceInsights":{
           "shape":"BooleanOptional",

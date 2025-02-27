@@ -13,6 +13,24 @@
     "uid":"connectcases-2022-10-03"
   },
   "operations":{
+    "BatchGetCaseRule":{
+      "name":"BatchGetCaseRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{domainId}/rules-batch",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetCaseRuleRequest"},
+      "output":{"shape":"BatchGetCaseRuleResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Gets a batch of case rules. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+    },
     "BatchGetField":{
       "name":"BatchGetField",
       "http":{
@@ -68,7 +86,28 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <pre><code> &lt;p&gt;Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.&lt;/p&gt; &lt;p&gt;The following fields are required when creating a case:&lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;customer_id&lt;/code&gt; - You must provide the full customer profile ARN in this format: &lt;code&gt;arn:aws:profile:your_AWS_Region:your_AWS_account ID:domains/your_profiles_domain_name/profiles/profile_ID&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;title&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; </code></pre>",
+      "documentation":"<note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <p>The following fields are required when creating a case:</p> <pre><code> &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;customer_id&lt;/code&gt; - You must provide the full customer profile ARN in this format: &lt;code&gt;arn:aws:profile:your_AWS_Region:your_AWS_account ID:domains/your_profiles_domain_name/profiles/profile_ID&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;title&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; </code></pre>",
+      "idempotent":true
+    },
+    "CreateCaseRule":{
+      "name":"CreateCaseRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{domainId}/case-rules",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateCaseRuleRequest"},
+      "output":{"shape":"CreateCaseRuleResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a new case rule. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
       "idempotent":true
     },
     "CreateDomain":{
@@ -149,7 +188,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a related item (comments, tasks, and contacts) and associates it with a case.</p> <note> <ul> <li> <p>A Related Item is a resource that is associated with a case. It may or may not have an external identifier linking it to an external resource (for example, a <code>contactArn</code>). All Related Items have their own internal identifier, the <code>relatedItemArn</code>. Examples of related items include <code>comments</code> and <code>contacts</code>.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> </ul> <pre><code> &lt;/note&gt; </code></pre>",
+      "documentation":"<p>Creates a related item (comments, tasks, and contacts) and associates it with a case.</p> <note> <ul> <li> <p>A Related Item is a resource that is associated with a case. It may or may not have an external identifier linking it to an external resource (for example, a <code>contactArn</code>). All Related Items have their own internal identifier, the <code>relatedItemArn</code>. Examples of related items include <code>comments</code> and <code>contacts</code>.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p>The <code>type</code> field is reserved for internal use only.</p> </li> </ul> </note>",
       "idempotent":true
     },
     "CreateTemplate":{
@@ -170,7 +209,26 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a template in the Cases domain. This template is used to define the case object model (that is, to define what data can be captured on cases) in a Cases domain. A template must have a unique name within a domain, and it must reference existing field IDs and layout IDs. Additionally, multiple fields with same IDs are not allowed within the same Template. A template can be either Active or Inactive, as indicated by its status. Inactive templates cannot be used to create cases.</p>",
+      "documentation":"<p>Creates a template in the Cases domain. This template is used to define the case object model (that is, to define what data can be captured on cases) in a Cases domain. A template must have a unique name within a domain, and it must reference existing field IDs and layout IDs. Additionally, multiple fields with same IDs are not allowed within the same Template. A template can be either Active or Inactive, as indicated by its status. Inactive templates cannot be used to create cases.</p> <p> Other template APIs are: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetTemplate.html\">GetTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_ListTemplates.html\">ListTemplates</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_UpdateTemplate.html\">UpdateTemplate</a> </p> </li> </ul>",
+      "idempotent":true
+    },
+    "DeleteCaseRule":{
+      "name":"DeleteCaseRule",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{domainId}/case-rules/{caseRuleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteCaseRuleRequest"},
+      "output":{"shape":"DeleteCaseRuleResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a case rule. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
       "idempotent":true
     },
     "DeleteDomain":{
@@ -360,7 +418,25 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns the details for the requested template. </p>"
+      "documentation":"<p>Returns the details for the requested template. Other template APIs are: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateTemplate.html\">CreateTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_ListTemplates.html\">ListTemplates</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_UpdateTemplate.html\">UpdateTemplate</a> </p> </li> </ul>"
+    },
+    "ListCaseRules":{
+      "name":"ListCaseRules",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{domainId}/rules-list/",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCaseRulesRequest"},
+      "output":{"shape":"ListCaseRulesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all case rules in a Cases domain. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
     },
     "ListCasesForContact":{
       "name":"ListCasesForContact",
@@ -486,7 +562,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all of the templates in a Cases domain. Each list item is a condensed summary object of the template. </p>"
+      "documentation":"<p>Lists all of the templates in a Cases domain. Each list item is a condensed summary object of the template. </p> <p> Other template APIs are: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateTemplate.html\">CreateTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetTemplate.html\">GetTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_UpdateTemplate.html\">UpdateTemplate</a> </p> </li> </ul>"
     },
     "PutCaseEventConfiguration":{
       "name":"PutCaseEventConfiguration",
@@ -594,7 +670,27 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <pre><code> &lt;p&gt;Updates the values of fields on a case. Fields to be updated are received as an array of id/value pairs identical to the &lt;code&gt;CreateCase&lt;/code&gt; input .&lt;/p&gt; &lt;p&gt;If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.&lt;/p&gt; </code></pre>"
+      "documentation":"<note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Updates the values of fields on a case. Fields to be updated are received as an array of id/value pairs identical to the <code>CreateCase</code> input .</p> <p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p>"
+    },
+    "UpdateCaseRule":{
+      "name":"UpdateCaseRule",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/domains/{domainId}/case-rules/{caseRuleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateCaseRuleRequest"},
+      "output":{"shape":"UpdateCaseRuleResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates a case rule. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "idempotent":true
     },
     "UpdateField":{
       "name":"UpdateField",
@@ -654,7 +750,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Updates the attributes of an existing template. The template attributes that can be modified include <code>name</code>, <code>description</code>, <code>layoutConfiguration</code>, <code>requiredFields</code>, and <code>status</code>. At least one of these attributes must not be null. If a null value is provided for a given attribute, that attribute is ignored and its current value is preserved.</p>",
+      "documentation":"<p>Updates the attributes of an existing template. The template attributes that can be modified include <code>name</code>, <code>description</code>, <code>layoutConfiguration</code>, <code>requiredFields</code>, and <code>status</code>. At least one of these attributes must not be null. If a null value is provided for a given attribute, that attribute is ignored and its current value is preserved.</p> <p>Other template APIs are:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateTemplate.html\">CreateTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetTemplate.html\">GetTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_ListTemplates.html\">ListTemplates</a> </p> </li> </ul>",
       "idempotent":true
     }
   },
@@ -820,6 +916,54 @@
       },
       "documentation":"<p>Content specific to <code>BasicLayout</code> type. It configures fields in the top panel and More Info tab of agent application. </p>"
     },
+    "BatchGetCaseRuleRequest":{
+      "type":"structure",
+      "required":[
+        "caseRules",
+        "domainId"
+      ],
+      "members":{
+        "caseRules":{
+          "shape":"CaseRuleIdentifierList",
+          "documentation":"<p>List of case rule identifiers.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>Unique identifier of a Cases domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        }
+      }
+    },
+    "BatchGetCaseRuleResponse":{
+      "type":"structure",
+      "required":[
+        "caseRules",
+        "errors"
+      ],
+      "members":{
+        "caseRules":{
+          "shape":"BatchGetCaseRuleResponseCaseRulesList",
+          "documentation":"<p>List of detailed case rule information.</p>"
+        },
+        "errors":{
+          "shape":"BatchGetCaseRuleResponseErrorsList",
+          "documentation":"<p>List of case rule errors.</p>"
+        }
+      }
+    },
+    "BatchGetCaseRuleResponseCaseRulesList":{
+      "type":"list",
+      "member":{"shape":"GetCaseRuleResponse"},
+      "max":50,
+      "min":0
+    },
+    "BatchGetCaseRuleResponseErrorsList":{
+      "type":"list",
+      "member":{"shape":"CaseRuleError"},
+      "max":50,
+      "min":0
+    },
     "BatchGetFieldIdentifierList":{
       "type":"list",
       "member":{"shape":"FieldIdentifier"},
@@ -925,6 +1069,50 @@
       "type":"boolean",
       "box":true
     },
+    "BooleanCondition":{
+      "type":"structure",
+      "members":{
+        "equalTo":{
+          "shape":"BooleanOperands",
+          "documentation":"<p>Tests that operandOne is equal to operandTwo.</p>"
+        },
+        "notEqualTo":{
+          "shape":"BooleanOperands",
+          "documentation":"<p>Tests that operandOne is not equal to operandTwo.</p>"
+        }
+      },
+      "documentation":"<p>Boolean condition for a rule. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "union":true
+    },
+    "BooleanConditionList":{
+      "type":"list",
+      "member":{"shape":"BooleanCondition"},
+      "max":100,
+      "min":0
+    },
+    "BooleanOperands":{
+      "type":"structure",
+      "required":[
+        "operandOne",
+        "operandTwo",
+        "result"
+      ],
+      "members":{
+        "operandOne":{
+          "shape":"OperandOne",
+          "documentation":"<p>Represents the left hand operand in the condition.</p>"
+        },
+        "operandTwo":{
+          "shape":"OperandTwo",
+          "documentation":"<p>Represents the right hand operand in the condition.</p>"
+        },
+        "result":{
+          "shape":"Boolean",
+          "documentation":"<p>The value of the outer rule if the condition evaluates to true.</p>"
+        }
+      },
+      "documentation":"<p>Boolean operands for a condition. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+    },
     "CaseArn":{
       "type":"string",
       "max":500,
@@ -984,6 +1172,109 @@
       "max":500,
       "min":1
     },
+    "CaseRuleArn":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "CaseRuleDescription":{
+      "type":"string",
+      "max":255,
+      "min":0
+    },
+    "CaseRuleDetails":{
+      "type":"structure",
+      "members":{
+        "required":{
+          "shape":"RequiredCaseRule",
+          "documentation":"<p>Required rule type, used to indicate whether a field is required.</p>"
+        }
+      },
+      "documentation":"<p>Represents what rule type should take place, under what conditions. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "union":true
+    },
+    "CaseRuleError":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "id"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"String",
+          "documentation":"<p>Error code from getting a case rule.</p>"
+        },
+        "id":{
+          "shape":"CaseRuleId",
+          "documentation":"<p>The case rule identifier that caused the error.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Error message from getting a case rule.</p>"
+        }
+      },
+      "documentation":"<p>Error for batch describe case rules API failure. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+    },
+    "CaseRuleId":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "CaseRuleIdentifier":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"CaseRuleId",
+          "documentation":"<p>Unique identifier of a case rule.</p>"
+        }
+      },
+      "documentation":"<p>Object containing case rule identifier information.</p>"
+    },
+    "CaseRuleIdentifierList":{
+      "type":"list",
+      "member":{"shape":"CaseRuleIdentifier"},
+      "max":50,
+      "min":1
+    },
+    "CaseRuleName":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"^.*[\\S]$"
+    },
+    "CaseRuleSummary":{
+      "type":"structure",
+      "required":[
+        "caseRuleArn",
+        "caseRuleId",
+        "name",
+        "ruleType"
+      ],
+      "members":{
+        "caseRuleArn":{
+          "shape":"CaseRuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the case rule. </p>"
+        },
+        "caseRuleId":{
+          "shape":"CaseRuleId",
+          "documentation":"<p>Unique identifier of a case rule.</p>"
+        },
+        "description":{
+          "shape":"CaseRuleDescription",
+          "documentation":"<p>Description of a case rule.</p>"
+        },
+        "name":{
+          "shape":"CaseRuleName",
+          "documentation":"<p>Name of the case rule.</p>"
+        },
+        "ruleType":{
+          "shape":"RuleType",
+          "documentation":"<p>Possible types for a rule.</p>"
+        }
+      },
+      "documentation":"<p>Summary information of this case rule. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+    },
     "CaseSummary":{
       "type":"structure",
       "required":[
@@ -1009,7 +1300,7 @@
     },
     "CommentBody":{
       "type":"string",
-      "max":3000,
+      "max":15000,
       "min":1
     },
     "CommentBodyTextType":{
@@ -1171,6 +1462,51 @@
         "caseId":{
           "shape":"CaseId",
           "documentation":"<p>A unique identifier of the case.</p>"
+        }
+      }
+    },
+    "CreateCaseRuleRequest":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "name",
+        "rule"
+      ],
+      "members":{
+        "description":{
+          "shape":"CaseRuleDescription",
+          "documentation":"<p>The description of a case rule.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>Unique identifier of a Cases domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "name":{
+          "shape":"CaseRuleName",
+          "documentation":"<p>Name of the case rule.</p>"
+        },
+        "rule":{
+          "shape":"CaseRuleDetails",
+          "documentation":"<p>Represents what rule type should take place, under what conditions.</p>"
+        }
+      }
+    },
+    "CreateCaseRuleResponse":{
+      "type":"structure",
+      "required":[
+        "caseRuleArn",
+        "caseRuleId"
+      ],
+      "members":{
+        "caseRuleArn":{
+          "shape":"CaseRuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a case rule.</p>"
+        },
+        "caseRuleId":{
+          "shape":"CaseRuleId",
+          "documentation":"<p>Unique identifier of a case rule.</p>"
         }
       }
     },
@@ -1373,6 +1709,10 @@
           "shape":"RequiredFieldList",
           "documentation":"<p>A list of fields that must contain a value for a case to be successfully created with this template.</p>"
         },
+        "rules":{
+          "shape":"TemplateCaseRuleList",
+          "documentation":"<p>A list of case rules (also known as <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">case field conditions</a>) on a template. </p>"
+        },
         "status":{
           "shape":"TemplateStatus",
           "documentation":"<p>The status of the template.</p>"
@@ -1399,6 +1739,32 @@
     "CreatedTime":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "DeleteCaseRuleRequest":{
+      "type":"structure",
+      "required":[
+        "caseRuleId",
+        "domainId"
+      ],
+      "members":{
+        "caseRuleId":{
+          "shape":"CaseRuleId",
+          "documentation":"<p>Unique identifier of a case rule.</p>",
+          "location":"uri",
+          "locationName":"caseRuleId"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>Unique identifier of a Cases domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        }
+      }
+    },
+    "DeleteCaseRuleResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "DeleteDomainRequest":{
       "type":"structure",
@@ -1556,6 +1922,12 @@
       "members":{
       },
       "documentation":"<p>An empty value. You cannot set <code>EmptyFieldValue</code> on a field that is required on a case template.</p> <p>This structure will never have any data members. It signifies an empty value on a case field.</p>"
+    },
+    "EmptyOperandValue":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>Represents an empty operand value. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
     },
     "EventBridgeConfiguration":{
       "type":"structure",
@@ -1864,7 +2236,7 @@
           "documentation":"<p>Represents the user that performed the audit.</p>"
         }
       },
-      "documentation":"<p>Object to store union of Field values.</p> <note> <p>The <code>Summary</code> system field accepts 1500 characters while all other fields accept 500 characters.</p> </note>",
+      "documentation":"<p>Object to store union of Field values.</p> <note> <p>The <code>Summary</code> system field accepts 3000 characters while all other fields accept 500 characters.</p> </note>",
       "union":true
     },
     "FieldValueUnionStringValueString":{
@@ -2041,6 +2413,54 @@
       "member":{"shape":"FieldValue"},
       "max":100,
       "min":0
+    },
+    "GetCaseRuleResponse":{
+      "type":"structure",
+      "required":[
+        "caseRuleArn",
+        "caseRuleId",
+        "name",
+        "rule"
+      ],
+      "members":{
+        "caseRuleArn":{
+          "shape":"CaseRuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the case rule.</p>"
+        },
+        "caseRuleId":{
+          "shape":"CaseRuleId",
+          "documentation":"<p>Unique identifier of a case rule.</p>"
+        },
+        "createdTime":{
+          "shape":"CreatedTime",
+          "documentation":"<p>Timestamp when the resource was created.</p>"
+        },
+        "deleted":{
+          "shape":"Deleted",
+          "documentation":"<p>Indicates whether the resource has been deleted.</p>"
+        },
+        "description":{
+          "shape":"CaseRuleDescription",
+          "documentation":"<p>Description of a case rule.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>Timestamp when the resource was created or last modified.</p>"
+        },
+        "name":{
+          "shape":"CaseRuleName",
+          "documentation":"<p>Name of the case rule.</p>"
+        },
+        "rule":{
+          "shape":"CaseRuleDetails",
+          "documentation":"<p>Represents what rule type should take place, under what conditions.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+        }
+      },
+      "documentation":"<p>Detailed case rule information. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
     },
     "GetDomainRequest":{
       "type":"structure",
@@ -2265,6 +2685,10 @@
           "shape":"RequiredFieldList",
           "documentation":"<p>A list of fields that must contain a value for a case to be successfully created with this template.</p>"
         },
+        "rules":{
+          "shape":"TemplateCaseRuleList",
+          "documentation":"<p>A list of case rules (also known as <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">case field conditions</a>) on a template. </p>"
+        },
         "status":{
           "shape":"TemplateStatus",
           "documentation":"<p>The status of the template.</p>"
@@ -2384,6 +2808,50 @@
     "LayoutSummaryList":{
       "type":"list",
       "member":{"shape":"LayoutSummary"}
+    },
+    "ListCaseRulesRequest":{
+      "type":"structure",
+      "required":["domainId"],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>Unique identifier of a Cases domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListCaseRulesResponse":{
+      "type":"structure",
+      "required":["caseRules"],
+      "members":{
+        "caseRules":{
+          "shape":"ListCaseRulesResponseCaseRulesList",
+          "documentation":"<p>A list of field summary objects.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. This is null if there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListCaseRulesResponseCaseRulesList":{
+      "type":"list",
+      "member":{"shape":"CaseRuleSummary"},
+      "max":100,
+      "min":0
     },
     "ListCasesForContactRequest":{
       "type":"structure",
@@ -2692,6 +3160,45 @@
       "max":9000,
       "min":0
     },
+    "OperandOne":{
+      "type":"structure",
+      "members":{
+        "fieldId":{
+          "shape":"FieldId",
+          "documentation":"<p>The field ID that this operand should take the value of.</p>"
+        }
+      },
+      "documentation":"<p>Represents the left hand operand in the condition. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "union":true
+    },
+    "OperandTwo":{
+      "type":"structure",
+      "members":{
+        "booleanValue":{
+          "shape":"Boolean",
+          "documentation":"<p>Boolean value type.</p>"
+        },
+        "doubleValue":{
+          "shape":"Double",
+          "documentation":"<p>Double value type.</p>"
+        },
+        "emptyValue":{
+          "shape":"EmptyOperandValue",
+          "documentation":"<p>Empty value type.</p>"
+        },
+        "stringValue":{
+          "shape":"OperandTwoStringValueString",
+          "documentation":"<p>String value type.</p>"
+        }
+      },
+      "documentation":"<p>Represents the right hand operand in the condition. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "union":true
+    },
+    "OperandTwoStringValueString":{
+      "type":"string",
+      "max":1500,
+      "min":1
+    },
     "Order":{
       "type":"string",
       "enum":[
@@ -2809,6 +3316,24 @@
       "documentation":"<p>The list of types of related items and their parameters to use for filtering.</p>",
       "union":true
     },
+    "RequiredCaseRule":{
+      "type":"structure",
+      "required":[
+        "conditions",
+        "defaultValue"
+      ],
+      "members":{
+        "conditions":{
+          "shape":"BooleanConditionList",
+          "documentation":"<p>List of conditions for the required rule; the first condition to evaluate to true dictates the value of the rule.</p>"
+        },
+        "defaultValue":{
+          "shape":"Boolean",
+          "documentation":"<p>The value of the rule (that is, whether the field is required) should none of the conditions evaluate to true.</p>"
+        }
+      },
+      "documentation":"<p>Required rule type, used to indicate whether a field is required. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+    },
     "RequiredField":{
       "type":"structure",
       "required":["fieldId"],
@@ -2850,6 +3375,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "RuleType":{
+      "type":"string",
+      "enum":["Required"]
     },
     "SearchCasesRequest":{
       "type":"structure",
@@ -3155,6 +3684,12 @@
       "max":500,
       "min":1
     },
+    "TemplateCaseRuleList":{
+      "type":"list",
+      "member":{"shape":"TemplateRule"},
+      "max":50,
+      "min":0
+    },
     "TemplateDescription":{
       "type":"string",
       "max":255,
@@ -3170,6 +3705,24 @@
       "max":100,
       "min":1,
       "pattern":"^.*[\\S]$"
+    },
+    "TemplateRule":{
+      "type":"structure",
+      "required":[
+        "caseRuleId",
+        "fieldId"
+      ],
+      "members":{
+        "caseRuleId":{
+          "shape":"CaseRuleId",
+          "documentation":"<p>Unique identifier of a case rule.</p>"
+        },
+        "fieldId":{
+          "shape":"FieldId",
+          "documentation":"<p>Unique identifier of a field.</p>"
+        }
+      },
+      "documentation":"<p>An association representing a case rule acting upon a field. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
     },
     "TemplateStatus":{
       "type":"string",
@@ -3285,6 +3838,44 @@
       "members":{
       }
     },
+    "UpdateCaseRuleRequest":{
+      "type":"structure",
+      "required":[
+        "caseRuleId",
+        "domainId"
+      ],
+      "members":{
+        "caseRuleId":{
+          "shape":"CaseRuleId",
+          "documentation":"<p>Unique identifier of a case rule.</p>",
+          "location":"uri",
+          "locationName":"caseRuleId"
+        },
+        "description":{
+          "shape":"CaseRuleDescription",
+          "documentation":"<p>Description of a case rule.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>Unique identifier of a Cases domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "name":{
+          "shape":"CaseRuleName",
+          "documentation":"<p>Name of the case rule.</p>"
+        },
+        "rule":{
+          "shape":"CaseRuleDetails",
+          "documentation":"<p>Represents what rule type should take place, under what conditions.</p>"
+        }
+      }
+    },
+    "UpdateCaseRuleResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateFieldRequest":{
       "type":"structure",
       "required":[
@@ -3382,6 +3973,10 @@
           "shape":"RequiredFieldList",
           "documentation":"<p>A list of fields that must contain a value for a case to be successfully created with this template.</p>"
         },
+        "rules":{
+          "shape":"TemplateCaseRuleList",
+          "documentation":"<p>A list of case rules (also known as <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">case field conditions</a>) on a template.</p>"
+        },
         "status":{
           "shape":"TemplateStatus",
           "documentation":"<p>The status of the template.</p>"
@@ -3440,5 +4035,5 @@
       "min":0
     }
   },
-  "documentation":"<p>With Amazon Connect Cases, your agents can track and manage customer issues that require multiple interactions, follow-up tasks, and teams in your contact center. A case represents a customer issue. It records the issue, the steps and interactions taken to resolve the issue, and the outcome. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Amazon Connect Cases</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+  "documentation":"<ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_Connect_Cases.html\">Cases actions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_Connect_Cases.html\">Cases data types</a> </p> </li> </ul> <p>With Amazon Connect Cases, your agents can track and manage customer issues that require multiple interactions, follow-up tasks, and teams in your contact center. A case represents a customer issue. It records the issue, the steps and interactions taken to resolve the issue, and the outcome. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cases.html\">Amazon Connect Cases</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
 }

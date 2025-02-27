@@ -927,6 +927,10 @@
       "box":true,
       "sensitive":true
     },
+    "CedarJson":{
+      "type":"string",
+      "sensitive":true
+    },
     "Claim":{
       "type":"string",
       "min":1,
@@ -1116,9 +1120,13 @@
         "contextMap":{
           "shape":"ContextMap",
           "documentation":"<p>An list of attributes that are needed to successfully evaluate an authorization request. Each attribute in this array must include a map of a data type and its value.</p> <p>Example: <code>\"contextMap\":{\"&lt;KeyName1&gt;\":{\"boolean\":true},\"&lt;KeyName2&gt;\":{\"long\":1234}}</code> </p>"
+        },
+        "cedarJson":{
+          "shape":"CedarJson",
+          "documentation":"<p>A Cedar JSON string representation of the context needed to successfully evaluate an authorization request.</p> <p>Example: <code>{\"cedarJson\":\"{\\\"&lt;KeyName1&gt;\\\": true, \\\"&lt;KeyName2&gt;\\\": 1234}\" }</code> </p>"
         }
       },
-      "documentation":"<p>Contains additional details about the context of the request. Verified Permissions evaluates this information in an authorization request as part of the <code>when</code> and <code>unless</code> clauses in a policy.</p> <p>This data type is used as a request parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a>, <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html\">BatchIsAuthorized</a>, and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p> <p>Example: <code>\"context\":{\"contextMap\":{\"&lt;KeyName1&gt;\":{\"boolean\":true},\"&lt;KeyName2&gt;\":{\"long\":1234}}}</code> </p>",
+      "documentation":"<p>Contains additional details about the context of the request. Verified Permissions evaluates this information in an authorization request as part of the <code>when</code> and <code>unless</code> clauses in a policy.</p> <p>This data type is used as a request parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a>, <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html\">BatchIsAuthorized</a>, and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p> <p>If you're passing context as part of the request, exactly one instance of <code>context</code> must be passed. If you don't want to pass context, omit the <code>context</code> parameter from your request rather than sending <code>context {}</code>.</p> <p>Example: <code>\"context\":{\"contextMap\":{\"&lt;KeyName1&gt;\":{\"boolean\":true},\"&lt;KeyName2&gt;\":{\"long\":1234}}}</code> </p>",
       "union":true
     },
     "ContextMap":{
@@ -1470,7 +1478,11 @@
       "members":{
         "entityList":{
           "shape":"EntityList",
-          "documentation":"<p>An array of entities that are needed to successfully evaluate an authorization request. Each entity in this array must include an identifier for the entity, the attributes of the entity, and a list of any parent entities.</p>"
+          "documentation":"<p>An array of entities that are needed to successfully evaluate an authorization request. Each entity in this array must include an identifier for the entity, the attributes of the entity, and a list of any parent entities.</p> <note> <p>If you include multiple entities with the same <code>identifier</code>, only the last one is processed in the request.</p> </note>"
+        },
+        "cedarJson":{
+          "shape":"CedarJson",
+          "documentation":"<p>A Cedar JSON string representation of the entities needed to successfully evaluate an authorization request.</p> <p>Example: <code>{\"cedarJson\": \"[{\\\"uid\\\":{\\\"type\\\":\\\"Photo\\\",\\\"id\\\":\\\"VacationPhoto94.jpg\\\"},\\\"attrs\\\":{\\\"accessLevel\\\":\\\"public\\\"},\\\"parents\\\":[]}]\"}</code> </p>"
         }
       },
       "documentation":"<p>Contains the list of entities to be considered during an authorization request. This includes all principals, resources, and actions required to successfully evaluate the request.</p> <p>This data type is used as a field in the response parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a> and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p>",

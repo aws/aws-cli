@@ -342,7 +342,7 @@
         {"shape":"ValidationException"},
         {"shape":"InvalidNextTokenException"}
       ],
-      "documentation":"<p>Lists the rules for the condition. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a>. For more information about rules, see the <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html\">CodePipeline rule reference</a>.</p>"
+      "documentation":"<p>Lists the rules for the condition. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a> and <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html\">How do stage conditions work?</a>.For more information about rules, see the <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html\">CodePipeline rule reference</a>.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -390,7 +390,7 @@
         {"shape":"NotLatestPipelineExecutionException"},
         {"shape":"ConcurrentPipelineExecutionsLimitExceededException"}
       ],
-      "documentation":"<p>Used to override a stage condition.</p>"
+      "documentation":"<p>Used to override a stage condition. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a> and <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html\">How do stage conditions work?</a>.</p>"
     },
     "PollForJobs":{
       "name":"PollForJobs",
@@ -950,6 +950,10 @@
         "timeoutInMinutes":{
           "shape":"ActionTimeout",
           "documentation":"<p>A timeout duration in minutes that can be applied against the ActionType’s default timeout value specified in <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/limits.html\">Quotas for CodePipeline </a>. This attribute is available only to the manual approval ActionType.</p>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariableList",
+          "documentation":"<p>The environment variables for the action.</p>"
         }
       },
       "documentation":"<p>Represents information about an action declaration.</p>"
@@ -1763,7 +1767,7 @@
           "documentation":"<p>The conditions that are configured as entry conditions.</p>"
         }
       },
-      "documentation":"<p>The conditions for making checks for entry to a stage. </p>"
+      "documentation":"<p>The conditions for making checks for entry to a stage. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a> and <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html\">How do stage conditions work?</a>. </p>"
     },
     "BlockerDeclaration":{
       "type":"structure",
@@ -1848,7 +1852,7 @@
           "documentation":"<p>The rules that make up the condition.</p>"
         }
       },
-      "documentation":"<p>The condition for the stage. A condition is made up of the rules and the result for the condition. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a>. For more information about rules, see the <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html\">CodePipeline rule reference</a>.</p>"
+      "documentation":"<p>The condition for the stage. A condition is made up of the rules and the result for the condition. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a> and <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html\">How do stage conditions work?</a>.. For more information about rules, see the <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html\">CodePipeline rule reference</a>.</p>"
     },
     "ConditionExecution":{
       "type":"structure",
@@ -2208,6 +2212,42 @@
       "type":"string",
       "enum":["KMS"]
     },
+    "EnvironmentVariable":{
+      "type":"structure",
+      "required":[
+        "name",
+        "value"
+      ],
+      "members":{
+        "name":{
+          "shape":"EnvironmentVariableName",
+          "documentation":"<p>The environment variable name in the key-value pair.</p>"
+        },
+        "value":{
+          "shape":"EnvironmentVariableValue",
+          "documentation":"<p>The environment variable value in the key-value pair.</p>"
+        }
+      },
+      "documentation":"<p>The environment variables for the action.</p>"
+    },
+    "EnvironmentVariableList":{
+      "type":"list",
+      "member":{"shape":"EnvironmentVariable"},
+      "max":10,
+      "min":1
+    },
+    "EnvironmentVariableName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9_]+"
+    },
+    "EnvironmentVariableValue":{
+      "type":"string",
+      "max":2000,
+      "min":1,
+      "pattern":".*"
+    },
     "ErrorDetails":{
       "type":"structure",
       "members":{
@@ -2315,10 +2355,10 @@
         },
         "conditions":{
           "shape":"ConditionList",
-          "documentation":"<p>The conditions that are configured as failure conditions.</p>"
+          "documentation":"<p>The conditions that are configured as failure conditions. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a> and <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html\">How do stage conditions work?</a>.</p>"
         }
       },
-      "documentation":"<p>The configuration that specifies the result, such as rollback, to occur upon stage failure. </p>"
+      "documentation":"<p>The configuration that specifies the result, such as rollback, to occur upon stage failure. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a> and <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html\">How do stage conditions work?</a>. </p>"
     },
     "FailureDetails":{
       "type":"structure",
@@ -2633,7 +2673,7 @@
       "members":{
         "events":{
           "shape":"GitPullRequestEventTypeList",
-          "documentation":"<p>The field that specifies which pull request events to filter on (opened, updated, closed) for the trigger configuration.</p>"
+          "documentation":"<p>The field that specifies which pull request events to filter on (OPEN, UPDATED, CLOSED) for the trigger configuration.</p>"
         },
         "branches":{
           "shape":"GitBranchFilterCriteria",
@@ -2644,7 +2684,7 @@
           "documentation":"<p>The field that specifies to filter on file paths for the pull request trigger configuration.</p>"
         }
       },
-      "documentation":"<p>The event criteria for the pull request trigger configuration, such as the lists of branches or file paths to include and exclude.</p>"
+      "documentation":"<p>The event criteria for the pull request trigger configuration, such as the lists of branches or file paths to include and exclude.</p> <p>The following are valid values for the events for this filter:</p> <ul> <li> <p>CLOSED</p> </li> <li> <p>OPEN</p> </li> <li> <p>UPDATED</p> </li> </ul>"
     },
     "GitPullRequestFilterList":{
       "type":"list",
@@ -4001,7 +4041,7 @@
         },
         "token":{
           "shape":"ApprovalToken",
-          "documentation":"<p>The system-generated token used to identify a unique approval request. The token for each open approval request can be obtained using the <a>GetPipelineState</a> action. It is used to validate that the approval request corresponding to this token is still valid.</p> <important> <p>For a pipeline where the execution mode is set to PARALLEL, the token required to approve/reject approval request as detailed above is not available. Instead, use the <code>externalExecutionId</code> from the <code>GetPipelineState</code> action as the token in the approval request.</p> </important>"
+          "documentation":"<p>The system-generated token used to identify a unique approval request. The token for each open approval request can be obtained using the <a>GetPipelineState</a> action. It is used to validate that the approval request corresponding to this token is still valid.</p> <important> <p>For a pipeline where the execution mode is set to PARALLEL, the token required to approve/reject an approval request as detailed above is not available. Instead, use the <code>externalExecutionId</code> in the response output from the <a>ListActionExecutions</a> action as the token in the approval request.</p> </important>"
         }
       },
       "documentation":"<p>Represents the input of a <code>PutApprovalResult</code> action.</p>"
@@ -4457,7 +4497,7 @@
           "documentation":"<p>The action timeout for the rule.</p>"
         }
       },
-      "documentation":"<p>Represents information about the rule to be created for an associated condition. An example would be creating a new rule for an entry condition, such as a rule that checks for a test result before allowing the run to enter the deployment stage. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a>. For more information about rules, see the <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html\">CodePipeline rule reference</a>.</p>"
+      "documentation":"<p>Represents information about the rule to be created for an associated condition. An example would be creating a new rule for an entry condition, such as a rule that checks for a test result before allowing the run to enter the deployment stage. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a> and <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html\">How do stage conditions work?</a>. For more information about rules, see the <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html\">CodePipeline rule reference</a>.</p>"
     },
     "RuleDeclarationList":{
       "type":"list",
@@ -4579,7 +4619,7 @@
       "members":{
         "ruleTypeId":{
           "shape":"RuleTypeId",
-          "documentation":"<p>The ID for the rule type, which is made up of the combined values for category, owner, provider, and version.</p>"
+          "documentation":"<p>The ID for the rule type, which is made up of the combined values for category, owner, provider, and version. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a>. For more information about rules, see the <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html\">CodePipeline rule reference</a>.</p>"
         },
         "configuration":{
           "shape":"RuleConfigurationMap",
@@ -4763,14 +4803,14 @@
         },
         "provider":{
           "shape":"RuleProvider",
-          "documentation":"<p>The rule provider, such as the <code>DeploymentWindow</code> rule.</p>"
+          "documentation":"<p>The rule provider, such as the <code>DeploymentWindow</code> rule. For a list of rule provider names, see the rules listed in the <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html\">CodePipeline rule reference</a>.</p>"
         },
         "version":{
           "shape":"Version",
           "documentation":"<p>A string that describes the rule version.</p>"
         }
       },
-      "documentation":"<p>The ID for the rule type, which is made up of the combined values for category, owner, provider, and version.</p>"
+      "documentation":"<p>The ID for the rule type, which is made up of the combined values for category, owner, provider, and version. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a>. For more information about rules, see the <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html\">CodePipeline rule reference</a>.</p>"
     },
     "RuleTypeList":{
       "type":"list",
@@ -5228,7 +5268,7 @@
           "documentation":"<p>The conditions that are success conditions.</p>"
         }
       },
-      "documentation":"<p>The conditions for making checks that, if met, succeed a stage.</p>"
+      "documentation":"<p>The conditions for making checks that, if met, succeed a stage. For more information about conditions, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html\">Stage conditions</a> and <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works-conditions.html\">How do stage conditions work?</a>.</p>"
     },
     "Tag":{
       "type":"structure",

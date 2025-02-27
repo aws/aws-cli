@@ -800,6 +800,10 @@
           "shape":"Destination",
           "documentation":"<p>The Amazon Managed Service for Prometheus workspace to send metrics to.</p>"
         },
+        "roleConfiguration":{
+          "shape":"RoleConfiguration",
+          "documentation":"<p>The scraper role configuration for the workspace.</p>"
+        },
         "scrapeConfiguration":{
           "shape":"ScrapeConfiguration",
           "documentation":"<p>The configuration file to use in the new scraper. For more information, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html#AMP-collector-configuration\">Scraper configuration</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p>"
@@ -1223,7 +1227,8 @@
     },
     "IamRoleArn":{
       "type":"string",
-      "documentation":"<p>An ARN identifying an IAM role used by the scraper.</p>"
+      "documentation":"<p>An ARN identifying an IAM role used by the scraper.</p>",
+      "pattern":"^arn:aws[-a-z]*:iam::[0-9]{12}:role/.+$"
     },
     "IdempotencyToken":{
       "type":"string",
@@ -1262,7 +1267,7 @@
       "documentation":"<p>A KMS Key ARN.</p>",
       "max":2048,
       "min":20,
-      "pattern":"^arn:aws:kms:[a-z0-9\\-]+:\\d+:key/[a-f0-9\\-]+$"
+      "pattern":"^arn:aws[-a-z]*:kms:[-a-z0-9]+:[0-9]{12}:key/[-a-f0-9]+$"
     },
     "ListRuleGroupsNamespacesRequest":{
       "type":"structure",
@@ -1428,7 +1433,7 @@
     },
     "LogGroupArn":{
       "type":"string",
-      "pattern":"^arn:aws[a-z0-9-]*:logs:[a-z0-9-]+:\\d{12}:log-group:[A-Za-z0-9\\.\\-\\_\\#/]{1,512}\\:\\*$"
+      "pattern":"^arn:aws[-a-z]*:logs:[-a-z0-9]+:[0-9]{12}:log-group:[A-Za-z0-9\\.\\-\\_\\#/]{1,512}\\:\\*$"
     },
     "LoggingConfigurationMetadata":{
       "type":"structure",
@@ -1619,6 +1624,20 @@
       },
       "exception":true
     },
+    "RoleConfiguration":{
+      "type":"structure",
+      "members":{
+        "sourceRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>A ARN identifying the source role configuration.</p>"
+        },
+        "targetRoleArn":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>A ARN identifying the target role configuration.</p>"
+        }
+      },
+      "documentation":"<p>To configure roles that allows users to write to an Amazon Managed Service for Prometheus workspace in a different account.</p>"
+    },
     "RuleGroupsNamespaceArn":{
       "type":"string",
       "documentation":"<p>An ARN identifying a rule groups namespace.</p>"
@@ -1805,6 +1824,7 @@
           "shape":"IamRoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that provides permissions for the scraper to discover and collect metrics on your behalf.</p> <p>For example, <code>arn:aws:iam::123456789012:role/service-role/AmazonGrafanaServiceRole-12example</code>.</p>"
         },
+        "roleConfiguration":{"shape":"RoleConfiguration"},
         "scrapeConfiguration":{
           "shape":"ScrapeConfiguration",
           "documentation":"<p>The configuration in use by the scraper.</p>"
@@ -1914,6 +1934,7 @@
           "shape":"IamRoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that provides permissions for the scraper to discover and collect metrics on your behalf.</p>"
         },
+        "roleConfiguration":{"shape":"RoleConfiguration"},
         "scraperId":{
           "shape":"ScraperId",
           "documentation":"<p>The ID of the scraper.</p>"
@@ -2190,6 +2211,10 @@
         "destination":{
           "shape":"Destination",
           "documentation":"<p>The new Amazon Managed Service for Prometheus workspace to send metrics to.</p>"
+        },
+        "roleConfiguration":{
+          "shape":"RoleConfiguration",
+          "documentation":"<p>The scraper role configuration for the workspace.</p>"
         },
         "scrapeConfiguration":{
           "shape":"ScrapeConfiguration",

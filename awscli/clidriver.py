@@ -31,7 +31,10 @@ from botocore.configprovider import ChainProvider
 
 from awscli import __version__
 from awscli.compat import (
-    default_pager, get_stderr_text_writer, get_stdout_text_writer
+    default_pager,
+    get_stderr_text_writer,
+    get_stdout_text_writer,
+    validate_preferred_output_encoding,
 )
 from awscli.formatter import get_formatter
 from awscli.plugin import load_plugins
@@ -492,6 +495,7 @@ class CLIDriver(object):
             # command table.  This is why it's in the try/except clause.
             parsed_args, remaining = parser.parse_known_args(args)
             self._handle_top_level_args(parsed_args)
+            validate_preferred_output_encoding()
             self._emit_session_event(parsed_args)
             HISTORY_RECORDER.record(
                 'CLI_VERSION', self._cli_version(), 'CLI')

@@ -71,6 +71,7 @@ class FullyBufferedFormatter(Formatter):
             # so that if anything wraps stdout we'll pick up those changes
             # (specifically colorama on windows wraps stdout).
             stream = self._get_default_stream()
+        compat.set_preferred_output_encoding(stream)
         # I think the interfaces between non-paginated
         # and paginated responses can still be cleaned up.
         if is_response_paginated(response):
@@ -157,6 +158,7 @@ class StreamedYAMLFormatter(Formatter):
     def __call__(self, command_name, response, stream=None):
         if stream is None:
             stream = self._get_default_stream()
+        compat.set_preferred_output_encoding(stream)
         response_stream = self._get_response_stream(response)
         for response in response_stream:
             try:

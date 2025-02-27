@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import locale
+import io
 import os
 import signal
 
@@ -22,6 +23,10 @@ from awscli.compat import compat_open
 from awscli.compat import get_popen_kwargs_for_pager_cmd
 from awscli.compat import getpreferredencoding
 from awscli.compat import ignore_user_entered_signals
+from awscli.compat import (
+    set_preferred_output_encoding,
+    validate_preferred_output_encoding,
+)
 from awscli.testutils import mock, unittest, skip_if_windows, FileCreator
 
 
@@ -200,3 +205,24 @@ class TestCompatOpenWithAccessPermissions(unittest.TestCase):
         with compat_open(file_path, access_permissions=0o600, mode='w') as f:
             f.write('bar')
         self.assertEqual(os.stat(file_path).st_mode, expected_st_mode)
+
+
+@pytest.mark.parametrize('env_vars, expected_encoding', [
+    ({}, 'cp1252'),
+    ({'AWS_CLI_OUTPUT_ENCODING': 'UTF-8'}, 'UTF-8'),
+    ({'PYTHONUTF8': '1'}, 'UTF-8'),
+])
+def test_set_preferred_output_encoding(env_vars, expected_encoding):
+    stdout_b = io.BytesIO()
+    stdout = io.TextIOWrapper(stdout_b, encoding="cp1252")
+
+    with mock.patch.dict(os.environ, env_vars):
+        set_preferred_output_encoding(stdout)
+
+    assert stdout.encoding == expected_encoding
+
+
+def test_validate_preferred_output_encoding():
+    with mock.patch.dict(os.environ, {'AWS_CLI_OUTPUT_ENCODING': 'invalid'}):
+        with pytest.raises(ValueError):
+            validate_preferred_output_encoding()

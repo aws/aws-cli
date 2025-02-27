@@ -55,9 +55,6 @@ class AWSCLICrossLinkGenerator(object):
         self._generate_mappings()
 
     def _generate_mappings(self):
-        # TODO upon skim looks good.
-        # if anything is fundamentally wrong with command selection,
-        # this likely needs a deeper dive comparison against v1
         command_table = self._driver.create_help_command().command_table
         for name, command in command_table.items():
             if hasattr(command, '_UNDOCUMENTED'):

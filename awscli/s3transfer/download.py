@@ -229,6 +229,7 @@ class DownloadNonSeekableOutputManager(DownloadOutputManager):
         )
 
     def queue_file_io_task(self, fileobj, data, offset):
+        print('begin queue file io task')
         with self._io_submit_lock:
             writes = self._defer_queue.request_writes(offset, data)
             # TODO: I think this is the point of addressing the stripe s3 memory issue.
@@ -278,6 +279,7 @@ class DownloadSpecialFilenameOutputManager(DownloadNonSeekableOutputManager):
 
     def get_fileobj_for_io_writes(self, transfer_future):
         filename = transfer_future.meta.call_args.fileobj
+        print(f'filename: {filename}')
         self._fileobj = self._get_fileobj_from_filename(filename)
         return self._fileobj
 
@@ -475,6 +477,7 @@ class DownloadSubmissionTask(SubmissionTask):
         # Determine the number of parts
         part_size = config.multipart_chunksize
         num_parts = calculate_num_parts(transfer_future.meta.size, part_size)
+        print(f'part size: {part_size}, num parts: {num_parts}')
 
         # Get any associated tags for the get object task.
         get_object_tag = download_output_manager.get_download_task_tag()
@@ -576,6 +579,7 @@ class GetObjectTask(Task):
         last_exception = None
         for i in range(max_attempts):
             try:
+                print(f'attempt {i+1}/{max_attempts} of getobject task')
                 current_index = start_index
                 response = client.get_object(
                     Bucket=bucket, Key=key, **extra_args
@@ -596,6 +600,8 @@ class GetObjectTask(Task):
                     # or error somewhere else, stop trying to submit more
                     # data to be written and break out of the download.
                     if not self._transfer_coordinator.done():
+                        # print(f'current index: {current_index}')
+                        # print(f'download output manager: {type(download_output_manager).__name__}')
                         self._handle_io(
                             download_output_manager,
                             fileobj,
@@ -604,6 +610,7 @@ class GetObjectTask(Task):
                         )
                         current_index += len(chunk)
                     else:
+                        print('exiting early')
                         return
                 return
             except S3_RETRYABLE_DOWNLOAD_ERRORS as e:
@@ -638,6 +645,7 @@ class ImmediatelyWriteIOGetObjectTask(GetObjectTask):
     """
 
     def _handle_io(self, download_output_manager, fileobj, chunk, index):
+        # print(f'download output manager: {type(download_output_manager).__name__}')
         task = download_output_manager.get_io_write_task(fileobj, chunk, index)
         task()
 
@@ -762,6 +770,7 @@ class DeferQueue:
     """
 
     def __init__(self):
+        print('deferqueue initialized')
         self._writes = []
         self._pending_offsets = set()
         self._next_offset = 0
@@ -779,11 +788,13 @@ class DeferQueue:
         each method call.
 
         """
+        print(f'write len {len(data)} requested to offset {offset}')
         if offset + len(data) <= self._next_offset:
             # This is a request for a write that we've already
             # seen.  This can happen in the event of a retry
             # where if we retry at at offset N/2, we'll requeue
             # offsets 0-N/2 again.
+            print('DEFERQUEUE SKIPPED REQUEST SINCE ENTIRELY SEEN')
             return []
         writes = []
         if offset < self._next_offset:

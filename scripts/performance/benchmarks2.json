@@ -1,0 +1,2249 @@
+[
+  {
+    "name": "s3.cp.ranged.download",
+    "command": ["s3", "cp", "s3://bucket/test_file", "-", "--quiet"],
+    "dimensions": [
+      {"FileSize": "15GB"},
+      {"S3TransferClient": "Classic"}
+    ],
+    "environment": {
+      "files": [
+        {
+          "name": "test_file_subset",
+          "size": 0.5e9
+        },
+        {
+          "name": "standard_part",
+          "size": 8388608
+        },
+        {
+          "name": "last_part",
+          "size": 6827776
+        },
+        {
+          "name": "test_file",
+          "size": 1.5e9
+        }
+      ],
+      "config": "[default]\ns3 =\n preferred_transfer_client = classic"
+    },
+    "responses": [
+      {
+        "headers": {"Content-Length": "1500000000", "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT", "ETag": "etag-1"}
+      },
+      {
+        "headers": {"Content-Length": "8388608", "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT", "ETag": "etag-1"},
+        "body": {
+          "file": "standard_part"
+        },
+        "instances": 178
+      },
+      {
+        "headers": {"Content-Length": "6827776", "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT", "ETag": "etag-1"},
+        "body": {
+          "file": "last_part"
+        }
+      },
+      {}
+    ]
+  },
+  {
+    "name": "s3.cp.ranged.download.incomplete.read",
+    "command": ["s3", "cp", "s3://bucket/test_file", "-", "--quiet"],
+    "dimensions": [
+      {"FileSize": "15GB"},
+      {"S3TransferClient": "Classic"}
+    ],
+    "environment": {
+      "files": [
+        {
+          "name": "test_file_subset",
+          "size": 0.5e9
+        },
+        {
+          "name": "standard_part",
+          "size": 8388608
+        },
+        {
+          "name": "last_part",
+          "size": 6827776
+        },
+        {
+          "name": "test_file",
+          "size": 1.5e9
+        }
+      ],
+      "config": "[default]\ns3 =\n preferred_transfer_client = classic"
+    },
+    "responses": [
+    {
+        "headers": {
+            "Content-Length": "1500000000",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "0-8388608/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "8388608-16777216/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "16777216-25165824/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "25165824-33554432/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "33554432-41943040/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "41943040-50331648/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "50331648-58720256/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "58720256-67108864/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "67108864-75497472/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "75497472-83886080/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "83886080-92274688/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "92274688-100663296/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "100663296-109051904/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "109051904-117440512/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "117440512-125829120/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "125829120-134217728/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "134217728-142606336/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "142606336-150994944/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "150994944-159383552/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "159383552-167772160/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "167772160-176160768/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "176160768-184549376/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "184549376-192937984/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "192937984-201326592/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "201326592-209715200/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "209715200-218103808/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "218103808-226492416/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "226492416-234881024/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "234881024-243269632/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "243269632-251658240/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "251658240-260046848/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "260046848-268435456/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "268435456-276824064/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "276824064-285212672/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "285212672-293601280/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "293601280-301989888/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "301989888-310378496/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "310378496-318767104/1500000000"
+        },
+        "body": {
+            "file": "last_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "310378496-318767104/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "318767104-327155712/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "327155712-335544320/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "335544320-343932928/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "343932928-352321536/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "352321536-360710144/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "360710144-369098752/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "369098752-377487360/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "377487360-385875968/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "385875968-394264576/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "394264576-402653184/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "402653184-411041792/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "411041792-419430400/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "419430400-427819008/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "427819008-436207616/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "436207616-444596224/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "444596224-452984832/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "452984832-461373440/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "461373440-469762048/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "469762048-478150656/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "478150656-486539264/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "486539264-494927872/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "494927872-503316480/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "503316480-511705088/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "511705088-520093696/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "520093696-528482304/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "528482304-536870912/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "536870912-545259520/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "545259520-553648128/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "553648128-562036736/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "562036736-570425344/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "570425344-578813952/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "578813952-587202560/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "587202560-595591168/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "595591168-603979776/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "603979776-612368384/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "612368384-620756992/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "620756992-629145600/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "629145600-637534208/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "637534208-645922816/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "645922816-654311424/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "654311424-662700032/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "662700032-671088640/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "671088640-679477248/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "679477248-687865856/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "687865856-696254464/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "696254464-704643072/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "704643072-713031680/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "713031680-721420288/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "721420288-729808896/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "729808896-738197504/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "738197504-746586112/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "746586112-754974720/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "754974720-763363328/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "763363328-771751936/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "771751936-780140544/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "780140544-788529152/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "788529152-796917760/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "796917760-805306368/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "805306368-813694976/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "813694976-822083584/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "822083584-830472192/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "830472192-838860800/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "838860800-847249408/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "847249408-855638016/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "855638016-864026624/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "864026624-872415232/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "872415232-880803840/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "880803840-889192448/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "889192448-897581056/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "897581056-905969664/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "905969664-914358272/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "914358272-922746880/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "922746880-931135488/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "931135488-939524096/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "939524096-947912704/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "947912704-956301312/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "956301312-964689920/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "964689920-973078528/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "973078528-981467136/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "981467136-989855744/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "989855744-998244352/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "998244352-1006632960/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1006632960-1015021568/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1015021568-1023410176/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1023410176-1031798784/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1031798784-1040187392/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1040187392-1048576000/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1048576000-1056964608/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1056964608-1065353216/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1065353216-1073741824/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1073741824-1082130432/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1082130432-1090519040/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1090519040-1098907648/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1098907648-1107296256/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1107296256-1115684864/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1115684864-1124073472/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1124073472-1132462080/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1132462080-1140850688/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1140850688-1149239296/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1149239296-1157627904/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1157627904-1166016512/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1166016512-1174405120/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1174405120-1182793728/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1182793728-1191182336/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1191182336-1199570944/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1199570944-1207959552/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1207959552-1216348160/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1216348160-1224736768/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1224736768-1233125376/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1233125376-1241513984/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1241513984-1249902592/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1249902592-1258291200/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1258291200-1266679808/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1266679808-1275068416/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1275068416-1283457024/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1283457024-1291845632/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1291845632-1300234240/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1300234240-1308622848/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1308622848-1317011456/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1317011456-1325400064/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1325400064-1333788672/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1333788672-1342177280/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1342177280-1350565888/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1350565888-1358954496/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1358954496-1367343104/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1367343104-1375731712/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1375731712-1384120320/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1384120320-1392508928/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1392508928-1400897536/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1400897536-1409286144/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1409286144-1417674752/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1417674752-1426063360/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1426063360-1434451968/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1434451968-1442840576/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1442840576-1451229184/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1451229184-1459617792/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1459617792-1468006400/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1468006400-1476395008/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1476395008-1484783616/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "8388608",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1484783616-1493172224/1500000000"
+        },
+        "body": {
+            "file": "standard_part"
+        }
+    },
+    {
+        "headers": {
+            "Content-Length": "6827776",
+            "Last-Modified": "Thu, 18 Oct 2018 23:00:00 GMT",
+            "ETag": "etag-1",
+            "Accept-Ranges": "bytes",
+            "Content-Range": "1493172224-1500000000/1500000000"
+        },
+        "body": {
+            "file": "last_part"
+        }
+    },
+    {}
+]
+  }
+]

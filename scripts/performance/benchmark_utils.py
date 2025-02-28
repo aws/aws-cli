@@ -265,16 +265,22 @@ class BenchmarkHarness(object):
         client.setup()
         self._stub_responses(
             benchmark.get('responses', [{"headers": {}, "body": ""}]),
-            client
+            client,
+            result_dir
         )
 
-    def _stub_responses(self, responses, client):
+    def _stub_responses(self, responses, client, result_dir):
         """
         Stubs the supplied HTTP client using the response instructions in the supplied
         responses struct. Each instruction will generate one or more stubbed responses.
         """
         for response in responses:
             body = response.get("body", "")
+            # if body is a dict, load the contents from a file
+            if isinstance(body, dict):
+                contents_path = os.path.join(result_dir, body['file'])
+                with open(contents_path, 'r') as contents_f:
+                    body = contents_f.read()
             headers = response.get("headers", {})
             status_code = response.get("status_code", 200)
             # use the instances key to support duplicating responses a configured number of times
@@ -349,9 +355,10 @@ class BenchmarkHarness(object):
         try:
             if pid == 0:
                 with open(child_output_path, 'w') as out, open(child_err_path, 'w') as err:
-                    # redirect standard output of the child process to a file
-                    os.dup2(out.fileno(), sys.stdout.fileno())
-                    os.dup2(err.fileno(), sys.stderr.fileno())
+                    if not args.debug:
+                        # redirect standard output of the child process to a file
+                        os.dup2(out.fileno(), sys.stdout.fileno())
+                        os.dup2(err.fileno(), sys.stderr.fileno())
                     # execute command on child process
                     self._run_command_with_metric_hooks(benchmark['command'], metrics_path)
                     # terminate the child process
@@ -404,6 +411,7 @@ class BenchmarkHarness(object):
                     'name': benchmark['name'],
                     'measurements': []
                 }
+                print('Running benchmark ', benchmark['name'])
                 if 'dimensions' in benchmark:
                     benchmark_result['dimensions'] = benchmark['dimensions']
                 for _ in range(args.num_iterations):

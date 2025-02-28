@@ -219,7 +219,7 @@ def process_module_section(
     fn_select(template)
 
     fn_merge(template)
-    
+
     fn_insertfile(template, base_path)
 
     # Remove the Modules section from the template
@@ -548,9 +548,16 @@ class Module:
 
         This function sets d[n] and returns True if it resolved.
         """
+
         if not isinstance(v, list) or len(v) < 2:
             msg = f"GetAtt {v} invalid"
             raise exceptions.InvalidModuleError(msg=msg)
+
+        # print("")
+        # print("resolve_output_getatt")
+        # print("  v:", v)
+        # print("  d:", d)
+        # print("  n:", n)
 
         # For example, Content.Arn or Content[0].Arn
 
@@ -579,15 +586,35 @@ class Module:
         if index > -1:
             name = f"{name}{index}"
 
-        r = None
+        reffed_prop = None
         if name == self.name:
             if prop_name in self.module_outputs:
-                r = self.module_outputs[prop_name]
+                reffed_prop = self.module_outputs[prop_name]
             elif prop_name in self.props:
-                r = self.props[prop_name]
+                reffed_prop = self.props[prop_name]
 
-        if r is None:
+        if reffed_prop is None:
+            # print("  reffed_prop is None")
+            # print("")
             return False
+
+        # print("  reffed_prop:", reffed_prop)
+
+        if isinstance(reffed_prop, list):
+            for i, r in enumerate(reffed_prop):
+                self.replace_reffed_prop(r, reffed_prop, i)
+                d[n] = reffed_prop
+        else:
+            self.replace_reffed_prop(reffed_prop, d, n)
+
+        return True
+
+    def replace_reffed_prop(self, r, d, n):
+        """
+        Replace a reffed prop in an output getatt.
+
+        Sets d[n].
+        """
 
         if REF in r:
             ref = r[REF]
@@ -595,7 +622,7 @@ class Module:
         elif GETATT in r:
             getatt = r[GETATT]
             if len(getatt) < 2:
-                msg = f"GetAtt {getatt} in Output {v[1]} is invalid"
+                msg = f"GetAtt {getatt} in {self.name} is invalid"
                 raise exceptions.InvalidModuleError(msg=msg)
             s = getatt_map_list(getatt)
             if s is not None and s in self.mapped:
@@ -637,7 +664,6 @@ class Module:
         else:
             # Handle scalars in Properties
             d[n] = r
-        return True
 
     def resolve_output_getatt_map(self, mapped, name, prop_name):
         "Resolve GetAtts that reference all Outputs from a mapped module"

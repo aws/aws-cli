@@ -6,6 +6,8 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Ref Name
+  Bucket2:
+    Type: AWS::S3::Bucket
 Outputs:
   BucketArn:
     Value: !GetAtt Bucket.Arn
@@ -13,4 +15,8 @@ Outputs:
     Value: !Sub ${Bucket.Arn}
   BucketRef:
     Value: !Ref Bucket
+  ArnList:
+    Value:
+      - !Sub ${Bucket.Arn}
+      - !Sub ${Bucket2.Arn}
 

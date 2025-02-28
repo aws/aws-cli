@@ -7,6 +7,10 @@ Modules:
     Source: ./output-module2.yaml
     Properties:
       Name: !GetAtt ContentBucket.Arn
+    Overrides:
+      Foo:
+        Properties:
+          TestOverrideList: !GetAtt Content.ArnList
     
 Resources:
   A:
@@ -15,6 +19,7 @@ Resources:
       Object:
         Arn: !Sub ${Content.BucketArn}
         ArnGetAtt: !GetAtt Content.BucketArn
+        GetAttToSubList: !GetAtt Content.ArnList 
 Outputs:
   ExampleOutput:
     Value: !GetAtt Content.BucketArn

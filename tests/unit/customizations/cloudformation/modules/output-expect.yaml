@@ -9,15 +9,23 @@ Resources:
           Fn::GetAtt:
           - ContentBucket
           - Arn
+        GetAttToSubList:
+        - Fn::Sub: ${ContentBucket.Arn}
+        - Fn::Sub: ${ContentBucket2.Arn}
   ContentBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: foo
+  ContentBucket2:
+    Type: AWS::S3::Bucket
   AnotherModuleFoo:
     Type: A::B::C
     Properties:
       AName:
         Fn::Sub: another-${ContentBucket.Arn}
+      TestOverrideList:
+      - Fn::Sub: ${ContentBucket.Arn}
+      - Fn::Sub: ${ContentBucket2.Arn}
 Outputs:
   ExampleOutput:
     Value:

@@ -960,6 +960,47 @@
       ],
       "documentation": "Retrieve a JSON array of all available Job engine versions and the date they expire."
     },
+    "Probe": {
+      "name": "Probe",
+      "http": {
+        "method": "POST",
+        "requestUri": "/2017-08-29/probe",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ProbeRequest"
+      },
+      "output": {
+        "shape": "ProbeResponse"
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "The service can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "The service encountered an unexpected condition and can't fulfill your request."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permissions for this action with the credentials you sent."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The resource you requested doesn't exist."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Too many requests have been sent in too short of a time. The service limits the rate at which it will accept requests."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The service couldn't complete your request because there is a conflict with the current state of the resource."
+        }
+      ],
+      "documentation": "The Probe operation analyzes the provided media file and returns comprehensive metadata about its container format, tracks, and any encountered errors."
+    },
     "PutPolicy": {
       "name": "PutPolicy",
       "http": {
@@ -1982,6 +2023,42 @@
         }
       },
       "documentation": "Advanced audio normalization settings. Ignore these settings unless you need to comply with a loudness standard."
+    },
+    "AudioProperties": {
+      "type": "structure",
+      "members": {
+        "BitDepth": {
+          "shape": "__integer",
+          "locationName": "bitDepth",
+          "documentation": "The bit depth of the audio track."
+        },
+        "BitRate": {
+          "shape": "__integer",
+          "locationName": "bitRate",
+          "documentation": "The bit rate of the audio track in bits per second."
+        },
+        "Channels": {
+          "shape": "__integer",
+          "locationName": "channels",
+          "documentation": "The number of audio channels."
+        },
+        "FrameRate": {
+          "shape": "FrameRate",
+          "locationName": "frameRate",
+          "documentation": "the calculated frame rate of the asset."
+        },
+        "LanguageCode": {
+          "shape": "__string",
+          "locationName": "languageCode",
+          "documentation": "the language code of the track"
+        },
+        "SampleRate": {
+          "shape": "__integer",
+          "locationName": "sampleRate",
+          "documentation": "The sample rate of the audio track."
+        }
+      },
+      "documentation": "Properties specific to audio tracks."
     },
     "AudioSelector": {
       "type": "structure",
@@ -3606,6 +3683,33 @@
         "VERSION_1"
       ]
     },
+    "Codec": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "AAC",
+        "AC3",
+        "EAC3",
+        "FLAC",
+        "MP3",
+        "OPUS",
+        "PCM",
+        "VORBIS",
+        "AV1",
+        "AVC",
+        "HEVC",
+        "MJPEG",
+        "MP4V",
+        "MPEG2",
+        "PRORES",
+        "THEORA",
+        "VP8",
+        "VP9",
+        "C608",
+        "C708",
+        "WEBVTT"
+      ]
+    },
     "ColorConversion3DLUTSetting": {
       "type": "structure",
       "members": {
@@ -3706,6 +3810,28 @@
         "INSERT"
       ]
     },
+    "ColorPrimaries": {
+      "type": "string",
+      "documentation": "the color primaries.",
+      "enum": [
+        "ITU_709",
+        "UNSPECIFIED",
+        "RESERVED",
+        "ITU_470M",
+        "ITU_470BG",
+        "SMPTE_170M",
+        "SMPTE_240M",
+        "GENERIC_FILM",
+        "ITU_2020",
+        "SMPTE_428_1",
+        "SMPTE_431_2",
+        "SMPTE_EG_432_1",
+        "IPT",
+        "SMPTE_2067XYZ",
+        "EBU_3213_E",
+        "LAST"
+      ]
+    },
     "ColorSpace": {
       "type": "string",
       "documentation": "If your input video has accurate color space metadata, or if you don't know about color space: Keep the default value, Follow. MediaConvert will automatically detect your input color space. If your input video has metadata indicating the wrong color space, or has missing metadata: Specify the accurate color space here. If your input video is HDR 10 and the SMPTE ST 2086 Mastering Display Color Volume static metadata isn't present in your video stream, or if that metadata is present but not accurate: Choose Force HDR 10. Specify correct values in the input HDR 10 metadata settings. For more information about HDR jobs, see https://docs.aws.amazon.com/console/mediaconvert/hdr. When you specify an input color space, MediaConvert uses the following color space metadata, which includes color primaries, transfer characteristics, and matrix coefficients:\n * HDR 10: BT.2020, PQ, BT.2020 non-constant\n * HLG 2020: BT.2020, HLG, BT.2020 non-constant\n * P3DCI (Theater): DCIP3, SMPTE 428M, BT.709\n * P3D65 (SDR): Display P3, sRGB, BT.709\n * P3D65 (HDR): Display P3, PQ, BT.709",
@@ -3762,6 +3888,27 @@
         "httpStatusCode": 409
       },
       "documentation": "The service couldn't complete your request because there is a conflict with the current state of the resource."
+    },
+    "Container": {
+      "type": "structure",
+      "members": {
+        "Duration": {
+          "shape": "__double",
+          "locationName": "duration",
+          "documentation": "The duration of the media file in seconds."
+        },
+        "Format": {
+          "shape": "Format",
+          "locationName": "format",
+          "documentation": "The format of the container"
+        },
+        "Tracks": {
+          "shape": "__listOfTrack",
+          "locationName": "tracks",
+          "documentation": "List of Track objects."
+        }
+      },
+      "documentation": "Information about the container format of the media file."
     },
     "ContainerSettings": {
       "type": "structure",
@@ -4388,6 +4535,17 @@
         "COMPACT",
         "DISTINCT"
       ]
+    },
+    "DataProperties": {
+      "type": "structure",
+      "members": {
+        "LanguageCode": {
+          "shape": "__string",
+          "locationName": "languageCode",
+          "documentation": "the language code of the track"
+        }
+      },
+      "documentation": "Properties specific to data tracks."
     },
     "DecryptionMode": {
       "type": "string",
@@ -5784,6 +5942,15 @@
       },
       "documentation": "Use Force include renditions to specify one or more resolutions to include your ABR stack. * (Recommended) To optimize automated ABR, specify as few resolutions as possible. * (Required) The number of resolutions that you specify must be equal to, or less than, the Max renditions setting. * If you specify a Min top rendition size rule, specify at least one resolution that is equal to, or greater than, Min top rendition size. * If you specify a Min bottom rendition size rule, only specify resolutions that are equal to, or greater than, Min bottom rendition size. * If you specify a Force include renditions rule, do not specify a separate rule for Allowed renditions. * Note: The ABR stack may include other resolutions that you do not specify here, depending on the Max renditions setting."
     },
+    "Format": {
+      "type": "string",
+      "enum": [
+        "mp4",
+        "quicktime",
+        "matroska",
+        "webm"
+      ]
+    },
     "FrameCaptureSettings": {
       "type": "structure",
       "members": {
@@ -5809,6 +5976,22 @@
         }
       },
       "documentation": "Required when you set Codec to the value FRAME_CAPTURE."
+    },
+    "FrameRate": {
+      "type": "structure",
+      "members": {
+        "Denominator": {
+          "shape": "__integer",
+          "locationName": "denominator",
+          "documentation": "the denominator of the frame rate of the asset."
+        },
+        "Numerator": {
+          "shape": "__integer",
+          "locationName": "numerator",
+          "documentation": "the numerator of the frame rate of the asset."
+        }
+      },
+      "documentation": "the calculated frame rate of the asset."
     },
     "GetJobRequest": {
       "type": "structure",
@@ -9667,6 +9850,56 @@
       },
       "documentation": "These settings relate to the MPEG-2 transport stream (MPEG2-TS) container for the MPEG2-TS segments in your HLS outputs."
     },
+    "MatrixCoefficients": {
+      "type": "string",
+      "documentation": "the matrix coefficients.",
+      "enum": [
+        "RGB",
+        "ITU_709",
+        "UNSPECIFIED",
+        "RESERVED",
+        "FCC",
+        "ITU_470BG",
+        "SMPTE_170M",
+        "SMPTE_240M",
+        "YCgCo",
+        "ITU_2020_NCL",
+        "ITU_2020_CL",
+        "SMPTE_2085",
+        "CD_NCL",
+        "CD_CL",
+        "ITU_2100ICtCp",
+        "IPT",
+        "EBU3213",
+        "LAST"
+      ]
+    },
+    "Metadata": {
+      "type": "structure",
+      "members": {
+        "ETag": {
+          "shape": "__string",
+          "locationName": "eTag",
+          "documentation": "The ETag of the file."
+        },
+        "FileSize": {
+          "shape": "__long",
+          "locationName": "fileSize",
+          "documentation": "The size of the file in bytes."
+        },
+        "LastModified": {
+          "shape": "__timestampUnix",
+          "locationName": "lastModified",
+          "documentation": "The last modification time of the file."
+        },
+        "MimeType": {
+          "shape": "__string",
+          "locationName": "mimeType",
+          "documentation": "The MIME type of the file."
+        }
+      },
+      "documentation": "Metadata about the file."
+    },
     "MinBottomRenditionSize": {
       "type": "structure",
       "members": {
@@ -11245,6 +11478,58 @@
         "RESERVED"
       ]
     },
+    "ProbeInputFile": {
+      "type": "structure",
+      "members": {
+        "FileUrl": {
+          "shape": "__string",
+          "locationName": "fileUrl",
+          "documentation": "The URI to your input file(s) that is stored in Amazon S3 or on an HTTP(S) server."
+        }
+      },
+      "documentation": "The input file that needs to be analyzed."
+    },
+    "ProbeRequest": {
+      "type": "structure",
+      "members": {
+        "InputFiles": {
+          "shape": "__listOfProbeInputFile",
+          "locationName": "inputFiles",
+          "documentation": "The list of input media files to be probed."
+        }
+      }
+    },
+    "ProbeResponse": {
+      "type": "structure",
+      "members": {
+        "ProbeResults": {
+          "shape": "__listOfProbeResult",
+          "locationName": "probeResults",
+          "documentation": "List of probe results for the input media file(s)."
+        }
+      }
+    },
+    "ProbeResult": {
+      "type": "structure",
+      "members": {
+        "Container": {
+          "shape": "Container",
+          "locationName": "container",
+          "documentation": "Information about the container format of the media file."
+        },
+        "Metadata": {
+          "shape": "Metadata",
+          "locationName": "metadata",
+          "documentation": "Metadata about the file."
+        },
+        "TrackMappings": {
+          "shape": "__listOfTrackMapping",
+          "locationName": "trackMappings",
+          "documentation": "List of Track mapping objects."
+        }
+      },
+      "documentation": "The metadata and analysis results for a media file."
+    },
     "ProresChromaSampling": {
       "type": "string",
       "documentation": "This setting applies only to ProRes 4444 and ProRes 4444 XQ outputs that you create from inputs that use 4:4:4 chroma sampling. Set Preserve 4:4:4 sampling to allow outputs to also use 4:4:4 chroma sampling. You must specify a value for this setting when your output codec profile supports 4:4:4 chroma sampling. Related Settings: For Apple ProRes outputs with 4:4:4 chroma sampling: Choose Preserve 4:4:4 sampling. Use when your input has 4:4:4 chroma sampling and your output codec Profile is Apple ProRes 4444 or 4444 XQ. Note that when you choose Preserve 4:4:4 sampling, you cannot include any of the following Preprocessors: Dolby Vision, HDR10+, or Noise reducer.",
@@ -12261,6 +12546,68 @@
       },
       "documentation": "Too many requests have been sent in too short of a time. The service limits the rate at which it will accept requests."
     },
+    "Track": {
+      "type": "structure",
+      "members": {
+        "AudioProperties": {
+          "shape": "AudioProperties",
+          "locationName": "audioProperties",
+          "documentation": "Properties specific to audio tracks."
+        },
+        "Codec": {
+          "shape": "Codec",
+          "locationName": "codec",
+          "documentation": "The codec used for the track."
+        },
+        "DataProperties": {
+          "shape": "DataProperties",
+          "locationName": "dataProperties",
+          "documentation": "Properties specific to data tracks."
+        },
+        "Duration": {
+          "shape": "__double",
+          "locationName": "duration",
+          "documentation": "The duration of the track in seconds."
+        },
+        "Index": {
+          "shape": "__integer",
+          "locationName": "index",
+          "documentation": "The index of the track."
+        },
+        "TrackType": {
+          "shape": "TrackType",
+          "locationName": "trackType",
+          "documentation": "The type of the track (video, audio, or data)."
+        },
+        "VideoProperties": {
+          "shape": "VideoProperties",
+          "locationName": "videoProperties",
+          "documentation": "Properties specific to video tracks."
+        }
+      },
+      "documentation": "The track information such as codec, duration, etc."
+    },
+    "TrackMapping": {
+      "type": "structure",
+      "members": {
+        "AudioTrackIndexes": {
+          "shape": "__listOf__integer",
+          "locationName": "audioTrackIndexes",
+          "documentation": "The indexes of the audio tracks."
+        },
+        "DataTrackIndexes": {
+          "shape": "__listOf__integer",
+          "locationName": "dataTrackIndexes",
+          "documentation": "The indexes of the data tracks."
+        },
+        "VideoTrackIndexes": {
+          "shape": "__listOf__integer",
+          "locationName": "videoTrackIndexes",
+          "documentation": "The indexes of the video tracks."
+        }
+      },
+      "documentation": "Track mapping information."
+    },
     "TrackSourceSettings": {
       "type": "structure",
       "members": {
@@ -12271,6 +12618,39 @@
         }
       },
       "documentation": "Settings specific to caption sources that are specified by track number. Currently, this is only IMSC captions in an IMF package. If your caption source is IMSC 1.1 in a separate xml file, use FileSourceSettings instead of TrackSourceSettings."
+    },
+    "TrackType": {
+      "type": "string",
+      "enum": [
+        "video",
+        "audio",
+        "data"
+      ]
+    },
+    "TransferCharacteristics": {
+      "type": "string",
+      "documentation": "the transfer characteristics.",
+      "enum": [
+        "ITU_709",
+        "UNSPECIFIED",
+        "RESERVED",
+        "ITU_470M",
+        "ITU_470BG",
+        "SMPTE_170M",
+        "SMPTE_240M",
+        "LINEAR",
+        "LOG10_2",
+        "LOC10_2_5",
+        "IEC_61966_2_4",
+        "ITU_1361",
+        "IEC_61966_2_1",
+        "ITU_2020_10bit",
+        "ITU_2020_12bit",
+        "SMPTE_2084",
+        "SMPTE_428_1",
+        "ARIB_B67",
+        "LAST"
+      ]
     },
     "TsPtsOffset": {
       "type": "string",
@@ -13099,6 +13479,52 @@
         }
       },
       "documentation": "Find additional transcoding features under Preprocessors. Enable the features at each output individually. These features are disabled by default."
+    },
+    "VideoProperties": {
+      "type": "structure",
+      "members": {
+        "BitDepth": {
+          "shape": "__integer",
+          "locationName": "bitDepth",
+          "documentation": "The bit depth of the video track."
+        },
+        "BitRate": {
+          "shape": "__integer",
+          "locationName": "bitRate",
+          "documentation": "The bit rate of the video track in bits per second."
+        },
+        "ColorPrimaries": {
+          "shape": "ColorPrimaries",
+          "locationName": "colorPrimaries",
+          "documentation": "the color primaries."
+        },
+        "FrameRate": {
+          "shape": "FrameRate",
+          "locationName": "frameRate",
+          "documentation": "the calculated frame rate of the asset."
+        },
+        "Height": {
+          "shape": "__integer",
+          "locationName": "height",
+          "documentation": "The height of the video track in pixels."
+        },
+        "MatrixCoefficients": {
+          "shape": "MatrixCoefficients",
+          "locationName": "matrixCoefficients",
+          "documentation": "the matrix coefficients."
+        },
+        "TransferCharacteristics": {
+          "shape": "TransferCharacteristics",
+          "locationName": "transferCharacteristics",
+          "documentation": "the transfer characteristics."
+        },
+        "Width": {
+          "shape": "__integer",
+          "locationName": "width",
+          "documentation": "The width of the video track in pixels."
+        }
+      },
+      "documentation": "Properties specific to video tracks."
     },
     "VideoSelector": {
       "type": "structure",
@@ -14653,6 +15079,18 @@
         "shape": "Preset"
       }
     },
+    "__listOfProbeInputFile": {
+      "type": "list",
+      "member": {
+        "shape": "ProbeInputFile"
+      }
+    },
+    "__listOfProbeResult": {
+      "type": "list",
+      "member": {
+        "shape": "ProbeResult"
+      }
+    },
     "__listOfQueue": {
       "type": "list",
       "member": {
@@ -14675,6 +15113,18 @@
       "type": "list",
       "member": {
         "shape": "TeletextPageType"
+      }
+    },
+    "__listOfTrack": {
+      "type": "list",
+      "member": {
+        "shape": "Track"
+      }
+    },
+    "__listOfTrackMapping": {
+      "type": "list",
+      "member": {
+        "shape": "TrackMapping"
       }
     },
     "__listOfVideoOverlay": {
@@ -14705,6 +15155,12 @@
       "type": "list",
       "member": {
         "shape": "__doubleMinNegative60Max6"
+      }
+    },
+    "__listOf__integer": {
+      "type": "list",
+      "member": {
+        "shape": "__integer"
       }
     },
     "__listOf__integerMin1Max2147483647": {
@@ -14754,6 +15210,9 @@
       "member": {
         "shape": "__stringPatternS3ASSETMAPXml"
       }
+    },
+    "__long": {
+      "type": "long"
     },
     "__mapOfAudioSelector": {
       "type": "map",

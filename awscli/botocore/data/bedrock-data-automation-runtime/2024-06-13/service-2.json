@@ -49,6 +49,58 @@
       ],
       "documentation":"<p>Async API: Invoke data automation.</p>",
       "idempotent":true
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>List tags for an Amazon Bedrock Data Automation resource</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Tag an Amazon Bedrock Data Automation resource</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Untag an Amazon Bedrock Data Automation resource</p>"
     }
   },
   "shapes":{
@@ -104,6 +156,7 @@
         "documentation":"<p>Blueprint.</p>"
       },
       "documentation":"<p>Blueprint list.</p>",
+      "max":40,
       "min":1
     },
     "BlueprintStage":{
@@ -134,11 +187,11 @@
     },
     "DataAutomationConfiguration":{
       "type":"structure",
-      "required":["dataAutomationArn"],
+      "required":["dataAutomationProjectArn"],
       "members":{
-        "dataAutomationArn":{
+        "dataAutomationProjectArn":{
           "shape":"DataAutomationArn",
-          "documentation":"<p>Data automation arn.</p>"
+          "documentation":"<p>Data automation project arn.</p>"
         },
         "stage":{
           "shape":"DataAutomationStage",
@@ -146,6 +199,13 @@
         }
       },
       "documentation":"<p>Data automation configuration.</p>"
+    },
+    "DataAutomationProfileArn":{
+      "type":"string",
+      "documentation":"<p>Data automation profile arn.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"arn:aws(|-cn|-us-gov):bedrock:[a-zA-Z0-9-]*:(aws|[0-9]{12}):data-automation-profile/[a-zA-Z0-9-_.]+"
     },
     "DataAutomationStage":{
       "type":"string",
@@ -160,8 +220,8 @@
       "required":["kmsKeyId"],
       "members":{
         "kmsKeyId":{
-          "shape":"NonEmptyString",
-          "documentation":"<p>KMS key id.</p>"
+          "shape":"KMSKeyId",
+          "documentation":"<p>Customer KMS key used for encryption</p>"
         },
         "kmsEncryptionContext":{
           "shape":"EncryptionContextMap",
@@ -273,7 +333,8 @@
       "type":"structure",
       "required":[
         "inputConfiguration",
-        "outputConfiguration"
+        "outputConfiguration",
+        "dataAutomationProfileArn"
       ],
       "members":{
         "clientToken":{
@@ -304,6 +365,14 @@
         "blueprints":{
           "shape":"BlueprintList",
           "documentation":"<p>Blueprint list.</p>"
+        },
+        "dataAutomationProfileArn":{
+          "shape":"DataAutomationProfileArn",
+          "documentation":"<p>Data automation profile ARN</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>List of tags.</p>"
         }
       },
       "documentation":"<p>Invoke Data Automation Async Request</p>"
@@ -319,13 +388,28 @@
       },
       "documentation":"<p>Invoke Data Automation Async Response</p>"
     },
+    "KMSKeyId":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]+"
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceARN"],
+      "members":{
+        "resourceARN":{"shape":"TaggableResourceArn"}
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{"shape":"TagList"}
+      }
+    },
     "NonBlankString":{
       "type":"string",
       "pattern":"[\\s\\S]*"
-    },
-    "NonEmptyString":{
-      "type":"string",
-      "pattern":".*\\S.*"
     },
     "NotificationConfiguration":{
       "type":"structure",
@@ -362,7 +446,7 @@
       "documentation":"<p>A path in S3</p>",
       "max":1024,
       "min":1,
-      "pattern":"s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]([^\\x00-\\x1F\\x7F\\{^}%`\\]\">\\[~<#|]*)?"
+      "pattern":"s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/[^\\x00-\\x1F\\x7F\\{^}%`\\]\">\\[~<#|]*)?"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -373,6 +457,69 @@
       "exception":true
     },
     "String":{"type":"string"},
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{"shape":"TagKey"},
+        "value":{"shape":"TagValue"}
+      },
+      "documentation":"<p>Key value pair of a tag</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "documentation":"<p>Defines the context of the tag.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"(?!aws:)[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*"
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "documentation":"<p>List of tag keys</p>",
+      "max":200,
+      "min":0
+    },
+    "TagList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "documentation":"<p>List of tags</p>",
+      "max":200,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceARN",
+        "tags"
+      ],
+      "members":{
+        "resourceARN":{"shape":"TaggableResourceArn"},
+        "tags":{"shape":"TagList"}
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "documentation":"<p>Defines the value within the context. e.g. &lt;key=reason, value=training&gt;.</p>",
+      "max":256,
+      "min":0,
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
+    },
+    "TaggableResourceArn":{
+      "type":"string",
+      "documentation":"<p>ARN of a taggable resource</p>",
+      "max":1011,
+      "min":20,
+      "pattern":"arn:aws(|-cn|-us-gov):bedrock:[a-zA-Z0-9-]*:[0-9]{12}:data-automation-invocation/[a-zA-Z0-9-_]+"
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -380,6 +527,22 @@
       },
       "documentation":"<p>This exception will be thrown when customer reached API TPS limit.</p>",
       "exception":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceARN",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceARN":{"shape":"TaggableResourceArn"},
+        "tagKeys":{"shape":"TagKeyList"}
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "ValidationException":{
       "type":"structure",

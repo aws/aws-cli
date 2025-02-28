@@ -1,0 +1,57 @@
+Resources:
+  AHideMeFoo:
+    Type: A::B::C
+  ALambdaPolicy:
+    Type: AWS::IAM::RolePolicy
+    Metadata:
+      Comment: This resource is created only if the LambdaRoleArn is set
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:BatchGetItem
+          - dynamodb:GetItem
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:BatchWriteItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          Effect: Allow
+          Resource:
+          - Fn::GetAtt:
+            - ATable
+            - Arn
+      PolicyName: table-a-policy
+      RoleName: my-role
+  ATable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      TableName: table-a
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+  ATestResourceConditional:
+    Type: A::B::C
+    Properties:
+      Show: Foo
+      ShowA: A
+  BTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      TableName: table-b
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+  BTestResourceConditional:
+    Type: A::B::C
+    Properties:
+      Hide: Foo
+      ShowA: B

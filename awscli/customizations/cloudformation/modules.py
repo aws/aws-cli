@@ -629,6 +629,14 @@ class Module:
                 # Special handling for Overrides that GetAtt a module
                 # property, when that module has a Map attribute
                 if isinstance(self.mapped[s], list):
+                    # print("")
+                    # print("self.name", self.name)
+                    # print("r:", r)
+                    # print("d:", d)
+                    # print("n:", n)
+                    # print("s:", s)
+                    # print("self.mapped[s]", self.mapped[s])
+                    # print("")
                     d[n] = copy.deepcopy(self.mapped[s])
                     for item in d[n]:
                         if GETATT in item and len(item[GETATT]) > 0:
@@ -682,6 +690,9 @@ class Module:
                 if key not in mapped:
                     mapped[key] = []
                 if item_val not in mapped[key]:
+                    print("resolve_output_getatt_map")
+                    print("key:", key)
+                    print("item_val:", item_val)
                     # Don't double add. We already replaced refs in
                     # modules, so it shows up twice.
                     mapped[key].append(item_val)

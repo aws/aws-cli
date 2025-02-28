@@ -143,7 +143,7 @@ def resolve_mapped_lists(template, mapped):
             s = getatt_map_list(getatt)
             if s is not None:
                 if s in mapped:
-                    v.p[v.k] = mapped[s]
+                    v.p[v.k] = copy.deepcopy(mapped[s])
 
     if RESOURCES in template:
         v = Visitor(template[RESOURCES])
@@ -157,7 +157,7 @@ def resolve_mapped_lists(template, mapped):
                 if s is not None and s in mapped:
                     # Handling for Override GetAtts to module Outputs
                     # that reference a module with a Map
-                    val[VALUE] = mapped[s]
+                    val[VALUE] = copy.deepcopy(mapped[s])
 
 
 def getatt_map_list(getatt):

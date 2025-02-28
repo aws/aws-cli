@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import logging
 import platform
 import unittest
 
@@ -17,8 +18,12 @@ import pytest
 
 from botocore import __version__ as botocore_version
 from botocore.config import Config
+from botocore.context import get_context
 from botocore.useragent import (
+    UserAgentComponent,
+    UserAgentComponentSizeConfig,
     UserAgentString,
+    register_feature_id,
     sanitize_user_agent_string_component,
 )
 
@@ -68,7 +73,7 @@ def test_basic_user_agent_string():
     expected = (
         f'Botocore/{botocore_version} '
         'md/awscrt#Unknown '
-        'ua/2.0 '
+        'ua/2.1 '
         'os/linux#1.2.3-foo '
         'md/arch#x86_64 '
         'lang/python#3.8.20 '
@@ -96,7 +101,7 @@ def test_shared_test_case():
     actual = uas.to_string().split(' ')
     expected_in_exact_order = [
         f"Botocore/{botocore_version}",
-        "ua/2.0",
+        "ua/2.1",
         "os/linux#5.4.228-131.415.AMZN2.X86_64",
         "lang/python#4.3.2",
         "exec-env/lambda",
@@ -125,7 +130,7 @@ def test_user_agent_string_with_missing_information():
         crt_version=None,
     ).with_client_config(Config())
     actual = uas.to_string()
-    assert actual == f'Botocore/{botocore_version} ua/2.0 os/other lang/python'
+    assert actual == f'Botocore/{botocore_version} ua/2.1 os/other lang/python'
 
 
 def test_from_environment(monkeypatch):
@@ -178,3 +183,57 @@ def test_from_environment_unknown_platform(monkeypatch):
     monkeypatch.setattr(platform, 'release', lambda: '0.0.1')
     uas = UserAgentString.from_environment()
     assert ' os/other md/FooOS#0.0.1 ' in uas.to_string()
+
+
+def test_user_agent_string_with_registered_features(client_context):
+    uas = UserAgentString.from_environment()
+    uas.set_client_features({'A'})
+    register_feature_id('WAITER')
+
+    uafields = uas.to_string().split(' ')
+    feature_field = [field for field in uafields if field.startswith('m/')][0]
+    feature_list = feature_field[2:].split(',')
+    assert sorted(feature_list) == ['A', 'B']
+
+
+def test_register_feature_id(client_context):
+    register_feature_id('WAITER')
+    ctx = get_context()
+    assert ctx.features == {'B'}
+
+
+def test_register_unknown_feature_id_skips(client_context):
+    register_feature_id('MY_FEATURE')
+    ctx = get_context()
+    assert ctx.features == set()
+
+
+def test_user_agent_truncated_string():
+    size_config = UserAgentComponentSizeConfig(4, ',')
+    component = UserAgentComponent(
+        'm',
+        'A,BCD',
+        size_config=size_config,
+    )
+    assert component.to_string() == 'm/A'
+
+
+def test_user_agent_empty_truncated_string_logs(caplog):
+    caplog.set_level(logging.DEBUG)
+    size_config = UserAgentComponentSizeConfig(1, ',')
+    component = UserAgentComponent(
+        'm',
+        'A,B,C',
+        size_config=size_config,
+    )
+    assert component.to_string() == ''
+    assert 'could not be truncated' in caplog.text
+
+
+def test_non_positive_user_agent_component_size_config_raises():
+    with pytest.raises(ValueError) as excinfo:
+        UserAgentComponentSizeConfig(0, ',')
+    assert 'Invalid `max_size_in_bytes`' in str(excinfo.value)
+    with pytest.raises(ValueError) as excinfo:
+        UserAgentComponentSizeConfig(-1, ',')
+    assert 'Invalid `max_size_in_bytes`' in str(excinfo.value)

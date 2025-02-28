@@ -14,11 +14,14 @@
 import base64
 import json
 import logging
+from functools import partial
 from itertools import tee
 
 import jmespath
 from botocore.compat import zip
+from botocore.context import with_current_context
 from botocore.exceptions import PaginationError
+from botocore.useragent import register_feature_id
 from botocore.utils import merge_dicts, set_value_from_jmespath
 
 log = logging.getLogger(__name__)
@@ -325,6 +328,7 @@ class PageIterator(object):
                 # Yield result directly if it is not a list.
                 yield results
 
+    @with_current_context(partial(register_feature_id, 'PAGINATOR'))
     def _make_request(self, current_kwargs):
         return self._method(**current_kwargs)
 

@@ -12,9 +12,13 @@
 # language governing permissions and limitations under the License.
 import logging
 import time
+from functools import partial
 
 import jmespath
+
+from botocore.context import with_current_context
 from botocore.docs.docstring import WaiterDocstring
+from botocore.useragent import register_feature_id
 from botocore.utils import get_service_module_name
 
 from . import xform_name
@@ -315,6 +319,7 @@ class Waiter(object):
         self.name = name
         self.config = config
 
+    @with_current_context(partial(register_feature_id, 'WAITER'))
     def wait(self, **kwargs):
         acceptors = list(self.config.acceptors)
         current_state = 'waiting'

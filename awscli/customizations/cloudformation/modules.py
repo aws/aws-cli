@@ -35,6 +35,7 @@ from awscli.customizations.cloudformation import yamlhelper
 from awscli.customizations.cloudformation.module_functions import (
     fn_merge,
     fn_select,
+    fn_insertfile,
 )
 from awscli.customizations.cloudformation.module_merge import (
     isdict,
@@ -157,6 +158,15 @@ def process_module_section(
     "Recursively process the Modules section of a template"
 
     if MODULES not in template:
+        if parent_module is None:
+            # This is a template with no modules.
+            # Process template constants and new intrinsics.
+            constants = process_constants(template)
+            if constants is not None:
+                replace_constants(constants, template)
+            fn_select(template)
+            fn_merge(template)
+            fn_insertfile(template, base_path)
         return template
 
     if not isdict(template[MODULES]):
@@ -209,6 +219,8 @@ def process_module_section(
     fn_select(template)
 
     fn_merge(template)
+    
+    fn_insertfile(template, base_path)
 
     # Remove the Modules section from the template
     del template[MODULES]

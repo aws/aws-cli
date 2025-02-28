@@ -15,6 +15,13 @@ Conditions:
         - !Ref LambdaRoleName
         - ""
 
+  Nested:
+    Fn::And:
+      - Condition: IfLambdaRoleIsSet
+      - Fn::Equals:
+        - 1
+        - 1
+
 Modules:
   HideMe:
     Condition: IfLambdaRoleIsSet

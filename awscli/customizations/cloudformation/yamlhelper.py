@@ -58,7 +58,7 @@ def _dict_representer(dumper, data):
     return dumper.represent_dict(data.items())
 
 
-def yaml_dump(dict_to_dump):
+def yaml_dump(dict_to_dump, default_style=None):
     """
     Dumps the dictionary as a YAML document
     :param dict_to_dump:
@@ -69,6 +69,7 @@ def yaml_dump(dict_to_dump):
         dict_to_dump,
         default_flow_style=False,
         Dumper=FlattenAliasDumper,
+        default_style=default_style
     )
 
 
@@ -82,12 +83,6 @@ class SafeLoaderWrapper(yaml.SafeLoader):
     """
     Isolated safe loader to allow for customizations without global changes.
     """
-
-#    def construct_mapping(self, node, deep=False):
-#        "Adds support for line numbers"
-#        mapping = super().construct_mapping(node, deep=deep)
-#        mapping["__line__"] = node.start_mark.line + 1
-#        return mapping
 
 def yaml_parse(yamlstr):
     """Parse a yaml string"""

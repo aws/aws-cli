@@ -21,6 +21,7 @@ Fn::Merge
 """
 
 from collections import OrderedDict
+import os
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.module_merge import (
     isdict,
@@ -32,6 +33,7 @@ MERGE = "Fn::Merge"
 SELECT = "Fn::Select"
 REF = "Ref"
 GETATT = "Fn::GetAtt"
+INSERT_FILE = "Fn::InsertFile"
 
 
 def fn_select(d):
@@ -79,5 +81,21 @@ def fn_merge(d):
             if GETATT in mrg[0] or GETATT in mrg[1]:
                 return
             v.p[v.k] = merge_props(mrg[0], mrg[1])
+
+    Visitor(d).visit(vf)
+
+
+def fn_insertfile(d, base_path):
+    "Insert file contents into the template"
+
+    def vf(v):
+        if isdict(v.d) and INSERT_FILE in v.d and v.p is not None:
+            content = ""
+            relative_path = v.d[INSERT_FILE]
+            abs_path = os.path.join(base_path, relative_path)
+            norm_path = os.path.normpath(abs_path)
+            with open(norm_path, "r", encoding="utf-8") as s:
+                content = s.read()
+            v.p[v.k] = content
 
     Visitor(d).visit(vf)

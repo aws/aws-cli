@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.38.4
+======
+
+* api-change:``bedrock-agent``: This release lets Amazon Bedrock Flows support newer models by increasing the maximum length of output in a prompt configuration. This release also increases the maximum number of prompt variables to 20 and the maximum number of node inputs to 20.
+* api-change:``bedrock-data-automation``: Renamed and added new StandardConfiguration enums. Added support to update EncryptionConfiguration in UpdateBlueprint and UpdateDataAutomation APIs. Changed HttpStatus code for DeleteBlueprint and DeleteDataAutomationProject APIs to 200 from 204. Added APIs to support tagging.
+* api-change:``bedrock-data-automation-runtime``: Added a mandatory parameter DataAutomationProfileArn to support for cross region inference for InvokeDataAutomationAsync API. Renamed DataAutomationArn to DataAutomationProjectArn. Added APIs to support tagging.
+* api-change:``dms``: Add skipped status to the Result Statistics of an Assessment Run
+* api-change:``eks``: Adding licenses to EKS Anywhere Subscription operations response.
+* api-change:``mediaconvert``: The AWS MediaConvert Probe API allows you to analyze media files and retrieve detailed metadata about their content, format, and structure.
+* api-change:``pricing``: Update GetProducts and DescribeServices API request input validations.
+* api-change:``ssm``: Systems Manager doc-only updates for Feb. 2025.
+
+
 1.38.3
 ======
 

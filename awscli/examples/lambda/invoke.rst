@@ -16,7 +16,7 @@ Output::
         "StatusCode": 200
     }
 
-For more information, see `Synchronous Invocation <https://docs.aws.amazon.com/lambda/latest/dg/invocation-sync.html>`__ in the *AWS Lambda Developer Guide*.
+For more information, see `Invoke a Lambda function synchronously <https://docs.aws.amazon.com/lambda/latest/dg/invocation-sync.html>`__ in the *AWS Lambda Developer Guide*.
 
 **Example 2: To invoke a Lambda function asynchronously**
 
@@ -36,4 +36,4 @@ Output::
         "StatusCode": 202
     }
 
-For more information, see `Asynchronous Invocation <https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html>`__ in the *AWS Lambda Developer Guide*.
+For more information, see `Invoking a Lambda function asynchronously <https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html>`__ in the *AWS Lambda Developer Guide*.

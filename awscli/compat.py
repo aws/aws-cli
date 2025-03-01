@@ -22,11 +22,10 @@ import re
 import shlex
 import signal
 import urllib.parse as urlparse
+from collections import OrderedDict
 from configparser import RawConfigParser
 from urllib.error import URLError
 from urllib.request import urlopen
-
-from botocore.compat import six, OrderedDict
 
 import sys
 import zipfile

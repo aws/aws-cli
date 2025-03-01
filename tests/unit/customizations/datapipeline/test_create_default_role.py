@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 import awscli.customizations.datapipeline.createdefaultroles \
@@ -11,7 +13,6 @@ from awscli.customizations.datapipeline.constants\
 from awscli.testutils import BaseAWSCommandParamsTest,\
     mock, unittest
 from awscli.customizations.datapipeline.translator import dict_to_string
-from botocore.compat import json
 
 
 @pytest.mark.filterwarnings('ignore::UserWarning')

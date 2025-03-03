@@ -18,25 +18,40 @@ from awscli.customizations.utils import s3_bucket_exists
 from awscli.customizations.s3.utils import find_bucket_key
 
 
-S3_BUCKET = {'name': 's3-bucket', 'required': True,
-             'help_text': ('The S3 bucket that the AWS Config delivery channel'
-                           ' will use. If the bucket does not exist, it will '
-                           'be automatically created. The value for this '
-                           'argument should follow the form '
-                           'bucket/prefix. Note that the prefix is optional.')}
+S3_BUCKET = {
+    'name': 's3-bucket',
+    'required': True,
+    'help_text': (
+        'The S3 bucket that the AWS Config delivery channel'
+        ' will use. If the bucket does not exist, it will '
+        'be automatically created. The value for this '
+        'argument should follow the form '
+        'bucket/prefix. Note that the prefix is optional.'
+    ),
+}
 
-SNS_TOPIC = {'name': 'sns-topic', 'required': True,
-             'help_text': ('The SNS topic that the AWS Config delivery channel'
-                           ' will use. If the SNS topic does not exist, it '
-                           'will be automatically created. Value for this '
-                           'should be a valid SNS topic name or the ARN of an '
-                           'existing SNS topic.')}
+SNS_TOPIC = {
+    'name': 'sns-topic',
+    'required': True,
+    'help_text': (
+        'The SNS topic that the AWS Config delivery channel'
+        ' will use. If the SNS topic does not exist, it '
+        'will be automatically created. Value for this '
+        'should be a valid SNS topic name or the ARN of an '
+        'existing SNS topic.'
+    ),
+}
 
-IAM_ROLE = {'name': 'iam-role', 'required': True,
-            'help_text': ('The IAM role that the AWS Config configuration '
-                          'recorder will use to record current resource '
-                          'configurations. Value for this should be the '
-                          'ARN of the desired IAM role.')}
+IAM_ROLE = {
+    'name': 'iam-role',
+    'required': True,
+    'help_text': (
+        'The IAM role that the AWS Config configuration '
+        'recorder will use to record current resource '
+        'configurations. Value for this should be the '
+        'ARN of the desired IAM role.'
+    ),
+}
 
 
 def register_subscribe(cli):
@@ -49,10 +64,12 @@ def add_subscribe(command_table, session, **kwargs):
 
 class SubscribeCommand(BasicCommand):
     NAME = 'subscribe'
-    DESCRIPTION = ('Subscribes user to AWS Config by creating an AWS Config '
-                   'delivery channel and configuration recorder to track '
-                   'AWS resource configurations. The names of the default '
-                   'channel and configuration recorder will be default.')
+    DESCRIPTION = (
+        'Subscribes user to AWS Config by creating an AWS Config '
+        'delivery channel and configuration recorder to track '
+        'AWS resource configurations. The names of the default '
+        'channel and configuration recorder will be default.'
+    )
     ARG_TABLE = [S3_BUCKET, SNS_TOPIC, IAM_ROLE]
 
     def __init__(self, session):
@@ -79,7 +96,7 @@ class SubscribeCommand(BasicCommand):
         self._config_client.put_configuration_recorder(
             ConfigurationRecorder={
                 'name': name,
-                'roleARN': parsed_args.iam_role
+                'roleARN': parsed_args.iam_role,
             }
         )
 
@@ -87,14 +104,15 @@ class SubscribeCommand(BasicCommand):
         delivery_channel = {
             'name': name,
             's3BucketName': bucket,
-            'snsTopicARN': sns_topic_arn
+            'snsTopicARN': sns_topic_arn,
         }
 
         if prefix:
             delivery_channel['s3KeyPrefix'] = prefix
 
         self._config_client.put_delivery_channel(
-            DeliveryChannel=delivery_channel)
+            DeliveryChannel=delivery_channel
+        )
 
         # Start the configuration recorder.
         self._config_client.start_configuration_recorder(
@@ -106,7 +124,8 @@ class SubscribeCommand(BasicCommand):
         sys.stdout.write('Configuration Recorders: ')
         response = self._config_client.describe_configuration_recorders()
         sys.stdout.write(
-            json.dumps(response['ConfigurationRecorders'], indent=4))
+            json.dumps(response['ConfigurationRecorders'], indent=4)
+        )
         sys.stdout.write('\n\n')
 
         # Describe the delivery channels
@@ -120,14 +139,15 @@ class SubscribeCommand(BasicCommand):
     def _setup_clients(self, parsed_globals):
         client_args = {
             'verify': parsed_globals.verify_ssl,
-            'region_name': parsed_globals.region
+            'region_name': parsed_globals.region,
         }
         self._s3_client = self._session.create_client('s3', **client_args)
         self._sns_client = self._session.create_client('sns', **client_args)
         # Use the specified endpoint only for config related commands.
         client_args['endpoint_url'] = parsed_globals.endpoint_url
-        self._config_client = self._session.create_client('config',
-                                                          **client_args)
+        self._config_client = self._session.create_client(
+            'config', **client_args
+        )
 
 
 class S3BucketHelper(object):
@@ -149,9 +169,7 @@ class S3BucketHelper(object):
 
     def _create_bucket(self, bucket):
         region_name = self._s3_client.meta.region_name
-        params = {
-            'Bucket': bucket
-        }
+        params = {'Bucket': bucket}
         bucket_config = {'LocationConstraint': region_name}
         if region_name != 'us-east-1':
             params['CreateBucketConfiguration'] = bucket_config

@@ -24,8 +24,11 @@ from dateutil import tz, parser
 
 from awscrt.crypto import RSA, RSASignatureAlgorithm
 
-from awscli.customizations.cloudtrail.utils import get_trail_by_arn, \
-    get_account_id_from_arn, PublicKeyProvider
+from awscli.customizations.cloudtrail.utils import (
+    get_trail_by_arn,
+    get_account_id_from_arn,
+    PublicKeyProvider,
+)
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
 from botocore.exceptions import ClientError
@@ -81,11 +84,19 @@ def assert_cloudtrail_arn_is_valid(trail_arn):
         )
 
 
-def create_digest_traverser(cloudtrail_client, organization_client,
-                            s3_client_provider, trail_arn,
-                            trail_source_region=None, on_invalid=None,
-                            on_gap=None, on_missing=None, bucket=None,
-                            prefix=None, account_id=None):
+def create_digest_traverser(
+    cloudtrail_client,
+    organization_client,
+    s3_client_provider,
+    trail_arn,
+    trail_source_region=None,
+    on_invalid=None,
+    on_gap=None,
+    on_missing=None,
+    bucket=None,
+    prefix=None,
+    account_id=None,
+):
     """Creates a CloudTrail DigestTraverser and its object graph.
 
     :type cloudtrail_client: botocore.client.CloudTrail
@@ -134,9 +145,11 @@ def create_digest_traverser(cloudtrail_client, organization_client,
             if not account_id:
                 raise ParamValidationError(
                     "Missing required parameter for organization "
-                    "trail: '--account-id'")
+                    "trail: '--account-id'"
+                )
             organization_id = organization_client.describe_organization()[
-                'Organization']['Id']
+                'Organization'
+            ]['Id']
 
     # Determine the region from the ARN (e.g., arn:aws:cloudtrail:REGION:...)
     trail_region = trail_arn.split(':')[3]
@@ -147,16 +160,22 @@ def create_digest_traverser(cloudtrail_client, organization_client,
         account_id = get_account_id_from_arn(trail_arn)
 
     digest_provider = DigestProvider(
-        account_id=account_id, trail_name=trail_name,
+        account_id=account_id,
+        trail_name=trail_name,
         s3_client_provider=s3_client_provider,
         trail_source_region=trail_source_region,
         trail_home_region=trail_region,
-        organization_id=organization_id)
+        organization_id=organization_id,
+    )
     return DigestTraverser(
-        digest_provider=digest_provider, starting_bucket=bucket,
-        starting_prefix=prefix, on_invalid=on_invalid, on_gap=on_gap,
+        digest_provider=digest_provider,
+        starting_bucket=bucket,
+        starting_prefix=prefix,
+        on_invalid=on_invalid,
+        on_gap=on_gap,
         on_missing=on_missing,
-        public_key_provider=PublicKeyProvider(cloudtrail_client))
+        public_key_provider=PublicKeyProvider(cloudtrail_client),
+    )
 
 
 class S3ClientProvider(object):
@@ -165,6 +184,7 @@ class S3ClientProvider(object):
     This class will cache the location constraints of previously requested
     buckets and cache previously created clients for the same region.
     """
+
     def __init__(self, session, get_bucket_location_region='us-east-1'):
         self._session = session
         self._get_bucket_location_region = get_bucket_location_region
@@ -196,22 +216,29 @@ class S3ClientProvider(object):
 
 class DigestError(ValueError):
     """Exception raised when a digest fails to validate"""
+
     pass
 
 
 class DigestSignatureError(DigestError):
     """Exception raised when a digest signature is invalid"""
+
     def __init__(self, bucket, key):
-        message = ('Digest file\ts3://%s/%s\tINVALID: signature verification '
-                   'failed') % (bucket, key)
+        message = (
+            'Digest file\ts3://%s/%s\tINVALID: signature verification '
+            'failed'
+        ) % (bucket, key)
         super(DigestSignatureError, self).__init__(message)
 
 
 class InvalidDigestFormat(DigestError):
     """Exception raised when a digest has an invalid format"""
+
     def __init__(self, bucket, key):
-        message = 'Digest file\ts3://%s/%s\tINVALID: invalid format' % (bucket,
-                                                                        key)
+        message = 'Digest file\ts3://%s/%s\tINVALID: invalid format' % (
+            bucket,
+            key,
+        )
         super(InvalidDigestFormat, self).__init__(message)
 
 
@@ -224,9 +251,16 @@ class DigestProvider(object):
     dict. This class is not responsible for validation or iterating from
     one digest to the next.
     """
-    def __init__(self, s3_client_provider, account_id, trail_name,
-                 trail_home_region, trail_source_region=None,
-                 organization_id=None):
+
+    def __init__(
+        self,
+        s3_client_provider,
+        account_id,
+        trail_name,
+        trail_home_region,
+        trail_source_region=None,
+        organization_id=None,
+    ):
         self._client_provider = s3_client_provider
         self.trail_name = trail_name
         self.account_id = account_id
@@ -254,7 +288,8 @@ class DigestProvider(object):
         target_start_date = format_date(normalize_date(start_date))
         # Add one hour to the end_date to get logs that spilled over to next.
         target_end_date = format_date(
-            normalize_date(end_date + timedelta(hours=1)))
+            normalize_date(end_date + timedelta(hours=1))
+        )
         # Ensure digests are from the same trail.
         digest_key_regex = re.compile(self._create_digest_key_regex(prefix))
         for key in key_filter:
@@ -276,19 +311,23 @@ class DigestProvider(object):
         client = self._client_provider.get_client(bucket)
         result = client.get_object(Bucket=bucket, Key=key)
         try:
-            digest = zlib.decompress(result['Body'].read(),
-                                     zlib.MAX_WBITS | 16)
+            digest = zlib.decompress(
+                result['Body'].read(), zlib.MAX_WBITS | 16
+            )
             digest_data = json.loads(digest.decode())
         except (ValueError, ZLibError):
             # Cannot gzip decode or JSON parse.
             raise InvalidDigestFormat(bucket, key)
         # Add the expected digest signature and algorithm to the dict.
-        if 'signature' not in result['Metadata'] \
-                or 'signature-algorithm' not in result['Metadata']:
+        if (
+            'signature' not in result['Metadata']
+            or 'signature-algorithm' not in result['Metadata']
+        ):
             raise DigestSignatureError(bucket, key)
         digest_data['_signature'] = result['Metadata']['signature']
-        digest_data['_signature_algorithm'] = \
-            result['Metadata']['signature-algorithm']
+        digest_data['_signature_algorithm'] = result['Metadata'][
+            'signature-algorithm'
+        ]
         return digest_data, digest
 
     def _create_digest_key(self, start_date, key_prefix):
@@ -310,7 +349,7 @@ class DigestProvider(object):
             'ymd': date.strftime('%Y/%m/%d'),
             'source_region': self.trail_source_region,
             'home_region': self.trail_home_region,
-            'name': self.trail_name
+            'name': self.trail_name,
         }
         if self.organization_id:
             template += '{organization_id}/'
@@ -332,7 +371,7 @@ class DigestProvider(object):
             'account_id': re.escape(self.account_id),
             'source_region': re.escape(self.trail_source_region),
             'home_region': re.escape(self.trail_home_region),
-            'name': re.escape(self.trail_name)
+            'name': re.escape(self.trail_name),
         }
         if self.organization_id:
             template += '{organization_id}/'
@@ -350,15 +389,29 @@ class DigestProvider(object):
 
 class DigestTraverser(object):
     """Retrieves and validates digests within a date range."""
+
     # These keys are required to be present before validating the contents
     # of a digest.
-    required_digest_keys = ['digestPublicKeyFingerprint', 'digestS3Bucket',
-                            'digestS3Object', 'previousDigestSignature',
-                            'digestEndTime', 'digestStartTime']
+    required_digest_keys = [
+        'digestPublicKeyFingerprint',
+        'digestS3Bucket',
+        'digestS3Object',
+        'previousDigestSignature',
+        'digestEndTime',
+        'digestStartTime',
+    ]
 
-    def __init__(self, digest_provider, starting_bucket, starting_prefix,
-                 public_key_provider, digest_validator=None,
-                 on_invalid=None, on_gap=None, on_missing=None):
+    def __init__(
+        self,
+        digest_provider,
+        starting_bucket,
+        starting_prefix,
+        public_key_provider,
+        digest_validator=None,
+        on_invalid=None,
+        on_gap=None,
+        on_missing=None,
+    ):
         """
         :type digest_provider: DigestProvider
         :param digest_provider: DigestProvider object
@@ -409,57 +462,92 @@ class DigestTraverser(object):
         while key and start_date <= last_start_date:
             try:
                 digest, end_date = self._load_and_validate_digest(
-                    public_keys, bucket, key)
+                    public_keys, bucket, key
+                )
                 last_start_date = normalize_date(
-                    parse_date(digest['digestStartTime']))
+                    parse_date(digest['digestStartTime'])
+                )
                 previous_bucket = digest.get('previousDigestS3Bucket', None)
                 yield digest
                 if previous_bucket is None:
                     # The chain is broken, so find next in digest store.
                     key, end_date = self._find_next_digest(
-                        digests=digests, bucket=bucket, last_key=key,
-                        last_start_date=last_start_date, cb=self._on_gap,
-                        is_cb_conditional=True)
+                        digests=digests,
+                        bucket=bucket,
+                        last_key=key,
+                        last_start_date=last_start_date,
+                        cb=self._on_gap,
+                        is_cb_conditional=True,
+                    )
                 else:
                     key = digest['previousDigestS3Object']
                     if previous_bucket != bucket:
                         bucket = previous_bucket
                         # The bucket changed so reload the digest list.
                         digests = self._load_digests(
-                            bucket, prefix, start_date, end_date)
+                            bucket, prefix, start_date, end_date
+                        )
             except ClientError as e:
                 if e.response['Error']['Code'] != 'NoSuchKey':
                     raise e
                 key, end_date = self._find_next_digest(
-                    digests=digests, bucket=bucket, last_key=key,
-                    last_start_date=last_start_date, cb=self._on_missing,
-                    message=str(e))
+                    digests=digests,
+                    bucket=bucket,
+                    last_key=key,
+                    last_start_date=last_start_date,
+                    cb=self._on_missing,
+                    message=str(e),
+                )
             except DigestError as e:
                 key, end_date = self._find_next_digest(
-                    digests=digests, bucket=bucket, last_key=key,
-                    last_start_date=last_start_date, cb=self._on_invalid,
-                    message=str(e))
+                    digests=digests,
+                    bucket=bucket,
+                    last_key=key,
+                    last_start_date=last_start_date,
+                    cb=self._on_invalid,
+                    message=str(e),
+                )
             except Exception as e:
                 # Any other unexpected errors.
                 key, end_date = self._find_next_digest(
-                    digests=digests, bucket=bucket, last_key=key,
-                    last_start_date=last_start_date, cb=self._on_invalid,
+                    digests=digests,
+                    bucket=bucket,
+                    last_key=key,
+                    last_start_date=last_start_date,
+                    cb=self._on_invalid,
                     message='Digest file\ts3://%s/%s\tINVALID: %s'
-                            % (bucket, key, str(e)))
+                    % (bucket, key, str(e)),
+                )
 
     def _load_digests(self, bucket, prefix, start_date, end_date):
         return self.digest_provider.load_digest_keys_in_range(
-            bucket=bucket, prefix=prefix,
-            start_date=start_date, end_date=end_date)
+            bucket=bucket,
+            prefix=prefix,
+            start_date=start_date,
+            end_date=end_date,
+        )
 
-    def _find_next_digest(self, digests, bucket, last_key, last_start_date,
-                          cb=None, is_cb_conditional=False, message=None):
+    def _find_next_digest(
+        self,
+        digests,
+        bucket,
+        last_key,
+        last_start_date,
+        cb=None,
+        is_cb_conditional=False,
+        message=None,
+    ):
         """Finds the next digest in the bucket and invokes any callback."""
         next_key, next_end_date = self._get_last_digest(digests, last_key)
         if cb and (not is_cb_conditional or next_key):
-            cb(bucket=bucket, next_key=next_key, last_key=last_key,
-               next_end_date=next_end_date, last_start_date=last_start_date,
-               message=message)
+            cb(
+                bucket=bucket,
+                next_key=next_key,
+                last_key=last_key,
+                next_end_date=next_end_date,
+                last_start_date=last_start_date,
+                message=message,
+            )
         return next_key, next_end_date
 
     def _get_last_digest(self, digests, before_key=None):
@@ -474,14 +562,16 @@ class DigestTraverser(object):
         elif before_key is None:
             next_key = digests.pop()
             next_key_date = normalize_date(
-                parse_date(extract_digest_key_date(next_key)))
+                parse_date(extract_digest_key_date(next_key))
+            )
             return next_key, next_key_date
         # find a key before the given key.
         before_key_date = parse_date(extract_digest_key_date(before_key))
         while digests:
             next_key = digests.pop()
             next_key_date = normalize_date(
-                parse_date(extract_digest_key_date(next_key)))
+                parse_date(extract_digest_key_date(next_key))
+            )
             if next_key_date < before_key_date:
                 LOG.debug("Next found key: %s", next_key)
                 return next_key, next_key_date
@@ -499,33 +589,51 @@ class DigestTraverser(object):
             if required_key not in digest_data:
                 raise InvalidDigestFormat(bucket, key)
         # Ensure the bucket and key are the same as what's expected.
-        if digest_data['digestS3Bucket'] != bucket \
-                or digest_data['digestS3Object'] != key:
+        if (
+            digest_data['digestS3Bucket'] != bucket
+            or digest_data['digestS3Object'] != key
+        ):
             raise DigestError(
-                ('Digest file\ts3://%s/%s\tINVALID: has been moved from its '
-                 'original location') % (bucket, key))
+                (
+                    'Digest file\ts3://%s/%s\tINVALID: has been moved from its '
+                    'original location'
+                )
+                % (bucket, key)
+            )
         # Get the public keys in the given time range.
         fingerprint = digest_data['digestPublicKeyFingerprint']
         if fingerprint not in public_keys:
             raise DigestError(
-                ('Digest file\ts3://%s/%s\tINVALID: public key not found in '
-                 'region %s for fingerprint %s') %
-                (bucket, key, self.digest_provider.trail_home_region,
-                 fingerprint))
+                (
+                    'Digest file\ts3://%s/%s\tINVALID: public key not found in '
+                    'region %s for fingerprint %s'
+                )
+                % (
+                    bucket,
+                    key,
+                    self.digest_provider.trail_home_region,
+                    fingerprint,
+                )
+            )
         public_key_hex = public_keys[fingerprint]['Value']
         self._digest_validator.validate(
-            bucket, key, public_key_hex, digest_data, digest)
+            bucket, key, public_key_hex, digest_data, digest
+        )
         end_date = normalize_date(parse_date(digest_data['digestEndTime']))
         return digest_data, end_date
 
     def _load_public_keys(self, start_date, end_date):
         public_keys = self._public_key_provider.get_public_keys(
-            start_date, end_date)
+            start_date, end_date
+        )
         if not public_keys:
             raise RuntimeError(
-                'No public keys found between %s and %s' %
-                (format_display_date(start_date),
-                 format_display_date(end_date)))
+                'No public keys found between %s and %s'
+                % (
+                    format_display_date(start_date),
+                    format_display_date(end_date),
+                )
+            )
         return public_keys
 
 
@@ -554,9 +662,12 @@ class Sha256RSADigestValidator(object):
             public_key = RSA.new_public_key_from_der_data(decoded_key)
         except RuntimeError:
             raise DigestError(
-                ('Digest file\ts3://%s/%s\tINVALID: Unable to load PKCS #1 key'
-                 ' with fingerprint %s')
-                % (bucket, key, digest_data['digestPublicKeyFingerprint']))
+                (
+                    'Digest file\ts3://%s/%s\tINVALID: Unable to load PKCS #1 key'
+                    ' with fingerprint %s'
+                )
+                % (bucket, key, digest_data['digestPublicKeyFingerprint'])
+            )
 
         to_sign = self._create_string_to_sign(digest_data, inflated_digest)
         signature_bytes = binascii.unhexlify(digest_data['_signature'])
@@ -564,7 +675,7 @@ class Sha256RSADigestValidator(object):
         result = public_key.verify(
             signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
             digest=hashlib.sha256(to_sign).digest(),
-            signature=signature_bytes
+            signature=signature_bytes,
         )
         if not result:
             # The previous implementation caught a cryptography.exceptions.InvalidSignature
@@ -582,7 +693,8 @@ class Sha256RSADigestValidator(object):
             digest_data['digestS3Bucket'],
             digest_data['digestS3Object'],
             hashlib.sha256(inflated_digest).hexdigest(),
-            previous_signature)
+            previous_signature,
+        )
         LOG.debug('Digest string to sign: %s', string_to_sign)
         return string_to_sign.encode()
 
@@ -591,6 +703,7 @@ class CloudTrailValidateLogs(BasicCommand):
     """
     Validates log digests and log files, optionally saving them to disk.
     """
+
     NAME = 'validate-logs'
     DESCRIPTION = """
     Validates CloudTrail logs for a given period of time.
@@ -637,34 +750,67 @@ class CloudTrailValidateLogs(BasicCommand):
     """
 
     ARG_TABLE = [
-        {'name': 'trail-arn', 'required': True, 'cli_type_name': 'string',
-         'help_text': 'Specifies the ARN of the trail to be validated'},
-        {'name': 'start-time', 'required': True, 'cli_type_name': 'string',
-         'help_text': ('Specifies that log files delivered on or after the '
-                       'specified UTC timestamp value will be validated. '
-                       'Example: "2015-01-08T05:21:42Z".')},
-        {'name': 'end-time', 'cli_type_name': 'string',
-         'help_text': ('Optionally specifies that log files delivered on or '
-                       'before the specified UTC timestamp value will be '
-                       'validated. The default value is the current time. '
-                       'Example: "2015-01-08T12:31:41Z".')},
-        {'name': 's3-bucket', 'cli_type_name': 'string',
-         'help_text': ('Optionally specifies the S3 bucket where the digest '
-                       'files are stored. If a bucket name is not specified, '
-                       'the CLI will retrieve it by calling describe_trails')},
-        {'name': 's3-prefix', 'cli_type_name': 'string',
-         'help_text': ('Optionally specifies the optional S3 prefix where the '
-                       'digest files are stored. If not specified, the CLI '
-                       'will determine the prefix automatically by calling '
-                       'describe_trails.')},
-        {'name': 'account-id', 'cli_type_name': 'string',
-         'help_text': ('Optionally specifies the account for validating logs. '
-                       'This parameter is needed for organization trails '
-                       'for validating logs for specific account inside an '
-                       'organization')},
-        {'name': 'verbose', 'cli_type_name': 'boolean',
-         'action': 'store_true',
-         'help_text': 'Display verbose log validation information'}
+        {
+            'name': 'trail-arn',
+            'required': True,
+            'cli_type_name': 'string',
+            'help_text': 'Specifies the ARN of the trail to be validated',
+        },
+        {
+            'name': 'start-time',
+            'required': True,
+            'cli_type_name': 'string',
+            'help_text': (
+                'Specifies that log files delivered on or after the '
+                'specified UTC timestamp value will be validated. '
+                'Example: "2015-01-08T05:21:42Z".'
+            ),
+        },
+        {
+            'name': 'end-time',
+            'cli_type_name': 'string',
+            'help_text': (
+                'Optionally specifies that log files delivered on or '
+                'before the specified UTC timestamp value will be '
+                'validated. The default value is the current time. '
+                'Example: "2015-01-08T12:31:41Z".'
+            ),
+        },
+        {
+            'name': 's3-bucket',
+            'cli_type_name': 'string',
+            'help_text': (
+                'Optionally specifies the S3 bucket where the digest '
+                'files are stored. If a bucket name is not specified, '
+                'the CLI will retrieve it by calling describe_trails'
+            ),
+        },
+        {
+            'name': 's3-prefix',
+            'cli_type_name': 'string',
+            'help_text': (
+                'Optionally specifies the optional S3 prefix where the '
+                'digest files are stored. If not specified, the CLI '
+                'will determine the prefix automatically by calling '
+                'describe_trails.'
+            ),
+        },
+        {
+            'name': 'account-id',
+            'cli_type_name': 'string',
+            'help_text': (
+                'Optionally specifies the account for validating logs. '
+                'This parameter is needed for organization trails '
+                'for validating logs for specific account inside an '
+                'organization'
+            ),
+        },
+        {
+            'name': 'verbose',
+            'cli_type_name': 'boolean',
+            'action': 'store_true',
+            'help_text': 'Display verbose log validation information',
+        },
     ]
 
     def __init__(self, session):
@@ -722,26 +868,36 @@ class CloudTrailValidateLogs(BasicCommand):
         self._source_region = parsed_globals.region
         # Use the the same region as the region of the CLI to get locations.
         self.s3_client_provider = S3ClientProvider(
-            self._session, self._source_region)
-        client_args = {'region_name': parsed_globals.region,
-                       'verify': parsed_globals.verify_ssl}
+            self._session, self._source_region
+        )
+        client_args = {
+            'region_name': parsed_globals.region,
+            'verify': parsed_globals.verify_ssl,
+        }
         self.organization_client = self._session.create_client(
-            'organizations', **client_args)
+            'organizations', **client_args
+        )
 
         if parsed_globals.endpoint_url is not None:
             client_args['endpoint_url'] = parsed_globals.endpoint_url
         self.cloudtrail_client = self._session.create_client(
-            'cloudtrail', **client_args)
+            'cloudtrail', **client_args
+        )
 
     def _call(self):
         traverser = create_digest_traverser(
-            trail_arn=self.trail_arn, cloudtrail_client=self.cloudtrail_client,
+            trail_arn=self.trail_arn,
+            cloudtrail_client=self.cloudtrail_client,
             organization_client=self.organization_client,
             trail_source_region=self._source_region,
-            s3_client_provider=self.s3_client_provider, bucket=self.s3_bucket,
-            prefix=self.s3_prefix, on_missing=self._on_missing_digest,
-            on_invalid=self._on_invalid_digest, on_gap=self._on_digest_gap,
-            account_id=self.account_id)
+            s3_client_provider=self.s3_client_provider,
+            bucket=self.s3_bucket,
+            prefix=self.s3_prefix,
+            on_missing=self._on_missing_digest,
+            on_invalid=self._on_invalid_digest,
+            on_gap=self._on_digest_gap,
+            account_id=self.account_id,
+        )
         self._write_startup_text()
         digests = traverser.traverse(self.start_time, self.end_time)
         for digest in digests:
@@ -751,7 +907,8 @@ class CloudTrailValidateLogs(BasicCommand):
             self._valid_digests += 1
             self._write_status(
                 'Digest file\ts3://%s/%s\tvalid'
-                % (digest['digestS3Bucket'], digest['digestS3Object']))
+                % (digest['digestS3Bucket'], digest['digestS3Object'])
+            )
             if not digest['logFiles']:
                 continue
             for log in digest['logFiles']:
@@ -771,12 +928,13 @@ class CloudTrailValidateLogs(BasicCommand):
             self._found_end_time = min(digest_end_time, self.end_time)
 
     def _download_log(self, log):
-        """ Download a log, decompress, and compare SHA256 checksums"""
+        """Download a log, decompress, and compare SHA256 checksums"""
         try:
             # Create a client that can work with this bucket.
             client = self.s3_client_provider.get_client(log['s3Bucket'])
             response = client.get_object(
-                Bucket=log['s3Bucket'], Key=log['s3Object'])
+                Bucket=log['s3Bucket'], Key=log['s3Object']
+            )
             gzip_inflater = zlib.decompressobj(zlib.MAX_WBITS | 16)
             rolling_hash = hashlib.sha256()
             for chunk in iter(lambda: response['Body'].read(2048), b""):
@@ -790,8 +948,12 @@ class CloudTrailValidateLogs(BasicCommand):
                 self._on_log_invalid(log)
             else:
                 self._valid_logs += 1
-                self._write_status(('Log file\ts3://%s/%s\tvalid'
-                                    % (log['s3Bucket'], log['s3Object'])))
+                self._write_status(
+                    (
+                        'Log file\ts3://%s/%s\tvalid'
+                        % (log['s3Bucket'], log['s3Object'])
+                    )
+                )
         except ClientError as e:
             if e.response['Error']['Code'] != 'NoSuchKey':
                 raise
@@ -813,24 +975,36 @@ class CloudTrailValidateLogs(BasicCommand):
     def _write_startup_text(self):
         sys.stdout.write(
             'Validating log files for trail %s between %s and %s\n\n'
-            % (self.trail_arn, format_display_date(self.start_time),
-               format_display_date(self.end_time)))
+            % (
+                self.trail_arn,
+                format_display_date(self.start_time),
+                format_display_date(self.end_time),
+            )
+        )
 
     def _write_summary_text(self):
         if not self._is_last_status_double_space:
             sys.stdout.write('\n')
-        sys.stdout.write('Results requested for %s to %s\n'
-                         % (format_display_date(self.start_time),
-                            format_display_date(self.end_time)))
+        sys.stdout.write(
+            'Results requested for %s to %s\n'
+            % (
+                format_display_date(self.start_time),
+                format_display_date(self.end_time),
+            )
+        )
         if not self._valid_digests and not self._invalid_digests:
             sys.stdout.write('No digests found\n')
             return
         if not self._found_start_time or not self._found_end_time:
             sys.stdout.write('No valid digests found in range\n')
         else:
-            sys.stdout.write('Results found for %s to %s:\n'
-                             % (format_display_date(self._found_start_time),
-                                format_display_date(self._found_end_time)))
+            sys.stdout.write(
+                'Results found for %s to %s:\n'
+                % (
+                    format_display_date(self._found_start_time),
+                    format_display_date(self._found_end_time),
+                )
+            )
         self._write_ratio(self._valid_digests, self._invalid_digests, 'digest')
         self._write_ratio(self._valid_logs, self._invalid_logs, 'log')
         sys.stdout.write('\n')
@@ -840,19 +1014,26 @@ class CloudTrailValidateLogs(BasicCommand):
         if total > 0:
             sys.stdout.write('\n%d/%d %s files valid' % (valid, total, name))
             if invalid > 0:
-                sys.stdout.write(', %d/%d %s files INVALID' % (invalid, total,
-                                                               name))
+                sys.stdout.write(
+                    ', %d/%d %s files INVALID' % (invalid, total, name)
+                )
 
     def _on_missing_digest(self, bucket, last_key, **kwargs):
         self._invalid_digests += 1
-        self._write_status('Digest file\ts3://%s/%s\tINVALID: not found'
-                           % (bucket, last_key), True)
+        self._write_status(
+            'Digest file\ts3://%s/%s\tINVALID: not found' % (bucket, last_key),
+            True,
+        )
 
     def _on_digest_gap(self, **kwargs):
         self._write_status(
             'No log files were delivered by CloudTrail between %s and %s'
-            % (format_display_date(kwargs['next_end_date']),
-               format_display_date(kwargs['last_start_date'])), True)
+            % (
+                format_display_date(kwargs['next_end_date']),
+                format_display_date(kwargs['last_start_date']),
+            ),
+            True,
+        )
 
     def _on_invalid_digest(self, message, **kwargs):
         self._invalid_digests += 1
@@ -861,17 +1042,25 @@ class CloudTrailValidateLogs(BasicCommand):
     def _on_invalid_log_format(self, log_data):
         self._invalid_logs += 1
         self._write_status(
-            ('Log file\ts3://%s/%s\tINVALID: invalid format'
-             % (log_data['s3Bucket'], log_data['s3Object'])), True)
+            (
+                'Log file\ts3://%s/%s\tINVALID: invalid format'
+                % (log_data['s3Bucket'], log_data['s3Object'])
+            ),
+            True,
+        )
 
     def _on_log_invalid(self, log_data):
         self._invalid_logs += 1
         self._write_status(
             "Log file\ts3://%s/%s\tINVALID: hash value doesn't match"
-            % (log_data['s3Bucket'], log_data['s3Object']), True)
+            % (log_data['s3Bucket'], log_data['s3Object']),
+            True,
+        )
 
     def _on_missing_log(self, log_data):
         self._invalid_logs += 1
         self._write_status(
             'Log file\ts3://%s/%s\tINVALID: not found'
-            % (log_data['s3Bucket'], log_data['s3Object']), True)
+            % (log_data['s3Bucket'], log_data['s3Object']),
+            True,
+        )

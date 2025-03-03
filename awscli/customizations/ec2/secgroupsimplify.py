@@ -27,8 +27,7 @@ from awscli.customizations.exceptions import ParamValidationError
 
 
 def _add_params(argument_table, **kwargs):
-    arg = ProtocolArgument('protocol',
-                           help_text=PROTOCOL_DOCS)
+    arg = ProtocolArgument('protocol', help_text=PROTOCOL_DOCS)
     argument_table['protocol'] = arg
     argument_table['ip-protocol']._UNDOCUMENTED = True
 
@@ -43,13 +42,11 @@ def _add_params(argument_table, **kwargs):
     argument_table['cidr'] = arg
     argument_table['cidr-ip']._UNDOCUMENTED = True
 
-    arg = SourceGroupArgument('source-group',
-                              help_text=SOURCEGROUP_DOCS)
+    arg = SourceGroupArgument('source-group', help_text=SOURCEGROUP_DOCS)
     argument_table['source-group'] = arg
     argument_table['source-security-group-name']._UNDOCUMENTED = True
 
-    arg = GroupOwnerArgument('group-owner',
-                             help_text=GROUPOWNER_DOCS)
+    arg = GroupOwnerArgument('group-owner', help_text=GROUPOWNER_DOCS)
     argument_table['group-owner'] = arg
     argument_table['source-security-group-owner-id']._UNDOCUMENTED = True
 
@@ -60,11 +57,12 @@ def _check_args(parsed_args, **kwargs):
     # raise an error.
     arg_dict = vars(parsed_args)
     if arg_dict['ip_permissions']:
-        for key in ('protocol', 'port', 'cidr',
-                    'source_group', 'group_owner'):
+        for key in ('protocol', 'port', 'cidr', 'source_group', 'group_owner'):
             if arg_dict[key]:
-                msg = ('The --%s option is not compatible '
-                       'with the --ip-permissions option ') % key
+                msg = (
+                    'The --%s option is not compatible '
+                    'with the --ip-permissions option '
+                ) % key
                 raise ParamValidationError(msg)
 
 
@@ -72,21 +70,29 @@ def _add_docs(help_command, **kwargs):
     doc = help_command.doc
     doc.style.new_paragraph()
     doc.style.start_note()
-    msg = ('To specify multiple rules in a single command '
-           'use the <code>--ip-permissions</code> option')
+    msg = (
+        'To specify multiple rules in a single command '
+        'use the <code>--ip-permissions</code> option'
+    )
     doc.include_doc_string(msg)
     doc.style.end_note()
 
 
 EVENTS = [
-    ('building-argument-table.ec2.authorize-security-group-ingress',
-     _add_params),
-    ('building-argument-table.ec2.authorize-security-group-egress',
-     _add_params),
+    (
+        'building-argument-table.ec2.authorize-security-group-ingress',
+        _add_params,
+    ),
+    (
+        'building-argument-table.ec2.authorize-security-group-egress',
+        _add_params,
+    ),
     ('building-argument-table.ec2.revoke-security-group-ingress', _add_params),
     ('building-argument-table.ec2.revoke-security-group-egress', _add_params),
-    ('operation-args-parsed.ec2.authorize-security-group-ingress',
-     _check_args),
+    (
+        'operation-args-parsed.ec2.authorize-security-group-ingress',
+        _check_args,
+    ),
     ('operation-args-parsed.ec2.authorize-security-group-egress', _check_args),
     ('operation-args-parsed.ec2.revoke-security-group-ingress', _check_args),
     ('operation-args-parsed.ec2.revoke-security-group-egress', _check_args),
@@ -95,25 +101,31 @@ EVENTS = [
     ('doc-description.ec2.revoke-security-group-ingress', _add_docs),
     ('doc-description.ec2.revoke-security-groupdoc-ingress', _add_docs),
 ]
-PROTOCOL_DOCS = ('<p>The IP protocol: <code>tcp</code> | '
-                 '<code>udp</code> | <code>icmp</code></p> '
-                 '<p>(VPC only) Use <code>all</code> to specify all protocols.</p>'
-                 '<p>If this argument is provided without also providing the '
-                 '<code>port</code> argument, then it will be applied to all '
-                 'ports for the specified protocol.</p>')
-PORT_DOCS = ('<p>For TCP or UDP: The range of ports to allow.'
-             '  A single integer or a range (<code>min-max</code>).</p>'
-             '<p>For ICMP: A single integer or a range (<code>type-code</code>)'
-             ' representing the ICMP type'
-             ' number and the ICMP code number respectively.'
-             ' A value of -1 indicates all ICMP codes for'
-             ' all ICMP types. A value of -1 just for <code>type</code>'
-             ' indicates all ICMP codes for the specified ICMP type.</p>')
+PROTOCOL_DOCS = (
+    '<p>The IP protocol: <code>tcp</code> | '
+    '<code>udp</code> | <code>icmp</code></p> '
+    '<p>(VPC only) Use <code>all</code> to specify all protocols.</p>'
+    '<p>If this argument is provided without also providing the '
+    '<code>port</code> argument, then it will be applied to all '
+    'ports for the specified protocol.</p>'
+)
+PORT_DOCS = (
+    '<p>For TCP or UDP: The range of ports to allow.'
+    '  A single integer or a range (<code>min-max</code>).</p>'
+    '<p>For ICMP: A single integer or a range (<code>type-code</code>)'
+    ' representing the ICMP type'
+    ' number and the ICMP code number respectively.'
+    ' A value of -1 indicates all ICMP codes for'
+    ' all ICMP types. A value of -1 just for <code>type</code>'
+    ' indicates all ICMP codes for the specified ICMP type.</p>'
+)
 CIDR_DOCS = '<p>The IPv4 address range, in CIDR format.</p>'
-SOURCEGROUP_DOCS = ('<p>The name or ID of the source security group.</p>')
-GROUPOWNER_DOCS = ('<p>The AWS account ID that owns the source security '
-                   'group. Cannot be used when specifying a CIDR IP '
-                   'address.</p>')
+SOURCEGROUP_DOCS = '<p>The name or ID of the source security group.</p>'
+GROUPOWNER_DOCS = (
+    '<p>The AWS account ID that owns the source security '
+    'group. Cannot be used when specifying a CIDR IP '
+    'address.</p>'
+)
 
 
 def register_secgroup(event_handler):
@@ -137,19 +149,22 @@ def _build_ip_permissions(params, key, value):
 
 
 class ProtocolArgument(CustomArgument):
-
     def add_to_params(self, parameters, value):
         if value:
             try:
                 int_value = int(value)
                 if (int_value < 0 or int_value > 255) and int_value != -1:
-                    msg = ('protocol numbers must be in the range 0-255 '
-                           'or -1 to specify all protocols')
+                    msg = (
+                        'protocol numbers must be in the range 0-255 '
+                        'or -1 to specify all protocols'
+                    )
                     raise ParamValidationError(msg)
             except ValueError:
                 if value not in ('tcp', 'udp', 'icmp', 'all'):
-                    msg = ('protocol parameter should be one of: '
-                           'tcp|udp|icmp|all or any valid protocol number.')
+                    msg = (
+                        'protocol parameter should be one of: '
+                        'tcp|udp|icmp|all or any valid protocol number.'
+                    )
                     raise ParamValidationError(msg)
                 if value == 'all':
                     value = '-1'
@@ -157,7 +172,6 @@ class ProtocolArgument(CustomArgument):
 
 
 class PortArgument(CustomArgument):
-
     def add_to_params(self, parameters, value):
         if value:
             try:
@@ -175,13 +189,14 @@ class PortArgument(CustomArgument):
                 _build_ip_permissions(parameters, 'FromPort', int(fromstr))
                 _build_ip_permissions(parameters, 'ToPort', int(tostr))
             except ValueError:
-                msg = ('port parameter should be of the '
-                       'form <from[-to]> (e.g. 22 or 22-25)')
+                msg = (
+                    'port parameter should be of the '
+                    'form <from[-to]> (e.g. 22 or 22-25)'
+                )
                 raise ParamValidationError(msg)
 
 
 class CidrArgument(CustomArgument):
-
     def add_to_params(self, parameters, value):
         if value:
             value = [{'CidrIp': value}]
@@ -189,7 +204,6 @@ class CidrArgument(CustomArgument):
 
 
 class SourceGroupArgument(CustomArgument):
-
     def add_to_params(self, parameters, value):
         if value:
             if value.startswith('sg-'):
@@ -199,7 +213,6 @@ class SourceGroupArgument(CustomArgument):
 
 
 class GroupOwnerArgument(CustomArgument):
-
     def add_to_params(self, parameters, value):
         if value:
             _build_ip_permissions(parameters, 'UserId', value)

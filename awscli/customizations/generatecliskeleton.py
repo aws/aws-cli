@@ -33,7 +33,8 @@ def add_generate_skeleton(session, operation_model, argument_table, **kwargs):
     # is designated by the argument name `outfile`.
     if 'outfile' not in argument_table:
         generate_cli_skeleton_argument = GenerateCliSkeletonArgument(
-            session, operation_model)
+            session, operation_model
+        )
         generate_cli_skeleton_argument.add_to_arg_table(argument_table)
 
 
@@ -44,6 +45,7 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
     command from taking place. Instead, it will generate a JSON skeleton and
     print it to standard output.
     """
+
     ARG_DATA = {
         'name': 'generate-cli-skeleton',
         'help_text': (
@@ -86,17 +88,18 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
             except IndexError:
                 pass
             super(GenerateCliSkeletonArgument, self).override_required_args(
-                argument_table, args, **kwargs)
+                argument_table, args, **kwargs
+            )
 
-    def generate_skeleton(self, call_parameters, parsed_args,
-                          parsed_globals, **kwargs):
+    def generate_skeleton(
+        self, call_parameters, parsed_args, parsed_globals, **kwargs
+    ):
         if not getattr(parsed_args, 'generate_cli_skeleton', None):
             return
         arg_value = parsed_args.generate_cli_skeleton
         return getattr(
-            self, '_generate_%s_skeleton' % arg_value.replace('-', '_'))(
-                call_parameters=call_parameters, parsed_globals=parsed_globals
-        )
+            self, '_generate_%s_skeleton' % arg_value.replace('-', '_')
+        )(call_parameters=call_parameters, parsed_globals=parsed_globals)
 
     def _generate_yaml_input_skeleton(self, **kwargs):
         input_shape = self._operation_model.input_shape
@@ -120,13 +123,14 @@ class GenerateCliSkeletonArgument(OverrideRequiredArgsArgument):
         outfile.write('\n')
         return 0
 
-    def _generate_output_skeleton(self, call_parameters, parsed_globals,
-                                  **kwargs):
+    def _generate_output_skeleton(
+        self, call_parameters, parsed_globals, **kwargs
+    ):
         service_name = self._operation_model.service_model.service_name
         operation_name = self._operation_model.name
         return StubbedCLIOperationCaller(self._session).invoke(
-            service_name, operation_name, call_parameters,
-            parsed_globals)
+            service_name, operation_name, call_parameters, parsed_globals
+        )
 
 
 class StubbedCLIOperationCaller(CLIOperationCaller):
@@ -135,16 +139,20 @@ class StubbedCLIOperationCaller(CLIOperationCaller):
     It generates a fake response and uses the response and provided parameters
     to make a stubbed client call for an operation command.
     """
-    def _make_client_call(self, client, operation_name, parameters,
-                          parsed_globals):
+
+    def _make_client_call(
+        self, client, operation_name, parameters, parsed_globals
+    ):
         method_name = xform_name(operation_name)
         operation_model = client.meta.service_model.operation_model(
-            operation_name)
+            operation_name
+        )
         fake_response = {}
         if operation_model.output_shape:
             argument_generator = ArgumentGenerator(use_member_names=True)
             fake_response = argument_generator.generate_skeleton(
-                operation_model.output_shape)
+                operation_model.output_shape
+            )
         with Stubber(client) as stubber:
             stubber.add_response(method_name, fake_response)
             return getattr(client, method_name)(**parameters)
@@ -153,13 +161,14 @@ class StubbedCLIOperationCaller(CLIOperationCaller):
 class _Bytes(object):
     @classmethod
     def represent(cls, dumper, data):
-        return dumper.represent_scalar(u'tag:yaml.org,2002:binary', '')
+        return dumper.represent_scalar('tag:yaml.org,2002:binary', '')
 
 
 class YAMLArgumentGenerator(ArgumentGenerator):
     def __init__(self, use_member_names=False, yaml=None):
         super(YAMLArgumentGenerator, self).__init__(
-            use_member_names=use_member_names)
+            use_member_names=use_member_names
+        )
         self._yaml = yaml
         if self._yaml is None:
             self._yaml = YAML()
@@ -181,14 +190,17 @@ class YAMLArgumentGenerator(ArgumentGenerator):
         skeleton = self._yaml.map()
         for member_name, member_shape in shape.members.items():
             skeleton[member_name] = self._generate_skeleton(
-                member_shape, stack, name=member_name)
+                member_shape, stack, name=member_name
+            )
             is_required = member_name in shape.required_members
             self._add_member_comments(
-                skeleton, member_name, member_shape, is_required)
+                skeleton, member_name, member_shape, is_required
+            )
         return skeleton
 
-    def _add_member_comments(self, skeleton, member_name, member_shape,
-                             is_required):
+    def _add_member_comments(
+        self, skeleton, member_name, member_shape, is_required
+    ):
         comment_components = []
         if is_required:
             comment_components.append('[REQUIRED]')
@@ -208,6 +220,6 @@ class YAMLArgumentGenerator(ArgumentGenerator):
         # YAML has support for ordered maps, so don't use ordereddicts
         # because that isn't necessary and it makes the output harder to
         # understand and read.
-        return dict(super(YAMLArgumentGenerator, self)._generate_type_map(
-            shape, stack
-        ))
+        return dict(
+            super(YAMLArgumentGenerator, self)._generate_type_map(shape, stack)
+        )

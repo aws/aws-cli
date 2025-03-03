@@ -14,7 +14,8 @@
 
 def register_custom_endpoint_note(event_emitter):
     event_emitter.register_last(
-        'doc-description.iot-data', add_custom_endpoint_url_note)
+        'doc-description.iot-data', add_custom_endpoint_url_note
+    )
 
 
 def add_custom_endpoint_url_note(help_command, **kwargs):

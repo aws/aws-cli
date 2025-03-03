@@ -359,6 +359,10 @@ class BenchmarkHarness(object):
                         # redirect standard output of the child process to a file
                         os.dup2(out.fileno(), sys.stdout.fileno())
                         os.dup2(err.fileno(), sys.stderr.fileno())
+                    else:
+                        with open(os.path.abspath(f'/Users/aemous/Desktop/results{benchmark["name"]}.txt'), 'w') as f, open(os.path.abspath(f'/Users/aemous/Desktop/results{benchmark["name"]}err.txt'), 'w') as ferr:
+                            os.dup2(f.fileno(), sys.stdout.fileno())
+                            os.dup2(ferr.fileno(), sys.stderr.fileno())
                     # execute command on child process
                     self._run_command_with_metric_hooks(benchmark['command'], metrics_path)
                     # terminate the child process

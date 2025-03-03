@@ -68,8 +68,14 @@ SERVICE_TO_CLASS_NAME = {
     'workspaces': 'WorkSpaces'
 }
 
-@pytest.mark.parametrize("service_name", SERVICE_TO_CLASS_NAME)
-def test_client_has_correct_class_name(service_name):
+def _get_client_names():
     session = botocore.session.get_session()
-    client = session.create_client(service_name, REGION)
-    assert client.__class__.__name__ == SERVICE_TO_CLASS_NAME[service_name]
+    client_service_names = []
+    for service in SERVICE_TO_CLASS_NAME:
+        client = session.create_client(service, region_name=REGION)
+        client_service_names.append(client.__class__.__name__)
+    return list(zip(SERVICE_TO_CLASS_NAME.keys(), client_service_names))
+
+@pytest.mark.parametrize("service_name, client_service_name", _get_client_names())
+def test_client_has_correct_class_name(service_name, client_service_name):
+    assert client_service_name == SERVICE_TO_CLASS_NAME[service_name]

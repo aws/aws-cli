@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.24.16
+=======
+
+* enhancement:configuration: Add support for disabling host prefix injection via the ``AWS_DISABLE_HOST_PREFIX_INJECTION`` environment variable or the ``disable_host_prefix_injection`` parameter in the shared aws configuration file.
+* api-change:``sagemaker``: Add DomainId to CreateDomainResponse
+* api-change:``qbusiness``: Adds support for the ingestion of audio and video files by Q Business, which can be configured with the mediaExtractionConfiguration parameter.
+* api-change:``cognito-idp``: Added the capacity to return available challenges in admin authentication and to set version 3 of the pre token generation event for M2M ATC.
+* bugfix:``awscrt``: Fix urlencoding issues for request signing with the awscrt.
+* api-change:``rum``: Add support for PutResourcePolicy, GetResourcePolicy and DeleteResourcePolicy to support resource based policies for AWS CloudWatch RUM
+* api-change:``transcribe``: Updating documentation for post call analytics job queueing.
+* api-change:``ec2``: Update the DescribeVpcs response
+
+
 2.24.15
 =======
 

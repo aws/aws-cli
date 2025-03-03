@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.38.5
+======
+
+* api-change:``cognito-idp``: Added the capacity to return available challenges in admin authentication and to set version 3 of the pre token generation event for M2M ATC.
+* api-change:``ec2``: Update the DescribeVpcs response
+* api-change:``qbusiness``: Adds support for the ingestion of audio and video files by Q Business, which can be configured with the mediaExtractionConfiguration parameter.
+* api-change:``rum``: Add support for PutResourcePolicy, GetResourcePolicy and DeleteResourcePolicy to support resource based policies for AWS CloudWatch RUM
+* api-change:``sagemaker``: Add DomainId to CreateDomainResponse
+* api-change:``transcribe``: Updating documentation for post call analytics job queueing.
+
+
 1.38.4
 ======
 

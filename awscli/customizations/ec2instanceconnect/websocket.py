@@ -31,7 +31,8 @@ from awscrt.websocket import (
     OnIncomingFramePayloadData,
     OnSendFrameCompleteData,
     Opcode,
-    OnConnectionShutdownData, OnIncomingFrameCompleteData,
+    OnConnectionShutdownData,
+    OnIncomingFrameCompleteData,
 )
 
 from awscli.compat import is_windows
@@ -42,8 +43,10 @@ logger = logging.getLogger(__name__)
 class WebsocketException(RuntimeError):
     pass
 
+
 class InputClosedError(RuntimeError):
     pass
+
 
 class BaseWebsocketIO:
     def has_data_to_read(self):
@@ -63,10 +66,11 @@ _SELECT_TIMEOUT = 0.05
 
 
 class StdinStdoutIO(BaseWebsocketIO):
-
     def has_data_to_read(self):
         socket_list = [sys.stdin]
-        read_sockets, _, _ = select.select(socket_list, [], [], _SELECT_TIMEOUT)
+        read_sockets, _, _ = select.select(
+            socket_list, [], [], _SELECT_TIMEOUT
+        )
         if read_sockets:
             return True
         return False
@@ -83,13 +87,11 @@ class StdinStdoutIO(BaseWebsocketIO):
 
 
 class WindowsStdinStdoutIO(StdinStdoutIO):
-
     def has_data_to_read(self):
         return True
 
 
 class TCPSocketIO(BaseWebsocketIO):
-
     def __init__(self, conn):
         self.conn = conn
 
@@ -121,19 +123,36 @@ class TCPSocketIO(BaseWebsocketIO):
 
 
 class Websocket:
-    def __init__(self, websocketio, websocket_id, tls_connection_options=None, on_connection_event=None,
-                 shutdown_event=None, send_frame_results_queue=None):
+    def __init__(
+        self,
+        websocketio,
+        websocket_id,
+        tls_connection_options=None,
+        on_connection_event=None,
+        shutdown_event=None,
+        send_frame_results_queue=None,
+    ):
         self.websocketio = websocketio
         self.websocket_id = websocket_id
-        self._on_connection_event = Event() if (on_connection_event is None) else on_connection_event
-        self._send_frame_results_queue = Queue() if (send_frame_results_queue is None) else send_frame_results_queue
-        self._shutdown_event = Event() if (shutdown_event is None) else shutdown_event
+        self._on_connection_event = (
+            Event() if (on_connection_event is None) else on_connection_event
+        )
+        self._send_frame_results_queue = (
+            Queue()
+            if (send_frame_results_queue is None)
+            else send_frame_results_queue
+        )
+        self._shutdown_event = (
+            Event() if (shutdown_event is None) else shutdown_event
+        )
         self._websocket = None
         self._exception = None
         self._close_frame_bytes = bytearray()
 
         if tls_connection_options is None:
-            self._tls_connection_options = ClientTlsContext(TlsContextOptions()).new_connection_options()
+            self._tls_connection_options = ClientTlsContext(
+                TlsContextOptions()
+            ).new_connection_options()
         else:
             self._tls_connection_options = tls_connection_options
 
@@ -147,21 +166,29 @@ class Websocket:
     def connect(self, url, user_agent=None):
         parsed_url = urlparse(url)
         path = parsed_url.path + "?" + parsed_url.query
-        request = websocket.create_handshake_request(host=parsed_url.hostname, path=path)
+        request = websocket.create_handshake_request(
+            host=parsed_url.hostname, path=path
+        )
         if user_agent:
             request.headers.set("User-Agent", user_agent)
 
         environment = os.environ.copy()
         proxy_options = None
-        proxy_url = environment.get("HTTP_PROXY") or environment.get("HTTPS_PROXY")
+        proxy_url = environment.get("HTTP_PROXY") or environment.get(
+            "HTTPS_PROXY"
+        )
         no_proxy = environment.get("NO_PROXY", "")
         if proxy_url and parsed_url.hostname not in no_proxy:
             parsed_proxy_url = urlparse(proxy_url)
-            logger.debug(f"Using the following proxy: {parsed_proxy_url.hostname}")
+            logger.debug(
+                f"Using the following proxy: {parsed_proxy_url.hostname}"
+            )
             proxy_options = HttpProxyOptions(
                 host_name=parsed_proxy_url.hostname,
                 port=parsed_proxy_url.port,
-                auth_type=HttpProxyAuthenticationType.Basic if proxy_url else HttpProxyAuthenticationType.Nothing,
+                auth_type=HttpProxyAuthenticationType.Basic
+                if proxy_url
+                else HttpProxyAuthenticationType.Nothing,
                 auth_username=parsed_proxy_url.username or None,
                 auth_password=parsed_proxy_url.password or None,
             )
@@ -176,7 +203,7 @@ class Websocket:
             on_connection_setup=self._on_connection,
             on_connection_shutdown=self._on_connection_shutdown,
             on_incoming_frame_payload=self._on_incoming_frame_payload_data,
-            on_incoming_frame_complete=self._on_incoming_frame_complete
+            on_incoming_frame_complete=self._on_incoming_frame_complete,
         )
 
         # Wait for the on_connection callback to be called.
@@ -230,7 +257,9 @@ class Websocket:
                 ]
                 # Expected exception if server or user closes conn. Catch it and gracefully exit this method.
                 if any(exc_code in str(e.args) for exc_code in crt_exceptions):
-                    logger.debug(f"Received exception when sending websocket frame: {e.args}")
+                    logger.debug(
+                        f"Received exception when sending websocket frame: {e.args}"
+                    )
                     self.close()
                 else:
                     raise e
@@ -253,20 +282,29 @@ class Websocket:
         self._websocket = data.websocket
         self._on_connection_event.set()
 
-    def _on_incoming_frame_payload_data(self, incoming_frame_data: OnIncomingFramePayloadData) -> None:
+    def _on_incoming_frame_payload_data(
+        self, incoming_frame_data: OnIncomingFramePayloadData
+    ) -> None:
         opcode = incoming_frame_data.frame.opcode
         if not opcode.is_data_frame():
             if opcode == Opcode.CLOSE and incoming_frame_data.data:
                 self._close_frame_bytes += incoming_frame_data.data
             return
         if opcode == Opcode.TEXT:
-            self._exception = WebsocketException("Received invalid data from server, closing websocket connection.")
+            self._exception = WebsocketException(
+                "Received invalid data from server, closing websocket connection."
+            )
             self.close()
             return
         self.websocketio.write(incoming_frame_data.data)
 
-    def _on_incoming_frame_complete(self, incoming_frame_data: OnIncomingFrameCompleteData):
-        if incoming_frame_data.frame.opcode == Opcode.CLOSE and incoming_frame_data.exception is None:
+    def _on_incoming_frame_complete(
+        self, incoming_frame_data: OnIncomingFrameCompleteData
+    ):
+        if (
+            incoming_frame_data.frame.opcode == Opcode.CLOSE
+            and incoming_frame_data.exception is None
+        ):
             if len(self._close_frame_bytes) > 0:
                 shutdown_code_as_bytes = self._close_frame_bytes[0:2]
                 # The shutdown code is a packed 2 byte unsigned int.
@@ -274,11 +312,17 @@ class Websocket:
                 shutdown_reason_in_bytes = self._close_frame_bytes[2:]
                 if shutdown_code != 1000:
                     logger.debug("Shutdown code: %s", str(shutdown_code))
-                    decoded_shutdown_reason = shutdown_reason_in_bytes.decode("utf-8")
-                    self._exception = WebsocketException(f"Websocket Closure Reason: {decoded_shutdown_reason}")
+                    decoded_shutdown_reason = shutdown_reason_in_bytes.decode(
+                        "utf-8"
+                    )
+                    self._exception = WebsocketException(
+                        f"Websocket Closure Reason: {decoded_shutdown_reason}"
+                    )
             self.close()
 
-    def _on_send_frame_complete_data(self, send_frame_data: OnSendFrameCompleteData) -> None:
+    def _on_send_frame_complete_data(
+        self, send_frame_data: OnSendFrameCompleteData
+    ) -> None:
         self._send_frame_results_queue.put(send_frame_data)
 
     def _on_connection_shutdown(self, data: OnConnectionShutdownData) -> None:
@@ -288,7 +332,13 @@ class Websocket:
 
 
 class WebsocketManager:
-    def __init__(self, port, max_websocket_connections, eice_request_signer, user_agent=None):
+    def __init__(
+        self,
+        port,
+        max_websocket_connections,
+        eice_request_signer,
+        user_agent=None,
+    ):
         self._port = port
         self._executor = ThreadPoolExecutor(
             max_workers=max_websocket_connections
@@ -322,8 +372,12 @@ class WebsocketManager:
     def run(self):
         # If no port is specified, open a singular websocket connection.
         if not self._port:
-            websocketio = WindowsStdinStdoutIO() if is_windows else StdinStdoutIO()
-            future = self._open_websocket_connection(Websocket(websocketio, websocket_id=None))
+            websocketio = (
+                WindowsStdinStdoutIO() if is_windows else StdinStdoutIO()
+            )
+            future = self._open_websocket_connection(
+                Websocket(websocketio, websocket_id=None)
+            )
             # Block until the future completes.
             future.result()
         else:
@@ -342,21 +396,32 @@ class WebsocketManager:
                 conn, addr = self._socket.accept()
                 # Check if we have reached max connections
                 self._remove_done_futures()
-                if len(self._inflight_futures_and_websockets) >= self._max_websocket_connections:
-                    print(f"Max websocket connections {self._max_websocket_connections} have been reached, closing "
-                          f"incoming connection.")
+                if (
+                    len(self._inflight_futures_and_websockets)
+                    >= self._max_websocket_connections
+                ):
+                    print(
+                        f"Max websocket connections {self._max_websocket_connections} have been reached, closing "
+                        f"incoming connection."
+                    )
                     conn.close()
                     continue
 
                 websocket_id = self._connection_id_counter
                 self._connection_id_counter += 1
-                print(f"[{websocket_id}] Accepted new tcp connection, opening websocket tunnel.")
+                print(
+                    f"[{websocket_id}] Accepted new tcp connection, opening websocket tunnel."
+                )
                 try:
                     web_socket = Websocket(TCPSocketIO(conn), websocket_id)
                     future = self._open_websocket_connection(web_socket)
-                    future.add_done_callback(self._print_tcp_conn_closed(web_socket))
+                    future.add_done_callback(
+                        self._print_tcp_conn_closed(web_socket)
+                    )
                 except WebsocketException as e:
-                    logger.error(f"[{websocket_id}] Encountered error opening websocket: {e.args}")
+                    logger.error(
+                        f"[{websocket_id}] Encountered error opening websocket: {e.args}"
+                    )
 
     def _open_websocket_connection(self, web_socket):
         presigned_url = self._eice_request_signer.get_presigned_url()

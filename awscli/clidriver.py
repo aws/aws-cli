@@ -154,7 +154,7 @@ def _add_linux_distribution_to_user_agent(session):
     if linux_distribution := _get_distribution():
         add_metadata_component_to_user_agent_extra(
             session,
-            'distrib', 
+            'distrib',
             linux_distribution,
         )
 
@@ -456,7 +456,7 @@ class CLIDriver(object):
 
         if 'AWS_EXECUTION_ENV' in os.environ:
             version_string += f' exec-env/{os.environ.get("AWS_EXECUTION_ENV")}'
-        
+
         version_string += f' {_get_distribution_source()}/{platform.machine()}'
 
         if linux_distribution := _get_distribution():

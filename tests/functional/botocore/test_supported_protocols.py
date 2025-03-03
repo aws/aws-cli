@@ -13,41 +13,58 @@
 import pytest
 
 from botocore.args import PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
-from botocore.loaders import Loader
 from botocore.session import get_session
 
 
-def _get_services_models_by_protocols_trait(has_protocol_trait):
+def _multi_protocol_test_cases():
     session = get_session()
-    service_list = Loader().list_available_services('service-2')
-    for service in service_list:
+    loader = session.get_component('data_loader')
+    services = loader.list_available_services('service-2')
+    multi_protocol_services = []
+    supported_protocols = []
+    for service in services:
         service_model = session.get_service_model(service)
-        if ('protocols' in service_model.metadata) == has_protocol_trait:
-            yield service_model
+        if 'protocols' in service_model.metadata:
+            multi_protocol_services.append(service)
+            supported_protocols.append(service_model.metadata.get('protocols', []))
+    return list(zip(multi_protocol_services, supported_protocols))
+
+
+def _single_protocol_test_cases():
+    session = get_session()
+    loader = session.get_component('data_loader')
+    services = loader.list_available_services('service-2')
+    single_protocol_services = []
+    supported_protocol = []
+    for service in services:
+        service_model = session.get_service_model(service)
+        if 'protocols' not in service_model.metadata:
+            single_protocol_services.append(service)
+            supported_protocol.append(service_model.metadata.get('protocol'))
+    return list(zip(single_protocol_services, supported_protocol))
 
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize(
-    "service",
-    _get_services_models_by_protocols_trait(True),
+    "service_name, supported_protocols",
+    _multi_protocol_test_cases(),
 )
-def test_services_with_protocols_trait_have_supported_protocol(service):
-    service_supported_protocols = service.metadata.get('protocols', [])
-    message = f"No protocols supported for service {service.service_name}"
+def test_services_with_protocols_trait_have_supported_protocol(service_name, supported_protocols):
+    message = f"No protocols supported for service {service_name}"
     assert any(
         protocol in PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
-        for protocol in service_supported_protocols
+        for protocol in supported_protocols
     ), message
 
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize(
-    "service",
-    _get_services_models_by_protocols_trait(False),
+    "service_name, supported_protocol",
+    _single_protocol_test_cases(),
 )
-def test_services_without_protocols_trait_have_supported_protocol(service):
-    message = f"Service protocol not supported for {service.service_name}"
+def test_services_without_protocols_trait_have_supported_protocol(service_name, supported_protocol):
+    message = f"Service protocol not supported for {service_name}"
     assert (
-        service.metadata.get('protocol')
+        supported_protocol
         in PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
     ), message

@@ -11,6 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+import time
+from concurrent import futures
 from itertools import product
 
 import pytest
@@ -195,6 +197,93 @@ def test_user_agent_appid_gets_sanitized(patched_session, caplog):
     assert 'app/1234-' in uafields
 
 
+def test_user_agent_has_registered_feature_id(patched_session):
+    client_s3 = patched_session.create_client('s3')
+    with UACapHTTPStubber(client_s3) as stub_client:
+        paginator = client_s3.get_paginator('list_buckets')
+        # The `paginate()` method registers `'PAGINATOR': 'C'`
+        for _ in paginator.paginate():
+            pass
+    uafields = stub_client.captured_ua_string.split(' ')
+    feature_field = [field for field in uafields if field.startswith('m/')][0]
+    feature_list = feature_field[2:].split(',')
+    assert 'C' in feature_list
+
+
+def test_registered_feature_ids_dont_bleed_between_requests(patched_session):
+    client_s3 = patched_session.create_client('s3')
+    with UACapHTTPStubber(client_s3) as stub_client:
+        waiter = client_s3.get_waiter('bucket_exists')
+        # The `wait()` method registers `'WAITER': 'B'`
+        waiter.wait(Bucket='mybucket')
+    uafields = stub_client.captured_ua_string.split(' ')
+    feature_field = [field for field in uafields if field.startswith('m/')][0]
+    feature_list = feature_field[2:].split(',')
+    assert 'B' in feature_list
+
+    with UACapHTTPStubber(client_s3) as stub_client:
+        paginator = client_s3.get_paginator('list_buckets')
+        # The `paginate()` method registers `'PAGINATOR': 'C'`
+        for _ in paginator.paginate():
+            pass
+    uafields = stub_client.captured_ua_string.split(' ')
+    feature_field = [field for field in uafields if field.startswith('m/')][0]
+    feature_list = feature_field[2:].split(',')
+    assert 'C' in feature_list
+    assert 'B' not in feature_list
+
+
+def test_registered_feature_ids_dont_bleed_across_threads(patched_session):
+    client_s3 = patched_session.create_client('s3')
+    # The client stubber isn't thread-safe because it mutates the client's
+    # event system. This boolean is a workaround that ensures the paginator
+    # worker's thread spawns at the same time, but does not actually execute
+    # its job until the waiter thread finishes first and resets client state.
+    waiter_done = False
+
+    def wait(client, features):
+        with UACapHTTPStubber(client) as stub_client:
+            waiter = client.get_waiter('bucket_exists')
+            # The `wait()` method registers `'WAITER': 'B'`
+            waiter.wait(Bucket='mybucket')
+        uafields = stub_client.captured_ua_string.split(' ')
+        feature_field = [
+            field for field in uafields if field.startswith('m/')
+        ][0]
+        features.extend(feature_field[2:].split(','))
+        nonlocal waiter_done
+        waiter_done = True
+
+    def paginate(client, features):
+        nonlocal waiter_done
+        while not waiter_done:
+            time.sleep(0.5)
+        with UACapHTTPStubber(client) as stub_client:
+            paginator = client.get_paginator('list_buckets')
+            # The `paginate()` method registers `'PAGINATOR': 'C'`
+            for _ in paginator.paginate():
+                pass
+        uafields = stub_client.captured_ua_string.split(' ')
+        feature_field = [
+            field for field in uafields if field.startswith('m/')
+        ][0]
+        features.extend(feature_field[2:].split(','))
+
+    waiter_features = []
+    paginator_features = []
+    with futures.ThreadPoolExecutor(max_workers=2) as executor:
+        waiter_future = executor.submit(wait, client_s3, waiter_features)
+        paginator_future = executor.submit(
+            paginate, client_s3, paginator_features
+        )
+        waiter_future.result()
+        paginator_future.result()
+    assert 'B' in waiter_features
+    assert 'C' not in waiter_features
+    assert 'C' in paginator_features
+    assert 'B' not in paginator_features
+
+
 def test_awscli_v2_user_agent(patched_session):
     # emulate behavior from awscli.clidriver._set_user_agent_for_session
     patched_session.user_agent_name = 'aws-cli'
@@ -218,7 +307,7 @@ def test_awscli_v2_user_agent(patched_session):
     )
     # The regular User-Agent header components for platform, language, ...
     # should also be present:
-    assert ' ua/2.0 ' in stub_client.captured_ua_string
+    assert ' ua/2.1 ' in stub_client.captured_ua_string
     assert ' os/' in stub_client.captured_ua_string
     assert ' lang/' in stub_client.captured_ua_string
     assert ' cfg/' in stub_client.captured_ua_string

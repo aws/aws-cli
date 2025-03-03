@@ -14,6 +14,8 @@ from concurrent import futures
 from functools import partial
 from threading import Event
 
+from botocore.context import ClientContext, get_context
+
 from s3transfer.futures import BoundedExecutor, TransferCoordinator
 from s3transfer.subscribers import BaseSubscriber
 from s3transfer.tasks import (
@@ -67,6 +69,11 @@ class SubmitMoreTasksTask(Task):
 class NOOPSubmissionTask(SubmissionTask):
     def _submit(self, transfer_future, **kwargs):
         pass
+
+
+class ReturnContextTask(Task):
+    def _main(self):
+        return get_context()
 
 
 class ExceptionSubmissionTask(SubmissionTask):
@@ -722,6 +729,15 @@ class TestTask(unittest.TestCase):
         # pending future value in the list
         with self.assertRaises(TaskFailureException):
             self.transfer_coordinator.result()
+
+    def test_passing_context_to_task_call(self):
+        ctx = ClientContext()
+        ctx.features.add('FOO')
+        task = ReturnContextTask(self.transfer_coordinator)
+        self.assertEqual(task(ctx).features, {'FOO'})
+        # `task(ctx)` returned, so the current context should be reset to None.
+        current_ctx = get_context()
+        self.assertEqual(current_ctx, None)
 
 
 class BaseMultipartTaskTest(BaseTaskTest):

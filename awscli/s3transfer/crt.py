@@ -42,6 +42,7 @@ from botocore import UNSIGNED
 from botocore.compat import urlsplit
 from botocore.config import Config
 from botocore.exceptions import NoCredentialsError
+from botocore.useragent import register_feature_id
 from botocore.utils import ArnParser, InvalidArnException, is_s3express_bucket
 
 from s3transfer.constants import FULL_OBJECT_CHECKSUM_ARGS, MB
@@ -310,6 +311,7 @@ class CRTTransferManager:
         self._semaphore.release()
 
     def _submit_transfer(self, request_type, call_args):
+        register_feature_id('S3_TRANSFER')
         on_done_after_calls = [self._release_semaphore]
         coordinator = CRTTransferCoordinator(
             transfer_id=self._id_counter,

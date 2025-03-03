@@ -10,7 +10,7 @@ def assert_expected_user_agent(result, service, operation):
     assert ' md/arch#' in ua_string
     assert ' md/prompt#off' in ua_string
     assert f' md/command#{service}.{operation}' in ua_string
-    assert ' ua/2.0 ' in ua_string
+    assert ' ua/2.1 ' in ua_string
     assert ' os/' in ua_string
     assert ' lang/python' in ua_string
     assert ' cfg/' in ua_string

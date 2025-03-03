@@ -15,6 +15,8 @@ import logging
 import re
 import threading
 
+from botocore.useragent import register_feature_id
+
 from s3transfer.bandwidth import BandwidthLimiter, LeakyBucket
 from s3transfer.constants import (
     ALLOWED_DOWNLOAD_ARGS,
@@ -524,6 +526,7 @@ class TransferManager:
     def _submit_transfer(
         self, call_args, submission_task_cls, extra_main_kwargs=None
     ):
+        register_feature_id('S3_TRANSFER')
         if not extra_main_kwargs:
             extra_main_kwargs = {}
 

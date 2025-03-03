@@ -64286,6 +64286,10 @@
           "documentation":"<p>Indicates whether the VPC is the default VPC.</p>",
           "locationName":"isDefault"
         },
+        "EncryptionControl":{
+          "shape":"VpcEncryptionControl",
+          "locationName":"encryptionControl"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>Any tags assigned to the VPC.</p>",
@@ -64582,6 +64586,106 @@
         "shape":"VpcClassicLink",
         "locationName":"item"
       }
+    },
+    "VpcEncryptionControl":{
+      "type":"structure",
+      "members":{
+        "VpcId":{
+          "shape":"VpcId",
+          "locationName":"vpcId"
+        },
+        "VpcEncryptionControlId":{
+          "shape":"VpcEncryptionControlId",
+          "locationName":"vpcEncryptionControlId"
+        },
+        "Mode":{
+          "shape":"VpcEncryptionControlMode",
+          "locationName":"mode"
+        },
+        "State":{
+          "shape":"VpcEncryptionControlState",
+          "locationName":"state"
+        },
+        "StateMessage":{
+          "shape":"String",
+          "locationName":"stateMessage"
+        },
+        "ResourceExclusions":{
+          "shape":"VpcEncryptionControlExclusions",
+          "locationName":"resourceExclusions"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "locationName":"tagSet"
+        }
+      }
+    },
+    "VpcEncryptionControlExclusion":{
+      "type":"structure",
+      "members":{
+        "State":{
+          "shape":"VpcEncryptionControlExclusionState",
+          "locationName":"state"
+        },
+        "StateMessage":{
+          "shape":"String",
+          "locationName":"stateMessage"
+        }
+      }
+    },
+    "VpcEncryptionControlExclusionState":{
+      "type":"string",
+      "enum":[
+        "enabling",
+        "enabled",
+        "disabling",
+        "disabled"
+      ]
+    },
+    "VpcEncryptionControlExclusions":{
+      "type":"structure",
+      "members":{
+        "InternetGateway":{
+          "shape":"VpcEncryptionControlExclusion",
+          "locationName":"internetGateway"
+        },
+        "EgressOnlyInternetGateway":{
+          "shape":"VpcEncryptionControlExclusion",
+          "locationName":"egressOnlyInternetGateway"
+        },
+        "NatGateway":{
+          "shape":"VpcEncryptionControlExclusion",
+          "locationName":"natGateway"
+        },
+        "VirtualPrivateGateway":{
+          "shape":"VpcEncryptionControlExclusion",
+          "locationName":"virtualPrivateGateway"
+        },
+        "VpcPeering":{
+          "shape":"VpcEncryptionControlExclusion",
+          "locationName":"vpcPeering"
+        }
+      }
+    },
+    "VpcEncryptionControlId":{"type":"string"},
+    "VpcEncryptionControlMode":{
+      "type":"string",
+      "enum":[
+        "monitor",
+        "enforce"
+      ]
+    },
+    "VpcEncryptionControlState":{
+      "type":"string",
+      "enum":[
+        "enforce-in-progress",
+        "monitor-in-progress",
+        "enforce-failed",
+        "monitor-failed",
+        "deleting",
+        "deleted",
+        "available"
+      ]
     },
     "VpcEndpoint":{
       "type":"structure",

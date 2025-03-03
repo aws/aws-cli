@@ -2152,6 +2152,57 @@
       "type":"string",
       "enum":["DELETE"]
     },
+    "AudioExtractionConfiguration":{
+      "type":"structure",
+      "required":["audioExtractionStatus"],
+      "members":{
+        "audioExtractionStatus":{
+          "shape":"AudioExtractionStatus",
+          "documentation":"<p>The status of audio extraction (ENABLED or DISABLED) for processing audio content from files.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for audio content extraction and processing.</p>"
+    },
+    "AudioExtractionStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "AudioExtractionType":{
+      "type":"string",
+      "enum":[
+        "TRANSCRIPT",
+        "SUMMARY"
+      ]
+    },
+    "AudioSourceDetails":{
+      "type":"structure",
+      "members":{
+        "mediaId":{
+          "shape":"MediaId",
+          "documentation":"<p>Unique identifier for the audio media file.</p>"
+        },
+        "mediaMimeType":{
+          "shape":"String",
+          "documentation":"<p>The MIME type of the audio file (e.g., audio/mp3, audio/wav).</p>"
+        },
+        "startTimeMilliseconds":{
+          "shape":"Long",
+          "documentation":"<p>The starting timestamp in milliseconds for the relevant audio segment.</p>"
+        },
+        "endTimeMilliseconds":{
+          "shape":"Long",
+          "documentation":"<p>The ending timestamp in milliseconds for the relevant audio segment.</p>"
+        },
+        "audioExtractionType":{
+          "shape":"AudioExtractionType",
+          "documentation":"<p>The type of audio extraction performed on the content.</p>"
+        }
+      },
+      "documentation":"<p>Details about an audio source, including its identifier, format, and time information.</p>"
+    },
     "AuthChallengeRequest":{
       "type":"structure",
       "required":["authorizationUrl"],
@@ -5469,6 +5520,20 @@
         "DISABLED"
       ]
     },
+    "ImageSourceDetails":{
+      "type":"structure",
+      "members":{
+        "mediaId":{
+          "shape":"MediaId",
+          "documentation":"<p>Unique identifier for the image file.</p>"
+        },
+        "mediaMimeType":{
+          "shape":"String",
+          "documentation":"<p>The MIME type of the image file.</p>"
+        }
+      },
+      "documentation":"<p>Details about an image source, including its identifier and format.</p>"
+    },
     "Index":{
       "type":"structure",
       "members":{
@@ -6540,6 +6605,14 @@
         "imageExtractionConfiguration":{
           "shape":"ImageExtractionConfiguration",
           "documentation":"<p>The configuration for extracting semantic meaning from images in documents. For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/extracting-meaning-from-images.html\">Extracting semantic meaning from images and visuals</a>. </p>"
+        },
+        "audioExtractionConfiguration":{
+          "shape":"AudioExtractionConfiguration",
+          "documentation":"<p>Configuration settings for extracting and processing audio content from media files.</p>"
+        },
+        "videoExtractionConfiguration":{
+          "shape":"VideoExtractionConfiguration",
+          "documentation":"<p>Configuration settings for extracting and processing video content from media files.</p>"
         }
       },
       "documentation":"<p>The configuration for extracting information from media in documents.</p>"
@@ -7725,6 +7798,25 @@
       "type":"list",
       "member":{"shape":"SourceAttribution"}
     },
+    "SourceDetails":{
+      "type":"structure",
+      "members":{
+        "imageSourceDetails":{
+          "shape":"ImageSourceDetails",
+          "documentation":"<p>Details specific to image content within the source.</p>"
+        },
+        "audioSourceDetails":{
+          "shape":"AudioSourceDetails",
+          "documentation":"<p>Details specific to audio content within the source.</p>"
+        },
+        "videoSourceDetails":{
+          "shape":"VideoSourceDetails",
+          "documentation":"<p>Details specific to video content within the source.</p>"
+        }
+      },
+      "documentation":"<p>Container for details about different types of media sources (image, audio, or video).</p>",
+      "union":true
+    },
     "StartDataSourceSyncJobRequest":{
       "type":"structure",
       "required":[
@@ -8086,11 +8178,21 @@
         },
         "mediaId":{
           "shape":"SourceAttributionMediaId",
-          "documentation":"<p>The identifier of the media object associated with the text segment in the source attribution.</p>"
+          "documentation":"<p>The identifier of the media object associated with the text segment in the source attribution.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Deprecated in favor of using mediaId within the respective sourceDetails field.",
+          "deprecatedSince":"2025-02-28"
         },
         "mediaMimeType":{
           "shape":"String",
-          "documentation":"<p>The MIME type (image/png) of the media object associated with the text segment in the source attribution.</p>"
+          "documentation":"<p>The MIME type (image/png) of the media object associated with the text segment in the source attribution.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Deprecated in favor of using mediaMimeType within the respective sourceDetails field.",
+          "deprecatedSince":"2025-02-28"
+        },
+        "sourceDetails":{
+          "shape":"SourceDetails",
+          "documentation":"<p>Source information for a segment of extracted text, including its media type.</p>"
         }
       },
       "documentation":"<p>Provides information about a text extract in a chat response that can be attributed to a source document.</p>"
@@ -8774,6 +8876,57 @@
         "FIELD_VALIDATION_FAILED",
         "UNKNOWN_OPERATION"
       ]
+    },
+    "VideoExtractionConfiguration":{
+      "type":"structure",
+      "required":["videoExtractionStatus"],
+      "members":{
+        "videoExtractionStatus":{
+          "shape":"VideoExtractionStatus",
+          "documentation":"<p>The status of video extraction (ENABLED or DISABLED) for processing video content from files.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for video content extraction and processing.</p>"
+    },
+    "VideoExtractionStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "VideoExtractionType":{
+      "type":"string",
+      "enum":[
+        "TRANSCRIPT",
+        "SUMMARY"
+      ]
+    },
+    "VideoSourceDetails":{
+      "type":"structure",
+      "members":{
+        "mediaId":{
+          "shape":"MediaId",
+          "documentation":"<p>Unique identifier for the video media file.</p>"
+        },
+        "mediaMimeType":{
+          "shape":"String",
+          "documentation":"<p>The MIME type of the video file (e.g., video/mp4, video/avi).</p>"
+        },
+        "startTimeMilliseconds":{
+          "shape":"Long",
+          "documentation":"<p>The starting timestamp in milliseconds for the relevant video segment.</p>"
+        },
+        "endTimeMilliseconds":{
+          "shape":"Long",
+          "documentation":"<p>The ending timestamp in milliseconds for the relevant video segment.</p>"
+        },
+        "videoExtractionType":{
+          "shape":"VideoExtractionType",
+          "documentation":"<p>The type of video extraction performed on the content.</p>"
+        }
+      },
+      "documentation":"<p>Details about a video source, including its identifier, format, and time information.</p>"
     },
     "WebExperience":{
       "type":"structure",

@@ -19,8 +19,10 @@ from . import SectionNotFoundError
 class ConfigFileWriter(object):
     SECTION_REGEX = re.compile(r'^\s*\[(?P<header>[^]]+)\]')
     OPTION_REGEX = re.compile(
-        r'(?P<option>[^:=][^:=]*)' r'\s*(?P<vi>[:=])\s*' r'(?P<value>.*)$'
-    )
+        r'(?P<option>[^:=][^:=]*)'
+        r'\s*(?P<vi>[:=])\s*'
+        r'(?P<value>.*)$'
+    )  # fmt: skip
 
     def update_config(self, new_values, config_filename):
         """Update config file with new values.

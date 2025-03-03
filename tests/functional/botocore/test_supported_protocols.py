@@ -26,7 +26,9 @@ def _multi_protocol_test_cases():
         service_model = session.get_service_model(service)
         if 'protocols' in service_model.metadata:
             multi_protocol_services.append(service)
-            supported_protocols.append(service_model.metadata.get('protocols', []))
+            supported_protocols.append(
+                service_model.metadata.get('protocols', [])
+            )
     return list(zip(multi_protocol_services, supported_protocols))
 
 
@@ -49,7 +51,9 @@ def _single_protocol_test_cases():
     "service_name, supported_protocols",
     _multi_protocol_test_cases(),
 )
-def test_services_with_protocols_trait_have_supported_protocol(service_name, supported_protocols):
+def test_services_with_protocols_trait_have_supported_protocol(
+        service_name, supported_protocols
+):
     message = f"No protocols supported for service {service_name}"
     assert any(
         protocol in PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
@@ -62,7 +66,9 @@ def test_services_with_protocols_trait_have_supported_protocol(service_name, sup
     "service_name, supported_protocol",
     _single_protocol_test_cases(),
 )
-def test_services_without_protocols_trait_have_supported_protocol(service_name, supported_protocol):
+def test_services_without_protocols_trait_have_supported_protocol(
+        service_name, supported_protocol
+):
     message = f"Service protocol not supported for {service_name}"
     assert (
         supported_protocol

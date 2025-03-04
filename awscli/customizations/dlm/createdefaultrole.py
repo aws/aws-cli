@@ -138,7 +138,7 @@ class CreateDefaultRole(BasicCommand):
             return None
 
         LOG.debug(
-            'Role %s does not exist. ' 'Creating default role for Lifecycle',
+            'Role %s does not exist. Creating default role for Lifecycle',
             role_name,
         )
 

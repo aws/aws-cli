@@ -66,7 +66,7 @@ class UnexpectedTokenError(ParserError):
 class InvalidLiteralValueError(ParserError):
     def __init__(self, token, message, expression):
         error_message = (
-            'Invalid token value: {message}\n' '{expression}\n{underline}\n'
+            'Invalid token value: {message}\n{expression}\n{underline}\n'
         )
         token_length = token['end'] - token['start']
         underline = ' ' * token['start'] + '^' * (max(token_length, 1))

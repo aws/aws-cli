@@ -530,7 +530,13 @@ class Module:
                 resolved = "${" + word.w + "}"
                 sub += resolved
             elif word.t == WordType.GETATT:
-                sub += self.resolve_output_sub_getatt(word.w)
+                resolved = self.resolve_output_sub_getatt(word.w)
+                if not isinstance(resolved, str):
+                    msg = (
+                        f"Sub expected a string in {self.name}, got {resolved}"
+                    )
+                    raise exceptions.InvalidModuleError(msg=msg)
+                sub += resolved
 
         if is_sub_needed(sub):
             d[n] = {SUB: sub}
@@ -552,12 +558,6 @@ class Module:
         if not isinstance(v, list) or len(v) < 2:
             msg = f"GetAtt {v} invalid"
             raise exceptions.InvalidModuleError(msg=msg)
-
-        # print("")
-        # print("resolve_output_getatt")
-        # print("  v:", v)
-        # print("  d:", d)
-        # print("  n:", n)
 
         # For example, Content.Arn or Content[0].Arn
 
@@ -594,11 +594,7 @@ class Module:
                 reffed_prop = self.props[prop_name]
 
         if reffed_prop is None:
-            # print("  reffed_prop is None")
-            # print("")
             return False
-
-        # print("  reffed_prop:", reffed_prop)
 
         if isinstance(reffed_prop, list):
             for i, r in enumerate(reffed_prop):
@@ -629,14 +625,6 @@ class Module:
                 # Special handling for Overrides that GetAtt a module
                 # property, when that module has a Map attribute
                 if isinstance(self.mapped[s], list):
-                    # print("")
-                    # print("self.name", self.name)
-                    # print("r:", r)
-                    # print("d:", d)
-                    # print("n:", n)
-                    # print("s:", s)
-                    # print("self.mapped[s]", self.mapped[s])
-                    # print("")
                     d[n] = copy.deepcopy(self.mapped[s])
                     for item in d[n]:
                         if GETATT in item and len(item[GETATT]) > 0:
@@ -658,6 +646,10 @@ class Module:
                     resolved = "${" + word.w + "}"
                     if word.w in self.resources:
                         resolved = "${" + self.name + word.w + "}"
+                    elif word.w in self.module_parameters:
+                        found = self.find_ref(word.w)
+                        if found:
+                            resolved = found
                     sub += resolved
                 elif word.t == WordType.GETATT:
                     resolved = "${" + word.w + "}"
@@ -668,7 +660,10 @@ class Module:
                     if tokens[0] in self.resources:
                         resolved = "${" + self.name + word.w + "}"
                     sub += resolved
-            d[n] = {SUB: sub}
+            if is_sub_needed(sub):
+                d[n] = {SUB: sub}
+            else:
+                d[n] = sub
         else:
             # Handle scalars in Properties
             d[n] = r
@@ -690,9 +685,6 @@ class Module:
                 if key not in mapped:
                     mapped[key] = []
                 if item_val not in mapped[key]:
-                    # print("resolve_output_getatt_map")
-                    # print("key:", key)
-                    # print("item_val:", item_val)
                     # Don't double add. We already replaced refs in
                     # modules, so it shows up twice.
                     mapped[key].append(item_val)

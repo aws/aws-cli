@@ -62,25 +62,38 @@ def fn_merge(d):
     """
     Find all instances of Fn::Merge in the dictionary and merge
     them into a single object.
-
-    Raises an error if any argument to Fn::Merge is not a dictionary,
-    or if any of the keys are themselves intrinsic functions that
-    cannot be resolved on the client.
     """
 
     def vf(v):
         if isdict(v.d) and MERGE in v.d and v.p is not None:
             mrg = v.d[MERGE]
-            if len(mrg) != 2:
-                msg = f"Fn::Merge requires 2 args: {v.k}: {v.d}"
+            if not isinstance(mrg, list):
+                msg = f"Fn::Merge requires a list: {v.k}: {v.d}"
                 raise exceptions.InvalidModuleError(msg=msg)
-            # If there are any unresolved Refs, leave these alone
-            # so that the parent can resolve them
-            if REF in mrg[0] or REF in mrg[1]:
-                return
-            if GETATT in mrg[0] or GETATT in mrg[1]:
-                return
-            v.p[v.k] = merge_props(mrg[0], mrg[1])
+            if len(mrg) < 2:
+                msg = f"Fn::Merge requires at least 2 args: {v.k}: {v.d}"
+                raise exceptions.InvalidModuleError(msg=msg)
+            result = None
+            is_list = True
+            if isinstance(mrg[0], list):
+                result = []
+            else:
+                result = {}
+                is_list = False
+            for _, m in enumerate(mrg):
+                # If there are any unresolved Refs, leave these alone
+                # so that the parent can resolve them
+                if REF in m:
+                    return
+                if GETATT in m:
+                    return
+                msg = f"Fn::Merge items types mismatch: {v.k}: {v.d}"
+                if is_list and not isinstance(m, list):
+                    raise exceptions.InvalidModuleError(msg=msg)
+                if not is_list and isinstance(m, list):
+                    raise exceptions.InvalidModuleError(msg=msg)
+                result = merge_props(result, m)
+            v.p[v.k] = result
 
     Visitor(d).visit(vf)
 

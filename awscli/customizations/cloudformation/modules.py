@@ -690,9 +690,9 @@ class Module:
                 if key not in mapped:
                     mapped[key] = []
                 if item_val not in mapped[key]:
-                    #print("resolve_output_getatt_map")
-                    #print("key:", key)
-                    #print("item_val:", item_val)
+                    # print("resolve_output_getatt_map")
+                    # print("key:", key)
+                    # print("item_val:", item_val)
                     # Don't double add. We already replaced refs in
                     # modules, so it shows up twice.
                     mapped[key].append(item_val)

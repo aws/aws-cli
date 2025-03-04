@@ -17,12 +17,13 @@ from awscli.clidriver import CLIOperationCaller
 from awscli.customizations.utils import get_policy_arn_suffix
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.dlm.iam import IAM
-from awscli.customizations.dlm.constants \
-    import RESOURCES, \
-    LIFECYCLE_DEFAULT_ROLE_ASSUME_POLICY, \
-    POLICY_ARN_PATTERN, \
-    RESOURCE_TYPE_SNAPSHOT, \
-    RESOURCE_TYPE_IMAGE
+from awscli.customizations.dlm.constants import (
+    RESOURCES,
+    LIFECYCLE_DEFAULT_ROLE_ASSUME_POLICY,
+    POLICY_ARN_PATTERN,
+    RESOURCE_TYPE_SNAPSHOT,
+    RESOURCE_TYPE_IMAGE,
+)
 from awscli.customizations.exceptions import ConfigurationError
 
 LOG = logging.getLogger(__name__)
@@ -43,7 +44,8 @@ def display_response(session, operation_name, result, parsed_globals):
         # Calling a private method. Should be changed after the functionality
         # is moved outside CliOperationCaller.
         cli_operation_caller._display_response(
-            operation_name, result, parsed_globals)
+            operation_name, result, parsed_globals
+        )
 
 
 # Get policy arn from region and policy name
@@ -63,31 +65,40 @@ def get_region(session, parsed_globals):
 
 class CreateDefaultRole(BasicCommand):
     NAME = "create-default-role"
-    DESCRIPTION = ('Creates the default IAM role '
-                   ' which will be used by Lifecycle service.\n'
-                   'If the role does not exist, create-default-role '
-                   'will automatically create it and set its policy.'
-                   ' If the role has been already '
-                   'created, create-default-role'
-                   ' will not update its policy.'
-                   '\n')
+    DESCRIPTION = (
+        'Creates the default IAM role '
+        ' which will be used by Lifecycle service.\n'
+        'If the role does not exist, create-default-role '
+        'will automatically create it and set its policy.'
+        ' If the role has been already '
+        'created, create-default-role'
+        ' will not update its policy.'
+        '\n'
+    )
     ARG_TABLE = [
-        {'name': 'iam-endpoint',
-         'no_paramfile': True,
-         'help_text': '<p>The IAM endpoint to call for creating the roles.'
-                      ' This is optional and should only be specified when a'
-                      ' custom endpoint should be called for IAM operations'
-                      '.</p>'},
-        {'name': 'resource-type',
-         'default': RESOURCE_TYPE_SNAPSHOT,
-         'choices': [RESOURCE_TYPE_SNAPSHOT, RESOURCE_TYPE_IMAGE],
-         'help_text': (
-                 "<p>The resource type for which the role needs to be created."
-                 " The available options are '%s' and '%s'."
-                 " This parameter defaults to '%s'.</p>"
-                 % (RESOURCE_TYPE_SNAPSHOT, RESOURCE_TYPE_IMAGE,
-                    RESOURCE_TYPE_SNAPSHOT))}
-
+        {
+            'name': 'iam-endpoint',
+            'no_paramfile': True,
+            'help_text': '<p>The IAM endpoint to call for creating the roles.'
+            ' This is optional and should only be specified when a'
+            ' custom endpoint should be called for IAM operations'
+            '.</p>',
+        },
+        {
+            'name': 'resource-type',
+            'default': RESOURCE_TYPE_SNAPSHOT,
+            'choices': [RESOURCE_TYPE_SNAPSHOT, RESOURCE_TYPE_IMAGE],
+            'help_text': (
+                "<p>The resource type for which the role needs to be created."
+                " The available options are '%s' and '%s'."
+                " This parameter defaults to '%s'.</p>"
+                % (
+                    RESOURCE_TYPE_SNAPSHOT,
+                    RESOURCE_TYPE_IMAGE,
+                    RESOURCE_TYPE_SNAPSHOT,
+                )
+            ),
+        },
     ]
 
     def __init__(self, session):
@@ -99,27 +110,24 @@ class CreateDefaultRole(BasicCommand):
         self._region = get_region(self._session, parsed_globals)
         self._endpoint_url = parsed_args.iam_endpoint
         self._resource_type = parsed_args.resource_type
-        self._iam_client = IAM(self._session.create_client(
-            'iam',
-            region_name=self._region,
-            endpoint_url=self._endpoint_url,
-            verify=parsed_globals.verify_ssl
-        ))
+        self._iam_client = IAM(
+            self._session.create_client(
+                'iam',
+                region_name=self._region,
+                endpoint_url=self._endpoint_url,
+                verify=parsed_globals.verify_ssl,
+            )
+        )
 
         result = self._create_default_role_if_not_exists(parsed_globals)
 
-        display_response(
-            self._session,
-            'create_role',
-            result,
-            parsed_globals
-        )
+        display_response(self._session, 'create_role', result, parsed_globals)
 
         return 0
 
     def _create_default_role_if_not_exists(self, parsed_globals):
         """Method to create default lifecycle role
-            if it doesn't exist already
+        if it doesn't exist already
         """
 
         role_name = RESOURCES[self._resource_type]['default_role_name']
@@ -129,8 +137,10 @@ class CreateDefaultRole(BasicCommand):
             LOG.debug('Role %s exists', role_name)
             return None
 
-        LOG.debug('Role %s does not exist. '
-                  'Creating default role for Lifecycle', role_name)
+        LOG.debug(
+            'Role %s does not exist. ' 'Creating default role for Lifecycle',
+            role_name,
+        )
 
         # Get Region
         region = get_region(self._session, parsed_globals)
@@ -142,8 +152,7 @@ class CreateDefaultRole(BasicCommand):
             )
 
         managed_policy_arn = get_policy_arn(
-            region,
-            RESOURCES[self._resource_type]['default_policy_name']
+            region, RESOURCES[self._resource_type]['default_policy_name']
         )
 
         # Don't proceed if managed policy does not exist
@@ -153,16 +162,11 @@ class CreateDefaultRole(BasicCommand):
 
         LOG.debug('Managed Policy %s exists.', managed_policy_arn)
         # Create default role
-        create_role_response = \
-            self._iam_client.create_role_with_trust_policy(
-                role_name,
-                assume_role_policy
-            )
-        # Attach policy to role
-        self._iam_client.attach_policy_to_role(
-            managed_policy_arn,
-            role_name
+        create_role_response = self._iam_client.create_role_with_trust_policy(
+            role_name, assume_role_policy
         )
+        # Attach policy to role
+        self._iam_client.attach_policy_to_role(managed_policy_arn, role_name)
 
         # Construct result
         get_policy_response = self._iam_client.get_policy(managed_policy_arn)

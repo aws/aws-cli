@@ -278,7 +278,6 @@ class DownloadSpecialFilenameOutputManager(DownloadNonSeekableOutputManager):
 
     def get_fileobj_for_io_writes(self, transfer_future):
         filename = transfer_future.meta.call_args.fileobj
-        print(f'filename: {filename}')
         self._fileobj = self._get_fileobj_from_filename(filename)
         return self._fileobj
 
@@ -476,7 +475,6 @@ class DownloadSubmissionTask(SubmissionTask):
         # Determine the number of parts
         part_size = config.multipart_chunksize
         num_parts = calculate_num_parts(transfer_future.meta.size, part_size)
-        print(f'part size: {part_size}, num parts: {num_parts}')
 
         # Get any associated tags for the get object task.
         get_object_tag = download_output_manager.get_download_task_tag()
@@ -598,8 +596,6 @@ class GetObjectTask(Task):
                     # or error somewhere else, stop trying to submit more
                     # data to be written and break out of the download.
                     if not self._transfer_coordinator.done():
-                        # print(f'current index: {current_index}')
-                        # print(f'download output manager: {type(download_output_manager).__name__}')
                         self._handle_io(
                             download_output_manager,
                             fileobj,
@@ -608,7 +604,6 @@ class GetObjectTask(Task):
                         )
                         current_index += len(chunk)
                     else:
-                        print('exiting early')
                         return
                 return
             except S3_RETRYABLE_DOWNLOAD_ERRORS as e:
@@ -643,7 +638,6 @@ class ImmediatelyWriteIOGetObjectTask(GetObjectTask):
     """
 
     def _handle_io(self, download_output_manager, fileobj, chunk, index):
-        # print(f'download output manager: {type(download_output_manager).__name__}')
         task = download_output_manager.get_io_write_task(fileobj, chunk, index)
         task()
 
@@ -768,7 +762,6 @@ class DeferQueue:
     """
 
     def __init__(self):
-        print('deferqueue initialized')
         self._writes = []
         self._pending_offsets = set()
         self._pending_offsets2 = {}
@@ -787,13 +780,11 @@ class DeferQueue:
         each method call.
 
         """
-        print(f'write len {len(data)} requested to offset {offset}. next offset: {self._next_offset}')
         if offset + len(data) <= self._next_offset:
             # This is a request for a write that we've already
             # seen.  This can happen in the event of a retry
             # where if we retry at at offset N/2, we'll requeue
             # offsets 0-N/2 again.
-            print('DEFERQUEUE SKIPPED REQUEST SINCE ENTIRELY SEEN')
             return []
         writes = []
         if offset < self._next_offset:
@@ -810,7 +801,6 @@ class DeferQueue:
             seen_bytes = self._next_offset - offset
             data = data[seen_bytes:]
             offset = self._next_offset
-            print(f'SPECIAL CASE. SEEN {seen_bytes}. WILL WRITE {len(data)} AT OFFSET {offset}')
         # if (offset, len(data)) in self._pending_offsets:
         #     # We've already queued this offset so this request is
         #     # a duplicate.  In this case we should ignore
@@ -854,7 +844,6 @@ class DeferQueue:
             # self._pending_offsets.remove((next_write[0], next_write_len))
             del self._pending_offsets2[next_write_offset]
             self._next_offset += next_write_len
-            print(f'MOVED OFFSET TO {self._next_offset}')
         return writes
 
 # class DeferQueue:

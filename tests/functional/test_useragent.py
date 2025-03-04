@@ -31,3 +31,5 @@ def test_user_agent_for_customization():
     operation = 'ls'
     result = cli_runner.run([service, operation])
     assert_expected_user_agent(result, service, operation)
+    ua_string = result.aws_requests[0].http_requests[0].headers['User-Agent']
+    assert 'm/C' in ua_string

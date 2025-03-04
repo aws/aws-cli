@@ -25,6 +25,7 @@ See the public documentation for a full description of the feature.
 """
 
 # pylint: disable=fixme,too-many-instance-attributes,too-many-lines
+# pylint: disable=too-many-public-methods
 
 import copy
 import logging
@@ -647,7 +648,7 @@ class Module:
                     if word.w in self.resources:
                         resolved = "${" + self.name + word.w + "}"
                     elif word.w in self.module_parameters:
-                        found = self.find_ref(word.w)
+                        found = self.find_reffed_param(word.w)
                         if found:
                             resolved = found
                     sub += resolved
@@ -667,6 +668,20 @@ class Module:
         else:
             # Handle scalars in Properties
             d[n] = r
+
+    def find_reffed_param(self, w):
+        "Find a reffed parameter in an output sub"
+        resolved = None
+        found = self.find_ref(w)
+        if found:
+            resolved = found
+            if not isinstance(resolved, str):
+                if SUB in resolved:
+                    resolved = resolved[SUB]
+                else:
+                    msg = f"Expected str in {self.name}: {resolved}"
+                    raise exceptions.InvalidModuleError(msg=msg)
+        return resolved
 
     def resolve_output_getatt_map(self, mapped, name, prop_name):
         "Resolve GetAtts that reference all Outputs from a mapped module"

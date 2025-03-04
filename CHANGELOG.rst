@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.24.17
+=======
+
+* api-change:``iotsitewise``: AWS IoT SiteWise now supports MQTT-enabled, V3 gateways. Configure data destinations for real-time ingestion into AWS IoT SiteWise or buffered ingestion using Amazon S3 storage. You can also use path filters for precise data collection from specific MQTT topics.
+* api-change:``elasticache``: Doc only update, listing 'valkey7' and 'valkey8' as engine options for parameter groups.
+* api-change:``rds``: Note support for Database Insights for Amazon RDS.
+* enhancement:useragent: Update user agent string to include client feature use.
+* api-change:``iot-managed-integrations``: Adding managed integrations APIs for IoT Device Management to setup and control devices across different manufacturers and connectivity protocols. APIs include managedthing operations, credential and provisioning profile management, notification configuration, and OTA update.
+
+
 2.24.16
 =======
 

@@ -10,7 +10,7 @@ def assert_expected_user_agent(result, service, operation):
     assert ' md/arch#' in ua_string
     assert ' md/prompt#off' in ua_string
     assert f' md/command#{service}.{operation}' in ua_string
-    assert ' ua/2.0 ' in ua_string
+    assert ' ua/2.1 ' in ua_string
     assert ' os/' in ua_string
     assert ' lang/python' in ua_string
     assert ' cfg/' in ua_string
@@ -31,3 +31,5 @@ def test_user_agent_for_customization():
     operation = 'ls'
     result = cli_runner.run([service, operation])
     assert_expected_user_agent(result, service, operation)
+    ua_string = result.aws_requests[0].http_requests[0].headers['User-Agent']
+    assert 'm/C' in ua_string

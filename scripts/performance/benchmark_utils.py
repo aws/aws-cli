@@ -417,7 +417,6 @@ class BenchmarkHarness(object):
                     'name': benchmark['name'],
                     'measurements': []
                 }
-                print('Running benchmark ', benchmark['name'])
                 if 'dimensions' in benchmark:
                     benchmark_result['dimensions'] = benchmark['dimensions']
                 for iteration in range(args.num_iterations):

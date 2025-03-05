@@ -21,6 +21,7 @@ Fn::Merge
 """
 
 from collections import OrderedDict
+import copy
 import os
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.module_merge import (
@@ -34,6 +35,83 @@ SELECT = "Fn::Select"
 REF = "Ref"
 GETATT = "Fn::GetAtt"
 INSERT_FILE = "Fn::InsertFile"
+INVOKE = "Fn::Invoke"
+
+
+def fn_invoke(m):
+    """
+    Resolve Fn::Invoke.
+
+    Invoke allows you to treat a module like a function.
+
+    Invoking the module returns its outputs with a modified
+    set of parameters.
+
+    :param m: The module
+    """
+
+    def vf(v):
+        if not isdict(v.d):
+            return
+        if INVOKE not in v.d:
+            return
+        if v.p is None:
+            return
+
+        print("fn_invoke")
+        print("v.d:", v.d)
+        print("v.p:", v.p)
+        print("v.k:", v.k)
+
+        inv = v.d[INVOKE]
+        if not isinstance(inv, list) or len(inv) != 3:
+            msg = f"Fn::Invoke requires 3 arguments: {inv}"
+            raise exceptions.InvalidModuleError(msg=msg)
+        module_name = inv[0]
+        params = inv[1]
+        outputs = inv[2]
+
+        if module_name != m.name:
+            return
+
+        # Create a copy of the original props and override values
+        props_copy = copy.deepcopy(m.props)
+        for k, val in params.items():
+            props_copy[k] = val
+
+        invoke_outputs = []
+        if isinstance(outputs, list):
+            invoke_outputs = outputs
+        else:
+            invoke_outputs.append(outputs)
+
+        retval = []
+        for k in invoke_outputs:
+            if k not in m.module_outputs:
+                msg = f"Fn::Invoke output not found in {m.name}: k"
+                raise exceptions.InvalidModuleError(msg=msg)
+            n = "x"
+            d = {n: {}}
+            vv = copy.deepcopy(m.module_outputs[k])
+            d[n] = {k: vv}
+            print("")
+            print("fn_invoke resolve_module_outputs")
+            print("k:", k)
+            print("vv:", vv)
+            print("d:", d)
+            print("n:", n)
+            m.resolve_module_outputs(k, vv, d, n)
+            print("vv after:", vv)
+            print("d[n] after:", d[n])
+
+            retval.append(vv)
+
+        if len(retval) == 1:
+            retval = retval[0]
+
+        v.p[v.k] = retval
+
+    Visitor(m.template).visit(vf)
 
 
 def fn_select(d):

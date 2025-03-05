@@ -115,6 +115,7 @@ class TestPackageModules(unittest.TestCase):
             "mergetags",
             "insertfile",
             "outsublist",
+            "outjoin",
         ]
         for test in tests:
             t, _ = modules.read_source(f"{base}/{test}-template.yaml")

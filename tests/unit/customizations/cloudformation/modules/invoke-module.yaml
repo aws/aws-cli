@@ -1,0 +1,52 @@
+Description: This module outputs a consistent resource name
+
+Parameters:
+  
+  Env:
+    Type: String
+    Description: The environment, for example, dev, stage, prod
+
+  App:
+    Type: String
+    Description: The application name
+
+  Name:
+    Type: String
+    Description: The name of the resource
+
+  Delimiter:
+    Type: String
+    Default: "-"
+
+  MaxLength:
+    Type: Integer
+    Description: If the components exceed this, truncate and append a hash
+
+  IncludeRegion:
+    Type: Boolean
+    Default: false
+
+  IncludeAccount:
+    Type: Boolean
+    Default: false
+
+  LabelOrder:
+    Type: List<String>
+    Default:
+      - Name
+      - App
+      - Env
+      - Region
+      - Account
+
+Outputs:
+
+  Id:
+    Value:
+      Fn::Join:
+        - !Ref Delimiter
+        - - !Ref Name
+          - !Ref App
+          - !Ref Env
+
+

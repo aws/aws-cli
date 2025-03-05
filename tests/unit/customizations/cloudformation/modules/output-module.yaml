@@ -20,4 +20,10 @@ Outputs:
       - !Sub ${Bucket.Arn}
       - !Sub ${Bucket2.Arn}
       - !Sub abc-${Name}
+  JoinTest:
+    Value:
+      Fn::Join:
+        - "-"
+        - - !GetAtt Bucket.BucketName
+          - !GetAtt Bucket.Arn
 

@@ -13,6 +13,15 @@ Resources:
         - Fn::Sub: ${ContentBucket.Arn}
         - Fn::Sub: ${ContentBucket2.Arn}
         - abc-foo
+        Join:
+          Fn::Join:
+          - '-'
+          - - Fn::GetAtt:
+              - ContentBucket
+              - BucketName
+            - Fn::GetAtt:
+              - ContentBucket
+              - Arn
   ContentBucket:
     Type: AWS::S3::Bucket
     Properties:

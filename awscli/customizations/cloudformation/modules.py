@@ -37,6 +37,7 @@ from awscli.customizations.cloudformation.module_functions import (
     fn_merge,
     fn_select,
     fn_insertfile,
+    fn_invoke,
 )
 from awscli.customizations.cloudformation.module_merge import (
     isdict,
@@ -310,7 +311,7 @@ class Module:
             + f"source: {self.source}, props: {self.props}"
         )
 
-    # pylint: disable=too-many-branches
+    # pylint: disable=too-many-branches,too-many-statements
     def process(self):
         """
         Read the module source and process it.
@@ -408,6 +409,9 @@ class Module:
         # Process the module's outputs by modifying the parent
         self.process_module_outputs()
 
+        # Look for Fn::Invoke calling this module in the parent
+        fn_invoke(self)
+
         return self.template
 
     def process_module_outputs(self):
@@ -446,6 +450,14 @@ class Module:
 
         If a reference is found, this function sets the value of d[n]
         """
+
+        print("==")
+        print("resolve_module_outputs")
+        print("  k:", k)
+        print("  v:", v)
+        print("  d:", d)
+        print("  n:", n)
+
         if k == SUB:
             self.resolve_output_sub(v, d, n)
         elif k == GETATT:
@@ -461,6 +473,9 @@ class Module:
                     if isdict(v2):
                         for k3, v3 in v2.copy().items():
                             self.resolve_module_outputs(k3, v3, v, idx)
+                    elif isinstance(v2, list):
+                        for i, v3 in enumerate(v2):
+                            self.resolve_module_outputs(i, v3, v, idx)
 
     def resolve_output_sub_getatt(self, w):
         """
@@ -565,6 +580,11 @@ class Module:
         This function sets d[n] and returns True if it resolved.
         """
 
+        print("  resolve_output_getatt")
+        print("    v:", v)
+        print("    d:", d)
+        print("    n:", n)
+
         if not isinstance(v, list) or len(v) < 2:
             msg = f"GetAtt {v} invalid"
             raise exceptions.InvalidModuleError(msg=msg)
@@ -603,12 +623,15 @@ class Module:
             elif prop_name in self.props:
                 reffed_prop = self.props[prop_name]
 
+        print("    reffed_prop:", reffed_prop)
+
         if reffed_prop is None:
             return False
 
         if isinstance(reffed_prop, list):
             for i, r in enumerate(reffed_prop):
                 self.replace_reffed_prop(r, reffed_prop, i)
+                print("      reffed_prop enumerate:", reffed_prop)
                 d[n] = reffed_prop
         else:
             self.replace_reffed_prop(reffed_prop, d, n)
@@ -621,6 +644,11 @@ class Module:
 
         Sets d[n].
         """
+
+        print("    replace_reffed_prop")
+        print("      r:", r)
+        print("      d:", d)
+        print("      n:", n)
 
         if REF in r:
             ref = r[REF]
@@ -674,9 +702,22 @@ class Module:
                 d[n] = {SUB: sub}
             else:
                 d[n] = sub
+        elif isdict(r):
+            # An intrinsic like Join.. recurse
+            print("      recursing on dict...")
+            for rk, rv in r.copy().items():
+                self.replace_reffed_prop(rv, r, rk)
+                d[n] = r
+        elif isinstance(r, list):
+            print("      recursing on list...")
+            for ri, rv in enumerate(r):
+                self.replace_reffed_prop(rv, r, ri)
+                d[n] = r
         else:
             # Handle scalars in Properties
             d[n] = r
+
+        print("      replace_reffed_prop d[n]:", d[n])
 
     def find_reffed_param(self, w):
         "Find a reffed parameter in an output sub"

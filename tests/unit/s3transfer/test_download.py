@@ -963,7 +963,7 @@ class TestDeferQueue(unittest.TestCase):
         writes = self.q.request_writes(offset=11, data='hello again')
         self.assertEqual(writes, [{'offset': 11, 'data': 'hello again'}])
 
-    def test_writes_below_min_offset_are_ignored(self):
+    def test_writes_with_last_byte_below_min_offset_are_ignored(self):
         self.q.request_writes(offset=0, data='a')
         self.q.request_writes(offset=1, data='b')
         self.q.request_writes(offset=2, data='c')
@@ -978,13 +978,36 @@ class TestDeferQueue(unittest.TestCase):
             [{'offset': 3, 'data': 'd'}],
         )
 
-    def test_duplicate_writes_are_ignored(self):
+    def test_writes_below_min_offset_with_last_byte_above_min_offset_are_queued(self):
+        self.assertEqual(
+            self.q.request_writes(offset=0, data='foo'),
+            [
+                {'offset': 0, 'data': 'foo'}
+            ]
+        )
+
+        # Even though a partial write of 'foo' was completed at offset 0,
+        # a subsequent request to the same offset with a longer
+        # length will write a substring of the data starting at
+        # index next_offset.
+        self.assertEqual(
+            self.q.request_writes(offset=0, data='foo bar'),
+            [
+                # Note we are writing a substring of the data starting at
+                # index 3 since the previous write to index 0 had length 3.
+                {'offset': 3, 'data': ' bar'},
+            ],
+        )
+
+    def test_duplicate_writes_same_length_are_ignored(self):
         self.q.request_writes(offset=2, data='c')
         self.q.request_writes(offset=1, data='b')
 
         # We're still waiting for offset=0, but if
-        # a duplicate write comes in for offset=2/offset=1
-        # it's ignored.  This gives "first one wins" behavior.
+        # a duplicate write with the same length comes in
+        # for offset=2/offset=1 it's ignored.
+        # This gives "largest one wins" behavior with ties
+        # broken via "first one wins".
         self.assertEqual(self.q.request_writes(offset=2, data='X'), [])
         self.assertEqual(self.q.request_writes(offset=1, data='Y'), [])
 
@@ -997,3 +1020,24 @@ class TestDeferQueue(unittest.TestCase):
                 {'offset': 2, 'data': 'c'},
             ],
         )
+
+    def test_duplicate_writes_longer_length_update_queue(self):
+        self.q.request_writes(offset=1, data='b')
+
+        # We're still waiting for offset=0, but if
+        # a write comes in for the same offset=2/offset=1
+        # it updates the queue if the request contains more data.
+        # This gives "largest one wins" behavior with ties
+        # broken via "first one wins".
+        self.assertEqual(self.q.request_writes(offset=1, data='bar'), [])
+
+        self.assertEqual(
+            self.q.request_writes(offset=0, data='a'),
+            [
+                {'offset': 0, 'data': 'a'},
+                # Note we're seeing 'bar', and not 'b', since len(bar) > len(b).
+                {'offset': 1, 'data': 'bar'},
+            ],
+        )
+
+

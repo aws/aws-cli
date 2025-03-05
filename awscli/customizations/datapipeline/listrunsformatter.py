@@ -25,11 +25,12 @@ class ListRunsFormatter(FullyBufferedFormatter):
             self._print_row(i, obj, stream)
 
     def _print_headers(self, stream):
-        stream.write(self.TITLE_ROW_FORMAT_STRING % (
-            "Name", "Scheduled Start", "Status"))
+        stream.write(
+            self.TITLE_ROW_FORMAT_STRING
+            % ("Name", "Scheduled Start", "Status")
+        )
         stream.write('\n')
-        second_row = (self.SECOND_ROW_FORMAT_STRING % (
-            "ID", "Started", "Ended"))
+        second_row = self.SECOND_ROW_FORMAT_STRING % ("ID", "Started", "Ended")
         stream.write(second_row)
         stream.write('\n')
         stream.write('-' * len(second_row))
@@ -43,9 +44,16 @@ class ListRunsFormatter(FullyBufferedFormatter):
         start_date = obj.get('@actualStartTime', '')
         end_date = obj.get('@actualEndTime', '')
         first_row = self.FIRST_ROW_FORMAT_STRING % (
-            index + 1, logical_name, scheduled_start_date, status)
+            index + 1,
+            logical_name,
+            scheduled_start_date,
+            status,
+        )
         second_row = self.SECOND_ROW_FORMAT_STRING % (
-            object_id, start_date, end_date)
+            object_id,
+            start_date,
+            end_date,
+        )
         stream.write(first_row)
         stream.write('\n')
         stream.write(second_row)

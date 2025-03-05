@@ -17,8 +17,7 @@ from awscli.customizations.exceptions import ParamValidationError
 
 class PipelineDefinitionError(ParamValidationError):
     def __init__(self, msg, definition):
-        full_msg = (
-            "Error in pipeline definition: %s\n" % msg)
+        full_msg = "Error in pipeline definition: %s\n" % msg
         super(PipelineDefinitionError, self).__init__(full_msg)
         self.msg = msg
         self.definition = definition
@@ -44,7 +43,8 @@ def display_response(session, operation_name, result, parsed_globals):
     # Calling a private method. Should be changed after the functionality
     # is moved outside CliOperationCaller.
     cli_operation_caller._display_response(
-        operation_name, result, parsed_globals)
+        operation_name, result, parsed_globals
+    )
 
 
 def api_to_definition(definition):
@@ -54,13 +54,16 @@ def api_to_definition(definition):
     # api_response.
     if 'pipelineObjects' in definition:
         definition['objects'] = _api_to_objects_definition(
-            definition.pop('pipelineObjects'))
+            definition.pop('pipelineObjects')
+        )
     if 'parameterObjects' in definition:
         definition['parameters'] = _api_to_parameters_definition(
-            definition.pop('parameterObjects'))
+            definition.pop('parameterObjects')
+        )
     if 'parameterValues' in definition:
         definition['values'] = _api_to_values_definition(
-            definition.pop('parameterValues'))
+            definition.pop('parameterValues')
+        )
     return definition
 
 
@@ -75,8 +78,10 @@ def definition_to_api_objects(definition):
         try:
             element_id = element.pop('id')
         except KeyError:
-            raise PipelineDefinitionError('Missing "id" key of element: %s' %
-                                          json.dumps(element), definition)
+            raise PipelineDefinitionError(
+                'Missing "id" key of element: %s' % json.dumps(element),
+                definition,
+            )
         api_object = {'id': element_id}
         # If a name is provided, then we use that for the name,
         # otherwise the id is used for the name.
@@ -100,8 +105,10 @@ def definition_to_api_parameters(definition):
         try:
             parameter_id = element.pop('id')
         except KeyError:
-            raise PipelineDefinitionError('Missing "id" key of parameter: %s' %
-                                          json.dumps(element), definition)
+            raise PipelineDefinitionError(
+                'Missing "id" key of parameter: %s' % json.dumps(element),
+                definition,
+            )
         parameter_object = {'id': parameter_id}
         # Now we need the attribute list.  Each element in the attribute list
         # is a dict with a 'key', 'stringValue'
@@ -119,7 +126,8 @@ def definition_to_parameter_values(definition):
     parameter_values = []
     for key in definition['values']:
         parameter_values.extend(
-            _convert_single_parameter_value(key, definition['values'][key]))
+            _convert_single_parameter_value(key, definition['values'][key])
+        )
 
     return parameter_values
 
@@ -158,10 +166,7 @@ def _convert_single_parameter_value(key, values):
 def _api_to_objects_definition(api_response):
     pipeline_objects = []
     for element in api_response:
-        current = {
-            'id': element['id'],
-            'name': element['name']
-        }
+        current = {'id': element['id'], 'name': element['name']}
         for field in element['fields']:
             key = field['key']
             if 'stringValue' in field:
@@ -176,9 +181,7 @@ def _api_to_objects_definition(api_response):
 def _api_to_parameters_definition(api_response):
     parameter_objects = []
     for element in api_response:
-        current = {
-            'id': element['id']
-        }
+        current = {'id': element['id']}
         for attribute in element['attributes']:
             _add_value(attribute['key'], attribute['stringValue'], current)
         parameter_objects.append(current)

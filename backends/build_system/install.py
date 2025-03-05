@@ -25,6 +25,7 @@ WINDOWS_CMD_TEMPLATE = """@echo off
 {path} %*
 """
 
+
 class Uninstaller:
     def __init__(self, utils: Utils = None):
         if utils is None:
@@ -36,7 +37,9 @@ class Uninstaller:
             self._utils.rmtree(install_dir)
         for exe in CLI_SCRIPTS:
             exe_path = os.path.join(bin_dir, exe)
-            if self._utils.islink(exe_path) or self._utils.path_exists(exe_path):
+            if self._utils.islink(exe_path) or self._utils.path_exists(
+                exe_path
+            ):
                 self._utils.remove(exe_path)
 
 
@@ -78,7 +81,9 @@ class Installer:
 
     def _install_executables_on_windows(self, install_dir, bin_dir):
         filepath = os.path.join(bin_dir, "aws.cmd")
-        content = WINDOWS_CMD_TEMPLATE.format(path=os.path.join(install_dir, "aws.exe"))
+        content = WINDOWS_CMD_TEMPLATE.format(
+            path=os.path.join(install_dir, "aws.exe")
+        )
         self._utils.write_file(filepath, content)
 
     def _symlink_executables(self, install_dir, bin_dir):

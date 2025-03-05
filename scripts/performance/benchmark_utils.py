@@ -41,7 +41,7 @@ class Summarizer:
     def _validate_samples(self, samples):
         if not samples:
             raise RuntimeError(
-                'Benchmark samples could not be processed. ' 
+                'Benchmark samples could not be processed. '
                 'The samples list is empty'
             )
 
@@ -77,7 +77,7 @@ class Summarizer:
 
     def _compute_metric_percentile(self, percentile, name):
         num_samples = len(self._samples)
-        p_idx = math.ceil(percentile*num_samples/100) - 1
+        p_idx = math.ceil(percentile * num_samples / 100) - 1
         return self._samples[p_idx][name]
 
     def _get_time(self, sample):
@@ -97,6 +97,7 @@ class RawResponse(BytesIO):
     """
     A bytes-like streamable HTTP response representation.
     """
+
     def stream(self, **kwargs):
         contents = self.read()
         while contents:
@@ -108,6 +109,7 @@ class StubbedHTTPClient(object):
     """
     A generic stubbed HTTP client.
     """
+
     def setup(self):
         urllib3_session_send = 'botocore.httpsession.URLLib3Session.send'
         self._urllib3_patch = mock.patch(urllib3_session_send)
@@ -129,7 +131,7 @@ class StubbedHTTPClient(object):
             url='http://169.254.169.254/',
             status_code=status_code,
             headers=headers,
-            raw=RawResponse(body.encode())
+            raw=RawResponse(body.encode()),
         )
         self._responses.append(response)
 
@@ -138,6 +140,7 @@ class ProcessBenchmarker(object):
     """
     Periodically samples CPU and memory usage of a process given its pid.
     """
+
     def benchmark_process(self, pid, data_interval):
         parent_pid = os.getpid()
         try:
@@ -169,15 +172,23 @@ class ProcessBenchmarker(object):
                 # Collect the memory and cpu usage.
                 memory_used = process_to_measure.memory_info().rss
                 cpu_percent = process_to_measure.cpu_percent()
-            except (psutil.AccessDenied, psutil.ZombieProcess, psutil.NoSuchProcess):
+            except (
+                psutil.AccessDenied,
+                psutil.ZombieProcess,
+                psutil.NoSuchProcess,
+            ):
                 # Trying to get process information from a closed or
                 # zombie process will result in corresponding exceptions.
                 break
             # Determine the lapsed time for bookkeeping
             current_time = time.time()
-            samples.append({
-                "time": current_time, "memory": memory_used, "cpu": cpu_percent
-            })
+            samples.append(
+                {
+                    "time": current_time,
+                    "memory": memory_used,
+                    "cpu": cpu_percent,
+                }
+            )
         return samples
 
 
@@ -188,6 +199,7 @@ class BenchmarkHarness(object):
     Orchestrates running benchmarks in isolated, configurable environments defined
     via a specified JSON file.
     """
+
     def __init__(self):
         self._summarizer = Summarizer()
 
@@ -196,7 +208,7 @@ class BenchmarkHarness(object):
             'AWS_CONFIG_FILE': config_file,
             'AWS_DEFAULT_REGION': 'us-west-2',
             'AWS_ACCESS_KEY_ID': 'access_key',
-            'AWS_SECRET_ACCESS_KEY': 'secret_key'
+            'AWS_SECRET_ACCESS_KEY': 'secret_key',
         }
 
     def _create_file_with_size(self, path, size):
@@ -223,13 +235,7 @@ class BenchmarkHarness(object):
             file_path = os.path.join(dir_path, f'{i}')
             self._create_file_with_size(file_path, size)
 
-    def _setup_iteration(
-            self,
-            benchmark,
-            client,
-            result_dir,
-            config_file
-    ):
+    def _setup_iteration(self, benchmark, client, result_dir, config_file):
         """
         Performs the environment setup for a single iteration of a
         benchmark. This includes creating the files used by a
@@ -247,7 +253,7 @@ class BenchmarkHarness(object):
                 self._create_file_dir(
                     dir_path,
                     file_dir_def['file_count'],
-                    file_dir_def['file_size']
+                    file_dir_def['file_size'],
                 )
         if "file_literals" in env:
             for file_lit in env['file_literals']:
@@ -264,8 +270,7 @@ class BenchmarkHarness(object):
         # setup and stub HTTP client
         client.setup()
         self._stub_responses(
-            benchmark.get('responses', [{"headers": {}, "body": ""}]),
-            client
+            benchmark.get('responses', [{"headers": {}, "body": ""}]), client
         )
 
     def _stub_responses(self, responses, client):
@@ -301,30 +306,27 @@ class BenchmarkHarness(object):
         event_emitter.register_last(
             'before-call',
             _log_invocation_time,
-            'benchmarks.log-invocation-time'
+            'benchmarks.log-invocation-time',
         )
         rc = AWSCLIEntryPoint(driver).main(cmd)
         end_time = time.time()
 
         # write the collected metrics to a file
         metrics_f = open(out_file, 'w')
-        metrics_f.write(json.dumps(
-            {
-                'return_code': rc,
-                'start_time': start_time,
-                'end_time': end_time,
-                'first_client_invocation_time': first_client_invocation_time
-            }
-        ))
+        metrics_f.write(
+            json.dumps(
+                {
+                    'return_code': rc,
+                    'start_time': start_time,
+                    'end_time': end_time,
+                    'first_client_invocation_time': first_client_invocation_time,
+                }
+            )
+        )
         metrics_f.close()
 
     def _run_isolated_benchmark(
-            self,
-            result_dir,
-            benchmark,
-            client,
-            process_benchmarker,
-            args
+        self, result_dir, benchmark, client, process_benchmarker, args
     ):
         """
         Runs a single iteration of one benchmark execution. Includes setting up
@@ -340,7 +342,9 @@ class BenchmarkHarness(object):
         self._setup_iteration(benchmark, client, result_dir, config_path)
         os.chdir(result_dir)
         # patch the OS environment with our supplied defaults
-        env_patch = mock.patch.dict('os.environ', self._get_default_env(config_path))
+        env_patch = mock.patch.dict(
+            'os.environ', self._get_default_env(config_path)
+        )
         env_patch.start()
         # fork a child process to run the command on.
         # the parent process benchmarks the child process until the child terminates.
@@ -348,34 +352,44 @@ class BenchmarkHarness(object):
 
         try:
             if pid == 0:
-                with open(child_output_path, 'w') as out, open(child_err_path, 'w') as err:
+                with open(child_output_path, 'w') as out, open(
+                    child_err_path, 'w'
+                ) as err:
                     # redirect standard output of the child process to a file
                     os.dup2(out.fileno(), sys.stdout.fileno())
                     os.dup2(err.fileno(), sys.stderr.fileno())
                     # execute command on child process
-                    self._run_command_with_metric_hooks(benchmark['command'], metrics_path)
+                    self._run_command_with_metric_hooks(
+                        benchmark['command'], metrics_path
+                    )
                     # terminate the child process
                     os._exit(0)
             # benchmark child process from parent process until child terminates
             samples = process_benchmarker.benchmark_process(
-                pid,
-                args.data_interval
+                pid, args.data_interval
             )
             # load child-collected metrics if exists
             if not os.path.exists(metrics_path):
-                raise RuntimeError('Child process execution failed: output file not found.')
+                raise RuntimeError(
+                    'Child process execution failed: output file not found.'
+                )
             metrics_f = json.load(open(metrics_path, 'r'))
             # raise error if child process failed
             if (rc := metrics_f['return_code']) != 0:
                 with open(child_err_path, 'r') as err:
                     raise RuntimeError(
                         f'Child process execution failed: return code {rc}.\n'
-                        f'Error: {err.read()}')
+                        f'Error: {err.read()}'
+                    )
             # summarize benchmark results and process summary
             summary = self._summarizer.summarize(samples)
-            summary['total_time'] = metrics_f['end_time'] - metrics_f['start_time']
-            summary['first_client_invocation_time'] = (metrics_f['first_client_invocation_time']
-                                                       - metrics_f['start_time'])
+            summary['total_time'] = (
+                metrics_f['end_time'] - metrics_f['start_time']
+            )
+            summary['first_client_invocation_time'] = (
+                metrics_f['first_client_invocation_time']
+                - metrics_f['start_time']
+            )
         finally:
             # cleanup iteration of benchmark
             client.tearDown()
@@ -402,7 +416,7 @@ class BenchmarkHarness(object):
             for benchmark in definitions:
                 benchmark_result = {
                     'name': benchmark['name'],
-                    'measurements': []
+                    'measurements': [],
                 }
                 if 'dimensions' in benchmark:
                     benchmark_result['dimensions'] = benchmark['dimensions']
@@ -412,7 +426,7 @@ class BenchmarkHarness(object):
                         benchmark,
                         client,
                         process_benchmarker,
-                        args
+                        args,
                     )
                     benchmark_result['measurements'].append(measurements)
                 summaries['results'].append(benchmark_result)

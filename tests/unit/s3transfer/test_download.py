@@ -1039,5 +1039,3 @@ class TestDeferQueue(unittest.TestCase):
                 {'offset': 1, 'data': 'bar'},
             ],
         )
-
-

@@ -285,8 +285,12 @@ the service for each request made during command execution.
 the response. Each key-value pair corresponds to a single header name (key) 
 and its value.
       - Default: `{}`
-    - `body` (string) **(optional)**: The raw HTTP response.
+    - `body` (string | object) **(optional)**: The raw HTTP response body.
       - Default: `""`
+      - If body is an object, it supports the following keys:
+        - `file` (string): The name of a file whose contents will be used as 
+the response body. This can refer to files created under the `environment` 
+definition.
     - `instances` (int) **(optional)**: The total number of times to stub 
 this response; this prevents the need to repeat the same response many times.  
       - Default: 1

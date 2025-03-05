@@ -27,7 +27,7 @@ import bootstrapdocs
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['notfound.extension',]
+extensions = ['notfound.extension', 'crosslinker']
 notfound_context = {
     'title': 'Page not found',
     'body': '<h1>Page not found</h1>\n\n'

@@ -146,7 +146,9 @@ def process_resource_conditions(name, conditions, resources, outputs):
             trueval = conditional[1]
             falseval = conditional[2]
             if condition_name not in conditions:
-                return  # Assume this is a parent template condition?
+                # return  # Assume this is a parent template condition?
+                msg = f"{name} Condition not found: {condition_name}"
+                raise exceptions.InvalidModuleError(msg=msg)
             if conditions[condition_name]:
                 v.p[v.k] = trueval
             else:

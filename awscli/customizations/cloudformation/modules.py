@@ -794,7 +794,7 @@ class Module:
         if len(replace_ds) == 1:
             resource[DEPENDSON] = replace_ds[0]
         else:
-            resource[DEPENDSON] = replace_ds
+            resource[DEPENDSON] = list(set(replace_ds))
 
     def get_source_map(self, logical_id):
         "Get the string to put in the resource metadata source map"
@@ -1038,7 +1038,12 @@ class Module:
                 # in the Parameters section of this module
                 msg = f"{name} not found in module Parameters: {self.source}"
                 raise exceptions.InvalidModuleError(msg=msg)
-            return self.props[name]
+
+            p = self.props[name]
+            if isdict(p):
+                if self.parent_module.name != "" and REF in p:
+                    p = self.parent_module.find_ref(p[REF])
+            return p
 
         if name in self.module_parameters:
             param = self.module_parameters[name]

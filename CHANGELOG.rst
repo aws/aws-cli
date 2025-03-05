@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.24.18
+=======
+
+* api-change:``iotfleetwise``: This release adds floating point support for CAN/OBD signals and adds support for signed OBD signals.
+* api-change:``datasync``: AWS DataSync now supports modifying ServerHostname while updating locations SMB, NFS, and ObjectStorage.
+* api-change:``workspaces``: Added DeviceTypeWorkSpacesThinClient type to allow users to access their WorkSpaces through a WorkSpaces Thin Client.
+* api-change:``gameliftstreams``: New Service: Amazon GameLift Streams delivers low-latency game streaming from AWS global infrastructure to virtually any device with a browser at up to 1080p resolution and 60 fps.
+* api-change:``bedrock-runtime``: This releases adds support for Custom Prompt Router ARN
+
+
 2.24.17
 =======
 

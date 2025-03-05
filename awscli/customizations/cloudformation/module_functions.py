@@ -50,6 +50,8 @@ def fn_select(d):
             idx = sel[1]
             if isinstance(idx, (dict, OrderedDict, list)):
                 return
+            if not isinstance(arr, list):
+                return
             for item in arr:
                 if isinstance(item, (dict, OrderedDict, list)):
                     return

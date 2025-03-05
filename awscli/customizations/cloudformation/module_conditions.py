@@ -74,7 +74,11 @@ def istrue(v, find_ref, prior):
                 val0 = find_ref(val0[REF])
             if isdict(val1) and REF in val1:
                 val1 = find_ref(val1[REF])
-            retval = val0 == val1
+            # Recurse for nested IFs
+            if val0 == eq[0] and val1 == eq[1]:
+                retval = val0 == val1
+            else:
+                retval = istrue({EQUALS: [val0, val1]}, find_ref, prior)
         else:
             msg = f"Equals expression should be a list with 2 elements: {eq}"
             raise exceptions.InvalidModuleError(msg=msg)
@@ -120,8 +124,11 @@ def istrue(v, find_ref, prior):
     return retval
 
 
-def process_resource_conditions(name, conditions, resources, outputs):
-    "Visit all resources to look for Fn::If conditions"
+def process_conditions(name, conditions, modules, resources, outputs):
+    """
+    Visit all modules, resources, and outputs
+    to look for Fn::If conditions
+    """
 
     # Example
     #
@@ -158,6 +165,7 @@ def process_resource_conditions(name, conditions, resources, outputs):
                 if newval[REF] == "AWS::NoValue":
                     del v.p[v.k]
 
+    Visitor(modules).visit(vf)
     Visitor(resources).visit(vf)
     Visitor(outputs).visit(vf)
 

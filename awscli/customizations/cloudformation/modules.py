@@ -60,7 +60,7 @@ from awscli.customizations.cloudformation.parse_sub import (
 )
 from awscli.customizations.cloudformation.module_conditions import (
     parse_conditions,
-    process_resource_conditions,
+    process_conditions,
 )
 from awscli.customizations.cloudformation.module_read import (
     read_source,
@@ -377,6 +377,15 @@ class Module:
                         if v[CONDITION] in self.conditions:
                             if self.conditions[v[CONDITION]] is False:
                                 del module_dict[MODULES][k]
+
+        # Process inline Fn::If conditions
+        process_conditions(
+            self.name,
+            self.conditions,
+            module_dict.get(MODULES, {}),
+            self.resources,
+            self.module_outputs,
+        )
 
         # Recurse on nested modules
         bp = os.path.dirname(self.source)
@@ -729,10 +738,6 @@ class Module:
         for a in attrs:
             self.process_overrides(logical_id, resource, a)
 
-        process_resource_conditions(
-            self.name, self.conditions, self.resources, self.module_outputs
-        )
-
         # Resolve refs, subs, and getatts
         #    (Process module Parameters and parent Properties)
         container = {}
@@ -750,7 +755,9 @@ class Module:
             if METADATA not in resource:
                 resource[METADATA] = {}
             metadata = resource[METADATA]
-            metadata[SOURCE_MAP] = self.get_source_map(logical_id)
+            if SOURCE_MAP not in metadata:
+                # Don't overwrite child maps
+                metadata[SOURCE_MAP] = self.get_source_map(logical_id)
 
     def depends_on(self, logical_id, resource):
         """

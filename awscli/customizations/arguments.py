@@ -62,8 +62,10 @@ class OverrideRequiredArgsArgument(CustomArgument):
         super(OverrideRequiredArgsArgument, self).__init__(**self.ARG_DATA)
 
     def _register_argument_action(self):
-        self._session.register('before-building-argument-table-parser',
-                               self.override_required_args)
+        self._session.register(
+            'before-building-argument-table-parser',
+            self.override_required_args,
+        )
 
     def override_required_args(self, argument_table, args, **kwargs):
         name_in_cmdline = '--' + self.name
@@ -93,16 +95,19 @@ class StatefulArgument(CustomArgument):
 class QueryOutFileArgument(StatefulArgument):
     """An argument that write a JMESPath query result to a file"""
 
-    def __init__(self, session, name, query, after_call_event, perm,
-                 *args, **kwargs):
+    def __init__(
+        self, session, name, query, after_call_event, perm, *args, **kwargs
+    ):
         self._session = session
         self._query = query
         self._after_call_event = after_call_event
         self._perm = perm
         # Generate default help_text if text was not provided.
         if 'help_text' not in kwargs:
-            kwargs['help_text'] = ('Saves the command output contents of %s '
-                                   'to the given filename' % self.query)
+            kwargs['help_text'] = (
+                'Saves the command output contents of %s '
+                'to the given filename' % self.query
+            )
         super(QueryOutFileArgument, self).__init__(name, *args, **kwargs)
 
     @property
@@ -129,7 +134,8 @@ class QueryOutFileArgument(StatefulArgument):
         if is_parsed_result_successful(parsed):
             contents = jmespath.search(self.query, parsed)
             with compat_open(
-                    self.value, 'w', access_permissions=self.perm) as fp:
+                self.value, 'w', access_permissions=self.perm
+            ) as fp:
                 # Don't write 'None' to a file -- write ''.
                 if contents is None:
                     fp.write('')
@@ -152,8 +158,14 @@ class NestedBlobArgumentHoister(object):
     requiring the hoist.
     """
 
-    def __init__(self, source_arg, source_arg_blob_member,
-                 new_arg, new_arg_doc_string, doc_string_addendum):
+    def __init__(
+        self,
+        source_arg,
+        source_arg_blob_member,
+        new_arg,
+        new_arg_doc_string,
+        doc_string_addendum,
+    ):
         self._source_arg = source_arg
         self._source_arg_blob_member = source_arg_blob_member
         self._new_arg = new_arg
@@ -163,8 +175,7 @@ class NestedBlobArgumentHoister(object):
     def __call__(self, session, argument_table, **kwargs):
         if not self._valid_target(argument_table):
             return
-        self._update_arg(
-            argument_table, self._source_arg, self._new_arg)
+        self._update_arg(argument_table, self._source_arg, self._new_arg)
 
     def _valid_target(self, argument_table):
         # Find the source argument and check that it has a member of
@@ -173,16 +184,18 @@ class NestedBlobArgumentHoister(object):
             arg = argument_table[self._source_arg]
             input_model = arg.argument_model
             member = input_model.members.get(self._source_arg_blob_member)
-            if (member is not None and
-                    member.type_name == 'blob'):
+            if member is not None and member.type_name == 'blob':
                 return True
         return False
 
     def _update_arg(self, argument_table, source_arg, new_arg):
         argument_table[new_arg] = _NestedBlobArgumentParamOverwrite(
-            new_arg, source_arg, self._source_arg_blob_member,
+            new_arg,
+            source_arg,
+            self._source_arg_blob_member,
             help_text=self._new_arg_doc_string,
-            cli_type_name='blob')
+            cli_type_name='blob',
+        )
         argument_table[source_arg].required = False
         argument_table[source_arg].documentation += self._doc_string_addendum
 
@@ -190,7 +203,8 @@ class NestedBlobArgumentHoister(object):
 class _NestedBlobArgumentParamOverwrite(CustomArgument):
     def __init__(self, new_arg, source_arg, source_arg_blob_member, **kwargs):
         super(_NestedBlobArgumentParamOverwrite, self).__init__(
-            new_arg, **kwargs)
+            new_arg, **kwargs
+        )
         self._param_to_overwrite = _reverse_xform_name(source_arg)
         self._source_arg_blob_member = source_arg_blob_member
 

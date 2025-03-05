@@ -130,7 +130,6 @@ class StreamingBody(object):
         # to do this ourself.
         if self._content_length is not None and \
                 self._amount_read != int(self._content_length):
-            print('RAISING INCOMPLETE READ')
             raise IncompleteReadError(
                 actual_bytes=self._amount_read,
                 expected_bytes=int(self._content_length))

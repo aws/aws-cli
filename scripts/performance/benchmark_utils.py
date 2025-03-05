@@ -330,6 +330,7 @@ class BenchmarkHarness(object):
             benchmark,
             client,
             process_benchmarker,
+            iteration,
             args
     ):
         """
@@ -355,14 +356,15 @@ class BenchmarkHarness(object):
         try:
             if pid == 0:
                 with open(child_output_path, 'w') as out, open(child_err_path, 'w') as err:
-                    if not args.debug:
+                    if not args.debug_dir:
                         # redirect standard output of the child process to a file
                         os.dup2(out.fileno(), sys.stdout.fileno())
                         os.dup2(err.fileno(), sys.stderr.fileno())
                     else:
-                        with open(os.path.abspath(f'/Users/aemous/Desktop/results{benchmark["name"]}.txt'), 'w') as f, open(os.path.abspath(f'/Users/aemous/Desktop/results{benchmark["name"]}err.txt'), 'w') as ferr:
-                            os.dup2(f.fileno(), sys.stdout.fileno())
-                            os.dup2(ferr.fileno(), sys.stderr.fileno())
+                        with open(os.path.abspath(os.path.join(args.debug_dir, f'{benchmark["name"]}-{iteration}.txt')), 'w') as f:
+                            with open(os.path.abspath(os.path.join(args.debug_dir, f'{benchmark["name"]}-{iteration}-err.txt')), 'w') as f_err:
+                                os.dup2(f.fileno(), sys.stdout.fileno())
+                                os.dup2(f_err.fileno(), sys.stderr.fileno())
                     # execute command on child process
                     self._run_command_with_metric_hooks(benchmark['command'], metrics_path)
                     # terminate the child process
@@ -418,12 +420,13 @@ class BenchmarkHarness(object):
                 print('Running benchmark ', benchmark['name'])
                 if 'dimensions' in benchmark:
                     benchmark_result['dimensions'] = benchmark['dimensions']
-                for _ in range(args.num_iterations):
+                for iteration in range(args.num_iterations):
                     measurements = self._run_isolated_benchmark(
                         result_dir,
                         benchmark,
                         client,
                         process_benchmarker,
+                        iteration,
                         args
                     )
                     benchmark_result['measurements'].append(measurements)

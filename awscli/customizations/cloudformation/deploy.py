@@ -61,8 +61,10 @@ class CodePipelineLikeParameterOverrideParser(BaseParameterOverrideParser):
 class CloudFormationLikeParameterOverrideParser(BaseParameterOverrideParser):
     def can_parse(self, data):
         for param_pair in data:
-            if ('ParameterKey' not in param_pair or
-                    'ParameterValue' not in param_pair):
+            if (
+                'ParameterKey' not in param_pair
+                or 'ParameterValue' not in param_pair
+            ):
                 return False
             if len(param_pair.keys()) > 2:
                 return False
@@ -76,8 +78,7 @@ class CloudFormationLikeParameterOverrideParser(BaseParameterOverrideParser):
         #   "ParameterValue": "string",
         # }]
         return {
-            param['ParameterKey']: param['ParameterValue']
-            for param in data
+            param['ParameterKey']: param['ParameterValue'] for param in data
         }
 
 
@@ -98,14 +99,14 @@ class StringEqualsParameterOverrideParser(BaseParameterOverrideParser):
 
 
 class DeployCommand(BasicCommand):
-
-    MSG_NO_EXECUTE_CHANGESET = \
-        ("Changeset created successfully. Run the following command to "
-         "review changes:"
-         "\n"
-         "aws cloudformation describe-change-set --change-set-name "
-         "{changeset_id}"
-         "\n")
+    MSG_NO_EXECUTE_CHANGESET = (
+        "Changeset created successfully. Run the following command to "
+        "review changes:"
+        "\n"
+        "aws cloudformation describe-change-set --change-set-name "
+        "{changeset_id}"
+        "\n"
+    )
 
     MSG_EXECUTE_SUCCESS = "Successfully created/updated stack - {stack_name}\n"
 
@@ -113,8 +114,9 @@ class DeployCommand(BasicCommand):
     TAGS_CMD = "tags"
 
     NAME = 'deploy'
-    DESCRIPTION = BasicCommand.FROM_FILE("cloudformation",
-                                         "_deploy_description.rst")
+    DESCRIPTION = BasicCommand.FROM_FILE(
+        "cloudformation", "_deploy_description.rst"
+    )
 
     ARG_TABLE = [
         {
@@ -123,7 +125,7 @@ class DeployCommand(BasicCommand):
             'help_text': (
                 'The path where your AWS CloudFormation'
                 ' template is located.'
-            )
+            ),
         },
         {
             'name': 'stack-name',
@@ -133,7 +135,7 @@ class DeployCommand(BasicCommand):
                 'The name of the AWS CloudFormation stack you\'re deploying to.'
                 ' If you specify an existing stack, the command updates the'
                 ' stack. If you specify a new stack, the command creates it.'
-            )
+            ),
         },
         {
             'name': 's3-bucket',
@@ -142,7 +144,7 @@ class DeployCommand(BasicCommand):
                 'The name of the S3 bucket where this command uploads your '
                 'CloudFormation template. This is required the deployments of '
                 'templates sized greater than 51,200 bytes'
-            )
+            ),
         },
         {
             "name": "force-upload",
@@ -151,7 +153,7 @@ class DeployCommand(BasicCommand):
                 'Indicates whether to override existing files in the S3 bucket.'
                 ' Specify this flag to upload artifacts even if they '
                 ' match existing artifacts in the S3 bucket.'
-            )
+            ),
         },
         {
             'name': 's3-prefix',
@@ -160,15 +162,14 @@ class DeployCommand(BasicCommand):
                 ' artifacts\' name when it uploads them to the S3 bucket.'
                 ' The prefix name is a path name (folder name) for'
                 ' the S3 bucket.'
-            )
+            ),
         },
-
         {
             'name': 'kms-key-id',
             'help_text': (
                 'The ID of an AWS KMS key that the command uses'
                 ' to encrypt artifacts that are at rest in the S3 bucket.'
-            )
+            ),
         },
         {
             'name': PARAMETER_OVERRIDE_CMD,
@@ -184,7 +185,7 @@ class DeployCommand(BasicCommand):
                 ' parameters that don\'t have a default value.'
                 ' Syntax: ParameterKey1=ParameterValue1'
                 ' ParameterKey2=ParameterValue2 ... or JSON file (see Examples)'
-            )
+            ),
         },
         {
             'name': 'capabilities',
@@ -194,11 +195,8 @@ class DeployCommand(BasicCommand):
                 'type': 'array',
                 'items': {
                     'type': 'string',
-                    'enum': [
-                        'CAPABILITY_IAM',
-                        'CAPABILITY_NAMED_IAM'
-                    ]
-                }
+                    'enum': ['CAPABILITY_IAM', 'CAPABILITY_NAMED_IAM'],
+                },
             },
             'default': [],
             'help_text': (
@@ -215,8 +213,7 @@ class DeployCommand(BasicCommand):
                 ' custom names, you must specify CAPABILITY_NAMED_IAM. If you'
                 ' don\'t specify this parameter, this action returns an'
                 ' InsufficientCapabilities error.'
-            )
-
+            ),
         },
         {
             'name': 'no-execute-changeset',
@@ -230,7 +227,7 @@ class DeployCommand(BasicCommand):
                 ' AWS CloudFormation change set and then exits without'
                 ' executing the change set. After you view the change set,'
                 ' execute it to implement your changes.'
-            )
+            ),
         },
         {
             'name': 'disable-rollback',
@@ -242,7 +239,7 @@ class DeployCommand(BasicCommand):
             'help_text': (
                 'Preserve the state of previously provisioned resources when '
                 'the execute-change-set operation fails.'
-            )
+            ),
         },
         {
             'name': 'no-disable-rollback',
@@ -254,7 +251,7 @@ class DeployCommand(BasicCommand):
             'help_text': (
                 'Roll back all resource changes when the execute-change-set '
                 'operation fails.'
-            )
+            ),
         },
         {
             'name': 'role-arn',
@@ -263,21 +260,16 @@ class DeployCommand(BasicCommand):
                 'The Amazon Resource Name (ARN) of an AWS Identity and Access '
                 'Management (IAM) role that AWS CloudFormation assumes when '
                 'executing the change set.'
-            )
+            ),
         },
         {
             'name': 'notification-arns',
             'required': False,
-            'schema': {
-                'type': 'array',
-                'items': {
-                    'type': 'string'
-                }
-            },
+            'schema': {'type': 'array', 'items': {'type': 'string'}},
             'help_text': (
                 'Amazon Simple Notification Service topic Amazon Resource Names'
                 ' (ARNs) that AWS CloudFormation associates with the stack.'
-            )
+            ),
         },
         {
             'name': 'fail-on-empty-changeset',
@@ -287,10 +279,14 @@ class DeployCommand(BasicCommand):
             'dest': 'fail_on_empty_changeset',
             'default': False,
             'help_text': (
-                'Specify if the CLI should return a non-zero exit code if '
-                'there are no changes to be made to the stack. The default '
-                'behavior is to return a zero exit code.'
-            )
+                'Specify if the CLI should return a non-zero exit code '
+                'when there are no changes to be made to the stack. By '
+                'default, a zero exit code is returned, and this is '
+                'the same behavior that occurs when '
+                '`--no-fail-on-empty-changeset` is specified. If '
+                '`--fail-on-empty-changeset` is specified, then the '
+                'CLI will return a non-zero exit code.'
+            ),
         },
         {
             'name': 'no-fail-on-empty-changeset',
@@ -302,46 +298,43 @@ class DeployCommand(BasicCommand):
             'help_text': (
                 'Causes the CLI to return an exit code of 0 if there are no '
                 'changes to be made to the stack.'
-            )
+            ),
         },
         {
             'name': TAGS_CMD,
             'action': 'store',
             'required': False,
-            'schema': {
-                'type': 'array',
-                'items': {
-                    'type': 'string'
-                }
-            },
+            'schema': {'type': 'array', 'items': {'type': 'string'}},
             'default': [],
             'help_text': (
                 'A list of tags to associate with the stack that is created'
                 ' or updated. AWS CloudFormation also propagates these tags'
                 ' to resources in the stack if the resource supports it.'
                 ' Syntax: TagKey1=TagValue1 TagKey2=TagValue2 ...'
-            )
-        }
+            ),
+        },
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        cloudformation_client = \
-            self._session.create_client(
-                    'cloudformation', region_name=parsed_globals.region,
-                    endpoint_url=parsed_globals.endpoint_url,
-                    verify=parsed_globals.verify_ssl)
+        cloudformation_client = self._session.create_client(
+            'cloudformation',
+            region_name=parsed_globals.region,
+            endpoint_url=parsed_globals.endpoint_url,
+            verify=parsed_globals.verify_ssl,
+        )
 
         template_dict, template_str, template_size = self.load_template_file(
-            parsed_args.template_file)
+            parsed_args.template_file
+        )
 
         stack_name = parsed_args.stack_name
         parameter_overrides = self.parse_parameter_overrides(
             parsed_args.parameter_overrides
         )
         tags_dict = self.parse_key_value_arg(parsed_args.tags, self.TAGS_CMD)
-        tags = [{"Key": key, "Value": value}
-                for key, value in tags_dict.items()]
-
+        tags = [
+            {"Key": key, "Value": value} for key, value in tags_dict.items()
+        ]
 
         parameters = self.merge_parameters(template_dict, parameter_overrides)
 
@@ -354,39 +347,62 @@ class DeployCommand(BasicCommand):
                 "s3",
                 config=Config(signature_version='s3v4'),
                 region_name=parsed_globals.region,
-                verify=parsed_globals.verify_ssl)
+                verify=parsed_globals.verify_ssl,
+            )
 
-            s3_uploader = S3Uploader(s3_client,
-                                      bucket,
-                                      parsed_args.s3_prefix,
-                                      parsed_args.kms_key_id,
-                                      parsed_args.force_upload)
+            s3_uploader = S3Uploader(
+                s3_client,
+                bucket,
+                parsed_args.s3_prefix,
+                parsed_args.kms_key_id,
+                parsed_args.force_upload,
+            )
         else:
             s3_uploader = None
 
         deployer = Deployer(cloudformation_client)
-        return self.deploy(deployer, stack_name, template_str,
-                           parameters, parsed_args.capabilities,
-                           parsed_args.execute_changeset, parsed_args.role_arn,
-                           parsed_args.notification_arns, s3_uploader,
-                           tags, parsed_args.fail_on_empty_changeset,
-                           parsed_args.disable_rollback)
+        return self.deploy(
+            deployer,
+            stack_name,
+            template_str,
+            parameters,
+            parsed_args.capabilities,
+            parsed_args.execute_changeset,
+            parsed_args.role_arn,
+            parsed_args.notification_arns,
+            s3_uploader,
+            tags,
+            parsed_args.fail_on_empty_changeset,
+            parsed_args.disable_rollback,
+        )
 
     def load_template_file(self, template_file):
         template_path = os.path.expanduser(template_file)
         if not os.path.isfile(template_path):
             raise exceptions.InvalidTemplatePathError(
-                    template_path=template_path)
+                template_path=template_path
+            )
         with compat_open(template_path, "r") as handle:
             template_str = handle.read()
         template_dict = yaml_parse(template_str)
         template_size = os.path.getsize(template_path)
         return template_dict, template_str, template_size
 
-    def deploy(self, deployer, stack_name, template_str,
-               parameters, capabilities, execute_changeset, role_arn,
-               notification_arns, s3_uploader, tags,
-               fail_on_empty_changeset=False, disable_rollback=False):
+    def deploy(
+        self,
+        deployer,
+        stack_name,
+        template_str,
+        parameters,
+        capabilities,
+        execute_changeset,
+        role_arn,
+        notification_arns,
+        s3_uploader,
+        tags,
+        fail_on_empty_changeset=False,
+        disable_rollback=False,
+    ):
         try:
             result = deployer.create_and_wait_for_changeset(
                 stack_name=stack_name,
@@ -396,7 +412,7 @@ class DeployCommand(BasicCommand):
                 role_arn=role_arn,
                 notification_arns=notification_arns,
                 s3_uploader=s3_uploader,
-                tags=tags
+                tags=tags,
             )
         except exceptions.ChangeEmptyError as ex:
             if fail_on_empty_changeset:
@@ -405,14 +421,19 @@ class DeployCommand(BasicCommand):
             return 0
 
         if execute_changeset:
-            deployer.execute_changeset(result.changeset_id, stack_name,
-                                       disable_rollback)
+            deployer.execute_changeset(
+                result.changeset_id, stack_name, disable_rollback
+            )
             deployer.wait_for_execute(stack_name, result.changeset_type)
-            sys.stdout.write(self.MSG_EXECUTE_SUCCESS.format(
-                    stack_name=stack_name))
+            sys.stdout.write(
+                self.MSG_EXECUTE_SUCCESS.format(stack_name=stack_name)
+            )
         else:
-            sys.stdout.write(self.MSG_NO_EXECUTE_CHANGESET.format(
-                    changeset_id=result.changeset_id))
+            sys.stdout.write(
+                self.MSG_NO_EXECUTE_CHANGESET.format(
+                    changeset_id=result.changeset_id
+                )
+            )
 
         sys.stdout.flush()
         return 0
@@ -434,10 +455,7 @@ class DeployCommand(BasicCommand):
             return parameter_values
 
         for key, value in template_dict["Parameters"].items():
-
-            obj = {
-                "ParameterKey": key
-            }
+            obj = {"ParameterKey": key}
 
             if key in parameter_overrides:
                 obj["ParameterValue"] = parameter_overrides[key]
@@ -466,7 +484,7 @@ class DeployCommand(BasicCommand):
             parsers = [
                 CloudFormationLikeParameterOverrideParser(),
                 CodePipelineLikeParameterOverrideParser(),
-                StringEqualsParameterOverrideParser()
+                StringEqualsParameterOverrideParser(),
             ]
             for parser in parsers:
                 if parser.can_parse(data):
@@ -475,13 +493,13 @@ class DeployCommand(BasicCommand):
                 'JSON passed to --parameter-overrides must be one of '
                 'the formats: ["Key1=Value1","Key2=Value2", ...] , '
                 '[{"ParameterKey": "Key1", "ParameterValue": "Value1"}, ...] , '
-                '["Parameters": {"Key1": "Value1", "Key2": "Value2", ...}]')
+                '["Parameters": {"Key1": "Value1", "Key2": "Value2", ...}]'
+            )
         else:
             # In case it was in deploy command format
             # and was input via command line
             return self.parse_key_value_arg(
-                arg_value,
-                self.PARAMETER_OVERRIDE_CMD
+                arg_value, self.PARAMETER_OVERRIDE_CMD
             )
 
     def parse_key_value_arg(self, arg_value, argname):
@@ -496,14 +514,13 @@ class DeployCommand(BasicCommand):
         """
         result = {}
         for data in arg_value:
-
             # Split at first '=' from left
             key_value_pair = data.split("=", 1)
 
             if len(key_value_pair) != 2:
                 raise exceptions.InvalidKeyValuePairArgumentError(
-                        argname=argname,
-                        value=key_value_pair)
+                    argname=argname, value=key_value_pair
+                )
 
             result[key_value_pair[0]] = key_value_pair[1]
 

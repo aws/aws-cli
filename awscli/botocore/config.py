@@ -151,11 +151,14 @@ class Config(object):
     :type inject_host_prefix: bool
     :param inject_host_prefix: Whether host prefix injection should occur.
 
-        Defaults to True.
+        Defaults to None.
 
+        The default of None is equivalent to setting to True, which enables
+        the injection of operation parameters into the prefix of the hostname.
         Setting this to False disables the injection of operation parameters
-        into the prefix of the hostname. This is useful for clients providing
-        custom endpoints that should not have their host prefix modified.
+        into the prefix of the hostname. Setting this to False is useful for
+        clients providing custom endpoints that should not have their host
+        prefix modified.
 
     :type use_dualstack_endpoint: bool
     :param use_dualstack_endpoint: Setting to True enables dualstack
@@ -241,7 +244,7 @@ class Config(object):
         ('s3', None),
         ('retries', None),
         ('client_cert', None),
-        ('inject_host_prefix', True),
+        ('inject_host_prefix', None),
         ('endpoint_discovery_enabled', None),
         ('use_dualstack_endpoint', None),
         ('use_fips_endpoint', None),
@@ -253,9 +256,34 @@ class Config(object):
         ('response_checksum_validation', None),
     ])
 
+    # The original default value of the inject_host_prefix parameter was True.
+    # This prevented the ability to override the value from other locations in
+    # the parameter provider chain, like env vars or the shared configuration
+    # file. TO accomplish this, we need to disambiguate when the value was set
+    # by the user or not. This overrides the parameter with a property so the
+    # default value of inject_host_prefix is still True if it is not set by the
+    # user.
+    @property
+    def inject_host_prefix(self):
+        if self._inject_host_prefix == "UNSET":
+            return True
+
+        return self._inject_host_prefix
+
+    # Override the setter for the case where the user does supply a value;
+    # _inject_host_prefix will no longer be "UNSET".
+    @inject_host_prefix.setter
+    def inject_host_prefix(self, value):
+        self._inject_host_prefix = value
+
     def __init__(self, *args, **kwargs):
         self._user_provided_options = self._record_user_provided_options(
             args, kwargs)
+
+        # By default, we use a value that indicates the user did not
+        # set it. This value MUST persist on the Config object to be used
+        # elsewhere.
+        self._inject_host_prefix = 'UNSET'
 
         # Merge the user_provided options onto the default options
         config_vars = copy.copy(self.OPTION_DEFAULTS)
@@ -263,6 +291,15 @@ class Config(object):
 
         # Set the attributes based on the config_vars
         for key, value in config_vars.items():
+            # Default values for the Config object are set here. We don't want
+            # to use `setattr` in the case where the user already supplied a
+            # value.
+            if (
+                key == 'inject_host_prefix'
+                and 'inject_host_prefix'
+                not in self._user_provided_options.keys()
+            ):
+                continue
             setattr(self, key, value)
 
         # Validate the s3 options

@@ -1379,7 +1379,7 @@
         },
         "isSigned":{
           "shape":"PrimitiveBoolean",
-          "documentation":"<p>Whether the message data is specified as a signed value.</p>"
+          "documentation":"<p>Determines whether the message is signed (<code>true</code>) or not (<code>false</code>). If it's signed, the message can represent both positive and negative numbers. The <code>isSigned</code> parameter only applies to the <code>INTEGER</code> raw signal type, and it doesn't affect the <code>FLOATING_POINT</code> raw signal type.</p>"
         },
         "startBit":{
           "shape":"nonNegativeInteger",
@@ -1400,6 +1400,10 @@
         "name":{
           "shape":"CanSignalName",
           "documentation":"<p>The name of the signal.</p>"
+        },
+        "signalValueType":{
+          "shape":"SignalValueType",
+          "documentation":"<p>The value type of the signal. The default value is <code>INTEGER</code>.</p>"
         }
       },
       "documentation":"<p>Information about a single controller area network (CAN) signal and the messages it receives and transmits.</p>"
@@ -2096,7 +2100,7 @@
     "DataDestinationConfigs":{
       "type":"list",
       "member":{"shape":"DataDestinationConfig"},
-      "max":1,
+      "max":3,
       "min":1
     },
     "DataExtraDimensionNodePathList":{
@@ -2380,7 +2384,7 @@
       "members":{
         "identifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p>A unique, service-generated identifier.</p>"
+          "documentation":"<p>The unique ID of the state template.</p>"
         }
       }
     },
@@ -2928,7 +2932,7 @@
       "members":{
         "identifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p>A unique, service-generated identifier.</p>"
+          "documentation":"<p>The unique ID of the state template.</p>"
         }
       }
     },
@@ -3313,6 +3317,10 @@
         "status":{
           "shape":"statusStr",
           "documentation":"<p>An optional parameter to filter the results by the status of each created campaign in your account. The status can be one of: <code>CREATING</code>, <code>WAITING_FOR_APPROVAL</code>, <code>RUNNING</code>, or <code>SUSPENDED</code>.</p>"
+        },
+        "listResponseScope":{
+          "shape":"ListResponseScope",
+          "documentation":"<p>When you set the <code>listResponseScope</code> parameter to <code>METADATA_ONLY</code>, the list response includes: campaign name, Amazon Resource Name (ARN), creation time, and last modification time.</p>"
         }
       }
     },
@@ -3405,6 +3413,10 @@
         "maxResults":{
           "shape":"maxResults",
           "documentation":"<p>The maximum number of items to return, between 1 and 100, inclusive.</p>"
+        },
+        "listResponseScope":{
+          "shape":"ListResponseScope",
+          "documentation":"<p>When you set the <code>listResponseScope</code> parameter to <code>METADATA_ONLY</code>, the list response includes: decoder manifest name, Amazon Resource Name (ARN), creation time, and last modification time.</p>"
         }
       }
     },
@@ -3462,6 +3474,10 @@
         "maxResults":{
           "shape":"maxResults",
           "documentation":"<p>The maximum number of items to return, between 1 and 100, inclusive.</p>"
+        },
+        "listResponseScope":{
+          "shape":"ListResponseScope",
+          "documentation":"<p>When you set the <code>listResponseScope</code> parameter to <code>METADATA_ONLY</code>, the list response includes: fleet ID, Amazon Resource Name (ARN), creation time, and last modification time.</p>"
         }
       }
     },
@@ -3523,6 +3539,10 @@
         "maxResults":{
           "shape":"maxResults",
           "documentation":"<p>The maximum number of items to return, between 1 and 100, inclusive.</p>"
+        },
+        "listResponseScope":{
+          "shape":"ListResponseScope",
+          "documentation":"<p>When you set the <code>listResponseScope</code> parameter to <code>METADATA_ONLY</code>, the list response includes: model manifest name, Amazon Resource Name (ARN), creation time, and last modification time.</p>"
         }
       }
     },
@@ -3538,6 +3558,10 @@
           "documentation":"<p> The token to retrieve the next set of results, or <code>null</code> if there are no more results. </p>"
         }
       }
+    },
+    "ListResponseScope":{
+      "type":"string",
+      "enum":["METADATA_ONLY"]
     },
     "ListSignalCatalogNodesRequest":{
       "type":"structure",
@@ -3610,6 +3634,10 @@
         "maxResults":{
           "shape":"maxResults",
           "documentation":"<p>The maximum number of items to return, between 1 and 100, inclusive.</p>"
+        },
+        "listResponseScope":{
+          "shape":"ListResponseScope",
+          "documentation":"<p>When you set the <code>listResponseScope</code> parameter to <code>METADATA_ONLY</code>, the list response includes: state template ID, Amazon Resource Name (ARN), creation time, and last modification time.</p>"
         }
       }
     },
@@ -3698,6 +3726,10 @@
         "maxResults":{
           "shape":"listVehiclesMaxResults",
           "documentation":"<p>The maximum number of items to return, between 1 and 100, inclusive.</p>"
+        },
+        "listResponseScope":{
+          "shape":"ListResponseScope",
+          "documentation":"<p>When you set the <code>listResponseScope</code> parameter to <code>METADATA_ONLY</code>, the list response includes: vehicle name, Amazon Resource Name (ARN), creation time, and last modification time.</p>"
         }
       }
     },
@@ -4126,6 +4158,15 @@
         "bitMaskLength":{
           "shape":"ObdBitmaskLength",
           "documentation":"<p>The number of bits to mask in a message.</p>"
+        },
+        "isSigned":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>Determines whether the message is signed (<code>true</code>) or not (<code>false</code>). If it's signed, the message can represent both positive and negative numbers. The <code>isSigned</code> parameter only applies to the <code>INTEGER</code> raw signal type, and it doesn't affect the <code>FLOATING_POINT</code> raw signal type. The default value is <code>false</code>.</p>",
+          "box":true
+        },
+        "signalValueType":{
+          "shape":"SignalValueType",
+          "documentation":"<p>The value type of the signal. The default value is <code>INTEGER</code>.</p>"
         }
       },
       "documentation":"<p>Information about signal messages using the on-board diagnostics (OBD) II protocol in a vehicle.</p>"
@@ -4589,7 +4630,8 @@
       "type":"list",
       "member":{"shape":"SignalFetchInformation"},
       "max":2,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "SignalInformation":{
       "type":"structure",
@@ -4632,6 +4674,13 @@
         "CUSTOM_PROPERTY"
       ]
     },
+    "SignalValueType":{
+      "type":"string",
+      "enum":[
+        "INTEGER",
+        "FLOATING_POINT"
+      ]
+    },
     "SpoolingMode":{
       "type":"string",
       "enum":[
@@ -4648,7 +4697,7 @@
       "members":{
         "identifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p>A unique, service-generated identifier.</p>"
+          "documentation":"<p>The unique ID of the state template.</p>"
         },
         "stateTemplateUpdateStrategy":{"shape":"StateTemplateUpdateStrategy"}
       },
@@ -5388,7 +5437,7 @@
       "members":{
         "identifier":{
           "shape":"ResourceIdentifier",
-          "documentation":"<p>A unique, service-generated identifier.</p>"
+          "documentation":"<p>The unique ID of the state template.</p>"
         },
         "description":{
           "shape":"description",

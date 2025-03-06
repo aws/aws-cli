@@ -674,21 +674,21 @@ class SessionWithDefaultPrompt(PromptWithDefault):
 @dataclasses.dataclass
 class RegionPrompt(PromptWithDefault):
     msg_format: str = dataclasses.field(
-        init=False, default="CLI default client Region [{default}]: "
+        init=False, default="Default client Region [{default}]: "
     )
 
 
 @dataclasses.dataclass
 class OutputPrompt(PromptWithDefault):
     msg_format: str = dataclasses.field(
-        init=False, default="CLI default output format [{default}]: "
+        init=False, default="CLI default output format (json if not specified) [{default}]: "
     )
 
 
 @dataclasses.dataclass
 class ProfilePrompt(PromptWithDefault):
     msg_format: str = dataclasses.field(
-        init=False, default="CLI profile name [{default}]: "
+        init=False, default="Profile name [{default}]: "
     )
     expected_validator_cls: typing.Optional[Validator] = RequiredInputValidator
 
@@ -902,7 +902,7 @@ class TestConfigureSSOCommand:
         )
         stdout = capsys.readouterr().out
         assert "WARNING: Configuring using legacy format" in stdout
-        assert f"aws s3 ls --profile {inputs.profile_prompt.answer}" in stdout
+        assert f"aws sts get-caller-identity --profile {inputs.profile_prompt.answer}" in stdout
 
     def test_single_account_single_role_flow_no_browser(
         self,
@@ -1099,6 +1099,7 @@ class TestConfigureSSOCommand:
             expected_sso_region=inputs.sso_region_prompt.answer,
             expected_start_url=inputs.start_url_prompt.answer,
         )
+
         assert_aws_config(
             aws_config,
             expected_lines=[
@@ -1235,7 +1236,7 @@ class TestConfigureSSOCommand:
         )
         stdout = capsys.readouterr().out
         assert "WARNING: Configuring using legacy format" not in stdout
-        assert f"aws s3 ls --profile {inputs.profile_prompt.answer}" in stdout
+        assert f"aws sts get-caller-identity --profile {inputs.profile_prompt.answer}" in stdout
 
     def test_configure_sso_with_existing_sso_session(
         self,
@@ -1513,6 +1514,31 @@ class TestConfigureSSOCommand:
             ],
         )
 
+class TestPrintConclusion:
+    def test_print_conclusion_default_profile_with_credentials(self, sso_cmd, capsys):
+        sso_cmd._print_conclusion(True, 'default')
+        captured = capsys.readouterr()
+        assert "The AWS CLI is now configured to use the default profile." in captured.out
+        assert "aws sts get-caller-identity" in captured.out
+
+    def test_print_conclusion_named_profile_with_credentials(self, sso_cmd, capsys):
+        profile_name = "test-profile"
+        sso_cmd._print_conclusion(True, profile_name)
+        captured = capsys.readouterr()
+        assert f"To use this profile, specify the profile name using --profile" in captured.out
+        assert f"aws sts get-caller-identity --profile {profile_name}" in captured.out
+
+    def test_print_conclusion_sso_configuration(self, sso_cmd, capsys):
+        profile_name = "test-profile"
+        sso_cmd._print_conclusion(False, profile_name)
+        captured = capsys.readouterr()
+        assert f"Successfully configured SSO for profile: {profile_name}" in captured.out
+
+    def test_print_conclusion_default_profile_case_insensitive(selfself, sso_cmd, capsys):
+        sso_cmd._print_conclusion(True, 'DEFAULT')
+        captured = capsys.readouterr()
+        assert "The AWS CLI is now configured to use the default profile." in captured.out
+        assert "aws sts get-caller-identity" in captured.out
 
 class TestConfigureSSOSessionCommand:
     def test_new_sso_session(

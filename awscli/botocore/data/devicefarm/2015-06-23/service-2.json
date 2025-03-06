@@ -1642,6 +1642,10 @@
         "vpceConfigurationArns":{
           "shape":"AmazonResourceNames",
           "documentation":"<p>An array of ARNs included in the VPC endpoint configuration.</p>"
+        },
+        "deviceProxy":{
+          "shape":"DeviceProxy",
+          "documentation":"<p>The device proxy to be configured on the device for the remote access session.</p>"
         }
       },
       "documentation":"<p>Configuration settings for a remote access session, including billing method.</p>"
@@ -2314,6 +2318,36 @@
     "DevicePools":{
       "type":"list",
       "member":{"shape":"DevicePool"}
+    },
+    "DeviceProxy":{
+      "type":"structure",
+      "required":[
+        "host",
+        "port"
+      ],
+      "members":{
+        "host":{
+          "shape":"DeviceProxyHost",
+          "documentation":"<p>Hostname or IPv4 address of the proxy.</p>"
+        },
+        "port":{
+          "shape":"DeviceProxyPort",
+          "documentation":"<p>The port number on which the http/s proxy is listening.</p>"
+        }
+      },
+      "documentation":"<p>Represents the http/s proxy configuration that will be applied to a device during a run.</p>"
+    },
+    "DeviceProxyHost":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^([a-zA-Z0-9])([a-zA-Z0-9-.]+)([a-zA-Z0-9])$"
+    },
+    "DeviceProxyPort":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":1
     },
     "DeviceSelectionConfiguration":{
       "type":"structure",
@@ -4287,6 +4321,10 @@
         "vpcConfig":{
           "shape":"VpcConfig",
           "documentation":"<p>The VPC security groups and subnets that are attached to a project.</p>"
+        },
+        "deviceProxy":{
+          "shape":"DeviceProxy",
+          "documentation":"<p>The device proxy configured for the remote access session.</p>"
         }
       },
       "documentation":"<p>Represents information about the remote access session.</p>"
@@ -4457,6 +4495,10 @@
           "shape":"NetworkProfile",
           "documentation":"<p>The network profile being used for a test run.</p>"
         },
+        "deviceProxy":{
+          "shape":"DeviceProxy",
+          "documentation":"<p>The device proxy configured for the devices in the run.</p>"
+        },
         "parsingResultUrl":{
           "shape":"String",
           "documentation":"<p>Read-only URL for an object in an S3 bucket where you can get the parsing results of the test package. If the test package doesn't parse, the reason why it doesn't parse appears in the file that this URL points to.</p>"
@@ -4594,6 +4636,10 @@
         "vpceConfigurationArns":{
           "shape":"AmazonResourceNames",
           "documentation":"<p>An array of ARNs for your VPC endpoint configurations.</p>"
+        },
+        "deviceProxy":{
+          "shape":"DeviceProxy",
+          "documentation":"<p>The device proxy to be configured on the device for the run.</p>"
         },
         "customerArtifactPaths":{
           "shape":"CustomerArtifactPaths",

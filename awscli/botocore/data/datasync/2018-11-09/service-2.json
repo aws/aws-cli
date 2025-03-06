@@ -1545,7 +1545,7 @@
         },
         "ServerHostname":{
           "shape":"ServerHostname",
-          "documentation":"<p>Specifies the Domain Name System (DNS) name or IP version 4 address of the NFS file server that your DataSync agent connects to.</p>"
+          "documentation":"<p>Specifies the DNS name or IP version 4 address of the NFS file server that your DataSync agent connects to.</p>"
         },
         "OnPremConfig":{
           "shape":"OnPremConfig",
@@ -1582,7 +1582,7 @@
       "members":{
         "ServerHostname":{
           "shape":"ServerHostname",
-          "documentation":"<p>Specifies the domain name or IP address of the object storage server. A DataSync agent uses this hostname to mount the object storage server in a network.</p>"
+          "documentation":"<p>Specifies the domain name or IP version 4 (IPv4) address of the object storage server that your DataSync agent connects to.</p>"
         },
         "ServerPort":{
           "shape":"ObjectStorageServerPort",
@@ -1688,7 +1688,7 @@
         },
         "ServerHostname":{
           "shape":"ServerHostname",
-          "documentation":"<p>Specifies the domain name or IP address of the SMB file server that your DataSync agent will mount.</p> <p>Remember the following when configuring this parameter:</p> <ul> <li> <p>You can't specify an IP version 6 (IPv6) address.</p> </li> <li> <p>If you're using Kerberos authentication, you must specify a domain name.</p> </li> </ul>"
+          "documentation":"<p>Specifies the domain name or IP address of the SMB file server that your DataSync agent connects to.</p> <p>Remember the following when configuring this parameter:</p> <ul> <li> <p>You can't specify an IP version 6 (IPv6) address.</p> </li> <li> <p>If you're using Kerberos authentication, you must specify a domain name.</p> </li> </ul>"
         },
         "User":{
           "shape":"SmbUser",
@@ -1716,7 +1716,7 @@
         },
         "AuthenticationType":{
           "shape":"SmbAuthenticationType",
-          "documentation":"<p>Specifies the authentication protocol that DataSync uses to connect to your SMB file server. DataSync supports <code>NTLM</code> (default) and <code>KERBEROS</code> authentication.</p>"
+          "documentation":"<p>Specifies the authentication protocol that DataSync uses to connect to your SMB file server. DataSync supports <code>NTLM</code> (default) and <code>KERBEROS</code> authentication.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">Providing DataSync access to SMB file servers</a>.</p>"
         },
         "DnsIpAddresses":{
           "shape":"DnsIpList",
@@ -1724,7 +1724,7 @@
         },
         "KerberosPrincipal":{
           "shape":"KerberosPrincipal",
-          "documentation":"<p>Specifies a Kerberos prinicpal, which is an identity in your Kerberos realm that has permission to access the files, folders, and file metadata in your SMB file server.</p> <p>A Kerberos principal might look like <code>HOST/kerberosuser@EXAMPLE.COM</code>.</p> <p>Principal names are case sensitive. Your DataSync task execution will fail if the principal that you specify for this parameter doesn’t exactly match the principal that you use to create the keytab file.</p>"
+          "documentation":"<p>Specifies a Kerberos prinicpal, which is an identity in your Kerberos realm that has permission to access the files, folders, and file metadata in your SMB file server.</p> <p>A Kerberos principal might look like <code>HOST/kerberosuser@MYDOMAIN.ORG</code>.</p> <p>Principal names are case sensitive. Your DataSync task execution will fail if the principal that you specify for this parameter doesn’t exactly match the principal that you use to create the keytab file.</p>"
         },
         "KerberosKeytab":{
           "shape":"KerberosKeytabFile",
@@ -5429,6 +5429,10 @@
           "shape":"NfsSubdirectory",
           "documentation":"<p>Specifies the export path in your NFS file server that you want DataSync to mount.</p> <p>This path (or a subdirectory of the path) is where DataSync transfers data to or from. For information on configuring an export for DataSync, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-nfs-location.html#accessing-nfs\">Accessing NFS file servers</a>.</p>"
         },
+        "ServerHostname":{
+          "shape":"ServerHostname",
+          "documentation":"<p>Specifies the DNS name or IP version 4 (IPv4) address of the NFS file server that your DataSync agent connects to.</p>"
+        },
         "OnPremConfig":{"shape":"OnPremConfig"},
         "MountOptions":{"shape":"NfsMountOptions"}
       }
@@ -5457,6 +5461,10 @@
         "Subdirectory":{
           "shape":"S3Subdirectory",
           "documentation":"<p>Specifies the object prefix for your object storage server. If this is a source location, DataSync only copies objects with this prefix. If this is a destination location, DataSync writes all objects with this prefix.</p>"
+        },
+        "ServerHostname":{
+          "shape":"ServerHostname",
+          "documentation":"<p>Specifies the domain name or IP version 4 (IPv4) address of the object storage server that your DataSync agent connects to.</p>"
         },
         "AccessKey":{
           "shape":"ObjectStorageAccessKey",
@@ -5517,6 +5525,10 @@
           "shape":"SmbSubdirectory",
           "documentation":"<p>Specifies the name of the share exported by your SMB file server where DataSync will read or write data. You can include a subdirectory in the share path (for example, <code>/path/to/subdirectory</code>). Make sure that other SMB clients in your network can also mount this path.</p> <p>To copy all data in the specified subdirectory, DataSync must be able to mount the SMB share and access all of its data. For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">Providing DataSync access to SMB file servers</a>.</p>"
         },
+        "ServerHostname":{
+          "shape":"ServerHostname",
+          "documentation":"<p>Specifies the domain name or IP address of the SMB file server that your DataSync agent connects to.</p> <p>Remember the following when configuring this parameter:</p> <ul> <li> <p>You can't specify an IP version 6 (IPv6) address.</p> </li> <li> <p>If you're using Kerberos authentication, you must specify a domain name.</p> </li> </ul>"
+        },
         "User":{
           "shape":"SmbUser",
           "documentation":"<p>Specifies the user name that can mount your SMB file server and has permission to access the files and folders involved in your transfer. This parameter applies only if <code>AuthenticationType</code> is set to <code>NTLM</code>.</p> <p>For information about choosing a user with the right level of access for your transfer, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">Providing DataSync access to SMB file servers</a>.</p>"
@@ -5536,7 +5548,7 @@
         "MountOptions":{"shape":"SmbMountOptions"},
         "AuthenticationType":{
           "shape":"SmbAuthenticationType",
-          "documentation":"<p>Specifies the authentication protocol that DataSync uses to connect to your SMB file server. DataSync supports <code>NTLM</code> (default) and <code>KERBEROS</code> authentication.</p>"
+          "documentation":"<p>Specifies the authentication protocol that DataSync uses to connect to your SMB file server. DataSync supports <code>NTLM</code> (default) and <code>KERBEROS</code> authentication.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions\">Providing DataSync access to SMB file servers</a>.</p>"
         },
         "DnsIpAddresses":{
           "shape":"DnsIpList",
@@ -5544,7 +5556,7 @@
         },
         "KerberosPrincipal":{
           "shape":"KerberosPrincipal",
-          "documentation":"<p>Specifies a Kerberos prinicpal, which is an identity in your Kerberos realm that has permission to access the files, folders, and file metadata in your SMB file server.</p> <p>A Kerberos principal might look like <code>HOST/kerberosuser@EXAMPLE.COM</code>.</p> <p>Principal names are case sensitive. Your DataSync task execution will fail if the principal that you specify for this parameter doesn’t exactly match the principal that you use to create the keytab file.</p>"
+          "documentation":"<p>Specifies a Kerberos prinicpal, which is an identity in your Kerberos realm that has permission to access the files, folders, and file metadata in your SMB file server.</p> <p>A Kerberos principal might look like <code>HOST/kerberosuser@MYDOMAIN.ORG</code>.</p> <p>Principal names are case sensitive. Your DataSync task execution will fail if the principal that you specify for this parameter doesn’t exactly match the principal that you use to create the keytab file.</p>"
         },
         "KerberosKeytab":{
           "shape":"KerberosKeytabFile",

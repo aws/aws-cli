@@ -22,6 +22,7 @@ import distro
 import botocore.session
 from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
+from botocore.context import start_as_current_context
 from botocore.history import get_global_history_recorder
 from botocore.configprovider import InstanceVarProvider
 from botocore.configprovider import EnvironmentProvider
@@ -34,6 +35,7 @@ from awscli.compat import (
     default_pager,
     get_stderr_text_writer,
     get_stdout_text_writer,
+    validate_preferred_output_encoding,
 )
 from awscli.formatter import get_formatter
 from awscli.plugin import load_plugins
@@ -94,7 +96,8 @@ METADATA_FILENAME = 'metadata.json'
 
 
 def main():
-    return AWSCLIEntryPoint().main(sys.argv[1:])
+    with start_as_current_context():
+        return AWSCLIEntryPoint().main(sys.argv[1:])
 
 
 def create_clidriver(args=None):
@@ -499,6 +502,7 @@ class CLIDriver(object):
             # command table.  This is why it's in the try/except clause.
             parsed_args, remaining = parser.parse_known_args(args)
             self._handle_top_level_args(parsed_args)
+            validate_preferred_output_encoding()
             self._emit_session_event(parsed_args)
             HISTORY_RECORDER.record('CLI_VERSION', self._cli_version(), 'CLI')
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')

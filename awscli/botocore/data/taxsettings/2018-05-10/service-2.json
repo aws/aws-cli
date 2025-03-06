@@ -44,7 +44,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Get the active tax exemptions for a given list of accounts. </p>"
+      "documentation":"<p>Get the active tax exemptions for a given list of accounts. The IAM action is <code>tax:GetExemptions</code>. </p>"
     },
     "BatchPutTaxRegistration":{
       "name":"BatchPutTaxRegistration",
@@ -110,7 +110,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Get supported tax exemption types. </p>"
+      "documentation":"<p>Get supported tax exemption types. The IAM action is <code>tax:GetExemptions</code>. </p>"
     },
     "GetTaxInheritance":{
       "name":"GetTaxInheritance",
@@ -189,7 +189,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves the tax exemption of accounts listed in a consolidated billing family. </p>"
+      "documentation":"<p>Retrieves the tax exemption of accounts listed in a consolidated billing family. The IAM action is <code>tax:GetExemptions</code>.</p>"
     },
     "ListTaxRegistrations":{
       "name":"ListTaxRegistrations",
@@ -240,7 +240,7 @@
         {"shape":"AttachmentUploadException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Adds the tax exemption for a single account or all accounts listed in a consolidated billing family. </p>"
+      "documentation":"<p>Adds the tax exemption for a single account or all accounts listed in a consolidated billing family. The IAM action is <code>tax:UpdateExemptions</code>. </p>"
     },
     "PutTaxInheritance":{
       "name":"PutTaxInheritance",
@@ -283,7 +283,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The access is denied for the Amazon Web Services Support API. </p>",
+      "documentation":"<p>The access is denied for the Amazon Web ServicesSupport API. </p>",
       "error":{
         "httpStatusCode":401,
         "senderFault":true
@@ -364,6 +364,10 @@
           "shape":"CanadaAdditionalInfo",
           "documentation":"<p> Additional tax information associated with your TRN in Canada.</p>"
         },
+        "egyptAdditionalInfo":{
+          "shape":"EgyptAdditionalInfo",
+          "documentation":"<p>Additional tax information to specify for a TRN in Egypt. </p>"
+        },
         "estoniaAdditionalInfo":{
           "shape":"EstoniaAdditionalInfo",
           "documentation":"<p> Additional tax information to specify for a TRN in Estonia.</p>"
@@ -371,6 +375,10 @@
         "georgiaAdditionalInfo":{
           "shape":"GeorgiaAdditionalInfo",
           "documentation":"<p> Additional tax information to specify for a TRN in Georgia. </p>"
+        },
+        "greeceAdditionalInfo":{
+          "shape":"GreeceAdditionalInfo",
+          "documentation":"<p>Additional tax information to specify for a TRN in Greece.</p>"
         },
         "israelAdditionalInfo":{
           "shape":"IsraelAdditionalInfo",
@@ -415,6 +423,10 @@
         "ukraineAdditionalInfo":{
           "shape":"UkraineAdditionalInfo",
           "documentation":"<p> Additional tax information associated with your TRN in Ukraine. </p>"
+        },
+        "vietnamAdditionalInfo":{
+          "shape":"VietnamAdditionalInfo",
+          "documentation":"<p>Additional tax information to specify for a TRN in Vietnam. </p>"
         }
       },
       "documentation":"<p>Additional tax information associated with your tax registration number (TRN). Depending on the TRN for a specific country, you might need to specify this information when you set your TRN. </p> <p>You can only specify one of the following parameters and the value can't be empty. </p> <note> <p>The parameter that you specify must match the country for the TRN, if available. For example, if you set a TRN in Canada for specific provinces, you must also specify the <code>canadaAdditionalInfo</code> parameter.</p> </note>"
@@ -430,6 +442,10 @@
           "shape":"CanadaAdditionalInfo",
           "documentation":"<p>Additional tax information associated with your TRN in Canada. </p>"
         },
+        "egyptAdditionalInfo":{
+          "shape":"EgyptAdditionalInfo",
+          "documentation":"<p>Additional tax information to specify for a TRN in Egypt. </p>"
+        },
         "estoniaAdditionalInfo":{
           "shape":"EstoniaAdditionalInfo",
           "documentation":"<p> Additional tax information associated with your TRN in Estonia. </p>"
@@ -437,6 +453,10 @@
         "georgiaAdditionalInfo":{
           "shape":"GeorgiaAdditionalInfo",
           "documentation":"<p> Additional tax information associated with your TRN in Georgia. </p>"
+        },
+        "greeceAdditionalInfo":{
+          "shape":"GreeceAdditionalInfo",
+          "documentation":"<p>Additional tax information to specify for a TRN in Greece. </p>"
         },
         "indiaAdditionalInfo":{
           "shape":"IndiaAdditionalInfo",
@@ -485,6 +505,10 @@
         "ukraineAdditionalInfo":{
           "shape":"UkraineAdditionalInfo",
           "documentation":"<p> Additional tax information associated with your TRN in Ukraine. </p>"
+        },
+        "vietnamAdditionalInfo":{
+          "shape":"VietnamAdditionalInfo",
+          "documentation":"<p>Additional tax information to specify for a TRN in Vietnam. </p>"
         }
       },
       "documentation":"<p> Additional tax information associated with your TRN. The Tax Settings API returns country-specific information in the response when any additional information is present with your TRN for the following countries.</p>"
@@ -570,7 +594,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>Failed to upload the tax exemption document to Amazon Web Services Support case. </p>",
+      "documentation":"<p>Failed to upload the tax exemption document to Amazon Web ServicesSupport case. </p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -792,7 +816,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>You've exceeded the Amazon Web Services Support case creation limit for your account. </p>",
+      "documentation":"<p>You've exceeded the Amazon Web ServicesSupport case creation limit for your account. </p>",
       "error":{
         "httpStatusCode":413,
         "senderFault":true
@@ -839,6 +863,10 @@
       },
       "exception":true
     },
+    "ContractingAuthorityCode":{
+      "type":"string",
+      "pattern":"^\\d{4}\\.[A-Z]\\d{5}\\.\\d{4}$"
+    },
     "CountryCode":{
       "type":"string",
       "max":2,
@@ -853,6 +881,10 @@
       "type":"string",
       "max":10,
       "min":10,
+      "pattern":"^(\\d{4}-(0[0-9]|1[0-2])-([0-2][0-9]|3[0-1]))$"
+    },
+    "DateString":{
+      "type":"string",
       "pattern":"^(\\d{4}-(0[0-9]|1[0-2])-([0-2][0-9]|3[0-1]))$"
     },
     "DeleteSupplementalTaxRegistrationRequest":{
@@ -914,6 +946,28 @@
       "max":50,
       "min":1,
       "pattern":"^(?!\\s*$)[\\s\\S]+$"
+    },
+    "EgyptAdditionalInfo":{
+      "type":"structure",
+      "members":{
+        "uniqueIdentificationNumber":{
+          "shape":"UniqueIdentificationNumber",
+          "documentation":"<p>The unique identification number provided by the Egypt Tax Authority.</p>"
+        },
+        "uniqueIdentificationNumberExpirationDate":{
+          "shape":"DateString",
+          "documentation":"<p>The expiration date of the unique identification number provided by the Egypt Tax Authority.</p>"
+        }
+      },
+      "documentation":"<p>Additional tax information to specify for a TRN in Egypt.</p>"
+    },
+    "ElectronicTransactionCodeNumber":{
+      "type":"string",
+      "pattern":"^\\d{17}$"
+    },
+    "EnterpriseIdentificationNumber":{
+      "type":"string",
+      "pattern":"^(\\d{10}|(\\d{10}-\\d{3}))$"
     },
     "EntityExemptionAccountStatus":{
       "type":"string",
@@ -1075,6 +1129,16 @@
           "documentation":"<p>TRN information of the account mentioned in the request. </p>"
         }
       }
+    },
+    "GreeceAdditionalInfo":{
+      "type":"structure",
+      "members":{
+        "contractingAuthorityCode":{
+          "shape":"ContractingAuthorityCode",
+          "documentation":"<p>The code of contracting authority for e-invoicing.</p>"
+        }
+      },
+      "documentation":"<p>Additional tax information to specify for a TRN in Greece. </p>"
     },
     "HeritageStatus":{
       "type":"string",
@@ -1366,6 +1430,10 @@
     "Pan":{
       "type":"string",
       "pattern":"^[A-Z]{5}[0-9]{4}[A-Z]{1}$"
+    },
+    "PaymentVoucherNumber":{
+      "type":"string",
+      "pattern":"^\\d{17}$"
     },
     "PersonType":{
       "type":"string",
@@ -2118,6 +2186,10 @@
         "Individual"
       ]
     },
+    "UniqueIdentificationNumber":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9]{39}$"
+    },
     "Url":{
       "type":"string",
       "max":200,
@@ -2186,6 +2258,28 @@
         }
       },
       "documentation":"<p>Required information to verify your TRN.</p>"
+    },
+    "VietnamAdditionalInfo":{
+      "type":"structure",
+      "members":{
+        "electronicTransactionCodeNumber":{
+          "shape":"ElectronicTransactionCodeNumber",
+          "documentation":"<p>The electronic transaction code number on the tax return document.</p>"
+        },
+        "enterpriseIdentificationNumber":{
+          "shape":"EnterpriseIdentificationNumber",
+          "documentation":"<p>The enterprise identification number for tax registration.</p>"
+        },
+        "paymentVoucherNumber":{
+          "shape":"PaymentVoucherNumber",
+          "documentation":"<p>The payment voucher number on the tax return payment document.</p>"
+        },
+        "paymentVoucherNumberDate":{
+          "shape":"DateString",
+          "documentation":"<p>The date on the tax return payment document.</p>"
+        }
+      },
+      "documentation":"<p>Additional tax information to specify for a TRN in Vietnam.</p>"
     }
   },
   "documentation":"<p>You can use the tax setting API to programmatically set, modify, and delete the tax registration number (TRN), associated business legal name, and address (Collectively referred to as \"TRN information\"). You can also programmatically view TRN information and tax addresses (\"Tax profiles\"). </p> <p>You can use this API to automate your TRN information settings instead of manually using the console.</p> <p>Service Endpoint</p> <ul> <li> <p>https://tax.us-east-1.amazonaws.com</p> </li> </ul>"

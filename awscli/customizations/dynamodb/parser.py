@@ -14,7 +14,9 @@ from decimal import Decimal
 
 import awscli.customizations.dynamodb.ast as ast
 from .exceptions import (
-    EmptyExpressionError, UnexpectedTokenError, UnknownExpressionError,
+    EmptyExpressionError,
+    UnexpectedTokenError,
+    UnknownExpressionError,
     InvalidLiteralValueError,
 )
 
@@ -57,7 +59,9 @@ class Parser(object):
         expression = self._parse_simple_expression()
 
         identifier_types = [
-            'identifier', 'path_identifier', 'index_identifier'
+            'identifier',
+            'path_identifier',
+            'index_identifier',
         ]
         if expression['type'] in identifier_types and self._match('comma'):
             self._advance()
@@ -104,8 +108,11 @@ class Parser(object):
             return self._parse_function()
 
         operand_types = [
-            'literal', 'identifier', 'unquoted_identifier',
-            'lbracket', 'lbrace',
+            'literal',
+            'identifier',
+            'unquoted_identifier',
+            'lbracket',
+            'lbrace',
         ]
         if not self._match(operand_types):
             raise UnknownExpressionError(
@@ -174,7 +181,10 @@ class Parser(object):
                 token=self._current,
                 expression=self._expression,
                 expected_type=[
-                    'literal', 'lbracket', 'lbrace', 'identifier',
+                    'literal',
+                    'lbracket',
+                    'lbrace',
+                    'identifier',
                     'unquoted_identiifer',
                 ],
             )
@@ -291,7 +301,7 @@ class Parser(object):
                     expression=self._expression,
                     message=(
                         'Keys must be of type `str`, found `%s`' % type(key)
-                    )
+                    ),
                 )
             self._advance_if_match('literal')
             self._advance_if_match('colon')

@@ -78,7 +78,7 @@
       "http":{
         "method":"DELETE",
         "requestUri":"/blueprints/{blueprintArn}/",
-        "responseCode":204
+        "responseCode":200
       },
       "input":{"shape":"DeleteBlueprintRequest"},
       "output":{"shape":"DeleteBlueprintResponse"},
@@ -97,7 +97,7 @@
       "http":{
         "method":"DELETE",
         "requestUri":"/data-automation-projects/{projectArn}/",
-        "responseCode":204
+        "responseCode":200
       },
       "input":{"shape":"DeleteDataAutomationProjectRequest"},
       "output":{"shape":"DeleteDataAutomationProjectResponse"},
@@ -183,6 +183,61 @@
       ],
       "documentation":"<p>Lists all existing Amazon Bedrock Data Automation Projects</p>"
     },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/listTagsForResource",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>List tags for an Amazon Bedrock Data Automation resource</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tagResource",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Tag an Amazon Bedrock Data Automation resource</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/untagResource",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Untag an Amazon Bedrock Data Automation resource</p>"
+    },
     "UpdateBlueprint":{
       "name":"UpdateBlueprint",
       "http":{
@@ -213,6 +268,7 @@
       "input":{"shape":"UpdateDataAutomationProjectRequest"},
       "output":{"shape":"UpdateDataAutomationProjectResponse"},
       "errors":[
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
@@ -250,8 +306,8 @@
       "type":"string",
       "enum":[
         "AUDIO_CONTENT_MODERATION",
-        "CHAPTER_CONTENT_MODERATION",
-        "TRANSCRIPT"
+        "TRANSCRIPT",
+        "TOPIC_CONTENT_MODERATION"
       ]
     },
     "AudioExtractionCategoryTypes":{
@@ -280,8 +336,8 @@
       "type":"string",
       "enum":[
         "AUDIO_SUMMARY",
-        "CHAPTER_SUMMARY",
-        "IAB"
+        "IAB",
+        "TOPIC_SUMMARY"
       ]
     },
     "AudioStandardGenerativeFieldTypes":{
@@ -366,7 +422,6 @@
       "documentation":"<p>Schema of the blueprint</p>",
       "max":100000,
       "min":1,
-      "pattern":"[a-zA-Z0-9\\s!\"\\#\\$%'&\\(\\)\\*\\+\\,\\-\\./:;=\\?@\\[\\\\\\]\\^_`\\{\\|\\}~><]+",
       "sensitive":true
     },
     "BlueprintStage":{
@@ -449,7 +504,8 @@
           "shape":"ClientToken",
           "idempotencyToken":true
         },
-        "encryptionConfiguration":{"shape":"EncryptionConfiguration"}
+        "encryptionConfiguration":{"shape":"EncryptionConfiguration"},
+        "tags":{"shape":"TagList"}
       },
       "documentation":"<p>Create Blueprint Request</p>"
     },
@@ -503,7 +559,8 @@
           "shape":"ClientToken",
           "idempotencyToken":true
         },
-        "encryptionConfiguration":{"shape":"EncryptionConfiguration"}
+        "encryptionConfiguration":{"shape":"EncryptionConfiguration"},
+        "tags":{"shape":"TagList"}
       },
       "documentation":"<p>Create DataAutomationProject Request</p>"
     },
@@ -559,6 +616,8 @@
     "DataAutomationProjectDescription":{
       "type":"string",
       "documentation":"<p>Description of the DataAutomationProject</p>",
+      "max":300,
+      "min":0,
       "sensitive":true
     },
     "DataAutomationProjectFilter":{
@@ -791,6 +850,20 @@
       },
       "documentation":"<p>KMS Encryption Configuration</p>"
     },
+    "EncryptionContextKey":{
+      "type":"string",
+      "documentation":"<p>Encryption context key.</p>",
+      "max":2000,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "EncryptionContextValue":{
+      "type":"string",
+      "documentation":"<p>Encryption context value.</p>",
+      "max":2000,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
     "GetBlueprintRequest":{
       "type":"structure",
       "required":["blueprintArn"],
@@ -866,7 +939,8 @@
       "type":"string",
       "enum":[
         "CONTENT_MODERATION",
-        "TEXT_DETECTION"
+        "TEXT_DETECTION",
+        "LOGOS"
       ]
     },
     "ImageExtractionCategoryTypes":{
@@ -927,8 +1001,8 @@
     },
     "KmsEncryptionContext":{
       "type":"map",
-      "key":{"shape":"String"},
-      "value":{"shape":"String"},
+      "key":{"shape":"EncryptionContextKey"},
+      "value":{"shape":"EncryptionContextValue"},
       "documentation":"<p>KMS Encryption Context</p>",
       "min":1
     },
@@ -936,7 +1010,8 @@
       "type":"string",
       "documentation":"<p>KMS Key Identifier</p>",
       "max":2048,
-      "min":1
+      "min":1,
+      "pattern":"[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]+"
     },
     "ListBlueprintsRequest":{
       "type":"structure",
@@ -978,6 +1053,19 @@
         "nextToken":{"shape":"NextToken"}
       },
       "documentation":"<p>List DataAutomationProject Response</p>"
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceARN"],
+      "members":{
+        "resourceARN":{"shape":"TaggableResourceArn"}
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{"shape":"TagList"}
+      }
     },
     "MaxResults":{
       "type":"integer",
@@ -1062,7 +1150,67 @@
         "DISABLED"
       ]
     },
-    "String":{"type":"string"},
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{"shape":"TagKey"},
+        "value":{"shape":"TagValue"}
+      },
+      "documentation":"<p>Key value pair of a tag</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "documentation":"<p>Defines the context of the tag.</p>",
+      "max":128,
+      "min":1
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "documentation":"<p>List of tag keys</p>",
+      "max":200,
+      "min":0
+    },
+    "TagList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "documentation":"<p>List of tags</p>",
+      "max":200,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceARN",
+        "tags"
+      ],
+      "members":{
+        "resourceARN":{"shape":"TaggableResourceArn"},
+        "tags":{"shape":"TagList"}
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "documentation":"<p>Defines the value within the context. e.g. &lt;key=reason, value=training&gt;.</p>",
+      "max":256,
+      "min":0
+    },
+    "TaggableResourceArn":{
+      "type":"string",
+      "documentation":"<p>ARN of a taggable resource</p>",
+      "max":1011,
+      "min":20,
+      "pattern":"arn:aws(|-cn|-us-gov):bedrock:[a-z0-9-]*:[0-9]{12}:(blueprint|data-automation-project)/[a-zA-Z0-9-]{12,36}"
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -1083,6 +1231,22 @@
         "IMAGE"
       ]
     },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceARN",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceARN":{"shape":"TaggableResourceArn"},
+        "tagKeys":{"shape":"TagKeyList"}
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateBlueprintRequest":{
       "type":"structure",
       "required":[
@@ -1097,7 +1261,8 @@
           "locationName":"blueprintArn"
         },
         "schema":{"shape":"BlueprintSchema"},
-        "blueprintStage":{"shape":"BlueprintStage"}
+        "blueprintStage":{"shape":"BlueprintStage"},
+        "encryptionConfiguration":{"shape":"EncryptionConfiguration"}
       },
       "documentation":"<p>Update Blueprint Request</p>"
     },
@@ -1126,7 +1291,8 @@
         "projectDescription":{"shape":"DataAutomationProjectDescription"},
         "standardOutputConfiguration":{"shape":"StandardOutputConfiguration"},
         "customOutputConfiguration":{"shape":"CustomOutputConfiguration"},
-        "overrideConfiguration":{"shape":"OverrideConfiguration"}
+        "overrideConfiguration":{"shape":"OverrideConfiguration"},
+        "encryptionConfiguration":{"shape":"EncryptionConfiguration"}
       },
       "documentation":"<p>Update DataAutomationProject Request</p>"
     },
@@ -1192,7 +1358,8 @@
       "enum":[
         "CONTENT_MODERATION",
         "TEXT_DETECTION",
-        "TRANSCRIPT"
+        "TRANSCRIPT",
+        "LOGOS"
       ]
     },
     "VideoExtractionCategoryTypes":{
@@ -1225,8 +1392,8 @@
       "type":"string",
       "enum":[
         "VIDEO_SUMMARY",
-        "SCENE_SUMMARY",
-        "IAB"
+        "IAB",
+        "CHAPTER_SUMMARY"
       ]
     },
     "VideoStandardGenerativeFieldTypes":{

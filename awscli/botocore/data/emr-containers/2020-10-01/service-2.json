@@ -359,6 +359,13 @@
       "min":44,
       "pattern":"^arn:(aws[a-zA-Z0-9-]*):acm:.+:(\\d{12}):certificate/.+$"
     },
+    "AllowAWSToRetainLogs":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "AuthorizationConfiguration":{
       "type":"structure",
       "members":{
@@ -1788,6 +1795,20 @@
       "min":1,
       "pattern":"[\\.\\-_/#A-Za-z0-9]+"
     },
+    "ManagedLogs":{
+      "type":"structure",
+      "members":{
+        "allowAWSToRetainLogs":{
+          "shape":"AllowAWSToRetainLogs",
+          "documentation":"<p>Determines whether Amazon Web Services can retain logs.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon resource name (ARN) of the encryption key for logs.</p>"
+        }
+      },
+      "documentation":"<p>The entity that provides configuration control over managed logs.</p>"
+    },
     "MaxFilesToKeep":{
       "type":"integer",
       "max":50,
@@ -1796,6 +1817,10 @@
     "MonitoringConfiguration":{
       "type":"structure",
       "members":{
+        "managedLogs":{
+          "shape":"ManagedLogs",
+          "documentation":"<p>The entity that controls configuration for managed logs.</p>"
+        },
         "persistentAppUI":{
           "shape":"PersistentAppUI",
           "documentation":"<p>Monitoring configurations for the persistent application UI. </p>"

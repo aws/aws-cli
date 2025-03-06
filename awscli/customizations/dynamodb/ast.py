@@ -62,4 +62,3 @@ def between_expression(left, center, right):
 
 def comparison_expression(name, left, right):
     return {"type": "comparator", "children": [left, right], "value": name}
-

@@ -10,13 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
+import os
+import pytest
+import sys
 from argparse import Namespace
 
 from botocore.paginate import PageIterator
 
 from awscli.testutils import unittest, mock
-from awscli.compat import StringIO
-from awscli.formatter import YAMLDumper, StreamedYAMLFormatter
+from awscli.compat import StringIO, contextlib
+from awscli.formatter import YAMLDumper, StreamedYAMLFormatter, JSONFormatter
 
 
 class FakePageIterator(PageIterator):
@@ -58,8 +62,9 @@ class TestYAMLDumper(unittest.TestCase):
         self.assertEqual(self.output.getvalue(), '- val1\n- val2\n')
 
 
-class TestStreamedYAMLFormatter(unittest.TestCase):
-    def setUp(self):
+class TestStreamedYAMLFormatter:
+
+    def setup_method(self):
         self.args = Namespace(query=None)
         self.formatter = StreamedYAMLFormatter(self.args)
         self.output = StringIO()
@@ -71,8 +76,7 @@ class TestStreamedYAMLFormatter(unittest.TestCase):
             ]
         }
         self.formatter('list-tables', response, self.output)
-        self.assertEqual(
-            self.output.getvalue(),
+        assert self.output.getvalue() == (
             '- TableNames:\n'
             '  - MyTable\n'
         )
@@ -91,8 +95,7 @@ class TestStreamedYAMLFormatter(unittest.TestCase):
             },
         ])
         self.formatter('list-tables', response, self.output)
-        self.assertEqual(
-            self.output.getvalue(),
+        assert self.output.getvalue() == (
             '- TableNames:\n'
             '  - MyTable\n'
             '- TableNames:\n'
@@ -110,7 +113,7 @@ class TestStreamedYAMLFormatter(unittest.TestCase):
         }
         formatter = StreamedYAMLFormatter(self.args, io_error_dumper)
         formatter('list-tables', response, mock_output)
-        self.assertTrue(mock_output.flush.called)
+        assert mock_output.flush.called
 
     def test_stops_paginating_after_io_error(self):
         io_error_dumper = mock.Mock(YAMLDumper)
@@ -132,5 +135,75 @@ class TestStreamedYAMLFormatter(unittest.TestCase):
         formatter('list-tables', response, mock_output)
         # The dumper should have only been called once as the io error is
         # immediately raised and we should not have kept paginating.
-        self.assertTrue(len(io_error_dumper.dump.call_args_list), 1)
-        self.assertTrue(mock_output.flush.called)
+        assert len(io_error_dumper.dump.call_args_list) == 1
+        assert mock_output.flush.called
+
+    @pytest.mark.parametrize('env_vars', [
+        {'AWS_CLI_OUTPUT_ENCODING': 'UTF-8'},
+        {'PYTHONUTF8': '1'},
+    ])
+    def test_encoding_override(self, env_vars):
+        response = {
+            'TableNames': [
+                '桌子'
+            ]
+        }
+        stdout_b = io.BytesIO()
+        stdout = io.TextIOWrapper(stdout_b, encoding="cp1252", newline='\n')
+
+        formatter = StreamedYAMLFormatter(self.args)
+        with mock.patch.dict(os.environ, env_vars):
+            with contextlib.redirect_stdout(stdout):
+                assert 'cp1252' == sys.stdout.encoding
+                formatter('list-tables', response, sys.stdout)
+                # we expect the formatter to have changed the output stream
+                # encoding based on AWS_CLI_OUTPUT_ENCODING
+                assert 'UTF-8' == sys.stdout.encoding
+                stdout.flush()
+
+        assert stdout_b.getvalue() == (
+            '- TableNames:\n'
+            '  - 桌子\n'
+        ).encode('UTF-8')
+
+
+class TestJSONFormatter:
+    def setup_method(self):
+        self.args = Namespace(query=None)
+        self.formatter = JSONFormatter(self.args)
+
+    @pytest.mark.parametrize('env_vars', [
+        {'AWS_CLI_OUTPUT_ENCODING': 'UTF-8'},
+        {'PYTHONUTF8': '1'},
+    ])
+    def test_encoding_override(self, env_vars):
+        """
+        StreamedYAMLFormatter is tested above since it doesn't inherit from
+        FullyBufferedFormatter, this is implicitly testing all other
+        formatters that do.
+        """
+        response = {
+            'TableNames': [
+                '桌子'
+            ]
+        }
+        stdout_b = io.BytesIO()
+        stdout = io.TextIOWrapper(stdout_b, encoding="cp1252", newline='\n')
+
+        with mock.patch.dict(os.environ, env_vars):
+            with contextlib.redirect_stdout(stdout):
+                assert 'cp1252' == sys.stdout.encoding
+                self.formatter('list-tables', response, sys.stdout)
+                # we expect the formatter to have changed the output stream
+                # encoding based on AWS_CLI_OUTPUT_ENCODING
+                assert 'UTF-8' == sys.stdout.encoding
+                stdout.flush()
+
+        assert stdout_b.getvalue() == (
+            '{\n'
+            '    "TableNames": [\n'
+            '        "桌子"\n'
+            '    ]\n'
+            '}\n'
+        ).encode('UTF-8')
+

@@ -18,11 +18,14 @@ DATAPIPELINE_DEFAULT_SERVICE_ROLE_NAME = "DataPipelineDefaultRole"
 DATAPIPELINE_DEFAULT_RESOURCE_ROLE_NAME = "DataPipelineDefaultResourceRole"
 
 # DataPipeline role arn names
-DATAPIPELINE_DEFAULT_SERVICE_ROLE_ARN = ("arn:aws:iam::aws:policy/"
-                                         "service-role/AWSDataPipelineRole")
-DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ARN = ("arn:aws:iam::aws:policy/"
-                                          "service-role/"
-                                          "AmazonEC2RoleforDataPipelineRole")
+DATAPIPELINE_DEFAULT_SERVICE_ROLE_ARN = (
+    "arn:aws:iam::aws:policy/" "service-role/AWSDataPipelineRole"
+)
+DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ARN = (
+    "arn:aws:iam::aws:policy/"
+    "service-role/"
+    "AmazonEC2RoleforDataPipelineRole"
+)
 
 # Assume Role Policy definitions for roles
 DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ASSUME_POLICY = {
@@ -32,9 +35,9 @@ DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ASSUME_POLICY = {
             "Sid": "",
             "Effect": "Allow",
             "Principal": {"Service": "ec2.amazonaws.com"},
-            "Action": "sts:AssumeRole"
+            "Action": "sts:AssumeRole",
         }
-    ]
+    ],
 }
 
 DATAPIPELINE_DEFAULT_SERVICE_ROLE_ASSUME_POLICY = {
@@ -43,10 +46,13 @@ DATAPIPELINE_DEFAULT_SERVICE_ROLE_ASSUME_POLICY = {
         {
             "Sid": "",
             "Effect": "Allow",
-            "Principal": {"Service": ["datapipeline.amazonaws.com",
-                                      "elasticmapreduce.amazonaws.com"]
-                          },
-            "Action": "sts:AssumeRole"
+            "Principal": {
+                "Service": [
+                    "datapipeline.amazonaws.com",
+                    "elasticmapreduce.amazonaws.com",
+                ]
+            },
+            "Action": "sts:AssumeRole",
         }
-    ]
+    ],
 }

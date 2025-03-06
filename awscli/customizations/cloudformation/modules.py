@@ -256,6 +256,8 @@ class Module:
         self.template = template
         self.parent_module = parent_module
 
+        self.original_module_dict = {}
+
         if RESOURCES not in self.template:
             # The parent might only have Modules
             self.template[RESOURCES] = {}
@@ -312,7 +314,6 @@ class Module:
             + f"source: {self.source}, props: {self.props}"
         )
 
-    # pylint: disable=too-many-branches,too-many-statements
     def process(self):
         """
         Read the module source and process it.
@@ -324,6 +325,12 @@ class Module:
         self.lines = lines
 
         module_dict = yamlhelper.yaml_parse(content)
+        self.original_module_dict = copy.deepcopy(module_dict)
+        return self.process_content(module_dict)
+
+    # pylint: disable=too-many-branches,too-many-statements
+    def process_content(self, module_dict):
+        "Process the module content and return the template"
 
         # Process constants
         constants = process_constants(module_dict)

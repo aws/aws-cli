@@ -39,6 +39,13 @@ Parameters:
       - Region
       - Account
 
+Conditions:
+
+  IncludeRegion:
+    Fn::Equals:
+      - !Ref IncludeRegion
+      - true
+
 Outputs:
 
   Id:
@@ -48,5 +55,9 @@ Outputs:
         - - !Ref Name
           - !Ref App
           - !Ref Env
+          - Fn::If:
+            - IncludeRegion
+            - !Ref AWS::Region
+            - !Ref AWS::NoValue
 
 

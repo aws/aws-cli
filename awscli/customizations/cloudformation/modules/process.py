@@ -58,6 +58,7 @@ from awscli.customizations.cloudformation.modules.parse_sub import (
     WordType,
     is_sub_needed,
 )
+from awscli.customizations.cloudformation.modules.visitor import Visitor
 from awscli.customizations.cloudformation import yamlhelper
 
 LOG = logging.getLogger(__name__)
@@ -430,44 +431,20 @@ class Module:
         This function is running from the module, inspecting everything
         in the partially resolved parent template.
         """
+
+        def vf(v):
+            if not isdict(v.d) or v.p is None:
+                return
+            if SUB in v.d:
+                self.resolve_output_sub(v.d[SUB], v.p, v.k)
+            elif GETATT in v.d:
+                self.resolve_output_getatt(v.d[GETATT], v.p, v.k)
+
         sections = [RESOURCES, MODULES, OUTPUTS]
         for section in sections:
             if section not in self.template:
                 continue
-            for k, v in self.template[section].items():
-                self.resolve_module_outputs(k, v, self.template, section)
-
-    def resolve_module_outputs(self, k, v, d, n):
-        """
-        Recursively resolve GetAtts and Subs that reference module outputs.
-
-        :param name The name of the reference
-        :param k The name of the node
-        :param v The value of the node
-        :param d The dict that holds the parent of k
-        :param n The name of the node that holds k
-
-        If a reference is found, this function sets the value of d[n]
-        """
-
-        if k == SUB:
-            self.resolve_output_sub(v, d, n)
-        elif k == GETATT:
-            self.resolve_output_getatt(v, d, n)
-        else:
-            if isdict(v):
-                for k2, v2 in v.copy().items():
-                    self.resolve_module_outputs(k2, v2, d[n], k)
-            elif isinstance(v, list):
-                idx = -1
-                for v2 in v:
-                    idx = idx + 1
-                    if isdict(v2):
-                        for k3, v3 in v2.copy().items():
-                            self.resolve_module_outputs(k3, v3, v, idx)
-                    elif isinstance(v2, list):
-                        for i, v3 in enumerate(v2):
-                            self.resolve_module_outputs(i, v3, v, idx)
+            Visitor(self.template[section]).visit(vf)
 
     def resolve_output_sub_getatt(self, w):
         """
@@ -763,7 +740,19 @@ class Module:
         container = {}
         # We need the container for the first iteration of the recursion
         container[RESOURCES] = self.resources
-        self.resolve(logical_id, resource, container, RESOURCES)
+
+        def vf(v):
+            if not isdict(v.d) or v.p is None:
+                return
+            if REF in v.d:
+                self.resolve_ref(v.d[REF], v.p, v.k)
+            elif SUB in v.d:
+                self.resolve_sub(v.d[SUB], v.p, v.k)
+            elif GETATT in v.d:
+                self.resolve_getatt(v.d[GETATT], v.p, v.k)
+
+        Visitor(resource).visit(vf)
+
         self.template[RESOURCES][self.name + logical_id] = resource
 
         # DependsOn needs special handling, since it refers directly to
@@ -883,55 +872,6 @@ class Module:
         original = resource[attr_name]
         overrides = resource_overrides[attr_name]
         resource[attr_name] = merge_props(original, overrides)
-
-    def resolve(self, k, v, d, n):
-        """
-        Resolve Refs, Subs, and GetAtts recursively.
-
-        :param k The name of the node
-        :param v The value of the node
-        :param d The dict that is the parent of the dict that holds k, v
-        :param n The name of the dict that holds k, v
-
-        Example
-
-        Resources:
-          Bucket:
-            Type: AWS::S3::Bucket
-            Properties:
-              BucketName: !Ref Name
-
-        In the above example,
-            k = !Ref, v = Name, d = Properties{}, n = BucketName
-
-        So we can set d[n] = resolved_value (which replaces {k,v})
-
-        In the prior iteration,
-            k = BucketName, v = {!Ref, Name}, d = Bucket{}, n = Properties
-        """
-
-        if k == REF:
-            self.resolve_ref(v, d, n)
-        elif k == SUB:
-            self.resolve_sub(v, d, n)
-        elif k == GETATT:
-            self.resolve_getatt(v, d, n)
-        else:
-            if isdict(v):
-                vc = v.copy()
-                for k2, v2 in vc.items():
-                    self.resolve(k2, v2, d[n], k)
-            elif isinstance(v, list):
-                idx = -1
-                for v2 in v:
-                    idx = idx + 1
-                    if isdict(v2):
-                        v2c = v2.copy()
-                        for k3, v3 in v2c.items():
-                            self.resolve(k3, v3, v, idx)
-                    elif isinstance(v2, list):
-                        for i, v3 in enumerate(v2):
-                            self.resolve(i, v3, v, idx)
 
     def resolve_ref(self, v, d, n):
         """

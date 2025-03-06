@@ -4,16 +4,23 @@
 import pytest
 from awscli.testutils import unittest
 from awscli.customizations.cloudformation import yamlhelper
-from awscli.customizations.cloudformation import modules
 from awscli.customizations.cloudformation import exceptions
-from awscli.customizations.cloudformation.parse_sub import SubWord, WordType
-from awscli.customizations.cloudformation.parse_sub import parse_sub
-from awscli.customizations.cloudformation.module_visitor import Visitor
-from awscli.customizations.cloudformation.module_constants import (
+from awscli.customizations.cloudformation.modules.parse_sub import (
+    SubWord,
+    WordType,
+)
+from awscli.customizations.cloudformation.modules.parse_sub import parse_sub
+from awscli.customizations.cloudformation.modules.visitor import Visitor
+from awscli.customizations.cloudformation.modules.constants import (
     process_constants,
     replace_constants,
 )
-from awscli.customizations.cloudformation.module_read import read_source
+from awscli.customizations.cloudformation.modules.read import read_source
+from awscli.customizations.cloudformation.modules.merge import merge_props
+from awscli.customizations.cloudformation.modules.process import (
+    process_module_section,
+)
+
 
 MODULES = "Modules"
 RESOURCES = "Resources"
@@ -80,7 +87,7 @@ class TestPackageModules(unittest.TestCase):
         original = {"b": "c", "d": {"e": "f", "i": [1, 2, 3]}}
         overrides = {"b": "cc", "d": {"e": "ff", "g": "h", "i": [4, 5]}}
         expect = {"b": "cc", "d": {"e": "ff", "g": "h", "i": [1, 2, 3, 4, 5]}}
-        merged = modules.merge_props(original, overrides)
+        merged = merge_props(original, overrides)
         self.assertEqual(merged, expect)
 
     def test_main(self):
@@ -118,16 +125,16 @@ class TestPackageModules(unittest.TestCase):
             "outjoin",
         ]
         for test in tests:
-            t, _ = modules.read_source(f"{base}/{test}-template.yaml")
+            t, _ = read_source(f"{base}/{test}-template.yaml")
             td = yamlhelper.yaml_parse(t)
-            e, _ = modules.read_source(f"{base}/{test}-expect.yaml")
+            e, _ = read_source(f"{base}/{test}-expect.yaml")
 
             constants = process_constants(td)
             if constants is not None:
                 replace_constants(constants, td)
 
             # Modules section
-            td = modules.process_module_section(td, base, t, None, True, True)
+            td = process_module_section(td, base, t, None, True, True)
 
             processed = yamlhelper.yaml_dump(td)
             self.assertEqual(e, processed, f"{test} failed")
@@ -135,15 +142,13 @@ class TestPackageModules(unittest.TestCase):
         # These tests should fail to package
         bad_tests = ["badref"]
         for test in bad_tests:
-            t, _ = modules.read_source(f"{base}/{test}-template.yaml")
+            t, _ = read_source(f"{base}/{test}-template.yaml")
             td = yamlhelper.yaml_parse(t)
             with pytest.raises(exceptions.InvalidModuleError):
                 constants = process_constants(td)
                 if constants is not None:
                     replace_constants(constants, td)
-                td = modules.process_module_section(
-                    td, base, t, None, True, True
-                )
+                td = process_module_section(td, base, t, None, True, True)
 
     def test_visitor(self):
         "Test module_visitor"

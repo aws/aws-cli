@@ -12,19 +12,11 @@
 # language governing permissions and limitations under the License.
 
 """
-This file implements local module support for the package command.
-
-See tests/unit/customizations/cloudformation/modules for examples of what the
-Modules section of a template looks like, and how modules are used from parent
-templates.
-
-See the public documentation for a full description of the feature.
-
-```
-
+Basic module processing functions.
 """
 
-# pylint: disable=fixme,too-many-instance-attributes,too-many-lines
+# pylint: disable=too-many-lines
+# pylint: disable=too-many-instance-attributes
 # pylint: disable=too-many-public-methods
 
 import copy
@@ -32,42 +24,41 @@ import logging
 import os
 
 from awscli.customizations.cloudformation import exceptions
-from awscli.customizations.cloudformation import yamlhelper
-from awscli.customizations.cloudformation.module_functions import (
+from awscli.customizations.cloudformation.modules.functions import (
     fn_merge,
     fn_select,
     fn_insertfile,
-    fn_invoke,
     fn_join,
+    fn_invoke,
 )
-from awscli.customizations.cloudformation.module_merge import (
-    isdict,
-    merge_props,
-)
-from awscli.customizations.cloudformation.module_maps import (
+from awscli.customizations.cloudformation.modules.maps import (
     process_module_maps,
     resolve_mapped_lists,
-    ORIGINAL,
     getatt_map_list,
+    ORIGINAL,
 )
-from awscli.customizations.cloudformation.module_constants import (
-    process_constants,
-    replace_constants,
+from awscli.customizations.cloudformation.modules.read import (
+    is_url,
+    read_source,
 )
-
-from awscli.customizations.cloudformation.parse_sub import WordType
-from awscli.customizations.cloudformation.parse_sub import (
-    parse_sub,
-    is_sub_needed,
-)
-from awscli.customizations.cloudformation.module_conditions import (
+from awscli.customizations.cloudformation.modules.conditions import (
     parse_conditions,
     process_conditions,
 )
-from awscli.customizations.cloudformation.module_read import (
-    read_source,
-    is_url,
+from awscli.customizations.cloudformation.modules.constants import (
+    process_constants,
+    replace_constants,
 )
+from awscli.customizations.cloudformation.modules.merge import (
+    isdict,
+    merge_props,
+)
+from awscli.customizations.cloudformation.modules.parse_sub import (
+    parse_sub,
+    WordType,
+    is_sub_needed,
+)
+from awscli.customizations.cloudformation import yamlhelper
 
 LOG = logging.getLogger(__name__)
 

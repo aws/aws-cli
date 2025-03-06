@@ -24,11 +24,11 @@ from collections import OrderedDict
 import copy
 import os
 from awscli.customizations.cloudformation import exceptions
-from awscli.customizations.cloudformation.module_merge import (
+from awscli.customizations.cloudformation.modules.merge import (
     isdict,
     merge_props,
 )
-from awscli.customizations.cloudformation.module_visitor import Visitor
+from awscli.customizations.cloudformation.modules.visitor import Visitor
 
 MERGE = "Fn::Merge"
 SELECT = "Fn::Select"

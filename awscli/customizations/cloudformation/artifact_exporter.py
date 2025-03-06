@@ -25,8 +25,13 @@ from contextlib import contextmanager
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump, \
     yaml_parse
-from awscli.customizations.cloudformation import modules
-from awscli.customizations.cloudformation import module_constants
+from awscli.customizations.cloudformation.modules.process import (
+    process_module_section
+)
+from awscli.customizations.cloudformation.modules.constants import (
+    process_constants, 
+    replace_constants
+)
 import jmespath
 
 
@@ -671,9 +676,9 @@ class Template(object):
 
         # Process constants
         try:
-            constants = module_constants.process_constants(self.template_dict)
+            constants = process_constants(self.template_dict)
             if constants is not None:
-                module_constants.replace_constants(constants, self.template_dict)
+                replace_constants(constants, self.template_dict)
         except Exception as e:
             msg=f"Failed to process Constants section: {e}"
             LOG.exception(msg)
@@ -681,7 +686,7 @@ class Template(object):
 
         # Process modules
         try:
-            self.template_dict = modules.process_module_section(
+            self.template_dict = process_module_section(
                     self.template_dict, 
                     self.template_dir,
                     self.module_parent_path, 

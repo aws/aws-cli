@@ -20,9 +20,9 @@ See tests/unit/customizations/cloudformation/modules/map*.yaml
 import copy
 from collections import OrderedDict
 from awscli.customizations.cloudformation import exceptions
-from awscli.customizations.cloudformation.module_visitor import Visitor
-from awscli.customizations.cloudformation.parse_sub import WordType
-from awscli.customizations.cloudformation.parse_sub import parse_sub
+from awscli.customizations.cloudformation.modules.visitor import Visitor
+from awscli.customizations.cloudformation.modules.parse_sub import WordType
+from awscli.customizations.cloudformation.modules.parse_sub import parse_sub
 
 MAP_PLACEHOLDER = "$MapValue"
 INDEX_PLACEHOLDER = "$MapIndex"

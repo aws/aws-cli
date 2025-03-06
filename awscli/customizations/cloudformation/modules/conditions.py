@@ -22,7 +22,7 @@ We have to be able to fully resolve it locally.
 
 from collections import OrderedDict
 from awscli.customizations.cloudformation import exceptions
-from awscli.customizations.cloudformation.module_visitor import Visitor
+from awscli.customizations.cloudformation.modules.visitor import Visitor
 
 AND = "Fn::And"
 EQUALS = "Fn::Equals"

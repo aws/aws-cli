@@ -49,10 +49,12 @@ Example:
 """
 
 from collections import OrderedDict
-from awscli.customizations.cloudformation.parse_sub import WordType
-from awscli.customizations.cloudformation.parse_sub import parse_sub
-from awscli.customizations.cloudformation.parse_sub import is_sub_needed
-from awscli.customizations.cloudformation.module_visitor import Visitor
+from awscli.customizations.cloudformation.modules.parse_sub import WordType
+from awscli.customizations.cloudformation.modules.parse_sub import parse_sub
+from awscli.customizations.cloudformation.modules.parse_sub import (
+    is_sub_needed,
+)
+from awscli.customizations.cloudformation.modules.visitor import Visitor
 from awscli.customizations.cloudformation import exceptions
 
 CONSTANTS = "Constants"

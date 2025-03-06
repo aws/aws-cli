@@ -123,6 +123,7 @@ class TestPackageModules(unittest.TestCase):
             "insertfile",
             "outsublist",
             "outjoin",
+            "invoke",
         ]
         for test in tests:
             t, _ = read_source(f"{base}/{test}-template.yaml")

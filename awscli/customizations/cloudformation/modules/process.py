@@ -29,13 +29,12 @@ from awscli.customizations.cloudformation.modules.functions import (
     fn_select,
     fn_insertfile,
     fn_join,
-    fn_invoke,
 )
 from awscli.customizations.cloudformation.modules.maps import (
     process_module_maps,
     resolve_mapped_lists,
     getatt_map_list,
-    ORIGINAL,
+    ORIGINAL_MAP_NAME,
 )
 from awscli.customizations.cloudformation.modules.read import (
     is_url,
@@ -86,7 +85,13 @@ from awscli.customizations.cloudformation.modules.names import (
     SOURCE_MAP,
     NO_SOURCE_MAP,
     VALUE,
+    INVOKE,
 )
+
+ORIGINAL_CONFIG = "original_config"
+BASE_PATH = "base_path"
+PARENT_PATH = "parent_path"
+INVOKED = "invoked"
 
 LOG = logging.getLogger(__name__)
 LOG.setLevel(logging.DEBUG)
@@ -101,10 +106,15 @@ def make_module(
     parent_path,
     no_source_map,
     parent_module,
+    invoked=False,
 ):
     "Create an instance of a module based on a template and the module config"
     module_config = {}
     module_config[NAME] = name
+    module_config[ORIGINAL_CONFIG] = copy.deepcopy(config)
+    module_config[BASE_PATH] = base_path
+    module_config[PARENT_PATH] = parent_path
+    module_config[INVOKED] = invoked
     if SOURCE not in config:
         msg = f"{name} missing {SOURCE}"
         raise exceptions.InvalidModulePathError(msg=msg)
@@ -119,14 +129,14 @@ def make_module(
         module_config[SOURCE] = source_path
 
     if module_config[SOURCE] == parent_path:
-        msg = f"Module refers to itself: {parent_path}"
+        msg = f"Module {name} refers to itself: {parent_path}"
         raise exceptions.InvalidModuleError(msg=msg)
     if PROPERTIES in config:
         module_config[PROPERTIES] = config[PROPERTIES]
     if OVERRIDES in config:
         module_config[OVERRIDES] = config[OVERRIDES]
-    if ORIGINAL in config:
-        module_config[ORIGINAL] = config[ORIGINAL]
+    if ORIGINAL_MAP_NAME in config:
+        module_config[ORIGINAL_MAP_NAME] = config[ORIGINAL_MAP_NAME]
     module_config[NO_SOURCE_MAP] = no_source_map
     return Module(template, module_config, parent_module)
 
@@ -247,6 +257,10 @@ class Module:
         self.parent_module = parent_module
 
         self.original_module_dict = {}
+        self.original_config = module_config.get(ORIGINAL_CONFIG, {})
+        self.base_path = module_config.get(BASE_PATH, "")
+        self.parent_path = module_config.get(PARENT_PATH, "")
+        self.invoked = module_config.get(INVOKED, False)
 
         if RESOURCES not in self.template:
             # The parent might only have Modules
@@ -257,8 +271,8 @@ class Module:
 
         # Only set when we copy a module with a Map attribute
         self.original_map_name = None
-        if ORIGINAL in module_config:
-            self.original_map_name = module_config[ORIGINAL]
+        if ORIGINAL_MAP_NAME in module_config:
+            self.original_map_name = module_config[ORIGINAL_MAP_NAME]
 
         # The location of the source for the module, a URI string
         self.source = module_config[SOURCE]
@@ -408,9 +422,74 @@ class Module:
         self.process_module_outputs()
 
         # Look for Fn::Invoke calling this module in the parent
-        fn_invoke(self)
+        # Create a fresh copy of the module so that things
+        # like conditionals can be re-evaluated
+        if not self.invoked:
+            self.fn_invoke()
 
         return self.template
+
+    def fn_invoke(self):
+        """
+        Resolve Fn::Invoke.
+
+        Invoke allows you to treat a module like a function.
+
+        Invoking the module returns its outputs with a modified
+        set of parameters.
+        """
+
+        def vf(v):
+            if not isdict(v.d) or INVOKE not in v.d or v.p is None:
+                return
+
+            inv = v.d[INVOKE]
+            if not isinstance(inv, list) or len(inv) != 3:
+                msg = f"Fn::Invoke requires 3 arguments: {inv}"
+                raise exceptions.InvalidModuleError(msg=msg)
+            module_name = inv[0]
+            params = inv[1]
+            outputs = inv[2]
+
+            if module_name != self.name:
+                return
+
+            invoke_outputs = []
+            if isinstance(outputs, list):
+                invoke_outputs = outputs
+            else:
+                invoke_outputs.append(outputs)
+
+            copied_module = make_module(
+                self.template,
+                self.name,
+                copy.deepcopy(self.original_config),
+                self.base_path,
+                self.parent_path,
+                self.no_source_map,
+                self.parent_module,
+                True,
+            )
+            for k, val in params.items():
+                copied_module.props[k] = val
+
+            copied_module.process()
+
+            retval = []
+            for k in invoke_outputs:
+                if k not in copied_module.module_outputs:
+                    msg = f"Fn::Invoke output not found in {self.name}: k"
+                    raise exceptions.InvalidModuleError(msg=msg)
+                mo = copied_module.module_outputs[k]
+                copied_module.resolve(mo)
+                retval.append(mo)
+
+            if len(retval) == 1:
+                retval = retval[0]
+
+            v.p[v.k] = retval
+
+        Visitor(self.template).visit(vf)
 
     def process_module_outputs(self):
         """
@@ -739,17 +818,7 @@ class Module:
         # We need the container for the first iteration of the recursion
         container[RESOURCES] = self.resources
 
-        def vf(v):
-            if not isdict(v.d) or v.p is None:
-                return
-            if REF in v.d:
-                self.resolve_ref(v.d[REF], v.p, v.k)
-            elif SUB in v.d:
-                self.resolve_sub(v.d[SUB], v.p, v.k)
-            elif GETATT in v.d:
-                self.resolve_getatt(v.d[GETATT], v.p, v.k)
-
-        Visitor(resource).visit(vf)
+        self.resolve(resource)
 
         self.template[RESOURCES][self.name + logical_id] = resource
 
@@ -765,6 +834,21 @@ class Module:
             if SOURCE_MAP not in metadata:
                 # Don't overwrite child maps
                 metadata[SOURCE_MAP] = self.get_source_map(logical_id)
+
+    def resolve(self, resource):
+        "Resolve references in the resource"
+
+        def vf(v):
+            if not isdict(v.d) or v.p is None:
+                return
+            if REF in v.d:
+                self.resolve_ref(v.d[REF], v.p, v.k)
+            elif SUB in v.d:
+                self.resolve_sub(v.d[SUB], v.p, v.k)
+            elif GETATT in v.d:
+                self.resolve_getatt(v.d[GETATT], v.p, v.k)
+
+        Visitor(resource).visit(vf)
 
     def depends_on(self, logical_id, resource):
         """

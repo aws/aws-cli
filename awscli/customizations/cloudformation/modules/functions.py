@@ -21,7 +21,6 @@ Fn::Merge
 """
 
 from collections import OrderedDict
-import copy
 import os
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.modules.merge import (
@@ -35,74 +34,8 @@ from awscli.customizations.cloudformation.modules.names import (
     REF,
     GETATT,
     INSERT_FILE,
-    INVOKE,
     JOIN,
 )
-
-
-def fn_invoke(m):
-    """
-    Resolve Fn::Invoke.
-
-    Invoke allows you to treat a module like a function.
-
-    Invoking the module returns its outputs with a modified
-    set of parameters.
-
-    :param m: The module
-    """
-
-    def vf(v):
-        if not isdict(v.d):
-            return
-        if INVOKE not in v.d:
-            return
-        if v.p is None:
-            return
-
-        inv = v.d[INVOKE]
-        if not isinstance(inv, list) or len(inv) != 3:
-            msg = f"Fn::Invoke requires 3 arguments: {inv}"
-            raise exceptions.InvalidModuleError(msg=msg)
-        module_name = inv[0]
-        params = inv[1]
-        outputs = inv[2]
-
-        if module_name != m.name:
-            return
-
-        # Create a copy of the original props and override values
-        props_copy = copy.deepcopy(m.props)
-        for k, val in params.items():
-            props_copy[k] = val
-
-        invoke_outputs = []
-        if isinstance(outputs, list):
-            invoke_outputs = outputs
-        else:
-            invoke_outputs.append(outputs)
-
-        retval = []
-        for k in invoke_outputs:
-            if k not in m.module_outputs:
-                msg = f"Fn::Invoke output not found in {m.name}: k"
-                raise exceptions.InvalidModuleError(msg=msg)
-            copied_output = copy.deepcopy(m.module_outputs[k])
-            copied_props = copy.deepcopy(m.props)
-            m.props = props_copy
-            n = "x"
-            d = {}
-            d[n] = copied_output
-            m.resolve(k, copied_output, d, n)
-            retval.append(d[n])
-            m.props = copied_props
-
-        if len(retval) == 1:
-            retval = retval[0]
-
-        v.p[v.k] = retval
-
-    Visitor(m.template).visit(vf)
 
 
 def fn_join(d):

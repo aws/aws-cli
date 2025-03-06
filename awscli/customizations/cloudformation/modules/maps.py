@@ -34,7 +34,7 @@ MODULES = "Modules"
 GETATT = "Fn::GetAtt"
 RESOURCES = "Resources"
 OUTPUTS = "Outputs"
-ORIGINAL = "Original"
+ORIGINAL_MAP_NAME = "OriginalMapName"
 VALUE = "Value"
 
 
@@ -110,7 +110,7 @@ def process_module_maps(template, parent_module):
                 # Make a new module
                 module_id = f"{k}{i}"
                 copied_module = copy.deepcopy(v)
-                copied_module[ORIGINAL] = k
+                copied_module[ORIGINAL_MAP_NAME] = k
                 del copied_module[MAP]
                 # Replace $Map and $Index placeholders
                 if PROPERTIES in copied_module:

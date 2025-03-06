@@ -29,14 +29,15 @@ from awscli.customizations.cloudformation.modules.merge import (
     merge_props,
 )
 from awscli.customizations.cloudformation.modules.visitor import Visitor
-
-MERGE = "Fn::Merge"
-SELECT = "Fn::Select"
-REF = "Ref"
-GETATT = "Fn::GetAtt"
-INSERT_FILE = "Fn::InsertFile"
-INVOKE = "Fn::Invoke"
-JOIN = "Fn::Join"
+from awscli.customizations.cloudformation.modules.names import (
+    MERGE,
+    SELECT,
+    REF,
+    GETATT,
+    INSERT_FILE,
+    INVOKE,
+    JOIN,
+)
 
 
 def fn_invoke(m):

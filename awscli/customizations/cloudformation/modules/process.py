@@ -60,38 +60,36 @@ from awscli.customizations.cloudformation.modules.parse_sub import (
 )
 from awscli.customizations.cloudformation.modules.visitor import Visitor
 from awscli.customizations.cloudformation import yamlhelper
+from awscli.customizations.cloudformation.modules.names import (
+    RESOURCES,
+    METADATA,
+    OVERRIDES,
+    DEPENDSON,
+    PROPERTIES,
+    CREATIONPOLICY,
+    UPDATEPOLICY,
+    DELETIONPOLICY,
+    UPDATEREPLACEPOLICY,
+    DEFAULT,
+    NAME,
+    SOURCE,
+    REF,
+    SUB,
+    GETATT,
+    PARAMETERS,
+    MODULES,
+    OUTPUTS,
+    CONDITIONS,
+    CONDITION,
+    AWSTOOLSMETRICS,
+    CLOUDFORMATION_PACKAGE,
+    SOURCE_MAP,
+    NO_SOURCE_MAP,
+    VALUE,
+)
 
 LOG = logging.getLogger(__name__)
-
-RESOURCES = "Resources"
-METADATA = "Metadata"
-OVERRIDES = "Overrides"
-DEPENDSON = "DependsOn"
-PROPERTIES = "Properties"
-CREATIONPOLICY = "CreationPolicy"
-UPDATEPOLICY = "UpdatePolicy"
-DELETIONPOLICY = "DeletionPolicy"
-UPDATEREPLACEPOLICY = "UpdateReplacePolicy"
-DEFAULT = "Default"
-NAME = "Name"
-SOURCE = "Source"
-REF = "Ref"
-SUB = "Fn::Sub"
-GETATT = "Fn::GetAtt"
-PARAMETERS = "Parameters"
-MODULES = "Modules"
-TYPE = "Type"
-LOCAL_MODULE = "LocalModule"
-OUTPUTS = "Outputs"
-MAP = "Map"
-CONDITIONS = "Conditions"
-CONDITION = "Condition"
-IF = "Fn::If"
-AWSTOOLSMETRICS = "AWSToolsMetrics"
-CLOUDFORMATION_PACKAGE = "CloudFormationPackage"
-SOURCE_MAP = "SourceMap"
-NO_SOURCE_MAP = "NoSourceMap"
-VALUE = "Value"
+LOG.setLevel(logging.DEBUG)
 
 
 # pylint:disable=too-many-arguments,too-many-positional-arguments

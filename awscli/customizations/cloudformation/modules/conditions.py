@@ -23,14 +23,15 @@ We have to be able to fully resolve it locally.
 from collections import OrderedDict
 from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.modules.visitor import Visitor
-
-AND = "Fn::And"
-EQUALS = "Fn::Equals"
-IF = "Fn::If"
-NOT = "Fn::Not"
-OR = "Fn::Or"
-REF = "Ref"
-CONDITION = "Condition"
+from awscli.customizations.cloudformation.modules.names import (
+    AND,
+    EQUALS,
+    IF,
+    NOT,
+    OR,
+    REF,
+    CONDITION,
+)
 
 
 def parse_conditions(d, find_ref):

@@ -645,6 +645,54 @@
     "AccessDeniedException":{
       "type":"structure",
       "members":{
+        "accessControlAllowOrigin":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Allow-Origin"
+        },
+        "accessControlExposeHeaders":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Expose-Headers"
+        },
+        "cacheControl":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Cache-Control"
+        },
+        "contentSecurityPolicy":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Content-Security-Policy"
+        },
+        "strictTransportSecurity":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Strict-Transport-Security"
+        },
+        "xContentTypeOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Content-Type-Options"
+        },
+        "xFrameOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Frame-Options"
+        },
+        "xAmznErrorType":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"x-amzn-ErrorType"
+        },
         "exceptionMessage":{
           "shape":"errorMessage",
           "documentation":"<p>User does not have sufficient access to perform this action.</p>"
@@ -669,7 +717,7 @@
       "members":{
         "storageConfigurationArn":{
           "shape":"AutoParticipantRecordingStorageConfigurationArn",
-          "documentation":"<p>ARN of the <a>StorageConfiguration</a> resource to use for individual participant recording. Default: <code>\"\"</code> (empty string, no storage configuration is specified). Individual participant recording cannot be started unless a storage configuration is specified, when a <a>Stage</a> is created or updated.</p>"
+          "documentation":"<p>ARN of the <a>StorageConfiguration</a> resource to use for individual participant recording. Default: <code>\"\"</code> (empty string, no storage configuration is specified). Individual participant recording cannot be started unless a storage configuration is specified, when a <a>Stage</a> is created or updated. To disable individual participant recording, set this to <code>\"\"</code>; other fields in this object will get reset to their defaults when sending <code>\"\"</code>. </p>"
         },
         "mediaTypes":{
           "shape":"ParticipantRecordingMediaTypeList",
@@ -678,6 +726,10 @@
         "thumbnailConfiguration":{
           "shape":"ParticipantThumbnailConfiguration",
           "documentation":"<p>A complex type that allows you to enable/disable the recording of thumbnails for individual participant recording and modify the interval at which thumbnails are generated for the live session.</p>"
+        },
+        "recordingReconnectWindowSeconds":{
+          "shape":"ParticipantRecordingReconnectWindowSeconds",
+          "documentation":"<p>If a stage publisher disconnects and then reconnects within the specified interval, the multiple recordings will be considered a single recording and merged together.</p> <p>The default value is 0, which disables merging.</p>"
         }
       },
       "documentation":"<p>Object specifying a configuration for individual participant recording.</p>"
@@ -850,6 +902,54 @@
     "ConflictException":{
       "type":"structure",
       "members":{
+        "accessControlAllowOrigin":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Allow-Origin"
+        },
+        "accessControlExposeHeaders":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Expose-Headers"
+        },
+        "cacheControl":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Cache-Control"
+        },
+        "contentSecurityPolicy":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Content-Security-Policy"
+        },
+        "strictTransportSecurity":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Strict-Transport-Security"
+        },
+        "xContentTypeOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Content-Type-Options"
+        },
+        "xFrameOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Frame-Options"
+        },
+        "xAmznErrorType":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"x-amzn-ErrorType"
+        },
         "exceptionMessage":{
           "shape":"errorMessage",
           "documentation":"<p>Updating or deleting a resource can cause an inconsistent state.</p>"
@@ -1763,6 +1863,54 @@
     "InternalServerException":{
       "type":"structure",
       "members":{
+        "accessControlAllowOrigin":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Allow-Origin"
+        },
+        "accessControlExposeHeaders":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Expose-Headers"
+        },
+        "cacheControl":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Cache-Control"
+        },
+        "contentSecurityPolicy":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Content-Security-Policy"
+        },
+        "strictTransportSecurity":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Strict-Transport-Security"
+        },
+        "xContentTypeOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Content-Type-Options"
+        },
+        "xFrameOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Frame-Options"
+        },
+        "xAmznErrorType":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"x-amzn-ErrorType"
+        },
         "exceptionMessage":{
           "shape":"errorMessage",
           "documentation":"<p>Unexpected error during processing of request.</p>"
@@ -2236,7 +2384,7 @@
         },
         "recordingS3Prefix":{
           "shape":"ParticipantRecordingS3Prefix",
-          "documentation":"<p>S3 prefix of the S3 bucket where the participant is being recorded, if individual participant recording is enabled, or <code>\"\"</code> (empty string), if recording is not enabled.</p>"
+          "documentation":"<p>S3 prefix of the S3 bucket where the participant is being recorded, if individual participant recording is enabled, or <code>\"\"</code> (empty string), if recording is not enabled. If individual participant recording merge is enabled, and if a stage publisher disconnects from a stage and then reconnects, IVS tries to record to the same S3 prefix as the previous session. See <a href=\"/ivs/latest/RealTimeUserGuide/rt-individual-participant-recording.html#ind-part-rec-merge-frag\"> Merge Fragmented Individual Participant Recordings</a>.</p>"
         },
         "recordingState":{
           "shape":"ParticipantRecordingState",
@@ -2301,6 +2449,11 @@
       "type":"list",
       "member":{"shape":"ParticipantRecordingMediaType"},
       "max":1,
+      "min":0
+    },
+    "ParticipantRecordingReconnectWindowSeconds":{
+      "type":"integer",
+      "max":300,
       "min":0
     },
     "ParticipantRecordingS3BucketName":{
@@ -2488,6 +2641,54 @@
     "PendingVerification":{
       "type":"structure",
       "members":{
+        "accessControlAllowOrigin":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Allow-Origin"
+        },
+        "accessControlExposeHeaders":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Expose-Headers"
+        },
+        "cacheControl":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Cache-Control"
+        },
+        "contentSecurityPolicy":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Content-Security-Policy"
+        },
+        "strictTransportSecurity":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Strict-Transport-Security"
+        },
+        "xContentTypeOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Content-Type-Options"
+        },
+        "xFrameOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Frame-Options"
+        },
+        "xAmznErrorType":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"x-amzn-ErrorType"
+        },
         "exceptionMessage":{
           "shape":"errorMessage",
           "documentation":"<p> Your account is pending verification. </p>"
@@ -2665,6 +2866,54 @@
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
+        "accessControlAllowOrigin":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Allow-Origin"
+        },
+        "accessControlExposeHeaders":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Expose-Headers"
+        },
+        "cacheControl":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Cache-Control"
+        },
+        "contentSecurityPolicy":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Content-Security-Policy"
+        },
+        "strictTransportSecurity":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Strict-Transport-Security"
+        },
+        "xContentTypeOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Content-Type-Options"
+        },
+        "xFrameOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Frame-Options"
+        },
+        "xAmznErrorType":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"x-amzn-ErrorType"
+        },
         "exceptionMessage":{
           "shape":"errorMessage",
           "documentation":"<p>Request references a resource which does not exist.</p>"
@@ -2734,6 +2983,54 @@
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
+        "accessControlAllowOrigin":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Allow-Origin"
+        },
+        "accessControlExposeHeaders":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Expose-Headers"
+        },
+        "cacheControl":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Cache-Control"
+        },
+        "contentSecurityPolicy":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Content-Security-Policy"
+        },
+        "strictTransportSecurity":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Strict-Transport-Security"
+        },
+        "xContentTypeOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Content-Type-Options"
+        },
+        "xFrameOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Frame-Options"
+        },
+        "xAmznErrorType":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"x-amzn-ErrorType"
+        },
         "exceptionMessage":{
           "shape":"errorMessage",
           "documentation":"<p>Request would cause a service quota to be exceeded.</p>"
@@ -3103,7 +3400,7 @@
         },
         "tagKeys":{
           "shape":"TagKeyList",
-          "documentation":"<p>Array of tags to be removed. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>",
+          "documentation":"<p>Array of tag keys (strings) for the tags to be removed. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>",
           "location":"querystring",
           "locationName":"tagKeys"
         }
@@ -3172,6 +3469,54 @@
     "ValidationException":{
       "type":"structure",
       "members":{
+        "accessControlAllowOrigin":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Allow-Origin"
+        },
+        "accessControlExposeHeaders":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Access-Control-Expose-Headers"
+        },
+        "cacheControl":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Cache-Control"
+        },
+        "contentSecurityPolicy":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Content-Security-Policy"
+        },
+        "strictTransportSecurity":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"Strict-Transport-Security"
+        },
+        "xContentTypeOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Content-Type-Options"
+        },
+        "xFrameOptions":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"X-Frame-Options"
+        },
+        "xAmznErrorType":{
+          "shape":"String",
+          "documentation":"<p/>",
+          "location":"header",
+          "locationName":"x-amzn-ErrorType"
+        },
         "exceptionMessage":{
           "shape":"errorMessage",
           "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>"

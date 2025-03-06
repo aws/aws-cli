@@ -36,6 +36,7 @@ REF = "Ref"
 GETATT = "Fn::GetAtt"
 INSERT_FILE = "Fn::InsertFile"
 INVOKE = "Fn::Invoke"
+JOIN = "Fn::Join"
 
 
 def fn_invoke(m):
@@ -57,11 +58,6 @@ def fn_invoke(m):
             return
         if v.p is None:
             return
-
-        print("fn_invoke")
-        print("v.d:", v.d)
-        print("v.p:", v.p)
-        print("v.k:", v.k)
 
         inv = v.d[INVOKE]
         if not isinstance(inv, list) or len(inv) != 3:
@@ -90,21 +86,15 @@ def fn_invoke(m):
             if k not in m.module_outputs:
                 msg = f"Fn::Invoke output not found in {m.name}: k"
                 raise exceptions.InvalidModuleError(msg=msg)
+            copied_output = copy.deepcopy(m.module_outputs[k])
+            copied_props = copy.deepcopy(m.props)
+            m.props = props_copy
             n = "x"
-            d = {n: {}}
-            vv = copy.deepcopy(m.module_outputs[k])
-            d[n] = {k: vv}
-            print("")
-            print("fn_invoke resolve_module_outputs")
-            print("k:", k)
-            print("vv:", vv)
-            print("d:", d)
-            print("n:", n)
-            m.resolve_module_outputs(k, vv, d, n)
-            print("vv after:", vv)
-            print("d[n] after:", d[n])
-
-            retval.append(vv)
+            d = {}
+            d[n] = copied_output
+            m.resolve(k, copied_output, d, n)
+            retval.append(d[n])
+            m.props = copied_props
 
         if len(retval) == 1:
             retval = retval[0]
@@ -112,6 +102,36 @@ def fn_invoke(m):
         v.p[v.k] = retval
 
     Visitor(m.template).visit(vf)
+
+
+def fn_join(d):
+    """
+    Resolve Fn::Join where all items are scalars
+    """
+
+    def vf(v):
+        if not isdict(v.d) or JOIN not in v.d or v.p is None:
+            return
+        j = v.d[JOIN]
+        if not isinstance(j, list) or len(j) != 2:
+            return
+        if not isinstance(j[1], list):
+            return
+        if is_scalar(j[0]):
+            for item in j[1]:
+                if not is_scalar(item):
+                    return
+            v.p[v.k] = j[0].join(j[1])
+            return
+
+    Visitor(d).visit(vf)
+
+
+def is_scalar(v):
+    "Returns true if v is not a dict or list"
+    if isinstance(v, (OrderedDict, dict, list)):
+        return False
+    return True
 
 
 def fn_select(d):

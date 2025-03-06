@@ -13,9 +13,10 @@
 import logging
 import signal
 import sys
+from collections import OrderedDict
 
 import botocore.session
-from botocore.compat import OrderedDict, copy_kwargs
+from botocore.compat import copy_kwargs
 from botocore.exceptions import (
     NoCredentialsError,
     NoRegionError,

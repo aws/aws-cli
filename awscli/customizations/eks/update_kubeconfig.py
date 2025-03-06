@@ -13,8 +13,7 @@
 
 import os
 import logging
-
-from botocore.compat import OrderedDict
+from collections import OrderedDict
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import uni_print

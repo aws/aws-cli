@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import datetime
+import os
 
 from awscli.customizations.s3.filegenerator import FileStat
 from awscli.customizations.s3.syncstrategy.base import BaseSync, \
@@ -250,6 +251,52 @@ class TestSizeAndLastModifiedSync(unittest.TestCase):
             src_file, dest_file)
         self.assertFalse(should_sync)
 
+    def test_should_not_sync_s3_src_dir(self):
+        src_file = FileStat(src='sample-s3/test/dir/', dest='',
+                            compare_key='test/dir/', size=None,
+                            last_update=None, src_type='s3',
+                            dest_type='local', operation_name='')
+        should_sync = self.sync_strategy.determine_should_sync(
+            src_file, None)
+        self.assertFalse(should_sync)
+
+    def test_should_not_sync_s3_dest_dir(self):
+        src_file = FileStat(src='sample-s3/test/dir/', dest='',
+                            compare_key='test/dir/', size=None,
+                            last_update=None, src_type='s3',
+                            dest_type='local', operation_name='')
+        dest_file = FileStat(src='', dest='sample-s3/test/dir/',
+                             compare_key='test/dir/', size=None,
+                             last_update=None, src_type='local',
+                             dest_type='s3', operation_name='')
+        should_sync = self.sync_strategy.determine_should_sync(
+            src_file, dest_file)
+        self.assertFalse(should_sync)
+
+    def test_should_not_sync_local_src_dir(self):
+        s = os.path.sep
+        src_file = FileStat(src=os.path.join('foo', 'test', 'dir') + s, dest='',
+                            compare_key=os.path.join('foo', 'test', 'dir') + s, size=None,
+                            last_update=None, src_type='local',
+                            dest_type='s3', operation_name='')
+        should_sync = self.sync_strategy.determine_should_sync(
+            src_file, None)
+        self.assertFalse(should_sync)
+
+    def test_should_not_sync_local_dest_dir(self):
+        s = os.path.sep
+        src_file = FileStat(src='sample-s3/test/dir/', dest='',
+                            compare_key='test/dir/', size=None,
+                            last_update=None, src_type='s3',
+                            dest_type='local', operation_name='')
+        dest_file = FileStat(src='', dest=os.path.join('sample-s3', 'test', 'dir') + s,
+                             compare_key=os.path.join('sample-s3', 'test', 'dir') + s, size=None,
+                             last_update=None, src_type='local',
+                             dest_type='s3', operation_name='')
+        should_sync = self.sync_strategy.determine_should_sync(
+            src_file, dest_file)
+        self.assertFalse(should_sync)
+
 
 class TestNeverSync(unittest.TestCase):
     def setUp(self):
@@ -289,6 +336,25 @@ class TestMissingFileSync(unittest.TestCase):
         should_sync = self.sync_strategy.determine_should_sync(
             src_file, None)
         self.assertTrue(should_sync)
+
+    def test_should_not_sync_dirs(self):
+        src_file = FileStat(src='sample-s3/test/dir/', dest='',
+                            compare_key='test/dir/', size=None,
+                            last_update=None, src_type='s3',
+                            dest_type='local', operation_name='')
+        should_sync = self.sync_strategy.determine_should_sync(
+            src_file, None)
+        self.assertFalse(should_sync)
+
+    def test_should_not_sync_dirs_from_local(self):
+        s = os.path.sep
+        src_file = FileStat(src=os.path.join('foo', 'bar', 'dir') + s, dest='',
+                            compare_key=os.path.join('foo', 'bar', 'dir') + s, size=None,
+                            last_update=None, src_type='local',
+                            dest_type='s3', operation_name='')
+        should_sync = self.sync_strategy.determine_should_sync(
+            src_file, None)
+        self.assertFalse(should_sync)
 
 
 if __name__ == "__main__":

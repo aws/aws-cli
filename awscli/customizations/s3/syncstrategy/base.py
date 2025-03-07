@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+import os
 
 from awscli.customizations.exceptions import ParamValidationError
 
@@ -230,6 +231,12 @@ class BaseSync(object):
 class SizeAndLastModifiedSync(BaseSync):
 
     def determine_should_sync(self, src_file, dest_file):
+        # If the source or dest is a directory, we don't want to sync it
+        # (we only want to sync files). Extra checks for '/' as files could
+        # be a s3 path also.
+        if (src_file.src.endswith(os.path.sep) or (src_file.src.endswith('/') or dest_file.src.endswith(os.path.sep))
+                or dest_file.dest.endswith('/')):
+            return False
         same_size = self.compare_size(src_file, dest_file)
         same_last_modified_time = self.compare_time(src_file, dest_file)
         should_sync = (not same_size) or (not same_last_modified_time)
@@ -255,6 +262,11 @@ class MissingFileSync(BaseSync):
         super(MissingFileSync, self).__init__(sync_type)
 
     def determine_should_sync(self, src_file, dest_file):
+        # If the source is a directory, we don't want to sync it
+        # (we only want to sync files). Additional check for '/'
+        # as file could be a s3 path also.
+        if src_file.src.endswith(os.path.sep) or src_file.src.endswith('/'):
+            return False
         LOG.debug("syncing: %s -> %s, file does not exist at destination",
                   src_file.src, src_file.dest)
         return True

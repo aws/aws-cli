@@ -68,6 +68,37 @@ def is_readable(path):
     return True
 
 
+# Given file paths prev and cur, return a list of directories that has
+# been traversed upwards from prev to the deepest common directory.
+# Order of the list is the deepest directory to the most shallow.
+# Return an empty list if cur is in a subdirectory of prev.
+# Designed to be used with s3 paths excluding the s3://bucket_name prefix.
+def get_s3_directories_traversed_upwards(prev, cur):
+    prev = prev.split("/")[:-1]
+    cur = cur.split("/")[:-1]
+
+    # find the deepest common ancestor
+    i = 0
+    while i < len(prev) and i < len(cur) and prev[i] == cur[i]:
+        i += 1
+    i -= 1
+
+    # If the deepest common directory is at the end of prev
+    # Then the current directory is a child of the previous directory
+    # So return nothing
+    if i == len(prev) - 1:
+        return []
+
+    # Otherwise, the deepest common directory is somewhere in the middle of prev
+    # So return the directories that have been traversed upwards from prev to cur
+    result = []
+    while i + 1 < len(prev):
+        result.append("/".join(prev))
+        prev.pop()
+
+    return result
+
+
 # This class is provided primarily to provide a detailed error message.
 
 class FileDecodingError(Exception):
@@ -137,7 +168,7 @@ class FileGenerator(object):
         source = files['src']['path']
         src_type = files['src']['type']
         dest_type = files['dest']['type']
-        file_iterator = function_table[src_type](source, files['dir_op'])
+        file_iterator = function_table[src_type](source, files['dir_op'], files['yield_directories'])
         for src_path, extra_information in file_iterator:
             dest_path, compare_key = find_dest_path_comp_key(files, src_path)
             file_stat_kwargs = {
@@ -158,7 +189,7 @@ class FileGenerator(object):
         if src_type == 's3':
             file_stat_kwargs['response_data'] = extra_information
 
-    def list_files(self, path, dir_op):
+    def list_files(self, path, dir_op, yield_directories):
         """
         This function yields the appropriate local file or local files
         under a directory depending on if the operation is on a directory.
@@ -203,8 +234,15 @@ class FileGenerator(object):
                         # means we need to recurse into this sub directory
                         # before yielding the rest of this directory's
                         # contents.
-                        for x in self.list_files(file_path, dir_op):
+
+                        for x in self.list_files(file_path, dir_op, yield_directories):
                             yield x
+
+                        if yield_directories:
+                            # Yield the directory itself after we've yielded
+                            # all the contents. This is so that for sync --delete
+                            # subdirectories are deleted before the parent
+                            yield self._safely_get_file_stats(file_path)
                     else:
                         stats = self._safely_get_file_stats(file_path)
                         if stats:
@@ -302,7 +340,7 @@ class FileGenerator(object):
             return True
         return False
 
-    def list_objects(self, s3_path, dir_op):
+    def list_objects(self, s3_path, dir_op, yield_directories):
         """
         This function yields the appropriate object or objects under a
         common prefix depending if the operation is on objects under a
@@ -318,6 +356,7 @@ class FileGenerator(object):
         else:
             lister = BucketLister(self._client)
             extra_args = self.request_parameters.get('ListObjectsV2', {})
+            prev_path = None
             for key in lister.list_objects(bucket=bucket, prefix=prefix,
                                            page_size=self.page_size,
                                            extra_args=extra_args):
@@ -334,7 +373,19 @@ class FileGenerator(object):
                 elif not dir_op and s3_path != source_path:
                     pass
                 else:
+                    # Yield any directories as we travel up the tree
+                    if yield_directories and prev_path is not None:
+                        for directory in get_s3_directories_traversed_upwards(prev_path, source_path):
+                            yield directory + "/", {'Size': None, 'LastModified': None}
+
+                    prev_path = source_path
+
                     yield source_path, response_data
+
+            # For the last path, yield any directories as we travel up the tree
+            if yield_directories and prev_path is not None:
+                for directory in get_s3_directories_traversed_upwards(prev_path, s3_path):
+                    yield directory + "/", {'Size': None, 'LastModified': None}
 
     def _list_single_object(self, s3_path):
         # When we know we're dealing with a single object, we can avoid

@@ -47,6 +47,7 @@ class FileFormat(object):
         #     directory/objects under a common prefix or false when it
         #     is a single file
         dir_op = parameters['dir_op']
+        yield_directories = parameters['yield_directories']
         src_path = format_table[src_type](src_path, dir_op)[0]
         # :var use_src_name: True when the destination file/object will take on
         #     the name of the source file/object.  False when it
@@ -55,7 +56,8 @@ class FileFormat(object):
         dest_path, use_src_name = format_table[dest_type](dest_path, dir_op)
         files = {'src': {'path': src_path, 'type': src_type},
                  'dest': {'path': dest_path, 'type': dest_type},
-                 'dir_op': dir_op, 'use_src_name': use_src_name}
+                 'dir_op': dir_op, 'use_src_name': use_src_name,
+                 'yield_directories': yield_directories}
         return files
 
     def local_format(self, path, dir_op):

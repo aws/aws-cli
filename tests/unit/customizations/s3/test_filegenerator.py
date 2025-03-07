@@ -22,7 +22,7 @@ import socket
 from botocore.exceptions import ClientError
 
 from awscli.customizations.s3.filegenerator import FileGenerator, \
-    FileDecodingError, FileStat, is_special_file, is_readable
+    FileDecodingError, FileStat, is_special_file, is_readable, get_s3_directories_traversed_upwards
 from awscli.customizations.s3.utils import get_file_stat, EPOCH_TIME
 from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
     compare_files
@@ -87,6 +87,38 @@ class TestIsReadable(unittest.TestCase):
             self.assertFalse(is_readable(self.full_path))
 
 
+class TestS3DirectoriesTraversedUpwards(unittest.TestCase):
+    def test_file_is_in_subdirectory(self):
+        prev = "/".join(['foo', 'bar', 'hello.txt'])
+        cur = "/".join(['foo', 'bar', 'baz', 'file.txt'])
+        self.assertEqual(get_s3_directories_traversed_upwards(prev, cur), [])
+
+    def test_file_has_a_common_directory(self):
+        prev = "/".join(['foo', 'bar', 'hello', 'hello.txt'])
+        cur = "/".join(['foo', 'world', 'hello.txt'])
+
+        result = get_s3_directories_traversed_upwards(prev, cur)
+
+        expected = [
+            'foo/bar/hello',
+            'foo/bar',
+        ]
+        self.assertEqual(result, expected)
+
+    def test_file_has_no_common_directory(self):
+        prev = "/".join(['foo', 'bar', 'hello', 'hello.txt'])
+        cur = "/".join(['baz', 'world', 'hello.txt'])
+
+        result = get_s3_directories_traversed_upwards(prev, cur)
+
+        expected = [
+            f'foo/bar/hello',
+            f'foo/bar',
+            f'foo',
+        ]
+        self.assertEqual(result, expected)
+
+
 class LocalFileGeneratorTest(unittest.TestCase):
     def setUp(self):
         self.client = None
@@ -106,7 +138,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
                                     'type': 'local'},
                             'dest': {'path': 'bucket/text1.txt',
                                      'type': 's3'},
-                            'dir_op': False, 'use_src_name': False}
+                            'dir_op': False, 'use_src_name': False,
+                            'yield_directories': False}
         params = {'region': 'us-east-1'}
         files = FileGenerator(self.client, '').call(input_local_file)
         result_list = []
@@ -130,7 +163,8 @@ class LocalFileGeneratorTest(unittest.TestCase):
                                    'type': 'local'},
                            'dest': {'path': 'bucket/',
                                     'type': 's3'},
-                           'dir_op': True, 'use_src_name': True}
+                           'dir_op': True, 'use_src_name': True,
+                           'yield_directories': False}
         params = {'region': 'us-east-1'}
         files = FileGenerator(self.client, '').call(input_local_dir)
         result_list = []
@@ -315,7 +349,8 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                                    'type': 'local'},
                            'dest': {'path': self.bucket,
                                     'type': 's3'},
-                           'dir_op': True, 'use_src_name': True}
+                           'dir_op': True, 'use_src_name': True,
+                           'yield_directories': False}
         file_stats = FileGenerator(self.client, '', False).call(input_local_dir)
         self.filenames.sort()
         result_list = []
@@ -336,7 +371,8 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                                    'type': 'local'},
                            'dest': {'path': self.bucket,
                                     'type': 's3'},
-                           'dir_op': True, 'use_src_name': True}
+                           'dir_op': True, 'use_src_name': True,
+                           'yield_directories': False}
         file_stats = FileGenerator(self.client, '', True).call(input_local_dir)
         file_gen = FileGenerator(self.client, '', True)
         file_stats = file_gen.call(input_local_dir)
@@ -360,7 +396,8 @@ class TestSymlinksIgnoreFiles(unittest.TestCase):
                                    'type': 'local'},
                            'dest': {'path': self.bucket,
                                     'type': 's3'},
-                           'dir_op': True, 'use_src_name': True}
+                           'dir_op': True, 'use_src_name': True,
+                           'yield_directories': False}
         file_stats = FileGenerator(self.client, '', True).call(input_local_dir)
         all_filenames = self.filenames + self.symlink_files
         all_filenames.sort()
@@ -389,7 +426,7 @@ class TestListFilesLocally(unittest.TestCase):
         file_generator = FileGenerator(None, None, None)
         # utf-8 encoding for U+2713.
         listdir_mock.return_value = [b'\xe2\x9c\x93']
-        list(file_generator.list_files(self.directory, dir_op=True))
+        list(file_generator.list_files(self.directory, dir_op=True, yield_directories=False))
         # Ensure the message was added to the result queue and is
         # being skipped.
         self.assertFalse(file_generator.result_queue.empty())
@@ -409,7 +446,7 @@ class TestListFilesLocally(unittest.TestCase):
 
         file_generator = FileGenerator(None, None, None)
         values = list(el[0] for el in file_generator.list_files(
-            self.directory, dir_op=True))
+            self.directory, dir_op=True, yield_directories=False))
         ref_vals = list(sorted(values,
                                key=lambda items: items.replace(os.sep, '/')))
         self.assertEqual(values, ref_vals)
@@ -419,7 +456,7 @@ class TestListFilesLocally(unittest.TestCase):
         stat_mock.return_value = 9, None
         open(os.path.join(self.directory, 'test'), 'w').close()
         file_generator = FileGenerator(None, None, None)
-        value = list(file_generator.list_files(self.directory, dir_op=True))[0]
+        value = list(file_generator.list_files(self.directory, dir_op=True, yield_directories=False))[0]
         self.assertIs(value[1]['LastModified'], EPOCH_TIME)
 
     def test_list_local_files_with_unicode_chars(self):
@@ -437,7 +474,7 @@ class TestListFilesLocally(unittest.TestCase):
 
         file_generator = FileGenerator(None, None, None)
         values = list(el[0] for el in file_generator.list_files(
-            self.directory, dir_op=True))
+            self.directory, dir_op=True, yield_directories=False))
         expected_order = [os.path.join(self.directory, el) for el in [
             u"a",
             u"a\u0300",
@@ -448,6 +485,33 @@ class TestListFilesLocally(unittest.TestCase):
             u"a\u0300a%s\u00e6" % os.path.sep,
             u"z",
             u"\u00e6"
+        ]]
+        self.assertEqual(values, expected_order)
+
+    def test_list_local_files_with_directories(self):
+        p = os.path.join
+        os.mkdir(p(self.directory, '123'))
+        os.mkdir(p(self.directory, 'ABC'))
+        os.mkdir(p(self.directory, 'ABC', '234'))
+        os.mkdir(p(self.directory, 'ABC', 'abc'))
+        os.mkdir(p(self.directory, 'bar'))
+        open(p(self.directory, 'bar', 'test-123.txt'), 'w').close()
+        open(p(self.directory, 'ABC', 'test-123.txt'), 'w').close()
+        open(p(self.directory, 'ABC', '234', 'test-123.txt'), 'w').close()
+
+        file_generator = FileGenerator(None, None, None)
+        values = list(el[0] for el in file_generator.list_files(
+            self.directory, dir_op=True, yield_directories=True))
+        s = os.path.sep
+        expected_order = [os.path.join(self.directory, el) for el in [
+            f'123{s}',
+            f'ABC{s}234{s}test-123.txt',
+            f'ABC{s}234{s}',
+            f'ABC{s}abc{s}',
+            f'ABC{s}test-123.txt',
+            f'ABC{s}',
+            f'bar{s}test-123.txt',
+            f'bar{s}',
         ]]
         self.assertEqual(values, expected_order)
 
@@ -489,7 +553,8 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         """
         input_s3_file = {'src': {'path': self.file1, 'type': 's3'},
                          'dest': {'path': 'text1.txt', 'type': 'local'},
-                         'dir_op': False, 'use_src_name': False}
+                         'dir_op': False, 'use_src_name': False,
+                         'yield_directories': False}
         params = {'region': 'us-east-1'}
         self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
                                   "LastModified": "2014-01-09T20:45:49.000Z"}]
@@ -518,7 +583,8 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         """
         input_s3_file = {'src': {'path': self.file1, 'type': 's3'},
                          'dest': {'path': 'text1.txt', 'type': 'local'},
-                         'dir_op': False, 'use_src_name': False}
+                         'dir_op': False, 'use_src_name': False,
+                         'yield_directories': False}
         params = {'region': 'us-east-1'}
         self.client = mock.Mock()
         self.client.head_object.side_effect = \
@@ -535,7 +601,8 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
     def test_s3_single_file_delete(self):
         input_s3_file = {'src': {'path': self.file1, 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
-                         'dir_op': False, 'use_src_name': True}
+                         'dir_op': False, 'use_src_name': True,
+                         'yield_directories': False}
         self.client = mock.Mock()
         file_gen = FileGenerator(self.client, 'delete')
         result_list = list(file_gen.call(input_s3_file))
@@ -558,7 +625,8 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         """
         input_s3_file = {'src': {'path': self.bucket + '/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
-                         'dir_op': True, 'use_src_name': True}
+                         'dir_op': True, 'use_src_name': True,
+                         'yield_directories': False}
         params = {'region': 'us-east-1'}
         files = FileGenerator(self.client, '').call(input_s3_file)
 
@@ -601,7 +669,8 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         """
         input_s3_file = {'src': {'path': self.bucket + '/', 'type': 's3'},
                          'dest': {'path': '', 'type': 'local'},
-                         'dir_op': True, 'use_src_name': True}
+                         'dir_op': True, 'use_src_name': True,
+                         'yield_directories': False}
         self.parsed_responses = [{
             "CommonPrefixes": [], "Contents": [
                 {"Key": "another_directory/", "Size": 0,
@@ -641,6 +710,84 @@ class S3FileGeneratorTest(BaseAWSCommandParamsTest):
         ref_list = [file_stat1, file_stat2, file_stat3]
         self.assertEqual(len(result_list), len(ref_list))
         for i in range(len(result_list)):
+            compare_files(result_list[i], ref_list[i])
+
+    def test_s3_with_yield_directories(self):
+        input_s3_file = {'src': {'path': self.bucket + '/', 'type': 's3'},
+                         'dest': {'path': '', 'type': 'local'},
+                         'dir_op': True, 'use_src_name': True,
+                         'yield_directories': True}
+        self.parsed_responses = [{
+            "CommonPrefixes": [], "Contents": [
+                {"Key": "another_directory/", "Size": 0,
+                 "LastModified": "2012-01-09T20:45:49.000Z"},
+                {"Key": "another_directory/new_directory/text2.txt", "Size": 100,
+                 "LastModified": "2014-01-09T20:45:49.000Z"},
+                {"Key": "another_directory/text4.txt", "Size": 100,
+                 "LastModified": "2014-01-09T20:45:49.000Z"},
+                {"Key": "third_directory/abc/text1.txt", "Size": 10,
+                 "LastModified": "2013-01-09T20:45:49.000Z"}]}]
+
+        self.patch_make_request()
+        files = FileGenerator(self.client, '').call(input_s3_file)
+        result_list = []
+        for filename in files:
+            result_list.append(filename)
+
+        s = os.path.sep
+        file_stat1 = FileStat(src=f'{self.bucket}/another_directory/new_directory/text2.txt',
+                              dest=f'another_directory{s}new_directory{s}text2.txt',
+                              compare_key=f'another_directory/new_directory/text2.txt',
+                              size=result_list[0].size,
+                              last_update=result_list[0].last_update,
+                              src_type='s3',
+                              dest_type='local', operation_name='')
+        file_stat2 = FileStat(src=f'{self.bucket}/another_directory/new_directory/',
+                              dest=f'another_directory{s}new_directory{s}',
+                              compare_key=f'another_directory/new_directory/',
+                              size=result_list[1].size,
+                              last_update=result_list[1].last_update,
+                              src_type='s3',
+                              dest_type='local', operation_name='')
+        file_stat3 = FileStat(src=f'{self.bucket}/another_directory/text4.txt',
+                              dest=f'another_directory{s}text4.txt',
+                              compare_key=f'another_directory/text4.txt',
+                              size=result_list[2].size,
+                              last_update=result_list[2].last_update,
+                              src_type='s3',
+                              dest_type='local', operation_name='')
+        file_stat4 = FileStat(src=f'{self.bucket}/another_directory/',
+                              dest=f'another_directory{s}',
+                              compare_key=f'another_directory/',
+                              size=result_list[3].size,
+                              last_update=result_list[3].last_update,
+                              src_type='s3',
+                              dest_type='local', operation_name='')
+        file_stat5 = FileStat(src=f'{self.bucket}/third_directory/abc/text1.txt',
+                              dest=f'third_directory{s}abc{s}text1.txt',
+                              compare_key=f'third_directory/abc/text1.txt',
+                              size=result_list[4].size,
+                              last_update=result_list[4].last_update,
+                              src_type='s3',
+                              dest_type='local', operation_name='')
+        file_stat6 = FileStat(src=f'{self.bucket}/third_directory/abc/',
+                              dest=f'third_directory{s}abc{s}',
+                              compare_key=f'third_directory/abc/',
+                              size=result_list[5].size,
+                              last_update=result_list[5].last_update,
+                              src_type='s3',
+                              dest_type='local', operation_name='')
+        file_stat7 = FileStat(src=f'{self.bucket}/third_directory/',
+                              dest=f'third_directory{s}',
+                              compare_key=f'third_directory/',
+                              size=result_list[6].size,
+                              last_update=result_list[6].last_update,
+                              src_type='s3',
+                              dest_type='local', operation_name='')
+
+        ref_list = [file_stat1, file_stat2, file_stat3, file_stat4, file_stat5, file_stat6, file_stat7]
+        for i in range(len(result_list)):
+            print(result_list[i].src, ref_list[i].src)
             compare_files(result_list[i], ref_list[i])
 
 

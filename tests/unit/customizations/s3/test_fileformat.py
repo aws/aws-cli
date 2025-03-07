@@ -27,13 +27,14 @@ class FileFormatTest(unittest.TestCase):
         """
         src = '.' + os.sep
         dest = 's3://kyknapp/golfVid/'
-        parameters = {'dir_op': True}
+        parameters = {'dir_op': True, 'yield_directories': False}
         files = self.file_format.format(src, dest, parameters)
 
         ref_files = {'src': {'path': os.path.abspath(src) + os.sep,
                              'type': 'local'},
                      'dest': {'path': 'kyknapp/golfVid/', 'type': 's3'},
-                     'dir_op': True, 'use_src_name': True}
+                     'dir_op': True, 'use_src_name': True,
+                     'yield_directories': False}
         self.assertEqual(files, ref_files)
 
     def test_op_dir_noslash(self):
@@ -43,13 +44,14 @@ class FileFormatTest(unittest.TestCase):
         """
         src = '.'
         dest = 's3://kyknapp/golfVid'
-        parameters = {'dir_op': True}
+        parameters = {'dir_op': True, 'yield_directories': False}
         files = self.file_format.format(src, dest, parameters)
 
         ref_files = {'src': {'path': os.path.abspath(src) + os.sep,
                              'type': 'local'},
                      'dest': {'path': 'kyknapp/golfVid/', 'type': 's3'},
-                     'dir_op': True, 'use_src_name': True}
+                     'dir_op': True, 'use_src_name': True,
+                     'yield_directories': False}
         self.assertEqual(files, ref_files)
 
     def test_local_use_src_name(self):
@@ -59,14 +61,15 @@ class FileFormatTest(unittest.TestCase):
         """
         src = 's3://kyknapp/golfVid/hello.txt'
         dest = '.'
-        parameters = {'dir_op': False}
+        parameters = {'dir_op': False, 'yield_directories': False}
         files = self.file_format.format(src, dest, parameters)
 
         ref_files = {'src': {'path': 'kyknapp/golfVid/hello.txt',
                              'type': 's3'},
                      'dest': {'path': os.path.abspath(dest) + os.sep,
                               'type': 'local'},
-                     'dir_op': False, 'use_src_name': True}
+                     'dir_op': False, 'use_src_name': True,
+                     'yield_directories': False}
         self.assertEqual(files, ref_files)
 
     def test_local_noexist_file(self):
@@ -76,14 +79,15 @@ class FileFormatTest(unittest.TestCase):
         """
         src = 's3://kyknapp/golfVid/hello.txt'
         dest = 'someFile' + os.sep
-        parameters = {'dir_op': False}
+        parameters = {'dir_op': False, 'yield_directories': False}
         files = self.file_format.format(src, dest, parameters)
 
         ref_files = {'src': {'path': 'kyknapp/golfVid/hello.txt',
                              'type': 's3'},
                      'dest': {'path': os.path.abspath(dest) + os.sep,
                               'type': 'local'},
-                     'dir_op': False, 'use_src_name': True}
+                     'dir_op': False, 'use_src_name': True,
+                     'yield_directories': False}
         self.assertEqual(files, ref_files)
 
     def test_local_keep_dest_name(self):
@@ -93,14 +97,15 @@ class FileFormatTest(unittest.TestCase):
         """
         src = 's3://kyknapp/golfVid/hello.txt'
         dest = 'hello.txt'
-        parameters = {'dir_op': False}
+        parameters = {'dir_op': False, 'yield_directories': False}
         files = self.file_format.format(src, dest, parameters)
 
         ref_files = {'src': {'path': 'kyknapp/golfVid/hello.txt',
                              'type': 's3'},
                      'dest': {'path': os.path.abspath(dest),
                               'type': 'local'},
-                     'dir_op': False, 'use_src_name': False}
+                     'dir_op': False, 'use_src_name': False,
+                     'yield_directories': False}
         self.assertEqual(files, ref_files)
 
     def test_s3_use_src_name(self):
@@ -110,13 +115,14 @@ class FileFormatTest(unittest.TestCase):
         """
         src = 'fileformat_test.py'
         dest = 's3://kyknapp/golfVid/'
-        parameters = {'dir_op': False}
+        parameters = {'dir_op': False, 'yield_directories': False}
         files = self.file_format.format(src, dest, parameters)
 
         ref_files = {'src': {'path': os.path.abspath(src),
                              'type': 'local'},
                      'dest': {'path': 'kyknapp/golfVid/', 'type': 's3'},
-                     'dir_op': False, 'use_src_name': True}
+                     'dir_op': False, 'use_src_name': True,
+                     'yield_directories': False}
         self.assertEqual(files, ref_files)
 
     def test_s3_keep_dest_name(self):
@@ -126,13 +132,31 @@ class FileFormatTest(unittest.TestCase):
         """
         src = 'fileformat_test.py'
         dest = 's3://kyknapp/golfVid/file.py'
-        parameters = {'dir_op': False}
+        parameters = {'dir_op': False, 'yield_directories': False}
         files = self.file_format.format(src, dest, parameters)
 
         ref_files = {'src': {'path': os.path.abspath(src),
                              'type': 'local'},
                      'dest': {'path': 'kyknapp/golfVid/file.py', 'type': 's3'},
-                     'dir_op': False, 'use_src_name': False}
+                     'dir_op': False, 'use_src_name': False,
+                     'yield_directories': False}
+        self.assertEqual(files, ref_files)
+
+    def test_s3_pass_yield_directories(self):
+        """
+        No directory operation. Local source name given. S3
+        full key given.
+        """
+        src = 'fileformat_test.py'
+        dest = 's3://kyknapp/golfVid/file.py'
+        parameters = {'dir_op': False, 'yield_directories': True}
+        files = self.file_format.format(src, dest, parameters)
+
+        ref_files = {'src': {'path': os.path.abspath(src),
+                             'type': 'local'},
+                     'dest': {'path': 'kyknapp/golfVid/file.py', 'type': 's3'},
+                     'dir_op': False, 'use_src_name': False,
+                     'yield_directories': True}
         self.assertEqual(files, ref_files)
 
 

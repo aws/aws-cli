@@ -384,7 +384,7 @@ class ServiceAliasCommand(BaseInternalAliasCommand):
             # a built-in command.
             if shadow_name == parsed_alias_args.command:
                 LOG.debug(
-                    'Using shadowed command object: %s ' 'for alias: %s',
+                    'Using shadowed command object: %s for alias: %s',
                     self._shadow_proxy_command,
                     self._alias_name,
                 )

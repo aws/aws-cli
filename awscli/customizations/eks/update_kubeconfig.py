@@ -79,6 +79,12 @@ class UpdateKubeconfigCommand(BasicCommand):
             'required': False
         },
         {
+            'name': 'session-name',
+            'help_text': ("The name of the role session to be used when "
+                          "role-arn is set."),
+            'required': False
+        },
+        {
             'name': 'dry-run',
             'action': 'store_true',
             'default': False,
@@ -332,6 +338,12 @@ class EKSClient(object):
             generated_user["user"]["exec"]["args"].extend([
                 "--role",
                 self._parsed_args.role_arn
+            ])
+
+        if self._parsed_args.session_name is not None:
+            generated_user["user"]["exec"]["args"].extend([
+                "--session-name",
+                self._parsed_args.session_name
             ])
 
         if self._session.profile:

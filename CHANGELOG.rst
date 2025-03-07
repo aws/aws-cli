@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.24.14
+=======
+
+* api-change:``emr``: Definition update for EbsConfiguration.
+* api-change:``storagegateway``: This release adds support to invoke a process that cleans the specified file share's cache of file entries that are failing upload to Amazon S3.
+* api-change:``qbusiness``: This release supports deleting attachments from conversations.
+* enhancement:dependency: Upgrade pyinstaller from 5.13.2 to 6.11.1.
+* enhancement:encoding: Adds support for the ``AWS_CLI_OUTPUT_ENCODING`` environment variable, which can be used to override the locale's preferred encoding when the CLI is writing output.
+* api-change:``bedrock-agent-runtime``: Introduces Sessions (preview) to enable stateful conversations in GenAI applications.
+* api-change:``redshift-serverless``: Add track support for Redshift Serverless workgroup.
+* api-change:``sagemaker``: SageMaker HubService is introducing support for creating Training Jobs in Curated Hub (Private Hub). Additionally, it is introducing two new APIs: UpdateHubContent and UpdateHubContentReference.
+
+
 2.24.13
 =======
 

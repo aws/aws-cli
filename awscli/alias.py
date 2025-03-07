@@ -476,7 +476,7 @@ class InternalAliasSubCommand(BaseInternalAliasCommand):
             # proxied command.
             cmd_specific_args = cmd_specific_args[1:]
             LOG.debug(
-                "Delegating to proxy sub-command with new alias " "args: %s",
+                "Delegating to proxy sub-command with new alias args: %s",
                 alias_args,
             )
             return self._proxied_sub_command(cmd_specific_args, parsed_globals)

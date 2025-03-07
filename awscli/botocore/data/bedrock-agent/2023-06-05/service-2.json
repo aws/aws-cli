@@ -2465,6 +2465,24 @@
       },
       "documentation":"<p>Settings for a foundation model used to parse documents for a data source.</p>"
     },
+    "BedrockFoundationModelContextEnrichmentConfiguration":{
+      "type":"structure",
+      "required":[
+        "enrichmentStrategyConfiguration",
+        "modelArn"
+      ],
+      "members":{
+        "enrichmentStrategyConfiguration":{
+          "shape":"EnrichmentStrategyConfiguration",
+          "documentation":"<p>The enrichment stategy used to provide additional context. For example, Neptune GraphRAG uses Amazon Bedrock foundation models to perform chunk entity extraction.</p>"
+        },
+        "modelArn":{
+          "shape":"BedrockModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the foundation model used for context enrichment.</p>"
+        }
+      },
+      "documentation":"<p>Context enrichment configuration is used to provide additional context to the RAG application using Amazon Bedrock foundation models.</p>"
+    },
     "BedrockModelArn":{
       "type":"string",
       "max":2048,
@@ -2717,6 +2735,25 @@
         "CUSTOM",
         "S3"
       ]
+    },
+    "ContextEnrichmentConfiguration":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "bedrockFoundationModelConfiguration":{
+          "shape":"BedrockFoundationModelContextEnrichmentConfiguration",
+          "documentation":"<p>The configuration of the Amazon Bedrock foundation model used for context enrichment.</p>"
+        },
+        "type":{
+          "shape":"ContextEnrichmentType",
+          "documentation":"<p>The method used for context enrichment. It must be Amazon Bedrock foundation models.</p>"
+        }
+      },
+      "documentation":"<p>Context enrichment configuration is used to provide additional context to the RAG application.</p>"
+    },
+    "ContextEnrichmentType":{
+      "type":"string",
+      "enum":["BEDROCK_FOUNDATION_MODEL"]
     },
     "ConversationRole":{
       "type":"string",
@@ -4427,6 +4464,21 @@
       "max":1,
       "min":1
     },
+    "EnrichmentStrategyConfiguration":{
+      "type":"structure",
+      "required":["method"],
+      "members":{
+        "method":{
+          "shape":"EnrichmentStrategyMethod",
+          "documentation":"<p>The method used for the context enrichment strategy.</p>"
+        }
+      },
+      "documentation":"<p>The strategy used for performing context enrichment.</p>"
+    },
+    "EnrichmentStrategyMethod":{
+      "type":"string",
+      "enum":["CHUNK_ENTITY_EXTRACTION"]
+    },
     "ErrorMessage":{
       "type":"string",
       "max":2048,
@@ -5875,6 +5927,14 @@
         }
       }
     },
+    "GraphArn":{
+      "type":"string",
+      "documentation":"<p>ARN for Neptune Analytics graph database</p>",
+      "max":255,
+      "min":1,
+      "pattern":"^arn:aws(|-cn|-us-gov):neptune-graph:[a-zA-Z0-9-]*:[0-9]{12}:graph/g-[a-zA-Z0-9]{10}$",
+      "sensitive":true
+    },
     "GuardrailConfiguration":{
       "type":"structure",
       "members":{
@@ -6560,7 +6620,8 @@
         "PINECONE",
         "REDIS_ENTERPRISE_CLOUD",
         "RDS",
-        "MONGO_DB_ATLAS"
+        "MONGO_DB_ATLAS",
+        "NEPTUNE_ANALYTICS"
       ]
     },
     "KnowledgeBaseSummaries":{
@@ -7631,6 +7692,42 @@
       "type":"string",
       "max":1000,
       "min":1
+    },
+    "NeptuneAnalyticsConfiguration":{
+      "type":"structure",
+      "required":[
+        "fieldMapping",
+        "graphArn"
+      ],
+      "members":{
+        "fieldMapping":{
+          "shape":"NeptuneAnalyticsFieldMapping",
+          "documentation":"<p>Contains the names of the fields to which to map information about the vector store.</p>"
+        },
+        "graphArn":{
+          "shape":"GraphArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Neptune Analytics vector store.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the storage configuration of the knowledge base in Amazon Neptune Analytics. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-neptune.html\">Create a vector index in Amazon Neptune Analytics</a>.</p>"
+    },
+    "NeptuneAnalyticsFieldMapping":{
+      "type":"structure",
+      "required":[
+        "metadataField",
+        "textField"
+      ],
+      "members":{
+        "metadataField":{
+          "shape":"FieldName",
+          "documentation":"<p>The name of the field in which Amazon Bedrock stores metadata about the vector store.</p>"
+        },
+        "textField":{
+          "shape":"FieldName",
+          "documentation":"<p>The name of the field in which Amazon Bedrock stores the raw text from your data. The text is split according to the chunking strategy you choose.</p>"
+        }
+      },
+      "documentation":"<p>Contains the names of the fields to which to map information about the vector store.</p>"
     },
     "NextToken":{
       "type":"string",
@@ -9376,6 +9473,10 @@
           "shape":"MongoDbAtlasConfiguration",
           "documentation":"<p>Contains the storage configuration of the knowledge base in MongoDB Atlas.</p>"
         },
+        "neptuneAnalyticsConfiguration":{
+          "shape":"NeptuneAnalyticsConfiguration",
+          "documentation":"<p>Contains details about the Neptune Analytics configuration of the knowledge base in Amazon Neptune. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-neptune.html\">Create a vector index in Amazon Neptune Analytics.</a>.</p>"
+        },
         "opensearchServerlessConfiguration":{
           "shape":"OpenSearchServerlessConfiguration",
           "documentation":"<p>Contains the storage configuration of the knowledge base in Amazon OpenSearch Service.</p>"
@@ -10685,6 +10786,10 @@
         "chunkingConfiguration":{
           "shape":"ChunkingConfiguration",
           "documentation":"<p>Details about how to chunk the documents in the data source. A <i>chunk</i> refers to an excerpt from a data source that is returned when the knowledge base that it belongs to is queried.</p>"
+        },
+        "contextEnrichmentConfiguration":{
+          "shape":"ContextEnrichmentConfiguration",
+          "documentation":"<p>The context enrichment configuration used for ingestion of the data into the vector store.</p>"
         },
         "customTransformationConfiguration":{
           "shape":"CustomTransformationConfiguration",

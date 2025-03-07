@@ -706,6 +706,14 @@
       "min":0,
       "pattern":"^[0-9a-zA-Z]+$"
     },
+    "AgentCollaboration":{
+      "type":"string",
+      "enum":[
+        "SUPERVISOR",
+        "SUPERVISOR_ROUTER",
+        "DISABLED"
+      ]
+    },
     "AgentCollaboratorInputPayload":{
       "type":"structure",
       "members":{
@@ -1188,6 +1196,100 @@
         }
       },
       "documentation":"<p>Contains the JSON-formatted string returned by the API invoked by the code interpreter.</p>"
+    },
+    "CollaborationInstruction":{
+      "type":"string",
+      "max":4000,
+      "min":1,
+      "sensitive":true
+    },
+    "Collaborator":{
+      "type":"structure",
+      "required":[
+        "foundationModel",
+        "instruction"
+      ],
+      "members":{
+        "actionGroups":{
+          "shape":"AgentActionGroups",
+          "documentation":"<p> List of action groups with each action group defining tasks the inline collaborator agent needs to carry out. </p>"
+        },
+        "agentCollaboration":{
+          "shape":"AgentCollaboration",
+          "documentation":"<p> Defines how the inline supervisor agent handles information across multiple collaborator agents to coordinate a final response. </p>"
+        },
+        "agentName":{
+          "shape":"Name",
+          "documentation":"<p> Name of the inline collaborator agent which must be the same name as specified for <code>collaboratorName</code>. </p>"
+        },
+        "collaboratorConfigurations":{
+          "shape":"CollaboratorConfigurations",
+          "documentation":"<p> Settings of the collaborator agent. </p>"
+        },
+        "customerEncryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the AWS KMS key that encrypts the inline collaborator. </p>"
+        },
+        "foundationModel":{
+          "shape":"ModelIdentifier",
+          "documentation":"<p> The foundation model used by the inline collaborator agent. </p>"
+        },
+        "guardrailConfiguration":{
+          "shape":"GuardrailConfigurationWithArn",
+          "documentation":"<p> Details of the guardwrail associated with the inline collaborator. </p>"
+        },
+        "idleSessionTTLInSeconds":{
+          "shape":"SessionTTL",
+          "documentation":"<p> The number of seconds for which the Amazon Bedrock keeps information about the user's conversation with the inline collaborator agent.</p> <p>A user interaction remains active for the amount of time specified. If no conversation occurs during this time, the session expires and Amazon Bedrock deletes any data provided before the timeout. </p>"
+        },
+        "instruction":{
+          "shape":"Instruction",
+          "documentation":"<p> Instruction that tell the inline collaborator agent what it should do and how it should interact with users. </p>"
+        },
+        "knowledgeBases":{
+          "shape":"KnowledgeBases",
+          "documentation":"<p> Knowledge base associated with the inline collaborator agent. </p>"
+        },
+        "promptOverrideConfiguration":{
+          "shape":"PromptOverrideConfiguration",
+          "documentation":"<p> Contains configurations to override prompt templates in different parts of an inline collaborator sequence. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html\">Advanced prompts</a>. </p>"
+        }
+      },
+      "documentation":"<p> List of inline collaborators. </p>"
+    },
+    "CollaboratorConfiguration":{
+      "type":"structure",
+      "required":[
+        "collaboratorInstruction",
+        "collaboratorName"
+      ],
+      "members":{
+        "agentAliasArn":{
+          "shape":"AgentAliasArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the inline collaborator agent. </p>"
+        },
+        "collaboratorInstruction":{
+          "shape":"CollaborationInstruction",
+          "documentation":"<p> Instructions that tell the inline collaborator agent what it should do and how it should interact with users. </p>"
+        },
+        "collaboratorName":{
+          "shape":"Name",
+          "documentation":"<p> Name of the inline collaborator agent which must be the same name as specified for <code>agentName</code>. </p>"
+        },
+        "relayConversationHistory":{
+          "shape":"RelayConversationHistory",
+          "documentation":"<p> A relay conversation history for the inline collaborator agent. </p>"
+        }
+      },
+      "documentation":"<p> Settings of an inline collaborator agent. </p>"
+    },
+    "CollaboratorConfigurations":{
+      "type":"list",
+      "member":{"shape":"CollaboratorConfiguration"}
+    },
+    "Collaborators":{
+      "type":"list",
+      "member":{"shape":"Collaborator"}
     },
     "ConfirmationState":{
       "type":"string",
@@ -3157,6 +3259,10 @@
     "InlineSessionState":{
       "type":"structure",
       "members":{
+        "conversationHistory":{
+          "shape":"ConversationHistory",
+          "documentation":"<p> Contains the conversation history that persist across sessions. </p>"
+        },
         "files":{
           "shape":"InputFiles",
           "documentation":"<p> Contains information about the files used by code interpreter. </p>"
@@ -3602,9 +3708,21 @@
           "shape":"AgentActionGroups",
           "documentation":"<p> A list of action groups with each action group defining the action the inline agent needs to carry out. </p>"
         },
+        "agentCollaboration":{
+          "shape":"AgentCollaboration",
+          "documentation":"<p> Defines how the inline collaborator agent handles information across multiple collaborator agents to coordinate a final response. The inline collaborator agent can also be the supervisor. </p>"
+        },
         "bedrockModelConfigurations":{
           "shape":"InlineBedrockModelConfigurations",
           "documentation":"<p>Model settings for the request.</p>"
+        },
+        "collaboratorConfigurations":{
+          "shape":"CollaboratorConfigurations",
+          "documentation":"<p> Settings for an inline agent collaborator called with <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeInlineAgent.html\">InvokeInlineAgent</a>. </p>"
+        },
+        "collaborators":{
+          "shape":"Collaborators",
+          "documentation":"<p> List of collaborator inline agents. </p>"
         },
         "customerEncryptionKeyArn":{
           "shape":"KmsKeyArn",
@@ -4792,6 +4910,10 @@
           "shape":"BasePromptTemplate",
           "documentation":"<p>Defines the prompt template with which to replace the default prompt template. You can use placeholder variables in the base prompt template to customize the prompt. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html\">Prompt template placeholder variables</a>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts-configure.html\">Configure the prompt templates</a>.</p>"
         },
+        "foundationModel":{
+          "shape":"ModelIdentifier",
+          "documentation":"<p> The foundation model to use. </p>"
+        },
         "inferenceConfiguration":{
           "shape":"InferenceConfiguration",
           "documentation":"<p>Contains inference parameters to use when the agent invokes a foundation model in the part of the agent sequence defined by the <code>promptType</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p>"
@@ -5041,6 +5163,13 @@
       },
       "documentation":"<p>Contains information about the reasoning that the model used to return the content in the content block.</p>",
       "sensitive":true
+    },
+    "RelayConversationHistory":{
+      "type":"string",
+      "enum":[
+        "TO_COLLABORATOR",
+        "DISABLED"
+      ]
     },
     "RepromptResponse":{
       "type":"structure",
@@ -6320,6 +6449,10 @@
       "max":25000000,
       "min":0
     },
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
     "TagKey":{
       "type":"string",
       "documentation":"<p>Key of a tag</p>",
@@ -6567,6 +6700,10 @@
         "collaboratorName":{
           "shape":"Name",
           "documentation":"<p>The part's collaborator name.</p>"
+        },
+        "eventTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p> The time of the trace. </p>"
         },
         "sessionId":{
           "shape":"SessionId",

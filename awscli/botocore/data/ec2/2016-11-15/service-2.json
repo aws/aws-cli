@@ -7273,6 +7273,11 @@
           "documentation":"<p>The carrier IP address associated. This option is only available for network interfaces which reside in a subnet in a Wavelength Zone (for example an EC2 instance). </p>",
           "locationName":"carrierIp"
         },
+        "ServiceManaged":{
+          "shape":"ServiceManaged",
+          "documentation":"<p>The service that manages the elastic IP address.</p> <note> <p>The only option supported today is <code>alb</code>.</p> </note>",
+          "locationName":"serviceManaged"
+        },
         "InstanceId":{
           "shape":"String",
           "documentation":"<p>The ID of the instance that the address is associated with (if any).</p>",
@@ -15609,7 +15614,7 @@
         },
         "GroupName":{
           "shape":"String",
-          "documentation":"<p>The name of the security group.</p> <p>Constraints: Up to 255 characters in length. Cannot start with <code>sg-</code>.</p> <p>Valid characters: a-z, A-Z, 0-9, spaces, and ._-:/()#,@[]+=&amp;;{}!$*</p>"
+          "documentation":"<p>The name of the security group. Names are case-insensitive and must be unique within the VPC.</p> <p>Constraints: Up to 255 characters in length. Can't start with <code>sg-</code>.</p> <p>Valid characters: a-z, A-Z, 0-9, spaces, and ._-:/()#,@[]+=&amp;;{}!$*</p>"
         },
         "VpcId":{
           "shape":"VpcId",
@@ -57050,6 +57055,13 @@
         "shape":"ServiceDetail",
         "locationName":"item"
       }
+    },
+    "ServiceManaged":{
+      "type":"string",
+      "enum":[
+        "alb",
+        "nlb"
+      ]
     },
     "ServiceNetworkArn":{"type":"string"},
     "ServiceState":{

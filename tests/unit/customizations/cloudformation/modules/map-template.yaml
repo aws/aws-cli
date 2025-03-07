@@ -1,0 +1,26 @@
+Parameters:
+  List:
+    Type: CommaDelimitedList
+    Default: A,B,C
+
+Modules:
+  Content:
+    Source: ./map-module.yaml
+    Map: !Ref List
+    Properties:
+      Name: !Sub my-bucket-$MapValue
+  IndexTest:
+    Source: ./map-index-module.yaml
+    Map: !Ref List
+    Properties:
+      ContentRef: !GetAtt Content[$MapIndex].Arn
+      NestedRef:
+        Obj: !GetAtt Content[$MapIndex].Arn
+  ListTest:
+    Source: ./map-list-module.yaml
+    Properties:
+      ListRef: !GetAtt Content[].Arn
+    Overrides:
+      Bar:
+        Properties:
+          ListOverride: !GetAtt Content[].Arn

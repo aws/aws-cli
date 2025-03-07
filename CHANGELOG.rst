@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.24.20
+=======
+
+* api-change:``neptune-graph``: Several small updates to resolve customer requests.
+* api-change:``cloudfront``: Documentation updates for Amazon CloudFront.
+* api-change:``bedrock-agent``: Introduces support for Neptune Analytics as a vector data store and adds Context Enrichment Configurations, enabling use cases such as GraphRAG.
+* api-change:``ec2``: Add serviceManaged field to DescribeAddresses API response.
+* api-change:``elbv2``: This release adds support for assigning IP addresses to Application Load Balancers from VPC IP Address Manager pools.
+* api-change:``bedrock-agent-runtime``: Support Multi Agent Collaboration within Inline Agents
+
+
 2.24.19
 =======
 

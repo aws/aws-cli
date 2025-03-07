@@ -63,6 +63,7 @@ class SchemaTransformer(object):
         $ aws foo bar --baz arg1=Value1,arg2=5 arg1=Value2
 
     """
+
     JSON_SCHEMA_TO_AWS_TYPES = {
         'object': 'structure',
         'array': 'list',
@@ -116,7 +117,8 @@ class SchemaTransformer(object):
         for key, value in schema['properties'].items():
             current_type_name = self._json_schema_to_aws_type(value)
             current_shape_name = self._shape_namer.new_shape_name(
-                current_type_name)
+                current_type_name
+            )
             members[key] = {'shape': current_shape_name}
             if value.get('required', False):
                 required_members.append(key)

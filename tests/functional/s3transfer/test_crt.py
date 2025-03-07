@@ -160,6 +160,12 @@ class TestCRTTransferManager(unittest.TestCase):
             make_request_kwargs['signing_config'].algorithm,
             awscrt.auth.AwsSigningAlgorithm.V4_S3EXPRESS
         )
+        self.assertFalse(
+            make_request_kwargs['signing_config'].use_double_uri_encode,
+        )
+        self.assertFalse(
+            make_request_kwargs['signing_config'].should_normalize_uri_path,
+        )
 
     def _assert_expected_mrap_request(
         self,
@@ -179,6 +185,12 @@ class TestCRTTransferManager(unittest.TestCase):
         )
         self.assertEqual(
             make_request_kwargs['signing_config'].region, "*"
+        )
+        self.assertFalse(
+            make_request_kwargs['signing_config'].use_double_uri_encode,
+        )
+        self.assertFalse(
+            make_request_kwargs['signing_config'].should_normalize_uri_path,
         )
 
     def _assert_subscribers_called(self, expected_future=None):

@@ -149,6 +149,12 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
         "when_supported",
         None,
     ),
+    'disable_host_prefix_injection': (
+        'disable_host_prefix_injection',
+        'AWS_DISABLE_HOST_PREFIX_INJECTION',
+        None,
+        utils.ensure_boolean,
+    ),
 }
 # A mapping for the s3 specific configuration vars. These are the configuration
 # vars that typically go in the s3 section of the config file. This mapping

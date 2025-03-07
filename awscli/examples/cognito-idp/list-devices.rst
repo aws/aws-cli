@@ -1,18 +1,15 @@
-**To list devices for a user**
+**To list a user's devices**
 
-The following ``list-devices`` example lists devices for the currently sign-in user. ::
+The following ``list-devices`` example lists the devices that the current user has registered. ::
 
-    aws cognito-idp admin-list-devices \
-        --user-pool-id us-west-2_EXAMPLE \
-        --access-token eyJra456defEXAMPLE \
-        --limit 1
+    aws cognito-idp list-devices \
+        --access-token eyJra456defEXAMPLE
 
 Output::
 
     {
         "Devices": [
             {
-                "DeviceKey": "us-west-2_a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
                 "DeviceAttributes": [
                     {
                         "Name": "device_status",
@@ -20,34 +17,35 @@ Output::
                     },
                     {
                         "Name": "device_name",
-                        "Value": "MyDevice"
-                    },
-                    {
-                        "Name": "dev:device_arn",
-                        "Value": "arn:aws:cognito-idp:us-west-2:123456789012:owner/diego.us-west-2_EXAMPLE/device/us-west-2_a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
-                    },
-                    {
-                        "Name": "dev:device_owner",
-                        "Value": "diego.us-west-2_EXAMPLE"
+                        "Value": "Dart-device"
                     },
                     {
                         "Name": "last_ip_used",
                         "Value": "192.0.2.1"
-                    },
-                    {
-                        "Name": "dev:device_remembered_status",
-                        "Value": "remembered"
-                    },
-                    {
-                        "Name": "dev:device_sdk",
-                        "Value": "aws-sdk"
                     }
                 ],
                 "DeviceCreateDate": 1715100742.022,
-                "DeviceLastModifiedDate": 1723233651.167,
-                "DeviceLastAuthenticatedDate": 1715100742.0
+                "DeviceKey": "us-west-2_a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+                "DeviceLastAuthenticatedDate": 1715100742.0,
+                "DeviceLastModifiedDate": 1723233651.167
+            },
+            {
+                "DeviceAttributes": [
+                    {
+                        "Name": "device_status",
+                        "Value": "valid"
+                    },
+                    {
+                        "Name": "last_ip_used",
+                        "Value": "192.0.2.2"
+                    }
+                ],
+                "DeviceCreateDate": 1726856147.993,
+                "DeviceKey": "us-west-2_a1b2c3d4-5678-90ab-cdef-EXAMPLE22222",
+                "DeviceLastAuthenticatedDate": 1726856147.0,
+                "DeviceLastModifiedDate": 1726856147.993
             }
         ]
     }
 
-For more information, see `Working with user devices in your user pool <https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html>`__ in the *Amazon Cognito Developer Guide*.
+For more information, see `Working with devices <https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html>`__ in the *Amazon Cognito Developer Guide*.

@@ -2,6 +2,65 @@
 CHANGELOG
 =========
 
+2.24.19
+=======
+
+* api-change:``wafv2``: You can now perform an exact match or rate limit aggregation against the web request's JA4 fingerprint.
+* api-change:``bedrock``: This releases adds support for Custom Prompt Router
+* api-change:``workspaces``: Added a new ModifyEndpointEncryptionMode API for managing endpoint encryption settings.
+* api-change:``ivs-realtime``: IVS Real-Time now offers customers the ability to merge fragmented recordings in the event of a participant disconnect.
+* api-change:``networkflowmonitor``: This release contains 2 changes. 1: DeleteScope/GetScope/UpdateScope operations now return 404 instead of 500 when the resource does not exist. 2: Expected string format for clientToken fields of CreateMonitorInput/CreateScopeInput/UpdateMonitorInput have been updated to be an UUID based string.
+* api-change:``redshift-data``: This release adds support for ListStatements API to filter statements by ClusterIdentifier, WorkgroupName, and Database.
+* api-change:``cloudtrail``: Doc-only update for CloudTrail.
+
+
+2.24.18
+=======
+
+* api-change:``iotfleetwise``: This release adds floating point support for CAN/OBD signals and adds support for signed OBD signals.
+* api-change:``datasync``: AWS DataSync now supports modifying ServerHostname while updating locations SMB, NFS, and ObjectStorage.
+* api-change:``workspaces``: Added DeviceTypeWorkSpacesThinClient type to allow users to access their WorkSpaces through a WorkSpaces Thin Client.
+* api-change:``gameliftstreams``: New Service: Amazon GameLift Streams delivers low-latency game streaming from AWS global infrastructure to virtually any device with a browser at up to 1080p resolution and 60 fps.
+* api-change:``bedrock-runtime``: This releases adds support for Custom Prompt Router ARN
+
+
+2.24.17
+=======
+
+* api-change:``iotsitewise``: AWS IoT SiteWise now supports MQTT-enabled, V3 gateways. Configure data destinations for real-time ingestion into AWS IoT SiteWise or buffered ingestion using Amazon S3 storage. You can also use path filters for precise data collection from specific MQTT topics.
+* api-change:``elasticache``: Doc only update, listing 'valkey7' and 'valkey8' as engine options for parameter groups.
+* api-change:``rds``: Note support for Database Insights for Amazon RDS.
+* enhancement:useragent: Update user agent string to include client feature use.
+* api-change:``iot-managed-integrations``: Adding managed integrations APIs for IoT Device Management to setup and control devices across different manufacturers and connectivity protocols. APIs include managedthing operations, credential and provisioning profile management, notification configuration, and OTA update.
+
+
+2.24.16
+=======
+
+* enhancement:configuration: Add support for disabling host prefix injection via the ``AWS_DISABLE_HOST_PREFIX_INJECTION`` environment variable or the ``disable_host_prefix_injection`` parameter in the shared aws configuration file.
+* api-change:``sagemaker``: Add DomainId to CreateDomainResponse
+* api-change:``qbusiness``: Adds support for the ingestion of audio and video files by Q Business, which can be configured with the mediaExtractionConfiguration parameter.
+* api-change:``cognito-idp``: Added the capacity to return available challenges in admin authentication and to set version 3 of the pre token generation event for M2M ATC.
+* bugfix:``awscrt``: Fix urlencoding issues for request signing with the awscrt.
+* api-change:``rum``: Add support for PutResourcePolicy, GetResourcePolicy and DeleteResourcePolicy to support resource based policies for AWS CloudWatch RUM
+* api-change:``transcribe``: Updating documentation for post call analytics job queueing.
+* api-change:``ec2``: Update the DescribeVpcs response
+
+
+2.24.15
+=======
+
+* api-change:``pricing``: Update GetProducts and DescribeServices API request input validations.
+* api-change:``bedrock-data-automation``: Renamed and added new StandardConfiguration enums. Added support to update EncryptionConfiguration in UpdateBlueprint and UpdateDataAutomation APIs. Changed HttpStatus code for DeleteBlueprint and DeleteDataAutomationProject APIs to 200 from 204. Added APIs to support tagging.
+* api-change:``dms``: Add skipped status to the Result Statistics of an Assessment Run
+* api-change:``ssm``: Systems Manager doc-only updates for Feb. 2025.
+* api-change:``bedrock-data-automation-runtime``: Added a mandatory parameter DataAutomationProfileArn to support for cross region inference for InvokeDataAutomationAsync API. Renamed DataAutomationArn to DataAutomationProjectArn. Added APIs to support tagging.
+* api-change:``eks``: Adding licenses to EKS Anywhere Subscription operations response.
+* bugfix:dependency: Revert PyInstaller from 6.11.1 back to 5.13.2 due to `#9331 <https://github.com/aws/aws-cli/issues/9331>`__.
+* api-change:``bedrock-agent``: This release lets Amazon Bedrock Flows support newer models by increasing the maximum length of output in a prompt configuration. This release also increases the maximum number of prompt variables to 20 and the maximum number of node inputs to 20.
+* api-change:``mediaconvert``: The AWS MediaConvert Probe API allows you to analyze media files and retrieve detailed metadata about their content, format, and structure.
+
+
 2.24.14
 =======
 

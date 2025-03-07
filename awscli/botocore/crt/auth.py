@@ -25,6 +25,7 @@ from botocore.auth import (
 )
 from botocore.compat import HTTPHeaders, parse_qs, urlsplit, urlunsplit
 from botocore.exceptions import NoCredentialsError
+from botocore.useragent import register_feature_id
 from botocore.utils import percent_encode_sequence
 
 
@@ -242,6 +243,7 @@ class CrtSigV4AsymAuth(BaseSigner):
         self._expiration_in_seconds = None
 
     def add_auth(self, request):
+        register_feature_id("SIGV4A_SIGNING")
         if self.credentials is None:
             raise NoCredentialsError()
 

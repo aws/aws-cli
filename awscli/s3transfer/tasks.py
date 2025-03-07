@@ -13,6 +13,8 @@
 import copy
 import logging
 
+from botocore.context import start_as_current_context
+
 from s3transfer.utils import get_callbacks
 
 logger = logging.getLogger(__name__)
@@ -122,32 +124,33 @@ class Task:
             filtered_kwargs[param] = value
         return filtered_kwargs
 
-    def __call__(self):
+    def __call__(self, ctx=None):
         """The callable to use when submitting a Task to an executor"""
-        try:
-            # Wait for all of futures this task depends on.
-            self._wait_on_dependent_futures()
-            # Gather up all of the main keyword arguments for main().
-            # This includes the immediately provided main_kwargs and
-            # the values for pending_main_kwargs that source from the return
-            # values from the task's dependent futures.
-            kwargs = self._get_all_main_kwargs()
-            # If the task is not done (really only if some other related
-            # task to the TransferFuture had failed) then execute the task's
-            # main() method.
-            if not self._transfer_coordinator.done():
-                return self._execute_main(kwargs)
-        except Exception as e:
-            self._log_and_set_exception(e)
-        finally:
-            # Run any done callbacks associated to the task no matter what.
-            for done_callback in self._done_callbacks:
-                done_callback()
+        with start_as_current_context(ctx):
+            try:
+                # Wait for all of futures this task depends on.
+                self._wait_on_dependent_futures()
+                # Gather up all of the main keyword arguments for main().
+                # This includes the immediately provided main_kwargs and
+                # the values for pending_main_kwargs that source from the return
+                # values from the task's dependent futures.
+                kwargs = self._get_all_main_kwargs()
+                # If the task is not done (really only if some other related
+                # task to the TransferFuture had failed) then execute the task's
+                # main() method.
+                if not self._transfer_coordinator.done():
+                    return self._execute_main(kwargs)
+            except Exception as e:
+                self._log_and_set_exception(e)
+            finally:
+                # Run any done callbacks associated to the task no matter what.
+                for done_callback in self._done_callbacks:
+                    done_callback()
 
-            if self._is_final:
-                # If this is the final task announce that it is done if results
-                # are waiting on its completion.
-                self._transfer_coordinator.announce_done()
+                if self._is_final:
+                    # If this is the final task announce that it is done if results
+                    # are waiting on its completion.
+                    self._transfer_coordinator.announce_done()
 
     def _execute_main(self, kwargs):
         # Do not display keyword args that should not be printed, especially

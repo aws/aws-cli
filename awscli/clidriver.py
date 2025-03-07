@@ -22,6 +22,7 @@ import distro
 import botocore.session
 from botocore import xform_name
 from botocore.compat import copy_kwargs, OrderedDict
+from botocore.context import start_as_current_context
 from botocore.history import get_global_history_recorder
 from botocore.configprovider import InstanceVarProvider
 from botocore.configprovider import EnvironmentProvider
@@ -91,7 +92,8 @@ u''.encode('idna')
 
 
 def main():
-    return AWSCLIEntryPoint().main(sys.argv[1:])
+    with start_as_current_context():
+        return AWSCLIEntryPoint().main(sys.argv[1:])
 
 
 def create_clidriver(args=None):

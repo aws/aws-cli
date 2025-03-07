@@ -15,13 +15,15 @@
 
 # Lifecycle role names
 LIFECYCLE_DEFAULT_ROLE_NAME = "AWSDataLifecycleManagerDefaultRole"
-LIFECYCLE_DEFAULT_ROLE_NAME_AMI = \
+LIFECYCLE_DEFAULT_ROLE_NAME_AMI = (
     "AWSDataLifecycleManagerDefaultRoleForAMIManagement"
+)
 
 # Lifecycle role arn names
 LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME = "AWSDataLifecycleManagerServiceRole"
-LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME_AMI = \
+LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME_AMI = (
     "AWSDataLifecycleManagerServiceRoleForAMIManagement"
+)
 
 POLICY_ARN_PATTERN = "arn:{0}:iam::aws:policy/service-role/{1}"
 
@@ -33,9 +35,9 @@ LIFECYCLE_DEFAULT_ROLE_ASSUME_POLICY = {
             "Sid": "",
             "Effect": "Allow",
             "Principal": {"Service": "dlm.amazonaws.com"},
-            "Action": "sts:AssumeRole"
+            "Action": "sts:AssumeRole",
         }
-    ]
+    ],
 }
 
 RESOURCE_TYPE_SNAPSHOT = "snapshot"
@@ -44,10 +46,10 @@ RESOURCE_TYPE_IMAGE = "image"
 RESOURCES = {
     RESOURCE_TYPE_SNAPSHOT: {
         'default_role_name': LIFECYCLE_DEFAULT_ROLE_NAME,
-        'default_policy_name': LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME
+        'default_policy_name': LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME,
     },
     RESOURCE_TYPE_IMAGE: {
         'default_role_name': LIFECYCLE_DEFAULT_ROLE_NAME_AMI,
-        'default_policy_name': LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME_AMI
-    }
+        'default_policy_name': LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME_AMI,
+    },
 }

@@ -219,6 +219,28 @@
       "documentation":"<p>Creates a batch inference job to invoke a model on multiple prompts. Format your data according to <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data\">Format your inference data</a> and upload it to an Amazon S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html\">Process multiple prompts with batch inference</a>.</p> <p>The response returns a <code>jobArn</code> that you can use to stop or get details about the job.</p>",
       "idempotent":true
     },
+    "CreatePromptRouter":{
+      "name":"CreatePromptRouter",
+      "http":{
+        "method":"POST",
+        "requestUri":"/prompt-routers",
+        "responseCode":200
+      },
+      "input":{"shape":"CreatePromptRouterRequest"},
+      "output":{"shape":"CreatePromptRouterResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a prompt router that manages the routing of requests between multiple foundation models based on the routing criteria.</p>",
+      "idempotent":true
+    },
     "CreateProvisionedModelThroughput":{
       "name":"CreateProvisionedModelThroughput",
       "http":{
@@ -354,6 +376,25 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Delete the invocation logging. </p>",
+      "idempotent":true
+    },
+    "DeletePromptRouter":{
+      "name":"DeletePromptRouter",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/prompt-routers/{promptRouterArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeletePromptRouterRequest"},
+      "output":{"shape":"DeletePromptRouterResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a specified prompt router. This action cannot be undone.</p>",
       "idempotent":true
     },
     "DeleteProvisionedModelThroughput":{
@@ -1858,6 +1899,55 @@
         }
       }
     },
+    "CreatePromptRouterRequest":{
+      "type":"structure",
+      "required":[
+        "promptRouterName",
+        "models",
+        "routingCriteria",
+        "fallbackModel"
+      ],
+      "members":{
+        "clientRequestToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure idempotency of your requests. If not specified, the Amazon Web Services SDK automatically generates one for you.</p>",
+          "idempotencyToken":true
+        },
+        "promptRouterName":{
+          "shape":"PromptRouterName",
+          "documentation":"<p>The name of the prompt router. The name must be unique within your Amazon Web Services account in the current region.</p>"
+        },
+        "models":{
+          "shape":"PromptRouterTargetModels",
+          "documentation":"<p>A list of foundation models that the prompt router can route requests to. At least one model must be specified.</p>"
+        },
+        "description":{
+          "shape":"PromptRouterDescription",
+          "documentation":"<p>An optional description of the prompt router to help identify its purpose.</p>"
+        },
+        "routingCriteria":{
+          "shape":"RoutingCriteria",
+          "documentation":"<p>The criteria, which is the response quality difference, used to determine how incoming requests are routed to different models.</p>"
+        },
+        "fallbackModel":{
+          "shape":"PromptRouterTargetModel",
+          "documentation":"<p>The default model to use when the routing criteria is not met.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of key-value pairs to apply to this resource as tags. You can use tags to categorize and manage your Amazon Web Services resources.</p>"
+        }
+      }
+    },
+    "CreatePromptRouterResponse":{
+      "type":"structure",
+      "members":{
+        "promptRouterArn":{
+          "shape":"PromptRouterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the prompt router.</p>"
+        }
+      }
+    },
     "CreateProvisionedModelThroughputRequest":{
       "type":"structure",
       "required":[
@@ -2076,6 +2166,23 @@
       }
     },
     "DeleteModelInvocationLoggingConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeletePromptRouterRequest":{
+      "type":"structure",
+      "required":["promptRouterArn"],
+      "members":{
+        "promptRouterArn":{
+          "shape":"PromptRouterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the prompt router to delete.</p>",
+          "location":"uri",
+          "locationName":"promptRouterArn"
+        }
+      }
+    },
+    "DeletePromptRouterResponse":{
       "type":"structure",
       "members":{
       }
@@ -5596,6 +5703,12 @@
           "documentation":"<p>Specify the pagination token from a previous request to retrieve the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "type":{
+          "shape":"PromptRouterType",
+          "documentation":"<p>The type of the prompt routers, such as whether it's default or custom.</p>",
+          "location":"querystring",
+          "locationName":"type"
         }
       }
     },
@@ -6468,6 +6581,7 @@
     },
     "PromptRouterTargetModel":{
       "type":"structure",
+      "required":["modelArn"],
       "members":{
         "modelArn":{
           "shape":"PromptRouterTargetModelArn",
@@ -6480,7 +6594,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":".*(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})|(^arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{0,20}):(|[0-9]{12}):inference-profile/[a-zA-Z0-9-:.]+)"
+      "pattern":".*(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})|(^arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{0,20}):(|[0-9]{12}):(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+)"
     },
     "PromptRouterTargetModels":{
       "type":"list",
@@ -6898,7 +7012,7 @@
     "RoutingCriteriaResponseQualityDifferenceDouble":{
       "type":"double",
       "box":true,
-      "max":1,
+      "max":100,
       "min":0
     },
     "S3Config":{
@@ -7184,7 +7298,7 @@
       "type":"string",
       "max":1011,
       "min":20,
-      "pattern":".*(^[a-zA-Z0-9][a-zA-Z0-9\\-]*$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:([0-9]{12}|)((:(fine-tuning-job|model-customization-job|custom-model)/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12})$)|(:guardrail/[a-z0-9]+$)|(:(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+$)|(:(provisioned-model|model-invocation-job|model-evaluation-job|evaluation-job|model-import-job|imported-model|async-invoke)/[a-z0-9]{12}$))).*"
+      "pattern":".*(^[a-zA-Z0-9][a-zA-Z0-9\\-]*$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:([0-9]{12}|)((:(fine-tuning-job|model-customization-job|custom-model)/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12})$)|(:guardrail/[a-z0-9]+$)|(:automated-reasoning-policy/[a-zA-Z0-9]+(:[a-zA-Z0-9]+)?$)|(:(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+$)|(:(provisioned-model|model-invocation-job|model-evaluation-job|evaluation-job|model-import-job|imported-model|async-invoke|provisioned-model-v2|provisioned-model-reservation|prompt-router)/[a-z0-9]{12}$))).*"
     },
     "TeacherModelConfig":{
       "type":"structure",

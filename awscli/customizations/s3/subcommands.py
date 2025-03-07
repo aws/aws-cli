@@ -15,6 +15,7 @@ import logging
 import sys
 
 from botocore.client import Config
+from botocore.useragent import register_feature_id
 from botocore.utils import is_s3express_bucket, ensure_boolean
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
@@ -783,6 +784,7 @@ class PresignCommand(S3Command):
 class S3TransferCommand(S3Command):
     def _run_main(self, parsed_args, parsed_globals):
         super(S3TransferCommand, self)._run_main(parsed_args, parsed_globals)
+        register_feature_id('S3_TRANSFER')
         self._convert_path_args(parsed_args)
         params = self._get_params(parsed_args, parsed_globals, self._session)
         source_client, transfer_client = self._get_source_and_transfer_clients(

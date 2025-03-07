@@ -27,7 +27,7 @@ from botocore.endpoint import EndpointCreator
 from botocore.regions import EndpointResolverBuiltins as EPRBuiltins
 from botocore.regions import EndpointRulesetResolver
 from botocore.signers import RequestSigner
-from botocore.useragent import UserAgentString
+from botocore.useragent import UserAgentString, register_feature_id
 from botocore.utils import ensure_boolean, is_s3_accelerate_url
 
 logger = logging.getLogger(__name__)
@@ -180,6 +180,8 @@ class ClientArgsCreator(object):
             client_config=client_config,
             endpoint_url=endpoint_url,
         )
+        if configured_endpoint_url is not None:
+            register_feature_id('ENDPOINT_OVERRIDE')
 
         endpoint_config = self._compute_endpoint_config(
             service_name=service_name,
@@ -245,6 +247,7 @@ class ClientArgsCreator(object):
         self._compute_user_agent_appid_config(config_kwargs)
         self._compute_sigv4a_signing_region_set_config(config_kwargs)
         self._compute_checksum_config(config_kwargs)
+        self._compute_inject_host_prefix(client_config, config_kwargs)
         s3_config = self.compute_s3_config(client_config)
 
         is_s3_service = self._is_s3_service(service_name)
@@ -264,6 +267,25 @@ class ClientArgsCreator(object):
             's3_config': s3_config,
             'socket_options': self._compute_socket_options(scoped_config)
         }
+
+    def _compute_inject_host_prefix(self, client_config, config_kwargs):
+        # In the cases that a Config object was not provided, or the private value
+        # remained UNSET, we should resolve the value from the config store.
+        if (
+            client_config is None
+            or client_config._inject_host_prefix == 'UNSET'
+        ):
+            configured_disable_host_prefix_injection = (
+                self._config_store.get_config_variable(
+                    'disable_host_prefix_injection'
+                )
+            )
+            if configured_disable_host_prefix_injection is not None:
+                config_kwargs[
+                    'inject_host_prefix'
+                ] = not configured_disable_host_prefix_injection
+            else:
+                config_kwargs['inject_host_prefix'] = True
 
     def _compute_configured_endpoint_url(self, client_config, endpoint_url):
         if endpoint_url is not None:

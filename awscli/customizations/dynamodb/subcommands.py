@@ -23,7 +23,9 @@ import awscli.customizations.dynamodb.params as parameters
 from awscli.customizations.commands import BasicCommand, CustomArgument
 from awscli.customizations.dynamodb.extractor import AttributeExtractor
 from awscli.customizations.dynamodb.transform import (
-    ParameterTransformer, TypeSerializer, TypeDeserializer
+    ParameterTransformer,
+    TypeSerializer,
+    TypeDeserializer,
 )
 from awscli.customizations.dynamodb.formatter import DynamoYAMLDumper
 from awscli.customizations.paginate import ensure_paging_params_not_set
@@ -39,9 +41,10 @@ class DDBCommand(BasicCommand):
         factory = self._session.get_component('response_parser_factory')
         factory.set_parser_defaults(blob_parser=None)
         self._client = self._session.create_client(
-            'dynamodb', region_name=parsed_globals.region,
+            'dynamodb',
+            region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl
+            verify=parsed_globals.verify_ssl,
         )
         self._transformer = ParameterTransformer()
         self._serializer = TypeSerializer()
@@ -55,8 +58,10 @@ class DDBCommand(BasicCommand):
             self._client.meta.method_to_api_mapping.get(operation_name)
         )
         self._transformer.transform(
-            data, operation_model.input_shape, self._serializer.serialize,
-            'AttributeValue'
+            data,
+            operation_model.input_shape,
+            self._serializer.serialize,
+            'AttributeValue',
         )
 
     def _deserialize(self, operation_name, data):
@@ -65,12 +70,15 @@ class DDBCommand(BasicCommand):
             self._client.meta.method_to_api_mapping.get(operation_name)
         )
         self._transformer.transform(
-            data, operation_model.output_shape, self._deserializer.deserialize,
-            'AttributeValue'
+            data,
+            operation_model.output_shape,
+            self._deserializer.deserialize,
+            'AttributeValue',
         )
 
-    def _make_api_call(self, operation_name, client_args,
-                       should_paginate=True):
+    def _make_api_call(
+        self, operation_name, client_args, should_paginate=True
+    ):
         self._serialize(operation_name, client_args)
 
         if self._client.can_paginate(operation_name) and should_paginate:
@@ -78,8 +86,10 @@ class DDBCommand(BasicCommand):
             response = paginator.paginate(**client_args).build_full_result()
         else:
             response = getattr(self._client, operation_name)(**client_args)
-        if 'ConsumedCapacity' in response and \
-                response['ConsumedCapacity'] is None:
+        if (
+            'ConsumedCapacity' in response
+            and response['ConsumedCapacity'] is None
+        ):
             del response['ConsumedCapacity']
         self._deserialize(operation_name, response)
         return response
@@ -98,11 +108,11 @@ class DDBCommand(BasicCommand):
         with self._output_stream_factory.get_output_stream() as stream:
             formatter(operation_name, data, stream)
 
-    def _add_expression_args(self, expression_name, expression, args,
-                             substitution_count=0):
+    def _add_expression_args(
+        self, expression_name, expression, args, substitution_count=0
+    ):
         result = self._extractor.extract(
-            ' '.join(expression),
-            substitution_count
+            ' '.join(expression), substitution_count
         )
         args[expression_name] = result['expression']
 
@@ -121,7 +131,9 @@ class DDBCommand(BasicCommand):
 
 class PaginatedDDBCommand(DDBCommand):
     PAGING_ARGS = [
-        parameters.STARTING_TOKEN, parameters.MAX_ITEMS, parameters.PAGE_SIZE
+        parameters.STARTING_TOKEN,
+        parameters.MAX_ITEMS,
+        parameters.PAGE_SIZE,
     ]
 
     def _build_arg_table(self):
@@ -175,7 +187,10 @@ class SelectCommand(PaginatedDDBCommand):
 
     def _select(self, parsed_args, parsed_globals):
         output_type = parsed_globals.output
-        if output_type is not None and output_type not in self._SUPPORTED_OUTPUT_TYPES:
+        if (
+            output_type is not None
+            and output_type not in self._SUPPORTED_OUTPUT_TYPES
+        ):
             raise ParamValidationError(
                 f'{output_type} output format is not supported for ddb commands'
             )
@@ -201,27 +216,35 @@ class SelectCommand(PaginatedDDBCommand):
 
     def _get_client_args(self, parsed_args):
         client_args = super(SelectCommand, self)._get_client_args(parsed_args)
-        client_args.update({
-            'TableName': parsed_args.table_name,
-            'ConsistentRead': parsed_args.consistent_read,
-        })
+        client_args.update(
+            {
+                'TableName': parsed_args.table_name,
+                'ConsistentRead': parsed_args.consistent_read,
+            }
+        )
         substitution_count = 0
         if parsed_args.index_name is not None:
             client_args['IndexName'] = parsed_args.index_name
         if parsed_args.projection is not None:
             substitution_count = self._add_expression_args(
-                'ProjectionExpression', parsed_args.projection, client_args,
+                'ProjectionExpression',
+                parsed_args.projection,
+                client_args,
                 substitution_count,
             )
         if parsed_args.filter is not None:
             substitution_count += self._add_expression_args(
-                'FilterExpression', parsed_args.filter, client_args,
+                'FilterExpression',
+                parsed_args.filter,
+                client_args,
                 substitution_count,
             )
         if parsed_args.key_condition is not None:
             self._add_expression_args(
-                'KeyConditionExpression', parsed_args.key_condition,
-                client_args, substitution_count,
+                'KeyConditionExpression',
+                parsed_args.key_condition,
+                client_args,
+                substitution_count,
             )
         if parsed_args.attributes is not None:
             select_map = {
@@ -245,9 +268,7 @@ class SelectCommand(PaginatedDDBCommand):
 
 class PutCommand(DDBCommand):
     NAME = 'put'
-    DESCRIPTION = (
-        '``put`` puts one or more items into a table.'
-    )
+    DESCRIPTION = '``put`` puts one or more items into a table.'
     ARG_TABLE = [
         parameters.TABLE_NAME,
         parameters.ITEMS,
@@ -301,9 +322,7 @@ class PutCommand(DDBCommand):
         put_requests = [{'PutRequest': {'Item': i}} for i in items]
         while len(put_requests) > 0:
             batch_items = put_requests[:batch_size]
-            client_args['RequestItems'] = {
-                parsed_args.table_name: batch_items
-            }
+            client_args['RequestItems'] = {parsed_args.table_name: batch_items}
             result = self._make_api_call('batch_write_item', client_args)
 
             put_requests = put_requests[batch_size:]
@@ -328,6 +347,8 @@ class PutCommand(DDBCommand):
         client_args = {'ReturnConsumedCapacity': 'NONE'}
         if parsed_args.condition is not None:
             self._add_expression_args(
-                'ConditionExpression', parsed_args.condition, client_args,
+                'ConditionExpression',
+                parsed_args.condition,
+                client_args,
             )
         return client_args

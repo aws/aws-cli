@@ -11,10 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
+from collections import OrderedDict
 
 from botocore import xform_name
 from botocore import model
-from botocore.compat import OrderedDict
 
 from awscli.testutils import mock
 from awscli.testutils import unittest

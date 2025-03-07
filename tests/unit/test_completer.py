@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 import pprint
 import difflib
+from collections import OrderedDict
 
-from botocore.compat import OrderedDict
 from botocore.model import OperationModel
 from awscli.clidriver import (
     CLIDriver, ServiceCommand, ServiceOperation, CLICommand)

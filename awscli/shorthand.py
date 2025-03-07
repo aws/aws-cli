@@ -91,7 +91,7 @@ class ShorthandParseSyntaxError(ShorthandParseError):
         super(ShorthandParseSyntaxError, self).__init__(msg)
 
     def _construct_msg(self):
-        msg = ("Expected: '%s', received: '%s' for input:\n" "%s") % (
+        msg = ("Expected: '%s', received: '%s' for input:\n %s") % (
             self.expected,
             self.actual,
             self._error_location(),

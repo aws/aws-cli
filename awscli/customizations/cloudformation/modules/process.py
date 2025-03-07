@@ -414,12 +414,13 @@ class Module:
         # Make sure that overrides exist
         self.validate_overrides()
 
-        # Process resources and put them into the parent template
-        for logical_id, resource in self.resources.items():
-            self.process_resource(logical_id, resource)
+        if not self.invoked:
+            # Process resources and put them into the parent template
+            for logical_id, resource in self.resources.items():
+                self.process_resource(logical_id, resource)
 
-        # Process the module's outputs by modifying the parent
-        self.process_module_outputs()
+            # Process the module's outputs by modifying the parent
+            self.process_module_outputs()
 
         # Look for Fn::Invoke calling this module in the parent
         # Create a fresh copy of the module so that things

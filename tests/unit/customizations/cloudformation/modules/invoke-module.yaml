@@ -46,6 +46,22 @@ Conditions:
       - !Ref IncludeRegion
       - true
 
+Resources:
+  
+  Why:
+    Type: X::Y::Z
+    Properties:
+      Id:  
+        Fn::Join:
+          - !Ref Delimiter
+          - - !Ref Name
+            - !Ref App
+            - !Ref Env
+            - Fn::If:
+              - IncludeRegion
+              - !Ref AWS::Region
+              - !Ref AWS::NoValue
+
 Outputs:
 
   Id:

@@ -10,9 +10,9 @@ Example:
 
 ^/goto/cli2/acm-2015-12-08/AddTagsToCertificate$
 
-will redirect to
+will redirect to the relative path
 
-https://awscli.amazonaws.com/v2/documentation/api/latest/reference/acm/add-tags-to-certificate.html
+/cli/latest/reference/acm/add-tags-to-certificate.html
 
 Usage
 =====
@@ -28,18 +28,18 @@ class AWSCLICrossLinkGenerator(object):
     # The name of the tool, this is what's
     # used in the goto links: /goto/{toolname}/{operation}
     TOOL_NAME = 'cli2'
-    BASE_URL = 'https://awscli.amazonaws.com/v2/documentation/api/latest/reference'
+    BASE_URL = '/cli/latest/reference'
     # The base url for your SDK service reference. This page
     # is used as a fallback for goto links for unknown service
     # uids and for the "catch-all" regex for the tool.
     FALLBACK_BASE = (
-        'https://awscli.amazonaws.com/v2/documentation/api/latest/reference/index.html'
+        '/cli/latest/reference/index.html'
     )
     # The url used for a specific service. This value
     # must have one string placeholder value where the
     # service_name can be placed.
     SERVICE_BASE = (
-        'https://awscli.amazonaws.com/v2/documentation/api/latest/reference/%s/index.html'
+        '/cli/latest/reference/%s/index.html'
     )
 
     def __init__(self):

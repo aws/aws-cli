@@ -3672,6 +3672,12 @@ class SSOTokenLoader(object):
         cache_key = self._generate_cache_key(start_url, session_name)
         self._cache[cache_key] = token
 
+    def _is_expired(self):
+        # TODO get this hooked up
+        expiration = self._frozen_token.expiration
+        remaining = total_seconds(expiration - self._time_fetcher())
+        return remaining <= 0
+
     def __call__(self, start_url, session_name=None):
         cache_key = self._generate_cache_key(start_url, session_name)
         logger.debug(f'Checking for cached token at: {cache_key}')
@@ -3686,6 +3692,8 @@ class SSOTokenLoader(object):
         if 'accessToken' not in token or 'expiresAt' not in token:
             error_msg = f'Token for {start_url} is invalid'
             raise SSOTokenLoadError(error_msg=error_msg)
+
+        # TODO check if token is expired
         return token
 
 

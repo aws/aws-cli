@@ -1,8 +1,9 @@
 import os
 
-import awscli.clidriver
-import awscli.botocore.session
 from sphinx.application import Sphinx
+
+import awscli.botocore.session
+import awscli.clidriver
 
 """Generate apache rewrite rules for cross linking.
 

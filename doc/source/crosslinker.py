@@ -24,7 +24,7 @@ This is a Sphinx extension that gets run after all document updates have been
 executed and before the cleanup phase.
 """
 
-class AWSCLICrossLinkGenerator(object):
+class AWSCLICrossLinkGenerator:
     # The name of the tool, this is what's
     # used in the goto links: /goto/{toolname}/{operation}
     TOOL_NAME = 'cli2'

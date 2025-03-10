@@ -2,6 +2,52 @@
 CHANGELOG
 =========
 
+2.24.21
+=======
+
+* api-change:``ce``: Releasing minor partition endpoint updates.
+* api-change:``bedrock-agent-runtime``: Add support for computer use tools
+* api-change:``connect``: Add support for contact transfers in external voice systems.
+* api-change:``pca-connector-ad``: PrivateCA Connector for Active Directory now supports dual stack endpoints. This release adds the IpAddressType option to the VpcInformation on a Connector which determines whether the endpoint supports IPv4 only or IPv4 and IPv6 traffic.
+* api-change:``timestream-influxdb``: This release updates the default value of pprof-disabled from false to true.
+* api-change:``medialive``: Adds defaultFontSize and defaultLineHeight as options in the EbuTtDDestinationSettings within the caption descriptions for an output stream.
+* api-change:``bedrock-agent``: Add support for computer use tools
+* api-change:``securityhub``: This release adds new StandardsControlsUpdatable field to the StandardsSubscription resource
+
+
+2.24.20
+=======
+
+* api-change:``neptune-graph``: Several small updates to resolve customer requests.
+* api-change:``cloudfront``: Documentation updates for Amazon CloudFront.
+* api-change:``bedrock-agent``: Introduces support for Neptune Analytics as a vector data store and adds Context Enrichment Configurations, enabling use cases such as GraphRAG.
+* api-change:``ec2``: Add serviceManaged field to DescribeAddresses API response.
+* api-change:``elbv2``: This release adds support for assigning IP addresses to Application Load Balancers from VPC IP Address Manager pools.
+* api-change:``bedrock-agent-runtime``: Support Multi Agent Collaboration within Inline Agents
+
+
+2.24.19
+=======
+
+* api-change:``wafv2``: You can now perform an exact match or rate limit aggregation against the web request's JA4 fingerprint.
+* api-change:``bedrock``: This releases adds support for Custom Prompt Router
+* api-change:``workspaces``: Added a new ModifyEndpointEncryptionMode API for managing endpoint encryption settings.
+* api-change:``ivs-realtime``: IVS Real-Time now offers customers the ability to merge fragmented recordings in the event of a participant disconnect.
+* api-change:``networkflowmonitor``: This release contains 2 changes. 1: DeleteScope/GetScope/UpdateScope operations now return 404 instead of 500 when the resource does not exist. 2: Expected string format for clientToken fields of CreateMonitorInput/CreateScopeInput/UpdateMonitorInput have been updated to be an UUID based string.
+* api-change:``redshift-data``: This release adds support for ListStatements API to filter statements by ClusterIdentifier, WorkgroupName, and Database.
+* api-change:``cloudtrail``: Doc-only update for CloudTrail.
+
+
+2.24.18
+=======
+
+* api-change:``iotfleetwise``: This release adds floating point support for CAN/OBD signals and adds support for signed OBD signals.
+* api-change:``datasync``: AWS DataSync now supports modifying ServerHostname while updating locations SMB, NFS, and ObjectStorage.
+* api-change:``workspaces``: Added DeviceTypeWorkSpacesThinClient type to allow users to access their WorkSpaces through a WorkSpaces Thin Client.
+* api-change:``gameliftstreams``: New Service: Amazon GameLift Streams delivers low-latency game streaming from AWS global infrastructure to virtually any device with a browser at up to 1080p resolution and 60 fps.
+* api-change:``bedrock-runtime``: This releases adds support for Custom Prompt Router ARN
+
+
 2.24.17
 =======
 

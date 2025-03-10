@@ -52,7 +52,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a session to temporarily store conversations for generative AI (GenAI) applications built with open-source frameworks such as LangGraph and LlamaIndex. Sessions enable you to save the state of conversations at checkpoints, with the added security and infrastructure of Amazon Web Services. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p> <p>By default, Amazon Bedrock uses Amazon Web Services-managed keys for session encryption, including session metadata, or you can use your own KMS key. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/session-encryption.html\">Amazon Bedrock session encryption</a>.</p> <note> <p> You use a session to store state and conversation history for generative AI applications built with open-source frameworks. For Amazon Bedrock Agents, the service automatically manages conversation context and associates them with the agent-specific sessionId you specify in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/API_agent-runtime_InvokeAgent.html\">InvokeAgent</a> API operation. </p> </note> <p>Related APIs:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_ListSessions.html\">ListSessions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_GetSession.html\">GetSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_EndSession.html\">EndSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_DeleteSession.html\">DeleteSession</a> </p> </li> </ul>",
+      "documentation":"<p>Creates a session to temporarily store conversations for generative AI (GenAI) applications built with open-source frameworks such as LangGraph and LlamaIndex. Sessions enable you to save the state of conversations at checkpoints, with the added security and infrastructure of Amazon Web Services. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessions.html\">Store and retrieve conversation history and context with Amazon Bedrock sessions</a>.</p> <p>By default, Amazon Bedrock uses Amazon Web Services-managed keys for session encryption, including session metadata, or you can use your own KMS key. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/session-encryption.html\">Amazon Bedrock session encryption</a>.</p> <note> <p> You use a session to store state and conversation history for generative AI applications built with open-source frameworks. For Amazon Bedrock Agents, the service automatically manages conversation context and associates them with the agent-specific sessionId you specify in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html\">InvokeAgent</a> API operation. </p> </note> <p>Related APIs:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_ListSessions.html\">ListSessions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_GetSession.html\">GetSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_EndSession.html\">EndSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_DeleteSession.html\">DeleteSession</a> </p> </li> </ul>",
       "idempotent":true
     },
     "DeleteAgentMemory":{
@@ -632,8 +632,26 @@
       "type":"string",
       "enum":[
         "AMAZON.UserInput",
-        "AMAZON.CodeInterpreter"
+        "AMAZON.CodeInterpreter",
+        "ANTHROPIC.Computer",
+        "ANTHROPIC.Bash",
+        "ANTHROPIC.TextEditor"
       ]
+    },
+    "ActionGroupSignatureParams":{
+      "type":"map",
+      "key":{"shape":"ActionGroupSignatureParamsKeyString"},
+      "value":{"shape":"ActionGroupSignatureParamsValueString"}
+    },
+    "ActionGroupSignatureParamsKeyString":{
+      "type":"string",
+      "max":100,
+      "min":0
+    },
+    "ActionGroupSignatureParamsValueString":{
+      "type":"string",
+      "max":100,
+      "min":0
     },
     "ActionInvocationType":{
       "type":"string",
@@ -685,7 +703,11 @@
         },
         "parentActionGroupSignature":{
           "shape":"ActionGroupSignature",
-          "documentation":"<p> To allow your agent to request the user for additional information when trying to complete a task, set this field to <code>AMAZON.UserInput</code>. You must leave the <code>description</code>, <code>apiSchema</code>, and <code>actionGroupExecutor</code> fields blank for this action group. </p> <p>To allow your agent to generate, run, and troubleshoot code when trying to complete a task, set this field to <code>AMAZON.CodeInterpreter</code>. You must leave the <code>description</code>, <code>apiSchema</code>, and <code>actionGroupExecutor</code> fields blank for this action group.</p> <p>During orchestration, if your agent determines that it needs to invoke an API in an action group, but doesn't have enough information to complete the API request, it will invoke this action group instead and return an <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Observation.html\">Observation</a> reprompting the user for more information.</p>"
+          "documentation":"<p>Specify a built-in or computer use action for this action group. If you specify a value, you must leave the <code>description</code>, <code>apiSchema</code>, and <code>actionGroupExecutor</code> fields empty for this action group. </p> <ul> <li> <p>To allow your agent to request the user for additional information when trying to complete a task, set this field to <code>AMAZON.UserInput</code>. </p> </li> <li> <p>To allow your agent to generate, run, and troubleshoot code when trying to complete a task, set this field to <code>AMAZON.CodeInterpreter</code>.</p> </li> <li> <p>To allow your agent to use an Anthropic computer use tool, specify one of the following values. </p> <important> <p> Computer use is a new Anthropic Claude model capability (in beta) available with Anthropic Claude 3.7 Sonnet and Claude 3.5 Sonnet v2 only. When operating computer use functionality, we recommend taking additional security precautions, such as executing computer actions in virtual environments with restricted data access and limited internet connectivity. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agent-computer-use.html\">Configure an Amazon Bedrock Agent to complete tasks with computer use tools</a>. </p> </important> <ul> <li> <p> <code>ANTHROPIC.Computer</code> - Gives the agent permission to use the mouse and keyboard and take screenshots.</p> </li> <li> <p> <code>ANTHROPIC.TextEditor</code> - Gives the agent permission to view, create and edit files.</p> </li> <li> <p> <code>ANTHROPIC.Bash</code> - Gives the agent permission to run commands in a bash shell.</p> </li> </ul> </li> </ul>"
+        },
+        "parentActionGroupSignatureParams":{
+          "shape":"ActionGroupSignatureParams",
+          "documentation":"<p> The configuration settings for a computer use action. </p> <important> <p>Computer use is a new Anthropic Claude model capability (in beta) available with Claude 3.7 Sonnet and Claude 3.5 Sonnet v2 only. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agent-computer-use.html\">Configure an Amazon Bedrock Agent to complete tasks with computer use tools</a>.</p> </important>"
         }
       },
       "documentation":"<p> Contains details of the inline agent's action group. </p>"
@@ -705,6 +727,14 @@
       "max":10,
       "min":0,
       "pattern":"^[0-9a-zA-Z]+$"
+    },
+    "AgentCollaboration":{
+      "type":"string",
+      "enum":[
+        "SUPERVISOR",
+        "SUPERVISOR_ROUTER",
+        "DISABLED"
+      ]
     },
     "AgentCollaboratorInputPayload":{
       "type":"structure",
@@ -1189,6 +1219,100 @@
       },
       "documentation":"<p>Contains the JSON-formatted string returned by the API invoked by the code interpreter.</p>"
     },
+    "CollaborationInstruction":{
+      "type":"string",
+      "max":4000,
+      "min":1,
+      "sensitive":true
+    },
+    "Collaborator":{
+      "type":"structure",
+      "required":[
+        "foundationModel",
+        "instruction"
+      ],
+      "members":{
+        "actionGroups":{
+          "shape":"AgentActionGroups",
+          "documentation":"<p> List of action groups with each action group defining tasks the inline collaborator agent needs to carry out. </p>"
+        },
+        "agentCollaboration":{
+          "shape":"AgentCollaboration",
+          "documentation":"<p> Defines how the inline supervisor agent handles information across multiple collaborator agents to coordinate a final response. </p>"
+        },
+        "agentName":{
+          "shape":"Name",
+          "documentation":"<p> Name of the inline collaborator agent which must be the same name as specified for <code>collaboratorName</code>. </p>"
+        },
+        "collaboratorConfigurations":{
+          "shape":"CollaboratorConfigurations",
+          "documentation":"<p> Settings of the collaborator agent. </p>"
+        },
+        "customerEncryptionKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the AWS KMS key that encrypts the inline collaborator. </p>"
+        },
+        "foundationModel":{
+          "shape":"ModelIdentifier",
+          "documentation":"<p> The foundation model used by the inline collaborator agent. </p>"
+        },
+        "guardrailConfiguration":{
+          "shape":"GuardrailConfigurationWithArn",
+          "documentation":"<p> Details of the guardwrail associated with the inline collaborator. </p>"
+        },
+        "idleSessionTTLInSeconds":{
+          "shape":"SessionTTL",
+          "documentation":"<p> The number of seconds for which the Amazon Bedrock keeps information about the user's conversation with the inline collaborator agent.</p> <p>A user interaction remains active for the amount of time specified. If no conversation occurs during this time, the session expires and Amazon Bedrock deletes any data provided before the timeout. </p>"
+        },
+        "instruction":{
+          "shape":"Instruction",
+          "documentation":"<p> Instruction that tell the inline collaborator agent what it should do and how it should interact with users. </p>"
+        },
+        "knowledgeBases":{
+          "shape":"KnowledgeBases",
+          "documentation":"<p> Knowledge base associated with the inline collaborator agent. </p>"
+        },
+        "promptOverrideConfiguration":{
+          "shape":"PromptOverrideConfiguration",
+          "documentation":"<p> Contains configurations to override prompt templates in different parts of an inline collaborator sequence. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html\">Advanced prompts</a>. </p>"
+        }
+      },
+      "documentation":"<p> List of inline collaborators. </p>"
+    },
+    "CollaboratorConfiguration":{
+      "type":"structure",
+      "required":[
+        "collaboratorInstruction",
+        "collaboratorName"
+      ],
+      "members":{
+        "agentAliasArn":{
+          "shape":"AgentAliasArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the inline collaborator agent. </p>"
+        },
+        "collaboratorInstruction":{
+          "shape":"CollaborationInstruction",
+          "documentation":"<p> Instructions that tell the inline collaborator agent what it should do and how it should interact with users. </p>"
+        },
+        "collaboratorName":{
+          "shape":"Name",
+          "documentation":"<p> Name of the inline collaborator agent which must be the same name as specified for <code>agentName</code>. </p>"
+        },
+        "relayConversationHistory":{
+          "shape":"RelayConversationHistory",
+          "documentation":"<p> A relay conversation history for the inline collaborator agent. </p>"
+        }
+      },
+      "documentation":"<p> Settings of an inline collaborator agent. </p>"
+    },
+    "CollaboratorConfigurations":{
+      "type":"list",
+      "member":{"shape":"CollaboratorConfiguration"}
+    },
+    "Collaborators":{
+      "type":"list",
+      "member":{"shape":"Collaborator"}
+    },
     "ConfirmationState":{
       "type":"string",
       "enum":[
@@ -1230,6 +1354,10 @@
         "body":{
           "shape":"String",
           "documentation":"<p>The body of the API response.</p>"
+        },
+        "images":{
+          "shape":"ImageInputs",
+          "documentation":"<p>Lists details, including format and source, for the image in the response from the function call. You can specify only one image and the function in the <code>returnControlInvocationResults</code> must be a computer use action. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agent-computer-use.html\">Configure an Amazon Bedrock Agent to complete tasks with computer use tools</a>. </p>"
         }
       },
       "documentation":"<p>Contains the body of the API response.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p>In the <code>returnControlInvocationResults</code> field of the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_RequestSyntax\">InvokeAgent request</a> </p> </li> </ul>"
@@ -2248,7 +2376,7 @@
         },
         "responseBody":{
           "shape":"ResponseBody",
-          "documentation":"<p>The response from the function call using the parameters. The key of the object is the content type (currently, only <code>TEXT</code> is supported). The response may be returned directly or from the Lambda function.</p>"
+          "documentation":"<p>The response from the function call using the parameters. The response might be returned directly or from the Lambda function. Specify <code>TEXT</code> or <code>IMAGES</code>. The key of the object is the content type. You can only specify one type. If you specify <code>IMAGES</code>, you can specify only one image. You can specify images only when the function in the <code>returnControlInvocationResults</code> is a computer use action. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agent-computer-use.html\">Configure an Amazon Bedrock Agent to complete tasks with computer use tools</a>.</p>"
         },
         "responseState":{
           "shape":"ResponseState",
@@ -2953,6 +3081,52 @@
         "webp"
       ]
     },
+    "ImageInput":{
+      "type":"structure",
+      "required":[
+        "format",
+        "source"
+      ],
+      "members":{
+        "format":{
+          "shape":"ImageInputFormat",
+          "documentation":"<p>The type of image in the result.</p>"
+        },
+        "source":{
+          "shape":"ImageInputSource",
+          "documentation":"<p>The source of the image in the result.</p>"
+        }
+      },
+      "documentation":"<p>Details about an image in the result from a function in the action group invocation. You can specify images only when the function is a computer use action. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agent-computer-use.html\">Configure an Amazon Bedrock Agent to complete tasks with computer use tools</a>.</p>"
+    },
+    "ImageInputFormat":{
+      "type":"string",
+      "enum":[
+        "png",
+        "jpeg",
+        "gif",
+        "webp"
+      ]
+    },
+    "ImageInputSource":{
+      "type":"structure",
+      "members":{
+        "bytes":{
+          "shape":"ImageInputSourceBytesBlob",
+          "documentation":"<p> The raw image bytes for the image. If you use an Amazon Web Services SDK, you don't need to encode the image bytes in base64.</p>"
+        }
+      },
+      "documentation":"<p>Details about the source of an input image in the result from a function in the action group invocation.</p>",
+      "union":true
+    },
+    "ImageInputSourceBytesBlob":{
+      "type":"blob",
+      "min":1
+    },
+    "ImageInputs":{
+      "type":"list",
+      "member":{"shape":"ImageInput"}
+    },
     "ImageSource":{
       "type":"structure",
       "members":{
@@ -3157,6 +3331,10 @@
     "InlineSessionState":{
       "type":"structure",
       "members":{
+        "conversationHistory":{
+          "shape":"ConversationHistory",
+          "documentation":"<p> Contains the conversation history that persist across sessions. </p>"
+        },
         "files":{
           "shape":"InputFiles",
           "documentation":"<p> Contains information about the files used by code interpreter. </p>"
@@ -3602,9 +3780,21 @@
           "shape":"AgentActionGroups",
           "documentation":"<p> A list of action groups with each action group defining the action the inline agent needs to carry out. </p>"
         },
+        "agentCollaboration":{
+          "shape":"AgentCollaboration",
+          "documentation":"<p> Defines how the inline collaborator agent handles information across multiple collaborator agents to coordinate a final response. The inline collaborator agent can also be the supervisor. </p>"
+        },
         "bedrockModelConfigurations":{
           "shape":"InlineBedrockModelConfigurations",
           "documentation":"<p>Model settings for the request.</p>"
+        },
+        "collaboratorConfigurations":{
+          "shape":"CollaboratorConfigurations",
+          "documentation":"<p> Settings for an inline agent collaborator called with <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeInlineAgent.html\">InvokeInlineAgent</a>. </p>"
+        },
+        "collaborators":{
+          "shape":"Collaborators",
+          "documentation":"<p> List of collaborator inline agents. </p>"
         },
         "customerEncryptionKeyArn":{
           "shape":"KmsKeyArn",
@@ -4792,6 +4982,10 @@
           "shape":"BasePromptTemplate",
           "documentation":"<p>Defines the prompt template with which to replace the default prompt template. You can use placeholder variables in the base prompt template to customize the prompt. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html\">Prompt template placeholder variables</a>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts-configure.html\">Configure the prompt templates</a>.</p>"
         },
+        "foundationModel":{
+          "shape":"ModelIdentifier",
+          "documentation":"<p> The foundation model to use. </p>"
+        },
         "inferenceConfiguration":{
           "shape":"InferenceConfiguration",
           "documentation":"<p>Contains inference parameters to use when the agent invokes a foundation model in the part of the agent sequence defined by the <code>promptType</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p>"
@@ -5041,6 +5235,13 @@
       },
       "documentation":"<p>Contains information about the reasoning that the model used to return the content in the content block.</p>",
       "sensitive":true
+    },
+    "RelayConversationHistory":{
+      "type":"string",
+      "enum":[
+        "TO_COLLABORATOR",
+        "DISABLED"
+      ]
     },
     "RepromptResponse":{
       "type":"structure",
@@ -5429,7 +5630,7 @@
         },
         "notEquals":{
           "shape":"FilterAttribute",
-          "documentation":"<p>Knowledge base data sources that contain a metadata attribute whose name matches the <code>key</code> and whose value doesn't match the <code>value</code> in this object are returned.</p> <p>The following example would return data sources that don't contain an <code>animal</code> attribute whose value is <code>cat</code>.</p> <p> <code>\"notEquals\": { \"key\": \"animal\", \"value\": \"cat\" }</code> </p>"
+          "documentation":"<p>Knowledge base data sources are returned when:</p> <ul> <li> <p>It contains a metadata attribute whose name matches the <code>key</code> and whose value doesn't match the <code>value</code> in this object.</p> </li> <li> <p>The key is not present in the document.</p> </li> </ul> <p>The following example would return data sources that don't contain an <code>animal</code> attribute whose value is <code>cat</code>.</p> <p> <code>\"notEquals\": { \"key\": \"animal\", \"value\": \"cat\" }</code> </p>"
         },
         "notIn":{
           "shape":"FilterAttribute",
@@ -5692,7 +5893,7 @@
         },
         "type":{
           "shape":"RetrieveAndGenerateType",
-          "documentation":"<p>The type of resource that contains your data for retrieving information and generating responses.</p> <p>If you choose to use <code>EXTERNAL_SOURCES</code>, then currently only Anthropic Claude 3 Sonnet models for knowledge bases are supported.</p>"
+          "documentation":"<p>The type of resource that contains your data for retrieving information and generating responses.</p> <note> <p>If you choose to use <code>EXTERNAL_SOURCES</code>, then currently only Anthropic Claude 3 Sonnet models for knowledge bases are supported.</p> </note>"
         }
       },
       "documentation":"<p>Contains details about the resource being queried.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax\">RetrieveAndGenerate request</a> – in the <code>retrieveAndGenerateConfiguration</code> field</p> </li> </ul>"
@@ -6192,7 +6393,7 @@
         },
         "promptSessionAttributes":{
           "shape":"PromptSessionAttributesMap",
-          "documentation":"<p>Contains attributes that persist across a prompt and the values of those attributes. These attributes replace the $prompt_session_attributes$ placeholder variable in the orchestration prompt template. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html\">Prompt template placeholder variables</a>.</p>"
+          "documentation":"<p>Contains attributes that persist across a prompt and the values of those attributes. </p> <ul> <li> <p>In orchestration prompt template, these attributes replace the $prompt_session_attributes$ placeholder variable. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html\">Prompt template placeholder variables</a>.</p> </li> <li> <p>In <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-multi-agent-collaboration.html\">multi-agent collaboration</a>, the <code>promptSessionAttributes</code> will only be used by supervisor agent when $prompt_session_attributes$ is present in prompt template. </p> </li> </ul>"
         },
         "returnControlInvocationResults":{
           "shape":"ReturnControlInvocationResults",
@@ -6200,7 +6401,7 @@
         },
         "sessionAttributes":{
           "shape":"SessionAttributesMap",
-          "documentation":"<p>Contains attributes that persist across a session and the values of those attributes.</p>"
+          "documentation":"<p>Contains attributes that persist across a session and the values of those attributes. If <code>sessionAttributes</code> are passed to a supervisor agent in <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-multi-agent-collaboration.html\">multi-agent collaboration</a>, it will be forwarded to all agent collaborators.</p>"
         }
       },
       "documentation":"<p>Contains parameters that specify various attributes that persist across a session or prompt. You can define session state attributes as key-value pairs when writing a <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html\">Lambda function</a> for an action group or pass them when making an <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html\">InvokeAgent</a> request. Use session state attributes to control and provide conversational context for your agent and to help customize your agent's behavior. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-session-state.html\">Control session context</a>.</p>"
@@ -6319,6 +6520,10 @@
       "type":"string",
       "max":25000000,
       "min":0
+    },
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
     },
     "TagKey":{
       "type":"string",
@@ -6567,6 +6772,10 @@
         "collaboratorName":{
           "shape":"Name",
           "documentation":"<p>The part's collaborator name.</p>"
+        },
+        "eventTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p> The time of the trace. </p>"
         },
         "sessionId":{
           "shape":"SessionId",

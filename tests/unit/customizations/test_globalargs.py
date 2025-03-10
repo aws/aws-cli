@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from botocore.session import get_session
-from botocore.handlers import disable_signing
+from botocore import UNSIGNED
 import os
 
 from awscli.testutils import mock, unittest
@@ -132,16 +132,13 @@ class TestGlobalArgsCustomization(unittest.TestCase):
     def test_no_sign_request_if_option_specified(self):
         args = FakeParsedArgs(sign_request=False)
         session = mock.Mock()
-
-        globalargs.no_sign_request(args, session)
-        emitter = session.get_component('event_emitter')
-        emitter.register_first.assert_called_with(
-            'choose-signer', disable_signing, unique_id='disable-signing')
+        with mock.patch('awscli.customizations.globalargs._update_default_client_config') as mock_update:
+            globalargs.no_sign_request(args, session)
+            mock_update.assert_called_once_with(session, 'signature_version', UNSIGNED)
 
     def test_request_signed_by_default(self):
         args = FakeParsedArgs(sign_request=True)
         session = mock.Mock()
-
         globalargs.no_sign_request(args, session)
         self.assertFalse(session.register.called)
 

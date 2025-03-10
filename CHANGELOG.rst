@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.38.10
+=======
+
+* api-change:``bedrock-agent``: Add support for computer use tools
+* api-change:``bedrock-agent-runtime``: Add support for computer use tools
+* api-change:``ce``: Releasing minor partition endpoint updates.
+* api-change:``connect``: Add support for contact transfers in external voice systems.
+* api-change:``medialive``: Adds defaultFontSize and defaultLineHeight as options in the EbuTtDDestinationSettings within the caption descriptions for an output stream.
+* api-change:``pca-connector-ad``: PrivateCA Connector for Active Directory now supports dual stack endpoints. This release adds the IpAddressType option to the VpcInformation on a Connector which determines whether the endpoint supports IPv4 only or IPv4 and IPv6 traffic.
+* api-change:``securityhub``: This release adds new StandardsControlsUpdatable field to the StandardsSubscription resource
+* api-change:``timestream-influxdb``: This release updates the default value of pprof-disabled from false to true.
+
+
 1.38.9
 ======
 

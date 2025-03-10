@@ -57,12 +57,14 @@ from awscli.argprocess import unpack_argument
 from awscli.alias import AliasLoader
 from awscli.alias import AliasCommandInjector
 from awscli.logger import (
-    set_stream_logger, remove_stream_logger, enable_crt_logging,
+    set_stream_logger,
+    remove_stream_logger,
+    enable_crt_logging,
     disable_crt_logging,
 )
 from awscli.utils import (
     add_metadata_component_to_user_agent_extra,
-    add_command_lineage_to_user_agent_extra
+    add_command_lineage_to_user_agent_extra,
 )
 from awscli.utils import emit_top_level_args_parsed_event
 from awscli.utils import OutputStreamFactory
@@ -70,13 +72,15 @@ from awscli.utils import IMDSRegionProvider
 from awscli.constants import PARAM_VALIDATION_ERROR_RC
 from awscli.autoprompt.core import AutoPromptDriver
 from awscli.errorhandler import (
-    construct_cli_error_handlers_chain, construct_entry_point_handlers_chain
+    construct_cli_error_handlers_chain,
+    construct_entry_point_handlers_chain,
 )
 
 
 LOG = logging.getLogger('awscli.clidriver')
 LOG_FORMAT = (
-    '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s')
+    '%(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s'
+)
 HISTORY_RECORDER = get_global_history_recorder()
 METADATA_FILENAME = 'metadata.json'
 # Don't remove this line.  The idna encoding
@@ -88,7 +92,7 @@ METADATA_FILENAME = 'metadata.json'
 # the encodings.idna is imported and registered in the codecs registry,
 # which will stop the LookupErrors from happening.
 # See: https://bugs.python.org/issue29288
-u''.encode('idna')
+''.encode('idna')
 
 
 def main():
@@ -104,19 +108,21 @@ def create_clidriver(args=None):
         debug = args.debug
     session = botocore.session.Session()
     _set_user_agent_for_session(session)
-    load_plugins(session.full_config.get('plugins', {}),
-                 event_hooks=session.get_component('event_emitter'))
+    load_plugins(
+        session.full_config.get('plugins', {}),
+        event_hooks=session.get_component('event_emitter'),
+    )
     error_handlers_chain = construct_cli_error_handlers_chain()
-    driver = CLIDriver(session=session,
-                       error_handler=error_handlers_chain,
-                       debug=debug)
+    driver = CLIDriver(
+        session=session, error_handler=error_handlers_chain, debug=debug
+    )
     return driver
 
 
 def _get_distribution_source():
     metadata_file = os.path.join(
         os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data'),
-        METADATA_FILENAME
+        METADATA_FILENAME,
     )
     metadata = {}
     if os.path.isfile(metadata_file):
@@ -146,9 +152,7 @@ def _get_linux_distribution():
 
 def _add_distribution_source_to_user_agent(session):
     add_metadata_component_to_user_agent_extra(
-        session,
-        'installer',
-        _get_distribution_source()
+        session, 'installer', _get_distribution_source()
     )
 
 
@@ -156,7 +160,7 @@ def _add_linux_distribution_to_user_agent(session):
     if linux_distribution := _get_distribution():
         add_metadata_component_to_user_agent_extra(
             session,
-            'distrib', 
+            'distrib',
             linux_distribution,
         )
 
@@ -171,9 +175,7 @@ def _set_user_agent_for_session(session):
 def no_pager_handler(session, parsed_args, **kwargs):
     if parsed_args.no_cli_pager:
         config_store = session.get_component('config_store')
-        config_store.set_config_provider(
-            'pager', ConstantProvider(value=None)
-        )
+        config_store.set_config_provider('pager', ConstantProvider(value=None))
 
 
 class AWSCLIEntryPoint:
@@ -189,7 +191,7 @@ class AWSCLIEntryPoint:
             return self._error_handler.handle_exception(
                 e,
                 stdout=get_stdout_text_writer(),
-                stderr=get_stderr_text_writer()
+                stderr=get_stderr_text_writer(),
             )
 
         HISTORY_RECORDER.record('CLI_RC', rc, 'CLI')
@@ -228,9 +230,7 @@ class AWSCLIEntryPoint:
 
 
 class CLIDriver(object):
-
-    def __init__(self, session=None, error_handler=None,
-                 debug=False):
+    def __init__(self, session=None, error_handler=None, debug=False):
         if session is None:
             self.session = botocore.session.get_session()
             _set_user_agent_for_session(self.session)
@@ -250,32 +250,24 @@ class CLIDriver(object):
     def _update_config_chain(self):
         config_store = self.session.get_component('config_store')
         config_store.set_config_provider(
-            'region',
-            self._construct_cli_region_chain()
+            'region', self._construct_cli_region_chain()
         )
         config_store.set_config_provider(
-            'output',
-            self._construct_cli_output_chain()
+            'output', self._construct_cli_output_chain()
         )
         config_store.set_config_provider(
-            'pager',
-            self._construct_cli_pager_chain()
+            'pager', self._construct_cli_pager_chain()
         )
         config_store.set_config_provider(
-            'cli_binary_format',
-            self._construct_cli_binary_format_chain()
+            'cli_binary_format', self._construct_cli_binary_format_chain()
         )
         config_store.set_config_provider(
-            'cli_auto_prompt',
-            self._construct_cli_auto_prompt_chain()
+            'cli_auto_prompt', self._construct_cli_auto_prompt_chain()
         )
 
     def _construct_cli_region_chain(self):
         providers = [
-            InstanceVarProvider(
-                instance_var='region',
-                session=self.session
-            ),
+            InstanceVarProvider(instance_var='region', session=self.session),
             EnvironmentProvider(
                 name='AWS_REGION',
                 env=os.environ,
@@ -349,8 +341,7 @@ class CLIDriver(object):
                 env=os.environ,
             ),
             ScopedConfigProvider(
-                config_var_name='cli_auto_prompt',
-                session=self.session
+                config_var_name='cli_auto_prompt', session=self.session
             ),
             ConstantProvider(value='off'),
         ]
@@ -395,24 +386,27 @@ class CLIDriver(object):
 
         """
         command_table = self._build_builtin_commands(self.session)
-        self.session.emit('building-command-table.main',
-                          command_table=command_table,
-                          session=self.session,
-                          command_object=self)
+        self.session.emit(
+            'building-command-table.main',
+            command_table=command_table,
+            session=self.session,
+            command_object=self,
+        )
         return command_table
 
     def _build_builtin_commands(self, session):
         commands = OrderedDict()
         services = session.get_available_services()
         for service_name in services:
-            commands[service_name] = ServiceCommand(cli_name=service_name,
-                                                    session=self.session,
-                                                    service_name=service_name)
+            commands[service_name] = ServiceCommand(
+                cli_name=service_name,
+                session=self.session,
+                service_name=service_name,
+            )
         return commands
 
     def _add_aliases(self, command_table, parser):
-        injector = AliasCommandInjector(
-            self.session, self.alias_loader)
+        injector = AliasCommandInjector(self.session, self.alias_loader)
         injector.inject_aliases(command_table, parser)
 
     def _build_argument_table(self):
@@ -425,29 +419,36 @@ class CLIDriver(object):
             cli_argument.add_to_arg_table(argument_table)
         # Then the final step is to send out an event so handlers
         # can add extra arguments or modify existing arguments.
-        self.session.emit('building-top-level-params',
-                          session=self.session,
-                          argument_table=argument_table,
-                          driver=self)
+        self.session.emit(
+            'building-top-level-params',
+            session=self.session,
+            argument_table=argument_table,
+            driver=self,
+        )
         return argument_table
 
     def _create_cli_argument(self, option_name, option_params):
         return CustomArgument(
-            option_name, help_text=option_params.get('help', ''),
+            option_name,
+            help_text=option_params.get('help', ''),
             dest=option_params.get('dest'),
             default=option_params.get('default'),
             action=option_params.get('action'),
             required=option_params.get('required'),
             choices=option_params.get('choices'),
-            cli_type_name=option_params.get('type'))
+            cli_type_name=option_params.get('type'),
+        )
 
     def create_help_command(self):
         cli_data = self._get_cli_data()
-        return ProviderHelpCommand(self.session, self._get_command_table(),
-                                   self._get_argument_table(),
-                                   cli_data.get('description', None),
-                                   cli_data.get('synopsis', None),
-                                   cli_data.get('help_usage', None))
+        return ProviderHelpCommand(
+            self.session,
+            self._get_command_table(),
+            self._get_argument_table(),
+            cli_data.get('description', None),
+            cli_data.get('synopsis', None),
+            cli_data.get('help_usage', None),
+        )
 
     def _cli_version(self):
         version_string = (
@@ -457,8 +458,10 @@ class CLIDriver(object):
         )
 
         if 'AWS_EXECUTION_ENV' in os.environ:
-            version_string += f' exec-env/{os.environ.get("AWS_EXECUTION_ENV")}'
-        
+            version_string += (
+                f' exec-env/{os.environ.get("AWS_EXECUTION_ENV")}'
+            )
+
         version_string += f' {_get_distribution_source()}/{platform.machine()}'
 
         if linux_distribution := _get_distribution():
@@ -471,10 +474,12 @@ class CLIDriver(object):
         command_table['help'] = self.create_help_command()
         cli_data = self._get_cli_data()
         parser = MainArgParser(
-            command_table, self._cli_version(),
+            command_table,
+            self._cli_version(),
             cli_data.get('description', None),
             self._get_argument_table(),
-            prog="aws")
+            prog="aws",
+        )
         return parser
 
     def main(self, args=None):
@@ -499,8 +504,7 @@ class CLIDriver(object):
             self._handle_top_level_args(parsed_args)
             validate_preferred_output_encoding()
             self._emit_session_event(parsed_args)
-            HISTORY_RECORDER.record(
-                'CLI_VERSION', self._cli_version(), 'CLI')
+            HISTORY_RECORDER.record('CLI_VERSION', self._cli_version(), 'CLI')
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             return command_table[parsed_args.command](remaining, parsed_args)
         except BaseException as e:
@@ -512,7 +516,7 @@ class CLIDriver(object):
             return self._error_handler.handle_exception(
                 e,
                 stdout=get_stdout_text_writer(),
-                stderr=get_stderr_text_writer()
+                stderr=get_stderr_text_writer(),
             )
 
     def _emit_session_event(self, parsed_args):
@@ -522,8 +526,10 @@ class CLIDriver(object):
         # session components to be reset (such as session.profile = foo)
         # then all the prior registered components would be removed.
         self.session.emit(
-            'session-initialized', session=self.session,
-            parsed_args=parsed_args)
+            'session-initialized',
+            session=self.session,
+            parsed_args=parsed_args,
+        )
 
     def _show_error(self, msg):
         LOG.debug(msg, exc_info=True)
@@ -542,8 +548,9 @@ class CLIDriver(object):
         loggers_list = ['botocore', 'awscli', 's3transfer', 'urllib3']
         if debug:
             for logger_name in loggers_list:
-                set_stream_logger(logger_name, logging.DEBUG,
-                                  format_string=LOG_FORMAT)
+                set_stream_logger(
+                    logger_name, logging.DEBUG, format_string=LOG_FORMAT
+                )
             enable_crt_logging()
             LOG.debug("CLI version: %s", self._cli_version())
             LOG.debug("Arguments entered to CLI: %s", sys.argv[1:])
@@ -554,12 +561,10 @@ class CLIDriver(object):
             for logger_name in loggers_list:
                 remove_stream_logger(logger_name)
             disable_crt_logging()
-            set_stream_logger(logger_name='awscli',
-                              log_level=logging.ERROR)
+            set_stream_logger(logger_name='awscli', log_level=logging.ERROR)
 
 
 class ServiceCommand(CLICommand):
-
     """A service command for the CLI.
 
     For example, ``aws ec2 ...`` we'd create a ServiceCommand
@@ -627,7 +632,8 @@ class ServiceCommand(CLICommand):
     def _get_service_model(self):
         if self._service_model is None:
             self._service_model = self.session.get_service_model(
-                self._service_name)
+                self._service_name
+            )
         return self._service_model
 
     def __call__(self, args, parsed_globals):
@@ -652,10 +658,12 @@ class ServiceCommand(CLICommand):
                 operation_model=operation_model,
                 operation_caller=CLIOperationCaller(self.session),
             )
-        self.session.emit('building-command-table.%s' % self._name,
-                          command_table=command_table,
-                          session=self.session,
-                          command_object=self)
+        self.session.emit(
+            'building-command-table.%s' % self._name,
+            command_table=command_table,
+            session=self.session,
+            command_object=self,
+        )
         self._add_lineage(command_table)
         return command_table
 
@@ -666,23 +674,25 @@ class ServiceCommand(CLICommand):
 
     def create_help_command(self):
         command_table = self._get_command_table()
-        return ServiceHelpCommand(session=self.session,
-                                  obj=self._get_service_model(),
-                                  command_table=command_table,
-                                  arg_table=None,
-                                  event_class='.'.join(self.lineage_names),
-                                  name=self._name)
+        return ServiceHelpCommand(
+            session=self.session,
+            obj=self._get_service_model(),
+            command_table=command_table,
+            arg_table=None,
+            event_class='.'.join(self.lineage_names),
+            name=self._name,
+        )
 
     def create_parser(self):
         command_table = self._get_command_table()
         # Also add a 'help' command.
         command_table['help'] = self.create_help_command()
         return ServiceArgParser(
-            operations_table=command_table, service_name=self._name)
+            operations_table=command_table, service_name=self._name
+        )
 
 
 class ServiceOperation(object):
-
     """A single operation of a service.
 
     This class represents a single operation for a service, for
@@ -696,8 +706,9 @@ class ServiceOperation(object):
     }
     DEFAULT_ARG_CLASS = CLIArgument
 
-    def __init__(self, name, parent_name, operation_caller,
-                 operation_model, session):
+    def __init__(
+        self, name, parent_name, operation_caller, operation_model, session
+    ):
         """
 
         :type name: str
@@ -786,18 +797,26 @@ class ServiceOperation(object):
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a particular operation
         # of a service we can go ahead and load the parameters.
-        event = 'before-building-argument-table-parser.%s.%s' % \
-            (self._parent_name, self._name)
-        self._emit(event, argument_table=self.arg_table, args=args,
-                   session=self._session)
+        event = 'before-building-argument-table-parser.%s.%s' % (
+            self._parent_name,
+            self._name,
+        )
+        self._emit(
+            event,
+            argument_table=self.arg_table,
+            args=args,
+            session=self._session,
+        )
         subcommand_table = self.subcommand_table
         maybe_parsed_subcommand = self._parse_potential_subcommand(
-            args, subcommand_table)
+            args, subcommand_table
+        )
         if maybe_parsed_subcommand is not None:
             new_args, subcommand_name = maybe_parsed_subcommand
             return subcommand_table[subcommand_name](new_args, parsed_globals)
         operation_parser = self._create_operation_parser(
-            self.arg_table, subcommand_table)
+            self.arg_table, subcommand_table
+        )
         self._add_help(operation_parser)
         parsed_args, remaining = operation_parser.parse_known_args(args)
         if parsed_args.help == 'help':
@@ -807,20 +826,21 @@ class ServiceOperation(object):
             remaining.append(parsed_args.help)
         if remaining:
             raise UnknownArgumentError(
-                "Unknown options: %s" % ', '.join(remaining))
-        event = 'operation-args-parsed.%s.%s' % (self._parent_name,
-                                                 self._name)
-        self._emit(event, parsed_args=parsed_args,
-                   parsed_globals=parsed_globals)
+                "Unknown options: %s" % ', '.join(remaining)
+            )
+        event = 'operation-args-parsed.%s.%s' % (self._parent_name, self._name)
+        self._emit(
+            event, parsed_args=parsed_args, parsed_globals=parsed_globals
+        )
         call_parameters = self._build_call_parameters(
-            parsed_args, self.arg_table)
-        event = 'calling-command.%s.%s' % (self._parent_name,
-                                           self._name)
+            parsed_args, self.arg_table
+        )
+        event = 'calling-command.%s.%s' % (self._parent_name, self._name)
         override = self._emit_first_non_none_response(
             event,
             call_parameters=call_parameters,
             parsed_args=parsed_args,
-            parsed_globals=parsed_globals
+            parsed_globals=parsed_globals,
         )
         # There are two possible values for override. It can be some type
         # of exception that will be raised if detected or it can represent
@@ -843,14 +863,18 @@ class ServiceOperation(object):
             return self._operation_caller.invoke(
                 self._operation_model.service_model.service_name,
                 self._operation_model.name,
-                call_parameters, parsed_globals)
+                call_parameters,
+                parsed_globals,
+            )
 
     def create_help_command(self):
         return OperationHelpCommand(
             self._session,
             operation_model=self._operation_model,
             arg_table=self.arg_table,
-            name=self._name, event_class='.'.join(self.lineage_names))
+            name=self._name,
+            event_class='.'.join(self.lineage_names),
+        )
 
     def _add_help(self, parser):
         # The 'help' output is processed a little differently from
@@ -880,8 +904,9 @@ class ServiceOperation(object):
         service_name = self._operation_model.service_model.endpoint_prefix
         operation_name = xform_name(self._name, '-')
 
-        return unpack_argument(session, service_name, operation_name,
-                               cli_argument, value)
+        return unpack_argument(
+            session, service_name, operation_name, cli_argument, value
+        )
 
     def _create_argument_table(self):
         argument_table = OrderedDict()
@@ -893,8 +918,9 @@ class ServiceOperation(object):
             arg_dict = input_shape.members
         for arg_name, arg_shape in arg_dict.items():
             cli_arg_name = xform_name(arg_name, '-')
-            arg_class = self.ARG_TYPES.get(arg_shape.type_name,
-                                           self.DEFAULT_ARG_CLASS)
+            arg_class = self.ARG_TYPES.get(
+                arg_shape.type_name, self.DEFAULT_ARG_CLASS
+            )
             is_token = arg_shape.metadata.get('idempotencyToken', False)
             is_required = arg_name in required_arguments and not is_token
             event_emitter = self._session.get_component('event_emitter')
@@ -904,34 +930,36 @@ class ServiceOperation(object):
                 is_required=is_required,
                 operation_model=self._operation_model,
                 serialized_name=arg_name,
-                event_emitter=event_emitter)
+                event_emitter=event_emitter,
+            )
             arg_object.add_to_arg_table(argument_table)
         LOG.debug(argument_table)
-        self._emit('building-argument-table.%s.%s' % (self._parent_name,
-                                                      self._name),
-                   operation_model=self._operation_model,
-                   session=self._session,
-                   command=self,
-                   argument_table=argument_table)
+        self._emit(
+            'building-argument-table.%s.%s' % (self._parent_name, self._name),
+            operation_model=self._operation_model,
+            session=self._session,
+            command=self,
+            argument_table=argument_table,
+        )
         return argument_table
 
     def _emit(self, name, **kwargs):
         return self._session.emit(name, **kwargs)
 
     def _emit_first_non_none_response(self, name, **kwargs):
-        return self._session.emit_first_non_none_response(
-            name, **kwargs)
+        return self._session.emit_first_non_none_response(name, **kwargs)
 
     def _create_operation_parser(self, arg_table, subcommand_table):
         parser = ArgTableArgParser(arg_table, subcommand_table)
         return parser
 
     def _add_customization_to_user_agent(self):
-        add_command_lineage_to_user_agent_extra(self._session, self.lineage_names)
+        add_command_lineage_to_user_agent_extra(
+            self._session, self.lineage_names
+        )
 
 
 class CLIOperationCaller(object):
-
     """Call an AWS operation and format the response."""
 
     def __init__(self, session):
@@ -963,27 +991,31 @@ class CLIOperationCaller(object):
 
         """
         client = self._session.create_client(
-            service_name, region_name=parsed_globals.region,
+            service_name,
+            region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl)
+            verify=parsed_globals.verify_ssl,
+        )
         response = self._make_client_call(
-            client, operation_name, parameters, parsed_globals)
+            client, operation_name, parameters, parsed_globals
+        )
         self._display_response(operation_name, response, parsed_globals)
         return 0
 
-    def _make_client_call(self, client, operation_name, parameters,
-                          parsed_globals):
+    def _make_client_call(
+        self, client, operation_name, parameters, parsed_globals
+    ):
         py_operation_name = xform_name(operation_name)
         if client.can_paginate(py_operation_name) and parsed_globals.paginate:
             paginator = client.get_paginator(py_operation_name)
             response = paginator.paginate(**parameters)
         else:
             response = getattr(client, xform_name(operation_name))(
-                **parameters)
+                **parameters
+            )
         return response
 
-    def _display_response(self, command_name, response,
-                          parsed_globals):
+    def _display_response(self, command_name, response, parsed_globals):
         output = parsed_globals.output
         if output is None:
             output = self._session.get_config_variable('output')

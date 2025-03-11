@@ -1,11 +1,19 @@
-aws-cli
+# Peter's aws-cli
+
+## I Peter Oyedemi made some modification to this readme document
+
+## The change is in the documentation-update branch
+
+## Apart from this heading, I added the following
+
+## Added aesterike to some sub heading
 =======
 
 .. image:: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml/badge.svg
    :target: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml
    :alt: Build Status
 
-This package provides a unified command line interface to Amazon Web
+*  This package provides a unified command line interface to Amazon Web
 Services.
 
 Jump to:
@@ -17,14 +25,14 @@ Jump to:
 Getting Started
 ---------------
 
-This README is for the AWS CLI version 1. If you are looking for
+* This README is for the AWS CLI version 1. If you are looking for
 information about the AWS CLI version 2, please visit the `v2
 branch <https://github.com/aws/aws-cli/tree/v2>`__.
 
-Requirements
+*Requirements*
 ~~~~~~~~~~~~
 
-The aws-cli package works on Python versions:
+* The aws-cli package works on Python versions:
 
 -  3.8.x and greater
 -  3.9.x and greater

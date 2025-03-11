@@ -58,7 +58,7 @@ class TestIsGlacierCompatible(unittest.TestCase):
         self.file_info.operation_name = 'download'
         self.file_info.associated_response_data = {
             'StorageClass': 'GLACIER',
-            'Restore': 'ongoing-request="false", expiry-date="..."'
+            'Restore': 'ongoing-request="false", expiry-date="..."',
         }
         self.assertTrue(self.file_info.is_glacier_compatible())
 
@@ -66,6 +66,6 @@ class TestIsGlacierCompatible(unittest.TestCase):
         self.file_info.operation_name = 'download'
         self.file_info.associated_response_data = {
             'StorageClass': 'GLACIER',
-            'Restore': 'ongoing-request="true", expiry-date="..."'
+            'Restore': 'ongoing-request="true", expiry-date="..."',
         }
         self.assertFalse(self.file_info.is_glacier_compatible())

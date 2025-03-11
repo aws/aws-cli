@@ -45,7 +45,9 @@ class TestCloudTrailUtils(unittest.TestCase):
     def test_throws_when_unable_to_get_trail_by_arn(self):
         cloudtrail_client = mock.Mock()
         cloudtrail_client.describe_trails.return_value = {"trailList": []}
-        self.assertRaises(ValueError, utils.get_trail_by_arn, cloudtrail_client, "b")
+        self.assertRaises(
+            ValueError, utils.get_trail_by_arn, cloudtrail_client, "b"
+        )
 
     def test_formats_dates(self):
         date = datetime(2015, 8, 21, tzinfo=tz.tzutc())

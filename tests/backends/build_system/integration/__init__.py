@@ -73,7 +73,9 @@ class BaseArtifactTest:
             if '__pycache__' in dirs:
                 failures.append(os.path.join(root, '__pycache__'))
 
-        assert failures == [], f"Expected no __pycache__ directories, found {failures}"
+        assert (
+            failures == []
+        ), f"Expected no __pycache__ directories, found {failures}"
 
     def assert_built_venv_is_correct(self, venv_dir):
         self.assert_venv_is_correct(venv_dir)
@@ -102,11 +104,11 @@ class BaseArtifactTest:
         }
         dist_dir = aws_dir / "dist"
         dist_info_files = set(
-            f for f in os.listdir(dist_dir)
-            if '.dist-info' in f
+            f for f in os.listdir(dist_dir) if '.dist-info' in f
         )
-        assert dist_info_files == set(), \
-            f"Expected no dist-info files, found: {dist_info_files}"
+        assert (
+            dist_info_files == set()
+        ), f"Expected no dist-info files, found: {dist_info_files}"
 
         aws_exe = aws_dir / "dist" / "aws"
         self.assert_version_string_is_correct(aws_exe, "exe")
@@ -115,7 +117,9 @@ class BaseArtifactTest:
         self.assert_version_string_is_correct(exe_dir / CLI_SCRIPT_NAME, "exe")
 
     def assert_installed_venv_is_correct(self, exe_dir, lib_dir):
-        self.assert_version_string_is_correct(exe_dir / CLI_SCRIPT_NAME, "sandbox")
+        self.assert_version_string_is_correct(
+            exe_dir / CLI_SCRIPT_NAME, "sandbox"
+        )
         self.assert_venv_is_correct(lib_dir / "aws-cli")
 
 

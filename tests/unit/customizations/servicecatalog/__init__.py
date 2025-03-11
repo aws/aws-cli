@@ -24,7 +24,12 @@ class TestRegisterServiceCatalogCommands(unittest.TestCase):
         event_emitter = mock.Mock()
         register_servicecatalog_commands(event_emitter)
         event_emitter.register.assert_has_calls(
-            [mock.call('building-command-table.servicecatalog', inject_commands)])
+            [
+                mock.call(
+                    'building-command-table.servicecatalog', inject_commands
+                )
+            ]
+        )
 
 
 class TestInjectCommands(unittest.TestCase):
@@ -33,5 +38,4 @@ class TestInjectCommands(unittest.TestCase):
         session = mock.Mock()
         inject_commands(command_table, session)
         self.assertIn('generate', command_table)
-        self.assertIsInstance(
-            command_table['generate'], GenerateCommand)
+        self.assertIsInstance(command_table['generate'], GenerateCommand)

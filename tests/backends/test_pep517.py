@@ -114,7 +114,8 @@ def test_build_sdist(tmpdir, config_settings):
     assert unpacked_sdist.join("tests", "__init__.py").check()
     assert unpacked_sdist.join("tests", "unit", "__init__.py").check()
     assert unpacked_sdist.join(
-        "tests", "backends", "build_system", "unit", "__init__.py").check()
+        "tests", "backends", "build_system", "unit", "__init__.py"
+    ).check()
     assert unpacked_sdist.join("tests", "__init__.py").check()
 
     # Make sure sdist will be buildable
@@ -122,7 +123,8 @@ def test_build_sdist(tmpdir, config_settings):
     assert unpacked_sdist.join("Makefile.in").check()
     assert unpacked_sdist.join("requirements", "bootstrap.txt").check()
     assert unpacked_sdist.join(
-        "requirements", "download-deps", "bootstrap.txt").check()
+        "requirements", "download-deps", "bootstrap.txt"
+    ).check()
 
     # Make sure exe build files are added to the sdist
     assert unpacked_sdist.join("exe", "pyinstaller", "aws.spec")

@@ -17,11 +17,12 @@ from awscli.testutils import BaseAWSCommandParamsTest, unittest
 
 
 class TestUpdateConfigurationTemplate(BaseAWSCommandParamsTest):
-
     prefix = 'elasticbeanstalk create-application'
 
     def test_ascii(self):
         cmdline = self.prefix
         cmdline += ' --application-name FooBar'
-        result = {'ApplicationName': 'FooBar',}
+        result = {
+            'ApplicationName': 'FooBar',
+        }
         self.assert_params_for_cmd(cmdline, result)

@@ -18,7 +18,6 @@ from awscli.customizations.s3 import transferconfig
 
 
 class TestTransferConfig:
-
     def build_config_with(self, **config_from_user):
         return transferconfig.RuntimeConfig().build_config(**config_from_user)
 
@@ -33,7 +32,7 @@ class TestTransferConfig:
     def test_user_provides_partial_overrides(self):
         config_from_user = {
             'max_concurrent_requests': '20',
-            'multipart_threshold': str(64 * (1024 ** 2)),
+            'multipart_threshold': str(64 * (1024**2)),
         }
         runtime_config = self.build_config_with(**config_from_user)
         # Our overrides were accepted.
@@ -69,18 +68,18 @@ class TestTransferConfig:
         # of Py_ssize_t on python 3, but notably not the maximum size of an
         # int since they are effectively unbounded.
         long_value = sys.maxsize + 1
-        runtime_config = self.build_config_with(
-            multipart_threshold=long_value)
+        runtime_config = self.build_config_with(multipart_threshold=long_value)
         assert runtime_config['multipart_threshold'] == long_value
 
     @pytest.mark.parametrize(
-        'provided,resolved', [
+        'provided,resolved',
+        [
             (None, 'auto'),
             ('auto', 'auto'),
             ('classic', 'classic'),
             ('default', 'classic'),
             ('crt', 'crt'),
-        ]
+        ],
     )
     def test_set_preferred_transfer_client(self, provided, resolved):
         config_kwargs = {}
@@ -98,14 +97,13 @@ class TestTransferConfig:
             ('max_bandwidth', '1000', 1000),
             ('max_bandwidth', '1000B/s', 1000),
             ('max_bandwidth', '8000b/s', 1000),
-
             # target_bandwidth cases
             ('target_bandwidth', '5MB/s', 5 * 1024 * 1024),
             ('target_bandwidth', '1Mb/s', 1 * 1024 * 1024 / 8),
             ('target_bandwidth', '1000', 1000),
             ('target_bandwidth', '1000B/s', 1000),
             ('target_bandwidth', '8000b/s', 1000),
-        ]
+        ],
     )
     def test_rate_conversions(self, config_name, provided, expected):
         params = {config_name: provided}
@@ -122,7 +120,6 @@ class TestTransferConfig:
             ('max_bandwidth', '100/s'),
             ('max_bandwidth', ''),
             ('max_bandwidth', 'value-with-no-digits'),
-
             # target_bandwidth cases
             ('target_bandwidth', '1MB'),
             ('target_bandwidth', '1B'),
@@ -130,7 +127,7 @@ class TestTransferConfig:
             ('target_bandwidth', '100/s'),
             ('target_bandwidth', ''),
             ('target_bandwidth', 'value-with-no-digits'),
-        ]
+        ],
     )
     def test_invalid_rate_values(self, config_name, provided):
         params = {config_name: provided}
@@ -157,7 +154,8 @@ class TestConvertToS3TransferConfig:
             'max_in_memory_upload_chunks': 1000,
         }
         result = transferconfig.create_transfer_config_from_runtime_config(
-            runtime_config)
+            runtime_config
+        )
         assert result.multipart_threshold == 1
         assert result.multipart_chunksize == 2
         assert result.max_request_concurrency == 3

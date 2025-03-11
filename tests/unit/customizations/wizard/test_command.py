@@ -30,41 +30,41 @@ class TestWizardCommand(unittest.TestCase):
         self.wizard_v1_runner = mock.Mock(spec=Runner)
         self.runner = {
             '0.1': self.wizard_v1_runner,
-            '0.2': self.wizard_v2_runner
+            '0.2': self.wizard_v2_runner,
         }
 
     def test_will_delegate_v1_definition_to_v1_runner(self):
-        loaded = {
-            'version': '0.1'
-        }
+        loaded = {'version': '0.1'}
         self.loader.load_wizard.return_value = loaded
         cmd = TopLevelWizardCommand(
-            self.session, loader=self.loader,
-            parent_command='', runner=self.runner
+            self.session,
+            loader=self.loader,
+            parent_command='',
+            runner=self.runner,
         )
         cmd(['mywizard'], parsed_globals=None)
         self.wizard_v1_runner.run.assert_called_with(loaded)
 
     def test_will_delegate_v2_definition_to_v2_runner(self):
-        loaded = {
-            'version': '0.2'
-        }
+        loaded = {'version': '0.2'}
         self.loader.load_wizard.return_value = loaded
         cmd = TopLevelWizardCommand(
-            self.session, loader=self.loader,
-            parent_command='', runner=self.runner
+            self.session,
+            loader=self.loader,
+            parent_command='',
+            runner=self.runner,
         )
         cmd(['mywizard'], parsed_globals=None)
         self.wizard_v2_runner.run.assert_called_with(loaded)
 
     def test_will_raise_exception_for_unsupported_version(self):
-        loaded = {
-            'version': '100'
-        }
+        loaded = {'version': '100'}
         self.loader.load_wizard.return_value = loaded
         cmd = TopLevelWizardCommand(
-            self.session, loader=self.loader,
-            parent_command='', runner=self.runner
+            self.session,
+            loader=self.loader,
+            parent_command='',
+            runner=self.runner,
         )
         with self.assertRaises(ParamValidationError) as e:
             cmd(['mywizard'], parsed_globals=None)

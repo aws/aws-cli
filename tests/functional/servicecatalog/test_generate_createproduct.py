@@ -24,38 +24,33 @@ class TestGenerateProduct(BaseAWSCommandParamsTest):
     def get_expected_result(self):
         expected_url = f'https://s3.amazonaws.com/{self.bucket_name}/{get_s3_path(self.template_path)}'
 
-        return {'Description': self.product_description,
-                'Distributor': self.product_distributor,
-                'IdempotencyToken': mock.ANY,
-                'Name': self.product_name,
-                'Owner': self.product_owner,
-                'ProductType': self.product_type,
-                'ProvisioningArtifactParameters': {
-                    'Description': self.provisioning_artifact_description,
-                    'Info': {'LoadTemplateFromURL': expected_url},
-                    'Name': self.provisioning_artifact_name,
-                    'Type': self.provisioning_artifact_type},
-                'SupportDescription': self.support_description,
-                'SupportEmail': self.support_email,
-                'Tags': [
-                    {
-                        "Value": "value1",
-                        "Key": "key1"
-                    },
-                    {
-                        "Value": "value2",
-                        "Key": "key2"
-                    },
-                    {
-                        "Value": "value3",
-                        "Key": "key3"
-                    }
-                ]}
+        return {
+            'Description': self.product_description,
+            'Distributor': self.product_distributor,
+            'IdempotencyToken': mock.ANY,
+            'Name': self.product_name,
+            'Owner': self.product_owner,
+            'ProductType': self.product_type,
+            'ProvisioningArtifactParameters': {
+                'Description': self.provisioning_artifact_description,
+                'Info': {'LoadTemplateFromURL': expected_url},
+                'Name': self.provisioning_artifact_name,
+                'Type': self.provisioning_artifact_type,
+            },
+            'SupportDescription': self.support_description,
+            'SupportEmail': self.support_email,
+            'Tags': [
+                {"Value": "value1", "Key": "key1"},
+                {"Value": "value2", "Key": "key2"},
+                {"Value": "value3", "Key": "key3"},
+            ],
+        }
 
     def init_params(self):
         self.obj_key = 'development-environment.template'
-        self.template_path = os.path.join(os.path.dirname(__file__),
-                                          self.obj_key)
+        self.template_path = os.path.join(
+            os.path.dirname(__file__), self.obj_key
+        )
         self.bucket_name = 'bucket_name'
         self.product_name = 'prod_name'
         self.tags = 'Key=key1,Value=value1  Key=key2,Value=value2 \
@@ -84,14 +79,20 @@ class TestGenerateProduct(BaseAWSCommandParamsTest):
         if self.product_type:
             cmd_line += ' --product-type %s' % self.product_type
         if self.provisioning_artifact_name:
-            cmd_line += ' --provisioning-artifact-name %s' \
-                        % self.provisioning_artifact_name
+            cmd_line += (
+                ' --provisioning-artifact-name %s'
+                % self.provisioning_artifact_name
+            )
         if self.provisioning_artifact_description:
-            cmd_line += ' --provisioning-artifact-description %s' \
-                        % self.provisioning_artifact_description
+            cmd_line += (
+                ' --provisioning-artifact-description %s'
+                % self.provisioning_artifact_description
+            )
         if self.provisioning_artifact_type:
-            cmd_line += ' --provisioning-artifact-type %s' \
-                        % self.provisioning_artifact_type
+            cmd_line += (
+                ' --provisioning-artifact-type %s'
+                % self.provisioning_artifact_type
+            )
         cmd_line += ' --product-description %s' % self.product_description
         cmd_line += ' --product-distributor %s' % self.product_distributor
         cmd_line += ' --support-description %s' % self.support_description
@@ -106,9 +107,9 @@ class TestGenerateProduct(BaseAWSCommandParamsTest):
         self.cmd_line = self.build_cmd_line()
         expected_result = self.get_expected_result()
 
-        self.assert_params_for_cmd(self.cmd_line,
-                                   expected_result,
-                                   expected_rc=0)
+        self.assert_params_for_cmd(
+            self.cmd_line, expected_result, expected_rc=0
+        )
 
     def test_generate_product_success_unicode(self):
         self.product_name = '\u05d1\u05e8\u05d9\u05e6\u05e7\u05dc\u05d4'
@@ -117,58 +118,51 @@ class TestGenerateProduct(BaseAWSCommandParamsTest):
         self.cmd_line = self.build_cmd_line()
         expected_result = self.get_expected_result()
 
-        self.assert_params_for_cmd(self.cmd_line,
-                                   expected_result,
-                                   expected_rc=0)
+        self.assert_params_for_cmd(
+            self.cmd_line, expected_result, expected_rc=0
+        )
 
     def test_generate_product_invalid_path(self):
         self.template_path = os.path.join('invalid', 'template', 'file')
         self.cmd_line = self.build_cmd_line()
         self.assert_params_for_cmd(
-            self.cmd_line,
-            expected_rc=255,
-            stderr_contains='cannot be found'
+            self.cmd_line, expected_rc=255, stderr_contains='cannot be found'
         )
 
     def test_generate_product_missing_file_path(self):
         self.template_path = None
         self.cmd_line = self.build_cmd_line()
         self.assert_params_for_cmd(
-            self.cmd_line,
-            expected_rc=252,
-            stderr_contains='--file-path')
+            self.cmd_line, expected_rc=252, stderr_contains='--file-path'
+        )
 
     def test_generate_product_missing_bucket_name(self):
         self.bucket_name = None
         self.cmd_line = self.build_cmd_line()
         self.assert_params_for_cmd(
-            self.cmd_line,
-            expected_rc=252,
-            stderr_contains='--bucket-name')
+            self.cmd_line, expected_rc=252, stderr_contains='--bucket-name'
+        )
 
     def test_generate_product_missing_product_type(self):
         self.product_type = None
         self.cmd_line = self.build_cmd_line()
         self.assert_params_for_cmd(
-            self.cmd_line,
-            expected_rc=252,
-            stderr_contains='--product-type')
+            self.cmd_line, expected_rc=252, stderr_contains='--product-type'
+        )
 
     def test_generate_product_missing_product_name(self):
         self.product_name = None
         self.cmd_line = self.build_cmd_line()
         self.assert_params_for_cmd(
-            self.cmd_line,
-            expected_rc=252,
-            stderr_contains='--product-name')
+            self.cmd_line, expected_rc=252, stderr_contains='--product-name'
+        )
 
     def test_generate_product_missing_product_owner(self):
         self.product_owner = None
         self.cmd_line = self.build_cmd_line()
         self.assert_params_for_cmd(
-            self.cmd_line,
-            expected_rc=252,
-            stderr_contains='--product-owner')
+            self.cmd_line, expected_rc=252, stderr_contains='--product-owner'
+        )
 
     def test_generate_product_missing_provisioning_artifact_name(self):
         self.provisioning_artifact_name = None
@@ -176,7 +170,8 @@ class TestGenerateProduct(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             self.cmd_line,
             expected_rc=252,
-            stderr_contains='--provisioning-artifact-name')
+            stderr_contains='--provisioning-artifact-name',
+        )
 
     def test_generate_product_missing_provisioning_artifact_description(self):
         self.provisioning_artifact_description = None
@@ -184,7 +179,8 @@ class TestGenerateProduct(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             self.cmd_line,
             expected_rc=252,
-            stderr_contains='--provisioning-artifact-description')
+            stderr_contains='--provisioning-artifact-description',
+        )
 
     def test_generate_product_missing_provisioning_artifact_type(self):
         self.provisioning_artifact_type = None
@@ -192,7 +188,8 @@ class TestGenerateProduct(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             self.cmd_line,
             expected_rc=252,
-            stderr_contains='--provisioning-artifact-type')
+            stderr_contains='--provisioning-artifact-type',
+        )
 
     def test_invalid_product_type(self):
         self.product_type = 'invalid-product-type'
@@ -201,7 +198,8 @@ class TestGenerateProduct(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             self.cmd_line,
             expected_rc=252,
-            stderr_contains='--product-type: Invalid choice')
+            stderr_contains='--product-type: Invalid choice',
+        )
 
     def test_generate_product_invalid_provisioning_artifact_type(self):
         self.provisioning_artifact_type = 'invalid_provisioning type'
@@ -210,4 +208,5 @@ class TestGenerateProduct(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             self.cmd_line,
             expected_rc=252,
-            stderr_contains='--provisioning-artifact-type: Invalid choice')
+            stderr_contains='--provisioning-artifact-type: Invalid choice',
+        )

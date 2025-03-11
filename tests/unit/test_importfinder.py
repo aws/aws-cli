@@ -25,6 +25,7 @@ AWSCLI_ROOT_DIR = os.path.dirname(awscli.__file__)
 def fake_builtin_path_finder():
     class PathFinder(type):
         __module__ = '_frozen_importlib_external'
+
     return PathFinder
 
 
@@ -32,6 +33,7 @@ def fake_builtin_path_finder():
 def fake_pyinstaller_finder():
     class PyiFrozenImporter:
         __module__ = 'pyimod02_importers'
+
     return PyiFrozenImporter()
 
 
@@ -52,7 +54,7 @@ class RecordingMetaPathFinder(importlib.abc.MetaPathFinder):
         ('awscli', None, None),
         ('awscli.utils', [AWSCLI_ROOT_DIR], [AWSCLI_ROOT_DIR]),
         ('logging', None, None),
-    ]
+    ],
 )
 def test_find_spec(fullname, provided_path, expected_path):
     underlying_finder = RecordingMetaPathFinder()
@@ -83,11 +85,12 @@ def test_add_alias_finder_does_not_wrap_other_finders():
 
 
 def test_add_alias_finder_wraps_only_first_matching_finder(
-        fake_pyinstaller_finder):
+    fake_pyinstaller_finder,
+):
     sys_meta = [
         RecordingMetaPathFinder(),
         fake_pyinstaller_finder,
-        fake_pyinstaller_finder
+        fake_pyinstaller_finder,
     ]
     TopLevelImportAliasFinder.add_alias_finder(sys_meta)
     _assert_classes(
@@ -96,7 +99,7 @@ def test_add_alias_finder_wraps_only_first_matching_finder(
             RecordingMetaPathFinder,
             TopLevelImportAliasFinder,
             fake_pyinstaller_finder.__class__,
-        ]
+        ],
     )
 
 

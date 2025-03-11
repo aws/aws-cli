@@ -17,15 +17,16 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestDescribeInstanceAttribute(BaseAWSCommandParamsTest):
-
     prefix = 'ec2 describe-instance-attribute'
 
     def test_both_params(self):
         cmdline = self.prefix
         cmdline += ' --instance-id i-12345678'
         cmdline += ' --attribute blockDeviceMapping'
-        result = {'InstanceId': 'i-12345678',
-                  'Attribute': 'blockDeviceMapping'}
+        result = {
+            'InstanceId': 'i-12345678',
+            'Attribute': 'blockDeviceMapping',
+        }
         self.assert_params_for_cmd(cmdline, result)
 
 

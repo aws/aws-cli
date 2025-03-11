@@ -3,8 +3,7 @@ from awscli.testutils import unittest
 
 
 class TestRegexFilter(unittest.TestCase):
-    def assert_filter(self, pattern, replacement, input_text,
-                      expected_result):
+    def assert_filter(self, pattern, replacement, input_text, expected_result):
         regex_filter = RegexFilter(pattern, replacement)
         result = regex_filter.filter_text(input_text)
         self.assertEqual(result, expected_result)

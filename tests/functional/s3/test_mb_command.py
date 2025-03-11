@@ -15,7 +15,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestMBCommand(BaseAWSCommandParamsTest):
-
     prefix = 's3 mb '
 
     def test_make_bucket(self):
@@ -29,17 +28,13 @@ class TestMBCommand(BaseAWSCommandParamsTest):
         self.parsed_responses = [{'Location': 'us-west-2'}]
         expected_params = {
             'Bucket': 'bucket',
-            'CreateBucketConfiguration': {
-                'LocationConstraint': 'us-west-2'
-            }
+            'CreateBucketConfiguration': {'LocationConstraint': 'us-west-2'},
         }
         self.assert_params_for_cmd(command, expected_params)
 
     def test_location_constraint_not_added_on_us_east_1(self):
         command = self.prefix + 's3://bucket --region us-east-1'
-        expected_params = {
-            'Bucket': 'bucket'
-        }
+        expected_params = {'Bucket': 'bucket'}
         self.assert_params_for_cmd(command, expected_params)
 
     def test_nonzero_exit_if_invalid_path_provided(self):

@@ -23,6 +23,7 @@ try:
     file_type = file
 except NameError:
     import io
+
     file_type = io.IOBase
 
 
@@ -30,7 +31,6 @@ TAGSET = """{"TagSet":[{"Key":"key1","Value":"value1"},{"Key":"key2","Value":"va
 
 
 class TestPutBucketTagging(BaseAWSCommandParamsTest):
-
     prefix = 's3api put-bucket-tagging'
 
     def setUp(self):
@@ -48,7 +48,7 @@ class TestPutBucketTagging(BaseAWSCommandParamsTest):
                     {'Key': 'key1', 'Value': 'value1'},
                     {'Key': 'key2', 'Value': 'value2'},
                 ]
-            }
+            },
         }
         self.assert_params_for_cmd(cmdline, expected)
 

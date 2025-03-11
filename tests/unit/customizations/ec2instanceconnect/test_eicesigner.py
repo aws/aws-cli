@@ -65,9 +65,14 @@ def max_tunnel_duration():
 
 
 class TestInstanceConnectEndpointRequestSigner:
-
     def test_get_presigned_url_without_max_tunnel_duration(
-            self, session_mock, request_signer_mock, eice_id, remote_port, private_ip, dns_name
+        self,
+        session_mock,
+        request_signer_mock,
+        eice_id,
+        remote_port,
+        private_ip,
+        dns_name,
     ):
         eice_request_signer = InstanceConnectEndpointRequestSigner(
             session_mock,
@@ -94,9 +99,9 @@ class TestInstanceConnectEndpointRequestSigner:
         expected_query_string = urlencode(qs_components)
         expected_request_dict = {
             "url": "wss://"
-                   + dns_name
-                   + "/openTunnel?"
-                   + expected_query_string,
+            + dns_name
+            + "/openTunnel?"
+            + expected_query_string,
             "body": {},
             "headers": {"host": dns_name},
             "method": "GET",
@@ -111,7 +116,14 @@ class TestInstanceConnectEndpointRequestSigner:
         )
 
     def test_get_presigned_url_with_max_connection_timeout(
-            self, session_mock, request_signer_mock, eice_id, remote_port, private_ip, dns_name, max_tunnel_duration
+        self,
+        session_mock,
+        request_signer_mock,
+        eice_id,
+        remote_port,
+        private_ip,
+        dns_name,
+        max_tunnel_duration,
     ):
         eice_request_signer = InstanceConnectEndpointRequestSigner(
             session_mock,
@@ -139,9 +151,9 @@ class TestInstanceConnectEndpointRequestSigner:
         expected_query_string = urlencode(qs_components)
         expected_request_dict = {
             "url": "wss://"
-                   + dns_name
-                   + "/openTunnel?"
-                   + expected_query_string,
+            + dns_name
+            + "/openTunnel?"
+            + expected_query_string,
             "body": {},
             "headers": {"host": dns_name},
             "method": "GET",

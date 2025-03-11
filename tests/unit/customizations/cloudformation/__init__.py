@@ -29,10 +29,12 @@ class BaseYAMLTest(unittest.TestCase):
     CLI command runs because we do not run multiple commands that differ
     in YAML loading logic in a single process.
     """
+
     def setUp(self):
         super(BaseYAMLTest, self).setUp()
         self.original_implicit_resolvers = copy.deepcopy(
-            yaml.resolver.implicit_resolvers)
+            yaml.resolver.implicit_resolvers
+        )
 
     def tearDown(self):
         super(BaseYAMLTest, self).tearDown()

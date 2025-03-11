@@ -18,8 +18,9 @@ class TestCloudTrailPlumbing(unittest.TestCase):
     def test_initialization_registers_injector(self):
         cli = mock.Mock()
         cloudtrail.initialize(cli)
-        cli.register.assert_called_with('building-command-table.cloudtrail',
-                                        cloudtrail.inject_commands)
+        cli.register.assert_called_with(
+            'building-command-table.cloudtrail', cloudtrail.inject_commands
+        )
 
     def test_injection_adds_two_commands_to_cmd_table(self):
         command_table = {}

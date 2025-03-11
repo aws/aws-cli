@@ -19,7 +19,6 @@ from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 
 class BaseTestGenerateDBConnectAuthToken(BaseAWSCommandParamsTest):
-
     hostname = 'test.dsql.us-east-1.on.aws'
 
     def _urlparse(self, url):
@@ -43,7 +42,6 @@ class BaseTestGenerateDBConnectAuthToken(BaseAWSCommandParamsTest):
 
 
 class TestGenerateDBConnectAuthToken(BaseTestGenerateDBConnectAuthToken):
-
     prefix = 'dsql generate-db-connect-auth-token'
 
     def test_generate_simple_token(self):
@@ -56,17 +54,20 @@ class TestGenerateDBConnectAuthToken(BaseTestGenerateDBConnectAuthToken):
             stdout, _, _ = self.run_cmd(command, expected_rc=0)
 
         # Expected hashes are always the same as session variables come from the BaseAwsCommandParamsTest class
-        expected = ('test.dsql.us-east-1.on.aws/?'
-                    'Action=DbConnect&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential='
-                    'access_key%2F20241107%2Fus-east-1%2Fdsql%2Faws4_request&'
-                    'X-Amz-Date=20241107T173933Z&X-Amz-Expires=900&'
-                    'X-Amz-SignedHeaders=host&X-Amz-Signature='
-                    'e319d85380261f643d78a558f76257f05aacea758a6ccd42a2510e2ae0854a47')
+        expected = (
+            'test.dsql.us-east-1.on.aws/?'
+            'Action=DbConnect&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential='
+            'access_key%2F20241107%2Fus-east-1%2Fdsql%2Faws4_request&'
+            'X-Amz-Date=20241107T173933Z&X-Amz-Expires=900&'
+            'X-Amz-SignedHeaders=host&X-Amz-Signature='
+            'e319d85380261f643d78a558f76257f05aacea758a6ccd42a2510e2ae0854a47'
+        )
 
         # A scheme needs to be appended to the beginning or urlsplit may fail
         # on certain systems.
         self.assert_url_equal(
-            'https://' + stdout.strip('\n'), 'https://' + expected)
+            'https://' + stdout.strip('\n'), 'https://' + expected
+        )
 
     def test_missing_hostname_raises_exception(self):
         region = "us-east-1"
@@ -83,7 +84,6 @@ class TestGenerateDBConnectAuthToken(BaseTestGenerateDBConnectAuthToken):
 
 
 class TestGenerateDBConnectAdminAuthToken(BaseTestGenerateDBConnectAuthToken):
-
     prefix = 'dsql generate-db-connect-admin-auth-token'
 
     def test_generate_simple_token(self):
@@ -96,13 +96,16 @@ class TestGenerateDBConnectAdminAuthToken(BaseTestGenerateDBConnectAuthToken):
             stdout, _, _ = self.run_cmd(command, expected_rc=0)
 
         # Expected hashes are always the same as session variables come from the BaseAwsCommandParamsTest class
-        expected = ('test.dsql.us-east-1.on.aws/?'
-                    'Action=DbConnectAdmin&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential='
-                    'access_key%2F20241107%2Fus-east-1%2Fdsql%2Faws4_request'
-                    '&X-Amz-Date=20241107T173933Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&'
-                    'X-Amz-Signature=a08adc4c84a490014ce374b90c98ba9ed015b77b451c0d9f9fb3f8ca8c6f9c36')
+        expected = (
+            'test.dsql.us-east-1.on.aws/?'
+            'Action=DbConnectAdmin&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential='
+            'access_key%2F20241107%2Fus-east-1%2Fdsql%2Faws4_request'
+            '&X-Amz-Date=20241107T173933Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&'
+            'X-Amz-Signature=a08adc4c84a490014ce374b90c98ba9ed015b77b451c0d9f9fb3f8ca8c6f9c36'
+        )
 
         # A scheme needs to be appended to the beginning or urlsplit may fail
         # on certain systems.
         self.assert_url_equal(
-            'https://' + stdout.strip('\n'), 'https://' + expected)
+            'https://' + stdout.strip('\n'), 'https://' + expected
+        )

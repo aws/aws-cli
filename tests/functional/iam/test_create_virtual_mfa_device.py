@@ -17,7 +17,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
-
     prefix = 'iam create-virtual-mfa-device'
 
     def setUp(self):
@@ -25,12 +24,13 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         self.parsed_response = {
             'ResponseMetadata': {
                 'HTTPStatusCode': 200,
-                'RequestId': 'requset-id'
+                'RequestId': 'requset-id',
             },
             "VirtualMFADevice": {
                 "Base32StringSeed": (
                     "VFpYTVc2V1lIUFlFRFczSVhLUlpRUTJRVFdUSFRNRDNTQ0c3"
-                    "TkZDUVdQWDVETlNWM0IyUENaQVpWTEpQTlBOTA=="),
+                    "TkZDUVdQWDVETlNWM0IyUENaQVpWTEpQTlBOTA=="
+                ),
                 "SerialNumber": "arn:aws:iam::419278470775:mfa/fiebaz",
                 "QRCodePNG": (
                     "iVBORw0KGgoAAAANSUhEUgAAAPoAAAD6CAIAAAAHjs1qAAAFi"
@@ -75,12 +75,13 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
                     "R3EVwF8FdBHcR3EVwF8Fd5F/+AgASajf850wfAAAAAElFTkSu"
                     "QmCC"
                 ),
-            }
+            },
         }
 
     def getpath(self, filename):
-        return os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                            filename)
+        return os.path.join(
+            os.path.abspath(os.path.dirname(__file__)), filename
+        )
 
     def remove_file_if_exists(self, filename):
         if os.path.isfile(filename):
@@ -92,7 +93,8 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += ' --virtual-mfa-device-name fiebaz'
         cmdline += (
-            ' --outfile %s --bootstrap-method Base32StringSeed' % outfile)
+            ' --outfile %s --bootstrap-method Base32StringSeed' % outfile
+        )
         result = {"VirtualMFADeviceName": 'fiebaz'}
         self.assert_params_for_cmd(cmdline, result)
         self.assertTrue(os.path.exists(outfile))
@@ -146,7 +148,8 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
             },
             'ResponseMetadata': {
                 'HTTPStatusCode': 409,
-                'RequestId': 'requset-id'}
+                'RequestId': 'requset-id',
+            },
         }
         self.http_response.status_code = 409
         cmdline = self.prefix
@@ -156,4 +159,5 @@ class TestCreateVirtualMFADevice(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             cmdline,
             stderr_contains=self.parsed_response['Error']['Message'],
-            expected_rc=254)
+            expected_rc=254,
+        )

@@ -16,7 +16,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestAddPermission(BaseAWSCommandParamsTest):
-
     prefix = 'sqs add-permission'
     queue_url = 'https://queue.amazonaws.com/4444/testcli'
 
@@ -26,10 +25,12 @@ class TestAddPermission(BaseAWSCommandParamsTest):
         cmdline += ' --aws-account-ids 888888888888'
         cmdline += ' --actions SendMessage'
         cmdline += ' --label FooBarLabel'
-        result = {'QueueUrl': self.queue_url,
-                  'Actions': ['SendMessage'],
-                  'AWSAccountIds': ['888888888888'],
-                  'Label': 'FooBarLabel'}
+        result = {
+            'QueueUrl': self.queue_url,
+            'Actions': ['SendMessage'],
+            'AWSAccountIds': ['888888888888'],
+            'Label': 'FooBarLabel',
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_multiple_accounts(self):
@@ -38,10 +39,12 @@ class TestAddPermission(BaseAWSCommandParamsTest):
         cmdline += ' --aws-account-ids 888888888888 999999999999'
         cmdline += ' --actions SendMessage'
         cmdline += ' --label FooBarLabel'
-        result = {'QueueUrl': self.queue_url,
-                  'Actions': ['SendMessage'],
-                  'AWSAccountIds': ['888888888888', '999999999999'],
-                  'Label': 'FooBarLabel'}
+        result = {
+            'QueueUrl': self.queue_url,
+            'Actions': ['SendMessage'],
+            'AWSAccountIds': ['888888888888', '999999999999'],
+            'Label': 'FooBarLabel',
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_multiple_actions(self):
@@ -50,10 +53,12 @@ class TestAddPermission(BaseAWSCommandParamsTest):
         cmdline += ' --aws-account-ids 888888888888'
         cmdline += ' --actions SendMessage ReceiveMessage'
         cmdline += ' --label FooBarLabel'
-        result = {'QueueUrl': self.queue_url,
-                  'Actions': ['SendMessage', 'ReceiveMessage'],
-                  'AWSAccountIds': ['888888888888'],
-                  'Label': 'FooBarLabel'}
+        result = {
+            'QueueUrl': self.queue_url,
+            'Actions': ['SendMessage', 'ReceiveMessage'],
+            'AWSAccountIds': ['888888888888'],
+            'Label': 'FooBarLabel',
+        }
         self.assert_params_for_cmd(cmdline, result)
 
 

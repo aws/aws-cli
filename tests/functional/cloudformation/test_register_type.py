@@ -14,7 +14,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestRegisterType(BaseAWSCommandParamsTest):
-
     prefix = 'cloudformation register-type'
 
     def test_schema_handler_package_during_register_url(self):
@@ -23,6 +22,6 @@ class TestRegisterType(BaseAWSCommandParamsTest):
         cmdline += '--schema-handler-package s3://bucket-name/my-organization-resource_name.zip'
         result = {
             'TypeName': 'test-type-name',
-            'SchemaHandlerPackage': 's3://bucket-name/my-organization-resource_name.zip'
+            'SchemaHandlerPackage': 's3://bucket-name/my-organization-resource_name.zip',
         }
         self.assert_params_for_cmd(cmdline, result)

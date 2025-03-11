@@ -39,22 +39,25 @@ class TestListRunsFormatter(unittest.TestCase):
             [],
             "       Name                                                Scheduled Start      Status                 \n"  # noqa
             "       ID                                                  Started              Ended              \n"  # noqa
-            "---------------------------------------------------------------------------------------------------\n")  # noqa
+            "---------------------------------------------------------------------------------------------------\n",
+        )  # noqa
 
     def test_single_row(self):
         self.assert_data_renders_to(
-            [{
-                 '@componentParent': 'parent',
-                 '@id': 'id',
-                 '@scheduledStartTime': 'now',
-                 '@status': 'status',
-                 '@actualStartTime': 'actualStartTime',
-                 '@actualEndTime': 'actualEndTime',
-             }],
+            [
+                {
+                    '@componentParent': 'parent',
+                    '@id': 'id',
+                    '@scheduledStartTime': 'now',
+                    '@status': 'status',
+                    '@actualStartTime': 'actualStartTime',
+                    '@actualEndTime': 'actualEndTime',
+                }
+            ],
             "       Name                                                Scheduled Start      Status                 \n"  # noqa
             "       ID                                                  Started              Ended              \n"  # noqa
             "---------------------------------------------------------------------------------------------------\n"  # noqa
             "   1.  parent                                              now                  status                 \n"  # noqa
             "       id                                                  actualStartTime      actualEndTime      \n"  # noqa
-            "\n"
+            "\n",
         )

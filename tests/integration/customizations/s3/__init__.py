@@ -16,9 +16,9 @@ import pytest
 @pytest.mark.usefixtures('clean_shared_buckets')
 class BaseS3IntegrationTest:
     def assert_no_errors(self, p):
-        assert p.rc == 0, (
-            f'Non zero rc ({p.rc}) received: {p.stdout + p.stderr}'
-        )
+        assert (
+            p.rc == 0
+        ), f'Non zero rc ({p.rc}) received: {p.stdout + p.stderr}'
         assert 'Error:' not in p.stderr
         assert 'failed:' not in p.stderr
         assert 'client error' not in p.stderr

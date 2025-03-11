@@ -32,7 +32,11 @@ class BaseTokenTest(unittest.TestCase):
 
 
 class TestTokenGenerator(BaseTokenTest):
-    @mock.patch.object(TokenGenerator, '_get_presigned_url', return_value='aHR0cHM6Ly9zdHMuYW1hem9uYXdzLmNvbS8=')
+    @mock.patch.object(
+        TokenGenerator,
+        '_get_presigned_url',
+        return_value='aHR0cHM6Ly9zdHMuYW1hem9uYXdzLmNvbS8=',
+    )
     def test_token_no_padding(self, mock_presigned_url):
         generator = TokenGenerator(self._sts_client)
         tok = generator.get_token(self._cluster_name)
@@ -46,4 +50,6 @@ class TestGetTokenCommand(BaseTokenTest):
         try:
             datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%SZ')
         except ValueError:
-            raise ValueError("Incorrect data format, should be %Y-%m-%dT%H:%M:%SZ")
+            raise ValueError(
+                "Incorrect data format, should be %Y-%m-%dT%H:%M:%SZ"
+            )

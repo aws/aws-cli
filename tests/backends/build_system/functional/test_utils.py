@@ -72,9 +72,15 @@ def utils():
             Requirement("jmespath", ">=0.7.1", "<1.1.0"),
         ),
         ("urllib3>=1.25.4,<1.27", Requirement("urllib3", ">=1.25.4", "<1.27")),
-        (["urllib3>=1.\\\\", "25.4,<1.27"], Requirement("urllib3", ">=1.25.4", "<1.27")),
+        (
+            ["urllib3>=1.\\\\", "25.4,<1.27"],
+            Requirement("urllib3", ">=1.25.4", "<1.27"),
+        ),
         ("#urllib3>=1.25.4,<1.27", None),
-        ("urllib3>=1.25.4,<1.27 #foobarbaz", Requirement("urllib3", ">=1.25.4", "<1.27")),
+        (
+            "urllib3>=1.25.4,<1.27 #foobarbaz",
+            Requirement("urllib3", ">=1.25.4", "<1.27"),
+        ),
         ("urllib3>=1.25.4,<1.27 ; python_version == 3.6", ParseError),
     ],
 )
@@ -251,14 +257,19 @@ class TestUtils:
 
 @pytest.fixture
 def unmet_error(request):
-    error = UnmetDependenciesException([
-        ('colorama', '1.0', Requirement('colorama', '>=2.0', '<3.0')),
-    ], **request.param)
+    error = UnmetDependenciesException(
+        [
+            ('colorama', '1.0', Requirement('colorama', '>=2.0', '<3.0')),
+        ],
+        **request.param,
+    )
     return str(error)
 
 
 class TestUnmetDependencies:
-    @pytest.mark.parametrize('unmet_error', [{'in_venv': False}], indirect=True)
+    @pytest.mark.parametrize(
+        'unmet_error', [{'in_venv': False}], indirect=True
+    )
     def test_in_error_message(self, unmet_error):
         assert (
             "colorama (required: ('>=2.0', '<3.0')) (version installed: 1.0)"
@@ -267,7 +278,9 @@ class TestUnmetDependencies:
             f"{sys.executable} -m pip install --prefer-binary 'colorama>=2.0,<3.0'"
         ) in unmet_error
 
-    @pytest.mark.parametrize('unmet_error', [{'in_venv': False}], indirect=True)
+    @pytest.mark.parametrize(
+        'unmet_error', [{'in_venv': False}], indirect=True
+    )
     def test_not_in_venv(self, unmet_error):
         assert 'We noticed you are not in a virtualenv.' in unmet_error
 

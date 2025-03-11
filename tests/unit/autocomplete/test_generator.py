@@ -17,7 +17,6 @@ from awscli.testutils import mock, unittest
 
 
 class TestGenerateCompletionIndex(unittest.TestCase):
-
     def test_use_high_level_generator_for_index_creation(self):
         model_index = mock.Mock(spec=indexer.ModelIndexer)
         clidriver = mock.Mock(spec=CLIDriver)

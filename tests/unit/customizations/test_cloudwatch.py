@@ -18,61 +18,75 @@ from awscli.testutils import unittest
 
 class TestPutMetricArgument(unittest.TestCase):
     def test_build_metric_name_arg(self):
-        arg = putmetricdata.PutMetricArgument('metric-name',
-                                              help_text='metric-name')
+        arg = putmetricdata.PutMetricArgument(
+            'metric-name', help_text='metric-name'
+        )
         parameters = {}
         arg.add_to_params(parameters, 'MyMetricName')
-        self.assertEqual(parameters['MetricData'][0]['MetricName'],
-                         'MyMetricName')
+        self.assertEqual(
+            parameters['MetricData'][0]['MetricName'], 'MyMetricName'
+        )
 
     def test_build_unit_arg(self):
-        arg = putmetricdata.PutMetricArgument('unit',
-                                              help_text='unit')
+        arg = putmetricdata.PutMetricArgument('unit', help_text='unit')
         parameters = {}
         arg.add_to_params(parameters, 'Percent')
-        self.assertEqual(parameters['MetricData'][0]['Unit'],
-                         'Percent')
+        self.assertEqual(parameters['MetricData'][0]['Unit'], 'Percent')
 
     def test_value_arg(self):
-        arg = putmetricdata.PutMetricArgument('value',
-                                              help_text='value')
+        arg = putmetricdata.PutMetricArgument('value', help_text='value')
         parameters = {}
         arg.add_to_params(parameters, '123.1')
-        self.assertEqual(parameters['MetricData'][0]['Value'],
-                         decimal.Decimal('123.1'))
+        self.assertEqual(
+            parameters['MetricData'][0]['Value'], decimal.Decimal('123.1')
+        )
 
     def test_timestamp_arg(self):
-        arg = putmetricdata.PutMetricArgument('timestamp',
-                                              help_text='timestamp')
+        arg = putmetricdata.PutMetricArgument(
+            'timestamp', help_text='timestamp'
+        )
         parameters = {}
         arg.add_to_params(parameters, '2013-09-01')
-        self.assertEqual(parameters['MetricData'][0]['Timestamp'],
-                         '2013-09-01')
+        self.assertEqual(
+            parameters['MetricData'][0]['Timestamp'], '2013-09-01'
+        )
 
     def test_dimensions_arg(self):
-        arg = putmetricdata.PutMetricArgument('dimensions',
-                                              help_text='dimensions')
+        arg = putmetricdata.PutMetricArgument(
+            'dimensions', help_text='dimensions'
+        )
         parameters = {}
         arg.add_to_params(parameters, 'User=someuser,Stack=test')
-        self.assertEqual(parameters['MetricData'][0]['Dimensions'],
-                         [{"Name": "User", "Value": "someuser"},
-                          {"Name": "Stack", "Value": "test"}])
+        self.assertEqual(
+            parameters['MetricData'][0]['Dimensions'],
+            [
+                {"Name": "User", "Value": "someuser"},
+                {"Name": "Stack", "Value": "test"},
+            ],
+        )
 
     def test_statistics_arg(self):
-        arg = putmetricdata.PutMetricArgument('statistic-values',
-                                              help_text='statistic-values')
+        arg = putmetricdata.PutMetricArgument(
+            'statistic-values', help_text='statistic-values'
+        )
         parameters = {}
-        arg.add_to_params(parameters,
-                          'Sum=250,Minimum=30,Maximum=70,SampleCount=5')
-        self.assertEqual(parameters['MetricData'][0]['StatisticValues'],
-                         {'Maximum': decimal.Decimal('70'),
-                          'Minimum': decimal.Decimal('30'),
-                          'SampleCount': decimal.Decimal('5'),
-                          'Sum': decimal.Decimal('250')})
+        arg.add_to_params(
+            parameters, 'Sum=250,Minimum=30,Maximum=70,SampleCount=5'
+        )
+        self.assertEqual(
+            parameters['MetricData'][0]['StatisticValues'],
+            {
+                'Maximum': decimal.Decimal('70'),
+                'Minimum': decimal.Decimal('30'),
+                'SampleCount': decimal.Decimal('5'),
+                'Sum': decimal.Decimal('250'),
+            },
+        )
 
     def test_parse_empty_value(self):
-        arg = putmetricdata.PutMetricArgument('dimensions',
-                                              help_text='dimensions')
+        arg = putmetricdata.PutMetricArgument(
+            'dimensions', help_text='dimensions'
+        )
         parameters = {}
         arg.add_to_params(parameters, None)
         self.assertEqual(parameters, {})

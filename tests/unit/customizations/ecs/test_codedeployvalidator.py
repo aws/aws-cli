@@ -29,14 +29,14 @@ class TestCodeDeployValidator(unittest.TestCase):
         'cluster': 'test-cluster',
         'cluster_arn': 'arn:aws:ecs:::cluster/test-cluster',
         'app_name': 'test-application',
-        'deployment_group_name': 'test-deployment-group'
+        'deployment_group_name': 'test-deployment-group',
     }
 
     TEST_APP_DETAILS = {
         'application': {
             'applicationId': '876uyh6-45tdfg',
             'applicationName': 'test-application',
-            'computePlatform': 'ECS'
+            'computePlatform': 'ECS',
         }
     }
 
@@ -46,25 +46,23 @@ class TestCodeDeployValidator(unittest.TestCase):
             'deploymentGroupName': 'test-deployment-group',
             'computePlatform': 'ECS',
             'blueGreenDeploymentConfiguration': {
-                'deploymentReadyOption': {
-                    'waitTimeInMinutes': 5
-                },
+                'deploymentReadyOption': {'waitTimeInMinutes': 5},
                 'terminateBlueInstancesOnDeploymentSuccess': {
                     'terminationWaitTimeInMinutes': 10
-                }
+                },
             },
-            'ecsServices': [{
-                'serviceName': 'test-service',
-                'clusterName': 'test-cluster'
-            }]
+            'ecsServices': [
+                {'serviceName': 'test-service', 'clusterName': 'test-cluster'}
+            ],
         }
     }
 
     def setUp(self):
         self.validator = CodeDeployValidator(None, self.TEST_RESOURCES)
         self.validator.app_details = self.TEST_APP_DETAILS
-        self.validator.deployment_group_details = \
+        self.validator.deployment_group_details = (
             self.TEST_DEPLOYMENT_GROUP_DETAILS
+        )
 
     def test_get_deployment_wait_time(self):
         expected_wait = 5 + 10 + TIMEOUT_BUFFER_MIN
@@ -85,7 +83,7 @@ class TestCodeDeployValidator(unittest.TestCase):
         invalid_app = {
             'application': {
                 'applicationName': 'test-application',
-                'computePlatform': 'Server'
+                'computePlatform': 'Server',
             }
         }
 
@@ -96,11 +94,7 @@ class TestCodeDeployValidator(unittest.TestCase):
             bad_validator.validate_application()
 
     def test_validate_deployment_group_error_compute_platform(self):
-        invalid_dgp = {
-            'deploymentGroupInfo': {
-                'computePlatform': 'Lambda'
-            }
-        }
+        invalid_dgp = {'deploymentGroupInfo': {'computePlatform': 'Lambda'}}
         bad_validator = CodeDeployValidator(None, self.TEST_RESOURCES)
         bad_validator.deployment_group_details = invalid_dgp
 
@@ -111,10 +105,12 @@ class TestCodeDeployValidator(unittest.TestCase):
         invalid_dgp = {
             'deploymentGroupInfo': {
                 'computePlatform': 'ECS',
-                'ecsServices': [{
-                    'serviceName': 'the-wrong-test-service',
-                    'clusterName': 'test-cluster'
-                }]
+                'ecsServices': [
+                    {
+                        'serviceName': 'the-wrong-test-service',
+                        'clusterName': 'test-cluster',
+                    }
+                ],
             }
         }
         bad_validator = CodeDeployValidator(None, self.TEST_RESOURCES)
@@ -127,10 +123,12 @@ class TestCodeDeployValidator(unittest.TestCase):
         invalid_dgp = {
             'deploymentGroupInfo': {
                 'computePlatform': 'ECS',
-                'ecsServices': [{
-                    'serviceName': 'test-service',
-                    'clusterName': 'the-wrong-test-cluster'
-                }]
+                'ecsServices': [
+                    {
+                        'serviceName': 'test-service',
+                        'clusterName': 'the-wrong-test-cluster',
+                    }
+                ],
             }
         }
         bad_validator = CodeDeployValidator(None, self.TEST_RESOURCES)

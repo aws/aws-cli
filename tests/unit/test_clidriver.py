@@ -54,32 +54,15 @@ GET_DATA = {
         'description': 'description',
         'synopsis': 'usage: foo',
         'options': {
-            "debug": {
-                "action": "store_true",
-                "help": "Turn on debug logging"
-            },
+            "debug": {"action": "store_true", "help": "Turn on debug logging"},
             "output": {
-                "choices": [
-                    "json",
-                    "text",
-                    "table"
-                ],
-                "metavar": "output_format"
+                "choices": ["json", "text", "table"],
+                "metavar": "output_format",
             },
-            "query": {
-                "help": ""
-            },
-            "profile": {
-                "help": "",
-                "metavar": "profile_name"
-            },
-            "region": {
-                "metavar": "region_name"
-            },
-            "endpoint-url": {
-                "help": "",
-                "metavar": "endpoint_url"
-            },
+            "query": {"help": ""},
+            "profile": {"help": "", "metavar": "profile_name"},
+            "region": {"metavar": "region_name"},
+            "endpoint-url": {"help": "", "metavar": "endpoint_url"},
             "no-verify-ssl": {
                 "action": "store_false",
                 "dest": "verify_ssl",
@@ -88,21 +71,15 @@ GET_DATA = {
             "no-paginate": {
                 "action": "store_false",
                 "help": "",
-                "dest": "paginate"
+                "dest": "paginate",
             },
             "page-size": {
                 "type": "int",
                 "help": "",
             },
-            "read-timeout": {
-                "type": "int",
-                "help": ""
-            },
-            "connect-timeout": {
-                "type": "int",
-                "help": ""
-            }
-        }
+            "read-timeout": {"type": "int", "help": ""},
+            "connect-timeout": {"type": "int", "help": ""},
+        },
     },
 }
 
@@ -110,91 +87,93 @@ GET_VARIABLE = {
     'provider': 'aws',
     'output': 'json',
     'api_versions': {},
-    'pager': 'less'
+    'pager': 'less',
 }
 
 
 MINI_SERVICE = {
-  "metadata":{
-    "apiVersion":"2006-03-01",
-    "endpointPrefix":"s3",
-    "globalEndpoint":"s3.amazonaws.com",
-    "signatureVersion":"s3",
-    "protocol":"rest-xml"
-  },
-  "operations":{
-    "ListObjects":{
-      "name":"ListObjects",
-      "http":{
-        "method":"GET",
-        "requestUri":"/{Bucket}"
-      },
-      "input":{"shape":"ListObjectsRequest"},
-      "output":{"shape":"ListObjectsOutput"},
+    "metadata": {
+        "apiVersion": "2006-03-01",
+        "endpointPrefix": "s3",
+        "globalEndpoint": "s3.amazonaws.com",
+        "signatureVersion": "s3",
+        "protocol": "rest-xml",
     },
-    "IdempotentOperation":{
-      "name":"IdempotentOperation",
-      "http":{
-        "method":"GET",
-        "requestUri":"/{Bucket}"
-      },
-      "input":{"shape":"IdempotentOperationRequest"},
-      "output":{"shape":"ListObjectsOutput"},
-    },
-  },
-  "shapes":{
-    "ListObjectsOutput":{
-      "type":"structure",
-      "members":{
-        "IsTruncated":{
-          "shape":"IsTruncated",
-          "documentation":""
+    "operations": {
+        "ListObjects": {
+            "name": "ListObjects",
+            "http": {"method": "GET", "requestUri": "/{Bucket}"},
+            "input": {"shape": "ListObjectsRequest"},
+            "output": {"shape": "ListObjectsOutput"},
         },
-        "NextMarker":{
-          "shape":"NextMarker",
+        "IdempotentOperation": {
+            "name": "IdempotentOperation",
+            "http": {"method": "GET", "requestUri": "/{Bucket}"},
+            "input": {"shape": "IdempotentOperationRequest"},
+            "output": {"shape": "ListObjectsOutput"},
         },
-        "Contents":{"shape":"Contents"},
-      },
     },
-    "IdempotentOperationRequest":{
-      "type":"structure",
-      "required": "token",
-      "members":{
-        "token":{
-          "shape":"Token",
-          "idempotencyToken": True,
+    "shapes": {
+        "ListObjectsOutput": {
+            "type": "structure",
+            "members": {
+                "IsTruncated": {"shape": "IsTruncated", "documentation": ""},
+                "NextMarker": {
+                    "shape": "NextMarker",
+                },
+                "Contents": {"shape": "Contents"},
+            },
         },
-      }
+        "IdempotentOperationRequest": {
+            "type": "structure",
+            "required": "token",
+            "members": {
+                "token": {
+                    "shape": "Token",
+                    "idempotencyToken": True,
+                },
+            },
+        },
+        "ListObjectsRequest": {
+            "type": "structure",
+            "required": ["Bucket"],
+            "members": OrderedDict(
+                [
+                    (
+                        "Bucket",
+                        {
+                            "shape": "BucketName",
+                            "location": "uri",
+                            "locationName": "Bucket",
+                        },
+                    ),
+                    (
+                        "Marker",
+                        {
+                            "shape": "Marker",
+                            "location": "querystring",
+                            "locationName": "marker",
+                        },
+                    ),
+                    (
+                        "MaxKeys",
+                        {
+                            "shape": "MaxKeys",
+                            "location": "querystring",
+                            "locationName": "max-keys",
+                        },
+                    ),
+                ]
+            ),
+        },
+        "BucketName": {"type": "string"},
+        "MaxKeys": {"type": "integer"},
+        "Marker": {"type": "string"},
+        "IsTruncated": {"type": "boolean"},
+        "NextMarker": {"type": "string"},
+        "Contents": {"type": "string"},
+        "Token": {"type": "string"},
     },
-    "ListObjectsRequest":{
-      "type":"structure",
-      "required":["Bucket"],
-      "members":  OrderedDict([
-        ("Bucket", {
-          "shape":"BucketName",
-          "location":"uri",
-          "locationName":"Bucket"
-        }),
-        ("Marker", {
-          "shape":"Marker",
-          "location":"querystring",
-          "locationName":"marker",
-        }),
-        ("MaxKeys", {
-          "shape":"MaxKeys",
-          "location":"querystring",
-          "locationName":"max-keys",
-        }),
-      ]),
-    },
-    "BucketName":{"type":"string"},
-    "MaxKeys":{"type":"integer"},
-    "Marker":{"type":"string"},
-    "IsTruncated":{"type":"boolean"},
-    "NextMarker":{"type":"string"},
-    "Contents":{"type":"string"},
-    "Token":{"type":"string"},
-  }
 }
 
 
@@ -255,8 +234,7 @@ class FakeSession:
         return self.session_vars[name]
 
     def get_service_model(self, name, api_version=None):
-        return botocore.model.ServiceModel(
-            MINI_SERVICE, service_name='s3')
+        return botocore.model.ServiceModel(MINI_SERVICE, service_name='s3')
 
     def user_agent(self):
         return 'user_agent'
@@ -350,10 +328,13 @@ class TestCliDriver:
         assert rc == 255
         assert stderr_b.getvalue().strip() == "☃".encode()
 
-    @pytest.mark.parametrize('env_vars', [
-        {'AWS_CLI_OUTPUT_ENCODING': 'UTF-8'},
-        {'PYTHONUTF8': '1'},
-    ])
+    @pytest.mark.parametrize(
+        'env_vars',
+        [
+            {'AWS_CLI_OUTPUT_ENCODING': 'UTF-8'},
+            {'PYTHONUTF8': '1'},
+        ],
+    )
     def test_error_unicode_env_override(self, env_vars):
         stderr_b = io.BytesIO()
         stderr = io.TextIOWrapper(stderr_b, encoding="cp1252")
@@ -371,13 +352,17 @@ class TestCliDriver:
     def test_invalid_output_encoding_throws(self):
         stderr_b = io.BytesIO()
         fake_stderr = io.TextIOWrapper(stderr_b)
-        with mock.patch.dict(os.environ, {'AWS_CLI_OUTPUT_ENCODING': 'invalid'}):
+        with mock.patch.dict(
+            os.environ, {'AWS_CLI_OUTPUT_ENCODING': 'invalid'}
+        ):
             with contextlib.redirect_stderr(fake_stderr):
                 rc = self.driver.main('s3 list-objects --bucket foo'.split())
         assert rc == 255
         fake_stderr.flush()
-        assert stderr_b.getvalue().decode().strip() == \
-            'Unknown codec `invalid` specified for AWS_CLI_OUTPUT_ENCODING.'
+        assert (
+            stderr_b.getvalue().decode().strip()
+            == 'Unknown codec `invalid` specified for AWS_CLI_OUTPUT_ENCODING.'
+        )
 
     def test_can_access_subcommand_table(self):
         table = self.driver.subcommand_table
@@ -408,7 +393,8 @@ class TestCliDriver:
     def test_debug_enables_crt_logging(self, mock_init_logging):
         with contextlib.redirect_stderr(io.StringIO()):
             self.driver.main(
-                ['s3', 'list-objects', '--bucket', 'foo', '--debug'])
+                ['s3', 'list-objects', '--bucket', 'foo', '--debug']
+            )
         mock_init_logging.assert_called_with(
             awscrt.io.LogLevel.Debug, 'stderr'
         )
@@ -431,12 +417,12 @@ class TestCliDriverHooks(unittest.TestCase):
         self.stdout = StringIO()
         self.stderr = StringIO()
         self.stdout_patch = mock.patch('sys.stdout', self.stdout)
-        #self.stdout_patch.start()
+        # self.stdout_patch.start()
         self.stderr_patch = mock.patch('sys.stderr', self.stderr)
         self.stderr_patch.start()
 
     def tearDown(self):
-        #self.stdout_patch.stop()
+        # self.stdout_patch.stop()
         self.stderr_patch.stop()
 
     def assert_events_fired_in_order(self, events):
@@ -453,23 +439,25 @@ class TestCliDriverHooks(unittest.TestCase):
         self.session.emitter = self.emitter
         driver = CLIDriver(session=self.session)
         driver.main('s3 list-objects --bucket foo'.split())
-        self.assert_events_fired_in_order([
-            # Events fired while parser is being created.
-            'building-command-table.main',
-            'building-top-level-params',
-            'top-level-args-parsed',
-            'session-initialized',
-            'building-command-table.s3',
-            'building-argument-table.s3.list-objects',
-            'before-building-argument-table-parser.s3.list-objects',
-            'building-command-table.s3_list-objects',
-            'operation-args-parsed.s3.list-objects',
-            'load-cli-arg.s3.list-objects.bucket',
-            'process-cli-arg.s3.list-objects',
-            'load-cli-arg.s3.list-objects.marker',
-            'load-cli-arg.s3.list-objects.max-keys',
-            'calling-command.s3.list-objects'
-        ])
+        self.assert_events_fired_in_order(
+            [
+                # Events fired while parser is being created.
+                'building-command-table.main',
+                'building-top-level-params',
+                'top-level-args-parsed',
+                'session-initialized',
+                'building-command-table.s3',
+                'building-argument-table.s3.list-objects',
+                'before-building-argument-table-parser.s3.list-objects',
+                'building-command-table.s3_list-objects',
+                'operation-args-parsed.s3.list-objects',
+                'load-cli-arg.s3.list-objects.bucket',
+                'process-cli-arg.s3.list-objects',
+                'load-cli-arg.s3.list-objects.marker',
+                'load-cli-arg.s3.list-objects.max-keys',
+                'calling-command.s3.list-objects',
+            ]
+        )
 
     def test_create_help_command(self):
         # When we generate the HTML docs, we don't actually run
@@ -484,17 +472,19 @@ class TestCliDriverHooks(unittest.TestCase):
         main_hc = driver.create_help_command()
         command = main_hc.command_table['s3']
         command.create_help_command()
-        self.assert_events_fired_in_order([
-            # Events fired while parser is being created.
-            'building-command-table.main',
-            'building-top-level-params',
-            'building-command-table.s3',
-        ])
+        self.assert_events_fired_in_order(
+            [
+                # Events fired while parser is being created.
+                'building-command-table.main',
+                'building-top-level-params',
+                'building-command-table.s3',
+            ]
+        )
 
     def test_unknown_command_suggests_help(self):
         driver = CLIDriver(
             session=self.session,
-            error_handler=construct_cli_error_handlers_chain()
+            error_handler=construct_cli_error_handlers_chain(),
         )
 
         # Note the typo in 'list-objects'
@@ -505,7 +495,9 @@ class TestCliDriverHooks(unittest.TestCase):
         # Tell the user what went wrong.
         self.assertIn("Invalid choice: 'list-objecst'", self.stderr.getvalue())
         # Offer the user a suggestion.
-        self.assertIn("maybe you meant:\n\n  * list-objects", self.stderr.getvalue())
+        self.assertIn(
+            "maybe you meant:\n\n  * list-objects", self.stderr.getvalue()
+        )
 
 
 class TestSearchPath(unittest.TestCase):
@@ -514,8 +506,7 @@ class TestSearchPath(unittest.TestCase):
     def test_windows_style_search_path(self):
         driver = CLIDriver()
         # Our two overrides should be the last two elements in the search path.
-        search_paths = driver.session.get_component(
-            'data_loader').search_paths
+        search_paths = driver.session.get_component('data_loader').search_paths
         self.assertIn('c:\\foo', search_paths)
         self.assertIn('c:\\bar', search_paths)
 
@@ -540,9 +531,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
     def inject_command(self, command_table, session, **kwargs):
         command = FakeCommand(session)
         command.NAME = 'foo'
-        command.ARG_TABLE = [
-            {'name': 'bar', 'action': 'store'}
-        ]
+        command.ARG_TABLE = [{'name': 'bar', 'action': 'store'}]
         command_table['foo'] = command
 
     def inject_command_schema(self, command_table, session, **kwargs):
@@ -555,20 +544,13 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             "items": {
                 "type": "object",
                 "properties": {
-                    "Name": {
-                        "type": "string",
-                        "required": True
-                    },
-                    "Count": {
-                        "type": "integer"
-                    }
-                }
-            }
+                    "Name": {"type": "string", "required": True},
+                    "Count": {"type": "integer"},
+                },
+            },
         }
 
-        command.ARG_TABLE = [
-            {'name': 'bar', 'schema': schema}
-        ]
+        command.ARG_TABLE = [{'name': 'bar', 'schema': schema}]
 
         command_table['foo'] = command
 
@@ -586,10 +568,12 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         # So, for this test we need to create a new driver object.
         driver = create_clidriver()
         driver.session.register(
-            'building-top-level-params', self.inject_new_param)
+            'building-top-level-params', self.inject_new_param
+        )
         driver.session.register(
             'top-level-args-parsed',
-            lambda parsed_args, **kwargs: args_seen.append(parsed_args))
+            lambda parsed_args, **kwargs: args_seen.append(parsed_args),
+        )
 
         args_seen = []
 
@@ -601,8 +585,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(len(args_seen), 1)
         self.assertEqual(args_seen[0].unknown_arg, 'foo')
 
-    @mock.patch('awscli.paramfile.URIArgumentHandler',
-                spec=URIArgumentHandler)
+    @mock.patch('awscli.paramfile.URIArgumentHandler', spec=URIArgumentHandler)
     def test_custom_arg_paramfile(self, mock_handler):
         mock_paramfile = mock.Mock(autospec=True)
         mock_paramfile.return_value = None
@@ -610,11 +593,13 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
         driver = create_clidriver()
         driver.session.register(
-            'building-argument-table', self.inject_new_param)
+            'building-argument-table', self.inject_new_param
+        )
 
         self.patch_make_request()
         rc = driver.main(
-            'ec2 describe-instances --unknown-arg file:///foo'.split())
+            'ec2 describe-instances --unknown-arg file:///foo'.split()
+        )
 
         self.assertEqual(rc, 0)
 
@@ -628,23 +613,20 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         )
         # Make sure it was called with our passed-in URI
         self.assertEqual(
-            'file:///foo',
-            mock_paramfile.call_args_list[-1][1]['value'])
+            'file:///foo', mock_paramfile.call_args_list[-1][1]['value']
+        )
 
-    @mock.patch('awscli.paramfile.URIArgumentHandler',
-                spec=URIArgumentHandler)
+    @mock.patch('awscli.paramfile.URIArgumentHandler', spec=URIArgumentHandler)
     def test_custom_command_paramfile(self, mock_handler):
         mock_paramfile = mock.Mock(autospec=True)
         mock_paramfile.return_value = None
         mock_handler.return_value = mock_paramfile
 
         driver = create_clidriver()
-        driver.session.register(
-            'building-command-table', self.inject_command)
+        driver.session.register('building-command-table', self.inject_command)
 
         self.patch_make_request()
-        rc = driver.main(
-            'ec2 foo --bar file:///foo'.split())
+        rc = driver.main('ec2 foo --bar file:///foo'.split())
 
         self.assertEqual(rc, 0)
 
@@ -659,43 +641,40 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
     def test_custom_command_schema(self):
         driver = create_clidriver()
         driver.session.register(
-            'building-command-table', self.inject_command_schema)
+            'building-command-table', self.inject_command_schema
+        )
 
         self.patch_make_request()
 
         # Test single shorthand item
-        rc = driver.main(
-            'ec2 foo --bar Name=test,Count=4'.split())
+        rc = driver.main('ec2 foo --bar Name=test,Count=4'.split())
 
         self.assertEqual(rc, 0)
 
         # Test shorthand list of items with optional values
         rc = driver.main(
-            'ec2 foo --bar Name=test,Count=4 Name=another'.split())
+            'ec2 foo --bar Name=test,Count=4 Name=another'.split()
+        )
 
         self.assertEqual(rc, 0)
 
         # Test missing require shorthand item
-        rc = driver.main(
-            'ec2 foo --bar Count=4'.split())
+        rc = driver.main('ec2 foo --bar Count=4'.split())
 
         self.assertEqual(rc, 252)
 
         # Test extra unknown shorthand item
-        rc = driver.main(
-            'ec2 foo --bar Name=test,Unknown='.split())
+        rc = driver.main('ec2 foo --bar Name=test,Unknown='.split())
 
         self.assertEqual(rc, 252)
 
         # Test long form JSON
-        rc = driver.main(
-            'ec2 foo --bar {"Name":"test","Count":4}'.split())
+        rc = driver.main('ec2 foo --bar {"Name":"test","Count":4}'.split())
 
         self.assertEqual(rc, 0)
 
         # Test malformed long form JSON
-        rc = driver.main(
-            'ec2 foo --bar {"Name":"test",Count:4}'.split())
+        rc = driver.main('ec2 foo --bar {"Name":"test",Count:4}'.split())
 
         self.assertEqual(rc, 252)
 
@@ -703,33 +682,42 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         # Simulates the equivalent in bash: --identifies ""
         cmd = 'ses get-identity-dkim-attributes --identities'.split()
         cmd.append('')
-        self.assert_params_for_cmd(cmd,expected_rc=0)
+        self.assert_params_for_cmd(cmd, expected_rc=0)
 
     def test_file_param_does_not_exist(self):
         driver = create_clidriver()
-        rc = driver.main('ec2 describe-instances '
-                         '--filters file://does/not/exist.json'.split())
+        rc = driver.main(
+            'ec2 describe-instances '
+            '--filters file://does/not/exist.json'.split()
+        )
         self.assertEqual(rc, 252)
         error_msg = self.stderr.getvalue()
-        self.assertIn("Error parsing parameter '--filters': "
-                      "Unable to load paramfile file://does/not/exist.json",
-                      error_msg)
+        self.assertIn(
+            "Error parsing parameter '--filters': "
+            "Unable to load paramfile file://does/not/exist.json",
+            error_msg,
+        )
         self.assertIn("No such file or directory", error_msg)
 
     def test_aws_configure_in_error_message_no_credentials(self):
         driver = create_clidriver()
+
         def raise_exception(*args, **kwargs):
             raise NoCredentialsError()
+
         driver.session.register(
             'building-command-table',
-            lambda command_table, **kwargs: \
-                command_table.__setitem__('ec2', raise_exception))
+            lambda command_table, **kwargs: command_table.__setitem__(
+                'ec2', raise_exception
+            ),
+        )
         with mock.patch('sys.stderr') as f:
             driver.main('ec2 describe-instances'.split())
         self.assertEqual(
             f.write.call_args_list[1][0][0],
             'Unable to locate credentials. '
-            'You can configure credentials by running "aws configure".')
+            'You can configure credentials by running "aws configure".',
+        )
 
     def test_override_calling_command(self):
         self.driver = create_clidriver()
@@ -793,14 +781,11 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
     def test_user_agent_for_linux(self, *args):
         driver = create_clidriver()
         expected_user_agent = 'md/installer#source md/distrib#amzn.1'
-        self.assertEqual(expected_user_agent,
-                         driver.session.user_agent_extra)
+        self.assertEqual(expected_user_agent, driver.session.user_agent_extra)
 
     def test_user_agent(self, *args):
         driver = create_clidriver()
-        user_agent_extra_pattern = re.compile(
-            r'^md/installer#source'
-        )
+        user_agent_extra_pattern = re.compile(r'^md/installer#source')
         self.assertIsNotNone(
             user_agent_extra_pattern.match(driver.session.user_agent_extra)
         )
@@ -818,16 +803,17 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
     def setUp(self):
         super(TestHowClientIsCreated, self).setUp()
         self.endpoint_creator_patch = mock.patch(
-            'botocore.args.EndpointCreator')
+            'botocore.args.EndpointCreator'
+        )
         self.endpoint_creator = self.endpoint_creator_patch.start()
-        self.create_endpoint = \
-                self.endpoint_creator.return_value.create_endpoint
+        self.create_endpoint = (
+            self.endpoint_creator.return_value.create_endpoint
+        )
         self.endpoint = self.create_endpoint.return_value
         self.endpoint.host = 'https://example.com'
         # Have the endpoint give a dummy empty response.
         http_response = AWSResponse(None, 200, {}, None)
-        self.endpoint.make_request.return_value = (
-            http_response, {})
+        self.endpoint.make_request.return_value = (http_response, {})
 
     def tearDown(self):
         super(TestHowClientIsCreated, self).tearDown()
@@ -836,30 +822,34 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
     def test_aws_with_endpoint_url(self):
         self.assert_params_for_cmd(
             'ec2 describe-instances --endpoint-url https://foobar.com/',
-            expected_rc=0)
-        self.assertEqual(self.create_endpoint.call_args[1]['endpoint_url'],
-                         'https://foobar.com/')
+            expected_rc=0,
+        )
+        self.assertEqual(
+            self.create_endpoint.call_args[1]['endpoint_url'],
+            'https://foobar.com/',
+        )
 
     def test_aws_with_region(self):
         self.assert_params_for_cmd(
-            'ec2 describe-instances --region us-west-2',
-            expected_rc=0)
+            'ec2 describe-instances --region us-west-2', expected_rc=0
+        )
         self.assertEqual(
-            self.create_endpoint.call_args[1]['region_name'], 'us-west-2')
+            self.create_endpoint.call_args[1]['region_name'], 'us-west-2'
+        )
 
     def test_can_use_new_aws_region_env_var(self):
         self.environ['AWS_REGION'] = 'us-east-2'
         self.environ['AWS_DEFAULT_REGION'] = 'us-west-1'
-        self.assert_params_for_cmd(
-            'ec2 describe-instances',
-            expected_rc=0)
+        self.assert_params_for_cmd('ec2 describe-instances', expected_rc=0)
         self.assertEqual(
-            self.create_endpoint.call_args[1]['region_name'], 'us-east-2')
+            self.create_endpoint.call_args[1]['region_name'], 'us-east-2'
+        )
 
     def test_aws_with_verify_false(self):
         self.assert_params_for_cmd(
             'ec2 describe-instances --region us-east-1 --no-verify-ssl',
-            expected_rc=0)
+            expected_rc=0,
+        )
         # Because we used --no-verify-ssl, create_endpoint should be
         # called with verify=False
         call_args = self.create_endpoint.call_args
@@ -868,22 +858,24 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
     def test_aws_with_cacert_env_var(self):
         self.environ['AWS_CA_BUNDLE'] = '/path/cacert.pem'
         self.assert_params_for_cmd(
-            'ec2 describe-instances --region us-east-1',
-            expected_rc=0)
+            'ec2 describe-instances --region us-east-1', expected_rc=0
+        )
         call_args = self.create_endpoint.call_args
         self.assertEqual(call_args[1]['verify'], '/path/cacert.pem')
 
     def test_aws_with_read_timeout(self):
         self.assert_params_for_cmd(
             'lambda invoke --function-name foo out.log --cli-read-timeout 90',
-            expected_rc=0)
+            expected_rc=0,
+        )
         call_args = self.create_endpoint.call_args
         self.assertEqual(call_args[1]['timeout'][1], 90)
 
     def test_aws_with_blocking_read_timeout(self):
         self.assert_params_for_cmd(
             'lambda invoke --function-name foo out.log --cli-read-timeout 0',
-            expected_rc=0)
+            expected_rc=0,
+        )
         call_args = self.create_endpoint.call_args
         self.assertEqual(call_args[1]['timeout'][1], None)
 
@@ -891,7 +883,8 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             'lambda invoke --function-name foo out.log '
             '--cli-connect-timeout 90',
-            expected_rc=0)
+            expected_rc=0,
+        )
         call_args = self.create_endpoint.call_args
         self.assertEqual(call_args[1]['timeout'][0], 90)
 
@@ -899,7 +892,8 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             'lambda invoke --function-name foo out.log '
             '--cli-connect-timeout 0',
-            expected_rc=0)
+            expected_rc=0,
+        )
         call_args = self.create_endpoint.call_args
         self.assertEqual(call_args[1]['timeout'][0], None)
 
@@ -907,7 +901,8 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             'lambda invoke --function-name foo out.log '
             '--cli-read-timeout 70 --cli-connect-timeout 90',
-            expected_rc=0)
+            expected_rc=0,
+        )
         call_args = self.create_endpoint.call_args
         self.assertEqual(call_args[1]['timeout'], (90, 70))
 
@@ -922,7 +917,9 @@ class TestVerifyArgument(BaseAWSCommandParamsTest):
         self.recorded_args = parsed_args
 
     def test_no_verify_argument(self):
-        self.assert_params_for_cmd('s3api list-buckets --no-verify-ssl'.split())
+        self.assert_params_for_cmd(
+            's3api list-buckets --no-verify-ssl'.split()
+        )
         self.assertFalse(self.recorded_args.verify_ssl)
 
     def test_verify_argument_is_none_by_default(self):
@@ -966,8 +963,8 @@ class TestServiceCommand(unittest.TestCase):
     def test_can_access_subcommand_table(self):
         table = self.cmd.subcommand_table
         expected = [
-            xform_name(op, '-') for op in
-            self.session.get_service_model(self.name).operation_names
+            xform_name(op, '-')
+            for op in self.session.get_service_model(self.name).operation_names
         ]
         self.assertEqual(set(table), set(expected))
 
@@ -994,8 +991,7 @@ class TestServiceCommand(unittest.TestCase):
         # a service command's command table is not public.
         help_command = self.cmd.create_help_command()
         child_cmd = help_command.command_table['list-objects']
-        self.assertEqual(child_cmd.lineage,
-                         [self.cmd, child_cmd])
+        self.assertEqual(child_cmd.lineage, [self.cmd, child_cmd])
         self.assertEqual(child_cmd.lineage_names, ['foo', 'list-objects'])
 
     def test_help_event_class(self):
@@ -1012,18 +1008,21 @@ class TestServiceOperation(unittest.TestCase):
     def setUp(self):
         self.name = 'list-objects'
         self.session = FakeSession()
-        operation = self.session.get_service_model(
-            's3').operation_model('ListObjects')
+        operation = self.session.get_service_model('s3').operation_model(
+            'ListObjects'
+        )
         self.mock_operation = operation
-        self.cmd = ServiceOperation(self.name, None, None, operation,
-                                    self.session)
+        self.cmd = ServiceOperation(
+            self.name, None, None, operation, self.session
+        )
 
     def test_can_access_subcommand_table(self):
         self.assertEqual(self.cmd.subcommand_table, {})
 
     def test_can_access_arg_table(self):
-        self.assertEqual(set(self.cmd.arg_table),
-                         set(['bucket', 'marker', 'max-keys']))
+        self.assertEqual(
+            set(self.cmd.arg_table), set(['bucket', 'marker', 'max-keys'])
+        )
 
     def test_name(self):
         self.assertEqual(self.cmd.name, self.name)
@@ -1041,8 +1040,9 @@ class TestServiceOperation(unittest.TestCase):
 
     def test_deprecated_operation(self):
         self.mock_operation.deprecated = True
-        cmd = ServiceOperation(self.name, None, None, self.mock_operation,
-                               None)
+        cmd = ServiceOperation(
+            self.name, None, None, self.mock_operation, None
+        )
         self.assertTrue(getattr(cmd, '_UNDOCUMENTED'))
 
     def test_idempotency_token_is_not_required(self):
@@ -1053,12 +1053,13 @@ class TestServiceOperation(unittest.TestCase):
         cmd = ServiceOperation(name, None, None, operation_model, session)
         arg_table = cmd.arg_table
         token_argument = arg_table.get('token')
-        self.assertFalse(token_argument.required,
-                         'Idempotency tokens should not be required')
+        self.assertFalse(
+            token_argument.required,
+            'Idempotency tokens should not be required',
+        )
 
 
 class TestAWSCLIEntryPoint(unittest.TestCase):
-
     def setUp(self):
         self.driver = mock.Mock()
 
@@ -1068,7 +1069,8 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
 
         self.prompt_patch = mock.patch('awscli.clidriver.AutoPromptDriver')
         self.crete_driver_patch = mock.patch(
-            'awscli.clidriver.create_clidriver')
+            'awscli.clidriver.create_clidriver'
+        )
         prompt_driver_class = self.prompt_patch.start()
         self.create_clidriver = self.crete_driver_patch.start()
         self.create_clidriver.side_effect = _create_fake_cli_driver
@@ -1140,8 +1142,9 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
         self.driver.main.return_value = 252
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         entry_point.main([])
-        self.assertEqual(self.driver.session.user_agent_extra,
-                         'md/prompt#partial')
+        self.assertEqual(
+            self.driver.session.user_agent_extra, 'md/prompt#partial'
+        )
 
     def test_not_update_user_agent_in_partial_mode_on_success(self):
         self.prompt_driver.resolve_mode.return_value = 'on-partial'

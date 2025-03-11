@@ -37,6 +37,7 @@ from awscli.testutils import mock, unittest
 # contents of the index.  Once this schema has stabilized we could go in and
 # write tests that work at the sqlite3 layer.
 
+
 class DummyCommand:
     def __init__(self, command_name, subcommand_table=None, arg_table=None):
         self.name = command_name
@@ -56,8 +57,15 @@ class DummyCommand:
 
 
 class DummyArg:
-    def __init__(self, name, cli_type_name='string', nargs=None,
-                 positional_arg=False, required=False, help_text=''):
+    def __init__(
+        self,
+        name,
+        cli_type_name='string',
+        nargs=None,
+        positional_arg=False,
+        required=False,
+        help_text='',
+    ):
         self.name = name
         self.cli_type_name = cli_type_name
         self.nargs = nargs
@@ -86,20 +94,21 @@ class BaseIndexerTest(unittest.TestCase):
                             arg_table={
                                 'instance-ids': DummyArg('instance-ids'),
                                 'filters': DummyArg(
-                                    'filters', 'list', nargs='+'),
-                            }
+                                    'filters', 'list', nargs='+'
+                                ),
+                            },
                         ),
                         'run-instances': DummyCommand('run-instances'),
-                    }
+                    },
                 ),
                 's3': DummyCommand(
                     command_name='s3',
                     subcommand_table={
                         'list-objects': DummyCommand('list-objects'),
                         'put-object': DummyCommand('put-object'),
-                    }
-                )
-            }
+                    },
+                ),
+            },
         )
         # Ideally we just use ':memory:', but that's for
         # a specific sqlite3 connection so we'd have to
@@ -125,8 +134,7 @@ class TestCanRetrieveCommands(BaseIndexerTest):
     def test_can_retrieve_top_level_commands(self):
         self.indexer.generate_index(self.aws_command)
         self.assertEqual(
-            set(self.query.command_names(lineage=['aws'])),
-            set(['ec2', 's3'])
+            set(self.query.command_names(lineage=['aws'])), set(['ec2', 's3'])
         )
 
     def test_can_retrieve_operation_names(self):
@@ -146,8 +154,11 @@ class TestCanRetrieveCommands(BaseIndexerTest):
     def test_can_retrieve_service_params(self):
         self.indexer.generate_index(self.aws_command)
         self.assertEqual(
-            set(self.query.arg_names(lineage=['aws', 'ec2'],
-                                     command_name='describe-instances')),
+            set(
+                self.query.arg_names(
+                    lineage=['aws', 'ec2'], command_name='describe-instances'
+                )
+            ),
             set(['instance-ids', 'filters']),
         )
 
@@ -162,8 +173,11 @@ class TestCanRetrieveCommands(BaseIndexerTest):
         # 's3' version should have no params because we didn't add an arg
         # table.
         self.assertEqual(
-            set(self.query.arg_names(lineage=['aws', 's3'],
-                                     command_name='describe-instances')),
+            set(
+                self.query.arg_names(
+                    lineage=['aws', 's3'], command_name='describe-instances'
+                )
+            ),
             set([]),
         )
 
@@ -171,8 +185,7 @@ class TestCanRetrieveCommands(BaseIndexerTest):
         # Service commands don't have arguments.
         self.indexer.generate_index(self.aws_command)
         self.assertEqual(
-            set(self.query.arg_names(lineage=['aws'],
-                                     command_name='ec2')),
+            set(self.query.arg_names(lineage=['aws'], command_name='ec2')),
             set([]),
         )
 
@@ -212,7 +225,6 @@ class TestCanRetrieveCommands(BaseIndexerTest):
 
 
 class TestCanCreateModelIndexer(unittest.TestCase):
-
     def test_can_create_model_indexer(self):
         index = indexer.create_model_indexer('/tmp/a/b/c/d')
         self.assertIsInstance(index, indexer.ModelIndexer)
@@ -226,9 +238,9 @@ class TestGeneratesIndex(BaseIndexerTest):
     def test_generates_indexes_for_tables(self):
         self.indexer.generate_index(self.aws_command)
         index_info = 'SELECT name from pragma_index_info("%s");'
-        index = self.db_conn.execute(
-            index_info % 'parent_index').fetchall()
+        index = self.db_conn.execute(index_info % 'parent_index').fetchall()
         self.assertEqual([('parent',)], index)
         index = self.db_conn.execute(
-            index_info % 'parent_command_index').fetchall()
+            index_info % 'parent_command_index'
+        ).fetchall()
         self.assertEqual([('parent',), ('command',)], index)

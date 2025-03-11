@@ -25,42 +25,45 @@ from . import FakeSession
 
 
 class TestConfigureCommand(unittest.TestCase):
-
     def setUp(self):
         self.writer = mock.Mock()
         self.global_args = mock.Mock()
         self.global_args.profile = None
         self.precanned = PrecannedPrompter(value='new_value')
         self.session = FakeSession({'config_file': 'myconfigfile'})
-        self.configure = configure.ConfigureCommand(self.session,
-                                                    prompter=self.precanned,
-                                                    config_writer=self.writer)
+        self.configure = configure.ConfigureCommand(
+            self.session, prompter=self.precanned, config_writer=self.writer
+        )
 
     def assert_credentials_file_updated_with(self, new_values):
         called_args = self.writer.update_config.call_args_list
         credentials_file_call = called_args[0]
         expected_creds_file = os.path.expanduser('~/fake_credentials_filename')
-        self.assertEqual(credentials_file_call,
-                         mock.call(new_values, expected_creds_file))
+        self.assertEqual(
+            credentials_file_call, mock.call(new_values, expected_creds_file)
+        )
 
     def test_configure_command_sends_values_to_writer(self):
         self.configure(args=[], parsed_globals=self.global_args)
         # Credentials are always written to the shared credentials file.
         self.assert_credentials_file_updated_with(
-            {'aws_access_key_id': 'new_value',
-             'aws_secret_access_key': 'new_value'})
+            {
+                'aws_access_key_id': 'new_value',
+                'aws_secret_access_key': 'new_value',
+            }
+        )
 
         # Non-credentials config is written to the config file.
         self.writer.update_config.assert_called_with(
-            {'region': 'new_value',
-             'output': 'new_value'}, 'myconfigfile')
+            {'region': 'new_value', 'output': 'new_value'}, 'myconfigfile'
+        )
 
     def test_same_values_are_not_changed(self):
         # If the user enters the same value as the current value, we don't need
         # to write anything to the config.
-        self.configure = configure.ConfigureCommand(self.session,
-                                                    prompter=EchoPrompter(),
-                                                    config_writer=self.writer)
+        self.configure = configure.ConfigureCommand(
+            self.session, prompter=EchoPrompter(), config_writer=self.writer
+        )
         self.configure(args=[], parsed_globals=self.global_args)
         self.assertFalse(self.writer.update_config.called)
 
@@ -70,9 +73,9 @@ class TestConfigureCommand(unittest.TestCase):
         # to write anything out to the config.
         user_presses_enter = None
         precanned = PrecannedPrompter(value=user_presses_enter)
-        self.configure = configure.ConfigureCommand(self.session,
-                                                    prompter=precanned,
-                                                    config_writer=self.writer)
+        self.configure = configure.ConfigureCommand(
+            self.session, prompter=precanned, config_writer=self.writer
+        )
         self.configure(args=[], parsed_globals=self.global_args)
         self.assertFalse(self.writer.update_config.called)
 
@@ -89,13 +92,15 @@ class TestConfigureCommand(unittest.TestCase):
             "Default output format": "NEW OUTPUT FORMAT",
         }
         prompter = KeyValuePrompter(responses)
-        self.configure = configure.ConfigureCommand(self.session, prompter=prompter,
-                                                    config_writer=self.writer)
+        self.configure = configure.ConfigureCommand(
+            self.session, prompter=prompter, config_writer=self.writer
+        )
         self.configure(args=[], parsed_globals=self.global_args)
 
         # We only need to write out the default output format.
         self.writer.update_config.assert_called_with(
-            {'output': 'NEW OUTPUT FORMAT'}, 'myconfigfile')
+            {'output': 'NEW OUTPUT FORMAT'}, 'myconfigfile'
+        )
 
     def test_section_name_can_be_changed_for_profiles(self):
         # If the user specifies a profile we need to write this out to
@@ -104,38 +109,53 @@ class TestConfigureCommand(unittest.TestCase):
         self.configure(args=[], parsed_globals=self.global_args)
         # Note the __section__ key name.
         self.assert_credentials_file_updated_with(
-            {'aws_access_key_id': 'new_value',
-             'aws_secret_access_key': 'new_value',
-             '__section__': 'myname'})
+            {
+                'aws_access_key_id': 'new_value',
+                'aws_secret_access_key': 'new_value',
+                '__section__': 'myname',
+            }
+        )
         self.writer.update_config.assert_called_with(
-            {'__section__': 'profile myname',
-             'region': 'new_value',
-             'output': 'new_value'}, 'myconfigfile')
+            {
+                '__section__': 'profile myname',
+                'region': 'new_value',
+                'output': 'new_value',
+            },
+            'myconfigfile',
+        )
 
     def test_session_says_profile_does_not_exist(self):
         # Whenever you try to get a config value from botocore,
         # it will raise an exception complaining about ProfileNotFound.
         # We should handle this case, and write out a new profile section
         # in the config file.
-        session = FakeSession({'config_file': 'myconfigfile'},
-                              profile_does_not_exist=True,
-                              profile='profile-does-not-exist')
-        self.configure = configure.ConfigureCommand(session,
-                                                    prompter=self.precanned,
-                                                    config_writer=self.writer)
+        session = FakeSession(
+            {'config_file': 'myconfigfile'},
+            profile_does_not_exist=True,
+            profile='profile-does-not-exist',
+        )
+        self.configure = configure.ConfigureCommand(
+            session, prompter=self.precanned, config_writer=self.writer
+        )
         self.configure(args=[], parsed_globals=self.global_args)
         self.assert_credentials_file_updated_with(
-            {'aws_access_key_id': 'new_value',
-             'aws_secret_access_key': 'new_value',
-             '__section__': 'profile-does-not-exist'})
+            {
+                'aws_access_key_id': 'new_value',
+                'aws_secret_access_key': 'new_value',
+                '__section__': 'profile-does-not-exist',
+            }
+        )
         self.writer.update_config.assert_called_with(
-            {'__section__': 'profile profile-does-not-exist',
-             'region': 'new_value',
-             'output': 'new_value'}, 'myconfigfile')
+            {
+                '__section__': 'profile profile-does-not-exist',
+                'region': 'new_value',
+                'output': 'new_value',
+            },
+            'myconfigfile',
+        )
 
 
 class TestInteractivePrompter(unittest.TestCase):
-
     def setUp(self):
         self.input_patch = mock.patch('awscli.compat.raw_input')
         self.mock_raw_input = self.input_patch.start()
@@ -151,8 +171,10 @@ class TestInteractivePrompter(unittest.TestCase):
         self.mock_raw_input.return_value = 'foo'
         prompter = configure.InteractivePrompter()
         response = prompter.get_value(
-            current_value='myaccesskey', config_name='aws_access_key_id',
-            prompt_text='Access key')
+            current_value='myaccesskey',
+            config_name='aws_access_key_id',
+            prompt_text='Access key',
+        )
         # First we should return the value from raw_input.
         self.assertEqual(response, 'foo')
         # We should also not display the entire access key.
@@ -164,8 +186,10 @@ class TestInteractivePrompter(unittest.TestCase):
         self.mock_raw_input.return_value = 'foo'
         prompter = configure.InteractivePrompter()
         response = prompter.get_value(
-            current_value=None, config_name='aws_access_key_id',
-            prompt_text='Access key')
+            current_value=None,
+            config_name='aws_access_key_id',
+            prompt_text='Access key',
+        )
         # First we should return the value from raw_input.
         self.assertEqual(response, 'foo')
         prompt_text = self.stdout.getvalue()
@@ -176,7 +200,8 @@ class TestInteractivePrompter(unittest.TestCase):
         prompter.get_value(
             current_value='mysupersecretkey',
             config_name='aws_secret_access_key',
-            prompt_text='Secret Key')
+            prompt_text='Secret Key',
+        )
         # We should also not display the entire secret key.
         prompt_text = self.stdout.getvalue()
         self.assertNotIn('mysupersecretkey', prompt_text)
@@ -185,8 +210,10 @@ class TestInteractivePrompter(unittest.TestCase):
     def test_non_secret_keys_are_not_masked(self):
         prompter = configure.InteractivePrompter()
         prompter.get_value(
-            current_value='mycurrentvalue', config_name='not_a_secret_key',
-            prompt_text='Enter value')
+            current_value='mycurrentvalue',
+            config_name='not_a_secret_key',
+            prompt_text='Enter value',
+        )
         # We should also not display the entire secret key.
         prompt_text = self.stdout.getvalue()
         self.assertIn('mycurrentvalue', prompt_text)
@@ -198,8 +225,10 @@ class TestInteractivePrompter(unittest.TestCase):
 
         prompter = configure.InteractivePrompter()
         response = prompter.get_value(
-            current_value=None, config_name='aws_access_key_id',
-            prompt_text='Access key')
+            current_value=None,
+            config_name='aws_access_key_id',
+            prompt_text='Access key',
+        )
         # We convert the empty string to None to indicate that there
         # was no input.
         self.assertIsNone(response)
@@ -215,22 +244,24 @@ class TestInteractivePrompter(unittest.TestCase):
 
         # Make sure flush called at least once
         prompter = configure.InteractivePrompter()
-        prompter.get_value(current_value='foo', config_name='bar',
-                           prompt_text='baz')
+        prompter.get_value(
+            current_value='foo', config_name='bar', prompt_text='baz'
+        )
         self.assertTrue(self.stdout.flush.called)
 
         # Make sure flush is called after *every* prompt
         self.stdout.reset_mock()
-        prompter.get_value(current_value='foo2', config_name='bar2',
-                           prompt_text='baz2')
+        prompter.get_value(
+            current_value='foo2', config_name='bar2', prompt_text='baz2'
+        )
         self.assertTrue(self.stdout.flush.called)
 
 
 class TestConfigValueMasking(unittest.TestCase):
-
     def test_config_value_is_masked(self):
         config_value = ConfigValue(
-            'fake_access_key', 'config_file', 'aws_access_key_id')
+            'fake_access_key', 'config_file', 'aws_access_key_id'
+        )
         self.assertEqual(config_value.value, 'fake_access_key')
         config_value.mask_value()
         self.assertEqual(config_value.value, '****************_key')
@@ -243,7 +274,6 @@ class TestConfigValueMasking(unittest.TestCase):
 
 
 class TestProfileToSection(unittest.TestCase):
-
     def test_normal_profile(self):
         profile = 'my-profile'
         section = profile_to_section(profile)
@@ -271,7 +301,6 @@ class TestProfileToSection(unittest.TestCase):
 
 
 class PrecannedPrompter:
-
     def __init__(self, value):
         self._value = value
 
@@ -280,13 +309,11 @@ class PrecannedPrompter:
 
 
 class EchoPrompter:
-
     def get_value(self, current_value, logical_name, prompt_text=''):
         return current_value
 
 
 class KeyValuePrompter:
-
     def __init__(self, mapping):
         self.mapping = mapping
 

@@ -51,15 +51,11 @@ class TestBase64DecodeVisitor(unittest.TestCase):
                 'type': 'structure',
                 'members': {
                     'B': {'type': 'blob'},
-                }
+                },
             }
         }
-        params = {
-            'Nested': {'B': 'Zm9v'}
-        }
-        expected_params = {
-            'Nested': {'B': b'foo'}
-        }
+        params = {'Nested': {'B': 'Zm9v'}}
+        expected_params = {'Nested': {'B': b'foo'}}
         self.assert_decoded_params(members, params, expected_params)
 
     def test_can_convert_list_of_blob(self):
@@ -69,12 +65,8 @@ class TestBase64DecodeVisitor(unittest.TestCase):
                 'member': {'type': 'blob'},
             }
         }
-        params = {
-            'BS': ['Zm9v', '']
-        }
-        expected_params = {
-            'BS': [b'foo', b'']
-        }
+        params = {'BS': ['Zm9v', '']}
+        expected_params = {'BS': [b'foo', b'']}
         self.assert_decoded_params(members, params, expected_params)
 
     def test_can_convert_map_to_blob(self):
@@ -85,12 +77,8 @@ class TestBase64DecodeVisitor(unittest.TestCase):
                 'value': {'type': 'blob'},
             }
         }
-        params = {
-            'StoB': {'a': 'Zm9v', 'b': ''}
-        }
-        expected_params = {
-            'StoB': {'a': b'foo', 'b': b''}
-        }
+        params = {'StoB': {'a': 'Zm9v', 'b': ''}}
+        expected_params = {'StoB': {'a': b'foo', 'b': b''}}
         self.assert_decoded_params(members, params, expected_params)
 
     def test_converts_base64_exception(self):
@@ -124,14 +112,17 @@ class TestAddBinaryFormatter(unittest.TestCase):
 
     def test_legacy_handlers_added_via_profile(self):
         self.parsed_args.cli_binary_format = None
-        self.mock_session.get_config_variable.return_value = 'raw-in-base64-out'
+        self.mock_session.get_config_variable.return_value = (
+            'raw-in-base64-out'
+        )
         add_binary_formatter(self.mock_session, self.parsed_args)
         self._assert_legacy_handlers_added()
 
     def _assert_base64_handlers_added(self):
         self.assertEqual(self.mock_session.register.call_count, 1)
         self.mock_session.register.assert_called_with(
-            'provide-client-params', base64_decode_input_blobs,
+            'provide-client-params',
+            base64_decode_input_blobs,
         )
         # base64 format parses blobs with an identity function
         self.mock_factory.set_parser_defaults.assert_called_with(

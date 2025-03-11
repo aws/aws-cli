@@ -36,11 +36,7 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
 
     def init_clidriver(self):
         with temporary_file('w') as f:
-            f.write(
-                '[default]\n'
-                's3 =\n'
-                '  max_concurrent_requests = 1\n'
-            )
+            f.write('[default]\n' 's3 =\n' '  max_concurrent_requests = 1\n')
             f.flush()
             self.environ['AWS_CONFIG_FILE'] = f.name
             self.driver = create_clidriver()
@@ -56,7 +52,8 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
             for operation_called in self.operations_called
         ]
         self.assertEqual(
-            actual_operations_with_params, expected_operations_with_params)
+            actual_operations_with_params, expected_operations_with_params
+        )
 
     def assert_in_operations_called(self, expected_operation_with_params):
         actual_operations_with_params = [
@@ -68,40 +65,26 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
                 return
         self.fail(
             'Expected request: %s does not match any of the actual requests '
-            'made: %s' % (
-                expected_operation_with_params, actual_operations_with_params
-            )
+            'made: %s'
+            % (expected_operation_with_params, actual_operations_with_params)
         )
 
     def head_object_response(self, **override_kwargs):
-        response = {
-            'ContentLength': 100,
-            'LastModified': '00:00:00Z'
-        }
+        response = {'ContentLength': 100, 'LastModified': '00:00:00Z'}
         response.update(override_kwargs)
         return response
 
     def list_objects_response(self, keys, **override_kwargs):
         contents = []
         for key in keys:
-            content = {
-                'Key': key,
-                'LastModified': '00:00:00Z',
-                'Size': 100
-            }
+            content = {'Key': key, 'LastModified': '00:00:00Z', 'Size': 100}
             if override_kwargs:
                 content.update(override_kwargs)
             contents.append(content)
-        return {
-            'Contents': contents,
-            'CommonPrefixes': []
-        }
+        return {'Contents': contents, 'CommonPrefixes': []}
 
     def get_object_response(self):
-        return {
-            'ETag': '"foo-1"',
-            'Body': BytesIO(b'foo')
-        }
+        return {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')}
 
     def copy_object_response(self):
         return self.empty_response()
@@ -110,24 +93,16 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
         return self.empty_response()
 
     def create_mpu_response(self, upload_id):
-        return {
-            'UploadId': upload_id
-        }
+        return {'UploadId': upload_id}
 
     def upload_part_copy_response(self):
-        return {
-            'CopyPartResult': {
-                'ETag': '"etag"'
-            }
-        }
+        return {'CopyPartResult': {'ETag': '"etag"'}}
 
     def complete_mpu_response(self):
         return self.empty_response()
 
     def get_object_tagging_response(self, tags):
-        return {
-            'TagSet': [{'Key': k, 'Value': v} for k, v in tags.items()]
-        }
+        return {'TagSet': [{'Key': k, 'Value': v} for k, v in tags.items()]}
 
     def put_object_tagging_response(self):
         return 'PutObjectTagging', self.empty_response()
@@ -170,15 +145,13 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
         params.update(override_kwargs)
         return 'GetObject', params
 
-    def copy_object_request(self, source_bucket, source_key, bucket, key,
-                            **override_kwargs):
+    def copy_object_request(
+        self, source_bucket, source_key, bucket, key, **override_kwargs
+    ):
         params = {
             'Bucket': bucket,
             'Key': key,
-            'CopySource': {
-                'Bucket': source_bucket,
-                'Key': source_key
-            }
+            'CopySource': {'Bucket': source_bucket, 'Key': source_key},
         }
         params.update(override_kwargs)
         return 'CopyObject', params
@@ -199,35 +172,35 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
         params.update(override_kwargs)
         return 'CreateMultipartUpload', params
 
-    def upload_part_copy_request(self, source_bucket, source_key, bucket, key,
-                                 upload_id, **override_kwargs):
+    def upload_part_copy_request(
+        self,
+        source_bucket,
+        source_key,
+        bucket,
+        key,
+        upload_id,
+        **override_kwargs,
+    ):
         params = {
             'Bucket': bucket,
             'Key': key,
-            'CopySource': {
-                'Bucket': source_bucket,
-                'Key': source_key
-            },
+            'CopySource': {'Bucket': source_bucket, 'Key': source_key},
             'UploadId': upload_id,
-
         }
         params.update(override_kwargs)
         return 'UploadPartCopy', params
 
-    def complete_mpu_request(self, bucket, key, upload_id, num_parts,
-                             **override_kwargs):
+    def complete_mpu_request(
+        self, bucket, key, upload_id, num_parts, **override_kwargs
+    ):
         parts = []
         for i in range(num_parts):
-            parts.append(
-                {
-                    'ETag': '"etag"', 'PartNumber': i + 1
-                }
-            )
+            parts.append({'ETag': '"etag"', 'PartNumber': i + 1})
         params = {
             'Bucket': bucket,
             'Key': key,
             'UploadId': upload_id,
-            'MultipartUpload': {'Parts': parts}
+            'MultipartUpload': {'Parts': parts},
         }
         params.update(override_kwargs)
         return 'CompleteMultipartUpload', params
@@ -243,10 +216,8 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
             'Bucket': bucket,
             'Key': key,
             'Tagging': {
-                'TagSet': [
-                    {'Key': k, 'Value': v} for k, v in tags.items()
-                ],
-            }
+                'TagSet': [{'Key': k, 'Value': v} for k, v in tags.items()],
+            },
         }
 
     def no_such_key_error_response(self):
@@ -288,9 +259,11 @@ class BaseS3CLIRunnerTest(unittest.TestCase):
 
         self.config_files = FileCreator()
         self.config_filename = os.path.join(
-            self.config_files.rootdir, 'config')
+            self.config_files.rootdir, 'config'
+        )
         self.set_config_file_contents(
-            self.cli_runner.env, self.config_filename)
+            self.cli_runner.env, self.config_filename
+        )
 
     def tearDown(self):
         self.config_files.remove_all()
@@ -412,25 +385,28 @@ class BaseS3CLIRunnerTest(unittest.TestCase):
     def assert_no_remaining_botocore_responses(self):
         self.session_stubber.assert_no_remaining_responses()
 
-    def assert_operations_to_endpoints(self, cli_runner_result,
-                                       expected_operations_to_endpoints):
+    def assert_operations_to_endpoints(
+        self, cli_runner_result, expected_operations_to_endpoints
+    ):
         actual_operations_to_endpoints = []
         for aws_request in cli_runner_result.aws_requests:
             actual_operations_to_endpoints.append(
                 (
                     aws_request.operation_name,
-                    urlparse.urlparse(aws_request.http_requests[0].url).netloc
+                    urlparse.urlparse(aws_request.http_requests[0].url).netloc,
                 )
             )
         self.assertEqual(
-            actual_operations_to_endpoints, expected_operations_to_endpoints)
+            actual_operations_to_endpoints, expected_operations_to_endpoints
+        )
 
     def run_command(self, cmdline):
         result = self.cli_runner.run(cmdline)
         self.assertEqual(
-            result.rc, 0,
+            result.rc,
+            0,
             f'Expected rc of 0 instead got {result.rc} '
-            f'with stderr message: {result.stderr}'
+            f'with stderr message: {result.stderr}',
         )
         return result
 
@@ -440,8 +416,9 @@ class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
         super(BaseCRTTransferClientTest, self).setUp()
         self.crt_client_patch = mock.patch('s3transfer.crt.S3Client')
         self.mock_crt_client = self.crt_client_patch.start()
-        self.mock_crt_client.return_value.make_request.side_effect = \
+        self.mock_crt_client.return_value.make_request.side_effect = (
             self.simulate_make_request_side_effect
+        )
         self.files = FileCreator()
         self.expected_download_content = b'content'
 
@@ -489,8 +466,7 @@ class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
 
     def assert_crt_client_region(self, expected_region):
         self.assertEqual(
-            self.mock_crt_client.call_args[1]['region'],
-            expected_region
+            self.mock_crt_client.call_args[1]['region'], expected_region
         )
 
     def assert_crt_client_has_no_credential_provider(self):
@@ -499,26 +475,30 @@ class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
         )
 
     def assert_crt_make_request_call(
-            self, make_request_call, expected_type, expected_host,
-            expected_path, expected_http_method=None,
-            expected_send_filepath=None,
-            expected_recv_startswith=None,
-            expected_body_content=None):
+        self,
+        make_request_call,
+        expected_type,
+        expected_host,
+        expected_path,
+        expected_http_method=None,
+        expected_send_filepath=None,
+        expected_recv_startswith=None,
+        expected_body_content=None,
+    ):
         make_request_kwargs = make_request_call[1]
+        self.assertEqual(make_request_kwargs['type'], expected_type)
         self.assertEqual(
-            make_request_kwargs['type'], expected_type)
-        self.assertEqual(
-            make_request_kwargs['request'].headers.get('host'),
-            expected_host
+            make_request_kwargs['request'].headers.get('host'), expected_host
         )
-        self.assertEqual(
-            make_request_kwargs['request'].path, expected_path)
+        self.assertEqual(make_request_kwargs['request'].path, expected_path)
         if expected_http_method:
             self.assertEqual(
-                make_request_kwargs['request'].method, expected_http_method)
+                make_request_kwargs['request'].method, expected_http_method
+            )
         if expected_send_filepath:
             self.assertEqual(
-                make_request_kwargs['send_filepath'], expected_send_filepath)
+                make_request_kwargs['send_filepath'], expected_send_filepath
+            )
         if expected_recv_startswith:
             # The s3transfer/crt implementation has the CRT client download
             # to a temporary file before moving it to the correct location.
@@ -531,10 +511,11 @@ class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
             self.assertTrue(
                 make_request_kwargs['recv_filepath'].startswith(
                     expected_recv_startswith
-                ), (
+                ),
+                (
                     f"{make_request_kwargs['recv_filepath']} does not "
                     f"start with {expected_recv_startswith}"
-                )
+                ),
             )
         if expected_body_content is not None:
             # Note: The underlying CRT awscrt.io.InputStream does not expose
@@ -543,7 +524,7 @@ class BaseCRTTransferClientTest(BaseS3CLIRunnerTest):
             # to use a public interface if a public interface is ever exposed.
             self.assertEqual(
                 make_request_kwargs['request'].body_stream._stream.read(),
-                expected_body_content
+                expected_body_content,
             )
 
 

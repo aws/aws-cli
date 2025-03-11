@@ -29,14 +29,13 @@ class BaseHistoryCommandParamsTest(BaseAWSCommandParamsTest):
         super(BaseHistoryCommandParamsTest, self).setUp()
         self.history_recorder = history_recorder
         self.files = FileCreator()
-        config_contents = (
-            '[default]\n'
-            'cli_history = enabled'
-        )
+        config_contents = '[default]\n' 'cli_history = enabled'
         self.environ['AWS_CONFIG_FILE'] = self.files.create_file(
-            'config', config_contents)
+            'config', config_contents
+        )
         self.environ['AWS_CLI_HISTORY_FILE'] = self.files.create_file(
-            'history.db', '')
+            'history.db', ''
+        )
         self.driver = create_clidriver()
         self.entry_point = AWSCLIEntryPoint(self.driver)
 
@@ -52,14 +51,17 @@ class BaseHistoryCommandParamsTest(BaseAWSCommandParamsTest):
         # botocore.get_global_history_recorder as the objects are already
         # instantiated as so we have to individually patch each one of these...
         self._apply_history_recorder_patch(
-            'awscli.clidriver', history_recorder)
+            'awscli.clidriver', history_recorder
+        )
         self._apply_history_recorder_patch(
-            'awscli.customizations.history', history_recorder)
+            'awscli.customizations.history', history_recorder
+        )
         return history_recorder
 
     def _apply_history_recorder_patch(self, module, history_recorder):
         patch_history_recorder = mock.patch(
-            module + '.HISTORY_RECORDER', history_recorder)
+            module + '.HISTORY_RECORDER', history_recorder
+        )
         patch_history_recorder.start()
         self.addCleanup(patch_history_recorder.stop)
 

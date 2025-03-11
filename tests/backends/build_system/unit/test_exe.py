@@ -125,7 +125,7 @@ class TestExe:
                 "glob",
                 "**/*.dist-info",
                 os.path.join("workspace", "aws", "dist"),
-                True
+                True,
             ),
         ]
 

@@ -19,7 +19,6 @@ from awscli.testutils import BaseAWSCommandParamsTest, BaseAWSHelpOutputTest
 
 
 class TestGetObject(BaseAWSCommandParamsTest):
-
     prefix = ['s3api', 'select-object-content']
 
     def setUp(self):
@@ -35,11 +34,23 @@ class TestGetObject(BaseAWSCommandParamsTest):
         yield {'Records': {'Payload': b'a,b,c,d\n'}}
         # These next two events are ignored because they aren't
         # "Records".
-        yield {'Progress': {'Details': {'BytesScanned': 1048576,
-                                        'BytesProcessed': 37748736}}}
+        yield {
+            'Progress': {
+                'Details': {
+                    'BytesScanned': 1048576,
+                    'BytesProcessed': 37748736,
+                }
+            }
+        }
         yield {'Records': {'Payload': b'e,f,g,h\n'}}
-        yield {'Stats': {'Details': {'BytesProcessed': 62605400,
-                                     'BytesScanned': 1662276}}}
+        yield {
+            'Stats': {
+                'Details': {
+                    'BytesProcessed': 62605400,
+                    'BytesScanned': 1662276,
+                }
+            }
+        }
         yield {'End': {}}
 
     def test_can_stream_to_file(self):
@@ -50,8 +61,9 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline.extend(['--expression', 'SELECT * FROM S3Object'])
         cmdline.extend(['--expression-type', 'SQL'])
         cmdline.extend(['--request-progress', 'Enabled=True'])
-        cmdline.extend(['--input-serialization',
-                        '{"CSV": {}, "CompressionType": "GZIP"}'])
+        cmdline.extend(
+            ['--input-serialization', '{"CSV": {}, "CompressionType": "GZIP"}']
+        )
         cmdline.extend(['--output-serialization', '{"CSV": {}}'])
         cmdline.extend([filename])
 
@@ -68,10 +80,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         self.assertEqual(stdout, '')
         with open(filename) as f:
             contents = f.read()
-            self.assertEqual(contents, (
-                'a,b,c,d\n'
-                'e,f,g,h\n'
-            ))
+            self.assertEqual(contents, ('a,b,c,d\n' 'e,f,g,h\n'))
 
     def test_errors_are_propagated(self):
         self.http_response.status_code = 400
@@ -82,13 +91,20 @@ class TestGetObject(BaseAWSCommandParamsTest):
             }
         }
         cmdline = self.prefix + [
-            '--bucket', 'mybucket',
-            '--key', 'mykey',
-            '--expression', 'SELECT * FROM S3Object',
-            '--expression-type', 'SQL',
-            '--request-progress', 'Enabled=True',
-            '--input-serialization', '{"CSV": {}, "CompressionType": "GZIP"}',
-            '--output-serialization', '{"CSV": {}}',
+            '--bucket',
+            'mybucket',
+            '--key',
+            'mykey',
+            '--expression',
+            'SELECT * FROM S3Object',
+            '--expression-type',
+            'SQL',
+            '--request-progress',
+            'Enabled=True',
+            '--input-serialization',
+            '{"CSV": {}, "CompressionType": "GZIP"}',
+            '--output-serialization',
+            '{"CSV": {}}',
             os.path.join(self._tempdir, 'outfile'),
         ]
         expected_params = {
@@ -101,11 +117,13 @@ class TestGetObject(BaseAWSCommandParamsTest):
             'RequestProgress': {'Enabled': True},
         }
         self.assert_params_for_cmd(
-            cmd=cmdline, params=expected_params,
+            cmd=cmdline,
+            params=expected_params,
             expected_rc=254,
             stderr_contains=(
                 'An error occurred (CastFailed) when '
-                'calling the SelectObjectContent operation'),
+                'calling the SelectObjectContent operation'
+            ),
         )
 
 
@@ -115,8 +133,7 @@ class TestHelpOutput(BaseAWSHelpOutputTest):
         # We don't want to be super picky because the wording may change
         # We just want to verify the Output section was customized.
         self.assert_contains(
-            'Output\n======\n'
-            'This command generates no output'
+            'Output\n======\n' 'This command generates no output'
         )
         self.assert_not_contains('[outfile')
         self.assert_contains('outfile')

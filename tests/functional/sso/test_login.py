@@ -25,20 +25,20 @@ class TestLoginCommand(BaseSSOTest):
     )
 
     def assert_cache_contains_registration(
-            self,
-            start_url,
-            session_name,
-            scopes,
-            expected_client_id):
+        self, start_url, session_name, scopes, expected_client_id
+    ):
         cached_files = os.listdir(self.token_cache_dir)
 
         cached_registration_filename = self._get_cached_registration_filename(
-            start_url, session_name, scopes)
+            start_url, session_name, scopes
+        )
 
         self.assertIn(cached_registration_filename, cached_files)
         self.assertEqual(
-            self._get_cached_response(cached_registration_filename)['clientId'],
-            expected_client_id
+            self._get_cached_response(cached_registration_filename)[
+                'clientId'
+            ],
+            expected_client_id,
         )
 
     def assert_cache_contains_token(
@@ -57,10 +57,12 @@ class TestLoginCommand(BaseSSOTest):
         self.assertIn(cached_token_filename, cached_files)
         self.assertEqual(
             self._get_cached_response(cached_token_filename)['accessToken'],
-            expected_token
+            expected_token,
         )
 
-    def _get_cached_registration_filename(self, start_url, session_name, scopes):
+    def _get_cached_registration_filename(
+        self, start_url, session_name, scopes
+    ):
         args = {
             'tool': 'botocore',
             'startUrl': start_url,
@@ -104,8 +106,7 @@ class TestLoginCommand(BaseSSOTest):
             'https://sso.verify',
         )
         self.assert_cache_contains_token(
-            start_url=self.start_url,
-            expected_token=self.access_token
+            start_url=self.start_url, expected_token=self.access_token
         )
 
     def test_login_implicit_device(self):
@@ -120,8 +121,7 @@ class TestLoginCommand(BaseSSOTest):
             'https://sso.verify',
         )
         self.assert_cache_contains_token(
-            start_url=self.start_url,
-            expected_token=self.access_token
+            start_url=self.start_url, expected_token=self.access_token
         )
 
     def test_login_device_no_browser(self):
@@ -131,8 +131,7 @@ class TestLoginCommand(BaseSSOTest):
         self.open_browser_mock.assert_not_called()
         self.assert_used_expected_sso_region(expected_region=self.sso_region)
         self.assert_cache_contains_token(
-            start_url=self.start_url,
-            expected_token=self.access_token
+            start_url=self.start_url, expected_token=self.access_token
         )
 
     def test_login_auth_no_browser(self):
@@ -147,12 +146,12 @@ class TestLoginCommand(BaseSSOTest):
             start_url=self.start_url,
             session_name='test-session',
             scopes=self.registration_scopes,
-            expected_client_id='auth-client-id'
+            expected_client_id='auth-client-id',
         )
         self.assert_cache_contains_token(
             start_url=self.start_url,
             expected_token=self.access_token,
-            session_name='test-session'
+            session_name='test-session',
         )
 
     def test_login_device_forces_refresh(self):
@@ -161,7 +160,8 @@ class TestLoginCommand(BaseSSOTest):
         # The register response from the first login should have been
         # cached.
         self.add_oidc_device_responses(
-            'new.token', include_register_response=False)
+            'new.token', include_register_response=False
+        )
         self.run_cmd('sso login --use-device-code')
         self.assert_cache_contains_token(
             start_url=self.start_url,
@@ -176,17 +176,19 @@ class TestLoginCommand(BaseSSOTest):
         # The register response from the first login should have been
         # cached.
         self.add_oidc_auth_code_responses(
-            'new.token', include_register_response=False)
+            'new.token', include_register_response=False
+        )
         self.run_cmd('sso login')
         self.assert_cache_contains_token(
             start_url=self.start_url,
             expected_token='new.token',
-            session_name='test-session'
+            session_name='test-session',
         )
 
     def test_login_auth_after_device_forces_refresh(self):
         self.set_config_file_content(
-            content=self.get_sso_session_config('test-session'))
+            content=self.get_sso_session_config('test-session')
+        )
         self.add_oidc_device_responses(self.access_token)
         self.run_cmd('sso login --use-device-code')
         # The register response from the first login should have been
@@ -197,29 +199,28 @@ class TestLoginCommand(BaseSSOTest):
             start_url=self.start_url,
             session_name='test-session',
             scopes=self.registration_scopes,
-            expected_client_id='auth-client-id'
+            expected_client_id='auth-client-id',
         )
         self.assert_cache_contains_token(
             start_url=self.start_url,
             expected_token='new.token',
-            session_name='test-session'
+            session_name='test-session',
         )
 
     def test_login_device_no_sso_configuration(self):
         self.set_config_file_content(content='')
-        _, stderr, _ = self.run_cmd('sso login --use-device-code',
-                                    expected_rc=253)
+        _, stderr, _ = self.run_cmd(
+            'sso login --use-device-code', expected_rc=253
+        )
         self.assertIn(
-            'Missing the following required SSO configuration',
-            stderr
+            'Missing the following required SSO configuration', stderr
         )
 
     def test_login_auth_no_sso_configuration(self):
         self.set_config_file_content(content='')
         _, stderr, _ = self.run_cmd('sso login', expected_rc=253)
         self.assertIn(
-            'Missing the following required SSO configuration',
-            stderr
+            'Missing the following required SSO configuration', stderr
         )
 
     def test_login_device_minimal_sso_configuration(self):
@@ -238,22 +239,17 @@ class TestLoginCommand(BaseSSOTest):
             'https://sso.verify',
         )
         self.assert_cache_contains_token(
-            start_url=self.start_url,
-            expected_token=self.access_token
+            start_url=self.start_url, expected_token=self.access_token
         )
 
     def test_login_device_partially_missing_sso_configuration(self):
-        content = (
-            '[default]\n'
-            'sso_start_url=%s\n' % self.start_url
-        )
+        content = '[default]\n' 'sso_start_url=%s\n' % self.start_url
         self.set_config_file_content(content=content)
         _, stderr, _ = self.run_cmd(
             'sso login --use-device-code', expected_rc=253
         )
         self.assertIn(
-            'Missing the following required SSO configuration',
-            stderr
+            'Missing the following required SSO configuration', stderr
         )
         self.assertIn('sso_region', stderr)
         self.assertNotIn('sso_start_url', stderr)
@@ -265,8 +261,7 @@ class TestLoginCommand(BaseSSOTest):
         self.run_cmd('sso login --use-device-code')
         self.assert_used_expected_sso_region(expected_region=self.sso_region)
         self.assert_cache_contains_token(
-            start_url=self.start_url,
-            expected_token=self.access_token
+            start_url=self.start_url, expected_token=self.access_token
         )
         self.assert_cache_token_expiration_time_format_is_correct()
 
@@ -285,7 +280,7 @@ class TestLoginCommand(BaseSSOTest):
             start_url=self.start_url,
             session_name='test-session',
             scopes=self.registration_scopes,
-            expected_client_id='device-client-id'
+            expected_client_id='device-client-id',
         )
         self.assert_cache_contains_token(
             start_url=self.start_url,
@@ -304,7 +299,7 @@ class TestLoginCommand(BaseSSOTest):
             start_url=self.start_url,
             session_name='test-session',
             scopes=self.registration_scopes,
-            expected_client_id='auth-client-id'
+            expected_client_id='auth-client-id',
         )
         self.assert_cache_contains_token(
             start_url=self.start_url,
@@ -314,7 +309,8 @@ class TestLoginCommand(BaseSSOTest):
 
     def test_login_device_sso_with_explicit_sso_session_arg(self):
         content = self.get_sso_session_config(
-            'test-session', include_profile=False)
+            'test-session', include_profile=False
+        )
         self.set_config_file_content(content=content)
         self.add_oidc_device_responses(self.access_token)
         self.run_cmd('sso login --sso-session test-session --use-device-code')
@@ -328,7 +324,7 @@ class TestLoginCommand(BaseSSOTest):
             start_url=self.start_url,
             session_name='test-session',
             scopes=self.registration_scopes,
-            expected_client_id='device-client-id'
+            expected_client_id='device-client-id',
         )
         self.assert_cache_contains_token(
             start_url=self.start_url,
@@ -338,7 +334,8 @@ class TestLoginCommand(BaseSSOTest):
 
     def test_login_auth_sso_with_explicit_sso_session_arg(self):
         content = self.get_sso_session_config(
-            'test-session', include_profile=False)
+            'test-session', include_profile=False
+        )
         self.set_config_file_content(content=content)
         self.add_oidc_auth_code_responses(self.access_token)
         self.run_cmd('sso login --sso-session test-session')
@@ -348,7 +345,7 @@ class TestLoginCommand(BaseSSOTest):
             start_url=self.start_url,
             session_name='test-session',
             scopes=self.registration_scopes,
-            expected_client_id='auth-client-id'
+            expected_client_id='auth-client-id',
         )
         self.assert_cache_contains_token(
             start_url=self.start_url,
@@ -372,7 +369,7 @@ class TestLoginCommand(BaseSSOTest):
             start_url=self.start_url,
             session_name='test-session',
             scopes=self.registration_scopes,
-            expected_client_id='device-client-id'
+            expected_client_id='device-client-id',
         )
         self.assert_cache_contains_token(
             start_url=self.start_url,
@@ -395,7 +392,7 @@ class TestLoginCommand(BaseSSOTest):
             start_url=self.start_url,
             session_name='test-session',
             scopes=self.registration_scopes,
-            expected_client_id='auth-client-id'
+            expected_client_id='auth-client-id',
         )
         self.assert_cache_contains_token(
             start_url=self.start_url,
@@ -407,72 +404,58 @@ class TestLoginCommand(BaseSSOTest):
         self.assertEqual(params.get('scopes'), self.registration_scopes)
 
     def test_login_sso_session_missing_config(self):
-        content = (
-            '[default]\n'
-            'sso_session=test\n'
-            '[sso-session test]\n'
-        )
+        content = '[default]\n' 'sso_session=test\n' '[sso-session test]\n'
         self.set_config_file_content(content=content)
         _, stderr, _ = self.run_cmd('sso login', expected_rc=253)
         self.assertIn(
-            'SSO configuration values: sso_start_url, sso_region',
-            stderr
+            'SSO configuration values: sso_start_url, sso_region', stderr
         )
 
     def test_login_sso_session_missing(self):
-        content = (
-            '[default]\n'
-            'sso_session=test\n'
-        )
+        content = '[default]\n' 'sso_session=test\n'
         self.set_config_file_content(content=content)
         _, stderr, _ = self.run_cmd('sso login', expected_rc=253)
         self.assertIn('sso-session does not exist: "test"', stderr)
 
     def test_login_auth_sso_no_authorization_code_throws_error(self):
         self.fetcher_mock.return_value.get_auth_code_and_state.return_value = (
-            None, None
+            None,
+            None,
         )
         content = self.get_sso_session_config('test-session')
         self.set_config_file_content(content=content)
         self.add_oidc_auth_code_responses(self.access_token)
 
-        _, stderr, _ = self.run_cmd(
-            'sso login', expected_rc=255
-        )
-        self.assertIn(
-            'Failed to retrieve an authorization code.',
-            stderr
-        )
+        _, stderr, _ = self.run_cmd('sso login', expected_rc=255)
+        self.assertIn('Failed to retrieve an authorization code.', stderr)
 
     def test_login_auth_sso_state_mismatch_throws_error(self):
         self.fetcher_mock.return_value.get_auth_code_and_state.return_value = (
-            "abc", '00000000-0000-0000-0000-000000000001'
+            "abc",
+            '00000000-0000-0000-0000-000000000001',
         )
         content = self.get_sso_session_config('test-session')
         self.set_config_file_content(content=content)
         self.add_oidc_auth_code_responses(self.access_token)
 
-        _, stderr, _ = self.run_cmd(
-            'sso login', expected_rc=255
-        )
-        self.assertIn(
-            'State parameter does not match expected value.',
-            stderr
-        )
+        _, stderr, _ = self.run_cmd('sso login', expected_rc=255)
+        self.assertIn('State parameter does not match expected value.', stderr)
 
     def test_login_device_no_extra_user_agent(self):
         self.add_oidc_device_responses(self.access_token)
         self.run_cmd('sso login --use-device-code')
-        self.assertNotIn('md/sso#auth',
-                         self.last_request_dict['headers']['User-Agent'])
+        self.assertNotIn(
+            'md/sso#auth', self.last_request_dict['headers']['User-Agent']
+        )
 
     def test_login_auth_includes_extra_user_agent(self):
         content = self.get_sso_session_config('test-session')
         self.set_config_file_content(content=content)
         self.add_oidc_auth_code_responses(self.access_token)
         self.run_cmd('sso login')
-        self.assertIn('md/sso#auth',
-                      self.last_request_dict['headers']['User-Agent'])
+        self.assertIn(
+            'md/sso#auth', self.last_request_dict['headers']['User-Agent']
+        )
 
     @mock.patch('botocore.session.Session.create_client')
     def test_login_custom_ca(self, create_client_patch):
@@ -480,13 +463,10 @@ class TestLoginCommand(BaseSSOTest):
         # but it does get far enough to verify that the internal SSO-OIDC
         # client is created with the custom CA bundle
         self.run_cmd(
-            'sso login --ca-bundle /path/to/ca/bundle.pem',
-            expected_rc=255
+            'sso login --ca-bundle /path/to/ca/bundle.pem', expected_rc=255
         )
         create_client_patch.assert_called_once_with(
-            'sso-oidc',
-            config=mock.ANY,
-            verify='/path/to/ca/bundle.pem'
+            'sso-oidc', config=mock.ANY, verify='/path/to/ca/bundle.pem'
         )
 
     @mock.patch('botocore.session.Session.create_client')
@@ -494,10 +474,7 @@ class TestLoginCommand(BaseSSOTest):
         # Profile and mock responses aren't wired up so this fails with 255,
         # but it does get far enough to verify that the internal SSO-OIDC
         # client is created with verify=False
-        self.run_cmd(
-            'sso login --no-verify-ssl',
-            expected_rc=255
-        )
+        self.run_cmd('sso login --no-verify-ssl', expected_rc=255)
         create_client_patch.assert_called_once_with(
             'sso-oidc',
             config=mock.ANY,

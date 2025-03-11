@@ -26,18 +26,23 @@ from awscli.testutils import StringIOWithFileNo, mock, unittest
 
 
 class TestCodeCommitCredentialHelper(unittest.TestCase):
+    PROTOCOL_HOST_PATH = (
+        'protocol=https\n'
+        'host=git-codecommit.us-east-1.amazonaws.com\n'
+        'path=/v1/repos/myrepo'
+    )
 
-    PROTOCOL_HOST_PATH = ('protocol=https\n'
-                          'host=git-codecommit.us-east-1.amazonaws.com\n'
-                          'path=/v1/repos/myrepo')
+    FIPS_PROTOCOL_HOST_PATH = (
+        'protocol=https\n'
+        'host=git-codecommit-fips.us-east-1.amazonaws.com\n'
+        'path=/v1/repos/myrepo'
+    )
 
-    FIPS_PROTOCOL_HOST_PATH = ('protocol=https\n'
-                               'host=git-codecommit-fips.us-east-1.amazonaws.com\n'
-                               'path=/v1/repos/myrepo')
-
-    VPC_PROTOCOL_HOST_PATH = ('protocol=https\n'
-                              'host=vpce-0b47ea360adebf88a-jkl88hez.git-codecommit.us-east-1.vpce.amazonaws.com\n'
-                              'path=/v1/repos/myrepo')
+    VPC_PROTOCOL_HOST_PATH = (
+        'protocol=https\n'
+        'host=vpce-0b47ea360adebf88a-jkl88hez.git-codecommit.us-east-1.vpce.amazonaws.com\n'
+        'path=/v1/repos/myrepo'
+    )
 
     def setUp(self):
         self.orig_id = os.environ.get('AWS_ACCESS_KEY_ID')
@@ -65,10 +70,13 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         rc = entry_point.main('codecommit credential-helper get'.split())
         output = stdout_mock.getvalue().strip()
         self.assertEqual(
-            ('username=foo\n'
-             'password=20101008T000000Z'
-             '7dc259e2d505af354a1219b9bcd784bd384dc706efa0d9aefc571f214be4c89c'),
-             output)
+            (
+                'username=foo\n'
+                'password=20101008T000000Z'
+                '7dc259e2d505af354a1219b9bcd784bd384dc706efa0d9aefc571f214be4c89c'
+            ),
+            output,
+        )
         self.assertEqual(0, rc)
 
     @mock.patch('sys.stdin', StringIO(FIPS_PROTOCOL_HOST_PATH))
@@ -81,10 +89,13 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         rc = entry_point.main('codecommit credential-helper get'.split())
         output = stdout_mock.getvalue().strip()
         self.assertEqual(
-            ('username=foo\n'
-             'password=20101008T000000Z'
-             '500037cb3514b3fe01ebcda7c80973f5b4c0d8199a7a6563b85fd6edf272d460'),
-             output)
+            (
+                'username=foo\n'
+                'password=20101008T000000Z'
+                '500037cb3514b3fe01ebcda7c80973f5b4c0d8199a7a6563b85fd6edf272d460'
+            ),
+            output,
+        )
         self.assertEqual(0, rc)
 
     @mock.patch('sys.stdin', StringIO(VPC_PROTOCOL_HOST_PATH))
@@ -97,10 +108,13 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         rc = entry_point.main('codecommit credential-helper get'.split())
         output = stdout_mock.getvalue().strip()
         self.assertEqual(
-            ('username=foo\n'
-             'password=20101008T000000Z'
-             '9ed987cc6336c3de2d9f06b9236c7a9fd76b660b080db15983290e636dbfbd6b'),
-             output)
+            (
+                'username=foo\n'
+                'password=20101008T000000Z'
+                '9ed987cc6336c3de2d9f06b9236c7a9fd76b660b080db15983290e636dbfbd6b'
+            ),
+            output,
+        )
         self.assertEqual(0, rc)
 
 

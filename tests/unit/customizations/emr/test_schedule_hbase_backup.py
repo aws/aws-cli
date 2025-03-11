@@ -20,46 +20,54 @@ from tests.unit.customizations.emr import (
 
 class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
     prefix = 'emr schedule-hbase-backup'
-    default_steps = [{
-        'HadoopJarStep': {
-            'Args': [
-                'emr.hbase.backup.Main',
-                '--set-scheduled-backup',
-                'true',
-                '--backup-dir',
-                's3://abc/',
-                '--full-backup-time-interval',
-                '10',
-                '--full-backup-time-unit',
-                'minutes',
-                '--start-time',
-                'now'
-            ],
-            'Jar': '/home/hadoop/lib/hbase.jar'
-        },
-        'Name': 'Modify Backup Schedule',
-        'ActionOnFailure': 'CANCEL_AND_WAIT'
-    }]
+    default_steps = [
+        {
+            'HadoopJarStep': {
+                'Args': [
+                    'emr.hbase.backup.Main',
+                    '--set-scheduled-backup',
+                    'true',
+                    '--backup-dir',
+                    's3://abc/',
+                    '--full-backup-time-interval',
+                    '10',
+                    '--full-backup-time-unit',
+                    'minutes',
+                    '--start-time',
+                    'now',
+                ],
+                'Jar': '/home/hadoop/lib/hbase.jar',
+            },
+            'Name': 'Modify Backup Schedule',
+            'ActionOnFailure': 'CANCEL_AND_WAIT',
+        }
+    ]
 
     def test_schedule_hbase_backup_full(self):
-        args = ' --cluster-id j-ABCD --dir s3://abc/ --type full' +\
-               ' --interval 10 --unit minutes'
+        args = (
+            ' --cluster-id j-ABCD --dir s3://abc/ --type full'
+            + ' --interval 10 --unit minutes'
+        )
         cmdline = self.prefix + args
         result = {'JobFlowId': 'j-ABCD', 'Steps': self.default_steps}
 
         self.assert_params_for_cmd(cmdline, result)
 
     def test_schedule_hbase_backup_full_upper_case(self):
-        args = ' --cluster-id j-ABCD --dir s3://abc/ --type FULL' +\
-               ' --interval 10 --unit minutes'
+        args = (
+            ' --cluster-id j-ABCD --dir s3://abc/ --type FULL'
+            + ' --interval 10 --unit minutes'
+        )
         cmdline = self.prefix + args
         result = {'JobFlowId': 'j-ABCD', 'Steps': self.default_steps}
 
         self.assert_params_for_cmd(cmdline, result)
 
     def test_schedule_hbase_backup_incremental_upper_case(self):
-        args = ' --cluster-id j-ABCD --dir s3://abc/  --type INCREMENTAL' +\
-               ' --interval 10 --unit HOURS'
+        args = (
+            ' --cluster-id j-ABCD --dir s3://abc/  --type INCREMENTAL'
+            + ' --interval 10 --unit HOURS'
+        )
         cmdline = self.prefix + args
 
         steps = deepcopy(self.default_steps)
@@ -73,8 +81,10 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline, result)
 
     def test_schedule_hbase_backup_incremental(self):
-        args = ' --cluster-id j-ABCD --dir s3://abc/  --type incremental' +\
-               ' --interval 10 --unit minutes'
+        args = (
+            ' --cluster-id j-ABCD --dir s3://abc/  --type incremental'
+            + ' --interval 10 --unit minutes'
+        )
         cmdline = self.prefix + args
 
         steps = deepcopy(self.default_steps)
@@ -88,29 +98,39 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline, result)
 
     def test_schedule_hbase_backup_wrong_type(self):
-        args = ' --cluster-id j-ABCD --dir s3://abc/  --type wrong_type' +\
-               ' --interval 10 --unit minutes'
+        args = (
+            ' --cluster-id j-ABCD --dir s3://abc/  --type wrong_type'
+            + ' --interval 10 --unit minutes'
+        )
         cmdline = self.prefix + args
-        expected_error_msg = '\naws: error: invalid type. type should be' +\
-                             ' either full or incremental.\n'
+        expected_error_msg = (
+            '\naws: error: invalid type. type should be'
+            + ' either full or incremental.\n'
+        )
         result = self.run_cmd(cmdline, 252)
 
         self.assertEqual(expected_error_msg, result[1])
 
     def test_schedule_hbase_backup_wrong_unit(self):
-        args = ' --cluster-id j-ABCD --dir s3://abc/  --type full' +\
-               ' --interval 10 --unit wrong_unit'
+        args = (
+            ' --cluster-id j-ABCD --dir s3://abc/  --type full'
+            + ' --interval 10 --unit wrong_unit'
+        )
         cmdline = self.prefix + args
-        expected_error_msg = '\naws: error: invalid unit. unit should be' +\
-                             ' one of the following values: minutes,' +\
-                             ' hours or days.\n'
+        expected_error_msg = (
+            '\naws: error: invalid unit. unit should be'
+            + ' one of the following values: minutes,'
+            + ' hours or days.\n'
+        )
         result = self.run_cmd(cmdline, 252)
 
         self.assertEqual(expected_error_msg, result[1])
 
     def test_schedule_hbase_backup_consistent(self):
-        args = ' --cluster-id j-ABCD --dir s3://abc/ --type full' +\
-               ' --interval 10 --unit minutes --consistent'
+        args = (
+            ' --cluster-id j-ABCD --dir s3://abc/ --type full'
+            + ' --interval 10 --unit minutes --consistent'
+        )
         cmdline = self.prefix + args
 
         steps = deepcopy(self.default_steps)
@@ -120,8 +140,10 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(cmdline, result)
 
     def test_schedule_hbase_backup_start_time(self):
-        args = ' --cluster-id j-ABCD --dir s3://abc/ --type full --interval' +\
-               ' 10 --unit minutes --start-time 2014-04-18T10:43:24-07:00'
+        args = (
+            ' --cluster-id j-ABCD --dir s3://abc/ --type full --interval'
+            + ' 10 --unit minutes --start-time 2014-04-18T10:43:24-07:00'
+        )
         cmdline = self.prefix + args
 
         steps = deepcopy(self.default_steps)
@@ -130,16 +152,20 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
         result = {'JobFlowId': 'j-ABCD', 'Steps': steps}
         self.assert_params_for_cmd(cmdline, result)
 
-    @mock.patch('awscli.customizations.emr.'
-                'emrutils.get_release_label')
+    @mock.patch('awscli.customizations.emr.' 'emrutils.get_release_label')
     def test_unsupported_command_on_release_based_cluster_error(
-            self, grl_patch):
+        self, grl_patch
+    ):
         grl_patch.return_value = 'emr-4.0'
-        args = ' --cluster-id j-ABCD --dir s3://abc/ --type full' +\
-               ' --interval 10 --unit minutes'
+        args = (
+            ' --cluster-id j-ABCD --dir s3://abc/ --type full'
+            + ' --interval 10 --unit minutes'
+        )
         cmdline = self.prefix + args
-        expected_error_msg = ("\naws: error: schedule-hbase-backup"
-                              " is not supported with 'emr-4.0' release.\n")
+        expected_error_msg = (
+            "\naws: error: schedule-hbase-backup"
+            " is not supported with 'emr-4.0' release.\n"
+        )
         result = self.run_cmd(cmdline, 252)
 
         self.assertEqual(result[1], expected_error_msg)

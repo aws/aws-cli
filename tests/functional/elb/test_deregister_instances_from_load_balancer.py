@@ -14,7 +14,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestDeregisterInstancesFromLoadBalancer(BaseAWSCommandParamsTest):
-
     prefix = 'elb deregister-instances-from-load-balancer'
 
     def test_shorthand(self):
@@ -25,7 +24,7 @@ class TestDeregisterInstancesFromLoadBalancer(BaseAWSCommandParamsTest):
             'Instances': [
                 {'InstanceId': 'id1'},
                 {'InstanceId': 'id2'},
-                {'InstanceId': 'id3'}
-            ]
+                {'InstanceId': 'id3'},
+            ],
         }
         self.assert_params_for_cmd(command, expected_params)

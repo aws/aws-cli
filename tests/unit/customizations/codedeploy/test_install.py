@@ -42,7 +42,9 @@ class TestInstall(unittest.TestCase):
         self.system = self.system_patcher.start()
         self.system.return_value = 'Linux'
 
-        self.linux_distribution_patcher = mock.patch('awscli.compat.linux_distribution')
+        self.linux_distribution_patcher = mock.patch(
+            'awscli.compat.linux_distribution'
+        )
         self.linux_distribution = self.linux_distribution_patcher.start()
         self.linux_distribution.return_value = ('Ubuntu', '', '')
 
@@ -68,7 +70,8 @@ class TestInstall(unittest.TestCase):
 
         self.open_patcher = mock.patch(
             'awscli.customizations.codedeploy.systems.open',
-            mock.mock_open(), create=True
+            mock.mock_open(),
+            create=True,
         )
         self.open = self.open_patcher.start()
 
@@ -110,13 +113,15 @@ class TestInstall(unittest.TestCase):
     def test_install_throws_on_unsupported_system(self):
         self.system.return_value = 'Unsupported'
         with self.assertRaisesRegex(
-                RuntimeError, System.UNSUPPORTED_SYSTEM_MSG):
+            RuntimeError, System.UNSUPPORTED_SYSTEM_MSG
+        ):
             self.install._run_main(self.args, self.globals)
 
     def test_install_throws_on_ec2_instance(self):
         self.urlopen.side_effect = None
         with self.assertRaisesRegex(
-                RuntimeError, 'Amazon EC2 instances are not supported.'):
+            RuntimeError, 'Amazon EC2 instances are not supported.'
+        ):
             self.install._run_main(self.args, self.globals)
         self.assertIn('system', self.args)
         self.assertTrue(isinstance(self.args.system, Ubuntu))
@@ -124,25 +129,28 @@ class TestInstall(unittest.TestCase):
     def test_install_throws_on_non_administrator(self):
         self.geteuid.return_value = 1
         with self.assertRaisesRegex(
-                RuntimeError, 'You must run this command as sudo.'):
+            RuntimeError, 'You must run this command as sudo.'
+        ):
             self.install._run_main(self.args, self.globals)
 
     def test_install_throws_on_no_override_config(self):
         self.isfile.return_value = True
         self.args.override_config = False
         with self.assertRaisesRegex(
-                RuntimeError,
-                'The on-premises instance configuration file already exists. '
-                'Specify --override-config to update the existing on-premises '
-                'instance configuration file.'):
+            RuntimeError,
+            'The on-premises instance configuration file already exists. '
+            'Specify --override-config to update the existing on-premises '
+            'instance configuration file.',
+        ):
             self.install._run_main(self.args, self.globals)
 
     def test_install_throws_on_invalid_agent_installer(self):
         self.args.agent_installer = 'invalid-s3-location'
         with self.assertRaisesRegex(
-                ParamValidationError,
-                '--agent-installer must specify the Amazon S3 URL format as '
-                's3://<bucket>/<key>.'):
+            ParamValidationError,
+            '--agent-installer must specify the Amazon S3 URL format as '
+            's3://<bucket>/<key>.',
+        ):
             self.install._run_main(self.args, self.globals)
 
     @mock.patch.object(Ubuntu, 'install')
@@ -171,7 +179,7 @@ class TestInstall(unittest.TestCase):
         self.makedirs.assert_called_with('/etc/codedeploy-agent/conf')
         self.copyfile.assset_called_with(
             'codedeploy.onpremises.yml',
-            '/etc/codedeploy-agent/conf/codedeploy.onpremises.yml'
+            '/etc/codedeploy-agent/conf/codedeploy.onpremises.yml',
         )
         install.assert_called_with(self.args)
 
@@ -189,7 +197,7 @@ class TestInstall(unittest.TestCase):
         self.makedirs.assert_called_with(r'C:\ProgramData\Amazon\CodeDeploy')
         self.copyfile.assset_called_with(
             'conf.onpremises.yml',
-            r'C:\ProgramData\Amazon\CodeDeploy\conf.onpremises.yml'
+            r'C:\ProgramData\Amazon\CodeDeploy\conf.onpremises.yml',
         )
         validate_administrator.assert_called_with()
         install.assert_called_with(self.args)

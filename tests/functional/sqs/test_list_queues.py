@@ -16,7 +16,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestListQueues(BaseAWSCommandParamsTest):
-
     prefix = 'sqs list-queues'
 
     def test_no_param(self):

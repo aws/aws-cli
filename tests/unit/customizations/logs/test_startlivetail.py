@@ -228,7 +228,9 @@ class KeywordTest(unittest.TestCase):
         log_event = "This is an INFO log"
         self.keyword = Keyword(text)
 
-        colored_log_event = self.keyword._add_color_to_string(log_event, 11, 15)
+        colored_log_event = self.keyword._add_color_to_string(
+            log_event, 11, 15
+        )
 
         self.assertEqual(
             "This is an "
@@ -244,7 +246,9 @@ class KeywordTest(unittest.TestCase):
         log_event = "This is an INFO log"
         self.keyword = Keyword(text)
 
-        colored_log_event = self.keyword._add_color_to_string(log_event, 11, 15)
+        colored_log_event = self.keyword._add_color_to_string(
+            log_event, 11, 15
+        )
         uncolored_log_event = self.keyword._remove_color_from_string(
             log_event, 15, 19
         )
@@ -393,7 +397,9 @@ class LiveTailKeyBindingsTest(unittest.TestCase):
         self.ui.update_bottom_toolbar.assert_called_once_with(
             self.ui.get_instructions()
         )
-        self.ui.update_quit_button.assert_called_once_with(self.ui.EXIT_SESSION)
+        self.ui.update_quit_button.assert_called_once_with(
+            self.ui.EXIT_SESSION
+        )
         self.ui._application.invalidate.assert_called_once_with()
 
     def test_any_key_binding(self):
@@ -518,7 +524,9 @@ class LiveTailKeyBindingsTest(unittest.TestCase):
         self.ui.update_bottom_toolbar.assert_called_once_with(
             self.ui.get_instructions()
         )
-        self.ui.update_quit_button.assert_called_once_with(self.ui.EXIT_SESSION)
+        self.ui.update_quit_button.assert_called_once_with(
+            self.ui.EXIT_SESSION
+        )
         self.ui._application.invalidate.assert_called_once_with()
 
         # going to highlight mode

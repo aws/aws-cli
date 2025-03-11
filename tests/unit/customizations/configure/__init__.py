@@ -19,10 +19,16 @@ class FakeConfigStore:
 
 
 class FakeSession:
-
-    def __init__(self, all_variables, profile_does_not_exist=False,
-                 config_file_vars=None, environment_vars=None,
-                 credentials=None, profile=None, available_profiles=None):
+    def __init__(
+        self,
+        all_variables,
+        profile_does_not_exist=False,
+        config_file_vars=None,
+        environment_vars=None,
+        credentials=None,
+        profile=None,
+        available_profiles=None,
+    ):
         self.variables = all_variables
         self.profile_does_not_exist = profile_does_not_exist
         self.config = {}

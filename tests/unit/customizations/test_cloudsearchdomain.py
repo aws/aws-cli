@@ -22,16 +22,19 @@ class TestSearchCommand(BaseAWSCommandParamsTest):
     def test_search_with_query(self):
         cmd = self.prefix.split()
         cmd += [
-            '--endpoint-url', 'http://example.com/',
+            '--endpoint-url',
+            'http://example.com/',
             # Note we're also verifying that --query is renamed to
             # --search-query from argrename.py.
-            '--search-query', 'George Lucas',
+            '--search-query',
+            'George Lucas',
             '--query-options',
-            '{"defaultOperator":"and","fields":["directors^10"]}']
+            '{"defaultOperator":"and","fields":["directors^10"]}',
+        ]
 
         expected = {
             'query': 'George Lucas',
-            'queryOptions': '{"defaultOperator":"and","fields":["directors^10"]}'
+            'queryOptions': '{"defaultOperator":"and","fields":["directors^10"]}',
         }
         self.assert_params_for_cmd(cmd, expected)
 

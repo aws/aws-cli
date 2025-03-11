@@ -26,7 +26,6 @@ from awscli.testutils import (
 
 
 class TestGetPasswordData(BaseAWSCommandParamsTest):
-
     COMMAND = 'iam add-user-to-group --group-name foo --user-name bar'
 
     def setUp(self):
@@ -52,7 +51,6 @@ class TestGetPasswordData(BaseAWSCommandParamsTest):
 
 
 class TestListUsers(BaseAWSCommandParamsTest):
-
     def setUp(self):
         super(TestListUsers, self).setUp()
         self.parsed_response = {
@@ -62,14 +60,14 @@ class TestListUsers(BaseAWSCommandParamsTest):
                     "Path": "/",
                     "CreateDate": "2013-02-12T19:08:52Z",
                     "UserId": "EXAMPLEUSERID",
-                    "Arn": "arn:aws:iam::12345:user/testuser1"
+                    "Arn": "arn:aws:iam::12345:user/testuser1",
                 },
                 {
                     "UserName": "testuser-51",
                     "Path": "/",
                     "CreateDate": "2012-10-14T23:53:39Z",
                     "UserId": "EXAMPLEUSERID",
-                    "Arn": "arn:aws:iam::123456:user/testuser2"
+                    "Arn": "arn:aws:iam::123456:user/testuser2",
                 },
             ]
         }
@@ -79,13 +77,16 @@ class TestListUsers(BaseAWSCommandParamsTest):
         parsed_output = json.loads(output)
         self.assertIn('Users', parsed_output)
         self.assertEqual(len(parsed_output['Users']), 2)
-        self.assertEqual(sorted(parsed_output['Users'][0].keys()),
-                         ['Arn', 'CreateDate', 'Path', 'UserId', 'UserName'])
+        self.assertEqual(
+            sorted(parsed_output['Users'][0].keys()),
+            ['Arn', 'CreateDate', 'Path', 'UserId', 'UserName'],
+        )
 
     def test_jmespath_json_response(self):
         jmespath_query = 'Users[*].UserName'
-        output = self.run_cmd('iam list-users --query %s' % jmespath_query,
-                              expected_rc=0)[0]
+        output = self.run_cmd(
+            'iam list-users --query %s' % jmespath_query, expected_rc=0
+        )[0]
         parsed_output = json.loads(output)
         self.assertEqual(parsed_output, ['testuser-50', 'testuser-51'])
 
@@ -94,8 +95,9 @@ class TestListUsers(BaseAWSCommandParamsTest):
         # should be printing it to stdout if a jmespath query
         # evalutes to 0.
         jmespath_query = '`0`'
-        output = self.run_cmd('iam list-users --query %s' % jmespath_query,
-                              expected_rc=0)[0]
+        output = self.run_cmd(
+            'iam list-users --query %s' % jmespath_query, expected_rc=0
+        )[0]
         self.assertEqual(output, '0\n')
 
     def test_unknown_output_type_from_env_var(self):

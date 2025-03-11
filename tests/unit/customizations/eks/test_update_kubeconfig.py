@@ -60,21 +60,21 @@ def generate_env_variable(files):
 
 EXAMPLE_ARN = "arn:aws:eks:region:111222333444:cluster/ExampleCluster"
 
+
 class TestKubeconfigSelector(unittest.TestCase):
     def setUp(self):
         self._validator = kubeconfig.KubeconfigValidator()
         self._loader = kubeconfig.KubeconfigLoader(self._validator)
 
-    def assert_chosen_path(self,
-                           env_variable,
-                           path_in,
-                           cluster_name,
-                           chosen_path):
-        selector = KubeconfigSelector(env_variable, path_in, 
-                                                    self._validator,
-                                                    self._loader)
-        self.assertEqual(selector.choose_kubeconfig(cluster_name).path,
-                         chosen_path)  
+    def assert_chosen_path(
+        self, env_variable, path_in, cluster_name, chosen_path
+    ):
+        selector = KubeconfigSelector(
+            env_variable, path_in, self._validator, self._loader
+        )
+        self.assertEqual(
+            selector.choose_kubeconfig(cluster_name).path, chosen_path
+        )
 
     def test_parse_env_variable(self):
         paths = [
@@ -84,158 +84,222 @@ class TestKubeconfigSelector(unittest.TestCase):
             get_testdata("valid_bad_cluster2"),
             "",
             get_testdata("valid_existing"),
-            ""
+            "",
         ]
 
         env_variable = generate_env_variable(paths)
 
-        selector = KubeconfigSelector(env_variable, None, self._validator,
-                                                          self._loader)
-        self.assertEqual(selector._paths, [path for path in paths 
-                                                if len(path) > 0])
+        selector = KubeconfigSelector(
+            env_variable, None, self._validator, self._loader
+        )
+        self.assertEqual(
+            selector._paths, [path for path in paths if len(path) > 0]
+        )
 
     def test_choose_env_only(self):
-        paths = [
-            get_testdata("valid_simple"),
-            get_testdata("valid_existing")
-        ] + glob.glob(get_testdata("invalid_*")) + [
-            get_testdata("valid_bad_context"),
-            get_testdata("valid_no_user")
-        ]
+        paths = (
+            [get_testdata("valid_simple"), get_testdata("valid_existing")]
+            + glob.glob(get_testdata("invalid_*"))
+            + [
+                get_testdata("valid_bad_context"),
+                get_testdata("valid_no_user"),
+            ]
+        )
         env_variable = generate_env_variable(paths)
-        self.assert_chosen_path(env_variable, 
-                                None, 
-                                EXAMPLE_ARN, 
-                                get_testdata("valid_simple"))
+        self.assert_chosen_path(
+            env_variable, None, EXAMPLE_ARN, get_testdata("valid_simple")
+        )
 
     def test_choose_existing(self):
-        paths = [
-            get_testdata("valid_simple"),
-            get_testdata("valid_existing")
-        ] + glob.glob(get_testdata("invalid_*")) + [
-            get_testdata("valid_bad_context"),
-            get_testdata("valid_no_user"),
-            get_testdata("output_single"),
-            get_testdata("output_single_with_role")
-        ]
+        paths = (
+            [get_testdata("valid_simple"), get_testdata("valid_existing")]
+            + glob.glob(get_testdata("invalid_*"))
+            + [
+                get_testdata("valid_bad_context"),
+                get_testdata("valid_no_user"),
+                get_testdata("output_single"),
+                get_testdata("output_single_with_role"),
+            ]
+        )
         env_variable = generate_env_variable(paths)
-        self.assert_chosen_path(env_variable, 
-                                None, 
-                                EXAMPLE_ARN, 
-                                get_testdata("output_single"))
+        self.assert_chosen_path(
+            env_variable, None, EXAMPLE_ARN, get_testdata("output_single")
+        )
 
     def test_arg_override(self):
-        paths = [
-            get_testdata("valid_simple"),
-            get_testdata("valid_existing")
-        ] + glob.glob(get_testdata("invalid_*")) + [
-            get_testdata("valid_bad_context"),
-            get_testdata("valid_no_user"),
-            get_testdata("output_single"),
-            get_testdata("output_single_with_role")
-        ]
+        paths = (
+            [get_testdata("valid_simple"), get_testdata("valid_existing")]
+            + glob.glob(get_testdata("invalid_*"))
+            + [
+                get_testdata("valid_bad_context"),
+                get_testdata("valid_no_user"),
+                get_testdata("output_single"),
+                get_testdata("output_single_with_role"),
+            ]
+        )
         env_variable = generate_env_variable(paths)
-        self.assert_chosen_path(env_variable, 
-                                get_testdata("output_combined"), 
-                                EXAMPLE_ARN, 
-                                get_testdata("output_combined"))
+        self.assert_chosen_path(
+            env_variable,
+            get_testdata("output_combined"),
+            EXAMPLE_ARN,
+            get_testdata("output_combined"),
+        )
 
     def test_first_corrupted(self):
         paths = glob.glob(get_testdata("invalid_*")) + [
             get_testdata("valid_bad_context"),
-            get_testdata("valid_no_user")
+            get_testdata("valid_no_user"),
         ]
         env_variable = generate_env_variable(paths)
-        selector = KubeconfigSelector(env_variable, None, self._validator,
-                                                          self._loader)
-        self.assertRaises(kubeconfig.KubeconfigCorruptedError, 
-                          selector.choose_kubeconfig,
-                          EXAMPLE_ARN)
+        selector = KubeconfigSelector(
+            env_variable, None, self._validator, self._loader
+        )
+        self.assertRaises(
+            kubeconfig.KubeconfigCorruptedError,
+            selector.choose_kubeconfig,
+            EXAMPLE_ARN,
+        )
 
     def test_arg_override_first_corrupted(self):
         paths = glob.glob(get_testdata("invalid_*")) + [
             get_testdata("valid_bad_context"),
-            get_testdata("valid_no_user")
+            get_testdata("valid_no_user"),
         ]
         env_variable = generate_env_variable(paths)
-        self.assert_chosen_path(env_variable, 
-                                get_testdata("output_combined"), 
-                                EXAMPLE_ARN, 
-                                get_testdata("output_combined"))
+        self.assert_chosen_path(
+            env_variable,
+            get_testdata("output_combined"),
+            EXAMPLE_ARN,
+            get_testdata("output_combined"),
+        )
+
 
 class TestEKSClient(unittest.TestCase):
     def setUp(self):
-        self._correct_cluster_entry = OrderedDict([
-            ("cluster", OrderedDict([
-                ("certificate-authority-data", describe_cluster_response()\
-                    ["cluster"]["certificateAuthority"]["data"]),
-                ("server", describe_cluster_response()["cluster"]["endpoint"])
-            ])),
-            ("name", describe_cluster_response()["cluster"]["arn"])
-        ])
-        self._correct_user_entry = OrderedDict([
-            ("name", describe_cluster_response()["cluster"]["arn"]),
-            ("user", OrderedDict([
-                ("exec", OrderedDict([
-                    ("apiVersion", API_VERSION),
-                    ("args",
+        self._correct_cluster_entry = OrderedDict(
+            [
+                (
+                    "cluster",
+                    OrderedDict(
                         [
-                            "--region",
-                            "region",
-                            "eks",
-                            "get-token",
-                            "--cluster-name",
-                            "ExampleCluster",
-                            "--output",
-                            "json",
-                        ]),
-                    ("command", "aws")
-                ]))
-            ]))
-        ])
+                            (
+                                "certificate-authority-data",
+                                describe_cluster_response()["cluster"][
+                                    "certificateAuthority"
+                                ]["data"],
+                            ),
+                            (
+                                "server",
+                                describe_cluster_response()["cluster"][
+                                    "endpoint"
+                                ],
+                            ),
+                        ]
+                    ),
+                ),
+                ("name", describe_cluster_response()["cluster"]["arn"]),
+            ]
+        )
+        self._correct_user_entry = OrderedDict(
+            [
+                ("name", describe_cluster_response()["cluster"]["arn"]),
+                (
+                    "user",
+                    OrderedDict(
+                        [
+                            (
+                                "exec",
+                                OrderedDict(
+                                    [
+                                        ("apiVersion", API_VERSION),
+                                        (
+                                            "args",
+                                            [
+                                                "--region",
+                                                "region",
+                                                "eks",
+                                                "get-token",
+                                                "--cluster-name",
+                                                "ExampleCluster",
+                                                "--output",
+                                                "json",
+                                            ],
+                                        ),
+                                        ("command", "aws"),
+                                    ]
+                                ),
+                            )
+                        ]
+                    ),
+                ),
+            ]
+        )
 
-        self._correct_user_entry_outpost_cluster = OrderedDict([
-            ("name", describe_cluster_response()["cluster"]["arn"]),
-            ("user", OrderedDict([
-                ("exec", OrderedDict([
-                    ("apiVersion", API_VERSION),
-                    ("args",
+        self._correct_user_entry_outpost_cluster = OrderedDict(
+            [
+                ("name", describe_cluster_response()["cluster"]["arn"]),
+                (
+                    "user",
+                    OrderedDict(
                         [
-                            "--region",
-                            "region",
-                            "eks",
-                            "get-token",
-                            "--cluster-id",
-                            "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
-                            "--output",
-                            "json",
-                        ]),
-                    ("command", "aws")
-                ]))
-            ]))
-        ])
+                            (
+                                "exec",
+                                OrderedDict(
+                                    [
+                                        ("apiVersion", API_VERSION),
+                                        (
+                                            "args",
+                                            [
+                                                "--region",
+                                                "region",
+                                                "eks",
+                                                "get-token",
+                                                "--cluster-id",
+                                                "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+                                                "--output",
+                                                "json",
+                                            ],
+                                        ),
+                                        ("command", "aws"),
+                                    ]
+                                ),
+                            )
+                        ]
+                    ),
+                ),
+            ]
+        )
 
         self._mock_client = mock.Mock()
-        self._mock_client.describe_cluster.return_value =\
-                                                    describe_cluster_response()
+        self._mock_client.describe_cluster.return_value = (
+            describe_cluster_response()
+        )
 
         self._session = mock.Mock(spec=botocore.session.Session)
         self._session.create_client.return_value = self._mock_client
         self._session.profile = None
 
-        self._client = EKSClient(self._session, parsed_args=Namespace(cluster_name="ExampleCluster", role_arn=None))
+        self._client = EKSClient(
+            self._session,
+            parsed_args=Namespace(
+                cluster_name="ExampleCluster", role_arn=None
+            ),
+        )
 
     def test_get_cluster_description(self):
-        self.assertEqual(self._client.cluster_description,
-                         describe_cluster_response()["cluster"])
+        self.assertEqual(
+            self._client.cluster_description,
+            describe_cluster_response()["cluster"],
+        )
         self._mock_client.describe_cluster.assert_called_once_with(
             name="ExampleCluster"
         )
         self._session.create_client.assert_called_once_with("eks")
 
     def test_get_cluster_description_no_status(self):
-        self._mock_client.describe_cluster.return_value = \
+        self._mock_client.describe_cluster.return_value = (
             describe_cluster_no_status_response()
+        )
         with self.assertRaises(EKSClusterError):
             self._client.cluster_description
         self._mock_client.describe_cluster.assert_called_once_with(
@@ -244,44 +308,52 @@ class TestEKSClient(unittest.TestCase):
         self._session.create_client.assert_called_once_with("eks")
 
     def test_get_cluster_entry(self):
-        self.assertEqual(self._client.get_cluster_entry(),
-                         self._correct_cluster_entry)
+        self.assertEqual(
+            self._client.get_cluster_entry(), self._correct_cluster_entry
+        )
         self._mock_client.describe_cluster.assert_called_once_with(
             name="ExampleCluster"
         )
         self._session.create_client.assert_called_once_with("eks")
 
     def test_get_user_entry(self):
-        self.assertEqual(self._client.get_user_entry(),
-                         self._correct_user_entry)
+        self.assertEqual(
+            self._client.get_user_entry(), self._correct_user_entry
+        )
         self._mock_client.describe_cluster.assert_called_once_with(
             name="ExampleCluster"
         )
         self._session.create_client.assert_called_once_with("eks")
 
     def test_get_user_entry_outpost_cluster(self):
-        self._mock_client.describe_cluster.return_value =\
-                                                    describe_cluster_response_outpost_cluster()
-        self.assertEqual(self._client.get_user_entry(),
-                         self._correct_user_entry_outpost_cluster)
+        self._mock_client.describe_cluster.return_value = (
+            describe_cluster_response_outpost_cluster()
+        )
+        self.assertEqual(
+            self._client.get_user_entry(),
+            self._correct_user_entry_outpost_cluster,
+        )
         self._mock_client.describe_cluster.assert_called_once_with(
             name="ExampleCluster"
         )
-        self._session.create_client.assert_called_once_with("eks") 
+        self._session.create_client.assert_called_once_with("eks")
 
     def test_get_both(self):
-        self.assertEqual(self._client.get_cluster_entry(),
-                         self._correct_cluster_entry)
-        self.assertEqual(self._client.get_user_entry(),
-                         self._correct_user_entry)
+        self.assertEqual(
+            self._client.get_cluster_entry(), self._correct_cluster_entry
+        )
+        self.assertEqual(
+            self._client.get_user_entry(), self._correct_user_entry
+        )
         self._mock_client.describe_cluster.assert_called_once_with(
             name="ExampleCluster"
         )
         self._session.create_client.assert_called_once_with("eks")
 
     def test_cluster_creating(self):
-        self._mock_client.describe_cluster.return_value =\
-                                           describe_cluster_creating_response()
+        self._mock_client.describe_cluster.return_value = (
+            describe_cluster_creating_response()
+        )
         with self.assertRaises(EKSClusterError):
             self._client.cluster_description
         self._mock_client.describe_cluster.assert_called_once_with(
@@ -290,8 +362,9 @@ class TestEKSClient(unittest.TestCase):
         self._session.create_client.assert_called_once_with("eks")
 
     def test_cluster_deleting(self):
-        self._mock_client.describe_cluster.return_value =\
-                                           describe_cluster_deleting_response()
+        self._mock_client.describe_cluster.return_value = (
+            describe_cluster_deleting_response()
+        )
         with self.assertRaises(EKSClusterError):
             self._client.cluster_description
         self._mock_client.describe_cluster.assert_called_once_with(
@@ -302,13 +375,11 @@ class TestEKSClient(unittest.TestCase):
     def test_profile(self):
         self._session.profile = "profile"
         self._correct_user_entry["user"]["exec"]["env"] = [
-            OrderedDict([
-                ("name", "AWS_PROFILE"),
-                ("value", "profile")
-            ])
+            OrderedDict([("name", "AWS_PROFILE"), ("value", "profile")])
         ]
-        self.assertEqual(self._client.get_user_entry(),
-                         self._correct_user_entry)
+        self.assertEqual(
+            self._client.get_user_entry(), self._correct_user_entry
+        )
         self._mock_client.describe_cluster.assert_called_once_with(
             name="ExampleCluster"
         )
@@ -316,16 +387,19 @@ class TestEKSClient(unittest.TestCase):
 
     def test_create_user_with_alias(self):
         self._correct_user_entry["name"] = "alias"
-        self.assertEqual(self._client.get_user_entry(user_alias="alias"),
-                         self._correct_user_entry)
+        self.assertEqual(
+            self._client.get_user_entry(user_alias="alias"),
+            self._correct_user_entry,
+        )
         self._mock_client.describe_cluster.assert_called_once_with(
             name="ExampleCluster"
         )
         self._session.create_client.assert_called_once_with("eks")
 
     def test_create_user_without_alias(self):
-        self.assertEqual(self._client.get_user_entry(),
-                         self._correct_user_entry)
+        self.assertEqual(
+            self._client.get_user_entry(), self._correct_user_entry
+        )
         self._mock_client.describe_cluster.assert_called_once_with(
             name="ExampleCluster"
         )

@@ -34,10 +34,9 @@ class TestKubeconfigWriter(unittest.TestCase):
         self._writer = KubeconfigWriter()
 
     def test_write_order(self):
-        content = OrderedDict([
-            ("current-context", "context"),
-            ("apiVersion", "v1")
-        ])
+        content = OrderedDict(
+            [("current-context", "context"), ("apiVersion", "v1")]
+        )
         file_to_write = tempfile.NamedTemporaryFile(mode='w').name
         self.addCleanup(os.remove, file_to_write)
 
@@ -45,41 +44,38 @@ class TestKubeconfigWriter(unittest.TestCase):
         self._writer.write_kubeconfig(config)
 
         with open(file_to_write) as stream:
-            self.assertMultiLineEqual(stream.read(),
-                                      "current-context: context\n"
-                                      "apiVersion: v1\n")
+            self.assertMultiLineEqual(
+                stream.read(), "current-context: context\n" "apiVersion: v1\n"
+            )
+
     def test_write_makedirs(self):
-        content = OrderedDict([
-            ("current-context", "context"),
-            ("apiVersion", "v1")
-        ])
+        content = OrderedDict(
+            [("current-context", "context"), ("apiVersion", "v1")]
+        )
         containing_dir = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, containing_dir)
-        config_path = os.path.join(containing_dir,
-                                   "dir1",
-                                   "dir2",
-                                   "dir3")
+        config_path = os.path.join(containing_dir, "dir1", "dir2", "dir3")
 
         config = Kubeconfig(config_path, content)
         self._writer.write_kubeconfig(config)
 
         with open(config_path) as stream:
-            self.assertMultiLineEqual(stream.read(),
-                                      "current-context: context\n"
-                                      "apiVersion: v1\n")
+            self.assertMultiLineEqual(
+                stream.read(), "current-context: context\n" "apiVersion: v1\n"
+            )
 
     def test_write_directory(self):
-        content = OrderedDict([
-            ("current-context", "context"),
-            ("apiVersion", "v1")
-        ])
+        content = OrderedDict(
+            [("current-context", "context"), ("apiVersion", "v1")]
+        )
         containing_dir = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, containing_dir)
 
         config = Kubeconfig(containing_dir, content)
-        self.assertRaises(KubeconfigInaccessableError,
-                          self._writer.write_kubeconfig,
-                          config)
+        self.assertRaises(
+            KubeconfigInaccessableError, self._writer.write_kubeconfig, config
+        )
+
 
 class TestKubeconfigLoader(unittest.TestCase):
     def setUp(self):
@@ -100,53 +96,64 @@ class TestKubeconfigLoader(unittest.TestCase):
         """
         old_path = os.path.abspath(get_testdata(config))
         new_path = os.path.join(self._temp_directory, config)
-        shutil.copy2(old_path,
-                     new_path)
+        shutil.copy2(old_path, new_path)
         return new_path
 
     def test_load_simple(self):
         simple_path = self._clone_config("valid_simple")
-        content = OrderedDict([
-            ("apiVersion", "v1"),
-            ("clusters", [
-                OrderedDict([
-                    ("cluster", OrderedDict([
-                        ("server", "simple")
-                    ])),
-                    ("name", "simple")
-                ])
-            ]),
-            ("contexts", None),
-            ("current-context", "simple"),
-            ("kind", "Config"),
-            ("preferences", OrderedDict()),
-            ("users", None)
-        ])
+        content = OrderedDict(
+            [
+                ("apiVersion", "v1"),
+                (
+                    "clusters",
+                    [
+                        OrderedDict(
+                            [
+                                (
+                                    "cluster",
+                                    OrderedDict([("server", "simple")]),
+                                ),
+                                ("name", "simple"),
+                            ]
+                        )
+                    ],
+                ),
+                ("contexts", None),
+                ("current-context", "simple"),
+                ("kind", "Config"),
+                ("preferences", OrderedDict()),
+                ("users", None),
+            ]
+        )
         loaded_config = self._loader.load_kubeconfig(simple_path)
         self.assertEqual(loaded_config.content, content)
-        self._validator.validate_config.assert_called_with(Kubeconfig(simple_path,content))
+        self._validator.validate_config.assert_called_with(
+            Kubeconfig(simple_path, content)
+        )
 
     def test_load_noexist(self):
-        no_exist_path = os.path.join(self._temp_directory,
-                                     "this_does_not_exist")
+        no_exist_path = os.path.join(
+            self._temp_directory, "this_does_not_exist"
+        )
         loaded_config = self._loader.load_kubeconfig(no_exist_path)
-        self.assertEqual(loaded_config.content,
-                         _get_new_kubeconfig_content())
+        self.assertEqual(loaded_config.content, _get_new_kubeconfig_content())
         self._validator.validate_config.assert_called_with(
-            Kubeconfig(no_exist_path, _get_new_kubeconfig_content()))
+            Kubeconfig(no_exist_path, _get_new_kubeconfig_content())
+        )
 
     def test_load_empty(self):
         empty_path = self._clone_config("valid_empty_existing")
         loaded_config = self._loader.load_kubeconfig(empty_path)
-        self.assertEqual(loaded_config.content,
-                         _get_new_kubeconfig_content())
+        self.assertEqual(loaded_config.content, _get_new_kubeconfig_content())
         self._validator.validate_config.assert_called_with(
-            Kubeconfig(empty_path,
-                       _get_new_kubeconfig_content()))
+            Kubeconfig(empty_path, _get_new_kubeconfig_content())
+        )
 
     def test_load_directory(self):
         current_directory = self._temp_directory
-        self.assertRaises(KubeconfigInaccessableError,
-                          self._loader.load_kubeconfig,
-                          current_directory)
+        self.assertRaises(
+            KubeconfigInaccessableError,
+            self._loader.load_kubeconfig,
+            current_directory,
+        )
         self._validator.validate_config.assert_not_called()

@@ -37,7 +37,8 @@ class TestAssumeRolePlugin(unittest.TestCase):
         session.get_component.return_value = mock_resolver
 
         assumerole.inject_assume_role_provider_cache(
-            session, event_name='building-command-table.foo')
+            session, event_name='building-command-table.foo'
+        )
         session.get_component.assert_called_with('credential_provider')
         self.assertIsInstance(mock_assume_role.cache, assumerole.JSONFileCache)
         self.assertIsInstance(
@@ -57,11 +58,11 @@ class TestAssumeRolePlugin(unittest.TestCase):
 
     def test_no_registration_if_profile_does_not_exist(self):
         session = mock.Mock(spec=Session)
-        session.get_component.side_effect = ProfileNotFound(
-            profile='unknown')
+        session.get_component.side_effect = ProfileNotFound(profile='unknown')
 
         assumerole.inject_assume_role_provider_cache(
-            session, event_name='building-command-table.foo')
+            session, event_name='building-command-table.foo'
+        )
 
         credential_provider = session.get_component.return_value
         self.assertFalse(credential_provider.get_provider.called)

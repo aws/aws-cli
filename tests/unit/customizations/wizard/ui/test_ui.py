@@ -36,7 +36,8 @@ class TestFileCompleter(unittest.TestCase):
 
         with cd(self.temporary_directory):
             completions = list(
-                self.completer.get_completions(user_input, None))
+                self.completer.get_completions(user_input, None)
+            )
             return completions
 
     def test_can_list_children_of_dir_with_prefix(self):
@@ -46,8 +47,9 @@ class TestFileCompleter(unittest.TestCase):
 
         completions = self.get_completions_given_user_input('./b')
         self.assertEqual(
-            [c.text for c in completions], [os.path.join('.', 'bar.txt'),
-                                            os.path.join('.', 'baz.txt')])
+            [c.text for c in completions],
+            [os.path.join('.', 'bar.txt'), os.path.join('.', 'baz.txt')],
+        )
 
     def test_full_path_included_if_full_path_used_as_text(self):
         self.touch_file('foo.txt')
@@ -57,7 +59,7 @@ class TestFileCompleter(unittest.TestCase):
         )
         self.assertEqual(
             [c.text for c in completions],
-            [os.path.join(self.temporary_directory, 'foo.txt')]
+            [os.path.join(self.temporary_directory, 'foo.txt')],
         )
 
     def test_file_not_exists_returns_empy_list(self):

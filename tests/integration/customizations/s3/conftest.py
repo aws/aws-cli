@@ -86,11 +86,16 @@ def shared_non_dns_compatible_us_east_1_bucket(s3_utils):
 
 
 @pytest.fixture
-def clean_shared_buckets(s3_utils, shared_bucket, shared_copy_bucket,
-                         shared_cross_region_bucket,
-                         shared_non_dns_compatible_bucket,
-                         shared_non_dns_compatible_us_east_1_bucket,
-                         shared_dir_bucket, shared_copy_dir_bucket,):
+def clean_shared_buckets(
+    s3_utils,
+    shared_bucket,
+    shared_copy_bucket,
+    shared_cross_region_bucket,
+    shared_non_dns_compatible_bucket,
+    shared_non_dns_compatible_us_east_1_bucket,
+    shared_dir_bucket,
+    shared_copy_dir_bucket,
+):
     s3_utils.remove_all_objects(shared_bucket)
     s3_utils.remove_all_objects(shared_copy_bucket)
     s3_utils.remove_all_objects(shared_cross_region_bucket)

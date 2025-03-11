@@ -49,13 +49,13 @@ class TestTailCommand(BaseAWSCommandParamsTest):
             params={
                 'logGroupName': self.group_name,
                 'interleaved': True,
-                'startTime': mock.ANY
-            }
+                'startTime': mock.ANY,
+            },
         )
         self.assertEqual(
             stdout,
-            '%s %s %s' % (
-                self.formatted_log_timestamp, self.stream_name, self.message)
+            '%s %s %s'
+            % (self.formatted_log_timestamp, self.stream_name, self.message),
         )
 
     def test_tail_paginated(self):
@@ -70,7 +70,7 @@ class TestTailCommand(BaseAWSCommandParamsTest):
                         'ingestionTime': self.response_log_timestamp,
                     }
                 ],
-                'nextToken': 'token'
+                'nextToken': 'token',
             },
             {
                 "events": [
@@ -82,36 +82,34 @@ class TestTailCommand(BaseAWSCommandParamsTest):
                         'ingestionTime': self.response_log_timestamp,
                     }
                 ],
-            }
+            },
         ]
         stdout, _, _ = self.run_cmd('logs tail %s' % self.group_name)
         self.assertEqual(len(self.operations_called), 2)
-        self.assertEqual(
-            self.operations_called[0][0].name, 'FilterLogEvents')
+        self.assertEqual(self.operations_called[0][0].name, 'FilterLogEvents')
         self.assertEqual(
             self.operations_called[0][1],
             {
                 'logGroupName': 'mygroup',
                 'interleaved': True,
                 'startTime': mock.ANY,
-            }
+            },
         )
-        self.assertEqual(
-            self.operations_called[1][0].name, 'FilterLogEvents')
+        self.assertEqual(self.operations_called[1][0].name, 'FilterLogEvents')
         self.assertEqual(
             self.operations_called[1][1],
             {
                 'logGroupName': 'mygroup',
                 'interleaved': True,
                 'startTime': mock.ANY,
-                'nextToken': 'token'
-            }
+                'nextToken': 'token',
+            },
         )
         self.assertEqual(
             stdout,
-            '%s %s %s' % (
-                self.formatted_log_timestamp, self.stream_name,
-                self.message) * 2
+            '%s %s %s'
+            % (self.formatted_log_timestamp, self.stream_name, self.message)
+            * 2,
         )
 
     def test_tail_with_follow(self):
@@ -137,32 +135,39 @@ class TestTailCommand(BaseAWSCommandParamsTest):
                         'ingestionTime': self.response_log_timestamp,
                     }
                 ],
-            }
+            },
         ]
         with mock.patch('time.sleep') as mock_sleep:
             mock_sleep.side_effect = [None, KeyboardInterrupt]
             stdout, _, _ = self.run_cmd(
-                'logs tail %s --follow' % self.group_name)
+                'logs tail %s --follow' % self.group_name
+            )
             self.assertEqual(
                 stdout,
-                '%s %s %s' % (
-                    self.formatted_log_timestamp, self.stream_name,
-                    self.message) * 2
+                '%s %s %s'
+                % (
+                    self.formatted_log_timestamp,
+                    self.stream_name,
+                    self.message,
+                )
+                * 2,
             )
 
     def test_tail_defaults_to_10m(self):
         datetime_mock = mock.Mock(wraps=datetime)
         datetime_mock.utcnow = mock.Mock(
-            return_value=datetime(1970, 1, 1, 0, 10, 1, tzinfo=tz.tzutc()))
-        with mock.patch('awscli.customizations.logs.tail.datetime',
-                        new=datetime_mock):
+            return_value=datetime(1970, 1, 1, 0, 10, 1, tzinfo=tz.tzutc())
+        )
+        with mock.patch(
+            'awscli.customizations.logs.tail.datetime', new=datetime_mock
+        ):
             self.assert_params_for_cmd(
                 'logs tail %s' % self.group_name,
                 params={
                     'logGroupName': self.group_name,
                     'interleaved': True,
                     'startTime': 1000,
-                }
+                },
             )
 
     def test_tail_with_since(self):
@@ -171,23 +176,25 @@ class TestTailCommand(BaseAWSCommandParamsTest):
             params={
                 'logGroupName': self.group_name,
                 'interleaved': True,
-                'startTime': 1000
-            }
+                'startTime': 1000,
+            },
         )
 
     def test_tail_with_relative_since(self):
         datetime_mock = mock.Mock(wraps=datetime)
         datetime_mock.utcnow = mock.Mock(
-            return_value=datetime(1970, 1, 1, 0, 0, 2, tzinfo=tz.tzutc()))
-        with mock.patch('awscli.customizations.logs.tail.datetime',
-                        new=datetime_mock):
+            return_value=datetime(1970, 1, 1, 0, 0, 2, tzinfo=tz.tzutc())
+        )
+        with mock.patch(
+            'awscli.customizations.logs.tail.datetime', new=datetime_mock
+        ):
             self.assert_params_for_cmd(
                 'logs tail %s --since 1s' % self.group_name,
                 params={
                     'logGroupName': self.group_name,
                     'interleaved': True,
                     'startTime': 1000,
-                }
+                },
             )
 
     def test_tail_with_filter_pattern(self):
@@ -197,58 +204,61 @@ class TestTailCommand(BaseAWSCommandParamsTest):
                 'logGroupName': self.group_name,
                 'interleaved': True,
                 'startTime': mock.ANY,
-                'filterPattern': 'Pattern'
-            }
+                'filterPattern': 'Pattern',
+            },
         )
 
     def test_tail_with_short_format(self):
         stdout, _, _ = self.run_cmd(
-            'logs tail %s --format short' % self.group_name)
+            'logs tail %s --format short' % self.group_name
+        )
         self.assertEqual(
             stdout,
-            '%s %s' % (self.formatted_short_log_timestamp, self.message)
+            '%s %s' % (self.formatted_short_log_timestamp, self.message),
         )
 
     def test_tail_with_color_on(self):
         stdout, _, _ = self.run_cmd(
-            'logs tail %s --color on' % self.group_name)
+            'logs tail %s --color on' % self.group_name
+        )
         self.assertEqual(
             stdout,
-            "\x1b[32m%s\x1b[0m \x1b[36m%s\x1b[0m %s" % (
-                self.formatted_log_timestamp, self.stream_name, self.message)
+            "\x1b[32m%s\x1b[0m \x1b[36m%s\x1b[0m %s"
+            % (self.formatted_log_timestamp, self.stream_name, self.message),
         )
 
     def test_tail_with_color_off(self):
         stdout, _, _ = self.run_cmd(
-            'logs tail %s --color off' % self.group_name)
+            'logs tail %s --color off' % self.group_name
+        )
         self.assertEqual(
             stdout,
-            "%s %s %s" % (
-                self.formatted_log_timestamp, self.stream_name, self.message)
+            "%s %s %s"
+            % (self.formatted_log_timestamp, self.stream_name, self.message),
         )
 
     def test_tail_no_color_when_tty(self):
         with mock.patch(
-                'awscli.customizations.logs.tail.is_a_tty') as mock_is_a_tty:
+            'awscli.customizations.logs.tail.is_a_tty'
+        ) as mock_is_a_tty:
             mock_is_a_tty.return_value = True
-            stdout, _, _ = self.run_cmd(
-                'logs tail %s' % self.group_name)
+            stdout, _, _ = self.run_cmd('logs tail %s' % self.group_name)
         self.assertEqual(
             stdout,
-            "\x1b[32m%s\x1b[0m \x1b[36m%s\x1b[0m %s" % (
-                self.formatted_log_timestamp, self.stream_name, self.message)
+            "\x1b[32m%s\x1b[0m \x1b[36m%s\x1b[0m %s"
+            % (self.formatted_log_timestamp, self.stream_name, self.message),
         )
 
     def test_tail_with_log_stream_names(self):
         self.assert_params_for_cmd(
-            'logs tail %s --log-stream-names foo-stream bar-stream' %
-            self.group_name,
+            'logs tail %s --log-stream-names foo-stream bar-stream'
+            % self.group_name,
             params={
                 'logGroupName': self.group_name,
                 'interleaved': True,
                 'startTime': mock.ANY,
-                'logStreamNames': ['foo-stream', 'bar-stream']
-            }
+                'logStreamNames': ['foo-stream', 'bar-stream'],
+            },
         )
 
     def test_tail_with_log_stream_name_prefix(self):
@@ -258,6 +268,6 @@ class TestTailCommand(BaseAWSCommandParamsTest):
                 'logGroupName': self.group_name,
                 'interleaved': True,
                 'startTime': mock.ANY,
-                'logStreamNamePrefix': 'foo'
-            }
+                'logStreamNamePrefix': 'foo',
+            },
         )

@@ -20,7 +20,8 @@ class TestCreateBucket(BaseCLIDriverTest):
             _send.side_effect = [
                 mock.Mock(status_code=500, headers={}, content=b''),
                 mock.Mock(
-                    status_code=409, headers={},
+                    status_code=409,
+                    headers={},
                     content=b'''<?xml version="1.0" encoding="UTF-8"?>
                         <Error>
                         <Code>BucketAlreadyOwnedByYou</Code>
@@ -29,7 +30,8 @@ class TestCreateBucket(BaseCLIDriverTest):
                         <BucketName>awscli-foo-bar</BucketName>
                         <RequestId>0123456789ABCDEF</RequestId>
                         <HostId>foo</HostId>
-                        </Error>'''),
+                        </Error>''',
+                ),
                 mock.Mock(status_code=200, headers={}, content=b''),
-                ]
+            ]
             self.assertEqual(create_bucket(self.session, 'bucket'), 'bucket')

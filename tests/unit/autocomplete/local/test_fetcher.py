@@ -44,7 +44,8 @@ class TestCliDriverFetcher(unittest.TestCase):
 
     def test_get_argument_documentation(self):
         help_text = self.fetcher.get_argument_documentation(
-            ['aws', 'ec2'], 'describe-instances', 'instance-ids')
+            ['aws', 'ec2'], 'describe-instances', 'instance-ids'
+        )
         self.assertEqual(help_text, 'arg doc')
 
     def test_get_global_arg_documentation(self):
@@ -53,5 +54,6 @@ class TestCliDriverFetcher(unittest.TestCase):
 
     def test_get_operational_model(self):
         operational_model = self.fetcher.get_operation_model(
-            ['aws', 'ec2'], 'describe-instances')
+            ['aws', 'ec2'], 'describe-instances'
+        )
         self.assertEqual(operational_model, 'fake_operational_model')

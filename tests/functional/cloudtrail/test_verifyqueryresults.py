@@ -28,7 +28,9 @@ SAMPLE_HASH_VALUE = (
 )
 SAMPLE_SIGNING_FILE = {
     "region": "us-east-1",
-    "files": [{"fileHashValue": SAMPLE_HASH_VALUE, "fileName": "result_1.csv.gz"}],
+    "files": [
+        {"fileHashValue": SAMPLE_HASH_VALUE, "fileName": "result_1.csv.gz"}
+    ],
     "hashAlgorithm": "SHA-256",
     "publicKeyFingerprint": "fingerprint",
     "signatureAlgorithm": "SHA256withRSA",
@@ -46,21 +48,24 @@ class TestVerifyQueryResults(BaseAWSCommandParamsTest):
             public_key,
             private_key,
         ) = PublicPrivateKeyLoader.load_private_key_and_public_key(
-            get_private_key_path(),
-            get_public_key_path()
+            get_private_key_path(), get_public_key_path()
         )
 
         sign_file = copy.deepcopy(SAMPLE_SIGNING_FILE)
         signature = private_key.sign(
             signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
-            digest=hashlib.sha256(SAMPLE_HASH_VALUE.encode()).digest()
+            digest=hashlib.sha256(SAMPLE_HASH_VALUE.encode()).digest(),
         )
         sign_file["hashSignature"] = binascii.hexlify(signature).decode()
 
         self.parsed_responses = [
             {"Body": BytesIO(json.dumps(sign_file).encode("utf-8"))},
             {"Body": BytesIO(b"file")},
-            {"PublicKeyList": [{"Fingerprint": "fingerprint", "Value": public_key}]},
+            {
+                "PublicKeyList": [
+                    {"Fingerprint": "fingerprint", "Value": public_key}
+                ]
+            },
         ]
 
         stdout, stderr, rc = self.run_cmd(
@@ -68,17 +73,25 @@ class TestVerifyQueryResults(BaseAWSCommandParamsTest):
             f" --s3-prefix={SAMPLE_S3_EXPORT_FILE_PREFIX} "
         )
 
-        self.assertIn("Successfully validated sign and query result files\n", stdout)
+        self.assertIn(
+            "Successfully validated sign and query result files\n", stdout
+        )
         self.assertEqual(self.operations_called[0][0].name, "GetObject")
-        self.assertEqual(self.operations_called[0][1]["Bucket"], SAMPLE_S3_BUCKET_NAME)
         self.assertEqual(
-            self.operations_called[0][1]["Key"], "lake-export-prefix/result_sign.json"
+            self.operations_called[0][1]["Bucket"], SAMPLE_S3_BUCKET_NAME
+        )
+        self.assertEqual(
+            self.operations_called[0][1]["Key"],
+            "lake-export-prefix/result_sign.json",
         )
 
         self.assertEqual(self.operations_called[1][0].name, "GetObject")
-        self.assertEqual(self.operations_called[1][1]["Bucket"], SAMPLE_S3_BUCKET_NAME)
         self.assertEqual(
-            self.operations_called[1][1]["Key"], "lake-export-prefix/result_1.csv.gz"
+            self.operations_called[1][1]["Bucket"], SAMPLE_S3_BUCKET_NAME
+        )
+        self.assertEqual(
+            self.operations_called[1][1]["Key"],
+            "lake-export-prefix/result_1.csv.gz",
         )
 
         self.assertEqual(self.operations_called[2][0].name, "ListPublicKeys")
@@ -89,12 +102,11 @@ class TestVerifyQueryResults(BaseAWSCommandParamsTest):
             public_key,
             private_key,
         ) = PublicPrivateKeyLoader.load_private_key_and_public_key(
-            get_private_key_path(),
-            get_public_key_path()
+            get_private_key_path(), get_public_key_path()
         )
         signature = private_key.sign(
             signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
-            digest=hashlib.sha256(b"123").digest()
+            digest=hashlib.sha256(b"123").digest(),
         )
 
         sign_file["hashSignature"] = binascii.hexlify(signature).decode()
@@ -102,7 +114,11 @@ class TestVerifyQueryResults(BaseAWSCommandParamsTest):
         self.parsed_responses = [
             {"Body": BytesIO(json.dumps(sign_file).encode("utf-8"))},
             {"Body": BytesIO(b"file")},
-            {"PublicKeyList": [{"Fingerprint": "fingerprint", "Value": public_key}]},
+            {
+                "PublicKeyList": [
+                    {"Fingerprint": "fingerprint", "Value": public_key}
+                ]
+            },
         ]
 
         stdout, stderr, rc = self.run_cmd(
@@ -117,13 +133,16 @@ class TestVerifyQueryResults(BaseAWSCommandParamsTest):
             public_key,
             _,
         ) = PublicPrivateKeyLoader.load_private_key_and_public_key(
-            get_private_key_path(),
-            get_public_key_path()
+            get_private_key_path(), get_public_key_path()
         )
         self.parsed_responses = [
             {"Body": BytesIO(b"123")},
             {"Body": BytesIO(b"file")},
-            {"PublicKeyList": [{"Fingerprint": "fingerprint", "Value": public_key}]},
+            {
+                "PublicKeyList": [
+                    {"Fingerprint": "fingerprint", "Value": public_key}
+                ]
+            },
         ]
 
         stdout, stderr, rc = self.run_cmd(
@@ -140,8 +159,12 @@ class TestVerifyQueryResults(BaseAWSCommandParamsTest):
         self.assertNotIn("testurl", self.last_request_dict["url"])
 
     def test_invalid_parameter_both_empty(self):
-        stdout, stderr, rc = self.run_cmd("cloudtrail verify-query-results ", 252)
-        self.assertIn("Require parameter --s3-bucket or --local-export-path.", stderr)
+        stdout, stderr, rc = self.run_cmd(
+            "cloudtrail verify-query-results ", 252
+        )
+        self.assertIn(
+            "Require parameter --s3-bucket or --local-export-path.", stderr
+        )
         self.assertEqual(len(self.operations_called), 0)
 
     def test_invalid_parameter_both_provided(self):
@@ -164,19 +187,22 @@ class TestVerifyQueryResults(BaseAWSCommandParamsTest):
             public_key,
             private_key,
         ) = PublicPrivateKeyLoader.load_private_key_and_public_key(
-            get_private_key_path(),
-            get_public_key_path()
+            get_private_key_path(), get_public_key_path()
         )
         signature = private_key.sign(
             signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
-            digest=hashlib.sha256(SAMPLE_HASH_VALUE.encode()).digest()
+            digest=hashlib.sha256(SAMPLE_HASH_VALUE.encode()).digest(),
         )
         sign_file["hashSignature"] = binascii.hexlify(signature).decode()
 
         self.parsed_responses = [
             {"Body": BytesIO(json.dumps(sign_file).encode("utf-8"))},
             {"Body": BytesIO(b"123")},
-            {"PublicKeyList": [{"Fingerprint": "fingerprint", "Value": public_key}]},
+            {
+                "PublicKeyList": [
+                    {"Fingerprint": "fingerprint", "Value": public_key}
+                ]
+            },
         ]
 
         stdout, stderr, rc = self.run_cmd(
@@ -184,7 +210,9 @@ class TestVerifyQueryResults(BaseAWSCommandParamsTest):
             f" --s3-prefix={SAMPLE_S3_EXPORT_FILE_PREFIX} ",
             255,
         )
-        self.assertIn("has inconsistent hash value with hash value recorded", stderr)
+        self.assertIn(
+            "has inconsistent hash value with hash value recorded", stderr
+        )
 
         self.assertEqual(self.operations_called[0][0].name, "GetObject")
         self.assertEqual(self.operations_called[1][0].name, "GetObject")
@@ -208,7 +236,9 @@ class TestVerifyQueryResults(BaseAWSCommandParamsTest):
         stdout, stderr, rc = self.run_cmd(
             f"cloudtrail verify-query-results --local-export-path={local_export_file_path}"
         )
-        self.assertIn("Successfully validated sign and query result files\n", stdout)
+        self.assertIn(
+            "Successfully validated sign and query result files\n", stdout
+        )
 
         self.assertEqual(self.operations_called[0][0].name, "ListPublicKeys")
         self.assertEqual(len(self.operations_called), 1)
@@ -233,5 +263,7 @@ class TestVerifyQueryResults(BaseAWSCommandParamsTest):
             f" --endpoint-url=https://testurl/ "
         )
 
-        self.assertIn("Successfully validated sign and query result files\n", stdout)
+        self.assertIn(
+            "Successfully validated sign and query result files\n", stdout
+        )
         self.assertEqual(self.last_request_dict["url"], "https://testurl/")

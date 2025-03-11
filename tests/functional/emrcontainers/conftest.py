@@ -85,7 +85,9 @@ def start_job_run_service_accounts(account_id, base36_encoded_role_name):
 
 ## InteractiveEndpoint expected service accounts
 @pytest.fixture
-def interactive_endpoint_service_accounts(account_id, base36_encoded_role_name):
+def interactive_endpoint_service_accounts(
+    account_id, base36_encoded_role_name
+):
     emr_spark_components = ["jeg", "jeg-kernel", "session"]
     return [
         SERVICE_ACCOUNT_NAMING

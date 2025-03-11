@@ -35,8 +35,8 @@ COMPLETIONS_SCHEMA = {
                     },
                 },
                 "required": ["operation", "resourceIdentifier"],
-                "additionalProperties": False
-            }
+                "additionalProperties": False,
+            },
         },
         "operations": {
             "type": "object",
@@ -58,17 +58,17 @@ COMPLETIONS_SCHEMA = {
                                     },
                                     "resourceName": {"type": "string"},
                                     "resourceIdentifier": {"type": "string"},
-                                }
-                            }
+                                },
+                            },
                         }
                     },
                     "required": ["completions"],
                     "additionalProperties": False,
-                }
-            }
-        }
+                },
+            },
+        },
     },
-    "additionalProperties": False
+    "additionalProperties": False,
 }
 
 
@@ -81,13 +81,15 @@ def get_models_with_completions():
         service_model = loader.load_service_model(service_name, 'service-2')
         api_version = service_model['metadata']['apiVersion']
         completions = loader.load_service_model(
-            service_name, 'completions-1', api_version)
+            service_name, 'completions-1', api_version
+        )
         models.append((service_model, completions))
     return models
 
 
 @pytest.mark.parametrize(
-    "service_model, completions", get_models_with_completions())
+    "service_model, completions", get_models_with_completions()
+)
 def test_verify_generated_completions_are_valid(service_model, completions):
     _validate_schema(completions)
     # Validate that every operation named in the completions

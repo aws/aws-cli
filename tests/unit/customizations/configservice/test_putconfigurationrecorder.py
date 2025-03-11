@@ -27,19 +27,22 @@ class TestPutConfigurationRecorder(unittest.TestCase):
         self.argument_table = {}
         self.service_model = self.session.get_service_model('config')
         self.operation_model = self.service_model.operation_model(
-            'PutConfigurationRecorder')
-        configuration_recorder_model = self.operation_model.\
-            input_shape.members['ConfigurationRecorder']
+            'PutConfigurationRecorder'
+        )
+        configuration_recorder_model = (
+            self.operation_model.input_shape.members['ConfigurationRecorder']
+        )
         self.old_configuration_recorder_argument = CLIArgument(
             name='configuration-recorder',
             argument_model=configuration_recorder_model,
             operation_model=self.operation_model,
             is_required=True,
             event_emitter=self.session.get_component('event_emitter'),
-            serialized_name='ConfigurationRecorder'
+            serialized_name='ConfigurationRecorder',
         )
-        self.argument_table['configuration-recorder'] = \
+        self.argument_table['configuration-recorder'] = (
             self.old_configuration_recorder_argument
+        )
 
     def test_extract_recording_group(self):
         extract_recording_group(self.session, self.argument_table)
@@ -48,36 +51,33 @@ class TestPutConfigurationRecorder(unittest.TestCase):
         # Ensure the original argument was replaced with the updated argument.
         self.assertIn('configuration-recorder', self.argument_table)
         new_configuration_recorder_argument = self.argument_table[
-            'configuration-recorder']
+            'configuration-recorder'
+        ]
         self.assertIsNot(
             new_configuration_recorder_argument,
-            self.old_configuration_recorder_argument
+            self.old_configuration_recorder_argument,
         )
         self.assertIsInstance(
-            new_configuration_recorder_argument,
-            ConfigurationRecorderArgument
+            new_configuration_recorder_argument, ConfigurationRecorderArgument
         )
 
         # Ensure the recording group member was extracted to an argument
         self.assertIn('recording-group', self.argument_table)
         recording_group_argument = self.argument_table['recording-group']
-        self.assertIsInstance(
-            recording_group_argument,
-            RecordingGroupArgument
-        )
+        self.assertIsInstance(recording_group_argument, RecordingGroupArgument)
 
     def test_configuration_recorder_when_new_value(self):
         value = '{"name":"myname","roleARN":"myarn"}'
         parameters = {}
         extract_recording_group(self.session, self.argument_table)
         configuration_recorder_argument = self.argument_table[
-            'configuration-recorder']
+            'configuration-recorder'
+        ]
         configuration_recorder_argument.add_to_params(parameters, value)
         self.assertEqual(
-            {'ConfigurationRecorder': {
-                'name': 'myname',
-                'roleARN': 'myarn'}},
-            parameters)
+            {'ConfigurationRecorder': {'name': 'myname', 'roleARN': 'myarn'}},
+            parameters,
+        )
 
     def test_configuration_recorder_when_update_value(self):
         value = '{"name":"myname","roleARN":"myarn"}'
@@ -85,22 +85,28 @@ class TestPutConfigurationRecorder(unittest.TestCase):
             'ConfigurationRecorder': {
                 'recordingGroup': {
                     'allSupported': True,
-                    'resourceTypes': ['AWS::EC2::Volume']
+                    'resourceTypes': ['AWS::EC2::Volume'],
                 }
             }
         }
         extract_recording_group(self.session, self.argument_table)
         configuration_recorder_argument = self.argument_table[
-            'configuration-recorder']
+            'configuration-recorder'
+        ]
         configuration_recorder_argument.add_to_params(parameters, value)
         self.assertEqual(
-            {'ConfigurationRecorder': {
-                'name': 'myname',
-                'roleARN': 'myarn',
-                'recordingGroup': {
-                    'allSupported': True,
-                    'resourceTypes': ['AWS::EC2::Volume']}}},
-            parameters)
+            {
+                'ConfigurationRecorder': {
+                    'name': 'myname',
+                    'roleARN': 'myarn',
+                    'recordingGroup': {
+                        'allSupported': True,
+                        'resourceTypes': ['AWS::EC2::Volume'],
+                    },
+                }
+            },
+            parameters,
+        )
 
     def test_recording_group_when_new_value(self):
         value = '{"allSupported":true,"resourceTypes":["AWS::EC2::Volume"]}'
@@ -109,11 +115,16 @@ class TestPutConfigurationRecorder(unittest.TestCase):
         recording_group_argument = self.argument_table['recording-group']
         recording_group_argument.add_to_params(parameters, value)
         self.assertEqual(
-            {'ConfigurationRecorder': {
-                'recordingGroup': {
-                    'allSupported': True,
-                    'resourceTypes': ['AWS::EC2::Volume']}}},
-            parameters)
+            {
+                'ConfigurationRecorder': {
+                    'recordingGroup': {
+                        'allSupported': True,
+                        'resourceTypes': ['AWS::EC2::Volume'],
+                    }
+                }
+            },
+            parameters,
+        )
 
     def test_recording_group_when_update_value(self):
         value = '{"allSupported":true,"resourceTypes":["AWS::EC2::Volume"]}'
@@ -127,10 +138,15 @@ class TestPutConfigurationRecorder(unittest.TestCase):
         recording_group_argument = self.argument_table['recording-group']
         recording_group_argument.add_to_params(parameters, value)
         self.assertEqual(
-            {'ConfigurationRecorder': {
-                'name': 'myname',
-                'roleARN': 'myarn',
-                'recordingGroup': {
-                    'allSupported': True,
-                    'resourceTypes': ['AWS::EC2::Volume']}}},
-            parameters)
+            {
+                'ConfigurationRecorder': {
+                    'name': 'myname',
+                    'roleARN': 'myarn',
+                    'recordingGroup': {
+                        'allSupported': True,
+                        'resourceTypes': ['AWS::EC2::Volume'],
+                    },
+                }
+            },
+            parameters,
+        )

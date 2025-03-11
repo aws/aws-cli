@@ -18,12 +18,10 @@ from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 
 class BaseLambdaTests(BaseAWSCommandParamsTest):
-
     def setUp(self):
         super(BaseLambdaTests, self).setUp()
         self.files = FileCreator()
-        self.temp_file = self.files.create_file(
-            'foo', 'mycontents')
+        self.temp_file = self.files.create_file('foo', 'mycontents')
         self.zip_file = os.path.join(self.files.rootdir, 'foo.zip')
         with closing(zipfile.ZipFile(self.zip_file, 'w')) as f:
             f.write(self.temp_file)
@@ -36,7 +34,6 @@ class BaseLambdaTests(BaseAWSCommandParamsTest):
 
 
 class TestCreateFunction(BaseLambdaTests):
-
     prefix = 'lambda create-function'
 
     def test_create_function_with_file(self):
@@ -49,7 +46,7 @@ class TestCreateFunction(BaseLambdaTests):
             'Runtime': 'myruntime',
             'Role': 'myrole',
             'Handler': 'myhandler',
-            'Code': {'ZipFile': self.zip_file_contents}
+            'Code': {'ZipFile': self.zip_file_contents},
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -63,9 +60,11 @@ class TestCreateFunction(BaseLambdaTests):
             'Runtime': 'myruntime',
             'Role': 'myrole',
             'Handler': 'myhandler',
-            'Code': {'S3Bucket': 'mybucket',
-                     'S3Key': 'mykey',
-                     'S3ObjectVersion': 'vs'}
+            'Code': {
+                'S3Bucket': 'mybucket',
+                'S3Key': 'mykey',
+                'S3ObjectVersion': 'vs',
+            },
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -80,10 +79,12 @@ class TestCreateFunction(BaseLambdaTests):
             'Runtime': 'myruntime',
             'Role': 'myrole',
             'Handler': 'myhandler',
-            'Code': {'S3Bucket': 'mybucket',
-                     'S3Key': 'mykey',
-                     'S3ObjectVersion': 'vs',
-                     'ZipFile': self.zip_file_contents}
+            'Code': {
+                'S3Bucket': 'mybucket',
+                'S3Key': 'mykey',
+                'S3ObjectVersion': 'vs',
+                'ZipFile': self.zip_file_contents,
+            },
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -94,8 +95,9 @@ class TestCreateFunction(BaseLambdaTests):
         cmdline += ' --code S3Bucket=mybucket,S3Key=mykey,S3ObjectVersion=vs,'
         cmdline += 'ZipFile=foo'
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
-        self.assertIn('ZipFile cannot be provided as part of the --code',
-                      stderr)
+        self.assertIn(
+            'ZipFile cannot be provided as part of the --code', stderr
+        )
 
     def test_create_function_with_invalid_file_contents(self):
         cmdline = self.prefix
@@ -120,7 +122,6 @@ class TestCreateFunction(BaseLambdaTests):
 
 
 class TestPublishLayerVersion(BaseLambdaTests):
-
     prefix = 'lambda publish-layer-version'
 
     def test_publish_layer_version_with_file(self):
@@ -129,7 +130,7 @@ class TestPublishLayerVersion(BaseLambdaTests):
         cmdline += ' --zip-file fileb://%s' % self.zip_file
         result = {
             'LayerName': 'mylayer',
-            'Content': {'ZipFile': self.zip_file_contents}
+            'Content': {'ZipFile': self.zip_file_contents},
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -140,9 +141,11 @@ class TestPublishLayerVersion(BaseLambdaTests):
         cmdline += ' S3Bucket=mybucket,S3Key=mykey,S3ObjectVersion=vs'
         result = {
             'LayerName': 'mylayer',
-            'Content': {'S3Bucket': 'mybucket',
-                        'S3Key': 'mykey',
-                        'S3ObjectVersion': 'vs'}
+            'Content': {
+                'S3Bucket': 'mybucket',
+                'S3Key': 'mykey',
+                'S3ObjectVersion': 'vs',
+            },
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -154,10 +157,12 @@ class TestPublishLayerVersion(BaseLambdaTests):
         cmdline += ' --zip-file fileb://%s' % self.zip_file
         result = {
             'LayerName': 'mylayer',
-            'Content': {'S3Bucket': 'mybucket',
-                        'S3Key': 'mykey',
-                        'S3ObjectVersion': 'vs',
-                        'ZipFile': self.zip_file_contents}
+            'Content': {
+                'S3Bucket': 'mybucket',
+                'S3Key': 'mykey',
+                'S3ObjectVersion': 'vs',
+                'ZipFile': self.zip_file_contents,
+            },
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -168,8 +173,9 @@ class TestPublishLayerVersion(BaseLambdaTests):
         cmdline += ' S3Bucket=mybucket,S3Key=mykey,S3ObjectVersion=vs,'
         cmdline += 'ZipFile=foo'
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=252)
-        self.assertIn('ZipFile cannot be provided as part of the --content',
-                      stderr)
+        self.assertIn(
+            'ZipFile cannot be provided as part of the --content', stderr
+        )
 
     def test_publish_layer_version_with_invalid_file_contents(self):
         cmdline = self.prefix
@@ -192,7 +198,6 @@ class TestPublishLayerVersion(BaseLambdaTests):
 
 
 class TestUpdateFunctionCode(BaseLambdaTests):
-
     prefix = 'lambda update-function-code'
 
     def test_not_using_fileb_prefix(self):

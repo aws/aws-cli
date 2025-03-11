@@ -107,7 +107,11 @@ class TestInstaller:
                 os.path.join("build_dir", "exe", "aws", "dist"),
                 "lib_dir",
             ),
-            ("write_file", "bin_dir\\aws.cmd", "@echo off\nlib_dir\\aws.exe %*\n"),
+            (
+                "write_file",
+                "bin_dir\\aws.cmd",
+                "@echo off\nlib_dir\\aws.exe %*\n",
+            ),
         ]
 
     @skip_if_windows

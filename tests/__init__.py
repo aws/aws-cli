@@ -20,7 +20,8 @@ from io import BytesIO
 if os.environ.get('TESTS_REMOVE_REPO_ROOT_FROM_PATH'):
     rootdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     sys.path = [
-        path for path in sys.path
+        path
+        for path in sys.path
         if not os.path.isdir(path) or not os.path.samefile(path, rootdir)
     ]
 
@@ -28,8 +29,15 @@ import awscli  # noqa: I001
 from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
 from awscli.compat import collections_abc
 from awscli.testutils import (
-    unittest, mock, capture_output, if_windows, skip_if_windows, create_bucket,
-    FileCreator, ConsistencyWaiter, create_dir_bucket
+    unittest,
+    mock,
+    capture_output,
+    if_windows,
+    skip_if_windows,
+    create_bucket,
+    FileCreator,
+    ConsistencyWaiter,
+    create_dir_bucket,
 )
 
 import botocore.awsrequest
@@ -54,20 +62,43 @@ from prompt_toolkit.input.ansi_escape_sequences import REVERSE_ANSI_SEQUENCES
 # Botocore testing utilities that we want to preserve import statements for
 # in botocore specific tests.
 from tests.utils.botocore import (
-    assert_url_equal, create_session, random_chars, temporary_file,
-    patch_load_service_model, ALL_SERVICES, BaseEnvVar, BaseSessionTest,
-    BaseClientDriverTest, StubbedSession, ClientHTTPStubber, SessionHTTPStubber,
-    IntegerRefresher, FreezeTime, get_botocore_default_config_mapping
+    assert_url_equal,
+    create_session,
+    random_chars,
+    temporary_file,
+    patch_load_service_model,
+    ALL_SERVICES,
+    BaseEnvVar,
+    BaseSessionTest,
+    BaseClientDriverTest,
+    StubbedSession,
+    ClientHTTPStubber,
+    SessionHTTPStubber,
+    IntegerRefresher,
+    FreezeTime,
+    get_botocore_default_config_mapping,
 )
+
 # S3transfer testing utilities that we want to preserve import statements for
 # in s3transfer specific tests.
 from tests.utils.s3transfer import (
-     HAS_CRT, requires_crt, skip_if_using_serial_implementation,
-     random_bucket_name, assert_files_equal,
-     NonSeekableReader, NonSeekableWriter, StreamWithError,
-     RecordingSubscriber, FileSizeProvider, RecordingOSUtils,
-     RecordingExecutor, TransferCoordinatorWithInterrupt, BaseTaskTest,
-     BaseSubmissionTaskTest, BaseGeneralInterfaceTest, StubbedClientTest,
+    HAS_CRT,
+    requires_crt,
+    skip_if_using_serial_implementation,
+    random_bucket_name,
+    assert_files_equal,
+    NonSeekableReader,
+    NonSeekableWriter,
+    StreamWithError,
+    RecordingSubscriber,
+    FileSizeProvider,
+    RecordingOSUtils,
+    RecordingExecutor,
+    TransferCoordinatorWithInterrupt,
+    BaseTaskTest,
+    BaseSubmissionTaskTest,
+    BaseGeneralInterfaceTest,
+    StubbedClientTest,
 )
 
 # A shared loader to use for classes in this module. This allows us to
@@ -78,6 +109,7 @@ _LOADER = botocore.loaders.Loader()
 
 class CLIRunner:
     """Runs CLI commands in a stubbed environment"""
+
     def __init__(self, env=None, session_stubber=None):
         if env is None:
             env = self._get_default_env()
@@ -103,8 +135,7 @@ class CLIRunner:
         # future, but for now we are just replicating the logic in
         # this abstraction.
         cli_data_dir = os.path.join(
-            os.path.dirname(os.path.abspath(awscli.__file__)),
-            'data'
+            os.path.dirname(os.path.abspath(awscli.__file__)), 'data'
         )
         return {
             'AWS_DATA_PATH': cli_data_dir,
@@ -136,13 +167,13 @@ class SessionStubber:
     def register(self, session):
         events = session.get_component('event_emitter')
         events.register_first(
-            'before-parameter-build.*.*', self._capture_aws_request,
+            'before-parameter-build.*.*',
+            self._capture_aws_request,
         )
-        events.register_last(
-            'request-created', self._capture_http_request
-        )
+        events.register_last('request-created', self._capture_http_request)
         events.register_first(
-            'before-send.*.*', self._return_queued_http_response,
+            'before-send.*.*',
+            self._return_queued_http_response,
         )
 
     def add_response(self, response):
@@ -151,8 +182,8 @@ class SessionStubber:
     def assert_no_remaining_responses(self):
         if len(self._responses) != 0:
             raise AssertionError(
-                "The following queued responses are remaining: %s" %
-                self._responses
+                "The following queued responses are remaining: %s"
+                % self._responses
             )
 
     def _capture_aws_request(self, params, model, context, **kwargs):
@@ -185,14 +216,16 @@ class BaseResponse:
 
 
 class AWSResponse(BaseResponse):
-    def __init__(self, service_name, operation_name, parsed_response,
-                 validate=True):
+    def __init__(
+        self, service_name, operation_name, parsed_response, validate=True
+    ):
         self._service_name = service_name
         self._operation_name = operation_name
         self._parsed_response = parsed_response
         self._service_model = self._get_service_model()
         self._operation_model = self._service_model.operation_model(
-            self._operation_name)
+            self._operation_name
+        )
         if validate:
             self._validate_parsed_response()
 
@@ -202,8 +235,8 @@ class AWSResponse(BaseResponse):
     def __repr__(self):
         return (
             'AWSResponse(service_name=%r, operation_name=%r, '
-            'parsed_response=%r)' %
-            (self._service_name, self._operation_name, self._parsed_response)
+            'parsed_response=%r)'
+            % (self._service_name, self._operation_name, self._parsed_response)
         )
 
     def _get_service_model(self):
@@ -211,18 +244,19 @@ class AWSResponse(BaseResponse):
             service_name=self._service_name, type_name='service-2'
         )
         return botocore.model.ServiceModel(
-            loaded_service_model, service_name=self._service_name)
+            loaded_service_model, service_name=self._service_name
+        )
 
     def _validate_parsed_response(self):
         if self._operation_model.output_shape:
             botocore.validate.validate_parameters(
-                self._parsed_response, self._operation_model.output_shape)
+                self._parsed_response, self._operation_model.output_shape
+            )
 
     def _generate_http_response(self):
         serialized = self._reverse_serialize_parsed_response()
         return HTTPResponse(
-            headers=serialized['headers'],
-            body=serialized['body']
+            headers=serialized['headers'], body=serialized['body']
         )
 
     def _reverse_serialize_parsed_response(self):
@@ -243,7 +277,8 @@ class AWSResponse(BaseResponse):
         )
         self._operation_model.input_shape = self._operation_model.output_shape
         return serializer.serialize_to_request(
-            self._parsed_response, self._operation_model)
+            self._parsed_response, self._operation_model
+        )
 
 
 class HTTPResponse(BaseResponse):
@@ -278,16 +313,17 @@ class AWSRequest:
         self.http_requests = []
 
     def __repr__(self):
-        return (
-            'AWSRequest(service_name=%r, operation_name=%r, params=%r)' %
-            (self.service_name, self.operation_name, self.params)
+        return 'AWSRequest(service_name=%r, operation_name=%r, params=%r)' % (
+            self.service_name,
+            self.operation_name,
+            self.params,
         )
 
     def __eq__(self, other):
         return (
-            self.service_name == other.service_name and
-            self.operation_name == other.operation_name and
-            self.params == other.params
+            self.service_name == other.service_name
+            and self.operation_name == other.operation_name
+            and self.params == other.params
         )
 
     def __ne__(self, other):
@@ -302,17 +338,19 @@ class HTTPRequest:
         self.body = body
 
     def __repr__(self):
-        return (
-            'HTTPRequest(method=%r, url=%r, headers=%r, body=%r)' %
-            (self.method, self.url, self.headers, self.body)
+        return 'HTTPRequest(method=%r, url=%r, headers=%r, body=%r)' % (
+            self.method,
+            self.url,
+            self.headers,
+            self.body,
         )
 
     def __eq__(self, other):
         return (
-            self.method == other.method and
-            self.url == other.url and
-            self.headers == other.headers and
-            self.body == other.body
+            self.method == other.method
+            and self.url == other.url
+            and self.headers == other.headers
+            and self.body == other.body
         )
 
     def __ne__(self, other):
@@ -347,9 +385,7 @@ class CaseInsensitiveDict(collections_abc.MutableMapping):
     def lower_items(self):
         """Like iteritems(), but with all lowercase keys."""
         return (
-            (lowerkey, keyval[1])
-            for (lowerkey, keyval)
-            in self._store.items()
+            (lowerkey, keyval[1]) for (lowerkey, keyval) in self._store.items()
         )
 
     def __eq__(self, other):
@@ -392,7 +428,8 @@ class PromptToolkitAppRunner:
         self._pre_run = pre_run
         self._done_rendering_event = threading.Event()
         self.app.after_render = prompt_toolkit.utils.Event(
-            self.app, self._notify_done_rendering)
+            self.app, self._notify_done_rendering
+        )
         self._done_completing_event = threading.Event()
 
     @contextlib.contextmanager
@@ -404,7 +441,8 @@ class PromptToolkitAppRunner:
 
         run_context = AppRunContext()
         thread = threading.Thread(
-            target=self._do_run_app, args=(target, args, run_context))
+            target=self._do_run_app, args=(target, args, run_context)
+        )
         try:
             thread.start()
             self._wait_until_app_is_done_updating()
@@ -417,9 +455,7 @@ class PromptToolkitAppRunner:
     def feed_input(self, *keys):
         for key in keys:
             self._done_rendering_event.clear()
-            self.app.input.send_text(
-                self._convert_key_to_vt100_data(key)
-            )
+            self.app.input.send_text(self._convert_key_to_vt100_data(key))
             self._wait_until_app_is_done_updating()
 
     def wait_for_completions_on_current_buffer(self):
@@ -469,8 +505,8 @@ class PromptToolkitAppRunner:
 
     def _current_buffer_has_completions(self):
         return (
-            self.app.current_buffer.complete_state and
-            self.app.current_buffer.complete_state.completions
+            self.app.current_buffer.complete_state
+            and self.app.current_buffer.complete_state.completions
         )
 
     def _app_is_exitable(self):
@@ -500,7 +536,8 @@ class S3Utils:
         self._region = region
         self._bucket_to_region = {}
         self._client = self._session.create_client(
-            's3', region_name=self._region)
+            's3', region_name=self._region
+        )
 
     def _create_client_for_bucket(self, bucket_name):
         region = self._bucket_to_region.get(bucket_name, self._region)
@@ -542,17 +579,15 @@ class S3Utils:
 
     def put_object(self, bucket_name, key_name, contents='', extra_args=None):
         client = self._create_client_for_bucket(bucket_name)
-        call_args = {
-            'Bucket': bucket_name,
-            'Key': key_name, 'Body': contents
-        }
+        call_args = {'Bucket': bucket_name, 'Key': key_name, 'Body': contents}
         if extra_args is not None:
             call_args.update(extra_args)
         response = client.put_object(**call_args)
         extra_head_params = {}
         if extra_args:
             extra_head_params = dict(
-                (k, v) for (k, v) in extra_args.items()
+                (k, v)
+                for (k, v) in extra_args.items()
                 if k in self._PUT_HEAD_SHARED_EXTRAS
             )
         self.wait_until_key_exists(
@@ -609,7 +644,8 @@ class S3Utils:
         client = self._create_client_for_bucket(bucket_name)
         waiter = client.get_waiter('bucket_exists')
         consistency_waiter = ConsistencyWaiter(
-            min_successes=min_successes, delay_initial_poll=True)
+            min_successes=min_successes, delay_initial_poll=True
+        )
         consistency_waiter.wait(
             lambda: waiter.wait(Bucket=bucket_name) is None
         )
@@ -627,7 +663,8 @@ class S3Utils:
     def key_exists(self, bucket_name, key_name, min_successes=3):
         try:
             self.wait_until_key_exists(
-                    bucket_name, key_name, min_successes=min_successes)
+                bucket_name, key_name, min_successes=min_successes
+            )
             return True
         except (ClientError, WaiterError):
             return False
@@ -635,15 +672,17 @@ class S3Utils:
     def key_not_exists(self, bucket_name, key_name, min_successes=3):
         try:
             self.wait_until_key_not_exists(
-                    bucket_name, key_name, min_successes=min_successes)
+                bucket_name, key_name, min_successes=min_successes
+            )
             return True
         except (ClientError, WaiterError):
             return False
 
     def list_multipart_uploads(self, bucket_name):
         client = self._create_client_for_bucket(bucket_name)
-        return client.list_multipart_uploads(
-            Bucket=bucket_name).get('Uploads', [])
+        return client.list_multipart_uploads(Bucket=bucket_name).get(
+            'Uploads', []
+        )
 
     def list_buckets(self):
         response = self._client.list_buckets()
@@ -662,18 +701,28 @@ class S3Utils:
         response = client.head_object(Bucket=bucket_name, Key=key_name)
         return response
 
-    def wait_until_key_exists(self, bucket_name, key_name, extra_params=None,
-                              min_successes=3):
-        self._wait_for_key(bucket_name, key_name, extra_params,
-                           min_successes, exists=True)
+    def wait_until_key_exists(
+        self, bucket_name, key_name, extra_params=None, min_successes=3
+    ):
+        self._wait_for_key(
+            bucket_name, key_name, extra_params, min_successes, exists=True
+        )
 
-    def wait_until_key_not_exists(self, bucket_name, key_name,
-                                  extra_params=None, min_successes=3):
-        self._wait_for_key(bucket_name, key_name, extra_params,
-                           min_successes, exists=False)
+    def wait_until_key_not_exists(
+        self, bucket_name, key_name, extra_params=None, min_successes=3
+    ):
+        self._wait_for_key(
+            bucket_name, key_name, extra_params, min_successes, exists=False
+        )
 
-    def _wait_for_key(self, bucket_name, key_name, extra_params=None,
-                      min_successes=3, exists=True):
+    def _wait_for_key(
+        self,
+        bucket_name,
+        key_name,
+        extra_params=None,
+        min_successes=3,
+        exists=True,
+    ):
         client = self._create_client_for_bucket(bucket_name)
         if exists:
             waiter = client.get_waiter('object_exists')
@@ -684,6 +733,7 @@ class S3Utils:
             params.update(extra_params)
         for _ in range(min_successes):
             waiter.wait(**params)
+
 
 class PublicPrivateKeyLoader:
     def load_private_key_and_public_key(private_key_path, public_key_path):

@@ -16,7 +16,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestCreateQueue(BaseAWSCommandParamsTest):
-
     prefix = 'sqs create-queue'
     queue_name = 'foobar'
 

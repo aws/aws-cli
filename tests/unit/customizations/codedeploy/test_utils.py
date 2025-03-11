@@ -52,7 +52,9 @@ class TestUtils(unittest.TestCase):
         self.system = self.system_patcher.start()
         self.system.return_value = 'Linux'
 
-        self.linux_distribution_patcher = mock.patch('awscli.compat.linux_distribution')
+        self.linux_distribution_patcher = mock.patch(
+            'awscli.compat.linux_distribution'
+        )
         self.linux_distribution = self.linux_distribution_patcher.start()
         self.linux_distribution.return_value = ('Ubuntu', '', '')
 
@@ -115,9 +117,7 @@ class TestUtils(unittest.TestCase):
             '01234567890123456789012345678901234567890123456789'
             '012345678901234567890123456789012345678901234567891'
         )
-        error_msg = (
-            f'Instance name cannot be longer than {MAX_INSTANCE_NAME_LENGTH} characters.'
-        )
+        error_msg = f'Instance name cannot be longer than {MAX_INSTANCE_NAME_LENGTH} characters.'
         with self.assertRaisesRegex(ParamValidationError, error_msg):
             validate_instance_name(self.params)
 
@@ -125,9 +125,7 @@ class TestUtils(unittest.TestCase):
         self.params.tags = [
             {'Key': 'k' + str(x), 'Value': 'v' + str(x)} for x in range(11)
         ]
-        error_msg = (
-            f'Instances can only have a maximum of {MAX_TAGS_PER_INSTANCE} tags.'
-        )
+        error_msg = f'Instances can only have a maximum of {MAX_TAGS_PER_INSTANCE} tags.'
         with self.assertRaisesRegex(ParamValidationError, error_msg):
             validate_tags(self.params)
 
@@ -153,9 +151,7 @@ class TestUtils(unittest.TestCase):
     def test_validate_tags_throws_on_long_value(self):
         value = 'v' * 257
         self.params.tags = [{'Key': 'k1', 'Value': value}]
-        error_msg = (
-            f'Tag Value cannot be longer than {MAX_TAG_VALUE_LENGTH} characters.'
-        )
+        error_msg = f'Tag Value cannot be longer than {MAX_TAG_VALUE_LENGTH} characters.'
         with self.assertRaisesRegex(ParamValidationError, error_msg):
             validate_tags(self.params)
 
@@ -182,7 +178,11 @@ class TestUtils(unittest.TestCase):
     def test_validate_instance_rhel(self):
         self.urlopen.side_effect = timeout('Not EC2 instance')
         self.system.return_value = 'Linux'
-        self.linux_distribution.return_value = ('Red Hat Enterprise Linux Server', None, None)
+        self.linux_distribution.return_value = (
+            'Red Hat Enterprise Linux Server',
+            None,
+            None,
+        )
         self.params.session = self.session
         self.params.region = self.region
         validate_instance(self.params)
@@ -201,7 +201,8 @@ class TestUtils(unittest.TestCase):
     def test_validate_instance_throws_on_unsupported_system(self):
         self.system.return_value = 'Unsupported'
         with self.assertRaisesRegex(
-                RuntimeError, System.UNSUPPORTED_SYSTEM_MSG):
+            RuntimeError, System.UNSUPPORTED_SYSTEM_MSG
+        ):
             validate_instance(self.params)
 
     def test_validate_instance_throws_on_ec2_instance(self):
@@ -209,7 +210,8 @@ class TestUtils(unittest.TestCase):
         self.params.region = self.region
         self.urlopen.side_effect = None
         with self.assertRaisesRegex(
-                RuntimeError, 'Amazon EC2 instances are not supported.'):
+            RuntimeError, 'Amazon EC2 instances are not supported.'
+        ):
             validate_instance(self.params)
 
     def test_validate_s3_location_returns_bucket_key(self):

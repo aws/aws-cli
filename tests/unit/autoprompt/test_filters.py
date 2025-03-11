@@ -24,7 +24,6 @@ from awscli.testutils import mock, unittest
 
 
 class TestFilters(unittest.TestCase):
-
     @mock.patch('awscli.autoprompt.filters.get_app')
     def test_search_input_has_focus(self, get_app):
         app = mock.Mock()

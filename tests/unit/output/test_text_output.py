@@ -23,7 +23,6 @@ from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 
 
 class TestListUsers(BaseAWSCommandParamsTest):
-
     def setUp(self):
         super(TestListUsers, self).setUp()
         self.first_parsed_response = {
@@ -33,10 +32,10 @@ class TestListUsers(BaseAWSCommandParamsTest):
                     "Path": "/",
                     "CreateDate": "2013-02-12T19:08:52Z",
                     "UserId": "EXAMPLEUSERID",
-                    "Arn": "arn:aws:iam::12345:user/testuser1"
+                    "Arn": "arn:aws:iam::12345:user/testuser1",
                 },
             ],
-            'Groups': []
+            'Groups': [],
         }
         self.second_parsed_response = {
             'Users': [
@@ -45,36 +44,37 @@ class TestListUsers(BaseAWSCommandParamsTest):
                     "Path": "/",
                     "CreateDate": "2012-10-14T23:53:39Z",
                     "UserId": "EXAMPLEUSERID",
-                    "Arn": "arn:aws:iam::123456:user/testuser2"
+                    "Arn": "arn:aws:iam::123456:user/testuser2",
                 },
             ],
-            'Groups': []
+            'Groups': [],
         }
 
         self.parsed_responses = [
             self.first_parsed_response,
-            self.second_parsed_response
+            self.second_parsed_response,
         ]
 
     def test_text_response(self):
         output = self.run_cmd('iam list-users --output text', expected_rc=0)[0]
         self.assertEqual(
             output,
-            ('USERS\tarn:aws:iam::12345:user/testuser1\t2013-02-12T19:08:52Z\t'
-             '/\tEXAMPLEUSERID\ttestuser-50\n'))
+            (
+                'USERS\tarn:aws:iam::12345:user/testuser1\t2013-02-12T19:08:52Z\t'
+                '/\tEXAMPLEUSERID\ttestuser-50\n'
+            ),
+        )
 
         # Test something with a jmespath expression.
         output = self.run_cmd(
-            'rds describe-engine-default-parameters ' \
+            'rds describe-engine-default-parameters '
             '--db-parameter-group-family mysql5.1 --output text',
-            expected_rc=0)[0]
-        self.assertEqual(
-            output,
-            'ENGINEDEFAULTS\tNone\n')
+            expected_rc=0,
+        )[0]
+        self.assertEqual(output, 'ENGINEDEFAULTS\tNone\n')
 
 
 class TestDescribeChangesets(BaseAWSCommandParamsTest):
-
     def setUp(self):
         super(TestDescribeChangesets, self).setUp()
         self.first_parsed_response = {
@@ -90,12 +90,11 @@ class TestDescribeChangesets(BaseAWSCommandParamsTest):
             'NotificationARNs': [],
             'RollbackConfiguration': {'RollbackTriggers': []},
             'StackId': (
-                'arn:aws:cloudformation:us-west-2:12345:stack'
-                '/MyStack/12345'
+                'arn:aws:cloudformation:us-west-2:12345:stack' '/MyStack/12345'
             ),
             'StackName': 'MyStack',
             'Status': 'CREATE_COMPLETE',
-            'NextToken': "more stuff"
+            'NextToken': "more stuff",
         }
         self.second_parsed_response = {
             'Capabilities': ['CAPABILITY_IAM'],
@@ -110,11 +109,10 @@ class TestDescribeChangesets(BaseAWSCommandParamsTest):
             'NotificationARNs': [],
             'RollbackConfiguration': {'RollbackTriggers': []},
             'StackId': (
-                'arn:aws:cloudformation:us-west-2:12345:stack'
-                '/MyStack/12345'
+                'arn:aws:cloudformation:us-west-2:12345:stack' '/MyStack/12345'
             ),
             'StackName': 'MyStack',
-            'Status': 'CREATE_COMPLETE'
+            'Status': 'CREATE_COMPLETE',
         }
         self.parsed_responses = [
             self.first_parsed_response,
@@ -123,14 +121,20 @@ class TestDescribeChangesets(BaseAWSCommandParamsTest):
 
     def test_non_aggregate_keys(self):
         output = self.run_cmd(
-            ('cloudformation describe-change-set --change-set-name mychangeset'
-             ' --stack-name MyStack --output text'),
-            expected_rc=0
+            (
+                'cloudformation describe-change-set --change-set-name mychangeset'
+                ' --stack-name MyStack --output text'
+            ),
+            expected_rc=0,
         )[0]
         fields = output.split()
-        self.assertIn((
-            "arn:aws:cloudformation:us-west-2:12345:changeSet/mychangeset/"
-            "12345"), fields)
+        self.assertIn(
+            (
+                "arn:aws:cloudformation:us-west-2:12345:changeSet/mychangeset/"
+                "12345"
+            ),
+            fields,
+        )
         self.assert_in("CAPABILITY_IAM", fields, 1)
         self.assert_in("mychangeset", fields, 1)
         self.assert_in("2019-04-08T14:21:53.765Z", fields, 1)
@@ -146,7 +150,6 @@ class TestDescribeChangesets(BaseAWSCommandParamsTest):
             self.assertEqual(
                 count,
                 actual_count,
-                "%s was found in the output %s times. Expected %s." % (
-                    key, actual_count, count
-                )
+                "%s was found in the output %s times. Expected %s."
+                % (key, actual_count, count),
             )

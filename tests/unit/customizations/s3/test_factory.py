@@ -103,8 +103,10 @@ class TestClientFactory(unittest.TestCase):
         }
         self.factory.create_client(params=params)
         self.session.create_client.assert_called_with(
-            's3', region_name='us-west-2', endpoint_url='https://myendpoint',
-            verify=True
+            's3',
+            region_name='us-west-2',
+            endpoint_url='https://myendpoint',
+            verify=True,
         )
 
     def test_create_client_sets_sigv4_for_sse_kms(self):
@@ -116,9 +118,10 @@ class TestClientFactory(unittest.TestCase):
         }
         self.factory.create_client(params)
         self.assertEqual(
-            self.session.create_client.call_args[
-                1]['config'].signature_version,
-            's3v4'
+            self.session.create_client.call_args[1][
+                'config'
+            ].signature_version,
+            's3v4',
         )
 
     def test_create_client_with_no_source_region(self):
@@ -130,8 +133,10 @@ class TestClientFactory(unittest.TestCase):
         }
         self.factory.create_client(params, is_source_client=True)
         self.session.create_client.assert_called_with(
-            's3', region_name='us-west-2', endpoint_url='https://myendpoint',
-            verify=True
+            's3',
+            region_name='us-west-2',
+            endpoint_url='https://myendpoint',
+            verify=True,
         )
 
     def test_create_client_respects_source_region_for_copies(self):
@@ -144,8 +149,7 @@ class TestClientFactory(unittest.TestCase):
         }
         self.factory.create_client(params, is_source_client=True)
         self.session.create_client.assert_called_with(
-            's3', region_name='us-west-1', endpoint_url=None,
-            verify=True
+            's3', region_name='us-west-1', endpoint_url=None, verify=True
         )
 
 
@@ -173,23 +177,21 @@ class TestTransferManagerFactory(unittest.TestCase):
 
     def assert_tls_enabled_for_crt_client(self, mock_crt_client):
         self.assertEqual(
-            mock_crt_client.call_args[1]['tls_mode'],
-            S3RequestTlsMode.ENABLED
+            mock_crt_client.call_args[1]['tls_mode'], S3RequestTlsMode.ENABLED
         )
 
     def assert_tls_disabled_for_crt_client(self, mock_crt_client):
         self.assertEqual(
-            mock_crt_client.call_args[1]['tls_mode'],
-            S3RequestTlsMode.DISABLED
+            mock_crt_client.call_args[1]['tls_mode'], S3RequestTlsMode.DISABLED
         )
 
     def assert_uses_client_tls_context_options(
-            self, mock_crt_client, mock_client_tls_context_options):
-        mock_connection_options = mock_client_tls_context_options. \
-            return_value.new_connection_options.return_value
+        self, mock_crt_client, mock_client_tls_context_options
+    ):
+        mock_connection_options = mock_client_tls_context_options.return_value.new_connection_options.return_value
         self.assertIs(
             mock_crt_client.call_args[1]['tls_connection_options'],
-            mock_connection_options
+            mock_connection_options,
         )
 
     def assert_is_classic_manager(self, manager):
@@ -199,26 +201,30 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assertIsInstance(manager, CRTTransferManager)
 
     def assert_expected_throughput_target_gbps(
-            self, mock_crt_client, expected_throughput_target_gbps):
+        self, mock_crt_client, expected_throughput_target_gbps
+    ):
         self.assertEqual(
             mock_crt_client.call_args[1]['throughput_target_gbps'],
-            expected_throughput_target_gbps
+            expected_throughput_target_gbps,
         )
 
     def test_create_transfer_manager_classic(self):
         transfer_client = mock.Mock()
         self.session.create_client.return_value = transfer_client
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            self.params, self.runtime_config
+        )
         self.assert_is_classic_manager(transfer_manager)
         self.session.create_client.assert_called_with(
-            's3', region_name='us-west-2', endpoint_url=None,
+            's3',
+            region_name='us-west-2',
+            endpoint_url=None,
             verify=None,
         )
         self.assertIs(transfer_manager.client, transfer_client)
 
     def test_proxies_transfer_config_to_default_transfer_manager(self):
-        MB = 1024 ** 2
+        MB = 1024**2
         self.runtime_config = self.get_runtime_config(
             multipart_chunksize=5 * MB,
             multipart_threshold=20 * MB,
@@ -227,7 +233,8 @@ class TestTransferManagerFactory(unittest.TestCase):
             max_bandwidth=10 * MB,
         )
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            self.params, self.runtime_config
+        )
         self.assertEqual(transfer_manager.config.multipart_chunksize, 5 * MB)
         self.assertEqual(transfer_manager.config.multipart_threshold, 20 * MB)
         self.assertEqual(transfer_manager.config.max_request_concurrency, 20)
@@ -236,14 +243,17 @@ class TestTransferManagerFactory(unittest.TestCase):
         # These configurations are hardcoded and not configurable but
         # we just want to make sure they are being set by the factory.
         self.assertEqual(
-            transfer_manager.config.max_in_memory_upload_chunks, 6)
+            transfer_manager.config.max_in_memory_upload_chunks, 6
+        )
         self.assertEqual(
-            transfer_manager.config.max_in_memory_upload_chunks, 6)
+            transfer_manager.config.max_in_memory_upload_chunks, 6
+        )
 
     def test_can_provide_botocore_client_to_classic_manager(self):
         transfer_client = mock.Mock()
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config, botocore_client=transfer_client)
+            self.params, self.runtime_config, botocore_client=transfer_client
+        )
         self.assert_is_classic_manager(transfer_manager)
         self.session.create_client.assert_not_called()
         self.assertIs(transfer_manager.client, transfer_client)
@@ -251,88 +261,99 @@ class TestTransferManagerFactory(unittest.TestCase):
     @mock.patch('s3transfer.crt.S3Client')
     def test_uses_region_parameter_for_crt_manager(self, mock_crt_client):
         self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt')
+            preferred_transfer_client='crt'
+        )
         self.params['region'] = 'param-region'
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            self.params, self.runtime_config
+        )
         self.assert_is_crt_manager(transfer_manager)
         self.assertEqual(
             mock_crt_client.call_args[1]['region'], 'param-region'
         )
         self.assertEqual(
             self.session.create_client.call_args[1]['region_name'],
-            'param-region'
+            'param-region',
         )
 
     @mock.patch('s3transfer.crt.S3Client')
     def test_falls_back_to_session_region_for_crt_manager(
-            self, mock_crt_client):
+        self, mock_crt_client
+    ):
         self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt')
-        params = {
-            'verify_ssl': DEFAULT_CA_BUNDLE
-        }
+            preferred_transfer_client='crt'
+        )
+        params = {'verify_ssl': DEFAULT_CA_BUNDLE}
         self.session.get_config_variable.return_value = 'config-region'
         transfer_manager = self.factory.create_transfer_manager(
-            params, self.runtime_config)
+            params, self.runtime_config
+        )
         self.assert_is_crt_manager(transfer_manager)
         self.assertEqual(
             mock_crt_client.call_args[1]['region'], 'config-region'
         )
         self.assertEqual(
             self.session.create_client.call_args[1]['region_name'],
-            'config-region'
+            'config-region',
         )
 
     @mock.patch('s3transfer.crt.S3Client')
-    def test_uses_tls_by_default_for_crt_manager(
-            self, mock_crt_client):
+    def test_uses_tls_by_default_for_crt_manager(self, mock_crt_client):
         self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt')
+            preferred_transfer_client='crt'
+        )
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            self.params, self.runtime_config
+        )
         self.assert_is_crt_manager(transfer_manager)
         self.assert_tls_enabled_for_crt_client(mock_crt_client)
 
     @mock.patch('s3transfer.crt.S3Client')
     def test_uses_endpoint_url_parameter_for_crt_manager(
-            self, mock_crt_client):
+        self, mock_crt_client
+    ):
         self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt')
+            preferred_transfer_client='crt'
+        )
         self.params['endpoint_url'] = 'https://my.endpoint.com'
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            self.params, self.runtime_config
+        )
         self.assert_is_crt_manager(transfer_manager)
         self.assertEqual(
             self.session.create_client.call_args[1]['endpoint_url'],
-            'https://my.endpoint.com'
+            'https://my.endpoint.com',
         )
         self.assert_tls_enabled_for_crt_client(mock_crt_client)
 
     @mock.patch('s3transfer.crt.S3Client')
     def test_can_disable_tls_using_endpoint_scheme_for_crt_manager(
-            self, mock_crt_client):
+        self, mock_crt_client
+    ):
         self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt')
+            preferred_transfer_client='crt'
+        )
         self.params['endpoint_url'] = 'http://my.endpoint.com'
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            self.params, self.runtime_config
+        )
         self.assert_is_crt_manager(transfer_manager)
         self.assertEqual(
             self.session.create_client.call_args[1]['endpoint_url'],
-            'http://my.endpoint.com'
+            'http://my.endpoint.com',
         )
         self.assert_tls_disabled_for_crt_client(mock_crt_client)
 
     @mock.patch('s3transfer.crt.S3Client')
-    def test_uses_botocore_credentials_for_crt_manager(
-            self, mock_crt_client):
+    def test_uses_botocore_credentials_for_crt_manager(self, mock_crt_client):
         credentials = Credentials('access_key', 'secret_key', 'token')
         self.session.get_credentials.return_value = credentials
         self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt')
+            preferred_transfer_client='crt'
+        )
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            self.params, self.runtime_config
+        )
         self.assert_is_crt_manager(transfer_manager)
         self.session.get_credentials.assert_called_with()
         crt_credential_provider = mock_crt_client.call_args[1][
@@ -350,122 +371,143 @@ class TestTransferManagerFactory(unittest.TestCase):
 
     @mock.patch('s3transfer.crt.S3Client')
     def test_disable_botocore_credentials_for_crt_manager(
-            self, mock_crt_client):
+        self, mock_crt_client
+    ):
         self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt')
+            preferred_transfer_client='crt'
+        )
         self.params['sign_request'] = False
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            self.params, self.runtime_config
+        )
         self.assert_is_crt_manager(transfer_manager)
         self.session.get_credentials.assert_not_called()
-        self.assertIsNone(
-            mock_crt_client.call_args[1]['credential_provider']
-        )
+        self.assertIsNone(mock_crt_client.call_args[1]['credential_provider'])
 
     @mock.patch('s3transfer.crt.S3Client')
     @mock.patch('s3transfer.crt.ClientTlsContext')
     def test_use_verify_ssl_parameter_for_crt_manager(
-            self, mock_client_tls_context_options, mock_crt_client):
+        self, mock_client_tls_context_options, mock_crt_client
+    ):
         self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt')
+            preferred_transfer_client='crt'
+        )
         fake_ca_contents = b"fake ca content"
         fake_ca_bundle = self.files.create_file(
-            "fake_ca", fake_ca_contents, mode='wb')
+            "fake_ca", fake_ca_contents, mode='wb'
+        )
         self.params['verify_ssl'] = fake_ca_bundle
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            self.params, self.runtime_config
+        )
         self.assert_is_crt_manager(transfer_manager)
         tls_context_options = mock_client_tls_context_options.call_args[0][0]
-        self.assertEqual(tls_context_options.ca_buffer,
-                         fake_ca_contents)
+        self.assertEqual(tls_context_options.ca_buffer, fake_ca_contents)
         self.assert_uses_client_tls_context_options(
-            mock_crt_client, mock_client_tls_context_options)
+            mock_crt_client, mock_client_tls_context_options
+        )
 
     @mock.patch('s3transfer.crt.S3Client')
     @mock.patch('s3transfer.crt.ClientTlsContext')
     def test_use_ca_bundle_from_session_for_crt_manager(
-            self, mock_client_tls_context_options, mock_crt_client):
+        self, mock_client_tls_context_options, mock_crt_client
+    ):
         self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt')
+            preferred_transfer_client='crt'
+        )
         fake_ca_contents = b"fake ca content"
         fake_ca_bundle = self.files.create_file(
-            "fake_ca", fake_ca_contents, mode='wb')
+            "fake_ca", fake_ca_contents, mode='wb'
+        )
         self.session.get_config_variable.return_value = fake_ca_bundle
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            self.params, self.runtime_config
+        )
         self.assert_is_crt_manager(transfer_manager)
         tls_context_options = mock_client_tls_context_options.call_args[0][0]
-        self.assertEqual(tls_context_options.ca_buffer,
-                         fake_ca_contents)
+        self.assertEqual(tls_context_options.ca_buffer, fake_ca_contents)
         self.assert_uses_client_tls_context_options(
-            mock_crt_client, mock_client_tls_context_options)
+            mock_crt_client, mock_client_tls_context_options
+        )
 
     @mock.patch('s3transfer.crt.S3Client')
     @mock.patch('s3transfer.crt.ClientTlsContext')
     def test_use_verify_ssl_parameter_none_for_crt_manager(
-            self, mock_client_tls_context_options, mock_crt_client):
+        self, mock_client_tls_context_options, mock_crt_client
+    ):
         self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt')
+            preferred_transfer_client='crt'
+        )
         self.params['verify_ssl'] = None
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            self.params, self.runtime_config
+        )
         self.assert_is_crt_manager(transfer_manager)
         tls_context_options = mock_client_tls_context_options.call_args[0][0]
         with open(DEFAULT_CA_BUNDLE, mode='rb') as fh:
             contents = fh.read()
             self.assertEqual(tls_context_options.ca_buffer, contents)
         self.assert_uses_client_tls_context_options(
-            mock_crt_client, mock_client_tls_context_options)
+            mock_crt_client, mock_client_tls_context_options
+        )
 
     @mock.patch('s3transfer.crt.S3Client')
     @mock.patch('s3transfer.crt.ClientTlsContext')
     def test_use_verify_ssl_parameter_false_for_crt_manager(
-            self, mock_client_tls_context_options, mock_crt_client):
+        self, mock_client_tls_context_options, mock_crt_client
+    ):
         self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt')
+            preferred_transfer_client='crt'
+        )
         self.params['verify_ssl'] = False
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            self.params, self.runtime_config
+        )
         self.assert_is_crt_manager(transfer_manager)
         tls_context_options = mock_client_tls_context_options.call_args[0][0]
         self.assertFalse(tls_context_options.verify_peer)
         self.assert_uses_client_tls_context_options(
-            mock_crt_client, mock_client_tls_context_options)
+            mock_crt_client, mock_client_tls_context_options
+        )
 
     @mock.patch('s3transfer.crt.S3Client')
-    def test_target_bandwidth_configure_for_crt_manager(
-            self, mock_crt_client):
+    def test_target_bandwidth_configure_for_crt_manager(self, mock_crt_client):
         self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt',
-            target_bandwidth=1_000_000_000)
+            preferred_transfer_client='crt', target_bandwidth=1_000_000_000
+        )
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            self.params, self.runtime_config
+        )
         self.assert_is_crt_manager(transfer_manager)
         self.assert_expected_throughput_target_gbps(mock_crt_client, 8)
 
     @mock.patch('s3transfer.crt.get_recommended_throughput_target_gbps')
     @mock.patch('s3transfer.crt.S3Client')
     def test_target_bandwidth_uses_crt_recommended_throughput(
-            self, mock_crt_client, mock_get_target_gbps):
+        self, mock_crt_client, mock_get_target_gbps
+    ):
         mock_get_target_gbps.return_value = 100
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt',
         )
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            self.params, self.runtime_config
+        )
         self.assert_is_crt_manager(transfer_manager)
         self.assert_expected_throughput_target_gbps(mock_crt_client, 100)
 
     @mock.patch('s3transfer.crt.get_recommended_throughput_target_gbps')
     @mock.patch('s3transfer.crt.S3Client')
     def test_crt_recommended_target_throughput_default(
-            self, mock_crt_client, mock_get_target_gbps):
+        self, mock_crt_client, mock_get_target_gbps
+    ):
         mock_get_target_gbps.return_value = None
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt',
         )
         transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
+            self.params, self.runtime_config
+        )
         self.assert_is_crt_manager(transfer_manager)
         # Default when CRT is unable to recommend a throughput
         # should be 10 gbps
@@ -473,18 +515,17 @@ class TestTransferManagerFactory(unittest.TestCase):
 
     @mock.patch('s3transfer.crt.S3Client')
     def test_multipart_chunksize_configure_for_crt_manager(
-            self, mock_crt_client):
+        self, mock_crt_client
+    ):
         part_size = 16 * (1024**2)
         self.runtime_config = self.get_runtime_config(
-            preferred_transfer_client='crt',
-            multipart_chunksize=part_size)
-        transfer_manager = self.factory.create_transfer_manager(
-            self.params, self.runtime_config)
-        self.assert_is_crt_manager(transfer_manager)
-        self.assertEqual(
-            mock_crt_client.call_args[1]['part_size'],
-            part_size
+            preferred_transfer_client='crt', multipart_chunksize=part_size
         )
+        transfer_manager = self.factory.create_transfer_manager(
+            self.params, self.runtime_config
+        )
+        self.assert_is_crt_manager(transfer_manager)
+        self.assertEqual(mock_crt_client.call_args[1]['part_size'], part_size)
 
 
 @pytest.mark.parametrize(
@@ -496,34 +537,29 @@ class TestTransferManagerFactory(unittest.TestCase):
         ('auto', {}, False, False, TransferManager),
         ('classic', {}, False, False, TransferManager),
         ('crt', {}, False, False, CRTTransferManager),
-
         # "default" is a supported alias for "classic"
         ('default', {}, False, False, TransferManager),
-
         # Cases when CRT is optimized for system
         (None, {}, True, False, CRTTransferManager),
         ('auto', {}, True, False, CRTTransferManager),
         ('classic', {}, True, False, TransferManager),
         ('crt', {}, True, False, CRTTransferManager),
-
         # Cases when another AWS CLI process is running CRT
         (None, {}, True, True, TransferManager),
         ('auto', {}, True, True, TransferManager),
         ('classic', {}, True, True, TransferManager),
         ('crt', {}, True, True, CRTTransferManager),
-
         # S3 copies always default to classic transfer manager
         (None, {'paths_type': 's3s3'}, True, False, TransferManager),
         ('auto', {'paths_type': 's3s3'}, True, False, TransferManager),
         ('classic', {'paths_type': 's3s3'}, True, False, TransferManager),
         ('crt', {'paths_type': 's3s3'}, True, False, TransferManager),
-
         # Streaming operations use requested transfer client
         (None, {'is_stream': True}, False, False, TransferManager),
         ('auto', {'is_stream': True}, False, False, TransferManager),
         ('classic', {'is_stream': True}, False, False, TransferManager),
         ('crt', {'is_stream': True}, False, False, CRTTransferManager),
-    ]
+    ],
 )
 def test_transfer_manager_cls_resolution(
     preferred_transfer_client,
@@ -554,7 +590,7 @@ def test_transfer_manager_cls_resolution(
         ('auto', True),
         ('crt', False),
         ('crt', True),
-    ]
+    ],
 )
 def test_factory_always_acquires_crt_transfer_lock_for_crt_manager(
     preferred_transfer_client,
@@ -581,7 +617,7 @@ def test_factory_always_acquires_crt_transfer_lock_for_crt_manager(
         ('auto', False),
         ('classic', False),
         ('classic', True),
-    ]
+    ],
 )
 def test_factory_never_acquires_crt_transfer_lock_for_classic_manager(
     preferred_transfer_client,
@@ -603,14 +639,13 @@ def test_factory_never_acquires_crt_transfer_lock_for_classic_manager(
 
 
 def _create_transfer_manager_from_factory(
-    transfer_manager_factory,
-    params,
-    preferred_transfer_client=None
+    transfer_manager_factory, params, preferred_transfer_client=None
 ):
     runtime_config_kwargs = {}
     if preferred_transfer_client is not None:
-        runtime_config_kwargs[
-            'preferred_transfer_client'] = preferred_transfer_client
+        runtime_config_kwargs['preferred_transfer_client'] = (
+            preferred_transfer_client
+        )
     runtime_config = RuntimeConfig().build_config(**runtime_config_kwargs)
     return transfer_manager_factory.create_transfer_manager(
         params, runtime_config

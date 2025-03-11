@@ -24,9 +24,9 @@ class TestDefaultRoles(unittest.TestCase):
                 "Sid": "",
                 "Effect": "Allow",
                 "Principal": {"Service": "ec2.amazonaws.com"},
-                "Action": "sts:AssumeRole"
+                "Action": "sts:AssumeRole",
             }
-        ]
+        ],
     }
 
     def test_assume_role_policy(self):

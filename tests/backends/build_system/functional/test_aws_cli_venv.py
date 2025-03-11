@@ -86,17 +86,21 @@ class TestAwsCliVenv:
         return f"python{info[0]}.{info[1]}"
 
     def _site_packages_dir(self, venv_path: pathlib.PurePath) -> str:
-        site_path = [path for path in json.loads(
-            subprocess.check_output(
-                [
-                    venv_path / BIN_DIRNAME / PYTHON_EXE_NAME,
-                    "-c",
-                    "import site, json; print(json.dumps(site.getsitepackages()))",
-                ]
+        site_path = [
+            path
+            for path in json.loads(
+                subprocess.check_output(
+                    [
+                        venv_path / BIN_DIRNAME / PYTHON_EXE_NAME,
+                        "-c",
+                        "import site, json; print(json.dumps(site.getsitepackages()))",
+                    ]
+                )
+                .decode()
+                .strip()
             )
-            .decode()
-            .strip()
-        ) if "site-packages" in path][0]
+            if "site-packages" in path
+        ][0]
         return site_path
 
     @skip_if_windows("Posix virtualenv")

@@ -55,7 +55,6 @@ SHUTDOWN_SENTINEL = object()
 
 
 class StubStdinStdoutIO(BaseWebsocketIO):
-
     def has_data_to_read(self):
         return not STDIN_QUEUE.empty()
 
@@ -78,7 +77,6 @@ def assert_stdout_empty():
 
 
 class MockCRTWebsocket(threading.Thread):
-
     def __init__(self):
         super().__init__()
         self.url = None
@@ -97,22 +95,30 @@ class MockCRTWebsocket(threading.Thread):
         self._shutdown_exception = None
 
     def connect(
-            self,
-            *,
-            host: str,
-            port: Optional[int] = None,
-            handshake_request: HttpRequest,
-            bootstrap: Optional[ClientBootstrap] = None,
-            socket_options: Optional[SocketOptions] = None,
-            tls_connection_options: Optional[TlsConnectionOptions] = None,
-            proxy_options: Optional[HttpProxyOptions] = None,
-            manage_read_window: bool = False,
-            initial_read_window: Optional[int] = None,
-            on_connection_setup: Callable[[OnConnectionSetupData], None],
-            on_connection_shutdown: Optional[Callable[[OnConnectionShutdownData], None]] = None,
-            on_incoming_frame_begin: Optional[Callable[[OnIncomingFrameBeginData], None]] = None,
-            on_incoming_frame_payload: Optional[Callable[[OnIncomingFramePayloadData], None]] = None,
-            on_incoming_frame_complete: Optional[Callable[[OnIncomingFrameCompleteData], None]] = None,
+        self,
+        *,
+        host: str,
+        port: Optional[int] = None,
+        handshake_request: HttpRequest,
+        bootstrap: Optional[ClientBootstrap] = None,
+        socket_options: Optional[SocketOptions] = None,
+        tls_connection_options: Optional[TlsConnectionOptions] = None,
+        proxy_options: Optional[HttpProxyOptions] = None,
+        manage_read_window: bool = False,
+        initial_read_window: Optional[int] = None,
+        on_connection_setup: Callable[[OnConnectionSetupData], None],
+        on_connection_shutdown: Optional[
+            Callable[[OnConnectionShutdownData], None]
+        ] = None,
+        on_incoming_frame_begin: Optional[
+            Callable[[OnIncomingFrameBeginData], None]
+        ] = None,
+        on_incoming_frame_payload: Optional[
+            Callable[[OnIncomingFramePayloadData], None]
+        ] = None,
+        on_incoming_frame_complete: Optional[
+            Callable[[OnIncomingFrameCompleteData], None]
+        ] = None,
     ):
         self.url = host + handshake_request.path
 
@@ -138,12 +144,14 @@ class MockCRTWebsocket(threading.Thread):
 
     # Appends data to the client_input_queue, which will represent the client sending data to the websocket
     def send_frame_from_client(
-            self,
-            opcode: Opcode,
-            payload: Optional[Union[str, bytes, bytearray, memoryview]] = None,
-            *,
-            fin: bool = True,
-            on_complete: Optional[Callable[[OnSendFrameCompleteData], None]] = None,
+        self,
+        opcode: Opcode,
+        payload: Optional[Union[str, bytes, bytearray, memoryview]] = None,
+        *,
+        fin: bool = True,
+        on_complete: Optional[
+            Callable[[OnSendFrameCompleteData], None]
+        ] = None,
     ):
         if opcode == Opcode.BINARY:
             data = OnSendFrameCompleteData()
@@ -151,24 +159,33 @@ class MockCRTWebsocket(threading.Thread):
             if len(payload) > 0:
                 self.client_input_queue.put(payload)
 
-    def add_shutdown_from_server(self, shutdown_reason=None, shutdown_exception=None):
+    def add_shutdown_from_server(
+        self, shutdown_reason=None, shutdown_exception=None
+    ):
         self._server_input_queue.put(SHUTDOWN_SENTINEL)
         self._shutdown_reason = shutdown_reason
         self._shutdown_exception = shutdown_exception
 
     def run(self):
         while not self._shutdown_event.is_set():
-
             if not self._server_input_queue.empty():
                 data_in_bytes = self._server_input_queue.get()
                 if data_in_bytes == SHUTDOWN_SENTINEL:
                     self._shutdown_event.set()
                 else:
-                    incoming_frame = IncomingFrame(opcode=Opcode.BINARY, payload_length=len(data_in_bytes), fin=True)
-                    payload_data = OnIncomingFramePayloadData(frame=incoming_frame, data=data_in_bytes)
+                    incoming_frame = IncomingFrame(
+                        opcode=Opcode.BINARY,
+                        payload_length=len(data_in_bytes),
+                        fin=True,
+                    )
+                    payload_data = OnIncomingFramePayloadData(
+                        frame=incoming_frame, data=data_in_bytes
+                    )
                     self._on_incoming_frame_payload(payload_data)
 
-                    complete_data = OnIncomingFrameCompleteData(frame=incoming_frame)
+                    complete_data = OnIncomingFrameCompleteData(
+                        frame=incoming_frame
+                    )
                     self._on_incoming_frame_complete(complete_data)
 
         if self._shutdown_reason:
@@ -176,14 +193,22 @@ class MockCRTWebsocket(threading.Thread):
             packed_shutdown_code = struct.pack(">H", shutdown_code)
             encoded_shutdown_reason = self._shutdown_reason.encode()
             data_in_bytes = packed_shutdown_code + encoded_shutdown_reason
-            incoming_frame = IncomingFrame(opcode=Opcode.CLOSE, payload_length=len(data_in_bytes), fin=True)
-            payload_data = OnIncomingFramePayloadData(frame=incoming_frame, data=data_in_bytes)
+            incoming_frame = IncomingFrame(
+                opcode=Opcode.CLOSE,
+                payload_length=len(data_in_bytes),
+                fin=True,
+            )
+            payload_data = OnIncomingFramePayloadData(
+                frame=incoming_frame, data=data_in_bytes
+            )
             self._on_incoming_frame_payload(payload_data)
 
             complete_data = OnIncomingFrameCompleteData(frame=incoming_frame)
             self._on_incoming_frame_complete(complete_data)
 
-        self._on_connection_shutdown(OnConnectionShutdownData(exception=self._shutdown_exception))
+        self._on_connection_shutdown(
+            OnConnectionShutdownData(exception=self._shutdown_exception)
+        )
 
 
 @pytest.fixture
@@ -217,7 +242,7 @@ def io_patch():
     new_websocket_io = StubStdinStdoutIO
     return mock.patch(
         f"awscli.customizations.ec2instanceconnect.websocket.{io_to_patch}",
-        new=new_websocket_io
+        new=new_websocket_io,
     )
 
 
@@ -228,7 +253,9 @@ def mock_crt_websocket():
 
 @pytest.fixture
 def connect_patch(mock_crt_websocket):
-    return mock.patch("awscrt.websocket.connect", new=mock_crt_websocket.connect)
+    return mock.patch(
+        "awscrt.websocket.connect", new=mock_crt_websocket.connect
+    )
 
 
 @pytest.fixture
@@ -260,9 +287,13 @@ def request_params_for_describe_instance():
 def dns_name():
     return "eice-123.ec2-instance-connect-endpoint.us-west-2.amazonaws.com"
 
+
 @pytest.fixture
 def fips_dns_name():
-    return "eice-123.fips.ec2-instance-connect-endpoint.us-west-2.amazonaws.com"
+    return (
+        "eice-123.fips.ec2-instance-connect-endpoint.us-west-2.amazonaws.com"
+    )
+
 
 @pytest.fixture
 def describe_eice_response(dns_name, fips_dns_name):
@@ -281,6 +312,7 @@ def describe_eice_response(dns_name, fips_dns_name):
     </DescribeInstanceConnectEndpointsResponse>
     """
 
+
 @pytest.fixture
 def describe_eice_response_without_fips_dns(dns_name, fips_dns_name):
     return f"""
@@ -296,6 +328,7 @@ def describe_eice_response_without_fips_dns(dns_name, fips_dns_name):
         </instanceConnectEndpointSet>
     </DescribeInstanceConnectEndpointsResponse>
     """
+
 
 @pytest.fixture
 def describe_eice_response_empty_fips_dns(dns_name, fips_dns_name):
@@ -314,9 +347,15 @@ def describe_eice_response_empty_fips_dns(dns_name, fips_dns_name):
     </DescribeInstanceConnectEndpointsResponse>
     """
 
+
 @pytest.fixture
 def request_params_for_describe_eice():
-    return {'Filters': [{'Name': 'state', 'Values': ['create-complete']}, {'Name': 'vpc-id', 'Values': ['vpc-123']}]}
+    return {
+        'Filters': [
+            {'Name': 'state', 'Values': ['create-complete']},
+            {'Name': 'vpc-id', 'Values': ['vpc-123']},
+        ]
+    }
 
 
 @pytest.fixture
@@ -329,15 +368,19 @@ def datetime_utcnow_patch():
 
 @pytest.fixture
 def run_listener_cmd_in_thread_executor(
-        cli_runner, mock_crt_websocket, connect_patch, io_patch
-    ):
+    cli_runner, mock_crt_websocket, connect_patch, io_patch
+):
     stop_event = threading.Event()
-    with mock.patch.object(WebsocketManager, 'RUNNING', new_callable=mock.PropertyMock) as websocket_join:
+    with mock.patch.object(
+        WebsocketManager, 'RUNNING', new_callable=mock.PropertyMock
+    ) as websocket_join:
         websocket_join.return_value = stop_event
         with connect_patch, io_patch:
             with concurrent.futures.ThreadPoolExecutor() as executor:
+
                 def submit_run_command(cmdline):
                     return executor.submit(cli_runner.run, cmdline)
+
                 yield submit_run_command
                 stop_event.set()
 
@@ -391,25 +434,27 @@ def assert_url(dns_name, url):
 
 
 class TestOpenTunnel:
-
     def test_single_connection_mode(
-            self,
-            cli_runner,
-            mock_crt_websocket,
-            connect_patch,
-            io_patch,
-            describe_instance_response,
-            dns_name,
-            describe_eice_response,
-            request_params_for_describe_instance,
-            request_params_for_describe_eice,
-            datetime_utcnow_patch,
+        self,
+        cli_runner,
+        mock_crt_websocket,
+        connect_patch,
+        io_patch,
+        describe_instance_response,
+        dns_name,
+        describe_eice_response,
+        request_params_for_describe_instance,
+        request_params_for_describe_eice,
+        datetime_utcnow_patch,
     ):
         cli_runner.env["AWS_USE_FIPS_ENDPOINT"] = "false"
         cmdline = [
-            "ec2-instance-connect", "open-tunnel",
-            "--instance-id", "i-123",
-            "--max-tunnel-duration", "1"
+            "ec2-instance-connect",
+            "open-tunnel",
+            "--instance-id",
+            "i-123",
+            "--max-tunnel-duration",
+            "1",
         ]
         cli_runner.add_response(HTTPResponse(body=describe_instance_response))
         cli_runner.add_response(HTTPResponse(body=describe_eice_response))
@@ -425,13 +470,15 @@ class TestOpenTunnel:
         assert pop_stdout_content() == test_server_input
         assert_stdout_empty()
         # Order of the query params on the url mater because of sigv4
-        assert "eice-123.ec2-instance-connect-endpoint.us-west-2.amazonaws.com/openTunnel?" \
-               "instanceConnectEndpointId=eice-123&remotePort=22&privateIpAddress=10.0.0.0&" \
-               "maxTunnelDuration=1&X-Amz-Algorithm=AWS4-HMAC-SHA256&" \
-               "X-Amz-Credential=access_key%2F20200101%2Fus-west-2%2Fec2-instance-connect%2Faws4_request&" \
-               "X-Amz-Date=20200101T010101Z&X-Amz-Expires=60&X-Amz-SignedHeaders=host&" \
-               "X-Amz-Signature=3a56740422a5b9aebd22d860b7a30c729e459a6f71a83bc0de3a2b44b7353f28" == \
-               mock_crt_websocket.url
+        assert (
+            "eice-123.ec2-instance-connect-endpoint.us-west-2.amazonaws.com/openTunnel?"
+            "instanceConnectEndpointId=eice-123&remotePort=22&privateIpAddress=10.0.0.0&"
+            "maxTunnelDuration=1&X-Amz-Algorithm=AWS4-HMAC-SHA256&"
+            "X-Amz-Credential=access_key%2F20200101%2Fus-west-2%2Fec2-instance-connect%2Faws4_request&"
+            "X-Amz-Date=20200101T010101Z&X-Amz-Expires=60&X-Amz-SignedHeaders=host&"
+            "X-Amz-Signature=3a56740422a5b9aebd22d860b7a30c729e459a6f71a83bc0de3a2b44b7353f28"
+            == mock_crt_websocket.url
+        )
         assert_url(dns_name, mock_crt_websocket.url)
         assert result.aws_requests == [
             AWSRequest(
@@ -443,23 +490,28 @@ class TestOpenTunnel:
                 service_name='ec2',
                 operation_name='DescribeInstanceConnectEndpoints',
                 params=request_params_for_describe_eice,
-            )
+            ),
         ]
 
     def test_single_connection_mode_with_no_describe_calls(
-            self,
-            cli_runner,
-            mock_crt_websocket,
-            connect_patch,
-            io_patch,
-            dns_name,
+        self,
+        cli_runner,
+        mock_crt_websocket,
+        connect_patch,
+        io_patch,
+        dns_name,
     ):
         cmdline = [
-            "ec2-instance-connect", "open-tunnel",
-            "--private-ip-address", "10.0.0.0",
-            "--instance-connect-endpoint-id", "eice-123",
-            "--instance-connect-endpoint-dns-name", dns_name,
-            "--max-tunnel-duration", "1"
+            "ec2-instance-connect",
+            "open-tunnel",
+            "--private-ip-address",
+            "10.0.0.0",
+            "--instance-connect-endpoint-id",
+            "eice-123",
+            "--instance-connect-endpoint-dns-name",
+            dns_name,
+            "--max-tunnel-duration",
+            "1",
         ]
 
         test_server_input = b"Test Server Output"
@@ -475,19 +527,24 @@ class TestOpenTunnel:
         assert_url(dns_name, mock_crt_websocket.url)
         assert result.aws_requests == []
 
-
     def test_multiple_connection_mode(
-            self,
-            run_listener_cmd_in_thread_executor,
-            mock_crt_websocket,
+        self,
+        run_listener_cmd_in_thread_executor,
+        mock_crt_websocket,
     ):
         cmdline = [
-            "ec2-instance-connect", "open-tunnel",
-            "--instance-id", "i-123",
-            "--private-ip-address", "10.0.0.0",
-            "--instance-connect-endpoint-id", "eice-123",
-            "--instance-connect-endpoint-dns-name", "test",
-            "--local-port", "3333"
+            "ec2-instance-connect",
+            "open-tunnel",
+            "--instance-id",
+            "i-123",
+            "--private-ip-address",
+            "10.0.0.0",
+            "--instance-connect-endpoint-id",
+            "eice-123",
+            "--instance-connect-endpoint-dns-name",
+            "test",
+            "--local-port",
+            "3333",
         ]
         future = run_listener_cmd_in_thread_executor(cmdline)
         # Retry several times since it can take few ms to set up everything
@@ -502,24 +559,34 @@ class TestOpenTunnel:
             test_client_input = b"Test Client Input"
             # Writing to the TCP Conn should ensure a frame is sent with that data
             s.sendall(test_client_input)
-            client_input_sent_to_websocket = mock_crt_websocket.client_input_queue.get(timeout=5)
+            client_input_sent_to_websocket = (
+                mock_crt_websocket.client_input_queue.get(timeout=5)
+            )
             assert test_client_input == client_input_sent_to_websocket
 
             mock_crt_websocket.add_shutdown_from_server()
 
     def test_command_uses_fips_endpoint_to_connect(
-            self, cli_runner, mock_crt_websocket, connect_patch, io_patch, describe_instance_response,
-            fips_dns_name, describe_eice_response,
+        self,
+        cli_runner,
+        mock_crt_websocket,
+        connect_patch,
+        io_patch,
+        describe_instance_response,
+        fips_dns_name,
+        describe_eice_response,
     ):
         cli_runner.env["AWS_USE_FIPS_ENDPOINT"] = "true"
         cmdline = [
-            "ec2-instance-connect", "open-tunnel",
-            "--instance-id", "i-123",
-            "--max-tunnel-duration", "1"
+            "ec2-instance-connect",
+            "open-tunnel",
+            "--instance-id",
+            "i-123",
+            "--max-tunnel-duration",
+            "1",
         ]
         cli_runner.add_response(HTTPResponse(body=describe_instance_response))
         cli_runner.add_response(HTTPResponse(body=describe_eice_response))
-
 
         test_server_input = b"Test Server Output"
         mock_crt_websocket.add_output_from_server(test_server_input)
@@ -532,18 +599,25 @@ class TestOpenTunnel:
         assert_url(fips_dns_name, mock_crt_websocket.url)
 
     def test_command_returns_shutdown_reason(
-            self, cli_runner, mock_crt_websocket, connect_patch, io_patch
+        self, cli_runner, mock_crt_websocket, connect_patch, io_patch
     ):
         cmdline = [
-            "ec2-instance-connect", "open-tunnel",
-            "--instance-id", "i-123",
-            "--private-ip-address", "10.0.0.0",
-            "--instance-connect-endpoint-id", "eice-123",
-            "--instance-connect-endpoint-dns-name", "test"
+            "ec2-instance-connect",
+            "open-tunnel",
+            "--instance-id",
+            "i-123",
+            "--private-ip-address",
+            "10.0.0.0",
+            "--instance-connect-endpoint-id",
+            "eice-123",
+            "--instance-connect-endpoint-dns-name",
+            "test",
         ]
 
         shutdown_reason = "Test Shutdown"
-        mock_crt_websocket.add_shutdown_from_server(shutdown_reason=shutdown_reason)
+        mock_crt_websocket.add_shutdown_from_server(
+            shutdown_reason=shutdown_reason
+        )
 
         with connect_patch, io_patch:
             result = cli_runner.run(cmdline)
@@ -552,18 +626,25 @@ class TestOpenTunnel:
         assert shutdown_reason in result.stderr
 
     def test_command_returns_shutdown_exception(
-            self, cli_runner, mock_crt_websocket, connect_patch, io_patch
+        self, cli_runner, mock_crt_websocket, connect_patch, io_patch
     ):
         cmdline = [
-            "ec2-instance-connect", "open-tunnel",
-            "--instance-id", "i-123",
-            "--private-ip-address", "10.0.0.0",
-            "--instance-connect-endpoint-id", "eice-123",
-            "--instance-connect-endpoint-dns-name", "test"
+            "ec2-instance-connect",
+            "open-tunnel",
+            "--instance-id",
+            "i-123",
+            "--private-ip-address",
+            "10.0.0.0",
+            "--instance-connect-endpoint-id",
+            "eice-123",
+            "--instance-connect-endpoint-dns-name",
+            "test",
         ]
 
         shutdown_exception_message = "Test Shutdown Error"
-        mock_crt_websocket.add_shutdown_from_server(shutdown_exception=RuntimeError(shutdown_exception_message))
+        mock_crt_websocket.add_shutdown_from_server(
+            shutdown_exception=RuntimeError(shutdown_exception_message)
+        )
 
         with connect_patch, io_patch:
             result = cli_runner.run(cmdline)
@@ -571,45 +652,61 @@ class TestOpenTunnel:
         assert 255 == result.rc
         assert shutdown_exception_message in result.stderr
 
-    @pytest.mark.parametrize("cli_input,expected", [
-        # Customer must provide instance id or private ip
-        (
+    @pytest.mark.parametrize(
+        "cli_input,expected",
+        [
+            # Customer must provide instance id or private ip
+            (
                 [
-                    "ec2-instance-connect", "open-tunnel",
-                    "--instance-connect-endpoint-id", "eice-123",
-                    "--instance-connect-endpoint-dns-name", "test"
+                    "ec2-instance-connect",
+                    "open-tunnel",
+                    "--instance-connect-endpoint-id",
+                    "eice-123",
+                    "--instance-connect-endpoint-dns-name",
+                    "test",
                 ],
-                "Specify an instance id or private ip"
-        ),
-        # Customer must define eice id when dns name is provided
-        (
+                "Specify an instance id or private ip",
+            ),
+            # Customer must define eice id when dns name is provided
+            (
                 [
-                    "ec2-instance-connect", "open-tunnel",
-                    "--instance-id", "i-123",
-                    "--instance-connect-endpoint-dns-name", "test"
+                    "ec2-instance-connect",
+                    "open-tunnel",
+                    "--instance-id",
+                    "i-123",
+                    "--instance-connect-endpoint-dns-name",
+                    "test",
                 ],
-                "Specify an instance connect endpoint id"
-        ),
-        # Customer must define eice id when private ip is provided
-        (
+                "Specify an instance connect endpoint id",
+            ),
+            # Customer must define eice id when private ip is provided
+            (
                 [
-                    "ec2-instance-connect", "open-tunnel",
-                    "--instance-id", "i-123",
-                    "--private-ip-address", "0.0.0.0"
+                    "ec2-instance-connect",
+                    "open-tunnel",
+                    "--instance-id",
+                    "i-123",
+                    "--private-ip-address",
+                    "0.0.0.0",
                 ],
-                "Specify an instance connect endpoint id"
-        ),
-        # Customer must use provide local port when using command in isatty mode
-        (
+                "Specify an instance connect endpoint id",
+            ),
+            # Customer must use provide local port when using command in isatty mode
+            (
                 [
-                    "ec2-instance-connect", "open-tunnel",
-                    "--instance-id", "i-123"
+                    "ec2-instance-connect",
+                    "open-tunnel",
+                    "--instance-id",
+                    "i-123",
                 ],
-                "This command does not support interactive mode"
-        )
-    ])
+                "This command does not support interactive mode",
+            ),
+        ],
+    )
     @mock.patch("sys.stdin")
-    def test_command_fails_when_invalid_input(self, mock_stdin, cli_runner, cli_input, expected):
+    def test_command_fails_when_invalid_input(
+        self, mock_stdin, cli_runner, cli_input, expected
+    ):
         mock_stdin.isatty.return_value = True
         result = cli_runner.run(cli_input)
 
@@ -617,11 +714,16 @@ class TestOpenTunnel:
         assert expected in result.stderr
 
     @pytest.mark.parametrize("duration", ["-1", "0", "3601"])
-    def test_command_fails_when_using_invalid_max_tunnel_duration(self, cli_runner, duration):
+    def test_command_fails_when_using_invalid_max_tunnel_duration(
+        self, cli_runner, duration
+    ):
         cmdline = [
-            "ec2-instance-connect", "open-tunnel",
-            "--instance-id", "i-123",
-            "--max-tunnel-duration", duration
+            "ec2-instance-connect",
+            "open-tunnel",
+            "--instance-id",
+            "i-123",
+            "--max-tunnel-duration",
+            duration,
         ]
         result = cli_runner.run(cmdline)
 
@@ -629,16 +731,24 @@ class TestOpenTunnel:
         assert "Invalid max connection timeout specified" in result.stderr
 
     def test_command_fails_when_no_fips_endpoint_available_to_connect(
-            self, cli_runner, describe_instance_response, describe_eice_response_without_fips_dns,
+        self,
+        cli_runner,
+        describe_instance_response,
+        describe_eice_response_without_fips_dns,
     ):
         cli_runner.env["AWS_USE_FIPS_ENDPOINT"] = "true"
         cmdline = [
-            "ec2-instance-connect", "open-tunnel",
-            "--instance-id", "i-123",
-            "--max-tunnel-duration", "1"
+            "ec2-instance-connect",
+            "open-tunnel",
+            "--instance-id",
+            "i-123",
+            "--max-tunnel-duration",
+            "1",
         ]
         cli_runner.add_response(HTTPResponse(body=describe_instance_response))
-        cli_runner.add_response(HTTPResponse(body=describe_eice_response_without_fips_dns))
+        cli_runner.add_response(
+            HTTPResponse(body=describe_eice_response_without_fips_dns)
+        )
 
         result = cli_runner.run(cmdline)
 
@@ -646,18 +756,26 @@ class TestOpenTunnel:
         assert "Unable to find FIPS Endpoint" in result.stderr
 
     def test_command_fails_when_empty_fips_endpoint_available_to_connect(
-                self, cli_runner, describe_instance_response, describe_eice_response_empty_fips_dns,
-        ):
-            cli_runner.env["AWS_USE_FIPS_ENDPOINT"] = "true"
-            cmdline = [
-                "ec2-instance-connect", "open-tunnel",
-                "--instance-id", "i-123",
-                "--max-tunnel-duration", "1"
-            ]
-            cli_runner.add_response(HTTPResponse(body=describe_instance_response))
-            cli_runner.add_response(HTTPResponse(body=describe_eice_response_empty_fips_dns))
+        self,
+        cli_runner,
+        describe_instance_response,
+        describe_eice_response_empty_fips_dns,
+    ):
+        cli_runner.env["AWS_USE_FIPS_ENDPOINT"] = "true"
+        cmdline = [
+            "ec2-instance-connect",
+            "open-tunnel",
+            "--instance-id",
+            "i-123",
+            "--max-tunnel-duration",
+            "1",
+        ]
+        cli_runner.add_response(HTTPResponse(body=describe_instance_response))
+        cli_runner.add_response(
+            HTTPResponse(body=describe_eice_response_empty_fips_dns)
+        )
 
-            result = cli_runner.run(cmdline)
+        result = cli_runner.run(cmdline)
 
-            assert 253 == result.rc
-            assert "Unable to find FIPS Endpoint" in result.stderr
+        assert 253 == result.rc
+        assert "Unable to find FIPS Endpoint" in result.stderr

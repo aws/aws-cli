@@ -21,38 +21,60 @@ from tests.unit.autocomplete import InMemoryIndex
 
 class TestGroupNameCompleter(unittest.TestCase):
     def setUp(self):
-        self.index = InMemoryIndex({
-            'command_names': {
-                '': [('aws', None)],
-                'aws': [('logs', None)],
-                'aws.logs': [('tail', None)],
-            },
-            'arg_names': {
-                '': {
-                    'aws': ['region', 'profile'],
+        self.index = InMemoryIndex(
+            {
+                'command_names': {
+                    '': [('aws', None)],
+                    'aws': [('logs', None)],
+                    'aws.logs': [('tail', None)],
                 },
-                'aws.logs': {
-                    'tail': ['group_name'],
-                },
-            },
-            'arg_data': {
-                '': {
-                    'aws': {
-                        'profile': ('profile', 'string', 'aws', '',
-                                         None, False, False),
-                        'region': ('region', 'string', 'aws', '', None, False,
-                                   False),
-                    }
-                },
-                'aws.logs': {
-                    'tail': {
-                        'group_name': (
-                            'group_name', 'string',
-                            'tail', 'aws.logs.', None, True, False),
+                'arg_names': {
+                    '': {
+                        'aws': ['region', 'profile'],
                     },
-                }
+                    'aws.logs': {
+                        'tail': ['group_name'],
+                    },
+                },
+                'arg_data': {
+                    '': {
+                        'aws': {
+                            'profile': (
+                                'profile',
+                                'string',
+                                'aws',
+                                '',
+                                None,
+                                False,
+                                False,
+                            ),
+                            'region': (
+                                'region',
+                                'string',
+                                'aws',
+                                '',
+                                None,
+                                False,
+                                False,
+                            ),
+                        }
+                    },
+                    'aws.logs': {
+                        'tail': {
+                            'group_name': (
+                                'group_name',
+                                'string',
+                                'tail',
+                                'aws.logs.',
+                                None,
+                                True,
+                                False,
+                            ),
+                        },
+                    },
+                },
             }
-        })
+        )
         self.parser = parser.CLIParser(self.index)
         self.mock_client = mock.Mock()
         self.mock_create_client = mock.Mock()
@@ -70,8 +92,7 @@ class TestGroupNameCompleter(unittest.TestCase):
         results = self.completer.complete(parsed)
         self.assertEqual(
             results,
-            [CompletionResult('group', 0),
-             CompletionResult('mygroup', 0)]
+            [CompletionResult('group', 0), CompletionResult('mygroup', 0)],
         )
 
     def test_complete_group_name_filters_startswith(self):
@@ -83,14 +104,12 @@ class TestGroupNameCompleter(unittest.TestCase):
         }
         parsed = self.parser.parse('aws logs tail my')
         results = self.completer.complete(parsed)
-        self.assertEqual(
-            results,
-            [CompletionResult('mygroup', -2)]
-        )
+        self.assertEqual(results, [CompletionResult('mygroup', -2)])
 
     def test_complete_group_name_handles_errors(self):
         self.mock_client.describe_log_groups.side_effect = Exception(
-            "Something went wrong.")
+            "Something went wrong."
+        )
         parsed = self.parser.parse('aws logs tail ')
         results = self.completer.complete(parsed)
         self.assertEqual(results, [])
@@ -98,7 +117,9 @@ class TestGroupNameCompleter(unittest.TestCase):
     def test_client_created_with_region_and_profiles_from_parsed(self):
         self.mock_client.describe_log_groups.return_value = {'logGroups': []}
         parsed = self.parser.parse(
-            'aws --profile foo --region us-west-2 logs tail ')
+            'aws --profile foo --region us-west-2 logs tail '
+        )
         self.completer.complete(parsed)
         self.mock_create_client.create_client.assert_called_with(
-            'logs', parsed_profile='foo', parsed_region='us-west-2')
+            'logs', parsed_profile='foo', parsed_region='us-west-2'
+        )

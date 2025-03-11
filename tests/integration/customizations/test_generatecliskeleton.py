@@ -47,9 +47,11 @@ def clean_environ():
     with patch_environ():
         yield
 
+
 @pytest.fixture
 def yaml_safe_loader():
     return YAML(typ="safe", pure=True)
+
 
 def get_all_cli_skeleton_commands():
     skeleton_commands = []

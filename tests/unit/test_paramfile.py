@@ -47,8 +47,9 @@ class TestParamFile(unittest.TestCase):
         self.assertEqual(data, b'This is a test')
         self.assertIsInstance(data, bytes)
 
-    @skip_if_windows('Binary content error only occurs '
-                     'on non-Windows platforms.')
+    @skip_if_windows(
+        'Binary content error only occurs ' 'on non-Windows platforms.'
+    )
     def test_cannot_load_text_file(self):
         contents = b'\xbfX\xac\xbe'
         filename = self.files.create_file('foo', contents, mode='wb')
@@ -68,7 +69,6 @@ class TestParamFile(unittest.TestCase):
 
 
 class TestConfigureURIArgumentHandler(unittest.TestCase):
-
     @mock.patch('awscli.paramfile.URIArgumentHandler')
     def test_default_prefix_maps(self, mock_handler_cls):
         session = mock.Mock(spec=Session)

@@ -20,7 +20,6 @@ from awscli.testutils import BaseAWSCommandParamsTest, skip_if_windows
 
 
 class TestYAMLOutput(BaseAWSCommandParamsTest):
-
     def setUp(self):
         super(TestYAMLOutput, self).setUp()
         self.parsed_response = {
@@ -30,18 +29,18 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
                     "Path": "/",
                     "CreateDate": "2013-02-12T19:08:52Z",
                     "UserId": "EXAMPLEUSERID",
-                    "Arn": "arn:aws:iam::12345:user/testuser1"
+                    "Arn": "arn:aws:iam::12345:user/testuser1",
                 },
                 {
                     "UserName": "testuser-51",
                     "Path": "/",
                     "CreateDate": "2012-10-14T23:53:39Z",
                     "UserId": "EXAMPLEUSERID",
-                    "Arn": "arn:aws:iam::123456:user/testuser2"
+                    "Arn": "arn:aws:iam::123456:user/testuser2",
                 },
             ]
         }
-        
+
         self.yaml = YAML(typ="safe", pure=True)
 
     def test_yaml_response(self):
@@ -68,8 +67,7 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
     def test_empty_dict_response_prints_nothing(self):
         self.parsed_response = {}
         stdout, _, _ = self.run_cmd(
-            'sts get-caller-identity --output yaml',
-            expected_rc=0
+            'sts get-caller-identity --output yaml', expected_rc=0
         )
         self.assertEqual(stdout, '')
 
@@ -91,15 +89,13 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
         jmespath_query = 'Users[*].UserName'
         stdout, _, _ = self.run_cmd(
             'iam list-users --output yaml --query %s' % jmespath_query,
-            expected_rc=0
+            expected_rc=0,
         )
         parsed_output = self.yaml.load(stdout)
         self.assertEqual(parsed_output, ['testuser-50', 'testuser-51'])
 
     def test_print_int(self):
-        self.parsed_response = {
-            'Count': 1
-        }
+        self.parsed_response = {'Count': 1}
         command = (
             'dynamodb scan --output yaml --table-name foo --select COUNT '
             '--query Count'
@@ -108,11 +104,7 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
         self.assertEqual(stdout, '1\n')
 
     def test_print_float(self):
-        self.parsed_response = {
-            'ConsumedCapacity': {
-                'CapacityUnits': 0.5
-            }
-        }
+        self.parsed_response = {'ConsumedCapacity': {'CapacityUnits': 0.5}}
         command = (
             'dynamodb scan --output yaml --table-name foo '
             '--query ConsumedCapacity.CapacityUnits'
@@ -121,9 +113,7 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
         self.assertEqual(stdout, '0.5\n')
 
     def test_print_none(self):
-        self.parsed_response = {
-            'ConsumedCapacity': None
-        }
+        self.parsed_response = {'ConsumedCapacity': None}
         command = (
             'dynamodb scan --output yaml --table-name foo --query '
             'ConsumedCapacity'
@@ -146,10 +136,12 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
     def test_print_timestamp(self):
         now = datetime.datetime(1970, 1, 1, 0, 0)
         self.parsed_response = {
-            "Buckets": [{
-                "CreationDate": now,
-                "Name": "foo",
-            }]
+            "Buckets": [
+                {
+                    "CreationDate": now,
+                    "Name": "foo",
+                }
+            ]
         }
         command = (
             's3api list-buckets --output yaml --query Buckets[0].CreationDate'
@@ -162,7 +154,7 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
         jmespath_query = 'Users[0].UserName'
         stdout, _, _ = self.run_cmd(
             'iam list-users --output yaml --query %s' % jmespath_query,
-            expected_rc=0
+            expected_rc=0,
         )
         self.assertEqual(stdout, '"testuser-50"\n')
 
@@ -179,9 +171,13 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
         self.parsed_response['Users'][1]['UserId'] = '\u2713'
         stdout, _, _ = self.run_cmd(
             [
-                'iam', 'list-users', '--output', 'yaml', '--query',
-                'Users[1].UserId'
+                'iam',
+                'list-users',
+                '--output',
+                'yaml',
+                '--query',
+                'Users[1].UserId',
             ],
-            expected_rc=0
+            expected_rc=0,
         )
         self.assertIn('\u2713', ensure_text_type(stdout))

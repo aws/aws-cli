@@ -23,29 +23,37 @@ class TestPutMetricData(BaseAWSCommandParamsTest):
 
     expected_output = {
         'MetricData': [
-            {'MetricName': 'FreeMemoryBytes',
-             'Unit': 'Bytes',
-             'Timestamp': '2013-08-22T10:58:12.283Z',
-             'Value': decimal.Decimal("9130160128")}],
-        'Namespace': '"Foo/Bar"'}
+            {
+                'MetricName': 'FreeMemoryBytes',
+                'Unit': 'Bytes',
+                'Timestamp': '2013-08-22T10:58:12.283Z',
+                'Value': decimal.Decimal("9130160128"),
+            }
+        ],
+        'Namespace': '"Foo/Bar"',
+    }
 
     def test_using_json(self):
-        args = ('--namespace "Foo/Bar" '
-                '--metric-data [{"MetricName":"FreeMemoryBytes",'
-                '"Unit":"Bytes",'
-                '"Timestamp":"2013-08-22T10:58:12.283Z",'
-                '"Value":9130160128}]')
+        args = (
+            '--namespace "Foo/Bar" '
+            '--metric-data [{"MetricName":"FreeMemoryBytes",'
+            '"Unit":"Bytes",'
+            '"Timestamp":"2013-08-22T10:58:12.283Z",'
+            '"Value":9130160128}]'
+        )
         cmdline = self.prefix + args
         self.assert_params_for_cmd(cmdline, self.expected_output)
 
     def test_using_promoted_params(self):
         # This is equivalent to the json version in test_using_json
         # above.
-        args = ('--namespace "Foo/Bar" '
-                '--metric-name FreeMemoryBytes '
-                '--unit Bytes '
-                '--timestamp 2013-08-22T10:58:12.283Z '
-                '--value 9130160128')
+        args = (
+            '--namespace "Foo/Bar" '
+            '--metric-name FreeMemoryBytes '
+            '--unit Bytes '
+            '--timestamp 2013-08-22T10:58:12.283Z '
+            '--value 9130160128'
+        )
         cmdline = self.prefix + args
         self.assert_params_for_cmd(cmdline, self.expected_output)
 
@@ -59,15 +67,18 @@ class TestPutMetricData(BaseAWSCommandParamsTest):
         cmdline = self.prefix + args
         expected = {
             'MetricData': [
-                {'MetricName': 'PageViewCount',
-                 'StatisticValues': {
-                     'Maximum': decimal.Decimal('5'),
-                     'Minimum': decimal.Decimal('2'),
-                     'SampleCount': decimal.Decimal('3'),
-                     'Sum': decimal.Decimal('11')},
-                 'Timestamp': '2014-02-14T12:00:00.000Z'}
+                {
+                    'MetricName': 'PageViewCount',
+                    'StatisticValues': {
+                        'Maximum': decimal.Decimal('5'),
+                        'Minimum': decimal.Decimal('2'),
+                        'SampleCount': decimal.Decimal('3'),
+                        'Sum': decimal.Decimal('11'),
+                    },
+                    'Timestamp': '2014-02-14T12:00:00.000Z',
+                }
             ],
-            'Namespace': 'MyService'
+            'Namespace': 'MyService',
         }
         self.assert_params_for_cmd(cmdline, expected)
 
@@ -80,11 +91,13 @@ class TestPutMetricData(BaseAWSCommandParamsTest):
         )
         cmdline = self.prefix + args
         expected = {
-            'MetricData': [{
-                'MetricName': 'Foo',
-                'Value': decimal.Decimal('5'),
-                'StorageResolution': 1
-            }],
-            'Namespace': 'Bar'
+            'MetricData': [
+                {
+                    'MetricName': 'Foo',
+                    'Value': decimal.Decimal('5'),
+                    'StorageResolution': 1,
+                }
+            ],
+            'Namespace': 'Bar',
         }
         self.assert_params_for_cmd(cmdline, expected)

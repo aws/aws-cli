@@ -21,6 +21,4 @@ class TestInjectCommands(unittest.TestCase):
         session = mock.Mock()
         inject_commands(command_table, session)
         self.assertIn('login', command_table)
-        self.assertIsInstance(
-            command_table['login'], CodeArtifactLogin
-        )
+        self.assertIsInstance(command_table['login'], CodeArtifactLogin)

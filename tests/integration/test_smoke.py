@@ -21,7 +21,9 @@ from awscli.testutils import aws
 
 INTEG_TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
 
-with open(os.path.join(INTEG_TESTS_DIR, "smoke-tests.json")) as definitions_file:
+with open(
+    os.path.join(INTEG_TESTS_DIR, "smoke-tests.json")
+) as definitions_file:
     SMOKE_TESTS = json.load(definitions_file)
 COMMANDS = [" ".join(cmd) for cmd in SMOKE_TESTS["Commands"]]
 ERROR_COMMANDS = [" ".join(cmd) for cmd in SMOKE_TESTS["ErrorCommands"]]
@@ -55,8 +57,9 @@ def test_display_error_message(cmd):
     result = _aws(cmd, target_rc=254)
     assert result.rc == 254
     error_message = re.compile(
-        r'An error occurred \(.+\) when calling the \w+ operation: \w+')
-    match = error_message.search(result.stderr)
-    assert match, (
-        f'Error message was not displayed for command "{cmd}": {result.stderr}'
+        r'An error occurred \(.+\) when calling the \w+ operation: \w+'
     )
+    match = error_message.search(result.stderr)
+    assert (
+        match
+    ), f'Error message was not displayed for command "{cmd}": {result.stderr}'

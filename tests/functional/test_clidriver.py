@@ -27,8 +27,9 @@ class RegionCapture:
 
     def __call__(self, request, **kwargs):
         url = request.url
-        region = re.match(
-            r'https://.*?\.(.*?)\.amazonaws\.com', url).groups(1)[0]
+        region = re.match(r'https://.*?\.(.*?)\.amazonaws\.com', url).groups(
+            1
+        )[0]
         self.region = region
 
 
@@ -55,7 +56,7 @@ class TestSession(BaseCLIDriverTest):
             url='http://169.254.169.254/',
             status_code=status_code,
             headers={},
-            raw=RawResponse(body)
+            raw=RawResponse(body),
         )
         self._responses.append(response)
 
@@ -71,8 +72,7 @@ class TestSession(BaseCLIDriverTest):
         # Once a region is fetched form the IMDS server we need to mock an
         # XML response from ec2 so that the CLI driver doesn't throw an error
         # during parsing.
-        self.add_response(
-            b'<?xml version="1.0" ?><foo><bar>text</bar></foo>')
+        self.add_response(b'<?xml version="1.0" ?><foo><bar>text</bar></foo>')
         capture = RegionCapture()
         self.session.register('before-send.ec2.*', capture)
         self.driver.main(['ec2', 'describe-instances'])
@@ -90,27 +90,28 @@ class TestSession(BaseCLIDriverTest):
         # Once a region is fetched form the IMDS server we need to mock an
         # XML response from ec2 so that the CLI driver doesn't throw an error
         # during parsing.
-        self.add_response(
-            b'<?xml version="1.0" ?><foo><bar>text</bar></foo>')
+        self.add_response(b'<?xml version="1.0" ?><foo><bar>text</bar></foo>')
         capture = RegionCapture()
         self.session.register('before-send.ec2.*', capture)
         self.driver.main(['ec2', 'describe-instances'])
         self.assertEqual(capture.region, 'us-mars-2')
 
     def test_user_agent_in_request(self):
-        self.add_response(
-            b'<?xml version="1.0" ?><foo><bar>text</bar></foo>')
+        self.add_response(b'<?xml version="1.0" ?><foo><bar>text</bar></foo>')
         self.driver.main(['ec2', 'describe-instances'])
         self.assertTrue('User-Agent' in self._send.call_args[0][0].headers)
         self.assertTrue(
-            'aws-cli' in
-            self._send.call_args[0][0].headers['User-Agent'].decode('utf-8'))
+            'aws-cli'
+            in self._send.call_args[0][0].headers['User-Agent'].decode('utf-8')
+        )
         self.assertTrue(
-            'md/installer' in
-            self._send.call_args[0][0].headers['User-Agent'].decode('utf-8'))
+            'md/installer'
+            in self._send.call_args[0][0].headers['User-Agent'].decode('utf-8')
+        )
         self.assertTrue(
-            'md/command' in
-            self._send.call_args[0][0].headers['User-Agent'].decode('utf-8'))
+            'md/command'
+            in self._send.call_args[0][0].headers['User-Agent'].decode('utf-8')
+        )
 
 
 class TestPlugins(BaseCLIDriverTest):
@@ -121,8 +122,10 @@ class TestPlugins(BaseCLIDriverTest):
             self.files.rootdir, 'site-packages'
         )
         self.plugin_module_name = 'add_awscli_cmd_plugin'
-        self.plugin_filename = os.path.join(
-            os.path.dirname(__file__), self.plugin_module_name) + '.py'
+        self.plugin_filename = (
+            os.path.join(os.path.dirname(__file__), self.plugin_module_name)
+            + '.py'
+        )
         self.setup_plugin_site_packages()
 
     def setup_plugin_site_packages(self):
@@ -147,26 +150,24 @@ class TestPlugins(BaseCLIDriverTest):
         self.create_config(
             '[plugins]\n'
             'cli_legacy_plugin_path = %s\n'
-            'myplugin = %s\n' % (
-                self.plugins_site_packages, self.plugin_module_name)
+            'myplugin = %s\n'
+            % (self.plugins_site_packages, self.plugin_module_name)
         )
         clidriver = create_clidriver()
         self.assert_plugin_loaded(clidriver)
 
     def test_plugins_are_not_loaded_when_path_specified(self):
         self.create_config(
-            '[plugins]\n'
-            'myplugin = %s\n' % self.plugin_module_name
+            '[plugins]\n' 'myplugin = %s\n' % self.plugin_module_name
         )
         clidriver = create_clidriver()
         self.assert_plugin_not_loaded(clidriver)
 
     def test_looks_in_all_specified_paths(self):
-        nonexistent_dir = os.path.join(
-            self.files.rootdir, 'no-exist'
-        )
+        nonexistent_dir = os.path.join(self.files.rootdir, 'no-exist')
         plugin_path = os.pathsep.join(
-            [nonexistent_dir, self.plugins_site_packages])
+            [nonexistent_dir, self.plugins_site_packages]
+        )
         self.create_config(
             '[plugins]\n'
             'cli_legacy_plugin_path = %s\n'

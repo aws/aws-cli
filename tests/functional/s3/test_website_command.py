@@ -17,23 +17,25 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestWebsiteCommand(BaseAWSCommandParamsTest):
-
     prefix = 's3 website '
 
     def test_index_document(self):
         cmdline = self.prefix + 's3://mybucket --index-document index.html'
         result = {
-            'WebsiteConfiguration':
-                {'IndexDocument': {'Suffix': 'index.html'}},
-                 'Bucket': 'mybucket'}
+            'WebsiteConfiguration': {
+                'IndexDocument': {'Suffix': 'index.html'}
+            },
+            'Bucket': 'mybucket',
+        }
 
         self.assert_params_for_cmd(cmdline, result)
 
     def test_error_document(self):
         cmdline = self.prefix + 's3://mybucket --error-document mykey'
         result = {
-            'WebsiteConfiguration': {
-                'ErrorDocument': {'Key': 'mykey'}}, 'Bucket': 'mybucket'}
+            'WebsiteConfiguration': {'ErrorDocument': {'Key': 'mykey'}},
+            'Bucket': 'mybucket',
+        }
         self.assert_params_for_cmd(cmdline, result)
 
 

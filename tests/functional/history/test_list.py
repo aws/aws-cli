@@ -26,7 +26,7 @@ class TestListCommand(BaseHistoryCommandParamsTest):
                 "Regions": [
                     {
                         "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                        "RegionName": "ap-south-1"
+                        "RegionName": "ap-south-1",
                     },
                 ]
             }
@@ -53,7 +53,7 @@ class TestListCommand(BaseHistoryCommandParamsTest):
                 "Regions": [
                     {
                         "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                        "RegionName": "ap-south-1"
+                        "RegionName": "ap-south-1",
                     },
                 ]
             }
@@ -69,15 +69,15 @@ class TestListCommand(BaseHistoryCommandParamsTest):
                 "Regions": [
                     {
                         "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                        "RegionName": "ap-south-1"
+                        "RegionName": "ap-south-1",
                     },
                 ]
             },
             {
                 "UserId": "foo",
                 "Account": "bar",
-                "Arn": "arn:aws:iam::1234567:user/baz"
-            }
+                "Arn": "arn:aws:iam::1234567:user/baz",
+            },
         ]
         _, _, rc = self.run_cmd('ec2 describe-regions', expected_rc=0)
         self.history_recorder.record('CLI_RC', rc, 'CLI')

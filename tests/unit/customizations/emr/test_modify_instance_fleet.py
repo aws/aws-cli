@@ -24,18 +24,26 @@ class TestModifyInstanceFleet(BaseAWSCommandParamsTest):
 
     def test_modify_instance_fleet_with_instance_type_configs(self):
         self.assert_params_for_cmd(
-            self.prefix + CONSTANTS_FLEET.MODIFY_INSTANCE_FLEET_WITH_INSTANCE_TYPE_CONFIGS,
-            CONSTANTS_FLEET.RES_MODIFY_INSTANCE_FLEET_WITH_INSTANCE_TYPE_CONFIGS)
+            self.prefix
+            + CONSTANTS_FLEET.MODIFY_INSTANCE_FLEET_WITH_INSTANCE_TYPE_CONFIGS,
+            CONSTANTS_FLEET.RES_MODIFY_INSTANCE_FLEET_WITH_INSTANCE_TYPE_CONFIGS,
+        )
 
     def test_modify_instance_fleet_with_allocation_strategy_spot_and_od(self):
         self.assert_params_for_cmd(
-            self.prefix + CONSTANTS_FLEET.MODIFY_INSTANCE_FLEET_WITH_SPOT_AND_OD_RESIZE_SPECIFICATIONS,
-            CONSTANTS_FLEET.RES_MODIFY_INSTANCE_FLEET_WITH_SPOT_AND_OD_RESIZE_SPECIFICATIONS)
+            self.prefix
+            + CONSTANTS_FLEET.MODIFY_INSTANCE_FLEET_WITH_SPOT_AND_OD_RESIZE_SPECIFICATIONS,
+            CONSTANTS_FLEET.RES_MODIFY_INSTANCE_FLEET_WITH_SPOT_AND_OD_RESIZE_SPECIFICATIONS,
+        )
 
-    def test_modify_instance_fleet_with_allocation_strategy_spot_and_od_and_instance_type_configs(self):
+    def test_modify_instance_fleet_with_allocation_strategy_spot_and_od_and_instance_type_configs(
+        self,
+    ):
         self.assert_params_for_cmd(
-            self.prefix + CONSTANTS_FLEET.MODIFY_INSTANCE_FLEET_WITH_INSTANCE_TYPE_CONFIGS_AND_SPOT_AND_OD_RESIZE_SPECIFICATIONS,
-            CONSTANTS_FLEET.RES_MODIFY_INSTANCE_FLEET_WITH_INSTANCE_TYPE_CONFIGS_AND_SPOT_AND_OD_RESIZE_SPECIFICATIONS)
+            self.prefix
+            + CONSTANTS_FLEET.MODIFY_INSTANCE_FLEET_WITH_INSTANCE_TYPE_CONFIGS_AND_SPOT_AND_OD_RESIZE_SPECIFICATIONS,
+            CONSTANTS_FLEET.RES_MODIFY_INSTANCE_FLEET_WITH_INSTANCE_TYPE_CONFIGS_AND_SPOT_AND_OD_RESIZE_SPECIFICATIONS,
+        )
 
 
 if __name__ == "__main__":

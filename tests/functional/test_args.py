@@ -19,16 +19,13 @@ from awscli.testutils import (
 
 
 class TestArgsResolution(BaseAWSCommandParamsTest):
-
     def setUp(self):
         super(TestArgsResolution, self).setUp()
         self.files = FileCreator()
-        config_contents = (
-            '[profile bar]\n'
-            'region = us-west-2\n'
-        )
+        config_contents = '[profile bar]\n' 'region = us-west-2\n'
         self.environ['AWS_CONFIG_FILE'] = self.files.create_file(
-            'myconfig', config_contents)
+            'myconfig', config_contents
+        )
         self.driver = create_clidriver()
         self.entry_point = AWSCLIEntryPoint(self.driver)
 

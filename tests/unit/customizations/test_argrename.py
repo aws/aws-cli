@@ -32,8 +32,10 @@ class TestArgumentManipulations(unittest.TestCase):
 
     def test_can_alias_an_argument(self):
         arg = arguments.CustomArgument(
-            'foo', dest='foo',
-            argument_model=model.Shape('FooArg', {'type': 'string'}))
+            'foo',
+            dest='foo',
+            argument_model=model.Shape('FooArg', {'type': 'string'}),
+        )
         self.argument_table['foo'] = arg
         handler = argrename.hidden_alias('foo', 'alias-name')
 

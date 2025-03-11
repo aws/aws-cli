@@ -15,7 +15,6 @@ from awscli.testutils import mock, unittest
 
 
 class TestStyles(unittest.TestCase):
-
     @mock.patch('awscli.customizations.wizard.ui.style.is_windows')
     def test_get_styles_for_windows(self, is_windows):
         is_windows.return_value = True

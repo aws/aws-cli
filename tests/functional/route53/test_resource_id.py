@@ -12,18 +12,19 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest
 
-CHANGEBATCH_JSON = ('{"Comment":"string","Changes":['
-                    '{"Action":"CREATE","ResourceRecordSet":{'
-                    '"Name":"test-foo.bar.com",'
-                    '"Type":"CNAME",'
-                    '"TTL":300,'
-                    '"ResourceRecords":['
-                    '{"Value":"foo-bar-com"}'
-                    ']}}]}')
+CHANGEBATCH_JSON = (
+    '{"Comment":"string","Changes":['
+    '{"Action":"CREATE","ResourceRecordSet":{'
+    '"Name":"test-foo.bar.com",'
+    '"Type":"CNAME",'
+    '"TTL":300,'
+    '"ResourceRecords":['
+    '{"Value":"foo-bar-com"}'
+    ']}}]}'
+)
 
 
 class TestGetHostedZone(BaseAWSCommandParamsTest):
-
     prefix = 'route53 get-hosted-zone'
 
     def setUp(self):
@@ -33,18 +34,18 @@ class TestGetHostedZone(BaseAWSCommandParamsTest):
         args = ' --id /hostedzone/ZD3IYMVP1KDDM'
         cmdline = self.prefix + args
         self.assert_params_for_cmd(
-            cmdline, {'Id': 'ZD3IYMVP1KDDM'}, expected_rc=0)
+            cmdline, {'Id': 'ZD3IYMVP1KDDM'}, expected_rc=0
+        )
 
     def test_short_resource_id(self):
         args = ' --id ZD3IYMVP1KDDM'
         cmdline = self.prefix + args
         self.assert_params_for_cmd(
-            cmdline, {'Id': 'ZD3IYMVP1KDDM'},
-            expected_rc=0)
+            cmdline, {'Id': 'ZD3IYMVP1KDDM'}, expected_rc=0
+        )
 
 
 class TestChangeResourceRecord(BaseAWSCommandParamsTest):
-
     prefix = 'route53 change-resource-record-sets'
 
     def setUp(self):
@@ -65,21 +66,16 @@ class TestChangeResourceRecord(BaseAWSCommandParamsTest):
                             "Name": "test-foo.bar.com",
                             "Type": "CNAME",
                             "TTL": 300,
-                            "ResourceRecords": [
-                                {
-                                    "Value": "foo-bar-com"
-                                }
-                            ]
-                        }
+                            "ResourceRecords": [{"Value": "foo-bar-com"}],
+                        },
                     }
-                ]
-            }
+                ],
+            },
         }
         self.assert_params_for_cmd(cmdline, expected, expected_rc=0)
 
 
 class TestGetChange(BaseAWSCommandParamsTest):
-
     prefix = 'route53 get-change'
 
     def setUp(self):
@@ -99,7 +95,6 @@ class TestGetChange(BaseAWSCommandParamsTest):
 
 
 class TestReusableDelegationSet(BaseAWSCommandParamsTest):
-
     prefix = 'route53 get-reusable-delegation-set'
 
     def setUp(self):
@@ -108,18 +103,19 @@ class TestReusableDelegationSet(BaseAWSCommandParamsTest):
     def test_full_resource_id(self):
         args = ' --id /delegationset/N9INWVYQ6Q0FN'
         cmdline = self.prefix + args
-        self.assert_params_for_cmd(cmdline, {'Id': 'N9INWVYQ6Q0FN'},
-                                    expected_rc=0)
+        self.assert_params_for_cmd(
+            cmdline, {'Id': 'N9INWVYQ6Q0FN'}, expected_rc=0
+        )
 
     def test_short_resource_id(self):
         args = ' --id N9INWVYQ6Q0FN'
         cmdline = self.prefix + args
-        self.assert_params_for_cmd(cmdline, {'Id': 'N9INWVYQ6Q0FN'},
-                                    expected_rc=0)
+        self.assert_params_for_cmd(
+            cmdline, {'Id': 'N9INWVYQ6Q0FN'}, expected_rc=0
+        )
 
 
 class TestMaxItems(BaseAWSCommandParamsTest):
-
     prefix = 'route53 list-resource-record-sets'
 
     def test_full_resource_id(self):

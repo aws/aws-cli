@@ -21,11 +21,7 @@ def _hydrate(params, container, cli_type, key, value):
     An example to hydrate a complex structure with custom value logic. In this
     case we create a nested structure and divide the value by 100.
     """
-    params['bag'] = {
-        'ArgumentBaz': {
-            'SomeValueAbc': value / 100.0
-        }
-    }
+    params['bag'] = {'ArgumentBaz': {'SomeValueAbc': value / 100.0}}
 
 
 FLATTEN_CONFIG = {
@@ -33,40 +29,36 @@ FLATTEN_CONFIG = {
         'original-argument': {
             "keep": False,
             "flatten": {
-                "ArgumentFoo": {
-                    "name": "foo"
-                },
+                "ArgumentFoo": {"name": "foo"},
                 "ArgumentBar": {
                     "name": "bar",
                     "help_text": "Some help text",
                     "required": True,
-                    "hydrate_value": lambda x: x.upper()
-                }
-            }
+                    "hydrate_value": lambda x: x.upper(),
+                },
+            },
         },
         'another-original-argument': {
             "keep": True,
             "flatten": {
-                "ArgumentBaz.SomeValue": {
-                    "name": "baz",
-                    "hydrate": _hydrate
-                }
-            }
-        }
+                "ArgumentBaz.SomeValue": {"name": "baz", "hydrate": _hydrate}
+            },
+        },
     }
 }
+
 
 class TestFlattenedArgument(unittest.TestCase):
     def test_basic_argument(self):
         container = mock.Mock()
         container.argument_model.name = 'bag'
-        kwargs = {
-            'container': container,
-            'prop': 'ArgumentFoo'
-        }
+        kwargs = {'container': container, 'prop': 'ArgumentFoo'}
         kwargs['container'].py_name = 'bag'
-        kwargs.update(FLATTEN_CONFIG['command-name']['original-argument']
-                                    ['flatten']['ArgumentFoo'])
+        kwargs.update(
+            FLATTEN_CONFIG['command-name']['original-argument']['flatten'][
+                'ArgumentFoo'
+            ]
+        )
         arg = FlattenedArgument(**kwargs)
 
         self.assertEqual('foo', arg.name)
@@ -80,14 +72,14 @@ class TestFlattenedArgument(unittest.TestCase):
     def test_hydrate_value_argument(self):
         container = mock.Mock()
         container.argument_model.name = 'bag'
-        kwargs = {
-            'container': container,
-            'prop': 'ArgumentBar'
-        }
+        kwargs = {'container': container, 'prop': 'ArgumentBar'}
         kwargs['container'].py_name = 'bag'
         kwargs['container'].cli_type_name = 'list'
-        kwargs.update(FLATTEN_CONFIG['command-name']['original-argument']
-                                    ['flatten']['ArgumentBar'])
+        kwargs.update(
+            FLATTEN_CONFIG['command-name']['original-argument']['flatten'][
+                'ArgumentBar'
+            ]
+        )
         arg = FlattenedArgument(**kwargs)
 
         self.assertEqual('bar', arg.name)
@@ -101,14 +93,13 @@ class TestFlattenedArgument(unittest.TestCase):
     def test_hydrate_function_argument(self):
         container = mock.Mock()
         container.argument_model.name = 'bag'
-        kwargs = {
-            'container': container,
-            'prop': 'ArgumentBaz:SomeValue'
-        }
+        kwargs = {'container': container, 'prop': 'ArgumentBaz:SomeValue'}
         kwargs['container'].py_name = 'bag'
-        kwargs.update(FLATTEN_CONFIG['command-name']
-                                    ['another-original-argument']
-                                    ['flatten']['ArgumentBaz.SomeValue'])
+        kwargs.update(
+            FLATTEN_CONFIG['command-name']['another-original-argument'][
+                'flatten'
+            ]['ArgumentBaz.SomeValue']
+        )
         arg = FlattenedArgument(**kwargs)
 
         self.assertEqual('baz', arg.name)
@@ -127,9 +118,10 @@ class TestFlattenCommands(unittest.TestCase):
         flatten = FlattenArguments('my-service', FLATTEN_CONFIG)
         flatten.register(cli)
 
-        cli.register.assert_called_with(\
+        cli.register.assert_called_with(
             'building-argument-table.my-service.command-name',
-            flatten.flatten_args)
+            flatten.flatten_args,
+        )
 
     def test_flatten_modify_args(self):
         # Mock operation, arguments, and members for a service
@@ -151,7 +143,7 @@ class TestFlattenCommands(unittest.TestCase):
 
         argument_model1.members = {
             'ArgumentFoo': member_foo,
-            'ArgumentBar': member_bar
+            'ArgumentBar': member_bar,
         }
 
         argument_model2 = mock.Mock()
@@ -167,13 +159,9 @@ class TestFlattenCommands(unittest.TestCase):
         member_some_value.documenation = ''
         member_some_value.required_members = []
 
-        member_baz.members = {
-            'SomeValue': member_some_value
-        }
+        member_baz.members = {'SomeValue': member_some_value}
 
-        argument_model2.members = {
-            'ArgumentBaz': member_baz
-        }
+        argument_model2.members = {'ArgumentBaz': member_baz}
 
         cli_argument1 = mock.Mock(spec=CLIArgument)
         cli_argument1.argument_model = argument_model1
@@ -183,7 +171,7 @@ class TestFlattenCommands(unittest.TestCase):
 
         argument_table = {
             'original-argument': cli_argument1,
-            'another-original-argument': cli_argument2
+            'another-original-argument': cli_argument2,
         }
 
         # Create the flattened argument table
@@ -202,8 +190,9 @@ class TestFlattenCommands(unittest.TestCase):
         self.assertIsInstance(argument_table['foo'], FlattenedArgument)
         self.assertIsInstance(argument_table['bar'], FlattenedArgument)
         self.assertIsInstance(argument_table['baz'], FlattenedArgument)
-        self.assertNotIsInstance(argument_table['another-original-argument'],
-                                 FlattenedArgument)
+        self.assertNotIsInstance(
+            argument_table['another-original-argument'], FlattenedArgument
+        )
 
         # Make sure original required trait can be overridden
         self.assertEqual(False, argument_table['foo'].required)

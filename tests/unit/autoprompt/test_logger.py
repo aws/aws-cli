@@ -21,7 +21,6 @@ from awscli.testutils import mock, unittest
 
 
 class TestPromptToolkitHandler(unittest.TestCase):
-
     @mock.patch('awscli.autoprompt.logger.get_app')
     def test_can_log_to_prompter(self, get_app):
         handler = PromptToolkitHandler()

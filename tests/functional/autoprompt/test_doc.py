@@ -21,26 +21,35 @@ class TestDocsGetter(unittest.TestCase):
     def setUp(self):
         self.driver = create_clidriver()
         self.docs_getter = DocsGetter(self.driver)
-        self.index = InMemoryIndex({
-            'command_names': {
-                '': [('aws', None)],
-                'aws': [('ec2', None)],
-                'aws.ec2': [('describe-instances', None)],
-            },
-            'arg_names': {
-                '': {'aws': ['region']},
-                'aws.ec2': {'describe-instances': []},
-            },
-            'arg_data': {
-                '': {
-                    'aws': {
-                        'region': ('region', 'string', 'aws', '', None, False,
-                                   False),
-                    }
+        self.index = InMemoryIndex(
+            {
+                'command_names': {
+                    '': [('aws', None)],
+                    'aws': [('ec2', None)],
+                    'aws.ec2': [('describe-instances', None)],
                 },
-                'aws.ec2': {'describe-instances': {}}
+                'arg_names': {
+                    '': {'aws': ['region']},
+                    'aws.ec2': {'describe-instances': []},
+                },
+                'arg_data': {
+                    '': {
+                        'aws': {
+                            'region': (
+                                'region',
+                                'string',
+                                'aws',
+                                '',
+                                None,
+                                False,
+                                False,
+                            ),
+                        }
+                    },
+                    'aws.ec2': {'describe-instances': {}},
+                },
             }
-        })
+        )
         self.parser = parser.CLIParser(self.index)
 
     def test_get_service_command_docs(self):

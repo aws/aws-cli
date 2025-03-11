@@ -34,7 +34,9 @@ class TestUninstall(unittest.TestCase):
         self.system = self.system_patcher.start()
         self.system.return_value = 'Linux'
 
-        self.linux_distribution_patcher = mock.patch('awscli.compat.linux_distribution')
+        self.linux_distribution_patcher = mock.patch(
+            'awscli.compat.linux_distribution'
+        )
         self.linux_distribution = self.linux_distribution_patcher.start()
         self.linux_distribution.return_value = ('Ubuntu', '', '')
 
@@ -74,13 +76,15 @@ class TestUninstall(unittest.TestCase):
     def test_uninstall_throws_on_unsupported_system(self):
         self.system.return_value = 'Unsupported'
         with self.assertRaisesRegex(
-                RuntimeError, System.UNSUPPORTED_SYSTEM_MSG):
+            RuntimeError, System.UNSUPPORTED_SYSTEM_MSG
+        ):
             self.uninstall._run_main(self.args, self.globals)
 
     def test_uninstall_throws_on_ec2_instance(self):
         self.urlopen.side_effect = None
         with self.assertRaisesRegex(
-                RuntimeError, 'Amazon EC2 instances are not supported.'):
+            RuntimeError, 'Amazon EC2 instances are not supported.'
+        ):
             self.uninstall._run_main(self.args, self.globals)
         self.assertIn('system', self.args)
         self.assertTrue(isinstance(self.args.system, Ubuntu))
@@ -88,7 +92,8 @@ class TestUninstall(unittest.TestCase):
     def test_uninstall_throws_on_non_administrator(self):
         self.geteuid.return_value = 1
         with self.assertRaisesRegex(
-                RuntimeError, 'You must run this command as sudo.'):
+            RuntimeError, 'You must run this command as sudo.'
+        ):
             self.uninstall._run_main(self.args, self.globals)
 
     @mock.patch.object(Ubuntu, 'uninstall')
@@ -104,7 +109,11 @@ class TestUninstall(unittest.TestCase):
     @mock.patch.object(RHEL, 'uninstall')
     def test_uninstall_for_RHEL(self, uninstall):
         self.system.return_value = 'Linux'
-        self.linux_distribution.return_value = ('Red Hat Enterprise Linux Server', '', '')
+        self.linux_distribution.return_value = (
+            'Red Hat Enterprise Linux Server',
+            '',
+            '',
+        )
         self.uninstall._run_main(self.args, self.globals)
         uninstall.assert_called_with(self.args)
         self.remove.assert_called_with(

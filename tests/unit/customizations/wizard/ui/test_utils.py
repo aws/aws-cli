@@ -31,11 +31,11 @@ class TestGetUIControlByName(unittest.TestCase):
         layout.find_all_controls.return_value = [
             object(),  # Does not have a buffer property
             other_ui_control,
-            desired_ui_control
+            desired_ui_control,
         ]
         self.assertIs(
             get_ui_control_by_buffer_name(layout, 'desired-buffer'),
-            desired_ui_control
+            desired_ui_control,
         )
 
     def test_raises_error_when_no_matching_ui_control_found(self):

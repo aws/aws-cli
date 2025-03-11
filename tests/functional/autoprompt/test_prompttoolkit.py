@@ -44,8 +44,9 @@ def _generate_index_if_needed(db_connection):
             [indexer.ModelIndexer(db_connection)],
         )
         driver = create_clidriver()
-        driver.session.register('building-command-table.main',
-                                _cloudwatch_only_command_table)
+        driver.session.register(
+            'building-command-table.main', _cloudwatch_only_command_table
+        )
         index_generator.generate_index(driver)
 
 
@@ -80,18 +81,18 @@ def history_file(files):
         'commands': [
             'accessanalyzer update-findings',
             'cloudwatch describe-alarms',
-            's3 ls'
-        ]
+            's3 ls',
+        ],
     }
-    return files.create_file(
-        'prompt_history.json', json.dumps(history))
+    return files.create_file('prompt_history.json', json.dumps(history))
 
 
 @pytest.fixture
 def prompter(model_index, history_file, ptk_app_session):
     cli_parser = parser.CLIParser(model.ModelIndex(model_index))
     completion_source = create_autocompleter(
-        model_index, response_filter=filters.fuzzy_filter)
+        model_index, response_filter=filters.fuzzy_filter
+    )
     completer = PromptToolkitCompleter(completion_source)
     history_driver = HistoryDriver(history_file)
     driver = create_clidriver()
@@ -108,8 +109,7 @@ def prompter(model_index, history_file, ptk_app_session):
 
 @pytest.fixture
 def app_runner(prompter):
-    return PromptToolkitAppRunner(
-        app=prompter.app, pre_run=prompter.pre_run)
+    return PromptToolkitAppRunner(app=prompter.app, pre_run=prompter.pre_run)
 
 
 class BasicPromptToolkitTest:
@@ -139,29 +139,35 @@ class TestPromptToolkitPrompterBuffer:
     previously been known to produce unexpected behavior.
 
     """
+
     @pytest.mark.parametrize(
         'args,expected_input_buffer_text',
         [
             (['cloudwatch', 'fake'], 'cloudwatch fake '),
             (['cloudwatch'], 'cloudwatch '),
             (['cloud'], 'cloud'),
-            (['s3', 'mv', '/path/to/file/1', 's3://path/to/file/2'],
-             's3 mv /path/to/file/1 s3://path/to/file/2 '),
+            (
+                ['s3', 'mv', '/path/to/file/1', 's3://path/to/file/2'],
+                's3 mv /path/to/file/1 s3://path/to/file/2 ',
+            ),
             (['s3', 'ls'], 's3 ls '),
             (['cloudwatch', 'desc'], 'cloudwatch desc'),
             (['s3', 'ls '], 's3 ls '),
-            (['cloudwatch', 'fake', '--output'],
-             'cloudwatch fake --output '),
-            (['cloudwatch', 'describe-alarms', '--output'],
-             'cloudwatch describe-alarms --output '),
+            (['cloudwatch', 'fake', '--output'], 'cloudwatch fake --output '),
+            (
+                ['cloudwatch', 'describe-alarms', '--output'],
+                'cloudwatch describe-alarms --output ',
+            ),
             ([' '], ' '),
-        ]
+        ],
     )
     def test_input_buffer_initialization(
-            self, prompter, args, expected_input_buffer_text):
+        self, prompter, args, expected_input_buffer_text
+    ):
         prompter.args = args
         app_runner = PromptToolkitAppRunner(
-            app=prompter.app, pre_run=prompter.pre_run)
+            app=prompter.app, pre_run=prompter.pre_run
+        )
         with app_runner.run_app_in_thread():
             actual_input_text = prompter.input_buffer.document.text
             assert actual_input_text == expected_input_buffer_text
@@ -170,7 +176,8 @@ class TestPromptToolkitPrompterBuffer:
         original_args = ['iam', 'create-role', '--description', 'With spaces']
         prompter.args = original_args
         with app_runner.run_app_in_thread(
-                target=prompter.prompt_for_args, args=(original_args,)) as ctx:
+            target=prompter.prompt_for_args, args=(original_args,)
+        ) as ctx:
             assert prompter.input_buffer.document.text == (
                 "iam create-role --description 'With spaces' "
             )
@@ -185,8 +192,12 @@ class TestPromptToolkitDocBuffer(BasicPromptToolkitTest):
         assert not app.show_doc
 
     def assert_doc_panel_cursor_position(self, app, expected_row):
-        assert app.layout.get_buffer_by_name(
-            'doc_buffer').document.cursor_position_row == expected_row
+        assert (
+            app.layout.get_buffer_by_name(
+                'doc_buffer'
+            ).document.cursor_position_row
+            == expected_row
+        )
 
     def test_doc_buffer_not_shown_on_start_and_not_focusable(self, app_runner):
         with app_runner.run_app_in_thread():
@@ -212,24 +223,28 @@ class TestPromptToolkitDocBuffer(BasicPromptToolkitTest):
             self.assert_current_buffer(app_runner.app, 'input_buffer')
 
     def test_doc_buffer_keeps_position_if_content_dont_change(
-            self, prompter, app_runner):
+        self, prompter, app_runner
+    ):
         prompter.args = ['cloudwatch', 'describe-alarms']
         with app_runner.run_app_in_thread():
             # Open the doc panel, focus on it, and go to its top
             app_runner.feed_input(Keys.F3, Keys.F2, 'g')
             self.assert_doc_panel_cursor_position(
-                app_runner.app, expected_row=0)
+                app_runner.app, expected_row=0
+            )
             # Move three rows down
             app_runner.feed_input('j', 'j', 'j')
             self.assert_doc_panel_cursor_position(
-                app_runner.app, expected_row=3)
+                app_runner.app, expected_row=3
+            )
             # Focus on the input buffer
             app_runner.feed_input('q')
             # Add parameters to the currently inputted command
             app_runner.feed_input('--alarm-names')
             # The doc position should not have moved
             self.assert_doc_panel_cursor_position(
-                app_runner.app, expected_row=3)
+                app_runner.app, expected_row=3
+            )
 
     @pytest.mark.parametrize(
         'args,expected_docs',
@@ -239,14 +254,17 @@ class TestPromptToolkitDocBuffer(BasicPromptToolkitTest):
             (['cloudwatch'], 'Amazon CloudWatch'),
             (['cloudwatch', 'fake'], 'Amazon CloudWatch'),
             (['cloudwatch', 'describe-alarms '], 'Retrieves the specified'),
-            (['cloudwatch', 'describe-alarms', '--alarm-names'],
-             'The names of the alarms'),
-        ]
+            (
+                ['cloudwatch', 'describe-alarms', '--alarm-names'],
+                'The names of the alarms',
+            ),
+        ],
     )
     def test_doc_panel_content(self, prompter, args, expected_docs):
         prompter.args = args
         app_runner = PromptToolkitAppRunner(
-            app=prompter.app, pre_run=prompter.pre_run)
+            app=prompter.app, pre_run=prompter.pre_run
+        )
         with app_runner.run_app_in_thread():
             assert expected_docs in prompter.doc_buffer.document.text
 
@@ -263,7 +281,8 @@ class TestHistoryMode(BasicPromptToolkitTest):
         assert actual == expected
 
     def test_history_mode_disabled_on_start_and_switched_by_control_R(
-            self, app_runner):
+        self, app_runner
+    ):
         with app_runner.run_app_in_thread():
             self.assert_history_mode_is_disabled(app_runner.app)
             app_runner.feed_input(Keys.ControlR)
@@ -272,30 +291,30 @@ class TestHistoryMode(BasicPromptToolkitTest):
             self.assert_history_mode_is_disabled(app_runner.app)
 
     def test_choose_and_disable_history_mode_with_enter(
-            self, app_runner, prompter):
+        self, app_runner, prompter
+    ):
         prompter.args = ['s3']
         with app_runner.run_app_in_thread():
             self.assert_history_mode_is_disabled(app_runner.app)
             app_runner.feed_input(Keys.ControlR)
             self.assert_history_mode_is_enabled(app_runner.app)
             app_runner.feed_input(Keys.Down)
-            self.assert_selected_history_completion(
-                app_runner.app, 's3 ls')
+            self.assert_selected_history_completion(app_runner.app, 's3 ls')
             app_runner.feed_input(Keys.Enter)
             self.assert_history_mode_is_disabled(app_runner.app)
             self.assert_current_buffer(app_runner.app, 'input_buffer')
             self.assert_current_buffer_text(app_runner.app, 's3 ls')
 
     def test_choose_and_disable_history_mode_with_space(
-            self, app_runner, prompter):
+        self, app_runner, prompter
+    ):
         prompter.args = ['s3']
         with app_runner.run_app_in_thread():
             self.assert_history_mode_is_disabled(app_runner.app)
             app_runner.feed_input(Keys.ControlR)
             self.assert_history_mode_is_enabled(app_runner.app)
             app_runner.feed_input(Keys.Down)
-            self.assert_selected_history_completion(
-                app_runner.app, 's3 ls')
+            self.assert_selected_history_completion(app_runner.app, 's3 ls')
             app_runner.feed_input(' ')
             self.assert_history_mode_is_disabled(app_runner.app)
             self.assert_current_buffer(app_runner.app, 'input_buffer')
@@ -307,8 +326,9 @@ class TestCompletions(BasicPromptToolkitTest):
         prompter.args = ['c']
         with app_runner.run_app_in_thread():
             app_runner.wait_for_completions_on_current_buffer()
-            first_completion = app_runner.app.current_buffer.\
-                complete_state.completions[0]
+            first_completion = (
+                app_runner.app.current_buffer.complete_state.completions[0]
+            )
             assert 'Amazon CloudWatch' in first_completion.display_meta_text
 
     def test_switch_to_multicolumn_mode(self, app_runner, prompter):
@@ -323,7 +343,8 @@ class TestCompletions(BasicPromptToolkitTest):
 
 class TestHelpPanel(BasicPromptToolkitTest):
     def test_help_panel_disabled_on_start_and_appear_on_F1(
-            self, app_runner, prompter):
+        self, app_runner, prompter
+    ):
         with app_runner.run_app_in_thread():
             assert not app_runner.app.show_help
             app_runner.feed_input(Keys.F1)
@@ -331,8 +352,7 @@ class TestHelpPanel(BasicPromptToolkitTest):
             app_runner.feed_input(Keys.F1)
             assert not app_runner.app.show_help
 
-    def test_show_correct_help_panel(
-            self, app_runner, prompter):
+    def test_show_correct_help_panel(self, app_runner, prompter):
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.F1)
             self.assert_buffer_is_visible(app_runner.app, 'help_input')
@@ -344,8 +364,7 @@ class TestHelpPanel(BasicPromptToolkitTest):
             self.assert_buffer_is_visible(app_runner.app, 'help_doc')
             self.assert_buffer_is_not_visible(app_runner.app, 'help_input')
 
-    def test_toolbar_hides_when_help_panel_visible(
-            self, app_runner, prompter):
+    def test_toolbar_hides_when_help_panel_visible(self, app_runner, prompter):
         with app_runner.run_app_in_thread():
             self.assert_buffer_is_visible(app_runner.app, 'toolbar_input')
             app_runner.feed_input(Keys.F1)
@@ -355,25 +374,23 @@ class TestHelpPanel(BasicPromptToolkitTest):
 
 class TestDebugPanel(BasicPromptToolkitTest):
     def test_debug_panel_not_visible_in_non_debug_mode(
-            self, app_runner, prompter):
+        self, app_runner, prompter
+    ):
         with app_runner.run_app_in_thread():
             self.assert_buffer_is_not_visible(app_runner.app, 'debug_buffer')
 
-    def test_debug_panel_visible_in_debug_mode(
-            self, app_runner, prompter):
+    def test_debug_panel_visible_in_debug_mode(self, app_runner, prompter):
         prompter.app.debug = True
         with app_runner.run_app_in_thread():
             self.assert_buffer_is_visible(app_runner.app, 'debug_buffer')
 
-    def test_open_save_dialog_on_control_s(
-            self, app_runner, prompter):
+    def test_open_save_dialog_on_control_s(self, app_runner, prompter):
         prompter.app.debug = True
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.ControlS)
             self.assert_current_buffer_text(app_runner.app, 'prompt_debug.log')
 
-    def test_can_save_log_file(
-            self, app_runner, prompter, files):
+    def test_can_save_log_file(self, app_runner, prompter, files):
         prompter.app.debug = True
         log_file_path = files.full_path('prompt_debug.log')
         with cd(files.rootdir):
@@ -382,8 +399,7 @@ class TestDebugPanel(BasicPromptToolkitTest):
                 app_runner.feed_input(Keys.Enter)
         assert os.path.exists(log_file_path)
 
-    def test_can_switch_focus_between_panels(
-            self, app_runner, prompter):
+    def test_can_switch_focus_between_panels(self, app_runner, prompter):
         prompter.app.debug = True
         with app_runner.run_app_in_thread():
             self.assert_current_buffer(app_runner.app, 'input_buffer')
@@ -394,10 +410,12 @@ class TestDebugPanel(BasicPromptToolkitTest):
 
     @mock.patch('awscrt.io.init_logging')
     def test_debug_mode_does_not_allow_crt_logging(
-            self, mock_init_logging, app_runner, prompter):
+        self, mock_init_logging, app_runner, prompter
+    ):
         args = ['cloudwatch', 'describe-alarms', '--debug']
         with app_runner.run_app_in_thread(
-                target=prompter.prompt_for_args, args=(args,)):
+            target=prompter.prompt_for_args, args=(args,)
+        ):
             assert app_runner.app.debug
         mock_init_logging.assert_called_with(
             awscrt.io.LogLevel.NoLogs, 'stderr'
@@ -417,7 +435,8 @@ class TestOutputPanel(BasicPromptToolkitTest):
             self.assert_buffer_is_not_visible(app_runner.app, 'output_buffer')
 
     def test_output_panel_and_doc_panel_can_be_visible_together(
-            self, app_runner):
+        self, app_runner
+    ):
         with app_runner.run_app_in_thread():
             app_runner.feed_input(Keys.F5)
             self.assert_buffer_is_visible(app_runner.app, 'output_buffer')

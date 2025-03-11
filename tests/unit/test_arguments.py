@@ -32,35 +32,40 @@ class TestArgumentClasses(unittest.TestCase):
 class TestCLIArgument(unittest.TestCase):
     def setUp(self):
         self.service_name = 'baz'
-        self.service_model = ServiceModel({
-            'metadata': {
-                'endpointPrefix': 'bad',
-            },
-            'operations': {
-                'SampleOperation': {
-                    'name': 'SampleOperation',
-                    'input': {'shape': 'Input'}
-                }
-            },
-            'shapes': {
-                'StringShape': {'type': 'string'},
-                'Input': {
-                    'type': 'structure',
-                    'members': {
-                        'Foo': {'shape': 'StringShape'}
+        self.service_model = ServiceModel(
+            {
+                'metadata': {
+                    'endpointPrefix': 'bad',
+                },
+                'operations': {
+                    'SampleOperation': {
+                        'name': 'SampleOperation',
+                        'input': {'shape': 'Input'},
                     }
-                }
-            }
-        }, self.service_name)
+                },
+                'shapes': {
+                    'StringShape': {'type': 'string'},
+                    'Input': {
+                        'type': 'structure',
+                        'members': {'Foo': {'shape': 'StringShape'}},
+                    },
+                },
+            },
+            self.service_name,
+        )
         self.operation_model = self.service_model.operation_model(
-            'SampleOperation')
+            'SampleOperation'
+        )
         self.argument_model = self.operation_model.input_shape.members['Foo']
         self.event_emitter = mock.Mock()
 
     def create_argument(self):
         return arguments.CLIArgument(
-            self.argument_model.name, self.argument_model,
-            self.operation_model, self.event_emitter)
+            self.argument_model.name,
+            self.argument_model,
+            self.operation_model,
+            self.event_emitter,
+        )
 
     def test_unpack_uses_service_name_in_event(self):
         self.event_emitter.emit.return_value = ['value']
@@ -68,7 +73,9 @@ class TestCLIArgument(unittest.TestCase):
         params = {}
         argument.add_to_params(params, 'value')
         expected_event_name = 'process-cli-arg.%s.%s' % (
-            self.service_name, 'sample-operation')
+            self.service_name,
+            'sample-operation',
+        )
         actual_event_name = self.event_emitter.emit.call_args[0][0]
         self.assertEqual(actual_event_name, expected_event_name)
 
@@ -81,6 +88,6 @@ class TestCLIArgument(unittest.TestCase):
             is_required=True,
             name='test-nargs',
             operation_model=None,
-            serialized_name='TestNargs'
+            serialized_name='TestNargs',
         )
         self.assertEqual(arg.nargs, '*')

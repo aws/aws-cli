@@ -22,7 +22,7 @@ class TestShowCommand(BaseHistoryCommandParamsTest):
                 "Regions": [
                     {
                         "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                        "RegionName": "ap-south-1"
+                        "RegionName": "ap-south-1",
                     },
                 ]
             }
@@ -47,7 +47,7 @@ class TestShowCommand(BaseHistoryCommandParamsTest):
                 "Regions": [
                     {
                         "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                        "RegionName": "ap-south-1"
+                        "RegionName": "ap-south-1",
                     },
                 ]
             }
@@ -64,14 +64,15 @@ class TestShowCommand(BaseHistoryCommandParamsTest):
                 "Regions": [
                     {
                         "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                        "RegionName": "ap-south-1"
+                        "RegionName": "ap-south-1",
                     },
                 ]
             }
         ]
         self.run_cmd('ec2 describe-regions', expected_rc=0)
         stdout, _, _ = self.run_cmd(
-            'history show --include CLI_ARGUMENTS', expected_rc=0)
+            'history show --include CLI_ARGUMENTS', expected_rc=0
+        )
         # Make sure the CLI version was not included because of the filter.
         #
         # The show command writes the history out as binary to the attached
@@ -86,14 +87,15 @@ class TestShowCommand(BaseHistoryCommandParamsTest):
                 "Regions": [
                     {
                         "Endpoint": "ec2.ap-south-1.amazonaws.com",
-                        "RegionName": "ap-south-1"
+                        "RegionName": "ap-south-1",
                     },
                 ]
             }
         ]
         self.run_cmd('ec2 describe-regions', expected_rc=0)
         stdout, _, _ = self.run_cmd(
-            'history show --exclude CLI_ARGUMENTS', expected_rc=0)
+            'history show --exclude CLI_ARGUMENTS', expected_rc=0
+        )
         # Make sure the API call was not included because of the filter,
         # but all other events such as the version are included.
         #

@@ -16,7 +16,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestDescribeLayers(BaseAWSCommandParamsTest):
-
     prefix = 'opsworks describe-layers'
 
     def test_both_params(self):

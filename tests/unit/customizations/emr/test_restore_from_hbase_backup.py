@@ -21,19 +21,21 @@ from tests.unit.customizations.emr import (
 
 class TestRestoreFromHBaseBackup(BaseAWSCommandParamsTest):
     prefix = 'emr restore-from-hbase-backup'
-    steps = [{
-        'HadoopJarStep': {
-            'Args': [
-                'emr.hbase.backup.Main',
-                '--restore',
-                '--backup-dir',
-                's3://abc/'
-            ],
-            'Jar': '/home/hadoop/lib/hbase.jar'
-        },
-        'Name': 'Restore HBase',
-        'ActionOnFailure': 'CANCEL_AND_WAIT'
-    }]
+    steps = [
+        {
+            'HadoopJarStep': {
+                'Args': [
+                    'emr.hbase.backup.Main',
+                    '--restore',
+                    '--backup-dir',
+                    's3://abc/',
+                ],
+                'Jar': '/home/hadoop/lib/hbase.jar',
+            },
+            'Name': 'Restore HBase',
+            'ActionOnFailure': 'CANCEL_AND_WAIT',
+        }
+    ]
 
     def test_restore_from_hbase_backup(self):
         args = ' --cluster-id j-ABCD --dir s3://abc/'
@@ -53,18 +55,21 @@ class TestRestoreFromHBaseBackup(BaseAWSCommandParamsTest):
 
         self.assert_params_for_cmd(cmdline, result)
 
-    @mock.patch('awscli.customizations.emr.'
-                'emrutils.get_release_label')
+    @mock.patch('awscli.customizations.emr.' 'emrutils.get_release_label')
     def test_unsupported_command_on_release_based_cluster_error(
-            self, grl_patch):
+        self, grl_patch
+    ):
         grl_patch.return_value = 'emr-4.0'
         args = ' --cluster-id j-ABCD --dir s3://abc/'
         cmdline = self.prefix + args
-        expected_error_msg = ("\naws: error: restore-from-hbase-backup"
-                              " is not supported with 'emr-4.0' release.\n")
+        expected_error_msg = (
+            "\naws: error: restore-from-hbase-backup"
+            " is not supported with 'emr-4.0' release.\n"
+        )
         result = self.run_cmd(cmdline, 252)
 
         self.assertEqual(result[1], expected_error_msg)
+
 
 if __name__ == "__main__":
     unittest.main()

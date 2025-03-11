@@ -14,7 +14,6 @@ from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 
 class TestCreateInvalidation(BaseAWSCommandParamsTest):
-
     prefix = 'cloudfront create-invalidation --distribution-id my_id '
 
     def test_invalidation_batch_only(self):
@@ -25,8 +24,8 @@ class TestCreateInvalidation(BaseAWSCommandParamsTest):
             'InvalidationBatch': {
                 'Paths': {'Items': ['foo.txt', 'bar.txt'], 'Quantity': 2},
                 'CallerReference': 'ab',
-                },
-            }
+            },
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_paths_only(self):
@@ -36,8 +35,8 @@ class TestCreateInvalidation(BaseAWSCommandParamsTest):
             'InvalidationBatch': {
                 'Paths': {'Items': ['index.html', 'foo.txt'], 'Quantity': 2},
                 'CallerReference': mock.ANY,
-                },
-            }
+            },
+        }
         self.run_cmd(cmdline)
         self.assertEqual(self.last_kwargs, result)
 

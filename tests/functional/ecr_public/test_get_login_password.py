@@ -21,7 +21,7 @@ class TestGetLoginPasswordCommand(BaseAWSCommandParamsTest):
             {
                 'authorizationData': {
                     "authorizationToken": "Zm9vOmJhcg==",
-                    "expiresAt": "2015-10-16T00:00:00Z"
+                    "expiresAt": "2015-10-16T00:00:00Z",
                 }
             },
         ]

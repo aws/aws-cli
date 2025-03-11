@@ -27,10 +27,10 @@ class FakeParsedArgs:
 
 
 class TestCommandTableRenames(BaseAWSHelpOutputTest):
-
     def test_rename_command_table(self):
         handler = lambda command_table, **kwargs: utils.rename_command(
-            command_table, 'ec2', 'fooec2')
+            command_table, 'ec2', 'fooec2'
+        )
         # Verify that we can rename a top level command.
         self.session.register('building-command-table.main', handler)
         self.driver.main(['fooec2', 'help'])
@@ -42,7 +42,6 @@ class TestCommandTableRenames(BaseAWSHelpOutputTest):
 
 
 class TestCommandTableAlias(BaseAWSHelpOutputTest):
-
     def test_alias_command_table(self):
         old_name = 'cloudhsmv2'
         new_name = 'nopossiblewaythisisalreadythere'
@@ -107,8 +106,11 @@ class TestValidateMututuallyExclusiveGroups(unittest.TestCase):
             utils.validate_mutually_exclusive(parsed, ['foo'], ['bar'])
 
     def test_multiple_groups(self):
-        groups = (['one', 'two', 'three'], ['foo', 'bar', 'baz'],
-                  ['qux', 'bad', 'morebad'])
+        groups = (
+            ['one', 'two', 'three'],
+            ['foo', 'bar', 'baz'],
+            ['qux', 'bad', 'morebad'],
+        )
         # This is fine.
         parsed = FakeParsedArgs(foo='foo', bar='bar', baz='baz')
         utils.validate_mutually_exclusive(parsed, *groups)
@@ -123,24 +125,22 @@ class TestS3BucketExists(unittest.TestCase):
         self.s3_client = mock.Mock()
         self.bucket_name = 'mybucket'
         self.error_response = {
-            'Error': {
-                'Code': '404',
-                'Message': 'Not Found'
-            }
+            'Error': {'Code': '404', 'Message': 'Not Found'}
         }
         self.bucket_no_exists_error = ClientError(
-            self.error_response,
-            'HeadBucket'
+            self.error_response, 'HeadBucket'
         )
 
     def test_bucket_exists(self):
         self.assertTrue(
-            utils.s3_bucket_exists(self.s3_client, self.bucket_name))
+            utils.s3_bucket_exists(self.s3_client, self.bucket_name)
+        )
 
     def test_bucket_not_exists(self):
         self.s3_client.head_bucket.side_effect = self.bucket_no_exists_error
         self.assertFalse(
-            utils.s3_bucket_exists(self.s3_client, self.bucket_name))
+            utils.s3_bucket_exists(self.s3_client, self.bucket_name)
+        )
 
     def test_bucket_exists_with_non_404(self):
         self.error_response['Error']['Code'] = '403'
@@ -148,7 +148,8 @@ class TestS3BucketExists(unittest.TestCase):
         forbidden_error = ClientError(self.error_response, 'HeadBucket')
         self.s3_client.head_bucket.side_effect = forbidden_error
         self.assertTrue(
-            utils.s3_bucket_exists(self.s3_client, self.bucket_name))
+            utils.s3_bucket_exists(self.s3_client, self.bucket_name)
+        )
 
 
 class TestClientCreationFromGlobals(unittest.TestCase):
@@ -163,35 +164,38 @@ class TestClientCreationFromGlobals(unittest.TestCase):
 
     def test_creates_clients_with_no_overrides(self):
         client = utils.create_client_from_parsed_globals(
-            self.session, 'ec2', self.parsed_globals)
+            self.session, 'ec2', self.parsed_globals
+        )
         self.assertEqual(self.fake_client, client)
         self.session.create_client.assert_called_once_with(
             'ec2',
             region_name='us-west-2',
             verify=False,
-            endpoint_url='https://foo.bar.com'
+            endpoint_url='https://foo.bar.com',
         )
 
     def test_creates_clients_with_overrides(self):
         overrides = {
             'region_name': 'custom',
             'verify': True,
-            'other_thing': 'more custom'
+            'other_thing': 'more custom',
         }
         client = utils.create_client_from_parsed_globals(
-            self.session, 'ec2', self.parsed_globals, overrides)
+            self.session, 'ec2', self.parsed_globals, overrides
+        )
         self.assertEqual(self.fake_client, client)
         self.session.create_client.assert_called_once_with(
             'ec2',
             region_name='custom',
             verify=True,
             other_thing='more custom',
-            endpoint_url='https://foo.bar.com'
+            endpoint_url='https://foo.bar.com',
         )
 
     def test_creates_clients_with_no_parsed_globals(self):
         client = utils.create_client_from_parsed_globals(
-            self.session, 'ec2', argparse.Namespace())
+            self.session, 'ec2', argparse.Namespace()
+        )
         self.assertEqual(self.fake_client, client)
         self.session.create_client.assert_called_once_with('ec2')
 
@@ -204,6 +208,7 @@ class MockPipedStdout(io.BytesIO):
     `UTF-8`. The attribute is also `readonly` in `TextIOWrapper` and
     `TextIOBase` so it cannot be overwritten in subclasses.
     """
+
     def __init__(self):
         self.encoding = None
 
@@ -220,7 +225,6 @@ class MockPipedStdout(io.BytesIO):
 
 
 class TestUniPrint(unittest.TestCase):
-
     def test_out_file_with_encoding_attribute(self):
         buf = io.BytesIO()
         out = io.TextIOWrapper(buf, encoding='utf-8')
@@ -245,10 +249,16 @@ class TestUniPrint(unittest.TestCase):
 
 class TestGetPolicyARNSuffix(unittest.TestCase):
     def test_get_policy_arn_suffix(self):
-        self.assertEqual("aws-cn", utils.get_policy_arn_suffix("cn-northwest-1"))
-        self.assertEqual("aws-cn", utils.get_policy_arn_suffix("cn-northwest-2"))
+        self.assertEqual(
+            "aws-cn", utils.get_policy_arn_suffix("cn-northwest-1")
+        )
+        self.assertEqual(
+            "aws-cn", utils.get_policy_arn_suffix("cn-northwest-2")
+        )
         self.assertEqual("aws-cn", utils.get_policy_arn_suffix("cn-north-1"))
-        self.assertEqual("aws-us-gov", utils.get_policy_arn_suffix("us-gov-west-1"))
+        self.assertEqual(
+            "aws-us-gov", utils.get_policy_arn_suffix("us-gov-west-1")
+        )
         self.assertEqual("aws", utils.get_policy_arn_suffix("ca-central-1"))
         self.assertEqual("aws", utils.get_policy_arn_suffix("us-east-1"))
         self.assertEqual("aws", utils.get_policy_arn_suffix("sa-east-1"))
@@ -265,47 +275,47 @@ class TestGetShapeDocOverview(unittest.TestCase):
     def test_get_shape_doc_overview(self):
         self.assert_expected_shape_overview(
             shape_docs='Shape documentation',
-            expected_overview='Shape documentation.'
+            expected_overview='Shape documentation.',
         )
 
     def test_uses_content_before_first_period(self):
         self.assert_expected_shape_overview(
             shape_docs='First sentence. Second Sentence.',
-            expected_overview='First sentence.'
+            expected_overview='First sentence.',
         )
 
     def test_uses_content_before_first_colon(self):
         self.assert_expected_shape_overview(
             shape_docs='<p>Broken XML docs',
-            expected_overview='<p>Broken XML docs.'
+            expected_overview='<p>Broken XML docs.',
         )
 
     def test_removes_xml_tags(self):
         self.assert_expected_shape_overview(
             shape_docs='<p>Shape documentation</p>',
-            expected_overview='Shape documentation.'
+            expected_overview='Shape documentation.',
         )
 
     def test_removes_nested_xml_tags(self):
         self.assert_expected_shape_overview(
             shape_docs='<p>Shape <code>documentation</code></p>',
-            expected_overview='Shape documentation.'
+            expected_overview='Shape documentation.',
         )
 
     def test_can_handle_broken_xml(self):
         self.assert_expected_shape_overview(
             shape_docs='<p>Broken XML docs',
-            expected_overview='<p>Broken XML docs.'
+            expected_overview='<p>Broken XML docs.',
         )
 
     def test_ignores_newlines(self):
         self.assert_expected_shape_overview(
             shape_docs='First line\nSecond line',
-            expected_overview='First line Second line.'
+            expected_overview='First line Second line.',
         )
 
     def test_ignores_line_separator_char(self):
         self.assert_expected_shape_overview(
             shape_docs='First line\u2028Second line',
-            expected_overview='First line Second line.'
+            expected_overview='First line Second line.',
         )

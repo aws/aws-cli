@@ -30,7 +30,7 @@ class TestCreateReplicationGroup(BaseAWSCommandParamsTest):
         params = {
             'ReplicationGroupId': self.GROUP_ID,
             'ReplicationGroupDescription': self.GROUP_DESCRIPTION,
-            'PreferredCacheClusterAZs': [self.PREFERRED_AZ]
+            'PreferredCacheClusterAZs': [self.PREFERRED_AZ],
         }
         self.assert_params_for_cmd(cmdline, params)
 
@@ -41,6 +41,6 @@ class TestCreateReplicationGroup(BaseAWSCommandParamsTest):
         params = {
             'ReplicationGroupId': self.GROUP_ID,
             'ReplicationGroupDescription': self.GROUP_DESCRIPTION,
-            'PreferredCacheClusterAZs': [self.PREFERRED_AZ]
+            'PreferredCacheClusterAZs': [self.PREFERRED_AZ],
         }
         self.assert_params_for_cmd(cmdline, params)

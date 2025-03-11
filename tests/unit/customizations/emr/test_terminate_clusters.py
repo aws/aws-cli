@@ -31,5 +31,6 @@ class TestTerminateClusters(BaseAWSCommandParamsTest):
         result = {'JobFlowIds': ['j-ABC123456', 'j-AAAAAAA']}
         self.assert_params_for_cmd(cmdline, result)
 
+
 if __name__ == "__main__":
     unittest.main()

@@ -16,7 +16,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestPurgeQueue(BaseAWSCommandParamsTest):
-
     prefix = 'sqs purge-queue'
 
     def test_simple(self):

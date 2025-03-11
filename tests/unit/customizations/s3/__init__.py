@@ -29,8 +29,9 @@ class FakeTransferFuture:
 
 
 class FakeTransferFutureMeta:
-    def __init__(self, size=None, call_args=None, transfer_id=None,
-                 user_context=None):
+    def __init__(
+        self, size=None, call_args=None, transfer_id=None, user_context=None
+    ):
         self.size = size
         self.call_args = call_args
         self.transfer_id = transfer_id
@@ -55,14 +56,20 @@ def make_loc_files(file_creator, size=None):
         body = 'This is a test.'
 
     filename1 = file_creator.create_file(
-        os.path.join('some_directory', 'text1.txt'), body)
+        os.path.join('some_directory', 'text1.txt'), body
+    )
 
     filename2 = file_creator.create_file(
-        os.path.join('some_directory', 'another_directory', 'text2.txt'), body)
+        os.path.join('some_directory', 'another_directory', 'text2.txt'), body
+    )
     filename1 = str(filename1)
     filename2 = str(filename2)
-    return [filename1, filename2, os.path.dirname(filename2),
-            os.path.dirname(filename1)]
+    return [
+        filename1,
+        filename2,
+        os.path.dirname(filename2),
+        os.path.dirname(filename1),
+    ]
 
 
 def clean_loc_files(file_creator):

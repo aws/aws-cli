@@ -20,13 +20,11 @@ from tests.unit.customizations.emr import (
 
 
 class FakeCommand(Command):
-
     def _run_main_command(self, parsed_args, parsed_globals):
         return 0
 
 
 class TestCommand(BaseAWSCommandParamsTest):
-
     def test_region(self):
         def mock_region_side_effect(*args, **kwargs):
             if args[0] == 'region':

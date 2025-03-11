@@ -15,8 +15,9 @@ def set_up(config, env_var):
         'AWS_SECRET_ACCESS_KEY': 'secret_key',
         'AWS_CONFIG_FILE': '',
     }
-    environ = set_config_file_contents(environ=environ, config=config,
-                                       files=files)
+    environ = set_config_file_contents(
+        environ=environ, config=config, files=files
+    )
     environ = set_env_var(environ=environ, env_var=env_var)
     environ_patch = mock.patch('os.environ', environ)
     environ_patch.start()
@@ -25,15 +26,10 @@ def set_up(config, env_var):
 
 
 def set_config_file_contents(environ, files, config=None):
-    config_contents = ('')
+    config_contents = ''
     if config is not None:
-        config_contents = (
-            '[default]\n'
-            f'cli_auto_prompt = {config}\n'
-        )
-    environ['AWS_CONFIG_FILE'] = files.create_file(
-        'config', config_contents
-    )
+        config_contents = '[default]\n' f'cli_auto_prompt = {config}\n'
+    environ['AWS_CONFIG_FILE'] = files.create_file('config', config_contents)
     return environ
 
 
@@ -55,7 +51,7 @@ def set_env_var(environ, env_var=None):
         (None, 'on', 'on'),
         (None, 'off', 'off'),
         (None, None, 'off'),
-    ]
+    ],
 )
 def test_autoprompt_config_provider(config, env_var, expected_result):
     try:

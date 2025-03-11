@@ -28,8 +28,11 @@ class TestBaseSync(unittest.TestCase):
         self.sync_strategy = BaseSync()
 
     def test_init(self):
-        valid_sync_types = ['file_at_src_and_dest', 'file_not_at_dest',
-                            'file_not_at_src']
+        valid_sync_types = [
+            'file_at_src_and_dest',
+            'file_not_at_dest',
+            'file_not_at_src',
+        ]
         for sync_type in valid_sync_types:
             strategy = BaseSync(sync_type)
             self.assertEqual(strategy.sync_type, sync_type)
@@ -45,13 +48,14 @@ class TestBaseSync(unittest.TestCase):
         session = mock.Mock()
         self.sync_strategy.register_strategy(session)
         register_args = session.register.call_args_list
-        self.assertEqual(register_args[0][0][0],
-                         'building-arg-table.s3_sync')
-        self.assertEqual(register_args[0][0][1],
-                         self.sync_strategy.add_sync_argument)
+        self.assertEqual(register_args[0][0][0], 'building-arg-table.s3_sync')
+        self.assertEqual(
+            register_args[0][0][1], self.sync_strategy.add_sync_argument
+        )
         self.assertEqual(register_args[1][0][0], 'choosing-s3-sync-strategy')
-        self.assertEqual(register_args[1][0][1],
-                         self.sync_strategy.use_sync_strategy)
+        self.assertEqual(
+            register_args[1][0][1], self.sync_strategy.use_sync_strategy
+        )
 
     def test_determine_should_sync(self):
         """
@@ -84,9 +88,10 @@ class TestBaseSync(unittest.TestCase):
         arg_table = [{'name': 'original_argument'}]
         self.sync_strategy.ARGUMENT = {'name': 'sync_argument'}
         self.sync_strategy.add_sync_argument(arg_table)
-        self.assertEqual(arg_table,
-                         [{'name': 'original_argument'},
-                          {'name': 'sync_argument'}])
+        self.assertEqual(
+            arg_table,
+            [{'name': 'original_argument'}, {'name': 'sync_argument'}],
+        )
 
     def test_no_add_sync_argument_for_no_argument_specified(self):
         """
@@ -111,8 +116,9 @@ class TestBaseSync(unittest.TestCase):
         """
         self.sync_strategy.ARGUMENT = {'name': 'my-sync-strategy'}
         params = {'my_sync_strategy': True}
-        self.assertEqual(self.sync_strategy.use_sync_strategy(params),
-                         self.sync_strategy)
+        self.assertEqual(
+            self.sync_strategy.use_sync_strategy(params), self.sync_strategy
+        )
 
     def test_no_use_sync_strategy_for_name_and_no_dest(self):
         """
@@ -136,19 +142,24 @@ class TestBaseSync(unittest.TestCase):
         Test if sync strategy argument has ``name`` and ``dest`` and the
         strategy was called in ``params``.
         """
-        self.sync_strategy.ARGUMENT = {'name': 'my-sync-strategy',
-                                       'dest': 'my-dest'}
+        self.sync_strategy.ARGUMENT = {
+            'name': 'my-sync-strategy',
+            'dest': 'my-dest',
+        }
         params = {'my-dest': True}
-        self.assertEqual(self.sync_strategy.use_sync_strategy(params),
-                         self.sync_strategy)
+        self.assertEqual(
+            self.sync_strategy.use_sync_strategy(params), self.sync_strategy
+        )
 
     def test_no_use_sync_strategy_for_name_and_dest(self):
         """
         Test if sync strategy argument has ``name`` and ``dest`` but the
         the strategy was not called in ``params``.
         """
-        self.sync_strategy.ARGUMENT = {'name': 'my-sync-strategy',
-                                       'dest': 'my-dest'}
+        self.sync_strategy.ARGUMENT = {
+            'name': 'my-sync-strategy',
+            'dest': 'my-dest',
+        }
         params = {'my-dest': False}
         self.assertEqual(self.sync_strategy.use_sync_strategy(params), None)
 
@@ -158,8 +169,10 @@ class TestBaseSync(unittest.TestCase):
         the strategy was not called in ``params`` even though the ``name`` was
         called in ``params``.
         """
-        self.sync_strategy.ARGUMENT = {'name': 'my-sync-strategy',
-                                       'dest': 'my-dest'}
+        self.sync_strategy.ARGUMENT = {
+            'name': 'my-sync-strategy',
+            'dest': 'my-dest',
+        }
         params = {'my-sync-strategy': True}
         self.assertEqual(self.sync_strategy.use_sync_strategy(params), None)
 
@@ -173,16 +186,29 @@ class TestSizeAndLastModifiedSync(unittest.TestCase):
         Confirms compare size works.
         """
         time = datetime.datetime.now()
-        src_file = FileStat(src='', dest='',
-                            compare_key='comparator_test.py', size=11,
-                            last_update=time, src_type='local',
-                            dest_type='s3', operation_name='upload')
-        dest_file = FileStat(src='', dest='',
-                             compare_key='comparator_test.py', size=10,
-                             last_update=time, src_type='s3',
-                             dest_type='local', operation_name='')
+        src_file = FileStat(
+            src='',
+            dest='',
+            compare_key='comparator_test.py',
+            size=11,
+            last_update=time,
+            src_type='local',
+            dest_type='s3',
+            operation_name='upload',
+        )
+        dest_file = FileStat(
+            src='',
+            dest='',
+            compare_key='comparator_test.py',
+            size=10,
+            last_update=time,
+            src_type='s3',
+            dest_type='local',
+            operation_name='',
+        )
         should_sync = self.sync_strategy.determine_should_sync(
-            src_file, dest_file)
+            src_file, dest_file
+        )
         self.assertTrue(should_sync)
 
     def test_compare_lastmod_upload(self):
@@ -191,16 +217,29 @@ class TestSizeAndLastModifiedSync(unittest.TestCase):
         """
         time = datetime.datetime.now()
         future_time = time + datetime.timedelta(0, 3)
-        src_file = FileStat(src='', dest='',
-                            compare_key='comparator_test.py', size=10,
-                            last_update=future_time, src_type='local',
-                            dest_type='s3', operation_name='upload')
-        dest_file = FileStat(src='', dest='',
-                             compare_key='comparator_test.py', size=10,
-                             last_update=time, src_type='s3',
-                             dest_type='local', operation_name='')
+        src_file = FileStat(
+            src='',
+            dest='',
+            compare_key='comparator_test.py',
+            size=10,
+            last_update=future_time,
+            src_type='local',
+            dest_type='s3',
+            operation_name='upload',
+        )
+        dest_file = FileStat(
+            src='',
+            dest='',
+            compare_key='comparator_test.py',
+            size=10,
+            last_update=time,
+            src_type='s3',
+            dest_type='local',
+            operation_name='',
+        )
         should_sync = self.sync_strategy.determine_should_sync(
-            src_file, dest_file)
+            src_file, dest_file
+        )
         self.assertTrue(should_sync)
 
     def test_compare_lastmod_copy(self):
@@ -209,16 +248,29 @@ class TestSizeAndLastModifiedSync(unittest.TestCase):
         """
         time = datetime.datetime.now()
         future_time = time + datetime.timedelta(0, 3)
-        src_file = FileStat(src='', dest='',
-                            compare_key='comparator_test.py', size=10,
-                            last_update=future_time, src_type='s3',
-                            dest_type='s3', operation_name='copy')
-        dest_file = FileStat(src='', dest='',
-                             compare_key='comparator_test.py', size=10,
-                             last_update=time, src_type='s3',
-                             dest_type='s3', operation_name='')
+        src_file = FileStat(
+            src='',
+            dest='',
+            compare_key='comparator_test.py',
+            size=10,
+            last_update=future_time,
+            src_type='s3',
+            dest_type='s3',
+            operation_name='copy',
+        )
+        dest_file = FileStat(
+            src='',
+            dest='',
+            compare_key='comparator_test.py',
+            size=10,
+            last_update=time,
+            src_type='s3',
+            dest_type='s3',
+            operation_name='',
+        )
         should_sync = self.sync_strategy.determine_should_sync(
-            src_file, dest_file)
+            src_file, dest_file
+        )
         self.assertTrue(should_sync)
 
     def test_compare_lastmod_download(self):
@@ -227,31 +279,57 @@ class TestSizeAndLastModifiedSync(unittest.TestCase):
         """
         time = datetime.datetime.now()
         future_time = time + datetime.timedelta(0, 3)
-        src_file = FileStat(src='', dest='',
-                            compare_key='comparator_test.py', size=10,
-                            last_update=time, src_type='s3',
-                            dest_type='local', operation_name='download')
-        dest_file = FileStat(src='', dest='',
-                             compare_key='comparator_test.py', size=10,
-                             last_update=future_time, src_type='local',
-                             dest_type='s3', operation_name='')
+        src_file = FileStat(
+            src='',
+            dest='',
+            compare_key='comparator_test.py',
+            size=10,
+            last_update=time,
+            src_type='s3',
+            dest_type='local',
+            operation_name='download',
+        )
+        dest_file = FileStat(
+            src='',
+            dest='',
+            compare_key='comparator_test.py',
+            size=10,
+            last_update=future_time,
+            src_type='local',
+            dest_type='s3',
+            operation_name='',
+        )
 
         should_sync = self.sync_strategy.determine_should_sync(
-            src_file, dest_file)
+            src_file, dest_file
+        )
         self.assertTrue(should_sync)
 
         # If the source is newer than the destination do not download.
-        src_file = FileStat(src='', dest='',
-                            compare_key='comparator_test.py', size=10,
-                            last_update=future_time, src_type='s3',
-                            dest_type='local', operation_name='download')
-        dest_file = FileStat(src='', dest='',
-                             compare_key='comparator_test.py', size=10,
-                             last_update=time, src_type='local',
-                             dest_type='s3', operation_name='')
+        src_file = FileStat(
+            src='',
+            dest='',
+            compare_key='comparator_test.py',
+            size=10,
+            last_update=future_time,
+            src_type='s3',
+            dest_type='local',
+            operation_name='download',
+        )
+        dest_file = FileStat(
+            src='',
+            dest='',
+            compare_key='comparator_test.py',
+            size=10,
+            last_update=time,
+            src_type='local',
+            dest_type='s3',
+            operation_name='',
+        )
 
         should_sync = self.sync_strategy.determine_should_sync(
-            src_file, dest_file)
+            src_file, dest_file
+        )
         self.assertFalse(should_sync)
 
 
@@ -265,13 +343,18 @@ class TestNeverSync(unittest.TestCase):
     def test_determine_should_sync(self):
         time_dst = datetime.datetime.now()
 
-        dst_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=10,
-                            last_update=time_dst, src_type='s3',
-                            dest_type='local', operation_name='')
+        dst_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=10,
+            last_update=time_dst,
+            src_type='s3',
+            dest_type='local',
+            operation_name='',
+        )
 
-        should_sync = self.sync_strategy.determine_should_sync(
-            None, dst_file)
+        should_sync = self.sync_strategy.determine_should_sync(None, dst_file)
         self.assertFalse(should_sync)
 
 
@@ -285,13 +368,18 @@ class TestMissingFileSync(unittest.TestCase):
     def test_determine_should_sync(self):
         time_src = datetime.datetime.now()
 
-        src_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=10,
-                            last_update=time_src, src_type='s3',
-                            dest_type='local', operation_name='')
+        src_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=10,
+            last_update=time_src,
+            src_type='s3',
+            dest_type='local',
+            operation_name='',
+        )
 
-        should_sync = self.sync_strategy.determine_should_sync(
-            src_file, None)
+        should_sync = self.sync_strategy.determine_should_sync(src_file, None)
         self.assertTrue(should_sync)
 
 

@@ -61,7 +61,8 @@ class TestResultSubscribers(unittest.TestCase):
     def set_ref_transfer_futures(self):
         self.future = self.get_success_transfer_future('foo')
         self.failure_future = self.get_failed_transfer_future(
-            self.ref_exception)
+            self.ref_exception
+        )
 
     def get_success_transfer_future(self, result):
         return self._get_transfer_future(result=result)
@@ -73,11 +74,13 @@ class TestResultSubscribers(unittest.TestCase):
         call_args = self._get_transfer_future_call_args()
         meta = FakeTransferFutureMeta(size=self.size, call_args=call_args)
         return FakeTransferFuture(
-            result=result, exception=exception, meta=meta)
+            result=result, exception=exception, meta=meta
+        )
 
     def _get_transfer_future_call_args(self):
         return FakeTransferFutureCallArgs(
-            fileobj=self.filename, key=self.key, bucket=self.bucket)
+            fileobj=self.filename, key=self.key, bucket=self.bucket
+        )
 
     def get_queued_result(self):
         return self.result_queue.get(block=False)
@@ -105,8 +108,8 @@ class TestResultSubscribers(unittest.TestCase):
                 transfer_type=self.transfer_type,
                 src=self.src,
                 dest=self.dest,
-                total_transfer_size=self.size
-            )
+                total_transfer_size=self.size,
+            ),
         )
 
     def test_on_progress(self):
@@ -123,8 +126,8 @@ class TestResultSubscribers(unittest.TestCase):
                 dest=self.dest,
                 bytes_transferred=ref_bytes_transferred,
                 total_transfer_size=self.size,
-                timestamp=mock.ANY
-            )
+                timestamp=mock.ANY,
+            ),
         )
 
     def test_on_done_success(self):
@@ -138,7 +141,7 @@ class TestResultSubscribers(unittest.TestCase):
                 transfer_type=self.transfer_type,
                 src=self.src,
                 dest=self.dest,
-            )
+            ),
         )
 
     def test_on_done_failure(self):
@@ -152,8 +155,8 @@ class TestResultSubscribers(unittest.TestCase):
                 transfer_type=self.transfer_type,
                 src=self.src,
                 dest=self.dest,
-                exception=self.ref_exception
-            )
+                exception=self.ref_exception,
+            ),
         )
 
     def test_on_done_unexpected_cancelled(self):
@@ -180,7 +183,7 @@ class ResultRecorderTest(unittest.TestCase):
         self.transfer_type = 'upload'
         self.src = 'file'
         self.dest = 's3://mybucket/mykey'
-        self.total_transfer_size = 20 * (1024 ** 1024)  # 20MB
+        self.total_transfer_size = 20 * (1024**1024)  # 20MB
         self.warning_message = 'a dummy warning message'
         self.exception_message = 'a dummy exception message'
         self.exception = Exception(self.exception_message)
@@ -190,13 +193,15 @@ class ResultRecorderTest(unittest.TestCase):
     def test_queued_result(self):
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=self.total_transfer_size
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.total_transfer_size,
             )
         )
         self.assertEqual(
             self.result_recorder.expected_bytes_transferred,
-            self.total_transfer_size
+            self.total_transfer_size,
         )
         self.assertEqual(self.result_recorder.expected_files_transferred, 1)
 
@@ -208,57 +213,65 @@ class ResultRecorderTest(unittest.TestCase):
                     transfer_type=self.transfer_type,
                     src=self.src + str(i),
                     dest=self.dest + str(i),
-                    total_transfer_size=self.total_transfer_size
+                    total_transfer_size=self.total_transfer_size,
                 )
             )
 
         self.assertEqual(
             self.result_recorder.expected_bytes_transferred,
-            num_results * self.total_transfer_size
+            num_results * self.total_transfer_size,
         )
         self.assertEqual(
-            self.result_recorder.expected_files_transferred, num_results)
+            self.result_recorder.expected_files_transferred, num_results
+        )
 
     def test_queued_result_with_no_full_transfer_size(self):
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=None
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=None,
             )
         )
         # Since we do not know how many bytes are expected to be transferred
         # do not incremenent the count as we have no idea how much it may be.
-        self.assertEqual(
-            self.result_recorder.expected_bytes_transferred, 0)
-        self.assertEqual(
-            self.result_recorder.expected_files_transferred, 1)
+        self.assertEqual(self.result_recorder.expected_bytes_transferred, 0)
+        self.assertEqual(self.result_recorder.expected_files_transferred, 1)
 
     def test_progress_result(self):
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=self.total_transfer_size
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.total_transfer_size,
             )
         )
 
         bytes_transferred = 1024 * 1024  # 1MB
         self.result_recorder(
             ProgressResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, bytes_transferred=bytes_transferred,
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                bytes_transferred=bytes_transferred,
                 total_transfer_size=self.total_transfer_size,
-                timestamp=0
+                timestamp=0,
             )
         )
 
         self.assertEqual(
-            self.result_recorder.bytes_transferred, bytes_transferred)
+            self.result_recorder.bytes_transferred, bytes_transferred
+        )
 
     def test_multiple_progress_results(self):
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=self.total_transfer_size
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.total_transfer_size,
             )
         )
 
@@ -267,74 +280,91 @@ class ResultRecorderTest(unittest.TestCase):
         for i in range(num_results):
             self.result_recorder(
                 ProgressResult(
-                    transfer_type=self.transfer_type, src=self.src,
-                    dest=self.dest, bytes_transferred=bytes_transferred,
+                    transfer_type=self.transfer_type,
+                    src=self.src,
+                    dest=self.dest,
+                    bytes_transferred=bytes_transferred,
                     total_transfer_size=self.total_transfer_size,
-                    timestamp=i
+                    timestamp=i,
                 )
             )
 
         self.assertEqual(
             self.result_recorder.bytes_transferred,
-            num_results * bytes_transferred
+            num_results * bytes_transferred,
         )
 
     def test_progress_result_with_no_known_transfer_size(self):
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=None
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=None,
             )
         )
 
         bytes_transferred = 1024 * 1024
         self.result_recorder(
             ProgressResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, bytes_transferred=bytes_transferred,
-                total_transfer_size=None, timestamp=0
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                bytes_transferred=bytes_transferred,
+                total_transfer_size=None,
+                timestamp=0,
             )
         )
         # Because the transfer size is still not known, update the
         # expected bytes transferred with what was actually transferred.
         self.assertEqual(
-            self.result_recorder.bytes_transferred, bytes_transferred)
+            self.result_recorder.bytes_transferred, bytes_transferred
+        )
         self.assertEqual(
-            self.result_recorder.expected_bytes_transferred, bytes_transferred)
+            self.result_recorder.expected_bytes_transferred, bytes_transferred
+        )
 
     def test_progress_result_with_transfer_size_provided_during_progress(self):
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=None
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=None,
             )
         )
 
         bytes_transferred = 1024 * 1024
         self.result_recorder(
             ProgressResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, bytes_transferred=bytes_transferred,
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                bytes_transferred=bytes_transferred,
                 total_transfer_size=self.total_transfer_size,
-                timestamp=0
+                timestamp=0,
             )
         )
 
         self.assertEqual(
-            self.result_recorder.bytes_transferred, bytes_transferred)
+            self.result_recorder.bytes_transferred, bytes_transferred
+        )
         # With the total size provided in the progress result, it should
         # accurately be reflected in the expected bytes transferred.
         self.assertEqual(
             self.result_recorder.expected_bytes_transferred,
-            self.total_transfer_size)
+            self.total_transfer_size,
+        )
 
     def test_captures_start_time_on_queued(self):
         result_recorder = ResultRecorder()
         self.assertIsNone(result_recorder.start_time)
         result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=self.total_transfer_size
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.total_transfer_size,
             )
         )
         self.assertIsInstance(result_recorder.start_time, float)
@@ -345,8 +375,10 @@ class ResultRecorderTest(unittest.TestCase):
         self.total_transfer_size = 10
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=self.total_transfer_size
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.total_transfer_size,
             )
         )
         # At this point nothing should have been uploaded so transfer speed
@@ -355,10 +387,12 @@ class ResultRecorderTest(unittest.TestCase):
 
         self.result_recorder(
             ProgressResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, bytes_transferred=1,
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                bytes_transferred=1,
                 total_transfer_size=self.total_transfer_size,
-                timestamp=(start_time + 1)
+                timestamp=(start_time + 1),
             )
         )
 
@@ -367,10 +401,12 @@ class ResultRecorderTest(unittest.TestCase):
 
         self.result_recorder(
             ProgressResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, bytes_transferred=4,
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                bytes_transferred=4,
                 total_transfer_size=self.total_transfer_size,
-                timestamp=(start_time + 2)
+                timestamp=(start_time + 2),
             )
         )
 
@@ -379,10 +415,12 @@ class ResultRecorderTest(unittest.TestCase):
 
         self.result_recorder(
             ProgressResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, bytes_transferred=1,
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                bytes_transferred=1,
                 total_transfer_size=self.total_transfer_size,
-                timestamp=(start_time + 3)
+                timestamp=(start_time + 3),
             )
         )
 
@@ -392,15 +430,16 @@ class ResultRecorderTest(unittest.TestCase):
     def test_success_result(self):
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=self.total_transfer_size
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.total_transfer_size,
             )
         )
 
         self.result_recorder(
             SuccessResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest
+                transfer_type=self.transfer_type, src=self.src, dest=self.dest
             )
         )
         self.assertEqual(self.result_recorder.files_transferred, 1)
@@ -414,7 +453,7 @@ class ResultRecorderTest(unittest.TestCase):
                     transfer_type=self.transfer_type,
                     src=self.src + str(i),
                     dest=self.dest + str(i),
-                    total_transfer_size=self.total_transfer_size
+                    total_transfer_size=self.total_transfer_size,
                 )
             )
 
@@ -433,15 +472,19 @@ class ResultRecorderTest(unittest.TestCase):
     def test_failure_result(self):
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=self.total_transfer_size
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.total_transfer_size,
             )
         )
 
         self.result_recorder(
             FailureResult(
-                transfer_type=self.transfer_type, src=self.src, dest=self.dest,
-                exception=self.exception
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                exception=self.exception,
             )
         )
 
@@ -449,7 +492,8 @@ class ResultRecorderTest(unittest.TestCase):
         self.assertEqual(self.result_recorder.files_failed, 1)
         self.assertEqual(
             self.result_recorder.bytes_failed_to_transfer,
-            self.total_transfer_size)
+            self.total_transfer_size,
+        )
         self.assertEqual(self.result_recorder.bytes_transferred, 0)
 
     def test_multiple_failure_results(self):
@@ -460,7 +504,7 @@ class ResultRecorderTest(unittest.TestCase):
                     transfer_type=self.transfer_type,
                     src=self.src + str(i),
                     dest=self.dest + str(i),
-                    total_transfer_size=self.total_transfer_size
+                    total_transfer_size=self.total_transfer_size,
                 )
             )
 
@@ -470,7 +514,7 @@ class ResultRecorderTest(unittest.TestCase):
                     transfer_type=self.transfer_type,
                     src=self.src + str(i),
                     dest=self.dest + str(i),
-                    exception=self.exception
+                    exception=self.exception,
                 )
             )
 
@@ -478,31 +522,38 @@ class ResultRecorderTest(unittest.TestCase):
         self.assertEqual(self.result_recorder.files_failed, num_results)
         self.assertEqual(
             self.result_recorder.bytes_failed_to_transfer,
-            self.total_transfer_size * num_results)
+            self.total_transfer_size * num_results,
+        )
         self.assertEqual(self.result_recorder.bytes_transferred, 0)
 
     def test_failure_result_mid_progress(self):
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=self.total_transfer_size
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.total_transfer_size,
             )
         )
 
         bytes_transferred = 1024 * 1024  # 1MB
         self.result_recorder(
             ProgressResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, bytes_transferred=bytes_transferred,
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                bytes_transferred=bytes_transferred,
                 total_transfer_size=self.total_transfer_size,
-                timestamp=0
+                timestamp=0,
             )
         )
 
         self.result_recorder(
             FailureResult(
-                transfer_type=self.transfer_type, src=self.src, dest=self.dest,
-                exception=self.exception
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                exception=self.exception,
             )
         )
 
@@ -510,21 +561,27 @@ class ResultRecorderTest(unittest.TestCase):
         self.assertEqual(self.result_recorder.files_failed, 1)
         self.assertEqual(
             self.result_recorder.bytes_failed_to_transfer,
-            self.total_transfer_size - bytes_transferred)
+            self.total_transfer_size - bytes_transferred,
+        )
         self.assertEqual(
-            self.result_recorder.bytes_transferred, bytes_transferred)
+            self.result_recorder.bytes_transferred, bytes_transferred
+        )
 
     def test_failure_result_still_did_not_know_transfer_size(self):
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=None
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=None,
             )
         )
         self.result_recorder(
             FailureResult(
-                transfer_type=self.transfer_type, src=self.src, dest=self.dest,
-                exception=self.exception
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                exception=self.exception,
             )
         )
         self.assertEqual(self.result_recorder.files_transferred, 1)
@@ -532,30 +589,35 @@ class ResultRecorderTest(unittest.TestCase):
         # Because we never knew how many bytes to expect, do not make
         # any adjustments to bytes failed to transfer because it is impossible
         # to know that.
-        self.assertEqual(
-            self.result_recorder.bytes_failed_to_transfer, 0)
+        self.assertEqual(self.result_recorder.bytes_failed_to_transfer, 0)
 
     def test_failure_result_and_learned_of_transfer_size_in_progress(self):
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=None
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=None,
             )
         )
 
         bytes_transferred = 1024 * 1024
         self.result_recorder(
             ProgressResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, bytes_transferred=bytes_transferred,
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                bytes_transferred=bytes_transferred,
                 total_transfer_size=self.total_transfer_size,
-                timestamp=0
+                timestamp=0,
             )
         )
         self.result_recorder(
             FailureResult(
-                transfer_type=self.transfer_type, src=self.src, dest=self.dest,
-                exception=self.exception
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                exception=self.exception,
             )
         )
         self.assertEqual(self.result_recorder.files_transferred, 1)
@@ -565,7 +627,8 @@ class ResultRecorderTest(unittest.TestCase):
         # failure result is processed.
         self.assertEqual(
             self.result_recorder.bytes_failed_to_transfer,
-            self.total_transfer_size - bytes_transferred)
+            self.total_transfer_size - bytes_transferred,
+        )
 
     def test_can_handle_results_with_no_dest(self):
         # This is just a quick smoke test to make sure that a result with
@@ -573,24 +636,28 @@ class ResultRecorderTest(unittest.TestCase):
         # a transfer (i.e. being queued and finishing)
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=None, total_transfer_size=None))
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=None,
+                total_transfer_size=None,
+            )
+        )
         self.result_recorder(
             SuccessResult(
-                transfer_type=self.transfer_type, src=self.src, dest=None))
+                transfer_type=self.transfer_type, src=self.src, dest=None
+            )
+        )
         self.assertEqual(self.result_recorder.expected_files_transferred, 1)
         self.assertEqual(self.result_recorder.files_transferred, 1)
 
     def test_warning_result(self):
-        self.result_recorder(
-            WarningResult(message=self.warning_message))
+        self.result_recorder(WarningResult(message=self.warning_message))
         self.assertEqual(self.result_recorder.files_warned, 1)
 
     def test_multiple_warning_results(self):
         num_results = 5
         for _ in range(num_results):
-            self.result_recorder(
-                WarningResult(message=self.warning_message))
+            self.result_recorder(WarningResult(message=self.warning_message))
         self.assertEqual(self.result_recorder.files_warned, num_results)
 
     def test_error_result(self):
@@ -604,13 +671,16 @@ class ResultRecorderTest(unittest.TestCase):
     def test_expected_totals_are_final(self):
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=self.total_transfer_size
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.total_transfer_size,
             )
         )
         self.result_recorder(FinalTotalSubmissionsResult(1))
         self.assertEqual(
-            self.result_recorder.final_expected_files_transferred, 1)
+            self.result_recorder.final_expected_files_transferred, 1
+        )
         self.assertTrue(self.result_recorder.expected_totals_are_final())
 
     def test_expected_totals_are_final_reaches_final_after_notification(self):
@@ -618,26 +688,32 @@ class ResultRecorderTest(unittest.TestCase):
         self.assertFalse(self.result_recorder.expected_totals_are_final())
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=self.total_transfer_size
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.total_transfer_size,
             )
         )
         self.assertTrue(self.result_recorder.expected_totals_are_final())
 
     def test_expected_totals_are_final_is_false_with_no_notification(self):
         self.assertIsNone(
-            self.result_recorder.final_expected_files_transferred)
+            self.result_recorder.final_expected_files_transferred
+        )
         self.assertFalse(self.result_recorder.expected_totals_are_final())
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=self.src,
-                dest=self.dest, total_transfer_size=self.total_transfer_size
+                transfer_type=self.transfer_type,
+                src=self.src,
+                dest=self.dest,
+                total_transfer_size=self.total_transfer_size,
             )
         )
         # It should still be None because it has not yet been notified
         # of finals.
         self.assertIsNone(
-            self.result_recorder.final_expected_files_transferred)
+            self.result_recorder.final_expected_files_transferred
+        )
         # This should remain False as well.
         self.assertFalse(self.result_recorder.expected_totals_are_final())
 
@@ -653,13 +729,15 @@ class ResultRecorderTest(unittest.TestCase):
         unicode_source = '\u2713'
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=unicode_source,
-                dest=self.dest, total_transfer_size=self.total_transfer_size
+                transfer_type=self.transfer_type,
+                src=unicode_source,
+                dest=self.dest,
+                total_transfer_size=self.total_transfer_size,
             )
         )
         self.assertEqual(
             self.result_recorder.expected_bytes_transferred,
-            self.total_transfer_size
+            self.total_transfer_size,
         )
         self.assertEqual(self.result_recorder.expected_files_transferred, 1)
 
@@ -667,13 +745,15 @@ class ResultRecorderTest(unittest.TestCase):
         unicode_source = '\u2713'.encode()
         self.result_recorder(
             QueuedResult(
-                transfer_type=self.transfer_type, src=unicode_source,
-                dest=self.dest, total_transfer_size=self.total_transfer_size
+                transfer_type=self.transfer_type,
+                src=unicode_source,
+                dest=self.dest,
+                total_transfer_size=self.total_transfer_size,
             )
         )
         self.assertEqual(
             self.result_recorder.expected_bytes_transferred,
-            self.total_transfer_size
+            self.total_transfer_size,
         )
         self.assertEqual(self.result_recorder.expected_files_transferred, 1)
 
@@ -686,7 +766,7 @@ class BaseResultPrinterTest(unittest.TestCase):
         self.result_printer = ResultPrinter(
             result_recorder=self.result_recorder,
             out_file=self.out_file,
-            error_file=self.error_file
+            error_file=self.error_file,
         )
 
     def get_progress_result(self):
@@ -694,8 +774,12 @@ class BaseResultPrinterTest(unittest.TestCase):
         # of printing as the ResultPrinter only looks at the type and
         # the ResultRecorder to determine what to print out on progress.
         return ProgressResult(
-            transfer_type=None, src=None, dest=None, bytes_transferred=None,
-            total_transfer_size=None, timestamp=0
+            transfer_type=None,
+            src=None,
+            dest=None,
+            bytes_transferred=None,
+            total_transfer_size=None,
+            timestamp=0,
         )
 
 
@@ -719,7 +803,8 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_printer(progress_result)
         ref_progress_statement = (
             'Completed 1.0 MiB/20.0 MiB (0 Bytes/s) with 3 file(s) '
-            'remaining\r')
+            'remaining\r'
+        )
         self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
 
     def test_progress_with_no_expected_transfer_bytes(self):
@@ -732,7 +817,8 @@ class TestResultPrinter(BaseResultPrinterTest):
         progress_result = self.get_progress_result()
         self.result_printer(progress_result)
         ref_progress_statement = (
-            'Completed 1 file(s) with 3 file(s) remaining\r')
+            'Completed 1 file(s) with 3 file(s) remaining\r'
+        )
         self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
 
     def test_progress_then_more_progress(self):
@@ -776,7 +862,8 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_printer(progress_result)
         ref_progress_statement = (
             'Completed 1.0 MiB/~20.0 MiB (0 Bytes/s) with ~3 file(s) '
-            'remaining (calculating...)\r')
+            'remaining (calculating...)\r'
+        )
         self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
 
     def test_progress_still_calculating_totals_no_bytes(self):
@@ -788,7 +875,8 @@ class TestResultPrinter(BaseResultPrinterTest):
         progress_result = self.get_progress_result()
         self.result_printer(progress_result)
         ref_progress_statement = (
-            'Completed 1 file(s) with ~3 file(s) remaining (calculating...)\r')
+            'Completed 1 file(s) with ~3 file(s) remaining (calculating...)\r'
+        )
         self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
 
     def test_progress_with_transfer_speed_reporting(self):
@@ -805,7 +893,8 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_printer(progress_result)
         ref_progress_statement = (
             'Completed 1.0 MiB/20.0 MiB (7.0 KiB/s) with 3 file(s) '
-            'remaining\r')
+            'remaining\r'
+        )
         self.assertEqual(self.out_file.getvalue(), ref_progress_statement)
 
     def test_success(self):
@@ -820,13 +909,12 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.files_transferred = 1
 
         success_result = SuccessResult(
-            transfer_type=transfer_type, src=src, dest=dest)
+            transfer_type=transfer_type, src=src, dest=dest
+        )
 
         self.result_printer(success_result)
 
-        ref_success_statement = (
-            'upload: file to s3://mybucket/mykey\n'
-        )
+        ref_success_statement = 'upload: file to s3://mybucket/mykey\n'
         self.assertEqual(self.out_file.getvalue(), ref_success_statement)
 
     def test_success_with_progress(self):
@@ -847,7 +935,8 @@ class TestResultPrinter(BaseResultPrinterTest):
         src = 'file'
         dest = 's3://mybucket/mykey'
         success_result = SuccessResult(
-            transfer_type=transfer_type, src=src, dest=dest)
+            transfer_type=transfer_type, src=src, dest=dest
+        )
 
         self.result_recorder.files_transferred += 1
         self.result_printer(success_result)
@@ -875,7 +964,8 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.bytes_transferred = mb
 
         success_result = SuccessResult(
-            transfer_type=transfer_type, src=src, dest=dest)
+            transfer_type=transfer_type, src=src, dest=dest
+        )
 
         self.result_printer(success_result)
 
@@ -898,7 +988,8 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.bytes_transferred = mb
 
         success_result = SuccessResult(
-            transfer_type=transfer_type, src=src, dest=dest)
+            transfer_type=transfer_type, src=src, dest=dest
+        )
 
         self.result_printer(success_result)
 
@@ -920,13 +1011,12 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.files_transferred = 1
 
         success_result = SuccessResult(
-            transfer_type=transfer_type, src=src, dest=None)
+            transfer_type=transfer_type, src=src, dest=None
+        )
 
         self.result_printer(success_result)
 
-        ref_success_statement = (
-            'delete: s3://mybucket/mykey\n'
-        )
+        ref_success_statement = 'delete: s3://mybucket/mykey\n'
         self.assertEqual(self.out_file.getvalue(), ref_success_statement)
 
     def test_delete_success_with_files_remaining(self):
@@ -937,7 +1027,8 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.files_transferred = 1
 
         success_result = SuccessResult(
-            transfer_type=transfer_type, src=src, dest=None)
+            transfer_type=transfer_type, src=src, dest=None
+        )
 
         self.result_printer(success_result)
 
@@ -955,7 +1046,8 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.files_transferred = 1
 
         success_result = SuccessResult(
-            transfer_type=transfer_type, src=src, dest=None)
+            transfer_type=transfer_type, src=src, dest=None
+        )
 
         self.result_printer(success_result)
 
@@ -977,8 +1069,11 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.files_transferred = 1
 
         failure_result = FailureResult(
-            transfer_type=transfer_type, src=src, dest=dest,
-            exception=Exception('my exception'))
+            transfer_type=transfer_type,
+            src=src,
+            dest=dest,
+            exception=Exception('my exception'),
+        )
 
         self.result_printer(failure_result)
 
@@ -993,7 +1088,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_printer = ResultPrinter(
             result_recorder=self.result_recorder,
             out_file=shared_file,
-            error_file=shared_file
+            error_file=shared_file,
         )
 
         transfer_type = 'upload'
@@ -1007,8 +1102,11 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.bytes_transferred = mb
 
         failure_result = FailureResult(
-            transfer_type=transfer_type, src=src, dest=dest,
-            exception=Exception('my exception'))
+            transfer_type=transfer_type,
+            src=src,
+            dest=dest,
+            exception=Exception('my exception'),
+        )
 
         self.result_printer(failure_result)
 
@@ -1024,7 +1122,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_printer = ResultPrinter(
             result_recorder=self.result_recorder,
             out_file=shared_file,
-            error_file=shared_file
+            error_file=shared_file,
         )
 
         transfer_type = 'upload'
@@ -1038,8 +1136,11 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.bytes_transferred = mb
 
         failure_result = FailureResult(
-            transfer_type=transfer_type, src=src, dest=dest,
-            exception=Exception('my exception'))
+            transfer_type=transfer_type,
+            src=src,
+            dest=dest,
+            exception=Exception('my exception'),
+        )
 
         self.result_printer(failure_result)
 
@@ -1056,7 +1157,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_printer = ResultPrinter(
             result_recorder=self.result_recorder,
             out_file=shared_file,
-            error_file=shared_file
+            error_file=shared_file,
         )
 
         mb = 1024 * 1024
@@ -1076,8 +1177,11 @@ class TestResultPrinter(BaseResultPrinterTest):
         src = 'file'
         dest = 's3://mybucket/mykey'
         failure_result = FailureResult(
-            transfer_type=transfer_type, src=src, dest=dest,
-            exception=Exception('my exception'))
+            transfer_type=transfer_type,
+            src=src,
+            dest=dest,
+            exception=Exception('my exception'),
+        )
 
         self.result_recorder.bytes_failed_to_transfer = 3 * mb
         self.result_recorder.files_transferred += 1
@@ -1105,8 +1209,11 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.files_transferred = 1
 
         failure_result = FailureResult(
-            transfer_type=transfer_type, src=src, dest=None,
-            exception=Exception('my exception'))
+            transfer_type=transfer_type,
+            src=src,
+            dest=None,
+            exception=Exception('my exception'),
+        )
 
         self.result_printer(failure_result)
 
@@ -1121,7 +1228,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_printer = ResultPrinter(
             result_recorder=self.result_recorder,
             out_file=shared_file,
-            error_file=shared_file
+            error_file=shared_file,
         )
 
         transfer_type = 'delete'
@@ -1132,8 +1239,11 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.files_transferred = 1
 
         failure_result = FailureResult(
-            transfer_type=transfer_type, src=src, dest=None,
-            exception=Exception('my exception'))
+            transfer_type=transfer_type,
+            src=src,
+            dest=None,
+            exception=Exception('my exception'),
+        )
 
         self.result_printer(failure_result)
 
@@ -1148,7 +1258,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_printer = ResultPrinter(
             result_recorder=self.result_recorder,
             out_file=shared_file,
-            error_file=shared_file
+            error_file=shared_file,
         )
 
         transfer_type = 'delete'
@@ -1158,8 +1268,11 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.files_transferred = 1
 
         failure_result = FailureResult(
-            transfer_type=transfer_type, src=src, dest=None,
-            exception=Exception('my exception'))
+            transfer_type=transfer_type,
+            src=src,
+            dest=None,
+            exception=Exception('my exception'),
+        )
 
         self.result_printer(failure_result)
 
@@ -1187,7 +1300,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_printer = ResultPrinter(
             result_recorder=self.result_recorder,
             out_file=shared_file,
-            error_file=shared_file
+            error_file=shared_file,
         )
 
         mb = 1024 * 1024
@@ -1245,7 +1358,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         result = DryRunResult(
             transfer_type='upload',
             src='s3://mybucket/key',
-            dest='./local/file'
+            dest='./local/file',
         )
         self.result_printer(result)
         expected = '(dryrun) upload: s3://mybucket/key to ./local/file\n'
@@ -1263,7 +1376,8 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.bytes_transferred = mb
 
         success_result = SuccessResult(
-            transfer_type=transfer_type, src=src, dest=dest)
+            transfer_type=transfer_type, src=src, dest=dest
+        )
 
         self.result_printer(success_result)
 
@@ -1306,7 +1420,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         result = SuccessResult(
             transfer_type='upload',
             src='/tmp/\u2713',
-            dest='s3://mybucket/mykey'
+            dest='s3://mybucket/mykey',
         )
         self.result_printer(result)
         expected = 'upload: /tmp/\u2713 to s3://mybucket/mykey\n'
@@ -1320,9 +1434,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.files_transferred = 1
 
         result = SuccessResult(
-            transfer_type='delete',
-            src='s3://mybucket/tmp/\u2713',
-            dest=None
+            transfer_type='delete', src='s3://mybucket/tmp/\u2713', dest=None
         )
         self.result_printer(result)
         expected = 'delete: s3://mybucket/tmp/\u2713\n'
@@ -1332,7 +1444,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         result = DryRunResult(
             transfer_type='upload',
             src='s3://mybucket/\u2713',
-            dest='./local/file'
+            dest='./local/file',
         )
         self.result_printer(result)
         expected = '(dryrun) upload: s3://mybucket/\u2713 to ./local/file\n'
@@ -1350,8 +1462,11 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.files_transferred = 1
 
         failure_result = FailureResult(
-            transfer_type=transfer_type, src=src, dest=dest,
-            exception=Exception('my exception'))
+            transfer_type=transfer_type,
+            src=src,
+            dest=dest,
+            exception=Exception('my exception'),
+        )
 
         self.result_printer(failure_result)
 
@@ -1385,7 +1500,7 @@ class TestNoProgressResultPrinter(BaseResultPrinterTest):
         self.result_printer = NoProgressResultPrinter(
             result_recorder=self.result_recorder,
             out_file=self.out_file,
-            error_file=self.error_file
+            error_file=self.error_file,
         )
 
     def test_does_not_print_progress_result(self):
@@ -1398,7 +1513,8 @@ class TestNoProgressResultPrinter(BaseResultPrinterTest):
         src = 'file'
         dest = 's3://mybucket/mykey'
         success_result = SuccessResult(
-            transfer_type=transfer_type, src=src, dest=dest)
+            transfer_type=transfer_type, src=src, dest=dest
+        )
 
         self.result_printer(success_result)
         expected_message = 'upload: file to s3://mybucket/mykey\n'
@@ -1409,8 +1525,11 @@ class TestNoProgressResultPrinter(BaseResultPrinterTest):
         src = 'file'
         dest = 's3://mybucket/mykey'
         failure_result = FailureResult(
-            transfer_type=transfer_type, src=src, dest=dest,
-            exception=Exception('my exception'))
+            transfer_type=transfer_type,
+            src=src,
+            dest=dest,
+            exception=Exception('my exception'),
+        )
 
         self.result_printer(failure_result)
 
@@ -1436,7 +1555,8 @@ class TestNoProgressResultPrinter(BaseResultPrinterTest):
         self.result_recorder.bytes_transferred = mb
 
         success_result = SuccessResult(
-            transfer_type=transfer_type, src=src, dest=dest)
+            transfer_type=transfer_type, src=src, dest=dest
+        )
         self.result_printer(success_result)
         ref_statement = 'upload: file to s3://mybucket/mykey\n'
         self.assertEqual(self.out_file.getvalue(), ref_statement)
@@ -1452,7 +1572,7 @@ class TestOnlyShowErrorsResultPrinter(BaseResultPrinterTest):
         self.result_printer = OnlyShowErrorsResultPrinter(
             result_recorder=self.result_recorder,
             out_file=self.out_file,
-            error_file=self.error_file
+            error_file=self.error_file,
         )
 
     def test_does_not_print_progress_result(self):
@@ -1465,7 +1585,8 @@ class TestOnlyShowErrorsResultPrinter(BaseResultPrinterTest):
         src = 'file'
         dest = 's3://mybucket/mykey'
         success_result = SuccessResult(
-            transfer_type=transfer_type, src=src, dest=dest)
+            transfer_type=transfer_type, src=src, dest=dest
+        )
 
         self.result_printer(success_result)
         self.assertEqual(self.out_file.getvalue(), '')
@@ -1475,8 +1596,11 @@ class TestOnlyShowErrorsResultPrinter(BaseResultPrinterTest):
         src = 'file'
         dest = 's3://mybucket/mykey'
         failure_result = FailureResult(
-            transfer_type=transfer_type, src=src, dest=dest,
-            exception=Exception('my exception'))
+            transfer_type=transfer_type,
+            src=src,
+            dest=dest,
+            exception=Exception('my exception'),
+        )
 
         self.result_printer(failure_result)
 
@@ -1502,7 +1626,8 @@ class TestOnlyShowErrorsResultPrinter(BaseResultPrinterTest):
         self.result_recorder.bytes_transferred = mb
 
         success_result = SuccessResult(
-            transfer_type=transfer_type, src=src, dest=dest)
+            transfer_type=transfer_type, src=src, dest=dest
+        )
         self.result_printer(success_result)
         ref_statement = ''
         self.assertEqual(self.out_file.getvalue(), ref_statement)
@@ -1522,7 +1647,8 @@ class TestResultProcessor(unittest.TestCase):
         self.results_handled = []
 
         self.result_processor = ResultProcessor(
-            self.result_queue, [self.results_handled.append])
+            self.result_queue, [self.results_handled.append]
+        )
 
     def _handle_result_with_exception(self, result):
         raise Exception()
@@ -1534,7 +1660,7 @@ class TestResultProcessor(unittest.TestCase):
         total_transfer_size = 1024 * 1024
         results_to_process = [
             QueuedResult(transfer_type, src, dest, total_transfer_size),
-            SuccessResult(transfer_type, src, dest)
+            SuccessResult(transfer_type, src, dest),
         ]
         results_with_shutdown = results_to_process + [ShutdownThreadRequest()]
 
@@ -1551,7 +1677,7 @@ class TestResultProcessor(unittest.TestCase):
         total_transfer_size = 1024 * 1024
         results_to_process = [
             QueuedResult(transfer_type, src, dest, total_transfer_size),
-            SuccessResult(transfer_type, src, dest)
+            SuccessResult(transfer_type, src, dest),
         ]
         results_with_shutdown = results_to_process + [ShutdownThreadRequest()]
 
@@ -1571,7 +1697,7 @@ class TestResultProcessor(unittest.TestCase):
         total_transfer_size = 1024 * 1024
         results_to_process = [
             QueuedResult(transfer_type, src, dest, total_transfer_size),
-            SuccessResult(transfer_type, src, dest)
+            SuccessResult(transfer_type, src, dest),
         ]
         results_with_shutdown = results_to_process + [ShutdownThreadRequest()]
 
@@ -1581,8 +1707,12 @@ class TestResultProcessor(unittest.TestCase):
         results_handled_after_exception = []
         self.result_processor = ResultProcessor(
             self.result_queue,
-            [self.results_handled.append, self._handle_result_with_exception,
-             results_handled_after_exception.append])
+            [
+                self.results_handled.append,
+                self._handle_result_with_exception,
+                results_handled_after_exception.append,
+            ],
+        )
 
         self.result_processor.run()
 
@@ -1601,13 +1731,16 @@ class TestResultProcessor(unittest.TestCase):
         dest = 'dest'
         results_to_be_handled = [
             SuccessResult(transfer_type, src, dest),
-            ErrorResult(Exception('my exception'))
+            ErrorResult(Exception('my exception')),
         ]
         result_not_to_be_handled = [
             ErrorResult(Exception('my second exception'))
         ]
-        results_with_shutdown = results_to_be_handled + \
-            result_not_to_be_handled + [ShutdownThreadRequest()]
+        results_with_shutdown = (
+            results_to_be_handled
+            + result_not_to_be_handled
+            + [ShutdownThreadRequest()]
+        )
 
         for result in results_with_shutdown:
             self.result_queue.put(result)
@@ -1627,10 +1760,12 @@ class TestResultProcessor(unittest.TestCase):
         total_transfer_size = 1024 * 1024
         results_to_process = [
             QueuedResult(transfer_type, src, dest, total_transfer_size),
-            SuccessResult(transfer_type, src, dest)
+            SuccessResult(transfer_type, src, dest),
         ]
         results_with_shutdown = results_to_process + [
-            ShutdownThreadRequest(), WarningResult('my warning')]
+            ShutdownThreadRequest(),
+            WarningResult('my warning'),
+        ]
 
         for result in results_with_shutdown:
             self.result_queue.put(result)
@@ -1645,65 +1780,77 @@ class TestCommandResultRecorder(unittest.TestCase):
         self.result_queue = queue.Queue()
         self.result_recorder = ResultRecorder()
         self.result_processor = ResultProcessor(
-            self.result_queue, [self.result_recorder])
+            self.result_queue, [self.result_recorder]
+        )
         self.command_result_recorder = CommandResultRecorder(
-            self.result_queue, self.result_recorder, self.result_processor)
+            self.result_queue, self.result_recorder, self.result_processor
+        )
 
         self.transfer_type = 'upload'
         self.src = 'file'
         self.dest = 's3://mybucket/mykey'
-        self.total_transfer_size = 20 * (1024 ** 1024)
+        self.total_transfer_size = 20 * (1024**1024)
 
     def test_success(self):
         with self.command_result_recorder:
             self.result_queue.put(
                 QueuedResult(
-                    transfer_type=self.transfer_type, src=self.src,
+                    transfer_type=self.transfer_type,
+                    src=self.src,
                     dest=self.dest,
-                    total_transfer_size=self.total_transfer_size
+                    total_transfer_size=self.total_transfer_size,
                 )
             )
             self.result_queue.put(
                 SuccessResult(
-                    transfer_type=self.transfer_type, src=self.src,
-                    dest=self.dest
+                    transfer_type=self.transfer_type,
+                    src=self.src,
+                    dest=self.dest,
                 )
             )
         self.assertEqual(
-            self.command_result_recorder.get_command_result(), (0, 0))
+            self.command_result_recorder.get_command_result(), (0, 0)
+        )
 
     def test_fail(self):
         with self.command_result_recorder:
             self.result_queue.put(
                 QueuedResult(
-                    transfer_type=self.transfer_type, src=self.src,
+                    transfer_type=self.transfer_type,
+                    src=self.src,
                     dest=self.dest,
-                    total_transfer_size=self.total_transfer_size
+                    total_transfer_size=self.total_transfer_size,
                 )
             )
             self.result_queue.put(
                 FailureResult(
-                    transfer_type=self.transfer_type, src=self.src,
-                    dest=self.dest, exception=Exception('my exception')
+                    transfer_type=self.transfer_type,
+                    src=self.src,
+                    dest=self.dest,
+                    exception=Exception('my exception'),
                 )
             )
         self.assertEqual(
-            self.command_result_recorder.get_command_result(), (1, 0))
+            self.command_result_recorder.get_command_result(), (1, 0)
+        )
 
     def test_warning(self):
         with self.command_result_recorder:
             self.result_queue.put(WarningResult(message='my warning'))
         self.assertEqual(
-            self.command_result_recorder.get_command_result(), (0, 1))
+            self.command_result_recorder.get_command_result(), (0, 1)
+        )
 
     def test_error(self):
         with self.command_result_recorder:
             raise Exception('my exception')
         self.assertEqual(
-            self.command_result_recorder.get_command_result(), (1, 0))
+            self.command_result_recorder.get_command_result(), (1, 0)
+        )
 
     def test_notify_total_submissions(self):
         total = 5
         self.command_result_recorder.notify_total_submissions(total)
         self.assertEqual(
-            self.result_queue.get(), FinalTotalSubmissionsResult(total))
+            self.result_queue.get(), FinalTotalSubmissionsResult(total)
+        )

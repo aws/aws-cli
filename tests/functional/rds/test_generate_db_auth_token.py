@@ -19,7 +19,6 @@ from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 
 class TestGenerateDBAuthToken(BaseAWSCommandParamsTest):
-
     prefix = 'rds generate-db-auth-token'
 
     def _urlparse(self, url):
@@ -64,4 +63,5 @@ class TestGenerateDBAuthToken(BaseAWSCommandParamsTest):
         )
 
         self.assert_url_equal(
-            'https://' + stdout.strip('\n'), 'https://' + expected)
+            'https://' + stdout.strip('\n'), 'https://' + expected
+        )

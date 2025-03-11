@@ -71,7 +71,8 @@ class TestPromptToolkitFactory(unittest.TestCase):
 
     def test_can_create_layout_with_input_buffer_callback_specified(self):
         layout = self.factory.create_layout(
-            on_input_buffer_text_changed=self.dummy_callback)
+            on_input_buffer_text_changed=self.dummy_callback
+        )
         self.assertIsNotNone(layout.container)
 
     def test_can_create_layout_with_input_buffer_container_specified(self):

@@ -21,16 +21,14 @@ class TestShow(unittest.TestCase):
         self.files = FileCreator()
         self.environ = os.environ.copy()
         self.environ['AWS_CONFIG_FILE'] = self.files.create_file(
-            'config', (
-                '[default]\n'
-                'cli_history = enabled'
-            )
+            'config', ('[default]\n' 'cli_history = enabled')
         )
         self.environ['AWS_DEFAULT_PROFILE'] = 'default'
         self.environ['AWS_DEFAULT_REGION'] = 'us-west-2'
         self.environ['AWS_STS_REGIONAL_ENDPOINTS'] = 'regional'
         self.environ['AWS_CLI_HISTORY_FILE'] = os.path.join(
-            self.files.rootdir, 'history.db')
+            self.files.rootdir, 'history.db'
+        )
 
     def tearDown(self):
         self.files.remove_all()
@@ -45,8 +43,10 @@ class TestShow(unittest.TestCase):
             self.assertIn(line, contents)
             new_pos = contents.find(line)
             if new_pos < current_pos:
-                self.fail('Line: "%s" should have came after line: "%s"' % (
-                    line, prev_line))
+                self.fail(
+                    'Line: "%s" should have came after line: "%s"'
+                    % (line, prev_line)
+                )
             prev_line = line
             current_pos = new_pos
 
@@ -90,7 +90,7 @@ class TestShow(unittest.TestCase):
                 'parsed to: {',
                 '    "Error": {',
                 'AWS CLI command exited',
-                'with return code: 254'
+                'with return code: 254',
             ],
-            uncolored_content
+            uncolored_content,
         )

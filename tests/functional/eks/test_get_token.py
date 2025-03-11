@@ -35,7 +35,6 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         response, _, _ = self.run_cmd(cmd)
         return json.loads(response)
 
-
     def assert_url_correct(
         self,
         response,
@@ -114,7 +113,8 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         cmd += ' --query apiVersion'
         response = self.run_get_token(cmd)
         self.assertEqual(
-            response, "client.authentication.k8s.io/v1beta1",
+            response,
+            "client.authentication.k8s.io/v1beta1",
         )
 
     @mock.patch('awscli.customizations.eks.get_token.datetime')
@@ -149,7 +149,7 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
         self.assert_url_correct(
             response,
             expected_endpoint='sts.us-west-2.amazonaws.com',
-            expected_signing_region='us-west-2'
+            expected_signing_region='us-west-2',
         )
 
     def test_url_with_arn(self):
@@ -246,7 +246,10 @@ class TestGetTokenCommand(BaseAWSCommandParamsTest):
             "client.authentication.k8s.io/v1beta1",
         )
 
-        self.assertEqual(stderr, "",)
+        self.assertEqual(
+            stderr,
+            "",
+        )
 
     def test_api_version_discovery_v1(self):
         self.set_kubernetes_exec_info('v1')

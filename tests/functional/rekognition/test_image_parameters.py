@@ -17,8 +17,7 @@ class BaseRekognitionTest(BaseAWSCommandParamsTest):
     def setUp(self):
         super(BaseRekognitionTest, self).setUp()
         self.files = FileCreator()
-        self.temp_file = self.files.create_file(
-            'foo', 'mycontents')
+        self.temp_file = self.files.create_file('foo', 'mycontents')
         with open(self.temp_file, 'rb') as f:
             self.temp_file_bytes = f.read()
 
@@ -28,7 +27,6 @@ class BaseRekognitionTest(BaseAWSCommandParamsTest):
 
 
 class TestCompareFaces(BaseRekognitionTest):
-
     prefix = 'rekognition compare-faces'
 
     def test_image_file_does_populate_bytes_param(self):
@@ -56,91 +54,70 @@ class TestCompareFaces(BaseRekognitionTest):
 
 
 class TestDetectFaces(BaseRekognitionTest):
-
     prefix = 'rekognition detect-faces'
 
     def test_image_file_does_populate_bytes_param(self):
         cmdline = self.prefix
         cmdline += ' --image-bytes fileb://%s' % self.temp_file
-        result = {
-            'Image': {'Bytes': self.temp_file_bytes}
-        }
+        result = {'Image': {'Bytes': self.temp_file_bytes}}
         self.assert_params_for_cmd(cmdline, result)
 
     def test_image_bytes_still_works(self):
         cmdline = self.prefix
         cmdline += ' --image Bytes=Zm9vYmFy'
-        result = {
-            'Image': {'Bytes': b'foobar'}
-        }
+        result = {'Image': {'Bytes': b'foobar'}}
         self.assert_params_for_cmd(cmdline, result)
 
 
 class TestDetectLabels(BaseRekognitionTest):
-
     prefix = 'rekognition detect-labels'
 
     def test_image_file_does_populate_bytes_param(self):
         cmdline = self.prefix
         cmdline += ' --image-bytes fileb://%s' % self.temp_file
-        result = {
-            'Image': {'Bytes': self.temp_file_bytes}
-        }
+        result = {'Image': {'Bytes': self.temp_file_bytes}}
         self.assert_params_for_cmd(cmdline, result)
 
     def test_image_bytes_still_works(self):
         cmdline = self.prefix
         cmdline += ' --image Bytes=Zm9vYmFy'
-        result = {
-            'Image': {'Bytes': b'foobar'}
-        }
+        result = {'Image': {'Bytes': b'foobar'}}
         self.assert_params_for_cmd(cmdline, result)
 
 
 class TestDetectModerationLabels(BaseRekognitionTest):
-
     prefix = 'rekognition detect-moderation-labels'
 
     def test_image_file_does_populate_bytes_param(self):
         cmdline = self.prefix
         cmdline += ' --image-bytes fileb://%s' % self.temp_file
-        result = {
-            'Image': {'Bytes': self.temp_file_bytes}
-        }
+        result = {'Image': {'Bytes': self.temp_file_bytes}}
         self.assert_params_for_cmd(cmdline, result)
 
     def test_image_bytes_still_works(self):
         cmdline = self.prefix
         cmdline += ' --image Bytes=Zm9vYmFy'
-        result = {
-            'Image': {'Bytes': b'foobar'}
-        }
+        result = {'Image': {'Bytes': b'foobar'}}
         self.assert_params_for_cmd(cmdline, result)
 
 
 class TestDetectText(BaseRekognitionTest):
-
     prefix = 'rekognition detect-text'
 
     def test_image_file_does_populate_bytes_param(self):
         cmdline = self.prefix
         cmdline += ' --image-bytes fileb://%s' % self.temp_file
-        result = {
-            'Image': {'Bytes': self.temp_file_bytes}
-        }
+        result = {'Image': {'Bytes': self.temp_file_bytes}}
         self.assert_params_for_cmd(cmdline, result)
 
     def test_image_bytes_still_works(self):
         cmdline = self.prefix
         cmdline += ' --image Bytes=Zm9vYmFy'
-        result = {
-            'Image': {'Bytes': b'foobar'}
-        }
+        result = {'Image': {'Bytes': b'foobar'}}
         self.assert_params_for_cmd(cmdline, result)
 
 
 class TestIndexFaces(BaseRekognitionTest):
-
     prefix = 'rekognition index-faces'
 
     def test_image_file_does_populate_bytes_param(self):
@@ -149,7 +126,7 @@ class TestIndexFaces(BaseRekognitionTest):
         cmdline += ' --image-bytes fileb://%s' % self.temp_file
         result = {
             'CollectionId': 'foobar',
-            'Image': {'Bytes': self.temp_file_bytes}
+            'Image': {'Bytes': self.temp_file_bytes},
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -157,36 +134,27 @@ class TestIndexFaces(BaseRekognitionTest):
         cmdline = self.prefix
         cmdline += ' --collection-id foobar'
         cmdline += ' --image Bytes=Zm9vYmFy'
-        result = {
-            'CollectionId': 'foobar',
-            'Image': {'Bytes': b'foobar'}
-        }
+        result = {'CollectionId': 'foobar', 'Image': {'Bytes': b'foobar'}}
         self.assert_params_for_cmd(cmdline, result)
 
 
 class TestRecognizeCelebrities(BaseRekognitionTest):
-
     prefix = 'rekognition recognize-celebrities'
 
     def test_image_file_does_populate_bytes_param(self):
         cmdline = self.prefix
         cmdline += ' --image-bytes fileb://%s' % self.temp_file
-        result = {
-            'Image': {'Bytes': self.temp_file_bytes}
-        }
+        result = {'Image': {'Bytes': self.temp_file_bytes}}
         self.assert_params_for_cmd(cmdline, result)
 
     def test_image_bytes_still_works(self):
         cmdline = self.prefix
         cmdline += ' --image Bytes=Zm9vYmFy'
-        result = {
-            'Image': {'Bytes': b'foobar'}
-        }
+        result = {'Image': {'Bytes': b'foobar'}}
         self.assert_params_for_cmd(cmdline, result)
 
 
 class TestSearchFacesByImage(BaseRekognitionTest):
-
     prefix = 'rekognition search-faces-by-image'
 
     def test_image_file_does_populate_bytes_param(self):
@@ -195,7 +163,7 @@ class TestSearchFacesByImage(BaseRekognitionTest):
         cmdline += ' --image-bytes fileb://%s' % self.temp_file
         result = {
             'CollectionId': 'foobar',
-            'Image': {'Bytes': self.temp_file_bytes}
+            'Image': {'Bytes': self.temp_file_bytes},
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -203,8 +171,5 @@ class TestSearchFacesByImage(BaseRekognitionTest):
         cmdline = self.prefix
         cmdline += ' --collection-id foobar'
         cmdline += ' --image Bytes=Zm9vYmFy'
-        result = {
-            'CollectionId': 'foobar',
-            'Image': {'Bytes': b'foobar'}
-        }
+        result = {'CollectionId': 'foobar', 'Image': {'Bytes': b'foobar'}}
         self.assert_params_for_cmd(cmdline, result)

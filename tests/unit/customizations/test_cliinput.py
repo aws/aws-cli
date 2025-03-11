@@ -54,8 +54,10 @@ class TestCliInputJSONArgument(unittest.TestCase):
         parsed_args = self.create_args(self.input_json)
         call_parameters = {}
         self.argument.add_to_call_parameters(
-            service_operation=None, call_parameters=call_parameters,
-            parsed_args=parsed_args, parsed_globals=None
+            service_operation=None,
+            call_parameters=call_parameters,
+            parsed_args=parsed_args,
+            parsed_globals=None,
         )
         self.assertEqual(call_parameters, {'A': 'foo', 'B': 'bar'})
 
@@ -63,8 +65,10 @@ class TestCliInputJSONArgument(unittest.TestCase):
         parsed_args = self.create_args('file://' + self.temp_file)
         call_parameters = {}
         self.argument.add_to_call_parameters(
-            service_operation=None, call_parameters=call_parameters,
-            parsed_args=parsed_args, parsed_globals=None
+            service_operation=None,
+            call_parameters=call_parameters,
+            parsed_args=parsed_args,
+            parsed_globals=None,
         )
         self.assertEqual(call_parameters, {'A': 'foo', 'B': 'bar'})
 
@@ -73,8 +77,10 @@ class TestCliInputJSONArgument(unittest.TestCase):
         call_parameters = {}
         with self.assertRaises(ParamError):
             self.argument.add_to_call_parameters(
-                service_operation=None, call_parameters=call_parameters,
-                parsed_args=parsed_args, parsed_globals=None
+                service_operation=None,
+                call_parameters=call_parameters,
+                parsed_args=parsed_args,
+                parsed_globals=None,
             )
 
     def test_add_to_call_parameters_no_clobber(self):
@@ -82,8 +88,10 @@ class TestCliInputJSONArgument(unittest.TestCase):
         # The value for ``A`` should not be clobbered by the input JSON
         call_parameters = {'A': 'baz'}
         self.argument.add_to_call_parameters(
-            service_operation=None, call_parameters=call_parameters,
-            parsed_args=parsed_args, parsed_globals=None
+            service_operation=None,
+            call_parameters=call_parameters,
+            parsed_args=parsed_args,
+            parsed_globals=None,
         )
         self.assertEqual(call_parameters, {'A': 'baz', 'B': 'bar'})
 
@@ -91,8 +99,10 @@ class TestCliInputJSONArgument(unittest.TestCase):
         parsed_args = self.create_args(None)
         call_parameters = {'A': 'baz'}
         self.argument.add_to_call_parameters(
-            service_operation=None, call_parameters=call_parameters,
-            parsed_args=parsed_args, parsed_globals=None
+            service_operation=None,
+            call_parameters=call_parameters,
+            parsed_args=parsed_args,
+            parsed_globals=None,
         )
         # Nothing should have been added to the call parameters because
         # ``cli_input_json`` is not in the ``parsed_args``
@@ -106,8 +116,10 @@ class TestCliInputJSONArgument(unittest.TestCase):
             parsed_args = self.create_args(invalid_value)
             with self.assertRaises(ParamError):
                 self.argument.add_to_call_parameters(
-                    service_operation=None, call_parameters={},
-                    parsed_args=parsed_args, parsed_globals=None
+                    service_operation=None,
+                    call_parameters={},
+                    parsed_args=parsed_args,
+                    parsed_globals=None,
                 )
 
 
@@ -126,8 +138,10 @@ class TestCliInputYAMLArgument(TestCliInputJSONArgument):
         parsed_args = self.create_args(self.input_yaml)
         call_parameters = {}
         self.argument.add_to_call_parameters(
-            service_operation=None, call_parameters=call_parameters,
-            parsed_args=parsed_args, parsed_globals=None
+            service_operation=None,
+            call_parameters=call_parameters,
+            parsed_args=parsed_args,
+            parsed_globals=None,
         )
         self.assertEqual(call_parameters, {'A': 'foo', 'B': 'bar'})
 
@@ -136,8 +150,10 @@ class TestCliInputYAMLArgument(TestCliInputJSONArgument):
         parsed_args = self.create_args(input_yaml)
         call_parameters = {}
         self.argument.add_to_call_parameters(
-            service_operation=None, call_parameters=call_parameters,
-            parsed_args=parsed_args, parsed_globals=None
+            service_operation=None,
+            call_parameters=call_parameters,
+            parsed_args=parsed_args,
+            parsed_globals=None,
         )
         self.assertEqual(call_parameters, {'A': b'foo', 'B': 'bar'})
 
@@ -146,8 +162,10 @@ class TestCliInputYAMLArgument(TestCliInputJSONArgument):
         parsed_args = self.create_args(input_yaml)
         call_parameters = {}
         self.argument.add_to_call_parameters(
-            service_operation=None, call_parameters=call_parameters,
-            parsed_args=parsed_args, parsed_globals=None
+            service_operation=None,
+            call_parameters=call_parameters,
+            parsed_args=parsed_args,
+            parsed_globals=None,
         )
         self.assertEqual(call_parameters, {'foo': set([1, 2, 3])})
 
@@ -156,8 +174,10 @@ class TestCliInputYAMLArgument(TestCliInputJSONArgument):
         call_parameters = {}
         with self.assertRaises(ParamError):
             self.argument.add_to_call_parameters(
-                service_operation=None, call_parameters=call_parameters,
-                parsed_args=parsed_args, parsed_globals=None
+                service_operation=None,
+                call_parameters=call_parameters,
+                parsed_args=parsed_args,
+                parsed_globals=None,
             )
 
     def test_yaml_does_not_overwrite(self):
@@ -165,7 +185,9 @@ class TestCliInputYAMLArgument(TestCliInputJSONArgument):
         # The value for ``A`` should not be clobbered by the input YAML
         call_parameters = {'A': 'baz'}
         self.argument.add_to_call_parameters(
-            service_operation=None, call_parameters=call_parameters,
-            parsed_args=parsed_args, parsed_globals=None
+            service_operation=None,
+            call_parameters=call_parameters,
+            parsed_args=parsed_args,
+            parsed_globals=None,
         )
         self.assertEqual(call_parameters, {'A': 'baz', 'B': 'bar'})

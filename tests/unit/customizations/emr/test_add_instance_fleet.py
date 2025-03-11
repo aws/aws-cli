@@ -23,14 +23,16 @@ class TestAddInstanceFleet(BaseAWSCommandParamsTest):
     prefix = f"emr add-instance-fleet --cluster-id {CONSTANTS_FLEET.DEFAULT_CLUSTER_NAME} --instance-fleet "
 
     def test_add_instance_fleet_with_allocation_strategy_spot_and_od(self):
-        result = \
-            {
-                "ClusterId": CONSTANTS_FLEET.DEFAULT_CLUSTER_NAME,
-                "InstanceFleet": CONSTANTS_FLEET.RES_TASK_INSTANCE_FLEET_WITH_RESIZE_ALLOCATION_STRATEGY_SPOT_AND_OD
-            }
+        result = {
+            "ClusterId": CONSTANTS_FLEET.DEFAULT_CLUSTER_NAME,
+            "InstanceFleet": CONSTANTS_FLEET.RES_TASK_INSTANCE_FLEET_WITH_RESIZE_ALLOCATION_STRATEGY_SPOT_AND_OD,
+        }
         self.assert_params_for_cmd(
-            self.prefix + CONSTANTS_FLEET.TASK_INSTANCE_FLEET_WITH_RESIZE_ALLOCATION_STRATEGY_SPOT_AND_OD,
-            result)
+            self.prefix
+            + CONSTANTS_FLEET.TASK_INSTANCE_FLEET_WITH_RESIZE_ALLOCATION_STRATEGY_SPOT_AND_OD,
+            result,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

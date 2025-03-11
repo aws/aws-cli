@@ -92,11 +92,12 @@ class TestExtractor(unittest.TestCase):
 
     def test_represent_comparator(self):
         parsed_result = {
-            'type': 'comparator', 'value': 'eq',
+            'type': 'comparator',
+            'value': 'eq',
             'children': [
                 {'type': 'identifier', 'value': 'spam'},
-                {'type': 'literal', 'value': 7}
-            ]
+                {'type': 'literal', 'value': 7},
+            ],
         }
         parser = FakeParser(parsed_result)
         extractor = AttributeExtractor(parser)
@@ -113,15 +114,23 @@ class TestExtractor(unittest.TestCase):
         parsed_result = {
             'type': 'or_expression',
             'children': [
-                {'type': 'comparator', 'value': 'eq', 'children': [
-                    {'type': 'identifier', 'value': 'spam'},
-                    {'type': 'literal', 'value': 7}
-                ]},
-                {'type': 'comparator', 'value': 'eq', 'children': [
-                    {'type': 'identifier', 'value': 'eggs'},
-                    {'type': 'literal', 'value': 6}
-                ]}
-            ]
+                {
+                    'type': 'comparator',
+                    'value': 'eq',
+                    'children': [
+                        {'type': 'identifier', 'value': 'spam'},
+                        {'type': 'literal', 'value': 7},
+                    ],
+                },
+                {
+                    'type': 'comparator',
+                    'value': 'eq',
+                    'children': [
+                        {'type': 'identifier', 'value': 'eggs'},
+                        {'type': 'literal', 'value': 6},
+                    ],
+                },
+            ],
         }
         parser = FakeParser(parsed_result)
         extractor = AttributeExtractor(parser)
@@ -138,15 +147,23 @@ class TestExtractor(unittest.TestCase):
         parsed_result = {
             'type': 'and_expression',
             'children': [
-                {'type': 'comparator', 'value': 'eq', 'children': [
-                    {'type': 'identifier', 'value': 'spam'},
-                    {'type': 'literal', 'value': 7}
-                ]},
-                {'type': 'comparator', 'value': 'eq', 'children': [
-                    {'type': 'identifier', 'value': 'eggs'},
-                    {'type': 'literal', 'value': 6}
-                ]}
-            ]
+                {
+                    'type': 'comparator',
+                    'value': 'eq',
+                    'children': [
+                        {'type': 'identifier', 'value': 'spam'},
+                        {'type': 'literal', 'value': 7},
+                    ],
+                },
+                {
+                    'type': 'comparator',
+                    'value': 'eq',
+                    'children': [
+                        {'type': 'identifier', 'value': 'eggs'},
+                        {'type': 'literal', 'value': 6},
+                    ],
+                },
+            ],
         }
         parser = FakeParser(parsed_result)
         extractor = AttributeExtractor(parser)
@@ -164,11 +181,14 @@ class TestExtractor(unittest.TestCase):
             'type': 'in_expression',
             'children': [
                 {'type': 'identifier', 'value': 'spam'},
-                {'type': 'sequence', 'children': [
-                    {'type': 'literal', 'value': 1},
-                    {'type': 'literal', 'value': 2},
-                ]}
-            ]
+                {
+                    'type': 'sequence',
+                    'children': [
+                        {'type': 'literal', 'value': 1},
+                        {'type': 'literal', 'value': 2},
+                    ],
+                },
+            ],
         }
         parser = FakeParser(parsed_result)
         extractor = AttributeExtractor(parser)
@@ -185,11 +205,15 @@ class TestExtractor(unittest.TestCase):
         parsed_result = {
             'type': 'not_expression',
             'children': [
-                {'type': 'comparator', 'value': 'ne', 'children': [
-                    {'type': 'identifier', 'value': 'spam'},
-                    {'type': 'literal', 'value': 7}
-                ]},
-            ]
+                {
+                    'type': 'comparator',
+                    'value': 'ne',
+                    'children': [
+                        {'type': 'identifier', 'value': 'spam'},
+                        {'type': 'literal', 'value': 7},
+                    ],
+                },
+            ],
         }
         parser = FakeParser(parsed_result)
         extractor = AttributeExtractor(parser)
@@ -206,11 +230,15 @@ class TestExtractor(unittest.TestCase):
         parsed_result = {
             'type': 'subexpression',
             'children': [
-                {'type': 'comparator', 'value': 'lte', 'children': [
-                    {'type': 'identifier', 'value': 'spam'},
-                    {'type': 'literal', 'value': 7}
-                ]},
-            ]
+                {
+                    'type': 'comparator',
+                    'value': 'lte',
+                    'children': [
+                        {'type': 'identifier', 'value': 'spam'},
+                        {'type': 'literal', 'value': 7},
+                    ],
+                },
+            ],
         }
         parser = FakeParser(parsed_result)
         extractor = AttributeExtractor(parser)
@@ -230,7 +258,7 @@ class TestExtractor(unittest.TestCase):
                 {'type': 'identifier', 'value': 'spam'},
                 {'type': 'literal', 'value': 1},
                 {'type': 'literal', 'value': 2},
-            ]
+            ],
         }
         parser = FakeParser(parsed_result)
         extractor = AttributeExtractor(parser)
@@ -245,11 +273,12 @@ class TestExtractor(unittest.TestCase):
 
     def test_represent_function(self):
         parsed_result = {
-            'type': 'function', 'value': 'myfunction',
+            'type': 'function',
+            'value': 'myfunction',
             'children': [
                 {'type': 'identifier', 'value': 'spam'},
                 {'type': 'literal', 'value': 1},
-            ]
+            ],
         }
         parser = FakeParser(parsed_result)
         extractor = AttributeExtractor(parser)
@@ -268,7 +297,7 @@ class TestExtractor(unittest.TestCase):
             'children': [
                 {'type': 'identifier', 'value': 'foo', 'children': []},
                 {'type': 'identifier', 'value': 'bar', 'children': []},
-            ]
+            ],
         }
         parser = FakeParser(parsed_result)
         extractor = AttributeExtractor(parser)
@@ -283,10 +312,11 @@ class TestExtractor(unittest.TestCase):
 
     def test_represent_index_identifier(self):
         parsed_result = {
-            'type': 'index_identifier', 'value': Decimal(0),
+            'type': 'index_identifier',
+            'value': Decimal(0),
             'children': [
                 {'type': 'identifier', 'value': 'foo', 'children': []},
-            ]
+            ],
         }
         parser = FakeParser(parsed_result)
         extractor = AttributeExtractor(parser)
@@ -303,11 +333,15 @@ class TestExtractor(unittest.TestCase):
         parsed_result = {
             'type': 'path_identifier',
             'children': [
-                {'type': 'index_identifier', 'value': Decimal(0), 'children': [
-                    {'type': 'identifier', 'value': 'foo', 'children': []},
-                ]},
+                {
+                    'type': 'index_identifier',
+                    'value': Decimal(0),
+                    'children': [
+                        {'type': 'identifier', 'value': 'foo', 'children': []},
+                    ],
+                },
                 {'type': 'identifier', 'value': 'bar', 'children': []},
-            ]
+            ],
         }
         parser = FakeParser(parsed_result)
         extractor = AttributeExtractor(parser)
@@ -319,4 +353,3 @@ class TestExtractor(unittest.TestCase):
             'substitution_count': 2,
         }
         self.assertEqual(result, expected)
-

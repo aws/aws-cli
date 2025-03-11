@@ -74,7 +74,7 @@ from botocore.exceptions import (
     UnsupportedS3ArnError,
     UnsupportedS3ConfigurationError,
     UnsupportedS3ControlArnError,
-    UnsupportedS3ControlConfigurationError,
+    UnsupportedS3ControlConfigurationError, UnauthorizedSSOTokenError,
 )
 from dateutil.tz import tzutc
 from urllib3.exceptions import LocationParseError
@@ -306,6 +306,10 @@ def is_global_accesspoint(context):
     s3_accesspoint = context.get('s3_accesspoint', {})
     is_global = s3_accesspoint.get('region') == ''
     return is_global
+
+
+def _utc_now():
+    return datetime.datetime.now(tzutc())
 
 
 class _RetriesExceededError(Exception):
@@ -3657,10 +3661,11 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
 
 
 class SSOTokenLoader(object):
-    def __init__(self, cache=None):
+    def __init__(self, cache=None, time_fetcher=_utc_now):
         if cache is None:
             cache = {}
         self._cache = cache
+        self._time_fetcher = time_fetcher
 
     def _generate_cache_key(self, start_url, session_name):
         input_str = start_url
@@ -3672,10 +3677,9 @@ class SSOTokenLoader(object):
         cache_key = self._generate_cache_key(start_url, session_name)
         self._cache[cache_key] = token
 
-    def _is_expired(self):
-        # TODO get this hooked up
-        expiration = self._frozen_token.expiration
-        remaining = total_seconds(expiration - self._time_fetcher())
+    def _is_expired(self, expiration):
+        expiry = dateutil.parser.parse(expiration)
+        remaining = total_seconds(expiry - self._time_fetcher())
         return remaining <= 0
 
     def __call__(self, start_url, session_name=None):
@@ -3693,7 +3697,8 @@ class SSOTokenLoader(object):
             error_msg = f'Token for {start_url} is invalid'
             raise SSOTokenLoadError(error_msg=error_msg)
 
-        # TODO check if token is expired
+        if self._is_expired(token['expiresAt']):
+            raise UnauthorizedSSOTokenError()
         return token
 
 

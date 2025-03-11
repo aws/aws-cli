@@ -50,13 +50,14 @@ def read_source(source):
             raise exceptions.InvalidModulePathError(source=source)
 
     content = ""
-    if ".zip/" in source:
+    dotzip = ".zip"
+    zipslash = dotzip + "/"
+    if zipslash in source:
         # This is a reference to a Package
-        print("source", source)
-        tokens = source.split(".zip/")
-        zip_path = tokens[0] + ".zip"
+        tokens = source.split(zipslash)
+        zip_path = tokens[0] + dotzip
         with zipfile.ZipFile(zip_path) as zf:
-            content = zf.read(os.path.sep.join(tokens[1:]))
+            content = zf.read(tokens[1])
     else:
         if not os.path.isfile(source):
             raise exceptions.InvalidModulePathError(source=source)
@@ -107,7 +108,8 @@ def get_packaged_module_path(template, p):
     if PACKAGES not in template:
         msg = f"Packages section not found for {p}"
         raise exceptions.InvalidModuleError(msg=msg)
-    tokens = p.split(os.path.sep)
+    slash = "/"
+    tokens = p.split(slash)
     if len(tokens) < 2:
         msg = f"Invalid Package/module name: {p}"
         raise exceptions.InvalidModuleError(msg=msg)
@@ -119,4 +121,4 @@ def get_packaged_module_path(template, p):
     if SOURCE not in pkg:
         msg = f"Package {pkg} doesn't have {SOURCE}: {p}"
         raise exceptions.InvalidModuleError(msg=msg)
-    return pkg[SOURCE] + os.path.sep + os.path.sep.join(tokens[1:])
+    return pkg[SOURCE] + slash + os.path.sep.join(tokens[1:])

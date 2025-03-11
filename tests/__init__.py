@@ -24,7 +24,7 @@ if os.environ.get('TESTS_REMOVE_REPO_ROOT_FROM_PATH'):
         if not os.path.isdir(path) or not os.path.samefile(path, rootdir)
     ]
 
-import awscli
+import awscli  # noqa: I001
 from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
 from awscli.compat import collections_abc
 from awscli.testutils import (

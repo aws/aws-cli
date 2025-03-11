@@ -15,6 +15,7 @@
 Read CloudFormation Module source files.
 """
 
+import io
 import os
 import urllib
 import zipfile
@@ -41,29 +42,39 @@ def read_source(source):
     if not isinstance(source, str):
         raise exceptions.InvalidModulePathError(source=source)
 
+    content = ""
+    dotzip = ".zip"
+    is_remote_zip = False
     if is_url(source):
+        zipslash = dotzip + "/"
+        if zipslash in source:
+            # This is a reference to a remote Package
+            tokens = source.split(zipslash)
+            source = tokens[0] + dotzip
+            is_remote_zip = True
         try:
             with urllib.request.urlopen(source) as response:
-                return response.read()
+                content = response.read()
         except Exception as e:
             print(e)
             raise exceptions.InvalidModulePathError(source=source)
-
-    content = ""
-    dotzip = ".zip"
-    zipslash = dotzip + os.path.sep
-    if zipslash in source:
-        # This is a reference to a Package
-        tokens = source.split(zipslash)
-        zip_path = tokens[0] + dotzip
-        with zipfile.ZipFile(zip_path) as zf:
-            content = zf.read(tokens[1])
+        if is_remote_zip:
+            with zipfile.ZipFile(io.BytesIO(content)) as zf:
+                content = zf.read(tokens[1])
     else:
-        if not os.path.isfile(source):
-            raise exceptions.InvalidModulePathError(source=source)
+        zipslash = dotzip + os.path.sep
+        if zipslash in source:
+            # This is a reference to a local Package
+            tokens = source.split(zipslash)
+            zip_path = tokens[0] + dotzip
+            with zipfile.ZipFile(zip_path) as zf:
+                content = zf.read(tokens[1])
+        else:
+            if not os.path.isfile(source):
+                raise exceptions.InvalidModulePathError(source=source)
 
-        with open(source, "r", encoding="utf-8") as s:
-            content = s.read()
+            with open(source, "r", encoding="utf-8") as s:
+                content = s.read()
 
     node = yamlhelper.yaml_compose(content)
     lines = {}

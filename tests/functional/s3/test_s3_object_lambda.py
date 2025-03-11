@@ -15,7 +15,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestObjectLambdaHandling(BaseAWSCommandParamsTest):
-
     prefixes = [
         's3 ls s3://{object_lambda_arn}',
         's3 cp s3://{object_lambda_arn} .',
@@ -29,27 +28,33 @@ class TestObjectLambdaHandling(BaseAWSCommandParamsTest):
     ]
 
     def test_object_lambda_arn_with_colon_raises_exception(self):
-        object_lambda_arn = ('arn:aws:s3-object-lambda:us-west-2:123456789012:'
-                             'accesspoint:my-accesspoint')
+        object_lambda_arn = (
+            'arn:aws:s3-object-lambda:us-west-2:123456789012:'
+            'accesspoint:my-accesspoint'
+        )
         object_lambda_arn_with_key = '%s/my-key' % object_lambda_arn
         for prefix in self.prefixes:
             cmdline = prefix.format(object_lambda_arn=object_lambda_arn)
             _, stderr, _ = self.run_cmd(cmdline, 252)
             self.assertIn('s3 commands do not support', stderr)
             cmdline = prefix.format(
-                object_lambda_arn=object_lambda_arn_with_key)
+                object_lambda_arn=object_lambda_arn_with_key
+            )
             _, stderr, _ = self.run_cmd(cmdline, 252)
             self.assertIn('s3 commands do not support', stderr)
 
     def test_object_lambda_arn_with_slash_raises_exception(self):
-        object_lambda_arn = ('arn:aws:s3-object-lambda:us-west-2:123456789012:'
-                             'accesspoint/my-accesspoint')
+        object_lambda_arn = (
+            'arn:aws:s3-object-lambda:us-west-2:123456789012:'
+            'accesspoint/my-accesspoint'
+        )
         object_lambda_arn_with_key = '%s/my-key' % object_lambda_arn
         for prefix in self.prefixes:
             cmdline = prefix.format(object_lambda_arn=object_lambda_arn)
             _, stderr, _ = self.run_cmd(cmdline, 252)
             self.assertIn('s3 commands do not support', stderr)
             cmdline = prefix.format(
-                object_lambda_arn=object_lambda_arn_with_key)
+                object_lambda_arn=object_lambda_arn_with_key
+            )
             _, stderr, _ = self.run_cmd(cmdline, 252)
             self.assertIn('s3 commands do not support', stderr)

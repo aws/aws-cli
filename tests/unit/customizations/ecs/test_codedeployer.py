@@ -15,26 +15,29 @@ import hashlib
 import json
 
 from botocore import compat
-from awscli.testutils import capture_output, mock, unittest
-from awscli.customizations.ecs.deploy import CodeDeployer, MAX_WAIT_MIN
+
+from awscli.customizations.ecs.deploy import MAX_WAIT_MIN, CodeDeployer
 from awscli.customizations.ecs.exceptions import MissingPropertyError
+from awscli.testutils import capture_output, mock, unittest
 
 
 class TestCodeDeployer(unittest.TestCase):
     TEST_APPSPEC = {
         "version": 0.0,
-        "resources": [{
-            "TestService": {
-                "type": "AWS::ECS::Service",
-                "properties": {
-                    "taskDefinition": "arn:aws:ecs:::task-definition/test:1",
-                    "loadBalancerInfo": {
-                        "containerName": "web",
-                        "containerPort": 80
-                    }
+        "resources": [
+            {
+                "TestService": {
+                    "type": "AWS::ECS::Service",
+                    "properties": {
+                        "taskDefinition": "arn:aws:ecs:::task-definition/test:1",
+                        "loadBalancerInfo": {
+                            "containerName": "web",
+                            "containerPort": 80,
+                        },
+                    },
                 }
             }
-        }]
+        ],
     }
 
     def setUp(self):
@@ -51,21 +54,22 @@ class TestCodeDeployer(unittest.TestCase):
 
         appspec_resources = self.deployer._appspec_dict['resources']
         for resource in appspec_resources:
-            actual_arn = \
-                resource['TestService']['properties']['taskDefinition']
+            actual_arn = resource['TestService']['properties'][
+                'taskDefinition'
+            ]
             self.assertEqual(actual_arn, test_arn)
 
     def test_update_task_def_arn_error_required_key(self):
         invalid_appspec = {
             "version": 0.0,
-            "resources": [{
-                "TestFunc": {
-                    "type": "AWS::Lambda::Function",
-                    "properties": {
-                        "name": "some-function"
+            "resources": [
+                {
+                    "TestFunc": {
+                        "type": "AWS::Lambda::Function",
+                        "properties": {"name": "some-function"},
                     }
                 }
-            }]
+            ],
         }
         bad_deployer = CodeDeployer(None, invalid_appspec)
 
@@ -80,8 +84,9 @@ class TestCodeDeployer(unittest.TestCase):
         self.assertEqual(request['applicationName'], test_app)
         self.assertEqual(request['deploymentGroupName'], test_dgp)
 
-        actual_appspec = \
-            json.loads(request['revision']['appSpecContent']['content'])
+        actual_appspec = json.loads(
+            request['revision']['appSpecContent']['content']
+        )
         actual_hash = request['revision']['appSpecContent']['sha256']
 
         self.assertEqual(actual_appspec, self.deployer._appspec_dict)
@@ -98,7 +103,8 @@ class TestCodeDeployer(unittest.TestCase):
     def test_wait_for_deploy_success_default_wait(self):
         mock_id = 'd-1234567XX'
         expected_stdout = self.deployer.MSG_WAITING.format(
-            deployment_id=mock_id, wait=30)
+            deployment_id=mock_id, wait=30
+        )
 
         with capture_output() as captured:
             self.deployer.wait_for_deploy_success('d-1234567XX', 0)
@@ -109,7 +115,8 @@ class TestCodeDeployer(unittest.TestCase):
         mock_wait = 40
 
         expected_stdout = self.deployer.MSG_WAITING.format(
-            deployment_id=mock_id, wait=mock_wait)
+            deployment_id=mock_id, wait=mock_wait
+        )
 
         with capture_output() as captured:
             self.deployer.wait_for_deploy_success('d-1234567XX', mock_wait)
@@ -120,7 +127,8 @@ class TestCodeDeployer(unittest.TestCase):
         mock_wait = MAX_WAIT_MIN + 15
 
         expected_stdout = self.deployer.MSG_WAITING.format(
-            deployment_id=mock_id, wait=MAX_WAIT_MIN)
+            deployment_id=mock_id, wait=MAX_WAIT_MIN
+        )
 
         with capture_output() as captured:
             self.deployer.wait_for_deploy_success('d-1234567XX', mock_wait)

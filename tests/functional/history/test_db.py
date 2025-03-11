@@ -10,27 +10,28 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import threading
 import json
 import re
+import threading
 
-from awscli.compat import queue
-from awscli.customizations.history.db import DatabaseConnection
-from awscli.customizations.history.db import RecordBuilder
-from awscli.customizations.history.db import DatabaseRecordWriter
-from awscli.customizations.history.db import DatabaseRecordReader
-from awscli.customizations.history.db import DatabaseHistoryHandler
+from awscli.compat import queue, sqlite3
+from awscli.customizations.history.db import (
+    DatabaseConnection,
+    DatabaseHistoryHandler,
+    DatabaseRecordReader,
+    DatabaseRecordWriter,
+    RecordBuilder,
+)
 from awscli.testutils import unittest
-from awscli.compat import sqlite3
 from tests import CaseInsensitiveDict
 
 
-class ThreadedRecordWriter(object):
+class ThreadedRecordWriter:
     def __init__(self, writer):
         self._read_q = queue.Queue()
         self._thread = threading.Thread(
-            target=self._threaded_record_writer,
-            args=(writer,))
+            target=self._threaded_record_writer, args=(writer,)
+        )
 
     def _threaded_record_writer(self, writer):
         while True:
@@ -74,8 +75,7 @@ class BaseThreadedDatabaseWriter(BaseDatabaseTest):
         super(BaseThreadedDatabaseWriter, self).tearDown()
 
 
-@unittest.skipIf(sqlite3 is None,
-                 "sqlite3 not supported in this python")
+@unittest.skipIf(sqlite3 is None, "sqlite3 not supported in this python")
 class TestMultithreadedDatabaseWriter(BaseThreadedDatabaseWriter):
     def _write_records(self, thread_number, records):
         t = self.threads[thread_number]
@@ -86,33 +86,39 @@ class TestMultithreadedDatabaseWriter(BaseThreadedDatabaseWriter):
         thread_count = 10
         self.start_n_threads(thread_count)
         for i in range(thread_count):
-            self._write_records(i, [
-                {
-                    'command_id': 'command',
-                    'event_type': 'API_CALL',
-                    'payload': i,
-                    'source': 'TEST',
-                    'timestamp': 1234
-                }, {
-                    'command_id': 'command',
-                    'event_type': 'HTTP_REQUEST',
-                    'payload': i,
-                    'source': 'TEST',
-                    'timestamp': 1234
-                }, {
-                    'command_id': 'command',
-                    'event_type': 'HTTP_RESPONSE',
-                    'payload': i,
-                    'source': 'TEST',
-                    'timestamp': 1234
-                }, {
-                    'command_id': 'command',
-                    'event_type': 'PARSED_RESPONSE',
-                    'payload': i,
-                    'source': 'TEST',
-                    'timestamp': 1234
-                }
-            ])
+            self._write_records(
+                i,
+                [
+                    {
+                        'command_id': 'command',
+                        'event_type': 'API_CALL',
+                        'payload': i,
+                        'source': 'TEST',
+                        'timestamp': 1234,
+                    },
+                    {
+                        'command_id': 'command',
+                        'event_type': 'HTTP_REQUEST',
+                        'payload': i,
+                        'source': 'TEST',
+                        'timestamp': 1234,
+                    },
+                    {
+                        'command_id': 'command',
+                        'event_type': 'HTTP_RESPONSE',
+                        'payload': i,
+                        'source': 'TEST',
+                        'timestamp': 1234,
+                    },
+                    {
+                        'command_id': 'command',
+                        'event_type': 'PARSED_RESPONSE',
+                        'payload': i,
+                        'source': 'TEST',
+                        'timestamp': 1234,
+                    },
+                ],
+            )
         for t in self.threads:
             t.close()
         thread_id_to_request_id = {}
@@ -132,8 +138,7 @@ class TestMultithreadedDatabaseWriter(BaseThreadedDatabaseWriter):
         self.assertEqual(records, 4 * thread_count)
 
 
-@unittest.skipIf(sqlite3 is None,
-                 "sqlite3 not supported in this python")
+@unittest.skipIf(sqlite3 is None, "sqlite3 not supported in this python")
 class TestDatabaseRecordWriter(BaseDatabaseTest):
     def test_does_create_table(self):
         cursor = self.connection.execute(
@@ -150,7 +155,7 @@ class TestDatabaseRecordWriter(BaseDatabaseTest):
             'source': 'TEST',
             'event_type': 'foo',
             'payload': {"foo": "bar"},
-            'timestamp': 1234
+            'timestamp': 1234,
         }
         writer.write_record(known_record_fields)
 
@@ -177,7 +182,7 @@ class TestDatabaseRecordWriter(BaseDatabaseTest):
             'source': 'TEST',
             'event_type': 'foo',
             'payload': '',
-            'timestamp': 1234
+            'timestamp': 1234,
         }
         records_to_write = 40
         for _ in range(records_to_write):
@@ -188,8 +193,7 @@ class TestDatabaseRecordWriter(BaseDatabaseTest):
         self.assertEqual(num_records[0], records_to_write)
 
 
-@unittest.skipIf(sqlite3 is None,
-                 "sqlite3 not supported in this python")
+@unittest.skipIf(sqlite3 is None, "sqlite3 not supported in this python")
 class TestDatabaseRecordReader(BaseDatabaseTest):
     def _write_sequence_of_records(self, writer, records):
         for record in records:
@@ -207,48 +211,55 @@ class TestDatabaseRecordReader(BaseDatabaseTest):
 
     def test_can_read_record(self):
         writer = DatabaseRecordWriter(self.connection)
-        self._write_sequence_of_records(writer, [
-            {
-                'command_id': 'command a',
-                'source': 'TEST',
-                'event_type': 'foo',
-                'payload': '',
-                'timestamp': 3
-            },
-            {
-                'command_id': 'command a',
-                'source': 'TEST',
-                'event_type': 'bar',
-                'payload': '',
-                'timestamp': 1
-            },
-            {
-                'command_id': 'command a',
-                'source': 'TEST',
-                'event_type': 'baz',
-                'payload': '',
-                'timestamp': 4
-            }
-        ])
-        self._write_sequence_of_records(writer, [
-            {
-                'command_id': 'command b',
-                'source': 'TEST',
-                'event_type': 'qux',
-                'payload': '',
-                'timestamp': 2
-            },
-            {
-                'command_id': 'command b',
-                'source': 'TEST',
-                'event_type': 'zip',
-                'payload': '',
-                'timestamp': 6
-            }
-        ])
+        self._write_sequence_of_records(
+            writer,
+            [
+                {
+                    'command_id': 'command a',
+                    'source': 'TEST',
+                    'event_type': 'foo',
+                    'payload': '',
+                    'timestamp': 3,
+                },
+                {
+                    'command_id': 'command a',
+                    'source': 'TEST',
+                    'event_type': 'bar',
+                    'payload': '',
+                    'timestamp': 1,
+                },
+                {
+                    'command_id': 'command a',
+                    'source': 'TEST',
+                    'event_type': 'baz',
+                    'payload': '',
+                    'timestamp': 4,
+                },
+            ],
+        )
+        self._write_sequence_of_records(
+            writer,
+            [
+                {
+                    'command_id': 'command b',
+                    'source': 'TEST',
+                    'event_type': 'qux',
+                    'payload': '',
+                    'timestamp': 2,
+                },
+                {
+                    'command_id': 'command b',
+                    'source': 'TEST',
+                    'event_type': 'zip',
+                    'payload': '',
+                    'timestamp': 6,
+                },
+            ],
+        )
         reader = DatabaseRecordReader(self.connection)
         cursor = self.connection.execute(
-            'select id from records where event_type = "foo" limit 1')
+            'select id from records where event_type = "foo" limit 1'
+        )
         identifier = cursor.fetchone()['id']
 
         # This should select only the three records from writer_a since we
@@ -262,46 +273,52 @@ class TestDatabaseRecordReader(BaseDatabaseTest):
 
     def test_can_read_most_recent_records(self):
         writer = DatabaseRecordWriter(self.connection)
-        self._write_sequence_of_records(writer, [
-            {
-                'command_id': 'command a',
-                'source': 'TEST',
-                'event_type': 'foo',
-                'payload': '',
-                'timestamp': 3
-            },
-            {
-                'command_id': 'command a',
-                'source': 'TEST',
-                'event_type': 'bar',
-                'payload': '',
-                'timestamp': 1
-            }
-        ])
-        self._write_sequence_of_records(writer, [
-            {
-                'command_id': 'command b',
-                'source': 'TEST',
-                'event_type': 'baz',
-                'payload': '',
-                'timestamp': 2
-            }
-        ])
+        self._write_sequence_of_records(
+            writer,
+            [
+                {
+                    'command_id': 'command a',
+                    'source': 'TEST',
+                    'event_type': 'foo',
+                    'payload': '',
+                    'timestamp': 3,
+                },
+                {
+                    'command_id': 'command a',
+                    'source': 'TEST',
+                    'event_type': 'bar',
+                    'payload': '',
+                    'timestamp': 1,
+                },
+            ],
+        )
+        self._write_sequence_of_records(
+            writer,
+            [
+                {
+                    'command_id': 'command b',
+                    'source': 'TEST',
+                    'event_type': 'baz',
+                    'payload': '',
+                    'timestamp': 2,
+                }
+            ],
+        )
 
         # Since the foo and bar events were written by the writer_a they all
         # share an id. foo was written at time 3 which makes it the most
         # recent, so when we call get_latest_records we should get the
         # foo and bar records only.
         reader = DatabaseRecordReader(self.connection)
-        records = set([record['event_type'] for record
-                       in reader.iter_latest_records()])
+        records = set(
+            [record['event_type'] for record in reader.iter_latest_records()]
+        )
         self.assertEqual(set(['foo', 'bar']), records)
 
 
 class TestDatabaseHistoryHandler(unittest.TestCase):
     UUID_PATTERN = re.compile(
-        '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$',
-        re.I
+        '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$', re.I
     )
 
     def setUp(self):
@@ -309,7 +326,8 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         self.writer = DatabaseRecordWriter(connection=self.db)
         self.record_builder = RecordBuilder()
         self.handler = DatabaseHistoryHandler(
-            writer=self.writer, record_builder=self.record_builder)
+            writer=self.writer, record_builder=self.record_builder
+        )
 
     def _get_last_record(self):
         record = self.db.execute('SELECT * FROM records').fetchone()
@@ -372,11 +390,7 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
 
     def test_can_emit_api_call_record(self):
         # API_CALL records have a dictionary based payload
-        payload = {
-            'service': 's3',
-            'operation': 'ListBuckets',
-            'params': {}
-        }
+        payload = {'service': 's3', 'operation': 'ListBuckets', 'params': {}}
         self.handler.emit('API_CALL', payload, 'BOTOCORE')
         record = self._get_last_record()
         self._assert_record_has_command_id(record)
@@ -395,16 +409,13 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
                 "Handler": "mod.fn",
                 "Role": "foobar",
                 "Runtime": "python3",
-                "Code": {
-                    "ZipFile": b'zipfile binary content \xfe\xed'
-                }
-            }
+                "Code": {"ZipFile": b'zipfile binary content \xfe\xed'},
+            },
         }
         self.handler.emit('API_CALL', payload, 'BOTOCORE')
         record = self._get_last_record()
         parsed_payload = payload.copy()
-        parsed_payload['params']['Code']['ZipFile'] = \
-            '<Byte sequence>'
+        parsed_payload['params']['Code']['ZipFile'] = '<Byte sequence>'
         self._assert_record_has_command_id(record)
         self._assert_has_request_id(record)
         self._assert_expected_event_type('API_CALL', record)
@@ -416,14 +427,14 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         # blob, however it will all be utf-8 valid since the binary fields
         # from the api call will have been b64 encoded.
         payload = {
-            'url': ('https://lambda.us-west-2.amazonaws.com/2015-03-31/'
-                    'functions'),
+            'url': (
+                'https://lambda.us-west-2.amazonaws.com/2015-03-31/'
+                'functions'
+            ),
             'method': 'POST',
-            'headers': CaseInsensitiveDict({
-                'foo': 'bar'
-            }),
+            'headers': CaseInsensitiveDict({'foo': 'bar'}),
             'body': b'body with no invalid utf-8 bytes in it',
-            'streaming': False
+            'streaming': False,
         }
         self.handler.emit('HTTP_REQUEST', payload, 'BOTOCORE')
         record = self._get_last_record()
@@ -440,11 +451,9 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         # will not contain any non-unicode characters
         payload = {
             'status_code': 200,
-            'headers': CaseInsensitiveDict({
-                'foo': 'bar'
-            }),
+            'headers': CaseInsensitiveDict({'foo': 'bar'}),
             'body': b'body with no invalid utf-8 bytes in it',
-            'streaming': False
+            'streaming': False,
         }
         self.handler.emit('HTTP_RESPONSE', payload, 'BOTOCORE')
         record = self._get_last_record()
@@ -459,15 +468,9 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
     def test_can_emit_parsed_response_record(self):
         payload = {
             "Count": 1,
-            "Items": [
-                {
-                    "strkey": {
-                        "S": "string"
-                    }
-                }
-            ],
+            "Items": [{"strkey": {"S": "string"}}],
             "ScannedCount": 1,
-            "ConsumedCapacity": None
+            "ConsumedCapacity": None,
         }
         self.handler.emit('PARSED_RESPONSE', payload, 'BOTOCORE')
         record = self._get_last_record()
@@ -480,15 +483,9 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         # PARSED_RESPONSE can also contain raw bytes
         payload = {
             "Count": 1,
-            "Items": [
-                {
-                    "bitkey": {
-                        "B": b"binary data \xfe\xed"
-                    }
-                }
-            ],
+            "Items": [{"bitkey": {"B": b"binary data \xfe\xed"}}],
             "ScannedCount": 1,
-            "ConsumedCapacity": None
+            "ConsumedCapacity": None,
         }
         self.handler.emit('PARSED_RESPONSE', payload, 'BOTOCORE')
         record = self._get_last_record()
@@ -500,9 +497,7 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         self._assert_expected_source('BOTOCORE', record)
 
     def test_does_not_mutate_dict(self):
-        payload = {
-            "bitkey": b"binary data \xfe\xed"
-        }
+        payload = {"bitkey": b"binary data \xfe\xed"}
         copy_payload = payload.copy()
         self.handler.emit('test', payload, 'BOTOCORE')
         self.assertEqual(payload, copy_payload)

@@ -13,11 +13,13 @@
 
 from argparse import Namespace
 
-from awscli.customizations.servicecatalog import exceptions
-from awscli.customizations.servicecatalog.generateprovisioningartifact \
-    import GenerateProvisioningArtifactCommand
-from awscli.testutils import unittest, mock, capture_output
 from botocore.compat import json
+
+from awscli.customizations.servicecatalog import exceptions
+from awscli.customizations.servicecatalog.generateprovisioningartifact import (
+    GenerateProvisioningArtifactCommand,
+)
+from awscli.testutils import capture_output, mock, unittest
 
 
 class TestCreateProvisioningArtifactCommand(unittest.TestCase):
@@ -25,10 +27,14 @@ class TestCreateProvisioningArtifactCommand(unittest.TestCase):
         self.session = mock.Mock()
         self.servicecatalog_client = mock.Mock()
         self.s3_client = mock.Mock()
-        self.session.create_client.side_effect = [self.s3_client,
-                                                  self.servicecatalog_client]
-        self.session.get_available_regions.return_value = ['us-east-1',
-                                                           'eu-west-1']
+        self.session.create_client.side_effect = [
+            self.s3_client,
+            self.servicecatalog_client,
+        ]
+        self.session.get_available_regions.return_value = [
+            'us-east-1',
+            'eu-west-1',
+        ]
         self.cmd = GenerateProvisioningArtifactCommand(self.session)
 
         self.args = Namespace()
@@ -50,13 +56,12 @@ class TestCreateProvisioningArtifactCommand(unittest.TestCase):
     @mock.patch('os.path.getsize', return_value=1)
     def test_happy_path(self, getsize_patch):
         # Arrange
-        self.servicecatalog_client.create_provisioning_artifact\
-            .return_value = self.get_create_provisioning_artifact_output()
+        self.servicecatalog_client.create_provisioning_artifact.return_value = self.get_create_provisioning_artifact_output()
         expected_pa_detail = self.get_create_provisioning_artifact_output()
         del expected_pa_detail['ResponseMetadata']
-        expected_response_output = json.dumps(expected_pa_detail,
-                                              indent=2,
-                                              ensure_ascii=False)
+        expected_response_output = json.dumps(
+            expected_pa_detail, indent=2, ensure_ascii=False
+        )
 
         # Act
         with capture_output() as captured:
@@ -64,36 +69,33 @@ class TestCreateProvisioningArtifactCommand(unittest.TestCase):
 
         # Assert
         self.session.create_client.assert_called_with(
-                                        'servicecatalog',
-                                        region_name=self.global_args.region,
-                                        endpoint_url=None,
-                                        verify=None)
-        self.servicecatalog_client.create_provisioning_artifact.\
-            assert_called_once_with(
-                            ProductId=self.args.product_id,
-                            Parameters=self.
-                            get_provisioning_artifact_parameters(
-                                self.args.provisioning_artifact_name,
-                                self.args.provisioning_artifact_description,
-                                self.args.provisioning_artifact_type
-                            )
-                        )
-        self.assertEqual(expected_response_output,
-                         captured.stdout.getvalue())
+            'servicecatalog',
+            region_name=self.global_args.region,
+            endpoint_url=None,
+            verify=None,
+        )
+        self.servicecatalog_client.create_provisioning_artifact.assert_called_once_with(
+            ProductId=self.args.product_id,
+            Parameters=self.get_provisioning_artifact_parameters(
+                self.args.provisioning_artifact_name,
+                self.args.provisioning_artifact_description,
+                self.args.provisioning_artifact_type,
+            ),
+        )
+        self.assertEqual(expected_response_output, captured.stdout.getvalue())
         self.assertEqual(0, result)
 
     @mock.patch('os.path.getsize', return_value=1)
     def test_happy_path_unicode(self, getsize_patch):
         # Arrange
-        self.args.provisioning_artifact_name = u'\u05d1\u05e8\u05d9\u05e6'
-        self.args.provisioning_artifact_description = u'\u00fd\u00a9\u0194'
-        self.servicecatalog_client.create_provisioning_artifact\
-            .return_value = self.get_create_provisioning_artifact_output()
+        self.args.provisioning_artifact_name = '\u05d1\u05e8\u05d9\u05e6'
+        self.args.provisioning_artifact_description = '\u00fd\u00a9\u0194'
+        self.servicecatalog_client.create_provisioning_artifact.return_value = self.get_create_provisioning_artifact_output()
         expected_pa_detail = self.get_create_provisioning_artifact_output()
         del expected_pa_detail['ResponseMetadata']
-        expected_response_output = json.dumps(expected_pa_detail,
-                                              indent=2,
-                                              ensure_ascii=False)
+        expected_response_output = json.dumps(
+            expected_pa_detail, indent=2, ensure_ascii=False
+        )
 
         # Act
         with capture_output() as captured:
@@ -101,52 +103,48 @@ class TestCreateProvisioningArtifactCommand(unittest.TestCase):
 
         # Assert
         self.session.create_client.assert_called_with(
-                                        'servicecatalog',
-                                        region_name=self.global_args.region,
-                                        endpoint_url=None,
-                                        verify=None)
-        self.servicecatalog_client.create_provisioning_artifact.\
-            assert_called_once_with(
-                            ProductId=self.args.product_id,
-                            Parameters=self.
-                            get_provisioning_artifact_parameters(
-                                self.args.provisioning_artifact_name,
-                                self.args.provisioning_artifact_description,
-                                self.args.provisioning_artifact_type
-                            )
-                        )
-        self.assertEqual(expected_response_output,
-                         captured.stdout.getvalue())
+            'servicecatalog',
+            region_name=self.global_args.region,
+            endpoint_url=None,
+            verify=None,
+        )
+        self.servicecatalog_client.create_provisioning_artifact.assert_called_once_with(
+            ProductId=self.args.product_id,
+            Parameters=self.get_provisioning_artifact_parameters(
+                self.args.provisioning_artifact_name,
+                self.args.provisioning_artifact_description,
+                self.args.provisioning_artifact_type,
+            ),
+        )
+        self.assertEqual(expected_response_output, captured.stdout.getvalue())
         self.assertEqual(0, result)
 
     def test_region_not_supported(self):
         self.global_args.region = 'not-supported-region'
-        with self.assertRaisesRegex(exceptions.InvalidParametersException,
-                                     "not supported"):
+        with self.assertRaisesRegex(
+            exceptions.InvalidParametersException, "not supported"
+        ):
             self.cmd._run_main(self.args, self.global_args)
 
-    def get_provisioning_artifact_parameters(self, pa_name,
-                                             pa_description, pa_type):
+    def get_provisioning_artifact_parameters(
+        self, pa_name, pa_description, pa_type
+    ):
         return {
             'Name': pa_name,
             'Description': pa_description,
-            'Info': {
-                'LoadTemplateFromURL': self.s3_url
-            },
-            'Type': pa_type
+            'Info': {'LoadTemplateFromURL': self.s3_url},
+            'Type': pa_type,
         }
 
     def get_create_provisioning_artifact_output(self):
         return {
-            'Info': {
-                'TemplateUrl': self.s3_url
-            },
+            'Info': {'TemplateUrl': self.s3_url},
             'ProvisioningArtifactDetail': {
                 'Description': self.args.provisioning_artifact_description,
                 'Id': 'pa-inifmhpr47ft2',
                 'Name': self.args.provisioning_artifact_name,
-                'Type': self.args.provisioning_artifact_type
+                'Type': self.args.provisioning_artifact_type,
             },
             'Status': "CREATING",
-            'ResponseMetadata': {}
+            'ResponseMetadata': {},
         }

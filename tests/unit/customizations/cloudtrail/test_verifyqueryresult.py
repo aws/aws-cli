@@ -1,29 +1,30 @@
 import binascii
+import copy
+import hashlib
 import json
 import os
-import hashlib
 from io import BytesIO
-import copy
 
 from awscrt.crypto import RSASignatureAlgorithm
 
-from awscli.testutils import mock, unittest
 from awscli.customizations.cloudtrail.verifyqueryresults import (
-    Sha256RsaSignatureValidator,
-    S3SignFileProvider,
-    LocalSignFileProvider,
     SIGN_FILE_NAME,
-    S3ExportFilesHashValidator,
-    LocalExportFilesHashValidator,
-    ValidationError,
     InformationCollectionError,
+    LocalExportFilesHashValidator,
+    LocalSignFileProvider,
+    S3ExportFilesHashValidator,
+    S3SignFileProvider,
+    Sha256RsaSignatureValidator,
+    ValidationError,
 )
+from awscli.testutils import mock, unittest
 from tests import PublicPrivateKeyLoader
+
 from . import get_private_key_path, get_public_key_path
 
 s3_bucket = "s3-bucket-name"
 S3_PREFIX = "s3/prefix/"
-S3_PATH = "s3://{}/{}".format(s3_bucket, S3_PREFIX)
+S3_PATH = f"s3://{s3_bucket}/{S3_PREFIX}"
 LOCAL_FILE_PREFIX = "/local/prefix/"
 SAMPLE_SIGNING_FILE = {
     "region": "us-east-1",
@@ -105,13 +106,13 @@ class TestExportFilesHashValidator(unittest.TestCase):
             [
                 mock.call(
                     Bucket=s3_bucket,
-                    Key=S3_PREFIX + SAMPLE_SIGNING_FILE["files"][0]["fileName"],
+                    Key=S3_PREFIX
+                    + SAMPLE_SIGNING_FILE["files"][0]["fileName"],
                 )
             ]
         )
 
     def test_traverse_from_local_success(self):
-
         current_dir = os.path.dirname(os.path.realpath(__file__))
         validator = LocalExportFilesHashValidator(
             local_path_prefix=os.path.join(current_dir, "test_resource")
@@ -152,8 +153,14 @@ class TestSha256RSADigestValidator(unittest.TestCase):
         self._sign_file = {
             "region": "us-east-1",
             "files": [
-                {"fileHashValue": "fileHashValue1", "fileName": "result_1.csv.gz"},
-                {"fileHashValue": "fileHashValue2", "fileName": "result_2.csv.gz"},
+                {
+                    "fileHashValue": "fileHashValue1",
+                    "fileName": "result_1.csv.gz",
+                },
+                {
+                    "fileHashValue": "fileHashValue2",
+                    "fileName": "result_2.csv.gz",
+                },
             ],
             "hashAlgorithm": "SHA-256",
             "signatureAlgorithm": "SHA256withRSA",
@@ -165,8 +172,7 @@ class TestSha256RSADigestValidator(unittest.TestCase):
             public_key,
             private_key,
         ) = PublicPrivateKeyLoader.load_private_key_and_public_key(
-            get_private_key_path(),
-            get_public_key_path()
+            get_private_key_path(), get_public_key_path()
         )
         string_to_sign = "{} {}".format(
             self._sign_file["files"][0]["fileHashValue"],
@@ -175,7 +181,7 @@ class TestSha256RSADigestValidator(unittest.TestCase):
 
         signature = private_key.sign(
             signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
-            digest=hashlib.sha256(string_to_sign.encode()).digest()
+            digest=hashlib.sha256(string_to_sign.encode()).digest(),
         )
         self._sign_file["hashSignature"] = binascii.hexlify(signature)
         validator = Sha256RsaSignatureValidator()
@@ -187,8 +193,7 @@ class TestSha256RSADigestValidator(unittest.TestCase):
                 _,
                 private_key,
             ) = PublicPrivateKeyLoader.load_private_key_and_public_key(
-                get_private_key_path(),
-                get_public_key_path()
+                get_private_key_path(), get_public_key_path()
             )
             string_to_sign = "{} {}".format(
                 self._sign_file["files"][0]["fileHashValue"],
@@ -196,7 +201,7 @@ class TestSha256RSADigestValidator(unittest.TestCase):
             )
             signature = private_key.sign(
                 signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
-                digest=hashlib.sha256(string_to_sign.encode()).digest()
+                digest=hashlib.sha256(string_to_sign.encode()).digest(),
             )
             self._sign_file["hashSignature"] = binascii.hexlify(signature)
             validator = Sha256RsaSignatureValidator()

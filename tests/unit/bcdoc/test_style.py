@@ -21,12 +21,12 @@
 # IN THE SOFTWARE.
 #
 import unittest
-from awscli.bcdoc.style import ReSTStyle
+
 from awscli.bcdoc.restdoc import ReSTDocument
+from awscli.bcdoc.style import ReSTStyle
 
 
 class TestStyle(unittest.TestCase):
-
     def test_spaces(self):
         style = ReSTStyle(None, 4)
         self.assertEqual(style.spaces(), '')
@@ -86,7 +86,7 @@ class TestStyle(unittest.TestCase):
         style.h1('foobar fiebaz')
         self.assertEqual(
             style.doc.getvalue(),
-            b'\n\n*************\nfoobar fiebaz\n*************\n\n'
+            b'\n\n*************\nfoobar fiebaz\n*************\n\n',
         )
 
     def test_h2(self):
@@ -94,7 +94,7 @@ class TestStyle(unittest.TestCase):
         style.h2('foobar fiebaz')
         self.assertEqual(
             style.doc.getvalue(),
-            b'\n\n=============\nfoobar fiebaz\n=============\n\n'
+            b'\n\n=============\nfoobar fiebaz\n=============\n\n',
         )
 
     def test_h3(self):
@@ -102,14 +102,15 @@ class TestStyle(unittest.TestCase):
         style.h3('foobar fiebaz')
         self.assertEqual(
             style.doc.getvalue(),
-            b'\n\n-------------\nfoobar fiebaz\n-------------\n\n'
+            b'\n\n-------------\nfoobar fiebaz\n-------------\n\n',
         )
 
     def test_ref(self):
         style = ReSTStyle(ReSTDocument())
         style.ref('foobar', 'http://foo.bar.com')
-        self.assertEqual(style.doc.getvalue(),
-                b':doc:`foobar <http://foo.bar.com>`')
+        self.assertEqual(
+            style.doc.getvalue(), b':doc:`foobar <http://foo.bar.com>`'
+        )
 
     def test_examples(self):
         style = ReSTStyle(ReSTDocument())
@@ -122,29 +123,25 @@ class TestStyle(unittest.TestCase):
     def test_codeblock(self):
         style = ReSTStyle(ReSTDocument())
         style.codeblock('foobar')
-        self.assertEqual(style.doc.getvalue(),
-                         b'::\n\n  foobar\n\n\n')
+        self.assertEqual(style.doc.getvalue(), b'::\n\n  foobar\n\n\n')
 
     def test_important(self):
         style = ReSTStyle(ReSTDocument())
         style.start_important()
         style.end_important()
-        self.assertEqual(style.doc.getvalue(),
-                         b'\n\n.. warning::\n\n  \n\n')
+        self.assertEqual(style.doc.getvalue(), b'\n\n.. warning::\n\n  \n\n')
 
     def test_note(self):
         style = ReSTStyle(ReSTDocument())
         style.start_note()
         style.end_note()
-        self.assertEqual(style.doc.getvalue(),
-                         b'\n\n.. note::\n\n  \n\n')
+        self.assertEqual(style.doc.getvalue(), b'\n\n.. note::\n\n  \n\n')
 
     def test_danger(self):
         style = ReSTStyle(ReSTDocument())
         style.start_danger()
         style.end_danger()
-        self.assertEqual(style.doc.getvalue(),
-                         b'\n\n.. danger::\n\n  \n\n')
+        self.assertEqual(style.doc.getvalue(), b'\n\n.. danger::\n\n  \n\n')
 
     def test_toctree_html(self):
         style = ReSTStyle(ReSTDocument())
@@ -154,7 +151,7 @@ class TestStyle(unittest.TestCase):
         style.tocitem('bar')
         self.assertEqual(
             style.doc.getvalue(),
-            b'\n.. toctree::\n  :maxdepth: 1\n  :titlesonly:\n\n  foo\n  bar\n'
+            b'\n.. toctree::\n  :maxdepth: 1\n  :titlesonly:\n\n  foo\n  bar\n',
         )
 
     def test_toctree_man(self):
@@ -163,8 +160,7 @@ class TestStyle(unittest.TestCase):
         style.toctree()
         style.tocitem('foo')
         style.tocitem('bar')
-        self.assertEqual(style.doc.getvalue(),
-                         b'\n\n\n* foo\n\n\n* bar\n\n')
+        self.assertEqual(style.doc.getvalue(), b'\n\n\n* foo\n\n\n* bar\n\n')
 
     def test_hidden_toctree_html(self):
         style = ReSTStyle(ReSTDocument())
@@ -174,7 +170,7 @@ class TestStyle(unittest.TestCase):
         style.hidden_tocitem('bar')
         self.assertEqual(
             style.doc.getvalue(),
-            b'\n.. toctree::\n  :maxdepth: 1\n  :hidden:\n\n  foo\n  bar\n'
+            b'\n.. toctree::\n  :maxdepth: 1\n  :hidden:\n\n  foo\n  bar\n',
         )
 
     def test_hidden_toctree_non_html(self):
@@ -183,9 +179,7 @@ class TestStyle(unittest.TestCase):
         style.hidden_toctree()
         style.hidden_tocitem('foo')
         style.hidden_tocitem('bar')
-        self.assertEqual(
-            style.doc.getvalue(), b''
-        )
+        self.assertEqual(style.doc.getvalue(), b'')
 
     def test_href_link(self):
         style = ReSTStyle(ReSTDocument())
@@ -193,8 +187,7 @@ class TestStyle(unittest.TestCase):
         style.doc.write('example')
         style.end_a()
         self.assertEqual(
-            style.doc.getvalue(),
-            b'`example <http://example.org>`__ '
+            style.doc.getvalue(), b'`example <http://example.org>`__ '
         )
 
     def test_escape_href_link(self):
@@ -204,17 +197,14 @@ class TestStyle(unittest.TestCase):
         style.end_a()
         self.assertEqual(
             style.doc.getvalue(),
-            b'`foo\\: the next bar <http://example.org>`__ '
+            b'`foo\\: the next bar <http://example.org>`__ ',
         )
 
     def test_handle_no_text_hrefs(self):
         style = ReSTStyle(ReSTDocument())
         style.start_a(attrs=[('href', 'http://example.org')])
         style.end_a()
-        self.assertEqual(
-            style.doc.getvalue(),
-            b'`<http://example.org>`__ '
-        )
+        self.assertEqual(style.doc.getvalue(), b'`<http://example.org>`__ ')
 
     def test_sphinx_reference_label_html(self):
         style = ReSTStyle(ReSTDocument())
@@ -253,24 +243,25 @@ class TestStyle(unittest.TestCase):
     def test_table_of_contents_with_title_and_depth(self):
         style = ReSTStyle(ReSTDocument())
         style.table_of_contents(title='Foo', depth=2)
-        self.assertEqual(style.doc.getvalue(),
-                         b'.. contents:: Foo\n   :depth: 2\n')
+        self.assertEqual(
+            style.doc.getvalue(), b'.. contents:: Foo\n   :depth: 2\n'
+        )
 
     def test_sphinx_py_class(self):
         style = ReSTStyle(ReSTDocument())
         style.start_sphinx_py_class('FooClass')
         style.end_sphinx_py_class()
         self.assertEqual(
-            style.doc.getvalue(),
-            b'\n\n.. py:class:: FooClass\n\n  \n\n'
+            style.doc.getvalue(), b'\n\n.. py:class:: FooClass\n\n  \n\n'
         )
 
     def test_sphinx_py_method(self):
         style = ReSTStyle(ReSTDocument())
         style.start_sphinx_py_method('method')
         style.end_sphinx_py_method()
-        self.assertEqual(style.doc.getvalue(),
-                         b'\n\n.. py:method:: method\n\n  \n\n')
+        self.assertEqual(
+            style.doc.getvalue(), b'\n\n.. py:method:: method\n\n  \n\n'
+        )
 
     def test_sphinx_py_method_with_params(self):
         style = ReSTStyle(ReSTDocument())
@@ -278,14 +269,16 @@ class TestStyle(unittest.TestCase):
         style.end_sphinx_py_method()
         self.assertEqual(
             style.doc.getvalue(),
-            b'\n\n.. py:method:: method(foo=None)\n\n  \n\n')
+            b'\n\n.. py:method:: method(foo=None)\n\n  \n\n',
+        )
 
     def test_sphinx_py_attr(self):
         style = ReSTStyle(ReSTDocument())
         style.start_sphinx_py_attr('Foo')
         style.end_sphinx_py_attr()
-        self.assertEqual(style.doc.getvalue(),
-                         b'\n\n.. py:attribute:: Foo\n\n  \n\n')
+        self.assertEqual(
+            style.doc.getvalue(), b'\n\n.. py:attribute:: Foo\n\n  \n\n'
+        )
 
     def test_write_py_doc_string(self):
         style = ReSTStyle(ReSTDocument())
@@ -332,15 +325,17 @@ class TestStyle(unittest.TestCase):
         style.doc.handle_data('bar')
         style.end_li()
 
-        self.assertEqual(style.doc.getvalue(),
-                         b"\n\n\n* foo\n\n\n  \n  * bar\n  ")
+        self.assertEqual(
+            style.doc.getvalue(), b"\n\n\n* foo\n\n\n  \n  * bar\n  "
+        )
 
     def test_external_link(self):
         style = ReSTStyle(ReSTDocument())
         style.doc.target = 'html'
         style.external_link('MyLink', 'http://example.com/foo')
-        self.assertEqual(style.doc.getvalue(),
-                         b'`MyLink <http://example.com/foo>`_')
+        self.assertEqual(
+            style.doc.getvalue(), b'`MyLink <http://example.com/foo>`_'
+        )
 
     def test_external_link_in_man_page(self):
         style = ReSTStyle(ReSTDocument())
@@ -352,10 +347,7 @@ class TestStyle(unittest.TestCase):
         style = ReSTStyle(ReSTDocument())
         style.doc.target = 'html'
         style.internal_link('MyLink', '/index')
-        self.assertEqual(
-            style.doc.getvalue(),
-            b':doc:`MyLink </index>`'
-        )
+        self.assertEqual(style.doc.getvalue(), b':doc:`MyLink </index>`')
 
     def test_internal_link_in_man_page(self):
         style = ReSTStyle(ReSTDocument())

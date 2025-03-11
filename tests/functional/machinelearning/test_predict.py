@@ -14,14 +14,15 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestPredict(BaseAWSCommandParamsTest):
-
     prefix = 'machinelearning predict'
 
     def test_renamed_reboot_arg(self):
         cmdline = self.prefix
         cmdline += ' --ml-model-id ml-foo --record Foo=Bar,Biz=Baz'
         cmdline += ' --predict-endpoint https://myendpoint.amazonaws.com'
-        result = {'MLModelId': 'ml-foo',
-                  'Record': {'Foo': 'Bar', 'Biz': 'Baz'},
-                  'PredictEndpoint': 'https://myendpoint.amazonaws.com'}
+        result = {
+            'MLModelId': 'ml-foo',
+            'Record': {'Foo': 'Bar', 'Biz': 'Baz'},
+            'PredictEndpoint': 'https://myendpoint.amazonaws.com',
+        }
         self.assert_params_for_cmd(cmdline, result)

@@ -10,10 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import botocore.session
 import pytest
 
-import botocore.session
-from awscli.testutils import random_chars, FileCreator
+from awscli.testutils import FileCreator, random_chars
 from tests import S3Utils
 
 
@@ -86,11 +86,16 @@ def shared_non_dns_compatible_us_east_1_bucket(s3_utils):
 
 
 @pytest.fixture
-def clean_shared_buckets(s3_utils, shared_bucket, shared_copy_bucket,
-                         shared_cross_region_bucket,
-                         shared_non_dns_compatible_bucket,
-                         shared_non_dns_compatible_us_east_1_bucket,
-                         shared_dir_bucket, shared_copy_dir_bucket,):
+def clean_shared_buckets(
+    s3_utils,
+    shared_bucket,
+    shared_copy_bucket,
+    shared_cross_region_bucket,
+    shared_non_dns_compatible_bucket,
+    shared_non_dns_compatible_us_east_1_bucket,
+    shared_dir_bucket,
+    shared_copy_dir_bucket,
+):
     s3_utils.remove_all_objects(shared_bucket)
     s3_utils.remove_all_objects(shared_copy_bucket)
     s3_utils.remove_all_objects(shared_cross_region_bucket)

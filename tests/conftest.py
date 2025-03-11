@@ -13,10 +13,10 @@
 import logging
 import platform
 
+import pytest
 from prompt_toolkit.application import create_app_session
 from prompt_toolkit.input import create_pipe_input
 from prompt_toolkit.output import DummyOutput
-import pytest
 
 import awscli.logger
 
@@ -42,7 +42,9 @@ def ptk_app_session():
     with create_pipe_input() as pipe_input:
         output = DummyOutput()
         try:
-            with create_app_session(input=pipe_input, output=output) as session:
+            with create_app_session(
+                input=pipe_input, output=output
+            ) as session:
                 yield session
         finally:
             pipe_input.close()

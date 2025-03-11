@@ -16,9 +16,9 @@ from decimal import Decimal
 import jmespath
 import pytest
 
-from awscli.formatter import YAMLFormatter
 from awscli.customizations.dynamodb.formatter import DynamoYAMLDumper
 from awscli.customizations.dynamodb.types import Binary
+from awscli.formatter import YAMLFormatter
 from awscli.testutils import capture_output
 
 
@@ -52,14 +52,15 @@ from awscli.testutils import capture_output
             'expected': '!!binary "roWL1w=="\n',
             'query': 'mykey',
         },
-    ]
+    ],
 )
 def test_yaml_formatter_with_dynamo_dumper(case):
     compiled_query = None
     if case.get('query') is not None:
         compiled_query = jmespath.compile(case['query'])
     formatter = YAMLFormatter(
-        Namespace(query=compiled_query), DynamoYAMLDumper())
+        Namespace(query=compiled_query), DynamoYAMLDumper()
+    )
     with capture_output() as output:
         formatter('fake-command-name', case['given'])
     assert output.stdout.getvalue() == case['expected']

@@ -14,23 +14,20 @@ import pprint
 
 from botocore.compat import OrderedDict
 
+from awscli.schema import (
+    ParameterRequiredError,
+    SchemaTransformer,
+    ShapeNameGenerator,
+)
 from awscli.testutils import unittest
-from awscli.schema import ParameterRequiredError, SchemaTransformer
-from awscli.schema import ShapeNameGenerator
-
 
 MISSING_TYPE = {
     "type": "object",
-    "properties": {
-        "Foo": {
-            "description": "I am a foo"
-        }
-    }
+    "properties": {"Foo": {"description": "I am a foo"}},
 }
 
 
 class TestSchemaTransformer(unittest.TestCase):
-
     maxDiff = None
 
     def test_missing_top_level_type_raises_exception(self):
@@ -42,35 +39,31 @@ class TestSchemaTransformer(unittest.TestCase):
         transformer = SchemaTransformer()
 
         with self.assertRaises(ParameterRequiredError):
-            transformer.transform({
-                'type': 'object',
-                'properties': {
-                    'Foo': {
-                        'description': 'foo',
-                    }
+            transformer.transform(
+                {
+                    'type': 'object',
+                    'properties': {
+                        'Foo': {
+                            'description': 'foo',
+                        }
+                    },
                 }
-            })
+            )
 
     def assert_schema_transforms_to(self, schema, transforms_to):
         transformer = SchemaTransformer()
         actual = transformer.transform(schema)
         if actual != transforms_to:
-            self.fail("Transform failed.\n\nExpected:\n%s\n\nActual:\n%s\n" % (
-                pprint.pformat(transforms_to), pprint.pformat(actual)))
+            self.fail(
+                "Transform failed.\n\nExpected:\n%s\n\nActual:\n%s\n"
+                % (pprint.pformat(transforms_to), pprint.pformat(actual))
+            )
 
     def test_transforms_list_of_single_string(self):
-        schema = {
-            'type': 'array',
-            'items': {
-                'type': 'string'
-            }
-        }
+        schema = {'type': 'array', 'items': {'type': 'string'}}
         transforms_to = {
-            'InputShape': {
-                'type': 'list',
-                'member': {'shape': 'StringType1'}
-            },
-            'StringType1': {'type': 'string'}
+            'InputShape': {'type': 'list', 'member': {'shape': 'StringType1'}},
+            'StringType1': {'type': 'string'},
         }
         self.assert_schema_transforms_to(schema, transforms_to)
 
@@ -85,16 +78,14 @@ class TestSchemaTransformer(unittest.TestCase):
                     },
                     "arg2": {
                         "type": "integer",
-                    }
-                }
-            }
+                    },
+                },
+            },
         }
         transforms_to = {
             'InputShape': {
                 'type': 'list',
-                'member': {
-                    'shape': 'StructureType1'
-                }
+                'member': {'shape': 'StructureType1'},
             },
             'StructureType1': {
                 'type': 'structure',
@@ -105,7 +96,7 @@ class TestSchemaTransformer(unittest.TestCase):
                     'arg2': {
                         'shape': 'IntegerType1',
                     },
-                }
+                },
             },
             'StringType1': {'type': 'string'},
             'IntegerType1': {'type': 'integer'},
@@ -117,42 +108,32 @@ class TestSchemaTransformer(unittest.TestCase):
 
     def test_transforms_string(self):
         self.assert_schema_transforms_to(
-            schema={
-                'type': 'string'
-            },
-            transforms_to={
-                'InputShape': {'type': 'string'}
-            }
+            schema={'type': 'string'},
+            transforms_to={'InputShape': {'type': 'string'}},
         )
 
     def test_transforms_boolean(self):
         self.assert_schema_transforms_to(
-            schema={
-                'type': 'boolean'
-            },
-            transforms_to={
-                'InputShape': {'type': 'boolean'}
-            }
+            schema={'type': 'boolean'},
+            transforms_to={'InputShape': {'type': 'boolean'}},
         )
 
     def test_transforms_integer(self):
         self.assert_schema_transforms_to(
-            schema={
-                'type': 'integer'
-            },
-            transforms_to={
-                'InputShape': {'type': 'integer'}
-            }
+            schema={'type': 'integer'},
+            transforms_to={'InputShape': {'type': 'integer'}},
         )
 
     def test_transforms_structure(self):
         self.assert_schema_transforms_to(
             schema={
                 "type": "object",
-                "properties": OrderedDict([
-                    ("A", {"type": "string"}),
-                    ("B", {"type": "string"}),
-                ]),
+                "properties": OrderedDict(
+                    [
+                        ("A", {"type": "string"}),
+                        ("B", {"type": "string"}),
+                    ]
+                ),
             },
             transforms_to={
                 'InputShape': {
@@ -160,11 +141,11 @@ class TestSchemaTransformer(unittest.TestCase):
                     'members': {
                         'A': {'shape': 'StringType1'},
                         'B': {'shape': 'StringType2'},
-                    }
+                    },
                 },
                 'StringType1': {'type': 'string'},
                 'StringType2': {'type': 'string'},
-            }
+            },
         )
 
     def test_transforms_map(self):
@@ -172,31 +153,28 @@ class TestSchemaTransformer(unittest.TestCase):
             schema={
                 "type": "map",
                 "key": {"type": "string"},
-                "value": {"type": "string"}
+                "value": {"type": "string"},
             },
             transforms_to={
                 'InputShape': {
                     "type": "map",
                     "key": {"shape": "StringType1"},
-                    "value": {"shape": "StringType2"}
+                    "value": {"shape": "StringType2"},
                 },
                 'StringType1': {'type': 'string'},
                 'StringType2': {'type': 'string'},
-            }
+            },
         )
 
     def test_description_on_shape_type(self):
         self.assert_schema_transforms_to(
-            schema={
-                'type': 'string',
-                'description': 'a description'
-            },
+            schema={'type': 'string', 'description': 'a description'},
             transforms_to={
                 'InputShape': {
                     'type': 'string',
-                    'documentation': 'a description'
+                    'documentation': 'a description',
                 }
-            }
+            },
         )
 
     def test_enum_on_shape_type(self):
@@ -206,11 +184,8 @@ class TestSchemaTransformer(unittest.TestCase):
                 'enum': ['a', 'b'],
             },
             transforms_to={
-                'InputShape': {
-                    'type': 'string',
-                    'enum': ['a', 'b']
-                }
-            }
+                'InputShape': {'type': 'string', 'enum': ['a', 'b']}
+            },
         )
 
     def test_description_on_shape_ref(self):
@@ -223,7 +198,7 @@ class TestSchemaTransformer(unittest.TestCase):
                         'type': 'string',
                         'description': 'string description',
                     },
-                }
+                },
             },
             transforms_to={
                 'InputShape': {
@@ -231,13 +206,13 @@ class TestSchemaTransformer(unittest.TestCase):
                     'documentation': 'object description',
                     'members': {
                         'A': {'shape': 'StringType1'},
-                    }
+                    },
                 },
                 'StringType1': {
                     'documentation': 'string description',
-                    'type': 'string'
-                }
-            }
+                    'type': 'string',
+                },
+            },
         )
 
     def test_required_members_on_structure(self):
@@ -250,7 +225,7 @@ class TestSchemaTransformer(unittest.TestCase):
                 'type': 'object',
                 'properties': {
                     'A': {'type': 'string', 'required': True},
-                }
+                },
             },
             transforms_to={
                 'InputShape': {
@@ -259,10 +234,10 @@ class TestSchemaTransformer(unittest.TestCase):
                     'required': ['A'],
                     'members': {
                         'A': {'shape': 'StringType1'},
-                    }
+                    },
                 },
                 'StringType1': {'type': 'string'},
-            }
+            },
         )
 
     def test_nested_structure(self):
@@ -275,37 +250,31 @@ class TestSchemaTransformer(unittest.TestCase):
                         'properties': {
                             'B': {
                                 'type': 'object',
-                                'properties': {
-                                    'C': {'type': 'string'}
-                                }
+                                'properties': {'C': {'type': 'string'}},
                             }
-                        }
+                        },
                     },
-                }
+                },
             },
             transforms_to={
                 'InputShape': {
                     'type': 'structure',
                     'members': {
                         'A': {'shape': 'StructureType1'},
-                    }
+                    },
                 },
                 'StructureType1': {
                     'type': 'structure',
-                    'members': {
-                        'B': {'shape': 'StructureType2'}
-                    }
+                    'members': {'B': {'shape': 'StructureType2'}},
                 },
                 'StructureType2': {
                     'type': 'structure',
-                    'members': {
-                        'C': {'shape': 'StringType1'}
-                    }
+                    'members': {'C': {'shape': 'StringType1'}},
                 },
                 'StringType1': {
                     'type': 'string',
-                }
-            }
+                },
+            },
         )
 
 

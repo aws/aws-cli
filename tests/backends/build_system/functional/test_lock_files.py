@@ -1,11 +1,10 @@
+import os
 import re
 import sys
-import os
-from subprocess import run
 from pathlib import Path
+from subprocess import run
 
 import pytest
-
 
 ROOT = Path(__file__).parents[4]
 REQUIREMENTS_PATH = ROOT / "requirements"
@@ -28,7 +27,7 @@ def should_read_line(line):
 
 
 def read_lock_file(path):
-    with open(path, 'r') as f:
+    with open(path) as f:
         lines = f.read().strip('\n').split('\n')
 
     # Find source files
@@ -38,10 +37,7 @@ def read_lock_file(path):
         dependencies.extend(get_dependency_names(source_file))
 
     # Filter out comments
-    lines = [
-        line for line in lines
-        if should_read_line(line)
-    ]
+    lines = [line for line in lines if should_read_line(line)]
 
     # Filter out transient dependencies, we only care about the ones explicitly
     # mentioned in the requirements files.
@@ -69,7 +65,7 @@ def get_requires_from_pyproject():
         r"dependencies = \[([\s\S]+?)\]\s", re.MULTILINE
     )
     extract_dependencies_re = re.compile(r'"(.+)"')
-    with open(ROOT / "pyproject.toml", "r") as f:
+    with open(ROOT / "pyproject.toml") as f:
         data = f.read()
     raw_dependencies = dependency_block_re.findall(data)[0]
     dependencies = extract_dependencies_re.findall(raw_dependencies)
@@ -78,7 +74,9 @@ def get_requires_from_pyproject():
 
 def get_dependency_names(filename):
     if not filename.endswith('.txt'):
-        return [get_name_component(dep) for dep in get_requires_from_pyproject()]
+        return [
+            get_name_component(dep) for dep in get_requires_from_pyproject()
+        ]
 
     dependencies = []
     filepath = ROOT / filename
@@ -91,12 +89,13 @@ def get_dependency_names(filename):
             if line.startswith('-r'):
                 directory = os.path.dirname(filepath)
                 new_filename = line.split(' ')[1]
-                new_full_filepath = os.path.abspath(os.path.join(directory, new_filename))
+                new_full_filepath = os.path.abspath(
+                    os.path.join(directory, new_filename)
+                )
                 dependencies.extend(get_dependency_names(new_full_filepath))
             else:
                 dependencies.append(get_name_component(line))
     return dependencies
-
 
 
 def get_source_files(lines):
@@ -104,8 +103,8 @@ def get_source_files(lines):
         if 'pip-compile' and 'generate-hashes' in line:
             line = line[1:]
             files = [
-                part for part in
-                line.split(' ')
+                part
+                for part in line.split(' ')
                 if part and not part.startswith('--') and part != 'pip-compile'
             ]
             return files
@@ -129,7 +128,7 @@ def lockfile_paths(root):
 )
 def test_all_lock_files_are_generated_by_expected_python_version():
     for path in lockfile_paths(REQUIREMENTS_PATH):
-        with open(path, "r") as f:
+        with open(path) as f:
             content = f.read()
             assert f"Python {CANNONICAL_PYTHON_VERSION}" in content
 
@@ -165,4 +164,6 @@ def test_lock_files_are_up_to_date(tmpdir):
     }
 
     for regenerated_file, original_file in lockfile_mapping.items():
-        assert read_lock_file(regenerated_file) == read_lock_file(original_file)
+        assert read_lock_file(regenerated_file) == read_lock_file(
+            original_file
+        )

@@ -23,38 +23,47 @@ class TestAddOptionGroup(BaseAWSCommandParamsTest):
     prefix = 'rds add-option-to-option-group '
 
     def test_add_option(self):
-        args = ('--option-group-name myoptiongroup2 '
-                '--options {"OptionName":"TDE"}')
+        args = (
+            '--option-group-name myoptiongroup2 '
+            '--options {"OptionName":"TDE"}'
+        )
         cmdline = self.prefix + args
-        result = {'OptionsToInclude': [{'OptionName': 'TDE'}],
-                  'OptionGroupName': 'myoptiongroup2'}
+        result = {
+            'OptionsToInclude': [{'OptionName': 'TDE'}],
+            'OptionGroupName': 'myoptiongroup2',
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_option_to_remove_is_not_allowed(self):
-        args = ('--option-group-name myoptiongroup2 '
-                '--options-to-remove foo')
+        args = '--option-group-name myoptiongroup2 ' '--options-to-remove foo'
         cmdline = self.prefix + args
         self.assert_params_for_cmd(
-            cmdline, expected_rc=252,
-            stderr_contains='Unknown options: --options-to-remove')
+            cmdline,
+            expected_rc=252,
+            stderr_contains='Unknown options: --options-to-remove',
+        )
 
 
 class TestRemoveOptionGroup(BaseAWSCommandParamsTest):
-
     prefix = 'rds remove-option-from-option-group '
 
     def test_remove_options(self):
-        args = ('--option-group-name myoptiongroup2 '
-                '--options TDE')
+        args = '--option-group-name myoptiongroup2 ' '--options TDE'
         cmdline = self.prefix + args
-        result = {'OptionsToRemove': ['TDE'],
-                  'OptionGroupName': 'myoptiongroup2'}
+        result = {
+            'OptionsToRemove': ['TDE'],
+            'OptionGroupName': 'myoptiongroup2',
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_option_to_add_is_not_allowed(self):
-        args = ('--option-group-name myoptiongroup2 '
-                '--options-to-include {"OptionName":"TDE"}')
+        args = (
+            '--option-group-name myoptiongroup2 '
+            '--options-to-include {"OptionName":"TDE"}'
+        )
         cmdline = self.prefix + args
         self.assert_params_for_cmd(
-            cmdline, expected_rc=252,
-            stderr_contains='Unknown options: --options-to-include')
+            cmdline,
+            expected_rc=252,
+            stderr_contains='Unknown options: --options-to-include',
+        )

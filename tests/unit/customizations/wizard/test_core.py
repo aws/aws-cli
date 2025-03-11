@@ -11,17 +11,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+
+import pytest
+from botocore.paginate import Paginator
+from botocore.session import Session
 from ruamel.yaml import YAML
 
-from botocore.session import Session
-from botocore.paginate import Paginator
-import pytest
-
 from awscli.customizations.configure.writer import ConfigFileWriter
-from awscli.customizations.wizard import core
-from awscli.customizations.wizard import ui
+from awscli.customizations.wizard import core, ui
 from awscli.customizations.wizard.app import WizardValues
-from awscli.testutils import unittest, mock, temporary_file
+from awscli.testutils import mock, temporary_file, unittest
 
 
 def load_wizard(yaml_str):
@@ -41,7 +40,7 @@ class FakeWizardValues(WizardValues):
         return self.values[item]
 
 
-class FakePrompter(object):
+class FakePrompter:
     def __init__(self, responses):
         self.responses = responses
         self.recorded_prompts = []
@@ -105,8 +104,7 @@ class TestPlanner(unittest.TestCase):
         # were defined.
         self.assertEqual(
             self.prompter.recorded_prompts,
-            [('Enter user name', 'myname'),
-             ('Enter group name', 'wheel')],
+            [('Enter user name', 'myname'), ('Enter group name', 'wheel')],
         )
 
     def test_can_prompt_for_conditional_values_true(self):
@@ -135,8 +133,7 @@ class TestPlanner(unittest.TestCase):
         self.assertEqual(parameters['name'], 'admin')
         self.assertEqual(
             self.prompter.recorded_prompts,
-            [('Should we stop', 'no'),
-             ('Enter user name', 'admin')],
+            [('Should we stop', 'no'), ('Enter user name', 'admin')],
         )
 
     def test_can_prompt_for_conditional_values_false(self):
@@ -187,10 +184,16 @@ class TestPlanner(unittest.TestCase):
         self.assertEqual(parameters['name'], 'admin')
         self.assertEqual(
             self.prompter.recorded_prompts,
-            [('Enter user name', 'admin', [{'display': 'Administrator',
-                                             'actual_value': 'admin'},
-                                            {'display': 'Developer',
-                                             'actual_value': 'dev'}])],
+            [
+                (
+                    'Enter user name',
+                    'admin',
+                    [
+                        {'display': 'Administrator', 'actual_value': 'admin'},
+                        {'display': 'Developer', 'actual_value': 'dev'},
+                    ],
+                )
+            ],
         )
 
     def test_can_prompt_with_types(self):
@@ -257,7 +260,9 @@ class TestPlanner(unittest.TestCase):
         self.assertEqual(
             self.prompter.recorded_prompts,
             # We never prompt for the 'bar' value.
-            [('Foo', 'foo-value'),]
+            [
+                ('Foo', 'foo-value'),
+            ],
         )
 
     def test_can_run_template_step(self):
@@ -279,7 +284,9 @@ class TestPlanner(unittest.TestCase):
         self.assertEqual(parameters['bar'], 'template-foo-value')
         self.assertEqual(
             self.prompter.recorded_prompts,
-            [('Foo', 'foo-value'),]
+            [
+                ('Foo', 'foo-value'),
+            ],
         )
 
     def test_can_run_apicall_step(self):
@@ -348,12 +355,9 @@ class TestPlanner(unittest.TestCase):
             {
                 'foo': {'Policies': ['foo']},
                 'use_cached_foo': {'Policies': ['foo']},
-            }
+            },
         )
-        self.assertEqual(
-            mock_client.list_policies.call_count,
-            1
-        )
+        self.assertEqual(mock_client.list_policies.call_count, 1)
 
     def test_can_run_apicall_step_with_paginate(self):
         loaded = load_wizard("""
@@ -389,7 +393,7 @@ class TestPlanner(unittest.TestCase):
             parameters,
             {
                 'all_policies': {'Policies': ['foo']},
-            }
+            },
         )
         mock_client.get_paginator.assert_called_with('list_policies')
         mock_paginator.paginate.assert_called_with(Scope='All')
@@ -472,10 +476,16 @@ class TestPlanner(unittest.TestCase):
         self.assertEqual(parameters['name'], 'admin')
         self.assertEqual(
             self.prompter.recorded_prompts,
-            [('Enter user name', 'admin', [{'display': 'Administrator',
-                                             'actual_value': 'admin'},
-                                            {'display': 'Developer',
-                                             'actual_value': 'dev'}])],
+            [
+                (
+                    'Enter user name',
+                    'admin',
+                    [
+                        {'display': 'Administrator', 'actual_value': 'admin'},
+                        {'display': 'Developer', 'actual_value': 'dev'},
+                    ],
+                )
+            ],
         )
 
     def test_can_run_fileprompt_step(self):
@@ -495,8 +505,7 @@ class TestPlanner(unittest.TestCase):
             },
         )
         parameters = planner.plan(loaded['plan'])
-        self.assertEqual(parameters['foo'],
-                         os.path.abspath('myfile.txt'))
+        self.assertEqual(parameters['foo'], os.path.abspath('myfile.txt'))
 
     def test_can_run_yes_no_prompt_step(self):
         loaded = load_wizard("""
@@ -513,10 +522,16 @@ class TestPlanner(unittest.TestCase):
         self.assertEqual(parameters['wants_defaults'], 'yes')
         self.assertEqual(
             self.prompter.recorded_prompts,
-            [('Do you want to use the defaults?',
-              'yes',
-              [{'display': 'Yes', 'actual_value': 'yes'},
-               {'display': 'No', 'actual_value': 'no'}])],
+            [
+                (
+                    'Do you want to use the defaults?',
+                    'yes',
+                    [
+                        {'display': 'Yes', 'actual_value': 'yes'},
+                        {'display': 'No', 'actual_value': 'no'},
+                    ],
+                )
+            ],
         )
 
     def test_can_set_default_yes_no_value(self):
@@ -535,8 +550,10 @@ class TestPlanner(unittest.TestCase):
         self.assertEqual(
             self.prompter.recorded_prompts[0][2],
             # The default is No so it should be presented first.
-            [{'display': 'No', 'actual_value': 'no'},
-             {'display': 'Yes', 'actual_value': 'yes'}]
+            [
+                {'display': 'No', 'actual_value': 'no'},
+                {'display': 'Yes', 'actual_value': 'yes'},
+            ],
         )
 
     def test_can_jump_around_to_next_steps(self):
@@ -583,14 +600,15 @@ class TestPlanner(unittest.TestCase):
         self.assertEqual(parameters['fourth'], 'four')
         self.assertEqual(
             self.prompter.recorded_prompts,
-            [('step_a', 'one'),
-             ('step_d', 'two'),
-             ('step_c', 'three'),
-             ('step_b', 'four')],
+            [
+                ('step_a', 'one'),
+                ('step_d', 'two'),
+                ('step_c', 'three'),
+                ('step_b', 'four'),
+            ],
         )
 
     def test_can_delegate_to_arbitrary_type(self):
-
         class CustomStep(core.BaseStep):
             def run_step(self, step_definition, parameters):
                 # Just return whatever the value of 'foo' is in the
@@ -660,8 +678,9 @@ class TestPlanner(unittest.TestCase):
         )
         parameters = planner.plan(loaded['plan'])
         self.assertEqual(parameters['foo'], 'us-west-2')
-        config_api.get_value.assert_called_with(profile='devprofile',
-                                                value='region')
+        config_api.get_value.assert_called_with(
+            profile='devprofile', value='region'
+        )
 
 
 class TestExecutor(unittest.TestCase):
@@ -714,7 +733,8 @@ class TestExecutor(unittest.TestCase):
         self.executor.execute(loaded['execute'], {})
         self.session.create_client.assert_called_with('iam')
         self.client.create_user.assert_called_with(
-            UserName='admin', Path='/foo')
+            UserName='admin', Path='/foo'
+        )
 
     def test_optional_params_not_passed_if_none(self):
         loaded = load_wizard("""
@@ -796,7 +816,9 @@ class TestExecutor(unittest.TestCase):
               params:
                 UserName: admin
         """)
-        self.executor.execute(loaded['execute'], {'foo': 'one', 'bar': 'NOTTWO'})
+        self.executor.execute(
+            loaded['execute'], {'foo': 'one', 'bar': 'NOTTWO'}
+        )
         self.assertFalse(self.session.create_client.called)
 
     def test_can_recursively_template_variables_in_params(self):
@@ -830,7 +852,7 @@ class TestExecutor(unittest.TestCase):
                     {'Bar': 'FOOVALUE'},
                     {'Baz': 'FOOVALUE'},
                 ]
-            }
+            },
         }
         self.client.create_user.assert_called_with(**expected_params)
 
@@ -877,8 +899,10 @@ class TestExecutor(unittest.TestCase):
         self.session.create_client.assert_called_with('iam')
         self.assertEqual(
             self.client.method_calls,
-            [mock.call.create_user(UserName='admin'),
-             mock.call.create_role(RoleName='admin')]
+            [
+                mock.call.create_user(UserName='admin'),
+                mock.call.create_role(RoleName='admin'),
+            ],
         )
 
     def test_can_write_to_config_file(self):
@@ -894,7 +918,7 @@ class TestExecutor(unittest.TestCase):
         """)
         self.executor.execute(loaded['execute'], {})
         self.config_api.set_values.assert_called_with(
-             {'region': 'us-west-2', 'output': 'json'},
+            {'region': 'us-west-2', 'output': 'json'},
             profile='mydevprofile',
         )
 
@@ -925,7 +949,8 @@ class TestExecutor(unittest.TestCase):
         variables = {'foo': 'bar'}
         self.executor.execute(loaded['execute'], variables)
         self.config_api.set_values.assert_called_with(
-            {'region': 'bar'}, profile=None)
+            {'region': 'bar'}, profile=None
+        )
 
     def test_can_define_variables(self):
         loaded = load_wizard("""
@@ -951,8 +976,10 @@ class TestExecutor(unittest.TestCase):
         """)
         variables = {"bar": "value-of-bar"}
         self.executor.execute(loaded['execute'], variables)
-        self.assertEqual(variables, {'myvar': {'foo': 'value-of-bar'},
-                                     'bar': 'value-of-bar'})
+        self.assertEqual(
+            variables,
+            {'myvar': {'foo': 'value-of-bar'}, 'bar': 'value-of-bar'},
+        )
 
     def test_can_merge_dicts(self):
         loaded = load_wizard("""
@@ -1007,8 +1034,10 @@ class TestExecutor(unittest.TestCase):
         variables = {}
         self.executor.execute(loaded['execute'], variables)
         expected = {
-            'foo': {'bar': {'baz': 'new-baz', 'baz2': 'original-baz2'},
-                    'bar2': 'new-bar2'},
+            'foo': {
+                'bar': {'baz': 'new-baz', 'baz2': 'original-baz2'},
+                'bar2': 'new-bar2',
+            },
             'foo2': 'original-foo2',
         }
         self.assertEqual(variables['result'], expected)
@@ -1042,8 +1071,10 @@ class TestExecutor(unittest.TestCase):
         variables = {}
         self.executor.execute(loaded['execute'], variables)
         expected = {
-            'foo': {'bar': {'baz': 'new-baz', 'baz2': 'original-baz2'},
-                    'bar2': 'new-bar2'},
+            'foo': {
+                'bar': {'baz': 'new-baz', 'baz2': 'original-baz2'},
+                'bar2': 'new-bar2',
+            },
             'foo2': 'original-foo2',
         }
         self.assertEqual(variables['result'], expected)
@@ -1124,16 +1155,18 @@ class TestSharedConfigAPI(unittest.TestCase):
         self.mock_session = mock.Mock(spec=Session)
         self.config_writer = mock.Mock(spec=ConfigFileWriter)
         self.config_filename = 'foo'
-        self.mock_session.get_config_variable.return_value = \
+        self.mock_session.get_config_variable.return_value = (
             self.config_filename
-        self.config_api = core.SharedConfigAPI(self.mock_session,
-                                               self.config_writer)
+        )
+        self.config_api = core.SharedConfigAPI(
+            self.mock_session, self.config_writer
+        )
 
     def test_delegates_to_config_writer(self):
         self.config_api.set_values({'foo': 'bar'}, profile='bar')
         self.config_writer.update_config.assert_called_with(
-            {'foo': 'bar', '__section__': 'profile bar'},
-             self.config_filename)
+            {'foo': 'bar', '__section__': 'profile bar'}, self.config_filename
+        )
 
     def test_can_get_config_values(self):
         self.mock_session.get_config_variable.return_value = 'bar'
@@ -1195,7 +1228,7 @@ class TestAPIInvoker(unittest.TestCase):
             'iam',
             'CreateUser',
             api_params={'UserName': 'admin'},
-            plan_variables={}
+            plan_variables={},
         )
         call_method_args = self.get_call_args(self.mock_session)
         self.assertEqual(call_method_args, mock.call(UserName='admin'))
@@ -1207,7 +1240,7 @@ class TestAPIInvoker(unittest.TestCase):
             'CreateUser',
             api_params={'UserName': 'admin'},
             plan_variables={},
-            cache=True
+            cache=True,
         )
         call_method_args = self.get_call_args(self.mock_session)
         self.assertEqual(call_method_args, mock.call(UserName='admin'))
@@ -1216,7 +1249,7 @@ class TestAPIInvoker(unittest.TestCase):
             'CreateUser',
             api_params={'UserName': 'admin'},
             plan_variables={},
-            cache=True
+            cache=True,
         )
         self.assertEqual(self.get_call_count(self.mock_session), 1)
 
@@ -1227,7 +1260,7 @@ class TestAPIInvoker(unittest.TestCase):
             'CreateUser',
             api_params={'UserName': 'admin'},
             plan_variables={},
-            cache=True
+            cache=True,
         )
         call_method_args = self.get_call_args(self.mock_session)
         self.assertEqual(call_method_args, mock.call(UserName='admin'))
@@ -1236,11 +1269,12 @@ class TestAPIInvoker(unittest.TestCase):
             'CreateUser',
             api_params={'UserName': 'admin-different'},
             plan_variables={},
-            cache=True
+            cache=True,
         )
         call_method_args = self.get_call_args(self.mock_session)
         self.assertEqual(
-            call_method_args, mock.call(UserName='admin-different'))
+            call_method_args, mock.call(UserName='admin-different')
+        )
         self.assertEqual(self.get_call_count(self.mock_session), 2)
 
     def test_can_paginate(self):
@@ -1250,7 +1284,7 @@ class TestAPIInvoker(unittest.TestCase):
             'ListPolicies',
             api_params={'Scope': 'All'},
             plan_variables={},
-            paginate=True
+            paginate=True,
         )
         paginate_args = self.get_paginate_call_args(self.mock_session)
         self.assertEqual(paginate_args, mock.call(Scope='All'))
@@ -1261,7 +1295,7 @@ class TestAPIInvoker(unittest.TestCase):
             'iam',
             'CreateUser',
             api_params={'UserName': '{username}'},
-            plan_variables={'username': 'admin'}
+            plan_variables={'username': 'admin'},
         )
         call_method_args = self.get_call_args(self.mock_session)
         self.assertEqual(call_method_args, mock.call(UserName='admin'))
@@ -1292,11 +1326,9 @@ class TestTemplateStep(unittest.TestCase):
     def test_positive_condition_statement_for_equals(self):
         step_definition = {
             'type': 'template',
-            'value': "{%if {allow} == True %}allow body{%   endif   %}"
+            'value': "{%if {allow} == True %}allow body{%   endif   %}",
         }
-        parameters = {
-            'allow': 'True'
-        }
+        parameters = {'allow': 'True'}
         step = core.TemplateStep()
         value = step.run_step(step_definition, parameters)
         self.assertEqual(value, 'allow body')
@@ -1304,11 +1336,9 @@ class TestTemplateStep(unittest.TestCase):
     def test_negative_condition_statement_for_equals(self):
         step_definition = {
             'type': 'template',
-            'value': "{%if {allow} == True %}allow body{%   endif   %}"
+            'value': "{%if {allow} == True %}allow body{%   endif   %}",
         }
-        parameters = {
-            'allow': 'False'
-        }
+        parameters = {'allow': 'False'}
         step = core.TemplateStep()
         value = step.run_step(step_definition, parameters)
         self.assertEqual(value, '')
@@ -1323,7 +1353,7 @@ not allow foo
    {%if   {allow} == True    %}
 allow foo
         {% endif %}
-more text"""
+more text""",
         }
         parameters = {
             'foo': 'foo parameter',
@@ -1336,7 +1366,7 @@ more text"""
     def test_can_use_conditions_with_multiple_vars(self):
         step_definition = {
             'type': 'template',
-            'value': "{%if {var1} == {var2} %}allow body{% endif %}"
+            'value': "{%if {var1} == {var2} %}allow body{% endif %}",
         }
         parameters = {
             'var1': 'yes',
@@ -1349,7 +1379,7 @@ more text"""
     def test_can_use_conditions_with_no_vars(self):
         step_definition = {
             'type': 'template',
-            'value': "{%if yes == yes %}allow body{% endif %}"
+            'value': "{%if yes == yes %}allow body{% endif %}",
         }
         parameters = {}
         step = core.TemplateStep()
@@ -1359,7 +1389,7 @@ more text"""
     def test_positive_condition_statements_with_not_equal(self):
         step_definition = {
             'type': 'template',
-            'value': "{%if {first_var} != {second_var} %}not equals{% endif %}"
+            'value': "{%if {first_var} != {second_var} %}not equals{% endif %}",
         }
         parameters = {
             'first_var': 'first_value',
@@ -1372,7 +1402,7 @@ more text"""
     def test_negative_condition_statements_with_not_equal(self):
         step_definition = {
             'type': 'template',
-            'value': "{%if {first_var} != {second_var} %}not equals{% endif %}"
+            'value': "{%if {first_var} != {second_var} %}not equals{% endif %}",
         }
         parameters = {
             'first_var': 'same_value',
@@ -1385,7 +1415,7 @@ more text"""
     def test_does_not_error_for_missing_vars_in_condition(self):
         step_definition = {
             'type': 'template',
-            'value': "{%if {missing} == expected_value %}body{% endif %}"
+            'value': "{%if {missing} == expected_value %}body{% endif %}",
         }
         parameters = {}
         step = core.TemplateStep()
@@ -1393,10 +1423,7 @@ more text"""
         self.assertEqual(value, '')
 
     def test_can_fetch_values(self):
-        step_definition = {
-            'type': 'template',
-            'value': "{foo} {bar}"
-        }
+        step_definition = {'type': 'template', 'value': "{foo} {bar}"}
         fake_wizard_values = FakeWizardValues()
         step = core.TemplateStep()
         value = step.run_step(step_definition, fake_wizard_values)
@@ -1410,9 +1437,9 @@ class TestDumpDataStep:
             step_definition={
                 'type': 'dump-data',
                 'dump_type': 'json',
-                'value': {"key": "value"}
+                'value': {"key": "value"},
             },
-            parameters=FakeWizardValues()
+            parameters=FakeWizardValues(),
         )
         assert value == '{"key": "value"}'
 
@@ -1423,9 +1450,9 @@ class TestDumpDataStep:
             step_definition={
                 'type': 'dump-data',
                 'dump_type': 'json',
-                'value': '{replace-me}'
+                'value': '{replace-me}',
             },
-            parameters=wizard_values
+            parameters=wizard_values,
         )
         assert value == '{"replaced": "value"}'
 
@@ -1435,9 +1462,9 @@ class TestDumpDataStep:
                 step_definition={
                     'type': 'dump-data',
                     'dump_type': 'not-supported-type',
-                    'value': {"key": "value"}
+                    'value': {"key": "value"},
                 },
-                parameters=FakeWizardValues()
+                parameters=FakeWizardValues(),
             )
 
 
@@ -1450,9 +1477,9 @@ class TestLoadDataStep:
             step_definition={
                 'type': 'load-data',
                 'load_type': 'json',
-                'value': '{{"key": "value"}}'
+                'value': '{{"key": "value"}}',
             },
-            parameters=FakeWizardValues()
+            parameters=FakeWizardValues(),
         )
         assert value == {"key": "value"}
 
@@ -1463,9 +1490,9 @@ class TestLoadDataStep:
             step_definition={
                 'type': 'load-data',
                 'load_type': 'json',
-                'value': '{replace-me}'
+                'value': '{replace-me}',
             },
-            parameters=wizard_values
+            parameters=wizard_values,
         )
         assert value == {"replaced": "value"}
 
@@ -1475,7 +1502,7 @@ class TestLoadDataStep:
                 step_definition={
                     'type': 'load-data',
                     'load_type': 'not-supported-type',
-                    'value': '{"key": "value"}'
+                    'value': '{"key": "value"}',
                 },
-                parameters=FakeWizardValues()
+                parameters=FakeWizardValues(),
             )

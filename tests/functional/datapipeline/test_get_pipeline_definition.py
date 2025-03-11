@@ -14,14 +14,11 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestGetPipelineDefinition(BaseAWSCommandParamsTest):
-
     prefix = 'datapipeline get-pipeline-definition '
 
     def test_renamed_object_query_arg(self):
         # --version is renamed to --pipeline-version so we don't
         # conflict with the global --version argument.
         cmdline = self.prefix + '--pipeline-id foo --pipeline-version latest'
-        expected = {
-            'pipelineId': 'foo', 'version': 'latest'
-        }
+        expected = {'pipelineId': 'foo', 'version': 'latest'}
         self.assert_params_for_cmd(cmdline, expected)

@@ -13,9 +13,9 @@
 import datetime
 
 from awscli.customizations.s3.filegenerator import FileStat
-from awscli.customizations.s3.syncstrategy.exacttimestamps import \
-    ExactTimestampsSync
-
+from awscli.customizations.s3.syncstrategy.exacttimestamps import (
+    ExactTimestampsSync,
+)
 from awscli.testutils import unittest
 
 
@@ -32,18 +32,31 @@ class TestExactTimestampsSync(unittest.TestCase):
         time_src = datetime.datetime.now()
         time_dst = time_src - datetime.timedelta(days=1)
 
-        src_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=10,
-                            last_update=time_src, src_type='s3',
-                            dest_type='local', operation_name='download')
+        src_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=10,
+            last_update=time_src,
+            src_type='s3',
+            dest_type='local',
+            operation_name='download',
+        )
 
-        dst_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=10,
-                            last_update=time_dst, src_type='local',
-                            dest_type='s3', operation_name='')
+        dst_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=10,
+            last_update=time_dst,
+            src_type='local',
+            dest_type='s3',
+            operation_name='',
+        )
 
         should_sync = self.sync_strategy.determine_should_sync(
-            src_file, dst_file)
+            src_file, dst_file
+        )
         self.assertTrue(should_sync)
 
     def test_compare_exact_timestamps_src_older(self):
@@ -55,18 +68,31 @@ class TestExactTimestampsSync(unittest.TestCase):
         time_src = datetime.datetime.now() - datetime.timedelta(days=1)
         time_dst = datetime.datetime.now()
 
-        src_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=10,
-                            last_update=time_src, src_type='s3',
-                            dest_type='local', operation_name='download')
+        src_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=10,
+            last_update=time_src,
+            src_type='s3',
+            dest_type='local',
+            operation_name='download',
+        )
 
-        dst_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=10,
-                            last_update=time_dst, src_type='local',
-                            dest_type='s3', operation_name='')
+        dst_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=10,
+            last_update=time_dst,
+            src_type='local',
+            dest_type='s3',
+            operation_name='',
+        )
 
         should_sync = self.sync_strategy.determine_should_sync(
-            src_file, dst_file)
+            src_file, dst_file
+        )
         self.assertTrue(should_sync)
 
     def test_compare_exact_timestamps_same_age_same_size(self):
@@ -77,18 +103,31 @@ class TestExactTimestampsSync(unittest.TestCase):
         """
         time_both = datetime.datetime.now()
 
-        src_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=10,
-                            last_update=time_both, src_type='s3',
-                            dest_type='local', operation_name='download')
+        src_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=10,
+            last_update=time_both,
+            src_type='s3',
+            dest_type='local',
+            operation_name='download',
+        )
 
-        dst_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=10,
-                            last_update=time_both, src_type='local',
-                            dest_type='s3', operation_name='')
+        dst_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=10,
+            last_update=time_both,
+            src_type='local',
+            dest_type='s3',
+            operation_name='',
+        )
 
         should_sync = self.sync_strategy.determine_should_sync(
-            src_file, dst_file)
+            src_file, dst_file
+        )
         self.assertFalse(should_sync)
 
     def test_compare_exact_timestamps_same_age_diff_size(self):
@@ -99,18 +138,31 @@ class TestExactTimestampsSync(unittest.TestCase):
         """
         time_both = datetime.datetime.now()
 
-        src_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=20,
-                            last_update=time_both, src_type='s3',
-                            dest_type='local', operation_name='download')
+        src_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=20,
+            last_update=time_both,
+            src_type='s3',
+            dest_type='local',
+            operation_name='download',
+        )
 
-        dst_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=10,
-                            last_update=time_both, src_type='local',
-                            dest_type='s3', operation_name='')
+        dst_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=10,
+            last_update=time_both,
+            src_type='local',
+            dest_type='s3',
+            operation_name='',
+        )
 
         should_sync = self.sync_strategy.determine_should_sync(
-            src_file, dst_file)
+            src_file, dst_file
+        )
         self.assertTrue(should_sync)
 
     def test_compare_exact_timestamps_diff_age_not_download(self):
@@ -122,18 +174,31 @@ class TestExactTimestampsSync(unittest.TestCase):
         time_src = datetime.datetime.now()
         time_dst = time_src - datetime.timedelta(days=1)
 
-        src_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=10,
-                            last_update=time_src, src_type='s3',
-                            dest_type='local', operation_name='upload')
+        src_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=10,
+            last_update=time_src,
+            src_type='s3',
+            dest_type='local',
+            operation_name='upload',
+        )
 
-        dst_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=10,
-                            last_update=time_dst, src_type='local',
-                            dest_type='s3', operation_name='')
+        dst_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=10,
+            last_update=time_dst,
+            src_type='local',
+            dest_type='s3',
+            operation_name='',
+        )
 
         should_sync = self.sync_strategy.determine_should_sync(
-            src_file, dst_file)
+            src_file, dst_file
+        )
         self.assertTrue(should_sync)
 
 

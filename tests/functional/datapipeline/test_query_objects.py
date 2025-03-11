@@ -21,16 +21,23 @@ class TestDataPipelineQueryObjects(BaseAWSCommandParamsTest):
     def test_renamed_object_query_arg(self):
         # --query is renamed to --objects-query so we don't
         # conflict with the global --query argument.
-        args = ('--pipeline-id foo '
-                '--sphere INSTANCE '
-                '--objects-query {"selectors":[{"fieldName":"@status",'
-                '"operator":{"type":"EQ","values":["RUNNING"]}}]}')
+        args = (
+            '--pipeline-id foo '
+            '--sphere INSTANCE '
+            '--objects-query {"selectors":[{"fieldName":"@status",'
+            '"operator":{"type":"EQ","values":["RUNNING"]}}]}'
+        )
         cmdline = self.prefix + args
         expected = {
             'pipelineId': 'foo',
-            'query': {'selectors': [{'fieldName': '@status',
-                                     'operator': {'type': 'EQ',
-                                                  'values': ['RUNNING']}}]},
-            'sphere': 'INSTANCE'
+            'query': {
+                'selectors': [
+                    {
+                        'fieldName': '@status',
+                        'operator': {'type': 'EQ', 'values': ['RUNNING']},
+                    }
+                ]
+            },
+            'sphere': 'INSTANCE',
         }
         self.assert_params_for_cmd(cmdline, expected)

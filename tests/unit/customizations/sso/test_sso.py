@@ -14,24 +14,22 @@ import botocore.credentials
 import botocore.session
 from botocore.exceptions import ProfileNotFound, UnknownCredentialError
 
-from awscli.testutils import mock
-from awscli.testutils import unittest
 from awscli.customizations.sso import inject_json_file_cache
+from awscli.testutils import mock, unittest
 
 
 class TestInjectJSONFileCache(unittest.TestCase):
     def setUp(self):
         self.mock_sso_provider = mock.Mock(
-            spec=botocore.credentials.SSOProvider)
+            spec=botocore.credentials.SSOProvider
+        )
         self.mock_resolver = mock.Mock(botocore.credentials.CredentialResolver)
         self.mock_resolver.get_provider.return_value = self.mock_sso_provider
         self.session = mock.Mock(spec=botocore.session.Session)
         self.session.get_component.return_value = self.mock_resolver
 
     def test_inject_json_file_cache(self):
-        inject_json_file_cache(
-            self.session, event_name='session-initialized'
-        )
+        inject_json_file_cache(self.session, event_name='session-initialized')
         self.session.get_component.assert_called_with('credential_provider')
         self.assertIsInstance(
             self.mock_sso_provider.cache,
@@ -40,7 +38,8 @@ class TestInjectJSONFileCache(unittest.TestCase):
 
     def test_profile_not_found_is_not_propagated(self):
         self.session.get_component.side_effect = ProfileNotFound(
-            profile='unknown')
+            profile='unknown'
+        )
         try:
             inject_json_file_cache(
                 self.session, event_name='session-initialized'

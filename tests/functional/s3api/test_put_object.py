@@ -11,13 +11,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import copy
 import os
 import re
-import copy
-
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 import awscli.clidriver
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 # file is gone in python3, so instead IOBase must be used.
 # Given this test module is the only place that cares about
@@ -26,18 +25,19 @@ try:
     file_type = file
 except NameError:
     import io
+
     file_type = io.IOBase
 
 
 class TestPutObject(BaseAWSCommandParamsTest):
-
     maxDiff = None
     prefix = 's3api put-object'
 
     def setUp(self):
         super(TestPutObject, self).setUp()
-        self.file_path = os.path.join(os.path.dirname(__file__),
-                                      'test_put_object_data')
+        self.file_path = os.path.join(
+            os.path.dirname(__file__), 'test_put_object_data'
+        )
         self.files = FileCreator()
 
     def tearDown(self):
@@ -49,13 +49,11 @@ class TestPutObject(BaseAWSCommandParamsTest):
         cmdline += ' --bucket mybucket'
         cmdline += ' --key mykey'
         cmdline += ' --body %s' % self.file_path
-        result = {'uri_params': {'Bucket': 'mybucket',
-                                 'Key': 'mykey'},
-                  'headers': {'Expect': '100-continue'}}
-        expected = {
-            'Bucket': 'mybucket',
-            'Key': 'mykey'
+        result = {
+            'uri_params': {'Bucket': 'mybucket', 'Key': 'mykey'},
+            'headers': {'Expect': '100-continue'},
         }
+        expected = {'Bucket': 'mybucket', 'Key': 'mykey'}
         self.assert_params_for_cmd(cmdline, expected, ignore_params=['Body'])
         self.assertEqual(self.last_kwargs['Body'].name, self.file_path)
 
@@ -72,7 +70,7 @@ class TestPutObject(BaseAWSCommandParamsTest):
             'Bucket': 'mybucket',
             'ContentEncoding': 'x-gzip',
             'ContentType': 'text/plain',
-            'Key': 'mykey'
+            'Key': 'mykey',
         }
         self.assert_params_for_cmd(cmdline, expected, ignore_params=['Body'])
         self.assertEqual(self.last_kwargs['Body'].name, self.file_path)
@@ -87,7 +85,7 @@ class TestPutObject(BaseAWSCommandParamsTest):
             'ACL': 'public-read',
             'Bucket': 'mybucket',
             'Key': 'mykey',
-            'WebsiteRedirectLocation': 'http://www.example.com/'
+            'WebsiteRedirectLocation': 'http://www.example.com/',
         }
         self.assert_params_for_cmd(cmdline, expected)
 
@@ -105,7 +103,7 @@ class TestPutObject(BaseAWSCommandParamsTest):
             'Key': 'mykey',
             'SSECustomerAlgorithm': 'AES256',
             'SSECustomerKey': 'wg==',  # Note the key gets base64 encoded.
-            'SSECustomerKeyMD5': 'ZGXa0dMXUr4/MoPo9w/u9w=='
+            'SSECustomerKeyMD5': 'ZGXa0dMXUr4/MoPo9w/u9w==',
         }
         self.assert_params_for_cmd(cmdline, expected)
 

@@ -13,8 +13,8 @@
 import logging
 import os
 
-from awscli.testutils import mock, FileCreator, BaseAWSCommandParamsTest
 from awscli.clidriver import create_clidriver
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
 
 logger = logging.getLogger(__name__)
 
@@ -29,31 +29,31 @@ class BaseTestCLIFollowParamFile(BaseAWSCommandParamsTest):
         super(BaseTestCLIFollowParamFile, self).tearDown()
         self.files.remove_all()
 
-    def assert_param_expansion_is_correct(self, provided_param, expected_param):
+    def assert_param_expansion_is_correct(
+        self, provided_param, expected_param
+    ):
         cmd = '%s %s' % (self.prefix, provided_param)
         # We do not care about the return code here. All that is of interest
         # is what happened to the arguments before they were passed to botocore
         # which we get from the params={} key. For binary types we will fail in
         # python 3 with an rc of 255 and get an rc of 0 in python 2 where it
         # can't tell the difference, so we pass ANY here to ignore the rc.
-        self.assert_params_for_cmd(cmd,
-                                   params={'FunctionName': expected_param},
-                                   expected_rc=mock.ANY)
+        self.assert_params_for_cmd(
+            cmd, params={'FunctionName': expected_param}, expected_rc=mock.ANY
+        )
 
 
 class TestCLIFollowParamFileDefault(BaseTestCLIFollowParamFile):
     def test_does_not_prefixes_when_none_in_param(self):
         self.assert_param_expansion_is_correct(
-            provided_param='foobar',
-            expected_param='foobar'
+            provided_param='foobar', expected_param='foobar'
         )
 
     def test_does_use_file_prefix(self):
         path = self.files.create_file('foobar.txt', 'file content')
         param = 'file://%s' % path
         self.assert_param_expansion_is_correct(
-            provided_param=param,
-            expected_param='file content'
+            provided_param=param, expected_param='file content'
         )
 
     def test_does_use_fileb_prefix(self):
@@ -63,30 +63,27 @@ class TestCLIFollowParamFileDefault(BaseTestCLIFollowParamFile):
         path = self.files.create_file('foobar.txt', b'file content', mode='wb')
         param = 'fileb://%s' % path
         self.assert_param_expansion_is_correct(
-            provided_param=param,
-            expected_param=b'file content'
+            provided_param=param, expected_param=b'file content'
         )
 
 
 class TestCLIUseEncodingFromEnv(BaseTestCLIFollowParamFile):
-
     def setUp(self):
         super(TestCLIUseEncodingFromEnv, self).setUp()
         self.path = self.files.create_file(
-            'foobar.txt', '經理', encoding='utf-8')
+            'foobar.txt', '經理', encoding='utf-8'
+        )
 
     def test_does_use_encoding_utf8(self):
         self.environ['AWS_CLI_FILE_ENCODING'] = 'utf-8'
         param = 'file://%s' % self.path
         self.assert_param_expansion_is_correct(
-            provided_param=param,
-            expected_param='經理'
+            provided_param=param, expected_param='經理'
         )
 
     def test_does_use_encoding_cp1251(self):
         self.environ['AWS_CLI_FILE_ENCODING'] = 'cp1251'
         param = 'file://%s' % self.path
         self.assert_param_expansion_is_correct(
-            provided_param=param,
-            expected_param='з¶“зђ†'
+            provided_param=param, expected_param='з¶“зђ†'
         )

@@ -14,9 +14,9 @@ import glob
 import os
 import tempfile
 
-from awscli.testutils import unittest
 from awscli.autocomplete import generator
 from awscli.autocomplete.local import model
+from awscli.testutils import unittest
 
 
 class TestCanGenerateEntireIndex(unittest.TestCase):
@@ -57,14 +57,15 @@ class TestCanGenerateEntireIndex(unittest.TestCase):
         self.assertIn('ec2', commands)
         self.assertIn('s3', commands)
         self.assertIn('s3api', commands)
-        global_args = self.model_index.arg_names(lineage=[],
-                                                 command_name='aws')
+        global_args = self.model_index.arg_names(
+            lineage=[], command_name='aws'
+        )
         self.assertIn('region', global_args)
         self.assertIn('endpoint-url', global_args)
 
         single_arg = self.model_index.get_argument_data(
-            lineage=[], command_name='aws',
-            arg_name='output')
+            lineage=[], command_name='aws', arg_name='output'
+        )
         self.assertEqual(single_arg.argname, 'output')
         self.assertEqual(single_arg.command, 'aws')
         self.assertEqual(single_arg.parent, '')

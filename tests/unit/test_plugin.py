@@ -11,13 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
-from awscli.testutils import mock, unittest
 
-from awscli import plugin
 from botocore import hooks
 
+from awscli import plugin
+from awscli.testutils import mock, unittest
 
-class FakeModule(object):
+
+class FakeModule:
     def __init__(self):
         self.called = False
         self.context = None
@@ -28,17 +29,17 @@ class FakeModule(object):
         self.context = context
         self.context.register(
             'before_operation',
-            (lambda **kwargs: self.events_seen.append(kwargs)))
+            (lambda **kwargs: self.events_seen.append(kwargs)),
+        )
 
 
 class TestPlugins(unittest.TestCase):
-
     def setUp(self):
         self.fake_module = FakeModule()
         sys.modules['__fake_plugin__'] = self.fake_module
         self.plugin_mapping = {
             'cli_legacy_plugin_path': 'fake-path',
-            'fake_plugin': '__fake_plugin__'
+            'fake_plugin': '__fake_plugin__',
         }
 
     def tearDown(self):
@@ -48,8 +49,9 @@ class TestPlugins(unittest.TestCase):
         emitter = plugin.load_plugins(self.plugin_mapping)
         self.assertTrue(self.fake_module.called)
         self.assertTrue(isinstance(emitter, hooks.HierarchicalEmitter))
-        self.assertTrue(isinstance(self.fake_module.context,
-                                   hooks.HierarchicalEmitter))
+        self.assertTrue(
+            isinstance(self.fake_module.context, hooks.HierarchicalEmitter)
+        )
 
     def test_event_hooks_can_be_passed_in(self):
         hooks = plugin.HierarchicalEmitter()
@@ -72,7 +74,7 @@ class TestPluginCanBePackage(unittest.TestCase):
         sys.modules['__fake_plugin__.__fake__.bar'] = self.fake_module
         self.plugin_mapping = {
             'cli_legacy_plugin_path': 'fake-path',
-            'fake_plugin': '__fake_plugin__.__fake__.bar'
+            'fake_plugin': '__fake_plugin__.__fake__.bar',
         }
 
     def tearDown(self):
@@ -82,7 +84,7 @@ class TestPluginCanBePackage(unittest.TestCase):
         plugin.load_plugins(
             {
                 'cli_legacy_plugin_path': 'fake-path',
-                'fake_plugin': '__fake_plugin__.__fake__.bar'
+                'fake_plugin': '__fake_plugin__.__fake__.bar',
             }
         )
         self.assertTrue(self.fake_module.called)

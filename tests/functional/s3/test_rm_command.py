@@ -13,7 +13,8 @@
 from awscrt.s3 import S3RequestType
 
 from tests.functional.s3 import (
-    BaseS3TransferCommandTest, BaseCRTTransferClientTest
+    BaseCRTTransferClientTest,
+    BaseS3TransferCommandTest,
 )
 
 
@@ -25,33 +26,31 @@ class TestRmCommand(BaseS3TransferCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         # The only operation we should have called is DeleteObject.
         self.assertEqual(
-            len(self.operations_called), 1, self.operations_called)
+            len(self.operations_called), 1, self.operations_called
+        )
         self.assertEqual(self.operations_called[0][0].name, 'DeleteObject')
 
     def test_dryrun_delete(self):
         self.parsed_responses = [self.head_object_response()]
-        cmdline = (
-            f'{self.prefix} s3://bucket/key.txt --dryrun'
-        )
+        cmdline = f'{self.prefix} s3://bucket/key.txt --dryrun'
         stdout, _, _ = self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called([])
-        self.assertIn(
-            '(dryrun) delete: s3://bucket/key.txt',
-            stdout
-        )
+        self.assertIn('(dryrun) delete: s3://bucket/key.txt', stdout)
 
     def test_delete_with_request_payer(self):
         cmdline = '%s s3://mybucket/mykey --request-payer' % self.prefix
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_operations_called(
             [
-                ('DeleteObject', {
-                    'Bucket': 'mybucket',
-                    'Key': 'mykey',
-                    'RequestPayer': 'requester'
-                })
+                (
+                    'DeleteObject',
+                    {
+                        'Bucket': 'mybucket',
+                        'Key': 'mykey',
+                        'RequestPayer': 'requester',
+                    },
+                )
             ]
-
         )
 
     def test_recursive_delete_with_requests(self):
@@ -64,19 +63,18 @@ class TestRmCommand(BaseS3TransferCommandTest):
         self.assert_operations_called(
             [
                 self.list_objects_request(
-                    'mybucket', RequestPayer='requester'),
+                    'mybucket', RequestPayer='requester'
+                ),
                 self.delete_object_request(
-                    'mybucket', 'mykey', RequestPayer='requester'),
+                    'mybucket', 'mykey', RequestPayer='requester'
+                ),
             ]
-
         )
 
 
 class TestRmWithCRTClient(BaseCRTTransferClientTest):
     def test_delete_using_crt_client(self):
-        cmdline = [
-            's3', 'rm', 's3://bucket/key'
-        ]
+        cmdline = ['s3', 'rm', 's3://bucket/key']
         self.run_command(cmdline)
         crt_requests = self.get_crt_make_request_calls()
         self.assertEqual(len(crt_requests), 1)
@@ -85,13 +83,11 @@ class TestRmWithCRTClient(BaseCRTTransferClientTest):
             expected_type=S3RequestType.DEFAULT,
             expected_host=self.get_virtual_s3_host('bucket'),
             expected_path='/key',
-            expected_http_method='DELETE'
+            expected_http_method='DELETE',
         )
 
     def test_recursive_delete_using_crt_client(self):
-        cmdline = [
-            's3', 'rm', 's3://bucket/', '--recursive'
-        ]
+        cmdline = ['s3', 'rm', 's3://bucket/', '--recursive']
         self.add_botocore_list_objects_response(['key1', 'key2'])
         self.run_command(cmdline)
         crt_requests = self.get_crt_make_request_calls()
@@ -101,12 +97,12 @@ class TestRmWithCRTClient(BaseCRTTransferClientTest):
             expected_type=S3RequestType.DEFAULT,
             expected_host=self.get_virtual_s3_host('bucket'),
             expected_path='/key1',
-            expected_http_method='DELETE'
+            expected_http_method='DELETE',
         )
         self.assert_crt_make_request_call(
             crt_requests[1],
             expected_type=S3RequestType.DEFAULT,
             expected_host=self.get_virtual_s3_host('bucket'),
             expected_path='/key2',
-            expected_http_method='DELETE'
+            expected_http_method='DELETE',
         )

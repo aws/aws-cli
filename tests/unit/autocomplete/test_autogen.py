@@ -10,11 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
 from copy import deepcopy
-from awscli.autocomplete.autogen import ServerCompletionHeuristic
+
 from botocore.model import ServiceModel
 
+from awscli.autocomplete.autogen import ServerCompletionHeuristic
+from awscli.testutils import unittest
 
 # To make these tests more realistic, a stripped down version of the ACM
 # service is included as part of these tests.  There are a few extra
@@ -415,7 +416,6 @@ MODEL_WITH_STRING_LIST = {
 
 
 class TestCanGenerateCompletions(unittest.TestCase):
-
     maxDiff = None
 
     def setUp(self):
@@ -424,37 +424,49 @@ class TestCanGenerateCompletions(unittest.TestCase):
 
     def test_can_generate_resource_descriptions(self):
         resources = self.heuristic.generate_completion_descriptions(
-            self.service_model)['resources']
+            self.service_model
+        )['resources']
         self.assertEqual(
-            resources, {
+            resources,
+            {
                 'Certificate': {
                     'operation': 'ListCertificates',
                     'resourceIdentifier': {
                         'CertificateArn': (
-                            'CertificateSummaryList[].CertificateArn')
-                    }
+                            'CertificateSummaryList[].CertificateArn'
+                        )
+                    },
                 }
-             }
+            },
         )
 
     def test_can_generate_operations(self):
         # This model is chosen specifically because there's only
         # one resource we generate.  This makes the assertions easier.
         operations = self.heuristic.generate_completion_descriptions(
-            self.service_model)['operations']
+            self.service_model
+        )['operations']
         completion_param = {
             'CertificateArn': {
                 'completions': [
-                    {'parameters': {},
-                     'resourceIdentifier': 'CertificateArn',
-                     'resourceName': 'Certificate'}
+                    {
+                        'parameters': {},
+                        'resourceIdentifier': 'CertificateArn',
+                        'resourceName': 'Certificate',
+                    }
                 ]
             }
         }
         self.assertEqual(
             list(sorted(operations)),
-            ['DeleteCertificate', 'DescribeCertificate', 'ExportCertificate',
-             'GetCertificate', 'ImportCertificate'])
+            [
+                'DeleteCertificate',
+                'DescribeCertificate',
+                'ExportCertificate',
+                'GetCertificate',
+                'ImportCertificate',
+            ],
+        )
         for op in operations.values():
             self.assertEqual(op, completion_param)
 
@@ -463,42 +475,65 @@ class TestCanGenerateCompletions(unittest.TestCase):
         # Swap ListCertificates for DescribeCertificates.
         # We should still be able to generate auto-completion data.
         model['operations']['DescribeCertificates'] = model['operations'].pop(
-            'ListCertificates')
+            'ListCertificates'
+        )
         service_model = ServiceModel(model)
         completion_data = self.heuristic.generate_completion_descriptions(
-            service_model)
+            service_model
+        )
         # Ensure we're using the swapped 'DescribeCertificates' operation.
         self.assertEqual(
-             completion_data['resources']['Certificate']['operation'],
-            'DescribeCertificates'
+            completion_data['resources']['Certificate']['operation'],
+            'DescribeCertificates',
         )
         self.assertEqual(
             list(sorted(completion_data['operations'])),
-            ['DeleteCertificate', 'DescribeCertificate', 'ExportCertificate',
-             'GetCertificate', 'ImportCertificate'])
+            [
+                'DeleteCertificate',
+                'DescribeCertificate',
+                'ExportCertificate',
+                'GetCertificate',
+                'ImportCertificate',
+            ],
+        )
 
     def test_can_generate_string_list_completions(self):
         service_model = ServiceModel(MODEL_WITH_STRING_LIST)
         completion_data = self.heuristic.generate_completion_descriptions(
-            service_model)
+            service_model
+        )
         expected = {
             'version': '1.0',
             'operations': {
                 'DeleteNamedQuery': {
                     'NamedQueryId': {
-                        'completions': [{'parameters': {},
-                                         'resourceIdentifier': 'NamedQueryId',
-                                         'resourceName': 'NamedQuery'}]}},
+                        'completions': [
+                            {
+                                'parameters': {},
+                                'resourceIdentifier': 'NamedQueryId',
+                                'resourceName': 'NamedQuery',
+                            }
+                        ]
+                    }
+                },
                 'GetNamedQuery': {
                     'NamedQueryId': {
-                        'completions': [{'parameters': {},
-                                         'resourceIdentifier': 'NamedQueryId',
-                                         'resourceName': 'NamedQuery'}]}}
+                        'completions': [
+                            {
+                                'parameters': {},
+                                'resourceIdentifier': 'NamedQueryId',
+                                'resourceName': 'NamedQuery',
+                            }
+                        ]
+                    }
+                },
             },
             'resources': {
-                'NamedQuery': {'operation': 'ListNamedQueries',
-                               'resourceIdentifier': {
-                                   'NamedQueryId': 'NamedQueryIds[]'}}}
+                'NamedQuery': {
+                    'operation': 'ListNamedQueries',
+                    'resourceIdentifier': {'NamedQueryId': 'NamedQueryIds[]'},
+                }
+            },
         }
         self.assertEqual(completion_data, expected)
 
@@ -506,26 +541,28 @@ class TestCanGenerateCompletions(unittest.TestCase):
         model_dict = deepcopy(BASIC_MODEL)
         # We're going to mark an input param of ListCertificates as required.
         model_dict['shapes']['ListCertificatesRequest']['required'] = [
-            'CertificateStatuses']
+            'CertificateStatuses'
+        ]
         # We also have to have an operation reference this
         service_model = ServiceModel(model_dict)
         completion_data = self.heuristic.generate_completion_descriptions(
-            service_model, prune_completions=False)
+            service_model, prune_completions=False
+        )
         resources = completion_data['resources']
         self.assertEqual(
-            resources, {
+            resources,
+            {
                 'Certificate': {
                     'operation': 'ListCertificates',
                     'inputParameters': ['CertificateStatuses'],
                     'resourceIdentifier': {
                         'CertificateArn': (
-                            'CertificateSummaryList[].CertificateArn'),
-                        'DomainName': (
-                            'CertificateSummaryList[].DomainName'
-                        )
-                    }
+                            'CertificateSummaryList[].CertificateArn'
+                        ),
+                        'DomainName': ('CertificateSummaryList[].DomainName'),
+                    },
                 }
-             }
+            },
         )
 
     def test_remove_operations_with_required_params(self):
@@ -539,7 +576,7 @@ class TestCanGenerateCompletions(unittest.TestCase):
                 },
                 'DeleteFooBarThing': {
                     'input': {'shape': 'DeleteFooBarThingRequest'},
-                }
+                },
             },
             'shapes': {
                 'DeleteFooBarThingRequest': {
@@ -547,7 +584,7 @@ class TestCanGenerateCompletions(unittest.TestCase):
                     'members': {
                         'RequiredParam': {'shape': 'String'},
                         'FooBarThing': {'shape': 'String'},
-                    }
+                    },
                 },
                 'ListFooBarThingsRequest': {
                     'members': {
@@ -560,18 +597,19 @@ class TestCanGenerateCompletions(unittest.TestCase):
                     'type': 'structure',
                     'members': {
                         'FooBarThings': {'shape': 'FooBarThingList'},
-                    }
+                    },
                 },
                 'FooBarThingList': {
                     'type': 'list',
-                    'member': {'shape': 'String'}
+                    'member': {'shape': 'String'},
                 },
                 'String': {'type': 'string'},
-            }
+            },
         }
         service_model = ServiceModel(custom_model)
         completion_data = self.heuristic.generate_completion_descriptions(
-            service_model)
+            service_model
+        )
         # The operations dict should be empty because the FooBarThing has
         # a required parameter and we don't support that yet.
         self.assertEqual(completion_data['operations'], {})
@@ -585,7 +623,7 @@ class TestCanGenerateCompletions(unittest.TestCase):
                 },
                 'DeleteFooBarThing': {
                     'input': {'shape': 'DeleteFooBarThingRequest'},
-                }
+                },
             },
             'shapes': {
                 'DeleteFooBarThingRequest': {
@@ -593,13 +631,13 @@ class TestCanGenerateCompletions(unittest.TestCase):
                     'members': {
                         'FooBarThingId': {'shape': 'String'},
                         'FooBarThingArn': {'shape': 'String'},
-                    }
+                    },
                 },
                 'ListFooBarThingsResponse': {
                     'type': 'structure',
                     'members': {
                         'FooBarThings': {'shape': 'FooBarThingList'},
-                    }
+                    },
                 },
                 'FooBarThingList': {
                     'type': 'list',
@@ -615,21 +653,24 @@ class TestCanGenerateCompletions(unittest.TestCase):
                         # However it doesn't accept a "Name", so this
                         # identifier will be pruned from the response.
                         'FooBarThingPruneId': {'shape': 'String'},
-                    }
+                    },
                 },
                 'String': {'type': 'string'},
-            }
+            },
         }
         service_model = ServiceModel(custom_model)
         completion_data = self.heuristic.generate_completion_descriptions(
-            service_model)
+            service_model
+        )
         self.assertEqual(
             completion_data['resources'],
-             {'FooBarThing': {
-                 'operation': 'ListFooBarThings',
-                 'resourceIdentifier': {
-                     'FooBarThingArn': 'FooBarThings[].FooBarThingArn',
-                     'FooBarThingId': 'FooBarThings[].FooBarThingId'
-                 }}
-             }
+            {
+                'FooBarThing': {
+                    'operation': 'ListFooBarThings',
+                    'resourceIdentifier': {
+                        'FooBarThingArn': 'FooBarThings[].FooBarThingArn',
+                        'FooBarThingId': 'FooBarThings[].FooBarThingId',
+                    },
+                }
+            },
         )

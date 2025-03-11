@@ -11,17 +11,17 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from datetime import datetime, timedelta
+
 from dateutil import parser, tz
 
 from awscli.customizations.cloudtrail import utils
-from awscli.testutils import mock, unittest
 from awscli.customizations.cloudtrail.utils import (
-    normalize_date,
-    format_date,
-    parse_date,
     PublicKeyProvider,
+    format_date,
+    normalize_date,
+    parse_date,
 )
-
+from awscli.testutils import mock, unittest
 
 START_DATE = parser.parse("20140810T000000Z")
 
@@ -45,7 +45,9 @@ class TestCloudTrailUtils(unittest.TestCase):
     def test_throws_when_unable_to_get_trail_by_arn(self):
         cloudtrail_client = mock.Mock()
         cloudtrail_client.describe_trails.return_value = {"trailList": []}
-        self.assertRaises(ValueError, utils.get_trail_by_arn, cloudtrail_client, "b")
+        self.assertRaises(
+            ValueError, utils.get_trail_by_arn, cloudtrail_client, "b"
+        )
 
     def test_formats_dates(self):
         date = datetime(2015, 8, 21, tzinfo=tz.tzutc())

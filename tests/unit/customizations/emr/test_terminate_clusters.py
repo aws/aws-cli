@@ -11,8 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
-    BaseAWSCommandParamsTest
+from tests.unit.customizations.emr import (
+    EMRBaseAWSCommandParamsTest as BaseAWSCommandParamsTest,
+)
 
 
 class TestTerminateClusters(BaseAWSCommandParamsTest):
@@ -29,6 +30,7 @@ class TestTerminateClusters(BaseAWSCommandParamsTest):
         cmdline = self.prefix + args
         result = {'JobFlowIds': ['j-ABC123456', 'j-AAAAAAA']}
         self.assert_params_for_cmd(cmdline, result)
+
 
 if __name__ == "__main__":
     unittest.main()

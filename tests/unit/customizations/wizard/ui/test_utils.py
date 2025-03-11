@@ -10,15 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, mock
-
 from prompt_toolkit.application import Application
 from prompt_toolkit.layout import Layout
 
 from awscli.customizations.wizard.app import WizardTraverser
 from awscli.customizations.wizard.ui.utils import (
-    get_ui_control_by_buffer_name, move_to_previous_prompt
+    get_ui_control_by_buffer_name,
+    move_to_previous_prompt,
 )
+from awscli.testutils import mock, unittest
 
 
 class TestGetUIControlByName(unittest.TestCase):
@@ -31,11 +31,11 @@ class TestGetUIControlByName(unittest.TestCase):
         layout.find_all_controls.return_value = [
             object(),  # Does not have a buffer property
             other_ui_control,
-            desired_ui_control
+            desired_ui_control,
         ]
         self.assertIs(
             get_ui_control_by_buffer_name(layout, 'desired-buffer'),
-            desired_ui_control
+            desired_ui_control,
         )
 
     def test_raises_error_when_no_matching_ui_control_found(self):

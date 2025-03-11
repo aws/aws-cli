@@ -11,28 +11,30 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest
 import awscli.clidriver
+from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestSetQueueAttributes(BaseAWSCommandParamsTest):
-
     prefix = 'sqs set-queue-attributes'
     queue_url = 'https://queue.amazonaws.com/4444/testcli'
 
     def test_one(self):
         cmdline = self.prefix + ' --queue-url %s' % self.queue_url
         cmdline += ' --attributes {"VisibilityTimeout":"15"}'
-        result = {'QueueUrl': self.queue_url,
-                  'Attributes': {
-                      'VisibilityTimeout': '15'}}
+        result = {
+            'QueueUrl': self.queue_url,
+            'Attributes': {'VisibilityTimeout': '15'},
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_shorthand(self):
         cmdline = self.prefix + ' --queue-url %s' % self.queue_url
         cmdline += ' --attributes VisibilityTimeout=15'
-        result = {'QueueUrl': self.queue_url,
-                  'Attributes': {'VisibilityTimeout': '15'}}
+        result = {
+            'QueueUrl': self.queue_url,
+            'Attributes': {'VisibilityTimeout': '15'},
+        }
         self.assert_params_for_cmd(cmdline, result)
 
 

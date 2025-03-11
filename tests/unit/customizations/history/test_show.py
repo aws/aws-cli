@@ -10,21 +10,22 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 import argparse
+import os
 import xml.dom.minidom
 
 from botocore.session import Session
 
-from awscli.compat import ensure_text_type
-from awscli.compat import StringIO
-from awscli.utils import OutputStreamFactory
-from awscli.testutils import unittest, mock, FileCreator
-from awscli.customizations.history.show import ShowCommand
-from awscli.customizations.history.show import Formatter
-from awscli.customizations.history.show import DetailedFormatter
-from awscli.customizations.history.db import DatabaseRecordReader
+from awscli.compat import StringIO, ensure_text_type
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.history.db import DatabaseRecordReader
+from awscli.customizations.history.show import (
+    DetailedFormatter,
+    Formatter,
+    ShowCommand,
+)
+from awscli.testutils import FileCreator, mock, unittest
+from awscli.utils import OutputStreamFactory
 
 
 class FakeError(Exception):
@@ -34,7 +35,8 @@ class FakeError(Exception):
 class RecordingFormatter(Formatter):
     def __init__(self, output=None, include=None, exclude=None):
         super(RecordingFormatter, self).__init__(
-            output=output, include=include, exclude=exclude)
+            output=output, include=include, exclude=exclude
+        )
         self.history = []
 
     def _display(self, event_record):
@@ -48,13 +50,7 @@ class TestFormatter(unittest.TestCase):
         other_event_record = {'event_type': 'my_other_event'}
         formatter.display(event_record)
         formatter.display(other_event_record)
-        self.assertEqual(
-            formatter.history,
-            [
-                event_record,
-                other_event_record
-            ]
-        )
+        self.assertEqual(formatter.history, [event_record, other_event_record])
 
     def test_include_specified_event_type(self):
         formatter = RecordingFormatter(include=['my_event'])
@@ -78,8 +74,7 @@ class TestFormatter(unittest.TestCase):
         formatter = RecordingFormatter(exclude=['my_event'])
         other_event_record = {'event_type': 'my_other_event'}
         formatter.display(other_event_record)
-        self.assertEqual(
-            formatter.history, [other_event_record])
+        self.assertEqual(formatter.history, [other_event_record])
 
     def test_raises_error_when_both_include_and_exclude(self):
         with self.assertRaises(ParamValidationError):
@@ -93,7 +88,7 @@ class TestDetailedFormatter(unittest.TestCase):
 
     def get_pretty_xml(self, xml_str):
         xml_dom = xml.dom.minidom.parseString(xml_str)
-        return xml_dom.toprettyxml(indent=' '*4, newl='\n')
+        return xml_dom.toprettyxml(indent=' ' * 4, newl='\n')
 
     def assert_output(self, for_event, contains):
         self.formatter.display(for_event)
@@ -108,12 +103,12 @@ class TestDetailedFormatter(unittest.TestCase):
                 'id': 'my-id',
                 'payload': 'aws-cli/1.11.188',
                 'timestamp': 86400000,
-                'request_id': None
+                'request_id': None,
             },
             contains=[
                 'AWS CLI command entered',
-                'with AWS CLI version: aws-cli/1.11.188'
-            ]
+                'with AWS CLI version: aws-cli/1.11.188',
+            ],
         )
 
     def test_can_use_color(self):
@@ -124,12 +119,12 @@ class TestDetailedFormatter(unittest.TestCase):
                 'id': 'my-id',
                 'payload': 'aws-cli/1.11.188',
                 'timestamp': 86400000,
-                'request_id': None
+                'request_id': None,
             },
             contains=[
                 '\x1b[1mAWS CLI command entered',
-                '\x1b[36mwith AWS CLI version:'
-            ]
+                '\x1b[36mwith AWS CLI version:',
+            ],
         )
 
     def test_display_cli_arguments(self):
@@ -139,11 +134,9 @@ class TestDetailedFormatter(unittest.TestCase):
                 'id': 'my-id',
                 'payload': ['ec2', 'describe-regions'],
                 'timestamp': 86400000,
-                'request_id': None
+                'request_id': None,
             },
-            contains=[
-                 "with arguments: ['ec2', 'describe-regions']"
-            ]
+            contains=["with arguments: ['ec2', 'describe-regions']"],
         )
 
     def test_display_api_call(self):
@@ -155,15 +148,15 @@ class TestDetailedFormatter(unittest.TestCase):
                 'payload': {
                     'service': 'ec2',
                     'operation': 'DescribeRegions',
-                    'params': {}
+                    'params': {},
                 },
                 'timestamp': 86400000,
             },
             contains=[
                 'to service: ec2\n',
                 'using operation: DescribeRegions\n',
-                'with parameters: {}\n'
-            ]
+                'with parameters: {}\n',
+            ],
         )
 
     def test_two_different_api_calls_have_different_numbers(self):
@@ -174,7 +167,7 @@ class TestDetailedFormatter(unittest.TestCase):
             'payload': {
                 'service': 'ec2',
                 'operation': 'DescribeRegions',
-                'params': {}
+                'params': {},
             },
             'timestamp': 86400000,
         }
@@ -189,13 +182,14 @@ class TestDetailedFormatter(unittest.TestCase):
             'payload': {
                 'service': 'ec2',
                 'operation': 'DescribeRegions',
-                'params': {}
+                'params': {},
             },
             'timestamp': 86400000,
         }
         self.formatter.display(other_event)
         new_output = ensure_text_type(self.output.getvalue())[
-            len(collected_output):]
+            len(collected_output) :
+        ]
         self.assertIn('[1] API call made', new_output)
 
     def test_display_http_request(self):
@@ -208,7 +202,7 @@ class TestDetailedFormatter(unittest.TestCase):
                     'method': 'GET',
                     'url': 'https://myservice.us-west-2.amazonaws.com',
                     'headers': {},
-                    'body': 'This is my body'
+                    'body': 'This is my body',
                 },
                 'timestamp': 86400000,
             },
@@ -216,8 +210,8 @@ class TestDetailedFormatter(unittest.TestCase):
                 'to URL: https://myservice.us-west-2.amazonaws.com\n',
                 'with method: GET\n',
                 'with headers: {}\n',
-                'with body: This is my body\n'
-            ]
+                'with body: This is my body\n',
+            ],
         )
 
     def test_display_http_request_filter_signature(self):
@@ -235,13 +229,11 @@ class TestDetailedFormatter(unittest.TestCase):
                             'cc79c4f3d1636cf69fac0e7c1abcd'
                         )
                     },
-                    'body': 'This is my body'
+                    'body': 'This is my body',
                 },
                 'timestamp': 86400000,
             },
-            contains=[
-                '"Authorization": "Signature=d7fa..."'
-            ]
+            contains=['"Authorization": "Signature=d7fa..."'],
         )
 
     def test_display_http_request_with_streaming_body(self):
@@ -255,13 +247,13 @@ class TestDetailedFormatter(unittest.TestCase):
                     'url': 'https://myservice.us-west-2.amazonaws.com',
                     'headers': {},
                     'body': 'This should not be printed out',
-                    'streaming': True
+                    'streaming': True,
                 },
                 'timestamp': 86400000,
             },
             contains=[
                 'with body: The body is a stream and will not be displayed',
-            ]
+            ],
         )
 
     def test_display_http_request_with_no_payload(self):
@@ -274,13 +266,11 @@ class TestDetailedFormatter(unittest.TestCase):
                     'method': 'GET',
                     'url': 'https://myservice.us-west-2.amazonaws.com',
                     'headers': {},
-                    'body': None
+                    'body': None,
                 },
                 'timestamp': 86400000,
             },
-            contains=[
-                'with body: There is no associated body'
-            ]
+            contains=['with body: There is no associated body'],
         )
 
     def test_display_http_request_with_empty_string_payload(self):
@@ -293,13 +283,11 @@ class TestDetailedFormatter(unittest.TestCase):
                     'method': 'GET',
                     'url': 'https://myservice.us-west-2.amazonaws.com',
                     'headers': {},
-                    'body': ''
+                    'body': '',
                 },
                 'timestamp': 86400000,
             },
-            contains=[
-                'with body: There is no associated body'
-            ]
+            contains=['with body: There is no associated body'],
         )
 
     def test_display_http_request_with_xml_payload(self):
@@ -313,13 +301,11 @@ class TestDetailedFormatter(unittest.TestCase):
                     'method': 'GET',
                     'url': 'https://myservice.us-west-2.amazonaws.com',
                     'headers': {},
-                    'body': xml_body
+                    'body': xml_body,
                 },
                 'timestamp': 86400000,
             },
-            contains=[
-                'with body: ' + self.get_pretty_xml(xml_body)
-            ]
+            contains=['with body: ' + self.get_pretty_xml(xml_body)],
         )
 
     def test_display_http_request_with_xml_payload_and_whitespace(self):
@@ -333,15 +319,13 @@ class TestDetailedFormatter(unittest.TestCase):
                     'method': 'GET',
                     'url': 'https://myservice.us-west-2.amazonaws.com',
                     'headers': {},
-                    'body': self.get_pretty_xml(xml_body)
+                    'body': self.get_pretty_xml(xml_body),
                 },
                 'timestamp': 86400000,
             },
             # The XML should not be prettified more than once if the body
             # of the request was already prettied.
-            contains=[
-                'with body: ' + self.get_pretty_xml(xml_body)
-            ]
+            contains=['with body: ' + self.get_pretty_xml(xml_body)],
         )
 
     def test_display_http_request_with_json_struct_payload(self):
@@ -354,15 +338,11 @@ class TestDetailedFormatter(unittest.TestCase):
                     'method': 'GET',
                     'url': 'https://myservice.us-west-2.amazonaws.com',
                     'headers': {},
-                    'body': '{"foo": "bar"}'
+                    'body': '{"foo": "bar"}',
                 },
                 'timestamp': 86400000,
             },
-            contains=[
-                'with body: {\n'
-                '    "foo": "bar"\n'
-                '}'
-            ]
+            contains=['with body: {\n' '    "foo": "bar"\n' '}'],
         )
 
     def test_shares_api_number_across_events_of_same_api_call(self):
@@ -374,13 +354,11 @@ class TestDetailedFormatter(unittest.TestCase):
                 'payload': {
                     'service': 'ec2',
                     'operation': 'DescribeRegions',
-                    'params': {}
+                    'params': {},
                 },
                 'timestamp': 86400000,
             },
-            contains=[
-                '[0] API call made'
-            ]
+            contains=['[0] API call made'],
         )
         self.assert_output(
             for_event={
@@ -391,13 +369,11 @@ class TestDetailedFormatter(unittest.TestCase):
                     'method': 'GET',
                     'url': 'https://myservice.us-west-2.amazonaws.com',
                     'headers': {},
-                    'body': 'This is my body'
+                    'body': 'This is my body',
                 },
                 'timestamp': 86400000,
             },
-            contains=[
-                '[0] HTTP request sent'
-            ]
+            contains=['[0] HTTP request sent'],
         )
 
     def test_display_http_response(self):
@@ -409,7 +385,7 @@ class TestDetailedFormatter(unittest.TestCase):
                 'payload': {
                     'status_code': 200,
                     'headers': {},
-                    'body': 'This is my body'
+                    'body': 'This is my body',
                 },
                 'timestamp': 86400000,
             },
@@ -417,9 +393,8 @@ class TestDetailedFormatter(unittest.TestCase):
                 '[0] HTTP response received',
                 'with status code: 200\n',
                 'with headers: {}\n',
-                'with body: This is my body\n'
-
-            ]
+                'with body: This is my body\n',
+            ],
         )
 
     def test_display_http_response_with_streaming_body(self):
@@ -432,13 +407,13 @@ class TestDetailedFormatter(unittest.TestCase):
                     'status_code': 200,
                     'headers': {},
                     'body': 'This should not be printed out',
-                    'streaming': True
+                    'streaming': True,
                 },
                 'timestamp': 86400000,
             },
             contains=[
                 'with body: The body is a stream and will not be displayed'
-            ]
+            ],
         )
 
     def test_display_http_response_with_no_payload(self):
@@ -447,16 +422,10 @@ class TestDetailedFormatter(unittest.TestCase):
                 'event_type': 'HTTP_RESPONSE',
                 'id': 'my-id',
                 'request_id': 'some-id',
-                'payload': {
-                    'status_code': 200,
-                    'headers': {},
-                    'body': None
-                },
+                'payload': {'status_code': 200, 'headers': {}, 'body': None},
                 'timestamp': 86400000,
             },
-            contains=[
-                'with body: There is no associated body'
-            ]
+            contains=['with body: There is no associated body'],
         )
 
     def test_display_http_response_with_empty_string_payload(self):
@@ -465,16 +434,10 @@ class TestDetailedFormatter(unittest.TestCase):
                 'event_type': 'HTTP_RESPONSE',
                 'id': 'my-id',
                 'request_id': 'some-id',
-                'payload': {
-                    'status_code': 200,
-                    'headers': {},
-                    'body': ''
-                },
+                'payload': {'status_code': 200, 'headers': {}, 'body': ''},
                 'timestamp': 86400000,
             },
-            contains=[
-                'with body: There is no associated body'
-            ]
+            contains=['with body: There is no associated body'],
         )
 
     def test_display_http_response_with_xml_payload(self):
@@ -487,13 +450,11 @@ class TestDetailedFormatter(unittest.TestCase):
                 'payload': {
                     'status_code': 200,
                     'headers': {},
-                    'body': xml_body
+                    'body': xml_body,
                 },
                 'timestamp': 86400000,
             },
-            contains=[
-                'with body: ' + self.get_pretty_xml(xml_body)
-            ]
+            contains=['with body: ' + self.get_pretty_xml(xml_body)],
         )
 
     def test_display_http_response_with_xml_payload_and_whitespace(self):
@@ -506,15 +467,13 @@ class TestDetailedFormatter(unittest.TestCase):
                 'payload': {
                     'status_code': 200,
                     'headers': {},
-                    'body': self.get_pretty_xml(xml_body)
+                    'body': self.get_pretty_xml(xml_body),
                 },
                 'timestamp': 86400000,
             },
             # The XML should not be prettified more than once if the body
             # of the response was already prettied.
-            contains=[
-                'with body: ' + self.get_pretty_xml(xml_body)
-            ]
+            contains=['with body: ' + self.get_pretty_xml(xml_body)],
         )
 
     def test_display_http_response_with_json_struct_payload(self):
@@ -526,7 +485,7 @@ class TestDetailedFormatter(unittest.TestCase):
                 'payload': {
                     'status_code': 200,
                     'headers': {},
-                    'body': '{"foo": "bar"}'
+                    'body': '{"foo": "bar"}',
                 },
                 'timestamp': 86400000,
             },
@@ -534,7 +493,7 @@ class TestDetailedFormatter(unittest.TestCase):
                 'with body: {\n',
                 '    "foo": "bar"\n',
                 '}',
-            ]
+            ],
         )
 
     def test_display_parsed_response(self):
@@ -546,10 +505,7 @@ class TestDetailedFormatter(unittest.TestCase):
                 'payload': {},
                 'timestamp': 86400000,
             },
-            contains=[
-                '[0] HTTP response parsed',
-                'parsed to: {}'
-            ]
+            contains=['[0] HTTP response parsed', 'parsed to: {}'],
         )
 
     def test_display_cli_rc(self):
@@ -559,12 +515,9 @@ class TestDetailedFormatter(unittest.TestCase):
                 'id': 'my-id',
                 'payload': 0,
                 'timestamp': 86400000,
-                'request_id': None
+                'request_id': None,
             },
-            contains=[
-                'AWS CLI command exited',
-                'with return code: 0'
-            ]
+            contains=['AWS CLI command exited', 'with return code: 0'],
         )
 
     def test_display_unknown_type(self):
@@ -573,7 +526,7 @@ class TestDetailedFormatter(unittest.TestCase):
             'id': 'my-id',
             'payload': 'foo',
             'timestamp': 86400000,
-            'request_id': None
+            'request_id': None,
         }
         self.formatter.display(event)
         collected_output = ensure_text_type(self.output.getvalue())
@@ -592,15 +545,17 @@ class TestShowCommand(unittest.TestCase):
         self.output_stream = mock.Mock()
         output_stream_context.__enter__.return_value = self.output_stream
 
-        self.output_stream_factory.get_output_stream.return_value = \
+        self.output_stream_factory.get_output_stream.return_value = (
             output_stream_context
+        )
 
         self.db_reader = mock.Mock(DatabaseRecordReader)
         self.db_reader.iter_latest_records.return_value = []
         self.db_reader.iter_records.return_value = []
 
         self.show_cmd = ShowCommand(
-            self.session, self.db_reader, self.output_stream_factory)
+            self.session, self.db_reader, self.output_stream_factory
+        )
 
         self.formatter = mock.Mock(Formatter)
         self.add_formatter('mock', self.formatter)
@@ -637,7 +592,8 @@ class TestShowCommand(unittest.TestCase):
         db_filename = os.path.join(self.files.rootdir, 'name.db')
         with mock.patch('os.environ', {'AWS_CLI_HISTORY_FILE': db_filename}):
             with self.assertRaisesRegex(
-                    RuntimeError, 'Could not locate history'):
+                RuntimeError, 'Could not locate history'
+            ):
                 self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
 
     def add_formatter(self, formatter_name, formatter):
@@ -658,7 +614,7 @@ class TestShowCommand(unittest.TestCase):
         self.show_cmd._run_main(self.parsed_args, self.parsed_globals)
         self.assertEqual(
             self.db_reader.iter_records.call_args,
-            mock.call('some-specific-id')
+            mock.call('some-specific-id'),
         )
 
     def test_uses_format(self):
@@ -675,7 +631,7 @@ class TestShowCommand(unittest.TestCase):
         self.assertTrue(formatter.called)
         self.assertEqual(
             formatter.return_value.display.call_args_list,
-            [mock.call(return_record)]
+            [mock.call(return_record)],
         )
 
     def test_uses_include(self):
@@ -687,8 +643,8 @@ class TestShowCommand(unittest.TestCase):
         self.assertEqual(
             self.formatter.call_args,
             mock.call(
-                include=['API_CALL'], exclude=None,
-                output=self.output_stream)
+                include=['API_CALL'], exclude=None, output=self.output_stream
+            ),
         )
 
     def test_uses_exclude(self):
@@ -700,8 +656,8 @@ class TestShowCommand(unittest.TestCase):
         self.assertEqual(
             self.formatter.call_args,
             mock.call(
-                include=None, exclude=['CLI_RC'],
-                output=self.output_stream)
+                include=None, exclude=['CLI_RC'], output=self.output_stream
+            ),
         )
 
     def test_raises_error_when_both_include_and_exclude(self):
@@ -723,9 +679,11 @@ class TestShowCommand(unittest.TestCase):
         self.assertEqual(
             self.formatter.call_args,
             mock.call(
-                include=None, exclude=None,
-                output=self.output_stream, colorize=True
-            )
+                include=None,
+                exclude=None,
+                output=self.output_stream,
+                colorize=True,
+            ),
         )
 
     @mock.patch('awscli.customizations.history.commands.is_windows', False)
@@ -741,9 +699,11 @@ class TestShowCommand(unittest.TestCase):
         self.assertEqual(
             self.formatter.call_args,
             mock.call(
-                include=None, exclude=None,
-                output=self.output_stream, colorize=False
-            )
+                include=None,
+                exclude=None,
+                output=self.output_stream,
+                colorize=False,
+            ),
         )
 
     @mock.patch('awscli.customizations.history.commands.is_windows', True)
@@ -757,9 +717,11 @@ class TestShowCommand(unittest.TestCase):
         self.assertEqual(
             self.formatter.call_args,
             mock.call(
-                include=None, exclude=None,
-                output=self.output_stream, colorize=False
-            )
+                include=None,
+                exclude=None,
+                output=self.output_stream,
+                colorize=False,
+            ),
         )
 
     @mock.patch('awscli.customizations.history.commands.is_windows', True)
@@ -779,9 +741,11 @@ class TestShowCommand(unittest.TestCase):
         self.assertEqual(
             self.formatter.call_args,
             mock.call(
-                include=None, exclude=None,
-                output=self.output_stream, colorize=True
-            )
+                include=None,
+                exclude=None,
+                output=self.output_stream,
+                colorize=True,
+            ),
         )
 
     @mock.patch('awscli.customizations.history.commands.is_windows', False)
@@ -801,7 +765,9 @@ class TestShowCommand(unittest.TestCase):
         self.assertEqual(
             self.formatter.call_args,
             mock.call(
-                include=None, exclude=None,
-                output=self.output_stream, colorize=False
-            )
+                include=None,
+                exclude=None,
+                output=self.output_stream,
+                colorize=False,
+            ),
         )

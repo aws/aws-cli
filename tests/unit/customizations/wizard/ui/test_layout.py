@@ -10,14 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, mock
-
-from prompt_toolkit.layout import walk
 from prompt_toolkit.application import DummyApplication
+from prompt_toolkit.layout import walk
 
 from awscli.customizations.wizard.ui.layout import (
-    RunWizardDialog, WizardErrorBar
+    RunWizardDialog,
+    WizardErrorBar,
 )
+from awscli.testutils import mock, unittest
 
 
 class TestRunWizardDialog(unittest.TestCase):
@@ -66,45 +66,29 @@ class TestRunWizardDialog(unittest.TestCase):
         dialog = RunWizardDialog.from_done_section_definition(done_section)
         self.assertIn('Run wizard?', self.get_title_text(dialog))
         self.assertEqual(
-            self.get_button_texts(dialog),
-            [
-                '<   Yes    >',
-                '<   Back   >'
-            ]
+            self.get_button_texts(dialog), ['<   Yes    >', '<   Back   >']
         )
 
     def test_override_title_in_done_section_definition(self):
-        done_section = {
-            'description': 'Override title'
-        }
+        done_section = {'description': 'Override title'}
         dialog = RunWizardDialog.from_done_section_definition(done_section)
         self.assertIn('Override title', self.get_title_text(dialog))
 
     def test_override_button_list_in_done_section_definition(self):
-        done_section = {
-            'options': [
-                'yes'
-            ]
-        }
+        done_section = {'options': ['yes']}
         dialog = RunWizardDialog.from_done_section_definition(done_section)
         self.assertEqual(
             self.get_button_texts(dialog),
             [
                 '<   Yes    >',
-            ]
+            ],
         )
 
     def test_override_button_text_in_done_section_definition(self):
         done_section = {
             'options': [
-                {
-                    'name': 'yes',
-                    'description': 'Y'
-                },
-                {
-                    'name': 'back',
-                    'description': 'B'
-                },
+                {'name': 'yes', 'description': 'Y'},
+                {'name': 'back', 'description': 'B'},
             ]
         }
         dialog = RunWizardDialog.from_done_section_definition(done_section)
@@ -113,7 +97,7 @@ class TestRunWizardDialog(unittest.TestCase):
             [
                 '<    Y     >',
                 '<    B     >',
-            ]
+            ],
         )
 
 
@@ -124,7 +108,8 @@ class TestWizardErrorBar(unittest.TestCase):
         self.app.error_bar_visible = None
         self.get_app = mock.patch(
             'awscli.customizations.wizard.ui.layout.get_app',
-            return_value=self.app)
+            return_value=self.app,
+        )
         self.get_app.start()
 
     def tearDown(self):
@@ -141,9 +126,11 @@ class TestWizardErrorBar(unittest.TestCase):
 
     def get_error_bar_buffer(self):
         for child in walk(self.error_bar.container, skip_hidden=True):
-            if hasattr(child, 'content') and \
-                    hasattr(child.content, 'buffer') and \
-                    child.content.buffer.name == 'error_bar':
+            if (
+                hasattr(child, 'content')
+                and hasattr(child.content, 'buffer')
+                and child.content.buffer.name == 'error_bar'
+            ):
                 return child.content.buffer
         return None
 

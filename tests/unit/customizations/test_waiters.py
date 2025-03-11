@@ -10,15 +10,25 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.waiter import WaiterModel
 from botocore.exceptions import DataNotFoundError
+from botocore.waiter import WaiterModel
 
-from awscli.testutils import mock, unittest, BaseAWSHelpOutputTest, \
-    BaseAWSCommandParamsTest
 from awscli.customizations.exceptions import ParamValidationError
-from awscli.customizations.waiters import add_waiters, WaitCommand, \
-    get_waiter_model_from_service_model, WaiterStateCommand, WaiterCaller, \
-    WaiterStateDocBuilder, WaiterStateCommandBuilder
+from awscli.customizations.waiters import (
+    WaitCommand,
+    WaiterCaller,
+    WaiterStateCommand,
+    WaiterStateCommandBuilder,
+    WaiterStateDocBuilder,
+    add_waiters,
+    get_waiter_model_from_service_model,
+)
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    BaseAWSHelpOutputTest,
+    mock,
+    unittest,
+)
 
 
 class TestAddWaiters(unittest.TestCase):
@@ -35,7 +45,7 @@ class TestAddWaiters(unittest.TestCase):
                 'version': 2,
                 'waiters': {
                     'FooExists': {},
-                }
+                },
             }
         )
 
@@ -51,7 +61,7 @@ class TestAddWaiters(unittest.TestCase):
             {
                 'version': 2,
                 # No waiters are specified.
-                'waiters': {}
+                'waiters': {},
             }
         )
         command_table = {}
@@ -70,7 +80,8 @@ class TestAddWaiters(unittest.TestCase):
 
     def test_add_waiter_no_waiter_config(self):
         self.session.get_waiter_model.side_effect = DataNotFoundError(
-            data_path='foo')
+            data_path='foo'
+        )
         command_table = {}
         add_waiters(command_table, self.session, self.command_object)
         self.assertEqual(command_table, {})
@@ -91,23 +102,29 @@ class TestServicetoWaiterModel(unittest.TestCase):
         service_model.service_name = 'service'
         service_model.api_version = '2014-01-01'
         session.get_waiter_model.side_effect = DataNotFoundError(
-            data_path='foo')
+            data_path='foo'
+        )
         self.assertIsNone(
-            get_waiter_model_from_service_model(session, service_model))
+            get_waiter_model_from_service_model(session, service_model)
+        )
 
 
 class TestWaitCommand(unittest.TestCase):
     def setUp(self):
         self.session = mock.Mock()
-        self.model = WaiterModel({
-            'version': 2,
-            'waiters': {
-                'Foo': {
-                    'operation': 'foo', 'maxAttempts': 1, 'delay': 1,
-                    'acceptors': [],
-                }
+        self.model = WaiterModel(
+            {
+                'version': 2,
+                'waiters': {
+                    'Foo': {
+                        'operation': 'foo',
+                        'maxAttempts': 1,
+                        'delay': 1,
+                        'acceptors': [],
+                    }
+                },
             }
-        })
+        )
         self.service_model = mock.Mock()
         self.cmd = WaitCommand(self.session, self.model, self.service_model)
 
@@ -140,7 +157,8 @@ class TestWaitHelpOutput(BaseAWSHelpOutputTest):
         self.driver.main(['ec2', 'wait', 'instance-running', 'help'])
         self.assert_contains('.. _cli:aws ec2 wait instance-running:')
         self.assert_contains(
-            'Wait until JMESPath query Reservations[].Instances[].State.Name')
+            'Wait until JMESPath query Reservations[].Instances[].State.Name'
+        )
         self.assert_contains('poll every')
         self.assert_contains('This will exit with a return code of 255 after')
         self.assert_contains('``describe-instances``')
@@ -150,26 +168,22 @@ class TestWaitHelpOutput(BaseAWSHelpOutputTest):
 
 
 class TestWait(BaseAWSCommandParamsTest):
-    """ This is merely a smoke test.
+    """This is merely a smoke test.
 
     Its purpose is to test that the wait command can be run proberly for
     various services. It is by no means exhaustive.
     """
+
     def test_ec2_instance_running(self):
         cmdline = 'ec2 wait instance-running'
         cmdline += ' --instance-ids i-12345678 i-87654321'
         cmdline += """ --filters {"Name":"group-name","Values":["foobar"]}"""
-        result = {'Filters': [{'Name': 'group-name',
-                               'Values': ['foobar']}],
-                  'InstanceIds': ['i-12345678', 'i-87654321']}
+        result = {
+            'Filters': [{'Name': 'group-name', 'Values': ['foobar']}],
+            'InstanceIds': ['i-12345678', 'i-87654321'],
+        }
         self.parsed_response = {
-            'Reservations': [{
-                'Instances': [{
-                    'State': {
-                        'Name': 'running'
-                    }
-                }]
-            }]
+            'Reservations': [{'Instances': [{'State': {'Name': 'running'}}]}]
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -185,9 +199,7 @@ class TestWait(BaseAWSCommandParamsTest):
         cmdline += ' --db-instance-identifier abc'
         result = {'DBInstanceIdentifier': 'abc'}
         self.parsed_response = {
-            'DBInstances': [{
-                'DBInstanceStatus': 'available'
-            }]
+            'DBInstances': [{'DBInstanceStatus': 'available'}]
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -198,28 +210,28 @@ class TestWaiterStateCommandBuilder(unittest.TestCase):
         self.service_model = mock.Mock()
 
         # Create some waiters.
-        self.model = WaiterModel({
-            'version': 2,
-            'waiters': {
-                'InstanceRunning': {
-                    'description': 'My waiter description.',
-                    'delay': 1,
-                    'maxAttempts': 10,
-                    'operation': 'MyOperation',
+        self.model = WaiterModel(
+            {
+                'version': 2,
+                'waiters': {
+                    'InstanceRunning': {
+                        'description': 'My waiter description.',
+                        'delay': 1,
+                        'maxAttempts': 10,
+                        'operation': 'MyOperation',
+                    },
+                    'BucketExists': {
+                        'description': 'My waiter description.',
+                        'operation': 'MyOperation',
+                        'delay': 1,
+                        'maxAttempts': 10,
+                    },
                 },
-                'BucketExists': {
-                    'description': 'My waiter description.',
-                    'operation': 'MyOperation',
-                    'delay': 1,
-                    'maxAttempts': 10,
-                }
             }
-        })
+        )
 
         self.waiter_builder = WaiterStateCommandBuilder(
-            self.session,
-            self.model,
-            self.service_model
+            self.session, self.model, self.service_model
         )
 
     def test_build_waiter_state_cmds(self):
@@ -246,13 +258,13 @@ class TestWaiterStateCommandBuilder(unittest.TestCase):
             instance_running_cmd.DESCRIPTION,
             'My waiter description. It will poll every 1 seconds until '
             'a successful state has been reached. This will exit with a '
-            'return code of 255 after 10 failed checks.'
+            'return code of 255 after 10 failed checks.',
         )
         self.assertEqual(
             bucket_exists_cmd.DESCRIPTION,
             'My waiter description. It will poll every 1 seconds until '
             'a successful state has been reached. This will exit with a '
-            'return code of 255 after 10 failed checks.'
+            'return code of 255 after 10 failed checks.',
         )
 
 
@@ -274,7 +286,7 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
         self.waiter_config.acceptors = [
             self.fail_acceptor,
             self.success_acceptor,
-            self.error_acceptor
+            self.error_acceptor,
         ]
 
         self.doc_builder = WaiterStateDocBuilder(self.waiter_config)
@@ -287,7 +299,8 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
             description,
             'My description. It will poll every 5 seconds until a '
             'successful state has been reached. This will exit with a '
-            'return code of 255 after 20 failed checks.')
+            'return code of 255 after 20 failed checks.',
+        )
 
     def test_error_acceptor(self):
         self.success_acceptor.matcher = 'error'
@@ -298,7 +311,7 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
             'Wait until MyException is thrown when polling with '
             '``my-operation``. It will poll every 5 seconds until a '
             'successful state has been reached. This will exit with a '
-            'return code of 255 after 20 failed checks.'
+            'return code of 255 after 20 failed checks.',
         )
 
     def test_status_acceptor(self):
@@ -310,7 +323,7 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
             'Wait until 200 response is received when polling with '
             '``my-operation``. It will poll every 5 seconds until a '
             'successful state has been reached. This will exit with a '
-            'return code of 255 after 20 failed checks.'
+            'return code of 255 after 20 failed checks.',
         )
 
     def test_path_acceptor(self):
@@ -323,7 +336,7 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
             'Wait until JMESPath query MyResource.name returns running when '
             'polling with ``my-operation``. It will poll every 5 seconds '
             'until a successful state has been reached. This will exit with '
-            'a return code of 255 after 20 failed checks.'
+            'a return code of 255 after 20 failed checks.',
         )
 
     def test_path_all_acceptor(self):
@@ -336,7 +349,7 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
             'Wait until JMESPath query MyResource[].name returns running for '
             'all elements when polling with ``my-operation``. It will poll '
             'every 5 seconds until a successful state has been reached. '
-            'This will exit with a return code of 255 after 20 failed checks.'
+            'This will exit with a return code of 255 after 20 failed checks.',
         )
 
     def test_path_any_acceptor(self):
@@ -349,7 +362,7 @@ class TestWaiterStateDocBuilder(unittest.TestCase):
             'Wait until JMESPath query MyResource[].name returns running for '
             'any element when polling with ``my-operation``. It will poll '
             'every 5 seconds until a successful state has been reached. '
-            'This will exit with a return code of 255 after 20 failed checks.'
+            'This will exit with a return code of 255 after 20 failed checks.',
         )
 
 
@@ -367,21 +380,22 @@ class TestWaiterCaller(unittest.TestCase):
         parsed_globals.verify_ssl = True
 
         waiter_caller = WaiterCaller(session, waiter_name)
-        waiter_caller.invoke('myservice', 'MyWaiter', parameters,
-                             parsed_globals)
+        waiter_caller.invoke(
+            'myservice', 'MyWaiter', parameters, parsed_globals
+        )
 
         # Make sure the client was created properly.
         session.create_client.assert_called_with(
             'myservice',
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
-            verify=parsed_globals.verify_ssl
+            verify=parsed_globals.verify_ssl,
         )
 
         # Make sure we got the correct waiter.
         session.create_client.return_value.get_waiter.assert_called_with(
-            waiter_name)
+            waiter_name
+        )
 
         # Ensure the wait command was called properly.
-        waiter.wait.assert_called_with(
-            Foo='bar', Baz='biz')
+        waiter.wait.assert_called_with(Foo='bar', Baz='biz')

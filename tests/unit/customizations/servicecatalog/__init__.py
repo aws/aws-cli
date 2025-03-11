@@ -11,11 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.testutils import unittest
-from awscli.testutils import mock
-from awscli.customizations.servicecatalog import \
-    register_servicecatalog_commands, GenerateCommand
-from awscli.customizations.servicecatalog import inject_commands
+from awscli.customizations.servicecatalog import (
+    GenerateCommand,
+    inject_commands,
+    register_servicecatalog_commands,
+)
+from awscli.testutils import mock, unittest
 
 
 class TestRegisterServiceCatalogCommands(unittest.TestCase):
@@ -23,7 +24,12 @@ class TestRegisterServiceCatalogCommands(unittest.TestCase):
         event_emitter = mock.Mock()
         register_servicecatalog_commands(event_emitter)
         event_emitter.register.assert_has_calls(
-            [mock.call('building-command-table.servicecatalog', inject_commands)])
+            [
+                mock.call(
+                    'building-command-table.servicecatalog', inject_commands
+                )
+            ]
+        )
 
 
 class TestInjectCommands(unittest.TestCase):
@@ -32,5 +38,4 @@ class TestInjectCommands(unittest.TestCase):
         session = mock.Mock()
         inject_commands(command_table, session)
         self.assertIn('generate', command_table)
-        self.assertIsInstance(
-            command_table['generate'], GenerateCommand)
+        self.assertIsInstance(command_table['generate'], GenerateCommand)

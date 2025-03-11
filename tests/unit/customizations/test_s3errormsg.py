@@ -12,22 +12,16 @@
 # language governing permissions and limitations under the License.
 import copy
 
-from awscli.testutils import unittest
 from awscli.customizations import s3errormsg
+from awscli.testutils import unittest
 
 
 class TestGetRegionFromEndpoint(unittest.TestCase):
-
     def test_sigv4_error_message(self):
-        parsed = {
-            'Error': {
-                'Message': 'Please use AWS4-HMAC-SHA256'
-            }
-        }
+        parsed = {'Error': {'Message': 'Please use AWS4-HMAC-SHA256'}}
         s3errormsg.enhance_error_msg(parsed)
         # We should say how to fix the issue.
-        self.assertIn('You can fix this issue',
-                      parsed['Error']['Message'])
+        self.assertIn('You can fix this issue', parsed['Error']['Message'])
         # We should mention the --region argument.
         self.assertIn('--region', parsed['Error']['Message'])
         # We should mention get-bucket-location
@@ -51,23 +45,27 @@ class TestGetRegionFromEndpoint(unittest.TestCase):
             'Error': {
                 'Message': (
                     'Requests specifying Server Side Encryption with '
-                    'AWS KMS managed keys require AWS Signature Version 4.')
+                    'AWS KMS managed keys require AWS Signature Version 4.'
+                )
             }
         }
         s3errormsg.enhance_error_msg(parsed)
         # We should say how you enable it.
-        self.assertIn('You can enable AWS Signature Version 4',
-                      parsed['Error']['Message'])
+        self.assertIn(
+            'You can enable AWS Signature Version 4',
+            parsed['Error']['Message'],
+        )
         # We should mention the command that needs to be run.
         self.assertIn(
             'aws configure set s3.signature_version s3v4',
-            parsed['Error']['Message'])
+            parsed['Error']['Message'],
+        )
 
     def test_error_message_not_enhanced(self):
         parsed = {
             'Error': {
                 'Message': 'This is a different error message.',
-                'Code': 'Other Message'
+                'Code': 'Other Message',
             }
         }
         expected = copy.deepcopy(parsed)
@@ -76,10 +74,7 @@ class TestGetRegionFromEndpoint(unittest.TestCase):
         self.assertEqual(parsed, expected)
 
     def test_not_an_error_message(self):
-        parsed = {
-            'Success': 'response',
-            'ResponseMetadata': {}
-        }
+        parsed = {'Success': 'response', 'ResponseMetadata': {}}
         expected = copy.deepcopy(parsed)
         s3errormsg.enhance_error_msg(parsed)
         # Nothing should have changed

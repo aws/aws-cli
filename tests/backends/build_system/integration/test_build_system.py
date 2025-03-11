@@ -15,8 +15,10 @@ import subprocess
 
 import pytest
 
-from tests.backends.build_system.integration import BaseArtifactTest
-from tests.backends.build_system.integration import VEnvWorkspace
+from tests.backends.build_system.integration import (
+    BaseArtifactTest,
+    VEnvWorkspace,
+)
 
 
 class TestBuildBackend(BaseArtifactTest):

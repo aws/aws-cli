@@ -49,8 +49,9 @@ class InMemoryIndex(model.ModelIndex):
 
     def arg_names(self, lineage, command_name, positional_arg=False):
         parent = '.'.join(lineage)
-        arg_names = self.index['arg_names'].get(parent, {}).get(
-            command_name, [])
+        arg_names = (
+            self.index['arg_names'].get(parent, {}).get(command_name, [])
+        )
         filtered_arg_names = []
         for arg_name in arg_names:
             arg_data = self.get_argument_data(lineage, command_name, arg_name)
@@ -60,15 +61,18 @@ class InMemoryIndex(model.ModelIndex):
 
     def get_argument_data(self, lineage, command_name, arg_name):
         parent = '.'.join(lineage)
-        arg_data = self.index['arg_data'].get(parent, {}).get(
-            command_name, {}).get(arg_name)
+        arg_data = (
+            self.index['arg_data']
+            .get(parent, {})
+            .get(command_name, {})
+            .get(arg_name)
+        )
         if arg_data is not None:
             return model.CLIArgument(*arg_data)
 
     def get_global_arg_data(self, lineage=[], command_name='aws'):
         parent = '.'.join(lineage)
-        arg_data = self.index['arg_data'].get(parent, {}).get(
-            command_name, {})
+        arg_data = self.index['arg_data'].get(parent, {}).get(command_name, {})
         results = []
         for _, value in arg_data.items():
             results.append(model.CLIArgument(*value))

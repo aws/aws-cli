@@ -37,6 +37,6 @@ class TestUpdateCustomVerificationEmailTemplate(BaseAWSCommandParamsTest):
             'TemplateSubject': self.template_subject,
             'TemplateContent': self.template_content,
             'SuccessRedirectionURL': self.success_redirection_url,
-            'FailureRedirectionURL': self.failure_redirection_url
+            'FailureRedirectionURL': self.failure_redirection_url,
         }
         self.assert_params_for_cmd(cmdline, result)

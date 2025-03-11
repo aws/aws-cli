@@ -10,42 +10,49 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock, unittest, temporary_file
 import argparse
-import os
-
-import ntpath
-import time
 import datetime
+import ntpath
+import os
+import time
 
-from dateutil.tz import tzlocal
 import pytest
-from s3transfer.compat import seekable
 from botocore.hooks import HierarchicalEmitter
+from dateutil.tz import tzlocal
+from s3transfer.compat import seekable
 
 from awscli.compat import StringIO
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.s3.utils import (
+    AppendFilter,
+    BucketLister,
+    NonSeekableStream,
+    RequestParamsMapper,
+    S3PathResolver,
+    SetFileUtimeError,
+    StablePriorityQueue,
+    StdoutBytesWriter,
+    block_unsupported_resources,
+    create_warning,
     find_bucket_key,
-    guess_content_type, relative_path, block_unsupported_resources,
-    StablePriorityQueue, BucketLister, get_file_stat, AppendFilter,
-    create_warning, human_readable_size, human_readable_to_int,
-    set_file_utime, SetFileUtimeError, RequestParamsMapper, StdoutBytesWriter,
-    NonSeekableStream, S3PathResolver
+    get_file_stat,
+    guess_content_type,
+    human_readable_size,
+    human_readable_to_int,
+    relative_path,
+    set_file_utime,
 )
+from awscli.testutils import mock, temporary_file, unittest
 
 
 @pytest.fixture
 def s3control_client():
     client = mock.MagicMock()
-    client.get_access_point.return_value = {
-        "Bucket": "mybucket"
-    }
+    client.get_access_point.return_value = {"Bucket": "mybucket"}
     client.list_multi_region_access_points.return_value = {
-        "AccessPoints": [{
-            "Alias": "myalias.mrap",
-            "Regions": [{"Bucket": "mybucket"}]
-        }]
+        "AccessPoints": [
+            {"Alias": "myalias.mrap", "Regions": [{"Bucket": "mybucket"}]}
+        ]
     }
     return client
 
@@ -53,9 +60,7 @@ def s3control_client():
 @pytest.fixture
 def sts_client():
     client = mock.MagicMock()
-    client.get_caller_identity.return_value = {
-        "Account": "123456789012"
-    }
+    client.get_caller_identity.return_value = {"Account": "123456789012"}
     return client
 
 
@@ -71,14 +76,14 @@ def s3_path_resolver(s3control_client, sts_client):
         (10, '10 Bytes'),
         (1000, '1000 Bytes'),
         (1024, '1.0 KiB'),
-        (1024 ** 2, '1.0 MiB'),
-        (1024 ** 3, '1.0 GiB'),
-        (1024 ** 4, '1.0 TiB'),
-        (1024 ** 5, '1.0 PiB'),
-        (1024 ** 6, '1.0 EiB'),
-        (1024 ** 2 - 1, '1.0 MiB'),
-        (1024 ** 3 - 1, '1.0 GiB'),
-    )
+        (1024**2, '1.0 MiB'),
+        (1024**3, '1.0 GiB'),
+        (1024**4, '1.0 TiB'),
+        (1024**5, '1.0 PiB'),
+        (1024**6, '1.0 EiB'),
+        (1024**2 - 1, '1.0 MiB'),
+        (1024**3 - 1, '1.0 GiB'),
+    ),
 )
 def test_human_readable_size(bytes_int, expected):
     assert human_readable_size(bytes_int) == expected
@@ -91,15 +96,15 @@ def test_human_readable_size(bytes_int, expected):
         ("1024", 1024),
         ("1KB", 1024),
         ("1kb", 1024),
-        ("1MB", 1024 ** 2),
-        ("1GB", 1024 ** 3),
-        ("1TB", 1024 ** 4),
+        ("1MB", 1024**2),
+        ("1GB", 1024**3),
+        ("1TB", 1024**4),
         ("1KiB", 1024),
         ("1kib", 1024),
-        ("1MiB", 1024 ** 2),
-        ("1GiB", 1024 ** 3),
-        ("1TiB", 1024 ** 4),
-    )
+        ("1MiB", 1024**2),
+        ("1GiB", 1024**3),
+        ("1TiB", 1024**4),
+    ),
 )
 def test_convert_human_readable_to_int(size_str, expected):
     assert human_readable_to_int(size_str) == expected
@@ -109,18 +114,21 @@ class AppendFilterTest(unittest.TestCase):
     def test_call(self):
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--include', action=AppendFilter, nargs=1,
-                            dest='path')
-        parser.add_argument('--exclude', action=AppendFilter, nargs=1,
-                            dest='path')
+        parser.add_argument(
+            '--include', action=AppendFilter, nargs=1, dest='path'
+        )
+        parser.add_argument(
+            '--exclude', action=AppendFilter, nargs=1, dest='path'
+        )
         parsed_args = parser.parse_args(['--include', 'a', '--exclude', 'b'])
-        self.assertEqual(parsed_args.path, [['--include', 'a'],
-                                            ['--exclude', 'b']])
+        self.assertEqual(
+            parsed_args.path, [['--include', 'a'], ['--exclude', 'b']]
+        )
 
 
 class TestFindBucketKey(unittest.TestCase):
     def test_unicode(self):
-        s3_path = '\u1234' + u'/' + '\u5678'
+        s3_path = '\u1234' + '/' + '\u5678'
         bucket, key = find_bucket_key(s3_path)
         self.assertEqual(bucket, '\u1234')
         self.assertEqual(key, '\u5678')
@@ -147,30 +155,38 @@ class TestFindBucketKey(unittest.TestCase):
 
     def test_accesspoint_arn(self):
         bucket, key = find_bucket_key(
-            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint')
+            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint'
+        )
         self.assertEqual(
-            bucket, 'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint')
+            bucket, 'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint'
+        )
         self.assertEqual(key, '')
 
     def test_accesspoint_arn_with_slash(self):
         bucket, key = find_bucket_key(
-            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint/')
+            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint/'
+        )
         self.assertEqual(
-            bucket, 'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint')
+            bucket, 'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint'
+        )
         self.assertEqual(key, '')
 
     def test_accesspoint_arn_with_key(self):
         bucket, key = find_bucket_key(
-            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint/key')
+            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint/key'
+        )
         self.assertEqual(
-            bucket, 'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint')
+            bucket, 'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint'
+        )
         self.assertEqual(key, 'key')
 
     def test_accesspoint_arn_with_key_and_prefix(self):
         bucket, key = find_bucket_key(
-            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint/pre/key')
+            'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint/pre/key'
+        )
         self.assertEqual(
-            bucket, 'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint')
+            bucket, 'arn:aws:s3:us-west-2:123456789012:accesspoint/endpoint'
+        )
         self.assertEqual(key, 'pre/key')
 
     def test_outpost_arn_with_colon(self):
@@ -183,7 +199,7 @@ class TestFindBucketKey(unittest.TestCase):
             (
                 'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
                 'accesspoint:my-accesspoint'
-            )
+            ),
         )
         self.assertEqual(key, '')
 
@@ -197,7 +213,7 @@ class TestFindBucketKey(unittest.TestCase):
             (
                 'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
                 'accesspoint:my-accesspoint'
-            )
+            ),
         )
         self.assertEqual(key, 'key')
 
@@ -211,7 +227,7 @@ class TestFindBucketKey(unittest.TestCase):
             (
                 'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
                 'accesspoint:my-accesspoint'
-            )
+            ),
         )
         self.assertEqual(key, 'key:name')
 
@@ -225,7 +241,7 @@ class TestFindBucketKey(unittest.TestCase):
             (
                 'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
                 'accesspoint:my-accesspoint'
-            )
+            ),
         )
         self.assertEqual(key, 'key/name')
 
@@ -239,7 +255,7 @@ class TestFindBucketKey(unittest.TestCase):
             (
                 'arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-12334:'
                 'accesspoint:my-accesspoint'
-            )
+            ),
         )
         self.assertEqual(key, 'prefix/key:name')
 
@@ -253,7 +269,7 @@ class TestFindBucketKey(unittest.TestCase):
             (
                 'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
                 'accesspoint/my-accesspoint'
-            )
+            ),
         )
         self.assertEqual(key, '')
 
@@ -267,7 +283,7 @@ class TestFindBucketKey(unittest.TestCase):
             (
                 'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
                 'accesspoint/my-accesspoint'
-            )
+            ),
         )
         self.assertEqual(key, 'key')
 
@@ -281,7 +297,7 @@ class TestFindBucketKey(unittest.TestCase):
             (
                 'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
                 'accesspoint/my-accesspoint'
-            )
+            ),
         )
         self.assertEqual(key, 'key:name')
 
@@ -295,7 +311,7 @@ class TestFindBucketKey(unittest.TestCase):
             (
                 'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
                 'accesspoint/my-accesspoint'
-            )
+            ),
         )
         self.assertEqual(key, 'key/name')
 
@@ -309,7 +325,7 @@ class TestFindBucketKey(unittest.TestCase):
             (
                 'arn:aws:s3-outposts:us-west-2:123456789012:outpost/op-12334/'
                 'accesspoint/my-accesspoint'
-            )
+            ),
         )
         self.assertEqual(key, 'prefix/key:name')
 
@@ -317,7 +333,8 @@ class TestFindBucketKey(unittest.TestCase):
 class TestBlockUnsupportedResources(unittest.TestCase):
     def test_object_lambda_arn_with_colon_raises_exception(self):
         with self.assertRaisesRegex(
-                ParamValidationError, 'Use s3api commands instead'):
+            ParamValidationError, 'Use s3api commands instead'
+        ):
             block_unsupported_resources(
                 'arn:aws:s3-object-lambda:us-west-2:123456789012:'
                 'accesspoint:my-accesspoint'
@@ -325,15 +342,17 @@ class TestBlockUnsupportedResources(unittest.TestCase):
 
     def test_object_lambda_arn_with_slash_raises_exception(self):
         with self.assertRaisesRegex(
-                ParamValidationError, 'Use s3api commands instead'):
+            ParamValidationError, 'Use s3api commands instead'
+        ):
             block_unsupported_resources(
-                 'arn:aws:s3-object-lambda:us-west-2:123456789012:'
-                 'accesspoint/my-accesspoint'
+                'arn:aws:s3-object-lambda:us-west-2:123456789012:'
+                'accesspoint/my-accesspoint'
             )
 
     def test_outpost_bucket_arn_with_colon_raises_exception(self):
         with self.assertRaisesRegex(
-                ParamValidationError, 'Use s3control commands instead'):
+            ParamValidationError, 'Use s3control commands instead'
+        ):
             block_unsupported_resources(
                 'arn:aws:s3-outposts:us-west-2:123456789012:'
                 'outpost/op-0a12345678abcdefg:bucket/bucket-foo'
@@ -341,10 +360,11 @@ class TestBlockUnsupportedResources(unittest.TestCase):
 
     def test_outpost_bucket_arn_with_slash_raises_exception(self):
         with self.assertRaisesRegex(
-                ParamValidationError, 'Use s3control commands instead'):
+            ParamValidationError, 'Use s3control commands instead'
+        ):
             block_unsupported_resources(
-                 'arn:aws:s3-outposts:us-west-2:123456789012:'
-                 'outpost/op-0a12345678abcdefg/bucket/bucket-foo'
+                'arn:aws:s3-outposts:us-west-2:123456789012:'
+                'outpost/op-0a12345678abcdefg/bucket/bucket-foo'
             )
 
 
@@ -353,8 +373,10 @@ class TestCreateWarning(unittest.TestCase):
         path = '/foo/'
         error_message = 'There was an error'
         warning_message = create_warning(path, error_message)
-        self.assertEqual(warning_message.message,
-                         'warning: Skipping file /foo/. There was an error')
+        self.assertEqual(
+            warning_message.message,
+            'warning: Skipping file /foo/. There was an error',
+        )
         self.assertFalse(warning_message.error)
         self.assertTrue(warning_message.warning)
 
@@ -375,8 +397,9 @@ class TestGuessContentType(unittest.TestCase):
 
 class TestRelativePath(unittest.TestCase):
     def test_relpath_normal(self):
-        self.assertEqual(relative_path('/tmp/foo/bar', '/tmp/foo'),
-                         '.' + os.sep + 'bar')
+        self.assertEqual(
+            relative_path('/tmp/foo/bar', '/tmp/foo'), '.' + os.sep + 'bar'
+        )
 
     # We need to patch out relpath with the ntpath version so
     # we can simulate testing drives on windows.
@@ -463,32 +486,50 @@ class TestBucketList(unittest.TestCase):
         now = mock.sentinel.now
         self.client.get_paginator.return_value.paginate = self.fake_paginate
         individual_response_elements = [
-            {'LastModified': '2014-02-27T04:20:38.000Z',
-             'Key': 'a', 'Size': 1},
-            {'LastModified': '2014-02-27T04:20:38.000Z',
-                 'Key': 'b', 'Size': 2},
-            {'LastModified': '2014-02-27T04:20:38.000Z',
-                 'Key': 'c', 'Size': 3}
+            {
+                'LastModified': '2014-02-27T04:20:38.000Z',
+                'Key': 'a',
+                'Size': 1,
+            },
+            {
+                'LastModified': '2014-02-27T04:20:38.000Z',
+                'Key': 'b',
+                'Size': 2,
+            },
+            {
+                'LastModified': '2014-02-27T04:20:38.000Z',
+                'Key': 'c',
+                'Size': 3,
+            },
         ]
         self.responses = [
             {'Contents': individual_response_elements[0:2]},
-            {'Contents': [individual_response_elements[2]]}
+            {'Contents': [individual_response_elements[2]]},
         ]
         lister = BucketLister(self.client, self.date_parser)
         objects = list(lister.list_objects(bucket='foo'))
-        self.assertEqual(objects,
-            [('foo/a', individual_response_elements[0]),
-             ('foo/b', individual_response_elements[1]),
-             ('foo/c', individual_response_elements[2])])
+        self.assertEqual(
+            objects,
+            [
+                ('foo/a', individual_response_elements[0]),
+                ('foo/b', individual_response_elements[1]),
+                ('foo/c', individual_response_elements[2]),
+            ],
+        )
         for individual_response in individual_response_elements:
             self.assertEqual(individual_response['LastModified'], now)
 
     def test_list_objects_passes_in_extra_args(self):
         self.client.get_paginator.return_value.paginate.return_value = [
-            {'Contents': [
-                {'LastModified': '2014-02-27T04:20:38.000Z',
-                 'Key': 'mykey', 'Size': 3}
-            ]}
+            {
+                'Contents': [
+                    {
+                        'LastModified': '2014-02-27T04:20:38.000Z',
+                        'Key': 'mykey',
+                        'Size': 3,
+                    }
+                ]
+            }
         ]
         lister = BucketLister(self.client, self.date_parser)
         list(
@@ -497,13 +538,13 @@ class TestBucketList(unittest.TestCase):
             )
         )
         self.client.get_paginator.return_value.paginate.assert_called_with(
-            Bucket='mybucket', PaginationConfig={'PageSize': None},
-            RequestPayer='requester'
+            Bucket='mybucket',
+            PaginationConfig={'PageSize': None},
+            RequestPayer='requester',
         )
 
 
 class TestGetFileStat(unittest.TestCase):
-
     def test_get_file_stat(self):
         now = datetime.datetime.now(tzlocal())
         epoch_now = time.mktime(now.timetuple())
@@ -516,7 +557,7 @@ class TestGetFileStat(unittest.TestCase):
             self.assertEqual(time.mktime(update_time.timetuple()), epoch_now)
 
     def test_error_message(self):
-        with mock.patch('os.stat', mock.Mock(side_effect=IOError('msg'))):
+        with mock.patch('os.stat', mock.Mock(side_effect=OSError('msg'))):
             with self.assertRaisesRegex(ValueError, r'myfilename\.txt'):
                 get_file_stat('myfilename.txt')
 
@@ -541,7 +582,6 @@ class TestGetFileStat(unittest.TestCase):
 
 
 class TestSetsFileUtime(unittest.TestCase):
-
     def test_successfully_sets_utime(self):
         now = datetime.datetime.now(tzlocal())
         epoch_now = time.mktime(now.timetuple())
@@ -575,7 +615,7 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
             'sse_c': 'AES256',
             'sse_c_key': 'my-sse-c-key',
             'sse_c_copy_source': 'AES256',
-            'sse_c_copy_source_key': 'my-sse-c-copy-source-key'
+            'sse_c_copy_source_key': 'my-sse-c-copy-source-key',
         }
 
     def test_head_object(self):
@@ -583,8 +623,10 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
         RequestParamsMapper.map_head_object_params(params, self.cli_params)
         self.assertEqual(
             params,
-            {'SSECustomerAlgorithm': 'AES256',
-             'SSECustomerKey': 'my-sse-c-key'}
+            {
+                'SSECustomerAlgorithm': 'AES256',
+                'SSECustomerKey': 'my-sse-c-key',
+            },
         )
 
     def test_put_object(self):
@@ -592,10 +634,12 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
         RequestParamsMapper.map_put_object_params(params, self.cli_params)
         self.assertEqual(
             params,
-            {'SSECustomerAlgorithm': 'AES256',
-             'SSECustomerKey': 'my-sse-c-key',
-             'SSEKMSKeyId': 'my-kms-key',
-             'ServerSideEncryption': 'AES256'}
+            {
+                'SSECustomerAlgorithm': 'AES256',
+                'SSECustomerKey': 'my-sse-c-key',
+                'SSEKMSKeyId': 'my-kms-key',
+                'ServerSideEncryption': 'AES256',
+            },
         )
 
     def test_get_object(self):
@@ -603,8 +647,10 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
         RequestParamsMapper.map_get_object_params(params, self.cli_params)
         self.assertEqual(
             params,
-            {'SSECustomerAlgorithm': 'AES256',
-             'SSECustomerKey': 'my-sse-c-key'}
+            {
+                'SSECustomerAlgorithm': 'AES256',
+                'SSECustomerKey': 'my-sse-c-key',
+            },
         )
 
     def test_copy_object(self):
@@ -612,24 +658,29 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
         RequestParamsMapper.map_copy_object_params(params, self.cli_params)
         self.assertEqual(
             params,
-            {'CopySourceSSECustomerAlgorithm': 'AES256',
-             'CopySourceSSECustomerKey': 'my-sse-c-copy-source-key',
-             'SSECustomerAlgorithm': 'AES256',
-             'SSECustomerKey': 'my-sse-c-key',
-             'SSEKMSKeyId': 'my-kms-key',
-             'ServerSideEncryption': 'AES256'}
+            {
+                'CopySourceSSECustomerAlgorithm': 'AES256',
+                'CopySourceSSECustomerKey': 'my-sse-c-copy-source-key',
+                'SSECustomerAlgorithm': 'AES256',
+                'SSECustomerKey': 'my-sse-c-key',
+                'SSEKMSKeyId': 'my-kms-key',
+                'ServerSideEncryption': 'AES256',
+            },
         )
 
     def test_create_multipart_upload(self):
         params = {}
         RequestParamsMapper.map_create_multipart_upload_params(
-            params, self.cli_params)
+            params, self.cli_params
+        )
         self.assertEqual(
             params,
-            {'SSECustomerAlgorithm': 'AES256',
-             'SSECustomerKey': 'my-sse-c-key',
-             'SSEKMSKeyId': 'my-kms-key',
-             'ServerSideEncryption': 'AES256'}
+            {
+                'SSECustomerAlgorithm': 'AES256',
+                'SSECustomerKey': 'my-sse-c-key',
+                'SSEKMSKeyId': 'my-kms-key',
+                'ServerSideEncryption': 'AES256',
+            },
         )
 
     def test_upload_part(self):
@@ -637,20 +688,26 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
         RequestParamsMapper.map_upload_part_params(params, self.cli_params)
         self.assertEqual(
             params,
-            {'SSECustomerAlgorithm': 'AES256',
-             'SSECustomerKey': 'my-sse-c-key'}
+            {
+                'SSECustomerAlgorithm': 'AES256',
+                'SSECustomerKey': 'my-sse-c-key',
+            },
         )
 
     def test_upload_part_copy(self):
         params = {}
         RequestParamsMapper.map_upload_part_copy_params(
-            params, self.cli_params)
+            params, self.cli_params
+        )
         self.assertEqual(
             params,
-            {'CopySourceSSECustomerAlgorithm': 'AES256',
-             'CopySourceSSECustomerKey': 'my-sse-c-copy-source-key',
-             'SSECustomerAlgorithm': 'AES256',
-             'SSECustomerKey': 'my-sse-c-key'})
+            {
+                'CopySourceSSECustomerAlgorithm': 'AES256',
+                'CopySourceSSECustomerKey': 'my-sse-c-copy-source-key',
+                'SSECustomerAlgorithm': 'AES256',
+                'SSECustomerKey': 'my-sse-c-key',
+            },
+        )
 
 
 class TestRequestParamsMapperChecksumAlgorithm:
@@ -669,7 +726,9 @@ class TestRequestParamsMapperChecksumAlgorithm:
 
     def test_put_object_no_checksum(self, cli_params_no_algorithm):
         request_params = {}
-        RequestParamsMapper.map_put_object_params(request_params, cli_params_no_algorithm)
+        RequestParamsMapper.map_put_object_params(
+            request_params, cli_params_no_algorithm
+        )
         assert 'ChecksumAlgorithm' not in request_params
 
     def test_copy_object(self, cli_params):
@@ -679,7 +738,9 @@ class TestRequestParamsMapperChecksumAlgorithm:
 
     def test_copy_object_no_checksum(self, cli_params_no_algorithm):
         request_params = {}
-        RequestParamsMapper.map_put_object_params(request_params, cli_params_no_algorithm)
+        RequestParamsMapper.map_put_object_params(
+            request_params, cli_params_no_algorithm
+        )
         assert 'ChecksumAlgorithm' not in request_params
 
 
@@ -699,7 +760,9 @@ class TestRequestParamsMapperChecksumMode:
 
     def test_get_object_no_checksums(self, cli_params_no_checksum):
         request_params = {}
-        RequestParamsMapper.map_get_object_params(request_params, cli_params_no_checksum)
+        RequestParamsMapper.map_get_object_params(
+            request_params, cli_params_no_checksum
+        )
         assert 'ChecksumMode' not in request_params
 
 
@@ -730,7 +793,8 @@ class TestRequestParamsMapperRequestPayer(unittest.TestCase):
     def test_create_multipart_upload(self):
         params = {}
         RequestParamsMapper.map_create_multipart_upload_params(
-            params, self.cli_params)
+            params, self.cli_params
+        )
         self.assertEqual(params, {'RequestPayer': 'requester'})
 
     def test_upload_part(self):
@@ -741,31 +805,32 @@ class TestRequestParamsMapperRequestPayer(unittest.TestCase):
     def test_upload_part_copy(self):
         params = {}
         RequestParamsMapper.map_upload_part_copy_params(
-            params, self.cli_params)
+            params, self.cli_params
+        )
         self.assertEqual(params, {'RequestPayer': 'requester'})
 
     def test_delete_object(self):
         params = {}
-        RequestParamsMapper.map_delete_object_params(
-            params, self.cli_params)
+        RequestParamsMapper.map_delete_object_params(params, self.cli_params)
         self.assertEqual(params, {'RequestPayer': 'requester'})
 
     def test_list_objects(self):
         params = {}
-        RequestParamsMapper.map_list_objects_v2_params(
-            params, self.cli_params)
+        RequestParamsMapper.map_list_objects_v2_params(params, self.cli_params)
         self.assertEqual(params, {'RequestPayer': 'requester'})
 
     def test_map_get_object_tagging_params(self):
         params = {}
         RequestParamsMapper.map_get_object_tagging_params(
-            params, self.cli_params)
+            params, self.cli_params
+        )
         self.assertEqual(params, {'RequestPayer': 'requester'})
 
     def test_map_put_object_tagging_params(self):
         params = {}
         RequestParamsMapper.map_put_object_tagging_params(
-            params, self.cli_params)
+            params, self.cli_params
+        )
         self.assertEqual(params, {'RequestPayer': 'requester'})
 
 
@@ -796,22 +861,28 @@ class TestNonSeekableStream(unittest.TestCase):
 
 class TestS3PathResolver:
     _BASE_ACCESSPOINT_ARN = (
-        "s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint")
+        "s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint"
+    )
     _BASE_OUTPOST_ACCESSPOINT_ARN = (
         "s3://arn:aws:s3-outposts:us-east-1:123456789012:outpost"
-        "/op-foo/accesspoint/myaccesspoint")
+        "/op-foo/accesspoint/myaccesspoint"
+    )
     _BASE_ACCESSPOINT_ALIAS = "s3://myaccesspoint-foobar12345-s3alias"
     _BASE_OUTPOST_ACCESSPOINT_ALIAS = "s3://myaccesspoint-foobar12345--op-s3"
     _BASE_MRAP_ARN = "s3://arn:aws:s3::123456789012:accesspoint/myalias.mrap"
 
     @pytest.mark.parametrize(
         "path,resolved",
-        [(_BASE_ACCESSPOINT_ARN,"s3://mybucket/"),
-         (f"{_BASE_ACCESSPOINT_ARN}/","s3://mybucket/"),
-         (f"{_BASE_ACCESSPOINT_ARN}/mykey","s3://mybucket/mykey"),
-         (f"{_BASE_ACCESSPOINT_ARN}/myprefix/","s3://mybucket/myprefix/"),
-         (f"{_BASE_ACCESSPOINT_ARN}/myprefix/mykey",
-          "s3://mybucket/myprefix/mykey")]
+        [
+            (_BASE_ACCESSPOINT_ARN, "s3://mybucket/"),
+            (f"{_BASE_ACCESSPOINT_ARN}/", "s3://mybucket/"),
+            (f"{_BASE_ACCESSPOINT_ARN}/mykey", "s3://mybucket/mykey"),
+            (f"{_BASE_ACCESSPOINT_ARN}/myprefix/", "s3://mybucket/myprefix/"),
+            (
+                f"{_BASE_ACCESSPOINT_ARN}/myprefix/mykey",
+                "s3://mybucket/myprefix/mykey",
+            ),
+        ],
     )
     def test_resolves_accesspoint_arn(
         self, path, resolved, s3_path_resolver, s3control_client
@@ -819,19 +890,24 @@ class TestS3PathResolver:
         resolved_paths = s3_path_resolver.resolve_underlying_s3_paths(path)
         assert resolved_paths == [resolved]
         s3control_client.get_access_point.assert_called_with(
-            AccountId="123456789012",
-            Name="myaccesspoint"
+            AccountId="123456789012", Name="myaccesspoint"
         )
 
     @pytest.mark.parametrize(
         "path,resolved",
-        [(_BASE_OUTPOST_ACCESSPOINT_ARN,"s3://mybucket/"),
-         (f"{_BASE_OUTPOST_ACCESSPOINT_ARN}/","s3://mybucket/"),
-         (f"{_BASE_OUTPOST_ACCESSPOINT_ARN}/mykey","s3://mybucket/mykey"),
-         (f"{_BASE_OUTPOST_ACCESSPOINT_ARN}/myprefix/",
-          "s3://mybucket/myprefix/"),
-         (f"{_BASE_OUTPOST_ACCESSPOINT_ARN}/myprefix/mykey",
-          "s3://mybucket/myprefix/mykey")]
+        [
+            (_BASE_OUTPOST_ACCESSPOINT_ARN, "s3://mybucket/"),
+            (f"{_BASE_OUTPOST_ACCESSPOINT_ARN}/", "s3://mybucket/"),
+            (f"{_BASE_OUTPOST_ACCESSPOINT_ARN}/mykey", "s3://mybucket/mykey"),
+            (
+                f"{_BASE_OUTPOST_ACCESSPOINT_ARN}/myprefix/",
+                "s3://mybucket/myprefix/",
+            ),
+            (
+                f"{_BASE_OUTPOST_ACCESSPOINT_ARN}/myprefix/mykey",
+                "s3://mybucket/myprefix/mykey",
+            ),
+        ],
     )
     def test_resolves_outpost_accesspoint_arn(
         self, path, resolved, s3_path_resolver, s3control_client
@@ -840,18 +916,27 @@ class TestS3PathResolver:
         assert resolved_paths == [resolved]
         s3control_client.get_access_point.assert_called_with(
             AccountId="123456789012",
-            Name=("arn:aws:s3-outposts:us-east-1:123456789012:outpost"
-                  "/op-foo/accesspoint/myaccesspoint")
+            Name=(
+                "arn:aws:s3-outposts:us-east-1:123456789012:outpost"
+                "/op-foo/accesspoint/myaccesspoint"
+            ),
         )
 
     @pytest.mark.parametrize(
         "path,resolved",
-        [(_BASE_ACCESSPOINT_ALIAS,"s3://mybucket/"),
-         (f"{_BASE_ACCESSPOINT_ALIAS}/","s3://mybucket/"),
-         (f"{_BASE_ACCESSPOINT_ALIAS}/mykey","s3://mybucket/mykey"),
-         (f"{_BASE_ACCESSPOINT_ALIAS}/myprefix/","s3://mybucket/myprefix/"),
-         (f"{_BASE_ACCESSPOINT_ALIAS}/myprefix/mykey",
-          "s3://mybucket/myprefix/mykey")]
+        [
+            (_BASE_ACCESSPOINT_ALIAS, "s3://mybucket/"),
+            (f"{_BASE_ACCESSPOINT_ALIAS}/", "s3://mybucket/"),
+            (f"{_BASE_ACCESSPOINT_ALIAS}/mykey", "s3://mybucket/mykey"),
+            (
+                f"{_BASE_ACCESSPOINT_ALIAS}/myprefix/",
+                "s3://mybucket/myprefix/",
+            ),
+            (
+                f"{_BASE_ACCESSPOINT_ALIAS}/myprefix/mykey",
+                "s3://mybucket/myprefix/mykey",
+            ),
+        ],
     )
     def test_resolves_accesspoint_alias(
         self, path, resolved, s3_path_resolver, s3control_client, sts_client
@@ -860,17 +945,18 @@ class TestS3PathResolver:
         assert resolved_paths == [resolved]
         sts_client.get_caller_identity.assert_called_once_with()
         s3control_client.get_access_point.assert_called_with(
-            AccountId="123456789012",
-            Name="myaccesspoint-foobar12345-s3alias"
+            AccountId="123456789012", Name="myaccesspoint-foobar12345-s3alias"
         )
 
     @pytest.mark.parametrize(
         "path",
-        [(_BASE_OUTPOST_ACCESSPOINT_ALIAS),
-         (f"{_BASE_OUTPOST_ACCESSPOINT_ALIAS}/"),
-         (f"{_BASE_OUTPOST_ACCESSPOINT_ALIAS}/mykey"),
-         (f"{_BASE_OUTPOST_ACCESSPOINT_ALIAS}/myprefix/"),
-         (f"{_BASE_OUTPOST_ACCESSPOINT_ALIAS}/myprefix/mykey")]
+        [
+            (_BASE_OUTPOST_ACCESSPOINT_ALIAS),
+            (f"{_BASE_OUTPOST_ACCESSPOINT_ALIAS}/"),
+            (f"{_BASE_OUTPOST_ACCESSPOINT_ALIAS}/mykey"),
+            (f"{_BASE_OUTPOST_ACCESSPOINT_ALIAS}/myprefix/"),
+            (f"{_BASE_OUTPOST_ACCESSPOINT_ALIAS}/myprefix/mykey"),
+        ],
     )
     def test_outpost_accesspoint_alias_raises_exception(
         self, path, s3_path_resolver
@@ -881,11 +967,16 @@ class TestS3PathResolver:
 
     @pytest.mark.parametrize(
         "path,resolved",
-        [(_BASE_MRAP_ARN,"s3://mybucket/"),
-         (f"{_BASE_MRAP_ARN}/","s3://mybucket/"),
-         (f"{_BASE_MRAP_ARN}/mykey","s3://mybucket/mykey"),
-         (f"{_BASE_MRAP_ARN}/myprefix/","s3://mybucket/myprefix/"),
-         (f"{_BASE_MRAP_ARN}/myprefix/mykey","s3://mybucket/myprefix/mykey")]
+        [
+            (_BASE_MRAP_ARN, "s3://mybucket/"),
+            (f"{_BASE_MRAP_ARN}/", "s3://mybucket/"),
+            (f"{_BASE_MRAP_ARN}/mykey", "s3://mybucket/mykey"),
+            (f"{_BASE_MRAP_ARN}/myprefix/", "s3://mybucket/myprefix/"),
+            (
+                f"{_BASE_MRAP_ARN}/myprefix/mykey",
+                "s3://mybucket/myprefix/mykey",
+            ),
+        ],
     )
     def test_resolves_mrap_arn(
         self, path, resolved, s3_path_resolver, s3control_client
@@ -897,12 +988,19 @@ class TestS3PathResolver:
         )
 
     @pytest.mark.parametrize(
-            "path,resolved,name",
-            [(f"{_BASE_ACCESSPOINT_ARN}-s3alias/mykey","s3://mybucket/mykey",
-              "myaccesspoint-s3alias"),
-             (f"{_BASE_OUTPOST_ACCESSPOINT_ARN}--op-s3/mykey",
-              "s3://mybucket/mykey",
-              f"{_BASE_OUTPOST_ACCESSPOINT_ARN[5:]}--op-s3")]
+        "path,resolved,name",
+        [
+            (
+                f"{_BASE_ACCESSPOINT_ARN}-s3alias/mykey",
+                "s3://mybucket/mykey",
+                "myaccesspoint-s3alias",
+            ),
+            (
+                f"{_BASE_OUTPOST_ACCESSPOINT_ARN}--op-s3/mykey",
+                "s3://mybucket/mykey",
+                f"{_BASE_OUTPOST_ACCESSPOINT_ARN[5:]}--op-s3",
+            ),
+        ],
     )
     def test_alias_suffixes_dont_match_accesspoint_arns(
         self, path, resolved, name, s3_path_resolver, s3control_client
@@ -910,23 +1008,26 @@ class TestS3PathResolver:
         resolved_paths = s3_path_resolver.resolve_underlying_s3_paths(path)
         assert resolved_paths == [resolved]
         s3control_client.get_access_point.assert_called_with(
-            AccountId="123456789012",
-            Name=name
+            AccountId="123456789012", Name=name
         )
 
     @pytest.mark.parametrize(
-            "path,expected_has_underlying_s3_path",
-            [(_BASE_ACCESSPOINT_ARN,True),
-             (f"{_BASE_ACCESSPOINT_ARN}/mykey",True),
-             (f"{_BASE_ACCESSPOINT_ARN}/myprefix/mykey",True),
-             (_BASE_ACCESSPOINT_ALIAS,True),
-             (_BASE_OUTPOST_ACCESSPOINT_ARN,True),
-             (_BASE_OUTPOST_ACCESSPOINT_ALIAS,True),
-             (_BASE_MRAP_ARN,True),
-             ("s3://mybucket/",False),
-             ("s3://mybucket/mykey",False),
-             ("s3://mybucket/myprefix/mykey",False)]
+        "path,expected_has_underlying_s3_path",
+        [
+            (_BASE_ACCESSPOINT_ARN, True),
+            (f"{_BASE_ACCESSPOINT_ARN}/mykey", True),
+            (f"{_BASE_ACCESSPOINT_ARN}/myprefix/mykey", True),
+            (_BASE_ACCESSPOINT_ALIAS, True),
+            (_BASE_OUTPOST_ACCESSPOINT_ARN, True),
+            (_BASE_OUTPOST_ACCESSPOINT_ALIAS, True),
+            (_BASE_MRAP_ARN, True),
+            ("s3://mybucket/", False),
+            ("s3://mybucket/mykey", False),
+            ("s3://mybucket/myprefix/mykey", False),
+        ],
     )
-    def test_has_underlying_s3_path(self, path, expected_has_underlying_s3_path):
+    def test_has_underlying_s3_path(
+        self, path, expected_has_underlying_s3_path
+    ):
         has_underlying_s3_path = S3PathResolver.has_underlying_s3_path(path)
         assert has_underlying_s3_path == expected_has_underlying_s3_path

@@ -23,7 +23,7 @@ class TestGetLoginPasswordCommand(BaseAWSCommandParamsTest):
                     {
                         "authorizationToken": "Zm9vOmJhcg==",
                         "proxyEndpoint": "1235.ecr.us-east-1.io",
-                        "expiresAt": "2015-10-16T00:00:00Z"
+                        "expiresAt": "2015-10-16T00:00:00Z",
                     }
                 ]
             },

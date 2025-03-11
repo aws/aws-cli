@@ -25,8 +25,9 @@ class TestPut(BaseAWSCommandParamsTest):
         super(TestPut, self).setUp()
         self.parsed_response = {}
         self.tempdir = tempfile.mkdtemp()
-        self.original_tag_handlers = yaml.YAML(typ='safe').constructor\
-            .yaml_constructors.copy()
+        self.original_tag_handlers = yaml.YAML(
+            typ='safe'
+        ).constructor.yaml_constructors.copy()
 
     def tearDown(self):
         super(TestPut, self).tearDown()
@@ -40,7 +41,8 @@ class TestPut(BaseAWSCommandParamsTest):
         # in self.original_tag_handlers to ensure we handle binary and
         # float types correctly.
         yaml.YAML(typ='safe').constructor.yaml_constructors.update(
-            self.original_tag_handlers)
+            self.original_tag_handlers
+        )
 
     def assert_yaml_response_equal(self, response, expected):
         with self.assertRaises(ValueError):
@@ -55,16 +57,12 @@ class TestPut(BaseAWSCommandParamsTest):
             'ReturnConsumedCapacity': 'NONE',
             'Item': {"foo": {"S": "bar"}},
         }
-        self.assert_params_for_cmd(
-            command, expected_params, expected_rc=0
-        )
+        self.assert_params_for_cmd(command, expected_params, expected_rc=0)
         operations_called = [o[0].name for o in self.operations_called]
         self.assertEqual(operations_called, ['PutItem'])
 
     def test_batch_write(self):
-        command = [
-            'ddb', 'put', 'mytable', '[{foo: bar}, {foo: bar}]'
-        ]
+        command = ['ddb', 'put', 'mytable', '[{foo: bar}, {foo: bar}]']
         expected_params = {
             'ReturnConsumedCapacity': 'NONE',
             'RequestItems': {
@@ -72,24 +70,20 @@ class TestPut(BaseAWSCommandParamsTest):
                     {'PutRequest': {'Item': {'foo': {'S': 'bar'}}}},
                     {'PutRequest': {'Item': {'foo': {'S': 'bar'}}}},
                 ]
-            }
+            },
         }
-        self.assert_params_for_cmd(
-            command, expected_params, expected_rc=0
-        )
+        self.assert_params_for_cmd(command, expected_params, expected_rc=0)
         operations_called = [o[0].name for o in self.operations_called]
         self.assertEqual(operations_called, ['BatchWriteItem'])
 
     def test_batch_write_multiple_batches(self):
         items = ', '.join(["{foo: bar}" for _ in range(40)])
-        command = [
-            'ddb', 'put', 'mytable', '[%s]' % items
-        ]
+        command = ['ddb', 'put', 'mytable', '[%s]' % items]
         self.run_cmd(command, expected_rc=0)
         operations_called = [o[0].name for o in self.operations_called]
-        self.assertEqual(operations_called, [
-            'BatchWriteItem', 'BatchWriteItem'
-        ])
+        self.assertEqual(
+            operations_called, ['BatchWriteItem', 'BatchWriteItem']
+        )
 
         first_params = self.operations_called[0][1]
         num_items = len(first_params['RequestItems']['mytable'])
@@ -104,27 +98,34 @@ class TestPut(BaseAWSCommandParamsTest):
     def test_batch_write_unprocessed_items(self):
         self.parsed_responses = [
             {
-                'UnprocessedItems': {'mytable': [
-                    {'PutRequest': {'Item': {'foo': {'S': 'bar'}}}},
-                ]}
+                'UnprocessedItems': {
+                    'mytable': [
+                        {'PutRequest': {'Item': {'foo': {'S': 'bar'}}}},
+                    ]
+                }
             },
             {
-                'UnprocessedItems': {'mytable': [
-                    {'PutRequest': {'Item': {'foo': {'S': 'bar'}}}},
-                ]}
+                'UnprocessedItems': {
+                    'mytable': [
+                        {'PutRequest': {'Item': {'foo': {'S': 'bar'}}}},
+                    ]
+                }
             },
             {},
         ]
 
         items = ', '.join(["{foo: bar}" for _ in range(40)])
-        command = [
-            'ddb', 'put', 'mytable', '[%s]' % items
-        ]
+        command = ['ddb', 'put', 'mytable', '[%s]' % items]
         self.run_cmd(command, expected_rc=0)
         operations_called = [o[0].name for o in self.operations_called]
-        self.assertEqual(operations_called, [
-            'BatchWriteItem', 'BatchWriteItem', 'BatchWriteItem',
-        ])
+        self.assertEqual(
+            operations_called,
+            [
+                'BatchWriteItem',
+                'BatchWriteItem',
+                'BatchWriteItem',
+            ],
+        )
 
         first_params = self.operations_called[0][1]
         num_items = len(first_params['RequestItems']['mytable'])
@@ -140,8 +141,12 @@ class TestPut(BaseAWSCommandParamsTest):
 
     def test_put_with_condition(self):
         command = [
-            'ddb', 'put', 'mytable', '{foo: bar}',
-            '--condition', 'attribute_exists(foo)',
+            'ddb',
+            'put',
+            'mytable',
+            '{foo: bar}',
+            '--condition',
+            'attribute_exists(foo)',
         ]
         expected_params = {
             'TableName': 'mytable',
@@ -150,14 +155,16 @@ class TestPut(BaseAWSCommandParamsTest):
             'ExpressionAttributeNames': {'#n0': 'foo'},
             'Item': {"foo": {"S": "bar"}},
         }
-        self.assert_params_for_cmd(
-            command, expected_params, expected_rc=0
-        )
+        self.assert_params_for_cmd(command, expected_params, expected_rc=0)
 
     def test_batch_write_with_condition(self):
         command = [
-            'ddb', 'put', 'mytable', '[{foo: bar}, {foo: bar}]',
-            '--condition', 'attribute_exists(foo)',
+            'ddb',
+            'put',
+            'mytable',
+            '[{foo: bar}, {foo: bar}]',
+            '--condition',
+            'attribute_exists(foo)',
         ]
         _, stderr, _ = self.assert_params_for_cmd(command, expected_rc=252)
         self.assertIn('--condition is not supported', stderr)
@@ -173,9 +180,7 @@ class TestPut(BaseAWSCommandParamsTest):
             'ReturnConsumedCapacity': 'NONE',
             'Item': {"foo": {"S": "bar"}},
         }
-        self.assert_params_for_cmd(
-            command, expected_params, expected_rc=0
-        )
+        self.assert_params_for_cmd(command, expected_params, expected_rc=0)
 
     def test_load_items_from_stdin(self):
         command = ['ddb', 'put', 'mytable', '-']
@@ -185,9 +190,7 @@ class TestPut(BaseAWSCommandParamsTest):
             'Item': {"foo": {"S": "bar"}},
         }
         with capture_input(b'{foo: bar}'):
-            self.assert_params_for_cmd(
-                command, expected_params, expected_rc=0
-            )
+            self.assert_params_for_cmd(command, expected_params, expected_rc=0)
 
     def test_put_bytes(self):
         command = ['ddb', 'put', 'mytable', '{foo: !!binary "4pyT"}']
@@ -196,9 +199,7 @@ class TestPut(BaseAWSCommandParamsTest):
             'ReturnConsumedCapacity': 'NONE',
             'Item': {"foo": {"B": b'\xe2\x9c\x93'}},
         }
-        self.assert_params_for_cmd(
-            command, expected_params, expected_rc=0
-        )
+        self.assert_params_for_cmd(command, expected_params, expected_rc=0)
 
     def test_put_int(self):
         command = ['ddb', 'put', 'mytable', '{foo: 1}']
@@ -207,9 +208,7 @@ class TestPut(BaseAWSCommandParamsTest):
             'ReturnConsumedCapacity': 'NONE',
             'Item': {"foo": {"N": "1"}},
         }
-        self.assert_params_for_cmd(
-            command, expected_params, expected_rc=0
-        )
+        self.assert_params_for_cmd(command, expected_params, expected_rc=0)
 
     def test_put_float(self):
         command = ['ddb', 'put', 'mytable', '{foo: 1.1}']
@@ -218,6 +217,4 @@ class TestPut(BaseAWSCommandParamsTest):
             'ReturnConsumedCapacity': 'NONE',
             'Item': {"foo": {"N": "1.1"}},
         }
-        self.assert_params_for_cmd(
-            command, expected_params, expected_rc=0
-        )
+        self.assert_params_for_cmd(command, expected_params, expected_rc=0)

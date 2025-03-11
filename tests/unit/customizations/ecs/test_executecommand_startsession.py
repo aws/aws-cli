@@ -10,18 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import botocore.session
-import json
 import errno
-
-from awscli.testutils import mock
-
+import json
 import unittest
+
+import botocore.session
+
 from awscli.customizations.ecs import executecommand
+from awscli.testutils import mock
 
 
 class TestExecuteCommand(unittest.TestCase):
-
     def setUp(self):
         self.session = mock.Mock(botocore.session.Session)
         self.client = mock.Mock()
@@ -37,16 +36,19 @@ class TestExecuteCommand(unittest.TestCase):
             "cluster": "default",
             "task": "someTaskId",
             "command": "ls",
-            "interactive": "true"}
+            "interactive": "true",
+        }
         self.execute_command_response = {
             "containerName": "someContainerName",
             "containerArn": "ecs/someContainerArn",
             "taskArn": "ecs/someTaskArn",
-            "session": {"sessionId": "session-id",
-                        "tokenValue": "token-value",
-                        "streamUrl": "stream-url"},
+            "session": {
+                "sessionId": "session-id",
+                "tokenValue": "token-value",
+                "streamUrl": "stream-url",
+            },
             "clusterArn": "ecs/someClusterArn",
-            "interactive": "true"
+            "interactive": "true",
         }
         self.describe_tasks_response = {
             "failures": [],
@@ -62,14 +64,14 @@ class TestExecuteCommand(unittest.TestCase):
                             "taskArn": "ecs/someTaskArn",
                             "name": "someContainerName",
                             "managedAgents": [
-                             {
-                                 "reason": "Execute Command Agent started",
-                                 "lastStatus": "RUNNING",
-                                 "lastStartedAt": "1611619528.272",
-                                 "name": "ExecuteCommandAgent"
-                             }
-                             ],
-                            "runtimeId": "someRuntimeId"
+                                {
+                                    "reason": "Execute Command Agent started",
+                                    "lastStatus": "RUNNING",
+                                    "lastStartedAt": "1611619528.272",
+                                    "name": "ExecuteCommandAgent",
+                                }
+                            ],
+                            "runtimeId": "someRuntimeId",
                         },
                         {
                             "containerArn": "ecs/dummyContainerArn",
@@ -80,25 +82,20 @@ class TestExecuteCommand(unittest.TestCase):
                                     "reason": "Execute Command Agent started",
                                     "lastStatus": "RUNNING",
                                     "lastStartedAt": "1611619528.272",
-                                    "name": "ExecuteCommandAgent"
+                                    "name": "ExecuteCommandAgent",
                                 }
                             ],
-                            "runtimeId": "dummyRuntimeId"
-                        }
+                            "runtimeId": "dummyRuntimeId",
+                        },
                     ],
                     "lastStatus": "RUNNING",
-                    "enableExecuteCommand": "true"
-                }
-            ]
-        }
-        self.describe_tasks_response_fail = {
-            "failures": [
-                {
-                    "reason": "MISSING",
-                    "arn": "someTaskArn"
+                    "enableExecuteCommand": "true",
                 }
             ],
-            "tasks": []
+        }
+        self.describe_tasks_response_fail = {
+            "failures": [{"reason": "MISSING", "arn": "someTaskArn"}],
+            "tasks": [],
         }
         self.ssm_request_parameters = {
             "Target": "ecs:someClusterArn_someTaskArn_someRuntimeId"
@@ -122,84 +119,109 @@ class TestExecuteCommand(unittest.TestCase):
     def test_execute_command_success(self, mock_check_call):
         mock_check_call.return_value = 0
 
-        self.client.execute_command.return_value = \
+        self.client.execute_command.return_value = (
             self.execute_command_response
+        )
         self.client.describe_tasks.return_value = self.describe_tasks_response
 
-        rc = self.caller.invoke('ecs', 'ExecuteCommand',
-                                self.execute_command_params, mock.Mock())
+        rc = self.caller.invoke(
+            'ecs', 'ExecuteCommand', self.execute_command_params, mock.Mock()
+        )
 
         self.assertEqual(rc, 0)
-        self.client.execute_command.\
-            assert_called_with(**self.execute_command_params)
+        self.client.execute_command.assert_called_with(
+            **self.execute_command_params
+        )
 
         mock_check_call_list = mock_check_call.call_args[0][0]
         mock_check_call_list[1] = json.loads(mock_check_call_list[1])
         self.assertEqual(
             mock_check_call_list,
-            ['session-manager-plugin',
-             self.execute_command_response["session"],
-             self.region,
-             'StartSession',
-             self.profile,
-             json.dumps(self.ssm_request_parameters),
-             self.endpoint_url
-             ]
+            [
+                'session-manager-plugin',
+                self.execute_command_response["session"],
+                self.region,
+                'StartSession',
+                self.profile,
+                json.dumps(self.ssm_request_parameters),
+                self.endpoint_url,
+            ],
         )
 
     @mock.patch('awscli.customizations.ecs.executecommand.check_call')
     def test_when_describe_task_fails(self, mock_check_call):
         mock_check_call.return_value = 0
 
-        self.client.execute_command.return_value = \
+        self.client.execute_command.return_value = (
             self.execute_command_response
-        self.client.describe_tasks.side_effect = \
-            Exception("Some Server Exception")
+        )
+        self.client.describe_tasks.side_effect = Exception(
+            "Some Server Exception"
+        )
 
         with self.assertRaisesRegex(Exception, 'Some Server Exception'):
-            rc = self.caller.invoke('ecs', 'ExecuteCommand',
-                                    self.execute_command_params, mock.Mock())
+            rc = self.caller.invoke(
+                'ecs',
+                'ExecuteCommand',
+                self.execute_command_params,
+                mock.Mock(),
+            )
             self.assertEqual(rc, 0)
-            self.client.execute_command. \
-                assert_called_with(**self.execute_command_params)
+            self.client.execute_command.assert_called_with(
+                **self.execute_command_params
+            )
 
     @mock.patch('awscli.customizations.ecs.executecommand.check_call')
     def test_when_describe_task_returns_no_tasks(self, mock_check_call):
         mock_check_call.return_value = 0
 
-        self.client.execute_command.return_value = \
+        self.client.execute_command.return_value = (
             self.execute_command_response
-        self.client.describe_tasks.return_value = \
+        )
+        self.client.describe_tasks.return_value = (
             self.describe_tasks_response_fail
+        )
 
         with self.assertRaises(Exception):
-            rc = self.caller.invoke('ecs', 'ExecuteCommand',
-                                    self.execute_command_params, mock.Mock())
+            rc = self.caller.invoke(
+                'ecs',
+                'ExecuteCommand',
+                self.execute_command_params,
+                mock.Mock(),
+            )
             self.assertEqual(rc, 0)
-            self.client.execute_command. \
-                assert_called_with(**self.execute_command_params)
+            self.client.execute_command.assert_called_with(
+                **self.execute_command_params
+            )
 
     @mock.patch('awscli.customizations.ecs.executecommand.check_call')
     def test_when_check_call_fails(self, mock_check_call):
         mock_check_call.side_effect = [0, Exception('some Exception')]
 
-        self.client.execute_command.return_value = \
+        self.client.execute_command.return_value = (
             self.execute_command_response
+        )
         self.client.describe_tasks.return_value = self.describe_tasks_response
 
         with self.assertRaises(Exception):
-            self.caller.invoke('ecs', 'ExecuteCommand',
-                               self.execute_command_params, mock.Mock())
+            self.caller.invoke(
+                'ecs',
+                'ExecuteCommand',
+                self.execute_command_params,
+                mock.Mock(),
+            )
 
             mock_check_call_list = mock_check_call.call_args[0][0]
             mock_check_call_list[1] = json.loads(mock_check_call_list[1])
             self.assertEqual(
                 mock_check_call_list,
-                ['session-manager-plugin',
-                 self.execute_command_response["session"],
-                 self.region,
-                 'StartSession',
-                 self.profile,
-                 json.dumps(self.ssm_request_parameters),
-                 self.endpoint_url],
+                [
+                    'session-manager-plugin',
+                    self.execute_command_response["session"],
+                    self.region,
+                    'StartSession',
+                    self.profile,
+                    json.dumps(self.ssm_request_parameters),
+                    self.endpoint_url,
+                ],
             )

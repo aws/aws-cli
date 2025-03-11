@@ -15,7 +15,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
-
     prefix = 'ec2 modify-image-attribute'
 
     def test_one(self):
@@ -23,22 +22,26 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
         cmdline += ' --image-id ami-d00dbeef'
         cmdline += ' --operation-type add'
         cmdline += ' --user-ids 0123456789012'
-        result = {'ImageId': 'ami-d00dbeef',
-                  'OperationType': 'add',
-                  'UserIds': ['0123456789012']}
+        result = {
+            'ImageId': 'ami-d00dbeef',
+            'OperationType': 'add',
+            'UserIds': ['0123456789012'],
+        }
         self.assert_params_for_cmd(cmdline, result)
 
     def test_two(self):
         cmdline = self.prefix
         cmdline += ' --image-id ami-d00dbeef'
-        cmdline += (' --launch-permission {"Add":[{"UserId":"123456789012"}],'
-                    '"Remove":[{"Group":"all"}]}')
+        cmdline += (
+            ' --launch-permission {"Add":[{"UserId":"123456789012"}],'
+            '"Remove":[{"Group":"all"}]}'
+        )
         result = {
             'ImageId': 'ami-d00dbeef',
             'LaunchPermission': {
                 'Add': [{'UserId': '123456789012'}],
                 'Remove': [{'Group': 'all'}],
-            }
+            },
         }
         self.assert_params_for_cmd(cmdline, result)
 
@@ -47,8 +50,9 @@ class TestModifyInstanceAttribute(BaseAWSCommandParamsTest):
         cmdline += ' --image-id ami-d00dbeef'
         cmdline += ' --launch-permission THISISNOTJSON'
         # The arg name should be in the error message.
-        self.assert_params_for_cmd(cmdline, expected_rc=252,
-                                   stderr_contains='launch-permission')
+        self.assert_params_for_cmd(
+            cmdline, expected_rc=252, stderr_contains='launch-permission'
+        )
 
 
 if __name__ == "__main__":

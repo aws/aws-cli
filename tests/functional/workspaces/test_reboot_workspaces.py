@@ -14,7 +14,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestRebootWorkspaces(BaseAWSCommandParamsTest):
-
     prefix = 'workspaces reboot-workspaces'
 
     def test_shorthand(self):
@@ -23,7 +22,7 @@ class TestRebootWorkspaces(BaseAWSCommandParamsTest):
             'RebootWorkspaceRequests': [
                 {"WorkspaceId": "id1"},
                 {"WorkspaceId": "id2"},
-                {"WorkspaceId": "id3"}
+                {"WorkspaceId": "id3"},
             ]
         }
         self.assert_params_for_cmd(command, expected_params)

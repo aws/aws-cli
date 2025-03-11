@@ -13,94 +13,105 @@
 import errno
 import json
 
-from awscli.testutils import mock, BaseAWSCommandParamsTest, BaseAWSHelpOutputTest
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    BaseAWSHelpOutputTest,
+    mock,
+)
 
 
 class TestExecuteCommand(BaseAWSCommandParamsTest):
-
     @mock.patch('awscli.customizations.ecs.executecommand.check_call')
     def test_execute_command_success(self, mock_check_call):
-        cmdline = 'ecs execute-command --cluster someCluster ' \
-                  '--task someTaskId ' \
-                  '--interactive --command ls ' \
-                  '--region us-west-2'
+        cmdline = (
+            'ecs execute-command --cluster someCluster '
+            '--task someTaskId '
+            '--interactive --command ls '
+            '--region us-west-2'
+        )
         mock_check_call.return_value = 0
-        self.parsed_responses = [{
-            "containerName": "someContainerName",
-            "containerArn": "someContainerArn",
-            "taskArn": "someTaskArn",
-            "session": {"sessionId": "session-id",
-                        "tokenValue": "token-value",
-                        "streamUrl": "stream-url"},
-            "clusterArn": "someCluster",
-            "interactive": "true"
-        }, {
-            "failures": [],
-            "tasks": [
-                {
-                    "clusterArn": "ecs/someCLuster",
-                    "desiredStatus": "RUNNING",
-                    "createdAt": "1611619514.46",
-                    "taskArn": "someTaskArn",
-                    "containers": [
-                        {
-                            "containerArn": "ecs/someContainerArn",
-                            "taskArn": "ecs/someTaskArn",
-                            "name": "someContainerName",
-                            "managedAgents": [
-                                {
-                                    "reason": "Execute Command Agent started",
-                                    "lastStatus": "RUNNING",
-                                    "lastStartedAt": "1611619528.272",
-                                    "name": "ExecuteCommandAgent"
-                                }
-                            ],
-                            "runtimeId": "someRuntimeId"
-                        },
-                        {
-                            "containerArn": "ecs/dummyContainerArn",
-                            "taskArn": "ecs/someTaskArn",
-                            "name": "dummyContainerName",
-                            "managedAgents": [
-                                {
-                                    "reason": "Execute Command Agent started",
-                                    "lastStatus": "RUNNING",
-                                    "lastStartedAt": "1611619528.272",
-                                    "name": "ExecuteCommandAgent"
-                                }
-                            ],
-                            "runtimeId": "dummyRuntimeId"
-                        }
-                    ],
-                    "lastStatus": "RUNNING",
-                    "enableExecuteCommand": "true"
-                }
-            ]
-        }]
+        self.parsed_responses = [
+            {
+                "containerName": "someContainerName",
+                "containerArn": "someContainerArn",
+                "taskArn": "someTaskArn",
+                "session": {
+                    "sessionId": "session-id",
+                    "tokenValue": "token-value",
+                    "streamUrl": "stream-url",
+                },
+                "clusterArn": "someCluster",
+                "interactive": "true",
+            },
+            {
+                "failures": [],
+                "tasks": [
+                    {
+                        "clusterArn": "ecs/someCLuster",
+                        "desiredStatus": "RUNNING",
+                        "createdAt": "1611619514.46",
+                        "taskArn": "someTaskArn",
+                        "containers": [
+                            {
+                                "containerArn": "ecs/someContainerArn",
+                                "taskArn": "ecs/someTaskArn",
+                                "name": "someContainerName",
+                                "managedAgents": [
+                                    {
+                                        "reason": "Execute Command Agent started",
+                                        "lastStatus": "RUNNING",
+                                        "lastStartedAt": "1611619528.272",
+                                        "name": "ExecuteCommandAgent",
+                                    }
+                                ],
+                                "runtimeId": "someRuntimeId",
+                            },
+                            {
+                                "containerArn": "ecs/dummyContainerArn",
+                                "taskArn": "ecs/someTaskArn",
+                                "name": "dummyContainerName",
+                                "managedAgents": [
+                                    {
+                                        "reason": "Execute Command Agent started",
+                                        "lastStatus": "RUNNING",
+                                        "lastStartedAt": "1611619528.272",
+                                        "name": "ExecuteCommandAgent",
+                                    }
+                                ],
+                                "runtimeId": "dummyRuntimeId",
+                            },
+                        ],
+                        "lastStatus": "RUNNING",
+                        "enableExecuteCommand": "true",
+                    }
+                ],
+            },
+        ]
         self.run_cmd(cmdline, expected_rc=0)
-        self.assertEqual(self.operations_called[0][0].name,
-                         'ExecuteCommand'
-                         )
+        self.assertEqual(self.operations_called[0][0].name, 'ExecuteCommand')
         actual_response = json.loads(mock_check_call.call_args[0][0][1])
         self.assertEqual(
-            {"sessionId": "session-id",
-             "tokenValue": "token-value",
-             "streamUrl": "stream-url"},
-            actual_response
+            {
+                "sessionId": "session-id",
+                "tokenValue": "token-value",
+                "streamUrl": "stream-url",
+            },
+            actual_response,
         )
 
     @mock.patch('awscli.customizations.ecs.executecommand.check_call')
     def test_execute_command_fails(self, mock_check_call):
-        cmdline = 'ecs execute-command --cluster someCluster ' \
-                  '--task someTaskId ' \
-                  '--interactive --command ls ' \
-                  '--region us-west-2'
+        cmdline = (
+            'ecs execute-command --cluster someCluster '
+            '--task someTaskId '
+            '--interactive --command ls '
+            '--region us-west-2'
+        )
         mock_check_call.side_effect = OSError(errno.ENOENT, 'some error')
         self.run_cmd(cmdline, expected_rc=255)
 
 
 class TestHelpOutput(BaseAWSHelpOutputTest):
-
     def test_execute_command_output(self):
         self.driver.main(['ecs', 'execute-command', 'help'])
         self.assert_contains('Output\n======\n\nNone')

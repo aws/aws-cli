@@ -21,10 +21,9 @@
 #
 import sys
 
-from awscli.testutils import mock, unittest
-from awscli.compat import StringIO
-
 from awscli import text
+from awscli.compat import StringIO
+from awscli.testutils import mock, unittest
 
 
 class TestSection(unittest.TestCase):
@@ -47,17 +46,19 @@ class TestSection(unittest.TestCase):
     def test_list_of_dicts(self):
         self.assert_text_renders_to(
             {'foo': [dict(a=1, b=2, c=3), dict(a=4, b=5, c=6)]},
-            'FOO\t1\t2\t3\n'
-            'FOO\t4\t5\t6\n')
+            'FOO\t1\t2\t3\n' 'FOO\t4\t5\t6\n',
+        )
 
     def test_multiple_list_of_dicts(self):
         self.assert_text_renders_to(
-            {'foo': [dict(a=1, b=2, c=3), dict(a=4, b=5, c=6)],
-             'zoo': [dict(a=7, b=8, c=9), dict(a=0, b=1, c=2)]},
+            {
+                'foo': [dict(a=1, b=2, c=3), dict(a=4, b=5, c=6)],
+                'zoo': [dict(a=7, b=8, c=9), dict(a=0, b=1, c=2)],
+            },
             'FOO\t1\t2\t3\n'
             'FOO\t4\t5\t6\n'
             'ZOO\t7\t8\t9\n'
-            'ZOO\t0\t1\t2\n'
+            'ZOO\t0\t1\t2\n',
         )
 
     def test_single_scalar_number(self):
@@ -73,47 +74,45 @@ class TestSection(unittest.TestCase):
         self.assert_text_renders_to(
             #                                missing "b"        adds "d"
             {'foo': [dict(a=1, b=2, c=3), dict(a=4, c=5), dict(a=6, d=7)]},
-            'FOO\t1\t2\t3\t\n'
-            'FOO\t4\t\t5\t\n'
-            'FOO\t6\t\t\t7\n'
+            'FOO\t1\t2\t3\t\n' 'FOO\t4\t\t5\t\n' 'FOO\t6\t\t\t7\n',
         )
 
     def test_different_keys_in_nested_sublists(self):
-        self.assert_text_renders_to({'bar':[
-            {'foo': [dict(a=1, b=2, c=3), dict(a=4, c=5)]},
-            {'foo': [dict(b=6, d=7), dict(b=8, c=9)]},
-        ]},
-            'FOO\t1\t2\t3\n'
-            'FOO\t4\t\t5\n'
-            'FOO\t6\t\t7\n'
-            'FOO\t8\t9\t\n'
+        self.assert_text_renders_to(
+            {
+                'bar': [
+                    {'foo': [dict(a=1, b=2, c=3), dict(a=4, c=5)]},
+                    {'foo': [dict(b=6, d=7), dict(b=8, c=9)]},
+                ]
+            },
+            'FOO\t1\t2\t3\n' 'FOO\t4\t\t5\n' 'FOO\t6\t\t7\n' 'FOO\t8\t9\t\n',
         )
 
     def test_different_keys_in_deeply_nested_sublists(self):
-        self.assert_text_renders_to({'bar':[
-            {'foo': [[[dict(a=1, b=2, c=3), dict(a=4, c=5)]]]},
-            {'foo': [[[dict(b=6, d=7), dict(b=8, c=9)]]]},
-        ]},
-            'FOO\t1\t2\t3\n'
-            'FOO\t4\t\t5\n'
-            'FOO\t6\t\t7\n'
-            'FOO\t8\t9\t\n'
+        self.assert_text_renders_to(
+            {
+                'bar': [
+                    {'foo': [[[dict(a=1, b=2, c=3), dict(a=4, c=5)]]]},
+                    {'foo': [[[dict(b=6, d=7), dict(b=8, c=9)]]]},
+                ]
+            },
+            'FOO\t1\t2\t3\n' 'FOO\t4\t\t5\n' 'FOO\t6\t\t7\n' 'FOO\t8\t9\t\n',
         )
 
     def test_scalars_and_complex_types(self):
         self.assert_text_renders_to(
-            {'foo': [dict(a=1, b=dict(y='y', z='z'), c=3),
-                     dict(a=4, b=dict(y='y', z='z'), c=6)]},
-            'FOO\t1\t3\n'
-            'B\ty\tz\n'
-            'FOO\t4\t6\n'
-            'B\ty\tz\n')
+            {
+                'foo': [
+                    dict(a=1, b=dict(y='y', z='z'), c=3),
+                    dict(a=4, b=dict(y='y', z='z'), c=6),
+                ]
+            },
+            'FOO\t1\t3\n' 'B\ty\tz\n' 'FOO\t4\t6\n' 'B\ty\tz\n',
+        )
 
     def test_nested_list_of_lists(self):
         self.assert_text_renders_to(
-            [['1', '2', '3'], ['4', '5', '6']],
-            '1\t2\t3\n'
-            '4\t5\t6\n'
+            [['1', '2', '3'], ['4', '5', '6']], '1\t2\t3\n' '4\t5\t6\n'
         )
 
     def test_deeply_nested_lists(self):
@@ -122,15 +121,11 @@ class TestSection(unittest.TestCase):
                 [['1', '2', '3'], ['4', '5', '6']],
                 [['7', '8', '9'], ['0', '1', '2']],
             ],
-            '1\t2\t3\n'
-            '4\t5\t6\n'
-            '7\t8\t9\n'
-            '0\t1\t2\n'
+            '1\t2\t3\n' '4\t5\t6\n' '7\t8\t9\n' '0\t1\t2\n',
         )
 
     def test_unicode_text(self):
-        self.assert_text_renders_to([['1', '2', u'\u2713']],
-                                     u'1\t2\t\u2713\n')
+        self.assert_text_renders_to([['1', '2', '\u2713']], '1\t2\t\u2713\n')
 
     def test_single_scalar_value(self):
         self.assert_text_renders_to('foobarbaz', 'foobarbaz\n')
@@ -159,32 +154,19 @@ class TestSection(unittest.TestCase):
     def test_list_of_strings_in_dict(self):
         self.assert_text_renders_to(
             {'KeyName': ['a', 'b', 'c']},
-             'KEYNAME\ta\n'
-             'KEYNAME\tb\n'
-             'KEYNAME\tc\n')
+            'KEYNAME\ta\n' 'KEYNAME\tb\n' 'KEYNAME\tc\n',
+        )
 
     def test_inconsistent_sublists(self):
         self.assert_text_renders_to(
-            [
-                [['1', '2'], ['3', '4', '5', '6']],
-                [['7', '8', '9'], ['0']]
-            ],
-            '1\t2\n'
-            '3\t4\t5\t6\n'
-            '7\t8\t9\n'
-            '0\n'
+            [[['1', '2'], ['3', '4', '5', '6']], [['7', '8', '9'], ['0']]],
+            '1\t2\n' '3\t4\t5\t6\n' '7\t8\t9\n' '0\n',
         )
 
     def test_lists_mixed_with_scalars(self):
         self.assert_text_renders_to(
-            [
-                ['a', 'b', ['c', 'd']],
-                ['e', 'f', ['g', 'h']]
-            ],
-            'a\tb\n'
-            'c\td\n'
-            'e\tf\n'
-            'g\th\n'
+            [['a', 'b', ['c', 'd']], ['e', 'f', ['g', 'h']]],
+            'a\tb\n' 'c\td\n' 'e\tf\n' 'g\th\n',
         )
 
     def test_deeply_nested_with_scalars(self):
@@ -200,15 +182,12 @@ class TestSection(unittest.TestCase):
             'i\tj\n'
             'k\tl\n'
             'm\tn\n'
-            'o\tp\n'
+            'o\tp\n',
         )
 
     def test_deeply_nested_with_identifier(self):
         self.assert_text_renders_to(
-            {'foo': [
-                ['a', 'b', ['c', 'd']],
-                ['e', 'f', ['g', 'h']]
-            ]},
+            {'foo': [['a', 'b', ['c', 'd']], ['e', 'f', ['g', 'h']]]},
             'FOO\ta\n'
             'FOO\tb\n'
             'FOO\tc\n'
@@ -216,7 +195,7 @@ class TestSection(unittest.TestCase):
             'FOO\te\n'
             'FOO\tf\n'
             'FOO\tg\n'
-            'FOO\th\n'
+            'FOO\th\n',
         )
 
 

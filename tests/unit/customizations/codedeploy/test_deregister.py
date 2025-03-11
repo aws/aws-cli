@@ -12,9 +12,12 @@
 # language governing permissions and limitations under the License.
 
 from argparse import Namespace
+
 from awscli.customizations.codedeploy.deregister import Deregister
-from awscli.customizations.exceptions import ConfigurationError
-from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
 from awscli.testutils import mock, unittest
 
 
@@ -22,8 +25,8 @@ class TestDeregister(unittest.TestCase):
     def setUp(self):
         self.instance_name = 'instance-name'
         self.tags = [{'Key': 'k1', 'Value': 'v1'}]
-        self.iam_user_arn = 'arn:aws:iam::012345678912:user/{0}'.format(
-            self.instance_name
+        self.iam_user_arn = (
+            f'arn:aws:iam::012345678912:user/{self.instance_name}'
         )
         self.access_key_id = 'ACCESSKEYID'
         self.region = 'us-east-1'
@@ -41,10 +44,7 @@ class TestDeregister(unittest.TestCase):
 
         self.codedeploy = mock.MagicMock()
         self.codedeploy.get_on_premises_instance.return_value = {
-            'instanceInfo': {
-                'iamUserArn': self.iam_user_arn,
-                'tags': None
-            }
+            'instanceInfo': {'iamUserArn': self.iam_user_arn, 'tags': None}
         }
 
         self.iam = mock.MagicMock()
@@ -57,7 +57,8 @@ class TestDeregister(unittest.TestCase):
             {'AccessKeyMetadata': [{'AccessKeyId': self.access_key_id}]}
         ]
         self.iam.get_paginator.side_effect = [
-            self.list_user_policies, self.list_access_keys
+            self.list_user_policies,
+            self.list_access_keys,
         ]
 
         self.session = mock.MagicMock()
@@ -73,27 +74,30 @@ class TestDeregister(unittest.TestCase):
 
     def test_deregister_throws_on_invalid_instance_name(self):
         self.args.instance_name = 'invalid%@^&%#&'
-        with self.assertRaisesRegex(ParamValidationError,
-                'Instance name contains invalid characters.'):
+        with self.assertRaisesRegex(
+            ParamValidationError, 'Instance name contains invalid characters.'
+        ):
             self.deregister._run_main(self.args, self.globals)
 
     def test_deregister_creates_clients(self):
         self.deregister._run_main(self.args, self.globals)
-        self.session.create_client.assert_has_calls([
-            mock.call(
-                'codedeploy',
-                region_name=self.region,
-                endpoint_url=self.endpoint_url,
-                verify=self.globals.verify_ssl
-            ),
-            mock.call('iam', region_name=self.region)
-        ])
+        self.session.create_client.assert_has_calls(
+            [
+                mock.call(
+                    'codedeploy',
+                    region_name=self.region,
+                    endpoint_url=self.endpoint_url,
+                    verify=self.globals.verify_ssl,
+                ),
+                mock.call('iam', region_name=self.region),
+            ]
+        )
 
     def test_deregister_with_tags(self):
         self.codedeploy.get_on_premises_instance.return_value = {
             'instanceInfo': {
                 'iamUserArn': self.iam_user_arn,
-                'tags': self.tags
+                'tags': self.tags,
             }
         }
         self.deregister._run_main(self.args, self.globals)
@@ -106,22 +110,16 @@ class TestDeregister(unittest.TestCase):
         self.assertEqual(self.instance_name, self.args.user_name)
         self.assertIn('tags', self.args)
         self.assertEqual(self.tags, self.args.tags)
-        self.codedeploy.remove_tags_from_on_premises_instances.\
-            assert_called_with(
-                tags=self.tags,
-                instanceNames=[self.instance_name]
-            )
-        self.codedeploy.deregister_on_premises_instance.\
-            assert_called_with(
-                instanceName=self.instance_name
-            )
+        self.codedeploy.remove_tags_from_on_premises_instances.assert_called_with(
+            tags=self.tags, instanceNames=[self.instance_name]
+        )
+        self.codedeploy.deregister_on_premises_instance.assert_called_with(
+            instanceName=self.instance_name
+        )
 
     def test_deregister_with_no_tags(self):
         self.codedeploy.get_on_premises_instance.return_value = {
-            'instanceInfo': {
-                'iamUserArn': self.iam_user_arn,
-                'tags': None
-            }
+            'instanceInfo': {'iamUserArn': self.iam_user_arn, 'tags': None}
         }
         self.deregister._run_main(self.args, self.globals)
         self.codedeploy.get_on_premises_instance.assert_called_with(
@@ -136,10 +134,9 @@ class TestDeregister(unittest.TestCase):
         self.assertFalse(
             self.codedeploy.remove_tags_from_on_premises_instances.called
         )
-        self.codedeploy.deregister_on_premises_instance.\
-            assert_called_with(
-                instanceName=self.instance_name
-            )
+        self.codedeploy.deregister_on_premises_instance.assert_called_with(
+            instanceName=self.instance_name
+        )
 
     def test_deregister_with_delete_iam_user(self):
         self.args.no_delete_iam_user = False
@@ -147,31 +144,25 @@ class TestDeregister(unittest.TestCase):
         self.codedeploy.get_on_premises_instance.assert_called_with(
             instanceName=self.instance_name
         )
-        self.codedeploy.deregister_on_premises_instance.\
-            assert_called_with(
-                instanceName=self.instance_name
-            )
-        self.iam.get_paginator.assert_has_calls([
-            mock.call('list_user_policies'),
-            mock.call('list_access_keys')
-        ])
+        self.codedeploy.deregister_on_premises_instance.assert_called_with(
+            instanceName=self.instance_name
+        )
+        self.iam.get_paginator.assert_has_calls(
+            [mock.call('list_user_policies'), mock.call('list_access_keys')]
+        )
         self.list_user_policies.paginate.assert_called_with(
             UserName=self.instance_name
         )
         self.iam.delete_user_policy.assert_called_with(
-            UserName=self.instance_name,
-            PolicyName=self.policy_name
+            UserName=self.instance_name, PolicyName=self.policy_name
         )
         self.list_access_keys.paginate.assert_called_with(
             UserName=self.instance_name
         )
         self.iam.delete_access_key.assert_called_with(
-            UserName=self.instance_name,
-            AccessKeyId=self.access_key_id
+            UserName=self.instance_name, AccessKeyId=self.access_key_id
         )
-        self.iam.delete_user.assert_called_with(
-            UserName=self.instance_name
-        )
+        self.iam.delete_user.assert_called_with(UserName=self.instance_name)
 
     def test_deregister_with_no_delete_iam_user(self):
         self.args.no_delete_iam_user = True
@@ -179,10 +170,9 @@ class TestDeregister(unittest.TestCase):
         self.codedeploy.get_on_premises_instance.assert_called_with(
             instanceName=self.instance_name
         )
-        self.codedeploy.deregister_on_premises_instance.\
-            assert_called_with(
-                instanceName=self.instance_name
-            )
+        self.codedeploy.deregister_on_premises_instance.assert_called_with(
+            instanceName=self.instance_name
+        )
         self.assertFalse(self.iam.get_paginator.called)
         self.assertFalse(self.list_user_policies.paginate.called)
         self.assertFalse(self.iam.delete_user_policy.called)

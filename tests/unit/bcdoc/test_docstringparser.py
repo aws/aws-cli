@@ -20,10 +20,9 @@
 # IN THE SOFTWARE.
 import unittest
 
-from awscli.testutils import mock
-
 import awscli.bcdoc.docstringparser as parser
 from awscli.bcdoc.restdoc import ReSTDocument
+from awscli.testutils import mock
 
 
 class TestDocStringParser(unittest.TestCase):
@@ -46,18 +45,16 @@ class TestDocStringParser(unittest.TestCase):
     def test_nested_lists(self):
         html = "<ul><li>Wello</li><ul><li>Horld</li></ul></ul>"
         result = self.parse(html)
-        self.assert_contains_exact_lines_in_order(result, [
-            b'* Wello',
-            b'  * Horld'
-        ])
+        self.assert_contains_exact_lines_in_order(
+            result, [b'* Wello', b'  * Horld']
+        )
 
     def test_nested_lists_with_extra_white_space(self):
         html = "<ul> <li> Wello</li><ul> <li> Horld</li></ul></ul>"
         result = self.parse(html)
-        self.assert_contains_exact_lines_in_order(result, [
-            b'* Wello',
-            b'  * Horld'
-        ])
+        self.assert_contains_exact_lines_in_order(
+            result, [b'* Wello', b'  * Horld']
+        )
 
 
 class TestHTMLTree(unittest.TestCase):

@@ -15,7 +15,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestPutEventsCommand(BaseAWSCommandParamsTest):
-
     def run_put_events(self, cmd):
         response, _, _ = self.run_cmd(cmd)
         return response

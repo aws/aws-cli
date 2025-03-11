@@ -13,7 +13,7 @@
 import os
 
 
-class FakeTransferFuture(object):
+class FakeTransferFuture:
     def __init__(self, result=None, exception=None, meta=None):
         self._result = result
         self._exception = exception
@@ -28,16 +28,17 @@ class FakeTransferFuture(object):
         self._exception = exception
 
 
-class FakeTransferFutureMeta(object):
-    def __init__(self, size=None, call_args=None, transfer_id=None,
-                 user_context=None):
+class FakeTransferFutureMeta:
+    def __init__(
+        self, size=None, call_args=None, transfer_id=None, user_context=None
+    ):
         self.size = size
         self.call_args = call_args
         self.transfer_id = transfer_id
         self.user_context = user_context
 
 
-class FakeTransferFutureCallArgs(object):
+class FakeTransferFutureCallArgs:
     def __init__(self, **kwargs):
         for kwarg, val in kwargs.items():
             setattr(self, kwarg, val)
@@ -55,14 +56,20 @@ def make_loc_files(file_creator, size=None):
         body = 'This is a test.'
 
     filename1 = file_creator.create_file(
-        os.path.join('some_directory', 'text1.txt'), body)
+        os.path.join('some_directory', 'text1.txt'), body
+    )
 
     filename2 = file_creator.create_file(
-        os.path.join('some_directory', 'another_directory', 'text2.txt'), body)
+        os.path.join('some_directory', 'another_directory', 'text2.txt'), body
+    )
     filename1 = str(filename1)
     filename2 = str(filename2)
-    return [filename1, filename2, os.path.dirname(filename2),
-            os.path.dirname(filename1)]
+    return [
+        filename1,
+        filename2,
+        os.path.dirname(filename2),
+        os.path.dirname(filename1),
+    ]
 
 
 def clean_loc_files(file_creator):

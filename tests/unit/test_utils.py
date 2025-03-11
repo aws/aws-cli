@@ -10,34 +10,43 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import signal
-import platform
-import pytest
-import subprocess
 import json
 import os
+import platform
 import shlex
+import signal
+import subprocess
 
 import botocore
 import botocore.model
 import botocore.session as session
+import pytest
+import ruamel.yaml
 from botocore.exceptions import ConnectionClosedError, MetadataRetrievalError
+
 from awscli.clidriver import create_clidriver
-from awscli.testutils import unittest, skip_if_windows, mock
 from awscli.compat import is_windows
+from awscli.testutils import mock, skip_if_windows, unittest
 from awscli.utils import (
-    split_on_commas, ignore_ctrl_c, find_service_and_method_in_event_name,
-    is_document_type, is_document_type_container, is_streaming_blob_type,
-    is_tagged_union_type, operation_uses_document_types, dump_yaml_to_str,
-    ShapeWalker, ShapeRecordingVisitor, OutputStreamFactory, LazyPager,
+    IMDSRegionProvider,
+    InstanceMetadataRegionFetcher,
+    LazyPager,
+    OutputStreamFactory,
+    ShapeRecordingVisitor,
+    ShapeWalker,
     add_command_lineage_to_user_agent_extra,
     add_metadata_component_to_user_agent_extra,
+    dump_yaml_to_str,
+    find_service_and_method_in_event_name,
+    ignore_ctrl_c,
+    is_document_type,
+    is_document_type_container,
+    is_streaming_blob_type,
+    is_tagged_union_type,
+    operation_uses_document_types,
+    split_on_commas,
 )
-from awscli.utils import InstanceMetadataRegionFetcher
-from awscli.utils import IMDSRegionProvider
 from tests import RawResponse
-
-import ruamel.yaml
 
 
 @pytest.fixture()
@@ -46,42 +55,52 @@ def argument_model():
 
 
 class TestCSVSplit(unittest.TestCase):
-
     def test_normal_csv_split(self):
-        self.assertEqual(split_on_commas('foo,bar,baz'),
-                         ['foo', 'bar', 'baz'])
+        self.assertEqual(split_on_commas('foo,bar,baz'), ['foo', 'bar', 'baz'])
 
     def test_quote_split(self):
-        self.assertEqual(split_on_commas('foo,"bar",baz'),
-                         ['foo', 'bar', 'baz'])
+        self.assertEqual(
+            split_on_commas('foo,"bar",baz'), ['foo', 'bar', 'baz']
+        )
 
     def test_inner_quote_split(self):
-        self.assertEqual(split_on_commas('foo,bar="1,2,3",baz'),
-                         ['foo', 'bar=1,2,3', 'baz'])
+        self.assertEqual(
+            split_on_commas('foo,bar="1,2,3",baz'), ['foo', 'bar=1,2,3', 'baz']
+        )
 
     def test_single_quote(self):
-        self.assertEqual(split_on_commas("foo,bar='1,2,3',baz"),
-                         ['foo', 'bar=1,2,3', 'baz'])
+        self.assertEqual(
+            split_on_commas("foo,bar='1,2,3',baz"), ['foo', 'bar=1,2,3', 'baz']
+        )
 
     def test_mixing_double_single_quotes(self):
-        self.assertEqual(split_on_commas("""foo,bar="1,'2',3",baz"""),
-                         ['foo', "bar=1,'2',3", 'baz'])
+        self.assertEqual(
+            split_on_commas("""foo,bar="1,'2',3",baz"""),
+            ['foo', "bar=1,'2',3", 'baz'],
+        )
 
     def test_mixing_double_single_quotes_before_first_comma(self):
-        self.assertEqual(split_on_commas("""foo,bar="1','2',3",baz"""),
-                         ['foo', "bar=1','2',3", 'baz'])
+        self.assertEqual(
+            split_on_commas("""foo,bar="1','2',3",baz"""),
+            ['foo', "bar=1','2',3", 'baz'],
+        )
 
     def test_inner_quote_split_with_equals(self):
-        self.assertEqual(split_on_commas('foo,bar="Foo:80/bar?a=b",baz'),
-                         ['foo', 'bar=Foo:80/bar?a=b', 'baz'])
+        self.assertEqual(
+            split_on_commas('foo,bar="Foo:80/bar?a=b",baz'),
+            ['foo', 'bar=Foo:80/bar?a=b', 'baz'],
+        )
 
     def test_single_quoted_inner_value_with_no_commas(self):
-        self.assertEqual(split_on_commas("foo,bar='BAR',baz"),
-                         ['foo', 'bar=BAR', 'baz'])
+        self.assertEqual(
+            split_on_commas("foo,bar='BAR',baz"), ['foo', 'bar=BAR', 'baz']
+        )
 
     def test_escape_quotes(self):
-        self.assertEqual(split_on_commas(r'foo,bar=1\,2\,3,baz'),
-                         ['foo', 'bar=1,2,3', 'baz'])
+        self.assertEqual(
+            split_on_commas(r'foo,bar=1\,2\,3,baz'),
+            ['foo', 'bar=1,2,3', 'baz'],
+        )
 
     def test_no_commas(self):
         self.assertEqual(split_on_commas('foo'), ['foo'])
@@ -90,32 +109,44 @@ class TestCSVSplit(unittest.TestCase):
         self.assertEqual(split_on_commas('foo,'), ['foo', ''])
 
     def test_escape_backslash(self):
-        self.assertEqual(split_on_commas('foo,bar\\\\,baz\\\\,qux'),
-                         ['foo', 'bar\\', 'baz\\', 'qux'])
+        self.assertEqual(
+            split_on_commas('foo,bar\\\\,baz\\\\,qux'),
+            ['foo', 'bar\\', 'baz\\', 'qux'],
+        )
 
     def test_square_brackets(self):
-        self.assertEqual(split_on_commas('foo,bar=["a=b",\'2\',c=d],baz'),
-                         ['foo', 'bar=a=b,2,c=d', 'baz'])
+        self.assertEqual(
+            split_on_commas('foo,bar=["a=b",\'2\',c=d],baz'),
+            ['foo', 'bar=a=b,2,c=d', 'baz'],
+        )
 
     def test_quoted_square_brackets(self):
-        self.assertEqual(split_on_commas('foo,bar="[blah]",c=d],baz'),
-                         ['foo', 'bar=[blah]', 'c=d]', 'baz'])
+        self.assertEqual(
+            split_on_commas('foo,bar="[blah]",c=d],baz'),
+            ['foo', 'bar=[blah]', 'c=d]', 'baz'],
+        )
 
     def test_missing_bracket(self):
-        self.assertEqual(split_on_commas('foo,bar=[a,baz'),
-                         ['foo', 'bar=[a', 'baz'])
+        self.assertEqual(
+            split_on_commas('foo,bar=[a,baz'), ['foo', 'bar=[a', 'baz']
+        )
 
     def test_missing_bracket2(self):
-        self.assertEqual(split_on_commas('foo,bar=a],baz'),
-                         ['foo', 'bar=a]', 'baz'])
+        self.assertEqual(
+            split_on_commas('foo,bar=a],baz'), ['foo', 'bar=a]', 'baz']
+        )
 
     def test_bracket_in_middle(self):
-        self.assertEqual(split_on_commas('foo,bar=a[b][c],baz'),
-                         ['foo', 'bar=a[b][c]', 'baz'])
+        self.assertEqual(
+            split_on_commas('foo,bar=a[b][c],baz'),
+            ['foo', 'bar=a[b][c]', 'baz'],
+        )
 
     def test_end_bracket_in_value(self):
-        self.assertEqual(split_on_commas('foo,bar=[foo,*[biz]*,baz]'),
-                         ['foo', 'bar=foo,*[biz]*,baz'])
+        self.assertEqual(
+            split_on_commas('foo,bar=[foo,*[biz]*,baz]'),
+            ['foo', 'bar=foo,*[biz]*,baz'],
+        )
 
 
 @skip_if_windows("Ctrl-C not supported on windows.")
@@ -148,10 +179,10 @@ class TestFindServiceAndOperationNameFromEvent(unittest.TestCase):
         self.assertIs(operation, None)
 
 
-class MockProcess(object):
+class MockProcess:
     @property
     def stdin(self):
-        raise IOError('broken pipe')
+        raise OSError('broken pipe')
 
     def communicate(self):
         pass
@@ -167,7 +198,8 @@ class TestOutputStreamFactory(unittest.TestCase):
         self.popen = mock.Mock(subprocess.Popen)
         self.environ = {}
         self.stream_factory = OutputStreamFactory(
-            session=self.session, popen=self.popen,
+            session=self.session,
+            popen=self.popen,
             environ=self.environ,
         )
         self.pager = 'mypager --option'
@@ -180,14 +212,13 @@ class TestOutputStreamFactory(unittest.TestCase):
         self.patch_tty.stop()
 
     def set_session_pager(self, pager):
-        self.session.get_component.return_value.\
-            get_config_variable.return_value = pager
+        self.session.get_component.return_value.get_config_variable.return_value = pager
 
     def assert_popen_call(self, expected_pager_cmd, **override_args):
         popen_kwargs = {
             'stdin': subprocess.PIPE,
             'env': mock.ANY,
-            'universal_newlines': True
+            'universal_newlines': True,
         }
         if is_windows:
             popen_kwargs['args'] = expected_pager_cmd
@@ -201,17 +232,15 @@ class TestOutputStreamFactory(unittest.TestCase):
         self.set_session_pager('mypager --option')
         with self.stream_factory.get_pager_stream() as stream:
             stream.write()
-            self.assert_popen_call(
-                expected_pager_cmd='mypager --option'
-            )
+            self.assert_popen_call(expected_pager_cmd='mypager --option')
 
     def test_explicit_pager(self):
         self.set_session_pager('sessionpager --option')
-        with self.stream_factory.get_pager_stream('mypager --option') as stream:
+        with self.stream_factory.get_pager_stream(
+            'mypager --option'
+        ) as stream:
             stream.write()
-            self.assert_popen_call(
-                expected_pager_cmd='mypager --option'
-            )
+            self.assert_popen_call(expected_pager_cmd='mypager --option')
 
     def test_exit_of_context_manager_for_pager(self):
         self.set_session_pager('mypager --option')
@@ -237,16 +266,14 @@ class TestOutputStreamFactory(unittest.TestCase):
         try:
             with self.stream_factory.get_pager_stream() as stream:
                 stream.write()
-        except IOError:
+        except OSError:
             self.fail('Should not raise IOError')
 
     def test_get_output_stream(self):
         self.set_session_pager('mypager --option')
         with self.stream_factory.get_output_stream() as stream:
             stream.write()
-            self.assert_popen_call(
-                expected_pager_cmd='mypager --option'
-            )
+            self.assert_popen_call(expected_pager_cmd='mypager --option')
 
     @mock.patch('awscli.utils.get_stdout_text_writer')
     def test_use_stdout_if_not_tty(self, mock_stdout_writer):
@@ -267,8 +294,7 @@ class TestOutputStreamFactory(unittest.TestCase):
         with self.stream_factory.get_output_stream() as stream:
             stream.write()
             self.assert_popen_call(
-                expected_pager_cmd='myless',
-                env={'LESS': 'FRX'}
+                expected_pager_cmd='myless', env={'LESS': 'FRX'}
             )
 
     def test_does_not_clobber_less_env_var_if_in_env_vars(self):
@@ -277,19 +303,18 @@ class TestOutputStreamFactory(unittest.TestCase):
         with self.stream_factory.get_output_stream() as stream:
             stream.write()
             self.assert_popen_call(
-                expected_pager_cmd='less',
-                env={'LESS': 'S'}
+                expected_pager_cmd='less', env={'LESS': 'S'}
             )
 
     def test_set_less_flags_through_constructor(self):
         self.set_session_pager('less')
         stream_factory = OutputStreamFactory(
-            self.session, self.popen, self.environ, default_less_flags='ABC')
+            self.session, self.popen, self.environ, default_less_flags='ABC'
+        )
         with stream_factory.get_output_stream() as stream:
             stream.write()
             self.assert_popen_call(
-                expected_pager_cmd='less',
-                env={'LESS': 'ABC'}
+                expected_pager_cmd='less', env={'LESS': 'ABC'}
             )
 
     def test_not_create_pager_process_if_not_called(self):
@@ -300,19 +325,20 @@ class TestOutputStreamFactory(unittest.TestCase):
     def test_create_process_on_stdin_method_call(self):
         self.set_session_pager('less')
         stream_factory = OutputStreamFactory(
-            self.session, self.popen, self.environ, default_less_flags='ABC')
+            self.session, self.popen, self.environ, default_less_flags='ABC'
+        )
         with stream_factory.get_output_stream() as stream:
             self.assertEqual(self.popen.call_count, 0)
             stream.write()
             self.assert_popen_call(
-                expected_pager_cmd='less',
-                env={'LESS': 'ABC'}
+                expected_pager_cmd='less', env={'LESS': 'ABC'}
             )
 
     def test_not_create_process_if_stream_not_created(self):
         self.set_session_pager('less')
         stream_factory = OutputStreamFactory(
-            self.session, self.popen, self.environ, default_less_flags='ABC')
+            self.session, self.popen, self.environ, default_less_flags='ABC'
+        )
         with stream_factory.get_output_stream():
             self.assertEqual(self.popen.call_count, 0)
         self.assertEqual(self.popen.call_count, 0)
@@ -339,7 +365,7 @@ class BaseIMDSRegionTest(unittest.TestCase):
             url='http://169.254.169.254/',
             status_code=status_code,
             headers={},
-            raw=RawResponse(body)
+            raw=RawResponse(body),
         )
         self._imds_responses.append(response)
 
@@ -394,8 +420,7 @@ class TestInstanceMetadataRegionFetcher(BaseIMDSRegionTest):
         self.add_imds_token_response()
         self.add_get_region_imds_response()
 
-        InstanceMetadataRegionFetcher(
-            user_agent=user_agent).retrieve_region()
+        InstanceMetadataRegionFetcher(user_agent=user_agent).retrieve_region()
 
         headers = self._send.call_args[0][0].headers
         self.assertEqual(headers['User-Agent'], user_agent)
@@ -405,10 +430,12 @@ class TestInstanceMetadataRegionFetcher(BaseIMDSRegionTest):
         # be retried.
         self.add_imds_token_response()
         self.add_imds_response(
-            status_code=429, body=b'{"message": "Slow down"}')
+            status_code=429, body=b'{"message": "Slow down"}'
+        )
         self.add_get_region_imds_response()
         result = InstanceMetadataRegionFetcher(
-            num_attempts=2).retrieve_region()
+            num_attempts=2
+        ).retrieve_region()
         expected_result = 'us-mars-1'
         self.assertEqual(result, expected_result)
 
@@ -418,7 +445,8 @@ class TestInstanceMetadataRegionFetcher(BaseIMDSRegionTest):
         self.add_imds_response(body=b'')
         self.add_get_region_imds_response()
         result = InstanceMetadataRegionFetcher(
-            num_attempts=2).retrieve_region()
+            num_attempts=2
+        ).retrieve_region()
         expected_result = 'us-mars-1'
         self.assertEqual(result, expected_result)
 
@@ -427,10 +455,12 @@ class TestInstanceMetadataRegionFetcher(BaseIMDSRegionTest):
         # body should be retried.
         self.add_imds_token_response()
         self.add_imds_response(
-            status_code=429, body=b'{"message": "Slow down"}')
+            status_code=429, body=b'{"message": "Slow down"}'
+        )
         self.add_get_region_imds_response()
         result = InstanceMetadataRegionFetcher(
-            num_attempts=2).retrieve_region()
+            num_attempts=2
+        ).retrieve_region()
         expected_result = 'us-mars-1'
         self.assertEqual(result, expected_result)
 
@@ -440,7 +470,8 @@ class TestInstanceMetadataRegionFetcher(BaseIMDSRegionTest):
         self.add_imds_connection_error(ConnectionClosedError(endpoint_url=''))
         self.add_get_region_imds_response()
         result = InstanceMetadataRegionFetcher(
-            num_attempts=2).retrieve_region()
+            num_attempts=2
+        ).retrieve_region()
         expected_result = 'us-mars-1'
         self.assertEqual(result, expected_result)
 
@@ -450,7 +481,8 @@ class TestInstanceMetadataRegionFetcher(BaseIMDSRegionTest):
         self.add_imds_response(body=b'')
         self.add_get_region_imds_response()
         result = InstanceMetadataRegionFetcher(
-            num_attempts=2).retrieve_region()
+            num_attempts=2
+        ).retrieve_region()
         expected_result = 'us-mars-1'
         self.assertEqual(result, expected_result)
 
@@ -458,7 +490,8 @@ class TestInstanceMetadataRegionFetcher(BaseIMDSRegionTest):
         self.add_imds_token_response()
         self.add_imds_response(status_code=400, body=b'')
         result = InstanceMetadataRegionFetcher(
-            num_attempts=1).retrieve_region()
+            num_attempts=1
+        ).retrieve_region()
         self.assertEqual(result, None)
 
     def test_400_response_returns_none(self):
@@ -476,8 +509,11 @@ class TestInstanceMetadataRegionFetcher(BaseIMDSRegionTest):
 
 
 class TestIMDSRegionProvider(BaseIMDSRegionTest):
-    def assert_does_provide_expected_value(self, fetcher_region=None,
-                                           expected_result=None,):
+    def assert_does_provide_expected_value(
+        self,
+        fetcher_region=None,
+        expected_result=None,
+    ):
         fake_session = mock.Mock(spec=session.Session)
         fake_fetcher = mock.Mock(spec=InstanceMetadataRegionFetcher)
         fake_fetcher.retrieve_region.return_value = fetcher_region
@@ -529,7 +565,8 @@ class TestIMDSRegionProvider(BaseIMDSRegionTest):
     def test_can_set_imds_endpoint_mode_to_ipv4(self):
         driver = create_clidriver()
         driver.session.set_config_variable(
-            'ec2_metadata_service_endpoint_mode', 'ipv4')
+            'ec2_metadata_service_endpoint_mode', 'ipv4'
+        )
         self.add_imds_token_response()
         self.add_get_region_imds_response()
         provider = IMDSRegionProvider(driver.session)
@@ -540,7 +577,8 @@ class TestIMDSRegionProvider(BaseIMDSRegionTest):
     def test_can_set_imds_endpoint_mode_to_ipv6(self):
         driver = create_clidriver()
         driver.session.set_config_variable(
-            'ec2_metadata_service_endpoint_mode', 'ipv6')
+            'ec2_metadata_service_endpoint_mode', 'ipv6'
+        )
         self.add_imds_token_response()
         self.add_get_region_imds_response()
         provider = IMDSRegionProvider(driver.session)
@@ -551,7 +589,8 @@ class TestIMDSRegionProvider(BaseIMDSRegionTest):
     def test_can_set_imds_service_endpoint(self):
         driver = create_clidriver()
         driver.session.set_config_variable(
-            'ec2_metadata_service_endpoint', 'http://myendpoint/')
+            'ec2_metadata_service_endpoint', 'http://myendpoint/'
+        )
         self.add_imds_token_response()
         self.add_get_region_imds_response()
         provider = IMDSRegionProvider(driver.session)
@@ -562,9 +601,11 @@ class TestIMDSRegionProvider(BaseIMDSRegionTest):
     def test_imds_service_endpoint_overrides_ipv6_endpoint(self):
         driver = create_clidriver()
         driver.session.set_config_variable(
-            'ec2_metadata_service_endpoint_mode', 'ipv6')
+            'ec2_metadata_service_endpoint_mode', 'ipv6'
+        )
         driver.session.set_config_variable(
-            'ec2_metadata_service_endpoint', 'http://myendpoint/')
+            'ec2_metadata_service_endpoint', 'http://myendpoint/'
+        )
         self.add_imds_token_response()
         self.add_get_region_imds_response()
         provider = IMDSRegionProvider(driver.session)
@@ -626,11 +667,7 @@ class BaseShapeTest(unittest.TestCase):
         return shape_cls(shape_name, shape_model, resolver)
 
     def get_doc_type_shape_definition(self):
-        return {
-            'type': 'structure',
-            'members': {},
-            'document': True
-        }
+        return {'type': 'structure', 'members': {}, 'document': True}
 
 
 class TestIsDocumentType(BaseShapeTest):
@@ -671,12 +708,13 @@ class TestIsDocumentTypeContainer(BaseShapeTest):
     def test_is_not_document_type_container_if_not_scalar(self):
         self.shapes['String'] = {'type': 'string'}
         self.assertFalse(
-            is_document_type_container(self.get_shape_model('String')))
+            is_document_type_container(self.get_shape_model('String'))
+        )
 
     def test_is_document_type_container_if_list_member(self):
         self.shapes['ListOfDocTypes'] = {
             'type': 'list',
-            'member': {'shape': 'DocType'}
+            'member': {'shape': 'DocType'},
         }
         self.shapes['DocType'] = self.get_doc_type_shape_definition()
         self.assertTrue(
@@ -687,7 +725,7 @@ class TestIsDocumentTypeContainer(BaseShapeTest):
         self.shapes['MapOfDocTypes'] = {
             'type': 'map',
             'key': {'shape': 'String'},
-            'value': {'shape': 'DocType'}
+            'value': {'shape': 'DocType'},
         }
         self.shapes['DocType'] = self.get_doc_type_shape_definition()
         self.shapes['String'] = {'type': 'string'}
@@ -698,11 +736,11 @@ class TestIsDocumentTypeContainer(BaseShapeTest):
     def test_is_document_type_container_if_nested_list_member(self):
         self.shapes['NestedListsOfDocTypes'] = {
             'type': 'list',
-            'member': {'shape': 'ListOfDocTypes'}
+            'member': {'shape': 'ListOfDocTypes'},
         }
         self.shapes['ListOfDocTypes'] = {
             'type': 'list',
-            'member': {'shape': 'DocType'}
+            'member': {'shape': 'DocType'},
         }
         self.shapes['DocType'] = self.get_doc_type_shape_definition()
         self.assertTrue(
@@ -715,39 +753,36 @@ class TestIsDocumentTypeContainer(BaseShapeTest):
 class TestOperationUsesDocumentTypes(BaseShapeTest):
     def setUp(self):
         super(TestOperationUsesDocumentTypes, self).setUp()
-        self.input_shape_definition = {
-            'type': 'structure',
-            'members': {}
-        }
+        self.input_shape_definition = {'type': 'structure', 'members': {}}
         self.shapes['Input'] = self.input_shape_definition
-        self.output_shape_definition = {
-            'type': 'structure',
-            'members': {}
-        }
+        self.output_shape_definition = {'type': 'structure', 'members': {}}
         self.shapes['Output'] = self.output_shape_definition
         self.operation_definition = {
             'input': {'shape': 'Input'},
-            'output': {'shape': 'Output'}
+            'output': {'shape': 'Output'},
         }
         self.service_model = botocore.model.ServiceModel(
             {
                 'operations': {'DescribeResource': self.operation_definition},
-                'shapes': self.shapes
+                'shapes': self.shapes,
             }
         )
         self.operation_model = self.service_model.operation_model(
-            'DescribeResource')
+            'DescribeResource'
+        )
 
     def test_operation_uses_document_types_if_doc_type_in_input(self):
         self.shapes['DocType'] = self.get_doc_type_shape_definition()
         self.input_shape_definition['members']['DocType'] = {
-            'shape': 'DocType'}
+            'shape': 'DocType'
+        }
         self.assertTrue(operation_uses_document_types(self.operation_model))
 
     def test_operation_uses_document_types_if_doc_type_in_output(self):
         self.shapes['DocType'] = self.get_doc_type_shape_definition()
         self.output_shape_definition['members']['DocType'] = {
-            'shape': 'DocType'}
+            'shape': 'DocType'
+        }
         self.assertTrue(operation_uses_document_types(self.operation_model))
 
     def test_operation_uses_document_types_is_false_when_no_doc_types(self):
@@ -775,7 +810,7 @@ class TestShapeWalker(BaseShapeTest):
     def assert_visited_shapes(self, expected_shape_names):
         self.assertEqual(
             expected_shape_names,
-            [shape.name for shape in self.visitor.visited]
+            [shape.name for shape in self.visitor.visited],
         )
 
     def test_walk_scalar(self):
@@ -788,18 +823,15 @@ class TestShapeWalker(BaseShapeTest):
             'type': 'structure',
             'members': {
                 'String1': {'shape': 'String'},
-                'String2': {'shape': 'String'}
-            }
+                'String2': {'shape': 'String'},
+            },
         }
         self.shapes['String'] = {'type': 'string'}
         self.walker.walk(self.get_shape_model('Structure'), self.visitor)
         self.assert_visited_shapes(['Structure', 'String', 'String'])
 
     def test_walk_list(self):
-        self.shapes['List'] = {
-            'type': 'list',
-            'member': {'shape': 'String'}
-        }
+        self.shapes['List'] = {'type': 'list', 'member': {'shape': 'String'}}
         self.shapes['String'] = {'type': 'string'}
         self.walker.walk(self.get_shape_model('List'), self.visitor)
         self.assert_visited_shapes(['List', 'String'])
@@ -808,7 +840,7 @@ class TestShapeWalker(BaseShapeTest):
         self.shapes['Map'] = {
             'type': 'map',
             'key': {'shape': 'KeyString'},
-            'value': {'shape': 'ValueString'}
+            'value': {'shape': 'ValueString'},
         }
         self.shapes['KeyString'] = {'type': 'string'}
         self.shapes['ValueString'] = {'type': 'string'}
@@ -820,7 +852,7 @@ class TestShapeWalker(BaseShapeTest):
             'type': 'structure',
             'members': {
                 'Recursive': {'shape': 'Recursive'},
-            }
+            },
         }
         self.walker.walk(self.get_shape_model('Recursive'), self.visitor)
         self.assert_visited_shapes(['Recursive'])
@@ -871,7 +903,9 @@ def test_add_command_lineage_to_user_agent_extra(test_session):
     assert test_session.user_agent_extra == 'md/command#a.b.c'
 
 
-def test_no_add_command_lineage_to_user_agent_extra_with_existing_command_lineage(test_session):
+def test_no_add_command_lineage_to_user_agent_extra_with_existing_command_lineage(
+    test_session,
+):
     test_session.user_agent_extra = 'md/command#a.b.c'
     add_command_lineage_to_user_agent_extra(test_session, ['a', 'b', 'c', 'd'])
     assert test_session.user_agent_extra == 'md/command#a.b.c'

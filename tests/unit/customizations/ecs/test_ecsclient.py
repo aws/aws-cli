@@ -12,13 +12,14 @@
 # language governing permissions and limitations under the License.
 
 from argparse import Namespace
+
 from botocore import config
-from awscli.testutils import capture_output, mock, unittest
+
 from awscli.customizations.ecs.deploy import ECSClient, ECSDeploy
+from awscli.testutils import capture_output, mock, unittest
 
 
 class TestECSClient(unittest.TestCase):
-
     def setUp(self):
         ecs_client = mock.Mock()
         self.session = mock.Mock()
@@ -32,13 +33,17 @@ class TestECSClient(unittest.TestCase):
 
     def test_client_config(self):
         self.test_client = ECSClient(
-            self.session, None, self.global_args, ECSDeploy.USER_AGENT_EXTRA)
+            self.session, None, self.global_args, ECSDeploy.USER_AGENT_EXTRA
+        )
 
         expected_user_agent_extra = 'md/customization#ecs-deploy'
 
         create_args = self.session.create_client.call_args
         self.assertEqual(create_args[0][0], 'ecs')
         self.assertEqual(
-            create_args[1]['region_name'], self.global_args.region)
-        self.assertEqual(create_args[1]['config'].user_agent_extra,
-                          expected_user_agent_extra)
+            create_args[1]['region_name'], self.global_args.region
+        )
+        self.assertEqual(
+            create_args[1]['config'].user_agent_extra,
+            expected_user_agent_extra,
+        )

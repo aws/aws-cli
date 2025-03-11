@@ -14,7 +14,6 @@ import datetime
 
 from awscli.customizations.s3.filegenerator import FileStat
 from awscli.customizations.s3.syncstrategy.delete import DeleteSync
-
 from awscli.testutils import unittest
 
 
@@ -25,13 +24,18 @@ class TestDeleteSync(unittest.TestCase):
     def test_determine_should_sync(self):
         timenow = datetime.datetime.now()
 
-        dst_file = FileStat(src='', dest='',
-                            compare_key='test.py', size=10,
-                            last_update=timenow, src_type='local',
-                            dest_type='s3', operation_name='')
+        dst_file = FileStat(
+            src='',
+            dest='',
+            compare_key='test.py',
+            size=10,
+            last_update=timenow,
+            src_type='local',
+            dest_type='s3',
+            operation_name='',
+        )
 
-        should_sync = self.sync_strategy.determine_should_sync(
-            None, dst_file)
+        should_sync = self.sync_strategy.determine_should_sync(None, dst_file)
         self.assertTrue(should_sync)
         self.assertEqual(dst_file.operation_name, 'delete')
 

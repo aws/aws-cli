@@ -11,8 +11,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 import os
+
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 
 class TestOutFileQueryArguments(BaseAWSCommandParamsTest):
@@ -29,8 +30,8 @@ class TestOutFileQueryArguments(BaseAWSCommandParamsTest):
             'certificatePem': 'cert...',
             'ResponseMetadata': {
                 'HTTPStatusCode': 200,
-                'RequestId': 'request-id'
-            }
+                'RequestId': 'request-id',
+            },
         }
         outfile = self.files.full_path('cert.pem')
         cmdline = 'iot create-certificate-from-csr'
@@ -44,14 +45,11 @@ class TestOutFileQueryArguments(BaseAWSCommandParamsTest):
     def test_saves_files_for_create_keys_and_cert(self):
         self.parsed_response = {
             'certificatePem': 'cert...',
-            'keyPair': {
-                'PublicKey': 'public',
-                'PrivateKey': 'private'
-            },
+            'keyPair': {'PublicKey': 'public', 'PrivateKey': 'private'},
             'ResponseMetadata': {
                 'HTTPStatusCode': 200,
-                'RequestId': 'request-id'
-            }
+                'RequestId': 'request-id',
+            },
         }
         out_cert = self.files.full_path('cert.pem')
         out_pub = self.files.full_path('key_rsa.pub')
@@ -77,8 +75,8 @@ class TestOutFileQueryArguments(BaseAWSCommandParamsTest):
             'Error': {'Code': 'v1', 'Message': 'v2', 'Type': 'v3'},
             'ResponseMetadata': {
                 'HTTPStatusCode': 403,
-                'RequestId': 'request-id'
-            }
+                'RequestId': 'request-id',
+            },
         }
         self.http_response.status_code = 403
         cmdline = 'iot create-certificate-from-csr'
@@ -88,7 +86,8 @@ class TestOutFileQueryArguments(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             cmdline,
             stderr_contains=self.parsed_response['Error']['Message'],
-            expected_rc=254)
+            expected_rc=254,
+        )
 
     def test_ensures_file_is_writable_before_sending(self):
         outfile = os.sep.join(['', 'does', 'not', 'exist_', 'file.txt'])
@@ -99,4 +98,5 @@ class TestOutFileQueryArguments(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             cmdline,
             stderr_contains='Unable to write to file: ',
-            expected_rc=252)
+            expected_rc=252,
+        )

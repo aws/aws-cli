@@ -12,9 +12,9 @@
 # language governing permissions and limitations under the License.
 
 import subprocess
-
 from argparse import Namespace
-from awscli.customizations.codedeploy.systems import Windows, Ubuntu, RHEL
+
+from awscli.customizations.codedeploy.systems import RHEL, Ubuntu, Windows
 from awscli.testutils import mock, unittest
 
 
@@ -28,13 +28,14 @@ class TestWindows(unittest.TestCase):
 
         self.open_patcher = mock.patch(
             'awscli.customizations.codedeploy.systems.open',
-            mock.mock_open(), create=True
+            mock.mock_open(),
+            create=True,
         )
         self.open = self.open_patcher.start()
 
         self.config_dir = r'C:\ProgramData\Amazon\CodeDeploy'
         self.config_file = 'conf.onpremises.yml'
-        self.config_path = r'{0}\{1}'.format(self.config_dir, self.config_file)
+        self.config_path = rf'{self.config_dir}\{self.config_file}'
         self.installer = 'codedeploy-agent.msi'
         self.bucket = 'bucket'
         self.key = 'key'
@@ -80,43 +81,56 @@ class TestWindows(unittest.TestCase):
         process.returncode = 0
         self.popen.return_value = process
         self.windows.install(self.params)
-        self.popen.assert_has_calls([
-            mock.call(
-                [
-                    'powershell.exe',
-                    '-Command', 'Stop-Service',
-                    '-Name', 'codedeployagent'
-                ],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            ),
-            mock.call().communicate(),
-            mock.call(
-                [
-                    'powershell.exe',
-                    '-Command', 'Get-Service',
-                    '-Name', 'codedeployagent'
-                ],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            ),
-            mock.call().communicate()
-        ])
-        self.check_call.assert_has_calls([
-            mock.call(
-                [
-                    r'.\{0}'.format(self.installer),
-                    '/quiet',
-                    '/l', r'.\codedeploy-agent-install-log.txt'
-                ],
-                shell=True
-            ),
-            mock.call([
-                'powershell.exe',
-                '-Command', 'Restart-Service',
-                '-Name', 'codedeployagent'
-            ])
-        ])
+        self.popen.assert_has_calls(
+            [
+                mock.call(
+                    [
+                        'powershell.exe',
+                        '-Command',
+                        'Stop-Service',
+                        '-Name',
+                        'codedeployagent',
+                    ],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                ),
+                mock.call().communicate(),
+                mock.call(
+                    [
+                        'powershell.exe',
+                        '-Command',
+                        'Get-Service',
+                        '-Name',
+                        'codedeployagent',
+                    ],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                ),
+                mock.call().communicate(),
+            ]
+        )
+        self.check_call.assert_has_calls(
+            [
+                mock.call(
+                    [
+                        rf'.\{self.installer}',
+                        '/quiet',
+                        '/l',
+                        r'.\codedeploy-agent-install-log.txt',
+                    ],
+                    shell=True,
+                ),
+                mock.call(
+                    [
+                        'powershell.exe',
+                        '-Command',
+                        'Restart-Service',
+                        '-Name',
+                        'codedeployagent',
+                    ]
+                ),
+            ]
+        )
         self.open.assert_called_with(self.installer, 'wb')
         self.open().write.assert_called_with(self.body)
 
@@ -126,28 +140,36 @@ class TestWindows(unittest.TestCase):
         process.returncode = 0
         self.popen.return_value = process
         self.windows.uninstall(self.params)
-        self.popen.assert_has_calls([
-            mock.call(
-                [
-                    'powershell.exe',
-                    '-Command', 'Stop-Service',
-                    '-Name', 'codedeployagent'
-                ],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            ),
-            mock.call().communicate(),
-            mock.call(
-                [
-                    'wmic',
-                    'product', 'where', 'name="CodeDeploy Host Agent"',
-                    'call', 'uninstall', '/nointeractive'
-                ],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            ),
-            mock.call().communicate()
-        ])
+        self.popen.assert_has_calls(
+            [
+                mock.call(
+                    [
+                        'powershell.exe',
+                        '-Command',
+                        'Stop-Service',
+                        '-Name',
+                        'codedeployagent',
+                    ],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                ),
+                mock.call().communicate(),
+                mock.call(
+                    [
+                        'wmic',
+                        'product',
+                        'where',
+                        'name="CodeDeploy Host Agent"',
+                        'call',
+                        'uninstall',
+                        '/nointeractive',
+                    ],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                ),
+                mock.call().communicate(),
+            ]
+        )
 
 
 class TestLinux(unittest.TestCase):
@@ -160,7 +182,8 @@ class TestLinux(unittest.TestCase):
 
         self.open_patcher = mock.patch(
             'awscli.customizations.codedeploy.systems.open',
-            mock.mock_open(), create=True
+            mock.mock_open(),
+            create=True,
         )
         self.open = self.open_patcher.start()
 
@@ -170,7 +193,7 @@ class TestLinux(unittest.TestCase):
 
         self.config_dir = '/etc/codedeploy-agent/conf'
         self.config_file = 'codedeploy.onpremises.yml'
-        self.config_path = '{0}/{1}'.format(self.config_dir, self.config_file)
+        self.config_path = f'{self.config_dir}/{self.config_file}'
         self.installer = 'install'
         self.bucket = 'bucket'
         self.key = 'key'
@@ -184,12 +207,14 @@ class TestLinux(unittest.TestCase):
         self.credentials.secret_key = self.secret_access_key
         self.credentials.token = self.session_token
 
-        self.environment = dict({
-            'AWS_REGION': self.region,
-            'AWS_ACCESS_KEY_ID': self.access_key_id,
-            'AWS_SECRET_ACCESS_KEY': self.secret_access_key,
-            'AWS_SESSION_TOKEN': self.session_token
-        })
+        self.environment = dict(
+            {
+                'AWS_REGION': self.region,
+                'AWS_ACCESS_KEY_ID': self.access_key_id,
+                'AWS_SECRET_ACCESS_KEY': self.secret_access_key,
+                'AWS_SESSION_TOKEN': self.session_token,
+            }
+        )
 
         self.body = 'install-script'
         self.reader = mock.MagicMock()
@@ -235,7 +260,8 @@ class TestUbuntu(TestLinux):
     def test_validate_administrator_throws(self, geteuid):
         geteuid.return_value = 1
         with self.assertRaisesRegex(
-                RuntimeError, 'You must run this command as sudo.'):
+            RuntimeError, 'You must run this command as sudo.'
+        ):
             self.ubuntu.validate_administrator()
 
     def test_install(self):
@@ -244,23 +270,26 @@ class TestUbuntu(TestLinux):
         process.returncode = 0
         self.popen.return_value = process
         self.ubuntu.install(self.params)
-        self.popen.assert_has_calls([
-            mock.call(
-                ['service', 'codedeploy-agent', 'stop'],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            ),
-            mock.call().communicate()
-        ])
-        self.check_call.assert_has_calls([
-            mock.call(['apt-get', '-y', 'update']),
-            mock.call(['apt-get', '-y', 'install', 'ruby2.0']),
-            mock.call(['chmod', '+x', './{0}'.format(self.installer)]),
-            mock.call(
-                ['./{0}'.format(self.installer), 'auto'],
-                env=self.environment
-            )
-        ])
+        self.popen.assert_has_calls(
+            [
+                mock.call(
+                    ['service', 'codedeploy-agent', 'stop'],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                ),
+                mock.call().communicate(),
+            ]
+        )
+        self.check_call.assert_has_calls(
+            [
+                mock.call(['apt-get', '-y', 'update']),
+                mock.call(['apt-get', '-y', 'install', 'ruby2.0']),
+                mock.call(['chmod', '+x', f'./{self.installer}']),
+                mock.call(
+                    [f'./{self.installer}', 'auto'], env=self.environment
+                ),
+            ]
+        )
         self.open.assert_called_with(self.installer, 'wb')
         self.open().write.assert_called_with(self.body)
 
@@ -270,17 +299,20 @@ class TestUbuntu(TestLinux):
         process.returncode = 0
         self.popen.return_value = process
         self.ubuntu.uninstall(self.params)
-        self.popen.assert_has_calls([
-            mock.call(
-                ['service', 'codedeploy-agent', 'stop'],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            ),
-            mock.call().communicate()
-        ])
-        self.check_call.assert_has_calls([
-            mock.call(['dpkg', '-r', 'codedeploy-agent'])
-        ])
+        self.popen.assert_has_calls(
+            [
+                mock.call(
+                    ['service', 'codedeploy-agent', 'stop'],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                ),
+                mock.call().communicate(),
+            ]
+        )
+        self.check_call.assert_has_calls(
+            [mock.call(['dpkg', '-r', 'codedeploy-agent'])]
+        )
+
 
 class TestRHEL(TestLinux):
     def setUp(self):
@@ -303,7 +335,8 @@ class TestRHEL(TestLinux):
     def test_validate_administrator_throws(self, geteuid):
         geteuid.return_value = 1
         with self.assertRaisesRegex(
-                RuntimeError, 'You must run this command as sudo.'):
+            RuntimeError, 'You must run this command as sudo.'
+        ):
             self.rhel.validate_administrator()
 
     def test_install(self):
@@ -312,22 +345,25 @@ class TestRHEL(TestLinux):
         process.returncode = 0
         self.popen.return_value = process
         self.rhel.install(self.params)
-        self.popen.assert_has_calls([
-            mock.call(
-                ['service', 'codedeploy-agent', 'stop'],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            ),
-            mock.call().communicate()
-        ])
-        self.check_call.assert_has_calls([
-            mock.call(['yum', '-y', 'install', 'ruby']),
-            mock.call(['chmod', '+x', './{0}'.format(self.installer)]),
-            mock.call(
-                ['./{0}'.format(self.installer), 'auto'],
-                env=self.environment
-            )
-        ])
+        self.popen.assert_has_calls(
+            [
+                mock.call(
+                    ['service', 'codedeploy-agent', 'stop'],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                ),
+                mock.call().communicate(),
+            ]
+        )
+        self.check_call.assert_has_calls(
+            [
+                mock.call(['yum', '-y', 'install', 'ruby']),
+                mock.call(['chmod', '+x', f'./{self.installer}']),
+                mock.call(
+                    [f'./{self.installer}', 'auto'], env=self.environment
+                ),
+            ]
+        )
         self.open.assert_called_with(self.installer, 'wb')
         self.open().write.assert_called_with(self.body)
 
@@ -337,17 +373,20 @@ class TestRHEL(TestLinux):
         process.returncode = 0
         self.popen.return_value = process
         self.rhel.uninstall(self.params)
-        self.popen.assert_has_calls([
-            mock.call(
-                ['service', 'codedeploy-agent', 'stop'],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            ),
-            mock.call().communicate()
-        ])
-        self.check_call.assert_has_calls([
-            mock.call(['yum', '-y', 'erase', 'codedeploy-agent'])
-        ])
+        self.popen.assert_has_calls(
+            [
+                mock.call(
+                    ['service', 'codedeploy-agent', 'stop'],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                ),
+                mock.call().communicate(),
+            ]
+        )
+        self.check_call.assert_has_calls(
+            [mock.call(['yum', '-y', 'erase', 'codedeploy-agent'])]
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -15,9 +15,8 @@ from pathlib import Path
 
 import pytest
 
-from tests import CLIRunner
 from awscli.compat import urlparse
-
+from tests import CLIRunner
 
 ENDPOINT_TESTDATA_FILE = Path(__file__).parent / "profile-tests.json"
 
@@ -57,13 +56,15 @@ def create_cases():
                 ),
             },
             marks=pytest.mark.skipif(
-               'ignore_configured_endpoint_urls' in (
-                    test_suite['client_configs']
-                    .get(test_case_data['client_config'], {})
+                'ignore_configured_endpoint_urls'
+                in (
+                    test_suite['client_configs'].get(
+                        test_case_data['client_config'], {}
+                    )
                 ),
-               reason="Parameter not supported on the command line"
+                reason="Parameter not supported on the command line",
             ),
-            id=test_case_data['name']
+            id=test_case_data['name'],
         )
 
 
@@ -100,13 +101,11 @@ SERVICE_TO_OPERATION = {'s3api': 'list-buckets', 'dynamodb': 'list-tables'}
 
 
 class TestConfiguredEndpointUrl:
-    def assert_endpoint_used(
-        self, cli_runner_result, test_case
-    ):
-
+    def assert_endpoint_used(self, cli_runner_result, test_case):
         aws_request = cli_runner_result.aws_requests[0]
-        assert test_case['expected_endpoint_url'] == \
-            _normalize_endpoint(aws_request.http_requests[0].url)
+        assert test_case['expected_endpoint_url'] == _normalize_endpoint(
+            aws_request.http_requests[0].url
+        )
 
     def _create_command(self, test_case):
         service = test_case['service']
@@ -117,13 +116,14 @@ class TestConfiguredEndpointUrl:
             service,
             SERVICE_TO_OPERATION[service],
             '--profile',
-            f'{test_case["profile"]}'
+            f'{test_case["profile"]}',
         ]
 
         if test_case['client_args'].get('endpoint_url', None):
-            cmd.extend([
+            cmd.extend(
+                [
                     '--endpoint-url',
-                    f'{test_case["client_args"]["endpoint_url"]}'
+                    f'{test_case["client_args"]["endpoint_url"]}',
                 ]
             )
 

@@ -21,13 +21,15 @@ class TestDataPipelineQueryObjects(BaseAWSCommandParamsTest):
     def _generate_pipeline_objects(self, object_ids):
         objects = []
         for object_id in object_ids:
-            objects.append({
-                'id': object_id,
-                'name': object_id,
-                'fields': [
-                    {'key': '@componentParent', 'stringValue': object_id}
-                ]
-            })
+            objects.append(
+                {
+                    'id': object_id,
+                    'name': object_id,
+                    'fields': [
+                        {'key': '@componentParent', 'stringValue': object_id}
+                    ],
+                }
+            )
         return objects
 
     def test_list_more_than_one_hundred_runs(self):
@@ -35,7 +37,9 @@ class TestDataPipelineQueryObjects(BaseAWSCommandParamsTest):
         end_date = '2017-10-26T00:37:21'
         pipeline_id = 'pipeline-id'
         args = '--pipeline-id %s --start-interval %s,%s' % (
-            pipeline_id, start_date, end_date
+            pipeline_id,
+            start_date,
+            end_date,
         )
         command = self.prefix + args
         object_ids = ['object-id-%s' % i for i in range(150)]
@@ -45,46 +49,55 @@ class TestDataPipelineQueryObjects(BaseAWSCommandParamsTest):
             {
                 'ids': object_ids[:100],
                 'hasMoreResults': True,
-                'marker': 'marker'
+                'marker': 'marker',
             },
-            {
-                'ids': object_ids[100:],
-                'hasMoreResults': False
-            },
+            {'ids': object_ids[100:], 'hasMoreResults': False},
             {'pipelineObjects': objects[:100]},
-            {'pipelineObjects': objects[100:]}
+            {'pipelineObjects': objects[100:]},
         ]
 
         self.run_cmd(command, expected_rc=0)
 
         query = {
-            'selectors': [{
-                'fieldName': '@actualStartTime',
-                'operator': {
-                    'type': 'BETWEEN',
-                    'values': [start_date, end_date]
+            'selectors': [
+                {
+                    'fieldName': '@actualStartTime',
+                    'operator': {
+                        'type': 'BETWEEN',
+                        'values': [start_date, end_date],
+                    },
                 }
-            }]
+            ]
         }
 
         expected_operations_called = [
-            ('QueryObjects', {
-                'pipelineId': pipeline_id,
-                'query': query, 'sphere': 'INSTANCE'
-            }),
-            ('QueryObjects', {
-                'pipelineId': pipeline_id,
-                'marker': 'marker', 'query': query, 'sphere': 'INSTANCE'
-            }),
-            ('DescribeObjects', {
-                'objectIds': object_ids[:100],
-                'pipelineId': pipeline_id
-            }),
-            ('DescribeObjects', {
-                'objectIds': object_ids[100:],
-                'pipelineId': pipeline_id
-            })
+            (
+                'QueryObjects',
+                {
+                    'pipelineId': pipeline_id,
+                    'query': query,
+                    'sphere': 'INSTANCE',
+                },
+            ),
+            (
+                'QueryObjects',
+                {
+                    'pipelineId': pipeline_id,
+                    'marker': 'marker',
+                    'query': query,
+                    'sphere': 'INSTANCE',
+                },
+            ),
+            (
+                'DescribeObjects',
+                {'objectIds': object_ids[:100], 'pipelineId': pipeline_id},
+            ),
+            (
+                'DescribeObjects',
+                {'objectIds': object_ids[100:], 'pipelineId': pipeline_id},
+            ),
         ]
-        operations_called = [(op.name, params)
-                             for op, params in self.operations_called]
+        operations_called = [
+            (op.name, params) for op, params in self.operations_called
+        ]
         self.assertEqual(expected_operations_called, operations_called)

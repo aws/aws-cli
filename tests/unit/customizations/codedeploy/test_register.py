@@ -12,10 +12,13 @@
 # language governing permissions and limitations under the License.
 
 from argparse import Namespace
+
 from awscli.customizations.codedeploy.register import Register
 from awscli.customizations.codedeploy.utils import MAX_TAGS_PER_INSTANCE
-from awscli.customizations.exceptions import ConfigurationError
-from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
 from awscli.testutils import mock, unittest
 
 
@@ -54,7 +57,8 @@ class TestRegister(unittest.TestCase):
 
         self.open_patcher = mock.patch(
             'awscli.customizations.codedeploy.register.open',
-            mock.mock_open(), create=True
+            mock.mock_open(),
+            create=True,
         )
         self.open = self.open_patcher.start()
 
@@ -67,7 +71,7 @@ class TestRegister(unittest.TestCase):
         self.iam.create_access_key.return_value = {
             'AccessKey': {
                 'AccessKeyId': self.access_key_id,
-                'SecretAccessKey': self.secret_access_key
+                'SecretAccessKey': self.secret_access_key,
             }
         }
 
@@ -96,9 +100,9 @@ class TestRegister(unittest.TestCase):
             {'Key': 'k' + str(x), 'Value': 'v' + str(x)} for x in range(11)
         ]
         with self.assertRaisesRegex(
-                ParamValidationError,
-                'Instances can only have a maximum of {0} tags.'.format(
-                    MAX_TAGS_PER_INSTANCE)):
+            ParamValidationError,
+            f'Instances can only have a maximum of {MAX_TAGS_PER_INSTANCE} tags.',
+        ):
             self.register._run_main(self.args, self.globals)
 
     def test_register_throws_on_invalid_iam_user_arn(self):
@@ -109,22 +113,23 @@ class TestRegister(unittest.TestCase):
 
     def test_register_creates_clients(self):
         self.register._run_main(self.args, self.globals)
-        self.session.create_client.assert_has_calls([
-            mock.call(
-                'codedeploy',
-                region_name=self.region,
-                endpoint_url=self.endpoint_url,
-                verify=self.globals.verify_ssl
-            ),
-            mock.call('iam', region_name=self.region)
-        ])
+        self.session.create_client.assert_has_calls(
+            [
+                mock.call(
+                    'codedeploy',
+                    region_name=self.region,
+                    endpoint_url=self.endpoint_url,
+                    verify=self.globals.verify_ssl,
+                ),
+                mock.call('iam', region_name=self.region),
+            ]
+        )
 
     def test_register_with_no_iam_user_arn(self):
         self.args.iam_user_arn = None
         self.register._run_main(self.args, self.globals)
         self.register.iam.create_user.assert_called_with(
-            Path=self.path,
-            UserName=self.instance_name
+            Path=self.path, UserName=self.instance_name
         )
         self.assertIn('iam_user_arn', self.args)
         self.assertEqual(self.iam_user_arn, self.args.iam_user_arn)
@@ -138,7 +143,7 @@ class TestRegister(unittest.TestCase):
         self.register.iam.put_user_policy.assert_called_with(
             UserName=self.instance_name,
             PolicyName=self.policy_name,
-            PolicyDocument=self.policy_document
+            PolicyDocument=self.policy_document,
         )
         self.assertIn('policy_name', self.args)
         self.assertEqual(self.policy_name, self.args.policy_name)
@@ -147,21 +152,14 @@ class TestRegister(unittest.TestCase):
         self.open.assert_called_with(self.config_file, 'w')
         self.open().write.assert_called_with(
             '---\n'
-            'region: {0}\n'
-            'iam_user_arn: {1}\n'
-            'aws_access_key_id: {2}\n'
-            'aws_secret_access_key: {3}\n'.format(
-                self.region,
-                self.iam_user_arn,
-                self.access_key_id,
-                self.secret_access_key
-            )
+            f'region: {self.region}\n'
+            f'iam_user_arn: {self.iam_user_arn}\n'
+            f'aws_access_key_id: {self.access_key_id}\n'
+            f'aws_secret_access_key: {self.secret_access_key}\n'
         )
-        self.register.codedeploy.register_on_premises_instance.\
-            assert_called_with(
-                instanceName=self.instance_name,
-                iamUserArn=self.iam_user_arn
-            )
+        self.register.codedeploy.register_on_premises_instance.assert_called_with(
+            instanceName=self.instance_name, iamUserArn=self.iam_user_arn
+        )
 
     def test_register_with_iam_user_arn(self):
         self.args.iam_user_arn = self.iam_user_arn
@@ -170,20 +168,16 @@ class TestRegister(unittest.TestCase):
         self.assertFalse(self.register.iam.create_access_key.called)
         self.assertFalse(self.register.iam.put_user_policy.called)
         self.assertFalse(self.open.called)
-        self.register.codedeploy.register_on_premises_instance.\
-            assert_called_with(
-                instanceName=self.instance_name,
-                iamUserArn=self.iam_user_arn
-            )
+        self.register.codedeploy.register_on_premises_instance.assert_called_with(
+            instanceName=self.instance_name, iamUserArn=self.iam_user_arn
+        )
 
     def test_register_with_no_tags(self):
         self.args.tags = None
         self.register._run_main(self.args, self.globals)
-        self.register.codedeploy.register_on_premises_instance.\
-            assert_called_with(
-                instanceName=self.instance_name,
-                iamUserArn=self.iam_user_arn
-            )
+        self.register.codedeploy.register_on_premises_instance.assert_called_with(
+            instanceName=self.instance_name, iamUserArn=self.iam_user_arn
+        )
         self.assertFalse(
             self.register.codedeploy.add_tags_to_on_premises_instances.called
         )
@@ -191,16 +185,12 @@ class TestRegister(unittest.TestCase):
     def test_register_with_tags(self):
         self.args.tags = self.tags
         self.register._run_main(self.args, self.globals)
-        self.register.codedeploy.register_on_premises_instance.\
-            assert_called_with(
-                instanceName=self.instance_name,
-                iamUserArn=self.iam_user_arn
-            )
-        self.register.codedeploy.add_tags_to_on_premises_instances.\
-            assert_called_with(
-                tags=self.tags,
-                instanceNames=[self.instance_name]
-            )
+        self.register.codedeploy.register_on_premises_instance.assert_called_with(
+            instanceName=self.instance_name, iamUserArn=self.iam_user_arn
+        )
+        self.register.codedeploy.add_tags_to_on_premises_instances.assert_called_with(
+            tags=self.tags, instanceNames=[self.instance_name]
+        )
 
 
 if __name__ == "__main__":

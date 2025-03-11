@@ -14,7 +14,6 @@ from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestGetDistributionConfig(BaseAWSCommandParamsTest):
-
     prefix = 'cloudfront get-distribution-config'
 
     def test_get_distribution_config(self):

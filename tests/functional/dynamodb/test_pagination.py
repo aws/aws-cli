@@ -23,13 +23,13 @@ class TestPagination(BaseAWSCommandParamsTest):
             "Count": 1,
             "ScannedCount": 1,
             "ConsumedCapacity": 1,
-            "LastEvaluatedKey": {"Key": {"B":"MjEzNw=="}}
+            "LastEvaluatedKey": {"Key": {"B": "MjEzNw=="}},
         }
         self.second_response = {
             "Items": [],
             "Count": 0,
             "ScannedCount": 1,
-            "ConsumedCapacity": 1
+            "ConsumedCapacity": 1,
         }
 
     def test_scan_pagination_binary_last_evaluated_key(self):

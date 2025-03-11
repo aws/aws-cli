@@ -13,17 +13,19 @@
 import argparse
 import os
 
-from botocore.session import Session
-from botocore.history import HistoryRecorder
 from botocore.exceptions import ProfileNotFound
+from botocore.history import HistoryRecorder
+from botocore.session import Session
 
-from awscli.testutils import unittest, mock, FileCreator
 from awscli.compat import StringIO
-from awscli.customizations.history import attach_history_handler
-from awscli.customizations.history import add_history_commands
-from awscli.customizations.history import HistoryCommand
-from awscli.customizations.history.db import DatabaseHistoryHandler
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.history import (
+    HistoryCommand,
+    add_history_commands,
+    attach_history_handler,
+)
+from awscli.customizations.history.db import DatabaseHistoryHandler
+from awscli.testutils import FileCreator, mock, unittest
 
 
 class TestAttachHistoryHandler(unittest.TestCase):

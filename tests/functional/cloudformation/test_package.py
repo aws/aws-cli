@@ -12,17 +12,19 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import os
 import shutil
 import tempfile
-import os
 import zipfile
+from unittest import TestCase
 
 import pytest
 
-from unittest import TestCase
-from awscli.customizations.cloudformation.artifact_exporter import make_zip
+from awscli.customizations.cloudformation.artifact_exporter import (
+    Template,
+    make_zip,
+)
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump
-from awscli.customizations.cloudformation.artifact_exporter import Template
 from awscli.testutils import skip_if_windows
 
 
@@ -88,7 +90,7 @@ def test_known_templates(input_template, output_template):
     template = Template(input_template, os.getcwd(), None)
     exported = template.export()
     result = yaml_dump(exported)
-    expected = open(output_template, 'r').read()
+    expected = open(output_template).read()
 
     assert result == expected, (
         '\nAcutal template:\n'

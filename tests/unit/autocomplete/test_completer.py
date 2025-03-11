@@ -14,11 +14,10 @@ import os
 
 from prompt_toolkit.completion import Completion
 
-from awscli.testutils import unittest, mock
 from awscli.autocomplete import completer, parser
-from awscli.autocomplete.local import basic
 from awscli.autocomplete.completer import CompletionResult
-
+from awscli.autocomplete.local import basic
+from awscli.testutils import mock, unittest
 from tests.unit.autocomplete import InMemoryIndex
 
 

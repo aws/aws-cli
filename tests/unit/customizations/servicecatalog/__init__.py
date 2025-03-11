@@ -11,11 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.testutils import unittest
-from awscli.testutils import mock
-from awscli.customizations.servicecatalog import \
-    register_servicecatalog_commands, GenerateCommand
-from awscli.customizations.servicecatalog import inject_commands
+from awscli.customizations.servicecatalog import (
+    GenerateCommand,
+    inject_commands,
+    register_servicecatalog_commands,
+)
+from awscli.testutils import mock, unittest
 
 
 class TestRegisterServiceCatalogCommands(unittest.TestCase):

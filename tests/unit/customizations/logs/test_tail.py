@@ -10,21 +10,23 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock, unittest
-from datetime import datetime, timedelta
 import time
+from datetime import datetime, timedelta
 
-from dateutil import tz
 from botocore.session import Session
 from botocore.stub import Stubber
+from dateutil import tz
 
 from awscli.compat import StringIO
-from awscli.customizations.logs.tail import ShortLogEventsFormatter
-from awscli.customizations.logs.tail import PrettyJSONLogEventsFormatter
-from awscli.customizations.logs.tail import DetailedLogEventsFormatter
-from awscli.customizations.logs.tail import TimestampUtils
-from awscli.customizations.logs.tail import NoFollowLogEventsGenerator
-from awscli.customizations.logs.tail import FollowLogEventsGenerator
+from awscli.customizations.logs.tail import (
+    DetailedLogEventsFormatter,
+    FollowLogEventsGenerator,
+    NoFollowLogEventsGenerator,
+    PrettyJSONLogEventsFormatter,
+    ShortLogEventsFormatter,
+    TimestampUtils,
+)
+from awscli.testutils import mock, unittest
 
 
 class BaseLogEventsFormatterTest(unittest.TestCase):

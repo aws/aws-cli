@@ -12,8 +12,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.compat import BytesIO
-from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import FileCreator
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 
 class TestStreamingOutput(BaseAWSCommandParamsTest):

@@ -13,7 +13,7 @@
 import os
 
 
-class FakeTransferFuture(object):
+class FakeTransferFuture:
     def __init__(self, result=None, exception=None, meta=None):
         self._result = result
         self._exception = exception
@@ -28,7 +28,7 @@ class FakeTransferFuture(object):
         self._exception = exception
 
 
-class FakeTransferFutureMeta(object):
+class FakeTransferFutureMeta:
     def __init__(self, size=None, call_args=None, transfer_id=None,
                  user_context=None):
         self.size = size
@@ -37,7 +37,7 @@ class FakeTransferFutureMeta(object):
         self.user_context = user_context
 
 
-class FakeTransferFutureCallArgs(object):
+class FakeTransferFutureCallArgs:
     def __init__(self, **kwargs):
         for kwarg, val in kwargs.items():
             setattr(self, kwarg, val)

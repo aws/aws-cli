@@ -13,10 +13,11 @@
 
 import difflib
 
-from awscli.testutils import mock, unittest
-from awscli.customizations.datapipeline.listrunsformatter \
-    import ListRunsFormatter
 from awscli.compat import StringIO
+from awscli.customizations.datapipeline.listrunsformatter import (
+    ListRunsFormatter,
+)
+from awscli.testutils import mock, unittest
 
 
 class TestListRunsFormatter(unittest.TestCase):

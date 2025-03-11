@@ -13,7 +13,8 @@
 from awscrt.s3 import S3RequestType
 
 from tests.functional.s3 import (
-    BaseS3TransferCommandTest, BaseCRTTransferClientTest
+    BaseCRTTransferClientTest,
+    BaseS3TransferCommandTest,
 )
 
 

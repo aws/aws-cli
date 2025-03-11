@@ -12,20 +12,18 @@
 # language governing permissions and limitations under the License.
 import contextlib
 import json
-import re
 import os
-import sys
 import pathlib
+import re
 import subprocess
+import sys
 
-import pytest
 import flit_core.buildapi
-
+import pytest
 from build_system.awscli_venv import AwsCliVenv
 from build_system.constants import ArtifactType
 
-from awscli.testutils import skip_if_windows
-from awscli.testutils import if_windows
+from awscli.testutils import if_windows, skip_if_windows
 from backends.build_system.constants import BIN_DIRNAME, PYTHON_EXE_NAME
 
 ROOT_DIR = pathlib.Path(__file__).parents[4]
@@ -77,7 +75,7 @@ class TestAwsCliVenv:
             r"dependencies = \[([\s\S]+?)\]", re.MULTILINE
         )
         extract_dependencies_re = re.compile(r'"(.+)"')
-        with open(ROOT_DIR / "pyproject.toml", "r") as f:
+        with open(ROOT_DIR / "pyproject.toml") as f:
             data = f.read()
         raw_dependencies = dependency_block_re.findall(data)[0]
         dependencies = extract_dependencies_re.findall(raw_dependencies)

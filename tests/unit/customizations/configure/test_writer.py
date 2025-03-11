@@ -11,11 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import tempfile
 import shutil
+import tempfile
 
 from awscli.customizations.configure.writer import ConfigFileWriter
-from awscli.testutils import unittest, skip_if_windows
+from awscli.testutils import skip_if_windows, unittest
 
 
 class TestConfigFileWriter(unittest.TestCase):
@@ -35,7 +35,7 @@ class TestConfigFileWriter(unittest.TestCase):
         with open(self.config_filename, 'w') as f:
             f.write(original_config_contents)
         self.writer.update_config(updated_data, self.config_filename)
-        with open(self.config_filename, 'r') as f:
+        with open(self.config_filename) as f:
             new_contents = f.read()
         if new_contents != updated_config_contents:
             self.fail("Config file contents do not match.\n"
@@ -162,14 +162,14 @@ class TestConfigFileWriter(unittest.TestCase):
 
     def test_config_file_does_not_exist(self):
         self.writer.update_config({'foo': 'value'}, self.config_filename)
-        with open(self.config_filename, 'r') as f:
+        with open(self.config_filename) as f:
             new_contents = f.read()
         self.assertEqual(new_contents, '[default]\nfoo = value\n')
 
     @skip_if_windows("Test not valid on windows.")
     def test_permissions_on_new_file(self):
         self.writer.update_config({'foo': 'value'}, self.config_filename)
-        with open(self.config_filename, 'r') as f:
+        with open(self.config_filename) as f:
             f.read()
         self.assertEqual(os.stat(self.config_filename).st_mode & 0xFFF, 0o600)
 

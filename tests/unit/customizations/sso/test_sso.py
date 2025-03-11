@@ -14,9 +14,8 @@ import botocore.credentials
 import botocore.session
 from botocore.exceptions import ProfileNotFound, UnknownCredentialError
 
-from awscli.testutils import mock
-from awscli.testutils import unittest
 from awscli.customizations.sso import inject_json_file_cache
+from awscli.testutils import mock, unittest
 
 
 class TestInjectJSONFileCache(unittest.TestCase):

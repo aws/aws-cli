@@ -13,7 +13,11 @@
 import errno
 import json
 
-from awscli.testutils import mock, BaseAWSCommandParamsTest, BaseAWSHelpOutputTest
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    BaseAWSHelpOutputTest,
+    mock,
+)
 
 
 class TestExecuteCommand(BaseAWSCommandParamsTest):

@@ -14,6 +14,7 @@ import os
 
 from awscli.customizations.configure.set import ConfigureSetCommand
 from awscli.testutils import mock, unittest
+
 from . import FakeSession
 
 

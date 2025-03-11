@@ -11,11 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-from awscli.testutils import unittest
 import platform
 
 from awscli.customizations.s3.filegenerator import FileStat
 from awscli.customizations.s3.filters import Filter, create_filter
+from awscli.testutils import unittest
 
 
 def platform_path(filepath):

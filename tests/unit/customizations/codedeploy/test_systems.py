@@ -12,9 +12,9 @@
 # language governing permissions and limitations under the License.
 
 import subprocess
-
 from argparse import Namespace
-from awscli.customizations.codedeploy.systems import Windows, Ubuntu, RHEL
+
+from awscli.customizations.codedeploy.systems import RHEL, Ubuntu, Windows
 from awscli.testutils import mock, unittest
 
 
@@ -34,7 +34,7 @@ class TestWindows(unittest.TestCase):
 
         self.config_dir = r'C:\ProgramData\Amazon\CodeDeploy'
         self.config_file = 'conf.onpremises.yml'
-        self.config_path = r'{0}\{1}'.format(self.config_dir, self.config_file)
+        self.config_path = rf'{self.config_dir}\{self.config_file}'
         self.installer = 'codedeploy-agent.msi'
         self.bucket = 'bucket'
         self.key = 'key'
@@ -105,7 +105,7 @@ class TestWindows(unittest.TestCase):
         self.check_call.assert_has_calls([
             mock.call(
                 [
-                    r'.\{0}'.format(self.installer),
+                    rf'.\{self.installer}',
                     '/quiet',
                     '/l', r'.\codedeploy-agent-install-log.txt'
                 ],
@@ -170,7 +170,7 @@ class TestLinux(unittest.TestCase):
 
         self.config_dir = '/etc/codedeploy-agent/conf'
         self.config_file = 'codedeploy.onpremises.yml'
-        self.config_path = '{0}/{1}'.format(self.config_dir, self.config_file)
+        self.config_path = f'{self.config_dir}/{self.config_file}'
         self.installer = 'install'
         self.bucket = 'bucket'
         self.key = 'key'
@@ -255,9 +255,9 @@ class TestUbuntu(TestLinux):
         self.check_call.assert_has_calls([
             mock.call(['apt-get', '-y', 'update']),
             mock.call(['apt-get', '-y', 'install', 'ruby2.0']),
-            mock.call(['chmod', '+x', './{0}'.format(self.installer)]),
+            mock.call(['chmod', '+x', f'./{self.installer}']),
             mock.call(
-                ['./{0}'.format(self.installer), 'auto'],
+                [f'./{self.installer}', 'auto'],
                 env=self.environment
             )
         ])
@@ -322,9 +322,9 @@ class TestRHEL(TestLinux):
         ])
         self.check_call.assert_has_calls([
             mock.call(['yum', '-y', 'install', 'ruby']),
-            mock.call(['chmod', '+x', './{0}'.format(self.installer)]),
+            mock.call(['chmod', '+x', f'./{self.installer}']),
             mock.call(
-                ['./{0}'.format(self.installer), 'auto'],
+                [f'./{self.installer}', 'auto'],
                 env=self.environment
             )
         ])

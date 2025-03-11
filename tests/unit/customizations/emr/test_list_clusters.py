@@ -11,10 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
-    BaseAWSCommandParamsTest
 from datetime import datetime
 from time import mktime
+
+from tests.unit.customizations.emr import (
+    EMRBaseAWSCommandParamsTest as BaseAWSCommandParamsTest,
+)
 
 
 class TestListClusters(BaseAWSCommandParamsTest):

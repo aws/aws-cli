@@ -14,12 +14,13 @@
 import copy
 import json
 
-from awscli.testutils import mock, BaseAWSCommandParamsTest, unittest
 from awscli.customizations.emrcontainers.base36 import Base36
-from awscli.customizations.emrcontainers.constants \
-    import TRUST_POLICY_STATEMENT_FORMAT, \
-    TRUST_POLICY_STATEMENT_ALREADY_EXISTS, \
-    TRUST_POLICY_UPDATE_SUCCESSFUL
+from awscli.customizations.emrcontainers.constants import (
+    TRUST_POLICY_STATEMENT_ALREADY_EXISTS,
+    TRUST_POLICY_STATEMENT_FORMAT,
+    TRUST_POLICY_UPDATE_SUCCESSFUL,
+)
+from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 
 
 def json_matches(first, second):

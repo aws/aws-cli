@@ -10,15 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import (
-    mock,
-    unittest,
-    BaseAWSCommandParamsTest,
-    create_clidriver,
-    FileCreator,
-)
 from awscli.clidriver import AWSCLIEntryPoint
 from awscli.customizations.configure.configure import ConfigureCommand
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    FileCreator,
+    create_clidriver,
+    mock,
+    unittest,
+)
 
 
 class TestConfigureCommand(BaseAWSCommandParamsTest):
@@ -40,7 +40,7 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
         self.entry_point = AWSCLIEntryPoint(self.driver)
 
     def get_config_file_contents(self):
-        with open(self.config_filename, "r") as f:
+        with open(self.config_filename) as f:
             return f.read()
 
     def test_list_command(self):

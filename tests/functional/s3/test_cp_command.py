@@ -13,14 +13,15 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscrt.s3 import S3RequestType, S3RequestTlsMode
+from awscrt.s3 import S3RequestTlsMode, S3RequestType
 
-from awscli.customizations.s3.utils import relative_path
-from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import capture_input, mock
 from awscli.compat import BytesIO, OrderedDict
+from awscli.customizations.s3.utils import relative_path
+from awscli.testutils import BaseAWSCommandParamsTest, capture_input, mock
 from tests.functional.s3 import (
-    BaseS3TransferCommandTest, BaseS3CLIRunnerTest, BaseCRTTransferClientTest
+    BaseCRTTransferClientTest,
+    BaseS3CLIRunnerTest,
+    BaseS3TransferCommandTest,
 )
 
 MB = 1024 ** 2
@@ -110,9 +111,9 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
         self.assertDictEqual(
             self.operations_called[0][1],
-            {'Key': u'key.txt', 'Bucket': u'bucket', 'GrantRead': u'id=foo',
-             'GrantFullControl': u'id=bar', 'GrantReadACP': u'id=biz',
-             'GrantWriteACP': u'id=baz', 'ContentType': u'text/plain',
+            {'Key': 'key.txt', 'Bucket': 'bucket', 'GrantRead': 'id=foo',
+             'GrantFullControl': 'id=bar', 'GrantReadACP': 'id=biz',
+             'GrantWriteACP': 'id=baz', 'ContentType': 'text/plain',
              'Body': mock.ANY, 'ChecksumAlgorithm': 'CRC64NVME'}
         )
 
@@ -729,11 +730,11 @@ class TestCPCommand(BaseCPCommandTest):
              'LastModified': '00:00:00Z'},  # HeadObject
             {'ETag': '"foo"'}  # PutObject
         ]
-        command = u's3 cp s3://bucket/\u2603 s3://bucket/\u2713'
+        command = 's3 cp s3://bucket/\u2603 s3://bucket/\u2713'
         stdout, stderr, rc = self.run_cmd(command, expected_rc=0)
 
         success_message = (
-            u'copy: s3://bucket/\u2603 to s3://bucket/\u2713'
+            'copy: s3://bucket/\u2603 to s3://bucket/\u2713'
         )
         self.assertIn(success_message, stdout)
 

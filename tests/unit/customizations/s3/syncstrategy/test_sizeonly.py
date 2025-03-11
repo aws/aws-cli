@@ -14,7 +14,6 @@ import datetime
 
 from awscli.customizations.s3.filegenerator import FileStat
 from awscli.customizations.s3.syncstrategy.sizeonly import SizeOnlySync
-
 from awscli.testutils import unittest
 
 

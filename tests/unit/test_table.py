@@ -21,7 +21,7 @@
 #
 import unittest
 
-from awscli.table import Section, MultiTable, convert_to_vertical_table
+from awscli.table import MultiTable, Section, convert_to_vertical_table
 
 
 class TestSection(unittest.TestCase):
@@ -66,7 +66,7 @@ class TestSection(unittest.TestCase):
         self.assertEqual(widths, [13, 14, 14])
 
     def test_width_with_full_width_characters(self):
-        self.section.add_row([u'\u4e00', u'one'])
+        self.section.add_row(['\u4e00', 'one'])
         self.assertEqual(self.section.calculate_column_widths(), [2, 3])
 
     def test_max_width_scaling_is_negative(self):
@@ -90,10 +90,10 @@ class TestSection(unittest.TestCase):
     def test_unicode_text_row(self):
         self.section.add_row([1])
         self.section.add_row(['check'])
-        self.section.add_row([u'\u2713'])
+        self.section.add_row(['\u2713'])
         self.assertEqual(
             self.section.rows,
-            [[u'1'], [u'check'], [u'\u2713']])
+            [['1'], ['check'], ['\u2713']])
 
 
 class TestMultiTable(unittest.TestCase):

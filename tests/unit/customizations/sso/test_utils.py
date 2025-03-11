@@ -13,22 +13,23 @@
 import os
 import threading
 import webbrowser
+
 import pytest
 import urllib3
-
 from botocore.exceptions import PendingAuthorizationExpiredError
 from botocore.session import Session
 
 from awscli.compat import BytesIO, StringIO
-from awscli.customizations.sso.utils import OpenBrowserHandler
-from awscli.customizations.sso.utils import PrintOnlyHandler
-from awscli.customizations.sso.utils import do_sso_login
-from awscli.customizations.sso.utils import open_browser_with_original_ld_path
 from awscli.customizations.sso.utils import (
-    parse_sso_registration_scopes, AuthCodeFetcher, OAuthCallbackHandler
+    AuthCodeFetcher,
+    OAuthCallbackHandler,
+    OpenBrowserHandler,
+    PrintOnlyHandler,
+    do_sso_login,
+    open_browser_with_original_ld_path,
+    parse_sso_registration_scopes,
 )
-from awscli.testutils import mock
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 
 
 @pytest.mark.parametrize(
@@ -215,7 +216,7 @@ class TestOpenBrowserWithPatchedEnv(unittest.TestCase):
         self.assertIsNone(captured_env.get('LD_LIBRARY_PATH'))
 
 
-class MockRequest(object):
+class MockRequest:
     def __init__(self, request):
         self._request = request
 

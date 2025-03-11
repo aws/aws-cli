@@ -13,7 +13,7 @@
 
 from awscli.customizations.emr import exceptions
 from awscli.customizations.emr.configutils import ConfigWriter
-from awscli.testutils import mock, BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 
 class EMRBaseAWSCommandParamsTest(BaseAWSCommandParamsTest):

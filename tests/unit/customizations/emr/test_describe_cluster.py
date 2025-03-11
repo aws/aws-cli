@@ -14,9 +14,9 @@
 import json
 
 from awscli.testutils import mock
-
-from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
-    BaseAWSCommandParamsTest
+from tests.unit.customizations.emr import (
+    EMRBaseAWSCommandParamsTest as BaseAWSCommandParamsTest,
+)
 
 describe_cluster_result_mock_ig = {
     "Cluster": {

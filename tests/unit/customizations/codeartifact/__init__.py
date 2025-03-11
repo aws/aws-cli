@@ -1,8 +1,9 @@
-from awscli.testutils import unittest
-from awscli.testutils import mock
-from awscli.customizations.codeartifact import register_codeartifact_commands
-from awscli.customizations.codeartifact import inject_commands
+from awscli.customizations.codeartifact import (
+    inject_commands,
+    register_codeartifact_commands,
+)
 from awscli.customizations.codeartifact.login import CodeArtifactLogin
+from awscli.testutils import mock, unittest
 
 
 class TestRegisterCodeArtifactCommands(unittest.TestCase):

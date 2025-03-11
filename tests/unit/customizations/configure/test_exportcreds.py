@@ -10,29 +10,28 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import json
 import io
+import json
 from datetime import datetime, timedelta
 
-from dateutil.tz import tzutc
 import pytest
-from botocore.credentials import RefreshableCredentials
 from botocore.credentials import Credentials as StaticCredentials
-from botocore.credentials import ReadOnlyCredentials
+from botocore.credentials import ReadOnlyCredentials, RefreshableCredentials
 from botocore.session import Session
+from dateutil.tz import tzutc
 
-from awscli.testutils import mock, unittest
-from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.configure.exportcreds import (
-    Credentials,
-    convert_botocore_credentials,
-    ConfigureExportCredentialsCommand,
     BashEnvVarFormatter,
     BashNoExportEnvFormatter,
+    ConfigureExportCredentialsCommand,
+    CredentialProcessFormatter,
+    Credentials,
     PowershellFormatter,
     WindowsCmdFormatter,
-    CredentialProcessFormatter,
+    convert_botocore_credentials,
 )
+from awscli.customizations.exceptions import ConfigurationError
+from awscli.testutils import mock, unittest
 
 
 class JSONValue:

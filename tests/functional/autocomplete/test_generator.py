@@ -14,9 +14,9 @@ import glob
 import os
 import tempfile
 
-from awscli.testutils import unittest
 from awscli.autocomplete import generator
 from awscli.autocomplete.local import model
+from awscli.testutils import unittest
 
 
 class TestCanGenerateEntireIndex(unittest.TestCase):

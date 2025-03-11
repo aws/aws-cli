@@ -13,12 +13,16 @@
 import os
 
 from awscrt.s3 import S3RequestType
+
 from awscli.compat import BytesIO
 from awscli.customizations.s3.utils import relative_path
-from awscli.testutils import mock, cd
+from awscli.testutils import cd, mock
 from tests.functional.s3 import (
-    BaseS3TransferCommandTest, BaseS3CLIRunnerTest, BaseCRTTransferClientTest
+    BaseCRTTransferClientTest,
+    BaseS3CLIRunnerTest,
+    BaseS3TransferCommandTest,
 )
+
 
 class TestSyncCommand(BaseS3TransferCommandTest):
 

@@ -12,14 +12,13 @@
 # language governing permissions and limitations under the License.
 import os
 import shutil
-
-from awscli.testutils import unittest, mock
-from awscli.autocomplete import db
-from awscli.autocomplete.local import indexer, model
 import tempfile
 
 from botocore.session import Session
 
+from awscli.autocomplete import db
+from awscli.autocomplete.local import indexer, model
+from awscli.testutils import mock, unittest
 
 # Quick note about these tests.  sqlite3 is used as the data store for the
 # index cache.  When testing this we have two options.  We can either invoke
@@ -38,7 +37,7 @@ from botocore.session import Session
 # contents of the index.  Once this schema has stabilized we could go in and
 # write tests that work at the sqlite3 layer.
 
-class DummyCommand(object):
+class DummyCommand:
     def __init__(self, command_name, subcommand_table=None, arg_table=None):
         self.name = command_name
         if subcommand_table is None:
@@ -56,7 +55,7 @@ class DummyCommand(object):
         return help_command
 
 
-class DummyArg(object):
+class DummyArg:
     def __init__(self, name, cli_type_name='string', nargs=None,
                  positional_arg=False, required=False, help_text=''):
         self.name = name

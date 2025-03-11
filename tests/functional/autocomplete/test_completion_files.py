@@ -10,10 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli import clidriver
-from jsonschema import Draft4Validator
 import pytest
+from jsonschema import Draft4Validator
 
+from awscli import clidriver
 
 COMPLETIONS_SCHEMA = {
     "type": "object",

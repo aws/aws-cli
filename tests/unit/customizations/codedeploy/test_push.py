@@ -11,15 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import awscli
-
 from argparse import Namespace
+
 from botocore.exceptions import ClientError
 
+import awscli
+from awscli.compat import ZIP_COMPRESSION_MODE, StringIO
 from awscli.customizations.codedeploy.push import Push
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import mock, unittest
-from awscli.compat import StringIO, ZIP_COMPRESSION_MODE
 
 
 class TestPush(unittest.TestCase):
@@ -28,7 +28,7 @@ class TestPush(unittest.TestCase):
         self.description = 'MyApp revision'
         self.source = '/tmp'
         self.appspec = 'appspec.yml'
-        self.appspec_path = '{0}/{1}'.format(self.source, self.appspec)
+        self.appspec_path = f'{self.source}/{self.appspec}'
         self.bucket = 'foo'
         self.key = 'bar/baz.zip'
         self.s3_location = 's3://' + self.bucket + '/' + self.key
@@ -184,13 +184,10 @@ class TestPush(unittest.TestCase):
         expected_output = (
             'To deploy with this revision, run:\n'
             'aws deploy create-deployment '
-            '--application-name {0} {1} '
+            f'--application-name {self.application_name} {expected_revision_output} '
             '--deployment-group-name <deployment-group-name> '
             '--deployment-config-name <deployment-config-name> '
-            '--description <description>'.format(
-                self.application_name,
-                expected_revision_output
-            )
+            '--description <description>'
         )
         self.assertEqual(expected_output, output)
 

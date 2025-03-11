@@ -10,10 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from . import FakeSession
 from awscli.compat import StringIO
-from awscli.testutils import unittest
 from awscli.customizations.configure.listprofiles import ListProfilesCommand
+from awscli.testutils import unittest
+
+from . import FakeSession
 
 
 class TestListProfilesCommand(unittest.TestCase):

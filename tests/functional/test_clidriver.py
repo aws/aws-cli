@@ -14,15 +14,14 @@ import os
 import re
 import shutil
 
-from tests import RawResponse
-
 import botocore
 
-from awscli.testutils import mock, BaseCLIDriverTest, FileCreator
 from awscli.clidriver import create_clidriver
+from awscli.testutils import BaseCLIDriverTest, FileCreator, mock
+from tests import RawResponse
 
 
-class RegionCapture(object):
+class RegionCapture:
     def __init__(self):
         self.region = None
 

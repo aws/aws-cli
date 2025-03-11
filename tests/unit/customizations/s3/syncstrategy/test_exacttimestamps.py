@@ -13,9 +13,9 @@
 import datetime
 
 from awscli.customizations.s3.filegenerator import FileStat
-from awscli.customizations.s3.syncstrategy.exacttimestamps import \
-    ExactTimestampsSync
-
+from awscli.customizations.s3.syncstrategy.exacttimestamps import (
+    ExactTimestampsSync,
+)
 from awscli.testutils import unittest
 
 

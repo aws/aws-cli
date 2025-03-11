@@ -12,10 +12,10 @@
 # language governing permissions and limitations under the License.
 import random
 
+import botocore.session
 import pytest
 
-import botocore.session
-from awscli.testutils import unittest, aws, random_chars
+from awscli.testutils import aws, random_chars, unittest
 
 
 class TestDynamoDBWait(unittest.TestCase):

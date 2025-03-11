@@ -10,11 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock, unittest
-from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.help import PagingHelpRenderer
 from awscli.customizations.cloudsearchdomain import validate_endpoint_url
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.help import PagingHelpRenderer
+from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 
 
 class TestSearchCommand(BaseAWSCommandParamsTest):
@@ -31,8 +30,8 @@ class TestSearchCommand(BaseAWSCommandParamsTest):
             '{"defaultOperator":"and","fields":["directors^10"]}']
 
         expected = {
-            'query': u'George Lucas',
-            'queryOptions': u'{"defaultOperator":"and","fields":["directors^10"]}'
+            'query': 'George Lucas',
+            'queryOptions': '{"defaultOperator":"and","fields":["directors^10"]}'
         }
         self.assert_params_for_cmd(cmd, expected)
 

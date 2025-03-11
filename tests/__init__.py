@@ -1,14 +1,14 @@
 import asyncio
-import contextlib
-import dataclasses
-from io import BytesIO
 import base64
 import collections
+import contextlib
 import copy
+import dataclasses
 import os
 import sys
 import threading
 import time
+from io import BytesIO
 
 # Both nose and py.test will add the first parent directory it
 # encounters that does not have a __init__.py to the sys.path. In
@@ -76,7 +76,7 @@ from tests.utils.s3transfer import (
 _LOADER = botocore.loaders.Loader()
 
 
-class CLIRunner(object):
+class CLIRunner:
     """Runs CLI commands in a stubbed environment"""
     def __init__(self, env=None, session_stubber=None):
         if env is None:
@@ -128,7 +128,7 @@ class CLIRunner(object):
         return runner_result
 
 
-class SessionStubber(object):
+class SessionStubber:
     def __init__(self):
         self.received_aws_requests = []
         self._responses = collections.deque()
@@ -179,7 +179,7 @@ class SessionStubber(object):
         return response.on_http_request_sent(request)
 
 
-class BaseResponse(object):
+class BaseResponse:
     def on_http_request_sent(self, request):
         raise NotImplementedError('on_http_request_sent')
 
@@ -262,7 +262,7 @@ class HTTPResponse(BaseResponse):
         return self
 
 
-class CLIRunnerResult(object):
+class CLIRunnerResult:
     def __init__(self, rc, stdout=None, stderr=None):
         self.rc = rc
         self.stdout = stdout
@@ -270,7 +270,7 @@ class CLIRunnerResult(object):
         self.aws_requests = []
 
 
-class AWSRequest(object):
+class AWSRequest:
     def __init__(self, service_name, operation_name, params):
         self.service_name = service_name
         self.operation_name = operation_name
@@ -294,7 +294,7 @@ class AWSRequest(object):
         return not self.__eq__(other)
 
 
-class HTTPRequest(object):
+class HTTPRequest:
     def __init__(self, method, url, headers, body):
         self.method = method
         self.url = url

@@ -1,10 +1,12 @@
 import botocore.session
-
-from awscli.testutils import mock
-
 from botocore.stub import Stubber
-from awscli.customizations.cloudformation.deployer import Deployer, ChangeSetResult
+
 from awscli.customizations.cloudformation import exceptions
+from awscli.customizations.cloudformation.deployer import (
+    ChangeSetResult,
+    Deployer,
+)
+from awscli.testutils import mock
 from tests.unit.customizations.cloudformation import BaseYAMLTest
 
 
@@ -57,8 +59,8 @@ class TestDeployer(BaseYAMLTest):
 
         # Response is a ClientError with a message that the stack does not exist
         self.stub_client.add_client_error('describe_stacks', "ClientError",
-                                          "Stack with id {0} does not exist"
-                                          .format(stack_name))
+                                          f"Stack with id {stack_name} does not exist"
+                                          )
         with self.stub_client:
             response = self.deployer.has_stack(stack_name)
             self.assertFalse(response)

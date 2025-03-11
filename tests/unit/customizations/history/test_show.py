@@ -10,21 +10,22 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 import argparse
+import os
 import xml.dom.minidom
 
 from botocore.session import Session
 
-from awscli.compat import ensure_text_type
-from awscli.compat import StringIO
-from awscli.utils import OutputStreamFactory
-from awscli.testutils import unittest, mock, FileCreator
-from awscli.customizations.history.show import ShowCommand
-from awscli.customizations.history.show import Formatter
-from awscli.customizations.history.show import DetailedFormatter
-from awscli.customizations.history.db import DatabaseRecordReader
+from awscli.compat import StringIO, ensure_text_type
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.history.db import DatabaseRecordReader
+from awscli.customizations.history.show import (
+    DetailedFormatter,
+    Formatter,
+    ShowCommand,
+)
+from awscli.testutils import FileCreator, mock, unittest
+from awscli.utils import OutputStreamFactory
 
 
 class FakeError(Exception):

@@ -17,10 +17,12 @@ from awscrt.s3 import S3RequestType
 
 from awscli.compat import BytesIO
 from awscli.testutils import mock
-from tests.functional.s3 import (
-    BaseS3TransferCommandTest, BaseCRTTransferClientTest
-)
 from tests import requires_crt
+from tests.functional.s3 import (
+    BaseCRTTransferClientTest,
+    BaseS3TransferCommandTest,
+)
+
 
 class TestMvCommand(BaseS3TransferCommandTest):
 

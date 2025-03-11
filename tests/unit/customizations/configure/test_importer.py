@@ -13,16 +13,17 @@
 
 import os
 
-from . import FakeSession
-from awscli.testutils import mock, unittest
 from awscli.compat import StringIO
 from awscli.customizations.configure.importer import (
-    CredentialImporter,
     ConfigureImportCommand,
-    CSVCredentialParser,
+    CredentialImporter,
     CredentialParserError,
+    CSVCredentialParser,
 )
 from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.testutils import mock, unittest
+
+from . import FakeSession
 
 CSV_HEADERS = (
     'User name,Password,Access key ID,Secret access key,Console login link\n'
@@ -110,7 +111,7 @@ class TestCSVCredentialParser(unittest.TestCase):
 
     def test_csv_parser_with_bom(self):
         contents = (
-            u'\ufeffUser name,Access key ID,Secret access key\n'
+            '\ufeffUser name,Access key ID,Secret access key\n'
             'PROFILENAME,AKID,SAK\n'
         )
         self.assert_parse_matches_expected(contents)
@@ -129,7 +130,7 @@ class TestCSVCredentialParser(unittest.TestCase):
 
     def test_csv_parser_multiple_entries_bom(self):
         contents = (
-            u'\ufeffUser name,Access key ID,Secret access key\n'
+            '\ufeffUser name,Access key ID,Secret access key\n'
             'PROFILENAME1,AKID1,SAK1\n'
             'PROFILENAME2,AKID2,SAK2\n'
         )

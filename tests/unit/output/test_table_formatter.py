@@ -12,9 +12,9 @@
 # language governing permissions and limitations under the License.
 import unittest
 
+from awscli.compat import StringIO
 from awscli.formatter import TableFormatter
 from awscli.table import MultiTable, Styler
-from awscli.compat import StringIO
 
 SIMPLE_LIST = {
     "QueueUrls": [
@@ -362,7 +362,7 @@ JMESPATH_FILTERED_RESPONSE_DICT_TABLE = """\
 """
 
 
-class Object(object):
+class Object:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
         self.query = None

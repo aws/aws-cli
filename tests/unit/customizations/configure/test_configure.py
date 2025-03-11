@@ -12,10 +12,14 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.customizations.configure import configure, ConfigValue, NOT_SET
-from awscli.customizations.configure import profile_to_section
-from awscli.testutils import mock, unittest
 from awscli.compat import StringIO
+from awscli.customizations.configure import (
+    NOT_SET,
+    ConfigValue,
+    configure,
+    profile_to_section,
+)
+from awscli.testutils import mock, unittest
 
 from . import FakeSession
 
@@ -266,7 +270,7 @@ class TestProfileToSection(unittest.TestCase):
         self.assertEqual(profile, section)
 
 
-class PrecannedPrompter(object):
+class PrecannedPrompter:
 
     def __init__(self, value):
         self._value = value
@@ -275,13 +279,13 @@ class PrecannedPrompter(object):
         return self._value
 
 
-class EchoPrompter(object):
+class EchoPrompter:
 
     def get_value(self, current_value, logical_name, prompt_text=''):
         return current_value
 
 
-class KeyValuePrompter(object):
+class KeyValuePrompter:
 
     def __init__(self, mapping):
         self.mapping = mapping

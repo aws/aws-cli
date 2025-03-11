@@ -16,8 +16,7 @@ import datetime
 from ruamel.yaml import YAML
 
 from awscli.compat import ensure_text_type
-from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import skip_if_windows
+from awscli.testutils import BaseAWSCommandParamsTest, skip_if_windows
 
 
 class TestYAMLOutput(BaseAWSCommandParamsTest):
@@ -37,7 +36,7 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
                     "UserName": "testuser-51",
                     "Path": "/",
                     "CreateDate": "2012-10-14T23:53:39Z",
-                    "UserId": u"EXAMPLEUSERID",
+                    "UserId": "EXAMPLEUSERID",
                     "Arn": "arn:aws:iam::123456:user/testuser2"
                 },
             ]
@@ -169,15 +168,15 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
 
     @skip_if_windows('Encoding tests only supported on mac/linux')
     def test_yaml_prints_unicode_chars(self):
-        self.parsed_response['Users'][1]['UserId'] = u'\u2713'
+        self.parsed_response['Users'][1]['UserId'] = '\u2713'
         stdout, _, _ = self.run_cmd(
             'iam list-users --output yaml', expected_rc=0
         )
-        self.assertIn(u'\u2713', ensure_text_type(stdout))
+        self.assertIn('\u2713', ensure_text_type(stdout))
 
     @skip_if_windows('Encoding tests only supported on mac/linux')
     def test_unicode_yaml_scalar(self):
-        self.parsed_response['Users'][1]['UserId'] = u'\u2713'
+        self.parsed_response['Users'][1]['UserId'] = '\u2713'
         stdout, _, _ = self.run_cmd(
             [
                 'iam', 'list-users', '--output', 'yaml', '--query',
@@ -185,4 +184,4 @@ class TestYAMLOutput(BaseAWSCommandParamsTest):
             ],
             expected_rc=0
         )
-        self.assertIn(u'\u2713', ensure_text_type(stdout))
+        self.assertIn('\u2713', ensure_text_type(stdout))

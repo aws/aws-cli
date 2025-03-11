@@ -14,42 +14,49 @@ import os
 
 from s3transfer.manager import TransferManager
 
-from awscli.testutils import mock, unittest
-from awscli.testutils import FileCreator
 from awscli.compat import queue
-from awscli.customizations.s3.s3handler import S3TransferHandler
-from awscli.customizations.s3.s3handler import S3TransferHandlerFactory
-from awscli.customizations.s3.s3handler import UploadRequestSubmitter
-from awscli.customizations.s3.s3handler import DownloadRequestSubmitter
-from awscli.customizations.s3.s3handler import CopyRequestSubmitter
-from awscli.customizations.s3.s3handler import UploadStreamRequestSubmitter
-from awscli.customizations.s3.s3handler import DownloadStreamRequestSubmitter
-from awscli.customizations.s3.s3handler import DeleteRequestSubmitter
-from awscli.customizations.s3.s3handler import LocalDeleteRequestSubmitter
 from awscli.customizations.s3.fileinfo import FileInfo
-from awscli.customizations.s3.results import QueuedResult
-from awscli.customizations.s3.results import SuccessResult
-from awscli.customizations.s3.results import FailureResult
-from awscli.customizations.s3.results import QueuedResultSubscriber
-from awscli.customizations.s3.results import ProgressResultSubscriber
-from awscli.customizations.s3.results import DoneResultSubscriber
-from awscli.customizations.s3.results import ResultRecorder
-from awscli.customizations.s3.results import ResultProcessor
-from awscli.customizations.s3.results import CommandResultRecorder
-from awscli.customizations.s3.results import DryRunResult
-from awscli.customizations.s3.utils import MAX_UPLOAD_SIZE
-from awscli.customizations.s3.utils import NonSeekableStream
-from awscli.customizations.s3.utils import StdoutBytesWriter
-from awscli.customizations.s3.utils import WarningResult
+from awscli.customizations.s3.results import (
+    CommandResultRecorder,
+    DoneResultSubscriber,
+    DryRunResult,
+    FailureResult,
+    ProgressResultSubscriber,
+    QueuedResult,
+    QueuedResultSubscriber,
+    ResultProcessor,
+    ResultRecorder,
+    SuccessResult,
+)
+from awscli.customizations.s3.s3handler import (
+    CopyRequestSubmitter,
+    DeleteRequestSubmitter,
+    DownloadRequestSubmitter,
+    DownloadStreamRequestSubmitter,
+    LocalDeleteRequestSubmitter,
+    S3TransferHandler,
+    S3TransferHandlerFactory,
+    UploadRequestSubmitter,
+    UploadStreamRequestSubmitter,
+)
 from awscli.customizations.s3.subscribers import (
-    ProvideSizeSubscriber, SetMetadataDirectivePropsSubscriber,
-    SetTagsSubscriber, ProvideUploadContentTypeSubscriber,
-    ProvideLastModifiedTimeSubscriber,
-    DirectoryCreatorSubscriber, DeleteSourceFileSubscriber,
+    DeleteSourceFileSubscriber,
     DeleteSourceObjectSubscriber,
-
+    DirectoryCreatorSubscriber,
+    ProvideLastModifiedTimeSubscriber,
+    ProvideSizeSubscriber,
+    ProvideUploadContentTypeSubscriber,
+    SetMetadataDirectivePropsSubscriber,
+    SetTagsSubscriber,
 )
 from awscli.customizations.s3.transferconfig import RuntimeConfig
+from awscli.customizations.s3.utils import (
+    MAX_UPLOAD_SIZE,
+    NonSeekableStream,
+    StdoutBytesWriter,
+    WarningResult,
+)
+from awscli.testutils import FileCreator, mock, unittest
 
 
 def runtime_config(**kwargs):

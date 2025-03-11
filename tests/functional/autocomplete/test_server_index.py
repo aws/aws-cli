@@ -2,9 +2,9 @@ import os
 
 from awscli import clidriver
 from awscli.autocomplete import db, generator
+from awscli.autocomplete.local.indexer import ModelIndexer
 from awscli.autocomplete.serverside import model
 from awscli.autocomplete.serverside.indexer import APICallIndexer
-from awscli.autocomplete.local.indexer import ModelIndexer
 from awscli.testutils import unittest
 
 

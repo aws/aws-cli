@@ -10,11 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock, unittest
-
 from awscli.arguments import CLIArgument
 from awscli.customizations import utils
-from awscli.customizations.flatten import FlattenedArgument, FlattenArguments
+from awscli.customizations.flatten import FlattenArguments, FlattenedArgument
+from awscli.testutils import mock, unittest
 
 
 def _hydrate(params, container, cli_type, key, value):

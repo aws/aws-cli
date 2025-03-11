@@ -13,12 +13,16 @@
 
 import json
 
+from awscli.customizations.ecs.deploy import (
+    MAX_WAIT_MIN,
+    TIMEOUT_BUFFER_MIN,
+    CodeDeployer,
+)
+from awscli.customizations.ecs.filehelpers import (
+    get_app_name,
+    get_deploy_group_name,
+)
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
-from awscli.customizations.ecs.deploy import (CodeDeployer,
-                                              MAX_WAIT_MIN,
-                                              TIMEOUT_BUFFER_MIN)
-from awscli.customizations.ecs.filehelpers import (get_app_name,
-                                                   get_deploy_group_name)
 
 
 class TestDeployCommand(BaseAWSCommandParamsTest):

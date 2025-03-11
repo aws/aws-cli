@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 from argparse import ArgumentParser
 
-from awscli.testutils import unittest
 from awscli.argparser import CommandAction, FirstPassGlobalArgParser
+from awscli.testutils import unittest
 
 
 class TestCommandAction(unittest.TestCase):

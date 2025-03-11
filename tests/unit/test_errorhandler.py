@@ -14,20 +14,24 @@ import io
 from collections import namedtuple
 
 import pytest
-
 from botocore.exceptions import (
-    NoRegionError, NoCredentialsError, ClientError,
-    ParamValidationError as BotocoreParamValidationError,
+    ClientError,
+    NoCredentialsError,
+    NoRegionError,
 )
-from awscli.arguments import UnknownArgumentError
-from awscli.argparser import ArgParseException
-from awscli.argprocess import ParamError, ParamSyntaxError
-from awscli.autoprompt.factory import PrompterKeyboardInterrupt
-from awscli.customizations.exceptions import (
-    ParamValidationError, ConfigurationError
+from botocore.exceptions import (
+    ParamValidationError as BotocoreParamValidationError,
 )
 
 from awscli import errorhandler
+from awscli.argparser import ArgParseException
+from awscli.argprocess import ParamError, ParamSyntaxError
+from awscli.arguments import UnknownArgumentError
+from awscli.autoprompt.factory import PrompterKeyboardInterrupt
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
 
 Case = namedtuple('Case', [
     'exception',

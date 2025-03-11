@@ -16,7 +16,7 @@ from awscli.customizations.dynamodb.extractor import AttributeExtractor
 from awscli.testutils import unittest
 
 
-class FakeParser(object):
+class FakeParser:
     def __init__(self, parsed_result):
         self.parsed_result = parsed_result
 

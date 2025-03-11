@@ -21,10 +21,9 @@
 #
 import sys
 
-from awscli.testutils import mock, unittest
-from awscli.compat import StringIO
-
 from awscli import text
+from awscli.compat import StringIO
+from awscli.testutils import mock, unittest
 
 
 class TestSection(unittest.TestCase):
@@ -129,8 +128,8 @@ class TestSection(unittest.TestCase):
         )
 
     def test_unicode_text(self):
-        self.assert_text_renders_to([['1', '2', u'\u2713']],
-                                     u'1\t2\t\u2713\n')
+        self.assert_text_renders_to([['1', '2', '\u2713']],
+                                     '1\t2\t\u2713\n')
 
     def test_single_scalar_value(self):
         self.assert_text_renders_to('foobarbaz', 'foobarbaz\n')

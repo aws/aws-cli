@@ -13,11 +13,12 @@
 import os
 
 import pytest
-
-from build_system.constants import PYINSTALLER_DIR
-from build_system.constants import EXE_ASSETS_DIR
-from build_system.constants import BIN_DIRNAME
-from build_system.constants import PYINSTALLER_EXE_NAME
+from build_system.constants import (
+    BIN_DIRNAME,
+    EXE_ASSETS_DIR,
+    PYINSTALLER_DIR,
+    PYINSTALLER_EXE_NAME,
+)
 from build_system.exe import ExeBuilder
 
 

@@ -10,8 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock, unittest, BaseAWSCommandParamsTest
-from awscli.customizations.s3.s3 import awscli_initialize, add_s3
+from awscli.customizations.s3.s3 import add_s3, awscli_initialize
+from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 
 
 class AWSInitializeTest(unittest.TestCase):

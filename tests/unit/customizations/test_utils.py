@@ -10,19 +10,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import io
 import argparse
+import io
 
 from botocore.exceptions import ClientError
 from botocore.model import Shape
 
 from awscli.customizations import utils
 from awscli.customizations.exceptions import ParamValidationError
-from awscli.testutils import mock, unittest
-from awscli.testutils import BaseAWSHelpOutputTest
+from awscli.testutils import BaseAWSHelpOutputTest, mock, unittest
 
 
-class FakeParsedArgs(object):
+class FakeParsedArgs:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
@@ -225,20 +224,20 @@ class TestUniPrint(unittest.TestCase):
     def test_out_file_with_encoding_attribute(self):
         buf = io.BytesIO()
         out = io.TextIOWrapper(buf, encoding='utf-8')
-        utils.uni_print(u'\u2713', out)
-        self.assertEqual(buf.getvalue(), u'\u2713'.encode('utf-8'))
+        utils.uni_print('\u2713', out)
+        self.assertEqual(buf.getvalue(), '\u2713'.encode())
 
     def test_encoding_with_encoding_none(self):
         '''When the output of the aws command is being piped,
         the `encoding` attribute of `sys.stdout` is `None`.'''
         out = MockPipedStdout()
-        utils.uni_print(u'SomeChars\u2713\u2714OtherChars', out)
+        utils.uni_print('SomeChars\u2713\u2714OtherChars', out)
         self.assertEqual(out.getvalue(), b'SomeChars??OtherChars')
 
     def test_encoding_statement_fails_are_replaced(self):
         buf = io.BytesIO()
         out = io.TextIOWrapper(buf, encoding='ascii')
-        utils.uni_print(u'SomeChars\u2713\u2714OtherChars', out)
+        utils.uni_print('SomeChars\u2713\u2714OtherChars', out)
         # We replace the characters that can't be encoded
         # with '?'.
         self.assertEqual(buf.getvalue(), b'SomeChars??OtherChars')

@@ -10,17 +10,19 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, mock
-from awscli.autocomplete.serverside.servercomp import ServerSideCompleter
-from awscli.autocomplete.serverside.servercomp import LazyClientCreator
-from awscli.autocomplete.completer import CompletionResult
-from awscli.autocomplete import parser
-from tests.unit.autocomplete import InMemoryIndex
-
 import botocore.client
 
+from awscli.autocomplete import parser
+from awscli.autocomplete.completer import CompletionResult
+from awscli.autocomplete.serverside.servercomp import (
+    LazyClientCreator,
+    ServerSideCompleter,
+)
+from awscli.testutils import mock, unittest
+from tests.unit.autocomplete import InMemoryIndex
 
-class FakeCompletionLookup(object):
+
+class FakeCompletionLookup:
     def __init__(self, completion_data):
         self.completion_data = completion_data
 

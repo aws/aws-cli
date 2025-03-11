@@ -1,29 +1,30 @@
 import binascii
+import copy
+import hashlib
 import json
 import os
-import hashlib
 from io import BytesIO
-import copy
 
 from awscrt.crypto import RSASignatureAlgorithm
 
-from awscli.testutils import mock, unittest
 from awscli.customizations.cloudtrail.verifyqueryresults import (
-    Sha256RsaSignatureValidator,
-    S3SignFileProvider,
-    LocalSignFileProvider,
     SIGN_FILE_NAME,
-    S3ExportFilesHashValidator,
-    LocalExportFilesHashValidator,
-    ValidationError,
     InformationCollectionError,
+    LocalExportFilesHashValidator,
+    LocalSignFileProvider,
+    S3ExportFilesHashValidator,
+    S3SignFileProvider,
+    Sha256RsaSignatureValidator,
+    ValidationError,
 )
+from awscli.testutils import mock, unittest
 from tests import PublicPrivateKeyLoader
+
 from . import get_private_key_path, get_public_key_path
 
 s3_bucket = "s3-bucket-name"
 S3_PREFIX = "s3/prefix/"
-S3_PATH = "s3://{}/{}".format(s3_bucket, S3_PREFIX)
+S3_PATH = f"s3://{s3_bucket}/{S3_PREFIX}"
 LOCAL_FILE_PREFIX = "/local/prefix/"
 SAMPLE_SIGNING_FILE = {
     "region": "us-east-1",

@@ -11,15 +11,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import contextlib
-import os
 import json
 import logging
+import os
 
 import pytest
 from ruamel.yaml import YAML
 
 from awscli.clidriver import create_clidriver
 from awscli.testutils import mock
+
 
 # NOTE: This should be a standalone pytest fixture.  However, fixtures cannot
 # be used outside of other fixtures or test cases, and it is needed by

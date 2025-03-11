@@ -14,18 +14,16 @@
 import copy
 import os
 
-from botocore.compat import json
-from botocore.compat import OrderedDict
+from botocore.compat import OrderedDict, json
 
 from awscli.testutils import mock
-
-from tests.unit.customizations.emr import test_constants as \
-    CONSTANTS
-from tests.unit.customizations.emr import test_constants_instance_fleets as \
-    CONSTANTS_FLEET
-from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
-    BaseAWSCommandParamsTest
-
+from tests.unit.customizations.emr import (
+    EMRBaseAWSCommandParamsTest as BaseAWSCommandParamsTest,
+)
+from tests.unit.customizations.emr import test_constants as CONSTANTS
+from tests.unit.customizations.emr import (
+    test_constants_instance_fleets as CONSTANTS_FLEET,
+)
 
 DEFAULT_CLUSTER_NAME = "Development Cluster"
 

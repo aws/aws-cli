@@ -11,8 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.testutils import unittest
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest, unittest
 
 
 class TestGetApplicationRevisionLocationArguments(

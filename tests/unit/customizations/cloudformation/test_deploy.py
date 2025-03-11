@@ -10,22 +10,20 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import json
-
-import tempfile
 import collections
+import json
+import tempfile
 
-from awscli.testutils import mock
-
+from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.cloudformation.deploy import DeployCommand
 from awscli.customizations.cloudformation.deployer import Deployer
 from awscli.customizations.cloudformation.yamlhelper import yaml_parse
-from awscli.customizations.cloudformation import exceptions
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.testutils import mock
 from tests.unit.customizations.cloudformation import BaseYAMLTest
 
 
-class FakeArgs(object):
+class FakeArgs:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 

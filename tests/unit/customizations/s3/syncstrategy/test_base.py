@@ -12,11 +12,15 @@
 # language governing permissions and limitations under the License.
 import datetime
 
-from awscli.customizations.s3.filegenerator import FileStat
-from awscli.customizations.s3.syncstrategy.base import BaseSync, \
-    SizeAndLastModifiedSync, MissingFileSync, NeverSync
-from awscli.testutils import mock, unittest
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.s3.filegenerator import FileStat
+from awscli.customizations.s3.syncstrategy.base import (
+    BaseSync,
+    MissingFileSync,
+    NeverSync,
+    SizeAndLastModifiedSync,
+)
+from awscli.testutils import mock, unittest
 
 
 class TestBaseSync(unittest.TestCase):

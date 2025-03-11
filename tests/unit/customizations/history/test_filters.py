@@ -1,5 +1,5 @@
-from awscli.testutils import unittest
 from awscli.customizations.history.filters import RegexFilter
+from awscli.testutils import unittest
 
 
 class TestRegexFilter(unittest.TestCase):

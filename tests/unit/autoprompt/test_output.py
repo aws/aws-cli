@@ -12,10 +12,9 @@
 # language governing permissions and limitations under the License.
 import json
 
-from awscli.clidriver import create_clidriver
 from awscli.autocomplete import parser
 from awscli.autoprompt.output import OutputGetter
-
+from awscli.clidriver import create_clidriver
 from awscli.testutils import unittest
 from tests.unit.autocomplete import InMemoryIndex
 

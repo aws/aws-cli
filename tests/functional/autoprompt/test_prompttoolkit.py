@@ -17,16 +17,17 @@ import awscrt.io
 import pytest
 from prompt_toolkit.keys import Keys
 
-from awscli.autocomplete.main import create_autocompleter
-from awscli.autocomplete import generator, filters, parser, db
+from awscli.autocomplete import db, filters, generator, parser
 from awscli.autocomplete.local import indexer, model
-from awscli.clidriver import create_clidriver
+from awscli.autocomplete.main import create_autocompleter
 from awscli.autoprompt.factory import PromptToolkitFactory
-from awscli.autoprompt.prompttoolkit import (
-    PromptToolkitCompleter, PromptToolkitPrompter
-)
 from awscli.autoprompt.history import HistoryDriver
-from awscli.testutils import mock, FileCreator, cd
+from awscli.autoprompt.prompttoolkit import (
+    PromptToolkitCompleter,
+    PromptToolkitPrompter,
+)
+from awscli.clidriver import create_clidriver
+from awscli.testutils import FileCreator, cd, mock
 from tests import PromptToolkitAppRunner
 
 

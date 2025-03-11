@@ -35,7 +35,7 @@ def awscli_package():
 
 def parse_lockfile(lockfile: Path):
     requirements = {}
-    with open(lockfile, "r") as f:
+    with open(lockfile) as f:
         for line in f.readlines():
             match = _LOCKFILE_PATTERN.match(line)
             if not match:

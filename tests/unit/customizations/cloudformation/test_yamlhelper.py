@@ -13,7 +13,10 @@
 from botocore.compat import OrderedDict
 
 from awscli.customizations.cloudformation.deployer import Deployer
-from awscli.customizations.cloudformation.yamlhelper import yaml_parse, yaml_dump
+from awscli.customizations.cloudformation.yamlhelper import (
+    yaml_dump,
+    yaml_parse,
+)
 from tests.unit.customizations.cloudformation import BaseYAMLTest
 
 

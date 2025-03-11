@@ -12,10 +12,13 @@
 # language governing permissions and limitations under the License.
 
 from argparse import Namespace
+
 from awscli.customizations.codedeploy.register import Register
 from awscli.customizations.codedeploy.utils import MAX_TAGS_PER_INSTANCE
-from awscli.customizations.exceptions import ConfigurationError
-from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
 from awscli.testutils import mock, unittest
 
 
@@ -97,8 +100,7 @@ class TestRegister(unittest.TestCase):
         ]
         with self.assertRaisesRegex(
                 ParamValidationError,
-                'Instances can only have a maximum of {0} tags.'.format(
-                    MAX_TAGS_PER_INSTANCE)):
+                f'Instances can only have a maximum of {MAX_TAGS_PER_INSTANCE} tags.'):
             self.register._run_main(self.args, self.globals)
 
     def test_register_throws_on_invalid_iam_user_arn(self):
@@ -147,15 +149,10 @@ class TestRegister(unittest.TestCase):
         self.open.assert_called_with(self.config_file, 'w')
         self.open().write.assert_called_with(
             '---\n'
-            'region: {0}\n'
-            'iam_user_arn: {1}\n'
-            'aws_access_key_id: {2}\n'
-            'aws_secret_access_key: {3}\n'.format(
-                self.region,
-                self.iam_user_arn,
-                self.access_key_id,
-                self.secret_access_key
-            )
+            f'region: {self.region}\n'
+            f'iam_user_arn: {self.iam_user_arn}\n'
+            f'aws_access_key_id: {self.access_key_id}\n'
+            f'aws_secret_access_key: {self.secret_access_key}\n'
         )
         self.register.codedeploy.register_on_premises_instance.\
             assert_called_with(

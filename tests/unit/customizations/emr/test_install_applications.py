@@ -13,10 +13,11 @@
 
 
 import json
-from awscli.testutils import mock
-from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
-    BaseAWSCommandParamsTest
 
+from awscli.testutils import mock
+from tests.unit.customizations.emr import (
+    EMRBaseAWSCommandParamsTest as BaseAWSCommandParamsTest,
+)
 
 INSTALL_HIVE_STEP = {
     'HadoopJarStep': {

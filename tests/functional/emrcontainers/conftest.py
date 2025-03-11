@@ -11,12 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-from tests import SessionStubber, CLIRunner
+
 from awscli.customizations.emrcontainers.base36 import Base36
 from awscli.customizations.emrcontainers.constants import (
     SERVICE_ACCOUNT_NAMING,
     ServiceAccount,
 )
+from tests import CLIRunner, SessionStubber
 
 
 @pytest.fixture

@@ -13,8 +13,7 @@
 # language governing permissions and limitations under the License.
 import sys
 
-from awscli.testutils import unittest
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest, unittest
 
 
 class TestCreateTags(BaseAWSCommandParamsTest):

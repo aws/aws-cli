@@ -13,14 +13,16 @@
 from decimal import Decimal
 
 from awscli.customizations.dynamodb.exceptions import (
-    UnexpectedTokenError, UnknownExpressionError, InvalidLiteralValueError,
     EmptyExpressionError,
+    InvalidLiteralValueError,
+    UnexpectedTokenError,
+    UnknownExpressionError,
 )
 from awscli.customizations.dynamodb.parser import Parser
 from awscli.testutils import unittest
 
 
-class FakeLexer(object):
+class FakeLexer:
     def __init__(self, tokens):
         self._tokens = tokens
 

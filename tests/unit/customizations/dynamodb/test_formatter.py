@@ -16,9 +16,9 @@ from decimal import Decimal
 import jmespath
 import pytest
 
-from awscli.formatter import YAMLFormatter
 from awscli.customizations.dynamodb.formatter import DynamoYAMLDumper
 from awscli.customizations.dynamodb.types import Binary
+from awscli.formatter import YAMLFormatter
 from awscli.testutils import capture_output
 
 

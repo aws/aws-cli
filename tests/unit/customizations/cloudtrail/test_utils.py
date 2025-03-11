@@ -11,17 +11,17 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from datetime import datetime, timedelta
+
 from dateutil import parser, tz
 
 from awscli.customizations.cloudtrail import utils
-from awscli.testutils import mock, unittest
 from awscli.customizations.cloudtrail.utils import (
-    normalize_date,
-    format_date,
-    parse_date,
     PublicKeyProvider,
+    format_date,
+    normalize_date,
+    parse_date,
 )
-
+from awscli.testutils import mock, unittest
 
 START_DATE = parser.parse("20140810T000000Z")
 

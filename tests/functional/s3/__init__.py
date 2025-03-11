@@ -15,11 +15,18 @@ import os
 from awscrt.s3 import S3Request
 from botocore.awsrequest import AWSResponse
 
-from tests import CLIRunner, SessionStubber, HTTPResponse
 from awscli.clidriver import AWSCLIEntryPoint
-from awscli.testutils import unittest, create_clidriver, temporary_file, mock
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
-from awscli.compat import urlparse, BytesIO
+from awscli.compat import BytesIO, urlparse
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    FileCreator,
+    create_clidriver,
+    mock,
+    temporary_file,
+    unittest,
+)
+from tests import CLIRunner, HTTPResponse, SessionStubber
+
 
 class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
     def setUp(self):

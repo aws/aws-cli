@@ -13,11 +13,11 @@
 import json
 import os
 
-from botocore.session import get_session
 from botocore.loaders import Loader
+from botocore.session import get_session
 
 from awscli.customizations.configure.addmodel import get_model_location
-from awscli.testutils import unittest, FileCreator
+from awscli.testutils import FileCreator, unittest
 
 
 class TestGetModelLocation(unittest.TestCase):

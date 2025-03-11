@@ -11,12 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.testutils import unittest
-from awscli.autocomplete import parser, filters
+from awscli.autocomplete import filters, parser
+from awscli.autocomplete.completer import CompletionResult
 from awscli.autocomplete.local import basic, fetcher
 from awscli.clidriver import CLIDriver, create_clidriver
-from awscli.autocomplete.completer import CompletionResult
-
+from awscli.testutils import unittest
 from tests.unit.autocomplete import InMemoryIndex
 
 

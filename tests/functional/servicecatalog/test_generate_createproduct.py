@@ -14,18 +14,15 @@
 
 import os
 
-from awscli.customizations.servicecatalog.utils \
-    import get_s3_path
-from awscli.testutils import mock, BaseAWSCommandParamsTest
+from awscli.customizations.servicecatalog.utils import get_s3_path
+from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 
 class TestGenerateProduct(BaseAWSCommandParamsTest):
     prefix = "servicecatalog generate product "
 
     def get_expected_result(self):
-        expected_url = 'https://s3.amazonaws.com/{0}/{1}'.\
-                            format(self.bucket_name,
-                                   get_s3_path(self.template_path))
+        expected_url = f'https://s3.amazonaws.com/{self.bucket_name}/{get_s3_path(self.template_path)}'
 
         return {'Description': self.product_description,
                 'Distributor': self.product_distributor,
@@ -114,8 +111,8 @@ class TestGenerateProduct(BaseAWSCommandParamsTest):
                                    expected_rc=0)
 
     def test_generate_product_success_unicode(self):
-        self.product_name = u'\u05d1\u05e8\u05d9\u05e6\u05e7\u05dc\u05d4'
-        self.support_description = u'\u00fd\u00a9\u0194\u0292'
+        self.product_name = '\u05d1\u05e8\u05d9\u05e6\u05e7\u05dc\u05d4'
+        self.support_description = '\u00fd\u00a9\u0194\u0292'
 
         self.cmd_line = self.build_cmd_line()
         expected_result = self.get_expected_result()

@@ -11,12 +11,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.compat import json
 import platform
-from awscli.formatter import JSONFormatter
-from awscli.testutils import mock, BaseAWSCommandParamsTest, unittest
-from awscli.testutils import skip_if_windows
+
+from botocore.compat import json
+
 from awscli.compat import StringIO, get_stdout_text_writer
+from awscli.formatter import JSONFormatter
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    mock,
+    skip_if_windows,
+    unittest,
+)
 
 
 class TestGetPasswordData(BaseAWSCommandParamsTest):
@@ -62,7 +68,7 @@ class TestListUsers(BaseAWSCommandParamsTest):
                     "UserName": "testuser-51",
                     "Path": "/",
                     "CreateDate": "2012-10-14T23:53:39Z",
-                    "UserId": u"EXAMPLEUSERID",
+                    "UserId": "EXAMPLEUSERID",
                     "Arn": "arn:aws:iam::123456:user/testuser2"
                 },
             ]
@@ -101,11 +107,11 @@ class TestListUsers(BaseAWSCommandParamsTest):
 
     @skip_if_windows('Encoding tests only supported on mac/linux')
     def test_json_prints_unicode_chars(self):
-        self.parsed_response['Users'][1]['UserId'] = u'\u2713'
+        self.parsed_response['Users'][1]['UserId'] = '\u2713'
         output = self.run_cmd('iam list-users', expected_rc=0)[0]
         with mock.patch('sys.stdout', StringIO()) as f:
             out = get_stdout_text_writer()
-            out.write(u'\u2713')
+            out.write('\u2713')
             expected = f.getvalue()
         # We should not see the '\u<hex>' for of the unicode character.
         # It should be encoded into the default encoding.

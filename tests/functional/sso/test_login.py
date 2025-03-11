@@ -79,14 +79,14 @@ class TestLoginCommand(BaseSSOTest):
 
     def _get_cached_response(self, token_filename):
         token_path = os.path.join(self.token_cache_dir, token_filename)
-        with open(token_path, 'r') as f:
+        with open(token_path) as f:
             cached_response = json.loads(f.read())
             return cached_response
 
     def assert_cache_token_expiration_time_format_is_correct(self):
         token_filename = self._get_cached_token_filename(self.start_url, None)
         token_path = os.path.join(self.token_cache_dir, token_filename)
-        with open(token_path, 'r') as f:
+        with open(token_path) as f:
             cached_response = json.loads(f.read())
             self.assertIsNotNone(
                 self._TIMESTAMP_FORMAT_PATTERN.match(
@@ -225,9 +225,9 @@ class TestLoginCommand(BaseSSOTest):
     def test_login_device_minimal_sso_configuration(self):
         content = (
             '[default]\n'
-            'sso_start_url={start_url}\n'
-            'sso_region={sso_region}\n'
-        ).format(start_url=self.start_url, sso_region=self.sso_region)
+            f'sso_start_url={self.start_url}\n'
+            f'sso_region={self.sso_region}\n'
+        )
         self.set_config_file_content(content=content)
         self.add_oidc_device_responses(self.access_token)
         self.run_cmd('sso login')
@@ -408,9 +408,9 @@ class TestLoginCommand(BaseSSOTest):
 
     def test_login_sso_session_missing_config(self):
         content = (
-            f'[default]\n'
-            f'sso_session=test\n'
-            f'[sso-session test]\n'
+            '[default]\n'
+            'sso_session=test\n'
+            '[sso-session test]\n'
         )
         self.set_config_file_content(content=content)
         _, stderr, _ = self.run_cmd('sso login', expected_rc=253)
@@ -421,8 +421,8 @@ class TestLoginCommand(BaseSSOTest):
 
     def test_login_sso_session_missing(self):
         content = (
-            f'[default]\n'
-            f'sso_session=test\n'
+            '[default]\n'
+            'sso_session=test\n'
         )
         self.set_config_file_content(content=content)
         _, stderr, _ = self.run_cmd('sso login', expected_rc=253)

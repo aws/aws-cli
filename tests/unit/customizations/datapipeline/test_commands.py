@@ -15,11 +15,15 @@
 import copy
 import unittest
 
-from awscli.testutils import mock, BaseAWSHelpOutputTest, BaseAWSCommandParamsTest
-
-from awscli.customizations.datapipeline import convert_described_objects
-from awscli.customizations.datapipeline import ListRunsCommand
-
+from awscli.customizations.datapipeline import (
+    ListRunsCommand,
+    convert_described_objects,
+)
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    BaseAWSHelpOutputTest,
+    mock,
+)
 
 API_DESCRIBE_OBJECTS = [
     {"fields": [
@@ -166,7 +170,7 @@ class TestConvertObjects(unittest.TestCase):
                          '2013-08-19T23:59:00')
 
 
-class FakeParsedArgs(object):
+class FakeParsedArgs:
     def __init__(self, **kwargs):
         self.endpoint_url = None
         self.region = None

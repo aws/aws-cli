@@ -14,10 +14,12 @@ import os
 import shutil
 import tempfile
 
-from awscli.testutils import mock, unittest
 from awscli.argprocess import ParamError
-from awscli.customizations.cliinput import CliInputJSONArgument
-from awscli.customizations.cliinput import CliInputYAMLArgument
+from awscli.customizations.cliinput import (
+    CliInputJSONArgument,
+    CliInputYAMLArgument,
+)
+from awscli.testutils import mock, unittest
 
 
 class TestCliInputJSONArgument(unittest.TestCase):

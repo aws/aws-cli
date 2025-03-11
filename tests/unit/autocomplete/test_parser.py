@@ -15,10 +15,9 @@ from functools import partial
 
 import pytest
 
-from awscli.testutils import unittest
 from awscli.autocomplete import parser
+from awscli.testutils import unittest
 from tests.unit.autocomplete import InMemoryIndex
-
 
 # This models an 'aws ec2 stop-instances' command
 # along with the 'region', 'endpoint-url', and 'debug' global params.

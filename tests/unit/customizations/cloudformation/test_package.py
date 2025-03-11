@@ -13,17 +13,16 @@
 import os
 import sys
 import tempfile
-
-from awscli.testutils import mock
-
 from io import StringIO
-from awscli.customizations.cloudformation.package import PackageCommand
+
 from awscli.customizations.cloudformation.artifact_exporter import Template
+from awscli.customizations.cloudformation.package import PackageCommand
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump
+from awscli.testutils import mock
 from tests.unit.customizations.cloudformation import BaseYAMLTest
 
 
-class FakeArgs(object):
+class FakeArgs:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
@@ -104,7 +103,7 @@ class TestPackageCommand(BaseYAMLTest):
 
     @mock.patch("awscli.customizations.cloudformation.package.sys.stdout")
     def test_write_output_to_stdout(self, stdoutmock):
-        data = u"some data"
+        data = "some data"
         filename = None
 
         self.package_command.write_output(filename, data)

@@ -10,16 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import re
-import sys
-import shutil
-import venv
-import subprocess
 import os
-
+import re
+import shutil
+import subprocess
+import sys
+import venv
 from pathlib import Path
 from typing import Dict
-
 
 IS_WINDOWS = sys.platform == "win32"
 BIN_DIRNAME = "Scripts" if IS_WINDOWS else "bin"
@@ -42,7 +40,7 @@ SYSTEM_SANDBOX_REQIREMENTS = (
 class BaseArtifactTest:
     def expected_cli_version(self):
         init_file_path = ROOT / "awscli" / "__init__.py"
-        version_file = open(init_file_path, "r").read()
+        version_file = open(init_file_path).read()
         version_match = re.search(
             r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M
         )

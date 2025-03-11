@@ -10,18 +10,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock
-
-from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
-    BaseAWSCommandParamsTest
-from tests.unit.customizations.emr import test_constants as \
-    CONSTANTS
-from tests.unit.customizations.emr import test_constants_instance_fleets as \
-    CONSTANTS_FLEET
 import copy
-import os
 import json
+import os
 
+from awscli.testutils import mock
+from tests.unit.customizations.emr import (
+    EMRBaseAWSCommandParamsTest as BaseAWSCommandParamsTest,
+)
+from tests.unit.customizations.emr import test_constants as CONSTANTS
+from tests.unit.customizations.emr import (
+    test_constants_instance_fleets as CONSTANTS_FLEET,
+)
 
 DEFAULT_CLUSTER_NAME = "Development Cluster"
 

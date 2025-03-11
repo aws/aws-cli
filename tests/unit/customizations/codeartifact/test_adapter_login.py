@@ -4,20 +4,26 @@ import re
 import signal
 import stat
 import subprocess
-
-from datetime import datetime
-from dateutil.tz import tzlocal, tzutc
-from dateutil.relativedelta import relativedelta
-
 from configparser import RawConfigParser
+from datetime import datetime
 from urllib.parse import urlsplit
 
-from awscli.testutils import unittest, mock, FileCreator, skip_if_windows
+from dateutil.relativedelta import relativedelta
+from dateutil.tz import tzlocal, tzutc
+
 from awscli.compat import urlparse
 from awscli.customizations.codeartifact.login import (
-    BaseLogin, SwiftLogin, NuGetLogin, DotNetLogin, NpmLogin, PipLogin,
-    TwineLogin, get_relative_expiration_time, CommandFailedError
+    BaseLogin,
+    CommandFailedError,
+    DotNetLogin,
+    NpmLogin,
+    NuGetLogin,
+    PipLogin,
+    SwiftLogin,
+    TwineLogin,
+    get_relative_expiration_time,
 )
+from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
 
 
 class TestBaseLogin(unittest.TestCase):
@@ -29,13 +35,8 @@ class TestBaseLogin(unittest.TestCase):
         self.auth_token = 'auth-token'
         self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
                            + relativedelta(minutes=9)).replace(microsecond=0)
-        self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
-            'a2z.com/{format}/{repository}/'.format(
-                domain=self.domain,
-                domainOwner=self.domain_owner,
-                format=self.package_format,
-                repository=self.repository
-            )
+        self.endpoint = f'https://{self.domain}-{self.domain_owner}.codeartifact.aws.' \
+            f'a2z.com/{self.package_format}/{self.repository}/'
 
         self.subprocess_utils = mock.Mock()
 
@@ -79,8 +80,8 @@ class TestBaseLogin(unittest.TestCase):
         self.subprocess_utils.run.side_effect = error_to_be_caught
         with self.assertRaisesRegex(
                 CommandFailedError,
-                (rf"(?=.*cmd)(?=.*with)(?!.*auth-token)(?=.*present)"
-                 rf"(?=.*Stderr from command:\nCommand error message.)")
+                (r"(?=.*cmd)(?=.*with)(?!.*auth-token)(?=.*present)"
+                 r"(?=.*Stderr from command:\nCommand error message.)")
         ):
             self.test_subject._run_commands('tool', ['cmd'])
 
@@ -156,7 +157,7 @@ class TestSwiftLogin(unittest.TestCase):
         self.file_creator.remove_all()
 
     def _assert_netrc_has_expected_content(self, expected_contents):
-        with open(self.test_netrc_path, 'r') as file:
+        with open(self.test_netrc_path) as file:
             actual_contents = file.read()
             self.assertEqual(expected_contents, actual_contents)
 
@@ -463,13 +464,8 @@ Registered Sources:
         self.auth_token = 'auth-token'
         self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
                            + relativedelta(minutes=9)).replace(microsecond=0)
-        self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
-            'a2z.com/{format}/{repository}/'.format(
-                domain=self.domain,
-                domainOwner=self.domain_owner,
-                format=self.package_format,
-                repository=self.repository
-            )
+        self.endpoint = f'https://{self.domain}-{self.domain_owner}.codeartifact.aws.' \
+            f'a2z.com/{self.package_format}/{self.repository}/'
 
         self.nuget_index_url = self._NUGET_INDEX_URL_FMT.format(
             endpoint=self.endpoint,
@@ -658,13 +654,8 @@ to an 'HTTPS' source."""
         self.auth_token = 'auth-token'
         self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
                            + relativedelta(minutes=9)).replace(microsecond=0)
-        self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
-            'a2z.com/{format}/{repository}/'.format(
-                domain=self.domain,
-                domainOwner=self.domain_owner,
-                format=self.package_format,
-                repository=self.repository
-            )
+        self.endpoint = f'https://{self.domain}-{self.domain_owner}.codeartifact.aws.' \
+            f'a2z.com/{self.package_format}/{self.repository}/'
 
         self.nuget_index_url = self._NUGET_INDEX_URL_FMT.format(
             endpoint=self.endpoint,
@@ -881,21 +872,12 @@ class TestNpmLogin(unittest.TestCase):
         self.namespace = 'namespace'
         self.expiration = (datetime.now(tzlocal()) + relativedelta(hours=10)
                            + relativedelta(minutes=9)).replace(microsecond=0)
-        self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
-            'a2z.com/{format}/{repository}/'.format(
-                domain=self.domain,
-                domainOwner=self.domain_owner,
-                format=self.package_format,
-                repository=self.repository
-            )
+        self.endpoint = f'https://{self.domain}-{self.domain_owner}.codeartifact.aws.' \
+            f'a2z.com/{self.package_format}/{self.repository}/'
 
         repo_uri = urlsplit(self.endpoint)
-        always_auth_config = '//{}{}:always-auth'.format(
-            repo_uri.netloc, repo_uri.path
-        )
-        auth_token_config = '//{}{}:_authToken'.format(
-            repo_uri.netloc, repo_uri.path
-        )
+        always_auth_config = f'//{repo_uri.netloc}{repo_uri.path}:always-auth'
+        auth_token_config = f'//{repo_uri.netloc}{repo_uri.path}:_authToken'
         self.commands = []
         self.commands.append([
             self.NPM_CMD, 'config', 'set', 'registry', self.endpoint
@@ -961,7 +943,7 @@ class TestNpmLogin(unittest.TestCase):
         )
 
     def test_get_scope(self):
-        expected_value = '@{}'.format(self.namespace)
+        expected_value = f'@{self.namespace}'
         scope = self.test_subject.get_scope(self.namespace)
         self.assertEqual(scope, expected_value)
 
@@ -972,11 +954,11 @@ class TestNpmLogin(unittest.TestCase):
 
     def test_get_scope_invalid_name(self):
         with self.assertRaises(ValueError):
-            self.test_subject.get_scope('.{}'.format(self.namespace))
+            self.test_subject.get_scope(f'.{self.namespace}')
 
     def test_get_scope_without_prefix(self):
-        expected_value = '@{}'.format(self.namespace)
-        scope = self.test_subject.get_scope('@{}'.format(self.namespace))
+        expected_value = f'@{self.namespace}'
+        scope = self.test_subject.get_scope(f'@{self.namespace}')
         self.assertEqual(scope, expected_value)
 
     def test_get_commands(self):
@@ -989,7 +971,7 @@ class TestNpmLogin(unittest.TestCase):
         commands = self.test_subject.get_commands(
             self.endpoint, self.auth_token, scope=self.namespace
         )
-        self.commands[0][3] = '{}:registry'.format(self.namespace)
+        self.commands[0][3] = f'{self.namespace}:registry'
         self.assertCountEqual(commands, self.commands)
 
     def test_login_dry_run(self):
@@ -1009,13 +991,8 @@ class TestPipLogin(unittest.TestCase):
         self.auth_token = 'auth-token'
         self.expiration = (datetime.now(tzlocal()) + relativedelta(years=1)
                            + relativedelta(months=9)).replace(microsecond=0)
-        self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
-            'a2z.com/{format}/{repository}/'.format(
-                domain=self.domain,
-                domainOwner=self.domain_owner,
-                format=self.package_format,
-                repository=self.repository
-            )
+        self.endpoint = f'https://{self.domain}-{self.domain_owner}.codeartifact.aws.' \
+            f'a2z.com/{self.package_format}/{self.repository}/'
 
         repo_uri = urlsplit(self.endpoint)
         self.pip_index_url = self.PIP_INDEX_URL_FMT.format(
@@ -1067,13 +1044,8 @@ class TestTwineLogin(unittest.TestCase):
         self.auth_token = 'auth-token'
         self.expiration = (datetime.now(tzlocal()) + relativedelta(years=1)
                            + relativedelta(months=9)).replace(microsecond=0)
-        self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
-            'a2z.com/{format}/{repository}/'.format(
-                domain=self.domain,
-                domainOwner=self.domain_owner,
-                format=self.package_format,
-                repository=self.repository
-            )
+        self.endpoint = f'https://{self.domain}-{self.domain_owner}.codeartifact.aws.' \
+            f'a2z.com/{self.package_format}/{self.repository}/'
         self.default_pypi_rc = self.DEFAULT_PYPI_RC_FMT.format(
             repository_endpoint=self.endpoint,
             auth_token=self.auth_token

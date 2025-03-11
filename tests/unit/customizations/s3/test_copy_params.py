@@ -11,10 +11,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
-import sys
-import re
 import copy
+import os
+import re
+import sys
 
 from awscli.testutils import BaseAWSCommandParamsTest
 
@@ -50,7 +50,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline = self.prefix
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
-        result = {'Bucket': u'mybucket', 'Key': u'mykey', 'ChecksumAlgorithm': 'CRC64NVME'}
+        result = {'Bucket': 'mybucket', 'Key': 'mykey', 'ChecksumAlgorithm': 'CRC64NVME'}
         self.assert_params(cmdline, result)
 
     def test_sse(self):
@@ -58,7 +58,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --sse'
-        result = {'Bucket': u'mybucket', 'Key': u'mykey',
+        result = {'Bucket': 'mybucket', 'Key': 'mykey',
                   'ServerSideEncryption': 'AES256', 'ChecksumAlgorithm': 'CRC64NVME'}
         self.assert_params(cmdline, result)
 
@@ -67,8 +67,8 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --storage-class REDUCED_REDUNDANCY'
-        result = {'Bucket': u'mybucket', 'Key': u'mykey',
-                  'ChecksumAlgorithm': 'CRC64NVME', 'StorageClass': u'REDUCED_REDUNDANCY'}
+        result = {'Bucket': 'mybucket', 'Key': 'mykey',
+                  'ChecksumAlgorithm': 'CRC64NVME', 'StorageClass': 'REDUCED_REDUNDANCY'}
         self.assert_params(cmdline, result)
 
     def test_standard_ia_storage_class(self):
@@ -76,8 +76,8 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --storage-class STANDARD_IA'
-        result = {'Bucket': u'mybucket', 'Key': u'mykey',
-                  'StorageClass': u'STANDARD_IA', 'ChecksumAlgorithm': 'CRC64NVME'}
+        result = {'Bucket': 'mybucket', 'Key': 'mykey',
+                  'StorageClass': 'STANDARD_IA', 'ChecksumAlgorithm': 'CRC64NVME'}
         self.assert_params(cmdline, result)
 
     def test_glacier_ir_storage_class(self):
@@ -85,8 +85,8 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --storage-class GLACIER_IR'
-        result = {'Bucket': u'mybucket', 'Key': u'mykey',
-                  'ChecksumAlgorithm': 'CRC64NVME', 'StorageClass': u'GLACIER_IR'}
+        result = {'Bucket': 'mybucket', 'Key': 'mykey',
+                  'ChecksumAlgorithm': 'CRC64NVME', 'StorageClass': 'GLACIER_IR'}
         self.assert_params(cmdline, result)
 
     def test_website_redirect(self):
@@ -94,10 +94,10 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --website-redirect /foobar'
-        result = {'Bucket': u'mybucket',
-                  'Key': u'mykey',
+        result = {'Bucket': 'mybucket',
+                  'Key': 'mykey',
                   'ChecksumAlgorithm': 'CRC64NVME',
-                  'WebsiteRedirectLocation': u'/foobar'}
+                  'WebsiteRedirectLocation': '/foobar'}
         self.assert_params(cmdline, result)
 
     def test_acl(self):
@@ -130,10 +130,10 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --grants read=bob'
         cmdline += ' full=alice'
-        result = {'Bucket': u'mybucket',
-                  'GrantFullControl': u'alice',
-                  'GrantRead': u'bob',
-                  'Key': u'mykey',
+        result = {'Bucket': 'mybucket',
+                  'GrantFullControl': 'alice',
+                  'GrantRead': 'bob',
+                  'Key': 'mykey',
                   'ChecksumAlgorithm': 'CRC64NVME'}
         self.assert_params(cmdline, result)
 
@@ -150,8 +150,8 @@ class TestGetObject(BaseAWSCommandParamsTest):
         cmdline += self.file_path
         cmdline += ' s3://mybucket/mykey'
         cmdline += ' --content-type text/xml'
-        result = {'Bucket': u'mybucket', 'ContentType': u'text/xml',
-                  'Key': u'mykey', 'ChecksumAlgorithm': 'CRC64NVME'}
+        result = {'Bucket': 'mybucket', 'ContentType': 'text/xml',
+                  'Key': 'mykey', 'ChecksumAlgorithm': 'CRC64NVME'}
         self.assert_params(cmdline, result)
 
 

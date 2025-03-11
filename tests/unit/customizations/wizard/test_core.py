@@ -11,17 +11,16 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
+
+import pytest
+from botocore.paginate import Paginator
+from botocore.session import Session
 from ruamel.yaml import YAML
 
-from botocore.session import Session
-from botocore.paginate import Paginator
-import pytest
-
 from awscli.customizations.configure.writer import ConfigFileWriter
-from awscli.customizations.wizard import core
-from awscli.customizations.wizard import ui
+from awscli.customizations.wizard import core, ui
 from awscli.customizations.wizard.app import WizardValues
-from awscli.testutils import unittest, mock, temporary_file
+from awscli.testutils import mock, temporary_file, unittest
 
 
 def load_wizard(yaml_str):
@@ -41,7 +40,7 @@ class FakeWizardValues(WizardValues):
         return self.values[item]
 
 
-class FakePrompter(object):
+class FakePrompter:
     def __init__(self, responses):
         self.responses = responses
         self.recorded_prompts = []

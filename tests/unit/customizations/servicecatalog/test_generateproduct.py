@@ -13,11 +13,13 @@
 
 from argparse import Namespace
 
-from awscli.customizations.servicecatalog import exceptions
-from awscli.customizations.servicecatalog.generateproduct \
-    import GenerateProductCommand
-from awscli.testutils import unittest, mock, capture_output
 from botocore.compat import json
+
+from awscli.customizations.servicecatalog import exceptions
+from awscli.customizations.servicecatalog.generateproduct import (
+    GenerateProductCommand,
+)
+from awscli.testutils import capture_output, mock, unittest
 
 
 class TestCreateProductCommand(unittest.TestCase):
@@ -111,8 +113,8 @@ class TestCreateProductCommand(unittest.TestCase):
     @mock.patch('os.path.getsize', return_value=1)
     def test_happy_path_unicode(self, getsize_patch):
         # Arrange
-        self.args.product_name = u'\u05d1\u05e8\u05d9\u05e6\u05e7\u05dc\u05d4'
-        self.args.support_description = u'\u00fd\u00a9\u0194\u0292'
+        self.args.product_name = '\u05d1\u05e8\u05d9\u05e6\u05e7\u05dc\u05d4'
+        self.args.support_description = '\u00fd\u00a9\u0194\u0292'
 
         actual_product_view_detail = self.get_product_view_detail()
         self.servicecatalog_client.create_product.return_value = \

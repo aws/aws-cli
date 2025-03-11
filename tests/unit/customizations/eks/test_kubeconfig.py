@@ -13,25 +13,28 @@
 
 import glob
 import os
-import tempfile
 import shutil
+import tempfile
+
 from botocore.compat import OrderedDict
 
-from awscli.testutils import unittest, skip_if_windows
-from awscli.customizations.utils import uni_print
-from awscli.customizations.eks.kubeconfig import (KubeconfigError,
-                                                  KubeconfigInaccessableError,
-                                                  KubeconfigCorruptedError,
-                                                  Kubeconfig,
-                                                  KubeconfigValidator,
-                                                  KubeconfigLoader,
-                                                  KubeconfigAppender,
-                                                  KubeconfigWriter,
-                                                  _get_new_kubeconfig_content,
-                                                  )
 from awscli.customizations.eks.exceptions import EKSError
+from awscli.customizations.eks.kubeconfig import (
+    Kubeconfig,
+    KubeconfigAppender,
+    KubeconfigCorruptedError,
+    KubeconfigError,
+    KubeconfigInaccessableError,
+    KubeconfigLoader,
+    KubeconfigValidator,
+    KubeconfigWriter,
+    _get_new_kubeconfig_content,
+)
 from awscli.customizations.eks.ordered_yaml import ordered_yaml_load
+from awscli.customizations.utils import uni_print
+from awscli.testutils import skip_if_windows, unittest
 from tests.functional.eks.test_util import get_testdata
+
 
 class TestKubeconfig(unittest.TestCase):
     def setUp(self):
@@ -121,19 +124,19 @@ class TestKubeconfigValidator(unittest.TestCase):
     def test_valid(self):
         valid_cases = glob.glob(get_testdata( "valid_*" ))
         for case in valid_cases:
-            with open(case, 'r') as stream:
+            with open(case) as stream:
                 content_dict = ordered_yaml_load(stream)
             if content_dict is not None:
                 config = Kubeconfig(None, content_dict)
                 try:
                     self._validator.validate_config(config)
                 except KubeconfigError as e:
-                    self.fail("Valid file {0} raised {1}.".format(case, e))
+                    self.fail(f"Valid file {case} raised {e}.")
 
     def test_invalid(self):
         invalid_cases = glob.glob(get_testdata("invalid_*"))
         for case in invalid_cases:
-            with open(case, 'r') as stream:
+            with open(case) as stream:
                 content_dict = ordered_yaml_load(stream)
             config = Kubeconfig(None, content_dict)
             self.assertRaises(KubeconfigCorruptedError,

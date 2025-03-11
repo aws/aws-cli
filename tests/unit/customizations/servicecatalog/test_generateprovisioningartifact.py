@@ -13,11 +13,13 @@
 
 from argparse import Namespace
 
-from awscli.customizations.servicecatalog import exceptions
-from awscli.customizations.servicecatalog.generateprovisioningartifact \
-    import GenerateProvisioningArtifactCommand
-from awscli.testutils import unittest, mock, capture_output
 from botocore.compat import json
+
+from awscli.customizations.servicecatalog import exceptions
+from awscli.customizations.servicecatalog.generateprovisioningartifact import (
+    GenerateProvisioningArtifactCommand,
+)
+from awscli.testutils import capture_output, mock, unittest
 
 
 class TestCreateProvisioningArtifactCommand(unittest.TestCase):
@@ -85,8 +87,8 @@ class TestCreateProvisioningArtifactCommand(unittest.TestCase):
     @mock.patch('os.path.getsize', return_value=1)
     def test_happy_path_unicode(self, getsize_patch):
         # Arrange
-        self.args.provisioning_artifact_name = u'\u05d1\u05e8\u05d9\u05e6'
-        self.args.provisioning_artifact_description = u'\u00fd\u00a9\u0194'
+        self.args.provisioning_artifact_name = '\u05d1\u05e8\u05d9\u05e6'
+        self.args.provisioning_artifact_description = '\u00fd\u00a9\u0194'
         self.servicecatalog_client.create_provisioning_artifact\
             .return_value = self.get_create_provisioning_artifact_output()
         expected_pa_detail = self.get_create_provisioning_artifact_output()

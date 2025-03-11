@@ -11,8 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import copy
-
 import unittest
+
 import ruamel.yaml as yaml
 
 unittest.TestCase.assertItemsEqual = unittest.TestCase.assertCountEqual

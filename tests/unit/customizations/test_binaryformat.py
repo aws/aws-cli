@@ -10,16 +10,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, mock
-from awscli.customizations.binaryformat import Base64DecodeVisitor
-from awscli.customizations.binaryformat import add_binary_formatter
-from awscli.customizations.binaryformat import base64_decode_input_blobs
-from awscli.customizations.binaryformat import identity
-from awscli.customizations.binaryformat import InvalidBase64Error
-
 from botocore import model
 from botocore.exceptions import ProfileNotFound
 from botocore.session import Session
+
+from awscli.customizations.binaryformat import (
+    Base64DecodeVisitor,
+    InvalidBase64Error,
+    add_binary_formatter,
+    base64_decode_input_blobs,
+    identity,
+)
+from awscli.testutils import mock, unittest
 
 
 def test_identity_function():
@@ -39,7 +41,7 @@ class TestBase64DecodeVisitor(unittest.TestCase):
 
     def test_can_convert_top_level_blob(self):
         members = {'B': {'type': 'blob'}}
-        params = {'B': u'Zm9vAGJheg=='}
+        params = {'B': 'Zm9vAGJheg=='}
         expected_params = {'B': b'foo\x00baz'}
         self.assert_decoded_params(members, params, expected_params)
 
@@ -53,7 +55,7 @@ class TestBase64DecodeVisitor(unittest.TestCase):
             }
         }
         params = {
-            'Nested': {'B': u'Zm9v'}
+            'Nested': {'B': 'Zm9v'}
         }
         expected_params = {
             'Nested': {'B': b'foo'}
@@ -68,7 +70,7 @@ class TestBase64DecodeVisitor(unittest.TestCase):
             }
         }
         params = {
-            'BS': [u'Zm9v', u'']
+            'BS': ['Zm9v', '']
         }
         expected_params = {
             'BS': [b'foo', b'']
@@ -84,7 +86,7 @@ class TestBase64DecodeVisitor(unittest.TestCase):
             }
         }
         params = {
-            'StoB': {'a': u'Zm9v', 'b': u''}
+            'StoB': {'a': 'Zm9v', 'b': ''}
         }
         expected_params = {
             'StoB': {'a': b'foo', 'b': b''}
@@ -93,7 +95,7 @@ class TestBase64DecodeVisitor(unittest.TestCase):
 
     def test_converts_base64_exception(self):
         members = {'B': {'type': 'blob'}}
-        params = {'B': u'this:is:not:base64'}
+        params = {'B': 'this:is:not:base64'}
         shape = self.construct_model(members)
         base64_decode_visitor = Base64DecodeVisitor()
         with self.assertRaises(InvalidBase64Error):

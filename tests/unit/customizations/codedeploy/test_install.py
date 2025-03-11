@@ -12,14 +12,21 @@
 # language governing permissions and limitations under the License.
 
 import sys
-
 from argparse import Namespace
-from awscli.customizations.codedeploy.install import Install
-from awscli.customizations.codedeploy.systems import Ubuntu, Windows, RHEL, System
-from awscli.customizations.exceptions import ConfigurationError
-from awscli.customizations.exceptions import ParamValidationError
-from awscli.testutils import mock, unittest
 from socket import timeout
+
+from awscli.customizations.codedeploy.install import Install
+from awscli.customizations.codedeploy.systems import (
+    RHEL,
+    System,
+    Ubuntu,
+    Windows,
+)
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
+from awscli.testutils import mock, unittest
 
 
 class TestInstall(unittest.TestCase):
@@ -27,9 +34,9 @@ class TestInstall(unittest.TestCase):
         self.region = 'us-east-1'
         self.config_file = 'config-file'
         self.installer = 'install'
-        self.bucket = 'aws-codedeploy-{0}'.format(self.region)
-        self.key = 'latest/{0}'.format(self.installer)
-        self.agent_installer = 's3://{0}/{1}'.format(self.bucket, self.key)
+        self.bucket = f'aws-codedeploy-{self.region}'
+        self.key = f'latest/{self.installer}'
+        self.agent_installer = f's3://{self.bucket}/{self.key}'
 
         self.system_patcher = mock.patch('platform.system')
         self.system = self.system_patcher.start()

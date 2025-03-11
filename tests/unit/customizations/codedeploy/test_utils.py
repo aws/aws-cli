@@ -12,17 +12,31 @@
 # language governing permissions and limitations under the License.
 
 import sys
-
-from socket import timeout
 from argparse import Namespace
-from awscli.customizations.codedeploy.systems import Ubuntu, Windows, RHEL, System
-from awscli.customizations.codedeploy.utils import \
-    validate_region, validate_instance_name, validate_tags, \
-    validate_iam_user_arn, validate_instance, validate_s3_location, \
-    MAX_INSTANCE_NAME_LENGTH, MAX_TAGS_PER_INSTANCE, MAX_TAG_KEY_LENGTH, \
-    MAX_TAG_VALUE_LENGTH
-from awscli.customizations.exceptions import ConfigurationError
-from awscli.customizations.exceptions import ParamValidationError
+from socket import timeout
+
+from awscli.customizations.codedeploy.systems import (
+    RHEL,
+    System,
+    Ubuntu,
+    Windows,
+)
+from awscli.customizations.codedeploy.utils import (
+    MAX_INSTANCE_NAME_LENGTH,
+    MAX_TAG_KEY_LENGTH,
+    MAX_TAG_VALUE_LENGTH,
+    MAX_TAGS_PER_INSTANCE,
+    validate_iam_user_arn,
+    validate_instance,
+    validate_instance_name,
+    validate_region,
+    validate_s3_location,
+    validate_tags,
+)
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
 from awscli.testutils import mock, unittest
 
 
@@ -102,8 +116,8 @@ class TestUtils(unittest.TestCase):
             '012345678901234567890123456789012345678901234567891'
         )
         error_msg = (
-            'Instance name cannot be longer than {0} characters.'
-        ).format(MAX_INSTANCE_NAME_LENGTH)
+            f'Instance name cannot be longer than {MAX_INSTANCE_NAME_LENGTH} characters.'
+        )
         with self.assertRaisesRegex(ParamValidationError, error_msg):
             validate_instance_name(self.params)
 
@@ -112,8 +126,8 @@ class TestUtils(unittest.TestCase):
             {'Key': 'k' + str(x), 'Value': 'v' + str(x)} for x in range(11)
         ]
         error_msg = (
-            'Instances can only have a maximum of {0} tags.'
-        ).format(MAX_TAGS_PER_INSTANCE)
+            f'Instances can only have a maximum of {MAX_TAGS_PER_INSTANCE} tags.'
+        )
         with self.assertRaisesRegex(ParamValidationError, error_msg):
             validate_tags(self.params)
 
@@ -126,8 +140,8 @@ class TestUtils(unittest.TestCase):
         key = 'k' * 129
         self.params.tags = [{'Key': key, 'Value': 'v1'}]
         error_msg = (
-            'Tag Key cannot be longer than {0} characters.'
-        ).format(MAX_TAG_KEY_LENGTH)
+            f'Tag Key cannot be longer than {MAX_TAG_KEY_LENGTH} characters.'
+        )
         with self.assertRaisesRegex(ParamValidationError, error_msg):
             validate_tags(self.params)
 
@@ -140,8 +154,8 @@ class TestUtils(unittest.TestCase):
         value = 'v' * 257
         self.params.tags = [{'Key': 'k1', 'Value': value}]
         error_msg = (
-            'Tag Value cannot be longer than {0} characters.'
-        ).format(MAX_TAG_VALUE_LENGTH)
+            f'Tag Value cannot be longer than {MAX_TAG_VALUE_LENGTH} characters.'
+        )
         with self.assertRaisesRegex(ParamValidationError, error_msg):
             validate_tags(self.params)
 
@@ -199,7 +213,7 @@ class TestUtils(unittest.TestCase):
             validate_instance(self.params)
 
     def test_validate_s3_location_returns_bucket_key(self):
-        self.params.s3_location = 's3://{0}/{1}'.format(self.bucket, self.key)
+        self.params.s3_location = f's3://{self.bucket}/{self.key}'
         validate_s3_location(self.params, self.arg_name)
         self.assertIn('bucket', self.params)
         self.assertEqual(self.bucket, self.params.bucket)
@@ -214,9 +228,9 @@ class TestUtils(unittest.TestCase):
     def test_validate_s3_location_throws_on_invalid_location(self):
         self.params.s3_location = 'invalid-s3-location'
         error_msg = (
-            '--{0} must specify the Amazon S3 URL format as '
+            f'--{self.arg_name} must specify the Amazon S3 URL format as '
             's3://<bucket>/<key>.'
-        ).format(self.arg_name)
+        )
         with self.assertRaisesRegex(ParamValidationError, error_msg):
             validate_s3_location(self.params, self.arg_name)
 

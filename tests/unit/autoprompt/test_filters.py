@@ -10,12 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock, unittest
 from awscli.autoprompt.filters import (
-    search_input_has_focus, help_section_visible, doc_window_has_focus,
-    doc_section_visible, is_history_mode, is_multi_column, is_one_column,
-    input_buffer_has_focus
+    doc_section_visible,
+    doc_window_has_focus,
+    help_section_visible,
+    input_buffer_has_focus,
+    is_history_mode,
+    is_multi_column,
+    is_one_column,
+    search_input_has_focus,
 )
+from awscli.testutils import mock, unittest
 
 
 class TestFilters(unittest.TestCase):

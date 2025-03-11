@@ -21,7 +21,7 @@
 #
 import json
 
-from awscli.testutils import unittest, FileCreator
+from awscli.testutils import FileCreator, unittest
 from awscli.topictags import TopicTagDB
 
 
@@ -254,7 +254,7 @@ class TestTopicTagDBGeneral(TestTopicTagDB):
         self.topic_tag_db.index_file = saved_json_index
 
         self.topic_tag_db.save_to_json_index()
-        with open(saved_json_index, 'r') as f:
+        with open(saved_json_index) as f:
             self.assertEqual(f.read(), tag_json)
 
 
@@ -405,7 +405,7 @@ class TestTopicDBScan(TestTopicTagDB):
         self.topic_tag_db = TopicTagDB(index_file=json_index)
         self.topic_tag_db.scan(file_paths)
         self.topic_tag_db.save_to_json_index()
-        with open(json_index, 'r') as f:
+        with open(json_index) as f:
             saved_index = json.loads(f.read())
             self.assertEqual(saved_index, reference_tag_dict)
 

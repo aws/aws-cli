@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 import copy
 
-from awscli.testutils import unittest
 from awscli.customizations import s3errormsg
+from awscli.testutils import unittest
 
 
 class TestGetRegionFromEndpoint(unittest.TestCase):

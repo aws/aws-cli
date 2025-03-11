@@ -10,15 +10,25 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.waiter import WaiterModel
 from botocore.exceptions import DataNotFoundError
+from botocore.waiter import WaiterModel
 
-from awscli.testutils import mock, unittest, BaseAWSHelpOutputTest, \
-    BaseAWSCommandParamsTest
 from awscli.customizations.exceptions import ParamValidationError
-from awscli.customizations.waiters import add_waiters, WaitCommand, \
-    get_waiter_model_from_service_model, WaiterStateCommand, WaiterCaller, \
-    WaiterStateDocBuilder, WaiterStateCommandBuilder
+from awscli.customizations.waiters import (
+    WaitCommand,
+    WaiterCaller,
+    WaiterStateCommand,
+    WaiterStateCommandBuilder,
+    WaiterStateDocBuilder,
+    add_waiters,
+    get_waiter_model_from_service_model,
+)
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    BaseAWSHelpOutputTest,
+    mock,
+    unittest,
+)
 
 
 class TestAddWaiters(unittest.TestCase):

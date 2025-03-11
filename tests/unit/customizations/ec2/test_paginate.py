@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 from argparse import Namespace
 
-from awscli.testutils import mock, unittest
 from awscli.customizations.ec2.paginate import EC2PageSizeInjector
+from awscli.testutils import mock, unittest
 
 
 class TestEC2PageSizeInjector(unittest.TestCase):

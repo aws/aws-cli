@@ -12,9 +12,13 @@
 # language governing permissions and limitations under the License.
 import errno
 import json
-import awscli
 
-from awscli.testutils import mock, BaseAWSCommandParamsTest, BaseAWSHelpOutputTest
+import awscli
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    BaseAWSHelpOutputTest,
+    mock,
+)
 
 
 class TestPushContainerImageTest(BaseAWSCommandParamsTest):

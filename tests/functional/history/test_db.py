@@ -10,22 +10,23 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import threading
 import json
 import re
+import threading
 
-from awscli.compat import queue
-from awscli.customizations.history.db import DatabaseConnection
-from awscli.customizations.history.db import RecordBuilder
-from awscli.customizations.history.db import DatabaseRecordWriter
-from awscli.customizations.history.db import DatabaseRecordReader
-from awscli.customizations.history.db import DatabaseHistoryHandler
+from awscli.compat import queue, sqlite3
+from awscli.customizations.history.db import (
+    DatabaseConnection,
+    DatabaseHistoryHandler,
+    DatabaseRecordReader,
+    DatabaseRecordWriter,
+    RecordBuilder,
+)
 from awscli.testutils import unittest
-from awscli.compat import sqlite3
 from tests import CaseInsensitiveDict
 
 
-class ThreadedRecordWriter(object):
+class ThreadedRecordWriter:
     def __init__(self, writer):
         self._read_q = queue.Queue()
         self._thread = threading.Thread(

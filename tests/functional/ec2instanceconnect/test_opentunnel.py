@@ -13,6 +13,7 @@
 import concurrent.futures
 import contextlib
 import ctypes
+import datetime
 import os
 import queue
 import socket
@@ -20,24 +21,33 @@ import struct
 import sys
 import threading
 import time
-import urllib.parse
 import traceback
-from typing import Optional, Callable, Union
+import urllib.parse
+from typing import Callable, Optional, Union
 from unittest import mock
-import datetime
 
-from dateutil.tz import tzutc
 import awscrt
 import pytest
-from awscrt.http import HttpRequest, HttpProxyOptions
+from awscrt.http import HttpProxyOptions, HttpRequest
 from awscrt.io import ClientBootstrap, SocketOptions, TlsConnectionOptions
-from awscrt.websocket import OnConnectionSetupData, OnConnectionShutdownData, OnIncomingFramePayloadData, \
-    OnIncomingFrameCompleteData, IncomingFrame, Opcode, OnSendFrameCompleteData, OnIncomingFrameBeginData
-from awscli.customizations.ec2instanceconnect.websocket import WebsocketManager
+from awscrt.websocket import (
+    IncomingFrame,
+    OnConnectionSetupData,
+    OnConnectionShutdownData,
+    OnIncomingFrameBeginData,
+    OnIncomingFrameCompleteData,
+    OnIncomingFramePayloadData,
+    OnSendFrameCompleteData,
+    Opcode,
+)
+from dateutil.tz import tzutc
 
 from awscli.compat import is_windows
-from awscli.customizations.ec2instanceconnect.websocket import BaseWebsocketIO
-from tests import SessionStubber, AWSRequest, CLIRunner, HTTPResponse
+from awscli.customizations.ec2instanceconnect.websocket import (
+    BaseWebsocketIO,
+    WebsocketManager,
+)
+from tests import AWSRequest, CLIRunner, HTTPResponse, SessionStubber
 
 STDIN_QUEUE = queue.Queue()
 STDOUT_QUEUE = queue.Queue()
@@ -342,11 +352,11 @@ def connect_to_listener(listener_future):
         time.sleep(0.2)
         try:
             return socket.create_connection(("localhost", 3333), timeout=5)
-        except (ConnectionError, OSError) as e:
+        except (ConnectionError, OSError):
             tracebacks += f'Traceback from attempt {attempts}:\n{traceback.format_exc()}\n'
             if attempts == max_attempts:
                 retry_connection = False
-        except Exception as e:
+        except Exception:
             tracebacks += f'Traceback from attempt {attempts}:\n{traceback.format_exc()}\n'
             retry_connection = False
     msg = (

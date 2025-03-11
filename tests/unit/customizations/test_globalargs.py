@@ -10,16 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.session import get_session
-from botocore.handlers import disable_signing
 import os
 
-from awscli.testutils import mock, unittest
+from botocore.handlers import disable_signing
+from botocore.session import get_session
+
 from awscli.customizations import globalargs
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.testutils import mock, unittest
 
 
-class FakeParsedArgs(object):
+class FakeParsedArgs:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
@@ -27,7 +28,7 @@ class FakeParsedArgs(object):
         return None
 
 
-class FakeSession(object):
+class FakeSession:
 
     def __init__(self, session_vars=None, config_file_vars=None):
         if session_vars is None:

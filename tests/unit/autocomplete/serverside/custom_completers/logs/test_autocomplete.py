@@ -10,10 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, mock
-from awscli.autocomplete.completer import CompletionResult
 from awscli.autocomplete import parser
-from awscli.autocomplete.serverside.custom_completers.logs.autocomplete import GroupNameCompleter
+from awscli.autocomplete.completer import CompletionResult
+from awscli.autocomplete.serverside.custom_completers.logs.autocomplete import (
+    GroupNameCompleter,
+)
+from awscli.testutils import mock, unittest
 from tests.unit.autocomplete import InMemoryIndex
 
 

@@ -10,24 +10,24 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import locale
 import io
+import locale
 import os
 import signal
 
 import pytest
 
-from awscli.compat import ensure_text_type
-from awscli.compat import compat_shell_quote
-from awscli.compat import compat_open
-from awscli.compat import get_popen_kwargs_for_pager_cmd
-from awscli.compat import getpreferredencoding
-from awscli.compat import ignore_user_entered_signals
 from awscli.compat import (
+    compat_open,
+    compat_shell_quote,
+    ensure_text_type,
+    get_popen_kwargs_for_pager_cmd,
+    getpreferredencoding,
+    ignore_user_entered_signals,
     set_preferred_output_encoding,
     validate_preferred_output_encoding,
 )
-from awscli.testutils import mock, unittest, skip_if_windows, FileCreator
+from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
 
 
 class TestEnsureText(unittest.TestCase):
@@ -44,7 +44,7 @@ class TestEnsureText(unittest.TestCase):
         self.assertEqual(response, 'bar')
 
     def test_unicode(self):
-        value = u'baz'
+        value = 'baz'
         response = ensure_text_type(value)
         self.assertIsInstance(response, str)
         self.assertEqual(response, 'baz')
@@ -53,7 +53,7 @@ class TestEnsureText(unittest.TestCase):
         value = b'\xe2\x9c\x93'
         response = ensure_text_type(value)
         self.assertIsInstance(response, str)
-        self.assertEqual(response, u'\u2713')
+        self.assertEqual(response, '\u2713')
 
     def test_non_string_or_bytes_raises_error(self):
         value = 500

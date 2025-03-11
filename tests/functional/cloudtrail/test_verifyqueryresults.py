@@ -1,14 +1,15 @@
-from io import BytesIO
-import json
 import binascii
 import copy
 import hashlib
+import json
 import os
+from io import BytesIO
 
 from awscrt.crypto import RSASignatureAlgorithm
 
 from awscli.testutils import BaseAWSCommandParamsTest
 from tests import PublicPrivateKeyLoader
+
 from . import get_private_key_path, get_public_key_path
 
 SAMPLE_PUBLIC_KEY_FINGERPRINT = "67b9fa73676d86966b449dd677850753"
@@ -93,7 +94,7 @@ class TestVerifyQueryResults(BaseAWSCommandParamsTest):
         )
         signature = private_key.sign(
             signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
-            digest=hashlib.sha256("123".encode()).digest()
+            digest=hashlib.sha256(b"123").digest()
         )
 
         sign_file["hashSignature"] = binascii.hexlify(signature).decode()

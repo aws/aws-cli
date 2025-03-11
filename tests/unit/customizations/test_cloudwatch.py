@@ -12,9 +12,8 @@
 # language governing permissions and limitations under the License.
 import decimal
 
-from awscli.testutils import unittest
-
 from awscli.customizations import putmetricdata
+from awscli.testutils import unittest
 
 
 class TestPutMetricArgument(unittest.TestCase):

@@ -17,8 +17,10 @@ import os
 from botocore.loaders import Loader
 
 from awscli.testutils import (
-    create_clidriver, FileCreator, BaseAWSCommandParamsTest,
-    BaseAWSHelpOutputTest
+    BaseAWSCommandParamsTest,
+    BaseAWSHelpOutputTest,
+    FileCreator,
+    create_clidriver,
 )
 
 # NOTE: Typically, the functional tests reuse preexisting models. However

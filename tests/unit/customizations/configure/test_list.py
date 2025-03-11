@@ -12,9 +12,9 @@
 # language governing permissions and limitations under the License.
 from argparse import Namespace
 
-from awscli.testutils import mock, unittest
-from awscli.customizations.configure.list import ConfigureListCommand
 from awscli.compat import StringIO
+from awscli.customizations.configure.list import ConfigureListCommand
+from awscli.testutils import mock, unittest
 
 from . import FakeSession
 

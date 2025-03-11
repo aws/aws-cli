@@ -1,7 +1,7 @@
-import os
-import tempfile
-import shutil
 import codecs
+import os
+import shutil
+import tempfile
 
 from awscli.testutils import unittest
 from awscli.utils import write_exception

@@ -13,7 +13,10 @@
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.layout import (
-    HSplit, Window, ConditionalContainer, FloatContainer
+    ConditionalContainer,
+    FloatContainer,
+    HSplit,
+    Window,
 )
 from prompt_toolkit.widgets import Dialog
 

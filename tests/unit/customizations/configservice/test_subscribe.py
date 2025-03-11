@@ -13,10 +13,13 @@
 import botocore.session
 from botocore.exceptions import ClientError
 
-from awscli.testutils import mock, unittest
 from awscli.compat import StringIO
-from awscli.customizations.configservice.subscribe import SubscribeCommand, \
-    S3BucketHelper, SNSTopicHelper
+from awscli.customizations.configservice.subscribe import (
+    S3BucketHelper,
+    SNSTopicHelper,
+    SubscribeCommand,
+)
+from awscli.testutils import mock, unittest
 
 
 class TestS3BucketHelper(unittest.TestCase):

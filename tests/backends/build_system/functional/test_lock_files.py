@@ -1,11 +1,10 @@
+import os
 import re
 import sys
-import os
-from subprocess import run
 from pathlib import Path
+from subprocess import run
 
 import pytest
-
 
 ROOT = Path(__file__).parents[4]
 REQUIREMENTS_PATH = ROOT / "requirements"
@@ -28,7 +27,7 @@ def should_read_line(line):
 
 
 def read_lock_file(path):
-    with open(path, 'r') as f:
+    with open(path) as f:
         lines = f.read().strip('\n').split('\n')
 
     # Find source files
@@ -69,7 +68,7 @@ def get_requires_from_pyproject():
         r"dependencies = \[([\s\S]+?)\]\s", re.MULTILINE
     )
     extract_dependencies_re = re.compile(r'"(.+)"')
-    with open(ROOT / "pyproject.toml", "r") as f:
+    with open(ROOT / "pyproject.toml") as f:
         data = f.read()
     raw_dependencies = dependency_block_re.findall(data)[0]
     dependencies = extract_dependencies_re.findall(raw_dependencies)
@@ -129,7 +128,7 @@ def lockfile_paths(root):
 )
 def test_all_lock_files_are_generated_by_expected_python_version():
     for path in lockfile_paths(REQUIREMENTS_PATH):
-        with open(path, "r") as f:
+        with open(path) as f:
             content = f.read()
             assert f"Python {CANNONICAL_PYTHON_VERSION}" in content
 

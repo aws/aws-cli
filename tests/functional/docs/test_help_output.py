@@ -23,13 +23,10 @@ at the man output, we look one step before at the generated rst output
 """
 import os
 
-from awscli.testutils import BaseAWSHelpOutputTest
-from awscli.testutils import FileCreator
-from awscli.testutils import mock
-from tests import CLIRunner
-from awscli.compat import StringIO
-
 from awscli.alias import AliasLoader
+from awscli.compat import StringIO
+from awscli.testutils import BaseAWSHelpOutputTest, FileCreator, mock
+from tests import CLIRunner
 
 
 class TestHelpOutput(BaseAWSHelpOutputTest):
@@ -240,8 +237,8 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
         self.driver.main(['autoscaling',
                           'terminate-instance-in-auto-scaling-group', 'help'])
         self.assert_contains(
-            ('``--should-decrement-desired-capacity`` | '
-             '``--no-should-decrement-desired-capacity`` (boolean)'))
+            '``--should-decrement-desired-capacity`` | '
+             '``--no-should-decrement-desired-capacity`` (boolean)')
 
     def test_streaming_output_arg(self):
         self.driver.main(['s3api', 'get-object', 'help'])

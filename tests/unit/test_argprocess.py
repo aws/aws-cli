@@ -12,24 +12,27 @@
 # language governing permissions and limitations under the License.
 import json
 
-from botocore import xform_name
-from botocore import model
+from botocore import model, xform_name
 from botocore.compat import OrderedDict
 
-from awscli.testutils import mock, unittest
-from awscli.testutils import BaseCLIDriverTest
-from awscli.testutils import temporary_file
+from awscli.argprocess import (
+    ParamError,
+    ParamShorthandDocGen,
+    ParamShorthandParser,
+    ParamUnknownKeyError,
+    detect_shape_structure,
+    unpack_cli_arg,
+)
+from awscli.arguments import (
+    BooleanArgument,
+    CLIArgument,
+    CustomArgument,
+    ListArgument,
+    create_argument_model_from_schema,
+)
 from awscli.help import OperationHelpCommand
-from awscli.argprocess import detect_shape_structure
-from awscli.argprocess import unpack_cli_arg
-from awscli.argprocess import ParamShorthandParser
-from awscli.argprocess import ParamShorthandDocGen
-from awscli.argprocess import ParamError
-from awscli.argprocess import ParamUnknownKeyError
-from awscli.paramfile import URIArgumentHandler, LOCAL_PREFIX_MAP
-from awscli.arguments import CustomArgument, CLIArgument
-from awscli.arguments import ListArgument, BooleanArgument
-from awscli.arguments import create_argument_model_from_schema
+from awscli.paramfile import LOCAL_PREFIX_MAP, URIArgumentHandler
+from awscli.testutils import BaseCLIDriverTest, mock, temporary_file, unittest
 
 
 # These tests use real service types so that we can

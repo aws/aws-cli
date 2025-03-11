@@ -15,9 +15,8 @@ from pathlib import Path
 
 import pytest
 
-from tests import CLIRunner
 from awscli.compat import urlparse
-
+from tests import CLIRunner
 
 ENDPOINT_TESTDATA_FILE = Path(__file__).parent / "profile-tests.json"
 

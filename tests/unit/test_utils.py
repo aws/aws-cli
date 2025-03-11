@@ -10,34 +10,43 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import signal
-import platform
-import pytest
-import subprocess
 import json
 import os
+import platform
 import shlex
+import signal
+import subprocess
 
 import botocore
 import botocore.model
 import botocore.session as session
+import pytest
+import ruamel.yaml
 from botocore.exceptions import ConnectionClosedError, MetadataRetrievalError
+
 from awscli.clidriver import create_clidriver
-from awscli.testutils import unittest, skip_if_windows, mock
 from awscli.compat import is_windows
+from awscli.testutils import mock, skip_if_windows, unittest
 from awscli.utils import (
-    split_on_commas, ignore_ctrl_c, find_service_and_method_in_event_name,
-    is_document_type, is_document_type_container, is_streaming_blob_type,
-    is_tagged_union_type, operation_uses_document_types, dump_yaml_to_str,
-    ShapeWalker, ShapeRecordingVisitor, OutputStreamFactory, LazyPager,
+    IMDSRegionProvider,
+    InstanceMetadataRegionFetcher,
+    LazyPager,
+    OutputStreamFactory,
+    ShapeRecordingVisitor,
+    ShapeWalker,
     add_command_lineage_to_user_agent_extra,
     add_metadata_component_to_user_agent_extra,
+    dump_yaml_to_str,
+    find_service_and_method_in_event_name,
+    ignore_ctrl_c,
+    is_document_type,
+    is_document_type_container,
+    is_streaming_blob_type,
+    is_tagged_union_type,
+    operation_uses_document_types,
+    split_on_commas,
 )
-from awscli.utils import InstanceMetadataRegionFetcher
-from awscli.utils import IMDSRegionProvider
 from tests import RawResponse
-
-import ruamel.yaml
 
 
 @pytest.fixture()
@@ -148,10 +157,10 @@ class TestFindServiceAndOperationNameFromEvent(unittest.TestCase):
         self.assertIs(operation, None)
 
 
-class MockProcess(object):
+class MockProcess:
     @property
     def stdin(self):
-        raise IOError('broken pipe')
+        raise OSError('broken pipe')
 
     def communicate(self):
         pass
@@ -237,7 +246,7 @@ class TestOutputStreamFactory(unittest.TestCase):
         try:
             with self.stream_factory.get_pager_stream() as stream:
                 stream.write()
-        except IOError:
+        except OSError:
             self.fail('Should not raise IOError')
 
     def test_get_output_stream(self):

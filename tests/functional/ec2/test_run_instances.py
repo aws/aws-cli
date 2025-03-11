@@ -11,9 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.compat import compat_open
-
-from awscli.testutils import temporary_file
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest, temporary_file
 
 
 class TestRunInstances(BaseAWSCommandParamsTest):
@@ -47,7 +45,7 @@ class TestRunInstances(BaseAWSCommandParamsTest):
         self.assert_run_instances_call(args, result)
 
     def test_user_data(self):
-        data = u'\u0039'
+        data = '\u0039'
         with temporary_file('r+') as tmp:
             with compat_open(tmp.name, 'w') as f:
                 f.write(data)
@@ -137,8 +135,8 @@ class TestRunInstances(BaseAWSCommandParamsTest):
             'NetworkInterfaces': [
                 {'DeviceIndex': 0,
                  'PrivateIpAddresses': [
-                     {'Primary': False, 'PrivateIpAddress': u'10.0.2.106'},
-                     {'Primary': False, 'PrivateIpAddress': u'10.0.2.107'}]}],
+                     {'Primary': False, 'PrivateIpAddress': '10.0.2.106'},
+                     {'Primary': False, 'PrivateIpAddress': '10.0.2.107'}]}],
             'MaxCount': 1,
             'MinCount': 1}
         self.assert_run_instances_call(args, result)

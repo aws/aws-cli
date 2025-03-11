@@ -2,14 +2,12 @@ import os
 import sys
 from contextlib import contextmanager
 
-from awscli.testutils import unittest, skip_if_windows
-from awscli.testutils import capture_output
+import colorama
+from colorama import Back, Fore
+
 from awscli.compat import StringIO
 from awscli.table import COLORAMA_KWARGS
-
-import colorama
-from colorama import Fore
-from colorama import Back
+from awscli.testutils import capture_output, skip_if_windows, unittest
 
 
 @skip_if_windows('Posix color code tests')

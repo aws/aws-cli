@@ -11,12 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from prompt_toolkit.buffer import Buffer
-from prompt_toolkit.completion import DummyCompleter, Completer
+from prompt_toolkit.completion import Completer, DummyCompleter
 from prompt_toolkit.layout import Window
 from prompt_toolkit.widgets import SearchToolbar
 
 from awscli.autoprompt.factory import (
-    PromptToolkitKeyBindings, PromptToolkitFactory, CLIPromptBuffer
+    CLIPromptBuffer,
+    PromptToolkitFactory,
+    PromptToolkitKeyBindings,
 )
 from awscli.autoprompt.history import HistoryCompleter
 from awscli.testutils import mock, unittest

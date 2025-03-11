@@ -10,10 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import re
-import os
-import time
 import json
+import os
+import re
+import time
 
 import pytest
 
@@ -21,7 +21,7 @@ from awscli.testutils import aws
 
 INTEG_TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
 
-with open(os.path.join(INTEG_TESTS_DIR, "smoke-tests.json"), "r") as definitions_file:
+with open(os.path.join(INTEG_TESTS_DIR, "smoke-tests.json")) as definitions_file:
     SMOKE_TESTS = json.load(definitions_file)
 COMMANDS = [" ".join(cmd) for cmd in SMOKE_TESTS["Commands"]]
 ERROR_COMMANDS = [" ".join(cmd) for cmd in SMOKE_TESTS["ErrorCommands"]]

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
@@ -12,45 +11,43 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import contextlib
-import platform
-import os
-import pytest
-import re
-
-from awscli.testutils import unittest
-from awscli.testutils import BaseAWSCommandParamsTest
-import logging
 import io
-
-from awscli.testutils import mock
-
-import awscrt.io
-from botocore import xform_name
+import logging
+import os
+import platform
+import re
 import sys
 
-from botocore.awsrequest import AWSResponse
-from botocore.exceptions import NoCredentialsError
-from botocore.compat import OrderedDict
+import awscrt.io
 import botocore.model
+import pytest
+from botocore import xform_name
+from botocore.awsrequest import AWSResponse
+from botocore.compat import OrderedDict
+from botocore.configprovider import (
+    ConfigChainFactory,
+    ConfigValueStore,
+    create_botocore_default_config_mapping,
+)
+from botocore.exceptions import NoCredentialsError
+from botocore.hooks import HierarchicalEmitter
 
 import awscli
-from awscli.clidriver import CLIDriver
-from awscli.clidriver import create_clidriver
-from awscli.clidriver import CustomArgument
-from awscli.clidriver import CLICommand
-from awscli.clidriver import construct_cli_error_handlers_chain
-from awscli.clidriver import ServiceCommand
-from awscli.clidriver import ServiceOperation
-from awscli.paramfile import URIArgumentHandler
-from awscli.customizations.commands import BasicCommand
 from awscli import formatter
 from awscli.argparser import HELP_BLURB
+from awscli.clidriver import (
+    CLICommand,
+    CLIDriver,
+    CustomArgument,
+    ServiceCommand,
+    ServiceOperation,
+    construct_cli_error_handlers_chain,
+    create_clidriver,
+)
 from awscli.compat import StringIO
-from botocore.hooks import HierarchicalEmitter
-from botocore.configprovider import create_botocore_default_config_mapping
-from botocore.configprovider import ConfigChainFactory
-from botocore.configprovider import ConfigValueStore
-
+from awscli.customizations.commands import BasicCommand
+from awscli.paramfile import URIArgumentHandler
+from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 
 GET_DATA = {
     'cli': {
@@ -201,7 +198,7 @@ MINI_SERVICE = {
 }
 
 
-class FakeSession(object):
+class FakeSession:
     def __init__(self, emitter=None):
         self.operation = None
         if emitter is None:
@@ -343,7 +340,7 @@ class TestCliDriver:
         stderr_b = io.BytesIO()
         stderr = io.TextIOWrapper(stderr_b, encoding="UTF-8")
         fake_client = mock.Mock()
-        fake_client.list_objects.side_effect = Exception(u"☃")
+        fake_client.list_objects.side_effect = Exception("☃")
         fake_client.can_paginate.return_value = False
         self.driver.session.create_client = mock.Mock(return_value=fake_client)
         with mock.patch("sys.stderr", stderr):
@@ -351,7 +348,7 @@ class TestCliDriver:
                 rc = self.driver.main('s3 list-objects --bucket foo'.split())
         stderr.flush()
         assert rc == 255
-        assert stderr_b.getvalue().strip() == u"☃".encode("UTF-8")
+        assert stderr_b.getvalue().strip() == "☃".encode()
 
     @pytest.mark.parametrize('env_vars', [
         {'AWS_CLI_OUTPUT_ENCODING': 'UTF-8'},
@@ -361,7 +358,7 @@ class TestCliDriver:
         stderr_b = io.BytesIO()
         stderr = io.TextIOWrapper(stderr_b, encoding="cp1252")
         fake_client = mock.Mock()
-        fake_client.list_objects.side_effect = Exception(u"☃")
+        fake_client.list_objects.side_effect = Exception("☃")
         fake_client.can_paginate.return_value = False
         self.driver.session.create_client = mock.Mock(return_value=fake_client)
         with mock.patch.dict(os.environ, env_vars):
@@ -369,7 +366,7 @@ class TestCliDriver:
                 rc = self.driver.main('s3 list-objects --bucket foo'.split())
         stderr.flush()
         assert rc == 255
-        assert stderr_b.getvalue().strip() == u"☃".encode("UTF-8")
+        assert stderr_b.getvalue().strip() == "☃".encode()
 
     def test_invalid_output_encoding_throws(self):
         stderr_b = io.BytesIO()

@@ -17,14 +17,18 @@ import tempfile
 
 from botocore.compat import OrderedDict
 
+from awscli.customizations.eks.kubeconfig import (
+    Kubeconfig,
+    KubeconfigInaccessableError,
+    KubeconfigLoader,
+    KubeconfigValidator,
+    KubeconfigWriter,
+    _get_new_kubeconfig_content,
+)
 from awscli.testutils import mock, unittest
 from tests.functional.eks.test_util import get_testdata
-from awscli.customizations.eks.kubeconfig import (_get_new_kubeconfig_content,
-                                                  KubeconfigWriter,
-                                                  KubeconfigLoader,
-                                                  KubeconfigValidator,
-                                                  Kubeconfig,
-                                                  KubeconfigInaccessableError)
+
+
 class TestKubeconfigWriter(unittest.TestCase):
     def setUp(self):
         self._writer = KubeconfigWriter()
@@ -40,7 +44,7 @@ class TestKubeconfigWriter(unittest.TestCase):
         config = Kubeconfig(file_to_write, content)
         self._writer.write_kubeconfig(config)
 
-        with open(file_to_write, 'r') as stream:
+        with open(file_to_write) as stream:
             self.assertMultiLineEqual(stream.read(),
                                       "current-context: context\n"
                                       "apiVersion: v1\n")
@@ -59,7 +63,7 @@ class TestKubeconfigWriter(unittest.TestCase):
         config = Kubeconfig(config_path, content)
         self._writer.write_kubeconfig(config)
 
-        with open(config_path, 'r') as stream:
+        with open(config_path) as stream:
             self.assertMultiLineEqual(stream.read(),
                                       "current-context: context\n"
                                       "apiVersion: v1\n")

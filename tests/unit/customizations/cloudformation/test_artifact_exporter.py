@@ -1,37 +1,53 @@
-import botocore.session
-import tempfile
 import os
-import string
 import random
+import string
+import tempfile
 import zipfile
+from contextlib import closing, contextmanager
 
+import botocore.session
 import pytest
-
-from contextlib import contextmanager, closing
 from botocore.stub import Stubber
-from awscli.testutils import mock, FileCreator
-from awscli.customizations.cloudformation import exceptions
-from awscli.customizations.cloudformation.artifact_exporter \
-    import is_s3_url, parse_s3_url, is_local_file, is_local_folder, \
-    upload_local_artifacts, zip_folder, make_abs_path, make_zip, \
-    Template, Resource, ResourceWithS3UrlDict, ServerlessApiResource, \
-    ServerlessFunctionResource, GraphQLSchemaResource, \
-    LambdaFunctionResource, ApiGatewayRestApiResource, \
-    ElasticBeanstalkApplicationVersion, CloudFormationStackResource, \
-    ServerlessApplicationResource, LambdaLayerVersionResource, \
-    copy_to_temp_dir, include_transform_export_handler, GLOBAL_EXPORT_DICT, \
-    ServerlessLayerVersionResource, ServerlessRepoApplicationLicense, \
-    ServerlessRepoApplicationReadme, \
-    AppSyncResolverRequestTemplateResource, \
-    AppSyncResolverResponseTemplateResource, \
-    AppSyncFunctionConfigurationRequestTemplateResource, \
-    AppSyncFunctionConfigurationResponseTemplateResource, \
-    GlueJobCommandScriptLocationResource, \
-    StepFunctionsStateMachineDefinitionResource, \
-    ServerlessStateMachineDefinitionResource, \
-    CodeCommitRepositoryS3Resource
-from tests.unit.customizations.cloudformation import BaseYAMLTest
 
+from awscli.customizations.cloudformation import exceptions
+from awscli.customizations.cloudformation.artifact_exporter import (
+    GLOBAL_EXPORT_DICT,
+    ApiGatewayRestApiResource,
+    AppSyncFunctionConfigurationRequestTemplateResource,
+    AppSyncFunctionConfigurationResponseTemplateResource,
+    AppSyncResolverRequestTemplateResource,
+    AppSyncResolverResponseTemplateResource,
+    CloudFormationStackResource,
+    CodeCommitRepositoryS3Resource,
+    ElasticBeanstalkApplicationVersion,
+    GlueJobCommandScriptLocationResource,
+    GraphQLSchemaResource,
+    LambdaFunctionResource,
+    LambdaLayerVersionResource,
+    Resource,
+    ResourceWithS3UrlDict,
+    ServerlessApiResource,
+    ServerlessApplicationResource,
+    ServerlessFunctionResource,
+    ServerlessLayerVersionResource,
+    ServerlessRepoApplicationLicense,
+    ServerlessRepoApplicationReadme,
+    ServerlessStateMachineDefinitionResource,
+    StepFunctionsStateMachineDefinitionResource,
+    Template,
+    copy_to_temp_dir,
+    include_transform_export_handler,
+    is_local_file,
+    is_local_folder,
+    is_s3_url,
+    make_abs_path,
+    make_zip,
+    parse_s3_url,
+    upload_local_artifacts,
+    zip_folder,
+)
+from awscli.testutils import FileCreator, mock
+from tests.unit.customizations.cloudformation import BaseYAMLTest
 
 VALID_CASES = [
     "s3://foo/bar",

@@ -10,21 +10,22 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
-import sys
 import json
+import os
 import platform
+import sys
 from typing import List
 
 import pytest
+from build_system.utils import (
+    ParseError,
+    Requirement,
+    UnmetDependenciesException,
+    Utils,
+    parse_requirements,
+)
 
-from build_system.utils import Utils
-from build_system.utils import parse_requirements
-from build_system.utils import ParseError
-from build_system.utils import Requirement
-from build_system.utils import UnmetDependenciesException
-
-from tests.backends.build_system.markers import skip_if_windows, if_windows
+from tests.backends.build_system.markers import if_windows, skip_if_windows
 
 
 @pytest.fixture
@@ -160,9 +161,9 @@ class TestUtils:
         dst_path = tmp_path / "destination.txt"
 
         utils.copy_file(src_path, dst_path)
-        with open(src_path, "r") as f:
+        with open(src_path) as f:
             src = f.read()
-        with open(dst_path, "r") as f:
+        with open(dst_path) as f:
             dst = f.read()
 
         assert src == dst
@@ -176,7 +177,7 @@ class TestUtils:
 
         utils.copy_directory_contents_into(str(src_path), str(dst_path))
 
-        assert open((dst_path / "file"), "r").read() == "foo"
+        assert open(dst_path / "file").read() == "foo"
 
     def test_copy_directory(self, utils: Utils, tmp_path):
         src_path = tmp_path / "src"
@@ -187,7 +188,7 @@ class TestUtils:
         utils.copy_directory(src_path, dst_path)
 
         assert os.path.exists(dst_path)
-        assert open((dst_path / "file"), "r").read() == "foo"
+        assert open(dst_path / "file").read() == "foo"
 
     def test_update_metadata(self, utils: Utils, tmp_path):
         data_dir = tmp_path / "awscli" / "data"
@@ -197,7 +198,7 @@ class TestUtils:
 
         utils.update_metadata(tmp_path, key="value")
 
-        with open(metadata_path, "r") as f:
+        with open(metadata_path) as f:
             data = json.load(f)
         assert data == {"key": "value"}
 

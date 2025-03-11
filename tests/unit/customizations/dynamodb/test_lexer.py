@@ -15,10 +15,10 @@ from decimal import Decimal
 import pytest
 
 from awscli.customizations.dynamodb.exceptions import (
-    LexerError, EmptyExpressionError,
+    EmptyExpressionError,
+    LexerError,
 )
 from awscli.customizations.dynamodb.lexer import Lexer
-
 
 STRING_TOKENS = ['and', 'between', 'in', 'or', 'not']
 
@@ -130,7 +130,7 @@ def test_lexer_error(expression, error_part):
     LexTester().assert_lex_error(expression, error_part)
 
 
-class LexTester(object):
+class LexTester:
     def __init__(self):
         self.lexer = Lexer()
 

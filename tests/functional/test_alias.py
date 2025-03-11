@@ -13,10 +13,12 @@
 import os
 
 from awscli.alias import AliasLoader, register_alias_commands
-from awscli.testutils import skip_if_windows
-from awscli.testutils import FileCreator
-from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.customizations.commands import BasicCommand
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    FileCreator,
+    skip_if_windows,
+)
 
 
 # We need to test that aliases work with custom BasicCommand,
@@ -414,7 +416,7 @@ class TestAliases(BaseAWSCommandParamsTest):
             CustomTestCommand.add_command)
         with open(self.alias_file, 'a+') as f:
             f.write('[command resourcegroupstaggingapi resources]\n')
-            f.write(f'mycluster = --resource-types ecs:cluster\n')
+            f.write('mycluster = --resource-types ecs:cluster\n')
         cmdline = 'resourcegroupstaggingapi resources mycluster'
         self.assert_single_operation_called(
             cmdline,
@@ -429,7 +431,7 @@ class TestAliases(BaseAWSCommandParamsTest):
             CustomTestCommand.add_command)
         with open(self.alias_file, 'a+') as f:
             f.write('[command resourcegroupstaggingapi resources]\n')
-            f.write(f'mycluster = --resource-types ecs:cluster\n')
+            f.write('mycluster = --resource-types ecs:cluster\n')
         cmdline = 'resourcegroupstaggingapi resources mycluster --tags foo=bar'
         # We should merge the cmdline params from the 'mycluster' alias along
         # with the explicitly provided --tags option from cmdline args.

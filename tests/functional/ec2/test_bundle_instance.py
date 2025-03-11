@@ -15,8 +15,8 @@ import base64
 import datetime
 
 import awscli.customizations.ec2.bundleinstance
-from awscli.testutils import mock, BaseAWSCommandParamsTest
 from awscli.compat import StringIO
+from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 
 class TestBundleInstance(BaseAWSCommandParamsTest):

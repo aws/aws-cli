@@ -21,15 +21,16 @@ from botocore.session import get_session
 from awscli.customizations.eks.exceptions import EKSClusterError
 from awscli.customizations.eks.kubeconfig import (
     KubeconfigCorruptedError,
-    KubeconfigInaccessableError
+    KubeconfigInaccessableError,
 )
 from awscli.customizations.eks.update_kubeconfig import UpdateKubeconfigCommand
-from awscli.testutils import mock, unittest, capture_output
+from awscli.testutils import capture_output, mock, unittest
 from tests.functional.eks.test_util import (
-    describe_cluster_response,
     describe_cluster_creating_response,
-    get_testdata
+    describe_cluster_response,
+    get_testdata,
 )
+
 
 def sanitize_output(output):
     """

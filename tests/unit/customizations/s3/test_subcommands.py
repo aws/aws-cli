@@ -14,22 +14,36 @@ import argparse
 import os
 import sys
 
-
 import botocore.session
-from awscli.customizations.s3.s3 import S3
-from awscli.customizations.s3.subcommands import CommandParameters, \
-    CommandArchitecture, CpCommand, SyncCommand, ListCommand, RbCommand
-from awscli.customizations.s3.transferconfig import RuntimeConfig
-from awscli.customizations.s3.syncstrategy.base import \
-    SizeAndLastModifiedSync, NeverSync, MissingFileSync
-from awscli.customizations.exceptions import ParamValidationError
-from awscli.testutils import mock, unittest, BaseAWSHelpOutputTest, \
-    BaseAWSCommandParamsTest, FileCreator
-from tests.unit.customizations.s3 import make_loc_files, clean_loc_files
+
 from awscli.compat import StringIO
+from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.s3.s3 import S3
+from awscli.customizations.s3.subcommands import (
+    CommandArchitecture,
+    CommandParameters,
+    CpCommand,
+    ListCommand,
+    RbCommand,
+    SyncCommand,
+)
+from awscli.customizations.s3.syncstrategy.base import (
+    MissingFileSync,
+    NeverSync,
+    SizeAndLastModifiedSync,
+)
+from awscli.customizations.s3.transferconfig import RuntimeConfig
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    BaseAWSHelpOutputTest,
+    FileCreator,
+    mock,
+    unittest,
+)
+from tests.unit.customizations.s3 import clean_loc_files, make_loc_files
 
 
-class FakeArgs(object):
+class FakeArgs:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
@@ -110,9 +124,9 @@ class TestLSCommand(unittest.TestCase):
         # And only a single pagination call to ListObjectsV2.
         self.session.create_client.return_value.get_paginator.\
             assert_called_with('list_objects_v2')
-        ref_call_args = {'Bucket': u'mybucket', 'Delimiter': '/',
-                         'Prefix': u'',
-                         'PaginationConfig': {'PageSize': u'5'}}
+        ref_call_args = {'Bucket': 'mybucket', 'Delimiter': '/',
+                         'Prefix': '',
+                         'PaginationConfig': {'PageSize': '5'}}
 
         paginate.assert_called_with(**ref_call_args)
 
@@ -227,8 +241,8 @@ class TestLSCommand(unittest.TestCase):
         self.session.create_client.return_value.get_paginator.\
             assert_called_with('list_objects_v2')
         ref_call_args = {
-            'Bucket': u'mybucket', 'Delimiter': '/',
-            'Prefix': u'', 'PaginationConfig': {'PageSize': '5'},
+            'Bucket': 'mybucket', 'Delimiter': '/',
+            'Prefix': '', 'PaginationConfig': {'PageSize': '5'},
             'RequestPayer': 'requester',
         }
 

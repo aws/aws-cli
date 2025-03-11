@@ -11,15 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import base64
-import botocore
 import json
 from datetime import datetime
 
-from awscli.testutils import mock, unittest, capture_output
-from awscli.customizations.eks.get_token import (
-    GetTokenCommand,
-    TokenGenerator
-)
+import botocore
+
+from awscli.customizations.eks.get_token import GetTokenCommand, TokenGenerator
+from awscli.testutils import capture_output, mock, unittest
 
 
 class BaseTokenTest(unittest.TestCase):

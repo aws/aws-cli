@@ -10,29 +10,40 @@
 # distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import binascii
 import base64
+import binascii
+import gzip
 import hashlib
 import json
-import gzip
-from datetime import datetime, timedelta
-from dateutil import parser, tz
 from argparse import Namespace
+from datetime import datetime, timedelta
 
 from awscrt.crypto import RSASignatureAlgorithm
-
-from awscli.testutils import mock, BaseAWSCommandParamsTest
-from awscli.customizations.cloudtrail.validation import DigestError, \
-    extract_digest_key_date, normalize_date, format_date, DigestProvider, \
-    DigestTraverser, create_digest_traverser, \
-    Sha256RSADigestValidator, DATE_FORMAT, CloudTrailValidateLogs, \
-    parse_date, assert_cloudtrail_arn_is_valid, DigestSignatureError, \
-    InvalidDigestFormat, S3ClientProvider
-from awscli.testutils import unittest
-from awscli.customizations.exceptions import ParamValidationError
-from awscli.compat import BytesIO
 from botocore.exceptions import ClientError
+from dateutil import parser, tz
+
+from awscli.compat import BytesIO
+from awscli.customizations.cloudtrail.validation import (
+    DATE_FORMAT,
+    CloudTrailValidateLogs,
+    DigestError,
+    DigestProvider,
+    DigestSignatureError,
+    DigestTraverser,
+    InvalidDigestFormat,
+    S3ClientProvider,
+    Sha256RSADigestValidator,
+    assert_cloudtrail_arn_is_valid,
+    create_digest_traverser,
+    extract_digest_key_date,
+    format_date,
+    normalize_date,
+    parse_date,
+)
+from awscli.customizations.exceptions import ParamValidationError
+from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 from tests import PublicPrivateKeyLoader
+
 from . import get_private_key_path, get_public_key_path
 
 START_DATE = parser.parse('20140810T000000Z')
@@ -94,7 +105,7 @@ def collecting_callback():
     return cb, calls
 
 
-class MockDigestProvider(object):
+class MockDigestProvider:
     def __init__(self, actions, logs=None):
         self.logs = logs or []
         self.actions = actions
@@ -212,9 +223,9 @@ class TestValidation(unittest.TestCase):
         self.assertEqual(tz.tzutc(), normalized.tzinfo)
 
     def test_extracts_dates_from_digest_keys(self):
-        arn = ('AWSLogs/{account}/CloudTrail-Digest/us-east-1/2015/08/'
-               '16/{account}_CloudTrail-Digest_us-east-1_foo_us-east-1_'
-               '20150816T230550Z.json.gz').format(account=TEST_ACCOUNT_ID)
+        arn = (f'AWSLogs/{TEST_ACCOUNT_ID}/CloudTrail-Digest/us-east-1/2015/08/'
+               f'16/{TEST_ACCOUNT_ID}_CloudTrail-Digest_us-east-1_foo_us-east-1_'
+               '20150816T230550Z.json.gz')
         self.assertEqual('20150816T230550Z', extract_digest_key_date(arn))
 
     def test_creates_traverser(self):
@@ -389,7 +400,7 @@ class TestSha256RSADigestValidator(unittest.TestCase):
         validator = Sha256RSADigestValidator()
         try:
             validator.validate(
-                'b', 'k', 'YQo=', self._digest_data, 'invalid'.encode())
+                'b', 'k', 'YQo=', self._digest_data, b'invalid')
             self.fail('Should have failed')
         except DigestError as e:
             self.assertEqual(('Digest file\ts3://b/k\tINVALID: Unable to load '
@@ -400,7 +411,7 @@ class TestSha256RSADigestValidator(unittest.TestCase):
         try:
             validator.validate(
                 'b', 'k', VALID_TEST_KEY, self._digest_data,
-                'invalid'.encode())
+                b'invalid')
             self.fail('Should have failed')
         except DigestSignatureError as e:
             self.assertEqual(('Digest file\ts3://b/k\tINVALID: signature '
@@ -413,21 +424,18 @@ class TestSha256RSADigestValidator(unittest.TestCase):
             'digestS3Bucket': 'b',
             'digestS3Object': 'c',
             'previousDigestSignature': None}
-        signed = validator._create_string_to_sign(digest_data, 'abc'.encode())
+        signed = validator._create_string_to_sign(digest_data, b'abc')
         self.assertEqual(
-            ('a\nb/c\nba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff6'
-             '1f20015ad\nnull').encode(), signed)
+            (b'a\nb/c\nba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff6'
+             b'1f20015ad\nnull'), signed)
 
 
 class TestDigestProvider(BaseAWSCommandParamsTest):
     def _fake_key(self, date):
         parsed = parser.parse(date)
-        return ('prefix/AWSLogs/{account}/CloudTrail-Digest/us-east-1/{year}/'
-                '{month}/{day}/{account}_CloudTrail-Digest_us-east-1_foo_'
-                'us-east-1_{date}.json.gz').format(date=date, year=parsed.year,
-                                                   month=parsed.month,
-                                                   account=TEST_ACCOUNT_ID,
-                                                   day=parsed.day)
+        return (f'prefix/AWSLogs/{TEST_ACCOUNT_ID}/CloudTrail-Digest/us-east-1/{parsed.year}/'
+                f'{parsed.month}/{parsed.day}/{TEST_ACCOUNT_ID}_CloudTrail-Digest_us-east-1_foo_'
+                f'us-east-1_{date}.json.gz')
 
     def _get_mock_provider(self, s3_client):
         mock_s3_client_provider = mock.Mock()
@@ -524,7 +532,7 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
     def test_ensures_digest_has_proper_metadata(self):
         out = BytesIO()
         f = gzip.GzipFile(fileobj=out, mode="wb")
-        f.write('{"foo":"bar"}'.encode())
+        f.write(b'{"foo":"bar"}')
         f.close()
         gzipped_data = out.getvalue()
         s3_client = mock.Mock()
@@ -538,7 +546,7 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
     def test_ensures_digest_can_be_gzip_inflated(self):
         s3_client = mock.Mock()
         s3_client.get_object.return_value = {
-            'Body': BytesIO('foo'.encode()),
+            'Body': BytesIO(b'foo'),
             'Metadata': {}}
         provider = self._get_mock_provider(s3_client)
         with self.assertRaises(InvalidDigestFormat):

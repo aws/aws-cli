@@ -13,8 +13,8 @@
 import logging
 import os
 
-from awscli.testutils import mock, FileCreator, BaseAWSCommandParamsTest
 from awscli.clidriver import create_clidriver
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
 
 logger = logging.getLogger(__name__)
 

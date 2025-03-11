@@ -15,22 +15,23 @@ import subprocess
 
 from botocore.session import Session
 
-from awscli.testutils import unittest
-from awscli.testutils import mock
-from awscli.testutils import FileCreator
-from awscli.alias import AliasSubCommandInjector, InvalidAliasException
-from awscli.alias import AliasLoader
-from awscli.alias import AliasCommandInjector
-from awscli.alias import BaseAliasCommand
-from awscli.alias import ServiceAliasCommand
-from awscli.alias import ExternalAliasCommand
-from awscli.alias import InternalAliasSubCommand
-from awscli.argparser import MainArgParser, ArgParseException
-from awscli.commands import CLICommand
+from awscli.alias import (
+    AliasCommandInjector,
+    AliasLoader,
+    AliasSubCommandInjector,
+    BaseAliasCommand,
+    ExternalAliasCommand,
+    InternalAliasSubCommand,
+    InvalidAliasException,
+    ServiceAliasCommand,
+)
+from awscli.argparser import ArgParseException, MainArgParser
 from awscli.clidriver import CLIDriver
+from awscli.commands import CLICommand
+from awscli.testutils import FileCreator, mock, unittest
 
 
-class FakeParsedArgs(object):
+class FakeParsedArgs:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 

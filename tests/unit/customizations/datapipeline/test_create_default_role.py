@@ -1,17 +1,15 @@
 import pytest
-
-import awscli.customizations.datapipeline.createdefaultroles \
-    as createdefaultroles
-from awscli.customizations.datapipeline.constants\
-    import DATAPIPELINE_DEFAULT_SERVICE_ROLE_NAME,\
-    DATAPIPELINE_DEFAULT_RESOURCE_ROLE_NAME,\
-    DATAPIPELINE_DEFAULT_SERVICE_ROLE_ASSUME_POLICY,\
-    DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ASSUME_POLICY
-
-from awscli.testutils import BaseAWSCommandParamsTest,\
-    mock, unittest
-from awscli.customizations.datapipeline.translator import dict_to_string
 from botocore.compat import json
+
+import awscli.customizations.datapipeline.createdefaultroles as createdefaultroles
+from awscli.customizations.datapipeline.constants import (
+    DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ASSUME_POLICY,
+    DATAPIPELINE_DEFAULT_RESOURCE_ROLE_NAME,
+    DATAPIPELINE_DEFAULT_SERVICE_ROLE_ASSUME_POLICY,
+    DATAPIPELINE_DEFAULT_SERVICE_ROLE_NAME,
+)
+from awscli.customizations.datapipeline.translator import dict_to_string
+from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 
 
 @pytest.mark.filterwarnings('ignore::UserWarning')

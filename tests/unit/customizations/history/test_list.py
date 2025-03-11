@@ -15,14 +15,15 @@ import datetime
 
 from botocore.session import Session
 
-from awscli.compat import StringIO
-from awscli.compat import ensure_text_type
-from awscli.utils import OutputStreamFactory
-from awscli.testutils import unittest, mock
-from awscli.customizations.history.list import ListCommand
-from awscli.customizations.history.list import RecordAdapter
-from awscli.customizations.history.list import TextFormatter
+from awscli.compat import StringIO, ensure_text_type
 from awscli.customizations.history.db import DatabaseRecordReader
+from awscli.customizations.history.list import (
+    ListCommand,
+    RecordAdapter,
+    TextFormatter,
+)
+from awscli.testutils import mock, unittest
+from awscli.utils import OutputStreamFactory
 
 
 class TestRecordAdapter(unittest.TestCase):

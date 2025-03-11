@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.testutils import \
-    BaseAWSCommandParamsTest, FileCreator
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 from awscli.utils import dump_yaml_to_str
 
 

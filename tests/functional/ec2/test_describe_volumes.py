@@ -13,8 +13,7 @@
 import json
 import shutil
 
-from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import FileCreator
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 
 class TestDescribeVolumes(BaseAWSCommandParamsTest):

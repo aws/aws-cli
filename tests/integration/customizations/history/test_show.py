@@ -13,7 +13,7 @@
 import os
 import re
 
-from awscli.testutils import aws, unittest, FileCreator
+from awscli.testutils import FileCreator, aws, unittest
 
 
 class TestShow(unittest.TestCase):

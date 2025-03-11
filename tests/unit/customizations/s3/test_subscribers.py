@@ -18,28 +18,35 @@ import tempfile
 
 from dateutil.tz import tzlocal
 from s3transfer.crt import CRTTransferFuture, CRTTransferMeta
-from s3transfer.futures import TransferMeta, TransferFuture
+from s3transfer.futures import TransferFuture, TransferMeta
 from s3transfer.manager import TransferConfig
 
-from awscli.testutils import unittest, mock
-from awscli.testutils import FileCreator
 from awscli.compat import queue
 from awscli.customizations.s3 import utils
 from awscli.customizations.s3.fileinfo import FileInfo
-from awscli.customizations.s3.subscribers import (
-    ProvideSizeSubscriber, OnDoneFilteredSubscriber,
-    ProvideUploadContentTypeSubscriber,
-    ProvideLastModifiedTimeSubscriber, DirectoryCreatorSubscriber,
-    DeleteSourceObjectSubscriber, DeleteSourceFileSubscriber,
-    DeleteCopySourceObjectSubscriber, CreateDirectoryError,
-    CopyPropsSubscriberFactory, ReplaceMetadataDirectiveSubscriber,
-    ReplaceTaggingDirectiveSubscriber, SetMetadataDirectivePropsSubscriber,
-    SetTagsSubscriber
-)
 from awscli.customizations.s3.results import WarningResult
-from tests.unit.customizations.s3 import FakeTransferFuture
-from tests.unit.customizations.s3 import FakeTransferFutureMeta
-from tests.unit.customizations.s3 import FakeTransferFutureCallArgs
+from awscli.customizations.s3.subscribers import (
+    CopyPropsSubscriberFactory,
+    CreateDirectoryError,
+    DeleteCopySourceObjectSubscriber,
+    DeleteSourceFileSubscriber,
+    DeleteSourceObjectSubscriber,
+    DirectoryCreatorSubscriber,
+    OnDoneFilteredSubscriber,
+    ProvideLastModifiedTimeSubscriber,
+    ProvideSizeSubscriber,
+    ProvideUploadContentTypeSubscriber,
+    ReplaceMetadataDirectiveSubscriber,
+    ReplaceTaggingDirectiveSubscriber,
+    SetMetadataDirectivePropsSubscriber,
+    SetTagsSubscriber,
+)
+from awscli.testutils import FileCreator, mock, unittest
+from tests.unit.customizations.s3 import (
+    FakeTransferFuture,
+    FakeTransferFutureCallArgs,
+    FakeTransferFutureMeta,
+)
 
 
 class TestProvideSizeSubscriber(unittest.TestCase):

@@ -10,19 +10,20 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock, BaseAWSCommandParamsTest, unittest
-from botocore.compat import json
 import botocore.session
-from awscli.customizations.dlm.iam import IAM
+from botocore.compat import json
 
-from awscli.customizations.dlm.constants \
-    import LIFECYCLE_DEFAULT_ROLE_NAME, \
-    LIFECYCLE_DEFAULT_ROLE_ASSUME_POLICY, \
-    LIFECYCLE_DEFAULT_ROLE_NAME_AMI, \
-    LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME, \
-    LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME_AMI, \
-    RESOURCE_TYPE_SNAPSHOT, \
-    RESOURCE_TYPE_IMAGE
+from awscli.customizations.dlm.constants import (
+    LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME,
+    LIFECYCLE_DEFAULT_MANAGED_POLICY_NAME_AMI,
+    LIFECYCLE_DEFAULT_ROLE_ASSUME_POLICY,
+    LIFECYCLE_DEFAULT_ROLE_NAME,
+    LIFECYCLE_DEFAULT_ROLE_NAME_AMI,
+    RESOURCE_TYPE_IMAGE,
+    RESOURCE_TYPE_SNAPSHOT,
+)
+from awscli.customizations.dlm.iam import IAM
+from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 
 
 class TestCreateDefaultRole(BaseAWSCommandParamsTest):

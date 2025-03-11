@@ -11,16 +11,18 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.testutils import unittest
 from awscli.customizations.ecs.exceptions import MissingPropertyError
-from awscli.customizations.ecs.filehelpers import (APP_PREFIX,
-                                                   DGP_PREFIX,
-                                                   find_required_key,
-                                                   get_app_name,
-                                                   get_cluster_name_from_arn,
-                                                   get_deploy_group_name,
-                                                   MAX_CHAR_LENGTH,
-                                                   parse_appspec)
+from awscli.customizations.ecs.filehelpers import (
+    APP_PREFIX,
+    DGP_PREFIX,
+    MAX_CHAR_LENGTH,
+    find_required_key,
+    get_app_name,
+    get_cluster_name_from_arn,
+    get_deploy_group_name,
+    parse_appspec,
+)
+from awscli.testutils import unittest
 
 
 class TestFilehelpers(unittest.TestCase):

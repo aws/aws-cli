@@ -11,8 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.clidriver import AWSCLIEntryPoint
-from awscli.testutils import create_clidriver
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    FileCreator,
+    create_clidriver,
+)
 
 
 class TestArgsResolution(BaseAWSCommandParamsTest):

@@ -10,16 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from botocore.compat import json
 from botocore.awsrequest import AWSResponse
+from botocore.compat import json
 from botocore.exceptions import ClientError
 
-import awscli.customizations.emr.emrutils as emrutils
 import awscli.customizations.emr.createdefaultroles as createdefaultroles
+import awscli.customizations.emr.emrutils as emrutils
 from awscli.testutils import mock, unittest
-from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
-    BaseAWSCommandParamsTest
-
+from tests.unit.customizations.emr import (
+    EMRBaseAWSCommandParamsTest as BaseAWSCommandParamsTest,
+)
 
 EC2_ROLE_NAME = "EMR_EC2_DefaultRole"
 EMR_ROLE_NAME = "EMR_DefaultRole"

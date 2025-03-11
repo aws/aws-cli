@@ -12,13 +12,18 @@
 # language governing permissions and limitations under the License.
 
 import sys
-
 from argparse import Namespace
-from awscli.customizations.codedeploy.systems import Ubuntu, Windows, RHEL, System
+from socket import timeout
+
+from awscli.customizations.codedeploy.systems import (
+    RHEL,
+    System,
+    Ubuntu,
+    Windows,
+)
 from awscli.customizations.codedeploy.uninstall import Uninstall
 from awscli.customizations.exceptions import ConfigurationError
 from awscli.testutils import mock, unittest
-from socket import timeout
 
 
 class TestUninstall(unittest.TestCase):

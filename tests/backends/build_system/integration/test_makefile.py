@@ -13,9 +13,10 @@
 import os
 
 from awscli.testutils import skip_if_windows
-from tests.backends.build_system.integration import BaseArtifactTest
-from tests.backends.build_system.integration import VEnvWorkspace
-
+from tests.backends.build_system.integration import (
+    BaseArtifactTest,
+    VEnvWorkspace,
+)
 
 WINDOWS_SKIP_REASON = "./configure tests do not run nativly on windows"
 
@@ -79,7 +80,7 @@ class TestMakeInstall(BaseArtifactTest):
         workspace.make(
             [
                 "install",
-                f"prefix=/install",
+                "prefix=/install",
             ],
             env={"DESTDIR": str(workspace.path)},
         )

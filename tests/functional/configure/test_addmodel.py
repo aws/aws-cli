@@ -39,7 +39,7 @@ class TestAddModel(BaseAWSCommandParamsTest):
             "metadata": {
                 "apiVersion": '2015-12-02',
                 "endpointPrefix": 'myservice',
-                "keyWithUnicode": u'\u2713'
+                "keyWithUnicode": '\u2713'
             },
             "operations": {},
             "shapes": {}

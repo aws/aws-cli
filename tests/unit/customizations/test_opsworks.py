@@ -18,8 +18,8 @@ import json
 from botocore.exceptions import ClientError
 
 from awscli.customizations import opsworks
-from awscli.testutils import mock, unittest
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.testutils import mock, unittest
 
 
 class TestOpsWorksBase(unittest.TestCase):

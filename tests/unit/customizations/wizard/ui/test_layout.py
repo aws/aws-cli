@@ -10,14 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, mock
-
-from prompt_toolkit.layout import walk
 from prompt_toolkit.application import DummyApplication
+from prompt_toolkit.layout import walk
 
 from awscli.customizations.wizard.ui.layout import (
-    RunWizardDialog, WizardErrorBar
+    RunWizardDialog,
+    WizardErrorBar,
 )
+from awscli.testutils import mock, unittest
 
 
 class TestRunWizardDialog(unittest.TestCase):

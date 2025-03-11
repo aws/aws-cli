@@ -12,14 +12,16 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.testutils import mock, unittest, FileCreator, skip_if_windows
-from awscli.customizations.arguments import NestedBlobArgumentHoister
-from awscli.customizations.arguments import OverrideRequiredArgsArgument
-from awscli.customizations.arguments import StatefulArgument
-from awscli.customizations.arguments import QueryOutFileArgument
-from awscli.customizations.arguments import resolve_given_outfile_path
-from awscli.customizations.arguments import is_parsed_result_successful
+from awscli.customizations.arguments import (
+    NestedBlobArgumentHoister,
+    OverrideRequiredArgsArgument,
+    QueryOutFileArgument,
+    StatefulArgument,
+    is_parsed_result_successful,
+    resolve_given_outfile_path,
+)
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
 
 
 class TestOverrideRequiredArgsArgument(unittest.TestCase):

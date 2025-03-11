@@ -10,19 +10,24 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import time
-import signal
 import os
-import tempfile
 import random
 import re
 import shutil
+import signal
+import tempfile
+import time
 
 import botocore.session
-from awscli.testutils import unittest, aws, BaseS3CLICommand
-from awscli.testutils import temporary_file
-from awscli.testutils import skip_if_windows
+
 from awscli.clidriver import create_clidriver
+from awscli.testutils import (
+    BaseS3CLICommand,
+    aws,
+    skip_if_windows,
+    temporary_file,
+    unittest,
+)
 
 
 class TestBasicCommandFunctionality(unittest.TestCase):
@@ -293,7 +298,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         base_env_vars['AWS_EXECUTION_ENV'] = 'an_execution_env'
         p = aws('--version', env_vars=base_env_vars)
         version_output = p.stdout
-        self.assertTrue(f' exec-env/an_execution_env' in version_output)
+        self.assertTrue(' exec-env/an_execution_env' in version_output)
 
     def test_traceback_printed_when_debug_on(self):
         p = aws('ec2 describe-instances --filters BADKEY=foo --debug')

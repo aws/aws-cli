@@ -15,8 +15,12 @@ import uuid
 from botocore.history import HistoryRecorder
 
 from awscli.clidriver import AWSCLIEntryPoint
-from awscli.testutils import mock, create_clidriver, FileCreator
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    FileCreator,
+    create_clidriver,
+    mock,
+)
 
 
 class BaseHistoryCommandParamsTest(BaseAWSCommandParamsTest):

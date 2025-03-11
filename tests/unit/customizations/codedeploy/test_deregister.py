@@ -12,9 +12,12 @@
 # language governing permissions and limitations under the License.
 
 from argparse import Namespace
+
 from awscli.customizations.codedeploy.deregister import Deregister
-from awscli.customizations.exceptions import ConfigurationError
-from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
 from awscli.testutils import mock, unittest
 
 
@@ -22,9 +25,7 @@ class TestDeregister(unittest.TestCase):
     def setUp(self):
         self.instance_name = 'instance-name'
         self.tags = [{'Key': 'k1', 'Value': 'v1'}]
-        self.iam_user_arn = 'arn:aws:iam::012345678912:user/{0}'.format(
-            self.instance_name
-        )
+        self.iam_user_arn = f'arn:aws:iam::012345678912:user/{self.instance_name}'
         self.access_key_id = 'ACCESSKEYID'
         self.region = 'us-east-1'
         self.policy_name = 'codedeploy-agent'

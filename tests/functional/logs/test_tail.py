@@ -14,7 +14,7 @@ from datetime import datetime
 
 from dateutil import tz
 
-from awscli.testutils import mock, BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest, mock
 
 
 class TestTailCommand(BaseAWSCommandParamsTest):

@@ -12,18 +12,18 @@
 # language governing permissions and limitations under the License.
 
 import copy
-import os
 import json
+import os
 
-from awscli.customizations.emr.emrfsutils import CONSISTENT_OPTION_NAME
-from awscli.customizations.emr.emrfsutils import CSE_CUSTOM_OPTION_NAME
-from awscli.customizations.emr.emrfsutils import CSE_KMS_OPTION_NAME
-from awscli.customizations.emr.emrfsutils import CSE_OPTION_NAME
-
-
-from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
-    BaseAWSCommandParamsTest
-
+from awscli.customizations.emr.emrfsutils import (
+    CONSISTENT_OPTION_NAME,
+    CSE_CUSTOM_OPTION_NAME,
+    CSE_KMS_OPTION_NAME,
+    CSE_OPTION_NAME,
+)
+from tests.unit.customizations.emr import (
+    EMRBaseAWSCommandParamsTest as BaseAWSCommandParamsTest,
+)
 
 DEFAULT_INSTANCES = {
     'KeepJobFlowAliveWhenNoSteps': True,

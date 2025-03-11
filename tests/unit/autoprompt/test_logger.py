@@ -11,12 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import contextlib
-import logging
 import io
+import logging
 
 from prompt_toolkit.buffer import Buffer
-from awscli.autoprompt.logger import PromptToolkitHandler
 
+from awscli.autoprompt.logger import PromptToolkitHandler
 from awscli.testutils import mock, unittest
 
 

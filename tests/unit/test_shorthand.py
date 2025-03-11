@@ -10,16 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import signal
 from unittest.mock import patch
 
 import pytest
-import signal
+from botocore import model
 
 import awscli.paramfile
 from awscli import shorthand
 from awscli.testutils import skip_if_windows, unittest
-
-from botocore import model
 
 PARSING_TEST_CASES = (
     # Key val pairs with scalar value.
@@ -31,8 +30,8 @@ PARSING_TEST_CASES = (
     ('foo=', {'foo': ''}),
     ('foo=,bar=', {'foo': '', 'bar': ''}),
     # Unicode is allowed.
-    (u'foo=\u2713', {'foo': u'\u2713'}),
-    (u'foo=\u2713,\u2713', {'foo': [u'\u2713', u'\u2713']}),
+    ('foo=\u2713', {'foo': '\u2713'}),
+    ('foo=\u2713,\u2713', {'foo': ['\u2713', '\u2713']}),
     # Key val pairs with csv values.
     ('foo=a,b', {'foo': ['a', 'b']}),
     ('foo=a,b,c', {'foo': ['a', 'b', 'c']}),
@@ -134,7 +133,7 @@ PARSING_TEST_CASES = (
     ('foo@=bar', {'foo': 'bar'}),
     ('foo@=bar,baz@=qux', {'foo': 'bar', 'baz': 'qux'}),
     ('foo@=,bar@=', {'foo': '', 'bar': ''}),
-    (u'foo@=\u2713,\u2713', {'foo': [u'\u2713', u'\u2713']}),
+    ('foo@=\u2713,\u2713', {'foo': ['\u2713', '\u2713']}),
     ('foo@=a,b,bar=c,d', {'foo': ['a', 'b'], 'bar': ['c', 'd']}),
     ('foo=a,b@=with space', {'foo': 'a', 'b': 'with space'}),
     ('foo=a,b@=with trailing space  ', {'foo': 'a', 'b': 'with trailing space'}),
@@ -177,9 +176,9 @@ def test_error_parsing(expr):
 @pytest.mark.parametrize(
     "expr", (
         # starting with " but unclosed, then repeated \
-        f'foo="' + '\\' * 100,
+        'foo="' + '\\' * 100,
         # starting with ' but unclosed, then repeated \
-        f'foo=\'' + '\\' * 100,
+        'foo=\'' + '\\' * 100,
     )
 )
 @skip_if_windows("Windows does not support signal.SIGALRM.")
@@ -226,7 +225,7 @@ class TestShorthandParserParamFile:
         f2_contents = 'contents2'
         mock_compat_open.return_value.__enter__.return_value.read.side_effect = [f1_contents, f2_contents]
         result = shorthand.ShorthandParser().parse(
-            f'Foo@=[a, file://foo1, file://foo2]'
+            'Foo@=[a, file://foo1, file://foo2]'
         )
         assert result == {'Foo': ['a', f1_contents, f2_contents]}
 

@@ -13,11 +13,16 @@
 import errno
 import json
 
-from awscli.clidriver import AWSCLIEntryPoint
-from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import BaseAWSHelpOutputTest
-from awscli.testutils import create_clidriver, mock, temporary_file
 from botocore.exceptions import ProfileNotFound
+
+from awscli.clidriver import AWSCLIEntryPoint
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    BaseAWSHelpOutputTest,
+    create_clidriver,
+    mock,
+    temporary_file,
+)
 
 
 class TestSessionManager(BaseAWSCommandParamsTest):

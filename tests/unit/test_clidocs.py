@@ -12,17 +12,32 @@
 # language governing permissions and limitations under the License.
 import json
 
-from botocore.model import ShapeResolver, StructureShape, StringShape, \
-    ListShape, MapShape, Shape, DenormalizedStructureBuilder
+from botocore.model import (
+    DenormalizedStructureBuilder,
+    ListShape,
+    MapShape,
+    Shape,
+    ShapeResolver,
+    StringShape,
+    StructureShape,
+)
 
-from awscli.testutils import mock, unittest, FileCreator
-from awscli.clidocs import OperationDocumentEventHandler, \
-    CLIDocumentEventHandler, TopicListerDocumentEventHandler, \
-    TopicDocumentEventHandler, GlobalOptionsDocumenter
-from awscli.bcdoc.restdoc import ReSTDocument
-from awscli.help import ServiceHelpCommand, TopicListerCommand, \
-    TopicHelpCommand, HelpCommand
 from awscli.arguments import CustomArgument
+from awscli.bcdoc.restdoc import ReSTDocument
+from awscli.clidocs import (
+    CLIDocumentEventHandler,
+    GlobalOptionsDocumenter,
+    OperationDocumentEventHandler,
+    TopicDocumentEventHandler,
+    TopicListerDocumentEventHandler,
+)
+from awscli.help import (
+    HelpCommand,
+    ServiceHelpCommand,
+    TopicHelpCommand,
+    TopicListerCommand,
+)
+from awscli.testutils import FileCreator, mock, unittest
 
 
 class TestRecursiveShapes(unittest.TestCase):

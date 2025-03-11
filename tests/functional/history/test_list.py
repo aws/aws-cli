@@ -12,9 +12,8 @@
 # language governing permissions and limitations under the License.
 from awscli.clidriver import AWSCLIEntryPoint
 from awscli.compat import ensure_text_type
-
-from tests.functional.history import BaseHistoryCommandParamsTest
 from awscli.testutils import create_clidriver
+from tests.functional.history import BaseHistoryCommandParamsTest
 
 
 class TestListCommand(BaseHistoryCommandParamsTest):

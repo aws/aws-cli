@@ -13,10 +13,10 @@
 from botocore.session import Session
 
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.wizard.app import WizardAppRunner
 from awscli.customizations.wizard.commands import TopLevelWizardCommand
 from awscli.customizations.wizard.core import Runner
 from awscli.customizations.wizard.loader import WizardLoader
-from awscli.customizations.wizard.app import WizardAppRunner
 from awscli.testutils import mock, unittest
 
 

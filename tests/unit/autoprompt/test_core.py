@@ -14,8 +14,8 @@ from collections import namedtuple
 
 import pytest
 
-from awscli.clidriver import create_clidriver
 from awscli.autoprompt import core
+from awscli.clidriver import create_clidriver
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import mock, unittest
 

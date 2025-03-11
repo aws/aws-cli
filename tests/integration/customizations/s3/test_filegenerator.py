@@ -17,15 +17,15 @@
 # variables to communicate with s3 as these are integration tests.  Therefore,
 # only tests that use sessions are included as integration tests.
 
-import os
 import itertools
+import os
 
+import botocore.session
 import pytest
 
 from awscli.customizations.s3.filegenerator import FileGenerator, FileStat
-import botocore.session
-from tests.unit.customizations.s3 import compare_files
 from tests.integration.customizations.s3 import BaseS3IntegrationTest
+from tests.unit.customizations.s3 import compare_files
 
 
 @pytest.fixture(scope='module')

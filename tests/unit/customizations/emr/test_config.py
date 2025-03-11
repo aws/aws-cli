@@ -1,14 +1,11 @@
 
 from awscli.customizations.emr.createcluster import CreateCluster
 from awscli.customizations.emr.exceptions import InvalidBooleanConfigError
-from awscli.customizations.emr.ssh import Get
-from awscli.customizations.emr.ssh import Put
-from awscli.customizations.emr.ssh import SSH
-from awscli.customizations.emr.ssh import Socks
-from awscli.testutils import mock, BaseAWSHelpOutputTest
-from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
-    BaseAWSCommandParamsTest
-
+from awscli.customizations.emr.ssh import SSH, Get, Put, Socks
+from awscli.testutils import BaseAWSHelpOutputTest, mock
+from tests.unit.customizations.emr import (
+    EMRBaseAWSCommandParamsTest as BaseAWSCommandParamsTest,
+)
 
 INSTANCE_GROUPS_ARG = (
     'InstanceGroupType=MASTER,Name=MASTER,'

@@ -11,8 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from awscli.testutils import unittest
 from awscli.customizations.emrcontainers.base36 import Base36
+from awscli.testutils import unittest
+
 
 class TestBase36(unittest.TestCase):
     base36 = Base36()

@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest
 
-
 CHANGEBATCH_JSON = ('{"Comment":"string","Changes":['
                     '{"Action":"CREATE","ResourceRecordSet":{'
                     '"Name":"test-foo.bar.com",'

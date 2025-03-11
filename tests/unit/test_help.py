@@ -10,20 +10,26 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock, unittest, skip_if_windows, FileCreator
-import signal
 import json
-import sys
 import os
+import signal
+import sys
 
-from awscli.help import PosixHelpRenderer, ExecutableNotFoundError
-from awscli.help import WindowsHelpRenderer, ProviderHelpCommand, HelpCommand
-from awscli.help import TopicListerCommand, TopicHelpCommand
 from awscli.argparser import HELP_BLURB, ArgParseException
 from awscli.compat import StringIO
+from awscli.help import (
+    ExecutableNotFoundError,
+    HelpCommand,
+    PosixHelpRenderer,
+    ProviderHelpCommand,
+    TopicHelpCommand,
+    TopicListerCommand,
+    WindowsHelpRenderer,
+)
+from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
 
 
-class HelpSpyMixin(object):
+class HelpSpyMixin:
     def __init__(self):
         self.exists_on_path = {}
         self.popen_calls = []

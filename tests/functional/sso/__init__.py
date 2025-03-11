@@ -14,11 +14,13 @@ import time
 import uuid
 
 from awscli.clidriver import AWSCLIEntryPoint
-from awscli.customizations.sso.utils import OpenBrowserHandler, AuthCodeFetcher
-from awscli.testutils import create_clidriver
-from awscli.testutils import FileCreator
-from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import mock
+from awscli.customizations.sso.utils import AuthCodeFetcher, OpenBrowserHandler
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    FileCreator,
+    create_clidriver,
+    mock,
+)
 
 
 class BaseSSOTest(BaseAWSCommandParamsTest):

@@ -13,10 +13,14 @@
 import datetime
 
 from botocore.compat import urlsplit
-from awscli.clidriver import AWSCLIEntryPoint
-from awscli.testutils import BaseAWSCommandParamsTest, mock, temporary_file
-from awscli.testutils import create_clidriver
 
+from awscli.clidriver import AWSCLIEntryPoint
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    create_clidriver,
+    mock,
+    temporary_file,
+)
 
 # Values used to fix time.time() and datetime.datetime.utcnow()
 # so we know the exact values of the signatures generated.
@@ -143,7 +147,7 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
                         'access_key%2F20160818%2Fus-east-1'
                         '%2Fs3%2Faws4_request'),
                     'X-Amz-Date': '20160818T143303Z',
-                    'X-Amz-Expires': '{}'.format(expires_in),
+                    'X-Amz-Expires': f'{expires_in}',
                     'X-Amz-Signature': (
                         '865fb61b021c3bf406c40d41353f584835fff1f158cf1b'
                         '3e6ec06260ecbb8937'),

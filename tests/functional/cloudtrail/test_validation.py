@@ -13,14 +13,26 @@
 import gzip
 
 from botocore.exceptions import ClientError
-from tests.unit.customizations.cloudtrail.test_validation import \
-    create_scenario, TEST_TRAIL_ARN, START_DATE, END_DATE, VALID_TEST_KEY, \
-    DigestProvider, MockDigestProvider, TEST_ACCOUNT_ID
-from awscli.testutils import mock, BaseAWSCommandParamsTest
-from awscli.customizations.cloudtrail.validation import DigestTraverser, \
-    DATE_FORMAT, format_display_date, S3ClientProvider
-from awscli.compat import BytesIO
 from botocore.handlers import parse_get_bucket_location
+
+from awscli.compat import BytesIO
+from awscli.customizations.cloudtrail.validation import (
+    DATE_FORMAT,
+    DigestTraverser,
+    S3ClientProvider,
+    format_display_date,
+)
+from awscli.testutils import BaseAWSCommandParamsTest, mock
+from tests.unit.customizations.cloudtrail.test_validation import (
+    END_DATE,
+    START_DATE,
+    TEST_ACCOUNT_ID,
+    TEST_TRAIL_ARN,
+    VALID_TEST_KEY,
+    DigestProvider,
+    MockDigestProvider,
+    create_scenario,
+)
 
 RETRIEVER_FUNCTION = 'awscli.customizations.cloudtrail.validation.create_digest_traverser'
 START_TIME_ARG = START_DATE.strftime(DATE_FORMAT)

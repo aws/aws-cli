@@ -1,20 +1,19 @@
 import copy
 import os
 import platform
+import re
 import subprocess
 import time
-import re
-
 from configparser import RawConfigParser
 from io import StringIO
 from urllib.parse import urlsplit
 
 from botocore.utils import parse_timestamp
 
-from tests import CLIRunner, AWSRequest, AWSResponse
-from awscli.testutils import unittest, FileCreator, mock
 from awscli.compat import urlparse
 from awscli.customizations.codeartifact.login import CodeArtifactLogin
+from awscli.testutils import FileCreator, mock, unittest
+from tests import AWSRequest, AWSResponse, CLIRunner
 
 
 class TestCodeArtifactLogin(unittest.TestCase):
@@ -77,13 +76,8 @@ class TestCodeArtifactLogin(unittest.TestCase):
                    include_duration_seconds=False,
                    include_namespace=False):
         package_format = CodeArtifactLogin.TOOL_MAP[tool]['package_format']
-        self.endpoint = 'https://{domain}-{domainOwner}.codeartifact.aws.' \
-            'a2z.com/{format}/{repository}/'.format(
-                domain=self.domain,
-                domainOwner=self.domain_owner,
-                format=package_format,
-                repository=self.repository
-            )
+        self.endpoint = f'https://{self.domain}-{self.domain_owner}.codeartifact.aws.' \
+            f'a2z.com/{package_format}/{self.repository}/'
 
         cmdline = copy.copy(self.prefix)
         cmdline.extend([
@@ -183,15 +177,11 @@ class TestCodeArtifactLogin(unittest.TestCase):
             if platform.system().lower() == 'windows' else 'npm'
 
         repo_uri = urlsplit(self.endpoint)
-        always_auth_config = '//{}{}:always-auth'.format(
-            repo_uri.netloc, repo_uri.path
-        )
-        auth_token_config = '//{}{}:_authToken'.format(
-            repo_uri.netloc, repo_uri.path
-        )
+        always_auth_config = f'//{repo_uri.netloc}{repo_uri.path}:always-auth'
+        auth_token_config = f'//{repo_uri.netloc}{repo_uri.path}:_authToken'
 
         scope = kwargs.get('scope')
-        registry = '{}:registry'.format(scope) if scope else 'registry'
+        registry = f'{scope}:registry' if scope else 'registry'
 
         commands = []
         commands.append(
@@ -374,7 +364,7 @@ password: {auth_token}'''
             self.assertEqual(pypi_rc.get(server, 'password'), password)
 
     def _assert_netrc_has_expected_content(self):
-        with open(self.test_netrc_path, 'r') as f:
+        with open(self.test_netrc_path) as f:
             actual_contents = f.read()
 
         hostname = urlparse.urlparse(self.endpoint).hostname
@@ -1002,7 +992,7 @@ to an 'HTTPS' source."""
         self._assert_operations_called(package_format='npm', result=result)
         self._assert_expiration_printed_to_stdout(result.stdout)
         self._assert_subprocess_execution(
-            self._get_npm_commands(scope='@{}'.format(self.namespace))
+            self._get_npm_commands(scope=f'@{self.namespace}')
         )
 
     def test_npm_login_with_namespace_dry_run(self):
@@ -1013,7 +1003,7 @@ to an 'HTTPS' source."""
         self.assertEqual(result.rc, 0)
         self._assert_operations_called(package_format='npm', result=result)
         self._assert_dry_run_execution(
-            self._get_npm_commands(scope='@{}'.format(self.namespace)),
+            self._get_npm_commands(scope=f'@{self.namespace}'),
             result.stdout
         )
 
@@ -1025,7 +1015,7 @@ to an 'HTTPS' source."""
         self.assertEqual(result.rc, 0)
         self._assert_operations_called(package_format='npm', result=result, include_endpoint_type=True)
         self._assert_dry_run_execution(
-            self._get_npm_commands(scope='@{}'.format(self.namespace)),
+            self._get_npm_commands(scope=f'@{self.namespace}'),
             result.stdout
         )
 

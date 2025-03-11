@@ -10,11 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest
 from copy import deepcopy
-from awscli.autocomplete.autogen import ServerCompletionHeuristic
+
 from botocore.model import ServiceModel
 
+from awscli.autocomplete.autogen import ServerCompletionHeuristic
+from awscli.testutils import unittest
 
 # To make these tests more realistic, a stripped down version of the ACM
 # service is included as part of these tests.  There are a few extra

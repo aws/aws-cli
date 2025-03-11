@@ -11,12 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import tempfile
 import shutil
+import tempfile
 
 from awscli.compat import ensure_text_type
 from awscli.customizations.wizard import ui
-from awscli.testutils import unittest, mock, cd
+from awscli.testutils import cd, mock, unittest
 
 
 class TestFileCompleter(unittest.TestCase):
@@ -44,7 +44,7 @@ class TestFileCompleter(unittest.TestCase):
         self.touch_file('bar.txt')
         self.touch_file('baz.txt')
 
-        completions = self.get_completions_given_user_input(u'./b')
+        completions = self.get_completions_given_user_input('./b')
         self.assertEqual(
             [c.text for c in completions], [os.path.join('.', 'bar.txt'),
                                             os.path.join('.', 'baz.txt')])
@@ -53,7 +53,7 @@ class TestFileCompleter(unittest.TestCase):
         self.touch_file('foo.txt')
 
         completions = self.get_completions_given_user_input(
-            self.temporary_directory + u'/'
+            self.temporary_directory + '/'
         )
         self.assertEqual(
             [c.text for c in completions],
@@ -62,6 +62,6 @@ class TestFileCompleter(unittest.TestCase):
 
     def test_file_not_exists_returns_empy_list(self):
         completions = self.get_completions_given_user_input(
-            self.temporary_directory + u'/asdf/does-not-exist'
+            self.temporary_directory + '/asdf/does-not-exist'
         )
         self.assertEqual(completions, [])

@@ -11,8 +11,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest
 import re
+
+from awscli.testutils import BaseAWSCommandParamsTest
 
 
 class TestWebsiteCommand(BaseAWSCommandParamsTest):
@@ -24,7 +25,7 @@ class TestWebsiteCommand(BaseAWSCommandParamsTest):
         result = {
             'WebsiteConfiguration':
                 {'IndexDocument': {'Suffix': 'index.html'}},
-                 'Bucket': u'mybucket'}
+                 'Bucket': 'mybucket'}
 
         self.assert_params_for_cmd(cmdline, result)
 
@@ -32,7 +33,7 @@ class TestWebsiteCommand(BaseAWSCommandParamsTest):
         cmdline = self.prefix + 's3://mybucket --error-document mykey'
         result = {
             'WebsiteConfiguration': {
-                'ErrorDocument': {'Key': 'mykey'}}, 'Bucket': u'mybucket'}
+                'ErrorDocument': {'Key': 'mykey'}}, 'Bucket': 'mybucket'}
         self.assert_params_for_cmd(cmdline, result)
 
 

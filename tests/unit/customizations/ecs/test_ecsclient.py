@@ -12,9 +12,11 @@
 # language governing permissions and limitations under the License.
 
 from argparse import Namespace
+
 from botocore import config
-from awscli.testutils import capture_output, mock, unittest
+
 from awscli.customizations.ecs.deploy import ECSClient, ECSDeploy
+from awscli.testutils import capture_output, mock, unittest
 
 
 class TestECSClient(unittest.TestCase):

@@ -10,16 +10,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
 import os
 import shutil
 import tempfile
-import json
 import time
 
-from botocore.session import Session
 from botocore.exceptions import ClientError
+from botocore.session import Session
 
-from awscli.testutils import unittest, aws, random_chars
+from awscli.testutils import aws, random_chars, unittest
 
 S3_READ_POLICY_ARN = 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
 

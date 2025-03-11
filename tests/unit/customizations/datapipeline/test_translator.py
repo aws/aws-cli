@@ -10,14 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.customizations.datapipeline.translator \
-    import PipelineDefinitionError
-from awscli.testutils import unittest
-
 from botocore.compat import OrderedDict, json
 
 from awscli.customizations.datapipeline import translator
-
+from awscli.customizations.datapipeline.translator import (
+    PipelineDefinitionError,
+)
+from awscli.testutils import unittest
 
 # Thoughout these tests, 'df' refers to the condensed JSON definition format
 # that the user provides and API refers to the format expected by the API.

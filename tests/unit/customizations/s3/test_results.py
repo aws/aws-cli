@@ -10,35 +10,36 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from s3transfer.exceptions import CancelledError
-from s3transfer.exceptions import FatalError
+from s3transfer.exceptions import CancelledError, FatalError
 
-from awscli.testutils import unittest
-from awscli.testutils import mock
-from awscli.compat import queue
-from awscli.compat import StringIO
-from awscli.customizations.s3.results import ShutdownThreadRequest
-from awscli.customizations.s3.results import QueuedResult
-from awscli.customizations.s3.results import ProgressResult
-from awscli.customizations.s3.results import SuccessResult
-from awscli.customizations.s3.results import FailureResult
-from awscli.customizations.s3.results import ErrorResult
-from awscli.customizations.s3.results import CtrlCResult
-from awscli.customizations.s3.results import DryRunResult
-from awscli.customizations.s3.results import FinalTotalSubmissionsResult
-from awscli.customizations.s3.results import QueuedResultSubscriber
-from awscli.customizations.s3.results import ProgressResultSubscriber
-from awscli.customizations.s3.results import DoneResultSubscriber
-from awscli.customizations.s3.results import ResultRecorder
-from awscli.customizations.s3.results import ResultPrinter
-from awscli.customizations.s3.results import OnlyShowErrorsResultPrinter
-from awscli.customizations.s3.results import NoProgressResultPrinter
-from awscli.customizations.s3.results import ResultProcessor
-from awscli.customizations.s3.results import CommandResultRecorder
+from awscli.compat import StringIO, queue
+from awscli.customizations.s3.results import (
+    CommandResultRecorder,
+    CtrlCResult,
+    DoneResultSubscriber,
+    DryRunResult,
+    ErrorResult,
+    FailureResult,
+    FinalTotalSubmissionsResult,
+    NoProgressResultPrinter,
+    OnlyShowErrorsResultPrinter,
+    ProgressResult,
+    ProgressResultSubscriber,
+    QueuedResult,
+    QueuedResultSubscriber,
+    ResultPrinter,
+    ResultProcessor,
+    ResultRecorder,
+    ShutdownThreadRequest,
+    SuccessResult,
+)
 from awscli.customizations.s3.utils import WarningResult
-from tests.unit.customizations.s3 import FakeTransferFuture
-from tests.unit.customizations.s3 import FakeTransferFutureMeta
-from tests.unit.customizations.s3 import FakeTransferFutureCallArgs
+from awscli.testutils import mock, unittest
+from tests.unit.customizations.s3 import (
+    FakeTransferFuture,
+    FakeTransferFutureCallArgs,
+    FakeTransferFutureMeta,
+)
 
 
 class TestResultSubscribers(unittest.TestCase):
@@ -649,7 +650,7 @@ class ResultRecorderTest(unittest.TestCase):
         self.assertEqual(self.result_recorder.files_transferred, 0)
 
     def test_result_with_unicode(self):
-        unicode_source = u'\u2713'
+        unicode_source = '\u2713'
         self.result_recorder(
             QueuedResult(
                 transfer_type=self.transfer_type, src=unicode_source,
@@ -663,7 +664,7 @@ class ResultRecorderTest(unittest.TestCase):
         self.assertEqual(self.result_recorder.expected_files_transferred, 1)
 
     def test_result_with_encoded_unicode(self):
-        unicode_source = u'\u2713'.encode('utf-8')
+        unicode_source = '\u2713'.encode()
         self.result_recorder(
             QueuedResult(
                 transfer_type=self.transfer_type, src=unicode_source,
@@ -1304,11 +1305,11 @@ class TestResultPrinter(BaseResultPrinterTest):
 
         result = SuccessResult(
             transfer_type='upload',
-            src=u'/tmp/\u2713',
+            src='/tmp/\u2713',
             dest='s3://mybucket/mykey'
         )
         self.result_printer(result)
-        expected = u'upload: /tmp/\u2713 to s3://mybucket/mykey\n'
+        expected = 'upload: /tmp/\u2713 to s3://mybucket/mykey\n'
         self.assertEqual(self.out_file.getvalue(), expected)
 
     def test_print_unicode_success_src(self):
@@ -1320,26 +1321,26 @@ class TestResultPrinter(BaseResultPrinterTest):
 
         result = SuccessResult(
             transfer_type='delete',
-            src=u's3://mybucket/tmp/\u2713',
+            src='s3://mybucket/tmp/\u2713',
             dest=None
         )
         self.result_printer(result)
-        expected = u'delete: s3://mybucket/tmp/\u2713\n'
+        expected = 'delete: s3://mybucket/tmp/\u2713\n'
         self.assertEqual(self.out_file.getvalue(), expected)
 
     def test_print_unicode_dryrun(self):
         result = DryRunResult(
             transfer_type='upload',
-            src=u's3://mybucket/\u2713',
+            src='s3://mybucket/\u2713',
             dest='./local/file'
         )
         self.result_printer(result)
-        expected = u'(dryrun) upload: s3://mybucket/\u2713 to ./local/file\n'
+        expected = '(dryrun) upload: s3://mybucket/\u2713 to ./local/file\n'
         self.assertEqual(self.out_file.getvalue(), expected)
 
     def test_print_unicode_failure(self):
         transfer_type = 'upload'
-        src = u'\u2713'
+        src = '\u2713'
         dest = 's3://mybucket/mykey'
 
         # Pretend that this is the final result in the result queue that
@@ -1355,7 +1356,7 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_printer(failure_result)
 
         ref_failure_statement = (
-            u'upload failed: \u2713 to s3://mybucket/mykey my exception\n'
+            'upload failed: \u2713 to s3://mybucket/mykey my exception\n'
         )
         self.assertEqual(self.error_file.getvalue(), ref_failure_statement)
         self.assertEqual(self.out_file.getvalue(), '')
@@ -1367,8 +1368,8 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_recorder.expected_files_transferred = 1
         self.result_recorder.files_transferred = 1
 
-        self.result_printer(WarningResult(u'warning: unicode exists \u2713'))
-        ref_warning_statement = u'warning: unicode exists \u2713\n'
+        self.result_printer(WarningResult('warning: unicode exists \u2713'))
+        ref_warning_statement = 'warning: unicode exists \u2713\n'
         self.assertEqual(self.error_file.getvalue(), ref_warning_statement)
         self.assertEqual(self.out_file.getvalue(), '')
 

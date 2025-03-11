@@ -14,10 +14,12 @@ import pprint
 
 from botocore.compat import OrderedDict
 
+from awscli.schema import (
+    ParameterRequiredError,
+    SchemaTransformer,
+    ShapeNameGenerator,
+)
 from awscli.testutils import unittest
-from awscli.schema import ParameterRequiredError, SchemaTransformer
-from awscli.schema import ShapeNameGenerator
-
 
 MISSING_TYPE = {
     "type": "object",

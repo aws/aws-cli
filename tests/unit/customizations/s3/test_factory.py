@@ -10,23 +10,23 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, mock, FileCreator
-
 import awscrt.s3
+import pytest
+import s3transfer.crt
 from awscrt.s3 import S3RequestTlsMode
-from botocore.session import Session
 from botocore.config import Config
 from botocore.credentials import Credentials
 from botocore.httpsession import DEFAULT_CA_BUNDLE
-from s3transfer.manager import TransferManager
-import s3transfer.crt
+from botocore.session import Session
 from s3transfer.crt import CRTTransferManager
-import pytest
+from s3transfer.manager import TransferManager
 
 from awscli.customizations.s3.factory import (
-    ClientFactory, TransferManagerFactory
+    ClientFactory,
+    TransferManagerFactory,
 )
 from awscli.customizations.s3.transferconfig import RuntimeConfig
+from awscli.testutils import FileCreator, mock, unittest
 
 
 @pytest.fixture

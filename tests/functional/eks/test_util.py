@@ -15,7 +15,6 @@
 
 import os
 
-
 EXAMPLE_NAME = "ExampleCluster"
 
 def get_testdata(file_name):

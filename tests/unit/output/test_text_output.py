@@ -11,16 +11,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import mock, unittest
-from awscli.compat import StringIO
 import json
-import os
-import sys
-import re
 import locale
+import os
+import re
+import sys
 
+from awscli.compat import StringIO
 from awscli.formatter import Formatter
+from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 
 
 class TestListUsers(BaseAWSCommandParamsTest):

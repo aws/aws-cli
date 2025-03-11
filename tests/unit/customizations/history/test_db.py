@@ -10,25 +10,27 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import datetime
+import json
+import numbers
 import os
 import re
-import json
 import threading
-import datetime
-import numbers
 
 from awscli.compat import queue
-from awscli.customizations.history.db import DatabaseConnection
-from awscli.customizations.history.db import DatabaseHistoryHandler
-from awscli.customizations.history.db import DatabaseRecordWriter
-from awscli.customizations.history.db import DatabaseRecordReader
-from awscli.customizations.history.db import PayloadSerializer
-from awscli.customizations.history.db import RecordBuilder
-from awscli.testutils import mock, unittest, FileCreator
+from awscli.customizations.history.db import (
+    DatabaseConnection,
+    DatabaseHistoryHandler,
+    DatabaseRecordReader,
+    DatabaseRecordWriter,
+    PayloadSerializer,
+    RecordBuilder,
+)
+from awscli.testutils import FileCreator, mock, unittest
 from tests import CaseInsensitiveDict
 
 
-class FakeDatabaseConnection(object):
+class FakeDatabaseConnection:
     def __init__(self):
         self.execute = mock.MagicMock()
         self.closed = False
@@ -404,7 +406,7 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
         )
 
 
-class ThreadedRecordBuilder(object):
+class ThreadedRecordBuilder:
     def __init__(self, tracker):
         self._read_q = queue.Queue()
         self._write_q = queue.Queue()

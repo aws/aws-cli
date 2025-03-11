@@ -14,8 +14,7 @@ import os
 import zipfile
 from contextlib import closing
 
-from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import FileCreator
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 
 class BaseLambdaTests(BaseAWSCommandParamsTest):

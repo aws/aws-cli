@@ -20,10 +20,9 @@
 # IN THE SOFTWARE.
 import unittest
 
-from awscli.testutils import mock
-
 import awscli.bcdoc.docstringparser as parser
 from awscli.bcdoc.restdoc import ReSTDocument
+from awscli.testutils import mock
 
 
 class TestDocStringParser(unittest.TestCase):

@@ -11,13 +11,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import copy
 import os
 import re
-import copy
-
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 import awscli.clidriver
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 # file is gone in python3, so instead IOBase must be used.
 # Given this test module is the only place that cares about

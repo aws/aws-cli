@@ -12,13 +12,14 @@
 # language governing permissions and limitations under the License.
 import logging
 
-from prompt_toolkit.completion import Completion, CompleteEvent
+from prompt_toolkit.completion import CompleteEvent, Completion
 from prompt_toolkit.document import Document
 
 from awscli.autocomplete.completer import CompletionResult
 from awscli.autoprompt.logger import PromptToolkitHandler
 from awscli.autoprompt.prompttoolkit import (
-    PromptToolkitCompleter, loggers_handler_switcher
+    PromptToolkitCompleter,
+    loggers_handler_switcher,
 )
 from awscli.testutils import mock, unittest
 

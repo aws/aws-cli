@@ -11,11 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import tempfile
 import shutil
+import tempfile
 
-from awscli.testutils import BaseAWSCommandParamsTest, mock, cd
-from awscli.testutils import BaseAWSHelpOutputTest
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    BaseAWSHelpOutputTest,
+    cd,
+    mock,
+)
 
 
 class TestRunWizard(BaseAWSCommandParamsTest):

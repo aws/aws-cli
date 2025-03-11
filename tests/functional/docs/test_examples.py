@@ -24,16 +24,14 @@ at the man output, we look one step before at the generated rst output
 import os
 import re
 import shlex
+
 import docutils.nodes
 import docutils.parsers.rst
 import docutils.utils
-
 import pytest
 
-from awscli.argparser import MainArgParser
-from awscli.argparser import ServiceArgParser
+from awscli.argparser import MainArgParser, ServiceArgParser
 from awscli.testutils import BaseAWSHelpOutputTest, create_clidriver
-
 
 # Mapping of command names to subcommands that have examples in their help
 # output.  This isn't mean to be an exhaustive list, but should help catch
@@ -59,7 +57,7 @@ HTTP_LINK_REGEX = re.compile(r'`.+?<http://')
 
 # Used so that docutils doesn't write errors to stdout/stderr.
 # We're collecting and reporting these via AssertionErrors messages.
-class NoopWriter(object):
+class NoopWriter:
     def write(self, *args, **kwargs):
         pass
 
@@ -241,7 +239,7 @@ def find_all_cli_commands(filename):
     return visitor.cli_commands
 
 
-class CommandValidator(object):
+class CommandValidator:
     def __init__(self, driver):
         self.driver = driver
         help_command = self.driver.create_help_command()

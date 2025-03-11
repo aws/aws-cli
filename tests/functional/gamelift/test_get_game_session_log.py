@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
 from awscli.compat import BytesIO
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator, mock
 
 
 class TestGetGameSessionLog(BaseAWSCommandParamsTest):

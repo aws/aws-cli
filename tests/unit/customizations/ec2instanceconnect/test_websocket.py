@@ -15,33 +15,43 @@ import platform
 import socket
 import struct
 import sys
-from io import TextIOWrapper, BytesIO
-from threading import Event
+from io import BytesIO, TextIOWrapper
 from queue import Queue
+from threading import Event
 from unittest import mock
 from unittest.mock import patch
 from urllib.parse import urlparse
 
 import pytest
 from awscrt import websocket
-from awscrt.http import HttpProxyAuthenticationType, HttpProxyOptions, HttpRequest, HttpHeaders
-from awscrt.io import ClientTlsContext, TlsContextOptions, TlsConnectionOptions
+from awscrt.http import (
+    HttpHeaders,
+    HttpProxyAuthenticationType,
+    HttpProxyOptions,
+    HttpRequest,
+)
+from awscrt.io import ClientTlsContext, TlsConnectionOptions, TlsContextOptions
 from awscrt.websocket import (
-    Opcode,
-    OnConnectionSetupData,
-    OnIncomingFramePayloadData,
     IncomingFrame,
-    OnSendFrameCompleteData,
+    OnConnectionSetupData,
     OnConnectionShutdownData,
     OnIncomingFrameCompleteData,
+    OnIncomingFramePayloadData,
+    OnSendFrameCompleteData,
+    Opcode,
     WebSocket,
 )
 
 from awscli.customizations.ec2instanceconnect.websocket import (
-    BaseWebsocketIO, Websocket, StdinStdoutIO, WindowsStdinStdoutIO,
-    TCPSocketIO, WebsocketException, WebsocketManager, InputClosedError,
+    BaseWebsocketIO,
+    InputClosedError,
+    StdinStdoutIO,
+    TCPSocketIO,
+    Websocket,
+    WebsocketException,
+    WebsocketManager,
+    WindowsStdinStdoutIO,
 )
-
 
 skip_if_windows = pytest.mark.skipif(
     platform.system() not in ['Darwin', 'Linux'],

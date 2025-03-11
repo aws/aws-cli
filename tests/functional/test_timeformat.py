@@ -10,11 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import json
 import datetime
+import json
+
 from dateutil.tz import tzlocal
-from awscli.testutils import FileCreator, BaseCLIWireResponseTest
-from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
+
+from awscli.clidriver import AWSCLIEntryPoint, create_clidriver
+from awscli.testutils import BaseCLIWireResponseTest, FileCreator
 
 
 class TestCLITimestampParser(BaseCLIWireResponseTest):

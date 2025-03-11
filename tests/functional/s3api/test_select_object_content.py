@@ -12,11 +12,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import tempfile
 import shutil
+import tempfile
 
-from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import BaseAWSHelpOutputTest
+from awscli.testutils import BaseAWSCommandParamsTest, BaseAWSHelpOutputTest
 
 
 class TestGetObject(BaseAWSCommandParamsTest):
@@ -58,7 +57,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
 
         expected_params = {
             'Bucket': 'mybucket',
-            'Key': u'mykey',
+            'Key': 'mykey',
             'Expression': 'SELECT * FROM S3Object',
             'ExpressionType': 'SQL',
             'InputSerialization': {'CSV': {}, 'CompressionType': 'GZIP'},
@@ -67,7 +66,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         }
         stdout = self.assert_params_for_cmd(cmdline, expected_params)[0]
         self.assertEqual(stdout, '')
-        with open(filename, 'r') as f:
+        with open(filename) as f:
             contents = f.read()
             self.assertEqual(contents, (
                 'a,b,c,d\n'
@@ -94,7 +93,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
         ]
         expected_params = {
             'Bucket': 'mybucket',
-            'Key': u'mykey',
+            'Key': 'mykey',
             'Expression': 'SELECT * FROM S3Object',
             'ExpressionType': 'SQL',
             'InputSerialization': {'CSV': {}, 'CompressionType': 'GZIP'},

@@ -11,16 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-
-from awscli.customizations.paginate import PageArgument
-from awscli.testutils import mock, unittest
-
 from botocore.exceptions import DataNotFoundError
 from botocore.model import OperationModel
-from awscli.help import OperationHelpCommand, OperationDocumentEventHandler
 
 from awscli.customizations import paginate
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.paginate import PageArgument
+from awscli.help import OperationDocumentEventHandler, OperationHelpCommand
+from awscli.testutils import mock, unittest
 
 
 @pytest.fixture

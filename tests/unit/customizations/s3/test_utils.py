@@ -10,29 +10,39 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock, unittest, temporary_file
 import argparse
-import os
-
-import ntpath
-import time
 import datetime
+import ntpath
+import os
+import time
 
-from dateutil.tz import tzlocal
 import pytest
-from s3transfer.compat import seekable
 from botocore.hooks import HierarchicalEmitter
+from dateutil.tz import tzlocal
+from s3transfer.compat import seekable
 
 from awscli.compat import StringIO
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.customizations.s3.utils import (
+    AppendFilter,
+    BucketLister,
+    NonSeekableStream,
+    RequestParamsMapper,
+    S3PathResolver,
+    SetFileUtimeError,
+    StablePriorityQueue,
+    StdoutBytesWriter,
+    block_unsupported_resources,
+    create_warning,
     find_bucket_key,
-    guess_content_type, relative_path, block_unsupported_resources,
-    StablePriorityQueue, BucketLister, get_file_stat, AppendFilter,
-    create_warning, human_readable_size, human_readable_to_int,
-    set_file_utime, SetFileUtimeError, RequestParamsMapper, StdoutBytesWriter,
-    NonSeekableStream, S3PathResolver
+    get_file_stat,
+    guess_content_type,
+    human_readable_size,
+    human_readable_to_int,
+    relative_path,
+    set_file_utime,
 )
+from awscli.testutils import mock, temporary_file, unittest
 
 
 @pytest.fixture
@@ -120,7 +130,7 @@ class AppendFilterTest(unittest.TestCase):
 
 class TestFindBucketKey(unittest.TestCase):
     def test_unicode(self):
-        s3_path = '\u1234' + u'/' + '\u5678'
+        s3_path = '\u1234' + '/' + '\u5678'
         bucket, key = find_bucket_key(s3_path)
         self.assertEqual(bucket, '\u1234')
         self.assertEqual(key, '\u5678')
@@ -516,7 +526,7 @@ class TestGetFileStat(unittest.TestCase):
             self.assertEqual(time.mktime(update_time.timetuple()), epoch_now)
 
     def test_error_message(self):
-        with mock.patch('os.stat', mock.Mock(side_effect=IOError('msg'))):
+        with mock.patch('os.stat', mock.Mock(side_effect=OSError('msg'))):
             with self.assertRaisesRegex(ValueError, r'myfilename\.txt'):
                 get_file_stat('myfilename.txt')
 

@@ -10,25 +10,29 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import unittest, mock
-
+import pytest
 from botocore.session import Session
 from prompt_toolkit.application import Application
-from prompt_toolkit.completion import PathCompleter, Completion
+from prompt_toolkit.completion import Completion, PathCompleter
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.layout import walk
-import pytest
 
-from tests import PromptToolkitAppRunner
-from awscli.customizations.wizard.factory import create_wizard_app
 from awscli.customizations.wizard.app import (
-    WizardAppRunner, WizardTraverser, WizardValues, FileIO
-)
-from awscli.customizations.wizard.exceptions import (
-    InvalidChoiceException, UnableToRunWizardError, UnexpectedWizardException,
-    InvalidDataTypeConversionException
+    FileIO,
+    WizardAppRunner,
+    WizardTraverser,
+    WizardValues,
 )
 from awscli.customizations.wizard.core import BaseStep, Executor
+from awscli.customizations.wizard.exceptions import (
+    InvalidChoiceException,
+    InvalidDataTypeConversionException,
+    UnableToRunWizardError,
+    UnexpectedWizardException,
+)
+from awscli.customizations.wizard.factory import create_wizard_app
+from awscli.testutils import mock, unittest
+from tests import PromptToolkitAppRunner
 
 
 @pytest.fixture

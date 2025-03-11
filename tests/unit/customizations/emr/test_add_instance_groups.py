@@ -10,14 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import mock
-
-from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
-    BaseAWSCommandParamsTest
-from tests.unit.customizations.emr import test_constants as \
-    CONSTANTS
 import json
 
+from awscli.testutils import mock
+from tests.unit.customizations.emr import (
+    EMRBaseAWSCommandParamsTest as BaseAWSCommandParamsTest,
+)
+from tests.unit.customizations.emr import test_constants as CONSTANTS
 
 INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY = (
     ' InstanceGroupType=TASK,InstanceType=d2.xlarge,InstanceCount=2,'

@@ -15,6 +15,7 @@ from dateutil import parser, tz
 
 from tests.functional.s3 import BaseS3TransferCommandTest
 
+
 class TestLSCommand(BaseS3TransferCommandTest):
 
     def test_operations_used_in_recursive_list(self):

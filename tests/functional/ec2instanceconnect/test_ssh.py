@@ -10,13 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+import sys
 from unittest import mock
 
-import os
 import pytest
-import sys
 
-from tests import SessionStubber, AWSRequest, CLIRunner, HTTPResponse
+from tests import AWSRequest, CLIRunner, HTTPResponse, SessionStubber
 
 
 @pytest.fixture
@@ -157,7 +157,7 @@ def request_params_for_describe_instance():
 
 
 def get_describe_eice_response():
-    return f"""
+    return """
     <DescribeInstanceConnectEndpointsResponse xmlns="http://ec2.amazonaws.com/doc/2016-11-15/">
         <instanceConnectEndpointSet>
             <item>

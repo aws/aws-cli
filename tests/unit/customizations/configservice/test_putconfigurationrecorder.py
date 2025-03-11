@@ -10,12 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.clidriver import create_clidriver
 from awscli.arguments import CLIArgument
+from awscli.clidriver import create_clidriver
+from awscli.customizations.configservice.putconfigurationrecorder import (
+    ConfigurationRecorderArgument,
+    RecordingGroupArgument,
+    extract_recording_group,
+)
 from awscli.testutils import unittest
-from awscli.customizations.configservice.putconfigurationrecorder import \
-    extract_recording_group, ConfigurationRecorderArgument, \
-    RecordingGroupArgument
 
 
 class TestPutConfigurationRecorder(unittest.TestCase):

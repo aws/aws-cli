@@ -12,15 +12,15 @@
 # language governing permissions and limitations under the License.
 import io
 import os
-import pytest
 import sys
 from argparse import Namespace
 
+import pytest
 from botocore.paginate import PageIterator
 
-from awscli.testutils import unittest, mock
 from awscli.compat import StringIO, contextlib
-from awscli.formatter import YAMLDumper, StreamedYAMLFormatter, JSONFormatter
+from awscli.formatter import JSONFormatter, StreamedYAMLFormatter, YAMLDumper
+from awscli.testutils import mock, unittest
 
 
 class FakePageIterator(PageIterator):
@@ -105,7 +105,7 @@ class TestStreamedYAMLFormatter:
     def test_flushes_after_io_error(self):
         io_error_dumper = mock.Mock(YAMLDumper)
         mock_output = mock.Mock()
-        io_error_dumper.dump.side_effect = IOError()
+        io_error_dumper.dump.side_effect = OSError()
         response = {
             'TableNames': [
                 'MyTable'
@@ -118,7 +118,7 @@ class TestStreamedYAMLFormatter:
     def test_stops_paginating_after_io_error(self):
         io_error_dumper = mock.Mock(YAMLDumper)
         mock_output = mock.Mock()
-        io_error_dumper.dump.side_effect = IOError()
+        io_error_dumper.dump.side_effect = OSError()
         response = FakePageIterator([
             {
                 'TableNames': [
@@ -164,7 +164,7 @@ class TestStreamedYAMLFormatter:
         assert stdout_b.getvalue() == (
             '- TableNames:\n'
             '  - 桌子\n'
-        ).encode('UTF-8')
+        ).encode()
 
 
 class TestJSONFormatter:
@@ -205,5 +205,5 @@ class TestJSONFormatter:
             '        "桌子"\n'
             '    ]\n'
             '}\n'
-        ).encode('UTF-8')
+        ).encode()
 

@@ -11,11 +11,15 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+from awscli.customizations.ecs.deploy import (
+    TIMEOUT_BUFFER_MIN,
+    CodeDeployValidator,
+)
+from awscli.customizations.ecs.exceptions import (
+    InvalidPlatformError,
+    InvalidProperyError,
+)
 from awscli.testutils import unittest
-from awscli.customizations.ecs.deploy import (CodeDeployValidator,
-                                              TIMEOUT_BUFFER_MIN)
-from awscli.customizations.ecs.exceptions import (InvalidPlatformError,
-                                                  InvalidProperyError)
 
 
 class TestCodeDeployValidator(unittest.TestCase):

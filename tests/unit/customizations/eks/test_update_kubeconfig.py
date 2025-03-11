@@ -24,15 +24,21 @@ from botocore.compat import OrderedDict
 import awscli.customizations.eks.kubeconfig as kubeconfig
 from awscli.customizations.eks.exceptions import EKSClusterError, EKSError
 from awscli.customizations.eks.ordered_yaml import ordered_yaml_load
-from awscli.customizations.eks.update_kubeconfig import (API_VERSION,
-                                                         EKSClient,
-                                                         KubeconfigSelector)
+from awscli.customizations.eks.update_kubeconfig import (
+    API_VERSION,
+    EKSClient,
+    KubeconfigSelector,
+)
 from awscli.customizations.utils import uni_print
 from awscli.testutils import mock, unittest
 from tests.functional.eks.test_util import (
-    describe_cluster_creating_response, describe_cluster_deleting_response,
-    describe_cluster_no_status_response, describe_cluster_response,
-    describe_cluster_response_outpost_cluster, get_testdata)
+    describe_cluster_creating_response,
+    describe_cluster_deleting_response,
+    describe_cluster_no_status_response,
+    describe_cluster_response,
+    describe_cluster_response_outpost_cluster,
+    get_testdata,
+)
 
 
 def generate_env_variable(files):

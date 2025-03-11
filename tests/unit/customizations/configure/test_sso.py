@@ -14,34 +14,37 @@ import argparse
 import dataclasses
 import json
 import typing
-
 from datetime import datetime, timedelta
 
 import prompt_toolkit
 import pytest
+from botocore.stub import Stubber
 from dateutil.tz import tzlocal
-
 from prompt_toolkit import prompt as ptk_prompt
 from prompt_toolkit.document import Document
-from prompt_toolkit.validation import Validator
-from prompt_toolkit.validation import DummyValidator
-from prompt_toolkit.validation import ValidationError
+from prompt_toolkit.validation import (
+    DummyValidator,
+    ValidationError,
+    Validator,
+)
 
-from botocore.stub import Stubber
-
-from awscli.testutils import mock, unittest
-from awscli.customizations.configure.sso import display_account
-from awscli.customizations.configure.sso import PTKPrompt
-from awscli.customizations.configure.sso import SSOSessionConfigurationPrompter
-from awscli.customizations.configure.sso import ConfigureSSOCommand
-from awscli.customizations.configure.sso import ConfigureSSOSessionCommand
-from awscli.customizations.configure.sso import StartUrlValidator
-from awscli.customizations.configure.sso import RequiredInputValidator
-from awscli.customizations.configure.sso import ScopesValidator
-from awscli.customizations.sso.utils import parse_sso_registration_scopes
-from awscli.customizations.sso.utils import do_sso_login, PrintOnlyHandler
+from awscli.customizations.configure.sso import (
+    ConfigureSSOCommand,
+    ConfigureSSOSessionCommand,
+    PTKPrompt,
+    RequiredInputValidator,
+    ScopesValidator,
+    SSOSessionConfigurationPrompter,
+    StartUrlValidator,
+    display_account,
+)
+from awscli.customizations.sso.utils import (
+    PrintOnlyHandler,
+    do_sso_login,
+    parse_sso_registration_scopes,
+)
 from awscli.formatter import CLI_OUTPUT_FORMATS
-
+from awscli.testutils import mock, unittest
 from tests import StubbedSession
 
 
@@ -815,7 +818,7 @@ def write_aws_config(aws_config, lines):
 
 
 def assert_aws_config(aws_config, expected_lines):
-    with open(aws_config, "r") as f:
+    with open(aws_config) as f:
         assert f.read().splitlines() == expected_lines
 
 
@@ -1103,7 +1106,7 @@ class TestConfigureSSOCommand:
         assert_aws_config(
             aws_config,
             expected_lines=[
-                f"[profile new-profile]",
+                "[profile new-profile]",
                 f"sso_start_url = {inputs.start_url_prompt.answer}",
                 f"sso_region = {inputs.sso_region_prompt.answer}",
                 f"sso_account_id = {account_id}",
@@ -1525,7 +1528,7 @@ class TestPrintConclusion:
         profile_name = "test-profile"
         sso_cmd._print_conclusion(True, profile_name)
         captured = capsys.readouterr()
-        assert f"To use this profile, specify the profile name using --profile" in captured.out
+        assert "To use this profile, specify the profile name using --profile" in captured.out
         assert f"aws sts get-caller-identity --profile {profile_name}" in captured.out
 
     def test_print_conclusion_sso_configuration(self, sso_cmd, capsys):

@@ -10,10 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import botocore.session
 import pytest
 
-import botocore.session
-from awscli.testutils import random_chars, FileCreator
+from awscli.testutils import FileCreator, random_chars
 from tests import S3Utils
 
 

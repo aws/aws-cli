@@ -12,10 +12,11 @@
 # language governing permissions and limitations under the License.
 from botocore.model import DenormalizedStructureBuilder
 
-from awscli.testutils import mock, unittest, capture_output
-from awscli.customizations.generatecliskeleton import \
-    GenerateCliSkeletonArgument
 from awscli.compat import StringIO
+from awscli.customizations.generatecliskeleton import (
+    GenerateCliSkeletonArgument,
+)
+from awscli.testutils import capture_output, mock, unittest
 
 
 class TestGenerateCliSkeleton(unittest.TestCase):

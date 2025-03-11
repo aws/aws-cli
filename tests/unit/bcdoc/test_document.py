@@ -21,7 +21,8 @@
 # IN THE SOFTWARE.
 #
 import unittest
-from awscli.bcdoc.restdoc import ReSTDocument, DocumentStructure
+
+from awscli.bcdoc.restdoc import DocumentStructure, ReSTDocument
 
 
 class TestReSTDocument(unittest.TestCase):

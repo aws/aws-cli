@@ -11,12 +11,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import BaseAWSCommandParamsTest, unittest
-from awscli.testutils import temporary_file
-
-from awscli.customizations.datapipeline import QueryArgBuilder
 from dateutil.parser import parse
 
+from awscli.customizations.datapipeline import QueryArgBuilder
+from awscli.testutils import BaseAWSCommandParamsTest, temporary_file, unittest
 
 # We're not interested in testing the def->api
 # translation process (that has its own test suite),
@@ -85,7 +83,7 @@ class TestErrorMessages(BaseAWSCommandParamsTest):
                              'waiting_on_dependencies'))
 
 
-class FakeParsedArgs(object):
+class FakeParsedArgs:
     def __init__(self, start_interval=None, schedule_interval=None,
                  status=None):
         self.start_interval = start_interval

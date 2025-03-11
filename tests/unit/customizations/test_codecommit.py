@@ -11,19 +11,21 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import awscli
-
 from argparse import Namespace
-from botocore.session import Session
-from botocore.credentials import Credentials
-from awscli.customizations.codecommit import CodeCommitGetCommand
-from awscli.customizations.codecommit import CodeCommitCommand
-from awscli.customizations.exceptions import ParamValidationError
-from awscli.testutils import mock, unittest, StringIOWithFileNo
-from awscli.compat import StringIO
 
 from botocore.auth import SigV4Auth
 from botocore.awsrequest import AWSRequest
+from botocore.credentials import Credentials
+from botocore.session import Session
+
+import awscli
+from awscli.compat import StringIO
+from awscli.customizations.codecommit import (
+    CodeCommitCommand,
+    CodeCommitGetCommand,
+)
+from awscli.customizations.exceptions import ParamValidationError
+from awscli.testutils import StringIOWithFileNo, mock, unittest
 
 
 class TestCodeCommitCredentialHelper(unittest.TestCase):

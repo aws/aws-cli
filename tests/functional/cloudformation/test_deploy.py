@@ -12,8 +12,7 @@
 # language governing permissions and limitations under the License.
 import json
 
-from awscli.testutils import BaseAWSCommandParamsTest
-from awscli.testutils import FileCreator
+from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 
 class TestDeployCommand(BaseAWSCommandParamsTest):

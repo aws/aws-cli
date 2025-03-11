@@ -10,14 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from argparse import Namespace
 import os
+from argparse import Namespace
 
 from botocore.session import get_session
 
-from awscli.testutils import unittest, mock, FileCreator
-from awscli.customizations.gamelift.getlog import GetGameSessionLogCommand
 from awscli.compat import BytesIO
+from awscli.customizations.gamelift.getlog import GetGameSessionLogCommand
+from awscli.testutils import FileCreator, mock, unittest
 
 
 class TestGetGameSessionLogCommand(unittest.TestCase):

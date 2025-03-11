@@ -15,9 +15,14 @@ import json
 import ruamel.yaml as yaml
 
 from awscli.clidriver import AWSCLIEntryPoint
-from awscli.testutils import skip_if_windows, if_windows
-from awscli.testutils import mock, create_clidriver, FileCreator
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    FileCreator,
+    create_clidriver,
+    if_windows,
+    mock,
+    skip_if_windows,
+)
 
 
 class TestOutput(BaseAWSCommandParamsTest):

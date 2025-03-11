@@ -13,9 +13,9 @@
 import datetime
 import unittest
 
-from awscli.testutils import mock
 from awscli.customizations.s3.comparator import Comparator
 from awscli.customizations.s3.filegenerator import FileStat
+from awscli.testutils import mock
 
 
 class ComparatorTest(unittest.TestCase):

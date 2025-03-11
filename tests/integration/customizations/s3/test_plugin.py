@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You
@@ -15,29 +14,32 @@
 # The following tests are performed to ensure that the commands work.
 # It does not check every possible parameter that can be thrown as
 # those are checked by tests in other classes
+import contextlib
+import copy
 import datetime
 import os
 import platform
-import contextlib
-import time
 import re
-import stat
 import signal
 import socket
+import stat
 import tempfile
-import copy
+import time
 
-from dateutil.tz import tzutc
 import pytest
+from dateutil.tz import tzutc
 
 from awscli.compat import BytesIO, urlopen
-from awscli.testutils import unittest, get_stdout_encoding
-from awscli.testutils import skip_if_windows
-from awscli.testutils import aws as _aws
-from awscli.testutils import random_chars, random_bucket_name
 from awscli.customizations.s3.transferconfig import DEFAULTS
+from awscli.testutils import aws as _aws
+from awscli.testutils import (
+    get_stdout_encoding,
+    random_bucket_name,
+    random_chars,
+    skip_if_windows,
+    unittest,
+)
 from tests.integration.customizations.s3 import BaseS3IntegrationTest
-
 
 _NON_EXISTENT_BUCKET = random_bucket_name()
 
@@ -93,7 +95,7 @@ def _get_config_contents(session):
     if config_file:
         config_path = os.path.expanduser(os.path.expandvars(config_file))
         if os.path.exists(config_path):
-            with open(config_path, 'r') as f:
+            with open(config_path) as f:
                 return f.read()
     return ''
 
@@ -192,7 +194,7 @@ class TestMoveCommand(BaseParameterizedS3ClientTest):
         p = aws('s3 mv s3://%s/foo.txt %s' % (shared_bucket, full_path))
         self.assert_no_errors(p)
         assert os.path.exists(full_path)
-        with open(full_path, 'r') as f:
+        with open(full_path) as f:
             assert f.read() == 'this is foo.txt'
         # The s3 file should not be there anymore.
         assert s3_utils.key_not_exists(shared_bucket, key_name='foo.txt')
@@ -273,10 +275,9 @@ class TestMoveCommand(BaseParameterizedS3ClientTest):
         file_contents = 'hello'
         s3_utils.put_object(from_bucket, file_name, file_contents)
 
-        p = aws('s3 mv s3://{0}/{4} s3://{1}/{4} '
-                '--source-region {2} --region {3}'
-                .format(from_bucket, to_bucket, from_region, to_region,
-                        file_name))
+        p = aws(f's3 mv s3://{from_bucket}/{file_name} s3://{to_bucket}/{file_name} '
+                f'--source-region {from_region} --region {to_region}'
+                )
         self.assert_no_errors(p)
 
         assert s3_utils.key_not_exists(from_bucket, file_name)
@@ -391,7 +392,7 @@ class TestCp(BaseParameterizedS3ClientTest):
         p = aws('s3 cp s3://%s/foo.txt %s' % (shared_bucket, full_path))
         self.assert_no_errors(p)
 
-        with open(full_path, 'r') as f:
+        with open(full_path) as f:
             assert f.read() == 'this is foo.txt'
 
     def test_cp_without_trailing_slash(self, files, s3_utils, shared_bucket):
@@ -530,7 +531,7 @@ class TestCp(BaseParameterizedS3ClientTest):
                 (bucket_name, object_name, local_filename))
         assert p.rc == 0
         # Assert that the file was downloaded properly.
-        with open(local_filename, 'r') as f:
+        with open(local_filename) as f:
             assert f.read() == contents
 
     def test_download_empty_object(self, files, s3_utils, shared_bucket):
@@ -541,7 +542,7 @@ class TestCp(BaseParameterizedS3ClientTest):
             shared_bucket, object_name, local_filename))
         assert p.rc == 0
         # Assert that the file was downloaded and has no content.
-        with open(local_filename, 'r') as f:
+        with open(local_filename) as f:
             assert f.read() == ''
 
     def test_website_redirect_ignore_paramfile(self, files, s3_utils,
@@ -747,9 +748,9 @@ class TestSync(BaseParameterizedS3ClientTest):
         # The files should be back now.
         assert os.path.isfile(foo_txt)
         assert os.path.isfile(bar_txt)
-        with open(foo_txt, 'r') as f:
+        with open(foo_txt) as f:
             assert f.read() == 'foo contents'
-        with open(bar_txt, 'r') as f:
+        with open(bar_txt) as f:
             assert f.read() == 'bar contents'
 
     def test_sync_to_nonexistent_bucket(self, files):
@@ -1081,10 +1082,10 @@ class TestUnicode(BaseParameterizedS3ClientTest):
     """
     def test_cp(self, files, shared_bucket):
         local_example1_txt = files.create_file(
-            u'\u00e9xample.txt', 'example1 contents')
+            '\u00e9xample.txt', 'example1 contents')
         s3_example1_txt = 's3://%s/%s' % (shared_bucket,
                                           os.path.basename(local_example1_txt))
-        local_example2_txt = files.full_path(u'\u00e9xample2.txt')
+        local_example2_txt = files.full_path('\u00e9xample2.txt')
 
         p = aws('s3 cp %s %s' % (local_example1_txt, s3_example1_txt))
         self.assert_no_errors(p)
@@ -1096,9 +1097,9 @@ class TestUnicode(BaseParameterizedS3ClientTest):
             assert f.read() == b'example1 contents'
 
     def test_recursive_cp(self, files, shared_bucket):
-        local_example1_txt = files.create_file(u'\u00e9xample.txt',
+        local_example1_txt = files.create_file('\u00e9xample.txt',
                                                'example1 contents')
-        local_example2_txt = files.create_file(u'\u00e9xample2.txt',
+        local_example2_txt = files.create_file('\u00e9xample2.txt',
                                                'example2 contents')
         p = aws('s3 cp %s s3://%s --recursive --quiet' % (
             files.rootdir, shared_bucket))
@@ -1693,7 +1694,7 @@ class TestStreams(BaseParameterizedS3ClientTest):
         """
         This tests being able to upload unicode from stdin.
         """
-        unicode_str = u'\u00e9 This is a test'
+        unicode_str = '\u00e9 This is a test'
         byte_str = unicode_str.encode('utf-8')
         p = aws('s3 cp - s3://%s/stream' % shared_bucket,
                 input_data=byte_str)
@@ -1708,7 +1709,7 @@ class TestStreams(BaseParameterizedS3ClientTest):
         The data has some unicode in it to avoid having to do a separate
         multipart upload test just for unicode.
         """
-        data = u'\u00e9bcd' * (1024 * 1024 * 10)
+        data = '\u00e9bcd' * (1024 * 1024 * 10)
         data_encoded = data.encode('utf-8')
         p = aws('s3 cp - s3://%s/stream' % shared_bucket,
                 input_data=data_encoded)
@@ -1733,7 +1734,7 @@ class TestStreams(BaseParameterizedS3ClientTest):
         """
         This tests downloading a small unicode stream from stdout.
         """
-        data = u'\u00e9 This is a test'
+        data = '\u00e9 This is a test'
         data_encoded = data.encode('utf-8')
         p = aws('s3 cp - s3://%s/stream' % shared_bucket,
                 input_data=data_encoded)
@@ -1752,7 +1753,7 @@ class TestStreams(BaseParameterizedS3ClientTest):
         """
         # First lets upload some data via streaming since
         # its faster and we do not have to write to a file!
-        data = u'\u00e9bcd' * (1024 * 1024 * 10)
+        data = '\u00e9bcd' * (1024 * 1024 * 10)
         data_encoded = data.encode('utf-8')
         p = aws('s3 cp - s3://%s/stream' % shared_bucket,
                 input_data=data_encoded)
@@ -1824,7 +1825,7 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
         self.assert_no_errors(p)
 
         assert os.path.isfile(download_filename)
-        with open(download_filename, 'r') as f:
+        with open(download_filename) as f:
             assert f.read() == contents
 
     def test_sse_upload(self, files, s3_utils, shared_bucket):
@@ -1968,7 +1969,7 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
         self.assert_no_errors(p)
 
         assert os.path.isfile(file_name)
-        with open(file_name, 'r') as f:
+        with open(file_name) as f:
             assert f.read() == contents
 
     def test_smoke_sync_sse_kms(self, files, shared_bucket):
@@ -1995,7 +1996,7 @@ class TestSSERelatedParams(BaseParameterizedS3ClientTest):
         self.assert_no_errors(p)
 
         assert os.path.isfile(file_name)
-        with open(file_name, 'r') as f:
+        with open(file_name) as f:
             assert f.read() == contents
 
 
@@ -2011,7 +2012,7 @@ class TestSSECRelatedParams(BaseParameterizedS3ClientTest):
         self.assert_no_errors(p)
 
         assert os.path.isfile(download_filename)
-        with open(download_filename, 'r') as f:
+        with open(download_filename) as f:
             assert f.read() == contents
 
     def test_sse_c_upload_and_download(self, files, s3_utils, encrypt_key,
@@ -2131,7 +2132,7 @@ class TestSSECRelatedParams(BaseParameterizedS3ClientTest):
         self.assert_no_errors(p)
 
         assert os.path.isfile(file_name)
-        with open(file_name, 'r') as f:
+        with open(file_name) as f:
             assert f.read() == contents
 
 

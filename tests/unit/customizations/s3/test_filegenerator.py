@@ -12,20 +12,33 @@
 # language governing permissions and limitations under the License.
 import os
 import platform
-from awscli.testutils import mock, unittest, FileCreator, BaseAWSCommandParamsTest
-from awscli.testutils import skip_if_windows
-import stat
-import tempfile
 import shutil
 import socket
+import stat
+import tempfile
 
 from botocore.exceptions import ClientError
 
-from awscli.customizations.s3.filegenerator import FileGenerator, \
-    FileDecodingError, FileStat, is_special_file, is_readable
-from awscli.customizations.s3.utils import get_file_stat, EPOCH_TIME
-from tests.unit.customizations.s3 import make_loc_files, clean_loc_files, \
-    compare_files
+from awscli.customizations.s3.filegenerator import (
+    FileDecodingError,
+    FileGenerator,
+    FileStat,
+    is_readable,
+    is_special_file,
+)
+from awscli.customizations.s3.utils import EPOCH_TIME, get_file_stat
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    FileCreator,
+    mock,
+    skip_if_windows,
+    unittest,
+)
+from tests.unit.customizations.s3 import (
+    clean_loc_files,
+    compare_files,
+    make_loc_files,
+)
 
 
 @skip_if_windows('Special files only supported on mac/linux')
@@ -424,30 +437,30 @@ class TestListFilesLocally(unittest.TestCase):
 
     def test_list_local_files_with_unicode_chars(self):
         p = os.path.join
-        open(p(self.directory, u'a'), 'w').close()
-        open(p(self.directory, u'a\u0300'), 'w').close()
-        open(p(self.directory, u'a\u0300-1'), 'w').close()
-        open(p(self.directory, u'a\u03001'), 'w').close()
-        open(p(self.directory, u'z'), 'w').close()
-        open(p(self.directory, u'\u00e6'), 'w').close()
-        os.mkdir(p(self.directory, u'a\u0300a'))
-        open(p(self.directory, u'a\u0300a', u'a'), 'w').close()
-        open(p(self.directory, u'a\u0300a', u'z'), 'w').close()
-        open(p(self.directory, u'a\u0300a', u'\u00e6'), 'w').close()
+        open(p(self.directory, 'a'), 'w').close()
+        open(p(self.directory, 'a\u0300'), 'w').close()
+        open(p(self.directory, 'a\u0300-1'), 'w').close()
+        open(p(self.directory, 'a\u03001'), 'w').close()
+        open(p(self.directory, 'z'), 'w').close()
+        open(p(self.directory, '\u00e6'), 'w').close()
+        os.mkdir(p(self.directory, 'a\u0300a'))
+        open(p(self.directory, 'a\u0300a', 'a'), 'w').close()
+        open(p(self.directory, 'a\u0300a', 'z'), 'w').close()
+        open(p(self.directory, 'a\u0300a', '\u00e6'), 'w').close()
 
         file_generator = FileGenerator(None, None, None)
         values = list(el[0] for el in file_generator.list_files(
             self.directory, dir_op=True))
         expected_order = [os.path.join(self.directory, el) for el in [
-            u"a",
-            u"a\u0300",
-            u"a\u0300-1",
-            u"a\u03001",
-            u"a\u0300a%sa" % os.path.sep,
-            u"a\u0300a%sz" % os.path.sep,
-            u"a\u0300a%s\u00e6" % os.path.sep,
-            u"z",
-            u"\u00e6"
+            "a",
+            "a\u0300",
+            "a\u0300-1",
+            "a\u03001",
+            "a\u0300a%sa" % os.path.sep,
+            "a\u0300a%sz" % os.path.sep,
+            "a\u0300a%s\u00e6" % os.path.sep,
+            "z",
+            "\u00e6"
         ]]
         self.assertEqual(values, expected_order)
 

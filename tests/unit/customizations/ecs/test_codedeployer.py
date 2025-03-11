@@ -15,9 +15,10 @@ import hashlib
 import json
 
 from botocore import compat
-from awscli.testutils import capture_output, mock, unittest
-from awscli.customizations.ecs.deploy import CodeDeployer, MAX_WAIT_MIN
+
+from awscli.customizations.ecs.deploy import MAX_WAIT_MIN, CodeDeployer
 from awscli.customizations.ecs.exceptions import MissingPropertyError
+from awscli.testutils import capture_output, mock, unittest
 
 
 class TestCodeDeployer(unittest.TestCase):

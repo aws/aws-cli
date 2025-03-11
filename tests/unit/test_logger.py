@@ -15,10 +15,12 @@ import logging
 import awscrt.io
 
 from awscli.logger import (
-    set_stream_logger, remove_stream_logger, enable_crt_logging,
     disable_crt_logging,
+    enable_crt_logging,
+    remove_stream_logger,
+    set_stream_logger,
 )
-from awscli.testutils import unittest, mock
+from awscli.testutils import mock, unittest
 
 
 class TestLogger(unittest.TestCase):

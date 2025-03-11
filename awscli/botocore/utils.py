@@ -74,7 +74,8 @@ from botocore.exceptions import (
     UnsupportedS3ArnError,
     UnsupportedS3ConfigurationError,
     UnsupportedS3ControlArnError,
-    UnsupportedS3ControlConfigurationError, UnauthorizedSSOTokenError,
+    UnsupportedS3ControlConfigurationError,
+    UnauthorizedSSOTokenError,
 )
 from dateutil.tz import tzutc
 from urllib3.exceptions import LocationParseError
